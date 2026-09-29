@@ -1066,15 +1066,471 @@
         "relevant": true
       }
     ],
-    "alqueva": [
+    "leirosa": [
       {
-        "areaCode": "BJA",
-        "areaLabel": "Beja",
-        "type": "Trovoada",
+        "areaCode": "LRA",
+        "areaLabel": "Leiria",
+        "type": "Precipitação",
         "level": "yellow",
-        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-09-28T12:00:00",
-        "endTime": "2026-09-28T21:00:00",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-09-29T21:00:00",
+        "endTime": "2026-09-30T06:00:00",
+        "relevant": true
+      }
+    ],
+    "praia-da-vieira": [
+      {
+        "areaCode": "LRA",
+        "areaLabel": "Leiria",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-09-29T21:00:00",
+        "endTime": "2026-09-30T06:00:00",
+        "relevant": true
+      }
+    ],
+    "castelo-bode": [
+      {
+        "areaCode": "LRA",
+        "areaLabel": "Leiria",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-09-29T21:00:00",
+        "endTime": "2026-09-30T06:00:00",
+        "relevant": true
+      }
+    ],
+    "nazare": [
+      {
+        "areaCode": "LRA",
+        "areaLabel": "Leiria",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-09-29T21:00:00",
+        "endTime": "2026-09-30T06:00:00",
+        "relevant": true
+      }
+    ],
+    "foz-arelho": [
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-09-30T00:00:00",
+        "endTime": "2026-09-30T06:00:00",
+        "relevant": true
+      }
+    ],
+    "foil-foz-arelho": [
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-09-30T00:00:00",
+        "endTime": "2026-09-30T06:00:00",
+        "relevant": true
+      }
+    ],
+    "obidos-lagoon": [
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-09-30T00:00:00",
+        "endTime": "2026-09-30T06:00:00",
+        "relevant": true
+      }
+    ],
+    "obidos-lagoon-sul": [
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-09-30T00:00:00",
+        "endTime": "2026-09-30T06:00:00",
+        "relevant": true
+      }
+    ],
+    "obidos-lagoon-foz": [
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-09-30T00:00:00",
+        "endTime": "2026-09-30T06:00:00",
+        "relevant": true
+      }
+    ],
+    "foz-arelho-beach": [
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-09-30T00:00:00",
+        "endTime": "2026-09-30T06:00:00",
+        "relevant": true
+      }
+    ],
+    "praia-del-rey": [
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-09-30T00:00:00",
+        "endTime": "2026-09-30T06:00:00",
+        "relevant": true
+      }
+    ],
+    "almagreira": [
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-09-30T00:00:00",
+        "endTime": "2026-09-30T06:00:00",
+        "relevant": true
+      }
+    ],
+    "baleal": [
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-09-30T00:00:00",
+        "endTime": "2026-09-30T06:00:00",
+        "relevant": true
+      }
+    ],
+    "supertubos": [
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-09-30T00:00:00",
+        "endTime": "2026-09-30T06:00:00",
+        "relevant": true
+      }
+    ],
+    "foz-sizandro": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-09-30T00:00:00",
+        "endTime": "2026-09-30T06:00:00",
+        "relevant": true
+      }
+    ],
+    "coxos": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-09-30T00:00:00",
+        "endTime": "2026-09-30T06:00:00",
+        "relevant": true
+      }
+    ],
+    "ribeira-ilhas": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-09-30T00:00:00",
+        "endTime": "2026-09-30T06:00:00",
+        "relevant": true
+      }
+    ],
+    "empa": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-09-30T00:00:00",
+        "endTime": "2026-09-30T06:00:00",
+        "relevant": true
+      }
+    ],
+    "sao-lourenco": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-09-30T00:00:00",
+        "endTime": "2026-09-30T06:00:00",
+        "relevant": true
+      }
+    ],
+    "pedra-branca": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-09-30T00:00:00",
+        "endTime": "2026-09-30T06:00:00",
+        "relevant": true
+      }
+    ],
+    "sao-sebastiao": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-09-30T00:00:00",
+        "endTime": "2026-09-30T06:00:00",
+        "relevant": true
+      }
+    ],
+    "foz-lizandro": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-09-30T00:00:00",
+        "endTime": "2026-09-30T06:00:00",
+        "relevant": true
+      }
+    ],
+    "praia-grande-sintra": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-09-30T00:00:00",
+        "endTime": "2026-09-30T06:00:00",
+        "relevant": true
+      }
+    ],
+    "adraga": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-09-30T00:00:00",
+        "endTime": "2026-09-30T06:00:00",
+        "relevant": true
+      }
+    ],
+    "guincho": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-09-30T00:00:00",
+        "endTime": "2026-09-30T06:00:00",
+        "relevant": true
+      }
+    ],
+    "seixal-bay": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-09-30T00:00:00",
+        "endTime": "2026-09-30T06:00:00",
+        "relevant": true
+      }
+    ],
+    "parede": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-09-30T00:00:00",
+        "endTime": "2026-09-30T06:00:00",
+        "relevant": true
+      }
+    ],
+    "carcavelos": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-09-30T00:00:00",
+        "endTime": "2026-09-30T06:00:00",
+        "relevant": true
+      }
+    ],
+    "nova-vaga": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-09-30T00:00:00",
+        "endTime": "2026-09-30T06:00:00",
+        "relevant": true
+      }
+    ],
+    "sao-joao-caparica": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-09-30T00:00:00",
+        "endTime": "2026-09-30T06:00:00",
+        "relevant": true
+      }
+    ],
+    "costa-caparica": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-09-30T00:00:00",
+        "endTime": "2026-09-30T06:00:00",
+        "relevant": true
+      }
+    ],
+    "fonte-telha": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-09-30T00:00:00",
+        "endTime": "2026-09-30T06:00:00",
+        "relevant": true
+      }
+    ],
+    "ponta-dos-corvos": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-09-30T00:00:00",
+        "endTime": "2026-09-30T06:00:00",
+        "relevant": true
+      }
+    ],
+    "trafaria": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-09-30T00:00:00",
+        "endTime": "2026-09-30T06:00:00",
+        "relevant": true
+      }
+    ],
+    "cova-do-vapor": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-09-30T00:00:00",
+        "endTime": "2026-09-30T06:00:00",
+        "relevant": true
+      }
+    ],
+    "praia-da-rainha": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-09-30T00:00:00",
+        "endTime": "2026-09-30T06:00:00",
+        "relevant": true
+      }
+    ],
+    "lagoa-albufeira": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-09-30T00:00:00",
+        "endTime": "2026-09-30T06:00:00",
+        "relevant": true
+      }
+    ],
+    "foil-lagoa-albufeira": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-09-30T00:00:00",
+        "endTime": "2026-09-30T06:00:00",
+        "relevant": true
+      }
+    ],
+    "praia-lagoa-albufeira": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-09-30T00:00:00",
+        "endTime": "2026-09-30T06:00:00",
         "relevant": true
       }
     ],
@@ -1097,546 +1553,6 @@
         "text": "No litoral, vento do quadrante sul, com rajadas até 70/80 km/h.",
         "startTime": "2026-09-29T12:00:00",
         "endTime": "2026-09-29T21:00:00",
-        "relevant": true
-      }
-    ],
-    "mosteiros": [
-      {
-        "areaCode": "AOR",
-        "areaLabel": "Vila do Porto",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada.",
-        "startTime": "2026-09-28T12:19:00",
-        "endTime": "2026-09-28T15:00:00",
-        "relevant": true
-      }
-    ],
-    "monte-verde": [
-      {
-        "areaCode": "AOR",
-        "areaLabel": "Vila do Porto",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada.",
-        "startTime": "2026-09-28T12:19:00",
-        "endTime": "2026-09-28T15:00:00",
-        "relevant": true
-      }
-    ],
-    "santa-barbara": [
-      {
-        "areaCode": "AOR",
-        "areaLabel": "Vila do Porto",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada.",
-        "startTime": "2026-09-28T12:19:00",
-        "endTime": "2026-09-28T15:00:00",
-        "relevant": true
-      }
-    ],
-    "milicias": [
-      {
-        "areaCode": "AOR",
-        "areaLabel": "Vila do Porto",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada.",
-        "startTime": "2026-09-28T12:19:00",
-        "endTime": "2026-09-28T15:00:00",
-        "relevant": true
-      }
-    ],
-    "agua-alto": [
-      {
-        "areaCode": "AOR",
-        "areaLabel": "Vila do Porto",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada.",
-        "startTime": "2026-09-28T12:19:00",
-        "endTime": "2026-09-28T15:00:00",
-        "relevant": true
-      }
-    ],
-    "zambujeira": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima, em especial no barlavento e no interior.",
-        "startTime": "2026-09-25T16:25:00",
-        "endTime": "2026-09-26T18:00:00",
-        "relevant": false
-      }
-    ],
-    "carvalhal": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima, em especial no barlavento e no interior.",
-        "startTime": "2026-09-25T16:25:00",
-        "endTime": "2026-09-26T18:00:00",
-        "relevant": false
-      }
-    ],
-    "odeceixe": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima, em especial no barlavento e no interior.",
-        "startTime": "2026-09-25T16:25:00",
-        "endTime": "2026-09-26T18:00:00",
-        "relevant": false
-      }
-    ],
-    "amoreira": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima, em especial no barlavento e no interior.",
-        "startTime": "2026-09-25T16:25:00",
-        "endTime": "2026-09-26T18:00:00",
-        "relevant": false
-      }
-    ],
-    "monte-clerigo": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima, em especial no barlavento e no interior.",
-        "startTime": "2026-09-25T16:25:00",
-        "endTime": "2026-09-26T18:00:00",
-        "relevant": false
-      }
-    ],
-    "arrifana": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima, em especial no barlavento e no interior.",
-        "startTime": "2026-09-25T16:25:00",
-        "endTime": "2026-09-26T18:00:00",
-        "relevant": false
-      }
-    ],
-    "vale-figueiras": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima, em especial no barlavento e no interior.",
-        "startTime": "2026-09-25T16:25:00",
-        "endTime": "2026-09-26T18:00:00",
-        "relevant": false
-      }
-    ],
-    "bordeira": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima, em especial no barlavento e no interior.",
-        "startTime": "2026-09-25T16:25:00",
-        "endTime": "2026-09-26T18:00:00",
-        "relevant": false
-      }
-    ],
-    "amado": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima, em especial no barlavento e no interior.",
-        "startTime": "2026-09-25T16:25:00",
-        "endTime": "2026-09-26T18:00:00",
-        "relevant": false
-      }
-    ],
-    "barriga": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima, em especial no barlavento e no interior.",
-        "startTime": "2026-09-25T16:25:00",
-        "endTime": "2026-09-26T18:00:00",
-        "relevant": false
-      }
-    ],
-    "castelejo": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima, em especial no barlavento e no interior.",
-        "startTime": "2026-09-25T16:25:00",
-        "endTime": "2026-09-26T18:00:00",
-        "relevant": false
-      }
-    ],
-    "luz": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima, em especial no barlavento e no interior.",
-        "startTime": "2026-09-25T16:25:00",
-        "endTime": "2026-09-26T18:00:00",
-        "relevant": false
-      }
-    ],
-    "burgau": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima, em especial no barlavento e no interior.",
-        "startTime": "2026-09-25T16:25:00",
-        "endTime": "2026-09-26T18:00:00",
-        "relevant": false
-      }
-    ],
-    "salema": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima, em especial no barlavento e no interior.",
-        "startTime": "2026-09-25T16:25:00",
-        "endTime": "2026-09-26T18:00:00",
-        "relevant": false
-      }
-    ],
-    "cordoama": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima, em especial no barlavento e no interior.",
-        "startTime": "2026-09-25T16:25:00",
-        "endTime": "2026-09-26T18:00:00",
-        "relevant": false
-      }
-    ],
-    "ferragudo": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima, em especial no barlavento e no interior.",
-        "startTime": "2026-09-25T16:25:00",
-        "endTime": "2026-09-26T18:00:00",
-        "relevant": false
-      }
-    ],
-    "vila-real-santo-antonio": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima, em especial no barlavento e no interior.",
-        "startTime": "2026-09-25T16:25:00",
-        "endTime": "2026-09-26T18:00:00",
-        "relevant": false
-      }
-    ],
-    "monte-gordo": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima, em especial no barlavento e no interior.",
-        "startTime": "2026-09-25T16:25:00",
-        "endTime": "2026-09-26T18:00:00",
-        "relevant": false
-      }
-    ],
-    "praia-verde": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima, em especial no barlavento e no interior.",
-        "startTime": "2026-09-25T16:25:00",
-        "endTime": "2026-09-26T18:00:00",
-        "relevant": false
-      }
-    ],
-    "altura": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima, em especial no barlavento e no interior.",
-        "startTime": "2026-09-25T16:25:00",
-        "endTime": "2026-09-26T18:00:00",
-        "relevant": false
-      }
-    ],
-    "praia-rocha": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima, em especial no barlavento e no interior.",
-        "startTime": "2026-09-25T16:25:00",
-        "endTime": "2026-09-26T18:00:00",
-        "relevant": false
-      }
-    ],
-    "alvor": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima, em especial no barlavento e no interior.",
-        "startTime": "2026-09-25T16:25:00",
-        "endTime": "2026-09-26T18:00:00",
-        "relevant": false
-      }
-    ],
-    "foil-alvor": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima, em especial no barlavento e no interior.",
-        "startTime": "2026-09-25T16:25:00",
-        "endTime": "2026-09-26T18:00:00",
-        "relevant": false
-      }
-    ],
-    "lagos": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima, em especial no barlavento e no interior.",
-        "startTime": "2026-09-25T16:25:00",
-        "endTime": "2026-09-26T18:00:00",
-        "relevant": false
-      }
-    ],
-    "lagos-wakepark": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima, em especial no barlavento e no interior.",
-        "startTime": "2026-09-25T16:25:00",
-        "endTime": "2026-09-26T18:00:00",
-        "relevant": false
-      }
-    ],
-    "beliche": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima, em especial no barlavento e no interior.",
-        "startTime": "2026-09-25T16:25:00",
-        "endTime": "2026-09-26T18:00:00",
-        "relevant": false
-      }
-    ],
-    "martinhal": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima, em especial no barlavento e no interior.",
-        "startTime": "2026-09-25T16:25:00",
-        "endTime": "2026-09-26T18:00:00",
-        "relevant": false
-      }
-    ],
-    "barrinha-faro": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima, em especial no barlavento e no interior.",
-        "startTime": "2026-09-25T16:25:00",
-        "endTime": "2026-09-26T18:00:00",
-        "relevant": false
-      }
-    ],
-    "fuseta": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima, em especial no barlavento e no interior.",
-        "startTime": "2026-09-25T16:25:00",
-        "endTime": "2026-09-26T18:00:00",
-        "relevant": false
-      }
-    ],
-    "ilha-faro": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima, em especial no barlavento e no interior.",
-        "startTime": "2026-09-25T16:25:00",
-        "endTime": "2026-09-26T18:00:00",
-        "relevant": false
-      }
-    ],
-    "faro-mar": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima, em especial no barlavento e no interior.",
-        "startTime": "2026-09-25T16:25:00",
-        "endTime": "2026-09-26T18:00:00",
-        "relevant": false
-      }
-    ],
-    "culatra": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima, em especial no barlavento e no interior.",
-        "startTime": "2026-09-25T16:25:00",
-        "endTime": "2026-09-26T18:00:00",
-        "relevant": false
-      }
-    ],
-    "armona": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima, em especial no barlavento e no interior.",
-        "startTime": "2026-09-25T16:25:00",
-        "endTime": "2026-09-26T18:00:00",
-        "relevant": false
-      }
-    ],
-    "ilha-tavira": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima, em especial no barlavento e no interior.",
-        "startTime": "2026-09-25T16:25:00",
-        "endTime": "2026-09-26T18:00:00",
-        "relevant": false
-      }
-    ],
-    "cabanas-tavira": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima, em especial no barlavento e no interior.",
-        "startTime": "2026-09-25T16:25:00",
-        "endTime": "2026-09-26T18:00:00",
-        "relevant": false
-      }
-    ],
-    "cacela-velha": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima, em especial no barlavento e no interior.",
-        "startTime": "2026-09-25T16:25:00",
-        "endTime": "2026-09-26T18:00:00",
-        "relevant": false
-      }
-    ],
-    "zavial": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima, em especial no barlavento e no interior.",
-        "startTime": "2026-09-25T16:25:00",
-        "endTime": "2026-09-26T18:00:00",
-        "relevant": false
-      }
-    ],
-    "tonel": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima, em especial no barlavento e no interior.",
-        "startTime": "2026-09-25T16:25:00",
-        "endTime": "2026-09-26T18:00:00",
-        "relevant": false
-      }
-    ],
-    "anjos": [
-      {
-        "areaCode": "AOR",
-        "areaLabel": "Vila do Porto",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada.",
-        "startTime": "2026-09-28T12:19:00",
-        "endTime": "2026-09-28T15:00:00",
-        "relevant": true
-      }
-    ],
-    "ponta-delgada": [
-      {
-        "areaCode": "AOR",
-        "areaLabel": "Vila do Porto",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada.",
-        "startTime": "2026-09-28T12:19:00",
-        "endTime": "2026-09-28T15:00:00",
         "relevant": true
       }
     ],
@@ -1674,111 +1590,99 @@
         "relevant": true
       }
     ],
-    "garrão": [
+    "santa-cruz": [
       {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima, em especial no barlavento e no interior.",
-        "startTime": "2026-09-25T16:25:00",
-        "endTime": "2026-09-26T18:00:00",
-        "relevant": false
-      }
-    ],
-    "falesia": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima, em especial no barlavento e no interior.",
-        "startTime": "2026-09-25T16:25:00",
-        "endTime": "2026-09-26T18:00:00",
-        "relevant": false
-      }
-    ],
-    "tres-irmaos": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima, em especial no barlavento e no interior.",
-        "startTime": "2026-09-25T16:25:00",
-        "endTime": "2026-09-26T18:00:00",
-        "relevant": false
-      }
-    ],
-    "canavial": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima, em especial no barlavento e no interior.",
-        "startTime": "2026-09-25T16:25:00",
-        "endTime": "2026-09-26T18:00:00",
-        "relevant": false
-      }
-    ],
-    "armacao-pera": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima, em especial no barlavento e no interior.",
-        "startTime": "2026-09-25T16:25:00",
-        "endTime": "2026-09-26T18:00:00",
-        "relevant": false
-      }
-    ],
-    "mareta": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima, em especial no barlavento e no interior.",
-        "startTime": "2026-09-25T16:25:00",
-        "endTime": "2026-09-26T18:00:00",
-        "relevant": false
-      }
-    ],
-    "calhetas": [
-      {
-        "areaCode": "AOR",
-        "areaLabel": "Vila do Porto",
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
         "type": "Precipitação",
         "level": "yellow",
-        "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada.",
-        "startTime": "2026-09-28T12:19:00",
-        "endTime": "2026-09-28T15:00:00",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-09-30T00:00:00",
+        "endTime": "2026-09-30T06:00:00",
         "relevant": true
       }
     ],
-    "ribeira-quente": [
+    "consolacao": [
       {
-        "areaCode": "AOR",
-        "areaLabel": "Vila do Porto",
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
         "type": "Precipitação",
         "level": "yellow",
-        "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada.",
-        "startTime": "2026-09-28T12:19:00",
-        "endTime": "2026-09-28T15:00:00",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-09-30T00:00:00",
+        "endTime": "2026-09-30T06:00:00",
         "relevant": true
       }
     ],
-    "formosa-santa-maria": [
+    "areia-branca": [
       {
-        "areaCode": "AOR",
-        "areaLabel": "Vila do Porto",
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
         "type": "Precipitação",
         "level": "yellow",
-        "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada.",
-        "startTime": "2026-09-28T12:19:00",
-        "endTime": "2026-09-28T15:00:00",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-09-30T00:00:00",
+        "endTime": "2026-09-30T06:00:00",
+        "relevant": true
+      }
+    ],
+    "sao-martinho-porto": [
+      {
+        "areaCode": "LRA",
+        "areaLabel": "Leiria",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-09-29T21:00:00",
+        "endTime": "2026-09-30T06:00:00",
+        "relevant": true
+      }
+    ],
+    "cave-ericeira": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-09-30T00:00:00",
+        "endTime": "2026-09-30T06:00:00",
+        "relevant": true
+      }
+    ],
+    "pescadores-ericeira": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-09-30T00:00:00",
+        "endTime": "2026-09-30T06:00:00",
+        "relevant": true
+      }
+    ],
+    "crazy-left": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-09-30T00:00:00",
+        "endTime": "2026-09-30T06:00:00",
+        "relevant": true
+      }
+    ],
+    "meco": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-09-30T00:00:00",
+        "endTime": "2026-09-30T06:00:00",
         "relevant": true
       }
     ],

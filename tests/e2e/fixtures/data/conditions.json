@@ -15,6 +15,8 @@
     "tideHeight": -0.13,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 0.8,
+    "uvIndexMax": 3.6,
     "currentSpeed": 0.21,
     "currentDir": 225,
     "secondarySwellHeight": 0.28,
@@ -84,11 +86,12 @@
       }
     ],
     "updatedAt": "2026-09-09T23:13:36.844Z",
+    "airQualityIndex": 28,
+    "airQualityAt": "2026-09-29T16:00",
     "observedWave": {
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 2.51,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -104,25 +107,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 23,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 3.5,
+        "deltaM": -0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.9900000095367432,
-      "wavePeriod": 11.130000114440918,
-      "waveDirection": 313,
-      "waterTemp": 18.1299991607666,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 55.8,
-      "observedAt": "2026-09-28T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 60,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 55.8
     },
     "observedWaveNotClosest": {
@@ -148,6 +148,8 @@
     "tideHeight": -0.13,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 1.3,
+    "uvIndexMax": 3.9,
     "currentSpeed": 0.22,
     "currentDir": 207,
     "secondarySwellHeight": 0.24,
@@ -217,11 +219,12 @@
       }
     ],
     "updatedAt": "2026-09-09T23:13:48.937Z",
+    "airQualityIndex": 28,
+    "airQualityAt": "2026-09-29T16:00",
     "observedWave": {
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 2.51,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -237,26 +240,29 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 23,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 3.5,
+        "deltaM": -0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.9900000095367432,
-      "wavePeriod": 11.130000114440918,
-      "waveDirection": 313,
-      "waterTemp": 18.1299991607666,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 58.6,
-      "observedAt": "2026-09-28T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 56.8,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 58.6
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 59,
+      "altKm": 0
     }
   },
   "afife": {
@@ -275,6 +281,8 @@
     "tideHeight": -0.13,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 1.3,
+    "uvIndexMax": 3.9,
     "currentSpeed": 0.22,
     "currentDir": 207,
     "secondarySwellHeight": 0.24,
@@ -344,6 +352,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:01.042Z",
+    "airQualityIndex": 29,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 3,
       "windDirDeg": 90,
@@ -359,7 +369,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 2.51,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -375,25 +384,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 23,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 3.5,
+        "deltaM": -0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.9900000095367432,
-      "wavePeriod": 11.130000114440918,
-      "waveDirection": 313,
-      "waterTemp": 18.1299991607666,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 59.9,
-      "observedAt": "2026-09-28T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 52.3,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 59.9
     },
     "windBias": {
@@ -403,6 +409,12 @@
       "mae": 1.6,
       "rmse": 2,
       "n": 272
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 60,
+      "altKm": 0
     }
   },
   "castelo-neiva": {
@@ -421,6 +433,8 @@
     "tideHeight": -0.12,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 1.3,
+    "uvIndexMax": 3.9,
     "currentSpeed": 0.14,
     "currentDir": 225,
     "secondarySwellHeight": 0.2,
@@ -490,6 +504,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:13.163Z",
+    "airQualityIndex": 29,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 3,
       "windDirDeg": 90,
@@ -505,7 +521,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 2.51,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -521,25 +536,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 23,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 3.5,
+        "deltaM": -0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.9900000095367432,
-      "wavePeriod": 11.130000114440918,
-      "waveDirection": 313,
-      "waterTemp": 18.1299991607666,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 65.1,
-      "observedAt": "2026-09-28T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 50.2,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 65.1
     },
     "windBias": {
@@ -549,6 +561,12 @@
       "mae": 1.6,
       "rmse": 2,
       "n": 272
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 65,
+      "altKm": 0
     }
   },
   "amorosa": {
@@ -567,8 +585,13 @@
     "tideHeight": -0.12,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 1.5,
+    "uvIndexMax": 4.2,
     "currentSpeed": 0.18,
     "currentDir": 214,
+    "secondarySwellHeight": 0.58,
+    "secondarySwellPeriod": 9.1,
+    "secondarySwellDirection": 303,
     "tideObservedHeight": 3.867,
     "tideObservedAt": "2026-09-11T14:25:00Z",
     "tideStation": "Viana do Castelo",
@@ -633,6 +656,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:25.267Z",
+    "airQualityIndex": 29,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 3,
       "windDirDeg": 90,
@@ -648,7 +673,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 2.51,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -664,25 +688,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 23,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 3.5,
+        "deltaM": -0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.9900000095367432,
-      "wavePeriod": 11.130000114440918,
-      "waveDirection": 313,
-      "waterTemp": 18.1299991607666,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 67,
-      "observedAt": "2026-09-28T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 44.1,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 67
     },
     "windBias": {
@@ -692,6 +713,12 @@
       "mae": 1.6,
       "rmse": 2,
       "n": 272
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 67,
+      "altKm": 0
     }
   },
   "cabedelo": {
@@ -710,8 +737,13 @@
     "tideHeight": -0.12,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 1.5,
+    "uvIndexMax": 4.2,
     "currentSpeed": 0.14,
     "currentDir": 225,
+    "secondarySwellHeight": 0.56,
+    "secondarySwellPeriod": 9.3,
+    "secondarySwellDirection": 302,
     "tideObservedHeight": 3.867,
     "tideObservedAt": "2026-09-11T14:25:00Z",
     "tideStation": "Viana do Castelo",
@@ -776,6 +808,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:26.083Z",
+    "airQualityIndex": 34,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 3,
       "windDirDeg": 90,
@@ -791,7 +825,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 2.51,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -807,25 +840,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 23,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 3.5,
+        "deltaM": -0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.9900000095367432,
-      "wavePeriod": 11.130000114440918,
-      "waveDirection": 313,
-      "waterTemp": 18.1299991607666,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 69.6,
-      "observedAt": "2026-09-28T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 42.3,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 69.6
     },
     "windBias": {
@@ -835,6 +865,12 @@
       "mae": 1.6,
       "rmse": 2,
       "n": 272
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 70,
+      "altKm": 0
     }
   },
   "foil-cabedelo": {
@@ -853,8 +889,13 @@
     "tideHeight": -0.12,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 1.5,
+    "uvIndexMax": 4.2,
     "currentSpeed": 0.14,
     "currentDir": 225,
+    "secondarySwellHeight": 0.56,
+    "secondarySwellPeriod": 9.3,
+    "secondarySwellDirection": 302,
     "tideObservedHeight": 3.867,
     "tideObservedAt": "2026-09-11T14:25:00Z",
     "tideStation": "Viana do Castelo",
@@ -919,6 +960,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:26.440Z",
+    "airQualityIndex": 34,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 3,
       "windDirDeg": 90,
@@ -934,7 +977,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 2.51,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -950,25 +992,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 23,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 3.5,
+        "deltaM": -0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.9900000095367432,
-      "wavePeriod": 11.130000114440918,
-      "waveDirection": 313,
-      "waterTemp": 18.1299991607666,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 69.6,
-      "observedAt": "2026-09-28T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 42.3,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 69.6
     },
     "windBias": {
@@ -978,6 +1017,12 @@
       "mae": 1.6,
       "rmse": 2,
       "n": 272
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 70,
+      "altKm": 0
     }
   },
   "cabedelo-wakepark": {
@@ -996,8 +1041,13 @@
     "tideHeight": -0.12,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 1.5,
+    "uvIndexMax": 4.2,
     "currentSpeed": 0.18,
     "currentDir": 214,
+    "secondarySwellHeight": 0.58,
+    "secondarySwellPeriod": 9.1,
+    "secondarySwellDirection": 303,
     "tideObservedHeight": 3.867,
     "tideObservedAt": "2026-09-11T14:25:00Z",
     "tideStation": "Viana do Castelo",
@@ -1062,6 +1112,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:26.799Z",
+    "airQualityIndex": 34,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 3,
       "windDirDeg": 90,
@@ -1077,7 +1129,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 2.51,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -1093,25 +1144,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 23,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 3.5,
+        "deltaM": -0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.9900000095367432,
-      "wavePeriod": 11.130000114440918,
-      "waveDirection": 313,
-      "waterTemp": 18.1299991607666,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 68.5,
-      "observedAt": "2026-09-28T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 43.6,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 68.5
     },
     "windBias": {
@@ -1121,6 +1169,12 @@
       "mae": 1.6,
       "rmse": 2,
       "n": 272
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 69,
+      "altKm": 0
     }
   },
   "rodanho": {
@@ -1139,8 +1193,13 @@
     "tideHeight": -0.12,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 1.5,
+    "uvIndexMax": 4.2,
     "currentSpeed": 0.14,
     "currentDir": 225,
+    "secondarySwellHeight": 0.56,
+    "secondarySwellPeriod": 9.3,
+    "secondarySwellDirection": 302,
     "tideObservedHeight": 3.867,
     "tideObservedAt": "2026-09-11T14:25:00Z",
     "tideStation": "Viana do Castelo",
@@ -1205,6 +1264,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:27.158Z",
+    "airQualityIndex": 34,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 3,
       "windDirDeg": 90,
@@ -1220,7 +1281,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 2.51,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -1236,25 +1296,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 23,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 3.5,
+        "deltaM": -0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.9900000095367432,
-      "wavePeriod": 11.130000114440918,
-      "waveDirection": 313,
-      "waterTemp": 18.1299991607666,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 71,
-      "observedAt": "2026-09-28T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 41.2,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 71
     },
     "windBias": {
@@ -1264,6 +1321,12 @@
       "mae": 1.6,
       "rmse": 2,
       "n": 272
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 71,
+      "altKm": 0
     }
   },
   "ofir": {
@@ -1282,6 +1345,8 @@
     "tideHeight": -0.11,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 1.4,
+    "uvIndexMax": 4.2,
     "currentSpeed": 0.14,
     "currentDir": 225,
     "secondarySwellHeight": 0.26,
@@ -1351,6 +1416,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:27.515Z",
+    "airQualityIndex": 31,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 3,
       "windDirDeg": 90,
@@ -1366,7 +1433,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 2.51,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -1382,25 +1448,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 23,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 3.5,
+        "deltaM": -0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.9900000095367432,
-      "wavePeriod": 11.130000114440918,
-      "waveDirection": 313,
-      "waterTemp": 18.1299991607666,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 82.9,
-      "observedAt": "2026-09-28T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 30.5,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 82.9
     },
     "windBias": {
@@ -1410,6 +1473,12 @@
       "mae": 1.6,
       "rmse": 2,
       "n": 272
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 83,
+      "altKm": 0
     }
   },
   "esposende": {
@@ -1428,6 +1497,8 @@
     "tideHeight": -0.11,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 1.4,
+    "uvIndexMax": 4.2,
     "currentSpeed": 0.14,
     "currentDir": 225,
     "secondarySwellHeight": 0.26,
@@ -1497,6 +1568,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:27.873Z",
+    "airQualityIndex": 31,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 3,
       "windDirDeg": 90,
@@ -1512,7 +1585,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 2.51,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -1528,25 +1600,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 23,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 3.5,
+        "deltaM": -0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.9900000095367432,
-      "wavePeriod": 11.130000114440918,
-      "waveDirection": 313,
-      "waterTemp": 18.1299991607666,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 84.3,
-      "observedAt": "2026-09-28T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 28.9,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 84.3
     },
     "windBias": {
@@ -1556,6 +1625,12 @@
       "mae": 1.6,
       "rmse": 2,
       "n": 272
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 84,
+      "altKm": 0
     }
   },
   "esposende-praia": {
@@ -1574,6 +1649,8 @@
     "tideHeight": -0.11,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 1.4,
+    "uvIndexMax": 4.2,
     "currentSpeed": 0.14,
     "currentDir": 225,
     "secondarySwellHeight": 0.26,
@@ -1643,6 +1720,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:28.231Z",
+    "airQualityIndex": 31,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 3,
       "windDirDeg": 90,
@@ -1658,7 +1737,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 2.51,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -1674,25 +1752,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 23,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 3.5,
+        "deltaM": -0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.9900000095367432,
-      "wavePeriod": 11.130000114440918,
-      "waveDirection": 313,
-      "waterTemp": 18.1299991607666,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 83.8,
-      "observedAt": "2026-09-28T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 29.4,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 83.8
     },
     "windBias": {
@@ -1702,6 +1777,12 @@
       "mae": 1.6,
       "rmse": 2,
       "n": 272
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 84,
+      "altKm": 0
     }
   },
   "fao": {
@@ -1720,6 +1801,8 @@
     "tideHeight": -0.11,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 1.4,
+    "uvIndexMax": 4.2,
     "currentSpeed": 0.14,
     "currentDir": 225,
     "secondarySwellHeight": 0.26,
@@ -1789,6 +1872,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:28.589Z",
+    "airQualityIndex": 31,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 1,
       "windDirDeg": 90,
@@ -1804,7 +1889,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 2.51,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -1820,25 +1904,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 23,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 3.5,
+        "deltaM": -0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.9900000095367432,
-      "wavePeriod": 11.130000114440918,
-      "waveDirection": 313,
-      "waterTemp": 18.1299991607666,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 87.1,
-      "observedAt": "2026-09-28T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 28,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 87.1
     },
     "windBias": {
@@ -1848,6 +1929,12 @@
       "mae": 1.9,
       "rmse": 2.2,
       "n": 32
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 87,
+      "altKm": 0
     }
   },
   "apulia": {
@@ -1866,6 +1953,8 @@
     "tideHeight": -0.11,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 1.4,
+    "uvIndexMax": 4.2,
     "currentSpeed": 0.21,
     "currentDir": 194,
     "secondarySwellHeight": 0.28,
@@ -1935,6 +2024,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:28.946Z",
+    "airQualityIndex": 32,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 1,
       "windDirDeg": 90,
@@ -1950,7 +2041,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 2.51,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -1966,25 +2056,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 23,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 3.5,
+        "deltaM": -0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.9900000095367432,
-      "wavePeriod": 11.130000114440918,
-      "waveDirection": 313,
-      "waterTemp": 18.1299991607666,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 90.3,
-      "observedAt": "2026-09-28T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 26.1,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 90.3
     },
     "windBias": {
@@ -1994,6 +2081,12 @@
       "mae": 1.9,
       "rmse": 2.2,
       "n": 32
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 90,
+      "altKm": 0
     }
   },
   "povoa-varzim": {
@@ -2012,6 +2105,8 @@
     "tideHeight": -0.1,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 1.2,
+    "uvIndexMax": 3.5,
     "currentSpeed": 0.21,
     "currentDir": 194,
     "secondarySwellHeight": 0.3,
@@ -2081,6 +2176,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:29.305Z",
+    "airQualityIndex": 34,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 3,
       "windDirDeg": 100,
@@ -2098,7 +2195,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 2.51,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -2114,25 +2210,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 23,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 3.5,
+        "deltaM": -0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.9900000095367432,
-      "wavePeriod": 11.130000114440918,
-      "waveDirection": 313,
-      "waterTemp": 18.1299991607666,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 99.6,
-      "observedAt": "2026-09-28T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 19.8,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 99.6
     },
     "windBias": {
@@ -2142,6 +2235,12 @@
       "mae": 1.4,
       "rmse": 1.6,
       "n": 21
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 100,
+      "altKm": 0
     }
   },
   "azurara": {
@@ -2160,6 +2259,8 @@
     "tideHeight": -0.1,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 1.1,
+    "uvIndexMax": 4.2,
     "currentSpeed": 0.14,
     "currentDir": 225,
     "secondarySwellHeight": 0.3,
@@ -2229,6 +2330,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:29.663Z",
+    "airQualityIndex": 34,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 315,
@@ -2244,7 +2347,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 2.51,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -2260,25 +2362,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 23,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 3.5,
+        "deltaM": -0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.9900000095367432,
-      "wavePeriod": 11.130000114440918,
-      "waveDirection": 313,
-      "waterTemp": 18.1299991607666,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 104,
-      "observedAt": "2026-09-28T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 20.2,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 104
     },
     "windBias": {
@@ -2288,6 +2387,12 @@
       "mae": 2.1,
       "rmse": 2.6,
       "n": 127
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 104,
+      "altKm": 0
     }
   },
   "leca-palmeira": {
@@ -2306,6 +2411,8 @@
     "tideHeight": -0.09,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 1.1,
+    "uvIndexMax": 4.4,
     "currentSpeed": 0.21,
     "currentDir": 194,
     "secondarySwellHeight": 0.3,
@@ -2375,6 +2482,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:30.021Z",
+    "airQualityIndex": 35,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 0,
       "windDirDeg": 158,
@@ -2390,7 +2499,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 2.51,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -2406,25 +2514,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 23,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 3.5,
+        "deltaM": -0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.9900000095367432,
-      "wavePeriod": 11.130000114440918,
-      "waveDirection": 313,
-      "waterTemp": 18.1299991607666,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 119.7,
-      "observedAt": "2026-09-28T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 27.1,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 119.7
     },
     "windBias": {
@@ -2434,6 +2539,12 @@
       "mae": 2,
       "rmse": 2.3,
       "n": 160
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 120,
+      "altKm": 0
     }
   },
   "matosinhos": {
@@ -2452,6 +2563,8 @@
     "tideHeight": -0.09,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 1.1,
+    "uvIndexMax": 4.4,
     "currentSpeed": 0.21,
     "currentDir": 194,
     "secondarySwellHeight": 0.3,
@@ -2521,6 +2634,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:30.379Z",
+    "airQualityIndex": 35,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 0,
       "windDirDeg": 158,
@@ -2536,7 +2651,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 2.51,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -2552,25 +2666,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 23,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 3.5,
+        "deltaM": -0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.9900000095367432,
-      "wavePeriod": 11.130000114440918,
-      "waveDirection": 313,
-      "waterTemp": 18.1299991607666,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 121.5,
-      "observedAt": "2026-09-28T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 28.8,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 121.5
     },
     "windBias": {
@@ -2580,6 +2691,12 @@
       "mae": 2,
       "rmse": 2.3,
       "n": 160
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 122,
+      "altKm": 0
     }
   },
   "cabedelo-douro": {
@@ -2598,6 +2715,8 @@
     "tideHeight": -0.08,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 1.1,
+    "uvIndexMax": 4.4,
     "currentSpeed": 0.16,
     "currentDir": 198,
     "secondarySwellHeight": 0.3,
@@ -2667,6 +2786,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:30.736Z",
+    "airQualityIndex": 35,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 0,
       "windDirDeg": 158,
@@ -2682,7 +2803,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 2.51,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -2698,25 +2818,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 23,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 3.5,
+        "deltaM": -0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.9900000095367432,
-      "wavePeriod": 11.130000114440918,
-      "waveDirection": 313,
-      "waterTemp": 18.1299991607666,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 126.1,
-      "observedAt": "2026-09-28T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 32.8,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 126.1
     },
     "windBias": {
@@ -2726,6 +2843,12 @@
       "mae": 2,
       "rmse": 2.3,
       "n": 160
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 126,
+      "altKm": 0
     }
   },
   "marina-afurada-foil": {
@@ -2744,8 +2867,13 @@
     "tideHeight": -0.08,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 1.1,
+    "uvIndexMax": 4.4,
     "currentSpeed": 0.16,
     "currentDir": 198,
+    "secondarySwellHeight": 0.68,
+    "secondarySwellPeriod": 8.15,
+    "secondarySwellDirection": 284,
     "tideObservedHeight": 2.47,
     "tideObservedAt": "2026-09-22T15:24:00Z",
     "tideStation": "B. do Douro - Cantareira",
@@ -2810,6 +2938,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:31.095Z",
+    "airQualityIndex": 35,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 0,
       "windDirDeg": 158,
@@ -2825,7 +2955,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 2.51,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -2841,25 +2970,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 23,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 3.5,
+        "deltaM": -0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.9900000095367432,
-      "wavePeriod": 11.130000114440918,
-      "waveDirection": 313,
-      "waterTemp": 18.1299991607666,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 126.6,
-      "observedAt": "2026-09-28T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 33.7,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 126.6
     },
     "windBias": {
@@ -2869,6 +2995,12 @@
       "mae": 2,
       "rmse": 2.3,
       "n": 160
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 127,
+      "altKm": 0
     }
   },
   "praia-da-lomba": {
@@ -2887,6 +3019,8 @@
     "tideHeight": 0,
     "tideStatus": "falling",
     "tideLabel": "Maré a Descer",
+    "uvIndex": 1.2,
+    "uvIndexMax": 4.9,
     "currentSpeed": 0,
     "currentDir": 0,
     "tideObservedHeight": 2.47,
@@ -2953,6 +3087,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:31.452Z",
+    "airQualityIndex": 35,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 3,
       "windDirDeg": 315,
@@ -2968,7 +3104,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 2.51,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -2984,25 +3119,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 23,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 3.5,
+        "deltaM": -0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.9900000095367432,
-      "wavePeriod": 11.130000114440918,
-      "waveDirection": 313,
-      "waterTemp": 18.1299991607666,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 144.2,
-      "observedAt": "2026-09-28T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 54.9,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 144.2
     },
     "windBias": {
@@ -3012,6 +3144,12 @@
       "mae": 1.2,
       "rmse": 1.5,
       "n": 41
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 144,
+      "altKm": 0
     }
   },
   "salgueiros": {
@@ -3030,8 +3168,13 @@
     "tideHeight": -0.08,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 1.1,
+    "uvIndexMax": 4.4,
     "currentSpeed": 0.16,
     "currentDir": 198,
+    "secondarySwellHeight": 0.68,
+    "secondarySwellPeriod": 8.15,
+    "secondarySwellDirection": 284,
     "tideObservedHeight": 2.47,
     "tideObservedAt": "2026-09-22T15:24:00Z",
     "tideStation": "B. do Douro - Cantareira",
@@ -3096,6 +3239,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:31.809Z",
+    "airQualityIndex": 35,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 0,
       "windDirDeg": 158,
@@ -3111,7 +3256,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 2.51,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -3127,25 +3271,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 23,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 3.5,
+        "deltaM": -0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.9900000095367432,
-      "wavePeriod": 11.130000114440918,
-      "waveDirection": 313,
-      "waterTemp": 18.1299991607666,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 128.1,
-      "observedAt": "2026-09-28T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 34.3,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 128.1
     },
     "windBias": {
@@ -3155,6 +3296,12 @@
       "mae": 2,
       "rmse": 2.3,
       "n": 160
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 128,
+      "altKm": 0
     }
   },
   "sereia-costa-verde": {
@@ -3173,8 +3320,13 @@
     "tideHeight": -0.08,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 1.1,
+    "uvIndexMax": 4.4,
     "currentSpeed": 0.16,
     "currentDir": 198,
+    "secondarySwellHeight": 0.68,
+    "secondarySwellPeriod": 8.15,
+    "secondarySwellDirection": 284,
     "tideObservedHeight": 2.47,
     "tideObservedAt": "2026-09-22T15:24:00Z",
     "tideStation": "B. do Douro - Cantareira",
@@ -3239,6 +3391,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:32.167Z",
+    "airQualityIndex": 35,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 0,
       "windDirDeg": 158,
@@ -3254,7 +3408,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 2.51,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -3270,25 +3423,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 23,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 3.5,
+        "deltaM": -0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.9900000095367432,
-      "wavePeriod": 11.130000114440918,
-      "waveDirection": 313,
-      "waterTemp": 18.1299991607666,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 128.4,
-      "observedAt": "2026-09-28T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 34.6,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 128.4
     },
     "windBias": {
@@ -3298,6 +3448,12 @@
       "mae": 2,
       "rmse": 2.3,
       "n": 160
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 128,
+      "altKm": 0
     }
   },
   "canide-sul": {
@@ -3316,8 +3472,13 @@
     "tideHeight": -0.08,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 1.1,
+    "uvIndexMax": 4.4,
     "currentSpeed": 0.16,
     "currentDir": 198,
+    "secondarySwellHeight": 0.68,
+    "secondarySwellPeriod": 8.15,
+    "secondarySwellDirection": 284,
     "tideObservedHeight": 2.47,
     "tideObservedAt": "2026-09-22T15:24:00Z",
     "tideStation": "B. do Douro - Cantareira",
@@ -3382,6 +3543,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:32.526Z",
+    "airQualityIndex": 35,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 0,
       "windDirDeg": 158,
@@ -3397,7 +3560,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 2.51,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -3413,25 +3575,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 23,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 3.5,
+        "deltaM": -0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.9900000095367432,
-      "wavePeriod": 11.130000114440918,
-      "waveDirection": 313,
-      "waterTemp": 18.1299991607666,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 128.9,
-      "observedAt": "2026-09-28T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 35,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 128.9
     },
     "windBias": {
@@ -3441,6 +3600,12 @@
       "mae": 2,
       "rmse": 2.3,
       "n": 160
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 129,
+      "altKm": 0
     }
   },
   "aguda": {
@@ -3459,8 +3624,13 @@
     "tideHeight": -0.08,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 1.3,
+    "uvIndexMax": 3.8,
     "currentSpeed": 0.18,
     "currentDir": 214,
+    "secondarySwellHeight": 0.52,
+    "secondarySwellPeriod": 7.6,
+    "secondarySwellDirection": 257,
     "tideObservedHeight": 2.47,
     "tideObservedAt": "2026-09-22T15:24:00Z",
     "tideStation": "B. do Douro - Cantareira",
@@ -3525,6 +3695,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:32.884Z",
+    "airQualityIndex": 35,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 0,
       "windDirDeg": 158,
@@ -3540,7 +3712,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 2.51,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -3556,25 +3727,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 23,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 3.5,
+        "deltaM": -0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.9900000095367432,
-      "wavePeriod": 11.130000114440918,
-      "waveDirection": 313,
-      "waterTemp": 18.1299991607666,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 135.1,
-      "observedAt": "2026-09-28T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 40.1,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 135.1
     },
     "windBias": {
@@ -3584,6 +3752,12 @@
       "mae": 2,
       "rmse": 2.3,
       "n": 160
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 135,
+      "altKm": 0
     }
   },
   "espinho": {
@@ -3602,8 +3776,13 @@
     "tideHeight": -0.08,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 1.3,
+    "uvIndexMax": 3.8,
     "currentSpeed": 0.18,
     "currentDir": 214,
+    "secondarySwellHeight": 0.52,
+    "secondarySwellPeriod": 7.6,
+    "secondarySwellDirection": 257,
     "tideObservedHeight": 2.47,
     "tideObservedAt": "2026-09-22T15:24:00Z",
     "tideStation": "B. do Douro - Cantareira",
@@ -3668,6 +3847,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:33.242Z",
+    "airQualityIndex": 35,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 3,
       "windDirDeg": 45,
@@ -3683,7 +3864,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 2.51,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -3699,25 +3879,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 23,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 3.5,
+        "deltaM": -0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.9900000095367432,
-      "wavePeriod": 11.130000114440918,
-      "waveDirection": 313,
-      "waterTemp": 18.1299991607666,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 140.1,
-      "observedAt": "2026-09-28T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 44.7,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 140.1
     },
     "windBias": {
@@ -3727,6 +3904,12 @@
       "mae": 2.1,
       "rmse": 2.6,
       "n": 440
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 140,
+      "altKm": 0
     }
   },
   "praia-37": {
@@ -3745,8 +3928,13 @@
     "tideHeight": -0.08,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 1.3,
+    "uvIndexMax": 3.8,
     "currentSpeed": 0.18,
     "currentDir": 214,
+    "secondarySwellHeight": 0.52,
+    "secondarySwellPeriod": 7.6,
+    "secondarySwellDirection": 257,
     "tideObservedHeight": 2.47,
     "tideObservedAt": "2026-09-22T15:24:00Z",
     "tideStation": "B. do Douro - Cantareira",
@@ -3811,6 +3999,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:33.600Z",
+    "airQualityIndex": 35,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 3,
       "windDirDeg": 45,
@@ -3826,7 +4016,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 2.51,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -3842,25 +4031,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 23,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 3.5,
+        "deltaM": -0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.9900000095367432,
-      "wavePeriod": 11.130000114440918,
-      "waveDirection": 313,
-      "waterTemp": 18.1299991607666,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 140.3,
-      "observedAt": "2026-09-28T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 44.7,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 140.3
     },
     "windBias": {
@@ -3870,6 +4056,12 @@
       "mae": 2.1,
       "rmse": 2.6,
       "n": 440
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 140,
+      "altKm": 0
     }
   },
   "bairro-piscatorio": {
@@ -3888,8 +4080,13 @@
     "tideHeight": -0.07,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 1.3,
+    "uvIndexMax": 3.8,
     "currentSpeed": 0.16,
     "currentDir": 252,
+    "secondarySwellHeight": 0.52,
+    "secondarySwellPeriod": 7.6,
+    "secondarySwellDirection": 257,
     "tideObservedHeight": 2.47,
     "tideObservedAt": "2026-09-22T15:24:00Z",
     "tideStation": "B. do Douro - Cantareira",
@@ -3954,6 +4151,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:33.957Z",
+    "airQualityIndex": 35,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 3,
       "windDirDeg": 45,
@@ -3969,7 +4168,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 2.51,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -3985,25 +4183,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 23,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 3.5,
+        "deltaM": -0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.9900000095367432,
-      "wavePeriod": 11.130000114440918,
-      "waveDirection": 313,
-      "waterTemp": 18.1299991607666,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 140.7,
-      "observedAt": "2026-09-28T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 45.1,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 140.7
     },
     "windBias": {
@@ -4013,6 +4208,12 @@
       "mae": 2.1,
       "rmse": 2.6,
       "n": 440
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 141,
+      "altKm": 0
     }
   },
   "paramos": {
@@ -4031,6 +4232,8 @@
     "tideHeight": -0.07,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 1.3,
+    "uvIndexMax": 3.8,
     "currentSpeed": 0.16,
     "currentDir": 252,
     "secondarySwellHeight": 0.38,
@@ -4100,6 +4303,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:34.315Z",
+    "airQualityIndex": 35,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 3,
       "windDirDeg": 45,
@@ -4115,7 +4320,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 2.51,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -4131,25 +4335,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 23,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 3.5,
+        "deltaM": -0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.9900000095367432,
-      "wavePeriod": 11.130000114440918,
-      "waveDirection": 313,
-      "waterTemp": 18.1299991607666,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 142.9,
-      "observedAt": "2026-09-28T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 47,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 142.9
     },
     "windBias": {
@@ -4159,6 +4360,12 @@
       "mae": 2.1,
       "rmse": 2.6,
       "n": 440
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 143,
+      "altKm": 0
     }
   },
   "barrinha-esmoriz": {
@@ -4177,6 +4384,8 @@
     "tideHeight": -0.07,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 1.3,
+    "uvIndexMax": 3.8,
     "currentSpeed": 0.16,
     "currentDir": 252,
     "secondarySwellHeight": 0.38,
@@ -4246,6 +4455,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:34.673Z",
+    "airQualityIndex": 35,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 3,
       "windDirDeg": 45,
@@ -4261,7 +4472,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 2.51,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -4277,25 +4487,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 23,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 3.5,
+        "deltaM": -0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.9900000095367432,
-      "wavePeriod": 11.130000114440918,
-      "waveDirection": 313,
-      "waterTemp": 18.1299991607666,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 144.1,
-      "observedAt": "2026-09-28T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 48.2,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 144.1
     },
     "windBias": {
@@ -4305,6 +4512,12 @@
       "mae": 2.1,
       "rmse": 2.6,
       "n": 440
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 144,
+      "altKm": 0
     }
   },
   "esmoriz": {
@@ -4323,6 +4536,8 @@
     "tideHeight": -0.07,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 1.3,
+    "uvIndexMax": 3.8,
     "currentSpeed": 0.16,
     "currentDir": 252,
     "secondarySwellHeight": 0.38,
@@ -4392,6 +4607,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:35.031Z",
+    "airQualityIndex": 35,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 3,
       "windDirDeg": 45,
@@ -4407,7 +4624,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 2.51,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -4423,25 +4639,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 23,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 3.5,
+        "deltaM": -0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.9900000095367432,
-      "wavePeriod": 11.130000114440918,
-      "waveDirection": 313,
-      "waterTemp": 18.1299991607666,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 144.2,
-      "observedAt": "2026-09-28T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 48.1,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 144.2
     },
     "windBias": {
@@ -4451,6 +4664,12 @@
       "mae": 2.1,
       "rmse": 2.6,
       "n": 440
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 144,
+      "altKm": 0
     }
   },
   "cortegaca": {
@@ -4469,6 +4688,8 @@
     "tideHeight": -0.07,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 1.3,
+    "uvIndexMax": 3.8,
     "currentSpeed": 0.16,
     "currentDir": 252,
     "secondarySwellHeight": 0.38,
@@ -4538,6 +4759,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:35.389Z",
+    "airQualityIndex": 35,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 3,
       "windDirDeg": 45,
@@ -4553,7 +4776,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 2.51,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -4569,25 +4791,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 23,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 3.5,
+        "deltaM": -0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.9900000095367432,
-      "wavePeriod": 11.130000114440918,
-      "waveDirection": 313,
-      "waterTemp": 18.1299991607666,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 145.6,
-      "observedAt": "2026-09-28T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 49.4,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 145.6
     },
     "windBias": {
@@ -4597,6 +4816,12 @@
       "mae": 2.1,
       "rmse": 2.6,
       "n": 440
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 146,
+      "altKm": 0
     }
   },
   "cortegaca-sul": {
@@ -4615,6 +4840,8 @@
     "tideHeight": -0.07,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 1.3,
+    "uvIndexMax": 3.8,
     "currentSpeed": 0.16,
     "currentDir": 252,
     "secondarySwellHeight": 0.38,
@@ -4684,6 +4911,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:35.747Z",
+    "airQualityIndex": 35,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 3,
       "windDirDeg": 45,
@@ -4699,7 +4928,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 2.51,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -4715,25 +4943,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 23,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 3.5,
+        "deltaM": -0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.9900000095367432,
-      "wavePeriod": 11.130000114440918,
-      "waveDirection": 313,
-      "waterTemp": 18.1299991607666,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 146.6,
-      "observedAt": "2026-09-28T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 50.3,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 146.6
     },
     "windBias": {
@@ -4743,6 +4968,12 @@
       "mae": 2.1,
       "rmse": 2.6,
       "n": 440
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 147,
+      "altKm": 0
     }
   },
   "maceda": {
@@ -4761,6 +4992,8 @@
     "tideHeight": -0.07,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 1.3,
+    "uvIndexMax": 3.8,
     "currentSpeed": 0.16,
     "currentDir": 252,
     "secondarySwellHeight": 0.38,
@@ -4830,6 +5063,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:36.105Z",
+    "airQualityIndex": 35,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 3,
       "windDirDeg": 45,
@@ -4845,7 +5080,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 2.51,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -4861,25 +5095,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 23,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 3.5,
+        "deltaM": -0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.9900000095367432,
-      "wavePeriod": 11.130000114440918,
-      "waveDirection": 313,
-      "waterTemp": 18.1299991607666,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 147.9,
-      "observedAt": "2026-09-28T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 51.5,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 147.9
     },
     "windBias": {
@@ -4889,6 +5120,12 @@
       "mae": 2.1,
       "rmse": 2.6,
       "n": 440
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 148,
+      "altKm": 0
     }
   },
   "murtosa": {
@@ -4907,6 +5144,8 @@
     "tideHeight": -0.05,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 1.5,
+    "uvIndexMax": 4.3,
     "currentSpeed": 0.21,
     "currentDir": 256,
     "secondarySwellHeight": 0.46,
@@ -4976,6 +5215,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:36.468Z",
+    "airQualityIndex": 35,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 6,
       "windDirDeg": 0,
@@ -4990,7 +5231,6 @@
     "observedWave": {
       "waveHeight": 2.065429925918579,
       "wavePeriod": 7.851600170135498,
-      "waveDirection": 312,
       "maxWaveHeight": 2.973629951477051,
       "waterTemp": 16.4,
       "stationName": "Nazaré Costeira (WMO)",
@@ -5009,23 +5249,12 @@
         "buoyName": "Nazaré Costeira (WMO)"
       }
     },
-    "observedWaveAlt": {
-      "waveHeight": 1.5966800451278687,
-      "wavePeriod": 10.019499778747559,
-      "maxWaveHeight": 2.4316399097442627,
-      "waterTemp": 17.456050872802734,
-      "stationName": "Nazaré Costeira (WMO)",
-      "stationArea": "Nazaré",
-      "distanceKm": 138.6,
-      "observedAt": "2026-09-28T12:00:00.000Z",
-      "source": "wmo-buoy"
-    },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 70.9,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 138.6
     },
     "windBias": {
@@ -5035,6 +5264,12 @@
       "mae": 1.4,
       "rmse": 1.8,
       "n": 280
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 139,
+      "altKm": 0
     }
   },
   "ria-torreira": {
@@ -5053,6 +5288,8 @@
     "tideHeight": -0.05,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 1.5,
+    "uvIndexMax": 4.3,
     "currentSpeed": 0.21,
     "currentDir": 256,
     "secondarySwellHeight": 0.46,
@@ -5122,6 +5359,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:36.827Z",
+    "airQualityIndex": 35,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 6,
       "windDirDeg": 0,
@@ -5136,7 +5375,6 @@
     "observedWave": {
       "waveHeight": 2.065429925918579,
       "wavePeriod": 7.851600170135498,
-      "waveDirection": 312,
       "maxWaveHeight": 2.973629951477051,
       "waterTemp": 16.4,
       "stationName": "Nazaré Costeira (WMO)",
@@ -5155,23 +5393,12 @@
         "buoyName": "Nazaré Costeira (WMO)"
       }
     },
-    "observedWaveAlt": {
-      "waveHeight": 1.5966800451278687,
-      "wavePeriod": 10.019499778747559,
-      "maxWaveHeight": 2.4316399097442627,
-      "waterTemp": 17.456050872802734,
-      "stationName": "Nazaré Costeira (WMO)",
-      "stationArea": "Nazaré",
-      "distanceKm": 139.2,
-      "observedAt": "2026-09-28T12:00:00.000Z",
-      "source": "wmo-buoy"
-    },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 68.5,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 139.2
     },
     "windBias": {
@@ -5181,6 +5408,12 @@
       "mae": 1.4,
       "rmse": 1.8,
       "n": 280
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 139,
+      "altKm": 0
     }
   },
   "praia-torreira": {
@@ -5199,6 +5432,8 @@
     "tideHeight": -0.05,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 1.5,
+    "uvIndexMax": 4.3,
     "currentSpeed": 0.29,
     "currentDir": 211,
     "secondarySwellHeight": 0.46,
@@ -5268,6 +5503,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:37.185Z",
+    "airQualityIndex": 35,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 6,
       "windDirDeg": 0,
@@ -5282,7 +5519,6 @@
     "observedWave": {
       "waveHeight": 2.065429925918579,
       "wavePeriod": 7.851600170135498,
-      "waveDirection": 312,
       "maxWaveHeight": 2.973629951477051,
       "waterTemp": 16.4,
       "stationName": "Nazaré Costeira (WMO)",
@@ -5301,23 +5537,12 @@
         "buoyName": "Nazaré Costeira (WMO)"
       }
     },
-    "observedWaveAlt": {
-      "waveHeight": 1.5966800451278687,
-      "wavePeriod": 10.019499778747559,
-      "maxWaveHeight": 2.4316399097442627,
-      "waterTemp": 17.456050872802734,
-      "stationName": "Nazaré Costeira (WMO)",
-      "stationArea": "Nazaré",
-      "distanceKm": 140,
-      "observedAt": "2026-09-28T12:00:00.000Z",
-      "source": "wmo-buoy"
-    },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 65.6,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 140
     },
     "windBias": {
@@ -5327,6 +5552,12 @@
       "mae": 1.4,
       "rmse": 1.8,
       "n": 280
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 140,
+      "altKm": 0
     }
   },
   "muranzel": {
@@ -5345,6 +5576,8 @@
     "tideHeight": -0.05,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 1.5,
+    "uvIndexMax": 4.3,
     "currentSpeed": 0.21,
     "currentDir": 256,
     "secondarySwellHeight": 0.52,
@@ -5414,6 +5647,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:37.543Z",
+    "airQualityIndex": 35,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 6,
       "windDirDeg": 0,
@@ -5428,7 +5663,6 @@
     "observedWave": {
       "waveHeight": 2.065429925918579,
       "wavePeriod": 7.851600170135498,
-      "waveDirection": 312,
       "maxWaveHeight": 2.973629951477051,
       "waterTemp": 16.4,
       "stationName": "Nazaré Costeira (WMO)",
@@ -5447,23 +5681,12 @@
         "buoyName": "Nazaré Costeira (WMO)"
       }
     },
-    "observedWaveAlt": {
-      "waveHeight": 1.5966800451278687,
-      "wavePeriod": 10.019499778747559,
-      "maxWaveHeight": 2.4316399097442627,
-      "waterTemp": 17.456050872802734,
-      "stationName": "Nazaré Costeira (WMO)",
-      "stationArea": "Nazaré",
-      "distanceKm": 135.3,
-      "observedAt": "2026-09-28T12:00:00.000Z",
-      "source": "wmo-buoy"
-    },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 69.6,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 135.3
     },
     "windBias": {
@@ -5473,6 +5696,12 @@
       "mae": 1.4,
       "rmse": 1.8,
       "n": 280
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 135,
+      "altKm": 0
     }
   },
   "furadouro": {
@@ -5491,6 +5720,8 @@
     "tideHeight": -0.06,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 1.6,
+    "uvIndexMax": 4.2,
     "currentSpeed": 0.16,
     "currentDir": 252,
     "secondarySwellHeight": 0.38,
@@ -5560,6 +5791,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:37.901Z",
+    "airQualityIndex": 35,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 3,
       "windDirDeg": 45,
@@ -5575,7 +5808,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 2.51,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -5591,25 +5823,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 23,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 3.5,
+        "deltaM": -0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.9900000095367432,
-      "wavePeriod": 11.130000114440918,
-      "waveDirection": 313,
-      "waterTemp": 18.1299991607666,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 152.3,
-      "observedAt": "2026-09-28T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 55.7,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 152.3
     },
     "windBias": {
@@ -5619,6 +5848,12 @@
       "mae": 2.1,
       "rmse": 2.6,
       "n": 440
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 152,
+      "altKm": 0
     }
   },
   "sao-jacinto": {
@@ -5637,6 +5872,8 @@
     "tideHeight": -0.05,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 1.5,
+    "uvIndexMax": 4.3,
     "currentSpeed": 0.21,
     "currentDir": 256,
     "secondarySwellHeight": 0.52,
@@ -5706,6 +5943,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:38.258Z",
+    "airQualityIndex": 35,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 6,
       "windDirDeg": 0,
@@ -5720,7 +5959,6 @@
     "observedWave": {
       "waveHeight": 2.065429925918579,
       "wavePeriod": 7.851600170135498,
-      "waveDirection": 312,
       "maxWaveHeight": 2.973629951477051,
       "waterTemp": 16.4,
       "stationName": "Nazaré Costeira (WMO)",
@@ -5739,23 +5977,12 @@
         "buoyName": "Nazaré Costeira (WMO)"
       }
     },
-    "observedWaveAlt": {
-      "waveHeight": 1.5966800451278687,
-      "wavePeriod": 10.019499778747559,
-      "maxWaveHeight": 2.4316399097442627,
-      "waterTemp": 17.456050872802734,
-      "stationName": "Nazaré Costeira (WMO)",
-      "stationArea": "Nazaré",
-      "distanceKm": 129.4,
-      "observedAt": "2026-09-28T12:00:00.000Z",
-      "source": "wmo-buoy"
-    },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 74.6,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 129.4
     },
     "windBias": {
@@ -5765,6 +5992,12 @@
       "mae": 1.4,
       "rmse": 1.8,
       "n": 280
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 129,
+      "altKm": 0
     }
   },
   "costa-nova": {
@@ -5783,6 +6016,8 @@
     "tideHeight": -0.04,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 1.3,
+    "uvIndexMax": 4.9,
     "currentSpeed": 0.16,
     "currentDir": 252,
     "secondarySwellHeight": 0.48,
@@ -5852,6 +6087,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:38.615Z",
+    "airQualityIndex": 35,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 6,
       "windDirDeg": 0,
@@ -5866,7 +6103,6 @@
     "observedWave": {
       "waveHeight": 2.065429925918579,
       "wavePeriod": 7.851600170135498,
-      "waveDirection": 312,
       "maxWaveHeight": 2.973629951477051,
       "waterTemp": 16.4,
       "stationName": "Nazaré Costeira (WMO)",
@@ -5885,23 +6121,12 @@
         "buoyName": "Nazaré Costeira (WMO)"
       }
     },
-    "observedWaveAlt": {
-      "waveHeight": 1.5966800451278687,
-      "wavePeriod": 10.019499778747559,
-      "maxWaveHeight": 2.4316399097442627,
-      "waterTemp": 17.456050872802734,
-      "stationName": "Nazaré Costeira (WMO)",
-      "stationArea": "Nazaré",
-      "distanceKm": 124.3,
-      "observedAt": "2026-09-28T12:00:00.000Z",
-      "source": "wmo-buoy"
-    },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 79.8,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 124.3
     },
     "windBias": {
@@ -5911,6 +6136,12 @@
       "mae": 1.4,
       "rmse": 1.8,
       "n": 280
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 124,
+      "altKm": 0
     }
   },
   "tocha": {
@@ -5929,6 +6160,8 @@
     "tideHeight": 0,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 0.9,
+    "uvIndexMax": 4.9,
     "currentSpeed": 0.21,
     "currentDir": 194,
     "secondarySwellHeight": 0.44,
@@ -5998,6 +6231,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:38.970Z",
+    "airQualityIndex": 35,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 5,
       "windDirDeg": 0,
@@ -6012,7 +6247,6 @@
     "observedWave": {
       "waveHeight": 2.2119100093841553,
       "wavePeriod": 14.41409969329834,
-      "waveDirection": 312,
       "maxWaveHeight": 3.017580032348633,
       "waterTemp": 16.4,
       "stationName": "Nazaré Costeira (WMO)",
@@ -6031,23 +6265,12 @@
         "buoyName": "Nazaré Costeira (WMO)"
       }
     },
-    "observedWaveAlt": {
-      "waveHeight": 1.5966800451278687,
-      "wavePeriod": 10.019499778747559,
-      "maxWaveHeight": 2.4316399097442627,
-      "waterTemp": 17.456050872802734,
-      "stationName": "Nazaré Costeira (WMO)",
-      "stationArea": "Nazaré",
-      "distanceKm": 91.3,
-      "observedAt": "2026-09-28T12:00:00.000Z",
-      "source": "wmo-buoy"
-    },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 110.1,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 91.3
     },
     "windBias": {
@@ -6081,6 +6304,8 @@
     "tideHeight": 0.01,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 1.1,
+    "uvIndexMax": 4.8,
     "currentSpeed": 0.16,
     "currentDir": 198,
     "secondarySwellHeight": 0.42,
@@ -6150,6 +6375,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:39.327Z",
+    "airQualityIndex": 35,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 1,
       "windDirDeg": 90,
@@ -6164,7 +6391,6 @@
     "observedWave": {
       "waveHeight": 2.2119100093841553,
       "wavePeriod": 14.41409969329834,
-      "waveDirection": 312,
       "maxWaveHeight": 3.017580032348633,
       "waterTemp": 16.4,
       "stationName": "Nazaré Costeira (WMO)",
@@ -6183,23 +6409,12 @@
         "buoyName": "Nazaré Costeira (WMO)"
       }
     },
-    "observedWaveAlt": {
-      "waveHeight": 1.5966800451278687,
-      "wavePeriod": 10.019499778747559,
-      "maxWaveHeight": 2.4316399097442627,
-      "waterTemp": 17.456050872802734,
-      "stationName": "Nazaré Costeira (WMO)",
-      "stationArea": "Nazaré",
-      "distanceKm": 78.3,
-      "observedAt": "2026-09-28T12:00:00.000Z",
-      "source": "wmo-buoy"
-    },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 122.1,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 78.3
     },
     "windBias": {
@@ -6233,6 +6448,8 @@
     "tideHeight": 0.02,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 2,
+    "uvIndexMax": 4.9,
     "currentSpeed": 0.21,
     "currentDir": 194,
     "secondarySwellHeight": 0.38,
@@ -6302,6 +6519,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:39.684Z",
+    "airQualityIndex": 35,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 1,
       "windDirDeg": 90,
@@ -6316,7 +6535,6 @@
     "observedWave": {
       "waveHeight": 2.2119100093841553,
       "wavePeriod": 14.41409969329834,
-      "waveDirection": 312,
       "maxWaveHeight": 3.017580032348633,
       "waterTemp": 16.4,
       "stationName": "Nazaré Costeira (WMO)",
@@ -6335,23 +6553,12 @@
         "buoyName": "Nazaré Costeira (WMO)"
       }
     },
-    "observedWaveAlt": {
-      "waveHeight": 1.5966800451278687,
-      "wavePeriod": 10.019499778747559,
-      "maxWaveHeight": 2.4316399097442627,
-      "waterTemp": 17.456050872802734,
-      "stationName": "Nazaré Costeira (WMO)",
-      "stationArea": "Nazaré",
-      "distanceKm": 71.7,
-      "observedAt": "2026-09-28T12:00:00.000Z",
-      "source": "wmo-buoy"
-    },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 130,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 71.7
     },
     "windBias": {
@@ -6385,6 +6592,8 @@
     "tideHeight": 0.02,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 2,
+    "uvIndexMax": 4.9,
     "currentSpeed": 0.18,
     "currentDir": 214,
     "secondarySwellHeight": 0.36,
@@ -6454,6 +6663,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:40.044Z",
+    "airQualityIndex": 35,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 1,
       "windDirDeg": 90,
@@ -6468,7 +6679,6 @@
     "observedWave": {
       "waveHeight": 2.2119100093841553,
       "wavePeriod": 14.41409969329834,
-      "waveDirection": 312,
       "maxWaveHeight": 3.017580032348633,
       "waterTemp": 16.4,
       "stationName": "Nazaré Costeira (WMO)",
@@ -6487,23 +6697,12 @@
         "buoyName": "Nazaré Costeira (WMO)"
       }
     },
-    "observedWaveAlt": {
-      "waveHeight": 1.5966800451278687,
-      "wavePeriod": 10.019499778747559,
-      "maxWaveHeight": 2.4316399097442627,
-      "waterTemp": 17.456050872802734,
-      "stationName": "Nazaré Costeira (WMO)",
-      "stationArea": "Nazaré",
-      "distanceKm": 61.7,
-      "observedAt": "2026-09-28T12:00:00.000Z",
-      "source": "wmo-buoy"
-    },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 140.2,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 61.7
     },
     "windBias": {
@@ -6537,6 +6736,8 @@
     "tideHeight": 0.03,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 1.9,
+    "uvIndexMax": 5.1,
     "currentSpeed": 0.18,
     "currentDir": 214,
     "secondarySwellHeight": 0.44,
@@ -6606,6 +6807,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:40.402Z",
+    "airQualityIndex": 34,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 5,
       "windDirDeg": 0,
@@ -6620,7 +6823,6 @@
     "observedWave": {
       "waveHeight": 2.2119100093841553,
       "wavePeriod": 14.41409969329834,
-      "waveDirection": 312,
       "maxWaveHeight": 3.017580032348633,
       "waterTemp": 16.4,
       "stationName": "Nazaré Costeira (WMO)",
@@ -6639,23 +6841,12 @@
         "buoyName": "Nazaré Costeira (WMO)"
       }
     },
-    "observedWaveAlt": {
-      "waveHeight": 1.5966800451278687,
-      "wavePeriod": 10.019499778747559,
-      "maxWaveHeight": 2.4316399097442627,
-      "waterTemp": 17.456050872802734,
-      "stationName": "Nazaré Costeira (WMO)",
-      "stationArea": "Nazaré",
-      "distanceKm": 40.3,
-      "observedAt": "2026-09-28T12:00:00.000Z",
-      "source": "wmo-buoy"
-    },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 160.5,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 40.3
     },
     "windBias": {
@@ -6689,6 +6880,8 @@
     "tideHeight": 0,
     "tideStatus": "falling",
     "tideLabel": "Maré a Descer",
+    "uvIndex": 3.4,
+    "uvIndexMax": 5.3,
     "currentSpeed": 0,
     "currentDir": 0,
     "tideObservedHeight": 3.848,
@@ -6755,6 +6948,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:40.758Z",
+    "airQualityIndex": 32,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 6,
       "windDirDeg": 315,
@@ -6838,6 +7033,8 @@
     "tideHeight": 0.03,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 1.5,
+    "uvIndexMax": 5,
     "currentSpeed": 0.21,
     "currentDir": 256,
     "secondarySwellHeight": 0.38,
@@ -6907,6 +7104,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:41.113Z",
+    "airQualityIndex": 33,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 1,
       "windDirDeg": 135,
@@ -6990,6 +7189,8 @@
     "tideHeight": 0.02,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 2,
+    "uvIndexMax": 5,
     "currentSpeed": 0.27,
     "currentDir": 248,
     "secondarySwellHeight": 0.12,
@@ -7059,6 +7260,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:41.471Z",
+    "airQualityIndex": 33,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 11,
       "windDirDeg": 0,
@@ -7141,6 +7344,8 @@
     "tideHeight": 0.02,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 2,
+    "uvIndexMax": 5,
     "currentSpeed": 0.27,
     "currentDir": 248,
     "secondarySwellHeight": 0.12,
@@ -7210,6 +7415,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:41.827Z",
+    "airQualityIndex": 33,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 11,
       "windDirDeg": 0,
@@ -7292,6 +7499,8 @@
     "tideHeight": 0.02,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 2,
+    "uvIndexMax": 5,
     "currentSpeed": 0.27,
     "currentDir": 248,
     "secondarySwellHeight": 0.46,
@@ -7361,6 +7570,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:42.183Z",
+    "airQualityIndex": 33,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 11,
       "windDirDeg": 0,
@@ -7443,6 +7654,8 @@
     "tideHeight": 0.02,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 2,
+    "uvIndexMax": 5,
     "currentSpeed": 0.27,
     "currentDir": 248,
     "secondarySwellHeight": 0.12,
@@ -7512,6 +7725,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:42.539Z",
+    "airQualityIndex": 33,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 11,
       "windDirDeg": 0,
@@ -7594,6 +7809,8 @@
     "tideHeight": 0.03,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 2.5,
+    "uvIndexMax": 5.1,
     "currentSpeed": 0.43,
     "currentDir": 234,
     "secondarySwellHeight": 0.46,
@@ -7663,6 +7880,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:42.896Z",
+    "airQualityIndex": 31,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 11,
       "windDirDeg": 0,
@@ -7745,6 +7964,8 @@
     "tideHeight": 0.03,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 2.5,
+    "uvIndexMax": 5.1,
     "currentSpeed": 0.43,
     "currentDir": 234,
     "secondarySwellHeight": 0.46,
@@ -7814,6 +8035,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:43.251Z",
+    "airQualityIndex": 34,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 11,
       "windDirDeg": 0,
@@ -7896,6 +8119,8 @@
     "tideHeight": 0.05,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 2.5,
+    "uvIndexMax": 5.1,
     "currentSpeed": 0.39,
     "currentDir": 220,
     "secondarySwellHeight": 0.3,
@@ -7965,6 +8190,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:43.606Z",
+    "airQualityIndex": 34,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 11,
       "windDirDeg": 0,
@@ -8047,6 +8274,8 @@
     "tideHeight": 0.05,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 2.5,
+    "uvIndexMax": 5.1,
     "currentSpeed": 0.39,
     "currentDir": 220,
     "secondarySwellHeight": 0.3,
@@ -8116,6 +8345,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:43.963Z",
+    "airQualityIndex": 34,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 11,
       "windDirDeg": 0,
@@ -8198,6 +8429,8 @@
     "tideHeight": 0.11,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.1,
+    "uvIndexMax": 5.6,
     "currentSpeed": 0.05,
     "currentDir": 180,
     "secondarySwellHeight": 0.12,
@@ -8267,6 +8500,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:44.320Z",
+    "airQualityIndex": 35,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 7,
       "windDirDeg": 0,
@@ -8350,6 +8585,8 @@
     "tideHeight": 0.14,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.6,
+    "uvIndexMax": 5.7,
     "currentSpeed": 0.15,
     "currentDir": 180,
     "secondarySwellHeight": 0.14,
@@ -8419,6 +8656,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:44.678Z",
+    "airQualityIndex": 32,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 7,
       "windDirDeg": 0,
@@ -8502,6 +8741,8 @@
     "tideHeight": 0.14,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.6,
+    "uvIndexMax": 5.7,
     "currentSpeed": 0.15,
     "currentDir": 180,
     "secondarySwellHeight": 0.14,
@@ -8571,6 +8812,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:45.036Z",
+    "airQualityIndex": 32,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 7,
       "windDirDeg": 0,
@@ -8654,6 +8897,8 @@
     "tideHeight": 0.14,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.6,
+    "uvIndexMax": 5.7,
     "currentSpeed": 0.15,
     "currentDir": 180,
     "secondarySwellHeight": 0.14,
@@ -8723,6 +8968,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:45.392Z",
+    "airQualityIndex": 32,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 7,
       "windDirDeg": 0,
@@ -8806,6 +9053,8 @@
     "tideHeight": 0.14,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.6,
+    "uvIndexMax": 5.7,
     "currentSpeed": 0.15,
     "currentDir": 180,
     "secondarySwellHeight": 0.14,
@@ -8875,6 +9124,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:45.748Z",
+    "airQualityIndex": 32,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 7,
       "windDirDeg": 0,
@@ -8958,6 +9209,8 @@
     "tideHeight": 0.14,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.6,
+    "uvIndexMax": 5.7,
     "currentSpeed": 0.15,
     "currentDir": 180,
     "secondarySwellHeight": 0.14,
@@ -9027,6 +9280,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:46.105Z",
+    "airQualityIndex": 32,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 7,
       "windDirDeg": 0,
@@ -9110,6 +9365,8 @@
     "tideHeight": 0.14,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.6,
+    "uvIndexMax": 5.7,
     "currentSpeed": 0.15,
     "currentDir": 180,
     "secondarySwellHeight": 0.14,
@@ -9179,6 +9436,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:46.462Z",
+    "airQualityIndex": 32,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 7,
       "windDirDeg": 0,
@@ -9262,6 +9521,8 @@
     "tideHeight": 0.14,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.6,
+    "uvIndexMax": 5.7,
     "currentSpeed": 0.15,
     "currentDir": 180,
     "secondarySwellHeight": 0.14,
@@ -9331,6 +9592,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:46.820Z",
+    "airQualityIndex": 32,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 9,
       "windDirDeg": 315,
@@ -9414,6 +9677,8 @@
     "tideHeight": 0.16,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.6,
+    "uvIndexMax": 5.7,
     "currentSpeed": 0.14,
     "currentDir": 225,
     "secondarySwellHeight": 0.12,
@@ -9483,6 +9748,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:47.177Z",
+    "airQualityIndex": 31,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 20,
       "windDirDeg": 0,
@@ -9566,6 +9833,8 @@
     "tideHeight": 0.16,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.6,
+    "uvIndexMax": 5.7,
     "currentSpeed": 0.14,
     "currentDir": 225,
     "secondarySwellHeight": 0.12,
@@ -9635,6 +9904,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:47.536Z",
+    "airQualityIndex": 33,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 20,
       "windDirDeg": 0,
@@ -9718,6 +9989,8 @@
     "tideHeight": 0.16,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.6,
+    "uvIndexMax": 5.7,
     "currentSpeed": 0.25,
     "currentDir": 217,
     "secondarySwellHeight": 0.18,
@@ -9787,6 +10060,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:47.892Z",
+    "airQualityIndex": 33,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 16,
       "windDirDeg": 0,
@@ -9870,6 +10145,8 @@
     "tideHeight": 0,
     "tideStatus": "falling",
     "tideLabel": "Maré a Descer",
+    "uvIndex": 4,
+    "uvIndexMax": 5.5,
     "currentSpeed": 0,
     "currentDir": 0,
     "tideObservedHeight": 1.103,
@@ -9936,6 +10213,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:48.250Z",
+    "airQualityIndex": 33,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 4,
       "windDirDeg": 0,
@@ -10013,6 +10292,8 @@
     "tideHeight": -0.02,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 5.7,
+    "uvIndexMax": 6,
     "currentSpeed": 0.18,
     "currentDir": 56,
     "secondarySwellHeight": 0.2,
@@ -10082,18 +10363,18 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:48.611Z",
+    "airQualityIndex": 30,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 0,
-      "windDirMissing": false,
       "windCardinal": "—",
       "windCardinalEn": "—",
       "tempC": 24,
       "stationName": "Lajes (METAR)",
       "distanceKm": 4.2,
       "observedAt": "2026-09-09T23:00:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPLA"
+      "source": "metar"
     },
     "observedWave": {
       "waveHeight": 0.73,
@@ -10156,6 +10437,8 @@
     "tideHeight": -0.01,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 5.4,
+    "uvIndexMax": 5.8,
     "currentSpeed": 0.07,
     "currentDir": 135,
     "secondarySwellHeight": 0.2,
@@ -10225,6 +10508,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:48.969Z",
+    "airQualityIndex": 30,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 45,
@@ -10297,6 +10582,8 @@
     "tideHeight": 0.17,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.6,
+    "uvIndexMax": 5.9,
     "currentSpeed": 0.18,
     "currentDir": 214,
     "secondarySwellHeight": 0.12,
@@ -10366,6 +10653,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:49.325Z",
+    "airQualityIndex": 35,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 22,
       "windDirDeg": 0,
@@ -10443,6 +10732,8 @@
     "tideHeight": 0.17,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.6,
+    "uvIndexMax": 5.9,
     "currentSpeed": 0.18,
     "currentDir": 214,
     "secondarySwellHeight": 0.12,
@@ -10512,6 +10803,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:49.682Z",
+    "airQualityIndex": 35,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 22,
       "windDirDeg": 0,
@@ -10589,6 +10882,8 @@
     "tideHeight": 0.19,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.6,
+    "uvIndexMax": 5.9,
     "currentSpeed": 0.1,
     "currentDir": 270,
     "secondarySwellHeight": 0.14,
@@ -10658,6 +10953,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:50.037Z",
+    "airQualityIndex": 36,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 8,
       "windDirDeg": 0,
@@ -10735,6 +11032,8 @@
     "tideHeight": 0.18,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.6,
+    "uvIndexMax": 5.9,
     "currentSpeed": 0.16,
     "currentDir": 252,
     "secondarySwellHeight": 0.18,
@@ -10804,6 +11103,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:50.392Z",
+    "airQualityIndex": 36,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 22,
       "windDirDeg": 0,
@@ -10881,6 +11182,8 @@
     "tideHeight": 0.19,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.6,
+    "uvIndexMax": 5.9,
     "currentSpeed": 0.1,
     "currentDir": 270,
     "secondarySwellHeight": 0.14,
@@ -10950,6 +11253,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:50.748Z",
+    "airQualityIndex": 36,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 8,
       "windDirDeg": 0,
@@ -11027,6 +11332,8 @@
     "tideHeight": 0.19,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.3,
+    "uvIndexMax": 5.6,
     "currentSpeed": 0.15,
     "currentDir": 270,
     "secondarySwellHeight": 0.14,
@@ -11096,6 +11403,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:51.106Z",
+    "airQualityIndex": 37,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 8,
       "windDirDeg": 0,
@@ -11173,6 +11482,8 @@
     "tideHeight": 0.19,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.3,
+    "uvIndexMax": 5.6,
     "currentSpeed": 0.1,
     "currentDir": 270,
     "secondarySwellHeight": 0.14,
@@ -11242,6 +11553,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:51.463Z",
+    "airQualityIndex": 33,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 4,
       "windDirDeg": 0,
@@ -11319,6 +11632,8 @@
     "tideHeight": 0.19,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.6,
+    "uvIndexMax": 5.9,
     "currentSpeed": 0.1,
     "currentDir": 270,
     "secondarySwellHeight": 0.26,
@@ -11388,6 +11703,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:51.821Z",
+    "airQualityIndex": 36,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 8,
       "windDirDeg": 0,
@@ -11465,6 +11782,8 @@
     "tideHeight": 0.18,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.6,
+    "uvIndexMax": 5.9,
     "currentSpeed": 0.16,
     "currentDir": 252,
     "secondarySwellHeight": 0.18,
@@ -11534,6 +11853,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:52.178Z",
+    "airQualityIndex": 36,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 22,
       "windDirDeg": 0,
@@ -11611,6 +11932,8 @@
     "tideHeight": 0.19,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.6,
+    "uvIndexMax": 5.9,
     "currentSpeed": 0.1,
     "currentDir": 270,
     "secondarySwellHeight": 0.14,
@@ -11680,6 +12003,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:52.535Z",
+    "airQualityIndex": 36,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 8,
       "windDirDeg": 0,
@@ -11757,6 +12082,8 @@
     "tideHeight": 0.03,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 3.6,
+    "uvIndexMax": 5.6,
     "currentSpeed": 0.11,
     "currentDir": 207,
     "secondarySwellHeight": 0.3,
@@ -11826,6 +12153,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:52.893Z",
+    "airQualityIndex": 31,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 225,
@@ -11898,6 +12227,8 @@
     "tideHeight": 0.19,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 2.8,
+    "uvIndexMax": 5.6,
     "currentSpeed": 0.1,
     "currentDir": 270,
     "secondarySwellHeight": 0.14,
@@ -11967,6 +12298,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:53.250Z",
+    "airQualityIndex": 33,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 4,
       "windDirDeg": 0,
@@ -12044,6 +12377,8 @@
     "tideHeight": 0.19,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 2.8,
+    "uvIndexMax": 5.6,
     "currentSpeed": 0.1,
     "currentDir": 270,
     "secondarySwellHeight": 0.14,
@@ -12113,6 +12448,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:53.607Z",
+    "airQualityIndex": 33,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 4,
       "windDirDeg": 0,
@@ -12190,6 +12527,8 @@
     "tideHeight": 0.19,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 2.8,
+    "uvIndexMax": 5.6,
     "currentSpeed": 0.15,
     "currentDir": 270,
     "secondarySwellHeight": 0.14,
@@ -12259,6 +12598,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:53.965Z",
+    "airQualityIndex": 33,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 4,
       "windDirDeg": 0,
@@ -12336,6 +12677,8 @@
     "tideHeight": 0.2,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 3.4,
+    "uvIndexMax": 5.7,
     "currentSpeed": 0.07,
     "currentDir": 225,
     "secondarySwellHeight": 0.22,
@@ -12405,6 +12748,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:54.321Z",
+    "airQualityIndex": 36,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 4,
       "windDirDeg": 0,
@@ -12482,6 +12827,8 @@
     "tideHeight": 0.2,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.3,
+    "uvIndexMax": 5.8,
     "currentSpeed": 0.14,
     "currentDir": 225,
     "secondarySwellHeight": 0.16,
@@ -12551,6 +12898,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:54.679Z",
+    "airQualityIndex": 32,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 4,
       "windDirDeg": 0,
@@ -12628,6 +12977,8 @@
     "tideHeight": 0.2,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.3,
+    "uvIndexMax": 6,
     "currentSpeed": 0.18,
     "currentDir": 236,
     "secondarySwellHeight": 0.16,
@@ -12697,6 +13048,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:55.039Z",
+    "airQualityIndex": 31,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 4,
       "windDirDeg": 315,
@@ -12774,6 +13127,8 @@
     "tideHeight": 0,
     "tideStatus": "falling",
     "tideLabel": "Maré a Descer",
+    "uvIndex": 4.6,
+    "uvIndexMax": 5.8,
     "currentSpeed": 0,
     "currentDir": 0,
     "tideObservedHeight": 3.92,
@@ -12840,6 +13195,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:55.397Z",
+    "airQualityIndex": 29,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 8,
       "windDirDeg": 315,
@@ -12918,6 +13275,8 @@
     "tideHeight": 0,
     "tideStatus": "falling",
     "tideLabel": "Maré a Descer",
+    "uvIndex": 0.8,
+    "uvIndexMax": 2,
     "currentSpeed": 0,
     "currentDir": 0,
     "tideObservedHeight": 3.867,
@@ -12984,6 +13343,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:55.753Z",
+    "airQualityIndex": 30,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 270,
@@ -12999,7 +13360,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 2.51,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -13015,25 +13375,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 23,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 3.5,
+        "deltaM": -0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.9900000095367432,
-      "wavePeriod": 11.130000114440918,
-      "waveDirection": 313,
-      "waterTemp": 18.1299991607666,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 122.5,
-      "observedAt": "2026-09-28T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 77.5,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 122.5
     },
     "windBias": {
@@ -13043,6 +13400,12 @@
       "mae": 1.8,
       "rmse": 2.1,
       "n": 41
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 123,
+      "altKm": 0
     }
   },
   "melides": {
@@ -13061,6 +13424,8 @@
     "tideHeight": 0.21,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.5,
+    "uvIndexMax": 6,
     "currentSpeed": 0.22,
     "currentDir": 243,
     "secondarySwellHeight": 0.48,
@@ -13130,6 +13495,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:56.111Z",
+    "airQualityIndex": 30,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 14,
       "windDirDeg": 0,
@@ -13207,6 +13574,8 @@
     "tideHeight": 0.22,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.5,
+    "uvIndexMax": 6,
     "currentSpeed": 0.21,
     "currentDir": 225,
     "secondarySwellHeight": 0.46,
@@ -13276,6 +13645,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:56.468Z",
+    "airQualityIndex": 32,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 14,
       "windDirDeg": 0,
@@ -13353,6 +13724,8 @@
     "tideHeight": 0.22,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.6,
+    "uvIndexMax": 6,
     "currentSpeed": 0.25,
     "currentDir": 233,
     "secondarySwellHeight": 0.46,
@@ -13422,6 +13795,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:56.825Z",
+    "airQualityIndex": 32,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 14,
       "windDirDeg": 0,
@@ -13499,6 +13874,8 @@
     "tideHeight": 0.07,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 5.8,
+    "uvIndexMax": 6.1,
     "currentSpeed": 0.05,
     "currentDir": 0,
     "secondarySwellHeight": 0.36,
@@ -13568,6 +13945,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:57.181Z",
+    "airQualityIndex": 34,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 135,
@@ -13604,6 +13983,8 @@
     "tideHeight": 0.23,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.6,
+    "uvIndexMax": 6,
     "currentSpeed": 0.22,
     "currentDir": 243,
     "secondarySwellHeight": 0.4,
@@ -13673,6 +14054,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:57.537Z",
+    "airQualityIndex": 30,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 14,
       "windDirDeg": 0,
@@ -13750,6 +14133,8 @@
     "tideHeight": 0.07,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 5.8,
+    "uvIndexMax": 6.1,
     "currentSpeed": 0.11,
     "currentDir": 63,
     "secondarySwellHeight": 0.22,
@@ -13819,6 +14204,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:57.893Z",
+    "airQualityIndex": 34,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 5,
       "windDirDeg": 270,
@@ -13855,6 +14242,8 @@
     "tideHeight": 0.07,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 5.8,
+    "uvIndexMax": 6.1,
     "currentSpeed": 0.11,
     "currentDir": 63,
     "secondarySwellHeight": 0.36,
@@ -13924,6 +14313,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:58.249Z",
+    "airQualityIndex": 34,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 10,
       "windDirDeg": 45,
@@ -13960,6 +14351,8 @@
     "tideHeight": 0.23,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.7,
+    "uvIndexMax": 6.1,
     "currentSpeed": 0.25,
     "currentDir": 217,
     "secondarySwellHeight": 0.4,
@@ -14029,6 +14422,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:58.606Z",
+    "airQualityIndex": 30,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 14,
       "windDirDeg": 0,
@@ -14101,6 +14496,8 @@
     "tideHeight": 0.06,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 5.8,
+    "uvIndexMax": 6.1,
     "currentSpeed": 0.1,
     "currentDir": 180,
     "secondarySwellHeight": 0.22,
@@ -14170,6 +14567,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:58.964Z",
+    "airQualityIndex": 36,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 1,
       "windDirDeg": 0,
@@ -14206,6 +14605,8 @@
     "tideHeight": 0.24,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.7,
+    "uvIndexMax": 6.1,
     "currentSpeed": 0.27,
     "currentDir": 202,
     "secondarySwellHeight": 0.4,
@@ -14275,6 +14676,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:59.321Z",
+    "airQualityIndex": 30,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 0,
@@ -14347,6 +14750,8 @@
     "tideHeight": 0.25,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.7,
+    "uvIndexMax": 6.1,
     "currentSpeed": 0.27,
     "currentDir": 202,
     "secondarySwellHeight": 0.36,
@@ -14416,6 +14821,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:59.680Z",
+    "airQualityIndex": 31,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 0,
@@ -14488,6 +14895,8 @@
     "tideHeight": 0.06,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 5.8,
+    "uvIndexMax": 6.1,
     "currentSpeed": 0.05,
     "currentDir": 90,
     "secondarySwellHeight": 0.22,
@@ -14557,6 +14966,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:15:00.038Z",
+    "airQualityIndex": 36,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 5,
       "windDirDeg": 270,
@@ -14593,6 +15004,8 @@
     "tideHeight": 0.25,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.7,
+    "uvIndexMax": 6.1,
     "currentSpeed": 0.36,
     "currentDir": 196,
     "secondarySwellHeight": 0.32,
@@ -14662,6 +15075,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:15:00.399Z",
+    "airQualityIndex": 31,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 6,
       "windDirDeg": 315,
@@ -14740,6 +15155,8 @@
     "tideHeight": 0.25,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.7,
+    "uvIndexMax": 6.1,
     "currentSpeed": 0.36,
     "currentDir": 196,
     "secondarySwellHeight": 0.32,
@@ -14809,6 +15226,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:15:00.755Z",
+    "airQualityIndex": 31,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 6,
       "windDirDeg": 315,
@@ -14887,8 +15306,13 @@
     "tideHeight": 0.26,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.7,
+    "uvIndexMax": 6.1,
     "currentSpeed": 0.38,
     "currentDir": 203,
+    "secondarySwellHeight": 0.42,
+    "secondarySwellPeriod": 4.4,
+    "secondarySwellDirection": 244,
     "tideObservedHeight": 3.984,
     "tideObservedAt": "2026-09-11T14:25:00Z",
     "tideStation": "Sines - Terminal XXI",
@@ -14953,6 +15377,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:15:01.113Z",
+    "airQualityIndex": 32,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 6,
       "windDirDeg": 315,
@@ -15031,6 +15457,8 @@
     "tideHeight": 0.27,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.8,
+    "uvIndexMax": 6.1,
     "currentSpeed": 0.4,
     "currentDir": 210,
     "secondarySwellHeight": 0.12,
@@ -15100,6 +15528,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:15:01.924Z",
+    "airQualityIndex": 32,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 90,
@@ -15178,6 +15608,8 @@
     "tideHeight": 0.27,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.8,
+    "uvIndexMax": 6.1,
     "currentSpeed": 0.4,
     "currentDir": 210,
     "secondarySwellHeight": 0.12,
@@ -15247,6 +15679,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:15:14.374Z",
+    "airQualityIndex": 32,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 90,
@@ -15325,6 +15759,8 @@
     "tideHeight": 0.27,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.8,
+    "uvIndexMax": 6.1,
     "currentSpeed": 0.4,
     "currentDir": 210,
     "secondarySwellHeight": 0.44,
@@ -15394,6 +15830,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:15:26.219Z",
+    "airQualityIndex": 35,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 90,
@@ -15472,6 +15910,8 @@
     "tideHeight": 0.27,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.8,
+    "uvIndexMax": 6.1,
     "currentSpeed": 0.4,
     "currentDir": 210,
     "secondarySwellHeight": 0.44,
@@ -15541,6 +15981,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:15:38.327Z",
+    "airQualityIndex": 35,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 90,
@@ -15619,6 +16061,8 @@
     "tideHeight": 0.27,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.8,
+    "uvIndexMax": 6.1,
     "currentSpeed": 0.32,
     "currentDir": 219,
     "secondarySwellHeight": 0.38,
@@ -15688,6 +16132,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:15:50.430Z",
+    "airQualityIndex": 34,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 90,
@@ -15766,6 +16212,8 @@
     "tideHeight": 0.27,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.8,
+    "uvIndexMax": 6.1,
     "currentSpeed": 0.32,
     "currentDir": 219,
     "secondarySwellHeight": 0.38,
@@ -15835,6 +16283,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:02.538Z",
+    "airQualityIndex": 36,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 90,
@@ -15913,6 +16363,8 @@
     "tideHeight": 0.29,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.8,
+    "uvIndexMax": 6.1,
     "currentSpeed": 0.46,
     "currentDir": 193,
     "secondarySwellHeight": 0.48,
@@ -15982,6 +16434,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:14.641Z",
+    "airQualityIndex": 36,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 90,
@@ -16060,6 +16514,8 @@
     "tideHeight": 0.29,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.8,
+    "uvIndexMax": 6.1,
     "currentSpeed": 0.46,
     "currentDir": 193,
     "secondarySwellHeight": 0.48,
@@ -16129,6 +16585,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:15.456Z",
+    "airQualityIndex": 35,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 90,
@@ -16207,6 +16665,8 @@
     "tideHeight": 0.33,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.8,
+    "uvIndexMax": 6.1,
     "currentSpeed": 0.11,
     "currentDir": 153,
     "secondarySwellHeight": 0.18,
@@ -16276,6 +16736,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:15.815Z",
+    "airQualityIndex": 37,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 11,
       "windDirDeg": 0,
@@ -16354,6 +16816,8 @@
     "tideHeight": 0.33,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.8,
+    "uvIndexMax": 6.1,
     "currentSpeed": 0.16,
     "currentDir": 108,
     "secondarySwellHeight": 0.34,
@@ -16423,6 +16887,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:16.172Z",
+    "airQualityIndex": 37,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 11,
       "windDirDeg": 0,
@@ -16501,6 +16967,8 @@
     "tideHeight": 0.33,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.8,
+    "uvIndexMax": 6.1,
     "currentSpeed": 0.16,
     "currentDir": 108,
     "secondarySwellHeight": 0.34,
@@ -16570,6 +17038,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:16.529Z",
+    "airQualityIndex": 35,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 11,
       "windDirDeg": 0,
@@ -16648,6 +17118,8 @@
     "tideHeight": 0.31,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.8,
+    "uvIndexMax": 6.1,
     "currentSpeed": 0.4,
     "currentDir": 187,
     "secondarySwellHeight": 0.52,
@@ -16717,6 +17189,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:16.886Z",
+    "airQualityIndex": 35,
+    "airQualityAt": "2026-09-29T16:00",
     "observedWave": {
       "waveHeight": 0.77,
       "wavePeriod": 4.8,
@@ -16776,6 +17250,8 @@
     "tideHeight": 0.34,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.7,
+    "uvIndexMax": 6.1,
     "currentSpeed": 0.11,
     "currentDir": 117,
     "secondarySwellHeight": 0.12,
@@ -16845,6 +17321,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:17.244Z",
+    "airQualityIndex": 34,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 11,
       "windDirDeg": 0,
@@ -16923,6 +17401,8 @@
     "tideHeight": 0.34,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.6,
+    "uvIndexMax": 6,
     "currentSpeed": 0.16,
     "currentDir": 108,
     "secondarySwellHeight": 0.1,
@@ -16992,6 +17472,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:17.601Z",
+    "airQualityIndex": 37,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 10,
       "windDirDeg": 315,
@@ -17076,8 +17558,13 @@
     "tideHeight": 0.34,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.6,
+    "uvIndexMax": 6,
     "currentSpeed": 0.16,
     "currentDir": 108,
+    "secondarySwellHeight": 0.12,
+    "secondarySwellPeriod": 9.15,
+    "secondarySwellDirection": 224,
     "tideObservedHeight": 3.92,
     "tideObservedAt": "2026-09-11T14:25:00Z",
     "tideStation": "Vila Real de S. António",
@@ -17142,6 +17629,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:17.958Z",
+    "airQualityIndex": 40,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 10,
       "windDirDeg": 315,
@@ -17226,8 +17715,13 @@
     "tideHeight": 0.34,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.6,
+    "uvIndexMax": 6,
     "currentSpeed": 0.16,
     "currentDir": 108,
+    "secondarySwellHeight": 0.1,
+    "secondarySwellPeriod": 9.2,
+    "secondarySwellDirection": 223,
     "tideObservedHeight": 3.92,
     "tideObservedAt": "2026-09-11T14:25:00Z",
     "tideStation": "Vila Real de S. António",
@@ -17292,6 +17786,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:18.315Z",
+    "airQualityIndex": 40,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 10,
       "windDirDeg": 315,
@@ -17376,8 +17872,13 @@
     "tideHeight": 0.34,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.6,
+    "uvIndexMax": 6,
     "currentSpeed": 0.16,
     "currentDir": 108,
+    "secondarySwellHeight": 0.12,
+    "secondarySwellPeriod": 9.15,
+    "secondarySwellDirection": 224,
     "tideObservedHeight": 3.92,
     "tideObservedAt": "2026-09-11T14:25:00Z",
     "tideStation": "Vila Real de S. António",
@@ -17442,6 +17943,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:18.673Z",
+    "airQualityIndex": 40,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 10,
       "windDirDeg": 315,
@@ -17526,6 +18029,8 @@
     "tideHeight": 0.34,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.7,
+    "uvIndexMax": 6.1,
     "currentSpeed": 0.11,
     "currentDir": 117,
     "secondarySwellHeight": 0.12,
@@ -17595,6 +18100,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:19.029Z",
+    "airQualityIndex": 34,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 11,
       "windDirDeg": 0,
@@ -17673,6 +18180,8 @@
     "tideHeight": 0.34,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.7,
+    "uvIndexMax": 6.1,
     "currentSpeed": 0.07,
     "currentDir": 135,
     "secondarySwellHeight": 0.12,
@@ -17742,6 +18251,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:19.387Z",
+    "airQualityIndex": 34,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 11,
       "windDirDeg": 0,
@@ -17820,6 +18331,8 @@
     "tideHeight": 0.34,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.7,
+    "uvIndexMax": 6.1,
     "currentSpeed": 0.07,
     "currentDir": 135,
     "secondarySwellHeight": 0.12,
@@ -17889,6 +18402,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:19.744Z",
+    "airQualityIndex": 34,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 11,
       "windDirDeg": 0,
@@ -17967,6 +18482,8 @@
     "tideHeight": 0.34,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.7,
+    "uvIndexMax": 6.1,
     "currentSpeed": 0.07,
     "currentDir": 135,
     "secondarySwellHeight": 0.12,
@@ -18036,6 +18553,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:20.103Z",
+    "airQualityIndex": 34,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 11,
       "windDirDeg": 0,
@@ -18114,6 +18633,8 @@
     "tideHeight": 0.33,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.7,
+    "uvIndexMax": 6.1,
     "currentSpeed": 0.11,
     "currentDir": 153,
     "secondarySwellHeight": 0.18,
@@ -18183,6 +18704,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:20.460Z",
+    "airQualityIndex": 34,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 11,
       "windDirDeg": 0,
@@ -18261,6 +18784,8 @@
     "tideHeight": 0.31,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.8,
+    "uvIndexMax": 6.1,
     "currentSpeed": 0.4,
     "currentDir": 187,
     "secondarySwellHeight": 0.52,
@@ -18330,6 +18855,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:20.815Z",
+    "airQualityIndex": 35,
+    "airQualityAt": "2026-09-29T16:00",
     "observedWave": {
       "waveHeight": 0.77,
       "wavePeriod": 4.8,
@@ -18389,6 +18916,8 @@
     "tideHeight": 0.31,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.8,
+    "uvIndexMax": 6.1,
     "currentSpeed": 0.4,
     "currentDir": 187,
     "secondarySwellHeight": 0.52,
@@ -18458,6 +18987,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:21.170Z",
+    "airQualityIndex": 35,
+    "airQualityAt": "2026-09-29T16:00",
     "observedWave": {
       "waveHeight": 0.77,
       "wavePeriod": 4.8,
@@ -18517,6 +19048,8 @@
     "tideHeight": 0.38,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.7,
+    "uvIndexMax": 5.8,
     "currentSpeed": 0.21,
     "currentDir": 135,
     "secondarySwellHeight": 0.2,
@@ -18586,6 +19119,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:21.532Z",
+    "airQualityIndex": 38,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 10,
       "windDirDeg": 315,
@@ -18670,6 +19205,8 @@
     "tideHeight": 0.38,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.6,
+    "uvIndexMax": 6,
     "currentSpeed": 0.27,
     "currentDir": 68,
     "secondarySwellHeight": 0.1,
@@ -18739,6 +19276,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:21.890Z",
+    "airQualityIndex": 41,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 5,
       "windDirDeg": 270,
@@ -18823,6 +19362,8 @@
     "tideHeight": 0.39,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.7,
+    "uvIndexMax": 5.8,
     "currentSpeed": 0.32,
     "currentDir": 108,
     "secondarySwellHeight": 0.2,
@@ -18892,6 +19433,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:22.247Z",
+    "airQualityIndex": 40,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 10,
       "windDirDeg": 315,
@@ -18976,6 +19519,8 @@
     "tideHeight": 0.38,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.7,
+    "uvIndexMax": 5.8,
     "currentSpeed": 0.21,
     "currentDir": 135,
     "secondarySwellHeight": 0.2,
@@ -19045,6 +19590,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:22.606Z",
+    "airQualityIndex": 38,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 10,
       "windDirDeg": 315,
@@ -19129,6 +19676,8 @@
     "tideHeight": 0.39,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.7,
+    "uvIndexMax": 5.7,
     "currentSpeed": 0.45,
     "currentDir": 96,
     "secondarySwellHeight": 0.12,
@@ -19198,6 +19747,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:22.962Z",
+    "airQualityIndex": 43,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 5,
       "windDirDeg": 270,
@@ -19282,6 +19833,8 @@
     "tideHeight": 0.38,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.6,
+    "uvIndexMax": 6,
     "currentSpeed": 0.11,
     "currentDir": 63,
     "secondarySwellHeight": 0.12,
@@ -19351,6 +19904,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:23.319Z",
+    "airQualityIndex": 41,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 5,
       "windDirDeg": 270,
@@ -19435,8 +19990,13 @@
     "tideHeight": 0.37,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.6,
+    "uvIndexMax": 6,
     "currentSpeed": 0.27,
     "currentDir": 112,
+    "secondarySwellHeight": 0.1,
+    "secondarySwellPeriod": 8.85,
+    "secondarySwellDirection": 222,
     "tideObservedHeight": 3.92,
     "tideObservedAt": "2026-09-11T14:25:00Z",
     "tideStation": "Vila Real de S. António",
@@ -19501,6 +20061,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:23.677Z",
+    "airQualityIndex": 39,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 5,
       "windDirDeg": 315,
@@ -19585,8 +20147,13 @@
     "tideHeight": 0.37,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.6,
+    "uvIndexMax": 6,
     "currentSpeed": 0.27,
     "currentDir": 112,
+    "secondarySwellHeight": 0.1,
+    "secondarySwellPeriod": 8.85,
+    "secondarySwellDirection": 222,
     "tideObservedHeight": 3.92,
     "tideObservedAt": "2026-09-11T14:25:00Z",
     "tideStation": "Vila Real de S. António",
@@ -19651,6 +20218,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:24.034Z",
+    "airQualityIndex": 40,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 5,
       "windDirDeg": 315,
@@ -19735,8 +20304,13 @@
     "tideHeight": 0.36,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.6,
+    "uvIndexMax": 6,
     "currentSpeed": 0.27,
     "currentDir": 112,
+    "secondarySwellHeight": 0.1,
+    "secondarySwellPeriod": 9.2,
+    "secondarySwellDirection": 223,
     "tideObservedHeight": 3.92,
     "tideObservedAt": "2026-09-11T14:25:00Z",
     "tideStation": "Vila Real de S. António",
@@ -19801,6 +20375,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:24.392Z",
+    "airQualityIndex": 40,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 5,
       "windDirDeg": 315,
@@ -19885,6 +20461,8 @@
     "tideHeight": 0.32,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.8,
+    "uvIndexMax": 6.1,
     "currentSpeed": 0.25,
     "currentDir": 169,
     "secondarySwellHeight": 0.34,
@@ -19954,6 +20532,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:24.749Z",
+    "airQualityIndex": 35,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 11,
       "windDirDeg": 0,
@@ -20032,6 +20612,8 @@
     "tideHeight": 0.31,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.8,
+    "uvIndexMax": 6.1,
     "currentSpeed": 0.4,
     "currentDir": 187,
     "secondarySwellHeight": 0.52,
@@ -20101,6 +20683,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:25.106Z",
+    "airQualityIndex": 35,
+    "airQualityAt": "2026-09-29T16:00",
     "observedWave": {
       "waveHeight": 0.77,
       "wavePeriod": 4.8,
@@ -20160,6 +20744,8 @@
     "tideHeight": 0.08,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 5.9,
+    "uvIndexMax": 6.2,
     "currentSpeed": 0.21,
     "currentDir": 135,
     "secondarySwellHeight": 0.34,
@@ -20229,6 +20815,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:25.464Z",
+    "airQualityIndex": 34,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 5,
       "windDirDeg": 45,
@@ -20265,6 +20853,8 @@
     "tideHeight": 0.07,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 5.8,
+    "uvIndexMax": 6.1,
     "currentSpeed": 0.1,
     "currentDir": 180,
     "secondarySwellHeight": 0.3,
@@ -20334,6 +20924,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:25.821Z",
+    "airQualityIndex": 36,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 1,
       "windDirDeg": 0,
@@ -20370,6 +20962,8 @@
     "tideHeight": 0.46,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 6.2,
+    "uvIndexMax": 6.9,
     "currentSpeed": 0.11,
     "currentDir": 63,
     "secondarySwellHeight": 0.22,
@@ -20439,6 +21033,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:26.181Z",
+    "airQualityIndex": 31,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 3,
       "windDirDeg": 225,
@@ -20511,6 +21107,8 @@
     "tideHeight": 0.47,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 6,
+    "uvIndexMax": 6.8,
     "currentSpeed": 0.05,
     "currentDir": 0,
     "secondarySwellHeight": 0.34,
@@ -20580,6 +21178,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:26.537Z",
+    "airQualityIndex": 31,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 11,
       "windDirDeg": 0,
@@ -20652,6 +21252,8 @@
     "tideHeight": 0.45,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 5.7,
+    "uvIndexMax": 6.5,
     "currentSpeed": 0.07,
     "currentDir": 315,
     "secondarySwellHeight": 0.3,
@@ -20721,6 +21323,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:26.894Z",
+    "airQualityIndex": 32,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 270,
@@ -20793,6 +21397,8 @@
     "tideHeight": 0.45,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 5.7,
+    "uvIndexMax": 6.5,
     "currentSpeed": 0.07,
     "currentDir": 315,
     "secondarySwellHeight": 0.3,
@@ -20862,6 +21468,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:27.251Z",
+    "airQualityIndex": 32,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 270,
@@ -20934,6 +21542,8 @@
     "tideHeight": 0.48,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 6,
+    "uvIndexMax": 6.8,
     "currentSpeed": 0.1,
     "currentDir": 90,
     "secondarySwellHeight": 0.18,
@@ -21003,6 +21613,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:27.607Z",
+    "airQualityIndex": 33,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 13,
       "windDirDeg": 0,
@@ -21075,6 +21687,8 @@
     "tideHeight": 0.47,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 5.7,
+    "uvIndexMax": 6.5,
     "currentSpeed": 0.05,
     "currentDir": 0,
     "secondarySwellHeight": 0.22,
@@ -21144,6 +21758,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:27.963Z",
+    "airQualityIndex": 33,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 4,
       "windDirDeg": 270,
@@ -21218,6 +21834,8 @@
     "tideHeight": 0.49,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 6,
+    "uvIndexMax": 6.8,
     "currentSpeed": 0.11,
     "currentDir": 117,
     "secondarySwellHeight": 0.22,
@@ -21287,6 +21905,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:28.320Z",
+    "airQualityIndex": 32,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 270,
@@ -21359,6 +21979,8 @@
     "tideHeight": -0.04,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 1.3,
+    "uvIndexMax": 4.9,
     "currentSpeed": 0.16,
     "currentDir": 252,
     "secondarySwellHeight": 0.48,
@@ -21428,6 +22050,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:28.677Z",
+    "airQualityIndex": 35,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 6,
       "windDirDeg": 0,
@@ -21442,7 +22066,6 @@
     "observedWave": {
       "waveHeight": 2.065429925918579,
       "wavePeriod": 7.851600170135498,
-      "waveDirection": 312,
       "maxWaveHeight": 2.973629951477051,
       "waterTemp": 16.4,
       "stationName": "Nazaré Costeira (WMO)",
@@ -21461,23 +22084,12 @@
         "buoyName": "Nazaré Costeira (WMO)"
       }
     },
-    "observedWaveAlt": {
-      "waveHeight": 1.5966800451278687,
-      "wavePeriod": 10.019499778747559,
-      "maxWaveHeight": 2.4316399097442627,
-      "waterTemp": 17.456050872802734,
-      "stationName": "Nazaré Costeira (WMO)",
-      "stationArea": "Nazaré",
-      "distanceKm": 126.1,
-      "observedAt": "2026-09-28T12:00:00.000Z",
-      "source": "wmo-buoy"
-    },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 77.9,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 126.1
     },
     "windBias": {
@@ -21487,6 +22099,12 @@
       "mae": 1.4,
       "rmse": 1.8,
       "n": 280
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 126,
+      "altKm": 0
     }
   },
   "vila-cha": {
@@ -21505,6 +22123,8 @@
     "tideHeight": -0.1,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 1.1,
+    "uvIndexMax": 4.2,
     "currentSpeed": 0.14,
     "currentDir": 225,
     "secondarySwellHeight": 0.32,
@@ -21574,6 +22194,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:29.033Z",
+    "airQualityIndex": 35,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 0,
       "windDirDeg": 158,
@@ -21589,7 +22211,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 2.51,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -21605,25 +22226,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 23,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 3.5,
+        "deltaM": -0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.9900000095367432,
-      "wavePeriod": 11.130000114440918,
-      "waveDirection": 313,
-      "waterTemp": 18.1299991607666,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 108.6,
-      "observedAt": "2026-09-28T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 20.5,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 108.6
     },
     "windBias": {
@@ -21633,6 +22251,12 @@
       "mae": 2,
       "rmse": 2.3,
       "n": 160
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 109,
+      "altKm": 0
     }
   },
   "santa-cruz": {
@@ -21651,6 +22275,8 @@
     "tideHeight": 0.11,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 3.6,
+    "uvIndexMax": 5.6,
     "currentSpeed": 0.05,
     "currentDir": 180,
     "secondarySwellHeight": 0.12,
@@ -21720,6 +22346,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:29.391Z",
+    "airQualityIndex": 31,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 7,
       "windDirDeg": 0,
@@ -21803,6 +22431,8 @@
     "tideHeight": 0.06,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 2.5,
+    "uvIndexMax": 5.1,
     "currentSpeed": 0.18,
     "currentDir": 214,
     "secondarySwellHeight": 0.24,
@@ -21872,6 +22502,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:29.747Z",
+    "airQualityIndex": 34,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 11,
       "windDirDeg": 0,
@@ -21954,6 +22586,8 @@
     "tideHeight": 0.06,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 2.5,
+    "uvIndexMax": 5.1,
     "currentSpeed": 0.18,
     "currentDir": 214,
     "secondarySwellHeight": 0.24,
@@ -22023,6 +22657,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:30.103Z",
+    "airQualityIndex": 33,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 11,
       "windDirDeg": 0,
@@ -22105,6 +22741,8 @@
     "tideHeight": 0.03,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 2,
+    "uvIndexMax": 5,
     "currentSpeed": 0.29,
     "currentDir": 239,
     "secondarySwellHeight": 0.28,
@@ -22174,6 +22812,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:30.459Z",
+    "airQualityIndex": 33,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 1,
       "windDirDeg": 135,
@@ -22257,6 +22897,8 @@
     "tideHeight": 0.14,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.6,
+    "uvIndexMax": 5.7,
     "currentSpeed": 0.15,
     "currentDir": 180,
     "secondarySwellHeight": 0.14,
@@ -22326,6 +22968,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:30.816Z",
+    "airQualityIndex": 32,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 7,
       "windDirDeg": 0,
@@ -22409,6 +23053,8 @@
     "tideHeight": 0.14,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.6,
+    "uvIndexMax": 5.7,
     "currentSpeed": 0.15,
     "currentDir": 180,
     "secondarySwellHeight": 0.14,
@@ -22478,6 +23124,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:31.173Z",
+    "airQualityIndex": 32,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 7,
       "windDirDeg": 0,
@@ -22561,6 +23209,8 @@
     "tideHeight": 0.14,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.6,
+    "uvIndexMax": 5.7,
     "currentSpeed": 0.15,
     "currentDir": 180,
     "secondarySwellHeight": 0.14,
@@ -22630,6 +23280,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:31.530Z",
+    "airQualityIndex": 32,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 7,
       "windDirDeg": 0,
@@ -22713,6 +23365,8 @@
     "tideHeight": 0.18,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 2.8,
+    "uvIndexMax": 5.6,
     "currentSpeed": 0.21,
     "currentDir": 256,
     "secondarySwellHeight": 0.16,
@@ -22782,6 +23436,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:31.886Z",
+    "airQualityIndex": 37,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 4,
       "windDirDeg": 0,
@@ -22859,6 +23515,8 @@
     "tideHeight": 0.21,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.5,
+    "uvIndexMax": 6,
     "currentSpeed": 0.22,
     "currentDir": 243,
     "secondarySwellHeight": 0.48,
@@ -22928,6 +23586,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:32.243Z",
+    "airQualityIndex": 30,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 14,
       "windDirDeg": 0,
@@ -23005,6 +23665,8 @@
     "tideHeight": 0.21,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.5,
+    "uvIndexMax": 6,
     "currentSpeed": 0.25,
     "currentDir": 233,
     "secondarySwellHeight": 0.54,
@@ -23074,6 +23736,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:32.600Z",
+    "airQualityIndex": 30,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 14,
       "windDirDeg": 0,
@@ -23151,6 +23815,8 @@
     "tideHeight": 0.23,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.7,
+    "uvIndexMax": 6.1,
     "currentSpeed": 0.25,
     "currentDir": 217,
     "secondarySwellHeight": 0.4,
@@ -23220,6 +23886,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:32.956Z",
+    "airQualityIndex": 30,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 14,
       "windDirDeg": 0,
@@ -23297,6 +23965,8 @@
     "tideHeight": 0.39,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.7,
+    "uvIndexMax": 5.8,
     "currentSpeed": 0.32,
     "currentDir": 108,
     "secondarySwellHeight": 0.2,
@@ -23366,6 +24036,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:33.311Z",
+    "airQualityIndex": 40,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 10,
       "windDirDeg": 315,
@@ -23450,6 +24122,8 @@
     "tideHeight": 0.37,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.7,
+    "uvIndexMax": 5.9,
     "currentSpeed": 0.21,
     "currentDir": 135,
     "secondarySwellHeight": 0.12,
@@ -23519,6 +24193,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:33.667Z",
+    "airQualityIndex": 38,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 4,
       "windDirDeg": 270,
@@ -23596,6 +24272,8 @@
     "tideHeight": 0.34,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.7,
+    "uvIndexMax": 6.1,
     "currentSpeed": 0.07,
     "currentDir": 135,
     "secondarySwellHeight": 0.12,
@@ -23665,6 +24343,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:34.024Z",
+    "airQualityIndex": 34,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 11,
       "windDirDeg": 0,
@@ -23743,6 +24423,8 @@
     "tideHeight": 0.35,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.7,
+    "uvIndexMax": 6.1,
     "currentSpeed": 0.1,
     "currentDir": 90,
     "secondarySwellHeight": 0.1,
@@ -23812,6 +24494,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:34.381Z",
+    "airQualityIndex": 37,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 11,
       "windDirDeg": 0,
@@ -23890,6 +24574,8 @@
     "tideHeight": 0.35,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.7,
+    "uvIndexMax": 6.1,
     "currentSpeed": 0.1,
     "currentDir": 90,
     "secondarySwellHeight": 0.1,
@@ -23959,6 +24645,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:34.737Z",
+    "airQualityIndex": 37,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 11,
       "windDirDeg": 0,
@@ -24037,6 +24725,8 @@
     "tideHeight": 0.31,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 4.8,
+    "uvIndexMax": 6.1,
     "currentSpeed": 0.4,
     "currentDir": 187,
     "secondarySwellHeight": 0.52,
@@ -24106,6 +24796,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:35.093Z",
+    "airQualityIndex": 35,
+    "airQualityAt": "2026-09-29T16:00",
     "observedWave": {
       "waveHeight": 0.77,
       "wavePeriod": 4.8,
@@ -24165,6 +24857,8 @@
     "tideHeight": 0.48,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 6,
+    "uvIndexMax": 6.8,
     "currentSpeed": 0.1,
     "currentDir": 90,
     "secondarySwellHeight": 0.18,
@@ -24234,6 +24928,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:35.448Z",
+    "airQualityIndex": 33,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 11,
       "windDirDeg": 0,
@@ -24306,6 +25002,8 @@
     "tideHeight": 0.46,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 5.9,
+    "uvIndexMax": 6.7,
     "currentSpeed": 0.11,
     "currentDir": 63,
     "secondarySwellHeight": 0.3,
@@ -24375,6 +25073,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:35.804Z",
+    "airQualityIndex": 30,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 9,
       "windDirDeg": 10,
@@ -24449,6 +25149,8 @@
     "tideHeight": 0.44,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 5.7,
+    "uvIndexMax": 6.5,
     "currentSpeed": 0.5,
     "currentDir": 323,
     "secondarySwellHeight": 0.32,
@@ -24518,6 +25220,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:36.160Z",
+    "airQualityIndex": 32,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 270,
@@ -24590,6 +25294,8 @@
     "tideHeight": 0.47,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 5.9,
+    "uvIndexMax": 6.7,
     "currentSpeed": 0.27,
     "currentDir": 338,
     "secondarySwellHeight": 0.26,
@@ -24659,6 +25365,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:36.517Z",
+    "airQualityIndex": 31,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 4,
       "windDirDeg": 270,
@@ -24731,6 +25439,8 @@
     "tideHeight": 0.07,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 5.8,
+    "uvIndexMax": 6.1,
     "currentSpeed": 0.11,
     "currentDir": 63,
     "secondarySwellHeight": 0.22,
@@ -24800,6 +25510,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:36.873Z",
+    "airQualityIndex": 34,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 5,
       "windDirDeg": 270,
@@ -24836,6 +25548,8 @@
     "tideHeight": 0.05,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 5.8,
+    "uvIndexMax": 6.2,
     "currentSpeed": 0.05,
     "currentDir": 90,
     "secondarySwellHeight": 0.18,
@@ -24905,6 +25619,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:37.228Z",
+    "airQualityIndex": 36,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 1,
       "windDirDeg": 90,
@@ -24941,6 +25657,8 @@
     "tideHeight": 0.08,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 5.9,
+    "uvIndexMax": 6.2,
     "currentSpeed": 0.25,
     "currentDir": 233,
     "secondarySwellHeight": 0.32,
@@ -25010,6 +25728,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:37.586Z",
+    "airQualityIndex": 34,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 5,
       "windDirDeg": 45,
@@ -25046,6 +25766,8 @@
     "tideHeight": -0.02,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 5.7,
+    "uvIndexMax": 6,
     "currentSpeed": 0.1,
     "currentDir": 90,
     "secondarySwellHeight": 0.2,
@@ -25115,6 +25837,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:37.950Z",
+    "airQualityIndex": 30,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 45,
@@ -25187,6 +25911,8 @@
     "tideHeight": -0.38,
     "tideStatus": "falling",
     "tideLabel": "Maré a Descer",
+    "uvIndex": 3.1,
+    "uvIndexMax": 6,
     "currentSpeed": 0.11,
     "currentDir": 333,
     "secondarySwellHeight": 0.56,
@@ -25256,6 +25982,8 @@
       }
     ],
     "updatedAt": "2026-09-22T15:27:46.119Z",
+    "airQualityIndex": 31,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 7,
       "windDirDeg": 90,
@@ -25328,6 +26056,8 @@
     "tideHeight": 0.03,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 5.8,
+    "uvIndexMax": 6,
     "currentSpeed": 0.07,
     "currentDir": 135,
     "secondarySwellHeight": 0.18,
@@ -25397,6 +26127,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:38.667Z",
+    "airQualityIndex": 30,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 0,
@@ -25469,6 +26201,8 @@
     "tideHeight": -0.11,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 1.4,
+    "uvIndexMax": 4.2,
     "currentSpeed": 0.14,
     "currentDir": 225,
     "secondarySwellHeight": 0.26,
@@ -25538,6 +26272,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:39.024Z",
+    "airQualityIndex": 31,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 1,
       "windDirDeg": 90,
@@ -25553,7 +26289,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 2.51,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -25569,25 +26304,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 23,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 3.5,
+        "deltaM": -0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.9900000095367432,
-      "wavePeriod": 11.130000114440918,
-      "waveDirection": 313,
-      "waterTemp": 18.1299991607666,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 84.9,
-      "observedAt": "2026-09-28T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 28.1,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 84.9
     },
     "windBias": {
@@ -25597,6 +26329,12 @@
       "mae": 1.9,
       "rmse": 2.2,
       "n": 32
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 85,
+      "altKm": 0
     }
   },
   "ofir-praia": {
@@ -25615,6 +26353,8 @@
     "tideHeight": -0.11,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 1.4,
+    "uvIndexMax": 4.2,
     "currentSpeed": 0.14,
     "currentDir": 225,
     "secondarySwellHeight": 0.26,
@@ -25684,6 +26424,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:39.380Z",
+    "airQualityIndex": 31,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 1,
       "windDirDeg": 90,
@@ -25699,7 +26441,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 2.51,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -25715,25 +26456,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 23,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 3.5,
+        "deltaM": -0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.9900000095367432,
-      "wavePeriod": 11.130000114440918,
-      "waveDirection": 313,
-      "waterTemp": 18.1299991607666,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 85.6,
-      "observedAt": "2026-09-28T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 27.7,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 85.6
     },
     "windBias": {
@@ -25743,6 +26481,12 @@
       "mae": 1.9,
       "rmse": 2.2,
       "n": 32
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 86,
+      "altKm": 0
     }
   },
   "mindelo": {
@@ -25761,6 +26505,8 @@
     "tideHeight": -0.1,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 1.1,
+    "uvIndexMax": 4.2,
     "currentSpeed": 0.14,
     "currentDir": 225,
     "secondarySwellHeight": 0.32,
@@ -25830,6 +26576,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:39.736Z",
+    "airQualityIndex": 34,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 3,
       "windDirDeg": 100,
@@ -25847,7 +26595,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 2.51,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -25863,25 +26610,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 23,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 3.5,
+        "deltaM": -0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.9900000095367432,
-      "wavePeriod": 11.130000114440918,
-      "waveDirection": 313,
-      "waterTemp": 18.1299991607666,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 106.8,
-      "observedAt": "2026-09-28T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 20.3,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 106.8
     },
     "windBias": {
@@ -25891,6 +26635,12 @@
       "mae": 1.4,
       "rmse": 1.6,
       "n": 21
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 107,
+      "altKm": 0
     }
   },
   "aterro": {
@@ -25909,6 +26659,8 @@
     "tideHeight": -0.09,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 1.1,
+    "uvIndexMax": 4.4,
     "currentSpeed": 0.21,
     "currentDir": 194,
     "secondarySwellHeight": 0.3,
@@ -25978,6 +26730,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:16:40.092Z",
+    "airQualityIndex": 35,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 0,
       "windDirDeg": 158,
@@ -25993,7 +26747,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 2.51,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -26009,25 +26762,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 23,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 3.5,
+        "deltaM": -0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.9900000095367432,
-      "wavePeriod": 11.130000114440918,
-      "waveDirection": 313,
-      "waterTemp": 18.1299991607666,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 117.5,
-      "observedAt": "2026-09-28T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 25.3,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 117.5
     },
     "windBias": {
@@ -26037,6 +26787,12 @@
       "mae": 2,
       "rmse": 2.3,
       "n": 160
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 118,
+      "altKm": 0
     }
   },
   "foil-fao-cavado": {
@@ -26055,6 +26811,8 @@
     "tideHeight": -0.11,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 1.4,
+    "uvIndexMax": 4.2,
     "currentSpeed": 0.14,
     "currentDir": 225,
     "secondarySwellHeight": 0.26,
@@ -26124,6 +26882,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:27.873Z",
+    "airQualityIndex": 31,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 3,
       "windDirDeg": 90,
@@ -26139,7 +26899,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 2.51,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -26155,26 +26914,29 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 23,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 3.5,
+        "deltaM": -0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.9900000095367432,
-      "wavePeriod": 11.130000114440918,
-      "waveDirection": 313,
-      "waterTemp": 18.1299991607666,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 84.3,
-      "observedAt": "2026-09-28T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 28.9,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 84.3
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 84,
+      "altKm": 0
     }
   },
   "foil-esposende-piscinas": {
@@ -26193,6 +26955,8 @@
     "tideHeight": -0.11,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 1.4,
+    "uvIndexMax": 4.2,
     "currentSpeed": 0.14,
     "currentDir": 225,
     "secondarySwellHeight": 0.26,
@@ -26262,6 +27026,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:27.873Z",
+    "airQualityIndex": 31,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 3,
       "windDirDeg": 90,
@@ -26277,7 +27043,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 2.51,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -26293,26 +27058,29 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 23,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 3.5,
+        "deltaM": -0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.9900000095367432,
-      "wavePeriod": 11.130000114440918,
-      "waveDirection": 313,
-      "waterTemp": 18.1299991607666,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 84.3,
-      "observedAt": "2026-09-28T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 28.9,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 84.3
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 84,
+      "altKm": 0
     }
   },
   "obidos-lagoon-sul": {
@@ -26331,6 +27099,8 @@
     "tideHeight": 0.02,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 2,
+    "uvIndexMax": 5,
     "currentSpeed": 0.27,
     "currentDir": 248,
     "secondarySwellHeight": 0.46,
@@ -26400,6 +27170,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:42.183Z",
+    "airQualityIndex": 33,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 11,
       "windDirDeg": 0,
@@ -26474,6 +27246,8 @@
     "tideHeight": 0.02,
     "tideStatus": "rising",
     "tideLabel": "Maré a Subir",
+    "uvIndex": 2,
+    "uvIndexMax": 5,
     "currentSpeed": 0.27,
     "currentDir": 248,
     "secondarySwellHeight": 0.46,
@@ -26543,6 +27317,8 @@
       }
     ],
     "updatedAt": "2026-09-09T23:14:42.183Z",
+    "airQualityIndex": 33,
+    "airQualityAt": "2026-09-29T16:00",
     "observed": {
       "windSpeedKt": 11,
       "windDirDeg": 0,
