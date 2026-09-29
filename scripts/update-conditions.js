@@ -264,6 +264,28 @@ async function updateConditions() {
       console.warn(`⚠️ hfr-currents.json grid ${hfrAgeH.toFixed(1)}h old (>6h) — measured current hidden this run`);
     }
   }
+  // Qualidade da água balnear (fetch-water-quality.js → water-quality.json,
+  // APA InfoÁgua — conselho balnear + classe anual + alertas). Dados
+  // semanais/sazonais: gate solto de 14 dias; a validade real é a época
+  // balnear, avaliada no render com as datas do próprio registo.
+  const wqPath = path.join(__dirname, '../public/data/water-quality.json');
+  const waterQuality = readJsonIfExists(wqPath, null, () => console.warn('⚠️ Could not parse water-quality.json — APA quality hidden this run'));
+  if (waterQuality?.spots && waterQuality.generatedAt) {
+    const wqAgeD = (Date.now() - new Date(waterQuality.generatedAt).getTime()) / 86_400_000;
+    if (wqAgeD <= 14) {
+      let wqMerged = 0;
+      for (const [spotId, conditions] of Object.entries(allConditions)) {
+        const entry = waterQuality.spots[spotId];
+        if (entry && entry.beach) {
+          conditions.waterQuality = entry;
+          wqMerged += 1;
+        }
+      }
+      console.log(`💧 APA water quality merged into ${wqMerged} spots (file ${wqAgeD.toFixed(1)}d old)`);
+    } else {
+      console.warn(`⚠️ water-quality.json ${wqAgeD.toFixed(1)}d old (>14d) — APA quality hidden this run`);
+    }
+  }
   // Persiste o baseline de anomalia (mesmo sem anomalias emitidas — os
   // resíduos desta run contam para a mediana das próximas).
   try {

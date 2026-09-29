@@ -54,6 +54,7 @@
     "data:aqi": "node scripts/fetch-air-quality.js",
     "data:tide-baseline": "node scripts/calibrate-tide-baseline.js",
     "data:hfr": "node scripts/fetch-hfr-currents.js",
+    "data:water-quality": "node scripts/fetch-water-quality.js",
     "skill:fetch": "node scripts/fetch-forecast-skill.js",
     "smoke:es": "node scripts/smoke-es-pipeline.js",
     "obs:coherence": "node scripts/check-buoy-coherence.js",

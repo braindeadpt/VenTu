@@ -1,6 +1,7 @@
 import type { ConfidenceDetail, ConfidenceTier, DailyConfidence } from '@/lib/forecastConfidenceCore';
 import type { ObservedConditions } from '@/lib/observations';
 import type { ObservedWave } from '@/lib/observedWave';
+import type { WaterQualityLive } from '@/lib/waterQuality';
 
 export type { ConfidenceDetail, ConfidenceTier, DailyConfidence } from '@/lib/forecastConfidenceCore';
 
@@ -36,6 +37,8 @@ export interface MarineConditionsFields {
   currentMeasuredDir?: number;
   currentMeasuredAt?: string;
   currentMeasuredNetwork?: string;
+  /** Qualidade da água balnear APA InfoÁgua — só spots ≤3 km de uma água balnear. */
+  waterQuality?: WaterQualityLive;
   /** Multi-model forecast agreement (does not affect score). */
   confidence?: ConfidenceTier;
   confidenceDetail?: ConfidenceDetail;

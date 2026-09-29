@@ -115,6 +115,7 @@ const DATA_FILE_BUDGETS_MB = {
   'climatology.json': 0.5,
   'air-quality.json': 0.2,
   'hfr-currents.json': 0.5,
+  'water-quality.json': 0.5,
 };
 
 const budgetBytes = BUDGET_MB * 1024 * 1024;

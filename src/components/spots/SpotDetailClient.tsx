@@ -87,6 +87,8 @@ interface Conditions {
   currentMeasuredDir?: number;
   currentMeasuredAt?: string;
   currentMeasuredNetwork?: string;
+  /** Qualidade da água balnear APA InfoÁgua — só spots ≤3 km de uma água balnear. */
+  waterQuality?: import('@/lib/waterQuality').WaterQualityLive;
   source?: 'real' | 'mock';
   updatedAt?: string;
   confidence?: import('@/lib/forecastConfidence').ConfidenceTier;
@@ -410,6 +412,7 @@ export default function SpotDetailClient({
               currentMeasuredDir: spotCond.currentMeasuredDir as number | undefined,
               currentMeasuredAt: spotCond.currentMeasuredAt as string | undefined,
               currentMeasuredNetwork: spotCond.currentMeasuredNetwork as string | undefined,
+              waterQuality: spotCond.waterQuality as Conditions['waterQuality'],
               confidence: spotCond.confidence as Conditions['confidence'],
               confidenceDetail: spotCond.confidenceDetail as Conditions['confidenceDetail'],
               dailyConfidence: spotCond.dailyConfidence as Conditions['dailyConfidence'],

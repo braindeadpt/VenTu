@@ -36,6 +36,7 @@ export default defineConfig({
       'scripts/lib/__tests__/ihObservedTide.test.js',
       'scripts/lib/__tests__/tideAnomaly.test.js',
       'scripts/lib/__tests__/hfrCurrents.test.js',
+      'scripts/lib/__tests__/waterQuality.test.js',
       'scripts/lib/__tests__/contributionsPrivacy.test.js',
       'scripts/lib/__tests__/terraformExpressions.test.js',
       'scripts/lib/__tests__/forecastSkill.test.js',

@@ -7,6 +7,7 @@ import type { SportType } from '@/lib/sportRatings'
 import type { SportScore } from '@/lib/sportScore'
 import { pickConfidenceFields } from '@/lib/forecastConfidence'
 import { pickMarineDisplayFields, pickObservedField } from '@/lib/marineConditions'
+import type { WaterQualityLive } from '@/lib/waterQuality'
 import type { ObservedConditions } from '@/lib/observations'
 import type { ObservedWave, ObservedWaveMeta } from '@/lib/observedWave'
 import { resolveConditionsEntry } from '@/lib/spotConditionsSource'
@@ -140,6 +141,7 @@ export interface SpotDetailConditions extends SpotListingConditions {
   currentMeasuredDir?: number
   currentMeasuredAt?: string
   currentMeasuredNetwork?: string
+  waterQuality?: WaterQualityLive
   /** Índice UV da hora corrente + máximo do dia (pipeline Open-Meteo). */
   uvIndex?: number
   uvIndexMax?: number
@@ -295,6 +297,7 @@ function buildSpotData(
     currentMeasuredDir: raw?.currentMeasuredDir as number | undefined,
     currentMeasuredAt: raw?.currentMeasuredAt as string | undefined,
     currentMeasuredNetwork: raw?.currentMeasuredNetwork as string | undefined,
+    waterQuality: raw?.waterQuality as WaterQualityLive | undefined,
     uvIndex: raw?.uvIndex as number | undefined,
     uvIndexMax: raw?.uvIndexMax as number | undefined,
     airQualityIndex: raw?.airQualityIndex as number | undefined,

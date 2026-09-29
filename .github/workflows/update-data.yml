@@ -230,6 +230,15 @@ jobs:
         continue-on-error: true
         run: node scripts/fetch-hfr-currents.js
 
+      # Qualidade da água balnear APA InfoÁgua (dataset embebido, 1 GET,
+      # sem auth — conselho balnear + classe anual + alertas por praia).
+      # Camada suave: o merge em update-conditions só usa o ficheiro se
+      # fresco (<14d); o conselho vivo é limitado pela época balnear.
+      - name: Fetch APA bathing-water quality (InfoÁgua)
+        if: steps.gate.outputs.mode == 'full'
+        continue-on-error: true
+        run: node scripts/fetch-water-quality.js
+
       # Climatologia NASA POWER (MERRA-2, baseline 2001–2020 fixa) —
       # artefacto raro: só corre quando o ficheiro ainda não existe. O
       # checkout traz o último commit do bot — depois de gerado uma vez,

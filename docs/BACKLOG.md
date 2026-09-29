@@ -93,17 +93,15 @@ leituras), mas a camada fica vazia nesses spots.
 mapeamento spot→WMO para a Costa de Prata (e, se viável, sugerir ao IH a
 inclusão da família Fugro no endpoint de séries — nova OGC API EDR já anunciada).
 
-### Qualidade da água
+### Qualidade da água — ✅ FEITO (2026-09)
 
-Tens waterTemp (Open-Meteo) mas não qualidade bacteriológica. APA (Agência Portuguesa do Ambiente) publica boletins semanais.
-
-**Fontes**:
-- APA.pt — boletins semanais de qualidade de praias
-- EEA Bathing Water — dados europeus
-
-**Limitação**: qualidade muda hora a hora com chuvas/escoamentos; real-time não está disponível em lado nenhum gratuito. Boletim semanal é o estado da arte.
-
-**Estimativa**: 1 sessão (parse + display no spot detail).
+Integrado via APA InfoÁgua: `scripts/fetch-water-quality.js` extrai o dataset
+nacional embutido em `infoagua.apambiente.pt/pt/praias` (761 águas balneares,
+1 GET sem auth) → `water-quality.json` → merge em `conditions.waterQuality`
+(spot → água balnear mais próxima ≤3 km, 166/185 cobertos). UI em
+`WaterQualityBadge` (conselho balnear só na época, classe anual APA, alertas
+activos, Bandeira Azul sem ano hardcoded). Cobertura: 86 spots <0,5 km,
+160 ≤2 km.
 
 ### Imagens reais por spot
 

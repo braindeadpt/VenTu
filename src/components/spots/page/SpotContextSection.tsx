@@ -91,7 +91,8 @@ export default function SpotContextSection({
     spot.blueFlag ||
     spot.waterQuality ||
     spot.waterQualityEn ||
-    spot.accessibleBeach
+    spot.accessibleBeach ||
+    conditions?.waterQuality
   );
 
   return (
@@ -151,6 +152,7 @@ export default function SpotContextSection({
                     waterQuality={spot.waterQuality}
                     waterQualityEn={spot.waterQualityEn}
                     accessibleBeach={spot.accessibleBeach}
+                    live={conditions?.waterQuality}
                     locale={locale}
                   />
                 </div>

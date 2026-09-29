@@ -50,6 +50,8 @@ export interface SpotDashboardConditions {
   currentMeasuredDir?: number;
   currentMeasuredAt?: string;
   currentMeasuredNetwork?: string;
+  /** Qualidade da água balnear APA InfoÁgua — só spots ≤3 km de uma água balnear. */
+  waterQuality?: import('@/lib/waterQuality').WaterQualityLive;
   swellHeight?: number;
   swellPeriod?: number;
   swellDirection?: number;
