@@ -42,8 +42,8 @@ Subscrições antigas em `alert_subscriptions` continuam a funcionar. O evaluato
 5. Executa [`supabase/supabase-alerts-harden-legacy.sql`](../supabase/supabase-alerts-harden-legacy.sql) (S2 — `subscribe_alert` endurecido; **sem este passo não existe caminho de escrita anónima**).
 6. Executa [`supabase/supabase-alerts-e1c.sql`](../supabase/supabase-alerts-e1c.sql) (E1c).
 7. Executa [`supabase/supabase-alerts-e1b-frequency.sql`](../supabase/supabase-alerts-e1b-frequency.sql) (E1b — digest vs imediato).
-7b. Executa [`supabase/supabase-alerts-e1c-harden.sql`](../supabase/supabase-alerts-e1c-harden.sql) (S2 — rate limits per-IP; se reaplicado depois do passo 7c, repete o 7c).
-7c. Executa [`supabase/supabase-alerts-warn.sql`](../supabase/supabase-alerts-warn.sql) (B4 — coluna `warn` + RPC 5-arg; opcional: sem ela os alertas de aviso ficam desligados e tudo o resto funciona).
+7b. Executa [`supabase/supabase-alerts-e1c-harden.sql`](../supabase/supabase-alerts-e1c-harden.sql) (S2 — rate limits per-IP + definição canónica da RPC `subscribe_favorites_alerts` 5-arg com `p_warn`).
+7c. Executa [`supabase/supabase-alerts-warn.sql`](../supabase/supabase-alerts-warn.sql) (B4 — coluna `warn`; opcional: sem ela os alertas de aviso ficam desligados e tudo o resto funciona. A RPC 5-arg já vem do passo 7b).
 8. Confirma tabelas `alert_subscriptions` e `user_alert_prefs`.
 9. Se já tinhas E1c aplicado: re-executa as funções `verify_user_alerts` / `verify_alert_token` de `supabase-alerts-e1c.sql` (confirmação idempotente).
 

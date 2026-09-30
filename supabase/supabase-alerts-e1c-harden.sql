@@ -35,14 +35,23 @@ $$;
 
 -- ── 1. Close direct writes on user_alert_prefs (RPCs are the only write path) ──
 ALTER TABLE user_alert_prefs ADD COLUMN IF NOT EXISTS client_ip TEXT;
+ALTER TABLE user_alert_prefs ADD COLUMN IF NOT EXISTS warn BOOLEAN NOT NULL DEFAULT false;
 REVOKE INSERT, UPDATE, DELETE ON user_alert_prefs FROM anon, authenticated;
 
--- ── 2. Hardened subscribe_favorites_alerts (per-IP + keeps per-user 30s) ──
+-- ── 2. subscribe_favorites_alerts — hardened (per-IP + per-user 30s) + warn ──
+-- DEFINIÇÃO CANÓNICA (guard de drift: uma só definição public.* em supabase/).
+-- A assinatura de 5 args (p_warn) substitui a de 4 — chamadas antigas de 4
+-- args resolvem via defaults (PostgREST resolve por nome + aridade).
+-- supabase-alerts-warn.sql já não redefine a função — só adiciona a coluna
+-- warn para quem aplica esse ficheiro isolado.
+DROP FUNCTION IF EXISTS public.subscribe_favorites_alerts(INTEGER, TEXT, TEXT, TEXT);
+
 CREATE OR REPLACE FUNCTION public.subscribe_favorites_alerts(
   p_min_score INTEGER,
   p_sport TEXT,
   p_locale TEXT DEFAULT 'pt',
-  p_alert_mode TEXT DEFAULT 'digest'
+  p_alert_mode TEXT DEFAULT 'digest',
+  p_warn BOOLEAN DEFAULT false
 )
 RETURNS JSONB
 LANGUAGE plpgsql
@@ -100,6 +109,7 @@ BEGIN
       sport = p_sport,
       locale = COALESCE(NULLIF(trim(p_locale), ''), 'pt'),
       alert_mode = v_mode,
+      warn = COALESCE(p_warn, false),
       active = true,
       client_ip = v_ip,
       updated_at = now()
@@ -114,7 +124,7 @@ BEGIN
   END IF;
 
   INSERT INTO user_alert_prefs (
-    user_id, email, min_score, sport, verify_token, locale, alert_mode, client_ip
+    user_id, email, min_score, sport, verify_token, locale, alert_mode, warn, client_ip
   ) VALUES (
     v_uid,
     lower(trim(v_email)),
@@ -123,6 +133,7 @@ BEGIN
     gen_random_uuid()::text,
     COALESCE(NULLIF(trim(p_locale), ''), 'pt'),
     v_mode,
+    COALESCE(p_warn, false),
     v_ip
   );
 
@@ -134,6 +145,8 @@ BEGIN
   );
 END;
 $$;
+
+GRANT EXECUTE ON FUNCTION public.subscribe_favorites_alerts(INTEGER, TEXT, TEXT, TEXT, BOOLEAN) TO authenticated;
 
 -- ── 3. Token RPCs (anon): per-IP rate limit (brute-force / abuse guard) ──
 CREATE OR REPLACE FUNCTION public.verify_user_alerts(p_token TEXT)
