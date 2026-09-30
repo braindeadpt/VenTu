@@ -215,21 +215,22 @@ jobs:
         continue-on-error: true
         run: node scripts/fetch-nhc-storms.js
 
-      # Estado de tempestade por spot (B1): eco do radar IPMA por spot —
-      # distância/intensidade + deslocamento do centróide («a aproximar-se»
-      # medido, não previsto) + nível máximo de aviso IPMA + cone NHC.
-      # Corre depois de radar+warnings+NHC; decode PNG via sharp.
-      - name: Build per-spot storm state (radar echo)
-        if: steps.gate.outputs.mode != 'skip'
-        continue-on-error: true
-        run: node scripts/build-storm-state.js
-
       # Radar IPMA — frame PNG mais recente (manifest imgs-radar.json, 5 min)
       # + bounds oficiais do overlay Leaflet do IPMA. Sem WMTS/tiles públicos;
       # bake do frame para o nosso origin (ver scripts/fetch-ipma-radar.js).
       - name: Fetch IPMA radar frame
         if: steps.gate.outputs.mode != 'skip'
         run: node scripts/fetch-ipma-radar.js
+
+      # Estado de tempestade por spot (B1): eco do radar IPMA por spot —
+      # distância/intensidade + deslocamento do centróide («a aproximar-se»
+      # medido, não previsto) + nível máximo de aviso IPMA + cone NHC.
+      # Corre DEPOIS do fetch do radar (lê radar.json + frames frescos desta
+      # run) + warnings + NHC; decode PNG via sharp.
+      - name: Build per-spot storm state (radar echo)
+        if: steps.gate.outputs.mode != 'skip'
+        continue-on-error: true
+        run: node scripts/build-storm-state.js
 
       # Qualidade do ar (European AQI, CAMS via Open-Meteo Air Quality) —
       # host separado do forecast API (quota própria). Falha suave por

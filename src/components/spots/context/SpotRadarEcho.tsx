@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { CloudRain } from 'lucide-react';
-import { DATE_LOCALE } from '@/lib/dataFreshness';
 import { getTranslation } from '@/lib/i18n';
+import { radarFrameClock } from '@/lib/ipmaRadar';
 import { movementCardinal } from '@/lib/nhcStorms';
 import {
   loadStormState,
@@ -71,17 +71,11 @@ export default function SpotRadarEcho({
   } else if (radar.approach?.state === 'receding') {
     parts.push(tc.stormRainRecede);
   }
-  const frameT = Date.parse(file.radar.frameTime);
-  if (Number.isFinite(frameT)) {
-    parts.push(
-      tc.stormRadarSource.replace(
-        '{time}',
-        new Date(frameT).toLocaleTimeString(DATE_LOCALE[locale] ?? 'en-GB', {
-          hour: '2-digit',
-          minute: '2-digit',
-        }),
-      ),
-    );
+  // frameTime é wall-clock de Lisboa com "Z" falso — mostra-se tal como
+  // está escrito (mesma convenção do badge do carrossel), sem shift de TZ.
+  const frameClock = radarFrameClock(file.radar.frameTime);
+  if (frameClock) {
+    parts.push(tc.stormRadarSource.replace('{time}', frameClock));
   }
 
   const chipClass =

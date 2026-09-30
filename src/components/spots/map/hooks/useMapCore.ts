@@ -48,6 +48,11 @@ interface UseMapCoreOptions {
    * do modo Explorar por cima — o enquadramento inicial desconta-os.
    */
   exploreChrome?: { enabled: boolean; panelCollapsed: boolean };
+  /**
+   * Deep link ?basemap=sat — força o basemap inicial sem gravar a
+   * preferência persistida (que só se grava na mudança manual).
+   */
+  initialBasemap?: BasemapMode;
 }
 
 interface UseMapCoreReturn {
@@ -218,7 +223,7 @@ function attachBasemap(
   rasterLayer.addTo(map);
 }
 
-export function useMapCore({ containerRef, isHeroEmbed, locale = 'pt', initialViewBounds = null, exploreChrome }: UseMapCoreOptions): UseMapCoreReturn {
+export function useMapCore({ containerRef, isHeroEmbed, locale = 'pt', initialViewBounds = null, exploreChrome, initialBasemap }: UseMapCoreOptions): UseMapCoreReturn {
   const mapInstanceRef = useRef<L.Map | null>(null);
   const LRef = useRef<typeof L | null>(null);
   const tileLayerRef = useRef<L.TileLayer | null>(null);
@@ -237,7 +242,7 @@ export function useMapCore({ containerRef, isHeroEmbed, locale = 'pt', initialVi
   const [clusterReady, setClusterReady] = useState(false);
   const [tileState, setTileState] = useState<BasemapLoadState>('loading');
   const [isDark, setIsDark] = useState(readIsDark);
-  const [basemapMode, setBasemapMode] = useState<BasemapMode>(readBasemapPref);
+  const [basemapMode, setBasemapMode] = useState<BasemapMode>(() => initialBasemap ?? readBasemapPref());
   const [isMobile, setIsMobile] = useState(() => {
     if (typeof window === 'undefined') return false;
     return window.matchMedia('(max-width: 767px)').matches;

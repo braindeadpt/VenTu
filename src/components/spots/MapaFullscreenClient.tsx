@@ -53,25 +53,42 @@ function readMapSearchParams(): {
   hs: boolean;
   sst: boolean;
   currents: boolean;
+  wind: boolean;
+  bathymetry: boolean;
+  seamarks: boolean;
+  gibsSat: boolean;
+  goesIr: boolean;
+  storms: boolean;
+  warnAreas: boolean;
+  coastalWarnings: boolean;
+  basemapSat: boolean;
   spot: string | undefined;
   center: [number, number] | undefined;
   zoom: number | undefined;
 } {
-  if (typeof window === 'undefined') {
-    return {
-      radar: false,
-      isobaths: false,
-      hours: false,
-      hourOfDay: null,
-      buoys: false,
-      hs: false,
-      sst: false,
-      currents: false,
-      spot: undefined,
-      center: undefined,
-      zoom: undefined,
-    };
-  }
+  const empty = {
+    radar: false,
+    isobaths: false,
+    hours: false,
+    hourOfDay: null,
+    buoys: false,
+    hs: false,
+    sst: false,
+    currents: false,
+    wind: false,
+    bathymetry: false,
+    seamarks: false,
+    gibsSat: false,
+    goesIr: false,
+    storms: false,
+    warnAreas: false,
+    coastalWarnings: false,
+    basemapSat: false,
+    spot: undefined,
+    center: undefined,
+    zoom: undefined,
+  };
+  if (typeof window === 'undefined') return empty;
   const params = new URLSearchParams(window.location.search);
   const hourOfDay = parseHourOfDayParam(params.get('t'));
   const lat = Number.parseFloat(params.get('lat') ?? '');
@@ -86,6 +103,15 @@ function readMapSearchParams(): {
     hs: params.get('hs') === '1' && params.get('sst') !== '1',
     sst: params.get('sst') === '1',
     currents: params.get('currents') === '1',
+    wind: params.get('wind') === '1',
+    bathymetry: params.get('bathymetry') === '1',
+    seamarks: params.get('seamarks') === '1',
+    gibsSat: params.get('gibsSat') === '1',
+    goesIr: params.get('goesIr') === '1',
+    storms: params.get('storms') === '1',
+    warnAreas: params.get('warnAreas') === '1',
+    coastalWarnings: params.get('coastalWarnings') === '1',
+    basemapSat: params.get('basemap') === 'sat',
     spot: params.get('spot') || undefined,
     center:
       Number.isFinite(lat) && Number.isFinite(lon)
@@ -126,6 +152,15 @@ export default function MapaFullscreenClient({
   const [initialHs, setInitialHs] = useState(false);
   const [initialSst, setInitialSst] = useState(false);
   const [initialCurrents, setInitialCurrents] = useState(false);
+  const [initialWind, setInitialWind] = useState(false);
+  const [initialBathymetry, setInitialBathymetry] = useState(false);
+  const [initialSeamarks, setInitialSeamarks] = useState(false);
+  const [initialGibsSat, setInitialGibsSat] = useState(false);
+  const [initialGoesIr, setInitialGoesIr] = useState(false);
+  const [initialStorms, setInitialStorms] = useState(false);
+  const [initialWarnAreas, setInitialWarnAreas] = useState(false);
+  const [initialCoastalWarnings, setInitialCoastalWarnings] = useState(false);
+  const [initialBasemap, setInitialBasemap] = useState<'map' | 'satellite' | undefined>();
   const [focusSpotId, setFocusSpotId] = useState<string | undefined>();
   const [initialCenter, setInitialCenter] = useState<[number, number] | undefined>();
   const [initialZoom, setInitialZoom] = useState<number | undefined>();
@@ -147,6 +182,15 @@ export default function MapaFullscreenClient({
     setInitialHs(s.hs);
     setInitialSst(s.sst);
     setInitialCurrents(s.currents);
+    setInitialWind(s.wind);
+    setInitialBathymetry(s.bathymetry);
+    setInitialSeamarks(s.seamarks);
+    setInitialGibsSat(s.gibsSat);
+    setInitialGoesIr(s.goesIr);
+    setInitialStorms(s.storms);
+    setInitialWarnAreas(s.warnAreas);
+    setInitialCoastalWarnings(s.coastalWarnings);
+    setInitialBasemap(s.basemapSat ? 'satellite' : undefined);
     setFocusSpotId(s.spot);
     setInitialCenter(s.center);
     setInitialZoom(s.zoom);
@@ -270,6 +314,15 @@ export default function MapaFullscreenClient({
         initialHsEnabled={initialHs}
         initialSstEnabled={initialSst}
         initialCurrentsEnabled={initialCurrents}
+        initialWindEnabled={initialWind}
+        initialBathymetryEnabled={initialBathymetry}
+        initialSeamarksEnabled={initialSeamarks}
+        initialGibsSatEnabled={initialGibsSat}
+        initialGoesIrEnabled={initialGoesIr}
+        initialStormsEnabled={initialStorms}
+        initialWarnAreasEnabled={initialWarnAreas}
+        initialCoastalWarningsEnabled={initialCoastalWarnings}
+        initialBasemap={initialBasemap}
         focusSpotId={focusSpotId}
         initialCenter={initialCenter}
         initialZoom={initialZoom}

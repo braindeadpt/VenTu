@@ -52,6 +52,20 @@ describe('ipmaWarningTriggers', () => {
     expect(ipmaWarningTriggers(data, 'nope')).toEqual([]);
     expect(ipmaWarningTriggers(null, 'spotA')).toEqual([]);
   });
+
+  it('aviso expirado (endTime no passado) nunca dispara — ficheiro stale', () => {
+    const now = Date.parse('2026-09-30T12:00:00Z');
+    const expired = {
+      spotWarnings: {
+        s: [{ ...SEA_RED, endTime: '2026-09-30T06:00:00Z' }],
+        f: [{ ...SEA_RED, endTime: '2026-10-01T06:00:00Z' }],
+      },
+    };
+    expect(ipmaWarningTriggers(expired, 's', now)).toEqual([]);
+    expect(ipmaWarningTriggers(expired, 'f', now)).toHaveLength(1);
+    // Sem endTime assume-se em vigor (fonte não diz que acabou).
+    expect(ipmaWarningTriggers({ spotWarnings: { s: [SEA_RED] } }, 's', now)).toHaveLength(1);
+  });
 });
 
 describe('isSafetyNavWarning — faixa §0', () => {

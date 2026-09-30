@@ -162,8 +162,9 @@ export default function FavoritesAlertsPanel({ locale, favoriteCount }: Favorite
       <form onSubmit={submit} className="space-y-3">
         <div className="grid grid-cols-2 gap-2">
           <div>
-            <label className="block text-xs text-fg-muted mb-1">{t.spotVerify.sportTabsAria}</label>
+            <label htmlFor="fav-alerts-sport" className="block text-xs text-fg-muted mb-1">{t.spotVerify.sportTabsAria}</label>
             <select
+              id="fav-alerts-sport"
               value={sport}
               onChange={(e) => setSport(e.target.value as SportType)}
               className="w-full px-3 py-2 rounded-lg bg-surface-1/[0.04] border border-divider text-sm text-fg"
@@ -176,8 +177,9 @@ export default function FavoritesAlertsPanel({ locale, favoriteCount }: Favorite
             </select>
           </div>
           <div>
-            <label className="block text-xs text-fg-muted mb-1">{a.minScore}</label>
+            <label htmlFor="fav-alerts-minscore" className="block text-xs text-fg-muted mb-1">{a.minScore}</label>
             <input
+              id="fav-alerts-minscore"
               type="number"
               min={30}
               max={100}
@@ -190,8 +192,9 @@ export default function FavoritesAlertsPanel({ locale, favoriteCount }: Favorite
         </div>
 
         <div>
-          <label className="block text-xs text-fg-muted mb-1">{a.frequency}</label>
+          <label htmlFor="fav-alerts-mode" className="block text-xs text-fg-muted mb-1">{a.frequency}</label>
           <select
+            id="fav-alerts-mode"
             value={alertMode}
             onChange={(e) => setAlertMode(e.target.value as AlertMode)}
             className="w-full px-3 py-2 rounded-lg bg-surface-1/[0.04] border border-divider text-sm text-fg"

@@ -78,6 +78,15 @@ interface SpotMapInteractiveProps {
   initialHsEnabled?: boolean;
   initialSstEnabled?: boolean;
   initialCurrentsEnabled?: boolean;
+  initialWindEnabled?: boolean;
+  initialBathymetryEnabled?: boolean;
+  initialSeamarksEnabled?: boolean;
+  initialGibsSatEnabled?: boolean;
+  initialGoesIrEnabled?: boolean;
+  initialStormsEnabled?: boolean;
+  initialWarnAreasEnabled?: boolean;
+  initialCoastalWarningsEnabled?: boolean;
+  initialBasemap?: BasemapMode;
   focusSpotId?: string;
   initialCenter?: [number, number] | undefined;
   initialZoom?: number;
@@ -104,6 +113,15 @@ export default function SpotMapInteractive({
   initialHsEnabled = false,
   initialSstEnabled = false,
   initialCurrentsEnabled = false,
+  initialWindEnabled = false,
+  initialBathymetryEnabled = false,
+  initialSeamarksEnabled = false,
+  initialGibsSatEnabled = false,
+  initialGoesIrEnabled = false,
+  initialStormsEnabled = false,
+  initialWarnAreasEnabled = false,
+  initialCoastalWarningsEnabled = false,
+  initialBasemap,
   focusSpotId,
   initialCenter,
   initialZoom,
@@ -140,6 +158,8 @@ export default function SpotMapInteractive({
     // prefs lidas do localStorage) — o mapa nasce enquadrado, sem pedir tiles
     // do zoom default. Deep links com initialCenter enquadram o seu próprio
     // setView, por isso ficam sem bounds aqui.
+    // Deep link ?basemap=sat — entra no modo satélite sem gravar a pref.
+    initialBasemap,
     initialViewBounds: isHeroEmbed || initialCenter
       ? null
       : exploreViewBoundsFromSpots(
@@ -183,7 +203,8 @@ export default function SpotMapInteractive({
   // ── Estado partilhado (vive no orquestrador; exposto às zonas via
   //    MapUiContext — docs/design/MAP-ZONES.md) ──
   const [clusterEnabled, setClusterEnabled] = useState(readClusterPref);
-  const [windEnabled, setWindEnabled] = useState(readWindPref);
+  // Deep link ?wind=1 — mesma semântica do ?radar=1: força ON sem gravar a pref.
+  const [windEnabled, setWindEnabled] = useState<boolean>(() => initialWindEnabled || readWindPref());
   const [onlyOnEnabled, setOnlyOnEnabled] = useState(readOnlyOnPref);
   const [isFullscreen, setIsFullscreen] = useState(initialFullscreen);
   const [sheetSpot, setSheetSpot] = useState<MapSpotSheetData | null>(null);
@@ -206,6 +227,13 @@ export default function SpotMapInteractive({
     initialHoursEnabled,
     initialHourOfDay,
     initialBuoysEnabled,
+    initialBathymetryEnabled,
+    initialSeamarksEnabled,
+    initialGibsSatEnabled,
+    initialGoesIrEnabled,
+    initialStormsEnabled,
+    initialWarnAreasEnabled,
+    initialCoastalWarningsEnabled,
     t,
   });
   const {
@@ -413,6 +441,14 @@ export default function SpotMapInteractive({
     hsEnabled,
     sstEnabled,
     currentsEnabled,
+    basemapMode,
+    bathymetryEnabled,
+    seamarksEnabled,
+    gibsSatEnabled,
+    goesIrEnabled,
+    stormsEnabled,
+    warnAreasEnabled,
+    coastalWarningsEnabled,
     handleHoursFrameChange,
     handleHoursUserPausedChange,
     handleRadarFrameChange,

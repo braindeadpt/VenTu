@@ -107,6 +107,15 @@ interface UseMapLayersOptions {
   focusSpotId?: string;
   initialRadarEnabled: boolean;
   initialIsobathsEnabled: boolean;
+  // Deep links ?<layer>=1 (partilha de vista) — forçam ON à entrada sem
+  // gravar a preferência persistida (mesmo padrão do ?radar=1).
+  initialBathymetryEnabled: boolean;
+  initialSeamarksEnabled: boolean;
+  initialGibsSatEnabled: boolean;
+  initialGoesIrEnabled: boolean;
+  initialCoastalWarningsEnabled: boolean;
+  initialStormsEnabled: boolean;
+  initialWarnAreasEnabled: boolean;
   radarOverlayRef: React.MutableRefObject<L.ImageOverlay | null>;
   isobathsLayerRef: React.MutableRefObject<L.LayerGroup | null>;
   coastalLayerRef: React.MutableRefObject<L.LayerGroup | null>;
@@ -192,6 +201,13 @@ export function useMapLayers({
   focusSpotId,
   initialRadarEnabled,
   initialIsobathsEnabled,
+  initialBathymetryEnabled,
+  initialSeamarksEnabled,
+  initialGibsSatEnabled,
+  initialGoesIrEnabled,
+  initialCoastalWarningsEnabled,
+  initialStormsEnabled,
+  initialWarnAreasEnabled,
   radarOverlayRef,
   isobathsLayerRef,
   coastalLayerRef,
@@ -575,6 +591,7 @@ export function useMapLayers({
   // desligada por omissão, best-effort (falhas de tile não tocam no mapa).
   const [bathymetryEnabled, setBathymetryEnabled] = useState<boolean>(() => {
     if (typeof window === 'undefined' || isHeroEmbed) return false;
+    if (initialBathymetryEnabled) return true;
     try {
       return localStorage.getItem(MAP_BATHYMETRY_LS_KEY) === '1';
     } catch {
@@ -646,6 +663,7 @@ export function useMapLayers({
   // opt-in: raster transparente por cima dos fields, por baixo dos markers.
   const [seamarksEnabled, setSeamarksEnabled] = useState<boolean>(() => {
     if (typeof window === 'undefined' || isHeroEmbed) return false;
+    if (initialSeamarksEnabled) return true;
     try {
       return localStorage.getItem(MAP_SEAMARKS_LS_KEY) === '1';
     } catch {
@@ -703,6 +721,7 @@ export function useMapLayers({
   // conta para o cap de raster pesadas.
   const [gibsSatEnabled, setGibsSatEnabled] = useState<boolean>(() => {
     if (typeof window === 'undefined' || isHeroEmbed) return false;
+    if (initialGibsSatEnabled) return true;
     try {
       return localStorage.getItem(MAP_GIBS_SAT_LS_KEY) === '1';
     } catch {
@@ -767,6 +786,7 @@ export function useMapLayers({
   // publica com ~35-40 min de latência), L.tileLayer com setUrl por frame.
   const [goesIrEnabled, setGoesIrEnabled] = useState<boolean>(() => {
     if (typeof window === 'undefined' || isHeroEmbed) return false;
+    if (initialGoesIrEnabled) return true;
     return readGoesIrEnabledPref() === true;
   });
   const [goesIrFrameIndex, setGoesIrFrameIndex] = useState(0);
@@ -944,6 +964,7 @@ export function useMapLayers({
   // ── Coastal Warnings ──
   const [coastalWarningsEnabled, setCoastalWarningsEnabled] = useState<boolean>(() => {
     if (typeof window === 'undefined') return false;
+    if (initialCoastalWarningsEnabled) return true;
     try {
       return localStorage.getItem(MAP_COASTAL_LS_KEY) === '1';
     } catch { return false; }
@@ -1155,6 +1176,7 @@ export function useMapLayers({
   // camada omite-se em vez de mostrar uma tempestade que já não existe.
   const [stormsEnabled, setStormsEnabled] = useState<boolean>(() => {
     if (typeof window === 'undefined' || isHeroEmbed) return false;
+    if (initialStormsEnabled) return true;
     try {
       return localStorage.getItem(MAP_STORMS_LS_KEY) === '1';
     } catch {
@@ -1313,6 +1335,7 @@ export function useMapLayers({
   const ipmaWarnings = useIpmaWarnings();
   const [warnAreasEnabled, setWarnAreasEnabled] = useState<boolean>(() => {
     if (typeof window === 'undefined' || isHeroEmbed) return false;
+    if (initialWarnAreasEnabled) return true;
     try {
       return localStorage.getItem(MAP_WARN_AREAS_LS_KEY) === '1';
     } catch {

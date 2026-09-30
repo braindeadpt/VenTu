@@ -12,6 +12,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type L from 'leaflet';
 import { getTranslation } from '@/lib/i18n';
 import type { GridSportFilter } from '@/lib/sportRatings';
+import type { BasemapMode } from '@/components/spots/MapLayerToggle';
 import { useToast } from '@/components/ui/ToastProvider';
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 import { useMapLocate } from '../hooks/useMapLocate';
@@ -64,6 +65,15 @@ interface UseMapChromeZoneParams {
   hsEnabled: boolean;
   sstEnabled: boolean;
   currentsEnabled: boolean;
+  // Camadas restantes do contrato de partilha (?<layer>=1) + basemap.
+  basemapMode: BasemapMode;
+  bathymetryEnabled: boolean;
+  seamarksEnabled: boolean;
+  gibsSatEnabled: boolean;
+  goesIrEnabled: boolean;
+  stormsEnabled: boolean;
+  warnAreasEnabled: boolean;
+  coastalWarningsEnabled: boolean;
   handleHoursFrameChange: (index: number) => void;
   handleHoursUserPausedChange: (paused: boolean) => void;
   handleRadarFrameChange: (index: number) => void;
@@ -95,6 +105,14 @@ export function useMapChromeZone({
   hsEnabled,
   sstEnabled,
   currentsEnabled,
+  basemapMode,
+  bathymetryEnabled,
+  seamarksEnabled,
+  gibsSatEnabled,
+  goesIrEnabled,
+  stormsEnabled,
+  warnAreasEnabled,
+  coastalWarningsEnabled,
   handleHoursFrameChange,
   handleHoursUserPausedChange,
   handleRadarFrameChange,
@@ -256,7 +274,16 @@ export function useMapChromeZone({
         hs: hsEnabled,
         sst: sstEnabled,
         currents: currentsEnabled,
+        wind: windEnabled,
+        bathymetry: bathymetryEnabled,
+        seamarks: seamarksEnabled,
+        gibsSat: gibsSatEnabled,
+        goesIr: goesIrEnabled,
+        storms: stormsEnabled,
+        warnAreas: warnAreasEnabled,
+        coastalWarnings: coastalWarningsEnabled,
       },
+      basemap: basemapMode,
     });
     try {
       if (typeof navigator.share === 'function') {
@@ -271,7 +298,10 @@ export function useMapChromeZone({
   }, [
     mapInstanceRef, locale, selectedSport, selectedRegion,
     radarEnabled, isobathsEnabled, hoursOn, buoysEnabled,
-    hsEnabled, sstEnabled, currentsEnabled, showToast, t.map.shareCopied,
+    hsEnabled, sstEnabled, currentsEnabled, windEnabled, basemapMode,
+    bathymetryEnabled, seamarksEnabled, gibsSatEnabled, goesIrEnabled,
+    stormsEnabled, warnAreasEnabled, coastalWarningsEnabled,
+    showToast, t.map.shareCopied,
   ]);
 
   // ── UX v3 §4 — pilha de controlos: zoom (pointer fino) ──

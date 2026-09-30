@@ -54,6 +54,13 @@ interface UseMapLayersBaseParams {
   initialHoursEnabled: boolean;
   initialHourOfDay: number | null;
   initialBuoysEnabled: boolean;
+  initialBathymetryEnabled: boolean;
+  initialSeamarksEnabled: boolean;
+  initialGibsSatEnabled: boolean;
+  initialGoesIrEnabled: boolean;
+  initialStormsEnabled: boolean;
+  initialWarnAreasEnabled: boolean;
+  initialCoastalWarningsEnabled: boolean;
   t: MapTranslation;
 }
 
@@ -74,6 +81,13 @@ export function useMapLayersBase({
   initialHoursEnabled,
   initialHourOfDay,
   initialBuoysEnabled,
+  initialBathymetryEnabled,
+  initialSeamarksEnabled,
+  initialGibsSatEnabled,
+  initialGoesIrEnabled,
+  initialStormsEnabled,
+  initialWarnAreasEnabled,
+  initialCoastalWarningsEnabled,
   t,
 }: UseMapLayersBaseParams) {
   const layers = useMapLayers({
@@ -86,6 +100,13 @@ export function useMapLayersBase({
     focusSpotId,
     initialRadarEnabled,
     initialIsobathsEnabled,
+    initialBathymetryEnabled,
+    initialSeamarksEnabled,
+    initialGibsSatEnabled,
+    initialGoesIrEnabled,
+    initialCoastalWarningsEnabled,
+    initialStormsEnabled,
+    initialWarnAreasEnabled,
     radarOverlayRef,
     isobathsLayerRef,
     coastalLayerRef,
