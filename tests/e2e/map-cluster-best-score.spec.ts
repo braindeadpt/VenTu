@@ -62,12 +62,16 @@ async function probeGroups(page: Page): Promise<GroupProbe[]> {
     return Array.from(document.querySelectorAll<HTMLElement>('.v3more')).map((el) => {
       const host = el.closest<HTMLElement>('[data-v3spot]');
       const ids = (el.dataset.v3members ?? '').split(',').filter(Boolean);
+      // O badge é `aria-hidden` (um `role="button"` dentro do `role="button"`
+      // do marcador era a violação `nested-interactive` do axe), por isso a
+      // etiqueta acessível do grupo vive no NOME do marcador.
+      const marker = el.closest<HTMLElement>('.leaflet-marker-icon');
       return {
         id: host?.dataset.v3spot ?? '',
         score: Number(host?.dataset.spotScore),
         members: ids.map(scoreOf),
         badge: el.textContent ?? '',
-        label: el.getAttribute('aria-label') ?? '',
+        label: marker?.getAttribute('aria-label') ?? '',
       };
     });
   });
