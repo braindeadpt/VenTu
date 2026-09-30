@@ -529,6 +529,70 @@
       ]
     },
     {
+      "id": 18695,
+      "ref": "ANAV NR 2196/26",
+      "category": "Requisitos de segurança maritima",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=12790fe7-82d5-48d5-8f34-d629fc0da4fa",
+      "source": "ih",
+      "collection": "nav_warning_coastal",
+      "polygons": [
+        [
+          [
+            -8.892686,
+            38.520735
+          ],
+          [
+            -8.892686,
+            38.521054
+          ],
+          [
+            -8.892037,
+            38.521054
+          ],
+          [
+            -8.892037,
+            38.520735
+          ],
+          [
+            -8.892686,
+            38.520735
+          ]
+        ]
+      ]
+    },
+    {
+      "id": 18697,
+      "ref": "ANAV NR 2197/26",
+      "category": "Requisitos de segurança maritima",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=f023faff-5eae-4caf-b594-e11493414c73",
+      "source": "ih",
+      "collection": "nav_warning_coastal",
+      "polygons": [
+        [
+          [
+            -8.56651,
+            37.105301
+          ],
+          [
+            -8.56651,
+            37.143624
+          ],
+          [
+            -8.494086,
+            37.143624
+          ],
+          [
+            -8.494086,
+            37.105301
+          ],
+          [
+            -8.56651,
+            37.105301
+          ]
+        ]
+      ]
+    },
+    {
       "id": 1000182,
       "ref": "ANAV NR 121/21",
       "category": "SEGURANÇA DA NAVEGAÇÃO - AVISO À NAVEGAÇÃO LOCAL",
@@ -7837,6 +7901,7 @@
       2017807
     ],
     "ferragudo": [
+      18697,
       1000318,
       1001007,
       1001008,
@@ -7860,6 +7925,7 @@
       2018305
     ],
     "praia-rocha": [
+      18697,
       1000318,
       1001007,
       1001008,
@@ -8128,7 +8194,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-09-29T23:14:53.236Z",
+  "fetchedAt": "2026-09-30T04:07:09.499Z",
   "sourceCollection": "nav_warning_coastal+nav_warning_local+orca_anavnet_point",
   "sourceUrl": "https://ogcapi.hidrografico.pt/collections/nav_warning_coastal"
 }
