@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-09-30T16:08:31.941Z",
+  "fetchedAt": "2026-09-30T19:07:25.493Z",
   "windowDays": 90,
   "dayCount": 29,
   "days": [
@@ -24458,13 +24458,6 @@
           "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=dd021968-f823-4dd2-8d60-695ad66f5311"
         },
         {
-          "id": 18169,
-          "ref": "ANAV NR 1686/26",
-          "category": "Requisitos de segurança maritima",
-          "source": "ih",
-          "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=2192282a-c972-49f8-b12f-01d8beb6814a"
-        },
-        {
           "id": 18199,
           "ref": "ANAV NR 1719/26",
           "category": "Requisitos de segurança maritima",
@@ -24533,6 +24526,13 @@
           "category": "Requisitos de segurança maritima",
           "source": "ih",
           "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=92ada44c-575f-4968-899a-f2bd0f528f7c"
+        },
+        {
+          "id": 18701,
+          "ref": "ANAV NR 2200/26",
+          "category": "Requisitos de segurança maritima",
+          "source": "ih",
+          "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=e6816d41-74ca-439b-a9de-97072296f8bc"
         },
         {
           "id": 1000182,
@@ -27462,46 +27462,6 @@
       "nDays": 29
     },
     {
-      "ref": "ANAV NR 1686/26",
-      "category": "Requisitos de segurança maritima",
-      "source": "ih",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=2192282a-c972-49f8-b12f-01d8beb6814a",
-      "firstSeen": "2026-09-01",
-      "lastSeen": "2026-09-30",
-      "daysInForce": [
-        "2026-09-01",
-        "2026-09-02",
-        "2026-09-03",
-        "2026-09-04",
-        "2026-09-05",
-        "2026-09-06",
-        "2026-09-07",
-        "2026-09-08",
-        "2026-09-09",
-        "2026-09-10",
-        "2026-09-11",
-        "2026-09-12",
-        "2026-09-13",
-        "2026-09-14",
-        "2026-09-15",
-        "2026-09-16",
-        "2026-09-18",
-        "2026-09-19",
-        "2026-09-20",
-        "2026-09-21",
-        "2026-09-22",
-        "2026-09-23",
-        "2026-09-24",
-        "2026-09-25",
-        "2026-09-26",
-        "2026-09-27",
-        "2026-09-28",
-        "2026-09-29",
-        "2026-09-30"
-      ],
-      "nDays": 29
-    },
-    {
       "ref": "ANAV NR 1695/26",
       "category": "Animais Marinhos - Interação",
       "source": "ih",
@@ -28466,6 +28426,18 @@
         "2026-09-30"
       ],
       "nDays": 19
+    },
+    {
+      "ref": "ANAV NR 2200/26",
+      "category": "Requisitos de segurança maritima",
+      "source": "ih",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=e6816d41-74ca-439b-a9de-97072296f8bc",
+      "firstSeen": "2026-09-30",
+      "lastSeen": "2026-09-30",
+      "daysInForce": [
+        "2026-09-30"
+      ],
+      "nDays": 1
     },
     {
       "ref": "ANAV NR 226/25",
@@ -30738,6 +30710,45 @@
         "2026-09-30"
       ],
       "nDays": 19
+    },
+    {
+      "ref": "ANAV NR 1686/26",
+      "category": "Requisitos de segurança maritima",
+      "source": "ih",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=2192282a-c972-49f8-b12f-01d8beb6814a",
+      "firstSeen": "2026-09-01",
+      "lastSeen": "2026-09-29",
+      "daysInForce": [
+        "2026-09-01",
+        "2026-09-02",
+        "2026-09-03",
+        "2026-09-04",
+        "2026-09-05",
+        "2026-09-06",
+        "2026-09-07",
+        "2026-09-08",
+        "2026-09-09",
+        "2026-09-10",
+        "2026-09-11",
+        "2026-09-12",
+        "2026-09-13",
+        "2026-09-14",
+        "2026-09-15",
+        "2026-09-16",
+        "2026-09-18",
+        "2026-09-19",
+        "2026-09-20",
+        "2026-09-21",
+        "2026-09-22",
+        "2026-09-23",
+        "2026-09-24",
+        "2026-09-25",
+        "2026-09-26",
+        "2026-09-27",
+        "2026-09-28",
+        "2026-09-29"
+      ],
+      "nDays": 28
     },
     {
       "ref": "ANAV NR 2169/26",
