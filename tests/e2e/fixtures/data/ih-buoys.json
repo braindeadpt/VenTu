@@ -623,13 +623,15 @@
       "idEst": 86,
       "stationTitle": "BOND5",
       "area": "Arquipélago Açores - Ilha Graciosa",
-      "distanceKm": 86.9
+      "distanceKm": 86.9,
+      "island": true
     },
     "santa-catarina-terceira": {
       "idEst": 86,
       "stationTitle": "BOND5",
       "area": "Arquipélago Açores - Ilha Graciosa",
-      "distanceKm": 78.2
+      "distanceKm": 78.2,
+      "island": true
     },
     "parede": {
       "idEst": 1010,
@@ -695,7 +697,8 @@
       "idEst": 86,
       "stationTitle": "BOND5",
       "area": "Arquipélago Açores - Ilha Graciosa",
-      "distanceKm": 84.1
+      "distanceKm": 84.1,
+      "island": true
     },
     "lagoa-albufeira": {
       "idEst": 1010,
@@ -767,7 +770,8 @@
       "idEst": 86,
       "stationTitle": "BOND5",
       "area": "Arquipélago Açores - Ilha Graciosa",
-      "distanceKm": 228.5
+      "distanceKm": 228.5,
+      "island": true
     },
     "porto-covo": {
       "idEst": 19,
@@ -779,13 +783,15 @@
       "idEst": 86,
       "stationTitle": "BOND5",
       "area": "Arquipélago Açores - Ilha Graciosa",
-      "distanceKm": 244.6
+      "distanceKm": 244.6,
+      "island": true
     },
     "santa-barbara": {
       "idEst": 86,
       "stationTitle": "BOND5",
       "area": "Arquipélago Açores - Ilha Graciosa",
-      "distanceKm": 241.9
+      "distanceKm": 241.9,
+      "island": true
     },
     "malhao": {
       "idEst": 19,
@@ -797,7 +803,8 @@
       "idEst": 86,
       "stationTitle": "BOND5",
       "area": "Arquipélago Açores - Ilha Graciosa",
-      "distanceKm": 248.6
+      "distanceKm": 248.6,
+      "island": true
     },
     "vila-nova-milfontes": {
       "idEst": 19,
@@ -810,6 +817,13 @@
       "stationTitle": "CSA83/1D",
       "area": "Sines",
       "distanceKm": 32.9
+    },
+    "agua-alto": {
+      "idEst": 86,
+      "stationTitle": "BOND5",
+      "area": "Arquipélago dos Açores - Ilha da Graciosa",
+      "distanceKm": 265,
+      "island": true
     },
     "zambujeira": {
       "idEst": 19,
@@ -1043,49 +1057,57 @@
       "idEst": 86,
       "stationTitle": "BOND5",
       "area": "Arquipélago Açores - Ilha Graciosa",
-      "distanceKm": 249.2
+      "distanceKm": 249.2,
+      "island": true
     },
     "sao-vicente-madeira": {
       "idEst": 33,
       "stationTitle": "CSA94",
       "area": "Caniçal",
-      "distanceKm": 30
+      "distanceKm": 30,
+      "island": true
     },
     "porto-da-cruz": {
       "idEst": 33,
       "stationTitle": "CSA94",
       "area": "Caniçal",
-      "distanceKm": 11.1
+      "distanceKm": 11.1,
+      "island": true
     },
     "paul-mar": {
       "idEst": 33,
       "stationTitle": "CSA94",
       "area": "Caniçal",
-      "distanceKm": 47.8
+      "distanceKm": 47.8,
+      "island": true
     },
     "jardim-mar": {
       "idEst": 33,
       "stationTitle": "CSA94",
       "area": "Caniçal",
-      "distanceKm": 46.2
+      "distanceKm": 46.2,
+      "island": true
     },
     "ponta-sao-lourenco": {
       "idEst": 33,
       "stationTitle": "CSA94",
       "area": "Caniçal",
-      "distanceKm": 2.5
+      "distanceKm": 2.5,
+      "island": true
     },
     "ribeira-brava": {
       "idEst": 33,
       "stationTitle": "CSA94",
       "area": "Caniçal",
-      "distanceKm": 32.3
+      "distanceKm": 32.3,
+      "island": true
     },
     "funchal": {
       "idEst": 33,
       "stationTitle": "CSA94",
       "area": "Caniçal",
-      "distanceKm": 20
+      "distanceKm": 20,
+      "island": true
     },
     "barra-aveiro": {
       "idEst": 4,
@@ -1205,49 +1227,64 @@
       "idEst": 33,
       "stationTitle": "CSA94",
       "area": "Caniçal",
-      "distanceKm": 4.1
+      "distanceKm": 4.1,
+      "island": true
     },
     "seixal-madeira": {
       "idEst": 33,
       "stationTitle": "CSA94",
       "area": "Caniçal",
-      "distanceKm": 37.1
+      "distanceKm": 37.1,
+      "island": true
     },
     "ponta-pargo": {
       "idEst": 33,
       "stationTitle": "CSA94",
       "area": "Caniçal",
-      "distanceKm": 51.7
+      "distanceKm": 51.7,
+      "island": true
     },
     "madalena-mar": {
       "idEst": 33,
       "stationTitle": "CSA94",
       "area": "Caniçal",
-      "distanceKm": 38.3
+      "distanceKm": 38.3,
+      "island": true
     },
     "calhetas": {
       "idEst": 86,
       "stationTitle": "BOND5",
       "area": "Arquipélago Açores - Ilha Graciosa",
-      "distanceKm": 249
+      "distanceKm": 249,
+      "island": true
+    },
+    "ribeira-quente": {
+      "idEst": 86,
+      "stationTitle": "BOND5",
+      "area": "Arquipélago dos Açores - Ilha da Graciosa",
+      "distanceKm": 275.9,
+      "island": true
     },
     "porto-martins": {
       "idEst": 86,
       "stationTitle": "BOND5",
       "area": "Arquipélago Açores - Ilha Graciosa",
-      "distanceKm": 90.3
+      "distanceKm": 90.3,
+      "island": true
     },
     "cachorro-pico": {
       "idEst": 86,
       "stationTitle": "BOND5",
       "area": "Arquipélago Açores - Ilha Graciosa",
-      "distanceKm": 67.5
+      "distanceKm": 67.5,
+      "island": true
     },
     "faja-cubres": {
       "idEst": 86,
       "stationTitle": "BOND5",
       "area": "Arquipélago Açores - Ilha Graciosa",
-      "distanceKm": 49.7
+      "distanceKm": 49.7,
+      "island": true
     },
     "fao-ofir-surf": {
       "idEst": 4,

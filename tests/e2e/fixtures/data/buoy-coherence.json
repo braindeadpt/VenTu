@@ -1627,12 +1627,64 @@
     "São Miguel": {
       "spotCount": 7,
       "withObservedWave": 0,
-      "bySource": {},
+      "bySource": {
+        "ih-buoy": 7
+      },
       "audited": 0,
       "attachedIsClosest": 0,
       "attachedNotClosest": 0,
       "onlySource": 0,
-      "notClosest": [],
+      "notClosest": [
+        {
+          "spot": "mosteiros",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 229,
+          "altKm": 0
+        },
+        {
+          "spot": "monte-verde",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 245,
+          "altKm": 0
+        },
+        {
+          "spot": "santa-barbara",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 242,
+          "altKm": 0
+        },
+        {
+          "spot": "milicias",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 249,
+          "altKm": 0
+        },
+        {
+          "spot": "agua-alto",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 265,
+          "altKm": 0
+        },
+        {
+          "spot": "calhetas",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 249,
+          "altKm": 0
+        },
+        {
+          "spot": "ribeira-quente",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 276,
+          "altKm": 0
+        }
+      ],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -1974,12 +2026,22 @@
     "Açores": {
       "spotCount": 1,
       "withObservedWave": 0,
-      "bySource": {},
+      "bySource": {
+        "ih-buoy": 1
+      },
       "audited": 0,
       "attachedIsClosest": 0,
       "attachedNotClosest": 0,
       "onlySource": 0,
-      "notClosest": [],
+      "notClosest": [
+        {
+          "spot": "ponta-delgada",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 249,
+          "altKm": 0
+        }
+      ],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
