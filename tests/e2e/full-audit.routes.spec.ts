@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { discoverAllRoutes, sampleRoutes, SAMPLE_SIZES } from './helpers/discover-routes';
 import { attachPageHealthCollectors, assertHealthyPage } from './helpers/audit-utils';
+import { waitHydrated } from './helpers/hydration';
 import { preseedWindRingLegend } from './helpers/map-setup';
 
 const allRoutes = discoverAllRoutes();
@@ -19,6 +20,7 @@ test.describe('Full route audit (browser: uncaught JS)', () => {
 
       expect(response?.status(), `HTTP status for ${path}`).toBeLessThan(400);
 
+      await waitHydrated(page);
       const isAlertPage = path.includes('/alerts/confirm') || path.includes('/alerts/unsubscribe');
       await assertHealthyPage(page, health, {
         allowLoadingState: isAlertPage,
@@ -30,9 +32,12 @@ test.describe('Full route audit (browser: uncaught JS)', () => {
 });
 
 test('route inventory matches build scale', () => {
-  expect(allRoutes.length).toBeGreaterThan(500);
+  expect(allRoutes.length).toBeGreaterThan(2000);
+  for (const route of ['/pt/diretorio/', '/pt/ferramentas/', '/pt/fontes/', '/pt/conta/', '/pt/passaporte/', '/pt/auth/callback/', '/pt/admin/diretorio/']) {
+    expect(allRoutes.some((r) => r.path === route), route).toBe(true);
+  }
   const groups = new Set(allRoutes.map((r) => r.group));
-  expect(groups).toEqual(new Set(['static', 'modalidade', 'explorar', 'spot', 'news']));
+  expect(groups).toEqual(new Set(['static', 'modalidade', 'explorar', 'spot', 'news', 'diretorio']));
 });
 
 /**
@@ -63,7 +68,7 @@ test('sample is deterministic and never thins distinct templates', () => {
     expect(sampledGroups.get(g)!.length).toBe(allGroups.get(g)!.length);
   }
   // Same-template groups: capped, deterministic.
-  for (const g of ['spot', 'news', 'explorar']) {
+  for (const g of ['spot', 'news', 'explorar', 'diretorio']) {
     const expectedSize = SAMPLE_SIZES[g as keyof typeof SAMPLE_SIZES];
     expect(sampledGroups.get(g)!.length).toBe(Math.min(expectedSize, allGroups.get(g)!.length));
     const strideSample = sampledGroups.get(g)!.map((r) => r.path);

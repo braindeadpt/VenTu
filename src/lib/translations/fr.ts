@@ -992,7 +992,7 @@ export const translationsFr = {
     signOut: 'Se déconnecter',
     telegramIntro: 'Reçois la même alerte de favoris sur Telegram (après avoir activé les alertes email).',
     telegramLinked: 'Telegram lié',
-    telegramSteps: '1) Appuie sur Lier · 2) Ouvre le bot et appuie sur Start · 3) Actif en ~15 min',
+    telegramSteps: '1) Appuie sur Lier · 2) Ouvre le bot et appuie sur Start · 3) La liaison sera traitée à la prochaine vérification ; cela peut prendre du temps',
     telegramWindowHint: 'Si la fenêtre ne s’est pas ouverte : ',
     telegramOpenBot: 'ouvrir le bot',
     telegramWorking: 'Création…',

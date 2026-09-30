@@ -1,4 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
+import { alignClockToForecast } from './helpers/conditions';
 
 /**
  * S2B — secção Instrumentos (docs/design/SPOT-PAGE.md §4).
@@ -50,7 +51,9 @@ function readouts(page: Page) {
 }
 
 test.describe('S2B — Instrumentos (vento, onda, maré)', () => {
+  test.use({ serviceWorkers: 'block' });
   test.beforeEach(async ({ page }) => {
+    await alignClockToForecast(page);
     await page.goto('/pt/spots/guincho/');
     await expect(page.getByRole('heading', { level: 1, name: /Guincho/i })).toBeVisible({
       timeout: 20_000,

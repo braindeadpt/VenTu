@@ -187,7 +187,7 @@ describe('buildV3MarkerIcon — marcador da maquete', () => {
     expect(icon.html).toContain('rgb(var(--bg-base))');
   });
 
-  it('badge «+N» com os membros do grupo e aria-label localizado', () => {
+  it('badge «+N» com os membros do grupo e aria-hidden (sem botão aninhado)', () => {
     const icon = buildV3MarkerIcon(fakeL, {
       spotId: 'a',
       score: 70,
@@ -197,7 +197,13 @@ describe('buildV3MarkerIcon — marcador da maquete', () => {
     expect(icon.html).toContain('class="v3more"');
     expect(icon.html).toContain('data-v3members="a,b,c"');
     expect(icon.html).toContain('+2');
-    expect(icon.html).toContain('aria-label="Mais 2 spots perto — ampliar"');
+    // O marcador é role="button" (o Leaflet marca com keyboard:true) e o
+    // badge vive dentro dele: um role="button" aninhado é a violação
+    // `nested-interactive` do axe que falhava o scan ocean do /mapa. A
+    // informação entra no nome acessível do marcador, não no badge.
+    expect(icon.html).toContain('aria-hidden="true"');
+    expect(icon.html).not.toContain('role="button"');
+    expect(icon.html).not.toContain('tabindex="-1"');
   });
 
   it('sem grupo não há badge; o tique de vento roda para onde sopra', () => {

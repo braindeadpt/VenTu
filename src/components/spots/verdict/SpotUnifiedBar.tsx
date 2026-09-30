@@ -68,7 +68,7 @@ export default function SpotUnifiedBar({
   nowScoreFallback,
 }: SpotUnifiedBarProps) {
   const tv = getTranslation(locale).spotPageVerdict;
-  const { nowIndex } = useSpotTimelineData();
+  const { nowIndex, nowResolved } = useSpotTimelineData();
   const { selectedScore, selectedHour, isNow } = useSpotTimelineIndex();
   // Chip de segurança — a mesma resolução da SpotStickyBar antiga (aviso
   // agitação/vento mais forte do spot). Acompanha o scroll: um «Mar
@@ -203,14 +203,14 @@ export default function SpotUnifiedBar({
           <span className="font-mono text-num-sm tabular-nums text-fg">
             {selectedHour ? formatHourLabel(selectedHour, locale) : '--:--'}
           </span>
-          {nowIndex >= 0 && (
+          {nowResolved && (
             <span
               className={cn(
                 'hidden sm:inline rounded-pill border px-1.5 py-0.5 text-meta-sm',
                 isNow ? 'border-divider-strong text-fg' : 'border-divider text-fg-muted',
               )}
             >
-              {isNow ? tv.nowLabel : tv.forecastLabel}
+              {nowIndex < 0 ? tv.outsideCoverageLabel : isNow ? tv.nowLabel : tv.forecastLabel}
             </span>
           )}
           {warning && (

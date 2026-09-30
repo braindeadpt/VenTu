@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 import { test, expect } from '@playwright/test';
 import {
   interceptConditions,
+  interceptForecastsForToday,
   interceptWaveBias,
   interceptWarnings,
   interceptIhBuoys,
@@ -298,6 +299,9 @@ test.describe('Observed wave card (boia X a Y km)', () => {
   // intermitentes quando o SW activa antes do fetch. Bloquear o SW garante
   // que a rota intercepta sempre (causa raiz da flakiness histórica deste spec).
   test.use({ serviceWorkers: 'block' });
+  test.beforeEach(async ({ page }) => {
+    await interceptForecastsForToday(page);
+  });
 
   test('renderiza o rótulo honesto quando observedWave está no JSON', async ({ page }) => {
     await gotoSpot(page, 'with-observed-wave');

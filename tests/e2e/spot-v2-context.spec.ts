@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { test, expect, type Page } from '@playwright/test';
-import { interceptMapHours } from './helpers/conditions';
+import { alignClockToForecast, interceptMapHours } from './helpers/conditions';
 
 /**
  * S2C — secções 6–7 da página de spot (docs/design/SPOT-PAGE.md):
@@ -201,6 +201,7 @@ test.describe('Spot context (S2C)', () => {
         ]),
       ),
     };
+    await alignClockToForecast(page);
     await interceptMapHours(page, crafted);
 
     // Dois índices da timeline cujas horas caem em passos diferentes do

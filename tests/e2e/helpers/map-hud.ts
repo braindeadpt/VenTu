@@ -12,25 +12,43 @@ import { expect, type Page } from '@playwright/test';
  */
 export async function expandMapHudFilters(page: Page): Promise<void> {
   const sheet = page.locator('[data-explore-sheet]');
-  // M7-F: as vistas das zonas são chunks dinâmicos — após goto/reload o
-  // sheet pode montar algumas centenas de ms depois de `is-hydrated`.
-  // Sem esta espera o helper via um sheet ausente, caía no ramo do HUD
-  // antigo (no-op) e os toggles de camadas nunca apareciam. A corrida é
-  // contra o botão do HUD (embeds/desktop nunca têm sheet).
-  if ((await sheet.count()) === 0) {
-    const expandBtn = page.getByRole('button', {
-      name: /Mostrar filtros|Show filters/i,
-    });
-    await Promise.race([
-      sheet.waitFor({ state: 'attached', timeout: 10_000 }),
-      expandBtn.waitFor({ state: 'visible', timeout: 10_000 }),
-    ]).catch(() => {});
+  // O ramo é decidido pelo viewport, não por sondar o DOM: o sheet é montado
+  // pelo cliente ASSÍNCRONO (SpotMapInteractive entra depois de o mapa estar
+  // pronto), e um `count()` imediato vê zero em mobile — o helper saía em
+  // silêncio, os filtros nunca abriam e o passo seguinte clicava num botão
+  // inexistente. No desktop o sheet não existe nunca (é o painel lateral).
+  const viewport = page.viewportSize();
+  const sheetExpected = viewport !== null && viewport.width < 1024;
+
+  if (sheetExpected) {
+    await sheet.first().waitFor({ state: 'attached', timeout: 20_000 });
   }
   if (await sheet.count()) {
     if ((await sheet.getAttribute('data-explore-sheet')) === 'peek') {
       await page.getByRole('button', { name: /Mostrar filtros|Show filters/i }).click();
       await expect(sheet).toHaveAttribute('data-explore-sheet', 'half');
     }
+    // O atributo muda no mesmo commit que o conteúdo, mas o translateY ainda
+    // anima (200–300 ms): um clique imediato falha a acção por instabilidade.
+    // Esperar o grupo de modalidade visível E estável é o contrato real que o
+    // utilizador tem (a sheet parada, com os filtros utilizáveis).
+    await expect(sheet.getByRole('group', { name: /Modalidade|Sport/i })).toBeVisible({
+      timeout: 15_000,
+    });
+    await expect
+      .poll(
+        async () =>
+          sheet.getByRole('group', { name: /Modalidade|Sport/i }).evaluate(
+            async (el) => {
+              const box = el.getBoundingClientRect();
+              await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+              const next = el.getBoundingClientRect();
+              return Math.abs(next.top - box.top) < 0.5;
+            },
+          ),
+        { timeout: 15_000 },
+      )
+      .toBe(true);
     return;
   }
 

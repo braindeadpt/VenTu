@@ -1,4 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
+import { alignClockToForecast, readRealForecasts } from './helpers/conditions';
 
 /**
  * S2A — Veredicto + barra fixa única + régua de 48 h (docs/design/SPOT-PAGE.md
@@ -12,6 +13,7 @@ const SPOT_URL = '/pt/spots/guincho/';
 const BAR_LABEL = 'Modalidade e hora escolhida';
 
 async function openSpot(page: Page) {
+  await alignClockToForecast(page);
   await page.goto(SPOT_URL);
   await expect(
     page.getByRole('heading', { level: 1, name: /Guincho/i }),
@@ -43,6 +45,20 @@ async function barScore(page: Page): Promise<number> {
 
 test.describe('S2A — régua de 48 h comanda veredicto e barra', () => {
   test.use({ serviceWorkers: 'block' });
+
+  test('previsão expirada não apresenta uma hora passada como Agora', async ({ page }) => {
+    const rows = readRealForecasts().guincho;
+    const last = String(rows[rows.length - 1].time);
+    await page.clock.setFixedTime(new Date(new Date(`${last}Z`).getTime() + 24 * 3_600_000));
+    await page.goto(SPOT_URL);
+    const hero = page.locator('#agora');
+    await expect(hero.getByText('Sem previsão para agora', { exact: true })).toBeVisible();
+    await expect(hero.getByText('Agora', { exact: true })).toHaveCount(0);
+    await expect(page.getByRole('button', { name: 'Agora', exact: true })).toHaveCount(0);
+    // Old forecasts remain explicitly dated and navigable, not a one-hour
+    // "current" slot with today's observed score injected into it.
+    await expect(slider(page)).toHaveAttribute('aria-valuemax', '47');
+  });
 
   test('arrastar a régua muda o score do veredicto e da barra', async ({ page }) => {
     await openSpot(page);
@@ -152,9 +168,10 @@ test.describe('S2A — régua de 48 h comanda veredicto e barra', () => {
     // canais RGB, ignorando o alfa.
     const rgb = (c: string | null) => c?.match(/\d+/g)?.slice(0, 3).join(',') ?? null;
     await expect.poll(async () => (await probe()).barFill).not.toBeNull();
-    let g = await probe();
-    expect(rgb(g.barFill)).not.toBe('0,0,0');
-    expect(rgb(g.barFill)).toBe(rgb(g.scoreColor));
+    await expect.poll(async () => {
+      const g = await probe();
+      return rgb(g.barFill) === rgb(g.scoreColor) && rgb(g.barFill) !== '0,0,0';
+    }).toBe(true);
 
     // Seta → outra hora: as duas superfícies convergem para a nova cor —
     // o fill da barra transiciona 200 ms, por isso espera-se a igualdade.

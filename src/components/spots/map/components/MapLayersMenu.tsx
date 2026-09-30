@@ -441,7 +441,9 @@ export default function MapLayersMenu({
       triggerRef.current?.focus();
     };
     const onScroll = (e: Event) => {
-      if (popRef.current?.contains(e.target as Node)) return;
+      // Resize targets Window, not a DOM Node. A TypeScript cast alone
+      // would throw in contains() and leave the portal open at stale coordinates.
+      if (e.target instanceof Node && popRef.current?.contains(e.target)) return;
       if (popRef.current?.contains(document.activeElement)) {
         triggerRef.current?.focus();
       }

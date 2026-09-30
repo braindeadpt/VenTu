@@ -110,6 +110,20 @@ test.describe('Menu Camadas — teclado (desktop)', () => {
     expect(page.url()).toContain('/pt/mapa/');
   });
 
+  test('resize fecha o portal sem erros e devolve o foco', async ({ page }) => {
+    const errors: string[] = [];
+    page.on('pageerror', (error) => errors.push(error.message));
+    await openMapa(page);
+    const trig = trigger(page);
+    await trig.press('Enter');
+    await expect(popover(page)).toBeVisible();
+    await expect(items(page).first()).toBeFocused();
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await expect(popover(page)).toHaveCount(0);
+    await expect(trig).toBeFocused();
+    expect(errors).toEqual([]);
+  });
+
   test('Tab fecha e segue para o próximo focável; Shift+Tab recua', async ({ page }) => {
     await openMapa(page);
     const trig = trigger(page);

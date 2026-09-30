@@ -53,6 +53,37 @@ test.describe('Map currents field', () => {
   test.use({ serviceWorkers: 'block', reducedMotion: 'reduce' });
   test.describe.configure({ timeout: 60_000 });
 
+  test('mudança de movimento reduzido pára e retoma as partículas sem reload', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'no-preference' });
+    await openMapCurrents(page);
+    const canvas = page.locator('.ventu-current-canvas');
+    await expect(canvas).toHaveCount(1);
+    const image = () => canvas.evaluate((el: HTMLCanvasElement) => el.toDataURL());
+    let before = await image();
+    await expect.poll(image).not.toBe(before);
+
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    // Allow the media-query listener and the static repaint to settle.
+    await page.waitForTimeout(500);
+    before = await image();
+    await page.waitForTimeout(500);
+    expect(await image()).toBe(before);
+
+    await page.emulateMedia({ reducedMotion: 'no-preference' });
+    await expect.poll(image).not.toBe(before);
+  });
+
+  test('campo estático repinta ao mudar de tema', async ({ page }) => {
+    await openMapCurrents(page);
+    const canvas = page.locator('.ventu-current-canvas');
+    await expect(canvas).toHaveCount(1);
+    const image = () => canvas.evaluate((el: HTMLCanvasElement) => el.toDataURL());
+    await page.waitForTimeout(500);
+    const before = await image();
+    await page.evaluate(() => document.documentElement.classList.add('theme-ocean'));
+    await expect.poll(image).not.toBe(before);
+  });
+
   test('deep link ?currents=1 liga o campo; 08h→17h muda a velocidade interpolada', async ({ page }) => {
     await openMapCurrents(page);
 

@@ -209,15 +209,17 @@ test.describe('About — secção de viés por boia (ondas)', () => {
     await page.goto('/pt/about/', { waitUntil: 'networkidle', timeout: 60_000 });
 
     const silleiroCell = page.locator('[data-skill-buoy-origin="wmo-es"]');
-    if ((await page.locator('[data-skill-buoy-origin]').count()) === 0) {
+    if ((await silleiroCell.count()) === 0) {
       test.skip(true, 'build sem boias ES no skill (About é SSG) — injetar forecast-skill.json + build');
       return;
     }
 
     // País/fonte explícito na linha da boia ES — não só um código enigmático.
-    await expect(silleiroCell).toBeVisible();
-    await expect(silleiroCell).toHaveText('Copernicus-ES');
-    await expect(silleiroCell).toHaveAttribute('title', /Copernicus-ES · Espanha/);
+    for (const cell of await silleiroCell.all()) {
+      await expect(cell).toBeVisible();
+      await expect(cell).toHaveText('Copernicus-ES');
+      await expect(cell).toHaveAttribute('title', /Copernicus-ES · Espanha/);
+    }
 
     // Nota honesta: o NW é coberto sem IH_API_KEY.
     await expect(

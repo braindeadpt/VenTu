@@ -992,7 +992,7 @@ export const translationsEs = {
     signOut: 'Salir',
     telegramIntro: 'Recibe el mismo aviso de favoritos en Telegram (después de activar las alertas por email).',
     telegramLinked: 'Telegram vinculado',
-    telegramSteps: '1) Pulsa Vincular · 2) Abre el bot y toca Start · 3) Activo en ~15 min',
+    telegramSteps: '1) Pulsa Vincular · 2) Abre el bot y toca Start · 3) La vinculación se procesa en la siguiente comprobación; puede tardar',
     telegramWindowHint: 'Si la ventana no se abrió: ',
     telegramOpenBot: 'abrir bot',
     telegramWorking: 'Generando…',

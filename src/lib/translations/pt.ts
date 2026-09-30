@@ -921,7 +921,7 @@ export const translationsPt = {
     signOut: 'Sair',
     telegramIntro: 'Recebe o mesmo aviso dos favoritos no Telegram (após activares alertas por email).',
     telegramLinked: 'Telegram ligado',
-    telegramSteps: '1) Clica em Ligar · 2) Abre o bot e toca Start · 3) Em ~15 min fica activo',
+    telegramSteps: '1) Clica em Ligar · 2) Abre o bot e toca Start · 3) A ligação será processada na próxima verificação; pode demorar',
     telegramWindowHint: 'Se a janela não abriu: ',
     telegramOpenBot: 'abrir bot',
     telegramWorking: 'A gerar…',

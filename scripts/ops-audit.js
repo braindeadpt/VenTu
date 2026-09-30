@@ -43,7 +43,7 @@ const { readdirSync, readFileSync, existsSync } = require('fs');
 const { join } = require('path');
 const { evaluatePipelineStaleness } = require('./lib/pipelineStaleness');
 const { evaluateDataCadence } = require('./lib/dataCadence');
-const { parseCrons, evaluateCronDelivery } = require('./lib/cronDelivery');
+const { parseCrons, evaluateCronDelivery, jobsWithoutTimeout } = require('./lib/cronDelivery');
 const { parseManifest } = require('./lib/ipmaRadar');
 const {
   resolveObsWorkerBase,
@@ -450,19 +450,14 @@ function auditDrift() {
     }
   }
 
-  // 2. Jobs sem timeout-minutes: cada `runs-on:` num workflow deve ter um
-  //    `timeout-minutes` nas ~8 linhas envolventes.
+  // 2. Job timeout is a sibling of runs-on, regardless of comment length.
   const wfDir = join(REPO_ROOT, '.github', 'workflows');
   if (existsSync(wfDir)) {
     for (const f of readdirSync(wfDir)) {
       if (!/\.(ya?ml)$/.test(f)) continue;
-      const lines = readFileSync(join(wfDir, f), 'utf-8').split('\n');
-      for (let i = 0; i < lines.length; i++) {
-        if (!/^\s+runs-on:/.test(lines[i])) continue;
-        const window = lines.slice(Math.max(0, i - 6), i + 7).join('\n');
-        if (!/timeout-minutes:/.test(window)) {
-          finding('P2', `job sem timeout-minutes: .github/workflows/${f} linha ${i + 1}`);
-        }
+      const yaml = readFileSync(join(wfDir, f), 'utf-8');
+      for (const line of jobsWithoutTimeout(yaml)) {
+        finding('P2', `job sem timeout-minutes: .github/workflows/${f} linha ${line}`);
       }
     }
   }

@@ -4,6 +4,7 @@
 const fs = require('fs');
 const path = require('path');
 const { getSeoLandingSlugs } = require('../../../scripts/seo-landings-slugs');
+const { parseSitemapRoutes, NOINDEX_ROUTE_PATHS } = require('../../../scripts/check-export-routes');
 
 const LOCALES = ['pt', 'en', 'es', 'de', 'fr'];
 const MODALITY_SLUGS = [
@@ -27,6 +28,7 @@ const SAMPLE_SIZES = {
   spot: 40,
   news: 20,
   explorar: 15,
+  diretorio: 20,
 };
 
 /** Set by the daily full browser audit; CI per-push runs leave it unset. */
@@ -154,6 +156,21 @@ function discoverAllRoutes() {
     }
   }
 
+  // The sitemap + noindex allowlist are the same contract checked against
+  // the export. Include new distinct templates and directory details instead
+  // of silently claiming "all routes" with an obsolete manual inventory.
+  const known = new Set(routes.map((route) => route.path));
+  const sitemap = path.join(__dirname, '../../../public/sitemap.xml');
+  const expected = parseSitemapRoutes(sitemap).map((rel) => encodeURI(`/${rel.replace(/index\.html$/, '')}`));
+  for (const locale of LOCALES) {
+    for (const sub of NOINDEX_ROUTE_PATHS) expected.push(localePath(locale, sub));
+  }
+  for (const routePath of expected) {
+    if (known.has(routePath)) continue;
+    known.add(routePath);
+    const group = /^\/[^/]+\/diretorio\/(?!gerir\/)[^/]+\/$/.test(routePath) ? 'diretorio' : 'static';
+    routes.push({ path: routePath, group });
+  }
   return routes;
 }
 
