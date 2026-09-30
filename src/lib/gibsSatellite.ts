@@ -5,6 +5,14 @@
  *  cliente. A resposta vem com `Cache-Control: no-store`, por isso o browser
  *  revalida e o «hoje» nunca fica parado a um dia anterior.
  *
+ *  ATENÇÃO — `default` é HOJE, e o mosaico de hoje só se preenche depois do
+ *  passe (Terra ~10:30 UTC sobre Ibéria + ~3 h de processamento): de manhã
+ *  o tile de hoje é o tile «sem dados» em TODOS os satélites (medido a 30 set
+ *  09:34 UTC: 1665 B contra 10 KB do dia anterior) e a camada ficava ligada
+ *  sem mostrar nada. Como o Worldview da NASA, empilha-se o mosaico de
+ *  ONTEM (completo) por baixo do de hoje (parcial, sem dados → transparente):
+ *  onde o passe de hoje já existe vê-se hoje, onde não, vê-se ontem.
+ *
  *  Cobertura útil: nuvens e frentes a chegar à costa — não é um basemap (o
  *  basemap satélite Esri é fotografia histórica), é o céu de agora.
  *
@@ -12,8 +20,22 @@
  *  z9 não há tiles — `maxNativeZoom: 9` faz o Leaflet esticar o último nível
  *  (a imagem é nuvens, não detalhe de rua — o stretch é aceitável). */
 
-export const GIBS_SATELLITE_URL =
-  'https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/MODIS_Terra_CorrectedReflectance_TrueColor/default/default/GoogleMapsCompatible_Level9/{z}/{y}/{x}.jpg';
+const GIBS_SATELLITE_BASE =
+  'https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/MODIS_Terra_CorrectedReflectance_TrueColor/default';
+const GIBS_SATELLITE_TAIL = 'GoogleMapsCompatible_Level9/{z}/{y}/{x}.jpg';
+
+/** Mosaico de HOJE (slot `default`): parcial até o passe ser processado. */
+export const GIBS_SATELLITE_URL = `${GIBS_SATELLITE_BASE}/default/${GIBS_SATELLITE_TAIL}`;
+
+/** Mosaico de um dia UTC concreto (YYYY-MM-DD) — a camada de baixo. */
+export function gibsSatelliteDayUrl(day: string): string {
+  return `${GIBS_SATELLITE_BASE}/${day}/${GIBS_SATELLITE_TAIL}`;
+}
+
+/** Dia UTC anterior ao de `nowMs`, em YYYY-MM-DD (o GIBS data em UTC). */
+export function gibsPreviousDayUtc(nowMs: number = Date.now()): string {
+  return new Date(nowMs - 86_400_000).toISOString().slice(0, 10);
+}
 
 export const GIBS_SATELLITE_NATIVE_MAX_ZOOM = 9;
 

@@ -248,7 +248,7 @@ export const translationsEs = {
     bathymetryHint: 'Relieve submarino (EMODnet) — bancos, cañones y talud bajo la rompiente',
     bathymetryLegend: 'Batimetría — m (EMODnet)',
     bathymetryContours: 'isobatas 50–5000 m',
-    gibsSatHint: 'Imagen real del último paso del satélite — nubes y frentes llegando (NASA GIBS · MODIS)',
+    gibsSatHint: 'Imagen real de los últimos pasos del satélite (hoy donde ya hay, si no ayer) — nubes y frentes llegando (NASA GIBS · MODIS)',
     satIrHint: 'Masa de nubes en infrarrojo GOES-East — células formándose en el Atlántico, fotogramas de ~10 min (NASA GIBS)',
     satIrBadge: 'Satélite IR',
     showSeamarks: 'Señalización náutica',

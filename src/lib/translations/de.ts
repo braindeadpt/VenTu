@@ -248,7 +248,7 @@ export const translationsDe = {
     bathymetryHint: 'Meeresboden-Relief (EMODnet) — Bänke, Canyons und Schelfkante unter der Brandung',
     bathymetryLegend: 'Bathymetrie — m (EMODnet)',
     bathymetryContours: 'Tiefenlinien 50–5000 m',
-    gibsSatHint: 'Echtbild des letzten Satellitendurchgangs — einziehende Wolken und Fronten (NASA GIBS · MODIS)',
+    gibsSatHint: 'Echtbild der letzten Satellitendurchgänge (heute, wo schon vorhanden, sonst gestern) — einziehende Wolken und Fronten (NASA GIBS · MODIS)',
     satIrHint: 'GOES-East-Infrarot-Wolkenmasse — Zellen über dem Atlantik, ~10-Min.-Frames (NASA GIBS)',
     satIrBadge: 'IR-Satellit',
     showSeamarks: 'Seezeichen',

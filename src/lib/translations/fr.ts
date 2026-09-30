@@ -248,7 +248,7 @@ export const translationsFr = {
     bathymetryHint: 'Relief sous-marin (EMODnet) — bancs, canyons et talus sous la zone de déferlement',
     bathymetryLegend: 'Bathymétrie — m (EMODnet)',
     bathymetryContours: 'isobathes 50–5000 m',
-    gibsSatHint: 'Image réelle du dernier passage satellite — nuages et fronts en approche (NASA GIBS · MODIS)',
+    gibsSatHint: 'Image réelle des derniers passages satellite (aujourd’hui là où disponible, sinon hier) — nuages et fronts en approche (NASA GIBS · MODIS)',
     satIrHint: 'Masse nuageuse infrarouge GOES-East — cellules en formation sur l’Atlantique, images de ~10 min (NASA GIBS)',
     satIrBadge: 'Satellite IR',
     showSeamarks: 'Balisage nautique',

@@ -85,7 +85,7 @@ https://nomads.ncep.noaa.gov/cgi-bin/filter_gfswave.pl
 
 **Phase A — near-zero cost, do first** — **IMPLEMENTADA (2026-09-29)**
 
-1. ✅ **GIBS map layer** («Satélite NASA (hoje)») — `L.TileLayer` no pane
+1. ✅ **GIBS map layer** («Satélite NASA») — `L.TileLayer` no pane
    `ventu-gibs-sat` (z205), MODIS Terra true-color com o slot `default` do
    WMTS a servir sempre a data mais recente (no-store). Conta para o cap de
    raster pesadas (máx. 2 de radar/batimetria/seamarks/gibsSat), persiste em

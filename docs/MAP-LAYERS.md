@@ -105,6 +105,6 @@ currents) have their own mutual-exclusion rules and don't count.
   no client-side date math; `Cache-Control: no-store` keeps «today» fresh.
 - `L.tileLayer` on `ventu-gibs-sat` pane, `pointerEvents: none`,
   `maxNativeZoom: 9` (~250 m/px — clouds, not street detail).
-- Toggle in the Camadas menu («Satélite NASA (hoje)», `data-map-gibs-sat-toggle`),
+- Toggle in the Camadas menu («Satélite NASA», `data-map-gibs-sat-toggle`),
   persisted to `ventu.map.gibsSat` localStorage, disabled in hero embeds.
 - Attribution: «Imagery © NASA GIBS (EOSDIS/MODIS Terra)».

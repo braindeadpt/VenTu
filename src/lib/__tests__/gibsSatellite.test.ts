@@ -3,6 +3,8 @@ import {
   GIBS_SATELLITE_URL,
   gibsBlankPixelRatio,
   gibsMaskPixels,
+  gibsPreviousDayUtc,
+  gibsSatelliteDayUrl,
 } from '@/lib/gibsSatellite';
 
 function rgba(px: Array<[number, number, number]>): Uint8ClampedArray {
@@ -15,6 +17,29 @@ function rgba(px: Array<[number, number, number]>): Uint8ClampedArray {
   });
   return data;
 }
+
+describe('gibsSatellite — mosaico de ontem por baixo do de hoje', () => {
+  it('o URL do dia anterior é o mesmo produto com a data no slot TIME', () => {
+    const url = gibsSatelliteDayUrl('2026-09-29');
+    expect(url).toContain('MODIS_Terra_CorrectedReflectance_TrueColor/default/2026-09-29/');
+    expect(url).toContain('GoogleMapsCompatible_Level9/{z}/{y}/{x}.jpg');
+    // Mesmo caminho que o de hoje, só o slot TIME muda.
+    expect(url.replace('/2026-09-29/', '/default/')).toBe(GIBS_SATELLITE_URL);
+  });
+
+  it('o dia anterior é UTC — o GIBS data em UTC, não em Lisboa', () => {
+    // 30 set 00:10 UTC (01:10 em Lisboa): ontem é 29, tanto para UTC como para Lisboa.
+    expect(gibsPreviousDayUtc(Date.UTC(2026, 8, 30, 0, 10))).toBe('2026-09-29');
+    // 29 set 23:50 UTC = 30 set 00:50 em Lisboa: em UTC ainda é dia 29 → ontem é 28.
+    expect(gibsPreviousDayUtc(Date.UTC(2026, 8, 29, 23, 50))).toBe('2026-09-28');
+  });
+
+  it('atravessa fim de mês e de ano', () => {
+    expect(gibsPreviousDayUtc(Date.UTC(2026, 9, 1, 8, 0))).toBe('2026-09-30');
+    expect(gibsPreviousDayUtc(Date.UTC(2027, 0, 1, 8, 0))).toBe('2026-12-31');
+    expect(gibsPreviousDayUtc(Date.UTC(2028, 2, 1, 8, 0))).toBe('2028-02-29'); // bissexto
+  });
+});
 
 describe('gibsSatellite', () => {
   it('URL aponta para o produto MODIS Terra true-color com slot default', () => {

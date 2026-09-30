@@ -69,6 +69,8 @@ import {
   GIBS_SATELLITE_ATTRIBUTION,
   MAP_GIBS_SAT_PANE,
   MAP_GIBS_SAT_PANE_Z,
+  gibsPreviousDayUtc,
+  gibsSatelliteDayUrl,
   gibsTileMaskBlank,
 } from '@/lib/gibsSatellite';
 import {
@@ -740,7 +742,7 @@ export function useMapLayers({
     pane.style.zIndex = MAP_GIBS_SAT_PANE_Z;
     pane.style.pointerEvents = 'none';
 
-    const layer = Leaflet.tileLayer(GIBS_SATELLITE_URL, {
+    const options = {
       pane: MAP_GIBS_SAT_PANE,
       opacity: 1,
       attribution: GIBS_SATELLITE_ATTRIBUTION,
@@ -749,18 +751,28 @@ export function useMapLayers({
       maxZoom: 19,
       // CORS permite ler os pixels (o GIBS manda ACAO:*) — ver tileload.
       crossOrigin: true,
-    });
+    } as const;
+    // Duas camadas empilhadas (ver gibsSatellite.ts): ONTEM por baixo, HOJE
+    // por cima. O mosaico de hoje só se preenche depois do passe — de manhã é
+    // todo «sem dados» e, sozinho, a opção ficava ligada sem mostrar nada.
+    const layers = [
+      Leaflet.tileLayer(gibsSatelliteDayUrl(gibsPreviousDayUtc()), { ...options, zIndex: 1 }),
+      Leaflet.tileLayer(GIBS_SATELLITE_URL, { ...options, zIndex: 2 }),
+    ];
     // Tiles «sem dados» são pretos (noite/fora do disco, nesga de swath) —
     // sem isto a camada opaca cobre o mapa todo de preto. A máscara torna o
-    // preto transparente e o basemap aparece por baixo.
-    layer.on('tileload', (e: L.TileEvent) => {
-      const tile = e.tile as HTMLImageElement | undefined;
-      if (tile) gibsTileMaskBlank(tile);
-    });
-    layer.addTo(map);
+    // preto transparente: em cima deixa ver o dia anterior, em baixo o
+    // basemap.
+    for (const layer of layers) {
+      layer.on('tileload', (e: L.TileEvent) => {
+        const tile = e.tile as HTMLImageElement | undefined;
+        if (tile) gibsTileMaskBlank(tile);
+      });
+      layer.addTo(map);
+    }
 
     return () => {
-      if (map.hasLayer(layer)) map.removeLayer(layer);
+      for (const layer of layers) if (map.hasLayer(layer)) map.removeLayer(layer);
     };
   }, [gibsSatEnabled, isReady, mapInstanceRef, LRef]);
 

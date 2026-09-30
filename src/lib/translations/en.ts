@@ -191,7 +191,7 @@ export const translationsEn = {
     bathymetryHint: 'Seafloor relief (EMODnet) — banks, canyons and shelf breaks under the break',
     bathymetryLegend: 'Bathymetry — m (EMODnet)',
     bathymetryContours: 'contours 50–5000 m',
-    gibsSatHint: 'Real imagery from the latest satellite pass — incoming clouds and fronts (NASA GIBS · MODIS)',
+    gibsSatHint: 'Real imagery from the latest satellite passes (today where available, otherwise yesterday) — incoming clouds and fronts (NASA GIBS · MODIS)',
     satIrHint: 'GOES-East infrared cloud mass — cells forming over the Atlantic, ~10-min frames (NASA GIBS)',
     satIrBadge: 'IR satellite',
     showSeamarks: 'Nautical marks',
