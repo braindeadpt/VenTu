@@ -229,7 +229,7 @@ export function useMapLayersFields({
     seamarksEnabled, toggleSeamarks,
     gibsSatEnabled, toggleGibsSat,
     goesIrEnabled, toggleGoesIr,
-    stormsEnabled, stormsData, toggleStorms,
+    stormsEnabled, stormsUnavailable, toggleStorms,
     warnAreasEnabled, warnAreasUnavailable, toggleWarnAreas,
     coastalWarningsEnabled, toggleCoastalWarnings, coastalWarningsLabel,
   } = base;
@@ -399,12 +399,12 @@ export function useMapLayersFields({
       label: lyr.layerStorms,
       // Sem tempestades activas na região ou ficheiro stale → o toggle que
       // não pinta nada desactiva-se em vez de parecer avariado.
-      hint: !stormsData || stormsData.storms.length === 0
+      hint: stormsUnavailable
         ? `${layerCopy.stormsHint} — ${lyr.unavailable}`
         : layerCopy.stormsHint,
       icon: <CloudLightning className="w-4 h-4" aria-hidden />,
       pressed: stormsEnabled,
-      disabled: !stormsData || stormsData.storms.length === 0,
+      disabled: stormsUnavailable,
       onToggle: toggleStorms,
       toggleAttr: 'data-map-storms-toggle',
       iconClass: 'text-score-poor',
@@ -529,7 +529,7 @@ export function useMapLayersFields({
     isobathsEnabled, toggleIsobaths,
     bathymetryEnabled, toggleBathymetry,
     seamarksEnabled, toggleSeamarks,
-    stormsEnabled, stormsData, toggleStorms,
+    stormsEnabled, stormsUnavailable, toggleStorms,
     warnAreasEnabled, warnAreasUnavailable, toggleWarnAreas,
     coastalWarningsEnabled, toggleCoastalWarnings,
   ]);

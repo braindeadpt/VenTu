@@ -173,6 +173,7 @@ interface UseMapLayersReturn {
   // NHC tropical storms
   stormsEnabled: boolean;
   stormsData: NhcStormsFile | null | undefined;
+  stormsUnavailable: boolean;
   toggleStorms: () => void;
   stormsLabel: string;
   // IPMA warning areas (polígonos distrito/ilha — B2)
@@ -776,18 +777,13 @@ export function useMapLayers({
   const [goesIrFrameList, setGoesIrFrameList] = useState<GoesIrFrame[]>([]);
   const goesIrFrameIndexRef = useRef(0);
   const goesIrUserPausedRef = useRef(goesIrUserPaused);
-  const goesIrLayerRef = useRef<L.TileLayer | null>(null);
+  const goesIrActivateRef = useRef<((i: number) => void) | null>(null);
 
   useEffect(() => { goesIrUserPausedRef.current = goesIrUserPaused; }, [goesIrUserPaused]);
 
   useEffect(() => {
-    if (!goesIrEnabled) {
-      if (goesIrLayerRef.current) {
-        mapInstanceRef.current?.removeLayer(goesIrLayerRef.current);
-        goesIrLayerRef.current = null;
-      }
-      return;
-    }
+    goesIrActivateRef.current = null;
+    if (!goesIrEnabled) return;
     if (!isReady || !mapInstanceRef.current) return;
     const map = mapInstanceRef.current;
     const Leaflet = LRef.current;
@@ -806,26 +802,80 @@ export function useMapLayers({
     pane.style.zIndex = MAP_GOES_IR_PANE_Z;
     pane.style.pointerEvents = 'none';
 
-    const layer = Leaflet.tileLayer(frames[savedFrame].url, {
-      pane: MAP_GOES_IR_PANE,
-      opacity: 0.85,
-      attribution: GOES_IR_ATTRIBUTION,
-      className: 'ventu-goes-ir',
-      maxNativeZoom: GOES_IR_NATIVE_MAX_ZOOM,
-      maxZoom: 19,
-      crossOrigin: true,
-    });
-    // Mesmo problema do true-color: fora do disco GOES o GIBS serve preto.
-    layer.on('tileload', (e: L.TileEvent) => {
-      const tile = e.tile as HTMLImageElement | undefined;
-      if (tile) gibsTileMaskBlank(tile);
-    });
-    layer.addTo(map);
-    goesIrLayerRef.current = layer;
+    // Um TileLayer por frame — o GIBS serve `no-store`, por isso `setUrl`
+    // (padrão do radar) re-pede todos os tiles a cada tick e a camada
+    // aparece/desaparece. Com um layer persistente por frame, trocar de
+    // frame é só trocar a opacidade: zero refetch, transição instantânea.
+    const pool = new Map<number, L.TileLayer>();
+    const warm = new Set<number>();
+    let activeIdx = -1;
+    let wantedIdx = -1;
+
+    const ensure = (i: number): L.TileLayer => {
+      let layer = pool.get(i);
+      if (layer) return layer;
+      layer = Leaflet.tileLayer(frames[i].url, {
+        pane: MAP_GOES_IR_PANE,
+        opacity: 0,
+        attribution: GOES_IR_ATTRIBUTION,
+        className: 'ventu-goes-ir',
+        maxNativeZoom: GOES_IR_NATIVE_MAX_ZOOM,
+        maxZoom: 19,
+        crossOrigin: true,
+        updateWhenZooming: false,
+        updateWhenIdle: true,
+      });
+      // Mesmo problema do true-color: fora do disco GOES o GIBS serve preto.
+      layer.on('tileload', (e: L.TileEvent) => {
+        const tile = e.tile as HTMLImageElement | undefined;
+        if (tile) gibsTileMaskBlank(tile);
+      });
+      layer.on('load', () => warm.add(i));
+      layer.addTo(map);
+      pool.set(i, layer);
+      return layer;
+    };
+
+    const activate = (i: number) => {
+      if (i === wantedIdx) return;
+      wantedIdx = i;
+      const layer = ensure(i);
+      const show = () => {
+        if (wantedIdx !== i) return;
+        activeIdx = i;
+        pool.forEach((l, k) => l.setOpacity(k === i ? 0.85 : 0));
+      };
+      // Frame já visto → troca instantânea; frame frio → mantém o anterior
+      // visível até o novo pintar (sem buraco na animação).
+      if (warm.has(i)) show();
+      else layer.once('load', show);
+      // Aquece o próximo frame — o tick seguinte é instantâneo.
+      ensure((i + 1) % frames.length);
+    };
+    goesIrActivateRef.current = activate;
+    activate(savedFrame);
+
+    // Num pan/zoom os tiles do pool ficam obsoletos — descarta os não
+    // activos para não refazer 12 camadas a cada movimento.
+    const onMoveStart = () => {
+      pool.forEach((l, k) => {
+        if (k === activeIdx) return;
+        if (map.hasLayer(l)) map.removeLayer(l);
+        pool.delete(k);
+        warm.delete(k);
+        // O layer removido podia ter um 'load' pendente — sem isto o
+        // re-pedido do mesmo frame seria ignorado pelo guard de wantedIdx.
+        if (k === wantedIdx) wantedIdx = activeIdx;
+      });
+    };
+    map.on('movestart', onMoveStart);
 
     return () => {
-      if (map.hasLayer(layer)) map.removeLayer(layer);
-      goesIrLayerRef.current = null;
+      map.off('movestart', onMoveStart);
+      goesIrActivateRef.current = null;
+      pool.forEach((l) => { if (map.hasLayer(l)) map.removeLayer(l); });
+      pool.clear();
+      warm.clear();
     };
   }, [goesIrEnabled, isReady, mapInstanceRef, LRef]);
 
@@ -853,7 +903,7 @@ export function useMapLayers({
     const v = Math.max(0, Math.min(goesIrFrameList.length - 1, value));
     goesIrFrameIndexRef.current = v;
     setGoesIrFrameIndex(v);
-    goesIrLayerRef.current?.setUrl(goesIrFrameList[v].url);
+    goesIrActivateRef.current?.(v);
     if (goesIrUserPausedRef.current) writeGoesIrPref(true, v);
   }, [goesIrFrameList]);
 
@@ -1128,6 +1178,11 @@ export function useMapLayers({
     };
   }, [stormsData]);
 
+  // Sem tempestades na região ou ficheiro stale (pipeline parado >24h) →
+  // «indisponível»: um toggle que não pinta nada parece avaria.
+  const stormsUnavailable =
+    !stormsData || !stormsFresh(stormsData) || stormsData.storms.length === 0;
+
   useEffect(() => {
     if (!stormsEnabled) {
       if (stormsLayerRef.current) {
@@ -1382,7 +1437,7 @@ export function useMapLayers({
     goesIrFrameList, goesIrFrameIndex, goesIrUserPaused,
     handleGoesIrFrameChange, handleGoesIrUserPausedChange,
     coastalWarningsEnabled, coastalWarningsData, toggleCoastalWarnings, coastalWarningsLabel,
-    stormsEnabled, stormsData, toggleStorms, stormsLabel,
+    stormsEnabled, stormsData, stormsUnavailable, toggleStorms, stormsLabel,
     warnAreasEnabled, warnAreasUnavailable, toggleWarnAreas,
   };
 }

@@ -221,7 +221,7 @@ export default function SpotMapInteractive({
     goesIrEnabled, toggleGoesIr,
     goesIrFrameList, goesIrFrameIndex, goesIrUserPaused,
     handleGoesIrFrameChange, handleGoesIrUserPausedChange,
-    stormsEnabled, stormsData, toggleStorms,
+    stormsEnabled, stormsUnavailable, toggleStorms,
     warnAreasEnabled, warnAreasUnavailable, toggleWarnAreas,
     coastalWarningsEnabled, toggleCoastalWarnings, coastalWarningsLabel,
     hoursFile, hoursOn, hoursLive, hoursFrame, hoursUserPaused, hoursPrefSet,
@@ -622,10 +622,10 @@ export default function SpotMapInteractive({
     stormsLabel: layerCopy.stormsLabel,
     // Sem tempestades na região ou ficheiro stale → hint «indisponível»
     // localizado + toggle off (pintar nada parecia avaria).
-    stormsHint: !stormsData || stormsData.storms.length === 0
+    stormsHint: stormsUnavailable
       ? `${layerCopy.stormsHint} — ${t.mapUiLayers.unavailable}`
       : layerCopy.stormsHint,
-    stormsUnavailable: !stormsData || stormsData.storms.length === 0,
+    stormsUnavailable,
     warnAreasEnabled,
     warnAreasLabel: layerCopy.warnAreasLabel,
     warnAreasHint: warnAreasUnavailable
