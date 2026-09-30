@@ -244,22 +244,25 @@ export default function SpotVerdictHero({
               <span className="font-mono tabular-nums text-fg">
                 {selectedHour ? formatHourLong(selectedHour, locale) : '--:--'}
               </span>
-              {/* A pill existe sempre — invisível até haver índice «agora»
-                  (HTML baked). Aparecer só depois da hidratação crescia a
-                  linha 4–5 px e empurrava a página inteira (CLS 0,2).
-                  Fora de cobertura assume a forma visível: a previsão está
-                  expirada e dizer «Agora» seria mentir sobre o dado. */}
+              {/* A pill existe sempre — invisível enquanto o relógio não está
+                  resolvido (HTML baked). Aparecer só depois da hidratação
+                  crescia a linha 4–5 px e empurrava a página (CLS 0,2).
+                  A visibilidade segue `nowResolved`, NÃO `nowIndex`: um
+                  `nowIndex` de −1 significa agora DUAS coisas — «ainda não
+                  medi» e «medi, mas a série expirou» — e no segundo caso o
+                  aviso tem de ser visível, porque dizer «Agora» seria
+                  mentir sobre o dado. */}
               <span
                 aria-hidden={!nowResolved || undefined}
                 className={cn(
                   'rounded-pill border px-2 py-0.5 text-meta-sm font-medium',
                   !nowResolved && 'invisible',
-                  !nowResolved || isNow
+                  nowIndex < 0 || isNow
                     ? 'border-divider-strong text-fg'
                     : 'border-divider text-fg-muted',
                 )}
               >
-                {!nowResolved
+                {nowIndex < 0
                   ? tv.outsideCoverageLabel
                   : isNow
                     ? tv.nowLabel
