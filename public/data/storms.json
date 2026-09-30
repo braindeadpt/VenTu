@@ -1,6 +1,6 @@
 {
   "source": "nhc",
-  "fetchedAt": "2026-09-30T04:07:10.011Z",
+  "fetchedAt": "2026-09-30T06:44:48.153Z",
   "region": {
     "latMin": 25,
     "latMax": 50,
@@ -8,120 +8,6 @@
     "lonMax": -4
   },
   "storms": [
-    {
-      "id": "al062026",
-      "name": "Fay",
-      "classification": "PTC",
-      "classificationLabel": "PTC",
-      "intensityMph": 25,
-      "pressureMb": 1011,
-      "lat": 23.7,
-      "lon": -48.2,
-      "movementDirDeg": 240,
-      "movementSpeedMph": 12,
-      "lastUpdate": "2026-09-29T21:00:00.000Z",
-      "advisory": "039",
-      "cone": [
-        [
-          -52.12388,
-          22.06229
-        ],
-        [
-          -51.84312,
-          22.0694
-        ],
-        [
-          -50.45287,
-          22.4439
-        ],
-        [
-          -49.2971,
-          22.84418
-        ],
-        [
-          -48.03512,
-          23.48311
-        ],
-        [
-          -47.92847,
-          23.61678
-        ],
-        [
-          -47.93717,
-          23.80625
-        ],
-        [
-          -48.08547,
-          23.94001
-        ],
-        [
-          -48.25767,
-          23.95699
-        ],
-        [
-          -49.87716,
-          23.50887
-        ],
-        [
-          -52.26643,
-          23.29857
-        ],
-        [
-          -52.61399,
-          23.01934
-        ],
-        [
-          -52.69616,
-          22.61522
-        ],
-        [
-          -52.48455,
-          22.23118
-        ],
-        [
-          -52.12388,
-          22.06229
-        ]
-      ],
-      "track": [
-        [
-          -48.2,
-          23.7
-        ],
-        [
-          -49.8,
-          23.1
-        ],
-        [
-          -52,
-          22.7
-        ]
-      ],
-      "trackPoints": [
-        {
-          "lat": 23.7,
-          "lon": -48.2,
-          "forecastHr": null,
-          "validAt": "5:00 PM AST September 29, 2026",
-          "maxWindMph": 30
-        },
-        {
-          "lat": 23.1,
-          "lon": -49.8,
-          "forecastHr": 12,
-          "validAt": "2:00 AM AST September 30, 2026",
-          "maxWindMph": 30
-        },
-        {
-          "lat": 22.7,
-          "lon": -52,
-          "forecastHr": 24,
-          "validAt": "2:00 PM AST September 30, 2026",
-          "maxWindMph": 30
-        }
-      ],
-      "coneTouchesRegion": null
-    },
     {
       "id": "al082026",
       "name": "Hanna",
@@ -310,5 +196,5 @@
     }
   ],
   "spotStorms": {},
-  "activeCount": 6
+  "activeCount": 5
 }
