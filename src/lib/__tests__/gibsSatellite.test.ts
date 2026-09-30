@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import {
-  GIBS_BLANK_TILE_RATIO,
   GIBS_SATELLITE_URL,
   gibsBlankPixelRatio,
+  gibsMaskPixels,
 } from '@/lib/gibsSatellite';
 
 function rgba(px: Array<[number, number, number]>): Uint8ClampedArray {
@@ -47,15 +47,42 @@ describe('gibsSatellite', () => {
     expect(gibsBlankPixelRatio(rgba(px), px.length)).toBeCloseTo(0.5, 5);
   });
 
-  it('rácio de corte cobre tiles quase todos pretos mas não mistos', () => {
-    const mostlyBlank = [
-      ...Array.from({ length: Math.floor(32 * 32 * 0.95) }, () => [0, 0, 0] as [number, number, number]),
-      ...Array.from({ length: 32 * 32 - Math.floor(32 * 32 * 0.95) }, () => [40, 80, 120] as [number, number, number]),
-    ];
-    expect(gibsBlankPixelRatio(rgba(mostlyBlank), mostlyBlank.length)).toBeGreaterThanOrEqual(GIBS_BLANK_TILE_RATIO);
-  });
-
   it('pixelCount 0 não rebenta', () => {
     expect(gibsBlankPixelRatio(new Uint8ClampedArray(0), 0)).toBe(0);
+  });
+});
+
+describe('gibsMaskPixels', () => {
+  it('pixels pretos ficam transparentes, pixels com conteúdo ficam opacos', () => {
+    const data = rgba([
+      [0, 0, 0],
+      [30, 60, 90],
+      [1, 2, 3],
+      [255, 200, 100],
+    ]);
+    const content = gibsMaskPixels(data);
+    expect(content).toBe(2);
+    expect(data[3]).toBe(0); // preto → alpha 0
+    expect(data[7]).toBe(255); // oceano → intacto
+    expect(data[11]).toBe(0); // ruído preto → alpha 0
+    expect(data[15]).toBe(255); // nuvem → intacto
+  });
+
+  it('tile todo com conteúdo não perde alpha nenhum', () => {
+    const data = rgba([
+      [50, 80, 110],
+      [200, 200, 190],
+    ]);
+    expect(gibsMaskPixels(data)).toBe(2);
+    expect(data[3]).toBe(255);
+    expect(data[7]).toBe(255);
+  });
+
+  it('tile todo preto devolve 0 conteúdo', () => {
+    const data = rgba([
+      [0, 0, 0],
+      [4, 5, 6],
+    ]);
+    expect(gibsMaskPixels(data)).toBe(0);
   });
 });
