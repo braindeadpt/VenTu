@@ -645,7 +645,8 @@ async function evaluateUserFavoritesAlerts(idToSlug, conditions, warnings, coast
     const { url, key } = getSupabaseConfig();
     const chatId = await fetchTelegramChatId(url, key, pref.user_id);
     let tgOk = false;
-    if (chatId) {    const tgLines = firing
+    if (chatId) {
+      const tgLines = firing
       .map(({ slug, score, source, seaWarn, coastalWarn, triggers }) => {
         const line = `• ${slug} — ${score}/100${scoreSourceNote(source, isPt)}`;
         const safetyLine = [

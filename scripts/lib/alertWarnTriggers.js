@@ -59,14 +59,22 @@ const TRIGGER_LEVELS = new Set(['orange', 'red']);
 
 /**
  * Avisos IPMA laranja/vermelho activos sobre o spot.
+ * Aviso expirado (endTime no passado) nunca dispara — o ficheiro pode
+ * ficar stale quando o IPMA está em baixo (o fetcher mantém o anterior).
  * @param {{ spotWarnings?: Record<string, Array<object>> } | null | undefined} data warnings.json
  * @param {string} spotId
+ * @param {number} [now] epoch ms
  */
-function ipmaWarningTriggers(data, spotId) {
+function ipmaWarningTriggers(data, spotId, now = Date.now()) {
   const list = data?.spotWarnings?.[spotId];
   if (!Array.isArray(list)) return [];
   return list
-    .filter((w) => w && TRIGGER_LEVELS.has(w.level))
+    .filter(
+      (w) =>
+        w &&
+        TRIGGER_LEVELS.has(w.level) &&
+        (!w.endTime || Date.parse(w.endTime) > now),
+    )
     .map((w) => ({
       kind: 'ipma',
       level: w.level,
@@ -118,11 +126,12 @@ function nhcStormTriggers(data, spotId) {
  * evaluator. Fontes em falta degradam para [] (nunca inventa).
  * @param {{ warnings?: object, coastal?: object, storms?: object }} sources
  * @param {string} spotId
+ * @param {number} [now] epoch ms (filtro de expiração IPMA)
  */
-function warningTriggersForSpot(sources, spotId) {
+function warningTriggersForSpot(sources, spotId, now = Date.now()) {
   const s = sources || {};
   return [
-    ...ipmaWarningTriggers(s.warnings, spotId),
+    ...ipmaWarningTriggers(s.warnings, spotId, now),
     ...ihSafetyTriggers(s.coastal, spotId),
     ...nhcStormTriggers(s.storms, spotId),
   ];
