@@ -1973,6 +1973,15 @@ body:has(header[data-header-compact='true']) [data-map-fullscreen='true'].top-16
   border-color: rgb(var(--divider));
   box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.2), 0 1px 3px 0 rgb(0 0 0 / 0.15);
 }
+/* Botões da pilha com fundo SÓLIDO. O StackButton pede `bg-bg-elevated`, mas o
+   MapControlButton traz `bg-surface-1/[0.04]` na base e o `cn` do repo é uma
+   junção simples (sem tailwind-merge): as duas classes coexistem e ganhava a
+   translúcida — vidro a 4 %, invisível sobre imagem clara (satélite NASA, basemap
+   Esri) em tema escuro. Só os botões directos da pilha: o grupo de zoom tem o
+   seu próprio fundo, e o estado «ligado» (aria-pressed) vem a seguir e vence. */
+[data-map-control-stack] > .map-cb > button:not([aria-pressed='true']) {
+  background: rgb(var(--bg-elevated));
+}
 [data-map-control-stack] button[aria-pressed='true'] {
   background: rgb(var(--fg));
   color: rgb(var(--bg-base));
