@@ -69,6 +69,7 @@ import {
   GIBS_SATELLITE_ATTRIBUTION,
   MAP_GIBS_SAT_PANE,
   MAP_GIBS_SAT_PANE_Z,
+  gibsTileIsBlank,
 } from '@/lib/gibsSatellite';
 import {
   goesIrFrames,
@@ -726,6 +727,15 @@ export function useMapLayers({
       className: 'ventu-gibs-sat',
       maxNativeZoom: GIBS_SATELLITE_NATIVE_MAX_ZOOM,
       maxZoom: 19,
+      // CORS permite ler os pixels (o GIBS manda ACAO:*) — ver tileload.
+      crossOrigin: true,
+    });
+    // Tiles «sem dados» são JPEGs 100% pretos (noite/fora do disco) — sem
+    // isto a camada opaca cobre o mapa todo de preto. Escondê-los deixa o
+    // basemap aparecer por baixo.
+    layer.on('tileload', (e: L.TileEvent) => {
+      const tile = e.tile as HTMLImageElement | undefined;
+      if (tile && gibsTileIsBlank(tile)) tile.style.display = 'none';
     });
     layer.addTo(map);
 
@@ -803,6 +813,12 @@ export function useMapLayers({
       className: 'ventu-goes-ir',
       maxNativeZoom: GOES_IR_NATIVE_MAX_ZOOM,
       maxZoom: 19,
+      crossOrigin: true,
+    });
+    // Mesmo problema do true-color: fora do disco GOES o GIBS serve preto.
+    layer.on('tileload', (e: L.TileEvent) => {
+      const tile = e.tile as HTMLImageElement | undefined;
+      if (tile && gibsTileIsBlank(tile)) tile.style.display = 'none';
     });
     layer.addTo(map);
     goesIrLayerRef.current = layer;

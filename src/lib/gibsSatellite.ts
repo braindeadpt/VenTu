@@ -25,3 +25,48 @@ export const GIBS_SATELLITE_ATTRIBUTION =
  *  — fields (345+), radar (400) e marcadores (600+) continuam por cima. */
 export const MAP_GIBS_SAT_PANE = 'ventu-gibs-sat';
 export const MAP_GIBS_SAT_PANE_Z = '205';
+
+/** Tiles «sem dados» do GIBS são JPEGs 100% pretos — acontece de noite
+ *  (true-color não vê nada), fora do disco do satélite e antes do passe do
+ *  dia. Sem tratamento, a camada opaca cobre o mapa inteiro de preto e o
+ *  utilizador lê «mapa avariado». Como o GIBS manda
+ *  `Access-Control-Allow-Origin: *`, pedimos os tiles com `crossOrigin` e
+ *  amostramos os pixels — tiles ~todo pretos são escondidos e o basemap
+ *  aparece por baixo.
+ *
+ *  O corte é deliberadamente baixo: o «sem dados» é #000 puro; o oceano
+ *  real de dia é azul-escuro (max canal ~30-60), nunca <14. */
+export const GIBS_BLANK_SAMPLE = 32;
+export const GIBS_BLANK_CHANNEL_MAX = 14;
+export const GIBS_BLANK_TILE_RATIO = 0.9;
+
+/** Fracção de pixels «vazios» (quase pretos) num buffer RGBA amostrado.
+ *  Exportada para testes — `gibsTileIsBlank` trata da parte DOM/canvas. */
+export function gibsBlankPixelRatio(data: ArrayLike<number>, pixelCount: number): number {
+  if (pixelCount <= 0) return 0;
+  let blank = 0;
+  for (let i = 0; i < pixelCount * 4; i += 4) {
+    if (Math.max(data[i], data[i + 1], data[i + 2]) < GIBS_BLANK_CHANNEL_MAX) blank++;
+  }
+  return blank / pixelCount;
+}
+
+let blankCanvas: HTMLCanvasElement | null = null;
+
+/** `img` é um tile GIBS já carregado. Devolve true quando ≥90% do tile é
+ *  quase preto — «sem dados». Em caso de erro (canvas indisponível, etc.)
+ *  devolve false: preferimos mostrar um tile suspeito a esconder um bom. */
+export function gibsTileIsBlank(img: HTMLImageElement): boolean {
+  try {
+    blankCanvas ??= document.createElement('canvas');
+    blankCanvas.width = GIBS_BLANK_SAMPLE;
+    blankCanvas.height = GIBS_BLANK_SAMPLE;
+    const ctx = blankCanvas.getContext('2d', { willReadFrequently: true });
+    if (!ctx) return false;
+    ctx.drawImage(img, 0, 0, GIBS_BLANK_SAMPLE, GIBS_BLANK_SAMPLE);
+    const { data } = ctx.getImageData(0, 0, GIBS_BLANK_SAMPLE, GIBS_BLANK_SAMPLE);
+    return gibsBlankPixelRatio(data, GIBS_BLANK_SAMPLE * GIBS_BLANK_SAMPLE) >= GIBS_BLANK_TILE_RATIO;
+  } catch {
+    return false;
+  }
+}
