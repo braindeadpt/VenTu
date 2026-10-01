@@ -364,7 +364,10 @@ export default function MapControls(props: MapControlsProps) {
           className={`${item} text-fg`}
           aria-label={clusterLabel}
           title={clusterLabel}
-          aria-pressed={!clusterEnabled}
+          // Nome = MODO (clusterLabel é constante) e estado = aria-pressed —
+          // a dupla negação antiga anunciava «Mostrar todos, premido» com o
+          // mapa agrupado (o nome contradizia o estado). Ver MapExploreZone.
+          aria-pressed={clusterEnabled}
         >
           {clusterEnabled ? <MapPin className="w-4 h-4 shrink-0" aria-hidden /> : <Layers className="w-4 h-4 shrink-0" aria-hidden />}
           <span className="hidden lg:inline">{clusterLabel}</span>

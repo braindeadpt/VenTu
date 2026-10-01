@@ -107,7 +107,11 @@ export function useMapExploreZone({
     return () => window.removeEventListener('resize', sync);
   }, []);
 
-  const clusterLabel = clusterEnabled ? t.map.showAllSpots : t.map.clusterSpots;
+  // Nome = MODO (constante) e estado = aria-pressed — nunca o contrário:
+  // com o mapa AGRUPADO o leitor anunciava «Mostrar todos, premido», o nome
+  // a contradizer o estado. O chip carrega o MESMO estado que o espelho
+  // `data-map-cluster` do shell (antes eram inversos).
+  const clusterLabel = t.map.clusterSpots;
   const onlyOnLabel = onlyOnEnabled ? t.map.onlyOnOff : t.map.onlyOn;
   const onlyOnHint = t.map.onlyOnHint;
   const hudSpotCount = onlyOnEnabled ? visibleSpots.length : (mapHud?.spotCount ?? visibleSpots.length);
@@ -119,7 +123,7 @@ export function useMapExploreZone({
       icon: clusterEnabled
         ? <MapPin className="w-4 h-4" aria-hidden />
         : <Layers className="w-4 h-4" aria-hidden />,
-      pressed: !clusterEnabled,
+      pressed: clusterEnabled,
       onToggle: toggleCluster,
     },
     {
