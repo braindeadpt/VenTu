@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type L from 'leaflet';
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 import { fetchMapHours, type MapHoursFile } from '@/lib/mapHours';
 import { MAP_CURRENTS_LS_KEY } from '@/lib/map-constants';
 import {
@@ -53,10 +54,6 @@ function cssRgbToken(el: Element, name: string, fallback: string): string {
   return raw || fallback;
 }
 
-function prefersReducedMotion(): boolean {
-  return typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-}
-
 export function useMapCurrentsField({
   mapInstanceRef,
   LRef,
@@ -89,7 +86,7 @@ export function useMapCurrentsField({
   const zoomRafRef = useRef(0);
   const flowParticlesRef = useRef<CurrentFlowParticle[]>([]);
   const lastTRef = useRef(0);
-  const [reducedMotion] = useState(prefersReducedMotion);
+  const reducedMotion = usePrefersReducedMotion();
   const [fetchedFile, setFetchedFile] = useState<MapHoursFile | null | undefined>(undefined);
 
   useEffect(() => {
@@ -174,6 +171,13 @@ export function useMapCurrentsField({
       water: cssRgbToken(host, '--data-water', '34 211 238'),
       halo: cssRgbToken(host, '--bg-base', '2 6 23'),
     };
+
+    const themeObserver = new MutationObserver(() => {
+      colors.water = cssRgbToken(host, '--data-water', '34 211 238');
+      colors.halo = cssRgbToken(host, '--bg-base', '2 6 23');
+      if (reducedMotion) paint();
+    });
+    themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
 
     const paint = () => {
       const layer = canvasRef.current;
@@ -350,6 +354,7 @@ export function useMapCurrentsField({
       rafRef.current = requestAnimationFrame(tick);
 
       return () => {
+        themeObserver.disconnect();
         map.off('zoomstart', onZoomStart);
         map.off('zoomend', onZoomEnd);
         map.off('move', clearCanvas);
@@ -399,6 +404,7 @@ export function useMapCurrentsField({
     paint();
 
     return () => {
+      themeObserver.disconnect();
       map.off('zoomstart', onZoomStart);
       map.off('zoomend', onZoomEnd);
       map.off('moveend viewreset', schedule);

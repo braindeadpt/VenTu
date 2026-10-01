@@ -993,7 +993,7 @@ export const translationsDe = {
     signOut: 'Abmelden',
     telegramIntro: 'Erhalte dieselbe Favoriten-Warnung auf Telegram (nach Aktivierung der E-Mail-Alerts).',
     telegramLinked: 'Telegram verknüpft',
-    telegramSteps: '1) Auf Verknüpfen tippen · 2) Bot öffnen und Start tippen · 3) In ~15 Min aktiv',
+    telegramSteps: '1) Auf Verknüpfen tippen · 2) Bot öffnen und Start tippen · 3) Die Verknüpfung erfolgt bei der nächsten Prüfung; das kann dauern',
     telegramWindowHint: 'Falls das Fenster nicht geöffnet wurde: ',
     telegramOpenBot: 'Bot öffnen',
     telegramWorking: 'Wird erstellt…',

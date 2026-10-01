@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { interceptConditions, interceptForecasts } from './helpers/conditions';
+import { alignClockToForecast, interceptConditions, interceptForecasts } from './helpers/conditions';
 
 /**
  * Marés — TideScheduleStrip.
@@ -14,6 +14,9 @@ import { interceptConditions, interceptForecasts } from './helpers/conditions';
 test.describe('Marés (TideScheduleStrip)', () => {
   // O SW serve /data/* do cache e burla o page.route — ver helpers/conditions.ts.
   test.use({ serviceWorkers: 'block' });
+  test.beforeEach(async ({ page }) => {
+    await alignClockToForecast(page);
+  });
 
   /**
    * S2B: o TideScheduleStrip/MoonTideCard vivem no painel de detalhe da secção

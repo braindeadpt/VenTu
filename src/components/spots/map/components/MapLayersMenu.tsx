@@ -45,6 +45,9 @@ const GROUP_OF: Record<string, MapLayerGroup> = {
   hours: 'time',
   radar: 'time',
   gibsSat: 'time',
+  goesIr: 'time',
+  storms: 'time',
+  warnAreas: 'time',
   isobaths: 'sea',
   hs: 'sea',
   sst: 'sea',
@@ -55,12 +58,16 @@ const GROUP_OF: Record<string, MapLayerGroup> = {
   coastalWarnings: 'nav',
 };
 const GROUP_ORDER: MapLayerGroup[] = ['time', 'sea', 'nav'];
-/** Ordem das linhas dentro de cada grupo (maquete: 48 h, radar; isóbatas,
- *  Hs, SST, correntes, batimetria; boias, sinalização, avisos). */
+/** Ordem das linhas dentro de cada grupo (maquete: 48 h, radar, satélite
+ *  NASA, satélite IR, tempestades, áreas de aviso; isóbatas, Hs, SST,
+ *  correntes, batimetria; boias, sinalização, avisos). */
 const ORDER_OF: Record<string, number> = {
   hours: 0,
   radar: 1,
   gibsSat: 2,
+  goesIr: 3,
+  storms: 4,
+  warnAreas: 5,
   isobaths: 0,
   hs: 1,
   sst: 2,
@@ -75,6 +82,9 @@ const NAME_KEY: Record<string, keyof mapUiLayersDict> = {
   hours: 'layerHours',
   radar: 'layerRadar',
   gibsSat: 'layerGibsSat',
+  goesIr: 'layerSatelliteIr',
+  storms: 'layerStorms',
+  warnAreas: 'layerWarnAreas',
   isobaths: 'layerIsobaths',
   hs: 'layerHs',
   sst: 'layerSst',
@@ -441,7 +451,9 @@ export default function MapLayersMenu({
       triggerRef.current?.focus();
     };
     const onScroll = (e: Event) => {
-      if (popRef.current?.contains(e.target as Node)) return;
+      // Resize targets Window, not a DOM Node. A TypeScript cast alone
+      // would throw in contains() and leave the portal open at stale coordinates.
+      if (e.target instanceof Node && popRef.current?.contains(e.target)) return;
       if (popRef.current?.contains(document.activeElement)) {
         triggerRef.current?.focus();
       }

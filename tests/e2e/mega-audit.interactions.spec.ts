@@ -265,10 +265,15 @@ test.describe('MEGA AUDIT — mapa', () => {
       const label = ((await t.textContent()) ?? '').trim().replace(/\s+/g, ' ').slice(0, 40) || `toggle #${i}`;
       const antes = await t.getAttribute('aria-pressed');
       const errosAntes = health.pageErrors.length;
-      try {
-        await t.click({ timeout: 4_000, force: true });
-        await page.waitForTimeout(320);
-      } catch (err) {
+    try {
+      // SEM `force`: ele salta a verificação de acção e clica no centro do
+      // elemento mesmo quando outro está por cima. O `pointerdown` resultante
+      // caía fora do popover e o `MapLayersMenu` — correctamente — fechava
+      // (clique exterior), o que abortava o resto do ciclo. Um clique real no
+      // botão deixa o popover aberto, que é o que este teste quer medir.
+      await t.click({ timeout: 4_000 });
+      await page.waitForTimeout(320);
+    } catch (err) {
         det.push(`${label}: clique falhou (${err instanceof Error ? err.message.split('\n')[0].slice(0, 60) : ''})`);
         continue;
       }

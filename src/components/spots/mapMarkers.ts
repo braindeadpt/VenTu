@@ -545,6 +545,12 @@ export interface V3MarkerIconOptions {
   /** Tique de vento: direcção PARA onde sopra (graus) — só com vento ligado e z≥8.5. */
   windBlowsToDeg?: number | null;
   /** aria-label do badge «+N» (já localizado). */
+  /**
+   * Rótulo do grupo para o nome acessível do marcador, com `{n}` para a
+   * contagem. O badge «+N» é `aria-hidden` (não pode ser um `role="button"`
+   * dentro do `role="button"` do marcador — `nested-interactive`), por isso
+   * esta informação vive no nome do marcador.
+   */
   moreAriaLabel?: string;
 }
 
@@ -563,10 +569,17 @@ export function buildV3MarkerIcon(Leaflet: typeof L, opts: V3MarkerIconOptions):
     opts.windBlowsToDeg != null && Number.isFinite(opts.windBlowsToDeg)
       ? `<i class="v3tick" data-wind-tick="true" aria-hidden="true" style="position:absolute;left:50%;top:50%;width:0;height:0;pointer-events:none;transform:rotate(${Math.round(opts.windBlowsToDeg)}deg)"><i style="position:absolute;left:-4px;top:-27px;border:4px solid transparent;border-bottom:7px solid rgb(var(--data-wind));border-top:0"></i></i>`
       : '';
+  // Badge «+N» — amplia para o grupo. NÃO é `role="button"`: vive DENTRO do
+  // marcador, que o Leaflet marca como `role="button" tabindex="0"`, e dois
+  // controlos interactivos aninhados é a violação `nested-interactive` do axe
+  // (o /mapa falhava o scan ocean com 11 nós). O badge também não é
+  // alcançável por teclado (`tabindex="-1"`, o zoom é por clique com
+  // stopPropagation), por isso anunciar um botão seria mentira. Fica como
+  // rótulo decorativo que o leitor de ecrã lê dentro do nome do marcador.
   const badge = hasMore
-    ? `<span class="v3more" role="button" tabindex="-1" data-v3members="${members
+    ? `<span class="v3more" aria-hidden="true" data-v3members="${members
         .map(escapeHtmlText)
-        .join(',')}" aria-label="${escapeHtmlText(opts.moreAriaLabel ?? '')}" style="position:absolute;right:-12px;top:-9px;min-width:22px;height:18px;padding:0 5px;border-radius:9px;background:rgb(var(--fg));color:rgb(var(--bg-base));font:600 10px/18px var(--font-geist-mono,ui-monospace,monospace);font-variant-numeric:tabular-nums;text-align:center;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.3)"><i aria-hidden="true" style="position:absolute;inset:-8px"></i>+${more}</span>`
+        .join(',')}" style="position:absolute;right:-12px;top:-9px;min-width:22px;height:18px;padding:0 5px;border-radius:9px;background:rgb(var(--fg));color:rgb(var(--bg-base));font:600 10px/18px var(--font-geist-mono,ui-monospace,monospace);font-variant-numeric:tabular-nums;text-align:center;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.3)"><i style="position:absolute;inset:-8px"></i>+${more}</span>`
     : '';
   const html = `<div class="v3mk" data-v3spot="${escapeHtmlText(spotId)}" data-v3kind="full" data-spot-score="${Math.round(
     score,
@@ -630,6 +643,13 @@ export function createV3SpotMarker(
     options.showWindTick && Number.isFinite(data.conditions.windDirection)
       ? (data.conditions.windDirection + 180) % 360
       : null;
+  const moreAriaLabel =
+    layout.kind === 'full' && layout.memberIds.length > 1
+      ? options.moreAriaTemplate?.replace(
+          '{n}',
+          String(layout.memberIds.length - 1),
+        )
+      : undefined;
   const icon =
     layout.kind === 'full'
       ? buildV3MarkerIcon(Leaflet, {
@@ -637,10 +657,7 @@ export function createV3SpotMarker(
           score,
           memberIds: layout.memberIds,
           windBlowsToDeg: windBlows,
-          moreAriaLabel: options.moreAriaTemplate?.replace(
-            '{n}',
-            String(Math.max(0, layout.memberIds.length - 1)),
-          ),
+          moreAriaLabel,
         })
       : buildV3DotIcon(Leaflet, spot.id, score);
   const marker = Leaflet.marker([spot.lat, spot.lon], {
@@ -655,7 +672,11 @@ export function createV3SpotMarker(
   marker.on('add', () => {
     const el = marker.getElement();
     if (!el) return;
-    if (!el.hasAttribute('aria-label')) el.setAttribute('aria-label', spot.name);
+    if (!el.hasAttribute('aria-label')) {
+      // O badge «+N» é aria-hidden, por isso a contagem do grupo entra no
+      // nome do marcador — senão o leitor de ecrã perdia a informação.
+      el.setAttribute('aria-label', moreAriaLabel ? `${spot.name} · ${moreAriaLabel}` : spot.name);
+    }
     // Ponte de hover com a lista «Nesta vista» (M3 §5) — igual ao
     // marcador clássico: a linha liga .ventu-list-hover neste elemento e
     // a delegação pointerover lê data-spot-id no sentido inverso.

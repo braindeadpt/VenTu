@@ -914,7 +914,7 @@ export const translationsEn = {
     signOut: 'Sign out',
     telegramIntro: 'Get the same favorites alert on Telegram (after enabling email alerts).',
     telegramLinked: 'Telegram linked',
-    telegramSteps: '1) Tap Link · 2) Open the bot and tap Start · 3) Active within ~15 min',
+    telegramSteps: '1) Tap Link · 2) Open the bot and tap Start · 3) Linking is processed at the next check; it may take a while',
     telegramWindowHint: 'If the window did not open: ',
     telegramOpenBot: 'open bot',
     telegramWorking: 'Working…',

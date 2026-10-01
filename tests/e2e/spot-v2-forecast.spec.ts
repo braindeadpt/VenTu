@@ -1,5 +1,6 @@
 import { test, expect, type Page } from '@playwright/test';
 import { SPORT_LABELS } from '../../src/lib/sportRatings';
+import { alignClockToForecast } from './helpers/conditions';
 
 /**
  * S3/SP-B — «Hora a hora» sincronizada com o eixo de tempo partilhado.
@@ -49,11 +50,16 @@ async function setTimelineIndex(page: Page, index: number) {
 }
 
 test.describe('S3/SP-B — «Hora a hora» no eixo de tempo partilhado', () => {
+  test.use({ serviceWorkers: 'block' });
   test.beforeEach(async ({ page }) => {
+    await alignClockToForecast(page);
     await page.goto('/pt/spots/guincho/');
     await expect(
       page.getByRole('heading', { level: 1, name: /Guincho/i }),
     ).toBeVisible({ timeout: 20_000 });
+    // Wait for landing, not just the SSR index=0: a slow hydration may
+    // otherwise change the window offset after the test has read it.
+    await expect(page.locator('#agora').getByText('Agora', { exact: true })).toBeVisible();
     // Secção hidratada e marcada pelo sync.
     await expect(page.locator(SECTION)).toHaveAttribute(
       'data-spot-timeline-index',
@@ -149,10 +155,12 @@ test.describe('S3/SP-B — «Hora a hora» no eixo de tempo partilhado', () => {
   test('arrasto de 10 passos na régua não re-renderiza a ForecastTable', async ({
     page,
   }) => {
-    // Último commit tardio da página: o overlay de dicas da comunidade
-    // (fetch pós-montagem) re-renderiza o SpotDetailClient e, em cascata, a
-    // tabela — nada a ver com o índice. Sob carga aterrava dentro do
-    // arrasto (flake «Received: 1»); o contador só zera com a página quieta.
+    // Source/bias fetches may legitimately re-render the table after first
+    // paint. Finish initial data loading before measuring scrub-only renders,
+    // e o último commit tardio da página (overlay de dicas da comunidade,
+    // fetch pós-montagem) tem de assentar — sob carga aterrava dentro do
+    // arrasto (flake «Received: 1»). O contador só zera com a página quieta.
+    await page.waitForLoadState('networkidle');
     await expect(page.locator('[data-community-tips]')).toHaveAttribute(
       'data-community-tips',
       'ready',

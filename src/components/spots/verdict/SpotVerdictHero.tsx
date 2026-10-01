@@ -98,7 +98,7 @@ export default function SpotVerdictHero({
 }: SpotVerdictHeroProps) {
   const isPt = locale === 'pt';
   const tv = getTranslation(locale).spotPageVerdict;
-  const { nowIndex } = useSpotTimelineData();
+  const { nowIndex, nowResolved } = useSpotTimelineData();
   const { selectedScore, selectedHour, isNow } = useSpotTimelineIndex();
   const reducedMotion = usePrefersReducedMotion();
 
@@ -130,7 +130,7 @@ export default function SpotVerdictHero({
   // o formatador canónico do mapa (getSpotScoreFactors), não uma linha
   // própria — mapa e página dizem o mesmo «porquê».
   const why =
-    isNow || nowIndex < 0
+    isNow || !nowResolved
       ? getSpotScoreFactors({
           spot,
           conditions,
@@ -145,10 +145,13 @@ export default function SpotVerdictHero({
   // Correcções observadas (boia/estação) só se aplicam ao «agora»: noutras
   // horas o score é previsão pura e a linha de fonte diz isso. Antes de
   // montar (nowIndex<0) a hora mostrada é a do bake = «agora».
-  const showObservedSources = isNow || nowIndex < 0;
+  // `nowResolved` (do provider) distingue «ainda não medi» de «medi e não
+  // está coberto». Sem esta distinção uma série expirada aparecia como
+  // «Agora» — mentira sobre o dado.
+  const showObservedSources = isNow || !nowResolved;
   // A pill segue a mesma regra: antes de montar diz «Agora» (não «Previsão»,
   // mais comprida — no mobile partia a linha da hora e a página saltava).
-  const showAsNow = isNow || nowIndex < 0;
+  const showAsNow = isNow || !nowResolved;
 
   // ── Linha de proveniência única ─────────────────────────────────────
   // «Onda corrigida pela boia CSA92 · vento da estação Cabo Raso ·
@@ -241,20 +244,29 @@ export default function SpotVerdictHero({
               <span className="font-mono tabular-nums text-fg">
                 {selectedHour ? formatHourLong(selectedHour, locale) : '--:--'}
               </span>
-              {/* A pill existe sempre — invisível até haver índice «agora»
-                  (HTML baked). Aparecer só depois da hidratação crescia a
-                  linha 4–5 px e empurrava a página inteira (CLS 0,2). */}
+              {/* A pill existe sempre — invisível enquanto o relógio não está
+                  resolvido (HTML baked). Aparecer só depois da hidratação
+                  crescia a linha 4–5 px e empurrava a página (CLS 0,2).
+                  A visibilidade segue `nowResolved`, NÃO `nowIndex`: um
+                  `nowIndex` de −1 significa agora DUAS coisas — «ainda não
+                  medi» e «medi, mas a série expirou» — e no segundo caso o
+                  aviso tem de ser visível, porque dizer «Agora» seria
+                  mentir sobre o dado. */}
               <span
-                aria-hidden={nowIndex < 0 || undefined}
+                aria-hidden={!nowResolved || undefined}
                 className={cn(
                   'rounded-pill border px-2 py-0.5 text-meta-sm font-medium',
-                  nowIndex < 0 && 'invisible',
-                  showAsNow
+                  !nowResolved && 'invisible',
+                  nowIndex < 0 || isNow
                     ? 'border-divider-strong text-fg'
                     : 'border-divider text-fg-muted',
                 )}
               >
-                {showAsNow ? tv.nowLabel : tv.forecastLabel}
+                {nowIndex < 0
+                  ? tv.outsideCoverageLabel
+                  : isNow
+                    ? tv.nowLabel
+                    : tv.forecastLabel}
               </span>
             </p>
             {/* Nível do dia — na coluna só em ≥lg. Em <lg a coluna é

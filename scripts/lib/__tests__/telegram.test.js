@@ -2,7 +2,7 @@ import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
-const { telegramApi, TelegramApiError, isActionableFailure } = require('../telegram');
+const { telegramApi, TelegramApiError, isActionableFailure, processTelegramLinkUpdates } = require('../telegram');
 const { exitCodeForError } = require('../../telegram-poll');
 
 /** Minimal fetch Response-shaped object for the mocked global fetch. */
@@ -21,6 +21,7 @@ beforeEach(() => {
 afterEach(() => {
   delete process.env.TELEGRAM_BOT_TOKEN;
   vi.unstubAllGlobals();
+  vi.useRealTimers();
 });
 
 describe('telegramApi error classification', () => {
@@ -103,8 +104,69 @@ describe('poll exit-code decision (exitCodeForError)', () => {
     expect(exitCodeForError(err)).toBe(1);
   });
 
-  it('unclassified error (code bug not tied to the API) → exit 0 with distinct log', () => {
-    expect(exitCodeForError(new Error('something broke in the merge'))).toBe(0);
+  it('unclassified DB/code error → exit 1, never false success', () => {
+    expect(exitCodeForError(new Error('something broke in the merge'))).toBe(1);
+  });
+});
+
+describe('Telegram account linking (mocked, no real messages/DB writes)', () => {
+  const url = 'https://supabase.example.test';
+  const expiry = '2026-09-30T12:30:00Z';
+  const sent = Date.parse('2026-09-30T12:05:00Z') / 1000;
+
+  function mockLink({ date = sent, failure = '' } = {}) {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2026-09-30T13:00:00Z'));
+    const calls = [];
+    const fetchMock = vi.fn(async (target, init = {}) => {
+      const method = init.method || 'GET';
+      const body = init.body ? JSON.parse(init.body) : null;
+      let operation;
+      if (target.includes('/getUpdates')) operation = 'updates';
+      else if (target.includes('/sendMessage')) operation = 'message';
+      else if (target.includes('on_conflict')) operation = 'save';
+      else if (target.includes('telegram_bot_state')) operation = 'offset';
+      else if (target.includes('link_token=eq.')) operation = 'find';
+      else if (target.includes('chat_id=eq.')) operation = 'clear';
+      else operation = 'patch';
+      calls.push({ operation, method, body });
+      if (failure === operation) return httpRes(503);
+      if (operation === 'offset') return httpRes(200, { body: [{ value: '42' }] });
+      if (operation === 'updates') return httpRes(200, { body: { ok: true, result: [
+        { update_id: 42, message: { date, text: '/start secret', chat: { id: 123 } } },
+      ] } });
+      if (operation === 'find') return httpRes(200, { body: [{ user_id: 'user-1', link_token_expires: expiry }] });
+      if (operation === 'message') return httpRes(200, { body: { ok: true } });
+      return httpRes(204);
+    });
+    vi.stubGlobal('fetch', fetchMock);
+    return calls;
+  }
+
+  it('accepts Start sent inside TTL even if the poll is delayed past expiry', async () => {
+    const calls = mockLink();
+    await expect(processTelegramLinkUpdates(url, 'test-key')).resolves.toEqual({ linked: 1, processed: 1 });
+    expect(calls.find((c) => c.operation === 'patch').body.chat_id).toBe(123);
+    expect(calls.find((c) => c.operation === 'save').body.value).toBe('43');
+  });
+
+  it.each([
+    Date.parse('2026-09-30T12:31:00Z') / 1000,
+    Date.parse('2026-09-30T11:59:00Z') / 1000,
+    Date.parse('2026-09-30T14:00:00Z') / 1000,
+    undefined,
+    null,
+  ])('rejects invalid/out-of-window message date %s', async (date) => {
+    const calls = mockLink({ date: date === undefined ? NaN : date });
+    await expect(processTelegramLinkUpdates(url, 'test-key')).resolves.toEqual({ linked: 0, processed: 1 });
+    expect(calls.some((c) => c.operation === 'patch')).toBe(false);
+  });
+
+  it.each(['offset', 'find', 'clear', 'patch', 'save'])('fails loudly on %s HTTP error without acknowledging failed work', async (failure) => {
+    const calls = mockLink({ failure });
+    await expect(processTelegramLinkUpdates(url, 'test-key')).rejects.toThrow('Supabase HTTP 503');
+    if (failure !== 'save') expect(calls.some((c) => c.operation === 'save')).toBe(false);
+    if (failure === 'offset') expect(calls.some((c) => c.operation === 'updates')).toBe(false);
   });
 });
 

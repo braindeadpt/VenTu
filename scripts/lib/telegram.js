@@ -100,19 +100,23 @@ function supabaseHeaders(key) {
   return { apikey: key, Authorization: `Bearer ${key}` };
 }
 
+function requireSupabaseOk(res, operation) {
+  if (!res.ok) throw new Error(`Telegram link ${operation}: Supabase HTTP ${res.status}`);
+}
+
 async function getUpdateOffset(url, key) {
   const res = await fetch(
     `${url}/rest/v1/telegram_bot_state?key=eq.updates_offset&select=value`,
     { headers: supabaseHeaders(key), signal: AbortSignal.timeout(30_000) },
   );
-  if (!res.ok) return 0;
+  requireSupabaseOk(res, 'read offset');
   const rows = await res.json();
   const n = Number(rows[0]?.value);
   return Number.isFinite(n) ? n : 0;
 }
 
 async function setUpdateOffset(url, key, offset) {
-  await fetch(`${url}/rest/v1/telegram_bot_state?on_conflict=key`, {
+  const res = await fetch(`${url}/rest/v1/telegram_bot_state?on_conflict=key`, {
     method: 'POST',
     signal: AbortSignal.timeout(30_000),
     headers: {
@@ -126,6 +130,7 @@ async function setUpdateOffset(url, key, offset) {
       updated_at: new Date().toISOString(),
     }),
   });
+  requireSupabaseOk(res, 'save offset');
 }
 
 /**
@@ -170,20 +175,28 @@ async function processTelegramLinkUpdates(url, key) {
       `${url}/rest/v1/user_telegram?link_token=eq.${encodeURIComponent(startPayload)}&select=user_id,link_token_expires`,
       { headers: supabaseHeaders(key), signal: AbortSignal.timeout(30_000) },
     );
-    if (!findRes.ok) continue;
+    // Never acknowledge an update whose DB lookup failed: the next tick
+    // must be able to retry it instead of permanently losing the /start.
+    requireSupabaseOk(findRes, 'find token');
     const rows = await findRes.json();
     const row = rows[0];
     if (!row) {
       await sendTelegramMessage(chatId, 'Link inválido ou expirado. Gera um novo em ventu.surf/conta.');
       continue;
     }
-    if (row.link_token_expires && new Date(row.link_token_expires).getTime() < Date.now()) {
+    // Telegram's trusted send time, not the delayed poll time, decides TTL.
+    // SQL issues 30-minute tokens. Reject missing/invalid dates, messages
+    // before issuance, after expiry or in the future (fail closed).
+    const expiresAt = Date.parse(row.link_token_expires);
+    const sentAt = Number(msg.date) * 1000;
+    if (!Number.isFinite(expiresAt) || !Number.isFinite(sentAt) ||
+        sentAt < expiresAt - 30 * 60_000 || sentAt > expiresAt || sentAt > Date.now()) {
       await sendTelegramMessage(chatId, 'Link expirado. Gera um novo em ventu.surf/conta.');
       continue;
     }
 
     // Clear any other row that already has this chat_id
-    await fetch(`${url}/rest/v1/user_telegram?chat_id=eq.${chatId}`, {
+    const clearRes = await fetch(`${url}/rest/v1/user_telegram?chat_id=eq.${chatId}`, {
       method: 'PATCH',
       signal: AbortSignal.timeout(30_000),
       headers: {
@@ -197,6 +210,8 @@ async function processTelegramLinkUpdates(url, key) {
         updated_at: new Date().toISOString(),
       }),
     });
+
+    requireSupabaseOk(clearRes, 'clear chat');
 
     const patchRes = await fetch(
       `${url}/rest/v1/user_telegram?user_id=eq.${encodeURIComponent(row.user_id)}`,
@@ -218,13 +233,12 @@ async function processTelegramLinkUpdates(url, key) {
       },
     );
 
-    if (patchRes.ok) {
-      linked++;
-      await sendTelegramMessage(
-        chatId,
-        'Ligado ✅\nRecebes avisos dos teus favoritos VenTu (mesmo limiar dos alertas por email).\nPara desligar: ventu.surf/conta',
-      );
-    }
+    requireSupabaseOk(patchRes, 'link user');
+    linked++;
+    await sendTelegramMessage(
+      chatId,
+      'Ligado ✅\nRecebes avisos dos teus favoritos VenTu (mesmo limiar dos alertas por email).\nPara desligar: ventu.surf/conta',
+    );
   }
 
   if (updates.length > 0) {

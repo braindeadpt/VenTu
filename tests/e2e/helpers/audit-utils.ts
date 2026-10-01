@@ -12,12 +12,6 @@ const IGNORED_CONSOLE_PATTERNS = [
   /leaflet/i,
 ];
 
-const IGNORED_PAGE_ERROR_PATTERNS = [
-  /_leaflet_pos/i,
-  /Map container not found/i,
-  /leaflet/i,
-];
-
 const IGNORED_REQUEST_PATTERNS = [
   /googletagmanager\.com/i,
   /google-analytics\.com/i,
@@ -44,7 +38,6 @@ export function attachPageHealthCollectors(page: Page): PageHealth {
   });
 
   page.on('pageerror', (err) => {
-    if (IGNORED_PAGE_ERROR_PATTERNS.some((re) => re.test(err.message))) return;
     health.pageErrors.push(err.message);
   });
 

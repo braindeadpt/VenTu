@@ -9,7 +9,7 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import { findCurrentHourIndex } from '@/lib/openMeteoTime';
+import { findCoveredHourIndex } from '@/lib/openMeteoTime';
 import { spotTimelineScore } from '@/lib/spotTimelineScore';
 import { spotTimelineWindow } from '@/components/spots/timeline/spotTimelineWindow';
 import { mapTimeTrackPaused } from '@/components/spots/map/mapTimeTrackPaused';
@@ -27,7 +27,9 @@ export interface SpotTimelineDataValue {
   hours: readonly string[];
   /** Scores canónicos por hora (mesma fonte da ForecastTable e da régua 48h). */
   scores: readonly number[];
-  /** Índice da hora «agora»; -1 antes de montar ou sem horas. */
+  /** Relógio resolvido no cliente (distingue SSR de previsão sem cobertura actual). */
+  nowResolved: boolean;
+  /** Índice da hora «agora»; -1 antes de montar ou fora da cobertura. */
   nowIndex: number;
   /** Score «agora» com correcções observadas (badge do herói). */
   nowScore?: number;
@@ -112,11 +114,11 @@ export default function SpotTimelineProvider({
       return;
     }
     const compute = () => {
-      const i = findCurrentHourIndex(hours as string[], new Date(nowMs ?? Date.now()));
+      const i = findCoveredHourIndex(hours, new Date(nowMs ?? Date.now()));
       setNowIndex(i);
-      if (!didLandOnNow.current) {
+      if (!didLandOnNow.current && i >= 0) {
         didLandOnNow.current = true;
-        if (i >= 0) setIndexRaw(i);
+        setIndexRaw(i);
       }
     };
     compute();
@@ -171,8 +173,8 @@ export default function SpotTimelineProvider({
   }, [paused, windowStart, windowEnd, tickMs]);
 
   const dataValue = useMemo<SpotTimelineDataValue>(
-    () => ({ hours, scores, nowIndex, nowScore, windowStart, windowEnd }),
-    [hours, scores, nowIndex, nowScore, windowStart, windowEnd],
+    () => ({ hours, scores, nowIndex, nowResolved: mounted, nowScore, windowStart, windowEnd }),
+    [hours, scores, nowIndex, mounted, nowScore, windowStart, windowEnd],
   );
 
   const indexValue = useMemo<SpotTimelineIndexValue>(
