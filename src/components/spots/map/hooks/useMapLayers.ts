@@ -901,10 +901,25 @@ export function useMapLayers({
         if (k === wantedIdx) wantedIdx = activeIdx;
       });
     };
+    // O arranque faz fit/flyTo (movestart): se o pool nasceu a meio desse
+    // movimento e nenhum frame ainda pintou (activeIdx=-1), o wipe acima
+    // removia TUDO e nada voltava a chamar activate — a camada ficava
+    // ligada no toggle mas invisível para sempre. No fim de cada movimento
+    // repõe-se o frame corrente se ele não sobreviveu.
+    const onMoveEnd = () => {
+      const idx = goesIrFrameIndexRef.current;
+      if (idx < 0 || idx >= frames.length) return;
+      const layer = pool.get(idx);
+      if (layer && map.hasLayer(layer)) return;
+      wantedIdx = -1;
+      activate(idx);
+    };
     map.on('movestart', onMoveStart);
+    map.on('moveend', onMoveEnd);
 
     return () => {
       map.off('movestart', onMoveStart);
+      map.off('moveend', onMoveEnd);
       goesIrActivateRef.current = null;
       pool.forEach((l) => { if (map.hasLayer(l)) map.removeLayer(l); });
       pool.clear();

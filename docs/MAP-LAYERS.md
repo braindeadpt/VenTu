@@ -119,7 +119,9 @@ with the other raster overlays for the same slot. The vector canvas fields
 - One persistent `L.tileLayer` per frame on the `ventu-goes-ir` pane
   (z 206); switching frames swaps opacity (0.85 active), warms frame+1,
   discards idle pool layers on `movestart`. Black no-data tiles reuse the
-  `gibsTileMaskBlank` mask.
+  `gibsTileMaskBlank` mask. On `moveend` the current frame is re-added if
+  the wipe caught it (startup fit could otherwise empty the pool before
+  any frame painted, leaving the toggle on with no tiles).
 - Shared `RadarCarousel` with `SatelliteDish` icon, Lisbon-wall-clock badge
   (`goesIrFrameClock`), gap/stale labels (cadence 10, stale > 120 min),
   NASA attribution node. The fullscreen HUD only owns the *radar* scrubber
