@@ -1,6 +1,6 @@
 {
   "day": "20261001",
-  "fetchedAt": "2026-10-01T04:36:34.720Z",
+  "fetchedAt": "2026-10-01T05:53:49.805Z",
   "minPairs": 3,
   "minAccumulatedPairs": 10,
   "archive": {
@@ -450,14 +450,14 @@
       ]
     },
     "Porto": {
-      "spotCount": 12,
-      "withObservedWave": 12,
+      "spotCount": 11,
+      "withObservedWave": 11,
       "bySource": {
-        "wmo-buoy": 12
+        "wmo-buoy": 11
       },
-      "audited": 12,
+      "audited": 11,
       "attachedIsClosest": 0,
-      "attachedNotClosest": 12,
+      "attachedNotClosest": 11,
       "onlySource": 0,
       "notClosest": [
         {
@@ -472,13 +472,6 @@
           "winner": "wmo-buoy",
           "reason": "wmo-only",
           "attachedKm": 120,
-          "altKm": 0
-        },
-        {
-          "spot": "matosinhos",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 122,
           "altKm": 0
         },
         {
@@ -545,7 +538,7 @@
           "altKm": 0
         }
       ],
-      "calibrated": 12,
+      "calibrated": 11,
       "calibrationRefs": {
         "6200084→6200199": {
           "esCode": "6200084",
@@ -559,7 +552,6 @@
           "spots": [
             "povoa-varzim",
             "leca-palmeira",
-            "matosinhos",
             "cabedelo-douro",
             "marina-afurada-foil",
             "salgueiros",
@@ -572,7 +564,7 @@
           ]
         }
       },
-      "suboptimalRefs": 12,
+      "suboptimalRefs": 11,
       "suboptimal": [
         {
           "spot": "povoa-varzim",
@@ -591,15 +583,6 @@
           "nearestPtCode": "4",
           "nearestPtName": "CSA92/D",
           "nearestPtKm": 27.06148173656539
-        },
-        {
-          "spot": "matosinhos",
-          "esCode": "6200084",
-          "ptRefCode": "6200199",
-          "ptRefKm": 185.07890221168577,
-          "nearestPtCode": "4",
-          "nearestPtName": "CSA92/D",
-          "nearestPtKm": 28.761820414108268
         },
         {
           "spot": "cabedelo-douro",
@@ -2379,7 +2362,7 @@
       "suboptimal": []
     }
   },
-  "regionsAuditedAt": "2026-10-01T04:39:00.930Z",
+  "regionsAuditedAt": "2026-10-01T06:03:29.443Z",
   "pairs": [
     {
       "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
@@ -2393,10 +2376,10 @@
       "meanDeltaM": -0.1,
       "meanAbsDeltaM": 0.4,
       "maxAbsDeltaM": 2.8,
-      "corr": 0.63,
+      "corr": 0.64,
       "verdict": "coherent",
-      "firstHour": "2026-09-01T05",
-      "lastHour": "2026-10-01T02",
+      "firstHour": "2026-09-01T06",
+      "lastHour": "2026-10-01T03",
       "hours": [
         {
           "6200084": 2.809999942779541,
@@ -2412,6 +2395,11 @@
           "6200084": 3.1600000858306885,
           "6200199": 2.387700080871582,
           "hour": "2026-10-01T02"
+        },
+        {
+          "6200084": 3.4000000953674316,
+          "6200199": 2.4023399353027344,
+          "hour": "2026-10-01T03"
         }
       ]
     }
