@@ -1,11 +1,11 @@
 {
   "day": "20261001",
-  "fetchedAt": "2026-10-01T18:55:54.393Z",
+  "fetchedAt": "2026-10-01T23:13:44.944Z",
   "minPairs": 3,
   "minAccumulatedPairs": 10,
   "archive": {
     "windowDays": 30,
-    "pairHourCount": 761,
+    "pairHourCount": 764,
     "path": "buoy-coherence-archive.json"
   },
   "daily": {
@@ -99,7 +99,7 @@
           "ptRefArea": "Nazaré",
           "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
           "me": -0.1,
-          "n": 538,
+          "n": 541,
           "spots": [
             "moledo"
           ]
@@ -196,7 +196,7 @@
           "ptRefArea": "Nazaré",
           "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
           "me": -0.1,
-          "n": 538,
+          "n": 541,
           "spots": [
             "vila-praia-ancora",
             "afife",
@@ -370,7 +370,7 @@
           "ptRefArea": "Nazaré",
           "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
           "me": -0.1,
-          "n": 538,
+          "n": 541,
           "spots": [
             "ofir",
             "esposende",
@@ -555,7 +555,7 @@
           "ptRefArea": "Nazaré",
           "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
           "me": -0.1,
-          "n": 538,
+          "n": 541,
           "spots": [
             "povoa-varzim",
             "leca-palmeira",
@@ -720,7 +720,7 @@
           "ptRefArea": "Nazaré",
           "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
           "me": -0.1,
-          "n": 538,
+          "n": 541,
           "spots": [
             "azurara",
             "mindelo"
@@ -778,7 +778,7 @@
           "ptRefArea": "Nazaré",
           "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
           "me": -0.1,
-          "n": 538,
+          "n": 541,
           "spots": [
             "praia-da-lomba"
           ]
@@ -840,7 +840,7 @@
           "ptRefArea": "Nazaré",
           "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
           "me": -0.1,
-          "n": 538,
+          "n": 541,
           "spots": [
             "praia-37",
             "bairro-piscatorio",
@@ -943,7 +943,7 @@
           "ptRefArea": "Nazaré",
           "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
           "me": -0.1,
-          "n": 538,
+          "n": 541,
           "spots": [
             "barrinha-esmoriz",
             "esmoriz",
@@ -1722,7 +1722,7 @@
           "ptRefArea": "Nazaré",
           "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
           "me": -0.1,
-          "n": 538,
+          "n": 541,
           "spots": [
             "ilha-do-ermal"
           ]
@@ -2379,7 +2379,7 @@
       "suboptimal": []
     }
   },
-  "regionsAuditedAt": "2026-10-01T18:56:08.092Z",
+  "regionsAuditedAt": "2026-10-01T23:18:59.674Z",
   "pairs": [
     {
       "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
@@ -2389,14 +2389,14 @@
       ],
       "distanceKm": 285.3,
       "ptSource": "wmo",
-      "n": 538,
+      "n": 541,
       "meanDeltaM": -0.1,
       "meanAbsDeltaM": 0.4,
       "maxAbsDeltaM": 2.8,
-      "corr": 0.69,
+      "corr": 0.71,
       "verdict": "coherent",
-      "firstHour": "2026-09-01T19",
-      "lastHour": "2026-10-01T16",
+      "firstHour": "2026-09-02T00",
+      "lastHour": "2026-10-01T21",
       "hours": [
         {
           "6200084": 2.809999942779541,
@@ -2482,6 +2482,31 @@
           "6200084": 4.21999979019165,
           "6200199": 3.208009958267212,
           "hour": "2026-10-01T16"
+        },
+        {
+          "6200084": 4.340000152587891,
+          "6200199": 3.3691399097442627,
+          "hour": "2026-10-01T17"
+        },
+        {
+          "6200084": 4.800000190734863,
+          "6200199": 2.7246100902557373,
+          "hour": "2026-10-01T18"
+        },
+        {
+          "6200084": 5.269999980926514,
+          "6200199": 2.973629951477051,
+          "hour": "2026-10-01T19"
+        },
+        {
+          "6200084": 4.800000190734863,
+          "6200199": 3.1054699420928955,
+          "hour": "2026-10-01T20"
+        },
+        {
+          "6200084": 5.039999961853027,
+          "6200199": 3.7207000255584717,
+          "hour": "2026-10-01T21"
         }
       ]
     }
