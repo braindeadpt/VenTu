@@ -1,11 +1,11 @@
 {
   "day": "20261001",
-  "fetchedAt": "2026-10-01T05:53:49.805Z",
+  "fetchedAt": "2026-10-01T07:50:35.029Z",
   "minPairs": 3,
   "minAccumulatedPairs": 10,
   "archive": {
     "windowDays": 30,
-    "pairHourCount": 774,
+    "pairHourCount": 769,
     "path": "buoy-coherence-archive.json"
   },
   "daily": {
@@ -14,8 +14,8 @@
     "trend": {
       "6200084|6200199": {
         "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
-        "coherent": 27,
-        "review": 1,
+        "coherent": 26,
+        "review": 2,
         "incoherent": 1,
         "insufficient": 0,
         "days": 29,
@@ -24,27 +24,27 @@
       "6200083|6201079": {
         "pair": "Villano-Sisargas × Datawell ao largo de Faro",
         "coherent": 6,
-        "review": 3,
+        "review": 2,
         "incoherent": 3,
-        "insufficient": 2,
+        "insufficient": 3,
         "days": 14,
-        "incoherentRatio": 0.25
+        "incoherentRatio": 0.273
       },
       "6200084|6201079": {
         "pair": "Cabo Silleiro × Datawell ao largo de Faro",
         "coherent": 7,
-        "review": 5,
+        "review": 4,
         "incoherent": 0,
-        "insufficient": 2,
+        "insufficient": 3,
         "days": 14,
         "incoherentRatio": 0
       },
       "6200085|6201079": {
         "pair": "Golfo de Cádiz × Datawell ao largo de Faro",
-        "coherent": 12,
+        "coherent": 11,
         "review": 0,
         "incoherent": 0,
-        "insufficient": 2,
+        "insufficient": 3,
         "days": 14,
         "incoherentRatio": 0
       },
@@ -450,14 +450,14 @@
       ]
     },
     "Porto": {
-      "spotCount": 11,
-      "withObservedWave": 11,
+      "spotCount": 12,
+      "withObservedWave": 12,
       "bySource": {
-        "wmo-buoy": 11
+        "wmo-buoy": 12
       },
-      "audited": 11,
+      "audited": 12,
       "attachedIsClosest": 0,
-      "attachedNotClosest": 11,
+      "attachedNotClosest": 12,
       "onlySource": 0,
       "notClosest": [
         {
@@ -472,6 +472,13 @@
           "winner": "wmo-buoy",
           "reason": "wmo-only",
           "attachedKm": 120,
+          "altKm": 0
+        },
+        {
+          "spot": "matosinhos",
+          "winner": "wmo-buoy",
+          "reason": "wmo-only",
+          "attachedKm": 122,
           "altKm": 0
         },
         {
@@ -538,7 +545,7 @@
           "altKm": 0
         }
       ],
-      "calibrated": 11,
+      "calibrated": 12,
       "calibrationRefs": {
         "6200084→6200199": {
           "esCode": "6200084",
@@ -552,6 +559,7 @@
           "spots": [
             "povoa-varzim",
             "leca-palmeira",
+            "matosinhos",
             "cabedelo-douro",
             "marina-afurada-foil",
             "salgueiros",
@@ -564,7 +572,7 @@
           ]
         }
       },
-      "suboptimalRefs": 11,
+      "suboptimalRefs": 12,
       "suboptimal": [
         {
           "spot": "povoa-varzim",
@@ -583,6 +591,15 @@
           "nearestPtCode": "4",
           "nearestPtName": "CSA92/D",
           "nearestPtKm": 27.06148173656539
+        },
+        {
+          "spot": "matosinhos",
+          "esCode": "6200084",
+          "ptRefCode": "6200199",
+          "ptRefKm": 185.07890221168577,
+          "nearestPtCode": "4",
+          "nearestPtName": "CSA92/D",
+          "nearestPtKm": 28.761820414108268
         },
         {
           "spot": "cabedelo-douro",
@@ -2362,7 +2379,7 @@
       "suboptimal": []
     }
   },
-  "regionsAuditedAt": "2026-10-01T06:03:29.443Z",
+  "regionsAuditedAt": "2026-10-01T07:53:23.467Z",
   "pairs": [
     {
       "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
@@ -2376,10 +2393,10 @@
       "meanDeltaM": -0.1,
       "meanAbsDeltaM": 0.4,
       "maxAbsDeltaM": 2.8,
-      "corr": 0.64,
+      "corr": 0.65,
       "verdict": "coherent",
-      "firstHour": "2026-09-01T06",
-      "lastHour": "2026-10-01T03",
+      "firstHour": "2026-09-01T08",
+      "lastHour": "2026-10-01T05",
       "hours": [
         {
           "6200084": 2.809999942779541,
@@ -2400,6 +2417,16 @@
           "6200084": 3.4000000953674316,
           "6200199": 2.4023399353027344,
           "hour": "2026-10-01T03"
+        },
+        {
+          "6200084": 3.630000114440918,
+          "6200199": 2.548830032348633,
+          "hour": "2026-10-01T04"
+        },
+        {
+          "6200084": 4.099999904632568,
+          "6200199": 2.768549919128418,
+          "hour": "2026-10-01T05"
         }
       ]
     }
