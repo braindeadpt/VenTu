@@ -140,6 +140,9 @@ export default function MapExploreZone({
           onSelectRow={onSelectRow}
           layers={sheetLayers}
           extras={sheetExtras}
+          // O MESMO item do chip «Agrupar spots» do half («Ver também»):
+          // o peek rende-o como switch gémeo (nome/estado/onToggle idênticos).
+          clusterItem={sheetExtras.find((e) => e.key === 'cluster')}
           basemapMode={basemapMode}
           onBasemapChange={onBasemapChange}
           exitFullscreenLabel={exitFullscreenLabel}

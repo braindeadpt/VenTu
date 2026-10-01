@@ -48,19 +48,24 @@ function FieldLabel({ htmlFor, children }: { htmlFor?: string; children: React.R
   );
 }
 
-/** Switch no estilo da maquete: rótulo à esquerda, track à direita. */
+/** Switch no estilo da maquete: rótulo à esquerda, track à direita.
+ *  `compact` é a fila do peek (dois switches lado a lado a 390 px): texto
+ *  `meta-sm` + gaps curtos + rótulo que trunca em vez de rebentar a linha.
+ *  O alvo mantém-se ≥44 px (só a largura encolhe, nunca a altura). */
 export function MapFilterSwitch({
   label,
   checked,
   onToggle,
   hint,
   toggleAttr,
+  compact,
 }: {
   label: string;
   checked: boolean;
   onToggle: () => void;
   hint?: string;
   toggleAttr?: string;
+  compact?: boolean;
 }) {
   return (
     <button
@@ -68,11 +73,15 @@ export function MapFilterSwitch({
       role="switch"
       aria-checked={checked}
       onClick={onToggle}
-      title={hint}
+      // Compacto + truncado: o title repõe o nome completo no hover (rato).
+      title={hint ?? (compact ? label : undefined)}
       {...(toggleAttr ? { [toggleAttr]: true } : {})}
-      className="flex min-h-[44px] w-full items-center justify-between gap-2.5 rounded-input px-1 text-left text-body-sm text-fg transition-colors duration-150 hover:text-fg"
+      className={cn(
+        'flex min-h-[44px] w-full items-center justify-between rounded-input px-1 text-left text-fg transition-colors duration-150 hover:text-fg',
+        compact ? 'gap-1.5 text-meta-sm' : 'gap-2.5 text-body-sm',
+      )}
     >
-      <span>{label}</span>
+      <span className={compact ? 'min-w-0 flex-1 truncate' : undefined}>{label}</span>
       <span
         aria-hidden
         className={cn(

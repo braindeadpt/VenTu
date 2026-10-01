@@ -15,8 +15,9 @@ export async function waitMapSettled(page: Page) {
 
 /**
  * Nome ACESSÍVEL do controlo de agrupamento — o MODO, constante em todas as
- * línguas e superfícies (toolbar, extras «Ver também» do half). O estado não
- * está aqui: está no `aria-pressed` do próprio botão e no `data-map-cluster`
+ * línguas e superfícies (switch do peek, chip dos extras «Ver também» do
+ * half, toolbar). O estado não está aqui: está no `aria-checked` do switch /
+ * `aria-pressed` do botão e no `data-map-cluster`
  * do shell. Antes o nome era a acção («Mostrar todos» quando agrupado), e os
  * testes que liam o estado do texto deixaram de ser possíveis de escrever sem
  * ambiguidade (auditoria 2026-09-21).
@@ -44,8 +45,9 @@ async function tapGrabberOnce(page: Page, sheet: import('@playwright/test').Loca
 
 /**
  * Desfaz o cluster pelo toggle REAL da UI. O mobile força cluster no arranque
- * (ignora o LS), por isso o único caminho é a UI: half → o chip
- * «Agrupar spots» do grupo «Ver também», voltando ao peek no fim. O clique
+ * (ignora o LS), por isso o único caminho é a UI: o switch «Agrupar spots»
+ * do peek (sem sair do estado) ou, sem sheet/peek, o chip do grupo
+ * «Ver também» do half, voltando ao peek no fim. O clique
  * é decidido pelo estado (`aria-pressed`), não pelo texto: um toggle já
  * desligado não se toca. Só devolve com o cluster desfeito
  * (`data-map-cluster=false`), os marcadores montados e o mapa parado — o
@@ -65,8 +67,13 @@ export async function showAllMapMarkers(page: Page) {
   const toggle = page.getByRole('button', { name: CLUSTER_TOGGLE_NAME }).filter({ visible: true }).first();
   const sheet = page.locator('[data-explore-sheet]');
   const grabber = page.locator('[data-sheet-grabber]');
-  if (await sheet.count()) {
-    // Leva o sheet a half, onde vive o toggle — por estado, um passo de
+  // Atalho: o switch gémeo do peek desliga sem sair do estado (um clique,
+  // sem navegação peek→half→peek).
+  const peekSwitch = page.locator('[data-sheet-peek] [data-map-cluster-toggle]').first();
+  if (await peekSwitch.isVisible().catch(() => false)) {
+    if ((await peekSwitch.getAttribute('aria-checked')) === 'true') await peekSwitch.click();
+  } else if (await sheet.count()) {
+    // Leva o sheet a half, onde vive o chip — por estado, um passo de
     // cada vez e com confirmação (o atributo muda no mesmo commit que o
     // conteúdo; o translateY ainda anima ~320 ms mas o DOM já está lá).
     for (let i = 0; i < 3 && !(await toggle.isVisible().catch(() => false)); i += 1) {
@@ -81,8 +88,10 @@ export async function showAllMapMarkers(page: Page) {
         await tapGrabberOnce(page, sheet, grabber);
       }
     }
-  }
-  if ((await toggle.isVisible().catch(() => false)) && (await toggle.getAttribute('aria-pressed')) === 'true') {
+    if ((await toggle.isVisible().catch(() => false)) && (await toggle.getAttribute('aria-pressed')) === 'true') {
+      await toggle.click();
+    }
+  } else if ((await toggle.isVisible().catch(() => false)) && (await toggle.getAttribute('aria-pressed')) === 'true') {
     await toggle.click();
   }
   // Falha aqui (e depressa) se o cluster continuar ligado sem toggle

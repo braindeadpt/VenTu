@@ -92,11 +92,21 @@ test.describe('MAP-UX-V3 §5 — sheet mobile (390×844)', () => {
     const h = await sheetVisibleHeight(page);
     expect(h, 'peek deveria medir 136 ± 4 px').toBeLessThanOrEqual(140);
 
-    // Linha 1 — cartão «Melhor agora»; linha 2 — «Filtros» · «Só a bombar» · contagem.
+    // Linha 1 — cartão «Melhor agora»; linha 2 — «Filtros» · «Só a bombar» ·
+    // «Agrupar spots» (a contagem vive no half e na lista aberta).
     await expect(page.locator('[data-sheet-best]')).toBeVisible();
     await expect(page.getByRole('button', { name: /Mostrar filtros|Show filters/i })).toBeVisible();
     await expect(page.getByRole('switch', { name: /Só a bombar/i })).toBeVisible();
-    await expect(sheet.getByText(/\d+ spots/).first()).toBeVisible();
+    await expect(page.getByRole('switch', { name: /Agrupar spots|Cluster spots/i })).toBeVisible();
+    // A fila cabe a 390 px — sem scroll horizontal interno.
+    const filtersOverflow = await page.evaluate(() => {
+      const row = document.querySelector('[data-sheet-peek-filters]');
+      if (!(row instanceof HTMLElement)) return 'sem fila do peek';
+      return row.scrollWidth > row.clientWidth + 1
+        ? `fila do peek transborda ${row.scrollWidth - row.clientWidth}px`
+        : null;
+    });
+    expect(filtersOverflow).toBeNull();
     // Atribuição sempre visível — obrigação de licença.
     await expect(sheet.locator('[data-sheet-attribution]').first()).toBeVisible();
   });

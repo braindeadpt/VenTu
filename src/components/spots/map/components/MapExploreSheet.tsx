@@ -19,7 +19,9 @@ import { cn } from '@/lib/cn';
  * Bottom sheet do /mapa em mobile — substitui o cartão «Modo Explorar».
  * Três estados com snap (MAP-UX-V3 §5, maquete aprovada):
  *  - peek (~136 px): cartão «Melhor agora» + [Filtros (n)] · switch
- *    «Só a bombar» · contagem — duas linhas de leitura, sem linhas só-ícone;
+ *    «Só a bombar» · switch «Agrupar spots» — duas linhas de leitura, sem
+ *    linhas só-ícone (a contagem vive no topo do half e no cabeçalho da
+ *    lista aberta — a 390 px não cabe um 4.º elemento na fila);
  *  - meio: os filtros como no painel + camadas/«Ver também»/legenda;
  *  - aberto: a lista sincronizada.
  *
@@ -177,6 +179,7 @@ export default function MapExploreSheet({
   onlyOnHint,
   clusterEnabled,
   onToggleCluster,
+  clusterItem,
   bestLabel,
   noteLabel,
   jumpLabel,
@@ -438,8 +441,11 @@ export default function MapExploreSheet({
       // ResizeObserver media essa altura, e o «peek» ficava do tamanho do
       // sheet inteiro — no iPhone 13 sobravam ~50 px de mapa visível.
       // Duas linhas de leitura rápida (maquete §5): cartão «Melhor agora»
-      // e a linha [Filtros (n)] · «Só a bombar» · «n spots». O cabeçalho
-      // inteiro é superfície de arrasto 1:1 (excepto os controlos).
+      // e a fila [Filtros (n)] · «Só a bombar» · «Agrupar spots» — os dois
+      // switches em variante compacta cabem a 390 px sem crescer em altura
+      // (a fila continua a medir 44 px, o máximo anterior). O cabeçalho
+      // inteiro é superfície de arrasto 1:1 (excepto os controlos — o
+      // startDrag ignora `button` e `[role="switch"]`).
       <div
         ref={s === state && !ghost ? peekContentRef : undefined}
         className="flex shrink-0 cursor-grab flex-col gap-1 px-3 pb-1 active:cursor-grabbing touch-none"
@@ -486,7 +492,7 @@ export default function MapExploreSheet({
         ) : (
           <p className="px-1 py-2 text-meta-sm text-fg-muted">{t.mapUiExplore.emptyView}</p>
         )}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5" data-sheet-peek-filters>
           <button
             type="button"
             onClick={() => onStateChange('half')}
@@ -500,6 +506,7 @@ export default function MapExploreSheet({
           </button>
           <div className="min-w-0 flex-1">
             <MapFilterSwitch
+              compact
               label={t.map.onlyOn}
               checked={onlyOnEnabled}
               onToggle={onToggleOnlyOn}
@@ -507,9 +514,23 @@ export default function MapExploreSheet({
               toggleAttr="data-map-only-on-toggle"
             />
           </div>
-          <span className="shrink-0 font-mono tabular-nums text-meta-sm text-fg-subtle">
-            {spotCount} spots
-          </span>
+          {/* Gémeo do chip «Agrupar spots» do half («Ver também»): MESMO
+              nome (o MODO, constante), MESMO estado e MESMA acção — uma
+              superfície por estado, nunca os dois no DOM ao mesmo tempo
+              (só a cópia fantasma do cross-fade coexiste, inert+aria-hidden).
+              Switch (não botão) para rimar com o vizinho «Só a bombar» e
+              com o par do bloco de filtros do half. `clusterItem` chega do
+              «Ver também»; sem ele, cai para clusterEnabled/onToggleCluster. */}
+          <div className="min-w-0 flex-1">
+            <MapFilterSwitch
+              compact
+              label={clusterItem?.label ?? t.map.clusterSpots}
+              checked={clusterItem?.pressed ?? clusterEnabled}
+              onToggle={clusterItem?.onToggle ?? onToggleCluster}
+              hint={clusterItem?.hint}
+              toggleAttr={clusterItem?.toggleAttr ?? 'data-map-cluster-toggle'}
+            />
+          </div>
         </div>
         {/* A atribuição do peek NÃO entra em flow aqui (rebentava os
             136 px da maquete) — rende como faixa própria flutuando acima
@@ -526,6 +547,12 @@ export default function MapExploreSheet({
       >
         {!ghost && warningChip}
         {timeTrack}
+        {/* A contagem («114 spots») vivia na fila do peek; com os dois
+            switches lado a lado a 390 px não há largura para um 4.º elemento
+            — mudou-se para aqui, como no cabeçalho do painel desktop. */}
+        <p className="text-meta-sm text-fg-muted" data-sheet-count>
+          {t.mapUiExplore.spotsInViewCount.replace('{count}', String(spotCount))}
+        </p>
         {/* «Meio: os filtros como no painel» — mesmo bloco partilhado. */}
         <MapExploreFilters
           idPrefix="m"

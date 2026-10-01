@@ -100,23 +100,27 @@ async function rowScore(row: ReturnType<Page['locator']>): Promise<number> {
 /**
  * Mobile arranca sempre com cluster (readClusterPref ignora o localStorage
  * em <md) — para ler marcadores individuais há que desligar o agrupamento
- * pelo toggle real no grupo «Ver também» do estado «half». O nome do
- * controlo é o MODO («Agrupar spots», constante) e o estado lê-se do
- * aria-pressed — não do texto (auditoria 2026-09-21).
+ * pelo toggle real: o switch «Agrupar spots» do peek. O nome do controlo é
+ * o MODO («Agrupar spots», constante) e o estado lê-se do aria-checked — não
+ * do texto (auditoria 2026-09-21). Termina em half, como a versão anterior
+ * (os chamadores sobem a open a partir daí).
  */
 async function unclusterMarkers(page: Page): Promise<void> {
   const sheet = page.locator('[data-explore-sheet]');
-  if ((await sheet.getAttribute('data-explore-sheet')) === 'peek') {
-    await page.getByRole('button', { name: /Mostrar filtros|Show filters/i }).click();
-    await expect(sheet).toHaveAttribute('data-explore-sheet', 'half');
+  // Os chamadores podem estar em half/open — volta ao peek (o toque no
+  // grabber percorre os estados) e desliga pelo switch gémeo do peek.
+  for (let i = 0; i < 3; i += 1) {
+    if ((await sheet.getAttribute('data-explore-sheet')) === 'peek') break;
+    await page.locator('[data-sheet-grabber]').click();
   }
-  const toggle = page
-    .getByRole('button', { name: CLUSTER_TOGGLE_NAME })
-    .filter({ visible: true })
-    .first();
-  await expect(toggle).toBeVisible({ timeout: 15_000 });
-  if ((await toggle.getAttribute('aria-pressed')) === 'true') await toggle.click();
+  await expect(sheet).toHaveAttribute('data-explore-sheet', 'peek', { timeout: 10_000 });
+  const sw = page.locator('[data-sheet-peek] [data-map-cluster-toggle]').first();
+  await expect(sw).toBeVisible({ timeout: 20_000 });
+  if ((await sw.getAttribute('aria-checked')) === 'true') await sw.click();
   await expect(page.locator('[data-map-cluster]').first()).toHaveAttribute('data-map-cluster', 'false');
+  // Contrato com os chamadores: termina em half (botão dedicado do peek).
+  await page.getByRole('button', { name: /Mostrar filtros|Show filters/i }).click();
+  await expect(sheet).toHaveAttribute('data-explore-sheet', 'half', { timeout: 10_000 });
   // A inserção chunked (8/batch) demora — espera marcadores individuais.
   await expect
     .poll(async () => page.locator('.leaflet-marker-icon.spot-marker').count(), { timeout: 20_000 })
@@ -393,6 +397,46 @@ test.describe('Lista sincronizada do /mapa — sheet mobile', () => {
     await expect(shell).toHaveAttribute('data-map-only-on', 'false');
   });
 
+  test('peek: «Agrupar spots» é o switch gémeo do chip do half', async ({ page }) => {
+    await openMapa(page);
+    const sheet = page.locator('[data-explore-sheet]');
+    await expect(sheet).toHaveAttribute('data-explore-sheet', 'peek');
+    const shell = page.locator('[data-map-cluster]').first();
+
+    // Mobile arranca agrupado: o switch do peek arranca ligado, com o MESMO
+    // nome do chip do half (o MODO, constante) — o estado lê-se do
+    // aria-checked. .first() pelo mesmo motivo do teste «Só a bombar».
+    const sw = page.locator('[data-sheet-peek] [data-map-cluster-toggle]').first();
+    await expect(sw).toBeVisible({ timeout: 20_000 });
+    await expect(page.getByRole('switch', { name: CLUSTER_TOGGLE_NAME })).toBeVisible();
+    await expect(sw).toHaveAttribute('aria-checked', 'true');
+    await expect(shell).toHaveAttribute('data-map-cluster', 'true');
+
+    // Desligar no peek: mesmo nome, só o aria-checked e o espelho do shell
+    // mudam — sem passar pelo half.
+    await sw.click();
+    const off = page.locator('[data-sheet-peek] [data-map-cluster-toggle]').first();
+    await expect(off).toHaveAttribute('aria-checked', 'false', { timeout: 15_000 });
+    await expect(page.getByRole('switch', { name: CLUSTER_TOGGLE_NAME })).toBeVisible();
+    await expect(shell).toHaveAttribute('data-map-cluster', 'false', { timeout: 15_000 });
+
+    // Uma superfície por estado: no peek não há BOTÃO com esse nome — o chip
+    // só existe no half (a toolbar não monta em fullscreen).
+    await expect(sheet.getByRole('button', { name: CLUSTER_TOGGLE_NAME })).toHaveCount(0);
+
+    // Voltar a ligar no peek.
+    await off.click();
+    await expect(
+      page.locator('[data-sheet-peek] [data-map-cluster-toggle]').first(),
+    ).toHaveAttribute('aria-checked', 'true', { timeout: 15_000 });
+    await expect(shell).toHaveAttribute('data-map-cluster', 'true', { timeout: 15_000 });
+
+    // A contagem continua alcançável: no topo do half…
+    await page.getByRole('button', { name: /Mostrar filtros|Show filters/i }).click();
+    await expect(sheet).toHaveAttribute('data-explore-sheet', 'half');
+    await expect(page.locator('[data-sheet-half] [data-sheet-count]')).toContainText(/\d+ spots/);
+  });
+
   test('half: o chip do cluster em «Ver também» declara o nome = modo', async ({ page }) => {
     await openMapa(page);
     const sheet = page.locator('[data-explore-sheet]');
@@ -400,9 +444,9 @@ test.describe('Lista sincronizada do /mapa — sheet mobile', () => {
     await page.locator('[data-sheet-grabber]').click();
     await expect(sheet).toHaveAttribute('data-explore-sheet', 'half');
 
-    // O chip dos extras só existe no half (peek e open não têm toggle de
-    // cluster) — escopo no [data-sheet-half] para não apanhar a cópia
-    // fantasma do cross-fade.
+    // O CHIP dos extras só existe no half (no peek vive o switch gémeo, no
+    // open não há toggle) — escopo no [data-sheet-half] para não apanhar a
+    // cópia fantasma do cross-fade.
     const half = page.locator('[data-sheet-half]');
     const chip = half.getByRole('button', { name: CLUSTER_TOGGLE_NAME });
     await expect(chip).toBeVisible({ timeout: 20_000 });

@@ -52,7 +52,10 @@ Lista «Nesta vista» (ordenada por score, com a ordenação num select):
 Sheet mobile (3 estados, snap):
 - **Peek, 136 px:**
   - linha 1: cartão «Melhor agora» (mosaico, nome, região, porquê em 1 linha);
-  - linha 2: [Filtros (2)] · switch «Só a bombar» · «114 spots».
+  - linha 2: [Filtros (2)] · switch «Só a bombar» · switch «Agrupar spots»
+    (gémeo do chip do half — mesmo nome/estado/onToggle; os dois switches em
+    variante compacta mantêm a fila nos 44 px).
+  - a contagem «114 spots» vive no topo do half e na lista aberta.
   - Nada de linhas só com ícones.
 - **Meio:** os filtros como no painel.
 - **Aberto:** a lista.
