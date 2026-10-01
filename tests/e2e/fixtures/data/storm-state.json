@@ -1094,12 +1094,12 @@
     },
     "praia-vitoria": {
       "radar": null,
-      "warnLevel": null,
+      "warnLevel": "yellow",
       "inStormCone": false
     },
     "santa-catarina-terceira": {
       "radar": null,
-      "warnLevel": null,
+      "warnLevel": "yellow",
       "inStormCone": false
     },
     "parede": {
@@ -1254,7 +1254,7 @@
     },
     "almoxarife": {
       "radar": null,
-      "warnLevel": null,
+      "warnLevel": "yellow",
       "inStormCone": false
     },
     "lagoa-albufeira": {
@@ -1314,7 +1314,7 @@
           "kmh": 32
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "comporta": {
@@ -1329,7 +1329,7 @@
           "kmh": 30
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "carvalhal-comporta": {
@@ -1344,7 +1344,7 @@
           "kmh": 31
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "alqueva": {
@@ -1383,9 +1383,13 @@
         "distKm": 2,
         "dirDeg": 317,
         "intensity": "moderate",
-        "approach": null
+        "approach": {
+          "state": "receding",
+          "deg": 86,
+          "kmh": 51
+        }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "sines": {
@@ -1400,7 +1404,7 @@
           "kmh": 21
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "sao-torpes": {
@@ -1415,12 +1419,12 @@
           "kmh": 22
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "mosteiros": {
       "radar": null,
-      "warnLevel": null,
+      "warnLevel": "yellow",
       "inStormCone": false
     },
     "porto-covo": {
@@ -1435,17 +1439,17 @@
           "kmh": 26
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "monte-verde": {
       "radar": null,
-      "warnLevel": null,
+      "warnLevel": "yellow",
       "inStormCone": false
     },
     "santa-barbara": {
       "radar": null,
-      "warnLevel": null,
+      "warnLevel": "yellow",
       "inStormCone": false
     },
     "malhao": {
@@ -1460,12 +1464,12 @@
           "kmh": 25
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "milicias": {
       "radar": null,
-      "warnLevel": null,
+      "warnLevel": "yellow",
       "inStormCone": false
     },
     "vila-nova-milfontes": {
@@ -1480,7 +1484,7 @@
           "kmh": 24
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "alteirinhos": {
@@ -1489,14 +1493,18 @@
         "distKm": 8,
         "dirDeg": 318,
         "intensity": "moderate",
-        "approach": null
+        "approach": {
+          "state": "receding",
+          "deg": 89,
+          "kmh": 22
+        }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "agua-alto": {
       "radar": null,
-      "warnLevel": null,
+      "warnLevel": "yellow",
       "inStormCone": false
     },
     "zambujeira": {
@@ -1505,7 +1513,11 @@
         "distKm": 3,
         "dirDeg": 319,
         "intensity": "moderate",
-        "approach": null
+        "approach": {
+          "state": "receding",
+          "deg": 127,
+          "kmh": 28
+        }
       },
       "warnLevel": null,
       "inStormCone": false
@@ -1516,7 +1528,11 @@
         "distKm": 1,
         "dirDeg": 320,
         "intensity": "moderate",
-        "approach": null
+        "approach": {
+          "state": "receding",
+          "deg": 129,
+          "kmh": 29
+        }
       },
       "warnLevel": null,
       "inStormCone": false
@@ -1992,11 +2008,7 @@
         "distKm": 18,
         "dirDeg": 81,
         "intensity": "heavy",
-        "approach": {
-          "state": "approaching",
-          "deg": 315,
-          "kmh": 47
-        }
+        "approach": null
       },
       "warnLevel": null,
       "inStormCone": false
@@ -2007,11 +2019,7 @@
         "distKm": 15,
         "dirDeg": 82,
         "intensity": "heavy",
-        "approach": {
-          "state": "approaching",
-          "deg": 321,
-          "kmh": 49
-        }
+        "approach": null
       },
       "warnLevel": null,
       "inStormCone": false
@@ -2063,12 +2071,12 @@
     },
     "anjos": {
       "radar": null,
-      "warnLevel": null,
+      "warnLevel": "yellow",
       "inStormCone": false
     },
     "ponta-delgada": {
       "radar": null,
-      "warnLevel": null,
+      "warnLevel": "yellow",
       "inStormCone": false
     },
     "sao-vicente-madeira": {
@@ -2262,9 +2270,13 @@
         "distKm": 3,
         "dirDeg": 317,
         "intensity": "moderate",
-        "approach": null
+        "approach": {
+          "state": "receding",
+          "deg": 88,
+          "kmh": 47
+        }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "lagoa-sancha": {
@@ -2279,7 +2291,7 @@
           "kmh": 22
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "pessegueiro": {
@@ -2294,7 +2306,7 @@
           "kmh": 26
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "garrão": {
@@ -2409,32 +2421,32 @@
     },
     "calhetas": {
       "radar": null,
-      "warnLevel": null,
+      "warnLevel": "yellow",
       "inStormCone": false
     },
     "ribeira-quente": {
       "radar": null,
-      "warnLevel": null,
+      "warnLevel": "yellow",
       "inStormCone": false
     },
     "formosa-santa-maria": {
       "radar": null,
-      "warnLevel": null,
+      "warnLevel": "yellow",
       "inStormCone": false
     },
     "porto-martins": {
       "radar": null,
-      "warnLevel": null,
+      "warnLevel": "yellow",
       "inStormCone": false
     },
     "cachorro-pico": {
       "radar": null,
-      "warnLevel": null,
+      "warnLevel": "yellow",
       "inStormCone": false
     },
     "faja-cubres": {
       "radar": null,
-      "warnLevel": null,
+      "warnLevel": "yellow",
       "inStormCone": false
     },
     "fao-ofir-surf": {
