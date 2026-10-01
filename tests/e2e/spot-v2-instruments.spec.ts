@@ -12,7 +12,20 @@ const SECTION = '#instrumentos';
 const CARDS = `${SECTION} [data-instrument]`;
 const WIND_BEAM = `${CARDS}[data-instrument='wind'] [data-beam]`;
 
+/**
+ * O eixo só está na hora actual depois de montar (antes mostra a hora do
+ * build). data-instrument-rows=ready NÃO garante isso: com o conteúdo no
+ * shell (sem streaming) o «ready» chega ~350 ms antes da aterragem no agora,
+ * e um índice lido nesse intervalo fica velho a meio do teste.
+ */
+async function waitTimelineLive(page: Page) {
+  await expect(page.locator(SECTION)).toHaveAttribute('data-spot-timeline-live', 'true', {
+    timeout: 20_000,
+  });
+}
+
 async function setTimelineIndex(page: Page, index: number) {
+  await waitTimelineLive(page);
   // O mesmo caminho do utilizador: clique na régua — o track mapeia a
   // fracção horizontal → índice global dentro da janela de 48 h.
   const slider = page.getByRole('slider');
@@ -49,6 +62,7 @@ test.describe('S2B — Instrumentos (vento, onda, maré)', () => {
       'ready',
       { timeout: 20_000 },
     );
+    await waitTimelineLive(page);
   });
 
   test('três cartões com leituras e marcação acessível', async ({ page }) => {
@@ -92,6 +106,38 @@ test.describe('S2B — Instrumentos (vento, onda, maré)', () => {
     expect(found, 'nenhuma hora nas próximas 24 h muda os três cartões').toBeGreaterThan(0);
     expect(beamAfter).not.toBe(beamBefore);
     expect(readAfter).not.toEqual(readBefore);
+  });
+
+  test('chip do vento usa classifyWind — 4 categorias do score (UX v3 §4)', async ({
+    page,
+  }) => {
+    const windCard = page.locator(`${CARDS}[data-instrument='wind']`);
+    const chip = windCard.locator('button .rounded-full');
+    // Um dos quatro rótulos canónicos — a mesma classificação do score
+    // (onshore / side-onshore / side-offshore / offshore).
+    await expect(chip).toHaveText(/^(Onshore|Cross-on|Cross-off|Offshore)$/);
+  });
+
+  test('abrir o cartão anima o painel por grid-template-rows (240 ms)', async ({
+    page,
+  }) => {
+    const windCard = page.locator(`${CARDS}[data-instrument='wind']`);
+    const acc = page.locator(`${SECTION} .ventu-inst-acc`);
+
+    // Fechado: 0fr. Aberto: 1fr — transição declarada na classe.
+    await expect(acc).toHaveCSS('grid-template-rows', '0px');
+    await windCard.getByRole('button').click();
+    await expect(acc).toHaveAttribute('data-open', '');
+    await expect(acc).toHaveCSS('transition-duration', '0.24s');
+
+    // A borda do cartão aberto usa --verdict a 40% — mas a cor interpola
+    // durante a transição de 240 ms: espera o valor final. Chromium pode
+    // serializar como color(srgb … / 0.4) ou oklab(… / 0.4).
+    await expect
+      .poll(async () =>
+        windCard.evaluate((el) => getComputedStyle(el).borderColor),
+      )
+      .toMatch(/[,/]\s*0\.4\s*\)$/);
   });
 
   test('o painel de detalhe abre por teclado e fecha com Escape', async ({ page }) => {
@@ -170,40 +216,61 @@ test.describe('S2B — Instrumentos (vento, onda, maré)', () => {
 });
 
 /**
- * Banda ensemble P10/P50/P90 (campo `ens` da linha horária) + skill por
- * horizonte de lead (`byLead` do forecast-skill.json).
+ * Banda ensemble no cartão Onda — o SLOT secundário e a altura do cartão.
  *
- * O `ens` só existe nas horas multi-modelo — e o ficheiro servido em dev/CI é
- * de um run best_match, sem a chave. Por isso o spec serve as linhas REAIS do
- * spot com `ens` acrescentado (mantém o alinhamento com a régua de 48 h e o
- * resto da página intacto) e stubba o forecast-skill.json com um byLead
- * determinístico para a boia mapeada do Guincho (IH idEst 1010).
+ * O `ens` só existe nas horas multi-modelo e o ficheiro servido em dev/CI é de
+ * um run best_match (sem a chave): o spec serve as linhas REAIS do spot com
+ * `ens` derivado do valor da hora, para o alinhamento com a régua de 48 h (e o
+ * resto da página) ficar intacto. `serviceWorkers: 'block'` é obrigatório — o
+ * SW do build serve os /data/* da cache e passa à frente das rotas.
+ *
+ * O que aqui se prova é a correcção da auditoria de 25/09: a banda entra na
+ * linha que o cartão JÁ tem (três linhas sempre, nunca quatro) e a altura do
+ * cartão e da secção é a mesma com e sem banda — a página não salta ao mexer
+ * na régua nem entre o HTML de partida e o relógio vivo.
  */
-test.describe('S2B — banda ensemble P10–P90 + skill por horizonte (lead)', () => {
-  // O SW do build estático serve os JSON de dados da cache — sem o bloquear,
-  // as rotas do Playwright não interceptam o ficheiro do spot.
+test.describe('S2B — banda ensemble no cartão Onda (uma linha, sempre)', () => {
   test.use({ serviceWorkers: 'block' });
 
   const SPOT = 'guincho';
-  const BUOY_ID = '1010';
   const WAVE_CARD = `${CARDS}[data-instrument='wave']`;
-  const PANEL = '#instrumentos-detalhe';
+  const BAND = `${WAVE_CARD} [data-wave-band='card']`;
+  /** Filhos directos do miolo de leitura: big + 2 linhas secundárias. */
+  const WAVE_LINES = `${WAVE_CARD} button > span.grid > span`;
+  const WAVE_SLOT = `${WAVE_LINES}:nth-child(3)`;
+  const PT_TEXT = /^modelos: \d,\d–\d,\d m$/;
+  const PT_HINT = 'Os outros modelos de onda — 8 em cada 10 ficam neste intervalo';
 
-  /** Serve as linhas do spot com uma banda determinística derivada do valor. */
-  async function stubForecastBand(page: Page, withBand = true) {
+  type BandMode = 'all' | 'even' | 'none';
+
+  /**
+   * Serve as linhas do spot com `ens` derivado de cada hora.
+   * 'even' deixa metade das horas sem banda — é assim que o spec compara uma
+   * hora com banda com uma hora sem banda na MESMA página.
+   */
+  async function stubBands(
+    page: Page,
+    mode: BandMode,
+    opts: { delayMs?: number; dropSwell?: boolean } = {},
+  ) {
+    const { delayMs = 0, dropSwell = false } = opts;
     await page.route('**/data/forecasts/*.json', async (route) => {
+      if (delayMs) await new Promise((r) => setTimeout(r, delayMs));
       const rows = (await (await route.fetch()).json()) as Record<string, unknown>[];
-      const banded = rows.map((r) => {
-        if (!withBand) {
-          const copy = { ...r };
-          delete copy.ens;
-          return copy;
+      const out = rows.map((row, i) => {
+        const copy = { ...row };
+        delete copy.ens;
+        if (dropSwell) {
+          delete copy.swellHeight;
+          delete copy.swellPeriod;
         }
-        const h = Number.isFinite(Number(r.waveHeight)) ? Number(r.waveHeight) : 1.5;
-        const w = Number.isFinite(Number(r.windSpeed)) ? Number(r.windSpeed) : 7;
+        const withBand = mode === 'all' || (mode === 'even' && i % 2 === 0);
+        if (!withBand) return copy;
+        const h = Number.isFinite(Number(row.waveHeight)) ? Number(row.waveHeight) : 1.5;
+        const w = Number.isFinite(Number(row.windSpeed)) ? Number(row.windSpeed) : 7;
         const q = (v: number, d = 2) => Number(v.toFixed(d));
         return {
-          ...r,
+          ...copy,
           // [waveP10, waveP50, waveP90, windP10, windP50, windP90, waveN, windN]
           ens: [
             q(Math.max(0, h - 0.4)),
@@ -217,115 +284,151 @@ test.describe('S2B — banda ensemble P10–P90 + skill por horizonte (lead)', (
           ],
         };
       });
-      await route.fulfill({ json: banded });
+      await route.fulfill({ json: out });
     });
   }
 
-  async function stubSkillByLead(page: Page, byLead = true) {
-    const buckets = byLead
-      ? [
-          { from: 0, to: 12, n: 12, me: 0.1, mae: 0.2, rmse: 0.3, corr: 0.9, meanLeadHours: 6 },
-          { from: 24, to: 48, n: 14, me: 0.6, mae: 0.7, rmse: 0.9, corr: 0.6, meanLeadHours: 36 },
-        ]
-      : undefined;
-    await page.route('**/data/forecast-skill.json', (route) =>
-      route.fulfill({
-        json: {
-          fetchedAt: '2026-09-25T06:00:00.000Z',
-          pairCount: 40,
-          pairCountByOrigin: { ih: 40, 'wmo-pt': 0, 'wmo-es': 0 },
-          calibratedPairCount: 0,
-          stats: { n: 40, me: 0.3, mae: 0.5, rmse: 0.7, corr: 0.8, meanLeadHours: 20 },
-          byOrigin: { ih: { n: 40, me: 0.3, mae: 0.5, rmse: 0.7, corr: 0.8, meanLeadHours: 20 } },
-          byBuoy: {
-            [BUOY_ID]: {
-              buoyName: 'ZLT1',
-              n: 40,
-              me: 0.3,
-              mae: 0.5,
-              rmse: 0.7,
-              corr: 0.8,
-              meanLeadHours: 20,
-              origin: 'ih',
-              ...(buckets ? { byLead: buckets } : {}),
-            },
-          },
-        },
-      }),
-    );
-  }
-
-  /**
-   * Abre o spot e espera que as linhas horárias cheguem. Espera pela RESPOSTA
-   * do ficheiro do spot e depois pelo marcador `ready` (seletor de atributo +
-   * `.first()` — durante a hidratação o shell pode desenhar duas cópias do
-   * contentor e `#instrumentos > div` batia em strict mode).
-   */
-  async function openSpot(page: Page) {
+  /** Abre o spot e espera (por omissão) pelas linhas horárias do forecast. */
+  async function openSpot(page: Page, path = `/pt/spots/${SPOT}/`) {
     const forecast = page.waitForResponse((r) => r.url().includes('/data/forecasts/'));
-    await page.goto(`/pt/spots/${SPOT}/`);
+    await page.goto(path);
     await forecast;
-    await expect(page.locator(`${SECTION} [data-instrument-rows="ready"]`).first()).toBeVisible({
-      timeout: 20_000,
-    });
+    await expect(
+      page.locator(`${SECTION} [data-instrument-rows='ready']`).first(),
+    ).toBeVisible({ timeout: 20_000 });
+    await waitTimelineLive(page);
   }
 
-  test('cartão Onda mostra a banda P10–P90 da hora (e nada sem `ens`)', async ({ page }) => {
-    await stubForecastBand(page, false);
-    await openSpot(page);
-    // Sem `ens` na linha, o cartão não inventa banda.
-    await expect(page.locator(WAVE_CARD).locator('[data-wave-band="card"]')).toHaveCount(0);
-  });
+  const height = async (page: Page, selector: string) => {
+    const box = await page.locator(selector).first().boundingBox();
+    return box?.height ?? -1;
+  };
 
-  test('cartão Onda: banda P10–P90 visível com os membros do ensemble', async ({ page }) => {
-    await stubForecastBand(page);
+  test('a banda entra na linha que já existia, sem siglas e com tooltip', async ({ page }) => {
+    await stubBands(page, 'all');
     await openSpot(page);
-    const band = page.locator(WAVE_CARD).locator('[data-wave-band="card"]');
+
+    // Três linhas, sempre as mesmas: big + 2 secundárias. Uma linha A MAIS
+    // (a regressão do f2508ce66) falha aqui.
+    await expect(page.locator(WAVE_LINES)).toHaveCount(3);
+
+    const band = page.locator(BAND);
     await expect(band).toBeVisible({ timeout: 15_000 });
-    await expect(band).toContainText('P10–P90');
-    await expect(band).toContainText('4 modelos');
-    // Formatação PT: vírgula decimal (o número grande do cartão usa a mesma).
-    await expect(band).toContainText(/\d,\d–\d,\d m/);
+    // Uma frase humana, sem siglas — e a explicação no title/leitor de ecrã.
+    await expect(page.locator(`${BAND} > span`).first()).toHaveText(PT_TEXT);
+    await expect(band).toHaveAttribute('title', PT_HINT);
+    await expect(band).toContainText(PT_HINT);
+
+    // Regra 2 da auditoria: nada de jargão no cartão.
+    const card = page.locator(WAVE_CARD);
+    await expect(card).not.toContainText('P10');
+    await expect(card).not.toContainText('RMSE');
   });
 
-  test('detalhe da Onda: banda da hora + skill por horizonte de lead', async ({ page }) => {
-    await stubForecastBand(page);
-    await stubSkillByLead(page);
+  test('EN: a banda sai traduzida e com a vírgula decimal local', async ({ page }) => {
+    await stubBands(page, 'all');
+    await openSpot(page, `/en/spots/${SPOT}/`);
+    const band = page.locator(BAND);
+    await expect(band).toBeVisible({ timeout: 15_000 });
+    await expect(page.locator(`${BAND} > span`).first()).toHaveText(
+      /^models: \d\.\d–\d\.\d m$/,
+    );
+    await expect(page.locator(WAVE_CARD)).not.toContainText('P10');
+  });
+
+  test('sem banda na hora o slot volta ao mar de fundo (e continua com 3 linhas)', async ({ page }) => {
+    await stubBands(page, 'none');
     await openSpot(page);
-    await page.locator(WAVE_CARD).getByRole('button').click();
-    const panel = page.locator(PANEL);
-    await expect(panel).toBeVisible({ timeout: 15_000 });
 
-    // Banda da hora escolhida: onda em m (P10/P50/P90) e vento em kt.
-    const detailBand = panel.locator('[data-wave-band="detail"]');
-    await expect(detailBand).toBeVisible();
-    await expect(detailBand).toContainText('Onda');
-    await expect(detailBand).toContainText('P10');
-    await expect(detailBand).toContainText('P50');
-    await expect(detailBand).toContainText('P90');
-    await expect(detailBand).toContainText('kt');
-    // Onda em metros com 2 casas e vírgula PT; vento convertido para kt inteiro.
-    await expect(detailBand).toContainText(/P10 \d,\d\d · P50 \d,\d\d · P90 \d,\d\d m/);
-    await expect(detailBand).toContainText(/P10 \d+ · P50 \d+ · P90 \d+ kt/);
-
-    // Skill por horizonte: só as faixas que o produtor publicou, com ME/RMSE/n.
-    const lead = panel.locator('[data-skill-by-lead="true"]');
-    await expect(lead).toBeVisible({ timeout: 20_000 });
-    await expect(lead).toContainText('0–12 h');
-    await expect(lead).toContainText('24–48 h');
-    await expect(lead).toContainText('n=12');
-    await expect(lead).toContainText('n=14');
-    await expect(lead).toContainText('RMSE');
+    await expect(page.locator(BAND)).toHaveCount(0);
+    await expect(page.locator(WAVE_LINES)).toHaveCount(3);
+    await expect(page.locator(WAVE_CARD)).not.toContainText('P10');
   });
 
-  test('skill por horizonte: sem byLead para a boia, a repartição não aparece', async ({
+  test('degradação: sem banda e sem mar de fundo o slot fica vazio com a mesma altura', async ({
     page,
   }) => {
-    await stubForecastBand(page);
-    await stubSkillByLead(page, false);
+    // Sem banda e sem mar de fundo o slot fica com o placeholder NBSP —
+    // invisível, mas com a caixa (é o que impede o salto ao mudar de hora).
+    await stubBands(page, 'none', { dropSwell: true });
     await openSpot(page);
-    await page.locator(WAVE_CARD).getByRole('button').click();
-    await expect(page.locator(PANEL)).toBeVisible({ timeout: 15_000 });
-    await expect(page.locator(`${PANEL} [data-skill-by-lead]`)).toHaveCount(0);
+    const emptySlot = await height(page, WAVE_SLOT);
+    const emptyCard = await height(page, WAVE_CARD);
+    // A caixa do slot vazio: com o placeholder NBSP o span tem uma caixa de
+    // linha inteira; com um espaço normal colapsava e media 0 (ou nada).
+    expect(emptySlot).toBeGreaterThan(10);
+    // E o placeholder é mesmo NBSP (U+00A0) — textContent não normaliza.
+    const placeholder = await page.locator(`${WAVE_SLOT} > span`).first().textContent();
+    expect(placeholder).toBe('\u00a0');
+
+    await page.unroute('**/data/forecasts/*.json');
+    await stubBands(page, 'all');
+    await openSpot(page);
+    await expect(page.locator(BAND)).toBeVisible();
+    expect(Math.abs((await height(page, WAVE_SLOT)) - emptySlot)).toBeLessThanOrEqual(0.5);
+    expect(Math.abs((await height(page, WAVE_CARD)) - emptyCard)).toBeLessThanOrEqual(0.5);
+  });
+
+  test('mesma altura com e sem banda — cartão e secção, a 390 e 1350 px', async ({ page }) => {
+    for (const width of [390, 1350]) {
+      await page.setViewportSize({ width, height: 900 });
+      await stubBands(page, 'even');
+      await openSpot(page);
+      const nowIndex = Number(
+        await page.locator(SECTION).getAttribute('data-spot-timeline-index'),
+      );
+
+      let withBand: { card: number; section: number } | null = null;
+      let without: { card: number; section: number } | null = null;
+      for (let step = 0; step <= 12 && !(withBand && without); step += 1) {
+        if (step > 0) await setTimelineIndex(page, nowIndex + step);
+        const hasBand = (await page.locator(BAND).count()) > 0;
+        if (hasBand && !withBand) {
+          withBand = { card: await height(page, WAVE_CARD), section: await height(page, SECTION) };
+        } else if (!hasBand && !without) {
+          without = { card: await height(page, WAVE_CARD), section: await height(page, SECTION) };
+        }
+      }
+
+      expect(withBand, `sem hora com banda a ${width}px`).not.toBeNull();
+      expect(without, `sem hora sem banda a ${width}px`).not.toBeNull();
+      expect(Math.abs(withBand!.card - without!.card), `cartão a ${width}px`).toBeLessThanOrEqual(
+        0.5,
+      );
+      expect(
+        Math.abs(withBand!.section - without!.section),
+        `secção a ${width}px`,
+      ).toBeLessThanOrEqual(0.5);
+
+      await page.unroute('**/data/forecasts/*.json');
+    }
+  });
+
+  test('o slot não muda de altura entre o HTML de partida e as linhas do forecast', async ({
+    page,
+  }) => {
+    // 2,5 s de atraso no ficheiro do spot: dá para medir o estado de arranque
+    // (snapshot `conditions`, sem banda) e o estado com linhas (com banda) na
+    // mesma página — é o intervalo que a auditoria dizia saltar.
+    await stubBands(page, 'all', { delayMs: 2500 });
+    const forecast = page.waitForResponse((r) => r.url().includes('/data/forecasts/'));
+    await page.goto(`/pt/spots/${SPOT}/`);
+    await expect(page.getByRole('heading', { level: 1, name: /Guincho/i })).toBeVisible({
+      timeout: 20_000,
+    });
+    const container = page.locator(`${SECTION} > div`).first();
+    await expect(container).toHaveAttribute('data-instrument-rows', 'loading');
+    const before = await height(page, WAVE_CARD);
+    expect(await page.locator(WAVE_LINES).count()).toBe(3);
+
+    await forecast;
+    await expect(container).toHaveAttribute('data-instrument-rows', 'ready', {
+      timeout: 20_000,
+    });
+    await expect(page.locator(BAND)).toBeVisible({ timeout: 15_000 });
+    expect(
+      Math.abs((await height(page, WAVE_CARD)) - before),
+      'altura do cartão entre o arranque e as linhas',
+    ).toBeLessThanOrEqual(0.5);
   });
 });

@@ -25,7 +25,7 @@ import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 export interface SpotTimelineDataValue {
   /** ISO local times (Open-Meteo, Europe/Lisbon wall time) alinhadas com scores. */
   hours: readonly string[];
-  /** Scores canónicos por hora (mesma fonte da ForecastTable/WhenToGoCard). */
+  /** Scores canónicos por hora (mesma fonte da ForecastTable e da régua 48h). */
   scores: readonly number[];
   /** Índice da hora «agora»; -1 antes de montar ou sem horas. */
   nowIndex: number;

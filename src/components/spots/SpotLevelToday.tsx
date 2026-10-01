@@ -19,7 +19,23 @@ export default function SpotLevelToday({
   className,
 }: SpotLevelTodayProps) {
   const resolved = resolveSpotLevelToday(difficulty, score);
-  if (!resolved) return null;
+  // Sem mensagem, a linha continua a ocupar a mesma caixa (invisível): o
+  // score vem da hora escolhida, que muda entre o HTML baked e o relógio
+  // vivo (e a cada passo da régua). Retirá-la do fluxo encolhia o hero
+  // ~27 px depois da hidratação — CLS 0,2 no Lighthouse (25 set).
+  if (!resolved) {
+    return (
+      <p
+        aria-hidden
+        className={cn(
+          'invisible inline-flex items-center rounded-pill border px-2.5 py-1 text-meta-sm',
+          className,
+        )}
+      >
+        {' '}
+      </p>
+    );
+  }
 
   const isPt = locale === 'pt';
   const message = isPt ? resolved.messagePt : resolved.messageEn;

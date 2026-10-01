@@ -1,23 +1,15 @@
+import { getTranslation } from '@/lib/i18n';
 import type { DirectoryEntry, DirectoryKind, DirectorySport, DirectoryTier } from '@/types/directory';
 
-export const DIRECTORY_KIND_LABELS: Record<
-  DirectoryKind,
-  { pt: string; en: string }
-> = {
-  surf_school: { pt: 'Escola de surf', en: 'Surf school' },
-  kite_center: { pt: 'Centro de kite', en: 'Kite center' },
-  windsurf: { pt: 'Windsurf', en: 'Windsurf' },
-  shop: { pt: 'Loja', en: 'Shop' },
-  club: { pt: 'Clube', en: 'Club' },
-  rental: { pt: 'Aluguer', en: 'Rental' },
-  other: { pt: 'Outro', en: 'Other' },
-};
 
-export const DIRECTORY_TIER_LABELS: Record<DirectoryTier, { pt: string; en: string }> = {
-  free: { pt: 'Grátis', en: 'Free' },
-  featured: { pt: 'Destaque', en: 'Featured' },
-  pro: { pt: 'Pro', en: 'Pro' },
-};
+
+/** Etiqueta do tier do directório — 5 línguas (bloco `directoryTiers`). */
+export function directoryTierLabel(tier: DirectoryTier, locale: string): string {
+  const t = getTranslation(locale).directoryTiers;
+  if (tier === 'free') return t.free;
+  if (tier === 'featured') return t.featured;
+  return 'Pro';
+}
 
 export function tierRank(tier?: DirectoryTier): number {
   if (tier === 'pro') return 3;
@@ -75,9 +67,25 @@ export function entriesNearSpot(
   return scored.map(({ _rank: _, ...rest }) => rest);
 }
 
+/** Tipo de estabelecimento — bloco `directoryKinds` (5 línguas). */
 export function kindLabel(kind: DirectoryKind, locale: string): string {
-  const row = DIRECTORY_KIND_LABELS[kind] ?? DIRECTORY_KIND_LABELS.other;
-  return locale === 'en' ? row.en : row.pt;
+  const t = getTranslation(locale).directoryKinds;
+  switch (kind) {
+    case 'surf_school':
+      return t.surfSchool;
+    case 'kite_center':
+      return t.kiteCenter;
+    case 'windsurf':
+      return 'Windsurf';
+    case 'shop':
+      return t.shop;
+    case 'club':
+      return t.club;
+    case 'rental':
+      return t.rental;
+    default:
+      return t.other;
+  }
 }
 
 export function sportLabel(sport: DirectorySport, locale: string): string {

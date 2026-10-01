@@ -23,7 +23,8 @@ test.describe('/pt/mapa fullscreen map', () => {
 
   test('difficulty filter persists in localStorage', async ({ page }) => {
     await page.getByRole('button', { name: /Mostrar filtros|Show filters/i }).click();
-    await page.getByRole('button', { name: 'Iniciante', exact: true }).click();
+    // §5: o nível passou a select nativo com label «Nível» (era pill «Iniciante»).
+    await page.getByRole('combobox', { name: /Nível|Level/i }).selectOption('beginner');
     const stored = await page.evaluate(() => localStorage.getItem('ventu:map:difficulty'));
     expect(stored).toBe('beginner');
   });
@@ -50,16 +51,19 @@ test.describe('/pt/mapa fullscreen map', () => {
 
   test('mobile HUD collapses to show more map', async ({ page }) => {
     const hud = page.locator('[data-map-hud-collapsed]');
+    // §5: os filtros do sheet vivem no estado «half»; o nível é um select
+    // nativo «Nível» (antes era a pill «Iniciante» do HUD expandido).
+    const levelSelect = page.getByRole('combobox', { name: /Nível|Level/i });
     await expect(hud).toHaveAttribute('data-map-hud-collapsed', 'true');
-    await expect(page.getByRole('button', { name: 'Iniciante', exact: true })).toBeHidden();
+    await expect(levelSelect).toBeHidden();
 
     await page.getByRole('button', { name: /Mostrar filtros|Show filters/i }).click();
     await expect(hud).toHaveAttribute('data-map-hud-collapsed', 'false');
-    await expect(page.getByRole('button', { name: 'Iniciante', exact: true })).toBeVisible();
+    await expect(levelSelect).toBeVisible();
 
     await page.getByRole('button', { name: /Ocultar filtros|Hide filters/i }).click();
     await expect(hud).toHaveAttribute('data-map-hud-collapsed', 'true');
-    await expect(page.getByRole('button', { name: 'Iniciante', exact: true })).toBeHidden();
+    await expect(levelSelect).toBeHidden();
   });
 
   test('exit and re-enter map without freezing', async ({ page }) => {

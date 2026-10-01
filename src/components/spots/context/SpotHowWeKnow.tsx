@@ -22,6 +22,7 @@ import ScoreWaveSourceBadge from '@/components/ui/ScoreWaveSourceBadge';
 import ScoreWindSourceBadge from '@/components/ui/ScoreWindSourceBadge';
 import WindSourceAttributionNote from '@/components/ui/WindSourceAttributionNote';
 import ObservedWaveSourcesChip from '@/components/spots/ObservedWaveSourcesChip';
+import SpotModelBand from '@/components/spots/context/SpotModelBand';
 import ScoreFeedback from '@/components/spots/ScoreFeedback';
 import FeedbackForm from '@/components/FeedbackForm';
 
@@ -129,12 +130,18 @@ export default function SpotHowWeKnow({
 
   return (
     <div className="space-y-3">
+      {/* Detalhe técnico do número grande da onda — banda ensemble por família
+          e erro do modelo por horizonte. A caixa é estável: passar a régua não
+          muda a altura da secção. */}
+      <SpotModelBand spot={spot} locale={locale} sport={selectedSport} />
+
       {conditions && scoreWaveSource && scoreWindSource && (
         <div className="space-y-2.5" data-testid="how-we-know-sources">
           <h3 className="text-meta-sm font-semibold text-fg-subtle uppercase tracking-wide">
             {tc.sourcesTitle}
           </h3>
-          <ProvenanceRow align="start">
+          {/* UX v3 §8 — os badges abrem popovers: alvos tácteis ≥44 px. */}
+          <ProvenanceRow align="start" className="[&_button]:min-h-11">
             <ScoreWaveSourceBadge
               source={scoreWaveSource}
               correction={scoreWaveCorrection}

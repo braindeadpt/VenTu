@@ -4,6 +4,7 @@
 
 import { spots } from './spots';
 import { getConditionsDataId } from './spotConditionsSource';
+import type { WaterQualityLive } from './waterQuality';
 
 export interface PrecomputedConditions {
   [spotId: string]: {
@@ -20,6 +21,12 @@ export interface PrecomputedConditions {
     tideObservedHeight?: number;
     tideObservedAt?: string;
     tideStation?: string;
+    tideAnomalyM?: number;
+    currentMeasuredSpeed?: number;
+    currentMeasuredDir?: number;
+    currentMeasuredAt?: string;
+    currentMeasuredNetwork?: string;
+    waterQuality?: WaterQualityLive;
     updatedAt: string;
     confidence?: 'alta' | 'média' | 'baixa';
     confidenceDetail?: {

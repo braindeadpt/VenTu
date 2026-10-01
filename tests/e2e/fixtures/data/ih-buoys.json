@@ -1,44 +1,5 @@
 {
   "stations": {
-    "1": {
-      "idEst": 1,
-      "name": "CSA88/1",
-      "area": "Boia Nazaré Oceânica",
-      "wmoId": 6200192,
-      "depth": 1897,
-      "status": "inactive",
-      "nrt": "near-real-time data not available",
-      "lat": 39.5,
-      "lon": -9.633333333333331,
-      "lastSea": "2025-09-30T05:00:00",
-      "family": "fugro"
-    },
-    "2": {
-      "idEst": 2,
-      "name": "CSA88/2",
-      "area": "Boia Nazaré Costeira",
-      "wmoId": 6200199,
-      "depth": 85,
-      "status": "active",
-      "nrt": "near-real-time data available",
-      "lat": 39.550000000000004,
-      "lon": -9.200000000000001,
-      "lastSea": "2026-09-08T06:00:00",
-      "family": "fugro"
-    },
-    "3": {
-      "idEst": 3,
-      "name": "CSA89/1 ",
-      "area": "Boia Leixões Oceânica",
-      "wmoId": 6200191,
-      "depth": 1647,
-      "status": "inactive",
-      "nrt": "near-real-time data not available",
-      "lat": 41.1333333333333,
-      "lon": -9.56666666666667,
-      "lastSea": "2025-02-12T12:00:00",
-      "family": "fugro"
-    },
     "4": {
       "idEst": 4,
       "name": "CSA92/D",
@@ -223,80 +184,6 @@
       "lastPos": "2025-08-18T16:02:24+00:00",
       "lastSea": "2025-08-18T16:02:24+00:00",
       "family": "datawell"
-    },
-    "1004": {
-      "idEst": 1004,
-      "name": "CSA87",
-      "area": "Zona Piloto - S. Pedro de Moel",
-      "depth": 59,
-      "status": "inactive",
-      "nrt": "near-real-time data not available",
-      "lat": 39.8731683,
-      "lon": -9.09806,
-      "lastSea": "2013-01-19T06:00:00",
-      "family": "fugro"
-    },
-    "1005": {
-      "idEst": 1005,
-      "name": "CSA81",
-      "area": "Boia Faro Oceânica",
-      "wmoId": 6200200,
-      "depth": 1300,
-      "status": "inactive",
-      "nrt": "near-real-time data not available",
-      "lat": 36.4833333333333,
-      "lon": -8.06666666666667,
-      "lastSea": "2026-05-01T04:00:00",
-      "family": "fugro"
-    },
-    "1007": {
-      "idEst": 1007,
-      "name": "Subeco",
-      "area": "Setúbal",
-      "depth": 1012,
-      "status": "inactive",
-      "nrt": "near-real-time data not available",
-      "lat": 38.1666666666667,
-      "lon": -9.33333333333333,
-      "lastSea": "2019-10-30T10:00:00",
-      "family": "fugro"
-    },
-    "1008": {
-      "idEst": 1008,
-      "name": "CSA83",
-      "area": "Boia Sines Oceânica",
-      "wmoId": 6201081,
-      "depth": 1052,
-      "status": "inactive",
-      "nrt": "near-real-time data not available",
-      "lat": 37.8833333333333,
-      "lon": -9.450000000000001,
-      "lastSea": "2025-11-28T07:00:00",
-      "family": "fugro"
-    },
-    "1010": {
-      "idEst": 1010,
-      "name": "ZLT1",
-      "area": "ZLT1",
-      "depth": 115,
-      "status": "active",
-      "nrt": "near-real-time data available",
-      "lat": 38.3833333333333,
-      "lon": -9.06666666666667,
-      "lastSea": "2026-09-08T06:00:00",
-      "family": "fugro"
-    },
-    "1011": {
-      "idEst": 1011,
-      "name": "ZLT2",
-      "area": "ZLT2",
-      "depth": 114,
-      "status": "active",
-      "nrt": "near-real-time data available",
-      "lat": 38.35,
-      "lon": -9,
-      "lastSea": "2026-09-08T06:00:00",
-      "family": "fugro"
     }
   },
   "spotMapping": {
@@ -736,13 +623,15 @@
       "idEst": 86,
       "stationTitle": "BOND5",
       "area": "Arquipélago Açores - Ilha Graciosa",
-      "distanceKm": 86.9
+      "distanceKm": 86.9,
+      "island": true
     },
     "santa-catarina-terceira": {
       "idEst": 86,
       "stationTitle": "BOND5",
       "area": "Arquipélago Açores - Ilha Graciosa",
-      "distanceKm": 78.2
+      "distanceKm": 78.2,
+      "island": true
     },
     "parede": {
       "idEst": 1010,
@@ -808,7 +697,8 @@
       "idEst": 86,
       "stationTitle": "BOND5",
       "area": "Arquipélago Açores - Ilha Graciosa",
-      "distanceKm": 84.1
+      "distanceKm": 84.1,
+      "island": true
     },
     "lagoa-albufeira": {
       "idEst": 1010,
@@ -880,7 +770,8 @@
       "idEst": 86,
       "stationTitle": "BOND5",
       "area": "Arquipélago Açores - Ilha Graciosa",
-      "distanceKm": 228.5
+      "distanceKm": 228.5,
+      "island": true
     },
     "porto-covo": {
       "idEst": 19,
@@ -892,13 +783,15 @@
       "idEst": 86,
       "stationTitle": "BOND5",
       "area": "Arquipélago Açores - Ilha Graciosa",
-      "distanceKm": 244.6
+      "distanceKm": 244.6,
+      "island": true
     },
     "santa-barbara": {
       "idEst": 86,
       "stationTitle": "BOND5",
       "area": "Arquipélago Açores - Ilha Graciosa",
-      "distanceKm": 241.9
+      "distanceKm": 241.9,
+      "island": true
     },
     "malhao": {
       "idEst": 19,
@@ -910,7 +803,8 @@
       "idEst": 86,
       "stationTitle": "BOND5",
       "area": "Arquipélago Açores - Ilha Graciosa",
-      "distanceKm": 248.6
+      "distanceKm": 248.6,
+      "island": true
     },
     "vila-nova-milfontes": {
       "idEst": 19,
@@ -923,6 +817,13 @@
       "stationTitle": "CSA83/1D",
       "area": "Sines",
       "distanceKm": 32.9
+    },
+    "agua-alto": {
+      "idEst": 86,
+      "stationTitle": "BOND5",
+      "area": "Arquipélago dos Açores - Ilha da Graciosa",
+      "distanceKm": 265,
+      "island": true
     },
     "zambujeira": {
       "idEst": 19,
@@ -1156,49 +1057,57 @@
       "idEst": 86,
       "stationTitle": "BOND5",
       "area": "Arquipélago Açores - Ilha Graciosa",
-      "distanceKm": 249.2
+      "distanceKm": 249.2,
+      "island": true
     },
     "sao-vicente-madeira": {
       "idEst": 33,
       "stationTitle": "CSA94",
       "area": "Caniçal",
-      "distanceKm": 30
+      "distanceKm": 30,
+      "island": true
     },
     "porto-da-cruz": {
       "idEst": 33,
       "stationTitle": "CSA94",
       "area": "Caniçal",
-      "distanceKm": 11.1
+      "distanceKm": 11.1,
+      "island": true
     },
     "paul-mar": {
       "idEst": 33,
       "stationTitle": "CSA94",
       "area": "Caniçal",
-      "distanceKm": 47.8
+      "distanceKm": 47.8,
+      "island": true
     },
     "jardim-mar": {
       "idEst": 33,
       "stationTitle": "CSA94",
       "area": "Caniçal",
-      "distanceKm": 46.2
+      "distanceKm": 46.2,
+      "island": true
     },
     "ponta-sao-lourenco": {
       "idEst": 33,
       "stationTitle": "CSA94",
       "area": "Caniçal",
-      "distanceKm": 2.5
+      "distanceKm": 2.5,
+      "island": true
     },
     "ribeira-brava": {
       "idEst": 33,
       "stationTitle": "CSA94",
       "area": "Caniçal",
-      "distanceKm": 32.3
+      "distanceKm": 32.3,
+      "island": true
     },
     "funchal": {
       "idEst": 33,
       "stationTitle": "CSA94",
       "area": "Caniçal",
-      "distanceKm": 20
+      "distanceKm": 20,
+      "island": true
     },
     "barra-aveiro": {
       "idEst": 4,
@@ -1318,49 +1227,64 @@
       "idEst": 33,
       "stationTitle": "CSA94",
       "area": "Caniçal",
-      "distanceKm": 4.1
+      "distanceKm": 4.1,
+      "island": true
     },
     "seixal-madeira": {
       "idEst": 33,
       "stationTitle": "CSA94",
       "area": "Caniçal",
-      "distanceKm": 37.1
+      "distanceKm": 37.1,
+      "island": true
     },
     "ponta-pargo": {
       "idEst": 33,
       "stationTitle": "CSA94",
       "area": "Caniçal",
-      "distanceKm": 51.7
+      "distanceKm": 51.7,
+      "island": true
     },
     "madalena-mar": {
       "idEst": 33,
       "stationTitle": "CSA94",
       "area": "Caniçal",
-      "distanceKm": 38.3
+      "distanceKm": 38.3,
+      "island": true
     },
     "calhetas": {
       "idEst": 86,
       "stationTitle": "BOND5",
       "area": "Arquipélago Açores - Ilha Graciosa",
-      "distanceKm": 249
+      "distanceKm": 249,
+      "island": true
+    },
+    "ribeira-quente": {
+      "idEst": 86,
+      "stationTitle": "BOND5",
+      "area": "Arquipélago dos Açores - Ilha da Graciosa",
+      "distanceKm": 275.9,
+      "island": true
     },
     "porto-martins": {
       "idEst": 86,
       "stationTitle": "BOND5",
       "area": "Arquipélago Açores - Ilha Graciosa",
-      "distanceKm": 90.3
+      "distanceKm": 90.3,
+      "island": true
     },
     "cachorro-pico": {
       "idEst": 86,
       "stationTitle": "BOND5",
       "area": "Arquipélago Açores - Ilha Graciosa",
-      "distanceKm": 67.5
+      "distanceKm": 67.5,
+      "island": true
     },
     "faja-cubres": {
       "idEst": 86,
       "stationTitle": "BOND5",
       "area": "Arquipélago Açores - Ilha Graciosa",
-      "distanceKm": 49.7
+      "distanceKm": 49.7,
+      "island": true
     },
     "fao-ofir-surf": {
       "idEst": 4,

@@ -1,21 +1,25 @@
 import { test, expect, type Page } from '@playwright/test';
+import { SPORT_LABELS } from '../../src/lib/sportRatings';
 
 /**
- * S3 — previsão sincronizada com o eixo de tempo partilhado.
+ * S3/SP-B — «Hora a hora» sincronizada com o eixo de tempo partilhado.
  *
- * Duas direcções (docs/design/SPOT-PAGE.md §5):
+ * Duas direcções (docs/design/SPOT-PAGE.md §5, SPOT-UX-V3 §5):
  *  1. Régua → previsão: a coluna da hora escolhida ganha data-tl-selected
- *     (matiz --verdict + contorno) e o stripe do meteograma move-se.
- *  2. Previsão → eixo: clicar numa coluna da tabela ou no meteograma muda
- *     o índice — régua e instrumentos reflectem a mesma hora.
+ *     (matiz --verdict 12% + contorno --verdict) na tabela e na lista
+ *     mobile.
+ *  2. Previsão → eixo: clicar numa coluna (desktop) ou numa linha de hora
+ *     (mobile) muda o índice — régua e instrumentos reflectem a mesma hora.
  *
  * O destaque é imperativo (ForecastTimelineSync): a ForecastTable não
  * re-renderiza por passo — medido por window.__ventuFtRenders.
+ *
+ * O meteograma saiu da página (UX v3 — «um painel, um eixo»): não há
+ * data-tl-meteogram nem data-tl-stripe.
  */
 
 const SECTION = '#previsao';
 const INSTRUMENTS = '#instrumentos';
-const METEOGRAM = `${SECTION} [data-tl-meteogram]`;
 
 /** Índice global da timeline — verdade lida nos instrumentos. */
 async function globalIndex(page: Page): Promise<number> {
@@ -44,7 +48,7 @@ async function setTimelineIndex(page: Page, index: number) {
   );
 }
 
-test.describe('S3 — previsão no eixo de tempo partilhado', () => {
+test.describe('S3/SP-B — «Hora a hora» no eixo de tempo partilhado', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/pt/spots/guincho/');
     await expect(
@@ -56,9 +60,39 @@ test.describe('S3 — previsão no eixo de tempo partilhado', () => {
       /\d+/,
       { timeout: 20_000 },
     );
+    // O índice aterra na hora corrente num effect — /\d+/ passa já no 0
+    // inicial (race). Espera a aterragem: a 1.ª célula data-tl-col é a
+    // hora corrente. Sem isto o `offset` da régua e o contador de renders
+    // apanham o commit de montagem.
+    // A 1.ª coluna só é a hora viva depois de o eixo montar (nowIndex ≥ 0):
+    // antes a tabela fatia pelo relógio do bake — com o build de uma hora
+    // anterior lia-se a hora do bake e a aterragem nunca coincidia.
+    await expect(page.locator(INSTRUMENTS)).toHaveAttribute(
+      'data-spot-timeline-live',
+      'true',
+      { timeout: 20_000 },
+    );
+    const firstCol = await page
+      .locator(`${SECTION} [data-tl-col]`)
+      .first()
+      .getAttribute('data-tl-col');
+    await expect(page.locator(INSTRUMENTS)).toHaveAttribute(
+      'data-spot-timeline-index',
+      firstCol ?? '',
+      { timeout: 10_000 },
+    );
   });
 
-  test('régua → previsão: coluna destacada e stripe do meteograma', async ({
+  test('título «Hora a hora» e sem meteograma na página', async ({ page }) => {
+    await expect(
+      page.locator(`${SECTION} h2`, { hasText: 'Hora a hora' }),
+    ).toBeVisible();
+    // O meteograma foi removido — nenhum resíduo do eixo concorrente.
+    await expect(page.locator(`${SECTION} [data-tl-meteogram]`)).toHaveCount(0);
+    await expect(page.locator(`${SECTION} [data-tl-stripe]`)).toHaveCount(0);
+  });
+
+  test('régua → previsão: coluna destacada em todas as linhas', async ({
     page,
   }) => {
     const target = (await globalIndex(page)) + 6;
@@ -74,13 +108,6 @@ test.describe('S3 — previsão no eixo de tempo partilhado', () => {
       `${SECTION} [data-tl-col="${target}"][data-tl-selected]`,
     );
     expect(await selected.count()).toBeGreaterThanOrEqual(4);
-
-    // Stripe do meteograma activa e posicionada na coluna escolhida.
-    const stripe = page.locator(`${SECTION} [data-tl-stripe]`);
-    await expect(stripe).toHaveCSS('opacity', '1');
-    expect(await stripe.evaluate((el) => el.style.transform)).toBe(
-      `translateX(${target * 15}px)`,
-    );
   });
 
   test('tabela → eixo: clicar numa coluna muda a hora em toda a página', async ({
@@ -119,32 +146,18 @@ test.describe('S3 — previsão no eixo de tempo partilhado', () => {
     ).toHaveAttribute('data-tl-selected', '');
   });
 
-  test('meteograma → eixo: clicar numa coluna escolhe a hora', async ({
-    page,
-  }) => {
-    const mg = page.locator(METEOGRAM);
-    const box = await mg.boundingBox();
-    test.skip(!box, 'meteograma fora do viewport');
-    const target = (await globalIndex(page)) + 4;
-
-    // Posição x = centro da coluna (largura fixa de 15 px).
-    const x = (target + 0.5) * 15;
-    test.skip(x > box!.width, 'coluna fora da área visível do meteograma');
-    await mg.click({ position: { x, y: 20 } });
-
-    await expect(page.locator(INSTRUMENTS)).toHaveAttribute(
-      'data-spot-timeline-index',
-      String(target),
-    );
-    await expect(page.locator(SECTION)).toHaveAttribute(
-      'data-spot-timeline-index',
-      String(target),
-    );
-  });
-
   test('arrasto de 10 passos na régua não re-renderiza a ForecastTable', async ({
     page,
   }) => {
+    // Último commit tardio da página: o overlay de dicas da comunidade
+    // (fetch pós-montagem) re-renderiza o SpotDetailClient e, em cascata, a
+    // tabela — nada a ver com o índice. Sob carga aterrava dentro do
+    // arrasto (flake «Received: 1»); o contador só zera com a página quieta.
+    await expect(page.locator('[data-community-tips]')).toHaveAttribute(
+      'data-community-tips',
+      'ready',
+      { timeout: 10_000 },
+    );
     await page.evaluate(() => {
       (window as unknown as { __ventuFtRenders?: number }).__ventuFtRenders = 0;
     });
@@ -162,5 +175,80 @@ test.describe('S3 — previsão no eixo de tempo partilhado', () => {
     );
     // A tabela não consome o índice — zero renders por passo.
     expect(renders).toBe(0);
+  });
+
+  test('desktop: ordem das linhas e separadores de dia', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    // Ordem da spec §5: Score, Ondas, Período, Vento, Rajada, Direcção,
+    // Maré, Água.
+    const labels = await page
+      .locator(`${SECTION} .forecast-table-scroll tbody th[scope='row']`)
+      .allTextContents();
+    const clean = labels.map((l) => l.replace(/\s+/g, ' ').trim());
+    // A linha de score usa o rótulo da modalidade («Surf», «Bodyboard»…)
+    // ou «Score» como fallback — o que a spec fixa é que é a 1.ª linha.
+    const sportNames = Object.values(SPORT_LABELS).map((s) => s.pt);
+    expect(
+      sportNames.includes(clean[0]) || clean[0].startsWith('Score'),
+      `1.ª linha devia ser o score (${sportNames.join('/')}/Score), é «${clean[0]}»`,
+    ).toBe(true);
+    const order = ['Ondas', 'Período', 'Vento', 'Rajada', 'Direcção', 'Maré', 'Água'];
+    const positions = order.map((label) =>
+      clean.findIndex((l) => l.startsWith(label)),
+    );
+    expect(
+      positions.every((p) => p >= 0),
+      `linhas da tabela: ${clean.join(' | ')}`,
+    ).toBe(true);
+    expect(
+      positions.every((p, i) => i === 0 || p > positions[i - 1]),
+      'ordem das linhas não respeita a spec',
+    ).toBe(true);
+
+    // Separador de dia: a primeira coluna de cada novo dia civil tem a
+    // classe forecast-col-daystart — pelo menos uma além da primeira.
+    const daySeps = await page
+      .locator(`${SECTION} .forecast-table-scroll .forecast-col-daystart`)
+      .count();
+    expect(daySeps).toBeGreaterThan(8); // ≥1 novo dia × ≥8 linhas + header
+  });
+
+  test('desktop: chips de dia saltam para o dia certo', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    // Chips de dia (pills por cima da tabela, marcadas data-day-chip) —
+    // 48 h cobrem ≥2 dias civis.
+    const allChips = page.locator(`${SECTION} [data-day-chip]`);
+    const chipCount = await allChips.count();
+    expect(chipCount).toBeGreaterThanOrEqual(2);
+
+    const scroller = page.locator(`${SECTION} .forecast-table-scroll`);
+    // O ÚLTIMO chip é o único determinístico a qualquer hora: o dia mais
+    // distante começa sempre ≥24 colunas à frente (48 h − hora actual),
+    // por isso centrar exige scrollLeft > 0. O 2.º chip («Amanhã») falha
+    // ao fim do dia — começa ~4 colunas à frente, targetLeft < 0 →
+    // clamp 0 → scrollLeft fica 0 (comportamento correcto: já está à
+    // vista, não há nada para centrar).
+    const chipIndex = chipCount - 1;
+    const before = await scroller.evaluate((el) => el.scrollLeft);
+    await allChips.nth(chipIndex).click();
+    await expect
+      .poll(async () => scroller.evaluate((el) => el.scrollLeft))
+      .toBeGreaterThan(before);
+
+    // Contrato real: a 1.ª coluna do dia clicado fica dentro da faixa
+    // visível do scroller (thead tem um .forecast-col-daystart por dia,
+    // na mesma ordem dos chips).
+    const dayCol = page.locator(
+      `${SECTION} .forecast-table-scroll thead .forecast-col-daystart`,
+    ).nth(chipIndex);
+    await expect
+      .poll(async () => {
+        const sBox = await scroller.boundingBox();
+        const cBox = await dayCol.boundingBox();
+        if (!sBox || !cBox) return -1;
+        const center = cBox.x + cBox.width / 2;
+        return center > sBox.x && center < sBox.x + sBox.width ? 1 : -1;
+      })
+      .toBe(1);
   });
 });

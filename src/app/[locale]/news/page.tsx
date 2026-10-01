@@ -3,27 +3,21 @@ import { loadNews } from '@/lib/load-news'
 import { loadEvents } from '@/lib/load-events'
 import { upcomingEvents } from '@/lib/events'
 import NewsArchiveClient from '@/components/news/NewsArchiveClient'
-import { getTranslation } from '@/lib/i18n'
+import { getTranslation, validateLocale } from '@/lib/i18n'
 import type { Metadata } from 'next'
+import { buildPageMetadata } from '@/lib/seo'
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
   const t = getTranslation(locale)
 
-  return {
+  const loc = validateLocale(locale)
+  return buildPageMetadata({
     title: `${t.news.title} — VenTu`,
     description: t.news.subtitle,
-    alternates: {
-      canonical: `/${locale}/news/`,
-      languages: {
-        pt: '/pt/news/',
-        en: '/en/news/',
-        es: '/es/news/',
-        de: '/de/news/',
-        fr: '/fr/news/',
-      },
-    },
-  }
+    locale: loc,
+    path: `/${loc}/news/`,
+  })
 }
 
 export default async function NewsPage({ params }: { params: Promise<{ locale: string }> }) {

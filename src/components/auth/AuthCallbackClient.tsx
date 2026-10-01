@@ -51,8 +51,14 @@ export default function AuthCallbackClient({ locale }: { locale: string }) {
     };
   }, [locale, router]);
 
+  // A página servida tinha 19 caracteres de conteúdo e nenhum <h1> (mega audit
+  // 2026-09-26, achado A5): quem a abre directamente — link expirado, atalho do
+  // browser — via texto solto, sem cabeçalho. O título passa a ser fixo (o
+  // estado continua a ser a linha que muda, com as cores de antes).
   return (
     <div className="max-w-md mx-auto py-20 px-4 text-center space-y-3">
+      <h1 className="font-display text-h2 text-fg">{t.titleDefault}</h1>
+      <p className="text-fg-muted">{t.subtitleDefault}</p>
       {status === 'loading' && (
         <p className="text-fg-muted">{t.confirming}</p>
       )}

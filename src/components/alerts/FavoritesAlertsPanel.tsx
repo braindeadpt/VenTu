@@ -32,6 +32,7 @@ export default function FavoritesAlertsPanel({ locale, favoriteCount }: Favorite
   const [sport, setSport] = useState<SportType>('kitesurf');
   const [minScore, setMinScore] = useState(70);
   const [alertMode, setAlertMode] = useState<AlertMode>('digest');
+  const [warn, setWarn] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState('');
@@ -52,6 +53,7 @@ export default function FavoritesAlertsPanel({ locale, favoriteCount }: Favorite
         setSport(row.sport as SportType);
         setMinScore(row.min_score);
         setAlertMode(row.alert_mode);
+        setWarn(row.warn === true);
       }
     } finally {
       setLoading(false);
@@ -77,7 +79,7 @@ export default function FavoritesAlertsPanel({ locale, favoriteCount }: Favorite
     setSaved(false);
 
     try {
-      const result = await subscribeFavoritesAlerts(sb, minScore, sport, locale, alertMode);
+      const result = await subscribeFavoritesAlerts(sb, minScore, sport, locale, alertMode, warn);
       if (!result.ok) {
         setError(formatUserAlertsError(result.error, locale));
         return;
@@ -116,7 +118,10 @@ export default function FavoritesAlertsPanel({ locale, favoriteCount }: Favorite
   const pendingConfirm = isActive && !isVerified;
 
   return (
-    <section id="alertas" className="card-1 p-4 sm:p-5 space-y-4">
+    // O `id="alertas"` (destino do link de /xx/alerts/) é do contentor estável
+    // de `FavoritesClient` — aqui duplicá-lo-ia, e este painel não existe sem
+    // sessão nem sem favoritos (mega audit 2026-09-26, achado A7).
+    <section className="card-1 p-4 sm:p-5 space-y-4">
       <div className="flex items-start gap-3">
         <Bell className="w-5 h-5 text-data-waves shrink-0 mt-0.5" aria-hidden />
         <div className="min-w-0 flex-1">
@@ -138,6 +143,7 @@ export default function FavoritesAlertsPanel({ locale, favoriteCount }: Favorite
           score ≥ {prefs!.min_score}
           {' · '}
           {alertModeLabel(prefs!.alert_mode, locale)}
+          {prefs!.warn === true && ` · ${a.warnOptIn}`}
         </p>
       )}
 
@@ -156,8 +162,9 @@ export default function FavoritesAlertsPanel({ locale, favoriteCount }: Favorite
       <form onSubmit={submit} className="space-y-3">
         <div className="grid grid-cols-2 gap-2">
           <div>
-            <label className="block text-xs text-fg-muted mb-1">{t.spotVerify.sportTabsAria}</label>
+            <label htmlFor="fav-alerts-sport" className="block text-xs text-fg-muted mb-1">{t.spotVerify.sportTabsAria}</label>
             <select
+              id="fav-alerts-sport"
               value={sport}
               onChange={(e) => setSport(e.target.value as SportType)}
               className="w-full px-3 py-2 rounded-lg bg-surface-1/[0.04] border border-divider text-sm text-fg"
@@ -170,8 +177,9 @@ export default function FavoritesAlertsPanel({ locale, favoriteCount }: Favorite
             </select>
           </div>
           <div>
-            <label className="block text-xs text-fg-muted mb-1">{a.minScore}</label>
+            <label htmlFor="fav-alerts-minscore" className="block text-xs text-fg-muted mb-1">{a.minScore}</label>
             <input
+              id="fav-alerts-minscore"
               type="number"
               min={30}
               max={100}
@@ -184,8 +192,9 @@ export default function FavoritesAlertsPanel({ locale, favoriteCount }: Favorite
         </div>
 
         <div>
-          <label className="block text-xs text-fg-muted mb-1">{a.frequency}</label>
+          <label htmlFor="fav-alerts-mode" className="block text-xs text-fg-muted mb-1">{a.frequency}</label>
           <select
+            id="fav-alerts-mode"
             value={alertMode}
             onChange={(e) => setAlertMode(e.target.value as AlertMode)}
             className="w-full px-3 py-2 rounded-lg bg-surface-1/[0.04] border border-divider text-sm text-fg"
@@ -194,6 +203,19 @@ export default function FavoritesAlertsPanel({ locale, favoriteCount }: Favorite
             <option value="immediate">{a.immediate}</option>
           </select>
         </div>
+
+        <label className="flex items-start gap-2.5 cursor-pointer py-1">
+          <input
+            type="checkbox"
+            checked={warn}
+            onChange={(e) => setWarn(e.target.checked)}
+            className="mt-0.5 w-4 h-4 rounded border-divider accent-[var(--accent)] shrink-0"
+          />
+          <span className="min-w-0">
+            <span className="block text-sm text-fg">{a.warnOptIn}</span>
+            <span className="block text-meta-sm text-fg-muted mt-0.5">{a.warnOptInHint}</span>
+          </span>
+        </label>
 
         {error && <p className="text-xs text-score-poor">{error}</p>}
 

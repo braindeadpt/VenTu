@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { startTransition, useEffect, useRef, useState, useCallback } from 'react';
 import type L from 'leaflet';
 
 import { guardLeafletCanvas } from '@/components/spots/map/leafletCanvasGuard';
@@ -23,7 +23,13 @@ import {
   type BasemapLoadState,
 } from '@/lib/map-constants';
 import { createClusterIconFunction } from '@/components/spots/MapClusterIcon';
-import { applyExploreMapFit, resolveExploreChrome } from '@/components/spots/mapMarkers';
+import { applyExploreMapFit, exploreFitPadding, resolveExploreChrome } from '@/components/spots/mapMarkers';
+import {
+  MAP_AREA_BOUNDS,
+  MAP_BASEMAP_EVENT,
+  MAP_FIT_AREA_EVENT,
+  isMapAreaKey,
+} from '@/lib/mapLayerBus';
 
 interface UseMapCoreOptions {
   containerRef: React.RefObject<HTMLDivElement | null>;
@@ -42,6 +48,11 @@ interface UseMapCoreOptions {
    * do modo Explorar por cima — o enquadramento inicial desconta-os.
    */
   exploreChrome?: { enabled: boolean; panelCollapsed: boolean };
+  /**
+   * Deep link ?basemap=sat — força o basemap inicial sem gravar a
+   * preferência persistida (que só se grava na mudança manual).
+   */
+  initialBasemap?: BasemapMode;
 }
 
 interface UseMapCoreReturn {
@@ -85,6 +96,19 @@ function readIsDark(): boolean {
 
 function tileSignature(mode: BasemapMode, dark: boolean): string {
   return mode === 'satellite' ? 'satellite' : `map:${dark ? 'dark' : 'light'}`;
+}
+
+/**
+ * M7-F: cede a main thread entre as peças do init — cada segmento fica
+ * num task próprio (<50 ms → fora do TBT) em vez de uma cadeia síncrona.
+ */
+const yieldToMain = () => new Promise<void>((r) => window.setTimeout(r, 0));
+
+/** requestIdleCallback com fallback setTimeout (Safari <15 / iframes). */
+function onIdle(cb: () => void, timeoutMs = 1200): void {
+  const ric = window.requestIdleCallback;
+  if (typeof ric === 'function') ric(cb, { timeout: timeoutMs });
+  else window.setTimeout(cb, 1);
 }
 
 function waitForMapBox(
@@ -144,10 +168,18 @@ function attachBasemap(
     }, hangMs);
   };
 
+  // CORRECCOES-24SET (M5 — gate «pan ≤ 50 ms» a 4× CPU): `updateWhenIdle`
+  // adia o pedido/decode de tiles novos para o fim do gesto — a M4 mediu o
+  // raster dos tiles como residual de long tasks no pan (idêntico com o
+  // vento desligado). Durante o arraste a faixa recém-exposta fica vazia
+  // até ao release — o comportamento que o Leaflet já aplica por defeito
+  // no mobile, estendido ao desktop pela mesma razão de performance.
+  const tilePerf = { updateWhenIdle: true } as const;
   if (mode === 'satellite') {
     const layer = Leaflet.tileLayer(TILE_URLS.satellite, {
       attribution: TILE_ATTRIBUTIONS.esri,
       maxZoom: MAX_ZOOM,
+      ...tilePerf,
     });
     tileLayerRef.current = layer;
     // Subscribe BEFORE addTo: Leaflet fires tileloadstart synchronously during
@@ -159,7 +191,7 @@ function attachBasemap(
   }
 
   const { url, ...opts } = rasterTileLayerOptions(dark);
-  const rasterLayer = Leaflet.tileLayer(url, opts);
+  const rasterLayer = Leaflet.tileLayer(url, { ...opts, ...tilePerf });
   const swapToEsri = () => {
     if (tileLayerRef.current !== rasterLayer) return;
     try {
@@ -171,6 +203,7 @@ function attachBasemap(
     const esriLayer = Leaflet.tileLayer(esri.url, {
       attribution: esri.attribution,
       maxZoom: MAX_ZOOM,
+      ...tilePerf,
     });
     tileLayerRef.current = esriLayer;
     watch(esriLayer, () => onTileState('failed'));
@@ -190,7 +223,7 @@ function attachBasemap(
   rasterLayer.addTo(map);
 }
 
-export function useMapCore({ containerRef, isHeroEmbed, locale = 'pt', initialViewBounds = null, exploreChrome }: UseMapCoreOptions): UseMapCoreReturn {
+export function useMapCore({ containerRef, isHeroEmbed, locale = 'pt', initialViewBounds = null, exploreChrome, initialBasemap }: UseMapCoreOptions): UseMapCoreReturn {
   const mapInstanceRef = useRef<L.Map | null>(null);
   const LRef = useRef<typeof L | null>(null);
   const tileLayerRef = useRef<L.TileLayer | null>(null);
@@ -209,7 +242,7 @@ export function useMapCore({ containerRef, isHeroEmbed, locale = 'pt', initialVi
   const [clusterReady, setClusterReady] = useState(false);
   const [tileState, setTileState] = useState<BasemapLoadState>('loading');
   const [isDark, setIsDark] = useState(readIsDark);
-  const [basemapMode, setBasemapMode] = useState<BasemapMode>(readBasemapPref);
+  const [basemapMode, setBasemapMode] = useState<BasemapMode>(() => initialBasemap ?? readBasemapPref());
   const [isMobile, setIsMobile] = useState(() => {
     if (typeof window === 'undefined') return false;
     return window.matchMedia('(max-width: 767px)').matches;
@@ -287,13 +320,17 @@ export function useMapCore({ containerRef, isHeroEmbed, locale = 'pt', initialVi
 
   // Encaminha os estados do watchdog; 'failed' arma a recuperação automática
   // (limitada) mantendo a UI de erro até um tile pintar.
+  // CORRECCOES-24SET (M5 — gate «pan ≤ 50 ms»): o estado dos tiles chega
+  // frequentemente a meio de um pan (com updateWhenIdle o 1º carregamento
+  // cai no moveend); o re-render síncrono media ~128 ms a 4× CPU. É uma
+  // actualização não-urgente — startTransition deixa o React fatiá-la.
   const handleTileState = useCallback((state: BasemapLoadState) => {
     if (state === 'ok') {
       stopAutoRecover();
-      setTileState('ok');
+      startTransition(() => setTileState('ok'));
       return;
     }
-    setTileState(state);
+    startTransition(() => setTileState(state));
   }, [stopAutoRecover]);
 
 
@@ -385,8 +422,10 @@ export function useMapCore({ containerRef, isHeroEmbed, locale = 'pt', initialVi
       const mobileInit = window.matchMedia('(max-width: 767px)').matches;
 
       try {
-        await import('leaflet/dist/leaflet.css');
-        const leafletMod = await import('leaflet');
+        const [leafletMod] = await Promise.all([
+          import('leaflet'),
+          import('leaflet/dist/leaflet.css'),
+        ]);
         const Leaflet = leafletMod.default;
         if (cancelled || !containerRef.current) return;
 
@@ -433,6 +472,10 @@ export function useMapCore({ containerRef, isHeroEmbed, locale = 'pt', initialVi
         created.invalidateSize({ animate: false });
 
         if (cancelled) return;
+        // M7-F: init em pedaços — a criação + invalidateSize fecham um task;
+        // a atribuição/fit/basemap correm no seguinte.
+        await yieldToMain();
+        if (cancelled) return;
 
         // O AttributionControl tem de existir ANTES de qualquer layer entrar
         // no mapa: o Leaflet só liga a remoção do crédito ao evento 'remove'
@@ -450,6 +493,8 @@ export function useMapCore({ containerRef, isHeroEmbed, locale = 'pt', initialVi
         // (dados estáticos), por isso o fit corre antes de anexar o basemap
         // — os tiles pedidos são já os da vista final e não os do zoom
         // default que seriam abortados a seguir.
+        // Ownership M5 (map-v3): enquadramento inicial / fit — ver
+        // docs/design/MAP-ZONES.md.
         if (!isHeroEmbed && initialViewBounds) {
           applyExploreMapFit(
             Leaflet,
@@ -486,27 +531,60 @@ export function useMapCore({ containerRef, isHeroEmbed, locale = 'pt', initialVi
           } catch { /* noop */ }
         }
 
-        await Promise.all([
-          import('leaflet.markercluster/dist/MarkerCluster.css'),
-          import('leaflet.markercluster/dist/MarkerCluster.Default.css'),
-          import('leaflet.markercluster'),
-        ]);
-        if (cancelled || !created) return;
+        // Ownership M4 (map-v3): criação e opções do markercluster — ver
+        // docs/design/MAP-ZONES.md.
+        markersGroupRef.current = Leaflet.layerGroup();
+        // M7-F (TBT /pt/mapa/): no modo Explorar o markercluster NUNCA entra
+        // no mapa — os marcadores vivem no LayerGroup e a colocação é o LOD
+        // por colisão (useMapMarkers). O trace mostrava ~110 ms de eval do
+        // chunk do plugin + construção do grupo num único task >50 ms no
+        // arranque; aqui o módulo deixa de ser carregado e o ref fica com
+        // um LayerGroup inerte que cumpre o contrato do caminho Explorar
+        // (hasLayer/removeLayer/clearLayers/on/off — nunca addLayers nem
+        // zoomToShowLayer, que só correm fora do Explorar).
+        const exploreInit = !isHeroEmbed && (exploreChrome?.enabled ?? false);
+        if (exploreInit) {
+          clusterGroupRef.current =
+            Leaflet.layerGroup() as unknown as L.MarkerClusterGroup;
+          if (!cancelled && mountedRef.current) setClusterReady(true);
+        } else {
+          // Embeds/hero: o plugin continua a ser preciso, mas o eval +
+          // construção vão para idle — não são precisos para o 1º frame.
+          onIdle(() => {
+            void (async () => {
+              try {
+                await Promise.all([
+                  import('leaflet.markercluster/dist/MarkerCluster.css'),
+                  import('leaflet.markercluster/dist/MarkerCluster.Default.css'),
+                  import('leaflet.markercluster'),
+                ]);
+                if (cancelled || !created) return;
 
-        const mcg = Leaflet.markerClusterGroup({
-          ...CLUSTER_CONFIG,
-          // Hero embed: o mapa não tem navegação (drag/zoom off) — um cluster
-          // que faz zoomToBounds prende o utilizador nessa vista sem saída.
-          // O clique é capturado pelo SpotMapInteractive e navega para /mapa/.
-          ...(isHeroEmbed ? { zoomToBoundsOnClick: false, spiderfyOnMaxZoom: false } : {}),
-          ...(mobileInit ? { chunkInterval: 200, chunkDelay: 80, maxClusterRadius: 72 } : {}),
-          iconCreateFunction: createClusterIconFunction(Leaflet, { simple: mobileInit, locale }),
-        });
-        const lg = Leaflet.layerGroup();
-        clusterGroupRef.current = mcg;
-        markersGroupRef.current = lg;
-        created.addLayer(mcg);
-        if (!cancelled && mountedRef.current) setClusterReady(true);
+                const mcg = Leaflet.markerClusterGroup({
+                  ...CLUSTER_CONFIG,
+                  // UX v3 (M4): raio de agrupamento da maquete — 40 px
+                  // desktop / 52 px mobile (o LOD por colisão do modo
+                  // Explorar usa os mesmos valores abaixo de z8.5). Só se
+                  // aplica a hero/embeds: no Explorar o markercluster
+                  // nunca entra no mapa.
+                  maxClusterRadius: mobileInit ? 52 : 40,
+                  // Hero embed: o mapa não tem navegação (drag/zoom off) —
+                  // um cluster que faz zoomToBounds prende o utilizador
+                  // nessa vista sem saída. O clique é capturado pelo
+                  // SpotMapInteractive e navega para /mapa/.
+                  ...(isHeroEmbed ? { zoomToBoundsOnClick: false, spiderfyOnMaxZoom: false } : {}),
+                  ...(mobileInit ? { chunkInterval: 200, chunkDelay: 80 } : {}),
+                  iconCreateFunction: createClusterIconFunction(Leaflet, { simple: mobileInit, locale }),
+                });
+                clusterGroupRef.current = mcg;
+                created.addLayer(mcg);
+                if (!cancelled && mountedRef.current) setClusterReady(true);
+              } catch {
+                if (!cancelled) teardownMap();
+              }
+            })();
+          });
+        }
       } catch {
         if (!cancelled) teardownMap();
       }
@@ -563,6 +641,82 @@ export function useMapCore({ containerRef, isHeroEmbed, locale = 'pt', initialVi
     attachBasemap(Leaflet, map, basemapMode, isDark, tileLayerRef, tileFallbackCleanupRef, handleTileState);
     tileSignatureRef.current = tileSignature(basemapMode, isDark);
   }, [basemapMode, isDark, mapInstanceRef, LRef, tileLayerRef, tileFallbackCleanupRef, handleTileState, stopAutoRecover]);
+
+  // Ownership M5 (map-v3): ponte de eventos das camadas — docs/design/MAP-ZONES.md.
+  //
+  // O menu Camadas (§8) e os chips de ilha (§10) vivem fora da árvore de props
+  // deste hook (o menu é portal da MapControls; os chips são da M3). Para não
+  // duplicarem estado disparam CustomEvents em `window` — o estado continua a
+  // viver só aqui:
+  //   - 'ventu:map-basemap'  → handleBasemapChange (modo + localStorage)
+  //   - 'ventu:map-fit-area' → enquadra continente/Açores/Madeira com o padding
+  //     da moldura activa (painel/sheet), o mesmo do fit inicial. flyToBounds
+  //     de 600 ms (maquete: flyTo easeOutCubic) ou fitBounds instantâneo com
+  //     prefers-reduced-motion.
+  const fitAreaContextRef = useRef({ enabled: false, panelCollapsed: false, isMobile: false });
+  useEffect(() => {
+    fitAreaContextRef.current = {
+      enabled: exploreChrome?.enabled ?? false,
+      panelCollapsed: exploreChrome?.panelCollapsed ?? false,
+      isMobile,
+    };
+  });
+
+  useEffect(() => {
+    const onBasemap = (e: Event) => {
+      const mode = (e as CustomEvent<BasemapMode>).detail;
+      if (mode === 'map' || mode === 'satellite') handleBasemapChange(mode);
+    };
+
+    const onFitArea = (e: Event) => {
+      const key = (e as CustomEvent<unknown>).detail;
+      if (!isMapAreaKey(key)) return;
+      const b = MAP_AREA_BOUNDS[key];
+      const Leaflet = LRef.current;
+      const map = mapInstanceRef.current;
+      if (!Leaflet || !map) return;
+
+      const { enabled, panelCollapsed, isMobile: mobileNow } = fitAreaContextRef.current;
+      const chrome = resolveExploreChrome(enabled, mobileNow, panelCollapsed);
+      const pad = exploreFitPadding(chrome, mobileNow);
+      const bounds = Leaflet.latLngBounds(
+        [b.south, b.west],
+        [b.north, b.east],
+      );
+      const options = {
+        paddingTopLeft: Leaflet.point(...pad.topLeft),
+        paddingBottomRight: Leaflet.point(...pad.bottomRight),
+        maxZoom: mobileNow ? 9 : 11,
+      };
+      // Mesmo bias para oeste de applyExploreMapFit — mete a costa à direita
+      // e abre o Atlântico à esquerda (é de lá que vem o swell).
+      const shiftWest = () => {
+        if (!pad.westShift || !mapInstanceRef.current) return;
+        const degPerPx = 360 / (256 * 2 ** map.getZoom());
+        const shiftPx = map.getZoom() >= 7 ? 140 : 70;
+        const c = map.getCenter();
+        map.setView([c.lat, c.lng - shiftPx * degPerPx], map.getZoom(), { animate: false });
+      };
+
+      const reduced =
+        typeof window !== 'undefined' &&
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduced) {
+        map.fitBounds(bounds, { ...options, animate: false });
+        shiftWest();
+      } else {
+        map.flyToBounds(bounds, { ...options, duration: 0.6 });
+        map.once('moveend', shiftWest);
+      }
+    };
+
+    window.addEventListener(MAP_BASEMAP_EVENT, onBasemap);
+    window.addEventListener(MAP_FIT_AREA_EVENT, onFitArea);
+    return () => {
+      window.removeEventListener(MAP_BASEMAP_EVENT, onBasemap);
+      window.removeEventListener(MAP_FIT_AREA_EVENT, onFitArea);
+    };
+  }, [handleBasemapChange]);
 
   // Resize handling
   useEffect(() => {

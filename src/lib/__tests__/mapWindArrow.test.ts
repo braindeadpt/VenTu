@@ -134,12 +134,17 @@ describe('wind ring marker', () => {
     });
     expect(en).toContain('aria-label="Dangerous sea (Red)"');
 
-    // Locales fora de pt usam o rótulo EN do nível, nunca a key crua.
+    // Cada língua tem o seu rótulo (a alemã não cai em EN), nunca a key crua.
     const de = buildWindRingMarkerHtml(80, 'rgb(1,2,3)', 270, 12, true, 'de', 270, {
       level: 'yellow',
       label: 'Vento',
     });
-    expect(de).toContain('aria-label="Vento (Yellow)"');
+    expect(de).toContain('aria-label="Vento (Gelb)"');
+    const fr = buildWindRingMarkerHtml(80, 'rgb(1,2,3)', 270, 12, true, 'fr', 270, {
+      level: 'orange',
+      label: 'Vent',
+    });
+    expect(fr).toContain('aria-label="Vent (Orange)"');
     expect(de).not.toContain('(yellow)');
   });
 

@@ -1,3 +1,5 @@
+import { isBodyScrollLocked } from '@/lib/scrollLock';
+
 /**
  * Remove Leaflet's internal container id so a remounted div can host a new map.
  */
@@ -15,7 +17,10 @@ export function clearLeafletContainer(el: HTMLDivElement | null): void {
 export function unlockPageInteraction(): void {
   if (typeof document === 'undefined') return;
 
-  document.body.style.overflow = '';
+  // Não tirar o bloqueio a um overlay ABERTO (diálogo/gaveta/paleta): o
+  // fallback de animação desta rede de segurança corre a cada mudança de rota e
+  // transtornava o scroll por baixo do `LoginModal` (medido: 2 de 3 corridas).
+  if (!isBodyScrollLocked()) document.body.style.overflow = '';
   document.body.style.position = '';
   document.body.style.top = '';
   document.body.style.width = '';

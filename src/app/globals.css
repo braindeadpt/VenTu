@@ -23,10 +23,10 @@ html:has([data-embed-widget]) body {
 @layer base {
   :root {
     /* ───── LAYOUT — página de spot ─────
-       Cota a que a linha de sport tabs e a SpotStickyBar pinam (header h-16),
+       Cota a que a SpotUnifiedBar (sport tabs) pina (header h-16),
        e ALTURA da fila de sport tabs (SportTab min-h 44 + pb-1). Partilhadas
-       entre a secção sticky (SpotDetailClient) e a barra (SpotStickyBar) —
-       nunca divergirem: mudar aqui é mudar nas duas superfícies. */
+       entre a SpotUnifiedBar e as âncoras calculadas no CSS —
+       nunca divergirem: mudar aqui é mudar em todas as superfícies. */
     --ventu-spot-sticky-top: 64px;
     --ventu-spot-tabs-h: 48px;
 
@@ -432,11 +432,23 @@ html:has([data-embed-widget]) body {
   }
 
   .leaflet-marker-icon:hover .ventu-wind-ring-marker-wrap .ventu-marker-pin circle:nth-of-type(2),
-  .leaflet-marker-icon:focus-visible .ventu-wind-ring-marker-wrap .ventu-marker-pin circle:nth-of-type(2) {
+  .leaflet-marker-icon:focus-visible .ventu-wind-ring-marker-wrap .ventu-marker-pin circle:nth-of-type(2),
+  .leaflet-marker-icon.ventu-list-hover .ventu-wind-ring-marker-wrap .ventu-marker-pin circle:nth-of-type(2) {
     transform: scale(1.1);
     box-shadow:
       0 0 12px rgb(var(--data-waves) / 0.45),
       0 4px 8px rgba(0, 0, 0, 0.45) !important;
+  }
+
+  /* Ponte de hover lista↔marcador (M3 §5) nos marcadores v3: a linha liga
+     .ventu-list-hover no ícone — o realce é o mesmo do hover directo
+     (transform scale, §11: 120 ms ease-out via transição inline do .v3in).
+     Nos pontos LOD (.v3dot) o realce é o anel do estado seleccionado. */
+  .leaflet-marker-icon.ventu-list-hover .v3in {
+    transform: scale(1.08);
+  }
+  .leaflet-marker-icon.ventu-list-hover .v3dot > i {
+    box-shadow: 0 0 0 1.5px rgb(var(--bg-base)), 0 0 0 4px rgb(var(--fg));
   }
 
   /* Spring scale on selected marker */
@@ -491,6 +503,18 @@ html:has([data-embed-widget]) body {
       opacity: 1;
       transform: translateY(0) scale(1);
     }
+  }
+
+  /* Painel «Explorar» do /mapa (MAP-UX-V3 §5/§11): recolher/abrir desliza
+     * por transform em 240 ms — a maquete anima translateX do painel.
+     * O rail entra com um slide curto do mesmo lado. */
+  @keyframes map-panel-in {
+    from { transform: translateX(calc(-100% + 56px)); }
+    to { transform: translateX(0); }
+  }
+  @keyframes map-rail-in {
+    from { opacity: 0; transform: translateX(-8px); }
+    to { opacity: 1; transform: translateX(0); }
   }
 
   @media (prefers-reduced-motion: no-preference) {
@@ -567,11 +591,12 @@ html:has([data-embed-widget]) body {
     --vi-m: rgb(var(--fg-muted-rgb));
     --vi-ink: rgb(var(--fg-rgb));
     --vi-acc: var(--vi-verdict);
+    /* UX v3 §7 — inversão de foco do cartão: 240 ms na curva da página. */
     transition:
-      background-color 200ms cubic-bezier(0.16, 1, 0.3, 1),
-      color 200ms cubic-bezier(0.16, 1, 0.3, 1),
-      border-color 200ms cubic-bezier(0.16, 1, 0.3, 1),
-      transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
+      background-color 240ms cubic-bezier(0.16, 1, 0.3, 1),
+      color 240ms cubic-bezier(0.16, 1, 0.3, 1),
+      border-color 240ms cubic-bezier(0.16, 1, 0.3, 1),
+      transform 240ms cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   /* Foco = troca de material, sem sombra. */
@@ -601,6 +626,34 @@ html:has([data-embed-widget]) body {
     }
   }
 
+  /* SP-B (UX v3 §4): o cartão aberto fica contornado a --verdict 40% —
+     o acento da hora escolhida, não a moldura neutra do hover/foco. */
+  .ventu-inst-card[data-open='true'],
+  html.theme-ocean .ventu-inst-card[data-open='true'] {
+    border-color: color-mix(
+      in srgb,
+      var(--verdict, var(--vi-verdict)) 40%,
+      transparent
+    );
+  }
+
+  /* Acordeão do painel de detalhe — grid-template-rows 0fr→1fr em
+     240 ms (UX v3 §4). O miolo (.ventu-inst-acc-inner) fica montado até
+     ao fim da transição para a altura animar no fecho. */
+  .ventu-inst-acc {
+    display: grid;
+    grid-template-rows: 0fr;
+    /* UX v3 §7 — acordeão/painel de detalhe: 240 ms ease-in-out. */
+    transition: grid-template-rows 240ms ease-in-out;
+  }
+  .ventu-inst-acc[data-open] {
+    grid-template-rows: 1fr;
+  }
+  .ventu-inst-acc-inner {
+    min-height: 0;
+    overflow: hidden;
+  }
+
   html.theme-ocean .ventu-inst-card:focus-within,
   html.theme-ocean .ventu-inst-card[data-open='true'] {
     background: #0f172a;
@@ -621,7 +674,7 @@ html:has([data-embed-widget]) body {
     }
   }
 
-  /* A SpotStickyBar (header 64 + tabs 48) tapa o cartão quando o browser
+  /* A SpotUnifiedBar (header 64 + tabs 48) tapa o cartão quando o browser
      faz scroll até ele (âncora, foco por teclado, scrollIntoView). O
      botão .ventu-inst-hit é o elemento que recebe o scroll — a margem
      tem de estar nele, não só no cartão. */
@@ -718,6 +771,9 @@ html:has([data-embed-widget]) body {
     .ventu-inst-card[data-open='true'],
     .ventu-inst-card:hover {
       transform: none;
+      transition: none;
+    }
+    .ventu-inst-acc {
       transition: none;
     }
     .ventu-inst-wob,
@@ -1011,6 +1067,87 @@ html:has([data-embed-widget]) body {
   }
 }
 
+/* ── NHC tropical storms (camada vectorial — divIcon do centro) ── */
+.ventu-storm-dot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  pointer-events: none;
+  width: auto !important;
+}
+
+.ventu-storm-ring {
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: #f97316;
+  border: 2px solid rgb(var(--bg-base));
+  box-shadow: 0 0 0 1.5px #f97316, 0 1px 4px rgb(0 0 0 / 0.5);
+  flex-shrink: 0;
+}
+
+.ventu-storm-ring[data-class='HU'],
+.ventu-storm-ring[data-class='MH'] {
+  background: #ef4444;
+  box-shadow: 0 0 0 1.5px #ef4444, 0 1px 4px rgb(0 0 0 / 0.5);
+}
+
+.ventu-storm-label {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  color: rgb(var(--fg));
+  background: rgb(var(--bg-base) / 0.92);
+  border: 1px solid rgb(var(--divider));
+  border-radius: 4px;
+  padding: 3px 6px;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.4);
+}
+
+@keyframes ventu-storm-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 1.5px #f97316, 0 0 0 1.5px rgb(249 115 22 / 0);
+  }
+  50% {
+    transform: scale(1.35);
+    box-shadow: 0 0 0 1.5px #f97316, 0 0 0 7px rgb(249 115 22 / 0.22);
+  }
+}
+
+@keyframes ventu-storm-pulse-hu {
+  0%,
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 1.5px #ef4444, 0 0 0 1.5px rgb(239 68 68 / 0);
+  }
+  50% {
+    transform: scale(1.35);
+    box-shadow: 0 0 0 1.5px #ef4444, 0 0 0 7px rgb(239 68 68 / 0.22);
+  }
+}
+
+/* O centro de um ciclone é a única coisa no mapa que «respira» — a
+   tempestade está viva e a mover-se. Só com motion permitido. */
+@media (prefers-reduced-motion: no-preference) {
+  .ventu-storm-ring {
+    animation: ventu-storm-pulse 2.6s ease-in-out infinite;
+  }
+  .ventu-storm-ring[data-class='HU'],
+  .ventu-storm-ring[data-class='MH'] {
+    animation-name: ventu-storm-pulse-hu;
+  }
+}
+
+.leaflet-div-icon.ventu-storm-dot {
+  background: transparent;
+  border: none;
+}
+
 /* Home hero map teaser: fill parent, page scroll passes through; markers stay clickable */
 [data-map-hero-teaser='true'] {
   height: 100%;
@@ -1111,7 +1248,7 @@ html:has([data-embed-widget]) body {
   overflow: visible !important;
 }
 
-/* Spot page anchors: com a SpotStickyBar activa o topo tem header (64) +
+/* Spot page anchors: com a SpotUnifiedBar pinned o topo tem header (64) +
    tabs (48) + strip de métricas (56px) — o scroll-mt-20 genérico (80px)
    deixava o destino da âncora escondido debaixo da barra. */
 #spot-livecam {
@@ -1623,20 +1760,86 @@ body.ventu-map-fullscreen-open .ventu-signup-nudge {
   box-shadow: 4px 0 10px -6px rgb(0 0 0 / 0.1);
 }
 
-/* S3 — coluna da hora escolhida (eixo de tempo partilhado): matiz leve de
-   --verdict (14%) sobre a cor semântica da célula + contorno inset. O
-   texto fica intacto — contraste ≥4.5:1 mantém-se porque o tint não
-   substitui o fundo nem mexe na cor do texto. */
-.forecast-table-scroll [data-tl-col] {
+/* S3/SP-B — coluna da hora escolhida (eixo de tempo partilhado): matiz
+   --verdict a 12% sobre a cor semântica da célula + contorno --verdict
+   (UX v3 §5). O texto fica intacto — contraste ≥4.5:1 mantém-se porque o
+   tint não substitui o fundo nem mexe na cor do texto. A mesma regra
+   cobre as linhas da lista mobile (.forecast-hourly-list). */
+:is(.forecast-table-scroll, .forecast-hourly-list) [data-tl-col] {
   cursor: pointer;
+  /* UX v3 §7 — a coluna/linha escolhida entra em 150 ms ease-out. O matiz
+     é um gradiente por cima da cor semântica da célula: o estado base é
+     um gradiente transparente para o tint interpolar (cross-fade real).
+     A lista de transição inclui as cores do `transition-colors` da linha
+     (120 ms), para o hover mobile não perder o feedback. */
+  background-image: linear-gradient(transparent, transparent);
+  transition:
+    background-image 150ms ease-out,
+    box-shadow 150ms ease-out,
+    color 120ms ease-out,
+    background-color 120ms ease-out,
+    border-color 120ms ease-out,
+    text-decoration-color 120ms ease-out,
+    fill 120ms ease-out,
+    stroke 120ms ease-out;
 }
-.forecast-table-scroll [data-tl-selected] {
+:is(.forecast-table-scroll, .forecast-hourly-list) [data-tl-selected] {
   background-image: linear-gradient(
-    color-mix(in srgb, var(--verdict, rgb(var(--accent))) 14%, transparent),
-    color-mix(in srgb, var(--verdict, rgb(var(--accent))) 14%, transparent)
+    color-mix(in srgb, var(--verdict, rgb(var(--accent))) 12%, transparent),
+    color-mix(in srgb, var(--verdict, rgb(var(--accent))) 12%, transparent)
   );
+  box-shadow: inset 0 0 0 1.5px var(--verdict, rgb(var(--accent)));
+}
+
+/* UX v3 §5 — coluna «agora»: contorno do primeiro plano a 30%; quando é
+   também a seleccionada, o anel --verdict fica por fora do fg. */
+.forecast-col-now {
   box-shadow: inset 0 0 0 1.5px
-    color-mix(in srgb, var(--verdict, rgb(var(--accent))) 55%, transparent);
+    color-mix(in srgb, rgb(var(--fg-rgb)) 30%, transparent);
+}
+:is(.forecast-table-scroll, .forecast-hourly-list)
+  .forecast-col-now[data-tl-selected] {
+  box-shadow:
+    inset 0 0 0 1.5px color-mix(in srgb, rgb(var(--fg-rgb)) 30%, transparent),
+    inset 0 0 0 3px var(--verdict, rgb(var(--accent)));
+}
+
+/* UX v3 §5 — separador de dia: linha vertical na primeira coluna do dia. */
+.forecast-col-daystart {
+  box-shadow: inset 1.5px 0 0 0 rgb(var(--divider-strong));
+}
+.forecast-col-daystart.forecast-col-now {
+  box-shadow:
+    inset 1.5px 0 0 0 rgb(var(--divider-strong)),
+    inset 0 0 0 1.5px color-mix(in srgb, rgb(var(--fg-rgb)) 30%, transparent);
+}
+
+/* UX v3 §5 — altura de linha 36 px nas linhas de dados da tabela. */
+.forecast-table-scroll tbody > tr > th,
+.forecast-table-scroll tbody > tr > td {
+  height: 2.25rem;
+}
+
+/* UX v3 §5 — lista mobile «Hora a hora»: cabeçalho de dia fixo por baixo
+   da SpotUnifiedBar (top = header 64 + tabs 48) e linha seleccionada. */
+.forecast-day-header {
+  position: sticky;
+  top: calc(var(--ventu-spot-sticky-top) + var(--ventu-spot-tabs-h));
+  z-index: 20;
+  background: rgb(var(--bg-base));
+  border-bottom: 1px solid rgb(var(--divider));
+}
+.forecast-day-group + .forecast-day-group {
+  border-top: 1px solid rgb(var(--divider-strong));
+}
+.forecast-hourly-row:focus-visible {
+  outline: 2px solid rgb(var(--fg-rgb));
+  outline-offset: -2px;
+}
+@media (hover: hover) {
+  .forecast-hourly-row:hover {
+    background-color: rgb(var(--fg-rgb) / 0.04);
+  }
 }
 
 /* Overflow scroll shadows: thin gradient edges to signal more data. */
@@ -1656,4 +1859,230 @@ body.ventu-map-fullscreen-open .ventu-signup-nudge {
     black calc(100% - var(--fade-size)),
     transparent 100%
   );
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+ *  MAPA — CROMO UX V3 (M2, migrado para aqui na M6)
+ *  ─────────────────────────────────────────────────────────────────────
+ *  Pilha de controlos à direita, pill + scrubber de 48 h, legenda
+ *  flutuante e atribuição única do /mapa fullscreen. O que não é
+ *  expressável em Tailwind (:has(), media pointer/hover, overrides dos
+ *  controlos Leaflet) vive neste bloco delimitado — era o ficheiro
+ *  src/components/spots/map/mapChrome.css (CORRECCOES-24SET M6#5).
+ *
+ *  O offset do painel NÃO é um literal: o MapSpotPanel publica
+ *  `--map-panel-offset` (= borda direita do painel + 12 px de respiro)
+ *  no root [data-map-fullscreen] enquanto está aberto, e a atribuição,
+ *  o scrubber e a pill consomem a variável (fallback 380 px).
+ * ═══════════════════════════════════════════════════════════════════════ */
+
+/* §1 — header compacto de 48 px no /mapa: o shell fullscreen desce do
+   top-16 (64 px) para ficar colado ao header. `top-16` também existe no
+   fullscreen do /spots grid (header aí mantém 64 px), por isso o override
+   só se aplica quando o header compacto está presente
+   (`data-header-compact` no <header> do /mapa). */
+body:has(header[data-header-compact='true']) [data-map-fullscreen='true'].top-16 {
+  top: 48px;
+  height: calc(100dvh - 48px) !important;
+}
+
+/* §1 — atribuição única. Desktop: o controlo Leaflet (bottom-left) senta-se
+   à direita do painel aberto — margem = --map-panel-offset publicado pelo
+   painel (borda direita + 12 px de respiro; 380 px com o painel de 360 px
+   a 8 px da margem). Painel recolhido em «rail» (56 px, âncora no topo)
+   não toca o fundo — sem desvio. */
+[data-map-fullscreen='true']:has([data-map-panel='open']) .leaflet-control-attribution {
+  margin-left: var(--map-panel-offset, 380px);
+}
+/* Mobile: a atribuição vive no sheet — faixa própria acima da borda
+   superior no peek (M7-A) e em flow no fim do conteúdo em half/open.
+   O controlo Leaflet ficaria tapado pelo sheet — uma segunda superfície
+   invisível. Escondido ≤767 px. */
+@media (max-width: 767px) {
+  [data-map-fullscreen='true'] .leaflet-control-attribution {
+    display: none;
+  }
+}
+/* (M6: o espelho textual da atribuição dentro do painel — antes escondido
+   por `[data-panel-attribution]{display:none}` — foi removido do JSX do
+   MapSpotPanel; a atribuição é só o controlo Leaflet, desviado acima.) */
+
+/* M7-F — lista «Nesta vista» (~150 linhas × ~10 nós): renderização
+   incremental do browser. content-visibility:auto salta layout/paint das
+   linhas fora do viewport (a árvore de a11y e o DOM mantêm-se completos —
+   roving tabindex e contagem de linhas não mudam); contain-intrinsic-size
+   `auto 64px` guarda o tamanho real medido e dá um fallback estável à
+   scrollbar antes da primeira medida. Só no fullscreen /mapa — os embeds
+   não têm a lista. */
+[data-map-fullscreen='true'] [data-row-index] {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 64px;
+}
+
+/* §2 — zoom nativo do Leaflet escondido no /mapa fullscreen: os botões
+   vivem na pilha direita. Nos embeds o controlo continua top-left. */
+[data-map-fullscreen='true'] .leaflet-control-zoom {
+  display: none;
+}
+
+/* Raio 12 px uniforme na pilha — inclui o trigger do menu «Camadas»
+   (MapControlButton partilhado usa rounded-input = 6 px noutros contextos)
+   e o estado «on» sólido neutro da maquete (--on/--on-ink → fg/bg-base).
+   Vem ANTES das regras do grupo de zoom para que estas vençam por ordem. */
+[data-map-control-stack] button {
+  border-radius: 12px;
+}
+
+/* §2 — o grupo de zoom só existe para pointer:fine; em toque o pinch
+   cobre (maquete: @media (pointer:coarse) esconde). */
+.map-zoom-group {
+  display: none;
+}
+@media (pointer: fine) {
+  .map-zoom-group {
+    display: grid;
+  }
+}
+.map-zoom-group {
+  border-radius: 12px;
+  overflow: visible;
+}
+.map-zoom-group button {
+  border-radius: 0;
+  border-width: 0;
+  box-shadow: none;
+  background: transparent;
+}
+/* Cada botão vive num wrapper .map-cb (para o tooltip) — a divisória fica
+   entre os wrappers, não entre os botões. O primeiro/último canto do grupo
+   fica redondo porque o grupo tem overflow visível + cantos próprios. */
+.map-zoom-group > .map-cb + .map-cb > button {
+  border-top: 1px solid rgb(var(--divider));
+}
+.map-zoom-group > .map-cb:first-child > button {
+  border-radius: 12px 12px 0 0;
+}
+.map-zoom-group > .map-cb:last-child > button {
+  border-radius: 0 0 12px 12px;
+}
+
+/* O trigger do menu «Camadas» (MapLayersMenu) não aceita className — aqui
+   iguala-se aos restantes botões da pilha (bg-elevated + shadow-card). */
+[data-map-control-stack] [data-map-layers-menu] {
+  background: rgb(var(--bg-elevated));
+  border-color: rgb(var(--divider));
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.2), 0 1px 3px 0 rgb(0 0 0 / 0.15);
+}
+/* Botões da pilha com fundo SÓLIDO. O StackButton pede `bg-bg-elevated`, mas o
+   MapControlButton traz `bg-surface-1/[0.04]` na base e o `cn` do repo é uma
+   junção simples (sem tailwind-merge): as duas classes coexistem e ganhava a
+   translúcida — vidro a 4 %, invisível sobre imagem clara (satélite NASA, basemap
+   Esri) em tema escuro. Só os botões directos da pilha: o grupo de zoom tem o
+   seu próprio fundo, e o estado «ligado» (aria-pressed) vem a seguir e vence. */
+[data-map-control-stack] > .map-cb > button:not([aria-pressed='true']) {
+  background: rgb(var(--bg-elevated));
+}
+[data-map-control-stack] button[aria-pressed='true'] {
+  background: rgb(var(--fg));
+  color: rgb(var(--bg-base));
+  border-color: transparent;
+}
+
+/* Tooltip à esquerda do botão — só em hover real (maquete .cb .lbl). */
+.map-cb .map-cb-lbl {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 120ms ease-out;
+}
+@media (hover: hover) {
+  .map-cb:hover .map-cb-lbl,
+  .map-cb:focus-visible .map-cb-lbl {
+    opacity: 1;
+  }
+}
+
+/* §3 — scrubber: o slider é um <input type=range> invisível sobre as
+   barras (mantém os selectores data-map-hours-scrubber input[type=range]
+   dos specs e dá teclado/pointer nativos); o contorno de foco vive no
+   contentor das barras. */
+.map-scrub-bars:has(input[type='range']:focus-visible) {
+  outline: 2px solid rgb(var(--accent));
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+.map-scrub-bars input[type='range'] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+}
+.map-scrub-bars input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 24px;
+  height: 100%;
+}
+.map-scrub-bars input[type='range']::-moz-range-thumb {
+  width: 24px;
+  height: 100%;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+.map-scrub-bars input[type='range']::-moz-range-track {
+  background: transparent;
+}
+
+/* §3/§12 — com o painel aberto o scrubber centra-se na faixa livre à
+   direita dele: a 768 px um centro absoluto colidia com o painel.
+   O desvio é o --map-panel-offset publicado pelo painel — sem literal. */
+@media (min-width: 768px) {
+  [data-map-fullscreen='true']:has([data-map-panel='open']) .map-scrub-wrap {
+    left: var(--map-panel-offset, 380px);
+  }
+  /* Idem para a pill: centro da faixa livre = offset + (vw − offset − 12)/2. */
+  [data-map-fullscreen='true']:has([data-map-panel='open']) [data-map-time-pill] {
+    left: calc(50% + (var(--map-panel-offset, 380px) - 12px) / 2);
+  }
+}
+/* No mobile o scrubber fica na banda [12, vw−64]: quando o sheet sobe a
+   «half»/«open» o cartão acompanha-o (bottom = topo do sheet + 12) e a
+   reserva de 64 px à direita garante que nunca passa por baixo da pilha
+   de controlos (medido a 390 px: stack termina em ~334 + respiro). As
+   barras ocupam 100% do cartão (CORRECCOES-24SET M6#1). */
+@media (max-width: 767px) {
+  [data-map-fullscreen='true'] .map-scrub-wrap {
+    left: 12px;
+    right: 64px;
+  }
+}
+
+/* §11 — popovers do cromo (legenda, scrubber 48 h, menu «Camadas»):
+   opacity + scale .96→1 em 180 ms com ease-out-expo; desligado com
+   prefers-reduced-motion. Aplica-se por atributo para cobrir o popover
+   portalizado do MapLayersMenu. */
+@keyframes map-chrome-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  [data-map-legend-card],
+  [data-map-hours-scrubber],
+  [data-map-layers-popover] {
+    animation: map-chrome-pop 180ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  [data-map-legend-card] {
+    transform-origin: 100% 100%;
+  }
+  [data-map-hours-scrubber] {
+    transform-origin: 50% 100%;
+  }
+  [data-map-layers-popover] {
+    transform-origin: 100% 0;
+  }
 }

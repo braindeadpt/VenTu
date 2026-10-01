@@ -1,5 +1,10 @@
 # Página de spot — contrato
 
+> **Substituído por `docs/design/SPOT-PAGE-V3.md` (spec v3, «um painel, um
+> eixo»).** Este documento fica como referência histórica do contrato v2;
+> onde divergir, manda a v3 — e onde a v3 divergir da auditoria do dono,
+> manda `_audit/ux-v3/CORRECCOES-24SET.md`.
+
 ## Princípios
 - Uma pergunta por secção. Uma hora escolhida comanda tudo (useSpotTimeline). Um acento: a cor da banda do score da hora escolhida, exposta como variável CSS --verdict no contentor da página (ÉPICO 80–100 #0EA5E9, BOM 60–79 #10B981, FUN 40–59 #F59E0B, FLAT 20–39 #EF4444, FECHADO 0–19 #6B7280; em fundo claro, usar a variante com contraste ≥3:1 — tokens existentes: `--score-epic`/`--score-good`/`--score-fair`/`--score-poor`/`--score-closed` em `src/app/globals.css` (:90–94 dark = sky-500/emerald-500/amber-500/red-400/gray-500; :224–228 `.theme-ocean` claro já escurece para sky-700/emerald-800/amber-800/red-700/gray-500, AA). `--verdict` = `rgb(var(--score-<tier>))` do tier activo — `scoreTierName(score)` em `src/lib/sportScore.ts` mapeia 80/60/40/20).
 - Movimento só quando significa algo (dado ou feedback). Sem carrosséis, glassmorphism, gradientes decorativos, sombras pesadas, emoji, embeds de livecam.
@@ -28,7 +33,7 @@
    - Foco (hover, clique, teclado) = troca de material: escuro ↔ areia #FAFAF7, sem sombra, scale ≤1.012.
    - Painel de detalhe único por baixo dos três: Vento → ObservedNow, WindRelation, WindFlowGlyph, fonte do vento. Onda → SwellTrainsTable, **banda ensemble P10/P50/P90 da hora** (`data-wave-band`), ObservedWaveCard, BuoySkillLine, **skill por horizonte de lead** (`WaveSkillByLead`, `data-skill-by-lead`), BuoyLayerNotice, IsobathsStrip, WaveCalibrationTag. Maré → TideScheduleStrip, MoonTideCard, temperatura da água. O cartão Onda mostra ainda a banda P10–P90 resumida da hora (`data-wave-band="card"`).
    - Avisos de coerência: marca no cartão afectado + texto completo em #como-sabemos.
-5. ForecastMeteogram + ForecastTable com a hora escolhida destacada; clicar numa coluna muda o índice; ao mudar por outra via, scroll da tabela até à coluna (só se a tabela estiver visível). Windguru e "mostrar mais horas" mantêm-se.
+5. ForecastTable ("Hora a hora") com a hora escolhida destacada; clicar numa coluna/linha muda o índice; ao mudar por outra via, scroll até à coluna (só se a tabela estiver visível). O meteograma saiu (UX-v3 §5 — a régua de 48 h é o único eixo). Windguru e "mostrar mais horas" mantêm-se.
 6. Desktop 3 colunas, mobile empilhado (No local aberto, restantes em accordion):
    - No local: avisos (ou "Sem avisos activos · fonte, hh:mm"), livecam como link de saída (src/lib/spotLivecams.ts), estação (SpotWeatherlinkSection), qualidade da água (WaterQualityBadge), eventos só se existirem.
    - Chegar e estar: SpotLogisticsPanel, nível, facilidades, perigos (hazards) em lista, LocalTipsSection, SpotImage pequena.
@@ -48,7 +53,7 @@ Renderizados por **SpotDetailClient**:
 | linha standalone de tabs (`<section>` + `SportTab` ×n) | 2 · Barra fixa |
 | `WhenToGoCard` (com `SessionStrip` + `SpotVerdict` internos) | 3 · Quando ir |
 | `SpotConditionsDashboard` | 4 · Instrumentos |
-| secção previsão (`h2` + link Windguru + `ForecastMeteogram` + `ForecastTable` + `Button` expandir) | 5 · Previsão |
+| secção previsão (`h2` + link Windguru + `ForecastTable` + `Button` expandir; meteograma removido na UX-v3) | 5 · Previsão |
 | `CollapsibleSection` avisos → `SpotWarningsSection` | 0 (faixa activa) / 6 · No local (estado «sem avisos») |
 | `CollapsibleSection` livecam → `SpotWebcamSection` | 6 · No local (link de saída) |
 | `CollapsibleSection` estação → `SpotWeatherlinkSection` | 6 · No local |

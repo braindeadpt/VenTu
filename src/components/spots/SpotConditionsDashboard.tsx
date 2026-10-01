@@ -10,6 +10,7 @@ import { getWindRelationLabel, getWindRelationToCoast, type WindRelation } from 
 import { buildSwellTrains, totalSwellPowerKw } from '@/lib/waveEnergy';
 import { isObservedFresh } from '@/lib/observations';
 import { isObservedWaveFresh } from '@/lib/observedWave';
+import { europeanAqiLevel } from '@/lib/airQuality';
 import SwellRadar from '@/components/ui/SwellRadar';
 import SwellTrainsTable from '@/components/spots/SwellTrainsTable';
 import ObservedNow from '@/components/spots/ObservedNow';
@@ -33,6 +34,24 @@ export interface SpotDashboardConditions {
   windDirection: number;
   windGust?: number;
   waterTemp: number;
+  /** Índice UV da hora corrente (Open-Meteo, pipeline). */
+  uvIndex?: number;
+  /** Índice UV máximo de hoje — o valor de planeamento. */
+  uvIndexMax?: number;
+  /** European AQI da hora corrente (CAMS via Open-Meteo, camada suave). */
+  airQualityIndex?: number;
+  /** Maré observada (maregrafo IH, fresco <6h) + anomalia vs previsão. */
+  tideObservedHeight?: number;
+  tideObservedAt?: string;
+  tideStation?: string;
+  tideAnomalyM?: number;
+  /** Corrente medida por radar HF (EMODnet/IH Lisboa) — só spots na rede. */
+  currentMeasuredSpeed?: number;
+  currentMeasuredDir?: number;
+  currentMeasuredAt?: string;
+  currentMeasuredNetwork?: string;
+  /** Qualidade da água balnear APA InfoÁgua — só spots ≤3 km de uma água balnear. */
+  waterQuality?: import('@/lib/waterQuality').WaterQualityLive;
   swellHeight?: number;
   swellPeriod?: number;
   swellDirection?: number;
@@ -67,6 +86,12 @@ interface SpotConditionsDashboardProps {
     subtitle: string;
     gustLabel: string;
     gustHint: string;
+    uvLabel: string;
+    uvMaxLabel: string;
+    uvHint: string;
+    aqiLabel: string;
+    aqiHint: string;
+    aqiLevels: Record<import('@/lib/airQuality').AqiLevel, string>;
     seaStateTitle: string;
     seaStateHint: string;
     windContextTitle: string;
@@ -202,7 +227,7 @@ export default function SpotConditionsDashboard({
                 coastOrientation={spot.coastOrientation}
                 idealSwell={spot.bestSwell}
                 idealWind={spot.bestWind}
-                locale={locale === 'pt' ? 'pt' : 'en'}
+                locale={locale}
                 size="md"
                 showLegend={false}
                 visualTone="dashboard"
@@ -227,6 +252,32 @@ export default function SpotConditionsDashboard({
                 {copy.gustLabel}{' '}
                 <span className="text-fg font-medium" data-visual-dynamic>{gustKt} kt</span>
               </p>
+              {/* UV máx. do dia — decisão de exposição ao sol; mesmo slot
+                  meta da rajada (único par de valores extra no card). */}
+              {conditions.uvIndexMax !== undefined && (
+                <p
+                  className="w-full max-w-xs text-center lg:text-left text-meta-sm font-mono tabular-nums text-fg-muted"
+                  title={copy.uvHint}
+                >
+                  {copy.uvLabel}{' '}
+                  <span className="text-fg font-medium" data-visual-dynamic>{conditions.uvIndexMax}</span>{' '}
+                  <span className="text-fg-subtle">{copy.uvMaxLabel}</span>
+                </p>
+              )}
+              {/* AQI europeu (CAMS) — só aparece quando a camada está fresca;
+                  palavra de nível torna o número legível sem escala. */}
+              {conditions.airQualityIndex !== undefined && (
+                <p
+                  className="w-full max-w-xs text-center lg:text-left text-meta-sm font-mono tabular-nums text-fg-muted"
+                  title={copy.aqiHint}
+                >
+                  {copy.aqiLabel}{' '}
+                  <span className="text-fg font-medium" data-visual-dynamic>{conditions.airQualityIndex}</span>{' '}
+                  <span className="text-fg-subtle">
+                    {copy.aqiLevels[europeanAqiLevel(conditions.airQualityIndex)]}
+                  </span>
+                </p>
+              )}
             </div>
 
             <div className="lg:col-span-8 min-w-0">

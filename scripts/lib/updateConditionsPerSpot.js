@@ -58,10 +58,10 @@ async function processSpot(spot, options) {
   let ihTideObs = null;
   if (mapping) {
     const station = ihTides.stations?.[mapping.codp];
-    if (station && isFreshIhObservation(station.lastData)) ihTideObs = { lastObs: station.lastObs, lastData: station.lastData, stationTitle: station.title };
+    if (station && isFreshIhObservation(station.lastData)) ihTideObs = { codp: station.codp ?? mapping.codp, lastObs: station.lastObs, lastData: station.lastData, stationTitle: station.title };
     else if (station) options.onStaleIhTide?.();
   }
-  const current = options.getCurrentConditions(marineData, weatherData, ihTideObs);
+  const current = options.getCurrentConditions(marineData, weatherData, ihTideObs, options.tideBaseline);
   const biasRow = applyWaveBiasToRow(current, spot.region, waveBias, waveBiasEnabled);
   if (biasRow.waveBias) log.log(`  ↳ ${spot.id}: waveHeight ${biasRow.waveHeightRaw} → ${biasRow.waveHeight} m (bias ${biasRow.waveBias.me >= 0 ? '+' : ''}${biasRow.waveBias.me} m, n=${biasRow.waveBias.n})`);
   const conditions = buildConditionsRow(marineData, weatherData, current, biasRow, confidenceDetail, dailyConfidence, useMultiModel);

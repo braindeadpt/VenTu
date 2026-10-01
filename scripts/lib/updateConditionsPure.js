@@ -78,6 +78,28 @@ function getTideStatus(seaLevel, seaLevelNext) {
   return { status: 'falling', label: 'Maré a Descer' };
 }
 
+/** UV da hora actual + máximo do dia de hoje (datas locais Europe/Lisbon do
+ *  payload Open-Meteo — «hoje» é a data da hora corrente, não a data UTC do
+ *  runner). Devolve {} quando a série uv_index não existe. */
+function uvIndexFields(hourly, timeIndex) {
+  const series = hourly?.uv_index;
+  if (!Array.isArray(series)) return {};
+  // Number(null) === 0 — um null da série é «sem dados», nunca «UV 0».
+  const finite = (i) => series[i] != null && Number.isFinite(Number(series[i]));
+  const out = {};
+  if (finite(timeIndex)) out.uvIndex = Math.round(Number(series[timeIndex]) * 10) / 10;
+  const today = typeof hourly.time?.[timeIndex] === 'string' ? hourly.time[timeIndex].slice(0, 10) : null;
+  if (today) {
+    let max = -Infinity;
+    for (let i = 0; i < (hourly.time?.length ?? 0); i += 1) {
+      if (hourly.time[i]?.slice(0, 10) !== today) continue;
+      if (finite(i) && Number(series[i]) > max) max = Number(series[i]);
+    }
+    if (max > -Infinity) out.uvIndexMax = Math.round(max * 10) / 10;
+  }
+  return out;
+}
+
 module.exports = {
   MIN_BIAS_N,
   MIN_BIAS_M,
@@ -88,5 +110,6 @@ module.exports = {
   wavePowerFromMarine,
   pickSwellTrain,
   getTideStatus,
+  uvIndexFields,
   SWELL_TRAIN_MIN_HEIGHT_M,
 };

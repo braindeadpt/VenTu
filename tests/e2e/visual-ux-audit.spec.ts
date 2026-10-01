@@ -7,7 +7,7 @@ import { preseedWindRingLegend } from './helpers/map-setup';
 import { attachPageHealthCollectors, assertHealthyPage } from './helpers/audit-utils';
 import { expandMapHudFilters } from './helpers/map-hud';
 import { waitHydrated } from './helpers/hydration';
-import { CLUSTER_TOGGLE_NAME, openMapSpotSheet, showAllMapMarkers } from './helpers/map-sheet';
+import { openMapSpotSheet, showAllMapMarkers } from './helpers/map-sheet';
 
 type Viewport = 'desktop' | 'mobile';
 
@@ -97,9 +97,13 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
       await page.waitForSelector('[data-map-hud="visible"]', { timeout: 25_000 });
       await expandMapHudFilters(page);
 
+      // Mapa v3 (M3): a região é um <select> «Região» — painel (desktop) e
+      // sheet (mobile) coexistem no DOM, conta o que está visível.
+      const regionSelect = () =>
+        page.getByLabel('Região', { exact: true }).filter({ visible: true });
       await page.getByRole('button', { name: 'Kitesurf', exact: true }).click();
       await expect(page).toHaveURL(/sport=kitesurf/);
-      await page.getByRole('button', { name: 'Algarve', exact: true }).click();
+      await regionSelect().selectOption('Algarve');
       await expect(page).toHaveURL(/region=Algarve/);
 
       await page.reload();
@@ -111,10 +115,7 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
         'aria-pressed',
         'true',
       );
-      await expect(page.getByRole('button', { name: 'Algarve', exact: true })).toHaveAttribute(
-        'aria-pressed',
-        'true',
-      );
+      await expect(regionSelect()).toHaveValue('Algarve');
 
       await context.close();
     });
@@ -139,19 +140,19 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
 
       const clustered = await mapShell.getAttribute('data-map-cluster');
       if (clustered === 'true') {
-        // Desktop: o toggle flutua no MapControls (visível). Mobile: vive nos
-        // extras do SHEET, que só aparece em peek→half — o mesmo caminho que
-        // showAllMapMarkers() já faz (grabber, clique, volta ao peek).
-        // O nome é o MODO («Agrupar spots»), constante; quem diz se o cluster
-        // está ligado é o aria-pressed, não o texto.
-        const clusterToggle = page
-          .getByRole('button', { name: CLUSTER_TOGGLE_NAME })
-          .filter({ visible: true })
-          .first();
-        if (await clusterToggle.isVisible().catch(() => false)) {
-          await clusterToggle.click();
-        } else {
+        // M2 (UX v3 §2): o toggle saiu do cromo — «Agrupar spots» passa a
+        // switch do painel na M3. No mobile continua nos extras do SHEET
+        // (peek→half). No desktop, até a M3 aterrar, o caminho é a
+        // preferência em localStorage + reload.
+        const showAll = page.getByRole('button', { name: /Mostrar todos|Show all/i }).first();
+        if (await showAll.isVisible().catch(() => false)) {
+          await showAll.click();
+        } else if (viewport === 'mobile') {
           await showAllMapMarkers(page);
+        } else {
+          await page.evaluate(() => localStorage.setItem('ventu.map.cluster', '0'));
+          await page.reload({ waitUntil: 'domcontentloaded' });
+          await page.waitForSelector('.leaflet-container', { timeout: 25_000 });
         }
       }
       await expect(mapShell).toHaveAttribute('data-map-cluster', 'false');
@@ -160,10 +161,7 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
         timeout: 15_000,
       });
 
-      const clusterBtn = page
-        .getByRole('button', { name: CLUSTER_TOGGLE_NAME })
-        .filter({ visible: true })
-        .first();
+      const clusterBtn = page.getByRole('button', { name: /Agrupar spots|Cluster spots/i });
       if (await clusterBtn.isVisible()) {
         await clusterBtn.click();
         await expect(mapShell).toHaveAttribute('data-map-cluster', 'true');
@@ -228,10 +226,13 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
         .toBe(true);
 
       if (viewport === 'desktop') {
+        // M2 (UX v3 §2): a barra do topo é agora a pilha vertical à direita
+        // (mesmo selector data-map-controls, role=toolbar). O toggle
+        // «Agrupar spots» saiu do cromo → switch do painel na M3.
         await expect(page.locator('[data-map-controls="true"]')).toBeVisible();
         await expect(
-          page.getByRole('button', { name: CLUSTER_TOGGLE_NAME }).filter({ visible: true }).first(),
-        ).toBeVisible();
+          page.locator('[data-map-controls="true"]'),
+        ).toHaveAttribute('role', 'toolbar');
       }
 
       await assertHealthyPage(page, health, { strictNetwork: false, strictConsole: false });
@@ -517,7 +518,9 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
       // Uma só régua de tempo na página.
       await expect(page.getByRole('slider')).toHaveCount(1);
 
-      // Tabs de modalidade (tablist da barra fixa): trocar marca a tab escolhida.
+      // Tabs de modalidade (tablist da barra fixa): trocar marca a tab
+      // escolhida. v3: a barra só aparece quando o hero sai do ecrã — scroll.
+      await page.evaluate(() => window.scrollTo(0, 1600));
       const kiteTab = page.getByRole('tab', { name: /Kitesurf/i }).first();
       if (await kiteTab.isVisible()) {
         await kiteTab.click();

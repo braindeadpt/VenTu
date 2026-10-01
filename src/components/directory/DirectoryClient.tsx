@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
 import type { DirectoryEntry, DirectoryKind } from '@/types/directory';
-import { DIRECTORY_KIND_LABELS } from '@/lib/directoryClient';
+import { kindLabel } from '@/lib/directoryClient';
 import DirectoryEntryCard from '@/components/directory/DirectoryEntryCard';
 import DirectoryRegisterForm from '@/components/directory/DirectoryRegisterForm';
 import FilterPill from '@/components/ui/FilterPill';
@@ -171,7 +171,7 @@ export default function DirectoryClient({ locale, entries: seedEntries, generate
             const label =
               k === 'all'
                 ? d.all
-                : DIRECTORY_KIND_LABELS[k][isPt ? 'pt' : 'en'];
+                : kindLabel(k, locale);
             return (
               <FilterPill key={k} active={kind === k} onClick={() => setKind(k)}>
                 {label}

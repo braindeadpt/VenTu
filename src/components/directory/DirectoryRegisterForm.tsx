@@ -5,7 +5,7 @@ import { useAuth } from '@/contexts/AuthProvider';
 import { getSupabaseClient } from '@/lib/supabase';
 import { getTranslation } from '@/lib/i18n';
 import { submitDirectoryListing } from '@/lib/directoryListings';
-import { DIRECTORY_KIND_LABELS } from '@/lib/directoryClient';
+import { kindLabel } from '@/lib/directoryClient';
 import { safeExternalUrl } from '@/lib/safeUrl';
 import { DIRECTORY_FIELD_LIMITS as L } from '@/lib/directoryFieldLimits';
 import type { DirectoryKind, DirectorySport } from '@/types/directory';
@@ -172,7 +172,7 @@ export default function DirectoryRegisterForm({ locale, onCreated }: Props) {
           >
             {KINDS.map((k) => (
               <option key={k} value={k}>
-                {isPt ? DIRECTORY_KIND_LABELS[k].pt : DIRECTORY_KIND_LABELS[k].en}
+                {kindLabel(k, locale)}
               </option>
             ))}
           </select>
@@ -188,7 +188,7 @@ export default function DirectoryRegisterForm({ locale, onCreated }: Props) {
                   key={s}
                   type="button"
                   onClick={() => toggleSport(s)}
-                  className={`pill min-h-[36px] px-3 py-1.5 text-meta ${
+                  className={`pill filter-pill-compact px-3 py-1.5 text-meta ${
                     active ? 'pill-active' : 'pill-ghost'
                   }`}
                   aria-pressed={active}

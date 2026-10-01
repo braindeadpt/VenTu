@@ -358,8 +358,21 @@ public/data/               conditions.json, forecasts.json, news.json, dawn-patr
   `mode=day`, avisa se nenhuma hora tiver banda — aviso, não falha, porque uma queda
   dos endpoints multi-modelo não pode bloquear o push de dados frescos. Os testes de
   `ensembleQuantiles` incluem um guarda de ligação ao pipeline (falha se
-  `updateConditionsPerSpot` deixar de chamar `attachEnsemble`).
-- **UI (2026-09-25)**: o **cartão Onda** mostra a banda da hora escolhida (`SwellCard`, `data-wave-band="card"` — «banda P10–P90 1,0–1,9 m · 4 modelos») e o **detalhe da Onda** repete-a por família (`InstrumentDetail`, `data-wave-band="detail"`): onda em m a 2 casas, vento convertido para kt, com a contagem de membros. O descodificador do array é `src/lib/ensembleBand.ts` (`parseEnsemble`, chamado pelo `rowToInstrumentHour`) — sem `ens` na linha não se desenha nada, nunca se inventa uma banda. A faixa sombreada na régua de 48 h e a leitura no badge de confiança continuam por fazer.
+  `updateConditionsPerSpot` deixar de chamar `attachEnsemble`).- **UI (cartão Onda)**: a banda é UMA frase humana na linha secundária que o cartão já
+tem — «modelos: 1,0–1,9 m», com «Os outros modelos de onda — 8 em cada 10
+ficam neste intervalo» no
+`title`/leitor de ecrã —, nunca uma linha a mais. O slot (banda → mar de fundo →
+placeholder NBSP) decide-se em `src/lib/ensembleCardLine.ts` e desenha sempre uma
+linha: a altura do cartão e da secção de instrumentos é a mesma com e sem banda, com
+a régua parada e entre o HTML de partida e o relógio vivo. É a correcção da auditoria
+de 25/09 ao `f2508ce66`, que acrescentava uma linha só nas horas multi-modelo e fazia
+a página saltar ao mexer na régua (mesma classe do CLS do hero, `a737f4184`).
+- **UI («Como sabemos»)**: o detalhe técnico — P10/P50/P90 por família, nº de modelos e
+  o erro do modelo por horizonte de lead (`byLead` do forecast-skill, ver
+  `docs/DATA-HISTORY.md`) — vive na secção §8 (`SpotModelBand`), não nos cartões de
+  instrumentos (regra v3: proveniência fora dos instrumentos). As duas linhas de
+  família são desenhadas sempre (com «—» quando a hora não tem banda), para a secção
+  não mudar de altura ao passar a régua. A faixa na régua de 48 h continua por fazer.
 
 ## Health-check de modelos (Open-Meteo ensemble)
 
@@ -543,6 +556,22 @@ O validador de export deriva as expectativas de `public/sitemap.xml` (a lista au
 
 A amostra é por **passo fixo sobre a lista ordenada** (sem aleatoriedade — mesmo teste em todos os runs) e só corta grupos same-template: um defeito de hidratação é template-wide (o #418 do relógio disparou 3142×; qualquer amostra o teria apanhado). O contrato é fechado por um teste de integridade no próprio spec (determinismo, caps, static/modalidade intactas) e por testes unitários em `scripts/lib/__tests__/checkExportRoutes.test.js`.
 
+### Mega audit de ponta a ponta (2026-09-26) — não corre no CI
+
+Varredura manual dedicada (não é passo de `ci.yml`: ~6 min no total), para cobrir o que o `full-audit` deixa de fora e para olhar o produto como um utilizador:
+
+| frente | onde | escala |
+|---|---|---|
+| Layout/HTML/a11y | `tests/e2e/mega-audit.layout.spec.ts` + `tests/e2e/helpers/audit-invariants.ts` | 445 provas: 30+80 rotas × 5 locales × 2 temas × 2 larguras |
+| Ligações internas | `scripts/mega-audit-links.mjs` (só Node, browserless) | 2 618 páginas, 114 574 links internos |
+| Botão a botão / mapa / movimento / capturas | `tests/e2e/mega-audit.interactions.spec.ts` | 237 controlos, 216 cliques em 18 hubs |
+
+`npm run test:e2e:mega-audit` (Playwright + links). Os dados brutos e as capturas vão para `_audit/mega-2026-09-26/` (**nunca** para `test-results/`: o Playwright apaga essa pasta no início de cada corrida, pelo que varrimentos diferentes apagavam-se uns aos outros). Relatório: `_audit/mega-2026-09-26/RELATORIO.md`.
+
+O que a varredura encontrou (detalhe e evidência no relatório): **`LoginModal` é `aria-modal="true"` sem mover nem conter o foco e sem fechar com Escape** (único de 32 diálogos); **720 páginas exportadas têm dois `<main>`** (`/diretorio/*` e `/admin/diretorio` renderizam o seu próprio dentro do da layout — `diretorio/page.tsx:33`, `DirectoryDetailClient.tsx:61`, `DirectoryManageClient.tsx`, `DirectoryAdminClient.tsx`); **`id` duplicado nos clusters do mapa** (`cluster-clip-<n>-0`, até 7×, 10 rotas); alvos de toque abaixo dos 44 px do projecto (✕ do aviso de locale 22×22, pílulas dos calculadores 36, inputs 42); `/auth/callback/` e `/admin/diretorio/` sem `<h1>` e quase vazias; âncora morta `/xx/favorites/#alertas` (o `id` só existe após hidratação) e dois embeds de terceiros quebrados (Surfline 404 em `cabedelo-wakepark`, X-Frame-Options do weatherlink em `foil-cabedelo`).
+
+Nota de método: a primeira versão da bateria deu falsos positivos que ficaram corrigidos no próprio harness — o mapa **não** usa `L.popup` (é um `aside[data-map-panel]`), o menu de camadas é um popover portalizado (`[data-map-layers-popover]`) e não um `role="dialog"`, e as «6 animações» de `prefers-reduced-motion` eram os `CSSTransition` de 10 ms dos tiles do Leaflet. Fica registado porque a mesma armadilha apanharia qualquer auditoria futura.
+
 ### E2E core — specs do CI (e o que cada um cobre)
 
 O `ci.yml` corre três passos Playwright: `critical-routes` (smoke de 18 rotas: homepage pt/en/es/de/fr, spot, mapa, comparador, favoritos, 404 localizados, palette de pesquisa), **`npm run test:e2e:core`** (os specs herméticos de dados/score — substituiu o antigo passo `test:e2e:data`, que era um subconjunto) e os audits `full-audit`/`visual-ux-audit`. O core agrupa os specs que correm no Actions sem rede nem `IH_API_KEY` (bloqueiam o SW e interceptam os data files client-side via `tests/e2e/helpers/conditions.ts`):
@@ -564,10 +593,14 @@ O `ci.yml` corre três passos Playwright: `critical-routes` (smoke de 18 rotas: 
 | `coastal-map-layer` | 6 | /mapa fullscreen: overlay de polígonos de TODOS os avisos à navegação activos, popup → detalhe |
 | `spot-sticky-geometry` | 2 | Geometria da SpotStickyBar: não sobrepõe os sport tabs após scroll — desktop **e** mobile (390px), cota/altura pelos tokens partilhados (globals.css) |
 | `tools-calculators` | 13 | Calculadoras de kite e fato: outputs reais (m², janela confortável, espessura mm, extras), edge cases (6 kt, 45 kt, 4 °C, 24 °C, windchill), overflow horizontal em 390px e paridade pt/en |
-| `ipma-radar-carousel` | 28 | Carrossel do radar IPMA (stub de 12 frames): badge/scrubber/tooltip com relógio congelado, pausa por drag/zoom/aba/viewport, persistência e deep link `?radar=1`, paridade es/fr/de, lift acima do HUD no `/mapa` mobile. Entrou no core na auditoria 2026-09-21 — as falhas que o mantinham de fora eram do próprio spec (corrida de timers + toggle procurado no peek, onde a grelha de camadas não é renderizada), não do carrossel |
+| `ipma-radar-carousel` | 28 | Carrossel do radar IPMA (stub de 12 frames): badge/scrubber/tooltip com relógio congelado, pausa por drag/zoom/aba/viewport, persistência e deep link `?radar=1`, paridade es/fr/de, lift acima do HUD no `/mapa` mobile. Fora do core (instável no main) — corre-se isolado |
+| `a11y-login-modal` | 4 | Contrato de modal do `LoginModal` (achado A1 da mega audit 2026-09-26): o foco entra no primeiro campo ao abrir, 10 `Tab`/10 `Shift+Tab` ficam presos dentro, `Escape` fecha e devolve o foco ao botão que abriu, o fundo fica bloqueado (`overflow: hidden`) e volta ao normal ao fechar |
+| `a11y-landmarks` | 17 | Um só `<main id="main-content">` por documento (HTML do build de 11 rotas, incl. `/xx/diretorio/`, uma ficha, `/diretorio/gerir/` e `/admin/diretorio/`, mais a DOM hidratada) e `<h1>` com texto em `/auth/callback/` e nos dois admins (achados A2/A5) |
+| `a11y-anchors` | 9 | Âncora `#alertas`: o `id` existe no HTML do build de `/xx/favorites/` nos 5 locales e nos quatro estados do cliente (esqueleto, sem sessão, com sessão sem favoritos, com painel); o link de `/xx/alerts/` aterra lá; e o varrimento de todos os `href="rota#id"` de 12 rotas exige destino na rota alvo (achado A7 — era o único caso em 114 574 links) |
+| `a11y-touch-targets` | 11 | Alvos de toque ≥44 px de altura a 390 px em 10 rotas, pelos componentes partilhados (aviso de locale, calculadoras, `Input`, paginação, pastilhas de filtro) — a área pode crescer por margem negativa/`<label>` sem crescer o desenho (achado A4) |
 
 Notas de operação:
-- **Config** (`playwright.config.ts`): no CI usa `workers: 2` (runner 4 vCPU; browsers isolados por worker — medido ≈ 2m30s quando o core tinha ~115 testes) e `retries: 2` para flakes pontuais conhecidos (ex. `search palette` / sheet do mapa). Hoje o core são **329 testes em 47 ficheiros** (`npx playwright test <specs do core> --list`; inclui `ipma-radar-carousel`, entrado a 2026-09-21) — re-medir o tempo no CI se o passo apertar. O core completo (`npm run test:e2e:core`) corre como passo próprio no `ci.yml`.
+- **Config** (`playwright.config.ts`): no CI usa `workers: 2` (runner 4 vCPU; browsers isolados por worker — medido ≈ 2m30s quando o core tinha ~115 testes) e `retries: 2` para flakes pontuais conhecidos (ex. `search palette` / sheet do mapa). Hoje o core são **349 testes em 51 ficheiros** (`npx playwright test <specs do core> --list`; 2026-09-27, com os quatro `a11y-*` novos — 41 testes) — re-medir o tempo no CI se o passo apertar. O core completo (`npm run test:e2e:core`) corre como passo próprio no `ci.yml`.
 - **Determinismo**: estes specs NÃO dependem da rede nem de keys — as fixtures vivem em `tests/e2e/helpers/conditions.ts` (`interceptConditions`/`interceptIhBuoys`/`interceptWmoBuoys`/`interceptWaveBias`/`interceptIsobaths`/`interceptCoastalNavWarnings`). Se um spec precisa de dados que o build não tem, intercepta client-side.
 - **Bump de `@playwright/test` (dependabot)**: cada minor traz um Chromium novo → o pixel gate (`test:visual`) falha até as baselines Linux serem re-gravadas. O dependabot isola o Playwright no grupo `playwright` (PR próprio, fora do `minor-patch`); nesse PR corre-se **Actions → Record Visual Baselines → ref=\<branch do PR\>** (o workflow grava no ref indicado, não só em `main`), o push das baselines re-corre o CI, e merge quando verde. Nunca gravar baselines no Windows — são Linux-only.
 - **TopNow (homepage) — SSG vs re-hidratação**: o primeiro paint dos cards é SSG (`buildSpotData` em build-time), por isso o badge «Corrigido (viés regional)»/«Corrigido pela boia X» só sai baked no `out/` quando o `wave-bias.json`/`observedWave` existir em `public/data/` DURANTE o `npm run build` (teste baked-only salta com skip honesto). MAS o `HomepageTopNow` re-hidrata client-side (`useLiveGridSpotData`, mount + **15 min** + tab visível — o mesmo `refreshGridSpotScores` do grid/mapa): as rows SSG são substituídas pelas de `conditions.json` e o viés regional aplica-se em runtime, pelo que o badge aparece SEM rebuild e os testes positivos interceptam client-side (`interceptConditions` + transform `all`). Recipe local para validar o caminho baked: `node tests/e2e/fixtures/write-wave-bias-fixture.mjs && npm run build && npx playwright test topnow-wave-badge` (o fixture escreve `public/data/wave-bias.json` com ME +0.3/n=120 em todas as regiões; `public/data/` é gitignored, nunca é commitado).

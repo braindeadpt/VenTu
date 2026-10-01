@@ -13,10 +13,10 @@ import {
 import { getTranslation } from '@/lib/i18n';
 import { TOOL_SPOT_OPTIONS, useSpotConditions } from './useSpotConditions';
 
-const DISCIPLINES: { id: KiteDiscipline; pt: string; en: string }[] = [
-  { id: 'twintip', pt: 'Twintip', en: 'Twintip' },
-  { id: 'strapless', pt: 'Strapless / onda', en: 'Strapless / surf' },
-  { id: 'foil', pt: 'Foil', en: 'Foil' },
+const DISCIPLINES: { id: KiteDiscipline; label: string }[] = [
+  { id: 'twintip', label: 'Twintip' },
+  { id: 'strapless', label: 'Strapless' },
+  { id: 'foil', label: 'Foil' },
 ];
 
 export default function KiteCalculatorClient({ locale }: { locale: string }) {
@@ -50,7 +50,7 @@ export default function KiteCalculatorClient({ locale }: { locale: string }) {
             step={1}
             value={weightKg}
             onChange={(e) => setWeightKg(Number(e.target.value))}
-            className="flex-1 accent-accent"
+            className="flex-1 accent-accent min-h-[44px] -my-3.5"
           />
           <span className="font-mono tabular-nums text-num text-fg w-20 text-right">
             {weightKg} kg
@@ -74,7 +74,7 @@ export default function KiteCalculatorClient({ locale }: { locale: string }) {
               setSpotId(null);
               setWindKt(Number(e.target.value));
             }}
-            className="flex-1 accent-accent"
+            className="flex-1 accent-accent min-h-[44px] -my-3.5"
           />
           <span className="font-mono tabular-nums text-num text-fg w-20 text-right">
             {effectiveWindKt} kt
@@ -85,7 +85,7 @@ export default function KiteCalculatorClient({ locale }: { locale: string }) {
           <select
             value={spotId ?? ''}
             onChange={(e) => setSpotId(e.target.value || null)}
-            className="flex-1 min-w-0 rounded-input border border-divider bg-bg-elevated text-fg text-body-sm px-2 py-1.5"
+            className="flex-1 min-w-0 min-h-[44px] rounded-input border border-divider bg-bg-elevated text-fg text-body-sm px-2 py-1.5"
             aria-label={t.tools.liveWindAria}
           >
             <option value="">{t.tools.liveWindLabel}</option>
@@ -114,13 +114,15 @@ export default function KiteCalculatorClient({ locale }: { locale: string }) {
               role="radio"
               aria-checked={discipline === d.id}
               onClick={() => setDiscipline(d.id)}
-              className={`px-3 py-1.5 rounded-pill text-meta-sm font-medium border transition-colors duration-150 ${
+              // `filter-pill-compact` = piso de 44 px no toque (36 só em desktop
+              // de rato puro) — a densidade já documentada no `FilterPill`.
+              className={`filter-pill-compact px-3 py-1.5 rounded-pill text-meta-sm font-medium border transition-colors duration-150 ${
                 discipline === d.id
                   ? 'bg-accent/15 text-accent border-accent/40'
                   : 'bg-surface-1/[0.04] text-fg-muted border-divider hover:text-fg'
               }`}
             >
-              {isPt ? d.pt : d.en}
+              {d.id === 'strapless' ? t.kiteDisciplines.strapless : d.label}
             </button>
           ))}
         </div>

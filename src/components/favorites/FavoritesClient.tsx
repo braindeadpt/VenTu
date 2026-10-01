@@ -148,7 +148,7 @@ export default function FavoritesClient() {
 
   if (!mounted || loading) {
     return (
-      <div className="min-h-screen bg-bg-base p-4">
+      <div id="alertas" className="min-h-screen bg-bg-base p-4 scroll-mt-24">
         <div className="max-w-4xl mx-auto space-y-8 pt-8">
           <Skeleton className="h-5 w-20" />
           <div className="space-y-3">
@@ -167,7 +167,7 @@ export default function FavoritesClient() {
 
   if (!supabaseReady) {
     return (
-      <div className="min-h-screen bg-bg-base flex items-center justify-center px-4">
+      <div id="alertas" className="min-h-screen bg-bg-base flex items-center justify-center px-4 scroll-mt-24">
         <p className="text-sm text-fg-muted text-center">
           {pt ? 'Favoritos indisponíveis (Supabase não configurado).' : 'Favorites unavailable (Supabase not configured).'}
         </p>
@@ -178,7 +178,7 @@ export default function FavoritesClient() {
   if (!session?.user) {
     return (
       <div className="min-h-screen bg-bg-base pb-20">
-        <div className="max-w-md mx-auto px-4 py-16 text-center space-y-6">
+        <div id="alertas" className="max-w-md mx-auto px-4 py-16 text-center space-y-6 scroll-mt-24">
           <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full border border-divider bg-surface-1/[0.04]">
             <LogIn className="w-6 h-6 text-data-waves" aria-hidden />
           </div>
@@ -235,22 +235,29 @@ export default function FavoritesClient() {
           </div>
         </div>
 
-        {favoriteSpots.length > 0 && (
-          <FavoritesAlertsPanel locale={loc} favoriteCount={favoriteSpots.length} />
-        )}
+        {/* Destino de `/xx/alerts/#alertas` (e do atalho de `/xx/conta/`): existe
+            em TODOS os estados — painel de alertas quando há favoritos, convite a
+            adicionar favoritos quando não há — e já no HTML do build. Antes o `id`
+            vivia no painel, que só monta com sessão E favoritos: o link não saltava
+            (mega audit 2026-09-26, achado A7 — o único caso em 114 574 links). */}
+        <div id="alertas" className="scroll-mt-24">
+          {favoriteSpots.length > 0 ? (
+            <FavoritesAlertsPanel locale={loc} favoriteCount={favoriteSpots.length} />
+          ) : (
+            <EmptyState
+              icon={<Heart className="w-8 h-8 text-fg-subtle" aria-hidden />}
+              title={getPlayfulEmptyCopy('no-favorites', loc).title}
+              description={getPlayfulEmptyCopy('no-favorites', loc).description}
+              action={
+                <Button href={`/${loc}/spots/`} size="lg" locale={locale}>
+                  {pt ? 'Explorar Spots' : 'Explore Spots'}
+                </Button>
+              }
+            />
+          )}
+        </div>
 
-        {favoriteSpots.length === 0 ? (
-          <EmptyState
-            icon={<Heart className="w-8 h-8 text-fg-subtle" aria-hidden />}
-            title={getPlayfulEmptyCopy('no-favorites', loc).title}
-            description={getPlayfulEmptyCopy('no-favorites', loc).description}
-            action={
-              <Button href={`/${loc}/spots/`} size="lg" locale={locale}>
-                {pt ? 'Explorar Spots' : 'Explore Spots'}
-              </Button>
-            }
-          />
-        ) : (
+        {favoriteSpots.length > 0 && (
           <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4 list-none m-0 p-0">
             {favoriteSpots.map((spot, index) => {
               const current = conditions[spot.id];

@@ -41,6 +41,7 @@ const MIGRATED_GLOBS = [
   'src/components/layout/OfflineBanner.tsx',
   'src/components/layout/ThemeToggle.tsx',
   'src/components/layout/DailyStreak.tsx',
+  'src/components/layout/NotFoundContent.tsx',
   'src/components/weather/SpotLivecamLink.tsx',
   'src/components/weather/SpotWeatherlinkSection.tsx',
   'src/components/weather/SpotWebcamSection.tsx',

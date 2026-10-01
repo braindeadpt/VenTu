@@ -11,6 +11,8 @@ export interface WaveCalibrationTagProps {
    */
   wave: Pick<ObservedWave, 'calibration' | 'waveHeight'> | null | undefined;
   locale: string;
+  /** `false` inside link-cards, where a button would be invalid HTML. */
+  interactive?: boolean;
   className?: string;
 }
 
@@ -26,6 +28,7 @@ export interface WaveCalibrationTagProps {
 export default function WaveCalibrationTag({
   wave,
   locale,
+  interactive = true,
   className,
 }: WaveCalibrationTagProps) {
   const calTag = waveCalibrationTag(wave, locale);
@@ -43,6 +46,7 @@ export default function WaveCalibrationTag({
       label={label}
       detail={calTag.title}
       locale={locale}
+      interactive={interactive}
       className={className}
       chipAttrs={{ 'data-wave-calibrated': 'compact' }}
       popoverAttrs={{ 'data-wave-calibration-popover': 'true' }}

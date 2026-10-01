@@ -7,32 +7,26 @@ import { join } from 'path';
  *
  * A cota de pinagem (`--ventu-spot-sticky-top`, header h-16) e a altura da
  * fila de sport tabs (`--ventu-spot-tabs-h`) vivem UMA vez no globals.css e
- * são referenciadas por nome nas duas superfícies (secção sticky + barra).
- * Se alguém voltar a hard-codar `top: '64px'` / `top-16` ou um dos lados
- * deixar de usar a variável, o CI falha — os dois sítios nunca divergem.
+ * são referenciadas por nome na SpotUnifiedBar e nas âncoras/scroll-margin
+ * do CSS. Se alguém voltar a hard-codar `top: '64px'` / `top-16` ou deixar
+ * de usar a variável, o CI falha — os sítios nunca divergem.
+ * (A SpotStickyBar legada saiu na limpeza SP-D; a barra unificada é a única
+ * superfície sticky.)
  */
 const ROOT = join(__dirname, '..', '..', '..');
 
 const globalsCss = readFileSync(join(ROOT, 'src/app/globals.css'), 'utf-8');
-const stickyBar = readFileSync(join(ROOT, 'src/components/spots/SpotStickyBar.tsx'), 'utf-8');
-// A fila de tabs vive na barra unificada desde a S2A — é ela que partilha a
-// cota de pinagem e a altura de 48px com a SpotStickyBar legada.
+// A fila de tabs vive na barra unificada — partilha a cota de pinagem e a
+// altura de 48px com as âncoras calculadas em globals.css.
 const detail = readFileSync(
   join(ROOT, 'src/components/spots/verdict/SpotUnifiedBar.tsx'),
   'utf-8',
 );
 
-describe('tokens de layout sport tabs (SpotUnifiedBar vs SpotStickyBar)', () => {
+describe('tokens de layout sport tabs (SpotUnifiedBar)', () => {
   it('globals.css define os dois tokens com os valores esperados', () => {
     expect(globalsCss).toMatch(/--ventu-spot-sticky-top:\s*64px/);
     expect(globalsCss).toMatch(/--ventu-spot-tabs-h:\s*48px/);
-  });
-
-  it('a SpotStickyBar usa os tokens (top da barra + altura da fila) e não hard-coda 64px', () => {
-    expect(stickyBar).toContain("top: 'var(--ventu-spot-sticky-top)'");
-    expect(stickyBar).toContain("height: 'var(--ventu-spot-tabs-h)'");
-    // Divergência guard: qualquer regresso a âncora mágica falha aqui.
-    expect(stickyBar).not.toMatch(/top:\s*'64px'|top:\s*"64px"/);
   });
 
   it('a barra unificada usa os tokens (pin top + altura da fila) e não hard-coda top-16', () => {

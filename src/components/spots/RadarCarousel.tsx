@@ -83,6 +83,22 @@ interface RadarCarouselProps {
   /** HUD range is dragging — pause ticks without flipping userPaused. */
   externalScrubbing?: boolean;
   onScrubbingChange?: (scrubbing: boolean) => void;
+  /** Cadência entre frames em minutos (radar IPMA = 5; satélite IR = 10) —
+   *  usada para contar slots em falta no badge de gaps. */
+  cadenceMin?: number;
+  /** Ícone do badge (default: CloudRain — precipitação). */
+  icon?: React.ReactNode;
+  /** Linha de atribuição por cima do default IPMA+Open-Meteo — camadas com
+   *  outra fonte (ex.: NASA GIBS) passam o seu próprio nó. */
+  attribution?: React.ReactNode;
+  /** Idade máxima do último frame antes do rótulo «atrasado» (default:
+   *  RADAR_MAX_AGE_MINUTES — o IPMA publica de 5 em 5 min). */
+  staleMaxAgeMin?: number;
+  /** Relógio do frame no badge (default: radarFrameClock — o ISO do IPMA é
+   *  wall-clock de Lisboa). Slots UTC reais passam goesIrFrameClock. */
+  frameClock?: (iso: string | null) => string | null;
+  /** Data+hora completa para o tooltip (default: radarFrameFullClock). */
+  frameFullClock?: (iso: string | null) => string | null;
 }
 
 /**
@@ -110,6 +126,12 @@ export default function RadarCarousel({
   hideScrubber = false,
   externalScrubbing = false,
   onScrubbingChange,
+  cadenceMin,
+  icon,
+  attribution,
+  staleMaxAgeMin,
+  frameClock,
+  frameFullClock,
 }: RadarCarouselProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   // Gate de hidratação para o indicador de atraso: Date.now() no SSR vs cliente
@@ -140,13 +162,15 @@ export default function RadarCarousel({
 
   if (frames.length === 0) return null;
 
-  const clock = radarFrameClock(frames[frameIndex]?.frameTime ?? null) ?? '';
+  const clockFn = frameClock ?? radarFrameClock;
+  const fullClockFn = frameFullClock ?? radarFrameFullClock;
+  const clock = clockFn(frames[frameIndex]?.frameTime ?? null) ?? '';
   // Data + hora do frame actual para o tooltip (distinguir dias diferentes).
-  const fullClock = radarFrameFullClock(frames[frameIndex]?.frameTime ?? null);
+  const fullClock = fullClockFn(frames[frameIndex]?.frameTime ?? null);
   // Frames de 5 min em FALTA entre o frame actual e o seguinte (mais antigo) —
   // o IPMA falha cadências; o carrossel salta para o próximo frame válido e o
   // badge avisa discretamente (gaps > 5 min), em vez de mostrar saltos mudos.
-  const missingAfter = radarMissingFrames(frames)[frameIndex] ?? 0;
+  const missingAfter = radarMissingFrames(frames, cadenceMin)[frameIndex] ?? 0;
   const gapLabel = missingAfter > 0 ? labels.gap.replace('{count}', String(missingAfter)) : null;
   // Idade do ÚLTIMO frame válido (frames[0] = mais recente) — não do frame a
   // ser visualizado: o atraso é uma propriedade do produto, não da playback.
@@ -156,7 +180,7 @@ export default function RadarCarousel({
       ? (nowMs - new Date(newestFrameTime).getTime()) / 60_000
       : 0;
   const staleLabel =
-    Number.isFinite(newestAgeMin) && newestAgeMin > RADAR_MAX_AGE_MINUTES
+    Number.isFinite(newestAgeMin) && newestAgeMin > (staleMaxAgeMin ?? RADAR_MAX_AGE_MINUTES)
       ? labels.stale.replace('{age}', formatRadarAge(newestAgeMin))
       : null;
 
@@ -203,7 +227,7 @@ export default function RadarCarousel({
           ) : (
             <span className="w-1.5 h-1.5 rounded-full bg-data-waves motion-reduce:animate-none animate-pulse" aria-hidden />
           )}
-          <CloudRain className="w-3.5 h-3.5 text-data-waves" aria-hidden />
+          {icon ?? <CloudRain className="w-3.5 h-3.5 text-data-waves" aria-hidden />}
           <span>{labels.badge}</span>
           <span className="font-semibold tabular-nums">{clock}</span>
           {frames.length > 1 && (
@@ -235,10 +259,10 @@ export default function RadarCarousel({
             </span>
           )}
         </div>
-        {/* Atribuições lado a lado junto ao overlay do radar — os dados são do
-            IPMA por cima de previsões Open-Meteo, por isso o badge mostra as
-            DUAS obrigatórias. Links clicáveis mesmo com o badge em
-            pointer-events-none. URLs e textos vêm dos módulos partilhados. */}
+        {/* Atribuições lado a lado junto ao overlay — o default é IPMA +
+            Open-Meteo (os dados do radar por cima de previsões Open-Meteo);
+            camadas com outra fonte passam `attribution` (ex.: NASA GIBS).
+            Links clicáveis mesmo com o badge em pointer-events-none. */}
         <div
           // Em mobile o painel tem de caber na banda livre entre o HUD e a
           // atribuição Leaflet (para não cobrir marcadores) — a fonte das
@@ -246,19 +270,24 @@ export default function RadarCarousel({
           className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-meta-xs text-fg-subtle max-md:gap-x-1.5 max-md:text-[10px]"
           data-radar-attributions="true"
         >
-          <a
-            href={IPMA_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="pointer-events-auto underline hover:text-fg transition-colors"
-          >
-            {labels.ipmaAttribution}
-          </a>
-          <span aria-hidden className="text-fg-muted">·</span>
-          {/* Fonte única da cadeia CC BY — mesmo componente do About//fontes/
-              card de onda. As duas âncoras (Open-Meteo.com + licença CC BY 4.0)
-              vêm de openMeteoAttribution.tsx e nunca divergem entre superfícies. */}
-          <OpenMeteoAttribution className="pointer-events-auto underline hover:text-fg transition-colors" />
+          {attribution ?? (
+            <>
+              <a
+                href={IPMA_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="pointer-events-auto underline hover:text-fg transition-colors"
+              >
+                {labels.ipmaAttribution}
+              </a>
+              <span aria-hidden className="text-fg-muted">·</span>
+              {/* Fonte única da cadeia CC BY — mesmo componente do About/
+                  /fontes/card de onda. As duas âncoras (Open-Meteo.com +
+                  licença CC BY 4.0) vêm de openMeteoAttribution.tsx e nunca
+                  divergem entre superfícies. */}
+              <OpenMeteoAttribution className="pointer-events-auto underline hover:text-fg transition-colors" />
+            </>
+          )}
         </div>
 
         {/* Imersão: abrir o /mapa com o radar já ligado (ecrã inteiro). O link é

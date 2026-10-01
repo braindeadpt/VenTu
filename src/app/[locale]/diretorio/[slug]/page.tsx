@@ -1,7 +1,7 @@
 import { localizedSpotName } from '@/lib/localizedSpotText';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getTranslation, locales } from '@/lib/i18n';
+import { getTranslation, locales, validateLocale } from '@/lib/i18n';
 import { kindLabel, loadDirectoryEntries } from '@/lib/directory';
 import { buildPageMetadata } from '@/lib/seo';
 import DirectoryDetailClient from '@/components/directory/DirectoryDetailClient';
@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
   const name = localizedSpotName(entry, locale);
   return buildPageMetadata({
-    locale: locale as 'pt' | 'en',
+    locale: validateLocale(locale),
     title: `${name} — ${kindLabel(entry.kind, locale)}`,
     description: getTranslation(locale).pages.directoryProfileMetaDescription.replace(
       '{name}',

@@ -5,14 +5,14 @@ import { getTranslation } from '@/lib/i18n';
 import type { Spot } from '@/types';
 import type { SpotDashboardConditions } from '@/components/spots/SpotConditionsDashboard';
 import type { TideHourPoint, TideSchedule } from '@/lib/tideSchedule';
-import { getWindRelationLabel, getWindRelationToCoast, type WindRelation } from '@/lib/wind';
+import { getWindRelationLabel, getWindRelationToCoast, getCardinalLabel, type WindRelation } from '@/lib/wind';
 import { isObservedFresh } from '@/lib/observations';
 import { isObservedWaveFresh } from '@/lib/observedWave';
+import { europeanAqiLevel } from '@/lib/airQuality';
 import type { ScoreWindCorrection, ScoreWindSource } from '@/lib/scoreConditions';
 import ObservedNow from '@/components/spots/ObservedNow';
 import ObservedWaveCard from '@/components/spots/ObservedWaveCard';
 import BuoySkillLine from '@/components/spots/BuoySkillLine';
-import WaveSkillByLead from '@/components/spots/WaveSkillByLead';
 import BuoyLayerNotice from '@/components/spots/BuoyLayerNotice';
 import IsobathsStrip from '@/components/spots/IsobathsStrip';
 import TideScheduleStrip from '@/components/spots/TideScheduleStrip';
@@ -24,12 +24,12 @@ import ScoreWindSourceBadge from '@/components/ui/ScoreWindSourceBadge';
 import { INSTRUMENT_DETAIL_ID, type InstrumentId } from './InstrumentCard';
 import { getInstrumentFmt } from './format';
 import type { InstrumentHour } from './types';
+import { scoreRangeForBand } from '@/lib/scoreBand';
 
 /**
  * Painel de detalhe único por baixo dos três cartões (spec §4).
  * Vento → ObservedNow, relação vento↔costa, WindFlowGlyph, fonte do vento.
- * Onda → SwellTrainsTable, banda ensemble P10/P50/P90 da hora escolhida,
- *        ObservedWaveCard, BuoySkillLine, skill por horizonte de lead,
+ * Onda → SwellTrainsTable, ObservedWaveCard, BuoySkillLine,
  *        BuoyLayerNotice, IsobathsStrip, WaveCalibrationTag.
  * Maré → TideScheduleStrip, MoonTideCard, temperatura da água.
  *
@@ -41,9 +41,13 @@ interface InstrumentDetailProps {
   open: InstrumentId;
   spot: Spot;
   locale: string;
+  /** Desporto seleccionado — a banda de score do detalhe da Onda é por desporto. */
+  selectedSport?: import('@/lib/sportRatings').SportType;
   conditions: SpotDashboardConditions;
   /** Linha da hora escolhida (modelo) — os valores seguem o eixo de tempo. */
   hour: InstrumentHour | null;
+  /** A hora escolhida é «agora» — o AQI só existe na hora corrente. */
+  isNow?: boolean;
   tideSchedule: TideSchedule | null;
   tideHourly?: TideHourPoint[];
   /** Relógio de frescura (bakedAtMs até montar — guarda React #418). */
@@ -53,6 +57,12 @@ interface InstrumentDetailProps {
   copy: {
     gustLabel: string;
     gustHint: string;
+    uvLabel: string;
+    uvMaxLabel: string;
+    uvHint: string;
+    aqiLabel: string;
+    aqiHint: string;
+    aqiLevels: Record<import('@/lib/airQuality').AqiLevel, string>;
     windContextTitle: string;
     windRelationHints: Record<WindRelation, string>;
     radarFootnote: string;
@@ -60,13 +70,17 @@ interface InstrumentDetailProps {
 }
 
 const MS_TO_KT = 1.94384;
+/** |anomalia| a partir da qual a maré meteorológica é assinalada (scripts/lib/tideAnomaly). */
+const TIDE_SURGE_FLAG_M = 0.3;
 
 export default function InstrumentDetail({
   open,
   spot,
   locale,
+  selectedSport,
   conditions,
   hour,
+  isNow,
   tideSchedule,
   tideHourly,
   freshnessNowMs,
@@ -164,7 +178,7 @@ export default function InstrumentDetail({
             {windRelation && (
               <p className="m-0 text-[13px] leading-[1.55] text-fg-muted">{copy.windRelationHints[windRelation]}</p>
             )}
-            <ul className="m-0 grid list-none gap-1.5 p-0 text-[12px] text-fg-muted">
+            <ul className="m-0 grid list-none gap-1.5 p-0 text-[13px] text-fg-muted">
               <li>
                 <span>Offshore</span> — {copy.windRelationHints.offshore}
               </li>
@@ -184,6 +198,27 @@ export default function InstrumentDetail({
               />{' '}
               {copy.gustLabel} {fmt.f0(gustKt)} kt
             </p>
+            {/* UV da hora escolhida + máximo do dia — planeamento de
+                exposição ao sol, mesma fonte Open-Meteo do vento. */}
+            {(hour?.uvIndex !== undefined || conditions.uvIndex !== undefined) && (
+              <p className="m-0 font-mono tabular-nums text-[13px] text-fg-muted" title={copy.uvHint}>
+                {copy.uvLabel} {hour?.uvIndex ?? conditions.uvIndex}
+                {conditions.uvIndexMax !== undefined && (
+                  <span className="text-fg-subtle"> · {copy.uvMaxLabel} {conditions.uvIndexMax}</span>
+                )}
+              </p>
+            )}
+            {/* AQI europeu — só na hora corrente (a camada CAMS não é por
+                hora de previsão nesta fase); fresco <8 h garantido no merge. */}
+            {isNow && conditions.airQualityIndex != null && Number.isFinite(conditions.airQualityIndex) && (
+              <p className="m-0 font-mono tabular-nums text-[13px] text-fg-muted" title={copy.aqiHint}>
+                {copy.aqiLabel} {conditions.airQualityIndex}
+                <span className="text-fg-subtle">
+                  {' · '}
+                  {copy.aqiLevels[europeanAqiLevel(conditions.airQualityIndex)]}
+                </span>
+              </p>
+            )}
             <p className="m-0 text-[13px] leading-[1.55] text-fg-muted">
               <ScoreWindSourceBadge
                 source={scoreWindSource}
@@ -199,38 +234,21 @@ export default function InstrumentDetail({
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div className="grid min-w-0 content-start gap-2.5">
             <SwellTrainsTable conditions={trainConditions} locale={locale} />
-            {hour?.ensemble && (
-              <div className="grid gap-1.5 border-t border-divider pt-2.5" data-wave-band="detail">
-                <h3 className="m-0 text-[11px] font-semibold uppercase tracking-[0.08em] text-fg-subtle">
-                  {ti.ensembleTitle}
-                </h3>
-                <ul className="m-0 grid list-none gap-0.5 p-0 font-mono tabular-nums text-[12px] text-fg-muted">
-                  {hour.ensemble.wave && (
-                    <li>
-                      <span className="text-fg">{ti.wave}</span>{' '}
-                      {ti.ensembleFamily
-                        .replace('{p10}', fmt.f2(hour.ensemble.wave.p10))
-                        .replace('{p50}', fmt.f2(hour.ensemble.wave.p50))
-                        .replace('{p90}', fmt.f2(hour.ensemble.wave.p90))
-                        .replace('{unit}', 'm')}{' '}
-                      · {ti.ensembleMembers.replace('{n}', String(hour.ensemble.wave.n))}
-                    </li>
-                  )}
-                  {hour.ensemble.wind && (
-                    <li>
-                      <span className="text-fg">{ti.wind}</span>{' '}
-                      {ti.ensembleFamily
-                        .replace('{p10}', fmt.f0(hour.ensemble.wind.p10 * MS_TO_KT))
-                        .replace('{p50}', fmt.f0(hour.ensemble.wind.p50 * MS_TO_KT))
-                        .replace('{p90}', fmt.f0(hour.ensemble.wind.p90 * MS_TO_KT))
-                        .replace('{unit}', 'kt')}{' '}
-                      · {ti.ensembleMembers.replace('{n}', String(hour.ensemble.wind.n))}
-                    </li>
-                  )}
-                </ul>
-                <p className="m-0 text-[11px] leading-snug text-fg-subtle">{ti.ensembleHint}</p>
-              </div>
-            )}
+            {/* Banda de score por modelo (Fase B): scorer real nos cantos
+                P10/P90 da banda ens — intervalo de sensibilidade, nunca
+                uma probabilidade fabricada. */}
+            {(() => {
+              if (!selectedSport || !hour?.ensemble) return null;
+              const band = scoreRangeForBand({ spot, sport: selectedSport, band: hour.ensemble, hour: hour ?? {} });
+              if (!band) return null;
+              return (
+                <p className="m-0 font-mono tabular-nums text-[12px] text-fg-muted" data-score-band>
+                  {ti.scoreBandLine
+                    .replace('{lo}', String(band.lo))
+                    .replace('{hi}', String(band.hi))}
+                </p>
+              );
+            })()}
           </div>
           <div className="grid min-w-0 content-start gap-2.5">
             <h3 className="m-0 mb-0.5 text-[11px] font-semibold uppercase tracking-[0.08em] text-fg-subtle">
@@ -252,9 +270,6 @@ export default function InstrumentDetail({
             ) : (
               <BuoySkillLine spotId={spot.id} locale={locale} />
             )}
-            {/* Skill por horizonte de lead — sempre presente quando há byLead
-                para a boia do spot (independente de haver leitura fresca). */}
-            <WaveSkillByLead spotId={spot.id} locale={locale} />
             {!freshObservedWave && conditions.observedWave && (
               <p className="m-0 text-[13px] leading-[1.55] text-fg-muted">{tv.staleBuoy}</p>
             )}
@@ -315,6 +330,52 @@ export default function InstrumentDetail({
             {waterTemp !== undefined && (
               <p className="font-mono tabular-nums text-[13px] text-fg">
                 {td.waterLabel}: {fmt.f1(waterTemp)} °C
+              </p>
+            )}
+            {conditions.tideObservedHeight != null && (
+              <p className="font-mono tabular-nums text-[12px] text-fg-muted" data-tide-observed>
+                {ti.tideObservedLine
+                  .replace('{obs}', fmt.f1(conditions.tideObservedHeight))
+                  .replace('{station}', conditions.tideStation ?? '')}
+              </p>
+            )}
+            {conditions.tideAnomalyM != null && (
+              <p
+                className={`font-mono tabular-nums text-[12px] ${
+                  Math.abs(conditions.tideAnomalyM) >= TIDE_SURGE_FLAG_M
+                    ? 'text-score-fair'
+                    : 'text-fg-muted'
+                }`}
+                data-tide-anomaly
+              >
+                {ti.tideAnomalyLine.replace(
+                  '{delta}',
+                  `${conditions.tideAnomalyM >= 0 ? '+' : ''}${fmt.f1(conditions.tideAnomalyM)}`,
+                )}
+                {Math.abs(conditions.tideAnomalyM) >= TIDE_SURGE_FLAG_M &&
+                  ` · ${ti.tideAnomalySurge}`}
+              </p>
+            )}
+            {/* Corrente medida por radar HF (Fase C) — só spots na rede
+                IH Lisboa; o timestamp vai no title porque a grelha atrasa. */}
+            {conditions.currentMeasuredSpeed != null && (
+              <p
+                className="m-0 font-mono tabular-nums text-[12px] text-fg-muted"
+                data-current-measured
+                title={
+                  conditions.currentMeasuredAt
+                    ? `${ti.currentMeasuredTitle} ${conditions.currentMeasuredAt.replace('T', ' ').replace(':00Z', ' UTC')}`
+                    : ti.currentMeasuredTitle
+                }
+              >
+                {ti.currentMeasuredLine
+                  .replace('{spd}', fmt.f1(conditions.currentMeasuredSpeed))
+                  .replace(
+                    '{dir}',
+                    conditions.currentMeasuredDir != null
+                      ? getCardinalLabel(conditions.currentMeasuredDir)
+                      : '',
+                  )}
               </p>
             )}
           </div>

@@ -22,7 +22,23 @@ interface LocalTipsSectionProps {
   spot: Spot;
   tips: SpotLocalTips | null;
   locale: string;
+  /** Subconjunto de cards — 'all' (default, comportamento actual),
+   *  'stay' = Estacionamento · Comer · Dormir, 'conditions' = Maré ideal ·
+   *  Regra local · Perigos · Instalações. Usado pela grelha interna de
+   *  «Chegar e estar» (SP-C, §6 da spec v3). */
+  group?: 'all' | 'stay' | 'conditions';
 }
+
+/** Grupo §6 a que cada card pertence (spec: stay | conditions). */
+const CARD_GROUP: Record<string, 'stay' | 'conditions'> = {
+  parking: 'stay',
+  food: 'stay',
+  sleep: 'stay',
+  tide: 'conditions',
+  rule: 'conditions',
+  hazards: 'conditions',
+  facilities: 'conditions',
+};
 
 type TipCard = {
   id: string;
@@ -38,7 +54,7 @@ function hasText(value: string | undefined | null): boolean {
   return t.length > 0 && t !== '—' && t !== '-';
 }
 
-export function LocalTipsSection({ spot, tips, locale }: LocalTipsSectionProps) {
+export function LocalTipsSection({ spot, tips, locale, group = 'all' }: LocalTipsSectionProps) {
   const isPt = locale === 'pt';
   const t = getTranslation(locale).localTips;
   const nearStayUrl = getNearAccommodationUrl(spot.lat, spot.lon);
@@ -153,13 +169,15 @@ export function LocalTipsSection({ spot, tips, locale }: LocalTipsSectionProps) 
     });
   }
 
-  if (cards.length === 0) {
+  const visible = group === 'all' ? cards : cards.filter((c) => CARD_GROUP[c.id] === group);
+
+  if (visible.length === 0) {
     return null;
   }
 
   return (
     <div className="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-3">
-      {cards.map((card) => {
+      {visible.map((card) => {
         const Icon = card.icon;
         return (
           <Card

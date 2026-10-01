@@ -1,5 +1,6 @@
-import { locales, getTranslation } from '@/lib/i18n'
+import { locales, getTranslation, validateLocale } from '@/lib/i18n'
 import type { Metadata } from 'next'
+import { buildPageMetadata } from '@/lib/seo'
 import Link from 'next/link'
 import { ArrowRight, Diamond, Flame, Sailboat, Ship, Waves, Wind, Zap } from 'lucide-react'
 import { pipelineSchedule } from '@/lib/dataPipelineSchedule'
@@ -29,13 +30,13 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params
   const t = getTranslation(locale)
-  return {
+  const loc = validateLocale(locale)
+  return buildPageMetadata({
     title: `${t.megaMenu.modalidadesTitle} — VenTu`,
-    description:
-      locale === 'pt'
-        ? `Modalidades náuticas em Portugal — spots de surf, kite, windsurf e mais com condições ${pipelineSchedule('pt')}, previsões e scores.`
-        : `Nautical modalities in Portugal — surf, kite, windsurf and more spots with conditions ${pipelineSchedule('en')}, forecasts and scores.`,
-  }
+    description: t.pages.modalitiesSubtitle.replace('{schedule}', pipelineSchedule(loc)),
+    locale: loc,
+    path: `/${loc}/modalidades/`,
+  })
 }
 
 export default async function ModalidadesPage({ params }: Props) {

@@ -35,8 +35,7 @@ export default function WindRingLegend({
   anchorRef,
   locale,
 }: WindRingLegendProps) {
-  const loc = (locale === 'pt' ? 'pt' : 'en') as Locale;
-  const copy = getTranslation(loc).map.windRingLegend;
+  const copy = getTranslation(locale).map.windRingLegend;
   const titleId = useId();
   const dialogRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
@@ -60,7 +59,7 @@ export default function WindRingLegend({
       fromDeg,
       speedKt,
       true,
-      loc,
+      locale,
       coastOrientation,
     );
   })();
@@ -249,7 +248,7 @@ export default function WindRingLegend({
           type="button"
           size="md"
           className="w-full"
-          locale={loc}
+          locale={locale}
           onClick={handleDismiss}
         >
           {copy.dismiss}

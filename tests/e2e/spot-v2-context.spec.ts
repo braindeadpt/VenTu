@@ -37,7 +37,11 @@ test.describe('Spot context (S2C)', () => {
     ).toBeVisible({ timeout: 15_000 });
   });
 
-  test('desktop 1440px: três colunas lado a lado', async ({ page }) => {
+  test('desktop 1440px: linha A «No local» + «Perto daqui», «Chegar» em largura total', async ({
+    page,
+  }) => {
+    // Layout §6 v3 (SP-C): linha A = «No local» 8/12 | «Perto daqui» 4/12;
+    // linha B = «Chegar e estar» a toda a largura; linha C = «Como sabemos».
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto(`/pt/spots/${SPOT_SLUG}/`);
     await expect(
@@ -47,9 +51,18 @@ test.describe('Spot context (S2C)', () => {
     const a = await page.locator('#no-local').boundingBox();
     const b = await page.locator('#chegar').boundingBox();
     const c = await page.locator('#perto').boundingBox();
-    expect(a && b && c).toBeTruthy();
-    expect(b!.x).toBeGreaterThan(a!.x);
-    expect(c!.x).toBeGreaterThan(b!.x);
+    const d = await page.locator('#como-sabemos').boundingBox();
+    expect(a && b && c && d).toBeTruthy();
+    // «Perto daqui» à direita de «No local», na mesma linha.
+    expect(c!.x).toBeGreaterThan(a!.x);
+    expect(Math.abs(c!.y - a!.y)).toBeLessThanOrEqual(2);
+    expect(a!.width).toBeGreaterThan(c!.width);
+    // «Chegar e estar» por baixo, mais largo que «No local» (12/12).
+    expect(b!.y).toBeGreaterThan(a!.y + a!.height - 1);
+    expect(b!.width).toBeGreaterThan(a!.width);
+    // «Como sabemos» por baixo de «Chegar», mesma largura.
+    expect(d!.y).toBeGreaterThan(b!.y + b!.height - 1);
+    expect(Math.abs(d!.width - b!.width)).toBeLessThanOrEqual(2);
     // Sem overflow horizontal da página.
     const fits = await page.evaluate(
       () => document.documentElement.scrollWidth <= window.innerWidth,

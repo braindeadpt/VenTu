@@ -66,7 +66,7 @@ export default function PartialLocaleNotice({ locale }: { locale: string }) {
         type="button"
         onClick={dismiss}
         aria-label={CLOSE[loc]}
-        className="p-1 rounded hover:bg-amber-500/15 transition-colors"
+        className="inline-flex items-center justify-center min-w-[44px] min-h-[44px] -my-[11px] rounded hover:bg-amber-500/15 transition-colors"
       >
         <X className="w-3.5 h-3.5" aria-hidden />
       </button>

@@ -72,4 +72,33 @@ describe('getTidePhasesForHours', () => {
     expect(phases[3]).toBe('rising');
     expect(phases[4]).toBe('rising');
   });
+
+  it('não depende do fuso do browser — mudança de hora em Auckland (27 set 2026)', () => {
+    // Preia-mar às 03:00 de 27 set; em Pacific/Auckland as 02:00 desse dia
+    // não existem (entrada na hora de Verão) e um parse local das 02:00 dá o
+    // mesmo instante das 03:00. O HTML do build (UTC) e o browser em Auckland
+    // tinham de dar a mesma tabela — antes, a «maré alta» mudava de coluna
+    // e a página rebentava com React #418.
+    const hourly = Array.from({ length: 13 }, (_, k) => {
+      const h = 20 + k;
+      const day = h < 24 ? '26' : '27';
+      return {
+        time: `2026-09-${day}T${String(h % 24).padStart(2, '0')}:00`,
+        tideHeight: Number((1.5 * Math.cos(((k - 7) / 12.4) * 2 * Math.PI)).toFixed(3)),
+      };
+    });
+    const prevTz = process.env.TZ;
+    try {
+      process.env.TZ = 'Europe/Lisbon';
+      const lisbon = getTidePhasesForHours(hourly);
+      process.env.TZ = 'Pacific/Auckland';
+      const auckland = getTidePhasesForHours(hourly);
+      expect(lisbon[7]).toBe('high'); // 27T03:00
+      expect(lisbon[6]).toBe('rising'); // 27T02:00
+      expect(auckland).toEqual(lisbon);
+    } finally {
+      if (prevTz === undefined) delete process.env.TZ;
+      else process.env.TZ = prevTz;
+    }
+  });
 });

@@ -28,11 +28,14 @@ async function openSpot(page: Page) {
 
 const slider = (page: Page) => page.getByRole('slider');
 const meter = (page: Page) => page.locator('#agora').getByRole('meter');
-const bar = (page: Page) => page.getByRole('region', { name: BAR_LABEL });
 
-/** Score mostrado no pill da barra fixa (testid explícito — os tabs também têm mini-scores). */
+/** Score mostrado no pill da barra fixa (testid explícito — os tabs também têm mini-scores).
+ *  CORRECCOES-24SET §1: a barra está sempre visível (getByRole resolve), mas
+ *  o chip score+hora é um extra — só entra quando o hero sai do ecrã, por
+ *  isso faz-se scroll até a régua ficar pinned antes de ler. */
 async function barScore(page: Page): Promise<number> {
-  const region = bar(page);
+  await page.evaluate(() => window.scrollTo(0, 1600));
+  const region = page.getByRole('region', { name: BAR_LABEL });
   await expect(region).toBeVisible();
   const txt = await region.getByTestId('spot-bar-score').textContent();
   return Number(txt);
@@ -60,10 +63,21 @@ test.describe('S2A — régua de 48 h comanda veredicto e barra', () => {
     const nowAttr = await slider(page).getAttribute('aria-valuenow');
     expect(Number(nowAttr)).toBeGreaterThan(30);
 
-    // Veredicto (meter) e barra convergem para o mesmo score da hora escolhida.
-    await expect
-      .poll(async () => Number(await meter(page).getAttribute('aria-valuenow')))
-      .not.toBe(Number(before));
+    // Veredicto (meter) e barra convergem para o score DA HORA ARRASTADA —
+    // lido do aria-valuetext da régua («…: score N, TIER»). Não se assume
+    // que difere de `before`: a hora alvo pode ter o mesmo score.
+    const vt = (await slider(page).getAttribute('aria-valuetext')) ?? '';
+    const m = vt.match(/score\s+(\d+)/i);
+    const targetScore = m ? Number(m[1]) : Number.NaN;
+    if (Number.isFinite(targetScore)) {
+      await expect
+        .poll(async () => Number(await meter(page).getAttribute('aria-valuenow')))
+        .toBe(targetScore);
+    } else {
+      await expect
+        .poll(async () => Number(await meter(page).getAttribute('aria-valuenow')))
+        .not.toBe(Number(before));
+    }
     const verdictScore = Number(await meter(page).getAttribute('aria-valuenow'));
     await expect.poll(async () => barScore(page)).toBe(verdictScore);
   });
@@ -158,8 +172,9 @@ test.describe('S2A — régua de 48 h comanda veredicto e barra', () => {
   test('aria-valuetext descreve hora, score e banda', async ({ page }) => {
     await openSpot(page);
     const vt = await slider(page).getAttribute('aria-valuetext');
-    // Ex.: «qui 17 set, 12:00: score 93, ÉPICO»
-    expect(vt).toMatch(/\w{3} \d{1,2} \w{3}, \d{2}:\d{2}: score \d{1,3}, (ÉPICO|BOM|FUN|FLAT|FECHADO)/);
+    // Ex.: «qui 17 set, 12:00: score 93, ÉPICO». \p{L} e não \w: o \w do JS
+    // não apanha letras acentuadas e «sáb» falhava todos os sábados.
+    expect(vt).toMatch(/\p{L}{3} \d{1,2} \p{L}{3}, \d{2}:\d{2}: score \d{1,3}, (ÉPICO|BOM|FUN|FLAT|FECHADO)/u);
   });
 
   test('menu «Mais»: abre por teclado, Esc fecha e devolve o foco', async ({ page }) => {

@@ -80,7 +80,7 @@ test.describe('Map SST field', () => {
 
     const slider = page.locator('[data-map-hours-scrubber] input[type="range"]');
     await slider.fill('3');
-    await expect(page.locator('[data-map-time-track-mode="hours"]')).toContainText('17h');
+    await expect(page.locator('[data-map-time-track-mode="hours"]')).toContainText('17:00');
     await expect(map).toHaveAttribute('data-map-sst-max', '22.0');
     await expect(page.locator('[data-map-thermal-chip]')).toBeVisible();
     await expect(page.locator('[data-map-thermal-chip]')).toContainText('Brisa de mar');

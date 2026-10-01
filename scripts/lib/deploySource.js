@@ -86,6 +86,48 @@ function pickGreenRun(runs, opts = {}) {
   return acceptable[0];
 }
 
+/** Retry policy for the CI-runs fetch. The workflow-runs API is served by an
+ *  eventually-consistent index — a single snapshot can transiently omit the
+ *  newest greens (observed 2026-09-29: the same query refused a deploy at
+ *  10:37:31 and found the green 66 s later, on the same main SHA). Retrying
+ *  turns that flake into a short delay instead of a skipped deploy; a real
+ *  red-CI window still fails loudly after the last attempt. */
+const GREEN_RUN_RETRY_ATTEMPTS_DEFAULT = 3;
+const GREEN_RUN_RETRY_DELAY_MS_DEFAULT = 20_000;
+
+/** Blocking sleep between retries — injectable so tests stay instant. */
+function sleepSync(ms) {
+  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
+}
+
+/**
+ * Fetch the CI-runs page and pick the newest acceptable green, re-fetching
+ * when a snapshot yields none (stale index, or fetch failed → null).
+ * `fetchRuns` and `sleep` are injected so the policy is unit-testable
+ * without network or real waiting.
+ *
+ * @param {() => Array<object>|null} fetchRuns
+ * @param {{ nowMs?: number; maxAgeDays?: number; attempts?: number; delayMs?: number;
+ *   sleep?: (ms: number) => void;
+ *   onRetry?: (info: { attempt: number; attempts: number; runs: Array<object>|null }) => void }} [opts]
+ * @returns {{ greenRun: object|null; runs: Array<object>|null; attemptsUsed: number }}
+ */
+function pickGreenRunWithRetries(fetchRuns, opts = {}) {
+  const attempts = Math.max(1, opts.attempts ?? GREEN_RUN_RETRY_ATTEMPTS_DEFAULT);
+  const delayMs = opts.delayMs ?? GREEN_RUN_RETRY_DELAY_MS_DEFAULT;
+  const sleep = opts.sleep ?? sleepSync;
+  let runs = null;
+  for (let attempt = 1; attempt <= attempts; attempt++) {
+    runs = fetchRuns();
+    const greenRun = pickGreenRun(runs, opts);
+    if (greenRun) return { greenRun, runs, attemptsUsed: attempt };
+    if (attempt < attempts) {
+      if (opts.onRetry) opts.onRetry({ attempt, attempts, runs });
+      sleep(delayMs);
+    }
+  }
+  return { greenRun: null, runs, attemptsUsed: attempts };
+}
 /**
  * Decide what the deploy publishes and whether it is warned/allowed.
  *
@@ -238,10 +280,13 @@ function formatDeploySummary(res, ctx = {}) {
 module.exports = {
   OVERLAY_PATHS,
   GREEN_RUN_MAX_AGE_DAYS_DEFAULT,
+  GREEN_RUN_RETRY_ATTEMPTS_DEFAULT,
+  GREEN_RUN_RETRY_DELAY_MS_DEFAULT,
   LAG_WARN_COMMITS_DEFAULT,
   LAG_WARN_HOURS_DEFAULT,
   isAcceptableGreenRun,
   pickGreenRun,
+  pickGreenRunWithRetries,
   evaluateDeploySource,
   formatDeploySummary,
 };

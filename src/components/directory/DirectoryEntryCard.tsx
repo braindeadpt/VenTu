@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { GraduationCap, MapPin, Store } from 'lucide-react';
 import Card from '@/components/ui/Card';
-import { kindLabel, sportLabel, DIRECTORY_TIER_LABELS } from '@/lib/directoryClient';
+import { kindLabel, sportLabel, directoryTierLabel } from '@/lib/directoryClient';
 import type { DirectoryEntry } from '@/types/directory';
 import DirectoryClaimButton from '@/components/directory/DirectoryClaimButton';
 import { buildEmbedSnippet } from '@/lib/directoryListings';
@@ -56,7 +56,7 @@ export default function DirectoryEntryCard({
             )}
             {tier !== 'free' && (
               <span className="text-meta-sm font-semibold text-fg">
-                {isPt ? DIRECTORY_TIER_LABELS[tier].pt : DIRECTORY_TIER_LABELS[tier].en}
+                {directoryTierLabel(tier, locale)}
               </span>
             )}
             {entry.verified ? (

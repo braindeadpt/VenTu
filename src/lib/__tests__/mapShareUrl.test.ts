@@ -23,6 +23,35 @@ describe('buildMapShareSearch', () => {
     expect(p.get('hours')).toBeNull();
   });
 
+  it('serializa todas as camadas do contrato + basemap satélite', () => {
+    const qs = buildMapShareSearch({
+      center: [38.7, -9.4],
+      sport: 'surf',
+      basemap: 'satellite',
+      layers: {
+        wind: true, bathymetry: true, seamarks: true, gibsSat: true,
+        goesIr: true, storms: true, warnAreas: true, coastalWarnings: true,
+      },
+    });
+    const p = new URLSearchParams(qs);
+    for (const k of ['wind', 'bathymetry', 'seamarks', 'gibsSat', 'goesIr', 'storms', 'warnAreas', 'coastalWarnings']) {
+      expect(p.get(k), k).toBe('1');
+    }
+    expect(p.get('basemap')).toBe('sat');
+  });
+
+  it('omite basemap «mapa» (default) e camadas desligadas', () => {
+    const qs = buildMapShareSearch({
+      center: [38.7, -9.4],
+      sport: 'surf',
+      basemap: 'map',
+      layers: { storms: false, goesIr: true },
+    });
+    expect(qs).not.toContain('basemap=');
+    expect(qs).not.toContain('storms=');
+    expect(qs).toContain('goesIr=1');
+  });
+
   it('omite região default e zoom ausente', () => {
     const qs = buildMapShareSearch({
       center: [38.0, -9.0],

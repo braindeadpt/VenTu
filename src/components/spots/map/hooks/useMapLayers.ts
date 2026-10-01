@@ -2,7 +2,7 @@
 
 import { DATE_LOCALE } from '@/lib/dataFreshness';
 import { getTranslation } from '@/lib/i18n';
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { startTransition, useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import type L from 'leaflet';
 import {
   fetchRadarData,
@@ -30,6 +30,23 @@ import {
   type CoastalWarningsFile,
 } from '@/lib/ihCoastalWarnings';
 import {
+  loadNhcStorms,
+  stormsFresh,
+  mphToKmh,
+  movementCardinal,
+  MAP_STORMS_LS_KEY,
+  type NhcStormsFile,
+} from '@/lib/nhcStorms';
+import {
+  loadWarningAreas,
+  activeWarnGroups,
+  MAP_WARN_AREAS_LS_KEY,
+  WARN_AREA_COLORS,
+  type WarningAreasFile,
+} from '@/lib/warningAreas';
+import { warningLevelLabel, warningTypeLabel } from '@/lib/ipmaWarnings';
+import { useIpmaWarnings } from '@/hooks/useIpmaWarnings';
+import {
   MAP_ISOBATHS_LS_KEY,
   MAP_COASTAL_LS_KEY,
   MAP_BATHYMETRY_LS_KEY,
@@ -44,11 +61,43 @@ import {
   OPENSEAMAP_ATTRIBUTION,
   MAP_SEAMARKS_PANE,
   MAP_SEAMARKS_PANE_Z,
+  MAP_GIBS_SAT_LS_KEY,
 } from '@/lib/map-constants';
+import {
+  GIBS_SATELLITE_URL,
+  GIBS_SATELLITE_NATIVE_MAX_ZOOM,
+  GIBS_SATELLITE_ATTRIBUTION,
+  MAP_GIBS_SAT_PANE,
+  MAP_GIBS_SAT_PANE_Z,
+  gibsPreviousDayUtc,
+  gibsSatelliteDayUrl,
+  gibsTileMaskBlank,
+} from '@/lib/gibsSatellite';
+import {
+  goesIrFrames,
+  GOES_IR_ATTRIBUTION,
+  GOES_IR_NATIVE_MAX_ZOOM,
+  MAP_GOES_IR_PANE,
+  MAP_GOES_IR_PANE_Z,
+  type GoesIrFrame,
+} from '@/lib/goesIr';
+import {
+  readGoesIrEnabledPref,
+  readGoesIrPref,
+  writeGoesIrEnabledPref,
+  writeGoesIrPref,
+} from '@/lib/goesIrPrefs';
 import {
   IPMA_RADAR_ATTRIBUTION_LABEL_PT,
   IPMA_RADAR_ATTRIBUTION_LABEL_EN,
 } from '@/lib/ipmaAttribution';
+import {
+  MAP_HEAVY_RASTER_KEYS,
+  MAP_HEAVY_RASTER_MAX,
+  MAP_RASTER_OFF_EVENT,
+  planHeavyRasterEnable,
+  type MapHeavyRasterKey,
+} from '@/lib/mapLayerBus';
 
 interface UseMapLayersOptions {
   mapInstanceRef: React.MutableRefObject<L.Map | null>;
@@ -60,6 +109,15 @@ interface UseMapLayersOptions {
   focusSpotId?: string;
   initialRadarEnabled: boolean;
   initialIsobathsEnabled: boolean;
+  // Deep links ?<layer>=1 (partilha de vista) — forçam ON à entrada sem
+  // gravar a preferência persistida (mesmo padrão do ?radar=1).
+  initialBathymetryEnabled: boolean;
+  initialSeamarksEnabled: boolean;
+  initialGibsSatEnabled: boolean;
+  initialGoesIrEnabled: boolean;
+  initialCoastalWarningsEnabled: boolean;
+  initialStormsEnabled: boolean;
+  initialWarnAreasEnabled: boolean;
   radarOverlayRef: React.MutableRefObject<L.ImageOverlay | null>;
   isobathsLayerRef: React.MutableRefObject<L.LayerGroup | null>;
   coastalLayerRef: React.MutableRefObject<L.LayerGroup | null>;
@@ -70,6 +128,8 @@ interface UseMapLayersOptions {
       radarHint: string;
       showCoastalWarnings: string;
       hideCoastalWarnings: string;
+      showStorms: string;
+      hideStorms: string;
     };
   };
 }
@@ -105,11 +165,32 @@ interface UseMapLayersReturn {
   // Seamarks (OpenSeaMap raster tiles)
   seamarksEnabled: boolean;
   toggleSeamarks: () => void;
+  // Satélite NASA GIBS (raster true-color «hoje»)
+  gibsSatEnabled: boolean;
+  toggleGibsSat: () => void;
+  // Satélite IR GOES-East (carrossel 10 min — B5)
+  goesIrEnabled: boolean;
+  toggleGoesIr: () => void;
+  goesIrFrameList: GoesIrFrame[];
+  goesIrFrameIndex: number;
+  goesIrUserPaused: boolean;
+  handleGoesIrFrameChange: (value: number) => void;
+  handleGoesIrUserPausedChange: (paused: boolean) => void;
   // Coastal warnings
   coastalWarningsEnabled: boolean;
   coastalWarningsData: CoastalWarningsFile | null | undefined;
   toggleCoastalWarnings: () => void;
   coastalWarningsLabel: string;
+  // NHC tropical storms
+  stormsEnabled: boolean;
+  stormsData: NhcStormsFile | null | undefined;
+  stormsUnavailable: boolean;
+  toggleStorms: () => void;
+  stormsLabel: string;
+  // IPMA warning areas (polígonos distrito/ilha — B2)
+  warnAreasEnabled: boolean;
+  warnAreasUnavailable: boolean;
+  toggleWarnAreas: () => void;
 }
 
 export function useMapLayers({
@@ -122,6 +203,13 @@ export function useMapLayers({
   focusSpotId,
   initialRadarEnabled,
   initialIsobathsEnabled,
+  initialBathymetryEnabled,
+  initialSeamarksEnabled,
+  initialGibsSatEnabled,
+  initialGoesIrEnabled,
+  initialCoastalWarningsEnabled,
+  initialStormsEnabled,
+  initialWarnAreasEnabled,
   radarOverlayRef,
   isobathsLayerRef,
   coastalLayerRef,
@@ -161,6 +249,51 @@ export function useMapLayers({
 
   // Sync refs
   useEffect(() => { radarUserPausedRef.current = radarUserPaused; }, [radarUserPaused]);
+
+  // ── Limite de raster pesadas (map-v3 §8) ──
+  // Máximo 2 de {radar, bathymetry, seamarks} activas — a 3.ª desliga a mais
+  // antiga e emite `ventu:map-raster-off` para a UI mostrar o toast. Os
+  // setters são registados pelas secções de cada camada (heavySetRef) porque
+  // esta máquina é declarada antes delas no corpo do hook.
+  const heavySetRef = useRef<Partial<Record<MapHeavyRasterKey, (next: boolean) => void>>>({});
+  const heavyOrderRef = useRef<MapHeavyRasterKey[]>([]);
+  const heavyOnRef = useRef<Record<MapHeavyRasterKey, boolean>>({
+    radar: false,
+    bathymetry: false,
+    seamarks: false,
+    gibsSat: false,
+    goesIr: false,
+  });
+
+  const evictHeavy = useCallback((key: MapHeavyRasterKey) => {
+    heavyOnRef.current[key] = false;
+    heavyOrderRef.current = heavyOrderRef.current.filter((k) => k !== key);
+    heavySetRef.current[key]?.(false);
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(
+        new CustomEvent<{ key: MapHeavyRasterKey }>(MAP_RASTER_OFF_EVENT, { detail: { key } }),
+      );
+    }
+  }, []);
+
+  // Toggle único: `apply` faz o set+persist da camada; a máquina cuida da
+  // ordem e da evicção. Desligar nunca evita nada.
+  const toggleHeavy = useCallback(
+    (key: MapHeavyRasterKey, apply: (next: boolean) => void) => {
+      if (heavyOnRef.current[key]) {
+        heavyOnRef.current[key] = false;
+        heavyOrderRef.current = heavyOrderRef.current.filter((k) => k !== key);
+        apply(false);
+        return;
+      }
+      const plan = planHeavyRasterEnable(heavyOrderRef.current, key);
+      heavyOrderRef.current = plan.order;
+      heavyOnRef.current[key] = true;
+      apply(true);
+      if (plan.evict) evictHeavy(plan.evict);
+    },
+    [evictHeavy],
+  );
 
   // A navegação client-side (Link do carrossel → /mapa?radar=1) pode entregar
   // a prop DEPOIS do primeiro render (o MapaFullscreenClient lê o URL num
@@ -228,12 +361,17 @@ export function useMapLayers({
         next.delete(src);
         return next;
       });
-    const onMoveStart = () => busy('move');
-    const onDragStart = () => busy('drag');
-    const onZoomStart = () => busy('zoom');
-    const onMoveEnd = () => idle('move');
-    const onDragEnd = () => idle('drag');
-    const onZoomEnd = () => idle('zoom');
+    // CORRECCOES-24SET (M5 — gate «pan ≤ 50 ms»): cada movestart/moveend
+    // fazia um setState → re-render síncrono do SpotMapInteractive a meio
+    // do gesto (~50-130 ms por stroke a 4× CPU). O estado «busy» só alimenta
+    // a pausa dos relógios radar/horas — não-urgente → startTransition
+    // deixa o React fatiar o render sem bloquear o gesto.
+    const onMoveStart = () => startTransition(() => busy('move'));
+    const onDragStart = () => startTransition(() => busy('drag'));
+    const onZoomStart = () => startTransition(() => busy('zoom'));
+    const onMoveEnd = () => startTransition(() => idle('move'));
+    const onDragEnd = () => startTransition(() => idle('drag'));
+    const onZoomEnd = () => startTransition(() => idle('zoom'));
     map.on('movestart', onMoveStart);
     map.on('dragstart', onDragStart);
     map.on('zoomstart', onZoomStart);
@@ -276,12 +414,23 @@ export function useMapLayers({
 
   const toggleRadar = useCallback(() => {
     setRadarPrefSet(true);
-    setRadarEnabled((prev) => {
-      const next = !prev;
+    toggleHeavy('radar', (next) => {
+      setRadarEnabled(next);
       writeRadarEnabledPref(next);
       if (!next) writeRadarPref(radarUserPausedRef.current, radarFrameIndexRef.current);
-      return next;
     });
+  }, [toggleHeavy]);
+
+  // Registo no cap de raster — usado quando outra pesada a desliga.
+  useEffect(() => {
+    const setters = heavySetRef.current;
+    setters.radar = (next: boolean) => {
+      setRadarPrefSet(true);
+      setRadarEnabled(next);
+      writeRadarEnabledPref(next);
+      if (!next) writeRadarPref(radarUserPausedRef.current, radarFrameIndexRef.current);
+    };
+    return () => { delete setters.radar; };
   }, []);
 
   const handleRadarFrameChange = useCallback((value: number) => {
@@ -445,6 +594,7 @@ export function useMapLayers({
   // desligada por omissão, best-effort (falhas de tile não tocam no mapa).
   const [bathymetryEnabled, setBathymetryEnabled] = useState<boolean>(() => {
     if (typeof window === 'undefined' || isHeroEmbed) return false;
+    if (initialBathymetryEnabled) return true;
     try {
       return localStorage.getItem(MAP_BATHYMETRY_LS_KEY) === '1';
     } catch {
@@ -494,11 +644,20 @@ export function useMapLayers({
   }, [bathymetryEnabled, isReady, mapInstanceRef, LRef]);
 
   const toggleBathymetry = useCallback(() => {
-    setBathymetryEnabled((prev) => {
-      const next = !prev;
+    toggleHeavy('bathymetry', (next) => {
+      setBathymetryEnabled(next);
       try { localStorage.setItem(MAP_BATHYMETRY_LS_KEY, next ? '1' : '0'); } catch { /* noop */ }
-      return next;
     });
+  }, [toggleHeavy]);
+
+  // Registo no cap de raster — usado quando outra pesada a desliga.
+  useEffect(() => {
+    const setters = heavySetRef.current;
+    setters.bathymetry = (next: boolean) => {
+      setBathymetryEnabled(next);
+      try { localStorage.setItem(MAP_BATHYMETRY_LS_KEY, next ? '1' : '0'); } catch { /* noop */ }
+    };
+    return () => { delete setters.bathymetry; };
   }, []);
 
   // ── Seamarks (OpenSeaMap tiles) ──
@@ -507,6 +666,7 @@ export function useMapLayers({
   // opt-in: raster transparente por cima dos fields, por baixo dos markers.
   const [seamarksEnabled, setSeamarksEnabled] = useState<boolean>(() => {
     if (typeof window === 'undefined' || isHeroEmbed) return false;
+    if (initialSeamarksEnabled) return true;
     try {
       return localStorage.getItem(MAP_SEAMARKS_LS_KEY) === '1';
     } catch {
@@ -540,16 +700,284 @@ export function useMapLayers({
   }, [seamarksEnabled, isReady, mapInstanceRef, LRef]);
 
   const toggleSeamarks = useCallback(() => {
-    setSeamarksEnabled((prev) => {
-      const next = !prev;
+    toggleHeavy('seamarks', (next) => {
+      setSeamarksEnabled(next);
       try { localStorage.setItem(MAP_SEAMARKS_LS_KEY, next ? '1' : '0'); } catch { /* noop */ }
-      return next;
     });
+  }, [toggleHeavy]);
+
+  // Registo no cap de raster — usado quando outra pesada a desliga.
+  useEffect(() => {
+    const setters = heavySetRef.current;
+    setters.seamarks = (next: boolean) => {
+      setSeamarksEnabled(next);
+      try { localStorage.setItem(MAP_SEAMARKS_LS_KEY, next ? '1' : '0'); } catch { /* noop */ }
+    };
+    return () => { delete setters.seamarks; };
   }, []);
+
+  // ── Satélite NASA GIBS (MODIS Terra true-color) ──
+  // Imagem real do último passe de satélite — nuvens e frentes a chegar.
+  // O slot `default` da URL serve sempre a data mais recente (no-store, o
+  // browser revalida). Raster opaca num pane logo acima do basemap: enquanto
+  // ligada substitui a carta, com fields/radar/marcadores por cima. Opt-in,
+  // conta para o cap de raster pesadas.
+  const [gibsSatEnabled, setGibsSatEnabled] = useState<boolean>(() => {
+    if (typeof window === 'undefined' || isHeroEmbed) return false;
+    if (initialGibsSatEnabled) return true;
+    try {
+      return localStorage.getItem(MAP_GIBS_SAT_LS_KEY) === '1';
+    } catch {
+      return false;
+    }
+  });
+
+  useEffect(() => {
+    if (!gibsSatEnabled || !isReady) return;
+    const map = mapInstanceRef.current;
+    const Leaflet = LRef.current;
+    if (!map || !Leaflet) return;
+
+    let pane = map.getPane(MAP_GIBS_SAT_PANE);
+    if (!pane) pane = map.createPane(MAP_GIBS_SAT_PANE);
+    pane.style.zIndex = MAP_GIBS_SAT_PANE_Z;
+    pane.style.pointerEvents = 'none';
+
+    const options = {
+      pane: MAP_GIBS_SAT_PANE,
+      opacity: 1,
+      attribution: GIBS_SATELLITE_ATTRIBUTION,
+      className: 'ventu-gibs-sat',
+      maxNativeZoom: GIBS_SATELLITE_NATIVE_MAX_ZOOM,
+      maxZoom: 19,
+      // CORS permite ler os pixels (o GIBS manda ACAO:*) — ver tileload.
+      crossOrigin: true,
+    } as const;
+    // Duas camadas empilhadas (ver gibsSatellite.ts): ONTEM por baixo, HOJE
+    // por cima. O mosaico de hoje só se preenche depois do passe — de manhã é
+    // todo «sem dados» e, sozinho, a opção ficava ligada sem mostrar nada.
+    const layers = [
+      Leaflet.tileLayer(gibsSatelliteDayUrl(gibsPreviousDayUtc()), { ...options, zIndex: 1 }),
+      Leaflet.tileLayer(GIBS_SATELLITE_URL, { ...options, zIndex: 2 }),
+    ];
+    // Tiles «sem dados» são pretos (noite/fora do disco, nesga de swath) —
+    // sem isto a camada opaca cobre o mapa todo de preto. A máscara torna o
+    // preto transparente: em cima deixa ver o dia anterior, em baixo o
+    // basemap.
+    for (const layer of layers) {
+      layer.on('tileload', (e: L.TileEvent) => {
+        const tile = e.tile as HTMLImageElement | undefined;
+        if (tile) gibsTileMaskBlank(tile);
+      });
+      layer.addTo(map);
+    }
+
+    return () => {
+      for (const layer of layers) if (map.hasLayer(layer)) map.removeLayer(layer);
+    };
+  }, [gibsSatEnabled, isReady, mapInstanceRef, LRef]);
+
+  const toggleGibsSat = useCallback(() => {
+    toggleHeavy('gibsSat', (next) => {
+      setGibsSatEnabled(next);
+      try { localStorage.setItem(MAP_GIBS_SAT_LS_KEY, next ? '1' : '0'); } catch { /* noop */ }
+    });
+  }, [toggleHeavy]);
+
+  // Registo no cap de raster — usado quando outra pesada a desliga.
+  useEffect(() => {
+    const setters = heavySetRef.current;
+    setters.gibsSat = (next: boolean) => {
+      setGibsSatEnabled(next);
+      try { localStorage.setItem(MAP_GIBS_SAT_LS_KEY, next ? '1' : '0'); } catch { /* noop */ }
+    };
+    return () => { delete setters.gibsSat; };
+  }, []);
+
+  // ── Satélite IR GOES-East (B5 — carrossel 10 min, tiles GIBS) ──
+  // Mesmo padrão do radar: slots TIME reais a terminar ~45 min atrás (o GIBS
+  // publica com ~35-40 min de latência), L.tileLayer com setUrl por frame.
+  const [goesIrEnabled, setGoesIrEnabled] = useState<boolean>(() => {
+    if (typeof window === 'undefined' || isHeroEmbed) return false;
+    if (initialGoesIrEnabled) return true;
+    return readGoesIrEnabledPref() === true;
+  });
+  const [goesIrFrameIndex, setGoesIrFrameIndex] = useState(0);
+  const [goesIrUserPaused, setGoesIrUserPaused] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false;
+    return readGoesIrPref().paused;
+  });
+  const [goesIrFrameList, setGoesIrFrameList] = useState<GoesIrFrame[]>([]);
+  const goesIrFrameIndexRef = useRef(0);
+  const goesIrUserPausedRef = useRef(goesIrUserPaused);
+  const goesIrActivateRef = useRef<((i: number) => void) | null>(null);
+
+  useEffect(() => { goesIrUserPausedRef.current = goesIrUserPaused; }, [goesIrUserPaused]);
+
+  useEffect(() => {
+    goesIrActivateRef.current = null;
+    if (!goesIrEnabled) return;
+    if (!isReady || !mapInstanceRef.current) return;
+    const map = mapInstanceRef.current;
+    const Leaflet = LRef.current;
+    if (!Leaflet) return;
+
+    // Slots calculados à entrada — a janela de ~2 h termina ~45 min atrás,
+    // por isso todos os tiles pedidos já existem publicados no GIBS.
+    const frames = goesIrFrames();
+    setGoesIrFrameList(frames);
+    const savedFrame = Math.max(0, Math.min(frames.length - 1, readGoesIrPref().frame));
+    goesIrFrameIndexRef.current = savedFrame;
+    setGoesIrFrameIndex(savedFrame);
+
+    let pane = map.getPane(MAP_GOES_IR_PANE);
+    if (!pane) pane = map.createPane(MAP_GOES_IR_PANE);
+    pane.style.zIndex = MAP_GOES_IR_PANE_Z;
+    pane.style.pointerEvents = 'none';
+
+    // Um TileLayer por frame — o GIBS serve `no-store`, por isso `setUrl`
+    // (padrão do radar) re-pede todos os tiles a cada tick e a camada
+    // aparece/desaparece. Com um layer persistente por frame, trocar de
+    // frame é só trocar a opacidade: zero refetch, transição instantânea.
+    const pool = new Map<number, L.TileLayer>();
+    const warm = new Set<number>();
+    let activeIdx = -1;
+    let wantedIdx = -1;
+
+    const ensure = (i: number): L.TileLayer => {
+      let layer = pool.get(i);
+      if (layer) return layer;
+      layer = Leaflet.tileLayer(frames[i].url, {
+        pane: MAP_GOES_IR_PANE,
+        opacity: 0,
+        attribution: GOES_IR_ATTRIBUTION,
+        className: 'ventu-goes-ir',
+        maxNativeZoom: GOES_IR_NATIVE_MAX_ZOOM,
+        maxZoom: 19,
+        crossOrigin: true,
+        updateWhenZooming: false,
+        updateWhenIdle: true,
+      });
+      // Mesmo problema do true-color: fora do disco GOES o GIBS serve preto.
+      layer.on('tileload', (e: L.TileEvent) => {
+        const tile = e.tile as HTMLImageElement | undefined;
+        if (tile) gibsTileMaskBlank(tile);
+      });
+      layer.on('load', () => warm.add(i));
+      layer.addTo(map);
+      pool.set(i, layer);
+      return layer;
+    };
+
+    const activate = (i: number) => {
+      if (i === wantedIdx) return;
+      wantedIdx = i;
+      const layer = ensure(i);
+      const show = () => {
+        if (wantedIdx !== i) return;
+        activeIdx = i;
+        pool.forEach((l, k) => l.setOpacity(k === i ? 0.85 : 0));
+      };
+      // Frame já visto → troca instantânea; frame frio → mantém o anterior
+      // visível até o novo pintar (sem buraco na animação).
+      if (warm.has(i)) show();
+      else layer.once('load', show);
+      // Aquece o próximo frame — o tick seguinte é instantâneo.
+      ensure((i + 1) % frames.length);
+    };
+    goesIrActivateRef.current = activate;
+    activate(savedFrame);
+
+    // Num pan/zoom os tiles do pool ficam obsoletos — descarta os não
+    // activos para não refazer 12 camadas a cada movimento.
+    const onMoveStart = () => {
+      pool.forEach((l, k) => {
+        if (k === activeIdx) return;
+        if (map.hasLayer(l)) map.removeLayer(l);
+        pool.delete(k);
+        warm.delete(k);
+        // O layer removido podia ter um 'load' pendente — sem isto o
+        // re-pedido do mesmo frame seria ignorado pelo guard de wantedIdx.
+        if (k === wantedIdx) wantedIdx = activeIdx;
+      });
+    };
+    map.on('movestart', onMoveStart);
+
+    return () => {
+      map.off('movestart', onMoveStart);
+      goesIrActivateRef.current = null;
+      pool.forEach((l) => { if (map.hasLayer(l)) map.removeLayer(l); });
+      pool.clear();
+      warm.clear();
+    };
+  }, [goesIrEnabled, isReady, mapInstanceRef, LRef]);
+
+  const toggleGoesIr = useCallback(() => {
+    toggleHeavy('goesIr', (next) => {
+      setGoesIrEnabled(next);
+      writeGoesIrEnabledPref(next);
+      if (!next) writeGoesIrPref(goesIrUserPausedRef.current, goesIrFrameIndexRef.current);
+    });
+  }, [toggleHeavy]);
+
+  // Registo no cap de raster — usado quando outra pesada a desliga.
+  useEffect(() => {
+    const setters = heavySetRef.current;
+    setters.goesIr = (next: boolean) => {
+      setGoesIrEnabled(next);
+      writeGoesIrEnabledPref(next);
+      if (!next) writeGoesIrPref(goesIrUserPausedRef.current, goesIrFrameIndexRef.current);
+    };
+    return () => { delete setters.goesIr; };
+  }, []);
+
+  const handleGoesIrFrameChange = useCallback((value: number) => {
+    if (goesIrFrameList.length === 0) return;
+    const v = Math.max(0, Math.min(goesIrFrameList.length - 1, value));
+    goesIrFrameIndexRef.current = v;
+    setGoesIrFrameIndex(v);
+    goesIrActivateRef.current?.(v);
+    if (goesIrUserPausedRef.current) writeGoesIrPref(true, v);
+  }, [goesIrFrameList]);
+
+  const handleGoesIrUserPausedChange = useCallback((paused: boolean) => {
+    goesIrUserPausedRef.current = paused;
+    setGoesIrUserPaused(paused);
+    writeGoesIrPref(paused, goesIrFrameIndexRef.current);
+  }, []);
+
+  // Reconciliação do cap: mudanças por vias externas (deep link ?radar=1,
+  // reset do radar, prefs) mantêm a ordem/estado internos correctos.
+  useEffect(() => {
+    const on: Record<MapHeavyRasterKey, boolean> = {
+      radar: radarEnabled,
+      bathymetry: bathymetryEnabled,
+      seamarks: seamarksEnabled,
+      gibsSat: gibsSatEnabled,
+      goesIr: goesIrEnabled,
+    };
+    for (const k of MAP_HEAVY_RASTER_KEYS) {
+      const was = heavyOnRef.current[k];
+      if (on[k] === was) continue;
+      heavyOnRef.current[k] = on[k];
+      heavyOrderRef.current = on[k]
+        ? [...heavyOrderRef.current, k]
+        : heavyOrderRef.current.filter((x) => x !== k);
+    }
+    // Vias externas também respeitam o limite — desligam a mais antiga em
+    // silêncio (sem toast: não é uma acção directa do utilizador).
+    while (heavyOrderRef.current.length > MAP_HEAVY_RASTER_MAX) {
+      const oldest = heavyOrderRef.current[0];
+      heavyOnRef.current[oldest] = false;
+      heavyOrderRef.current = heavyOrderRef.current.slice(1);
+      heavySetRef.current[oldest]?.(false);
+    }
+  }, [radarEnabled, bathymetryEnabled, seamarksEnabled, gibsSatEnabled, goesIrEnabled]);
 
   // ── Coastal Warnings ──
   const [coastalWarningsEnabled, setCoastalWarningsEnabled] = useState<boolean>(() => {
     if (typeof window === 'undefined') return false;
+    if (initialCoastalWarningsEnabled) return true;
     try {
       return localStorage.getItem(MAP_COASTAL_LS_KEY) === '1';
     } catch { return false; }
@@ -754,6 +1182,282 @@ export function useMapLayers({
   // Nome = camada; estado só no aria-pressed (auditoria 2026-09-21).
   const coastalWarningsLabel = t.map.showCoastalWarnings;
 
+  // ── NHC tropical storms (cone + track — B0 do docs/STORM-STUDY.md) ──
+  // Camada vectorial opt-in: não conta para o cap de raster pesadas.
+  // `stormsFresh` guarda a honestidade: ficheiro velho ou ausente → a
+  // camada omite-se em vez de mostrar uma tempestade que já não existe.
+  const [stormsEnabled, setStormsEnabled] = useState<boolean>(() => {
+    if (typeof window === 'undefined' || isHeroEmbed) return false;
+    if (initialStormsEnabled) return true;
+    try {
+      return localStorage.getItem(MAP_STORMS_LS_KEY) === '1';
+    } catch {
+      return false;
+    }
+  });
+  const [stormsData, setStormsData] = useState<NhcStormsFile | null | undefined>(undefined);
+  const stormsLayerRef = useRef<L.LayerGroup | null>(null);
+
+  // Fetch uma vez no mount — ~6 KB; o menu precisa de saber se há
+  // tempestades na região para decidir disabled (carregar só ao ligar
+  // criava um deadlock: toggle off até dados, dados só com toggle on).
+  useEffect(() => {
+    if (stormsData !== undefined) return;
+    let cancelled = false;
+    loadNhcStorms().then((data) => {
+      if (!cancelled && mountedRef.current) setStormsData(data);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [stormsData]);
+
+  // Sem tempestades na região ou ficheiro stale (pipeline parado >24h) →
+  // «indisponível»: um toggle que não pinta nada parece avaria.
+  const stormsUnavailable =
+    !stormsData || !stormsFresh(stormsData) || stormsData.storms.length === 0;
+
+  useEffect(() => {
+    if (!stormsEnabled) {
+      if (stormsLayerRef.current) {
+        mapInstanceRef.current?.removeLayer(stormsLayerRef.current);
+        stormsLayerRef.current = null;
+      }
+      return;
+    }
+    if (!isReady || !mapInstanceRef.current || !LRef.current) return;
+    const map = mapInstanceRef.current;
+    const Leaflet = LRef.current;
+
+    if (stormsData === undefined) return;
+    if (!stormsData || !stormsFresh(stormsData) || stormsData.storms.length === 0) return;
+
+    const isPt = locale === 'pt';
+    const escapeHtml = (s: string) =>
+      s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    const group = Leaflet.layerGroup();
+
+    for (const s of stormsData.storms) {
+      const hurricane = s.classification === 'HU' || s.classification === 'MH';
+      const color = hurricane ? '#ef4444' : '#f97316';
+      const name = s.name ?? '—';
+      const cls = s.classificationLabel ?? s.classification;
+      const moveCard = movementCardinal(s.movementDirDeg, isPt);
+      const moveTxt =
+        s.movementSpeedMph != null
+          ? ` → ${moveCard ?? ''} ${mphToKmh(s.movementSpeedMph)} km/h`
+          : '';
+      const centerTip =
+        `${escapeHtml(name)} — ${escapeHtml(cls)} · ${mphToKmh(s.intensityMph)} km/h` +
+        `${moveTxt}${s.advisory ? ` · adv #${escapeHtml(s.advisory)}` : ''}`;
+
+      // Cone de incerteza — tracejado translúcido; nunca uma área sólida que
+      // finja certeza de trajectória.
+      if (Array.isArray(s.cone) && s.cone.length >= 3) {
+        const latlngs = s.cone.map(([lo, la]) => [la, lo] as [number, number]);
+        Leaflet.polygon(latlngs, {
+          color,
+          weight: 1.6,
+          opacity: 0.75,
+          fillColor: color,
+          fillOpacity: 0.1,
+          dashArray: '7 6',
+          className: 'ventu-storm-cone',
+          interactive: false,
+        }).addTo(group);
+      }
+
+      // Track prevista — linha + pontos datados (forecastHr/validAt do NHC).
+      if (Array.isArray(s.track) && s.track.length >= 2) {
+        const line = s.track.map(([lo, la]) => [la, lo] as [number, number]);
+        Leaflet.polyline(line, {
+          color,
+          weight: 2.2,
+          opacity: 0.85,
+          className: 'ventu-storm-track',
+          interactive: false,
+        }).addTo(group);
+      }
+      for (const p of s.trackPoints ?? []) {
+        const tip =
+          `${escapeHtml(name)}${p.forecastHr != null ? ` +${p.forecastHr} h` : ''}` +
+          `${p.maxWindMph != null ? ` · ${mphToKmh(p.maxWindMph)} km/h` : ''}` +
+          `${p.validAt ? ` — ${escapeHtml(p.validAt)}` : ''}`;
+        Leaflet.circleMarker([p.lat, p.lon], {
+          radius: 3.5,
+          color,
+          weight: 1.5,
+          fillColor: color,
+          fillOpacity: 0.9,
+          className: 'ventu-storm-point',
+        })
+          .bindTooltip(tip, { sticky: true, direction: 'top' })
+          .addTo(group);
+      }
+
+      // Centro — divIcon com pulse (CSS, só no-preference).
+      Leaflet.marker([s.lat, s.lon], {
+        interactive: true,
+        keyboard: false,
+        icon: Leaflet.divIcon({
+          className: 'ventu-storm-dot',
+          html:
+            `<span class="ventu-storm-ring" data-class="${escapeHtml(s.classification)}"></span>` +
+            `<span class="ventu-storm-label">${escapeHtml(name)} · ${escapeHtml(s.classification)}</span>`,
+          iconSize: [40, 24],
+          iconAnchor: [20, 12],
+          tooltipAnchor: [0, -12],
+        }),
+      })
+        .bindTooltip(centerTip, { sticky: true, direction: 'top' })
+        .addTo(group);
+    }
+
+    group.addTo(map);
+    stormsLayerRef.current = group;
+    const attr = getTranslation(locale).map.stormsAttribution;
+    map.attributionControl?.addAttribution(attr);
+
+    return () => {
+      if (map.hasLayer(group)) map.removeLayer(group);
+      stormsLayerRef.current = null;
+      map.attributionControl?.removeAttribution(attr);
+    };
+  }, [stormsEnabled, isReady, stormsData, locale, mapInstanceRef, LRef]);
+
+  const toggleStorms = useCallback(() => {
+    setStormsEnabled((prev) => {
+      const next = !prev;
+      try {
+        localStorage.setItem(MAP_STORMS_LS_KEY, next ? '1' : '0');
+      } catch {
+        /* noop */
+      }
+      return next;
+    });
+  }, []);
+
+  const stormsLabel = stormsEnabled ? t.map.hideStorms : t.map.showStorms;
+
+  // ── Áreas de aviso IPMA (B2 — polígonos distrito/ilha) ──
+  // Vectorial opt-in: pinta os grupos (distrito / ilha / grupo de ilhas) com
+  // avisos IPMA em vigor ou anunciados — aviso expirado (endTime passado)
+  // não pinta. Avisos vindos do cache partilhado de warnings.json (o mesmo
+  // dos badges nos pins); a geometria (~40 KB) só se descarrega ao ligar.
+  const ipmaWarnings = useIpmaWarnings();
+  const [warnAreasEnabled, setWarnAreasEnabled] = useState<boolean>(() => {
+    if (typeof window === 'undefined' || isHeroEmbed) return false;
+    if (initialWarnAreasEnabled) return true;
+    try {
+      return localStorage.getItem(MAP_WARN_AREAS_LS_KEY) === '1';
+    } catch {
+      return false;
+    }
+  });
+  const [warnAreasData, setWarnAreasData] = useState<WarningAreasFile | null | undefined>(undefined);
+  const warnAreasLayerRef = useRef<L.LayerGroup | null>(null);
+
+  const warnAreaHits = useMemo(
+    () => activeWarnGroups(warnAreasData, ipmaWarnings?.warnings),
+    [warnAreasData, ipmaWarnings],
+  );
+  // O disabled NÃO pode depender dos hits (a geometria só se descarrega ao
+  // ligar — deadlock). Decide-se por: geometria falhada, ou warnings
+  // resolvidos sem nenhum aviso em vigor/anunciado. Os hits só contam quando
+  // ambos os dados existem (inconsistência geo↔códigos também desactiva).
+  const anyActiveWarning =
+    ipmaWarnings == null
+      ? null
+      : ipmaWarnings.warnings.some((w) => !w.endTime || Date.parse(w.endTime) > Date.now());
+  const warnAreasUnavailable =
+    warnAreasData === null ||
+    anyActiveWarning === false ||
+    (warnAreasData != null && ipmaWarnings != null && warnAreaHits.length === 0);
+
+  useEffect(() => {
+    if (!warnAreasEnabled) {
+      if (warnAreasLayerRef.current) {
+        mapInstanceRef.current?.removeLayer(warnAreasLayerRef.current);
+        warnAreasLayerRef.current = null;
+      }
+      return;
+    }
+    if (!isReady || !mapInstanceRef.current || !LRef.current) return;
+    const map = mapInstanceRef.current;
+    const Leaflet = LRef.current;
+
+    if (warnAreasData === undefined) {
+      let cancelled = false;
+      loadWarningAreas().then((data) => {
+        if (!cancelled && mountedRef.current) setWarnAreasData(data);
+      });
+      return () => {
+        cancelled = true;
+      };
+    }
+    if (warnAreasData === null) return;
+    // Avisos ainda por resolver — o efeito re-corre quando o fetch acabar.
+    if (ipmaWarnings == null) return;
+    if (warnAreaHits.length === 0) return;
+
+    const escapeHtml = (s: string) =>
+      s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    const hourFmt = new Intl.DateTimeFormat(DATE_LOCALE[locale] ?? 'en-GB', {
+      day: 'numeric',
+      month: 'short',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+    const group = Leaflet.layerGroup();
+    for (const hit of warnAreaHits) {
+      const color = WARN_AREA_COLORS[hit.maxLevel];
+      const lines = hit.warnings
+        .slice()
+        .sort((a, b) => a.type.localeCompare(b.type))
+        .map((w) => {
+          const until = w.endTime ? ` — ${hourFmt.format(new Date(w.endTime))}` : '';
+          return `${escapeHtml(warningTypeLabel(w.type, locale))} · ${escapeHtml(warningLevelLabel(w.level, locale))}${escapeHtml(until)}`;
+        });
+      const tooltipHtml = `<b>${escapeHtml(hit.group.label)}</b><br>${lines.join('<br>')}`;
+      for (const poly of hit.group.polys) {
+        const latlngs = poly.map((ring) => ring.map(([lo, la]) => [la, lo] as [number, number]));
+        Leaflet.polygon(latlngs, {
+          color,
+          weight: 1.8,
+          opacity: 0.85,
+          fillColor: color,
+          fillOpacity: 0.14,
+          dashArray: '8 5',
+          className: 'ventu-warn-area',
+        })
+          .bindTooltip(tooltipHtml, { sticky: true, direction: 'top' })
+          .addTo(group);
+      }
+    }
+    group.addTo(map);
+    warnAreasLayerRef.current = group;
+    const attr = getTranslation(locale).map.warnAreasAttribution;
+    map.attributionControl?.addAttribution(attr);
+
+    return () => {
+      if (map.hasLayer(group)) map.removeLayer(group);
+      warnAreasLayerRef.current = null;
+      map.attributionControl?.removeAttribution(attr);
+    };
+  }, [warnAreasEnabled, isReady, warnAreasData, ipmaWarnings, warnAreaHits, locale, mapInstanceRef, LRef]);
+
+  const toggleWarnAreas = useCallback(() => {
+    setWarnAreasEnabled((prev) => {
+      const next = !prev;
+      try {
+        localStorage.setItem(MAP_WARN_AREAS_LS_KEY, next ? '1' : '0');
+      } catch {
+        /* noop */
+      }
+      return next;
+    });
+  }, []);
+
   return {
     radarData, radarEnabled, radarFrameIndex, radarUserPaused, radarPrefSet,
     radarBusySources, radarLift, radarFrameIndexRef, radarUserPausedRef,
@@ -763,6 +1467,12 @@ export function useMapLayers({
     isobathsEnabled, isobathsData, toggleIsobaths,
     bathymetryEnabled, toggleBathymetry,
     seamarksEnabled, toggleSeamarks,
+    gibsSatEnabled, toggleGibsSat,
+    goesIrEnabled, toggleGoesIr,
+    goesIrFrameList, goesIrFrameIndex, goesIrUserPaused,
+    handleGoesIrFrameChange, handleGoesIrUserPausedChange,
     coastalWarningsEnabled, coastalWarningsData, toggleCoastalWarnings, coastalWarningsLabel,
+    stormsEnabled, stormsData, stormsUnavailable, toggleStorms, stormsLabel,
+    warnAreasEnabled, warnAreasUnavailable, toggleWarnAreas,
   };
 }

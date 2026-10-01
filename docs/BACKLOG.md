@@ -79,31 +79,34 @@ Formatos validados ao vivo a 2026-08-13 (o `400 invalid coords` confirma parsing
 
 ## 🌊 Dados em falta
 
-### observedWave da Costa de Prata (boia Fugro 2 — Nazaré Costeira)
+### observedWave da Costa de Prata — ✅ RESOLVIDO (WMO 6200199) + Açores (cap ilha)
 
-Confirmado a 2026-09-02 com a key real: `getDatawellData` **não serve a família
-Fugro** (série vazia em 48 h com as estações 2/1010/1011 vivas na OGC keyless).
-Os **36 spots da Costa de Prata** mapeados à boia 2 no `spotMapping` ficam sem
-`observedWave` de origem IH mesmo com key. O merge degrada graciosamente
-(`observedWaveMerge.js` devolve `wave: null` ou cai para a WMO — nunca inventa
-leituras), mas a camada fica vazia nesses spots.
+A nota original assumia gap WMO na Costa de Prata; verificação 2026-09 mostrou
+que **já está coberto**: WMO/Copernicus `6200199` («Nazaré Costeira» — a mesma
+Fugro via GTS) serve hs fresca e o `spotMapping` WMO cobre Nazaré → Ericeira
+dentro do cap de 200 km. IH Sines (`CSA83/1D`) também cobre a zona quando fresco.
 
-**Alternativa apontada em docs/IH_API_KEY.md**: fallback WMO ES — Cabo Silleiro
-(6200084, Copernicus sem key) cobre os spots do NW dentro do alcance. Estimar o
-mapeamento spot→WMO para a Costa de Prata (e, se viável, sugerir ao IH a
-inclusão da família Fugro no endpoint de séries — nova OGC API EDR já anunciada).
+O gap real eram os **Açores**: BOND2 (S. Miguel) e BOND6 (Sta Maria) inactivas
+desde 2025; BOND5 (Graciosa, idEst 86 / WMO `6202400`) viva mas a 228–276 km —
+mapeada e rejeitada pelo attach cap de 200 km. Fix em `scripts/lib/islandSpots.js`:
+geo-box Açores/Madeira (robusto a drift de `region`), cap map/attach **280 km**
+só para spots de ilha (mesma ordem da ponte Silleiro ~280–300 km), flag
+`island: true` persistida no `spotMapping`, `distanceKm` real no payload
+(a UI mostra «a 276 km»). Cobre **8/10** spots dos Açores; Sta Maria a ~344 km
+fica honestamente fora. Continente inalterado (250/200).
 
-### Qualidade da água
+Restante (não accionável): BOND2/BOND6 voltarem ao serviço — auto-cura no
+próximo fetch quando o IH reportar `latest` fresco.
 
-Tens waterTemp (Open-Meteo) mas não qualidade bacteriológica. APA (Agência Portuguesa do Ambiente) publica boletins semanais.
+### Qualidade da água — ✅ FEITO (2026-09)
 
-**Fontes**:
-- APA.pt — boletins semanais de qualidade de praias
-- EEA Bathing Water — dados europeus
-
-**Limitação**: qualidade muda hora a hora com chuvas/escoamentos; real-time não está disponível em lado nenhum gratuito. Boletim semanal é o estado da arte.
-
-**Estimativa**: 1 sessão (parse + display no spot detail).
+Integrado via APA InfoÁgua: `scripts/fetch-water-quality.js` extrai o dataset
+nacional embutido em `infoagua.apambiente.pt/pt/praias` (761 águas balneares,
+1 GET sem auth) → `water-quality.json` → merge em `conditions.waterQuality`
+(spot → água balnear mais próxima ≤3 km, 166/185 cobertos). UI em
+`WaterQualityBadge` (conselho balnear só na época, classe anual APA, alertas
+activos, Bandeira Azul sem ano hardcoded). Cobertura: 86 spots <0,5 km,
+160 ≤2 km.
 
 ### Imagens reais por spot
 

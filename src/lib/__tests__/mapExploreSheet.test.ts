@@ -24,7 +24,8 @@ const read = (p: string) => readFileSync(join(ROOT, p), 'utf-8');
 
 const sheet = read('src/components/spots/map/components/MapExploreSheet.tsx');
 const list = read('src/components/spots/map/components/MapSpotList.tsx');
-const interactive = read('src/components/spots/SpotMapInteractive.tsx');
+// viewRows vive na zona explorar desde o M1 (docs/design/MAP-ZONES.md).
+const exploreZone = read('src/components/spots/map/zones/MapExploreZone.tsx');
 const attributionHook = read('src/components/spots/map/hooks/useMapAttribution.ts');
 
 describe('mapExploreSheet (contrato do bottom sheet de 3 estados)', () => {
@@ -66,10 +67,10 @@ describe('mapExploreSheet (contrato do bottom sheet de 3 estados)', () => {
   });
 
   it('a lista é a mesma fonte dos marcadores (getBestScore + bounds)', () => {
-    // O parent constrói viewRows com getBestScore (a fonte do score do
-    // marcador) filtrada pelos bounds do viewport.
-    expect(interactive).toContain('getBestScore(d, selectedSport, hourScores?.get(d.spot.id))');
-    expect(interactive).toContain('bounds.contains');
+    // A zona explorar constrói viewRows com getBestScore (a fonte do score
+    // do marcador) filtrada pelos bounds do viewport.
+    expect(exploreZone).toContain('getBestScore(d, selectedSport, hourScores?.get(d.spot.id))');
+    expect(exploreZone).toContain('bounds.contains');
   });
 
   it('a lista partilhada é acessível por teclado (roving tabindex + setas)', () => {

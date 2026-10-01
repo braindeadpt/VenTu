@@ -64,9 +64,11 @@ describe('getSpotScoreFactors — gramática canónica', () => {
     const text = segs.map((s) => s.label).join(' · ');
     // ordem do scorer: ondas → período → vento; swell acrescenta quando cabe.
     expect(segs.length).toBeLessThanOrEqual(3);
-    expect(text).toContain('ondas 1.4 m');
+    expect(text).toContain('ondas 1,4 m');
     expect(text).toContain('período 11 s');
-    expect(text).toMatch(/(offshore|onshore|side-offshore|side-onshore) 12 kt/);
+    // M7★: a forma longa usa os rótulos canónicos windRel* (Cross-off…),
+    // não o token cru do classifyWind («side-offshore»).
+    expect(text).toMatch(/(Offshore|Onshore|Cross-off|Cross-on) 12 kt/);
   });
 
   it('mesmo input em EN produz a gramática inglesa', () => {
@@ -76,13 +78,26 @@ describe('getSpotScoreFactors — gramática canónica', () => {
     expect(text).toContain('period 11 s');
   });
 
-  it('versão curta: mesmos factores, etiquetas compactas', () => {
+  it('versão curta: mesmos factores, etiquetas compactas (PT)', () => {
     const segs = getSpotScoreFactors(input(spot, baseConditions, 'surf'));
     for (const s of segs) {
       expect(s.short.length).toBeLessThanOrEqual(s.label.length);
     }
-    expect(segs.find((s) => s.kind === 'wind')?.short).toMatch(/\d+kt/);
+    // M7: «12 kt Cross-off» — espaço antes de kt e relação de vento
+    // canónica (windRel*), não «s-off 2kt». Decimal por Intl («1,4 m»).
+    expect(segs.find((s) => s.kind === 'wind')?.short).toMatch(
+      /^12 kt (Offshore|Onshore|Cross-off|Cross-on)$/,
+    );
+    expect(segs.find((s) => s.kind === 'waves')?.short).toBe('1,4 m');
     expect(segs.find((s) => s.kind === 'period')?.short).toBe('11 s');
+  });
+
+  it('versão curta em EN: ponto decimal e «kt» com espaço', () => {
+    const segs = getSpotScoreFactors(input(spot, baseConditions, 'surf', 'en'));
+    expect(segs.find((s) => s.kind === 'wind')?.short).toMatch(
+      /^12 kt (Offshore|Onshore|Cross-off|Cross-on)$/,
+    );
+    expect(segs.find((s) => s.kind === 'waves')?.short).toBe('1.4 m');
   });
 
   it('kitesurf: categoria de vento funde-se num único segmento de vento', () => {

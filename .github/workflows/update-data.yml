@@ -206,12 +206,67 @@ jobs:
           ES_NAV_WARNINGS_URL: ${{ vars.ES_NAV_WARNINGS_URL }}
         run: node scripts/fetch-ih-coastal-warnings.js
 
+      # Ciclones tropicais NHC (CurrentStorms.json + KMZ track/cone, keyless
+      # NOAA) → storms.json: cone + track + spotStorms para a camada do mapa
+      # e o alerta no spot page. Filtrado à região Ventu; falhas de KMZ
+      # deixam geometria a null, nunca inventa.
+      - name: Fetch NHC tropical storms
+        if: steps.gate.outputs.mode != 'skip'
+        continue-on-error: true
+        run: node scripts/fetch-nhc-storms.js
+
       # Radar IPMA — frame PNG mais recente (manifest imgs-radar.json, 5 min)
       # + bounds oficiais do overlay Leaflet do IPMA. Sem WMTS/tiles públicos;
       # bake do frame para o nosso origin (ver scripts/fetch-ipma-radar.js).
       - name: Fetch IPMA radar frame
         if: steps.gate.outputs.mode != 'skip'
         run: node scripts/fetch-ipma-radar.js
+
+      # Estado de tempestade por spot (B1): eco do radar IPMA por spot —
+      # distância/intensidade + deslocamento do centróide («a aproximar-se»
+      # medido, não previsto) + nível máximo de aviso IPMA + cone NHC.
+      # Corre DEPOIS do fetch do radar (lê radar.json + frames frescos desta
+      # run) + warnings + NHC; decode PNG via sharp.
+      - name: Build per-spot storm state (radar echo)
+        if: steps.gate.outputs.mode != 'skip'
+        continue-on-error: true
+        run: node scripts/build-storm-state.js
+
+      # Qualidade do ar (European AQI, CAMS via Open-Meteo Air Quality) —
+      # host separado do forecast API (quota própria). Falha suave por
+      # desenho: o merge em update-conditions só usa o ficheiro se fresco
+      # (<8h) — um outage AQ nunca bloqueia o pipeline de condições.
+      - name: Fetch air quality (Open-Meteo AQ, European AQI)
+        if: steps.gate.outputs.mode == 'full'
+        continue-on-error: true
+        run: node scripts/fetch-air-quality.js
+
+      # Corrente medida por radar HF (Fase C — EMODnet ERDDAP, keyless,
+      # rede IH Lisboa Sines→Peniche). Camada suave: o merge em
+      # update-conditions só usa o ficheiro se o grid for fresco (<6h).
+      - name: Fetch HFR measured currents (EMODnet ERDDAP)
+        if: steps.gate.outputs.mode == 'full'
+        continue-on-error: true
+        run: node scripts/fetch-hfr-currents.js
+
+      # Qualidade da água balnear APA InfoÁgua (dataset embebido, 1 GET,
+      # sem auth — conselho balnear + classe anual + alertas por praia).
+      # Camada suave: o merge em update-conditions só usa o ficheiro se
+      # fresco (<14d); o conselho vivo é limitado pela época balnear.
+      - name: Fetch APA bathing-water quality (InfoÁgua)
+        if: steps.gate.outputs.mode == 'full'
+        continue-on-error: true
+        run: node scripts/fetch-water-quality.js
+
+      # Climatologia NASA POWER (MERRA-2, baseline 2001–2020 fixa) —
+      # artefacto raro: só corre quando o ficheiro ainda não existe. O
+      # checkout traz o último commit do bot — depois de gerado uma vez,
+      # fica tracked e o passo salta. continue-on-error: sem o ficheiro o
+      # card simplesmente não renderiza (degradação suave por desenho).
+      - name: Fetch NASA POWER climatology (if missing)
+        if: steps.gate.outputs.mode == 'full'
+        continue-on-error: true
+        run: test -f public/data/climatology.json || node scripts/fetch-climatology.js
 
       - name: Update Conditions (Open-Meteo)
         if: steps.gate.outputs.mode == 'full'

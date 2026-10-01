@@ -58,6 +58,7 @@ const RANGES = Object.freeze({
   seaLevelHeightMsl: [-15, 15],
   tideHeight: [-15, 15],
   tideObservedHeight: [-15, 15],
+  tideAnomalyM: [-2, 2],
   score: [0, 100],
   confidence: [0, 100],
 });

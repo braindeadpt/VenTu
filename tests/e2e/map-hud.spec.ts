@@ -214,6 +214,14 @@ test.describe('Explorar /mapa — garantias consolidadas (sheet mobile + painel 
     });
 
     test('o painel não colide com a legenda (cantos opostos)', async ({ page }) => {
+      // O painel e a legenda vivem no chunk lazy do mapa: `waitHydrated`
+      // devolve antes de eles montarem (medido: 4/10 corridas sem NENHUM dos
+      // dois no DOM, com a medição a devolver null). É o mesmo mount assíncrono
+      // que os helpers de zonas já esperam — sem esta espera o teste é uma
+      // corrida e falha em qualquer build com o bundle ligeiramente diferente.
+      await expect(page.locator('[data-map-panel="open"]')).toBeVisible();
+      await expect(page.locator('[aria-label="Legenda do mapa"]').first()).toBeAttached();
+
       const geo = await page.evaluate(() => {
         const panel = document.querySelector('[data-map-panel="open"]')?.getBoundingClientRect();
         const legend = document
@@ -296,7 +304,9 @@ test.describe('Explorar /mapa — garantias consolidadas (sheet mobile + painel 
 
       test('rato puro (any-pointer: fine): pills mantêm a densidade de 36px', async ({ page }) => {
         await openMapa(page);
-        const surf = page.locator('[data-map-panel] [aria-label="Modalidade"] button').nth(1); // Surf
+        // O segmented da M3 nomeia o grupo por aria-labelledby — getByRole
+        // resolve o nome; o selector de atributo [aria-label] falharia.
+        const surf = page.locator('[data-map-panel]').getByRole('group', { name: 'Modalidade' }).getByRole('button').nth(1); // Surf
         await expect(surf).toBeVisible();
 
         const box = await surf.boundingBox();
@@ -313,7 +323,7 @@ test.describe('Explorar /mapa — garantias consolidadas (sheet mobile + painel 
         const page = await ctx.newPage();
         await openMapa(page);
 
-        const surf = page.locator('[data-map-panel] [aria-label="Modalidade"] button').nth(1); // Surf
+        const surf = page.locator('[data-map-panel]').getByRole('group', { name: 'Modalidade' }).getByRole('button').nth(1); // Surf
         await expect(surf).toBeVisible();
         const box = await surf.boundingBox();
         expect(box, 'chip de modalidade deveria ter caixa mensurável').not.toBeNull();
@@ -335,38 +345,44 @@ test.describe('Explorar /mapa — garantias consolidadas (sheet mobile + painel 
         reducedMotion: 'reduce',
       });
 
-      test('linhas de pills rolam horizontalmente dentro do sheet', async ({ page }) => {
+      test('segmented de modalidade quebra de linha sem cortar (maquete §5)', async ({ page }) => {
         await openMapa(page);
         await expandMapHudFilters(page);
 
-        // 9 modalidades + 8 regiões em 360px não cabem: as linhas têm de ser
-        // overflow-x-auto (roláveis com edge-fade) — nunca overflow-x-hidden
-        // (inacessível) nem wrap infinito (sheet a crescer).
+        // MAP-UX-V3 §5: o segmented de modalidade usa flex-wrap — as pills
+        // quebram para a linha seguinte e nunca são cortadas nem roláveis
+        // (o comportamento scroll-x do HUD antigo saiu na M3).
         const geo = await page.evaluate(() => {
           const region = document.querySelector('[aria-label="Modo explorar"]');
           const card = region?.querySelector('[data-sheet-half]');
           if (!card) return null;
           const cb = card.getBoundingClientRect();
-          const strips = Array.from(card.querySelectorAll('[role="group"]')).map((g) => {
-            const el = g as HTMLElement;
-            return {
-              label: el.getAttribute('aria-label') ?? 'group',
-              scrollable: el.scrollWidth > el.clientWidth,
-            };
+          const group = card.querySelector('[role="group"][aria-labelledby]');
+          if (!group) return null;
+          const pills = Array.from(group.querySelectorAll('button')).map((b) => {
+            const r = b.getBoundingClientRect();
+            return { right: r.right, clipped: b.scrollWidth > b.clientWidth };
           });
-          const cardRight = Math.round(cb.right);
-          const stripsInside = Array.from(card.querySelectorAll('[role="group"]')).every(
-            (g) => g.getBoundingClientRect().right <= cardRight + 1,
-          );
-          return { strips, stripsInside };
+          return {
+            cardRight: Math.round(cb.right),
+            wrapped: group.scrollWidth <= group.clientWidth + 1,
+            multiLine: new Set(
+              Array.from(group.querySelectorAll('button')).map(
+                (b) => Math.round(b.getBoundingClientRect().top),
+              ),
+            ).size > 1,
+            pills,
+          };
         });
         expect(geo).not.toBeNull();
-        // Pelo menos a linha de modalidades transborda → tem de ser rolável.
-        const sportRow = geo!.strips.find((s) => /Modalidade|Sport/i.test(s.label));
-        expect(sportRow, 'linha de modalidade presente').toBeDefined();
-        expect(sportRow!.scrollable, 'linha de modalidade é rolável em 360px').toBe(true);
-        // E nenhuma linha estoura o cartão (o scroll acontece DENTRO da linha).
-        expect(geo!.stripsInside).toBe(true);
+        // 9 modalidades não cabem em 360px — tem de haver quebra de linha.
+        expect(geo!.multiLine, 'segmented quebra de linha em 360px').toBe(true);
+        expect(geo!.wrapped, 'o grupo não transborda horizontalmente').toBe(true);
+        // E nenhuma pill sai do cartão nem corta o próprio texto.
+        for (const p of geo!.pills) {
+          expect(p.right).toBeLessThanOrEqual(geo!.cardRight + 1);
+          expect(p.clipped, 'pill com texto cortado').toBe(false);
+        }
       });
 
       test('slider das horas não ultrapassa o sheet (regressão min-w-0)', async ({ page }) => {
@@ -464,13 +480,15 @@ test.describe('Explorar /mapa — garantias consolidadas (sheet mobile + painel 
       await expect(page.locator('[data-map-hours="true"]')).toBeVisible();
       const track = page.locator('[data-map-time-track-mode="hours"]');
       await expect(track).toBeVisible({ timeout: 15_000 });
-      await expect(track).toContainText('08h');
+      // UX v3 §3 — a pill mostra «Agora · HH:MM» ao vivo e o cabeçalho do
+      // scrubber «agora»/«qui 17:00» (formato da maquete, não «17h»).
+      await expect(page.locator('[data-map-time-pill]')).toContainText('08:00');
 
       await expectNazareScore(page, '20');
 
       const slider = page.locator('[data-map-hours-scrubber] input[type="range"]');
       await slider.fill('3');
-      await expect(track).toContainText('17h');
+      await expect(track).toContainText('17:00');
       await expectNazareScore(page, '88');
     });
 
@@ -479,7 +497,7 @@ test.describe('Explorar /mapa — garantias consolidadas (sheet mobile + painel 
 
       const track = page.locator('[data-map-time-track-mode="hours"]');
       await expect(track).toBeVisible({ timeout: 15_000 });
-      await expect(track).toContainText('17h');
+      await expect(track).toContainText('17:00');
       await expectNazareScore(page, '88');
     });
 
@@ -491,12 +509,12 @@ test.describe('Explorar /mapa — garantias consolidadas (sheet mobile + painel 
       await expect(track).toBeVisible({ timeout: 15_000 });
       const slider = page.locator('[data-map-hours-scrubber] input[type="range"]');
       await slider.fill('0');
-      await expect(track).toContainText('08h');
+      await expect(page.locator('[data-map-time-pill]')).toContainText('08:00');
       await expect(page.locator('[data-map-hours-play]')).toBeVisible();
       await expectNazareScore(page, '20');
 
       await slider.fill('3');
-      await expect(track).toContainText('17h');
+      await expect(track).toContainText('17:00');
       await expectNazareScore(page, '88');
     });
   });
@@ -521,11 +539,11 @@ test.describe('Explorar /mapa — garantias consolidadas (sheet mobile + painel 
       await expect(page.locator('[data-map-hours-toggle]')).toBeVisible({ timeout: 15_000 });
       const track = page.locator('[data-map-time-track-mode="hours"]');
       await expect(track).toBeVisible({ timeout: 15_000 });
-      await expect(track).toContainText('08h');
+      await expect(page.locator('[data-map-time-pill]')).toContainText('08:00');
 
       const slider = page.locator('[data-map-hours-scrubber] input[type="range"]');
       await slider.fill('3');
-      await expect(track).toContainText('17h');
+      await expect(track).toContainText('17:00');
     });
   });
 

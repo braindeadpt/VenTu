@@ -24,6 +24,8 @@ const SHARED_TOKENS = new Set([
   'offshore', // termo adoptado em pt/en/es/de/fr (relação de vento)
   'Offshore', // termo adoptado em pt/en/es/de/fr (relação de vento, capitalizado)
   'Onshore',  // termo adoptado em pt/en/es/de/fr (relação de vento, capitalizado)
+  'Cross-on',  // termo adoptado em pt/en (relação de vento side-onshore)
+  'Cross-off', // termo adoptado em pt/en (relação de vento side-offshore)
   'Multisport', // termo adoptado em pt/es/de/fr (tipo de spot)
   'Expert',   // termo adoptado em pt/en/es/de/fr (nível de dificuldade)
   'onshore',  // termo adoptado em pt/en/es/de/fr (relação de vento)
@@ -37,12 +39,23 @@ const SHARED_TOKENS = new Set([
   'PM', 'BM',
   // «ideal» é a mesma grafia em PT/EN/ES/DE (rótulo do sector ideal).
   'ideal {dirs}',
-  // Fórmulas simbólicas da banda ensemble e do skill por lead: P10/P50/P90,
+  // «Madeira» é nome próprio — idêntico em todas as línguas (chip de ilha §10).
+  'Madeira',
+  // Fórmulas simbólicas da banda ensemble e do erro por horizonte: P10/P50/P90,
   // ME, RMSE, n e h são símbolos/abreviaturas universais — nada a traduzir.
   'P10 {p10} · P50 {p50} · P90 {p90} {unit}',
   '{from}–{to} h',
   'ME {me} m · RMSE {rmse} m · n={n}',
   'ME {me} m · n={n}',
+  // Siglas técnicas universais — «UV» (índice ultravioleta) e «AQI» (Air
+  // Quality Index europeu) são siglas oficiais iguais em todas as línguas.
+  'UV', 'AQI',
+  // Atribuição da fonte APA/InfoÁgua — nome institucional igual em todas as línguas.
+  'APA · InfoÁgua',
+  // Intervalo numérico puro da banda de score — interpolação sem palavras.
+  '{lo}–{hi}',
+  // «Radar IPMA» — nome do instrumento/instituição, igual em todas as línguas.
+  'Radar IPMA {time}',
 ]);
 
 /**
@@ -51,6 +64,10 @@ const SHARED_TOKENS = new Set([
  * (ex.: «Explorar mapa» é espanhol válido). Não se aplicam a de/fr.
  */
 const ES_COGNATES = new Set([
+  // Camada do mapa: «Satélite NASA» escreve-se igual em ES e PT.
+  'Satélite NASA',
+  // Cartão Onda (banda dos modelos): «modelos» escreve-se igual em ES e PT.
+  'modelos: {lo}–{hi} m',
   'Abrir mapa', 'Actualizado', 'Agrupar spots', 'Alertas', 'Altura total',
   'Calculadora de kite', 'Comparar', 'Entrada gratuita', 'Entrar', 'Épico',
   'Excelente', 'Explorar', 'Explorar lista completa', 'Explorar mapa',
@@ -64,6 +81,8 @@ const ES_COGNATES = new Set([
   'Altura (medida)', // «Altura (medida)» é espanhol correcto — igual ao PT por coincidência de língua
   'par ES×PT',       // «par ES×PT» é espanhol correcto (par de boias ES×PT)
   'Actualizado {date}', // «Actualizado» é espanhol correcto — igual ao PT por coincidência de língua
+  'actualizado {age}', // «actualizado» é espanhol correcto — igual ao PT por coincidência de língua
+  'Modelo Open-Meteo', // «Modelo Open-Meteo» é espanhol correcto — igual ao PT por coincidência de língua
   'Abrir',              // «Abrir» é espanhol correcto — igual ao PT por coincidência de língua
   'Reclamar este perfil', // espanhol correcto = PT
   'Entrar para reclamar', // espanhol correcto = PT
@@ -83,7 +102,12 @@ const ES_COGNATES = new Set([
   'Tipo',               // espanhol correcto = PT
   'Nada encontrado',    // espanhol correcto = PT
   'Verificado',         // espanhol correcto = PT
+  'Satélite IR',        // «Satélite» é espanhol correcto = PT
+  'Satélite IR (10 min)', // idem — nome da camada IR
   'Ver perfil',         // espanhol correcto = PT
+  'Filtros',            // espanhol correcto = PT (painel/sheet «Explorar», M3)
+  'Filtros ({count})',  // espanhol correcto = PT (idem)
+  'Continente',         // espanhol correcto = PT (chip «Saltar para», M3)
   'Guardar',            // espanhol correcto = PT
   'condiciones',        // espanhol correcto = PT
   'MODALIDADES',        // espanhol correcto = PT (cabeçalho de grupo de pesquisa)
@@ -185,8 +209,17 @@ const ES_COGNATES = new Set([
   'Par {key} · {n} spot(s) recalibrado(s): {spots}', // espanhol correcto = PT (tooltip do par)
   'a',                                 // espanhol correcto = PT (preposição)
   'gate cross-border {day}: {codes}',  // espanhol correcto = PT (nota de gate)
-  'banda P10–P90 {lo}–{hi} m · {n} modelos', // espanhol correcto = PT (banda ensemble)
-  '{n} modelos',                        // espanhol correcto = PT (contagem de membros)
+  'Alerta',                            // espanhol correcto = PT (categoria de notícia)
+  'Centro de kite',                    // espanhol correcto = PT (tipo de estabelecimento)
+  'Botas',                             // espanhol correcto = PT (equipamento: botas)
+  'Norte',                             // espanhol correcto = PT (região Norte)
+  'Centro',                            // espanhol correcto = PT (região Centro)
+  'Lisboa',                            // espanhol correcto = PT (região Lisboa)
+  'Mar',                               // espanhol correcto = PT (grupo «Mar» do menu Camadas, §8)
+  'Próximas 48 h',                     // espanhol correcto = PT (camada «48 h» do menu, §8)
+  'Isóbatas',                          // espanhol correcto = PT (camada de isóbatas)
+  'Altura significativa (Hs)',         // espanhol correcto = PT (camada Hs)
+  'Continente',                        // espanhol correcto = PT (chip de área §10)
 ]);
 
 /**
@@ -198,6 +231,8 @@ const FR_COGNATES = new Set([
   ' · fetch {when}',    // francês correcto = PT (timestamp de fetch no indicador de frescura)
   'Livecams — {count} spots — VenTu', // «Livecams» é o termo adoptado em francês = PT (título)
   'Dormir',                            // francês correcto = PT (dica local: dormir)
+  '5/4 mm ou 6/5 mm',                  // francês correcto = PT («ou» é a mesma palavra)
+  'Açores',                            // francês correcto = PT (região dos Açores)
 ]);
 
 /**
@@ -223,12 +258,21 @@ const EN_COGNATES = new Set([
   'N', 'S', 'E', 'O', 'score',
   'ideal {dirs}', // «ideal» é a mesma grafia em EN e PT (rótulo do sector ideal)
   'Offshore', 'Onshore', 'Cross-shore', // relações de vento adoptadas em EN
+  'Cross-on', 'Cross-off', // classifyWind: rótulos do chip adoptados em EN = PT
   'Expert',            // termo adoptado em EN = PT (nível de dificuldade)
-  // Fórmulas simbólicas (mesmos símbolos em PT e EN): P10/P50/P90, ME, RMSE, n.
+  'Madeira',           // nome próprio — igual em EN (chip de ilha §10)
+  // Fórmulas simbólicas da banda ensemble e do erro por horizonte (mesmos
+  // símbolos em PT e EN): P10/P50/P90, ME, RMSE, n e h.
   'P10 {p10} · P50 {p50} · P90 {p90} {unit}',
   '{from}–{to} h',
   'ME {me} m · RMSE {rmse} m · n={n}',
   'ME {me} m · n={n}',
+  // Siglas oficiais universais — «UV» e «AQI» são iguais em PT e EN.
+  'UV', 'AQI',
+  // Atribuição da fonte APA/InfoÁgua — nome institucional igual em PT e EN.
+  'APA · InfoÁgua',
+  // Intervalo numérico puro da banda de score — interpolação sem palavras.
+  '{lo}–{hi}',
 ]);
 
 /** Allowlist por locale — cada valor idêntico ao pt tem de estar justificado. */
@@ -325,6 +369,21 @@ describe('i18n locales', () => {
       expect(mapBlock.hideRadar).toBeTruthy();
       expect(mapBlock.radarHint).toBeTruthy();
       expect(mapBlock.radarBadge).toBeTruthy();
+    }
+  });
+
+  it('en/es/de/fr mapUi* blocks carry every key of pt (zone namespaces stay in sync)', () => {
+    const pt = getTranslation('pt');
+    for (const ns of ['mapUiChrome', 'mapUiExplore', 'mapUiMarkers', 'mapUiLayers'] as const) {
+      const ptBlock = pt[ns] as Record<string, unknown> | undefined;
+      if (!ptBlock) continue;
+      for (const loc of ['en', 'es', 'de', 'fr'] as const) {
+        const locBlock = getTranslation(loc)[ns] as Record<string, unknown> | undefined;
+        expect(locBlock, `${loc}.${ns} missing`).toBeDefined();
+        for (const key of Object.keys(ptBlock)) {
+          expect(locBlock, `${loc}.${ns}.${key} missing`).toHaveProperty(key);
+        }
+      }
     }
   });
 

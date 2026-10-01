@@ -1,4 +1,5 @@
-import { getTranslation } from '@/lib/i18n';
+import { buildPageMetadata } from '@/lib/seo'
+import { getTranslation, validateLocale } from '@/lib/i18n';
 import FavoritesClient from '@/components/favorites/FavoritesClient';
 import type { Metadata } from 'next';
 
@@ -10,14 +11,13 @@ export async function generateMetadata({
   const { locale } = await params;
   const isPt = locale === 'pt';
 
-  return {
-    title: getTranslation(locale).pages.favoritesMetaTitle,
-    description: getTranslation(locale).pages.favoritesMetaDescription,
-    alternates: {
-      canonical: `/${locale}/favorites/`,
-      languages: { pt: '/pt/favorites/', en: '/en/favorites/' },
-    },
-  };
+  const loc = validateLocale(locale);
+  return buildPageMetadata({
+    title: getTranslation(loc).pages.favoritesMetaTitle,
+    description: getTranslation(loc).pages.favoritesMetaDescription,
+    locale: loc,
+    path: `/${loc}/favorites/`,
+  });
 }
 
 export default function FavoritesPage() {

@@ -6,26 +6,39 @@
  * categorias (big-wave/foil/sup/... caíam no sludge) e o NewsFilters tinha
  * a lista completa. Agora os três importam daqui.
  */
-export const newsCategoryLabels: Record<string, { pt: string; en: string }> = {
-  all:         { pt: 'Todas',      en: 'All' },
-  surf:        { pt: 'Surf',       en: 'Surf' },
-  kitesurf:    { pt: 'Kitesurf',   en: 'Kitesurf' },
-  windsurf:    { pt: 'Windsurf',   en: 'Windsurf' },
-  'big-wave':  { pt: 'Big Wave',   en: 'Big Wave' },
-  sup:         { pt: 'SUP',        en: 'SUP' },
-  foil:        { pt: 'Foil',       en: 'Foil' },
-  bodyboard:   { pt: 'Bodyboard',  en: 'Bodyboard' },
-  wakeboard:   { pt: 'Wakeboard',  en: 'Wakeboard' },
-  competition: { pt: 'Competição', en: 'Competition' },
-  safety:      { pt: 'Segurança',  en: 'Safety' },
-  general:     { pt: 'Geral',      en: 'General' },
-  alert:       { pt: 'Alerta',     en: 'Alert' },
+/**
+ * Desportos são nomes próprios (iguais em todas as línguas); as restantes
+ * categorias vêm do dicionário (`newsCategories`, 5 línguas).
+ */
+const SPORT_CATEGORY_LABELS: Record<string, string> = {
+  surf: 'Surf',
+  kitesurf: 'Kitesurf',
+  windsurf: 'Windsurf',
+  'big-wave': 'Big Wave',
+  sup: 'SUP',
+  foil: 'Foil',
+  bodyboard: 'Bodyboard',
+  wakeboard: 'Wakeboard',
 };
 
-/** Categoria traduzida para o locale (PT primeiro; EN para todo o resto —
- *  mesmo contrato `locale === 'pt' ? pt : en` do resto das news). */
+/** Categoria traduzida para o locale (nomes próprios à parte). */
 export function newsCategoryLabel(category: string, locale: string): string {
-  const entry = newsCategoryLabels[category];
-  if (!entry) return category;
-  return locale === 'pt' ? entry.pt : entry.en;
-}
+  const proper = SPORT_CATEGORY_LABELS[category];
+  if (proper) return proper;
+  const t = getTranslation(locale).newsCategories;
+  switch (category) {
+    case 'all':
+      return t.all;
+    case 'competition':
+      return t.competition;
+    case 'safety':
+      return t.safety;
+    case 'general':
+      return t.general;
+    case 'alert':
+      return t.alert;
+    default:
+      return category;
+  }
+}import { getTranslation } from '@/lib/i18n';
+

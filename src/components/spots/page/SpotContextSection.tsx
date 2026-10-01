@@ -19,7 +19,10 @@ import { WaterQualityBadge } from '@/components/spots/WaterQualityBadge';
 import SpotImage from '@/components/ui/SpotImage';
 import SpotNearbyDirectory from '@/components/directory/SpotNearbyDirectory';
 import SpotOnSiteWarnings from '@/components/spots/context/SpotOnSiteWarnings';
+import SpotStormAlert from '@/components/spots/context/SpotStormAlert';
+import SpotRadarEcho from '@/components/spots/context/SpotRadarEcho';
 import SpotNearbySpots from '@/components/spots/context/SpotNearbySpots';
+import SpotClimateCard from '@/components/spots/context/SpotClimateCard';
 import SpotHowWeKnow, {
   type SpotContextConditions,
 } from '@/components/spots/context/SpotHowWeKnow';
@@ -90,7 +93,8 @@ export default function SpotContextSection({
     spot.blueFlag ||
     spot.waterQuality ||
     spot.waterQualityEn ||
-    spot.accessibleBeach
+    spot.accessibleBeach ||
+    conditions?.waterQuality
   );
 
   return (
@@ -99,13 +103,20 @@ export default function SpotContextSection({
       className="space-y-4"
       data-spot-timeline-index={index}
     >
-      {/* §6 — contexto: 1 coluna em mobile, 3 em lg. */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-start">
+      {/* §6 v3 — desktop (≥1024): linha A «No local» 8/12 + «Perto daqui»
+          4/12; linha B «Chegar e estar» a toda a largura (3 colunas
+          internas + faixa de foto de 160 px); linha C «Como sabemos»
+          (fora da grelha, largura total). Tablet (768–1023): 2 colunas.
+          Mobile (<768): accordions como estavam — a ordem do DOM não
+          muda, o reordenamento é só visual via grid placement.
+          items-stretch (default) + h-full nos cards = colunas da mesma
+          linha com a mesma altura (critério ≤20 %). */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-4">
         <div
           id="no-local"
           role="group"
           aria-label={tc.onSite}
-          className="scroll-mt-32 min-w-0"
+          className="scroll-mt-32 min-w-0 lg:col-span-8"
         >
           {/* Segurança marítima — aberto por defeito também em mobile. */}
           <CollapsibleSection
@@ -113,18 +124,25 @@ export default function SpotContextSection({
             icon={<MapPin className="w-4 h-4 text-fg-muted shrink-0" aria-hidden />}
             collapsible={isMobile}
             defaultOpen
+            className="h-full"
           >
             <div className="space-y-4">
               <div>
                 <h3 className={SUB_LABEL}>{copy.warningsRadar}</h3>
+                {/* Ciclone tropical cujo cone cobre o spot — antes dos avisos
+                    IPMA/IH por ser o perigo de maior escala. */}
+                <SpotStormAlert spotId={spot.id} locale={locale} />
+                {/* Eco do radar IPMA por spot — «chuva sobre/perto/a aproximar-
+                    se», medido (não previsto), omite-se quando limpo/velho. */}
+                <SpotRadarEcho spotId={spot.id} locale={locale} />
                 <SpotOnSiteWarnings spotId={spot.id} locale={locale} />
               </div>
 
               {hasLivecam && (
                 <div id="spot-livecam" className="scroll-mt-32">
                   <h3 className={SUB_LABEL}>{copy.livecam}</h3>
-                  {/* Coluna de 1/3 no desktop: «stacked» põe o botão em
-                      largura total por baixo do texto, como no mobile. */}
+                  {/* Coluna de 8/12 no desktop: «stacked» mantém o botão
+                      em largura total por baixo do texto. */}
                   <SpotWebcamSection embedded layout="stacked" slug={spot.slug} locale={locale} />
                 </div>
               )}
@@ -142,6 +160,7 @@ export default function SpotContextSection({
                     waterQuality={spot.waterQuality}
                     waterQualityEn={spot.waterQualityEn}
                     accessibleBeach={spot.accessibleBeach}
+                    live={conditions?.waterQuality}
                     locale={locale}
                   />
                 </div>
@@ -149,6 +168,11 @@ export default function SpotContextSection({
 
               {/* Eventos — o componente só renderiza se houver futuros. */}
               <SpotUpcomingEvents embedded spotId={spot.id} locale={locale} events={events} />
+
+              {/* Clima do spot — médias mensais NASA POWER (MERRA-2).
+                  O card carrega /data/climatology.json no client e só
+                  renderiza (incl. o heading) se o spot tiver entrada. */}
+              <SpotClimateCard spotId={spot.id} locale={locale} subLabelClass={SUB_LABEL} />
             </div>
           </CollapsibleSection>
         </div>
@@ -157,41 +181,117 @@ export default function SpotContextSection({
           id="chegar"
           role="group"
           aria-label={tc.gettingThere}
-          className="scroll-mt-32 min-w-0"
+          className="scroll-mt-32 min-w-0 md:col-span-2 lg:col-span-12"
         >
           <CollapsibleSection
             title={tc.gettingThere}
             icon={<Navigation className="w-4 h-4 text-fg-muted shrink-0" aria-hidden />}
             collapsible={isMobile}
+            className="h-full"
           >
-            <div className="space-y-4">
-              <div>
-                <h3 className={SUB_LABEL}>{copy.logistics}</h3>
-                <SpotLogisticsPanel
-                  embedded
+            {isMobile ? (
+              /* Mobile: exactamente como estava (accordion com o painel
+                 completo, dicas e a foto em vídeo por baixo). */
+              <div className="space-y-4">
+                <div>
+                  <h3 className={SUB_LABEL}>{copy.logistics}</h3>
+                  <SpotLogisticsPanel
+                    embedded
+                    spot={spot}
+                    locale={locale}
+                    locationTitle={copy.location}
+                    aboutTitle={copy.aboutSpot}
+                    directionsHref={directionsUrl}
+                    googleMapsLinkLabel={copy.openGoogleMaps}
+                    openMapsLabel={copy.openMapsLabel}
+                    regionLabel={copy.region}
+                    difficultyLabel={copy.level}
+                  />
+                </div>
+                {/* Facilidades, perigos e dicas — o LocalTipsSection renderiza
+                    os três em cards próprios (não duplicar aqui). */}
+                <LocalTipsSection spot={spot} tips={mergedLocalTips} locale={locale} />
+                {/* SpotImage pequena — aspecto fixo (sem CLS), lazy por
+                    omissão (next/image só carrega perto do viewport). */}
+                <SpotImage
                   spot={spot}
+                  aspect="video"
                   locale={locale}
-                  locationTitle={copy.location}
-                  aboutTitle={copy.aboutSpot}
-                  directionsHref={directionsUrl}
-                  googleMapsLinkLabel={copy.openGoogleMaps}
-                  openMapsLabel={copy.openMapsLabel}
-                  regionLabel={copy.region}
-                  difficultyLabel={copy.level}
+                  className="rounded-card overflow-hidden"
                 />
               </div>
-              {/* Facilidades, perigos e dicas — o LocalTipsSection renderiza
-                  os três em cards próprios (não duplicar aqui). */}
-              <LocalTipsSection spot={spot} tips={mergedLocalTips} locale={locale} />
-              {/* SpotImage pequena — aspecto fixo (sem CLS), lazy por
-                  omissão (next/image só carrega perto do viewport). */}
-              <SpotImage
-                spot={spot}
-                aspect="video"
-                locale={locale === 'pt' ? 'pt' : 'en'}
-                className="rounded-card overflow-hidden"
-              />
-            </div>
+            ) : (
+              /* Tablet/desktop (§6 v3): faixa de foto de 160 px no topo,
+                 depois 3 colunas internas em lg (2 em md):
+                 [mapa mínimo + Direcções + Google Maps] ·
+                 [Estacionamento · Comer · Dormir] ·
+                 [Maré ideal · Regra local · Perigos · Instalações] ·
+                 e o texto «Sobre o spot» em largura total por baixo. */
+              <div>
+                <div data-context-band>
+                  <SpotImage
+                    spot={spot}
+                    aspect="band"
+                    locale={locale}
+                    className="rounded-card overflow-hidden"
+                  />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-4 mt-4">
+                  <div className="min-w-0" data-context-col="map">
+                    <SpotLogisticsPanel
+                      embedded
+                      columns="map"
+                      spot={spot}
+                      locale={locale}
+                      locationTitle={copy.location}
+                      aboutTitle={copy.aboutSpot}
+                      directionsHref={directionsUrl}
+                      googleMapsLinkLabel={copy.openGoogleMaps}
+                      openMapsLabel={copy.openMapsLabel}
+                      regionLabel={copy.region}
+                      difficultyLabel={copy.level}
+                    />
+                  </div>
+                  <div className="min-w-0" data-context-col="stay">
+                    <LocalTipsSection
+                      group="stay"
+                      spot={spot}
+                      tips={mergedLocalTips}
+                      locale={locale}
+                    />
+                  </div>
+                  <div
+                    className="min-w-0 md:col-span-2 lg:col-span-1"
+                    data-context-col="conditions"
+                  >
+                    <LocalTipsSection
+                      group="conditions"
+                      spot={spot}
+                      tips={mergedLocalTips}
+                      locale={locale}
+                    />
+                  </div>
+                  <div
+                    className="min-w-0 md:col-span-2 lg:col-span-3"
+                    data-context-col="about"
+                  >
+                    <SpotLogisticsPanel
+                      embedded
+                      columns="about"
+                      spot={spot}
+                      locale={locale}
+                      locationTitle={copy.location}
+                      aboutTitle={copy.aboutSpot}
+                      directionsHref={directionsUrl}
+                      googleMapsLinkLabel={copy.openGoogleMaps}
+                      openMapsLabel={copy.openMapsLabel}
+                      regionLabel={copy.region}
+                      difficultyLabel={copy.level}
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
           </CollapsibleSection>
         </div>
 
@@ -199,12 +299,13 @@ export default function SpotContextSection({
           id="perto"
           role="group"
           aria-label={tc.nearby}
-          className="scroll-mt-32 min-w-0"
+          className="scroll-mt-32 min-w-0 md:col-start-2 md:row-start-1 lg:col-start-9 lg:col-span-4 lg:row-start-1"
         >
           <CollapsibleSection
             title={tc.nearby}
             icon={<Compass className="w-4 h-4 text-fg-muted shrink-0" aria-hidden />}
             collapsible={isMobile}
+            className="h-full"
           >
             <div className="space-y-4">
               <div>

@@ -17,7 +17,9 @@ import {
   type TidePhase,
 } from '@/lib/tideSchedule';
 import { findCurrentHourIndex, hourKeyFromOpenMeteo, lisbonHourKeyFromDate } from '@/lib/openMeteoTime';
-import { formatDayShort } from '@/lib/verdict/formatHourLabel';
+import { groupForecastDays, type ForecastDayGroup } from '@/lib/forecastTimeline';
+import { formatDayShort, formatHourLabel } from '@/lib/verdict/formatHourLabel';
+import { getInstrumentFmt } from '@/components/spots/instruments/format';
 import {
   waveFactorSuffix,
   type ScoreWaveCorrection,
@@ -50,6 +52,8 @@ export interface ForecastHour {
   windGust?: number;
   waterTemp?: number;
   tideHeight?: number;
+  /** Índice UV da hora (linha `uvIndex` do forecast — Open-Meteo). */
+  uvIndex?: number;
   score?: number;
 }
 
@@ -57,6 +61,19 @@ interface ForecastTableProps {
   hourly: ForecastHour[];
   hours?: number;
   startTime?: Date;
+  /**
+   * Índice global explícito onde a fatia começa — o `nowIndex` do eixo
+   * partilhado (SpotTimelineProvider, relógio vivo). Ganha a
+   * `startAtCurrentHour`: «Hora a hora» é o detalhe da régua, cuja janela
+   * são 48 h a partir de «agora» — a mesma hora, não um relógio paralelo.
+   */
+  startIndex?: number;
+  /**
+   * A fatia começa no balde da hora corrente (em vez de `hourly[0]`) —
+   * fallback de `startIndex` antes de o eixo aterrar (e em páginas sem
+   * provider). Usa o relógio `now` (baked até montar, vivo depois).
+   */
+  startAtCurrentHour?: boolean;
   sport?: SportType;
   coastOrientation?: number;
   locale: string;
@@ -139,6 +156,14 @@ function waterText(t: number): string {
   return 'text-fg';
 }
 
+/** Índice UV → fundo (escala OMS: <3 baixo · 3–5 moderado · 6–7 alto · ≥8 muito alto). */
+function uvBg(u: number): string {
+  if (u < 3) return 'bg-surface-1/[0.02]';
+  if (u < 6) return 'bg-data-period/8';
+  if (u < 8) return 'bg-data-period/14';
+  return 'bg-data-period/20';
+}
+
 function tidePhaseBg(phase: TidePhase): string {
   if (phase === 'high') return 'bg-data-waves/25';
   if (phase === 'low') return 'bg-surface-2/[0.08]';
@@ -215,6 +240,8 @@ export default function ForecastTable({
   hourly,
   hours = 24,
   startTime,
+  startIndex,
+  startAtCurrentHour = false,
   sport,
   coastOrientation,
   locale,
@@ -236,12 +263,18 @@ export default function ForecastTable({
     );
   }
 
+  /* ── current hour ref ── */
+  const now = useMemo(() => (nowMs != null ? new Date(nowMs) : new Date()), [nowMs]);
+
   /* ── slice data ──
      visibleStart = offset da fatia dentro de `hourly` (0 sem startTime) —
      os data-tl-col das células guardam o índice GLOBAL da timeline, que o
-     sync da SpotForecastSection usa para destaque/selecção sem re-render. */
+     sync da SpotForecastSection usa para destaque/selecção sem re-render.
+     `startIndex` (nowIndex do eixo partilhado) ganha ao fallback
+     `startAtCurrentHour` (relógio baked) — a mesma hora da janela da
+     régua (48 h a partir de «agora»). */
   const { visible, visibleStart } = useMemo(() => {
-    let startIndex = 0;
+    let startIndex_ = 0;
     if (startTime) {
       // Wall-time Lisboa de startTime (epoch real) — comparação lexicográfica
       // com as strings naive, determinística em qualquer fuso.
@@ -253,17 +286,23 @@ export default function ForecastTable({
       const pick = (t: Intl.DateTimeFormatPartTypes) =>
         parts.find((p) => p.type === t)?.value ?? '00';
       const startKey = `${pick('year')}-${pick('month')}-${pick('day')}T${pick('hour')}:${pick('minute')}:${pick('second')}`;
-      startIndex = hourly.findIndex((h) => h.time >= startKey);
-      if (startIndex === -1) startIndex = 0;
+      startIndex_ = hourly.findIndex((h) => h.time >= startKey);
+      if (startIndex_ === -1) startIndex_ = 0;
+    } else if (startIndex != null && startIndex >= 0) {
+      // O eixo partilhado manda: a fatia abre na hora corrente do provider
+      // (relógio vivo), não no relógio baked deste componente.
+      startIndex_ = Math.min(startIndex, Math.max(0, hourly.length - 1));
+    } else if (startAtCurrentHour) {
+      startIndex_ = findCurrentHourIndex(
+        hourly.map((h) => h.time),
+        now,
+      );
     }
     return {
-      visible: hourly.slice(startIndex, startIndex + visibleCount),
-      visibleStart: startIndex,
+      visible: hourly.slice(startIndex_, startIndex_ + visibleCount),
+      visibleStart: startIndex_,
     };
-  }, [hourly, startTime, visibleCount]);
-
-  /* ── current hour ref ── */
-  const now = useMemo(() => (nowMs != null ? new Date(nowMs) : new Date()), [nowMs]);
+  }, [hourly, startTime, startIndex, startAtCurrentHour, visibleCount, now]);
 
   /* ── hover column state ── */
   const [hoveredCol, setHoveredCol] = useState<number | null>(null);
@@ -272,25 +311,48 @@ export default function ForecastTable({
   const scrollRef = useRef<HTMLDivElement>(null);
   const labelWidthPx = compact ? 72 : 96;
 
-  /* ── find current hour index ── */
+  /* ── find current hour index ──
+     Com `startIndex` (nowIndex do eixo partilhado) a coluna «agora» é a do
+     índice global — o mesmo instante que a régua marca, não um relógio
+     paralelo. Sem provider mantém o relógio `now` (baked→vivo). */
+  const isNowCol = useCallback(
+    (globalIdx: number, iso: string) =>
+      startIndex != null && startIndex >= 0
+        ? globalIdx === startIndex
+        : isCurrentHour(iso, now),
+    [startIndex, now],
+  );
   const currentHourIndex = useMemo(() => {
+    if (startIndex != null && startIndex >= 0) {
+      const rel = startIndex - visibleStart;
+      return rel >= 0 && rel < visible.length ? rel : -1;
+    }
     return visible.findIndex((h) => isCurrentHour(h.time, now));
-  }, [visible, now]);
+  }, [visible, visibleStart, startIndex, now]);
 
+  // UX v3 §5: contorno da coluna «agora» = fg a 30% (classe em globals.css).
   const nowCol = useCallback(
     (i: number) =>
-      currentHourIndex >= 0 && i === currentHourIndex ? 'ring-1 ring-inset ring-accent/45' : '',
+      currentHourIndex >= 0 && i === currentHourIndex ? 'forecast-col-now' : '',
     [currentHourIndex],
   );
 
   const labelW = compact ? 'w-[72px] min-w-[72px]' : 'w-[96px] min-w-[96px]';
   const hourW = compact ? 'w-[28px] min-w-[28px] max-w-[28px]' : 'min-w-[40px]';
 
-  /* ── scroll to current hour on mount ── */
+  /* ── scroll to current hour on mount ──
+     A tabela abre sempre na hora corrente (currentHourIndex 0, 48 colunas),
+     com ou sem o live do eixo — as deps do efeito não mudam depois do mount,
+     por isso corre uma só vez. O race é o timer de 200 ms: dispara DEPOIS de
+     um clique cedo (chip de dia, drag/wheel), repõe scrollLeft a 0 e
+     interrompe o scrollTo suave. O auto-centro cede SEMPRE a navegação
+     explícita do utilizador. */
+  const userNavigatedRef = useRef(false);
   useEffect(() => {
     if (scrollRef.current && currentHourIndex >= 0) {
       const container = scrollRef.current;
       const timer = setTimeout(() => {
+        if (userNavigatedRef.current) return;
         const labelWidth = labelWidthPx;
         const dataStart = labelWidth;
         const cellWidth = (container.scrollWidth - labelWidth) / visible.length;
@@ -302,24 +364,41 @@ export default function ForecastTable({
     }
   }, [currentHourIndex, visible.length, labelWidthPx]);
 
-  const dayGroups = useMemo(() => {
-    const groups: { day: string; dayLabel: string; startIndex: number }[] = [];
-    let currentDay = '';
-    visible.forEach((h, i) => {
-      const dayKey = h.time.slice(0, 10);
-      if (dayKey !== currentDay) {
-        currentDay = dayKey;
-        groups.push({
-          day: dayKey,
-          dayLabel: formatDayShort(h.time, locale),
-          startIndex: i,
-        });
-      }
-    });
-    return groups;
-  }, [visible, locale]);
+  const dayGroups = useMemo(() => groupForecastDays(visible, locale), [visible, locale]);
 
-  const [activeDayGroupIndex, setActiveDayGroupIndex] = useState(0);
+  // Colunas que abrem um novo dia civil — separador vertical da spec §5.
+  const dayStart = useMemo(
+    () =>
+      visible.map(
+        (h, i) => i === 0 || h.time.slice(0, 10) !== visible[i - 1].time.slice(0, 10),
+      ),
+    [visible],
+  );
+
+  // UX v3 §5 — chips de dia relativos: «Hoje · Amanhã · qui 25 …». O dia
+  // civil compara-se em wall-time Lisboa com o relógio baked (`now`).
+  const tCommon = getTranslation(locale).common;
+  const todayKey = lisbonHourKeyFromDate(now).slice(0, 10);
+  const tomorrowKey = lisbonHourKeyFromDate(
+    new Date(now.getTime() + 86_400_000),
+  ).slice(0, 10);
+  const dayChipLabel = useCallback(
+    (g: ForecastDayGroup) =>
+      g.day === todayKey
+        ? tCommon.today
+        : g.day === tomorrowKey
+          ? tCommon.tomorrow
+          : g.shortLabel,
+    [todayKey, tomorrowKey, tCommon.today, tCommon.tomorrow],
+  );
+
+  /* Dia activo — IMPERATIVO (data-active no chip + texto no canto sticky):
+     o scroll que acompanha a hora escolhida não pode re-renderizar a
+     tabela (0 renders por passo de scrub — UX v3 §5, medido em
+     window.__ventuFtRenders). */
+  const chipsRef = useRef<HTMLDivElement>(null);
+  const cornerDayRef = useRef<HTMLSpanElement>(null);
+  const mobileDayRef = useRef<HTMLParagraphElement>(null);
 
   const getColumnIndexAtScroll = useCallback(
     (scrollLeft: number, clientWidth: number, scrollWidth: number) => {
@@ -346,10 +425,33 @@ export default function ForecastTable({
     [dayGroups],
   );
 
+  /* Aplica o dia activo por DOM: marca o chip (data-active) e actualiza o
+     rótulo do canto sticky + o rótulo mobile — sem state, sem re-render. */
+  const applyActiveDay = useCallback(
+    (idx: number) => {
+      const g = dayGroups[idx];
+      if (!g) return;
+      const label = dayChipLabel(g);
+      chipsRef.current
+        ?.querySelectorAll('[data-day-chip]')
+        .forEach((el, i) => {
+          if (i === idx) el.setAttribute('data-active', '');
+          else el.removeAttribute('data-active');
+        });
+      for (const el of [cornerDayRef.current, mobileDayRef.current]) {
+        if (!el) continue;
+        if (el.textContent !== label) el.textContent = label;
+        if (el instanceof HTMLElement && el.title !== label) el.title = label;
+      }
+    },
+    [dayGroups, dayChipLabel],
+  );
+
   const scrollToDayGroup = (groupIndex: number) => {
     const group = dayGroups[groupIndex];
     if (!group || !scrollRef.current) return;
-    setActiveDayGroupIndex(groupIndex);
+    userNavigatedRef.current = true;
+    applyActiveDay(groupIndex);
     const el = scrollRef.current;
     const dataWidth = Math.max(1, el.scrollWidth - labelWidthPx);
     const cellWidth = dataWidth / visible.length;
@@ -361,9 +463,9 @@ export default function ForecastTable({
   useEffect(() => {
     if (dayGroups.length === 0) return;
     if (currentHourIndex >= 0) {
-      setActiveDayGroupIndex(dayIndexForColumn(currentHourIndex));
+      applyActiveDay(dayIndexForColumn(currentHourIndex));
     }
-  }, [currentHourIndex, dayGroups.length, dayIndexForColumn]);
+  }, [currentHourIndex, dayGroups.length, dayIndexForColumn, applyActiveDay]);
 
   useEffect(() => {
     const el = scrollRef.current;
@@ -371,17 +473,18 @@ export default function ForecastTable({
 
     const onScroll = () => {
       const col = getColumnIndexAtScroll(el.scrollLeft, el.clientWidth, el.scrollWidth);
-      setActiveDayGroupIndex(dayIndexForColumn(col));
+      applyActiveDay(dayIndexForColumn(col));
     };
 
     onScroll();
     el.addEventListener('scroll', onScroll, { passive: true });
     return () => el.removeEventListener('scroll', onScroll);
-  }, [dayGroups.length, getColumnIndexAtScroll, dayIndexForColumn]);
+  }, [dayGroups.length, getColumnIndexAtScroll, dayIndexForColumn, applyActiveDay]);
 
   /* ── row presence checks ── */
   const hasGust = visible.some((h) => typeof h.windGust === 'number');
   const hasWaterTemp = visible.some((h) => typeof h.waterTemp === 'number');
+  const hasUv = visible.some((h) => typeof h.uvIndex === 'number');
   const hasTide = visible.some((h) => typeof h.tideHeight === 'number');
   const tidePhases = useMemo(
     () => (hasTide ? getTidePhasesForHours(visible) : []),
@@ -393,6 +496,21 @@ export default function ForecastTable({
   const sportLabel = sport
     ? getSportLabel(sport, locale)
     : undefined;
+
+  /* ── mobile (<768 px): lista vertical «Hora a hora» — UX v3 §5 ── */
+  if (compact) {
+    return (
+      <ForecastHourlyList
+        visible={visible}
+        visibleStart={visibleStart}
+        locale={locale}
+        sportLabel={sportLabel}
+        caption={t.caption.replace('{hours}', String(visible.length))}
+        now={now}
+        nowIndex={startIndex}
+      />
+    );
+  }
 
   /* ── wave-correction title for the waves row label ── */
   const ftT = getTranslation(locale).spotsUi;
@@ -406,10 +524,21 @@ export default function ForecastTable({
   /* ── cell dimensions ── */
   const cellPx = compact ? 'px-0.5 py-0.5' : 'px-2 py-1';
   const labelCellPx = compact ? 'pl-2 pr-1 py-0.5' : 'px-2 py-1';
-  const numText = compact ? 'text-[10px] leading-tight' : 'text-num-xs md:text-num';
+  // UX v3 §5 — tipo 13 px mono nas células de dados (a linha fica com
+  // 36 px via globals.css .forecast-table-scroll tbody).
+  const numText = compact ? 'text-[10px] leading-tight' : 'text-[13px]';
   const metaText = compact ? 'text-[9px] leading-tight' : 'text-meta-xs md:text-meta-sm';
   const tableMinW = compact ? 'w-max' : 'min-w-[600px] md:min-w-[800px]';
-  const activeDayLabel = dayGroups[activeDayGroupIndex]?.dayLabel ?? '';
+  // Dia activo no primeiro paint (determinístico — `now` é baked); o
+  // scroll passa a geri-lo por DOM via applyActiveDay.
+  const initialDayGroupIndex =
+    dayGroups.length === 0
+      ? -1
+      : currentHourIndex >= 0
+        ? dayIndexForColumn(currentHourIndex)
+        : 0;
+  const activeDayLabel =
+    initialDayGroupIndex >= 0 ? dayChipLabel(dayGroups[initialDayGroupIndex]) : '';
 
   return (
     <div className="space-y-2">
@@ -423,22 +552,23 @@ export default function ForecastTable({
 
       {dayGroups.length > 1 && (
         <div className="flex flex-col gap-1.5 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-meta-sm font-semibold text-fg px-0.5 md:hidden">
+          <p
+            ref={mobileDayRef}
+            className="text-meta-sm font-semibold text-fg px-0.5 md:hidden"
+          >
             {activeDayLabel}
           </p>
-          <div className="flex gap-1 overflow-x-auto no-scrollbar pb-1">
+          <div ref={chipsRef} className="flex gap-1 overflow-x-auto no-scrollbar pb-1">
             {dayGroups.map((group, i) => (
               <button
                 key={group.day}
                 type="button"
+                data-day-chip
+                data-active={i === initialDayGroupIndex ? '' : undefined}
                 onClick={() => scrollToDayGroup(i)}
-                className={`px-2.5 py-1 rounded-pill text-meta-xs whitespace-nowrap shrink-0 transition-all ${
-                  activeDayGroupIndex === i
-                    ? 'bg-score-good/20 text-score-good border border-score-good/30 font-semibold'
-                    : 'bg-surface-1/[0.04] text-fg-muted border border-divider hover:bg-surface-2/[0.08]'
-                }`}
+                className="inline-flex min-h-11 items-center px-2.5 rounded-pill text-meta-sm whitespace-nowrap shrink-0 transition-all bg-surface-1/[0.04] text-fg-muted border border-divider hover:bg-surface-2/[0.08] data-[active]:bg-score-good/20 data-[active]:text-score-good data-[active]:border-score-good/30 data-[active]:font-semibold"
               >
-                {group.dayLabel}
+                {dayChipLabel(group)}
               </button>
             ))}
           </div>
@@ -454,7 +584,11 @@ export default function ForecastTable({
         tabIndex={0}
         role="region"
         aria-label={t.caption.replace('{hours}', String(visibleCount))}
+        onPointerDown={() => {
+          userNavigatedRef.current = true;
+        }}
         onWheel={(e) => {
+          userNavigatedRef.current = true;
           if (window.matchMedia('(pointer: coarse)').matches) return;
           if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) {
             e.preventDefault();
@@ -478,7 +612,11 @@ export default function ForecastTable({
               >
                 <div className="flex flex-col gap-0.5">
                   {dayGroups.length > 1 ? (
-                    <span className="text-fg truncate max-w-[68px]" title={activeDayLabel}>
+                    <span
+                      ref={cornerDayRef}
+                      className="text-fg truncate max-w-[68px]"
+                      title={activeDayLabel}
+                    >
                       {activeDayLabel}
                     </span>
                   ) : (
@@ -488,7 +626,7 @@ export default function ForecastTable({
                 </div>
               </th>
               {visible.map((h, i) => {
-                const current = isCurrentHour(h.time, now);
+                const current = isNowCol(visibleStart + i, h.time);
                 const isNewDay = i === 0 || h.time.slice(0, 10) !== visible[i - 1].time.slice(0, 10);
                 return (
                   <th
@@ -496,6 +634,8 @@ export default function ForecastTable({
                     scope="col"
                     data-tl-col={visibleStart + i}
                     className={`sticky top-0 z-20 ${hourW} ${cellPx} font-mono ${metaText} max-md:snap-start ${nowCol(i)} ${
+                      isNewDay ? 'forecast-col-daystart' : ''
+                    } ${
                       current
                         ? 'bg-accent/12 text-fg font-semibold'
                         : isNewDay
@@ -506,7 +646,7 @@ export default function ForecastTable({
                   >
                     <div className="flex flex-col items-center">
                       {isNewDay && !compact && (
-                        <span className="text-[9px] md:text-[10px] font-semibold text-fg-subtle leading-none mb-0.5">
+                        <span className="text-[11px] font-semibold text-fg-subtle leading-none mb-0.5">
                           {formatDayShort(h.time, locale)}
                         </span>
                       )}
@@ -519,6 +659,44 @@ export default function ForecastTable({
           </thead>
 
         <tbody data-visual-dynamic>
+          {/* ── SCORE (primeira linha — UX v3 §5) ── */}
+          {hasAnyScore && (
+            <tr>
+              <th
+                scope="row"
+                className={`forecast-sticky-label ${labelW} ${labelCellPx} text-left text-meta-xs md:text-meta-sm text-fg font-semibold border-r-2 border-b border-divider`}
+              >
+                {sportLabel ?? t.score}
+              </th>
+              {visible.map((h, i) => {
+                const hasScore = typeof h.score === 'number';
+                const variant = hasScore ? scoreVariant(h.score!) : '--score-closed';
+                return (
+                  <td
+                    key={i}
+                    data-tl-col={visibleStart + i}
+                    className={`${hourW} ${cellPx} max-md:snap-start ${nowCol(i)} font-mono ${numText} font-semibold ${
+                      dayStart[i] ? 'forecast-col-daystart' : ''
+                    } ${hoveredCol === i ? 'bg-surface-2/[0.08]' : ''} transition-colors duration-fast border-b border-divider/20`}
+                    style={
+                      hasScore
+                        ? ({
+                            backgroundColor: `rgb(var(${variant}) / 0.35)`,
+                            color: `rgb(var(${variant}))`,
+                          } as React.CSSProperties)
+                        : undefined
+                    }
+                    title={buildTooltip(h, sportLabel)}
+                    onMouseEnter={() => setHoveredCol(i)}
+                    onMouseLeave={() => setHoveredCol(null)}
+                  >
+                    {hasScore ? h.score : '—'}
+                  </td>
+                );
+              })}
+            </tr>
+          )}
+
           {/* ── WAVES ── */}
           <tr>
             <th
@@ -539,8 +717,8 @@ export default function ForecastTable({
                 key={i}
                 data-tl-col={visibleStart + i}
                 className={`${hourW} ${cellPx} max-md:snap-start ${nowCol(i)} ${waveBg(h.waveHeight)} font-mono ${numText} ${
-                  hoveredCol === i ? 'bg-surface-2/[0.08]' : ''
-                } transition-colors duration-fast border-b border-divider/20`}
+                  dayStart[i] ? 'forecast-col-daystart' : ''
+                } ${hoveredCol === i ? 'bg-surface-2/[0.08]' : ''} transition-colors duration-fast border-b border-divider/20`}
                 title={buildTooltip(h, sportLabel)}
                 onMouseEnter={() => setHoveredCol(i)}
                 onMouseLeave={() => setHoveredCol(null)}
@@ -563,8 +741,8 @@ export default function ForecastTable({
                 key={i}
                 data-tl-col={visibleStart + i}
                 className={`${hourW} ${cellPx} max-md:snap-start ${nowCol(i)} ${periodBg(h.wavePeriod)} font-mono ${numText} ${
-                  hoveredCol === i ? 'bg-surface-2/[0.08]' : ''
-                } transition-colors duration-fast border-b border-divider/20`}
+                  dayStart[i] ? 'forecast-col-daystart' : ''
+                } ${hoveredCol === i ? 'bg-surface-2/[0.08]' : ''} transition-colors duration-fast border-b border-divider/20`}
                 title={buildTooltip(h, sportLabel)}
                 onMouseEnter={() => setHoveredCol(i)}
                 onMouseLeave={() => setHoveredCol(null)}
@@ -590,7 +768,7 @@ export default function ForecastTable({
                   data-tl-col={visibleStart + i}
                   className={`${hourW} ${cellPx} max-md:snap-start ${nowCol(i)} ${windBg(windKt)} font-mono ${numText} ${windText(
                     windKt,
-                  )} ${hoveredCol === i ? 'bg-surface-2/[0.08]' : ''} transition-colors duration-fast border-b border-divider/20`}
+                  )} ${dayStart[i] ? 'forecast-col-daystart' : ''} ${hoveredCol === i ? 'bg-surface-2/[0.08]' : ''} transition-colors duration-fast border-b border-divider/20`}
                   title={buildTooltip(h, sportLabel)}
                   onMouseEnter={() => setHoveredCol(i)}
                   onMouseLeave={() => setHoveredCol(null)}
@@ -599,36 +777,6 @@ export default function ForecastTable({
                 </td>
               );
             })}
-          </tr>
-
-          {/* ── WIND DIRECTION ── */}
-          <tr>
-            <th
-              scope="row"
-              className={`forecast-sticky-label ${labelW} ${labelCellPx} text-left ${metaText} text-fg-subtle font-medium border-r-2 border-divider`}
-            >
-              {t.direction}
-            </th>
-            {visible.map((h, i) => (
-              <td
-                key={i}
-                data-tl-col={visibleStart + i}
-                  className={`${hourW} ${cellPx} max-md:snap-start ${nowCol(i)} ${windDirBg(
-                  h.windDirection,
-                  coastOrientation,
-                )} font-mono ${metaText} ${
-                  hoveredCol === i ? 'bg-surface-2/[0.08]' : ''
-                } transition-colors duration-fast border-b border-divider/20`}
-                title={buildTooltip(h, sportLabel)}
-                onMouseEnter={() => setHoveredCol(i)}
-                onMouseLeave={() => setHoveredCol(null)}
-              >
-                <span className="inline-flex items-center gap-0.5">
-                  <span>{getWindArrow(h.windDirection)}</span>
-                  <span className="hidden md:inline">{getCardinalLabel(h.windDirection)}</span>
-                </span>
-              </td>
-            ))}
           </tr>
 
           {/* ── GUST (conditional) ── */}
@@ -649,8 +797,8 @@ export default function ForecastTable({
                     className={`${hourW} ${cellPx} max-md:snap-start ${nowCol(i)} ${
                       gustKt !== null ? gustBg(gustKt) : 'bg-surface-1/[0.04]'
                     } font-mono ${numText} text-fg-muted ${
-                      hoveredCol === i ? 'bg-surface-2/[0.08]' : ''
-                    } transition-colors duration-fast border-b border-divider/20`}
+                      dayStart[i] ? 'forecast-col-daystart' : ''
+                    } ${hoveredCol === i ? 'bg-surface-2/[0.08]' : ''} transition-colors duration-fast border-b border-divider/20`}
                     title={buildTooltip(h, sportLabel)}
                     onMouseEnter={() => setHoveredCol(i)}
                     onMouseLeave={() => setHoveredCol(null)}
@@ -662,39 +810,35 @@ export default function ForecastTable({
             </tr>
           )}
 
-          {/* ── WATER TEMP (conditional) ── */}
-          {hasWaterTemp && (
-            <tr>
-              <th
-                scope="row"
-                className={`forecast-sticky-label ${labelW} ${labelCellPx} text-left ${metaText} text-fg-subtle font-medium border-r-2 border-divider`}
+          {/* ── WIND DIRECTION ── */}
+          <tr>
+            <th
+              scope="row"
+              className={`forecast-sticky-label ${labelW} ${labelCellPx} text-left ${metaText} text-fg-subtle font-medium border-r-2 border-divider`}
+            >
+              {t.direction}
+            </th>
+            {visible.map((h, i) => (
+              <td
+                key={i}
+                data-tl-col={visibleStart + i}
+                  className={`${hourW} ${cellPx} max-md:snap-start ${nowCol(i)} ${windDirBg(
+                  h.windDirection,
+                  coastOrientation,
+                )} font-mono ${numText} ${
+                  dayStart[i] ? 'forecast-col-daystart' : ''
+                } ${hoveredCol === i ? 'bg-surface-2/[0.08]' : ''} transition-colors duration-fast border-b border-divider/20`}
+                title={buildTooltip(h, sportLabel)}
+                onMouseEnter={() => setHoveredCol(i)}
+                onMouseLeave={() => setHoveredCol(null)}
               >
-                {t.water}
-              </th>
-              {visible.map((h, i) => (
-                <td
-                  key={i}
-                  data-tl-col={visibleStart + i}
-                  className={`${hourW} ${cellPx} max-md:snap-start ${nowCol(i)} ${
-                    typeof h.waterTemp === 'number'
-                      ? waterBg(h.waterTemp)
-                      : 'bg-surface-1/[0.04]'
-                  } font-mono ${numText} ${
-                    typeof h.waterTemp === 'number'
-                      ? waterText(h.waterTemp)
-                      : 'text-fg-subtle'
-                  } ${hoveredCol === i ? 'bg-surface-2/[0.08]' : ''} transition-colors duration-fast border-b border-divider/20`}
-                  title={buildTooltip(h, sportLabel)}
-                  onMouseEnter={() => setHoveredCol(i)}
-                  onMouseLeave={() => setHoveredCol(null)}
-                >
-                  {typeof h.waterTemp === 'number'
-                    ? h.waterTemp.toFixed(1)
-                    : '—'}
-                </td>
-              ))}
-            </tr>
-          )}
+                <span className="inline-flex items-center gap-0.5">
+                  <span>{getWindArrow(h.windDirection)}</span>
+                  <span className="hidden md:inline">{getCardinalLabel(h.windDirection)}</span>
+                </span>
+              </td>
+            ))}
+          </tr>
 
           {/* ── TIDE (conditional) ── */}
           {hasTide && (
@@ -727,8 +871,9 @@ export default function ForecastTable({
                     className={`${hourW} ${cellPx} max-md:snap-start ${nowCol(i)} ${
                       phase ? tidePhaseBg(phase) : 'bg-surface-1/[0.04]'
                     } ${metaText} ${phase ? tidePhaseText(phase) : 'text-fg-subtle'} ${
-                      hoveredCol === i ? 'bg-surface-2/[0.08]' : ''
-                    } transition-colors duration-fast border-b border-divider/20`}
+                      dayStart[i] ? 'forecast-col-daystart' : ''
+                    } ${hoveredCol === i ? 'bg-surface-2/[0.08]' : ''} transition-colors duration-fast border-b border-divider/20`}
+                    aria-label={phaseTitle}
                     title={phaseTitle}
                     onMouseEnter={() => setHoveredCol(i)}
                     onMouseLeave={() => setHoveredCol(null)}
@@ -740,47 +885,235 @@ export default function ForecastTable({
             </tr>
           )}
 
-          {/* ── SCORE (conditional, heavy visual weight) ── */}
-          {hasAnyScore && (
-            <tr className="border-t-2 border-divider-strong">
+          {/* ── WATER TEMP (conditional) ── */}
+          {hasWaterTemp && (
+            <tr>
               <th
                 scope="row"
-                className={`forecast-sticky-label ${labelW} ${labelCellPx} text-left text-meta-xs md:text-meta-sm text-fg font-semibold border-r-2 border-t border-b border-divider`}
+                className={`forecast-sticky-label ${labelW} ${labelCellPx} text-left ${metaText} text-fg-subtle font-medium border-r-2 border-divider`}
               >
-                {sportLabel ?? t.score}
+                {t.water}
               </th>
-              {visible.map((h, i) => {
-                const hasScore = typeof h.score === 'number';
-                const variant = hasScore ? scoreVariant(h.score!) : '--score-closed';
-                return (
-                  <td
-                    key={i}
-                    data-tl-col={visibleStart + i}
-                    className={`${hourW} ${cellPx} max-md:snap-start ${nowCol(i)} font-mono ${numText} font-semibold ${
-                      hoveredCol === i ? 'bg-surface-2/[0.08]' : ''
-                    } transition-colors duration-fast border-b border-divider/20`}
-                    style={
-                      hasScore
-                        ? ({
-                            backgroundColor: `rgb(var(${variant}) / 0.35)`,
-                            color: `rgb(var(${variant}))`,
-                          } as React.CSSProperties)
-                        : undefined
-                    }
-                    title={buildTooltip(h, sportLabel)}
-                    onMouseEnter={() => setHoveredCol(i)}
-                    onMouseLeave={() => setHoveredCol(null)}
-                  >
-                    {hasScore ? h.score : '—'}
-                  </td>
-                );
-              })}
+              {visible.map((h, i) => (
+                <td
+                  key={i}
+                  data-tl-col={visibleStart + i}
+                  className={`${hourW} ${cellPx} max-md:snap-start ${nowCol(i)} ${
+                    typeof h.waterTemp === 'number'
+                      ? waterBg(h.waterTemp)
+                      : 'bg-surface-1/[0.04]'
+                  } font-mono ${numText} ${
+                    typeof h.waterTemp === 'number'
+                      ? waterText(h.waterTemp)
+                      : 'text-fg-subtle'
+                  } ${dayStart[i] ? 'forecast-col-daystart' : ''} ${hoveredCol === i ? 'bg-surface-2/[0.08]' : ''} transition-colors duration-fast border-b border-divider/20`}
+                  title={buildTooltip(h, sportLabel)}
+                  onMouseEnter={() => setHoveredCol(i)}
+                  onMouseLeave={() => setHoveredCol(null)}
+                >
+                  {typeof h.waterTemp === 'number'
+                    ? h.waterTemp.toFixed(1)
+                    : '—'}
+                </td>
+              ))}
             </tr>
           )}
+
+          {/* ── UV (conditional) — índice previsto por hora, escala OMS ── */}
+          {hasUv && (
+            <tr>
+              <th
+                scope="row"
+                className={`forecast-sticky-label ${labelW} ${labelCellPx} text-left ${metaText} text-fg-subtle font-medium border-r-2 border-divider`}
+              >
+                {t.uv}
+              </th>
+              {visible.map((h, i) => (
+                <td
+                  key={i}
+                  data-tl-col={visibleStart + i}
+                  className={`${hourW} ${cellPx} max-md:snap-start ${nowCol(i)} ${
+                    typeof h.uvIndex === 'number'
+                      ? uvBg(h.uvIndex)
+                      : 'bg-surface-1/[0.04]'
+                  } font-mono ${numText} ${
+                    typeof h.uvIndex === 'number' && h.uvIndex >= 6
+                      ? 'text-data-period'
+                      : 'text-fg-muted'
+                  } ${dayStart[i] ? 'forecast-col-daystart' : ''} ${hoveredCol === i ? 'bg-surface-2/[0.08]' : ''} transition-colors duration-fast border-b border-divider/20`}
+                  title={buildTooltip(h, sportLabel)}
+                  onMouseEnter={() => setHoveredCol(i)}
+                  onMouseLeave={() => setHoveredCol(null)}
+                >
+                  {typeof h.uvIndex === 'number' ? h.uvIndex.toFixed(0) : '—'}
+                </td>
+              ))}
+            </tr>
+          )}
+
         </tbody>
         </table>
       </div>
       </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+ *  ForecastHourlyList — mobile (<768 px), UX v3 §5.
+ *
+ *  Uma linha por hora (56 px), agrupada por dia civil com cabeçalhos
+ *  sticky («Quarta, 23»). Mostra as primeiras 24 h e revela +24 por toque
+ *  em «Mostrar mais 24 h». A linha escolhida recebe data-tl-selected via
+ *  ForecastTimelineSync (imperativo — sem re-render por passo de scrub) e
+ *  o toque muda o índice do eixo partilhado pelo mesmo handler delegado
+ *  (data-tl-col = índice global).
+ *  ═══════════════════════════════════════════════════════════════════════ */
+
+const MOBILE_PAGE_HOURS = 24;
+
+function ForecastHourlyList({
+  visible,
+  visibleStart,
+  locale,
+  sportLabel,
+  caption,
+  now,
+  nowIndex,
+}: {
+  visible: ForecastHour[];
+  visibleStart: number;
+  locale: string;
+  sportLabel?: string;
+  caption: string;
+  /** Relógio baked — fallback da linha «agora» sem eixo partilhado. */
+  now: Date;
+  /** Índice «agora» do eixo partilhado — quando definido manda no `now`. */
+  nowIndex?: number;
+}) {
+  const tf = getTranslation(locale).spotPageForecast;
+  const tideLabels = getTranslation(locale).tideLabels;
+  const fmt = getInstrumentFmt(locale);
+  const [shown, setShown] = useState(MOBILE_PAGE_HOURS);
+  const shownHours = visible.slice(0, shown);
+  const groups = useMemo(
+    () => groupForecastDays(shownHours, locale),
+    [shownHours, locale],
+  );
+  const tidePhases = useMemo(
+    () => getTidePhasesForHours(shownHours),
+    [shownHours],
+  );
+  const loc = validateLocale(locale);
+
+  return (
+    <div
+      className="forecast-hourly-list"
+      data-tl-start={visibleStart}
+      data-tl-count={shownHours.length}
+      aria-label={caption}
+    >
+      {groups.map((g) => (
+        <section key={g.day} aria-label={g.longLabel} className="forecast-day-group">
+          <h3 className="forecast-day-header m-0 px-3 py-2 text-[13px] font-semibold tracking-[0.04em] text-fg">
+            {g.longLabel}
+          </h3>
+          <ol className="m-0 list-none p-0">
+            {shownHours.slice(g.startIndex, g.startIndex + g.count).map((h, j) => {
+              const i = g.startIndex + j;
+              const windKt = Math.round(h.windSpeed * 1.94384);
+              const gustKt =
+                typeof h.windGust === 'number'
+                  ? Math.round(h.windGust * 1.94384)
+                  : null;
+              const phase = tidePhases[i];
+              const tideTitle =
+                phase != null
+                  ? {
+                      high: tideLabels.high,
+                      low: tideLabels.low,
+                      rising: tideLabels.rising,
+                      falling: tideLabels.falling,
+                    }[phase]
+                  : undefined;
+              // «↑ a encher» / «↓ a vazar»; nos extremos só o nome da maré.
+              const tideText =
+                phase === 'rising'
+                  ? `${TIDE_PHASE_CELL.rising[loc]} ${tf.tideRising}`
+                  : phase === 'falling'
+                    ? `${TIDE_PHASE_CELL.falling[loc]} ${tf.tideFalling}`
+                    : phase === 'high'
+                      ? tf.tideHigh
+                      : phase === 'low'
+                        ? tf.tideLow
+                        : '—';
+              const score = typeof h.score === 'number' ? h.score : null;
+              const variant = score !== null ? scoreVariant(score) : '--score-closed';
+              const current =
+                nowIndex != null && nowIndex >= 0
+                  ? visibleStart + i === nowIndex
+                  : isCurrentHour(h.time, now);
+              return (
+                <li key={h.time}>
+                  <button
+                    type="button"
+                    data-tl-col={visibleStart + i}
+                    aria-current={current ? 'time' : undefined}
+                    title={buildTooltip(h, sportLabel)}
+                    className={`forecast-hourly-row grid min-h-14 w-full grid-cols-[2.75rem_1.75rem_minmax(0,1fr)_auto_auto] items-center gap-x-3 border-b border-divider/40 px-3 text-left transition-colors duration-fast ${
+                      current ? 'forecast-col-now' : ''
+                    }`}
+                  >
+                    <span className="font-mono text-[13px] font-medium tabular-nums text-fg">
+                      {formatHourLabel(h.time, locale)}
+                    </span>
+                    <span
+                      className="rounded-sm px-0.5 text-center font-mono text-[13px] font-semibold tabular-nums"
+                      style={
+                        score !== null
+                          ? {
+                              backgroundColor: `rgb(var(${variant}) / 0.18)`,
+                              color: `rgb(var(${variant}))`,
+                            }
+                          : { color: 'rgb(var(--fg-subtle-rgb))' }
+                      }
+                    >
+                      {score ?? '—'}
+                    </span>
+                    {/* Onda compacta «1,9 m 12 s» — CORRECCOES-24SET §3:
+                        a spec proíbe truncar; se não couber numa linha
+                        quebra para duas dentro da célula (56 px cabe) — só
+                        entre altura e período, nunca entre número e unidade. */}
+                    <span className="min-w-0 font-mono text-[13px] leading-tight tabular-nums text-fg">
+                      <span className="whitespace-nowrap">{fmt.f1(h.waveHeight)} m</span>{' '}
+                      <span className="whitespace-nowrap">{fmt.f0(h.wavePeriod)} s</span>
+                    </span>
+                    <span className="whitespace-nowrap font-mono text-[13px] tabular-nums text-fg-muted">
+                      {getWindArrow(h.windDirection)} {windKt} kt
+                      {gustKt !== null ? ` (${gustKt})` : ''}
+                    </span>
+                    <span
+                      className="whitespace-nowrap font-mono text-[13px] tabular-nums text-fg-muted"
+                      title={tideTitle}
+                    >
+                      {tideText}
+                    </span>
+                  </button>
+                </li>
+              );
+            })}
+          </ol>
+        </section>
+      ))}
+      {shown < visible.length && (
+        <button
+          type="button"
+          onClick={() => setShown((s) => s + MOBILE_PAGE_HOURS)}
+          className="forecast-hourly-more flex min-h-11 w-full items-center justify-center px-3 py-2 text-[13px] font-medium text-fg-muted transition-colors duration-fast hover:text-fg"
+        >
+          {tf.showMore24}
+        </button>
+      )}
     </div>
   );
 }

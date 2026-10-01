@@ -2,7 +2,7 @@ import { localizedSpotName, localizedSpotRegion } from '@/lib/localizedSpotText'
 import { localizedText } from '@/lib/localizedText';
 import Link from 'next/link';
 import { ExternalLink, Video } from 'lucide-react';
-import { locales, getTranslation } from '@/lib/i18n';
+import { locales, getTranslation, validateLocale } from '@/lib/i18n';
 import { listAllLivecams, getLivecamSpotCount } from '@/lib/spotLivecams';
 import { spots } from '@/lib/spots';
 import { buildPageMetadata } from '@/lib/seo';
@@ -20,7 +20,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const isPt = locale === 'pt';
-  const loc = isPt ? 'pt' : 'en';
+  const loc = validateLocale(locale);
   const count = getLivecamSpotCount();
   const title = getTranslation(locale).pages.livecamsMetaTitle.replace('{count}', String(count))
   const description = getTranslation(locale).pages.livecamsMetaDescription.replace(

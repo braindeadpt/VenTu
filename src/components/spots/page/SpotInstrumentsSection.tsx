@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { Spot } from '@/types';
 import type { SportType } from '@/lib/sportRatings';
 import { getScoreTokens, type SportScore } from '@/lib/sportScore';
@@ -49,6 +49,12 @@ export interface SpotInstrumentsSectionProps {
     subtitle: string;
     gustLabel: string;
     gustHint: string;
+    uvLabel: string;
+    uvMaxLabel: string;
+    uvHint: string;
+    aqiLabel: string;
+    aqiHint: string;
+    aqiLevels: Record<import('@/lib/airQuality').AqiLevel, string>;
     seaStateTitle: string;
     seaStateHint: string;
     windContextTitle: string;
@@ -75,18 +81,27 @@ export default function SpotInstrumentsSection({
   conditions,
   tideSchedule,
   tideHourly,
+  selectedSport,
   score,
   freshnessNowMs,
   ariaLabel,
 }: SpotInstrumentsSectionProps) {
   const ti = getTranslation(locale).spotPageInstruments;
-  const { hours } = useSpotTimelineData();
+  const { hours, nowIndex } = useSpotTimelineData();
   const { index, isNow, selectedScore } = useSpotTimelineIndex();
 
   const rows = useInstrumentRows(spot);
   const rootRef = useRef<HTMLDivElement>(null);
   const paused = useInstrumentPaused(rootRef);
   const [open, setOpen] = useState<InstrumentId | null>(null);
+  // O miolo do acordeão fica montado durante o fecho — a animação
+  // grid-template-rows 1fr→0fr (240 ms, globals.css) precisa do conteúdo.
+  const [detailId, setDetailId] = useState<InstrumentId | null>(null);
+  useEffect(() => {
+    if (open || !detailId) return undefined;
+    const t = window.setTimeout(() => setDetailId(null), 280);
+    return () => window.clearTimeout(t);
+  }, [open, detailId]);
 
   const tier = getScoreTokens(selectedScore ?? score.score).tier;
 
@@ -122,7 +137,13 @@ export default function SpotInstrumentsSection({
     [conditions],
   );
 
-  const onToggle = (id: InstrumentId) => setOpen((cur) => (cur === id ? null : id));
+  const onToggle = (id: InstrumentId) => {
+    // Monta o painel no mesmo commit da abertura (0fr→1fr anima com
+    // conteúdo); no fecho o timeout do efeito desmonta após a transição.
+    const next = open === id ? null : id;
+    if (next) setDetailId(next);
+    setOpen(next);
+  };
 
   const coherence =
     conditions.observedWaveCoherenceWarning || conditions.observedWaveCoherenceRefused
@@ -135,6 +156,10 @@ export default function SpotInstrumentsSection({
       aria-label={ariaLabel}
       className="scroll-mt-32"
       data-spot-timeline-index={index}
+      // «true» quando o eixo já aterrou na hora actual (relógio vivo). Antes
+      // disso mostra a hora do build (padrão mounted+bakedAtMs) — quem lê o
+      // índice tem de esperar por isto, não por data-instrument-rows.
+      data-spot-timeline-live={nowIndex >= 0 ? 'true' : 'false'}
     >
       <h2 className="sr-only">{ariaLabel}</h2>
       <div
@@ -150,8 +175,7 @@ export default function SpotInstrumentsSection({
         <div className="grid grid-cols-1 gap-4 min-[760px]:grid-cols-3">
           <WindCard
             hour={hour}
-            coastOrientation={spot.coastOrientation}
-            bestWind={spot.bestWind}
+            spot={spot}
             locale={locale}
             open={open === 'wind'}
             onToggle={onToggle}
@@ -174,21 +198,27 @@ export default function SpotInstrumentsSection({
             onToggle={onToggle}
           />
         </div>
-        {open && (
-          <InstrumentDetail
-            open={open}
-            spot={spot}
-            locale={locale}
-            conditions={conditions}
-            hour={hour}
-            tideSchedule={tideSchedule}
-            tideHourly={tideHourly}
-            freshnessNowMs={freshnessNowMs}
-            scoreWindSource={scoreWindSource}
-            scoreWindCorrection={scoreWindCorrection}
-            copy={copy}
-          />
-        )}
+        <div className="ventu-inst-acc" data-open={open ? '' : undefined}>
+          <div className="ventu-inst-acc-inner">
+            {detailId && (
+              <InstrumentDetail
+                open={detailId}
+                spot={spot}
+                locale={locale}
+                selectedSport={selectedSport}
+                conditions={conditions}
+                hour={hour}
+                isNow={isNow}
+                tideSchedule={tideSchedule}
+                tideHourly={tideHourly}
+                freshnessNowMs={freshnessNowMs}
+                scoreWindSource={scoreWindSource}
+                scoreWindCorrection={scoreWindCorrection}
+                copy={copy}
+              />
+            )}
+          </div>
+        </div>
       </div>
     </section>
   );

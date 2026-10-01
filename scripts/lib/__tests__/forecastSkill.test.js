@@ -368,8 +368,18 @@ describe('stats', () => {
       { forecastHm0: 2.0, observedHm0: 2.3, leadTimeHours: 12 },
       { forecastHm0: 3.0, observedHm0: 3.3, leadTimeHours: 24 },
     ]);
-    expect(stats).toMatchObject({ n: 3, me: 0.3, mae: 0.3, rmse: 0.3, meanLeadHours: 14 });
+    expect(stats).toMatchObject({ n: 3, me: 0.3, mae: 0.3, rmse: 0.3, withinHalfM: 1, meanLeadHours: 14 });
     expect(stats.corr).toBeCloseTo(1, 5);
+  });
+
+  it('withinHalfM — fracção de leituras dentro de ±0,5 m da previsão', () => {
+    const stats = computeSkillStats([
+      { forecastHm0: 1.0, observedHm0: 1.2, leadTimeHours: 6 },  // |e|=0.2 dentro
+      { forecastHm0: 1.0, observedHm0: 1.5, leadTimeHours: 6 },  // |e|=0.5 dentro (fronteira)
+      { forecastHm0: 1.0, observedHm0: 1.6, leadTimeHours: 6 },  // |e|=0.6 fora
+      { forecastHm0: 2.0, observedHm0: 1.4, leadTimeHours: 6 },  // |e|=0.6 fora
+    ]);
+    expect(stats.withinHalfM).toBe(0.5);
   });
 
   it('devolve null sem pares', () => {

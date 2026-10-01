@@ -75,7 +75,9 @@ async function closeAndReopen(page: Page, query = ''): Promise<void> {
 }
 
 // C4 (auditoria 2026-09-16): as camadas secundárias vivem no menu «Camadas»
-// — os testes abrem-no antes de tocar no toggle. O radar ficou primário.
+// — os testes abrem-no antes de tocar no toggle. UX v3 §2 (M2): a barra do
+// topo desapareceu no /mapa e o radar passou também para o menu — todos os
+// toggles desta tabela vivem agora no popover.
 // O popover é portalizado para document.body (data-map-layers-popover),
 // fora de [data-map-controls] — o escopo do toggle depende de `inMenu`.
 const LAYERS = [
@@ -83,7 +85,7 @@ const LAYERS = [
   { name: 'temperatura (SST)', param: 'sst', attr: 'data-map-sst-toggle', lsKey: 'ventu.map.sst', inMenu: true },
   { name: 'altura significativa (HS)', param: 'hs', attr: 'data-map-hs-toggle', lsKey: 'ventu.map.hs', inMenu: true },
   { name: 'isóbatas', param: 'isobaths', attr: 'data-map-isobaths-toggle', lsKey: 'ventu.map.isobaths', inMenu: true },
-  { name: 'radar IPMA', param: 'radar', attr: 'data-map-radar-toggle', lsKey: 'ventu.radar.state', inMenu: false },
+  { name: 'radar IPMA', param: 'radar', attr: 'data-map-radar-toggle', lsKey: 'ventu.radar.state', inMenu: true },
 ] as const;
 
 type Layer = (typeof LAYERS)[number];

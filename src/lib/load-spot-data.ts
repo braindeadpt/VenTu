@@ -7,6 +7,7 @@ import type { SportType } from '@/lib/sportRatings'
 import type { SportScore } from '@/lib/sportScore'
 import { pickConfidenceFields } from '@/lib/forecastConfidence'
 import { pickMarineDisplayFields, pickObservedField } from '@/lib/marineConditions'
+import type { WaterQualityLive } from '@/lib/waterQuality'
 import type { ObservedConditions } from '@/lib/observations'
 import type { ObservedWave, ObservedWaveMeta } from '@/lib/observedWave'
 import { resolveConditionsEntry } from '@/lib/spotConditionsSource'
@@ -67,6 +68,8 @@ export interface ForecastRow {
   windDirection?: number
   windGust?: number
   waterTemp?: number
+  /** Índice UV previsto da hora (merge do pipeline, Open-Meteo). */
+  uvIndex?: number
 }
 
 /**
@@ -127,6 +130,23 @@ export interface SpotDetailConditions extends SpotListingConditions {
   /** Station wind bias baked by the merge (wind-bias.json) — badge tooltip. */
   windBias?: { station?: string; source?: string; me?: number; mae?: number; rmse?: number; n?: number }
   tideHeight?: number
+  /** Maré observada no maregrafo IH (SSH vs ZH) + estação — fresco <6h. */
+  tideObservedHeight?: number
+  tideObservedAt?: string
+  tideStation?: string
+  /** Anomalia de maré (m) — obs de-biased vs previsão (baseline por estação). */
+  tideAnomalyM?: number
+  /** Corrente medida por radar HF (EMODnet/IH Lisboa) — só spots na rede. */
+  currentMeasuredSpeed?: number
+  currentMeasuredDir?: number
+  currentMeasuredAt?: string
+  currentMeasuredNetwork?: string
+  waterQuality?: WaterQualityLive
+  /** Índice UV da hora corrente + máximo do dia (pipeline Open-Meteo). */
+  uvIndex?: number
+  uvIndexMax?: number
+  /** European AQI da hora corrente (air-quality.json, CAMS — camada suave). */
+  airQualityIndex?: number
 }
 
 /** Shared row shell for both loaders. */
@@ -269,6 +289,18 @@ function buildSpotData(
       | undefined,
     windBias: raw?.windBias as SpotDetailConditions['windBias'],
     tideHeight: raw?.tideHeight as number | undefined,
+    tideObservedHeight: raw?.tideObservedHeight as number | undefined,
+    tideObservedAt: raw?.tideObservedAt as string | undefined,
+    tideStation: raw?.tideStation as string | undefined,
+    tideAnomalyM: raw?.tideAnomalyM as number | undefined,
+    currentMeasuredSpeed: raw?.currentMeasuredSpeed as number | undefined,
+    currentMeasuredDir: raw?.currentMeasuredDir as number | undefined,
+    currentMeasuredAt: raw?.currentMeasuredAt as string | undefined,
+    currentMeasuredNetwork: raw?.currentMeasuredNetwork as string | undefined,
+    waterQuality: raw?.waterQuality as WaterQualityLive | undefined,
+    uvIndex: raw?.uvIndex as number | undefined,
+    uvIndexMax: raw?.uvIndexMax as number | undefined,
+    airQualityIndex: raw?.airQualityIndex as number | undefined,
   }
 
   return {

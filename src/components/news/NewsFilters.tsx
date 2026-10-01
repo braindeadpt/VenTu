@@ -91,7 +91,9 @@ export default function NewsFilters({ filters, onChange, locale, total, debounci
                 key={period}
                 onClick={() => onChange({ period: period as DateFilter, page: 1 })}
                 className={[
-                  'px-2.5 py-1.5 rounded-md text-sm min-h-[36px]',
+                  // `filter-pill-compact`: 44 px no toque, 36 só em desktop de
+                  // rato puro (a densidade que estas pastilhas já tinham).
+                  'filter-pill-compact px-2.5 py-1.5 rounded-md text-sm',
                   'transition-all duration-200 whitespace-nowrap',
                   active
                     ? 'bg-surface-2/[0.08] border border-divider-strong text-fg font-medium'

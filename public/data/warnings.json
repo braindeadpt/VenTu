@@ -1,773 +1,229 @@
 {
   "source": "ipma",
-  "fetchedAt": "2026-09-23T12:16:21.544Z",
+  "fetchedAt": "2026-09-30T23:50:25.621Z",
   "warnings": [
     {
-      "areaCode": "BGC",
-      "areaLabel": "Bragança",
-      "type": "Tempo Quente",
+      "areaCode": "ACE",
+      "areaLabel": "Angra do Heroísmo",
+      "type": "Precipitação",
       "level": "yellow",
-      "text": "Persistência de valores elevados da temperatura máxima.",
-      "startTime": "2026-09-23T06:34:00",
-      "endTime": "2026-09-24T18:00:00",
-      "relevant": false
+      "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada",
+      "startTime": "2026-10-01T21:00:00",
+      "endTime": "2026-10-02T18:00:00",
+      "relevant": true
     },
     {
-      "areaCode": "VIS",
-      "areaLabel": "Viseu",
-      "type": "Tempo Quente",
+      "areaCode": "AOC",
+      "areaLabel": "Santa Cruz das Flores",
+      "type": "Precipitação",
       "level": "yellow",
-      "text": "Persistência de valores elevados da temperatura máxima.",
-      "startTime": "2026-09-23T06:34:00",
-      "endTime": "2026-09-23T18:00:00",
-      "relevant": false
+      "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada",
+      "startTime": "2026-10-01T21:00:00",
+      "endTime": "2026-10-02T12:00:00",
+      "relevant": true
     },
     {
-      "areaCode": "EVR",
-      "areaLabel": "Évora",
-      "type": "Tempo Quente",
+      "areaCode": "AOR",
+      "areaLabel": "Vila do Porto",
+      "type": "Precipitação",
       "level": "yellow",
-      "text": "Persistência de valores elevados da temperatura máxima.",
-      "startTime": "2026-09-23T06:34:00",
-      "endTime": "2026-09-24T18:00:00",
-      "relevant": false
-    },
-    {
-      "areaCode": "GDA",
-      "areaLabel": "Guarda",
-      "type": "Tempo Quente",
-      "level": "yellow",
-      "text": "Persistência de valores elevados da temperatura máxima.",
-      "startTime": "2026-09-23T06:34:00",
-      "endTime": "2026-09-24T18:00:00",
-      "relevant": false
-    },
-    {
-      "areaCode": "VRL",
-      "areaLabel": "Vila Real",
-      "type": "Tempo Quente",
-      "level": "yellow",
-      "text": "Persistência de valores elevados da temperatura máxima.",
-      "startTime": "2026-09-23T06:34:00",
-      "endTime": "2026-09-24T18:00:00",
-      "relevant": false
-    },
-    {
-      "areaCode": "STM",
-      "areaLabel": "Santarém",
-      "type": "Tempo Quente",
-      "level": "yellow",
-      "text": "Persistência de valores elevados da temperatura máxima.",
-      "startTime": "2026-09-23T06:34:00",
-      "endTime": "2026-09-23T18:00:00",
-      "relevant": false
-    },
-    {
-      "areaCode": "MRM",
-      "areaLabel": "Madeira — Regiões Montanhosas",
-      "type": "Tempo Quente",
-      "level": "yellow",
-      "text": "Persistência de valores elevados da temperatura máxima.",
-      "startTime": "2026-09-24T09:00:00",
-      "endTime": "2026-09-25T18:00:00",
-      "relevant": false
-    },
-    {
-      "areaCode": "LSB",
-      "areaLabel": "Lisboa",
-      "type": "Tempo Quente",
-      "level": "yellow",
-      "text": "Persistência de valores elevados da temperatura máxima.",
-      "startTime": "2026-09-23T06:34:00",
-      "endTime": "2026-09-23T18:00:00",
-      "relevant": false
-    },
-    {
-      "areaCode": "MCN",
-      "areaLabel": "Madeira — Costa Norte",
-      "type": "Tempo Quente",
-      "level": "yellow",
-      "text": "Persistência de valores elevados da temperatura máxima.",
-      "startTime": "2026-09-24T09:00:00",
-      "endTime": "2026-09-25T18:00:00",
-      "relevant": false
-    },
-    {
-      "areaCode": "CBO",
-      "areaLabel": "Castelo Branco",
-      "type": "Tempo Quente",
-      "level": "yellow",
-      "text": "Persistência de valores elevados da temperatura máxima.",
-      "startTime": "2026-09-23T06:34:00",
-      "endTime": "2026-09-24T18:00:00",
-      "relevant": false
-    },
-    {
-      "areaCode": "PTG",
-      "areaLabel": "Portalegre",
-      "type": "Tempo Quente",
-      "level": "yellow",
-      "text": "Persistência de valores elevados da temperatura máxima.",
-      "startTime": "2026-09-23T06:34:00",
-      "endTime": "2026-09-24T18:00:00",
-      "relevant": false
-    },
-    {
-      "areaCode": "MPS",
-      "areaLabel": "Porto Santo",
-      "type": "Tempo Quente",
-      "level": "yellow",
-      "text": "Persistência de valores elevados da temperatura máxima.",
-      "startTime": "2026-09-24T09:00:00",
-      "endTime": "2026-09-25T18:00:00",
-      "relevant": false
-    },
-    {
-      "areaCode": "MCS",
-      "areaLabel": "Funchal",
-      "type": "Tempo Quente",
-      "level": "yellow",
-      "text": "Persistência de valores elevados da temperatura máxima.",
-      "startTime": "2026-09-24T09:00:00",
-      "endTime": "2026-09-25T18:00:00",
-      "relevant": false
+      "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada",
+      "startTime": "2026-10-02T00:00:00",
+      "endTime": "2026-10-03T10:00:00",
+      "relevant": true
     }
   ],
   "spotWarnings": {
-    "foz-arelho": [
+    "praia-vitoria": [
       {
-        "areaCode": "STM",
-        "areaLabel": "Santarém",
-        "type": "Tempo Quente",
+        "areaCode": "ACE",
+        "areaLabel": "Angra do Heroísmo",
+        "type": "Precipitação",
         "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-23T06:34:00",
-        "endTime": "2026-09-23T18:00:00",
-        "relevant": false
+        "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada",
+        "startTime": "2026-10-01T21:00:00",
+        "endTime": "2026-10-02T18:00:00",
+        "relevant": true
       }
     ],
-    "foil-foz-arelho": [
+    "santa-catarina-terceira": [
       {
-        "areaCode": "STM",
-        "areaLabel": "Santarém",
-        "type": "Tempo Quente",
+        "areaCode": "ACE",
+        "areaLabel": "Angra do Heroísmo",
+        "type": "Precipitação",
         "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-23T06:34:00",
-        "endTime": "2026-09-23T18:00:00",
-        "relevant": false
+        "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada",
+        "startTime": "2026-10-01T21:00:00",
+        "endTime": "2026-10-02T18:00:00",
+        "relevant": true
       }
     ],
-    "obidos-lagoon": [
+    "almoxarife": [
       {
-        "areaCode": "STM",
-        "areaLabel": "Santarém",
-        "type": "Tempo Quente",
+        "areaCode": "ACE",
+        "areaLabel": "Angra do Heroísmo",
+        "type": "Precipitação",
         "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-23T06:34:00",
-        "endTime": "2026-09-23T18:00:00",
-        "relevant": false
+        "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada",
+        "startTime": "2026-10-01T21:00:00",
+        "endTime": "2026-10-02T18:00:00",
+        "relevant": true
       }
     ],
-    "obidos-lagoon-sul": [
+    "mosteiros": [
       {
-        "areaCode": "STM",
-        "areaLabel": "Santarém",
-        "type": "Tempo Quente",
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
+        "type": "Precipitação",
         "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-23T06:34:00",
-        "endTime": "2026-09-23T18:00:00",
-        "relevant": false
+        "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada",
+        "startTime": "2026-10-02T00:00:00",
+        "endTime": "2026-10-03T10:00:00",
+        "relevant": true
       }
     ],
-    "obidos-lagoon-foz": [
+    "monte-verde": [
       {
-        "areaCode": "STM",
-        "areaLabel": "Santarém",
-        "type": "Tempo Quente",
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
+        "type": "Precipitação",
         "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-23T06:34:00",
-        "endTime": "2026-09-23T18:00:00",
-        "relevant": false
+        "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada",
+        "startTime": "2026-10-02T00:00:00",
+        "endTime": "2026-10-03T10:00:00",
+        "relevant": true
       }
     ],
-    "foz-arelho-beach": [
+    "santa-barbara": [
       {
-        "areaCode": "STM",
-        "areaLabel": "Santarém",
-        "type": "Tempo Quente",
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
+        "type": "Precipitação",
         "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-23T06:34:00",
-        "endTime": "2026-09-23T18:00:00",
-        "relevant": false
+        "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada",
+        "startTime": "2026-10-02T00:00:00",
+        "endTime": "2026-10-03T10:00:00",
+        "relevant": true
       }
     ],
-    "praia-del-rey": [
+    "milicias": [
       {
-        "areaCode": "STM",
-        "areaLabel": "Santarém",
-        "type": "Tempo Quente",
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
+        "type": "Precipitação",
         "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-23T06:34:00",
-        "endTime": "2026-09-23T18:00:00",
-        "relevant": false
+        "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada",
+        "startTime": "2026-10-02T00:00:00",
+        "endTime": "2026-10-03T10:00:00",
+        "relevant": true
       }
     ],
-    "almagreira": [
+    "agua-alto": [
       {
-        "areaCode": "STM",
-        "areaLabel": "Santarém",
-        "type": "Tempo Quente",
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
+        "type": "Precipitação",
         "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-23T06:34:00",
-        "endTime": "2026-09-23T18:00:00",
-        "relevant": false
+        "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada",
+        "startTime": "2026-10-02T00:00:00",
+        "endTime": "2026-10-03T10:00:00",
+        "relevant": true
       }
     ],
-    "baleal": [
+    "anjos": [
       {
-        "areaCode": "STM",
-        "areaLabel": "Santarém",
-        "type": "Tempo Quente",
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
+        "type": "Precipitação",
         "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-23T06:34:00",
-        "endTime": "2026-09-23T18:00:00",
-        "relevant": false
+        "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada",
+        "startTime": "2026-10-02T00:00:00",
+        "endTime": "2026-10-03T10:00:00",
+        "relevant": true
       }
     ],
-    "supertubos": [
+    "ponta-delgada": [
       {
-        "areaCode": "STM",
-        "areaLabel": "Santarém",
-        "type": "Tempo Quente",
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
+        "type": "Precipitação",
         "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-23T06:34:00",
-        "endTime": "2026-09-23T18:00:00",
-        "relevant": false
+        "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada",
+        "startTime": "2026-10-02T00:00:00",
+        "endTime": "2026-10-03T10:00:00",
+        "relevant": true
       }
     ],
-    "foz-sizandro": [
+    "calhetas": [
       {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Tempo Quente",
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
+        "type": "Precipitação",
         "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-23T06:34:00",
-        "endTime": "2026-09-23T18:00:00",
-        "relevant": false
+        "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada",
+        "startTime": "2026-10-02T00:00:00",
+        "endTime": "2026-10-03T10:00:00",
+        "relevant": true
       }
     ],
-    "coxos": [
+    "ribeira-quente": [
       {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Tempo Quente",
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
+        "type": "Precipitação",
         "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-23T06:34:00",
-        "endTime": "2026-09-23T18:00:00",
-        "relevant": false
+        "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada",
+        "startTime": "2026-10-02T00:00:00",
+        "endTime": "2026-10-03T10:00:00",
+        "relevant": true
       }
     ],
-    "ribeira-ilhas": [
+    "formosa-santa-maria": [
       {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Tempo Quente",
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
+        "type": "Precipitação",
         "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-23T06:34:00",
-        "endTime": "2026-09-23T18:00:00",
-        "relevant": false
+        "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada",
+        "startTime": "2026-10-02T00:00:00",
+        "endTime": "2026-10-03T10:00:00",
+        "relevant": true
       }
     ],
-    "empa": [
+    "porto-martins": [
       {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Tempo Quente",
+        "areaCode": "ACE",
+        "areaLabel": "Angra do Heroísmo",
+        "type": "Precipitação",
         "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-23T06:34:00",
-        "endTime": "2026-09-23T18:00:00",
-        "relevant": false
+        "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada",
+        "startTime": "2026-10-01T21:00:00",
+        "endTime": "2026-10-02T18:00:00",
+        "relevant": true
       }
     ],
-    "sao-lourenco": [
+    "cachorro-pico": [
       {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Tempo Quente",
+        "areaCode": "ACE",
+        "areaLabel": "Angra do Heroísmo",
+        "type": "Precipitação",
         "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-23T06:34:00",
-        "endTime": "2026-09-23T18:00:00",
-        "relevant": false
+        "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada",
+        "startTime": "2026-10-01T21:00:00",
+        "endTime": "2026-10-02T18:00:00",
+        "relevant": true
       }
     ],
-    "pedra-branca": [
+    "faja-cubres": [
       {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Tempo Quente",
+        "areaCode": "ACE",
+        "areaLabel": "Angra do Heroísmo",
+        "type": "Precipitação",
         "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-23T06:34:00",
-        "endTime": "2026-09-23T18:00:00",
-        "relevant": false
-      }
-    ],
-    "sao-sebastiao": [
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-23T06:34:00",
-        "endTime": "2026-09-23T18:00:00",
-        "relevant": false
-      }
-    ],
-    "foz-lizandro": [
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-23T06:34:00",
-        "endTime": "2026-09-23T18:00:00",
-        "relevant": false
-      }
-    ],
-    "praia-grande-sintra": [
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-23T06:34:00",
-        "endTime": "2026-09-23T18:00:00",
-        "relevant": false
-      }
-    ],
-    "adraga": [
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-23T06:34:00",
-        "endTime": "2026-09-23T18:00:00",
-        "relevant": false
-      }
-    ],
-    "guincho": [
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-23T06:34:00",
-        "endTime": "2026-09-23T18:00:00",
-        "relevant": false
-      }
-    ],
-    "seixal-bay": [
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-23T06:34:00",
-        "endTime": "2026-09-23T18:00:00",
-        "relevant": false
-      }
-    ],
-    "parede": [
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-23T06:34:00",
-        "endTime": "2026-09-23T18:00:00",
-        "relevant": false
-      }
-    ],
-    "carcavelos": [
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-23T06:34:00",
-        "endTime": "2026-09-23T18:00:00",
-        "relevant": false
-      }
-    ],
-    "nova-vaga": [
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-23T06:34:00",
-        "endTime": "2026-09-23T18:00:00",
-        "relevant": false
-      }
-    ],
-    "sao-joao-caparica": [
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-23T06:34:00",
-        "endTime": "2026-09-23T18:00:00",
-        "relevant": false
-      }
-    ],
-    "costa-caparica": [
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-23T06:34:00",
-        "endTime": "2026-09-23T18:00:00",
-        "relevant": false
-      }
-    ],
-    "fonte-telha": [
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-23T06:34:00",
-        "endTime": "2026-09-23T18:00:00",
-        "relevant": false
-      }
-    ],
-    "ponta-dos-corvos": [
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-23T06:34:00",
-        "endTime": "2026-09-23T18:00:00",
-        "relevant": false
-      }
-    ],
-    "trafaria": [
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-23T06:34:00",
-        "endTime": "2026-09-23T18:00:00",
-        "relevant": false
-      }
-    ],
-    "cova-do-vapor": [
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-23T06:34:00",
-        "endTime": "2026-09-23T18:00:00",
-        "relevant": false
-      }
-    ],
-    "praia-da-rainha": [
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-23T06:34:00",
-        "endTime": "2026-09-23T18:00:00",
-        "relevant": false
-      }
-    ],
-    "lagoa-albufeira": [
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-23T06:34:00",
-        "endTime": "2026-09-23T18:00:00",
-        "relevant": false
-      }
-    ],
-    "foil-lagoa-albufeira": [
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-23T06:34:00",
-        "endTime": "2026-09-23T18:00:00",
-        "relevant": false
-      }
-    ],
-    "praia-lagoa-albufeira": [
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-23T06:34:00",
-        "endTime": "2026-09-23T18:00:00",
-        "relevant": false
-      }
-    ],
-    "sao-vicente-madeira": [
-      {
-        "areaCode": "MCN",
-        "areaLabel": "Madeira — Costa Norte",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-24T09:00:00",
-        "endTime": "2026-09-25T18:00:00",
-        "relevant": false
-      }
-    ],
-    "porto-da-cruz": [
-      {
-        "areaCode": "MRM",
-        "areaLabel": "Madeira — Regiões Montanhosas",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-24T09:00:00",
-        "endTime": "2026-09-25T18:00:00",
-        "relevant": false
-      }
-    ],
-    "paul-mar": [
-      {
-        "areaCode": "MCN",
-        "areaLabel": "Madeira — Costa Norte",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-24T09:00:00",
-        "endTime": "2026-09-25T18:00:00",
-        "relevant": false
-      }
-    ],
-    "jardim-mar": [
-      {
-        "areaCode": "MCN",
-        "areaLabel": "Madeira — Costa Norte",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-24T09:00:00",
-        "endTime": "2026-09-25T18:00:00",
-        "relevant": false
-      }
-    ],
-    "ponta-sao-lourenco": [
-      {
-        "areaCode": "MCS",
-        "areaLabel": "Funchal",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-24T09:00:00",
-        "endTime": "2026-09-25T18:00:00",
-        "relevant": false
-      }
-    ],
-    "ribeira-brava": [
-      {
-        "areaCode": "MRM",
-        "areaLabel": "Madeira — Regiões Montanhosas",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-24T09:00:00",
-        "endTime": "2026-09-25T18:00:00",
-        "relevant": false
-      }
-    ],
-    "funchal": [
-      {
-        "areaCode": "MCS",
-        "areaLabel": "Funchal",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-24T09:00:00",
-        "endTime": "2026-09-25T18:00:00",
-        "relevant": false
-      }
-    ],
-    "santa-cruz": [
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-23T06:34:00",
-        "endTime": "2026-09-23T18:00:00",
-        "relevant": false
-      }
-    ],
-    "consolacao": [
-      {
-        "areaCode": "STM",
-        "areaLabel": "Santarém",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-23T06:34:00",
-        "endTime": "2026-09-23T18:00:00",
-        "relevant": false
-      }
-    ],
-    "areia-branca": [
-      {
-        "areaCode": "STM",
-        "areaLabel": "Santarém",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-23T06:34:00",
-        "endTime": "2026-09-23T18:00:00",
-        "relevant": false
-      }
-    ],
-    "cave-ericeira": [
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-23T06:34:00",
-        "endTime": "2026-09-23T18:00:00",
-        "relevant": false
-      }
-    ],
-    "pescadores-ericeira": [
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-23T06:34:00",
-        "endTime": "2026-09-23T18:00:00",
-        "relevant": false
-      }
-    ],
-    "crazy-left": [
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-23T06:34:00",
-        "endTime": "2026-09-23T18:00:00",
-        "relevant": false
-      }
-    ],
-    "meco": [
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-23T06:34:00",
-        "endTime": "2026-09-23T18:00:00",
-        "relevant": false
-      }
-    ],
-    "machico": [
-      {
-        "areaCode": "MCS",
-        "areaLabel": "Funchal",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-24T09:00:00",
-        "endTime": "2026-09-25T18:00:00",
-        "relevant": false
-      }
-    ],
-    "seixal-madeira": [
-      {
-        "areaCode": "MCN",
-        "areaLabel": "Madeira — Costa Norte",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-24T09:00:00",
-        "endTime": "2026-09-25T18:00:00",
-        "relevant": false
-      }
-    ],
-    "ponta-pargo": [
-      {
-        "areaCode": "MCN",
-        "areaLabel": "Madeira — Costa Norte",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-24T09:00:00",
-        "endTime": "2026-09-25T18:00:00",
-        "relevant": false
-      }
-    ],
-    "madalena-mar": [
-      {
-        "areaCode": "MCN",
-        "areaLabel": "Madeira — Costa Norte",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-24T09:00:00",
-        "endTime": "2026-09-25T18:00:00",
-        "relevant": false
+        "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada",
+        "startTime": "2026-10-01T21:00:00",
+        "endTime": "2026-10-02T18:00:00",
+        "relevant": true
       }
     ]
   }

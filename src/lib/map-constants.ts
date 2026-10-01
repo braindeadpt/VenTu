@@ -168,6 +168,7 @@ export const MAP_CURRENTS_LS_KEY = 'ventu.map.currents';
 export const MAP_SST_LS_KEY = 'ventu.map.sst';
 export const MAP_BATHYMETRY_LS_KEY = 'ventu.map.bathymetry';
 export const MAP_SEAMARKS_LS_KEY = 'ventu.map.seamarks';
+export const MAP_GIBS_SAT_LS_KEY = 'ventu.map.gibsSat';
 
 /** EMODnet Bathymetry WMS (Copernicus) — sombreado contínuo de profundidade.
  *  Keyless, CC BY 4.0. mean_multicolour: azul-claro em águas baixas → azul

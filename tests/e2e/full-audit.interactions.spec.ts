@@ -119,23 +119,28 @@ test.describe('UI interactions audit', () => {
     await expect(
       page.getByRole('heading', { name: /^Instrumentos$|^Instruments$/i }),
     ).toBeVisible();
+    // Spot v3 (SP-B/SP-C): «Previsão horária» passou a «Hora a hora» e a
+    // «Logística» vive em «Chegar e estar» (com «Localização» como h3).
     await expect(
-      page.getByRole('heading', { name: /Previsão horária|Hourly forecast/i }),
+      page.getByRole('heading', { name: /^Hora a hora$|^Hour by hour$/i }),
     ).toBeVisible();
     const bestWindows = page.getByRole('heading', { name: /Melhores janelas|Best windows/i });
     if ((await bestWindows.count()) > 0) {
       await expect(bestWindows).toHaveCount(1);
     }
+    await expect(
+      page.getByRole('heading', { name: /^Chegar e estar$|^Getting there$/i }),
+    ).toBeVisible();
     await expect(page.getByRole('heading', { name: /Localização|Location/i })).toBeVisible();
-    await expect(page.getByRole('heading', { name: /^Logística$/i })).toBeVisible();
     expect(
       await page.getByRole('heading', { name: /Câmara ao vivo|Live camera/i }).count(),
     ).toBeLessThanOrEqual(1);
 
-    const kiteTab = page.getByRole('button', { name: /Kitesurf/i });
-    if (await kiteTab.isVisible()) {
-      await kiteTab.click();
-      await expect(kiteTab).toHaveAttribute('aria-pressed', 'true');
-    }
+    // As modalidades são tabs (role=tab + aria-selected) na barra única,
+    // sempre visíveis — CORRECCOES-24SET §1.
+    const kiteTab = page.getByRole('tab', { name: /Kitesurf/i });
+    await expect(kiteTab).toBeVisible();
+    await kiteTab.click();
+    await expect(kiteTab).toHaveAttribute('aria-selected', 'true');
   });
 });

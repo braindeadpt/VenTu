@@ -1,6 +1,7 @@
 import type { ConfidenceDetail, ConfidenceTier, DailyConfidence } from '@/lib/forecastConfidenceCore';
 import type { ObservedConditions } from '@/lib/observations';
 import type { ObservedWave } from '@/lib/observedWave';
+import type { WaterQualityLive } from '@/lib/waterQuality';
 
 export type { ConfidenceDetail, ConfidenceTier, DailyConfidence } from '@/lib/forecastConfidenceCore';
 
@@ -29,6 +30,15 @@ export interface MarineConditionsFields {
   tideObservedHeight?: number;
   tideObservedAt?: string;
   tideStation?: string;
+  /** Anomalia de maré (m) — obs IH de-biased vs previsão; só presente com baseline suficiente. */
+  tideAnomalyM?: number;
+  /** Corrente medida por radar HF (EMODnet/IH Lisboa) — só spots dentro da rede. */
+  currentMeasuredSpeed?: number;
+  currentMeasuredDir?: number;
+  currentMeasuredAt?: string;
+  currentMeasuredNetwork?: string;
+  /** Qualidade da água balnear APA InfoÁgua — só spots ≤3 km de uma água balnear. */
+  waterQuality?: WaterQualityLive;
   /** Multi-model forecast agreement (does not affect score). */
   confidence?: ConfidenceTier;
   confidenceDetail?: ConfidenceDetail;

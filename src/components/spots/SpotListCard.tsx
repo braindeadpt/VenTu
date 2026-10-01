@@ -274,6 +274,7 @@ export default function SpotListCard({
             <WaveCalibrationTag
               wave={{ calibration: observedWaveCalibration, waveHeight: conditions.waveHeight }}
               locale={locale}
+              interactive={false}
               className="shrink-0"
             />
           )}

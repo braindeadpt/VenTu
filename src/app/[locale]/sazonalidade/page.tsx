@@ -1,8 +1,9 @@
 import { localizedText } from '@/lib/localizedText';
-import { locales } from '@/lib/i18n'
+import { locales, validateLocale } from '@/lib/i18n'
 import type { Locale } from '@/lib/i18n'
 import { getTranslation } from '@/lib/i18n'
 import type { Metadata } from 'next'
+import { buildPageMetadata } from '@/lib/seo'
 import Link from 'next/link'
 import { ArrowLeft, Calendar, Waves, Wind, Thermometer, Sun, CloudRain } from 'lucide-react'
 import MoonTideMonthStrip from '@/components/sazonalidade/MoonTideMonthStrip'
@@ -19,10 +20,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params
   const isPt = locale === 'pt'
   const tp = getTranslation(locale).pages
-  return {
+  const loc = validateLocale(locale)
+  return buildPageMetadata({
     title: tp.seasonalMetaTitle,
-    description: getTranslation(locale).pages.seasonalMetaDescription,
-  }
+    description: tp.seasonalMetaDescription,
+    locale: loc,
+    path: `/${loc}/sazonalidade/`,
+  })
 }
 
 const seasonData = [

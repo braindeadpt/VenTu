@@ -78,6 +78,8 @@ test.describe('Map attribution (Leaflet control)', () => {
     await expect(attribution(page)).toContainText('OpenSeaMap');
 
     // Troca de basemap — antes apagava os créditos registados pelas camadas.
+    // (M5: o rádio vive dentro do menu «Camadas» → abrir primeiro.)
+    await openMapLayersMenu(page);
     await page.getByRole('radio', { name: 'Satélite' }).click();
     await expect(attribution(page)).toContainText(/Esri/, { timeout: 15_000 });
     await expect(attribution(page)).toContainText('EMODnet');
@@ -120,6 +122,8 @@ test.describe('Map attribution (Leaflet control)', () => {
     expect(await count()).toBe(1);
 
     // Depois de trocar para satélite o crédito OSM mantém-se único.
+    // (M5: o rádio vive dentro do menu «Camadas» → abrir primeiro.)
+    await openMapLayersMenu(page);
     await page.getByRole('radio', { name: 'Satélite' }).click();
     await expect(attribution(page)).toContainText(/Esri/, { timeout: 15_000 });
     expect(await count()).toBe(1);

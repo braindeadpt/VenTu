@@ -1,4 +1,4 @@
-import { getTranslation } from '@/lib/i18n';
+import { getTranslation, validateLocale } from '@/lib/i18n';
 import { localizedText } from '@/lib/localizedText';
 import Link from 'next/link';
 import { MapPin } from 'lucide-react';
@@ -6,7 +6,7 @@ import { locales } from '@/lib/i18n';
 import {
   SEO_LANDINGS,
   SPORT_LABELS,
-  REGION_LABELS,
+  regionLabel,
   landingTitle,
   type SeoLanding,
 } from '@/lib/seoLandings';
@@ -37,12 +37,12 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const isPt = locale === 'pt';
-  const loc = isPt ? 'pt' : 'en';
+  const loc = validateLocale(locale);
   const tp = getTranslation(locale).pages;
   const title = tp.exploreMetaTitle;
   const description = tp.exploreMetaDescription
     .replace('{count}', String(SEO_LANDINGS.length))
-    .replace('{schedule}', pipelineSchedule(loc));
+    .replace('{schedule}', pipelineSchedule(isPt ? 'pt' : 'en'));
   return buildPageMetadata({ title, description, locale: loc, path: `/${loc}/explorar/` });
 }
 
@@ -113,7 +113,7 @@ export default async function ExplorarIndexPage({ params }: Props) {
                       <p className="text-body font-medium text-fg group-hover:text-data-waves transition-colors flex items-center gap-1.5">
                         <MapPin className="w-3.5 h-3.5 text-fg-subtle shrink-0" aria-hidden />
                         {landing.region
-                          ? localizedText(REGION_LABELS[landing.region], locale)
+                          ? regionLabel(landing.region, locale)
                           : landing.slug}
                       </p>
                       <p className="text-meta text-fg-subtle mt-1">

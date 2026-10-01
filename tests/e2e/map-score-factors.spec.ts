@@ -6,7 +6,9 @@ import { waitHydrated } from './helpers/hydration';
 /**
  * «Porquê este score» — a gramática canónica de factores (src/lib/spotScoreFactors)
  * tem de ser a MESMA nas três superfícies do mapa:
- *   popup (desktop 1440) ≡ sheet de detalhe (mobile 390) ≡ linha da lista.
+ *   cartão v3 (desktop 1440) ≡ sheet de detalhe (mobile 390) ≡ linha da lista.
+ * UX v3 (M4): a pré-visualização desktop é o cartão `map-spot-card` — o
+ * popup Leaflet só resta nos embeds fora do modo Explorar.
  * O atributo data-score-factors carrega as etiquetas completas — o texto
  * visível da lista é a versão curta dos mesmos factores.
  */
@@ -57,40 +59,42 @@ test.describe('Factores do score — gramática partilhada (desktop)', () => {
     serviceWorkers: 'block',
   });
 
-  test('popup e linha da lista mostram os mesmos factores (PT)', async ({ page }) => {
+  test('cartão e linha da lista mostram os mesmos factores (PT)', async ({ page }) => {
     await openMapa(page, 'pt');
     await page.waitForSelector('.leaflet-marker-icon.spot-marker', { timeout: 30_000 });
     const index = await pickClickableMarker(page);
     await page.locator('.leaflet-marker-icon.spot-marker').nth(index).click({ force: true });
 
-    const factorsEl = page.locator('.spot-popup [data-score-factors]');
+    const card = page.locator('[data-testid="map-spot-card"]');
+    const factorsEl = card.locator('[data-score-factors]');
     await expect(factorsEl).toBeVisible({ timeout: 15_000 });
-    const popupFactors = await factorsEl.getAttribute('data-score-factors');
-    expect(popupFactors).toBeTruthy();
+    const cardFactors = await factorsEl.getAttribute('data-score-factors');
+    expect(cardFactors).toBeTruthy();
 
-    const spotId = await page.locator('.ventu-popup-detail').first().getAttribute('data-spot-id');
+    const spotId = await card.getAttribute('data-spot-id');
     expect(spotId).toBeTruthy();
 
     const rowFactors = page.locator(`[role="listbox"] [data-spot-id="${spotId}"] [data-score-factors]`);
     await expect(rowFactors).toBeVisible({ timeout: 15_000 });
-    expect(await rowFactors.getAttribute('data-score-factors')).toBe(popupFactors);
+    expect(await rowFactors.getAttribute('data-score-factors')).toBe(cardFactors);
   });
 
-  test('popup and list row show the same factors (EN)', async ({ page }) => {
+  test('card and list row show the same factors (EN)', async ({ page }) => {
     await openMapa(page, 'en');
     await page.waitForSelector('.leaflet-marker-icon.spot-marker', { timeout: 30_000 });
     const index = await pickClickableMarker(page);
     await page.locator('.leaflet-marker-icon.spot-marker').nth(index).click({ force: true });
 
-    const factorsEl = page.locator('.spot-popup [data-score-factors]');
+    const card = page.locator('[data-testid="map-spot-card"]');
+    const factorsEl = card.locator('[data-score-factors]');
     await expect(factorsEl).toBeVisible({ timeout: 15_000 });
-    const popupFactors = await factorsEl.getAttribute('data-score-factors');
-    expect(popupFactors).toBeTruthy();
+    const cardFactors = await factorsEl.getAttribute('data-score-factors');
+    expect(cardFactors).toBeTruthy();
 
-    const spotId = await page.locator('.ventu-popup-detail').first().getAttribute('data-spot-id');
+    const spotId = await card.getAttribute('data-spot-id');
     const rowFactors = page.locator(`[role="listbox"] [data-spot-id="${spotId}"] [data-score-factors]`);
     await expect(rowFactors).toBeVisible({ timeout: 15_000 });
-    expect(await rowFactors.getAttribute('data-score-factors')).toBe(popupFactors);
+    expect(await rowFactors.getAttribute('data-score-factors')).toBe(cardFactors);
   });
 });
 

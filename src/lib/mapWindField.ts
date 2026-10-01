@@ -42,6 +42,18 @@ export function windMaxDistKm(tileId: string, mobile = false): number {
 export const MAP_WIND_PARTICLES = 460;
 export const MAP_WIND_PARTICLES_MOBILE = 160;
 /**
+ * Alvo de partículas por zoom (map-v3 §9 — «densidade muda com zoom»):
+ * a z6 continental fica arejado (~140/60), a z9.4+ chega ao tecto do budget
+ * (460/160). A rampa é linear e o hook ajusta o pool a cada frame, por isso
+ * o zoom animado denso-dissolve de forma contínua.
+ */
+export function windParticleTarget(zoom: number, mobile = false): number {
+  const max = mobile ? MAP_WIND_PARTICLES_MOBILE : MAP_WIND_PARTICLES;
+  const base = mobile ? 60 : 140;
+  const t = Math.max(0, Math.min(1, (zoom - 6) / 3.4));
+  return Math.round(base + (max - base) * t);
+}
+/**
  * Trail persistence per frame (destination-in alpha kept). 0.962 davia
  * trails de ~2 s — com 460 partículas a soma tornava-se uma névoa clara
  * sobre a banda inteira; 0.95 mantém o rasto mas seca o brilho ambiente.
@@ -368,7 +380,9 @@ export function drawWindParticles(
       const x = pt.x;
       const y = pt.y;
       if (x > -8 && y > -8 && x < maxX && y < maxY) {
-        const a = Math.min(0.72, 0.26 + p.kt / 40) * opacityScale;
+        // map-v3 §9 — «opacidade 45%»: tecto global do traço. O vento é
+        // ambiente por baixo de Hs/correntes, nunca uma camada de dados.
+        const a = Math.min(0.45, 0.2 + p.kt / 40) * opacityScale;
         ctx.strokeStyle = `rgb(${color} / ${a.toFixed(3)})`;
         ctx.lineWidth = p.kt > 15 ? 1.7 : 1.15;
         ctx.beginPath();

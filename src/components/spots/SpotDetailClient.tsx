@@ -62,6 +62,11 @@ interface Conditions {
   windDirection: number;
   windGust: number;
   waterTemp: number;
+  /** UV da hora corrente + máximo do dia (pipeline Open-Meteo). */
+  uvIndex?: number;
+  uvIndexMax?: number;
+  /** European AQI da hora corrente (camada air-quality.json, CAMS). */
+  airQualityIndex?: number;
   swellHeight?: number;
   swellPeriod?: number;
   swellDirection?: number;
@@ -72,6 +77,18 @@ interface Conditions {
   tideHeight?: number;
   tideStatus?: 'high' | 'low' | 'rising' | 'falling';
   tideLabel?: string;
+  /** Maré observada (maregrafo IH, fresco <6h) + anomalia vs previsão. */
+  tideObservedHeight?: number;
+  tideObservedAt?: string;
+  tideStation?: string;
+  tideAnomalyM?: number;
+  /** Corrente medida por radar HF (EMODnet/IH Lisboa) — só spots na rede. */
+  currentMeasuredSpeed?: number;
+  currentMeasuredDir?: number;
+  currentMeasuredAt?: string;
+  currentMeasuredNetwork?: string;
+  /** Qualidade da água balnear APA InfoÁgua — só spots ≤3 km de uma água balnear. */
+  waterQuality?: import('@/lib/waterQuality').WaterQualityLive;
   source?: 'real' | 'mock';
   updatedAt?: string;
   confidence?: import('@/lib/forecastConfidence').ConfidenceTier;
@@ -116,6 +133,8 @@ interface SpotData {
     windGust: number;
     waterTemp: number;
     tideHeight?: number;
+    /** Índice UV da hora (linha `uvIndex` do forecast, Open-Meteo). */
+    uvIndex?: number;
   }>;
 }
 
@@ -234,9 +253,12 @@ export default function SpotDetailClient({
 
   const freshnessNowMs = mounted ? undefined : bakedAtMs;
   const [isMobile, setIsMobile] = useState(false);
-  const [communityOverlay, setCommunityOverlay] = useState<
-    Record<string, import('@/lib/communityTips').CommunityTipEntry>
-  >({});
+  // null até o overlay chegar (fetch pós-montagem) — o wrapper expõe-o em
+  // data-community-tips para as specs esperarem pelo último commit tardio.
+  const [communityOverlay, setCommunityOverlay] = useState<Record<
+    string,
+    import('@/lib/communityTips').CommunityTipEntry
+  > | null>(null);
 
   const { session } = useAuth();
 
@@ -357,6 +379,9 @@ export default function SpotDetailClient({
               windDirection: Number(spotCond.windDirection) || 0,
               windGust: Number(spotCond.windGust) || 0,
               waterTemp: Number(spotCond.waterTemp) || 0,
+              uvIndex: spotCond.uvIndex as number | undefined,
+              uvIndexMax: spotCond.uvIndexMax as number | undefined,
+              airQualityIndex: spotCond.airQualityIndex as number | undefined,
               swellHeight: spotCond.swellHeight as number | undefined,
               swellPeriod: spotCond.swellPeriod as number | undefined,
               swellDirection: spotCond.swellDirection as number | undefined,
@@ -379,6 +404,15 @@ export default function SpotDetailClient({
               tideHeight: spotCond.tideHeight as number | undefined,
               tideStatus: spotCond.tideStatus as Conditions['tideStatus'],
               tideLabel: spotCond.tideLabel as string | undefined,
+              tideObservedHeight: spotCond.tideObservedHeight as number | undefined,
+              tideObservedAt: spotCond.tideObservedAt as string | undefined,
+              tideStation: spotCond.tideStation as string | undefined,
+              tideAnomalyM: spotCond.tideAnomalyM as number | undefined,
+              currentMeasuredSpeed: spotCond.currentMeasuredSpeed as number | undefined,
+              currentMeasuredDir: spotCond.currentMeasuredDir as number | undefined,
+              currentMeasuredAt: spotCond.currentMeasuredAt as string | undefined,
+              currentMeasuredNetwork: spotCond.currentMeasuredNetwork as string | undefined,
+              waterQuality: spotCond.waterQuality as Conditions['waterQuality'],
               confidence: spotCond.confidence as Conditions['confidence'],
               confidenceDetail: spotCond.confidenceDetail as Conditions['confidenceDetail'],
               dailyConfidence: spotCond.dailyConfidence as Conditions['dailyConfidence'],
@@ -531,6 +565,7 @@ export default function SpotDetailClient({
       windGust: h.windGust,
       waterTemp: h.waterTemp,
       tideHeight: h.tideHeight,
+      uvIndex: h.uvIndex,
       score: hourlyScores[i],
     }));
   }, [spotData, hourlyScores]);
@@ -635,7 +670,7 @@ export default function SpotDetailClient({
   const mergedLocalTipsRaw = mergeLocalTips(
     spot,
     getLocalTips(spot.slug),
-    communityOverlay[spot.slug],
+    communityOverlay?.[spot.slug],
   );
   const mergedLocalTips = mergedLocalTipsRaw
     ? {
@@ -689,7 +724,10 @@ export default function SpotDetailClient({
         }}
       />
 
-      <div className="min-h-screen bg-bg-base pb-10">
+      <div
+        className="min-h-screen bg-bg-base pb-10"
+        data-community-tips={communityOverlay ? 'ready' : 'pending'}
+      >
         {/* Eixo de tempo partilhado — uma hora escolhida comanda o veredicto,
             a régua e a previsão (docs/design/SPOT-PAGE.md). */}
         <SpotTimelineProvider
@@ -739,6 +777,19 @@ export default function SpotDetailClient({
                 subtitle: td.nowSubtitle,
                 gustLabel: td.gustLabel,
                 gustHint: td.gustHint,
+                uvLabel: td.uvLabel,
+                uvMaxLabel: td.uvMaxLabel,
+                uvHint: td.uvHint,
+                aqiLabel: td.aqiLabel,
+                aqiHint: td.aqiHint,
+                aqiLevels: {
+                  good: td.aqiLevelGood,
+                  fair: td.aqiLevelFair,
+                  moderate: td.aqiLevelModerate,
+                  poor: td.aqiLevelPoor,
+                  veryPoor: td.aqiLevelVeryPoor,
+                  extreme: td.aqiLevelExtreme,
+                },
                 seaStateTitle: td.seaStateTitle,
                 seaStateHint: td.seaStateHint,
                 windContextTitle: td.windContextTitle,

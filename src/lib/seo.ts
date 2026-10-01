@@ -10,6 +10,7 @@ import {
   pickLocale,
   type Locale,
   validateLocale,
+  defaultLocale,
 } from '@/lib/i18n';
 import { SITE_NAME, SITE_URL } from '@/lib/site';
 
@@ -143,6 +144,9 @@ export function buildPageMetadata(input: PageSeoInput): Metadata {
   for (const loc of locales) {
     languages[loc] = `/${loc}${normalizedPath === '/' ? '/' : normalizedPath}`;
   }
+  // x-default: variante a servir a quem não corresponde a nenhuma língua.
+  // PT é o `defaultLocale` do site (o root redirecciona para /pt/).
+  languages['x-default'] = `/${defaultLocale}${normalizedPath === '/' ? '/' : normalizedPath}`;
 
   const alternateLocales = locales.filter((l) => l !== locale).map((l) => LOCALE_OG[l]);
 

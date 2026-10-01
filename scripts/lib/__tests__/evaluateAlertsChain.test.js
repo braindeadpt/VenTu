@@ -160,3 +160,152 @@ describe('evaluateUserFavoritesAlerts — cadeia hermética com Agitação Marí
     expect(tgCaptured).not.toContain('Dangerous sea');
   });
 });
+
+describe('evaluateUserFavoritesAlerts — B4 warn (aviso oficial sem score)', () => {
+  const WARNINGS = {
+    source: 'ipma',
+    fetchedAt: new Date().toISOString(),
+    warnings: [SEA],
+    spotWarnings: { guincho: [SEA] },
+  };
+
+  afterEach(() => {
+    PREFS[0].warn = false;
+    PREFS[0].min_score = 1;
+    PREFS[0].alert_mode = 'immediate';
+  });
+
+  it('warn=true + aviso laranja + score abaixo → email/Telegram de aviso', async () => {
+    installMockFetch();
+    PREFS[0].warn = true;
+    PREFS[0].min_score = 100; // nunca dispara por score
+
+    const result = await evaluateUserFavoritesAlerts(
+      { guincho: 'guincho' },
+      CONDITIONS,
+      WARNINGS,
+      {},
+      null,
+    );
+
+    expect(result.userDigestSent).toBe(1);
+    expect(result.userWarnSent).toBe(1);
+    // Email: assunto dedicado + linha de aviso com texto oficial, sem score.
+    expect(emailCaptured.subject).toBe('VenTu — ⚠️ aviso oficial em 1 favorito(s)');
+    expect(emailCaptured.html).toContain('Avisos oficiais em vigor nos teus favoritos');
+    expect(emailCaptured.html).toContain('⚠️ Aviso laranja — Agitação Marítima — Lisboa');
+    expect(emailCaptured.html).toContain('Ondulação de NW com ondas de 4 a 5 metros');
+    expect(emailCaptured.html).not.toContain('score ');
+    // Telegram: cabeçalho de aviso + linha compacta.
+    expect(tgCaptured).toContain('aviso oficial em 1 favorito');
+    expect(tgCaptured).toContain('⚠️ Aviso laranja — Agitação Marítima');
+  });
+
+  it('warn=false (default) → silêncio sem score, mesmo com aviso (E1c intacto)', async () => {
+    installMockFetch();
+    PREFS[0].min_score = 100;
+
+    const result = await evaluateUserFavoritesAlerts(
+      { guincho: 'guincho' },
+      CONDITIONS,
+      WARNINGS,
+      {},
+      null,
+    );
+
+    expect(result.userDigestSent).toBe(0);
+    expect(result.userWarnSent).toBe(0);
+    expect(emailCaptured).toBeNull();
+    expect(tgCaptured).toBeNull();
+  });
+
+  it('warn=true mas só aviso amarelo → não dispara', async () => {
+    installMockFetch();
+    PREFS[0].warn = true;
+    PREFS[0].min_score = 100;
+    const warnings = {
+      spotWarnings: { guincho: [{ type: 'Precipitação', level: 'yellow', areaLabel: 'Lisboa' }] },
+    };
+
+    const result = await evaluateUserFavoritesAlerts(
+      { guincho: 'guincho' },
+      CONDITIONS,
+      warnings,
+      {},
+      null,
+    );
+
+    expect(result.userDigestSent).toBe(0);
+    expect(emailCaptured).toBeNull();
+  });
+
+  it('perigo §0 do IH (arriba instável) dispara warn sem aviso IPMA', async () => {
+    installMockFetch();
+    PREFS[0].warn = true;
+    PREFS[0].min_score = 100;
+    const coastal = {
+      warnings: [{ id: 7, ref: 'ANAV 42/26', category: 'Arriba instável — perigo' }],
+      coverage: { guincho: [7] },
+    };
+
+    const result = await evaluateUserFavoritesAlerts(
+      { guincho: 'guincho' },
+      CONDITIONS,
+      null,
+      coastal,
+      null,
+    );
+
+    expect(result.userWarnSent).toBe(1);
+    expect(emailCaptured.html).toContain('Perigo na água (IH): ANAV 42/26');
+  });
+
+  it('cone NHC cobre o favorito → 🌀 no alerta', async () => {
+    installMockFetch();
+    PREFS[0].warn = true;
+    PREFS[0].min_score = 100;
+    const storms = {
+      spotStorms: {
+        guincho: [
+          { name: 'Hanna', classificationLabel: 'Tempestade tropical', centerDistKm: 240 },
+        ],
+      },
+    };
+
+    const result = await evaluateUserFavoritesAlerts(
+      { guincho: 'guincho' },
+      CONDITIONS,
+      null,
+      {},
+      storms,
+    );
+
+    expect(result.userWarnSent).toBe(1);
+    expect(emailCaptured.html).toContain('🌀 Hanna — Tempestade tropical');
+    expect(emailCaptured.html).toContain('cone de incerteza oficial (NOAA/NHC)');
+  });
+
+  it('score firing + warn no mesmo spot → prefixo ⚠️ e linha no item', async () => {
+    installMockFetch();
+    PREFS[0].warn = true;
+    // min_score 1 → guincho dispara por score E tem aviso de vento (não-mar).
+    const warnings = {
+      spotWarnings: {
+        guincho: [{ type: 'Vento', level: 'orange', areaLabel: 'Lisboa', text: 'Rajadas a 90 km/h.' }],
+      },
+    };
+
+    const result = await evaluateUserFavoritesAlerts(
+      { guincho: 'guincho' },
+      CONDITIONS,
+      warnings,
+      {},
+      null,
+    );
+
+    expect(result.userDigestSent).toBe(1);
+    expect(result.userWarnSent).toBe(1);
+    expect(emailCaptured.subject).toMatch(/^⚠️ VenTu — 1 favorito/);
+    expect(emailCaptured.html).toContain('⚠️ Aviso laranja — Vento — Lisboa: Rajadas a 90 km/h.');
+  });
+});

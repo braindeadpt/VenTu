@@ -94,7 +94,7 @@ const { sleep, createUsageCounter, fetchWithRetry } = require('./lib/updateCondi
 const sourceFetcher = createUpdateConditionsFetcher({ marineApi: MARINE_API, weatherApi: WEATHER_API, fetchWithRetry });
 const { fetchMarineData, fetchWeatherData, fetchMarineWaveModels, fetchWindModels } = sourceFetcher;
 
-function getCurrentConditions(marineData, weatherData, ihTideObs) {
+function getCurrentConditions(marineData, weatherData, ihTideObs, tideBaseline) {
   const marineTimeIndex = findCurrentHourIndex(marineData.hourly.time);
   const weatherTimeIndex = Math.min(findCurrentHourIndex(weatherData.hourly.time), weatherData.hourly.wind_speed_10m.length - 1);
   const seaLevel = marineData.hourly.sea_level_height_msl?.[marineTimeIndex] || 0;
@@ -114,6 +114,7 @@ function getCurrentConditions(marineData, weatherData, ihTideObs) {
     windGust: weatherData.hourly.wind_gusts_10m[weatherTimeIndex] || 0,
     waterTemp: marineData.hourly.sea_surface_temperature[marineTimeIndex] || 0,
     tideHeight: seaLevel, tideStatus: tide.status, tideLabel: tide.label,
+    ...require('./lib/updateConditionsPure').uvIndexFields(weatherData.hourly, weatherTimeIndex),
     ...require('./lib/updateConditionsMerge').readOceanCurrent(marineData.hourly, marineTimeIndex),
   };
   if (secondary) {
@@ -125,6 +126,39 @@ function getCurrentConditions(marineData, weatherData, ihTideObs) {
     result.tideObservedHeight = ihTideObs.lastObs;
     result.tideObservedAt = ihTideObs.lastData;
     result.tideStation = ihTideObs.stationTitle;
+    // Anomalia de maré (Fase B): a obs é vs ZH e a previsão vs MSL, e o
+    // resíduo cru oscila ±0.5 m com a fase da maré (amplitude real ≠ modelo).
+    // O baseline por estação guarda amostras [t, resíduo] e a anomalia
+    // compara só contra resíduos da mesma fase M2 (10–15 h atrás) — sem
+    // cobertura de fase, omite (nunca inventa).
+    if (tideBaseline && ihTideObs.codp != null) {
+      const tideAnomaly = require('./lib/tideAnomaly');
+      const key = String(ihTideObs.codp);
+      const entry = tideBaseline.stations[key];
+      const anomaly = tideAnomaly.tideAnomalyM({
+        obsZh: ihTideObs.lastObs,
+        predMsl: seaLevel,
+        entry,
+        nowMs: Date.now(),
+      });
+      if (anomaly !== null) result.tideAnomalyM = anomaly;
+      // O resíduo desta run entra no baseline DEPOIS de calcular a anomalia
+      // — a amostra corrente não se julga a si mesma. Uma vez por estação:
+      // vários spots partilham o mesmo codp/maregrafo.
+      // instanceof e não truthy: um baseline carregado do disco traz
+      // _recorded serializado como {} (Set → JSON) — recriar em vez de
+      // rebentar em .has(). O Set é apagado antes de persistir.
+      if (!(tideBaseline._recorded instanceof Set)) tideBaseline._recorded = new Set();
+      if (!tideBaseline._recorded.has(key)) {
+        tideBaseline._recorded.add(key);
+        tideAnomaly.recordResidual(
+          tideBaseline.stations,
+          ihTideObs.codp,
+          ihTideObs.lastObs - seaLevel,
+          ihTideObs.lastData,
+        );
+      }
+    }
   }
   return result;
 }
@@ -142,6 +176,16 @@ async function updateConditions() {
   const ihTides = readJsonIfExists(ihTidesPath, { stations: {}, spotMapping: {} }, () => console.warn('⚠️ Could not parse ih-tides.json, continuing without IH tide data\n'));
   if (ihTides.stations && ihTides.spotMapping) console.log(`📡 IH tide data loaded (${Object.keys(ihTides.stations).length} stations, ${Object.keys(ihTides.spotMapping).length} spot mappings)\n`);
   let ihSkippedStale = 0;
+  // Baseline de anomalia de maré (Fase B): resíduos crus obsZH−predMSL por
+  // estação, rolling — scripts/calibrate-tide-baseline.js semeia, cada run
+  // refina. Em data-state como os outros archives (sobrevive ao artefacto).
+  const tideBaselinePath = path.join(__dirname, '../data-state/tide-anomaly-baseline.json');
+  const tideBaseline = readJsonIfExists(
+    tideBaselinePath,
+    { stations: {} },
+    () => console.warn('⚠️ Could not parse tide-anomaly-baseline.json — anomaly hidden until it accumulates again'),
+  );
+  if (!tideBaseline.stations || typeof tideBaseline.stations !== 'object') tideBaseline.stations = {};
   // Ensemble P10/P50/P90 coverage for the run summary (see ensembleQuantiles.js).
   const ensembleRun = { spots: 0, hours: 0 };
   const waveBiasEnabled = process.env.VENTU_WAVE_BIAS_CORRECTION === '1';
@@ -154,7 +198,7 @@ async function updateConditions() {
     if (spot.conditionsSource) continue;
     try {
       const result = await processSpot(spot, {
-        useMultiModel, previousConditions, ihTides, waveBias, waveBiasEnabled, usage,
+        useMultiModel, previousConditions, ihTides, tideBaseline, waveBias, waveBiasEnabled, usage,
         fetchers: { fetchMarineData, fetchWeatherData, fetchMarineWaveModels, fetchWindModels },
         findCurrentHourIndex, confidenceAtIndex, confidenceByDay, blendWindAtIndex, readModelMap,
         applyWindBlendToHours, waveModels: WAVE_MODELS, windModels: WIND_MODELS, isFreshIhObservation,
@@ -174,7 +218,88 @@ async function updateConditions() {
     }
   }
   applyAliasSpots(aliasSpots, allConditions, allForecasts);
+  // European AQI (fetch-air-quality.js → air-quality.json): camada suave —
+  // merge só quando o ficheiro é fresco (<8h); um outage AQ nunca bloqueia.
+  const airQualityPath = path.join(__dirname, '../public/data/air-quality.json');
+  const airQuality = readJsonIfExists(airQualityPath, null, () => console.warn('⚠️ Could not parse air-quality.json — AQI chip hidden this run'));
+  if (airQuality?.spots && airQuality.generatedAt) {
+    const aqAgeH = (Date.now() - new Date(airQuality.generatedAt).getTime()) / 3_600_000;
+    if (aqAgeH <= 8) {
+      let aqMerged = 0;
+      for (const [spotId, conditions] of Object.entries(allConditions)) {
+        const entry = airQuality.spots[spotId];
+        if (entry && entry.aqi != null && Number.isFinite(Number(entry.aqi))) {
+          conditions.airQualityIndex = Number(entry.aqi);
+          conditions.airQualityAt = entry.at;
+          aqMerged += 1;
+        }
+      }
+      console.log(`🌫 AQI merged into ${aqMerged} spots (file ${aqAgeH.toFixed(1)}h old)`);
+    } else {
+      console.warn(`⚠️ air-quality.json ${aqAgeH.toFixed(1)}h old (>8h) — AQI chip hidden this run`);
+    }
+  }
   if (ihSkippedStale > 0) console.warn(`⚠️ Skipped stale IH observed tide on ${ihSkippedStale} spots (lastData > ${MAX_OBS_AGE_HOURS}h) — forecast tides stay on Open-Meteo`);
+  // Corrente MEDIDA por radar HF (fetch-hfr-currents.js → hfr-currents.json,
+  // EMODnet/IH Lisboa — Sines→Peniche). Camada suave como o AQI: só entra
+  // quando o grid é fresco (<6h); um outage nunca bloqueia.
+  const hfrPath = path.join(__dirname, '../public/data/hfr-currents.json');
+  const hfr = readJsonIfExists(hfrPath, null, () => console.warn('⚠️ Could not parse hfr-currents.json — measured current hidden this run'));
+  if (hfr?.spots && hfr.time) {
+    const hfrAgeH = require('./lib/hfrCurrents').gridAgeHours(hfr.time);
+    if (hfrAgeH <= require('./lib/hfrCurrents').MAX_AGE_HOURS) {
+      let hfrMerged = 0;
+      for (const [spotId, conditions] of Object.entries(allConditions)) {
+        const entry = hfr.spots[spotId];
+        if (entry && Number.isFinite(Number(entry.spd)) && Number.isFinite(Number(entry.dir))) {
+          conditions.currentMeasuredSpeed = Number(entry.spd);
+          conditions.currentMeasuredDir = Number(entry.dir);
+          conditions.currentMeasuredAt = hfr.time;
+          conditions.currentMeasuredNetwork = hfr.network;
+          hfrMerged += 1;
+        }
+      }
+      console.log(`📡 HFR measured current merged into ${hfrMerged} spots (grid ${hfrAgeH.toFixed(1)}h old)`);
+    } else {
+      console.warn(`⚠️ hfr-currents.json grid ${hfrAgeH.toFixed(1)}h old (>6h) — measured current hidden this run`);
+    }
+  }
+  // Qualidade da água balnear (fetch-water-quality.js → water-quality.json,
+  // APA InfoÁgua — conselho balnear + classe anual + alertas). Dados
+  // semanais/sazonais: gate solto de 14 dias; a validade real é a época
+  // balnear, avaliada no render com as datas do próprio registo.
+  const wqPath = path.join(__dirname, '../public/data/water-quality.json');
+  const waterQuality = readJsonIfExists(wqPath, null, () => console.warn('⚠️ Could not parse water-quality.json — APA quality hidden this run'));
+  if (waterQuality?.spots && waterQuality.generatedAt) {
+    const wqAgeD = (Date.now() - new Date(waterQuality.generatedAt).getTime()) / 86_400_000;
+    if (wqAgeD <= 14) {
+      let wqMerged = 0;
+      for (const [spotId, conditions] of Object.entries(allConditions)) {
+        const entry = waterQuality.spots[spotId];
+        if (entry && entry.beach) {
+          conditions.waterQuality = entry;
+          wqMerged += 1;
+        }
+      }
+      console.log(`💧 APA water quality merged into ${wqMerged} spots (file ${wqAgeD.toFixed(1)}d old)`);
+    } else {
+      console.warn(`⚠️ water-quality.json ${wqAgeD.toFixed(1)}d old (>14d) — APA quality hidden this run`);
+    }
+  }
+  // Persiste o baseline de anomalia (mesmo sem anomalias emitidas — os
+  // resíduos desta run contam para a mediana das próximas).
+  try {
+    tideBaseline.updatedAt = new Date().toISOString();
+    // O Set de dedupe é estado intra-run — serializaria como {} e
+    // corromperia a próxima run (.has is not a function).
+    delete tideBaseline._recorded;
+    ensureParentDir(tideBaselinePath);
+    atomicWriteJson(tideBaselinePath, tideBaseline);
+    const anomalySpots = Object.values(allConditions).filter((c) => c.tideAnomalyM != null).length;
+    if (anomalySpots > 0) console.log(`🌊 Tide anomaly emitted on ${anomalySpots} spots (baseline ${Object.keys(tideBaseline.stations).length} stations)`);
+  } catch (err) {
+    console.warn('⚠️ Failed to persist tide-anomaly-baseline.json:', err.message);
+  }
   const biasApplied = Object.values(allConditions).filter((condition) => condition.waveBias).length;
   if (waveBiasEnabled && biasApplied > 0) console.log(`📏 Bias correction applied on ${biasApplied} spots (n≥${MIN_BIAS_N}, |ME|≥${MIN_BIAS_M} m)`);
   ensureParentDir(outputPath);

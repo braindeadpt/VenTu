@@ -58,21 +58,34 @@ test.describe('Mapa — alvos de toque ≥44px', () => {
       await expectMinTargetSize(summary, 'summary «Legenda» do sheet');
 
       await summary.click();
-      await expect(page.getByRole('region', { name: 'Legenda do mapa' })).toBeVisible();
-      await expect(
-        page.getByRole('region', { name: 'Legenda do mapa' }).locator('.h-2'),
-      ).toBeVisible();
+      const legend = page.getByRole('region', { name: 'Legenda do mapa' });
+      await expect(legend).toBeVisible();
+      // UX v3 §4 — a régua usa amostras redondas (h-3.5) com os rótulos
+      // canónicos de getScoreTierLabel; o selector antigo (.h-2) era das
+      // barras de gradiente das camadas, que só existem com camadas ligadas.
+      await expect(legend.getByText('Épico')).toBeVisible();
+      await expect(legend.getByText('Fechado')).toBeVisible();
     });
   });
 
   test.describe('tablet 768px (touch — layout sm+)', () => {
     test.use({ viewport: { width: 768, height: 1024 }, hasTouch: true, serviceWorkers: 'block', reducedMotion: 'reduce' });
 
-    test('toggle da legenda ≥44px abaixo de lg', async ({ page }) => {
+    test('toggle da legenda ≥44px na pilha de controlos (UX v3 §2/§4)', async ({ page }) => {
       await openMapa(page);
 
-      const legend = page.getByRole('region', { name: 'Legenda do mapa' });
-      await expectMinTargetSize(legend.getByRole('button'), 'toggle da legenda (tablet)');
+      // M2: o toggle deixou de viver dentro do cartão da legenda — é um
+      // botão da pilha direita com aria-pressed, e o cartão abre por
+      // omissão no layout desktop (≥768px).
+      const toggle = page.locator('[data-map-legend-toggle]');
+      await expect(toggle).toBeVisible();
+      await expectMinTargetSize(toggle, 'toggle «Legenda» da pilha');
+      await expect(toggle).toHaveAttribute('aria-pressed', 'true');
+      await expect(page.getByRole('region', { name: 'Legenda do mapa' })).toBeVisible();
+
+      await toggle.click();
+      await expect(toggle).toHaveAttribute('aria-pressed', 'false');
+      await expect(page.getByRole('region', { name: 'Legenda do mapa' })).toHaveCount(0);
     });
   });
 

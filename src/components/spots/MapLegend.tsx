@@ -2,7 +2,8 @@
 
 import { getTranslation } from '@/lib/i18n';
 import { useEffect, useState } from 'react';
-import { getLegendLabels } from '@/lib/map-constants';
+import { getScoreTierLabel, type ScoreTier } from '@/lib/sportScore';
+import { getScoreTier, SCORE_THRESHOLD_STEPS } from '@/lib/scoreThresholds';
 import { ChevronDown } from 'lucide-react';
 import IsobathLegend from './IsobathLegend';
 
@@ -20,6 +21,21 @@ interface MapLegendProps {
   /** Renderiza em fluxo (sem posição absoluta nem cartão) — usado dentro do
    *  <details> «Legenda» do bottom sheet mobile. */
   embedded?: boolean;
+  /**
+   * UX v3 §4 — modo controlado do /mapa fullscreen: o cartão flutuante só
+   * existe quando `open`, a posição é a da maquete (bottom-right no
+   * desktop, top-right junto à pilha no mobile) e o estado vive na zona
+   * (toggle na pilha de controlos, persistido em localStorage). Sem
+   * `chrome` o comportamento antigo mantém-se (embeds/hero).
+   */
+  chrome?: {
+    open: boolean;
+    mobile: boolean;
+    bottomOffset: number;
+    /** Teto de altura (px) no mobile — a zona mede o espaço livre acima
+     *  do scrubber/sheet para o cartão nunca colidir (scroll interno). */
+    maxHeight?: number;
+  };
   /** Legenda de profundidade das isóbatas quando a camada está activa. */
   isobathsTitle?: string;
   isobathsVisible?: boolean;
@@ -43,12 +59,53 @@ interface MapLegendProps {
   warningsOrcaLabel?: string;
 }
 
+/**
+ * Régua de scores — 5 escalões discretos com os rótulos canónicos
+ * (`getScoreTierLabel`) e os intervalos das SCORE_TIER_THRESHOLDS
+ * (ÉPICO 80–100 · BOM 60–79 · … · FECHADO 0–19). A maquete mostrava
+ * «FUN»/«FLAT» — a spec manda usar a fonte canónica.
+ */
+function ScoreScale({ locale, title }: { locale: string; title: string }) {
+  const t = getTranslation(locale);
+  return (
+    <>
+      <p className="mb-1.5 text-[10.5px] font-semibold uppercase tracking-wide text-fg-muted">
+        {title}
+      </p>
+      <ul className="flex flex-col gap-1">
+        {SCORE_THRESHOLD_STEPS.map((step, i) => {
+          const tier: ScoreTier = getScoreTier(step.min);
+          const hi = i === 0 ? 100 : SCORE_THRESHOLD_STEPS[i - 1].min - 1;
+          return (
+            <li key={step.cssVar} className="grid grid-cols-[14px_1fr_auto] items-center gap-x-2">
+              <i
+                aria-hidden
+                className="block h-3.5 w-3.5 rounded-full"
+                style={{ background: `rgb(var(${step.cssVar}))` }}
+              />
+              <span className="text-meta-sm font-medium uppercase tracking-wide text-fg">
+                {getScoreTierLabel(tier, locale)}
+              </span>
+              <span className="font-mono tabular-nums text-[11px] text-fg-muted">
+                {step.min}–{hi}
+              </span>
+            </li>
+          );
+        })}
+      </ul>
+      {/* t mantém-se referenciado: `t` é usado pelas secções de camadas. */}
+      <span className="sr-only">{t.spotsMap.nauticalScore}</span>
+    </>
+  );
+}
+
 export default function MapLegend({
   locale,
   reserveHudSpace = false,
   hudLift = 0,
   placement = 'map',
   embedded = false,
+  chrome,
   isobathsTitle,
   isobathsVisible = false,
   hsTitle,
@@ -72,7 +129,6 @@ export default function MapLegend({
 }: MapLegendProps) {
   const isPt = locale === 'pt';
   const t = getTranslation(locale);
-  const labels = getLegendLabels(locale);
   const [collapsed, setCollapsed] = useState(true);
 
   // Auto-expand when a data layer activates — except the homepage hero:
@@ -85,6 +141,234 @@ export default function MapLegend({
       setCollapsed(false);
     }
   }, [placement, isobathsVisible, hsVisible, sstVisible, currentsVisible, windVisible, bathymetryVisible, seamarksVisible, warningsVisible]);
+
+  const scoreTitle = t.mapUiChrome.legendScoreTitle;
+
+  const layerSections = (
+    <>
+      {isobathsVisible && isobathsTitle && (
+        <div className="mt-2 pt-2 border-t border-divider" data-testid="isobaths-legend-inline">
+          <p className="text-[10px] font-semibold uppercase tracking-wide text-fg-subtle mb-1">
+            {isobathsTitle}
+          </p>
+          <IsobathLegend bare title={isobathsTitle} />
+        </div>
+      )}
+      {hsVisible && hsTitle && (
+        <div className="mt-2 pt-2 border-t border-divider" data-map-hs-legend>
+          <p className="text-[10px] font-semibold uppercase tracking-wide text-fg-subtle mb-1">
+            {hsTitle}
+          </p>
+          <div
+            className="h-2 rounded mb-1"
+            style={{
+              background:
+                'linear-gradient(to right, rgb(3 105 161 / 0.48), rgb(14 165 233 / 0.78) 42%, rgb(14 165 233 / 0.92) 70%, rgb(241 245 249 / 0.88))',
+            }}
+          />
+          <div className="flex justify-between text-[9px] font-mono tabular-nums text-fg-subtle">
+            <span>0.5</span>
+            <span>0.9</span>
+            <span>2.4+</span>
+          </div>
+        </div>
+      )}
+      {sstVisible && sstTitle && (
+        <div className="mt-2 pt-2 border-t border-divider" data-map-sst-legend>
+          <p className="text-[10px] font-semibold uppercase tracking-wide text-fg-subtle mb-1">
+            {sstTitle}
+          </p>
+          <div
+            className="h-2 rounded mb-1"
+            style={{
+              background:
+                'linear-gradient(to right, rgb(var(--data-water) / 0.55), rgb(var(--data-water) / 0.8) 48%, rgb(var(--data-period) / 0.92))',
+            }}
+          />
+          <div className="flex justify-between text-[9px] font-mono tabular-nums text-fg-subtle">
+            <span>14</span>
+            <span>18</span>
+            <span>22+</span>
+          </div>
+        </div>
+      )}
+      {currentsVisible && currentsTitle && (
+        <div className="mt-2 pt-2 border-t border-divider" data-map-currents-legend>
+          <p className="text-[10px] font-semibold uppercase tracking-wide text-fg-subtle mb-1">
+            {currentsTitle}
+          </p>
+          <div className="flex items-end justify-between h-6 mb-1 px-0.5" aria-hidden>
+            {[
+              { len: 7, op: 0.5 },
+              { len: 11, op: 0.72 },
+              { len: 15, op: 0.96 },
+            ].map((s) => (
+              <svg
+                key={s.len}
+                width={22}
+                height={22}
+                viewBox="0 0 22 22"
+                className="text-data-water"
+              >
+                <line
+                  x1="5"
+                  y1="16.5"
+                  x2={5 + s.len * 0.62}
+                  y2={16.5 - s.len * 0.62}
+                  stroke="currentColor"
+                  strokeWidth="1.7"
+                  strokeLinecap="round"
+                  opacity={s.op}
+                />
+                <circle
+                  cx={5 + s.len * 0.62}
+                  cy={16.5 - s.len * 0.62}
+                  r="1.55"
+                  fill="currentColor"
+                  opacity={s.op}
+                />
+              </svg>
+            ))}
+          </div>
+          <div className="flex justify-between text-[9px] font-mono tabular-nums text-fg-subtle">
+            <span>0.1</span>
+            <span>0.2</span>
+            <span>0.4+</span>
+          </div>
+        </div>
+      )}
+      {windVisible && windTitle && (
+        <div className="mt-2 pt-2 border-t border-divider" data-map-wind-legend>
+          <p className="text-[10px] font-semibold uppercase tracking-wide text-fg-subtle mb-1">
+            {windTitle}
+          </p>
+          {/* Amostras reais — mesma cor/espessura das partículas de vento
+              (maquete: 5 kt / 15 kt / 25+ kt). */}
+          <div className="grid grid-cols-3 gap-1.5 text-center text-[11px] text-fg-muted">
+            {[
+              { w: 1.4, op: 0.55, label: '5 kt' },
+              { w: 2, op: 0.75, label: '15 kt' },
+              { w: 2.8, op: 0.95, label: '25+ kt' },
+            ].map((s) => (
+              <span key={s.label}>
+                <svg viewBox="0 0 60 14" aria-hidden className="block w-full h-3.5 text-data-wind">
+                  <path
+                    d="M4 7h52"
+                    stroke="currentColor"
+                    strokeWidth={s.w}
+                    strokeOpacity={s.op}
+                    strokeLinecap="round"
+                  />
+                </svg>
+                {s.label}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+      {bathymetryVisible && bathymetryTitle && (
+        <div className="mt-2 pt-2 border-t border-divider" data-map-bathymetry-legend>
+          <p className="text-[10px] font-semibold uppercase tracking-wide text-fg-subtle mb-1">
+            {bathymetryTitle}
+          </p>
+          {/* Escala EMODnet mean_multicolour real: rebentação em vermelho
+              (0 m) → amarelo na plataforma → verde/ciano → azul → navy
+              nos canhões/talude (aproximação não-linear, como nos tiles). */}
+          <div
+            className="h-2 rounded mb-1"
+            style={{
+              background:
+                'linear-gradient(to right, #ef4444 0%, #fbbf24 12%, #4ade80 30%, #22d3ee 52%, #1d4ed8 75%, #081c3f 100%)',
+            }}
+          />
+          <div className="flex justify-between text-[9px] font-mono tabular-nums text-fg-subtle">
+            <span>0</span>
+            <span>500</span>
+            <span>4000+</span>
+          </div>
+          {bathymetryContoursLabel && (
+            <div className="flex items-center gap-1.5 mt-1 text-[9px] text-fg-subtle">
+              {/* Linha tracejada cinzenta — o estilo dos contornos
+                  EMODnet 50–5000 m (única cobertura de isóbatas nas ilhas). */}
+              <svg width="22" height="8" viewBox="0 0 22 8" aria-hidden>
+                <line x1="1" y1="4" x2="21" y2="4" stroke="#cbd5e1" strokeWidth="1.2" strokeDasharray="3 2" />
+              </svg>
+              <span>{bathymetryContoursLabel}</span>
+            </div>
+          )}
+        </div>
+      )}
+      {seamarksVisible && seamarksTitle && (
+        <div className="mt-2 pt-2 border-t border-divider" data-map-seamarks-legend>
+          <p className="text-[10px] font-semibold uppercase tracking-wide text-fg-subtle mb-1">
+            {seamarksTitle}
+          </p>
+          <div className="flex items-center gap-1.5 text-[9px] text-fg-subtle">
+            {/* Marcas IALA simplificadas: baliza lateral (cilindro),
+                cardinal (duplo cone) e perigo isolado (esferas). */}
+            <svg width="46" height="14" viewBox="0 0 46 14" aria-hidden>
+              <rect x="2" y="3" width="6" height="8" rx="1" fill="none" stroke="#ef4444" strokeWidth="1.3" />
+              <path d="M16 11 L20 3 L24 11 Z M16 8 L24 8" fill="none" stroke="#eab308" strokeWidth="1.3" strokeLinejoin="round" />
+              <circle cx="34" cy="5" r="2.4" fill="none" stroke="#334155" strokeWidth="1.3" />
+              <circle cx="34" cy="11" r="2.4" fill="#334155" />
+            </svg>
+            <span>{seamarksMarksLabel}</span>
+          </div>
+        </div>
+      )}
+      {warningsVisible && warningsTitle && (
+        <div className="mt-2 pt-2 border-t border-divider" data-map-warnings-legend>
+          <p className="text-[10px] font-semibold uppercase tracking-wide text-fg-subtle mb-1.5">
+            {warningsTitle}
+          </p>
+          <div className="flex flex-col gap-1 text-[9px] text-fg-subtle">
+            <span className="flex items-center gap-1.5">
+              <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden>
+                <rect x="1.5" y="1.5" width="11" height="11" fill="rgb(239 68 68 / 0.18)" stroke="#ef4444" strokeWidth="1.4" />
+              </svg>
+              {warningsZoneLabel}
+            </span>
+            <span className="flex items-center gap-1.5">
+              <svg width="14" height="14" viewBox="0 0 28 28" aria-hidden>
+                <circle cx="14" cy="16" r="10" fill="none" stroke="#f59e0b" strokeWidth="1.4" strokeDasharray="2.5 4" opacity="0.7" />
+                <path d="M14.2 6.5 C17.2 10.6 18.1 15.5 17.2 21.5 L10.2 21.5 C10.1 15.2 11.2 10.4 14.2 6.5 Z" fill="rgb(15 23 42)" stroke="rgb(226 232 240)" strokeWidth="1" strokeLinejoin="round" />
+              </svg>
+              {warningsOrcaLabel}
+            </span>
+          </div>
+        </div>
+      )}
+    </>
+  );
+
+  // UX v3 §4 — /mapa fullscreen: cartão controlado pela pilha (toggle
+  // «Legenda»), bottom-right no desktop / top-right no mobile, medido pelo
+  // scrubber para nunca colidir.
+  if (chrome) {
+    if (!chrome.open) return null;
+    return (
+      <div
+        role="region"
+        aria-label={t.spotsMap.mapLegend}
+        data-map-legend-card
+        className={`absolute z-[1140] rounded-modal border border-divider bg-bg-elevated shadow-card px-3.5 py-3 ${
+          chrome.mobile
+            ? 'top-16 right-16 w-[220px] overflow-y-auto overscroll-contain'
+            : 'right-3 w-[236px]'
+        }`}
+        style={
+          chrome.mobile
+            ? chrome.maxHeight != null
+              ? { maxHeight: chrome.maxHeight }
+              : undefined
+            : { bottom: chrome.bottomOffset }
+        }
+      >
+        <ScoreScale locale={locale} title={scoreTitle} />
+        {layerSections}
+      </div>
+    );
+  }
 
   const isHero = placement === 'hero';
   const bottomPx = !isHero && !embedded && reserveHudSpace
@@ -118,7 +402,7 @@ export default function MapLegend({
             className="flex items-center justify-between w-full min-h-[44px] mb-1 lg:min-h-0 lg:mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-fg-muted lg:cursor-default lg:hover:opacity-100"
             aria-expanded={!collapsed}
           >
-            <span>{t.spotsMap.nauticalScore}</span>
+            <span>{scoreTitle}</span>
             <ChevronDown
               className={`w-3 h-3 lg:hidden transition-transform ${collapsed ? '' : 'rotate-180'}`}
             />
@@ -126,234 +410,13 @@ export default function MapLegend({
         )}
         {embedded && (
           <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-fg-muted">
-            {t.spotsMap.nauticalScore}
+            {scoreTitle}
           </p>
         )}
 
         <div className={embedded ? 'block' : `${collapsed ? 'hidden' : 'block'} lg:block`}>
-          <div
-            className="h-2 rounded mb-1.5"
-            style={{
-              // Amostra da escala — usa sempre as variantes vívidas. Em tema
-              // claro os tokens --score-* trocam para variantes AA escuras
-              // (pensadas para texto), que na barra ficam lamacentas.
-              background: `linear-gradient(to right,
-                rgb(107 114 128) 0%,
-                rgb(248 113 113) 25%,
-                rgb(245 158 11) 50%,
-                rgb(16 185 129) 75%,
-                rgb(14 165 233) 100%
-              )`,
-            }}
-          />
-
-          <div className="grid grid-cols-5 gap-0.5 text-center text-[8px] leading-tight text-fg-subtle">
-            {labels.map((l) => (
-              <span key={l.label}>{l.label}</span>
-            ))}
-          </div>
-
-          {isobathsVisible && isobathsTitle && (
-            <div className="mt-2 pt-2 border-t border-divider" data-testid="isobaths-legend-inline">
-              <p className="text-[10px] font-semibold uppercase tracking-wide text-fg-subtle mb-1">
-                {isobathsTitle}
-              </p>
-              <IsobathLegend bare title={isobathsTitle} />
-            </div>
-          )}
-          {hsVisible && hsTitle && (
-            <div className="mt-2 pt-2 border-t border-divider" data-map-hs-legend>
-              <p className="text-[10px] font-semibold uppercase tracking-wide text-fg-subtle mb-1">
-                {hsTitle}
-              </p>
-              <div
-                className="h-2 rounded mb-1"
-                style={{
-                  background:
-                    'linear-gradient(to right, rgb(3 105 161 / 0.48), rgb(14 165 233 / 0.78) 42%, rgb(14 165 233 / 0.92) 70%, rgb(241 245 249 / 0.88))',
-                }}
-              />
-              <div className="flex justify-between text-[9px] font-mono tabular-nums text-fg-subtle">
-                <span>0.5</span>
-                <span>0.9</span>
-                <span>2.4+</span>
-              </div>
-            </div>
-          )}
-          {sstVisible && sstTitle && (
-            <div className="mt-2 pt-2 border-t border-divider" data-map-sst-legend>
-              <p className="text-[10px] font-semibold uppercase tracking-wide text-fg-subtle mb-1">
-                {sstTitle}
-              </p>
-              <div
-                className="h-2 rounded mb-1"
-                style={{
-                  background:
-                    'linear-gradient(to right, rgb(var(--data-water) / 0.55), rgb(var(--data-water) / 0.8) 48%, rgb(var(--data-period) / 0.92))',
-                }}
-              />
-              <div className="flex justify-between text-[9px] font-mono tabular-nums text-fg-subtle">
-                <span>14</span>
-                <span>18</span>
-                <span>22+</span>
-              </div>
-            </div>
-          )}
-          {currentsVisible && currentsTitle && (
-            <div className="mt-2 pt-2 border-t border-divider" data-map-currents-legend>
-              <p className="text-[10px] font-semibold uppercase tracking-wide text-fg-subtle mb-1">
-                {currentsTitle}
-              </p>
-              <div className="flex items-end justify-between h-6 mb-1 px-0.5" aria-hidden>
-                {[
-                  { len: 7, op: 0.5 },
-                  { len: 11, op: 0.72 },
-                  { len: 15, op: 0.96 },
-                ].map((s) => (
-                  <svg
-                    key={s.len}
-                    width={22}
-                    height={22}
-                    viewBox="0 0 22 22"
-                    className="text-data-water"
-                  >
-                    <line
-                      x1="5"
-                      y1="16.5"
-                      x2={5 + s.len * 0.62}
-                      y2={16.5 - s.len * 0.62}
-                      stroke="currentColor"
-                      strokeWidth="1.7"
-                      strokeLinecap="round"
-                      opacity={s.op}
-                    />
-                    <circle
-                      cx={5 + s.len * 0.62}
-                      cy={16.5 - s.len * 0.62}
-                      r="1.55"
-                      fill="currentColor"
-                      opacity={s.op}
-                    />
-                  </svg>
-                ))}
-              </div>
-              <div className="flex justify-between text-[9px] font-mono tabular-nums text-fg-subtle">
-                <span>0.1</span>
-                <span>0.2</span>
-                <span>0.4+</span>
-              </div>
-            </div>
-          )}
-          {windVisible && windTitle && (
-            <div className="mt-2 pt-2 border-t border-divider" data-map-wind-legend>
-              <p className="text-[10px] font-semibold uppercase tracking-wide text-fg-subtle mb-1">
-                {windTitle}
-              </p>
-              <div className="flex items-end justify-between h-6 mb-1 px-0.5" aria-hidden>
-                {[
-                  { len: 6, w: 1.15, op: 0.42 },
-                  { len: 11, w: 1.15, op: 0.6 },
-                  { len: 16, w: 1.7, op: 0.78 },
-                ].map((s) => (
-                  <svg
-                    key={s.len}
-                    width={22}
-                    height={22}
-                    viewBox="0 0 22 22"
-                    className="text-data-wind"
-                  >
-                    <line
-                      x1="3"
-                      y1="16"
-                      x2={3 + s.len}
-                      y2={16}
-                      stroke="currentColor"
-                      strokeWidth={s.w}
-                      strokeLinecap="round"
-                      opacity={s.op}
-                    />
-                  </svg>
-                ))}
-              </div>
-              <div className="flex justify-between text-[9px] font-mono tabular-nums text-fg-subtle">
-                <span>5</span>
-                <span>15</span>
-                <span>25+</span>
-              </div>
-            </div>
-          )}
-          {bathymetryVisible && bathymetryTitle && (
-            <div className="mt-2 pt-2 border-t border-divider" data-map-bathymetry-legend>
-              <p className="text-[10px] font-semibold uppercase tracking-wide text-fg-subtle mb-1">
-                {bathymetryTitle}
-              </p>
-              {/* Escala EMODnet mean_multicolour real: rebentação em vermelho
-                  (0 m) → amarelo na plataforma → verde/ciano → azul → navy
-                  nos canhões/talude (aproximação não-linear, como nos tiles). */}
-              <div
-                className="h-2 rounded mb-1"
-                style={{
-                  background:
-                    'linear-gradient(to right, #ef4444 0%, #fbbf24 12%, #4ade80 30%, #22d3ee 52%, #1d4ed8 75%, #081c3f 100%)',
-                }}
-              />
-              <div className="flex justify-between text-[9px] font-mono tabular-nums text-fg-subtle">
-                <span>0</span>
-                <span>500</span>
-                <span>4000+</span>
-              </div>
-              {bathymetryContoursLabel && (
-                <div className="flex items-center gap-1.5 mt-1 text-[9px] text-fg-subtle">
-                  {/* Linha tracejada cinzenta — o estilo dos contornos
-                      EMODnet 50–5000 m (única cobertura de isóbatas nas ilhas). */}
-                  <svg width="22" height="8" viewBox="0 0 22 8" aria-hidden>
-                    <line x1="1" y1="4" x2="21" y2="4" stroke="#cbd5e1" strokeWidth="1.2" strokeDasharray="3 2" />
-                  </svg>
-                  <span>{bathymetryContoursLabel}</span>
-                </div>
-              )}
-            </div>
-          )}
-          {seamarksVisible && seamarksTitle && (
-            <div className="mt-2 pt-2 border-t border-divider" data-map-seamarks-legend>
-              <p className="text-[10px] font-semibold uppercase tracking-wide text-fg-subtle mb-1">
-                {seamarksTitle}
-              </p>
-              <div className="flex items-center gap-1.5 text-[9px] text-fg-subtle">
-                {/* Marcas IALA simplificadas: baliza lateral (cilindro),
-                    cardinal (duplo cone) e perigo isolado (esferas). */}
-                <svg width="46" height="14" viewBox="0 0 46 14" aria-hidden>
-                  <rect x="2" y="3" width="6" height="8" rx="1" fill="none" stroke="#ef4444" strokeWidth="1.3" />
-                  <path d="M16 11 L20 3 L24 11 Z M16 8 L24 8" fill="none" stroke="#eab308" strokeWidth="1.3" strokeLinejoin="round" />
-                  <circle cx="34" cy="5" r="2.4" fill="none" stroke="#334155" strokeWidth="1.3" />
-                  <circle cx="34" cy="11" r="2.4" fill="#334155" />
-                </svg>
-                <span>{seamarksMarksLabel}</span>
-              </div>
-            </div>
-          )}
-          {warningsVisible && warningsTitle && (
-            <div className="mt-2 pt-2 border-t border-divider" data-map-warnings-legend>
-              <p className="text-[10px] font-semibold uppercase tracking-wide text-fg-subtle mb-1.5">
-                {warningsTitle}
-              </p>
-              <div className="flex flex-col gap-1 text-[9px] text-fg-subtle">
-                <span className="flex items-center gap-1.5">
-                  <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden>
-                    <rect x="1.5" y="1.5" width="11" height="11" fill="rgb(239 68 68 / 0.18)" stroke="#ef4444" strokeWidth="1.4" />
-                  </svg>
-                  {warningsZoneLabel}
-                </span>
-                <span className="flex items-center gap-1.5">
-                  <svg width="14" height="14" viewBox="0 0 28 28" aria-hidden>
-                    <circle cx="14" cy="16" r="10" fill="none" stroke="#f59e0b" strokeWidth="1.4" strokeDasharray="2.5 4" opacity="0.7" />
-                    <path d="M14.2 6.5 C17.2 10.6 18.1 15.5 17.2 21.5 L10.2 21.5 C10.1 15.2 11.2 10.4 14.2 6.5 Z" fill="rgb(15 23 42)" stroke="rgb(226 232 240)" strokeWidth="1" strokeLinejoin="round" />
-                  </svg>
-                  {warningsOrcaLabel}
-                </span>
-              </div>
-            </div>
-          )}
+          <ScoreScale locale={locale} title={scoreTitle} />
+          {layerSections}
         </div>
       </div>
     </div>

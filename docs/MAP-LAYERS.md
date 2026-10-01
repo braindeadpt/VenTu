@@ -9,6 +9,7 @@ rewriting the map core.
 | z-index | Pane | Layer | Notes |
 |---|---|---|---|
 | — | `tilePane` | basemap (CARTO light/dark, Esri satellite) | Leaflet default |
+| 205 | `ventu-gibs-sat` | **NASA GIBS true-color** (MODIS Terra, «hoje») | opaque raster — real imagery from the latest satellite pass (clouds/fronts); `default` TIME slot always serves the newest date (`no-store`); `maxNativeZoom: 9`, stretched above; keyless; `gibs.earthdata.nasa.gov` in CSP img-src (meta + terraform); counts toward the heavy-raster cap |
 | 210 | `ventu-bathymetry` | **EMODnet bathymetry WMS** (`emodnet:mean_multicolour` + `emodnet:contours`) | opt-in depth shading + 50–5000 m contours (island coverage — IH isobaths are mainland-only); host in CSP img-src (meta + terraform) |
 | 340 | — | isobaths (canvas image) | static, below fields |
 | 345 | `windfield` | **wind particle field** | ambient, animated |
@@ -87,3 +88,23 @@ Each field = `src/lib/map*Field.ts` (pure: samples → IDW grid → draw) +
 Rule of thumb: **ambient fields** live in numbered canvas panes (345–360,
 under markers); **discrete entities** (warnings, orcas, buoys) stay in the
 marker/overlay stack and surface through the existing warning/chip channels.
+
+## Heavy raster cap
+
+`MAP_HEAVY_RASTER_KEYS` (`src/lib/mapLayerBus.ts`) = `radar`, `bathymetry`,
+`seamarks`, `gibsSat` — max **2 active** (`MAP_HEAVY_RASTER_MAX`); turning on
+a third evicts the oldest (toast names the evicted layer). GIBS true-color
+is opaque — it replaces the basemap visually, so it competes with the other
+raster overlays for the same slot. The vector canvas fields (Hs/SST/wind/
+currents) have their own mutual-exclusion rules and don't count.
+
+## NASA GIBS (`gibsSatellite.ts` + `useMapLayers`)
+
+- `GIBS_SATELLITE_URL` — WMTS REST `…/MODIS_Terra_CorrectedReflectance_TrueColor/default/default/GoogleMapsCompatible_Level9/{z}/{y}/{x}.jpg`.
+  The `default` TIME segment always resolves to the latest available date —
+  no client-side date math; `Cache-Control: no-store` keeps «today» fresh.
+- `L.tileLayer` on `ventu-gibs-sat` pane, `pointerEvents: none`,
+  `maxNativeZoom: 9` (~250 m/px — clouds, not street detail).
+- Toggle in the Camadas menu («Satélite NASA», `data-map-gibs-sat-toggle`),
+  persisted to `ventu.map.gibsSat` localStorage, disabled in hero embeds.
+- Attribution: «Imagery © NASA GIBS (EOSDIS/MODIS Terra)».

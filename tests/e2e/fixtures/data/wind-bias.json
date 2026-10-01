@@ -616,6 +616,24 @@
       "rmse": 2.5,
       "lastUpdated": "2026-09-15T08:00:00.000Z"
     },
+    "metar|LPPD": {
+      "station": "Ponta Delgada (METAR)",
+      "source": "metar",
+      "n": 10,
+      "me": 1.3,
+      "mae": 1.3,
+      "rmse": 1.5,
+      "lastUpdated": "2026-09-27T08:30:00.000Z"
+    },
+    "ipma|Cabril": {
+      "station": "Cabril",
+      "source": "ipma",
+      "n": 10,
+      "me": -1.7,
+      "mae": 1.9,
+      "rmse": 2.3,
+      "lastUpdated": "2026-09-30T07:00:00.000Z"
+    },
     "ipma|Rio Maior": {
       "station": "Rio Maior",
       "source": "ipma",
@@ -624,6 +642,51 @@
       "mae": 2.7,
       "rmse": 2.8,
       "lastUpdated": "2026-09-14T15:00:00.000Z"
+    },
+    "metar|LPFR": {
+      "station": "Faro (METAR)",
+      "source": "metar",
+      "n": 17,
+      "me": 6.4,
+      "mae": 6.4,
+      "rmse": 7.9,
+      "lastUpdated": "2026-09-27T08:30:00.000Z"
+    },
+    "ipma|Odemira - Vila Nova de Milfontes": {
+      "station": "Odemira - Vila Nova de Milfontes",
+      "source": "ipma",
+      "n": 57,
+      "me": 0.8,
+      "mae": 1.4,
+      "rmse": 1.8,
+      "lastUpdated": "2026-09-25T12:00:00.000Z"
+    },
+    "ipma|Aljezur - Rogil": {
+      "station": "Aljezur - Rogil",
+      "source": "ipma",
+      "n": 38,
+      "me": -0.3,
+      "mae": 1.8,
+      "rmse": 2,
+      "lastUpdated": "2026-09-25T12:00:00.000Z"
+    },
+    "metar|LPOV": {
+      "station": "Ovar (METAR)",
+      "source": "metar",
+      "n": 13,
+      "me": 1.2,
+      "mae": 1.2,
+      "rmse": 1.5,
+      "lastUpdated": "2026-09-27T07:00:00.000Z"
+    },
+    "metar|LPCS": {
+      "station": "Cascais (METAR)",
+      "source": "metar",
+      "n": 21,
+      "me": 6.9,
+      "mae": 6.9,
+      "rmse": 7,
+      "lastUpdated": "2026-09-27T08:30:00.000Z"
     }
   },
   "lastPairs": [

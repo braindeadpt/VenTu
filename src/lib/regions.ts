@@ -30,6 +30,7 @@ const MUNICIPALITY_TO_REGION: Record<string, MacroRegion> = {
   'Cantanhede': 'Centro',
   'Lourinhã': 'Centro',
   'Caldas da Rainha': 'Centro',
+  'Marinha Grande': 'Centro',
 
   // Lisboa
   'Cascais': 'Lisboa',
@@ -45,6 +46,8 @@ const MUNICIPALITY_TO_REGION: Record<string, MacroRegion> = {
   // Alentejo
   'Alentejo': 'Alentejo',
   'Zambujeira do Mar': 'Alentejo',
+  'Grândola': 'Alentejo',
+  'Sines': 'Alentejo',
 
   // Algarve
   'Algarve': 'Algarve',

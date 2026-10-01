@@ -49,9 +49,9 @@ export interface SpotVerdictConditions {
  *    âncoras (cota --ventu-spot-sticky-top).
  * §3 SpotTimeRail (#quando) — régua de 48 h no eixo de tempo partilhado.
  *
- * Os componentes antigos (SpotDetailHero, SpotStickyBar, linha standalone de
- * tabs, WhenToGoCard) ficam no disco para referência até à limpeza — aqui já
- * não são compostos. As props legadas sem uso no interior novo (verdict,
+ * Os componentes antigos (SpotDetailHero, SpotStickyBar, SessionStrip,
+ * SpotVerdict, WhenToGoCard) foram removidos na limpeza SP-D — já não eram
+ * compostos em lado nenhum. As props legadas sem uso no interior novo (verdict,
  * hourly/windows de MagicWindow, observedWave*, rangeLabel) saíram na S3:
  * a régua usa spotWindows sobre o eixo partilhado e o hero lê as ondas
  * observadas de `conditions`. `--verdict` é definido UMA vez no contentor

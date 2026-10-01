@@ -55,11 +55,12 @@ test.describe('Map stable view', () => {
   test.use({ serviceWorkers: 'block', reducedMotion: 'reduce' });
   test.describe.configure({ timeout: 60_000 });
 
-  test('popup sobrevive a um refresh de dados (desktop, cluster desligado)', async ({ page }) => {
-    // Scores novos no refresh → os marcadores são recriados — o popup tem de
-    // reabrir na nova instância, não desaparecer. O JSON é pré-buscado uma
-    // vez: route.fetch() dentro do handler morre («Response disposed») se a
-    // página fechar a meio (refresh diferido de 5 s corre até ao fim do teste).
+  test('pré-visualização sobrevive a um refresh de dados (desktop)', async ({ page }) => {
+    // Scores novos no refresh → os marcadores são recriados — o cartão v3
+    // (sheetSpot no contexto partilhado) não pode fechar nem perder o spot.
+    // O JSON é pré-buscado uma vez: route.fetch() dentro do handler morre
+    // («Response disposed») se a página fechar a meio (refresh diferido de
+    // 5 s corre até ao fim do teste).
     const baseJson = (await (await page.request.get('/data/conditions.json')).json()) as Record<
       string,
       { waveHeight?: number; swellHeight?: number }
@@ -81,12 +82,12 @@ test.describe('Map stable view', () => {
     const marker = page.locator('.spot-marker').first();
     await expect(marker).toBeAttached({ timeout: 20_000 });
     await marker.dispatchEvent('click');
-    const popup = page.locator('.leaflet-popup');
-    await expect(popup).toBeVisible({ timeout: 10_000 });
+    const card = page.locator('[data-testid="map-spot-card"]');
+    await expect(card).toBeVisible({ timeout: 10_000 });
 
     mutate = true;
     await triggerRefresh(page);
-    await expect(popup).toBeVisible({ timeout: 15_000 });
+    await expect(card).toBeVisible({ timeout: 15_000 });
   });
 
   test('vista escolhida pelo utilizador sobrevive a refresh que muda o nº de spots', async ({

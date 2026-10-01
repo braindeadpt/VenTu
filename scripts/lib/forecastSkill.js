@@ -383,6 +383,10 @@ function computeSkillStats(pairs) {
     pairs.map((p) => p.observedHm0),
     pairs.map((p) => p.forecastHm0),
   );
+  // Hit-rate «acertou dentro de meio metro» — a métrica legível para o badge
+  // de precisão (ME/RMSE são jargão; a fracção de leituras da boia dentro de
+  // ±0,5 m da previsão diz a mesma coisa em linguagem de produto).
+  const withinHalfM = errs.filter((e) => Math.abs(e) <= 0.5).length / n;
   const meanLead = pairs.every((p) => Number.isFinite(p.leadTimeHours))
     ? pairs.reduce((a, p) => a + p.leadTimeHours, 0) / n
     : null;
@@ -393,6 +397,7 @@ function computeSkillStats(pairs) {
     mae: round2(mae),
     rmse: round2(rmse),
     corr: corr == null ? null : round2(corr),
+    withinHalfM: round2(withinHalfM),
     meanLeadHours: meanLead == null ? null : round1(meanLead),
   };
 }

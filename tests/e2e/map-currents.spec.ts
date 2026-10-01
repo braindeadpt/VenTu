@@ -67,7 +67,7 @@ test.describe('Map currents field', () => {
 
     const slider = page.locator('[data-map-hours-scrubber] input[type="range"]');
     await slider.fill('3');
-    await expect(page.locator('[data-map-time-track-mode="hours"]')).toContainText('17h');
+    await expect(page.locator('[data-map-time-track-mode="hours"]')).toContainText('17:00');
     await expect(map).toHaveAttribute('data-map-currents-max', '0.27');
   });
 });

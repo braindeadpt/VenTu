@@ -36,6 +36,32 @@ interface DawnPatrolScoreMeta {
 
 type DawnPatrolScoreSource = 'boia' | 'viés regional' | 'previsão';
 
+type DawnPatrolCopy = {
+  headline: string;
+  advice: string;
+  bestTime: string;
+  wetsuit: string;
+  crowdTip: string;
+  moonTideLine?: string;
+};
+
+/**
+ * Conteúdo editorial do Dawn Patrol no locale pedido.
+ *
+ * O pipeline gera PT e EN (o Dawn Patrol é gerado por IA, não é copy de UI);
+ * a cadeia é `locale → en → pt`, por isso se um dia o gerador emitir es/de/fr
+ * a chave aparece no JSON e o banner passa a usá-la sem mais alterações.
+ * Ver docs/I18N-MIGRATION.md («conteúdo de dados»).
+ */
+function dawnPatrolCopy(data: DawnPatrolData, locale: string): DawnPatrolCopy {
+  const extra = data as DawnPatrolData & Partial<Record<string, DawnPatrolCopy | undefined>>;
+  if (locale !== 'pt' && locale !== 'en') {
+    const exact = extra[locale];
+    if (exact?.headline) return exact;
+  }
+  return locale === 'pt' ? data.pt : data.en;
+}
+
 interface DawnPatrolData {
   date: string;
   topSpot: string;
@@ -216,7 +242,7 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
 
   if (!data) return null;
 
-  const content = isPt ? data.pt : data.en;
+  const content = dawnPatrolCopy(data, locale);
   const stale = isDawnPatrolStale(data.date);
 
   // Avisos IPMA relevantes para a água (resumo compacto, no máx. 3).

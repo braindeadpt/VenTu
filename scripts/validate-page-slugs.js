@@ -93,7 +93,11 @@ function validatePageSlugsContent(seo, modal) {
   const sportsBlock = block(seo, 'const SEO_SPORTS', '\n]');
   const sports = arrayItems(sportsBlock);
 
-  const labelsBlock = block(seo, 'const SPORT_LABELS', 'const REGION_LABELS');
+  // Fim do bloco = fecho do próprio objecto (`\n}`), não o `const` seguinte:
+  // o marcador antigo (`const REGION_LABELS`) desapareceu quando as regiões
+  // passaram ao dicionário e isso fazia o parser ler um bloco vazio (falso
+  // positivo de «chaves em falta»).
+  const labelsBlock = block(seo, 'const SPORT_LABELS', '\n}');
   const labelSlugs = [...labelsBlock.matchAll(/^\s*'?([a-z][a-z-]*)'?\s*:\s*\{/gm)].map((m) => m[1]);
 
   const popularBlock = block(seo, 'const POPULAR_LANDING_SLUGS', '] as const');
