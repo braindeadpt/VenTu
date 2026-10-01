@@ -70,34 +70,44 @@ export async function showAllMapMarkers(page: Page) {
   // Atalho: o switch gémeo do peek desliga sem sair do estado (um clique,
   // sem navegação peek→half→peek).
   const peekSwitch = page.locator('[data-sheet-peek] [data-map-cluster-toggle]').first();
-  if (await peekSwitch.isVisible().catch(() => false)) {
-    if ((await peekSwitch.getAttribute('aria-checked')) === 'true') await peekSwitch.click();
-  } else if (await sheet.count()) {
-    // Leva o sheet a half, onde vive o chip — por estado, um passo de
-    // cada vez e com confirmação (o atributo muda no mesmo commit que o
-    // conteúdo; o translateY ainda anima ~320 ms mas o DOM já está lá).
-    for (let i = 0; i < 3 && !(await toggle.isVisible().catch(() => false)); i += 1) {
-      const st = await sheet.getAttribute('data-explore-sheet');
-      if (st === 'half') break;
-      if (st === 'peek') {
-        await page.getByRole('button', { name: SHOW_FILTERS_NAME }).click();
-        await expect(sheet).toHaveAttribute('data-explore-sheet', 'half', { timeout: 10_000 });
-      } else {
-        // open (sem toggle): um toque no grabber volta a peek; o loop
-        // seguinte sobe a half pelo botão dedicado.
-        await tapGrabberOnce(page, sheet, grabber);
+  // O desarme corre em RETRY: uma leitura transitória durante o cross-fade
+  // do sheet (com state≠peek, o único [data-sheet-peek] no DOM é a cópia
+  // fantasma inert) podia saltar o clique ou deixá-lo cair no twin inert —
+  // e o assert a seguir falhava ao fim de 15 s com o cluster ainda ligado.
+  // Cada tentativa relê o estado real e repete o clique se o cluster
+  // continuar ligado.
+  await expect(async () => {
+    if (await peekSwitch.isVisible().catch(() => false)) {
+      if ((await peekSwitch.getAttribute('aria-checked')) === 'true') {
+        await peekSwitch.click({ timeout: 3_000 });
       }
-    }
-    if ((await toggle.isVisible().catch(() => false)) && (await toggle.getAttribute('aria-pressed')) === 'true') {
+    } else if (await sheet.count()) {
+      // Leva o sheet a half, onde vive o chip — por estado, um passo de
+      // cada vez e com confirmação (o atributo muda no mesmo commit que o
+      // conteúdo; o translateY ainda anima ~320 ms mas o DOM já está lá).
+      for (let i = 0; i < 3 && !(await toggle.isVisible().catch(() => false)); i += 1) {
+        const st = await sheet.getAttribute('data-explore-sheet');
+        if (st === 'half') break;
+        if (st === 'peek') {
+          await page.getByRole('button', { name: SHOW_FILTERS_NAME }).click();
+          await expect(sheet).toHaveAttribute('data-explore-sheet', 'half', { timeout: 10_000 });
+        } else {
+          // open (sem toggle): um toque no grabber volta a peek; o loop
+          // seguinte sobe a half pelo botão dedicado.
+          await tapGrabberOnce(page, sheet, grabber);
+        }
+      }
+      if ((await toggle.isVisible().catch(() => false)) && (await toggle.getAttribute('aria-pressed')) === 'true') {
+        await toggle.click();
+      }
+    } else if ((await toggle.isVisible().catch(() => false)) && (await toggle.getAttribute('aria-pressed')) === 'true') {
       await toggle.click();
     }
-  } else if ((await toggle.isVisible().catch(() => false)) && (await toggle.getAttribute('aria-pressed')) === 'true') {
-    await toggle.click();
-  }
-  // Falha aqui (e depressa) se o cluster continuar ligado sem toggle
-  // alcançável — o caminho antigo deixava passar em silêncio e o teste
-  // morria mais tarde num timeout de marcadores.
-  await expect(shell).toHaveAttribute('data-map-cluster', 'false', { timeout: 15_000 });
+    // Falha aqui (e depressa) se o cluster continuar ligado sem toggle
+    // alcançável — o caminho antigo deixava passar em silêncio e o teste
+    // morria mais tarde num timeout de marcadores.
+    await expect(shell).toHaveAttribute('data-map-cluster', 'false', { timeout: 1_500 });
+  }).toPass({ timeout: 20_000 });
   await page.waitForSelector('.leaflet-marker-icon.spot-marker', { timeout: 30_000 });
   if (await sheet.count()) {
     // Volta ao peek mesmo quando o cluster já estava desfeito — no half/open
