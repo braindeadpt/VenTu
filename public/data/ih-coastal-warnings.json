@@ -405,6 +405,70 @@
       ]
     },
     {
+      "id": 18707,
+      "ref": "ANAV NR 2206/26",
+      "category": "Requisitos de segurança maritima",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=858248f1-8256-4433-ab21-5abdf5816e02",
+      "source": "ih",
+      "collection": "nav_warning_coastal",
+      "polygons": [
+        [
+          [
+            -8.879639,
+            41.803182
+          ],
+          [
+            -8.879639,
+            41.818664
+          ],
+          [
+            -8.854583,
+            41.818664
+          ],
+          [
+            -8.854583,
+            41.803182
+          ],
+          [
+            -8.879639,
+            41.803182
+          ]
+        ]
+      ]
+    },
+    {
+      "id": 18709,
+      "ref": "ANAV NR 2207/26",
+      "category": "Requisitos de segurança maritima",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=995e6d63-1db1-4913-bca2-6e1505226f74",
+      "source": "ih",
+      "collection": "nav_warning_coastal",
+      "polygons": [
+        [
+          [
+            -8.882393,
+            41.847187
+          ],
+          [
+            -8.882393,
+            41.85895
+          ],
+          [
+            -8.859052,
+            41.85895
+          ],
+          [
+            -8.859052,
+            41.847187
+          ],
+          [
+            -8.882393,
+            41.847187
+          ]
+        ]
+      ]
+    },
+    {
       "id": 1000182,
       "ref": "ANAV NR 121/21",
       "category": "SEGURANÇA DA NAVEGAÇÃO - AVISO À NAVEGAÇÃO LOCAL",
@@ -7328,6 +7392,7 @@
   ],
   "coverage": {
     "moledo": [
+      18709,
       1003280,
       1003281
     ],
@@ -7995,7 +8060,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-10-01T10:37:33.788Z",
+  "fetchedAt": "2026-10-01T13:14:57.370Z",
   "sourceCollection": "nav_warning_coastal+nav_warning_local+orca_anavnet_point",
   "sourceUrl": "https://ogcapi.hidrografico.pt/collections/nav_warning_coastal"
 }
