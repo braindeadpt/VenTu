@@ -211,6 +211,9 @@ test.describe('Critical routes', () => {
     await page.goto('/pt/admin/contributions/');
     const loginHeading = page.getByRole('heading', { name: /Admin — Contribuições/i });
     const unconfigured = page.getByText(/Supabase não configurado|Supabase is not configured/i);
-    await expect(loginHeading.or(unconfigured)).toBeVisible({ timeout: 15_000 });
+    // Sem Supabase a página rende h1.sr-only + div com o texto — o `.or()`
+    // resolve 2 elementos e o strict mode chumba. `.first()` desliga o modo
+    // estrito: basta um dos dois estar visível para a página contar como loaded.
+    await expect(loginHeading.or(unconfigured).first()).toBeVisible({ timeout: 15_000 });
   });
 });
