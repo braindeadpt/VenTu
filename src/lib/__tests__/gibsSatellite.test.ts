@@ -1,10 +1,14 @@
 import { describe, expect, it } from 'vitest';
 import {
   GIBS_SATELLITE_URL,
+  gibsAttachTileMask,
   gibsBlankPixelRatio,
   gibsMaskPixels,
   gibsPreviousDayUtc,
   gibsSatelliteDayUrl,
+  gibsTileHideUntilMasked,
+  gibsTileMaskBlank,
+  gibsTileReveal,
 } from '@/lib/gibsSatellite';
 
 function rgba(px: Array<[number, number, number]>): Uint8ClampedArray {
@@ -109,5 +113,75 @@ describe('gibsMaskPixels', () => {
       [4, 5, 6],
     ]);
     expect(gibsMaskPixels(data)).toBe(0);
+  });
+});
+
+describe('gibsTileMaskBlank — idempotência (anti-loop tileload→src)', () => {
+  // O `tileload` dispara outra vez quando se reescreve o `src` (mesmo com o
+  // mesmo data-URL — o clássico `img.src = img.src` recarrega). Sem guarda,
+  // cada tile misto repintava para sempre: flashes e CPU no tecto ao fazer
+  // zoom-out. A flag vive no dataset do próprio <img>; verificada antes de
+  // tocar no canvas/document, por isso testável em Node com um fake.
+  const fakeImg = (dataset: Record<string, string>) =>
+    ({ dataset }) as unknown as HTMLImageElement;
+
+  it('tile já processado devolve true sem tocar no document', () => {
+    expect(gibsTileMaskBlank(fakeImg({ ventuMasked: '1' }))).toBe(true);
+  });
+
+  it('tile por processar sem document (Node) devolve false, nunca lança', () => {
+    expect(gibsTileMaskBlank(fakeImg({}))).toBe(false);
+  });
+
+  it('null/undefined nunca lança', () => {
+    expect(gibsTileMaskBlank(null as unknown as HTMLImageElement)).toBe(false);
+    expect(gibsTileMaskBlank(undefined as unknown as HTMLImageElement)).toBe(false);
+  });
+});
+
+describe('esconder→mascarar→revelar (anti-flash preto no zoom-out)', () => {
+  const tile = () => ({ dataset: {} as Record<string, string>, style: {} as Record<string, string> });
+
+  it('hide esconde, reveal repõe — null nunca lança', () => {
+    const t = tile();
+    gibsTileHideUntilMasked(t);
+    expect(t.style.visibility).toBe('hidden');
+    gibsTileReveal(t);
+    expect(t.style.visibility).toBe('');
+    expect(() => gibsTileHideUntilMasked(null)).not.toThrow();
+    expect(() => gibsTileReveal(undefined)).not.toThrow();
+  });
+
+  it('reveal não ressuscita tiles 100% «sem dados» (display:none)', () => {
+    const t = tile();
+    t.style.display = 'none';
+    gibsTileReveal(t);
+    expect(t.style.visibility).toBeUndefined();
+  });
+
+  it('tile já mascarado não é escondido outra vez', () => {
+    const t = tile();
+    t.dataset.ventuMasked = '1';
+    gibsTileHideUntilMasked(t);
+    expect(t.style.visibility).toBeUndefined();
+  });
+
+  it('attach liga loadstart→hide, load→reveal, error→reveal', () => {
+    const handlers = new Map<string, (e: { tile?: unknown }) => void>();
+    const layer = { on: (ev: string, fn: (e: { tile?: unknown }) => void) => handlers.set(ev, fn) };
+    gibsAttachTileMask(layer as never);
+    expect([...handlers.keys()].sort()).toEqual(['tileerror', 'tileload', 'tileloadstart']);
+
+    const t = tile();
+    handlers.get('tileloadstart')!({ tile: t });
+    expect(t.style.visibility).toBe('hidden');
+    // Sem document (Node) a máscara falha fechada → false, e o reveal repõe.
+    handlers.get('tileload')!({ tile: t });
+    expect(t.style.visibility).toBe('');
+
+    const err = tile();
+    err.style.visibility = 'hidden';
+    handlers.get('tileerror')!({ tile: err });
+    expect(err.style.visibility).toBe('');
   });
 });

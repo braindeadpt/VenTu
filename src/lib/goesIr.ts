@@ -106,6 +106,23 @@ export function goesIrFrameFullClock(iso: string | null): string | null {
   return `${get('year')}-${get('month')}-${get('day')} ${get('hour')}:${get('minute')}`;
 }
 
+/** Rectângulo lat/lon que contém o disco GOES-East com margem (~10°): o
+ *  capabilities do GIBS declara o mundo inteiro mas fora do disco só serve
+ *  preto. Passado como `bounds` ao TileLayer para ao fazer zoom-out não
+ *  pedir o vazio (Pacífico/Ásia) — menos tiles pretos a mascarar, menos
+ *  flashes. Generoso de propósito: cortar um pixel válido do limbo seria
+ *  pior que mascarar um tile preto.
+ *
+ *  Nota honesta de cobertura: o sub-satélite é ~75°W, por isso Portugal
+ *  continental (~9°W) fica mesmo no limbo oriental do disco — a imagem aí
+ *  é esborratada por física, não por código (o GIBS keyless não tem
+ *  Meteosat). O IR vale pelos sistemas no Atlântico/Açores a aproximar-se;
+ *  o detalhe da costa pertence ao radar IPMA, camada separada. */
+export const GOES_IR_BOUNDS: [[number, number], [number, number]] = [
+  [-65, -170],
+  [80, 15],
+];
+
 export const GOES_IR_ATTRIBUTION =
   'Imagery © <a href="https://earthdata.nasa.gov/gibs">NASA GIBS</a> (GOES-East ABI Band 13 Clean IR)';
 

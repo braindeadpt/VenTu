@@ -71,11 +71,12 @@ import {
   MAP_GIBS_SAT_PANE_Z,
   gibsPreviousDayUtc,
   gibsSatelliteDayUrl,
-  gibsTileMaskBlank,
+  gibsAttachTileMask,
 } from '@/lib/gibsSatellite';
 import {
   goesIrFrames,
   GOES_IR_ATTRIBUTION,
+  GOES_IR_BOUNDS,
   GOES_IR_NATIVE_MAX_ZOOM,
   MAP_GOES_IR_PANE,
   MAP_GOES_IR_PANE_Z,
@@ -752,6 +753,11 @@ export function useMapLayers({
       maxZoom: 19,
       // CORS permite ler os pixels (o GIBS manda ACAO:*) — ver tileload.
       crossOrigin: true,
+      // Durante o gesto de zoom o Leaflet estica os tiles existentes e só
+      // pede no fim: sem isto cada tick intermédio disparava dezenas de
+      // máscaras de canvas na main thread (jank que parecia «crash»).
+      updateWhenZooming: false,
+      updateWhenIdle: true,
     } as const;
     // Duas camadas empilhadas (ver gibsSatellite.ts): ONTEM por baixo, HOJE
     // por cima. O mosaico de hoje só se preenche depois do passe — de manhã é
@@ -763,12 +769,9 @@ export function useMapLayers({
     // Tiles «sem dados» são pretos (noite/fora do disco, nesga de swath) —
     // sem isto a camada opaca cobre o mapa todo de preto. A máscara torna o
     // preto transparente: em cima deixa ver o dia anterior, em baixo o
-    // basemap.
+    // basemap. Esconder→mascarar→revelar evita o flash preto a cada zoom.
     for (const layer of layers) {
-      layer.on('tileload', (e: L.TileEvent) => {
-        const tile = e.tile as HTMLImageElement | undefined;
-        if (tile) gibsTileMaskBlank(tile);
-      });
+      gibsAttachTileMask(layer);
       layer.addTo(map);
     }
 
@@ -854,15 +857,15 @@ export function useMapLayers({
         className: 'ventu-goes-ir',
         maxNativeZoom: GOES_IR_NATIVE_MAX_ZOOM,
         maxZoom: 19,
+        // Fora do disco o GIBS só serve preto — ao fazer zoom-out não pedir
+        // o vazio (ver GOES_IR_BOUNDS): menos tiles a mascarar, sem flashes.
+        bounds: GOES_IR_BOUNDS,
         crossOrigin: true,
         updateWhenZooming: false,
         updateWhenIdle: true,
       });
       // Mesmo problema do true-color: fora do disco GOES o GIBS serve preto.
-      layer.on('tileload', (e: L.TileEvent) => {
-        const tile = e.tile as HTMLImageElement | undefined;
-        if (tile) gibsTileMaskBlank(tile);
-      });
+      gibsAttachTileMask(layer);
       layer.on('load', () => warm.add(i));
       layer.addTo(map);
       pool.set(i, layer);
@@ -889,16 +892,16 @@ export function useMapLayers({
     activate(savedFrame);
 
     // Num pan/zoom os tiles do pool ficam obsoletos — descarta os não
-    // activos para não refazer 12 camadas a cada movimento.
+    // activos para não refazer 12 camadas a cada movimento. O wanted (a
+    // aquecer) sobrevive: antes era deitado fora a cada movestart e o tick
+    // seguinte re-pedia tudo ao GIBS (`no-store`) — flashes e rajadas de
+    // rede em cada pan/zoom no desktop.
     const onMoveStart = () => {
       pool.forEach((l, k) => {
-        if (k === activeIdx) return;
+        if (k === activeIdx || k === wantedIdx) return;
         if (map.hasLayer(l)) map.removeLayer(l);
         pool.delete(k);
         warm.delete(k);
-        // O layer removido podia ter um 'load' pendente — sem isto o
-        // re-pedido do mesmo frame seria ignorado pelo guard de wantedIdx.
-        if (k === wantedIdx) wantedIdx = activeIdx;
       });
     };
     // O arranque faz fit/flyTo (movestart): se o pool nasceu a meio desse

@@ -8,6 +8,7 @@ import {
   goesIrTileUrl,
   goesIrFrameClock,
   goesIrFrameFullClock,
+  GOES_IR_BOUNDS,
   GOES_IR_LAYER,
   GOES_IR_MATRIX_SET,
   GOES_IR_FRAME_COUNT,
@@ -70,6 +71,35 @@ describe('goesIrFrameClock / goesIrFrameFullClock', () => {
     expect(goesIrFrameClock(null)).toBeNull();
     expect(goesIrFrameClock('lixo')).toBeNull();
     expect(goesIrFrameFullClock('')).toBeNull();
+  });
+});
+
+describe('GOES_IR_BOUNDS — disco com margem, sem cortar o Atlântico', () => {
+  // O TileLayer pede só dentro destes bounds: ao fazer zoom-out não pede o
+  // vazio (Pacífico/Ásia), onde o GIBS só serve preto. Generoso de
+  // propósito — cortar um pixel válido do limbo seria pior que mascarar.
+  const inside = ([lat, lon]: [number, number]) => {
+    const [[s, w], [n, e]] = GOES_IR_BOUNDS;
+    return lat >= s && lat <= n && lon >= w && lon <= e;
+  };
+
+  it.each([
+    ['Lisboa', [38.7, -9.1]],
+    ['Porto', [41.1, -8.6]],
+    ['Açores (Ponta Delgada)', [37.7, -25.7]],
+    ['Madeira', [32.7, -16.9]],
+    ['Atlântico médio', [30, -40]],
+    ['costa leste EUA', [35, -75]],
+  ] as Array<[string, [number, number]]>)('%s dentro dos bounds', (_name, ll) => {
+    expect(inside(ll)).toBe(true);
+  });
+
+  it.each([
+    ['Tóquio', [35.7, 139.7]],
+    ['Sydney', [-33.9, 151.2]],
+    ['Pacífico oeste', [0, 150]],
+  ] as Array<[string, [number, number]]>)('%s fora dos bounds (vazio não pedido)', (_name, ll) => {
+    expect(inside(ll)).toBe(false);
   });
 });
 

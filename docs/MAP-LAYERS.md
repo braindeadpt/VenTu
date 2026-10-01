@@ -105,7 +105,15 @@ with the other raster overlays for the same slot. The vector canvas fields
   The `default` TIME segment always resolves to the latest available date —
   no client-side date math; `Cache-Control: no-store` keeps «today» fresh.
 - `L.tileLayer` on `ventu-gibs-sat` pane, `pointerEvents: none`,
-  `maxNativeZoom: 9` (~250 m/px — clouds, not street detail).
+  `maxNativeZoom: 9` (~250 m/px — clouds, not street detail),
+  `updateWhenZooming: false` (stretches cached tiles during the gesture —
+  fetching per intermediate zoom melted the main thread with canvas masks).
+- Anti-flash tríade via `gibsAttachTileMask` (also used by GOES-IR): hide on
+  `tileloadstart` → `gibsTileMaskBlank` on `tileload` (idempotent via
+  `dataset.ventuMasked` — re-masking every mixed tile twice cost a full
+  256² `getImageData` + `toDataURL` each) → reveal content, keep 100 %
+  no-data hidden. Without the hide step, black no-data tiles painted one
+  frame before being hidden — black flashing on every zoom-out.
 - Toggle in the Camadas menu («Satélite NASA», `data-map-gibs-sat-toggle`),
   persisted to `ventu.map.gibsSat` localStorage, disabled in hero embeds.
 - Attribution: «Imagery © NASA GIBS (EOSDIS/MODIS Terra)».
@@ -118,10 +126,18 @@ with the other raster overlays for the same slot. The vector canvas fields
   template per frame.
 - One persistent `L.tileLayer` per frame on the `ventu-goes-ir` pane
   (z 206); switching frames swaps opacity (0.85 active), warms frame+1,
-  discards idle pool layers on `movestart`. Black no-data tiles reuse the
-  `gibsTileMaskBlank` mask. On `moveend` the current frame is re-added if
+  discards idle pool layers on `movestart` (active + warming survive —
+  wiping those re-fetched everything from no-store GIBS on every pan/zoom).
+  Black no-data tiles reuse the `gibsTileMaskBlank` mask via
+  `gibsAttachTileMask`. On `moveend` the current frame is re-added if
   the wipe caught it (startup fit could otherwise empty the pool before
   any frame painted, leaving the toggle on with no tiles).
+- `GOES_IR_BOUNDS` ([-65,-170]–[80,15]) clips requests to the disk: GIBS
+  declares world-wide coverage but serves black off-disk, so zooming out
+  used to fetch the void (Pacific/Asia) and flash it. Portugal (~9°W) sits
+  near the eastern limb (sub-satellite ~75°W — GIBS has no Meteosat, so
+  limb smear is physics, not code); the IR layer covers Atlantic/Azores
+  systems, coastal detail belongs to the IPMA radar layer.
 - Shared `RadarCarousel` with `SatelliteDish` icon, Lisbon-wall-clock badge
   (`goesIrFrameClock`), gap/stale labels (cadence 10, stale > 120 min),
   NASA attribution node. The fullscreen HUD only owns the *radar* scrubber

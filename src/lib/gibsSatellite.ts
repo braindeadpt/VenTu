@@ -20,6 +20,8 @@
  *  z9 não há tiles — `maxNativeZoom: 9` faz o Leaflet esticar o último nível
  *  (a imagem é nuvens, não detalhe de rua — o stretch é aceitável). */
 
+import type L from 'leaflet';
+
 const GIBS_SATELLITE_BASE =
   'https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/MODIS_Terra_CorrectedReflectance_TrueColor/default';
 const GIBS_SATELLITE_TAIL = 'GoogleMapsCompatible_Level9/{z}/{y}/{x}.jpg';
@@ -86,15 +88,38 @@ export function gibsMaskPixels(data: Uint8ClampedArray): number {
 let blankCanvas: HTMLCanvasElement | null = null;
 let maskCanvas: HTMLCanvasElement | null = null;
 
+/** Flag de idempotência no dataset do próprio <img>: reescrever `img.src`
+ *  com o PNG mascarado dispara novo `tileload` (novo carregamento do
+ *  data-URL) e sem guarda cada tile misto pagava a máscara completa —
+ *  `getImageData` 256² + `toDataURL` — duas vezes, com uma repintura a
+ *  meio. Os tiles mistos (limbo do disco, terminador noite/dia, nesga de
+ *  swath) são precisamente os que dominam ao fazer zoom-out: flashes e
+ *  jank até a camada parecer «crashada». */
+const TILE_MASKED_FLAG = 'ventuMasked';
+
 /** `img` é um tile GIBS já carregado (crossOrigin anónimo). Três saídas:
  *  — sem pixels pretos: não toca (devolve false);
  *  — 100% «sem dados»: esconde o tile (display:none);
  *  — misto: substitui o src por PNG com alpha — preto vira transparente e
  *    o basemap aparece por baixo, a nesga de imagem real fica visível.
+ *  Tiles já processados devolvem true sem tocar em nada (ver
+ *  TILE_MASKED_FLAG) — o segundo `tileload` do data-URL é indistinguível
+ *  do primeiro.
  *  Em caso de erro devolve false: preferimos mostrar um tile suspeito a
  *  esconder um bom. */
 export function gibsTileMaskBlank(img: HTMLImageElement): boolean {
   try {
+    // Verificado ANTES de tocar no canvas/document: também torna a função
+    // testável em Node (ambiente dos testes unitários) com um fake.
+    const dataset = (img as unknown as { dataset?: DOMStringMap } | null)?.dataset;
+    if (dataset?.[TILE_MASKED_FLAG]) return true;
+    const markMasked = () => {
+      try {
+        if (dataset) dataset[TILE_MASKED_FLAG] = '1';
+      } catch {
+        /* noop — dataset só de leitura num fake esquisito */
+      }
+    };
     // Amostra barata primeiro: sem preto nenhum → nada a fazer.
     blankCanvas ??= document.createElement('canvas');
     blankCanvas.width = GIBS_BLANK_SAMPLE;
@@ -118,12 +143,73 @@ export function gibsTileMaskBlank(img: HTMLImageElement): boolean {
     const imageData = ctx.getImageData(0, 0, w, h);
     if (gibsMaskPixels(imageData.data) === 0) {
       img.style.display = 'none';
+      markMasked();
       return true;
     }
     ctx.putImageData(imageData, 0, 0);
     img.src = maskCanvas.toDataURL('image/png');
+    markMasked();
     return true;
   } catch {
     return false;
   }
+}
+
+interface MaskableStyle {
+  visibility?: string;
+  display?: string;
+}
+
+type MaskableImg =
+  | HTMLImageElement
+  | { dataset?: DOMStringMap | Record<string, string>; style?: MaskableStyle };
+
+function asMaskable(img: unknown): Exclude<MaskableImg, HTMLImageElement> | null {
+  if (!img || typeof img !== 'object') return null;
+  return img as { dataset?: DOMStringMap; style?: CSSStyleDeclaration };
+}
+
+/** Esconde o tile ao arrancar o pedido — a decisão da máscara só existe no
+ *  `tileload`, e sem isto os tiles «sem dados» pintavam pretos e eram
+ *  escondidos um a um: flashes pretos a cada zoom/pan. Testável em Node. */
+export function gibsTileHideUntilMasked(img: MaskableImg | null | undefined): void {
+  try {
+    const el = asMaskable(img);
+    if (!el || el.dataset?.[TILE_MASKED_FLAG]) return;
+    if (el.style) el.style.visibility = 'hidden';
+  } catch {
+    /* noop — esconder é optimização, nunca pode partir */
+  }
+}
+
+/** Revela o tile após a máscara — menos os 100% «sem dados»
+ *  (`display:none`), que continuam escondidos. Também usada no `tileerror`:
+ *  um tile partido é melhor que um buraco. Testável em Node. */
+export function gibsTileReveal(img: MaskableImg | null | undefined): void {
+  try {
+    const el = asMaskable(img);
+    if (!el?.style || el.style.display === 'none') return;
+    el.style.visibility = '';
+  } catch {
+    /* noop */
+  }
+}
+
+/** Liga a tríade anti-flash numa camada de tiles GIBS (true-color e IR
+ *  usam-na): esconder ao arrancar → mascarar ao carregar → revelar o que
+ *  tem conteúdo. Sem isto, cada zoom-out repintava dezenas de tiles pretos
+ *  antes de os esconder — o «flash» reportado no desktop. */
+export function gibsAttachTileMask(layer: L.TileLayer): void {
+  layer.on('tileloadstart', (e: L.TileEvent) => {
+    gibsTileHideUntilMasked(e.tile as HTMLImageElement | undefined);
+  });
+  layer.on('tileload', (e: L.TileEvent) => {
+    const tile = e.tile as HTMLImageElement | undefined;
+    if (!tile) return;
+    gibsTileMaskBlank(tile);
+    gibsTileReveal(tile);
+  });
+  layer.on('tileerror', (e: L.TileEvent) => {
+    gibsTileReveal(e.tile as HTMLImageElement | undefined);
+  });
 }
