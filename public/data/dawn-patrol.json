@@ -1,25 +1,47 @@
 {
-  "date": "2026-09-30",
-  "generatedAt": "2026-09-30T03:37:25.178Z",
-  "topSpot": "Guincho",
-  "topSpotSlug": "guincho",
+  "date": "2026-10-01",
+  "generatedAt": "2026-10-01T03:07:11.483Z",
+  "topSpot": "Arrifana",
+  "topSpotSlug": "arrifana",
   "pt": {
-    "headline": "Hoje é dia de Guincho! 🌊",
-    "advice": "Melhor janela: 6:00h. Ondas de 2.2m com 1 nós de vento. ⚓ Avisos à Navegação Costeiros (IH): ANAV NR 1445/26 — Animais Marinhos - Interação · ANAV NR 1727/26 — Animais Marinhos - Avistamento",
+    "headline": "Hoje é dia de Arrifana! 🌊",
+    "advice": "Melhor janela: 6:00h. Ondas de 2.4m com 6 nós de vento. ⚓ Avisos à Navegação Costeiros (IH): ANAV NR 2/22 — Plano de Salvamento Marítimo Lagos",
     "bestTime": "6:00",
-    "wetsuit": "3/2mm",
+    "wetsuit": "2mm shorty",
     "crowdTip": "Chega cedo para evitar crowd!",
-    "moonTideLine": "Gibosa minguante · Marés vivas · baixa-mar 12:00"
+    "moonTideLine": "Gibosa minguante · Transição · baixa-mar 13:00"
   },
   "en": {
-    "headline": "Today is Guincho day! 🌊",
-    "advice": "Best window: 6:00. 2.2m waves with 1 knot wind. ⚓ Coastal navigation warnings (IH): ANAV NR 1445/26 — Animais Marinhos - Interação · ANAV NR 1727/26 — Animais Marinhos - Avistamento",
+    "headline": "Today is Arrifana day! 🌊",
+    "advice": "Best window: 6:00. 2.4m waves with 6 knot wind. ⚓ Coastal navigation warnings (IH): ANAV NR 2/22 — Plano de Salvamento Marítimo Lagos",
     "bestTime": "6:00",
-    "wetsuit": "3/2mm",
+    "wetsuit": "2mm shorty",
     "crowdTip": "Get there early to beat the crowd!",
-    "moonTideLine": "Waning gibbous · Spring tides · low tide 12:00"
+    "moonTideLine": "Waning gibbous · Transition · low tide 13:00"
   },
   "spots": [
+    {
+      "name": "Arrifana",
+      "slug": "arrifana",
+      "score": 94,
+      "scoreForecast": 94,
+      "scoreSource": "previsão",
+      "scoreMeta": null,
+      "verdict": "go",
+      "ptReason": "Condições excelentes",
+      "enReason": "Excellent conditions"
+    },
+    {
+      "name": "Carcavelos",
+      "slug": "carcavelos",
+      "score": 93,
+      "scoreForecast": 93,
+      "scoreSource": "previsão",
+      "scoreMeta": null,
+      "verdict": "go",
+      "ptReason": "Condições excelentes",
+      "enReason": "Excellent conditions"
+    },
     {
       "name": "Guincho",
       "slug": "guincho",
@@ -34,19 +56,8 @@
     {
       "name": "Nazaré",
       "slug": "nazare",
-      "score": 88,
-      "scoreForecast": 88,
-      "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
-    },
-    {
-      "name": "Ribeira d'Ilhas",
-      "slug": "ribeira-ilhas",
-      "score": 88,
-      "scoreForecast": 88,
+      "score": 85,
+      "scoreForecast": 85,
       "scoreSource": "previsão",
       "scoreMeta": null,
       "verdict": "go",
@@ -56,8 +67,8 @@
     {
       "name": "Coxos",
       "slug": "coxos",
-      "score": 88,
-      "scoreForecast": 88,
+      "score": 85,
+      "scoreForecast": 85,
       "scoreSource": "previsão",
       "scoreMeta": null,
       "verdict": "go",
@@ -67,8 +78,8 @@
     {
       "name": "Supertubos",
       "slug": "supertubos",
-      "score": 87,
-      "scoreForecast": 87,
+      "score": 78,
+      "scoreForecast": 78,
       "scoreSource": "previsão",
       "scoreMeta": null,
       "verdict": "go",
@@ -76,21 +87,10 @@
       "enReason": "Excellent conditions"
     },
     {
-      "name": "Carcavelos",
-      "slug": "carcavelos",
-      "score": 87,
-      "scoreForecast": 87,
-      "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
-    },
-    {
-      "name": "Arrifana",
-      "slug": "arrifana",
-      "score": 85,
-      "scoreForecast": 85,
+      "name": "Ribeira d'Ilhas",
+      "slug": "ribeira-ilhas",
+      "score": 70,
+      "scoreForecast": 70,
       "scoreSource": "previsão",
       "scoreMeta": null,
       "verdict": "go",
@@ -98,8 +98,8 @@
       "enReason": "Excellent conditions"
     }
   ],
-  "topScore": 88,
-  "topScoreForecast": 88,
+  "topScore": 94,
+  "topScoreForecast": 94,
   "topScoreSource": "previsão",
   "topScoreMeta": null
 }
