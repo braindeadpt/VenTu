@@ -49,9 +49,11 @@ function png1x1(r: number, g: number, b: number): Buffer {
 
 const CLOUD = png1x1(170, 180, 200);
 
-async function openMapaWithIr(page: Page, query = '?goesIr=1'): Promise<void> {
-  await preseedWindRingLegend(page);
-  await page.route('**/gibs.earthdata.nasa.gov/**', async (route) => {
+/** Stub dos DOIS motores IR: o primário EUMETView (WMS Meteosat) e o
+ *  fallback GIBS (GOES-East). Os testes do carrossel não dependem de qual
+ *  motor respondeu — mas o de fallback força erros no Meteosat. */
+function stubIrSources(page: Page, opts: { meteosatStatus?: number } = {}): void {
+  void page.route('**/gibs.earthdata.nasa.gov/**', async (route) => {
     await route.fulfill({
       status: 200,
       contentType: 'image/png',
@@ -59,6 +61,28 @@ async function openMapaWithIr(page: Page, query = '?goesIr=1'): Promise<void> {
       body: CLOUD,
     });
   });
+  void page.route('**/view.eumetsat.int/geoserver/wms**', async (route) => {
+    if (opts.meteosatStatus != null && opts.meteosatStatus >= 400) {
+      // abort(): falha de rede real. Um fulfill com status 500 + body de
+      // imagem é CARREGADO pelo Chromium como <img> (o corpo chega e é um
+      // PNG válido — o erro HTTP é ignorado para imagens em certos caminhos
+      // de fulfill) e o tileload disparava com sucesso, mascarando a falha
+      // que este teste quer induzir.
+      await route.abort('failed');
+      return;
+    }
+    await route.fulfill({
+      status: 200,
+      contentType: 'image/png',
+      headers: { 'access-control-allow-origin': '*' },
+      body: CLOUD,
+    });
+  });
+}
+
+async function openMapaWithIr(page: Page, query = '?goesIr=1'): Promise<void> {
+  await preseedWindRingLegend(page);
+  stubIrSources(page);
   await page.goto(`/pt/mapa/${query}`, { waitUntil: 'domcontentloaded', timeout: 60_000 });
   await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
   await waitHydrated(page);
@@ -82,12 +106,15 @@ test.describe('Satelite IR GOES-East — carrossel de 10 min', () => {
     await openMapLayersMenu(page);
     await expect(irToggle(page)).toHaveAttribute('aria-pressed', 'true');
 
-    // Pool de TileLayers por frame (um layer por frame, opacidade por ativa).
+    // Pool de TileLayers por frame (um layer por frame, opacidade por ativa)
+    // — agora Meteosat primário (ventu-meteosat-ir) com GOES de fallback.
     await expect
       .poll(
         async () =>
           page.evaluate(
-            () => document.querySelectorAll('.leaflet-layer.ventu-goes-ir').length,
+            () =>
+              document.querySelectorAll('.leaflet-layer.ventu-meteosat-ir, .leaflet-layer.ventu-goes-ir')
+                .length,
           ),
         { timeout: 20_000, message: 'pool de layers IR criado' },
       )
@@ -108,12 +135,44 @@ test.describe('Satelite IR GOES-East — carrossel de 10 min', () => {
     await expect(badge).toHaveText(/Satélite IR/);
     await expect(badge).toHaveText(/\d{2}:\d{2}/);
     await expect(badge).toHaveText(/1\/12/);
-    // Atribuicao NASA propria (nao IPMA).
-    await expect(badge.getByRole('link', { name: /GOES-East/ })).toBeVisible();
-    await expect(badge.getByRole('link', { name: /GOES-East/ })).toHaveAttribute(
+    // Atribuição do motor primário (EUMETSAT, não IPMA nem NASA).
+    await expect(badge.getByRole('link', { name: /Meteosat-11/ })).toBeVisible();
+    await expect(badge.getByRole('link', { name: /Meteosat-11/ })).toHaveAttribute(
       'href',
-      'https://earthdata.nasa.gov/gibs',
+      'https://user.eumetsat.int/data-access/eumetview',
     );
+    // Motor primário no DOM: layers WMSTileLayer com className Meteosat.
+    await expect
+      .poll(
+        async () =>
+          page.evaluate(() => document.querySelectorAll('.leaflet-layer.ventu-meteosat-ir').length),
+        { timeout: 20_000, message: 'pool de layers Meteosat criado' },
+      )
+      .toBeGreaterThan(0);
+  });
+
+  test('Meteosat em erro → fallback para GOES-East (camada continua viva)', async ({
+    page,
+  }) => {
+    await preseedWindRingLegend(page);
+    stubIrSources(page, { meteosatStatus: 500 });
+    await page.goto('/pt/mapa/?goesIr=1', {
+      waitUntil: 'domcontentloaded',
+      timeout: 60_000,
+    });
+    await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
+    await waitHydrated(page);
+
+    // Com o Meteosat a 500, o pool troca para layers GOES (className vai
+    // aparecer) e o badge/camassel continua — a camada nunca fica morta.
+    await expect
+      .poll(
+        async () =>
+          page.evaluate(() => document.querySelectorAll('.leaflet-layer.ventu-goes-ir').length),
+        { timeout: 30_000, message: 'fallback GOES-East activo após falha Meteosat' },
+      )
+      .toBeGreaterThan(0);
+    await expect(irCarousel(page)).toBeVisible({ timeout: 20_000 });
   });
 
   test('toggle desliga/liga e persiste em localStorage', async ({ page }) => {
@@ -238,14 +297,7 @@ test.describe('Satelite IR GOES-East — carrossel de 10 min', () => {
     // na grelha «Camadas» do sheet (estado half).
     await page.setViewportSize({ width: 390, height: 844 });
     await preseedWindRingLegend(page);
-    await page.route('**/gibs.earthdata.nasa.gov/**', async (route) => {
-      await route.fulfill({
-        status: 200,
-        contentType: 'image/png',
-        headers: { 'access-control-allow-origin': '*' },
-        body: CLOUD,
-      });
-    });
+    stubIrSources(page);
     await page.goto('/pt/mapa/', { waitUntil: 'domcontentloaded', timeout: 60_000 });
     await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
     await waitHydrated(page);
@@ -287,14 +339,7 @@ test.describe('Satelite IR GOES-East — carrossel de 10 min', () => {
       bounds: { south: 34.011513, west: -12.454795, north: 43.792862, east: -4.345465 },
       attribution: 'IPMA',
     });
-    await page.route('**/gibs.earthdata.nasa.gov/**', async (route) => {
-      await route.fulfill({
-        status: 200,
-        contentType: 'image/png',
-        headers: { 'access-control-allow-origin': '*' },
-        body: CLOUD,
-      });
-    });
+    stubIrSources(page);
     await page.goto('/pt/mapa/?goesIr=1&radar=1', {
       waitUntil: 'domcontentloaded',
       timeout: 60_000,
@@ -302,8 +347,8 @@ test.describe('Satelite IR GOES-East — carrossel de 10 min', () => {
     await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
     await waitHydrated(page);
 
-    // «Dados IPMA» vs «GOES-East»: os rótulos colam-se ao relógio no
-    // textContent («Radar15:40»), por isso distinguem-se pela atribuição.
+    // «Dados IPMA» vs badge do IR: distinguem-se pela atribuição
+    // (Meteosat-11 no motor primário; radar mantém «Dados IPMA»).
     const radarBadge = page.locator('[data-radar-carousel="true"]', {
       hasText: 'Dados IPMA',
     });
@@ -316,7 +361,7 @@ test.describe('Satelite IR GOES-East — carrossel de 10 min', () => {
         el ? parseFloat(getComputedStyle(el as HTMLElement).bottom || '0') : NaN;
       const carousels = Array.from(document.querySelectorAll('[data-radar-carousel="true"]'));
       const byText = (t: string) => carousels.find((c) => c.textContent?.includes(t)) ?? null;
-      return { ir: px(byText('GOES-East')), radar: px(byText('Dados IPMA')) };
+      return { ir: px(byText('Meteosat-11')), radar: px(byText('Dados IPMA')) };
     });
     expect(bottoms.radar, 'radar ancorado acima do HUD').toBeGreaterThanOrEqual(32);
     expect(

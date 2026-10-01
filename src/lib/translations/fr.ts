@@ -250,7 +250,7 @@ export const translationsFr = {
     bathymetryLegend: 'Bathymétrie — m (EMODnet)',
     bathymetryContours: 'isobathes 50–5000 m',
     gibsSatHint: 'Image réelle des derniers passages satellite (aujourd’hui là où disponible, sinon hier) — nuages et fronts en approche (NASA GIBS · MODIS)',
-    satIrHint: 'Masse nuageuse infrarouge GOES-East — cellules en formation sur l’Atlantique, images de ~10 min (NASA GIBS)',
+    satIrHint: 'Nuages infrarouge Meteosat-11 (rehaut des sommets froids) — cellules convectives en formation, images de 15 min (EUMETSAT ; secours GOES-East)',
     satIrBadge: 'Satellite IR',
     showSeamarks: 'Balisage nautique',
     hideSeamarks: 'Masquer le balisage nautique',

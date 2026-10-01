@@ -1,7 +1,11 @@
 # Satélite IR sobre Portugal — alternativas ao GOES-East e melhorias
 
-**Data:** 2026-10-01 · **Âmbito:** camada «Satélite IR (10 min)» ([`src/lib/goesIr.ts`](../src/lib/goesIr.ts))
-**Estado:** relatório de investigação (sem mudanças de código)
+**Data:** 2026-10-01 · **Âmbito:** camada «Satélite IR» ([`src/lib/goesIr.ts`](../src/lib/goesIr.ts))
+**Estado:** ✅ **Opção A + C.3 implementadas** (2026-10-01) — motor primário
+Meteosat-11 IR10.8 via EUMETView WMS com fallback GOES-East por frame e
+paleta Infra+; ver `docs/MAP-LAYERS.md` e `src/lib/meteosatIr.ts` /
+`src/lib/irPalette.ts`. O resto deste documento mantém-se como registo da
+investigação.
 
 ---
 

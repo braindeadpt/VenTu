@@ -89,6 +89,11 @@ import {
   writeGoesIrPref,
 } from '@/lib/goesIrPrefs';
 import {
+  meteosatIrFrames,
+  createMeteosatIrLayer,
+} from '@/lib/meteosatIr';
+import { irApplyPaletteToTile } from '@/lib/irPaletteTile';
+import {
   IPMA_RADAR_ATTRIBUTION_LABEL_PT,
   IPMA_RADAR_ATTRIBUTION_LABEL_EN,
 } from '@/lib/ipmaAttribution';
@@ -797,9 +802,14 @@ export function useMapLayers({
     return () => { delete setters.gibsSat; };
   }, []);
 
-  // ── Satélite IR GOES-East (B5 — carrossel 10 min, tiles GIBS) ──
-  // Mesmo padrão do radar: slots TIME reais a terminar ~45 min atrás (o GIBS
-  // publica com ~35-40 min de latência), L.tileLayer com setUrl por frame.
+  // ── Satélite IR (B5 — carrossel, Meteosat primário + GOES-East fallback) ──
+  // Motor primário: EUMETView WMS Meteosat-11 IR10.8 a 15 min — Portugal no
+  // centro do disco (o GOES-East punha PT no limbo; ver
+  // docs/audits/SATELLITE-IR-OPTIONS.md). Fallback por-frame: se o Meteosat
+  // falhar (tiles em erro), o frame usa GOES-East GIBS — mantém a camada
+  // viva se o serviço estatal estiver em baixo.
+  // Slots TIME reais; cada frame é um layer persistente — trocar de frame é
+  // trocar opacidade (zero refetch, transição instantânea).
   const [goesIrEnabled, setGoesIrEnabled] = useState<boolean>(() => {
     if (typeof window === 'undefined' || isHeroEmbed) return false;
     if (initialGoesIrEnabled) return true;
@@ -825,11 +835,20 @@ export function useMapLayers({
     const Leaflet = LRef.current;
     if (!Leaflet) return;
 
-    // Slots calculados à entrada — a janela de ~2 h termina ~45 min atrás,
-    // por isso todos os tiles pedidos já existem publicados no GIBS.
+    // Slots do carrossel = METEOSAT (15 min, ~30 min de lag — todos os
+    // tiles já estão publicados; o badge/cadência segue o produto primário).
+    // `frames` (GOES 10 min) mantém-se para o fallback por-frame.
     const frames = goesIrFrames();
-    setGoesIrFrameList(frames);
-    const savedFrame = Math.max(0, Math.min(frames.length - 1, readGoesIrPref().frame));
+    const meteosatFrames = meteosatIrFrames();
+    // O carrossel só consome `frameTime` (relógio/contador) — `url` é
+    // preenchido vazio: o motor primário é WMS por `time=`, não template.
+    setGoesIrFrameList(
+      meteosatFrames.map((f) => ({ url: '', frameTime: f.frameTime })),
+    );
+    const savedFrame = Math.max(
+      0,
+      Math.min(meteosatFrames.length - 1, readGoesIrPref().frame),
+    );
     goesIrFrameIndexRef.current = savedFrame;
     setGoesIrFrameIndex(savedFrame);
 
@@ -844,13 +863,13 @@ export function useMapLayers({
     // frame é só trocar a opacidade: zero refetch, transição instantânea.
     const pool = new Map<number, L.TileLayer>();
     const warm = new Set<number>();
+    const failed = new Set<number>();
     let activeIdx = -1;
     let wantedIdx = -1;
 
-    const ensure = (i: number): L.TileLayer => {
-      let layer = pool.get(i);
-      if (layer) return layer;
-      layer = Leaflet.tileLayer(frames[i].url, {
+    /** Camada GOES-East de fallback para um frame (mesma config de antes). */
+    const ensureGoes = (i: number): L.TileLayer => {
+      const layer = Leaflet.tileLayer(frames[i].url, {
         pane: MAP_GOES_IR_PANE,
         opacity: 0,
         attribution: GOES_IR_ATTRIBUTION,
@@ -864,8 +883,68 @@ export function useMapLayers({
         updateWhenZooming: false,
         updateWhenIdle: true,
       });
-      // Mesmo problema do true-color: fora do disco GOES o GIBS serve preto.
       gibsAttachTileMask(layer);
+      layer.on('load', () => warm.add(i));
+      layer.addTo(map);
+      pool.set(i, layer);
+      return layer;
+    };
+
+    const ensure = (i: number): L.TileLayer => {
+      const existing = pool.get(i);
+      if (existing) return existing;
+      // Meteosat falhou neste frame → fallback directo ao GOES.
+      if (failed.has(i)) return ensureGoes(i);
+
+      // Primário: EUMETView WMS Meteosat-11 IR10.8 (15 min, PT centrado).
+      // Um WMSTileLayer por frame com `time=` fixo — trocar de frame é só
+      // opacidade. O tileload passa pela mesma máscara GIBS (o servidor
+      // também manda fundo preto fora do disco) + paleta Infra+.
+      const layer = createMeteosatIrLayer(Leaflet, meteosatFrames[i].time, MAP_GOES_IR_PANE);
+      layer.setOpacity(0);
+      gibsAttachTileMask(layer);
+      layer.on('tileload', (e: L.TileEvent) => {
+        // Paleta Infra+ depois da máscara (a máscara decide alpha, a paleta
+        // só tinge pixels opacos). Erros aquí não podem partir a camada.
+        const tile = e.tile as HTMLImageElement | undefined;
+        try {
+          if (tile) irApplyPaletteToTile(tile);
+        } catch { /* noop */ }
+      });
+      // Fallback: se NENHUM tile do frame Meteosat chegar, marca falha e
+      // troca para GOES-East no próximo activate (serviço em baixo, CORS
+      // quebrado, produto retirado — tudo a caminho do mesmo guard).
+      // Dois caminhos de detecção: 3+ tileerrors (falha rápida) OU — caso o
+      // viewport só peça 1-2 tiles — um timer de segurança de 12 s sem
+      // nenhum tile OK (o EUMETView responde em <2 s em serviço normal).
+      let ok = 0;
+      let bad = 0;
+      let failedThis = false;
+      const failToGoes = () => {
+        // Efeito limpo (toggle off, remount) → pool esvaziado: não reativar
+        // nada sobre um mapa que já não é nosso.
+        if (!pool.has(i) || failedThis) return;
+        failedThis = true;
+        failed.add(i);
+        clearTimeout(guard);
+        if (map.hasLayer(layer)) map.removeLayer(layer);
+        pool.delete(i);
+        if (wantedIdx === i) {
+          wantedIdx = -1;
+          activate(i); // re-activate já em GOES
+        }
+      };
+      const guard = setTimeout(() => {
+        if (ok === 0) failToGoes();
+      }, 12_000);
+      layer.on('tileload', () => {
+        ok += 1;
+        if (ok === 1) clearTimeout(guard);
+      });
+      layer.on('tileerror', () => {
+        bad += 1;
+        if (ok === 0 && bad >= 3) failToGoes();
+      });
       layer.on('load', () => warm.add(i));
       layer.addTo(map);
       pool.set(i, layer);
@@ -886,7 +965,7 @@ export function useMapLayers({
       if (warm.has(i)) show();
       else layer.once('load', show);
       // Aquece o próximo frame — o tick seguinte é instantâneo.
-      ensure((i + 1) % frames.length);
+      ensure((i + 1) % meteosatFrames.length);
     };
     goesIrActivateRef.current = activate;
     activate(savedFrame);
@@ -911,7 +990,7 @@ export function useMapLayers({
     // repõe-se o frame corrente se ele não sobreviveu.
     const onMoveEnd = () => {
       const idx = goesIrFrameIndexRef.current;
-      if (idx < 0 || idx >= frames.length) return;
+      if (idx < 0 || idx >= meteosatFrames.length) return;
       const layer = pool.get(idx);
       if (layer && map.hasLayer(layer)) return;
       wantedIdx = -1;

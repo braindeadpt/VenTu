@@ -22,9 +22,13 @@ import type { IpmaRadarData } from '@/lib/ipmaRadar';
 import {
   goesIrFrameClock,
   goesIrFrameFullClock,
-  GOES_IR_CADENCE_MIN,
   GOES_IR_STALE_MAX_AGE_MIN,
 } from '@/lib/goesIr';
+import {
+  meteosatIrFrameClock,
+  meteosatIrFrameFullClock,
+  METEOSAT_IR_CADENCE_MIN,
+} from '@/lib/meteosatIr';
 import { OpenMeteoAttribution } from '@/lib/openMeteoAttribution';
 import MapLayerToggle from '../../MapLayerToggle';
 import type { BasemapMode } from '../../MapLayerToggle';
@@ -70,7 +74,9 @@ interface MapLayersZoneProps {
   handleRadarFrameChange: (index: number) => void;
   handleRadarUserPausedChange: (paused: boolean) => void;
   handleRadarImmersionOpen: () => void;
-  // Carrossel de satélite IR (GOES-East, 10 min) — mesmo componente do radar.
+  // Carrossel de satélite IR (Meteosat 15 min, fallback GOES) — mesmo
+  // componente do radar. `url` não é usado pelo motor WMS (o pool usa
+  // `time=`), mantido para o tipo comum do carrossel.
   goesIrEnabled: boolean;
   goesIrFrameList: Array<{ url: string; frameTime: string }>;
   goesIrFrameIndex: number;
@@ -257,10 +263,10 @@ export default function MapLayersZone({
             stale: t.map.radarStale,
           }}
           icon={<SatelliteDish className="w-3.5 h-3.5 text-data-period" aria-hidden />}
-          cadenceMin={GOES_IR_CADENCE_MIN}
+          cadenceMin={METEOSAT_IR_CADENCE_MIN}
           staleMaxAgeMin={GOES_IR_STALE_MAX_AGE_MIN}
-          frameClock={goesIrFrameClock}
-          frameFullClock={goesIrFrameFullClock}
+          frameClock={meteosatIrFrameClock}
+          frameFullClock={meteosatIrFrameFullClock}
           // O HUD do fullscreen só é dono do scrubber do RADAR — o IR
           // mantém o seu flutuante (play + régua) em todas as superfícies.
           // Sem isto, com o IR ligado no /mapa não havia como mudar de
@@ -268,12 +274,12 @@ export default function MapLayersZone({
           attribution={(
             <>
               <a
-                href="https://earthdata.nasa.gov/gibs"
+                href="https://user.eumetsat.int/data-access/eumetview"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="pointer-events-auto underline hover:text-fg transition-colors"
               >
-                GOES-East © NASA GIBS
+                Meteosat-11 © EUMETSAT
               </a>
               <span aria-hidden className="text-fg-muted">·</span>
               <OpenMeteoAttribution className="pointer-events-auto underline hover:text-fg transition-colors" />

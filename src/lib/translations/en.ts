@@ -193,7 +193,7 @@ export const translationsEn = {
     bathymetryLegend: 'Bathymetry — m (EMODnet)',
     bathymetryContours: 'contours 50–5000 m',
     gibsSatHint: 'Real imagery from the latest satellite passes (today where available, otherwise yesterday) — incoming clouds and fronts (NASA GIBS · MODIS)',
-    satIrHint: 'GOES-East infrared cloud mass — cells forming over the Atlantic, ~10-min frames (NASA GIBS)',
+    satIrHint: 'Meteosat-11 infrared clouds (cold-top enhancement) — convective cells forming, 15-min frames (EUMETSAT; GOES-East fallback)',
     satIrBadge: 'IR satellite',
     showSeamarks: 'Nautical marks',
     hideSeamarks: 'Hide nautical marks',

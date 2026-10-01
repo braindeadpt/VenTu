@@ -195,7 +195,7 @@ export const translationsPt = {
     bathymetryLegend: 'Batimetria — m (EMODnet)',
     bathymetryContours: 'contornos 50–5000 m',
     gibsSatHint: 'Imagem real dos últimos passes de satélite (hoje onde já houver, senão ontem) — nuvens e frentes a chegar (NASA GIBS · MODIS)',
-    satIrHint: 'Massa de nuvens em infravermelho GOES-East — células a formar-se no Atlântico, frames de ~10 min (NASA GIBS)',
+    satIrHint: 'Nuvens em infravermelho Meteosat-11 (realce de topos frios) — células convectivas a formar-se, frames de 15 min (EUMETSAT; fallback GOES-East)',
     satIrBadge: 'Satélite IR',
     showSeamarks: 'Sinalização náutica',
     hideSeamarks: 'Ocultar sinalização náutica',

@@ -250,7 +250,7 @@ export const translationsDe = {
     bathymetryLegend: 'Bathymetrie — m (EMODnet)',
     bathymetryContours: 'Tiefenlinien 50–5000 m',
     gibsSatHint: 'Echtbild der letzten Satellitendurchgänge (heute, wo schon vorhanden, sonst gestern) — einziehende Wolken und Fronten (NASA GIBS · MODIS)',
-    satIrHint: 'GOES-East-Infrarot-Wolkenmasse — Zellen über dem Atlantik, ~10-Min.-Frames (NASA GIBS)',
+    satIrHint: 'Meteosat-11-Infrarot-Wolken (Kaltkopf-Hervorhebung) — sich bildende Konvektionszellen, 15-Min.-Frames (EUMETSAT; GOES-East-Fallback)',
     satIrBadge: 'IR-Satellit',
     showSeamarks: 'Seezeichen',
     hideSeamarks: 'Seezeichen ausblenden',
