@@ -137,38 +137,6 @@
       ]
     },
     {
-      "id": 18299,
-      "ref": "ANAV NR 1803/26",
-      "category": "Requisitos de segurança maritima",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=265f2973-dc82-4259-9ef9-d761da6884f7",
-      "source": "ih",
-      "collection": "nav_warning_coastal",
-      "polygons": [
-        [
-          [
-            -8.9287,
-            36.849033
-          ],
-          [
-            -8.920867,
-            36.849033
-          ],
-          [
-            -8.920867,
-            36.843967
-          ],
-          [
-            -8.9287,
-            36.843967
-          ],
-          [
-            -8.9287,
-            36.849033
-          ]
-        ]
-      ]
-    },
-    {
       "id": 18643,
       "ref": "ANAV NR 2136/26",
       "category": "Requisitos de segurança maritima",
@@ -309,70 +277,6 @@
       ]
     },
     {
-      "id": 18691,
-      "ref": "ANAV NR 2194/26",
-      "category": "Requisitos de segurança maritima",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=2f0431cd-5ac6-4b5c-87ff-f482600d4ee5",
-      "source": "ih",
-      "collection": "nav_warning_coastal",
-      "polygons": [
-        [
-          [
-            -8.805233,
-            41.513458
-          ],
-          [
-            -8.805233,
-            41.552009
-          ],
-          [
-            -8.784288,
-            41.552009
-          ],
-          [
-            -8.784288,
-            41.513458
-          ],
-          [
-            -8.805233,
-            41.513458
-          ]
-        ]
-      ]
-    },
-    {
-      "id": 18693,
-      "ref": "ANAV NR 2195/26",
-      "category": "Requisitos de segurança maritima",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=c9b15b15-c10a-4c6a-8b44-206e168534d2",
-      "source": "ih",
-      "collection": "nav_warning_coastal",
-      "polygons": [
-        [
-          [
-            -8.84657,
-            40.553461
-          ],
-          [
-            -8.84657,
-            40.711353
-          ],
-          [
-            -8.633638,
-            40.711353
-          ],
-          [
-            -8.633638,
-            40.553461
-          ],
-          [
-            -8.84657,
-            40.553461
-          ]
-        ]
-      ]
-    },
-    {
       "id": 18697,
       "ref": "ANAV NR 2197/26",
       "category": "Requisitos de segurança maritima",
@@ -464,6 +368,38 @@
           [
             -8.878749,
             40.141418
+          ]
+        ]
+      ]
+    },
+    {
+      "id": 18705,
+      "ref": "ANAV NR 2202/26",
+      "category": "Requisitos de segurança maritima",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=1534be18-1358-4c21-808d-52e1f18bfd42",
+      "source": "ih",
+      "collection": "nav_warning_coastal",
+      "polygons": [
+        [
+          [
+            -9.423077,
+            38.960543
+          ],
+          [
+            -9.423077,
+            38.963346
+          ],
+          [
+            -9.419559,
+            38.963346
+          ],
+          [
+            -9.419559,
+            38.960543
+          ],
+          [
+            -9.423077,
+            38.960543
           ]
         ]
       ]
@@ -7434,18 +7370,15 @@
       2018401
     ],
     "ofir": [
-      18691,
       1009684,
       2018401
     ],
     "esposende": [
-      18691,
       1000657,
       1009684,
       2018401
     ],
     "esposende-praia": [
-      18691,
       1000657,
       1009684,
       2018401
@@ -7491,7 +7424,6 @@
       2018383
     ],
     "foil-fao-cavado": [
-      18691,
       1000657,
       1009684,
       2018401
@@ -7547,11 +7479,9 @@
       1000708
     ],
     "sao-jacinto": [
-      18693,
       1000711
     ],
     "costa-nova": [
-      18693,
       1000711
     ],
     "leirosa": [
@@ -7945,7 +7875,6 @@
       1000459
     ],
     "barra-aveiro": [
-      18693,
       1000711,
       1010210
     ],
@@ -8044,12 +7973,10 @@
       1009371
     ],
     "fao-ofir-surf": [
-      18691,
       1009684,
       2018401
     ],
     "ofir-praia": [
-      18691,
       1009684,
       2018401
     ],
@@ -8068,7 +7995,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-09-30T23:50:26.701Z",
+  "fetchedAt": "2026-10-01T04:36:50.643Z",
   "sourceCollection": "nav_warning_coastal+nav_warning_local+orca_anavnet_point",
   "sourceUrl": "https://ogcapi.hidrografico.pt/collections/nav_warning_coastal"
 }
