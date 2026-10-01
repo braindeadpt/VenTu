@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-10-01T15:43:35.545Z",
+  "fetchedAt": "2026-10-01T18:37:17.131Z",
   "windowDays": 90,
   "dayCount": 30,
   "days": [
@@ -25828,13 +25828,6 @@
           "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=f023faff-5eae-4caf-b594-e11493414c73"
         },
         {
-          "id": 18699,
-          "ref": "ANAV NR 2199/26",
-          "category": "Requisitos de segurança maritima",
-          "source": "ih",
-          "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=92ada44c-575f-4968-899a-f2bd0f528f7c"
-        },
-        {
           "id": 18701,
           "ref": "ANAV NR 2200/26",
           "category": "Requisitos de segurança maritima",
@@ -29683,19 +29676,6 @@
       "nDays": 2
     },
     {
-      "ref": "ANAV NR 2199/26",
-      "category": "Requisitos de segurança maritima",
-      "source": "ih",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=92ada44c-575f-4968-899a-f2bd0f528f7c",
-      "firstSeen": "2026-09-30",
-      "lastSeen": "2026-10-01",
-      "daysInForce": [
-        "2026-09-30",
-        "2026-10-01"
-      ],
-      "nDays": 2
-    },
-    {
       "ref": "ANAV NR 22/25",
       "category": "AVISO À NAVEGAÇÃO - INSTALAÇÃO DE BOIA LiDAR FLS 200",
       "source": "ih",
@@ -32239,6 +32219,18 @@
         "2026-09-30"
       ],
       "nDays": 2
+    },
+    {
+      "ref": "ANAV NR 2199/26",
+      "category": "Requisitos de segurança maritima",
+      "source": "ih",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=92ada44c-575f-4968-899a-f2bd0f528f7c",
+      "firstSeen": "2026-09-30",
+      "lastSeen": "2026-09-30",
+      "daysInForce": [
+        "2026-09-30"
+      ],
+      "nDays": 1
     },
     {
       "ref": "ANAV NR 1686/26",
