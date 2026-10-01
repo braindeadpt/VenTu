@@ -261,6 +261,10 @@ export default function MapLayersZone({
           staleMaxAgeMin={GOES_IR_STALE_MAX_AGE_MIN}
           frameClock={goesIrFrameClock}
           frameFullClock={goesIrFrameFullClock}
+          // O HUD do fullscreen só é dono do scrubber do RADAR — o IR
+          // mantém o seu flutuante (play + régua) em todas as superfícies.
+          // Sem isto, com o IR ligado no /mapa não havia como mudar de
+          // frame: o carrossel escondia os controlos e o HUD não os rendia.
           attribution={(
             <>
               <a
@@ -275,7 +279,6 @@ export default function MapLayersZone({
               <OpenMeteoAttribution className="pointer-events-auto underline hover:text-fg transition-colors" />
             </>
           )}
-          hideScrubber={isFullscreen}
         />
       )}
     </>

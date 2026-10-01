@@ -10,6 +10,7 @@ rewriting the map core.
 |---|---|---|---|
 | — | `tilePane` | basemap (CARTO light/dark, Esri satellite) | Leaflet default |
 | 205 | `ventu-gibs-sat` | **NASA GIBS true-color** (MODIS Terra, «hoje») | opaque raster — real imagery from the latest satellite pass (clouds/fronts); `default` TIME slot always serves the newest date (`no-store`); `maxNativeZoom: 9`, stretched above; keyless; `gibs.earthdata.nasa.gov` in CSP img-src (meta + terraform); counts toward the heavy-raster cap |
+| 206 | `ventu-goes-ir` | **GOES-East ABI Band 13 Clean IR** (10-min carousel) | translucent raster (opacity 0.85) — cold cloud tops forming over the Atlantic; one persistent `L.tileLayer` per frame, frame switch = opacity swap (no refetch); `maxNativeZoom: 6`, stretched above; sits above true-color when both are on; counts toward the heavy-raster cap |
 | 210 | `ventu-bathymetry` | **EMODnet bathymetry WMS** (`emodnet:mean_multicolour` + `emodnet:contours`) | opt-in depth shading + 50–5000 m contours (island coverage — IH isobaths are mainland-only); host in CSP img-src (meta + terraform) |
 | 340 | — | isobaths (canvas image) | static, below fields |
 | 345 | `windfield` | **wind particle field** | ambient, animated |
@@ -92,11 +93,11 @@ marker/overlay stack and surface through the existing warning/chip channels.
 ## Heavy raster cap
 
 `MAP_HEAVY_RASTER_KEYS` (`src/lib/mapLayerBus.ts`) = `radar`, `bathymetry`,
-`seamarks`, `gibsSat` — max **2 active** (`MAP_HEAVY_RASTER_MAX`); turning on
-a third evicts the oldest (toast names the evicted layer). GIBS true-color
-is opaque — it replaces the basemap visually, so it competes with the other
-raster overlays for the same slot. The vector canvas fields (Hs/SST/wind/
-currents) have their own mutual-exclusion rules and don't count.
+`seamarks`, `gibsSat`, `goesIr` — max **2 active** (`MAP_HEAVY_RASTER_MAX`);
+turning on a third evicts the oldest (toast names the evicted layer).
+GIBS true-color is opaque — it replaces the basemap visually, so it competes
+with the other raster overlays for the same slot. The vector canvas fields
+(Hs/SST/wind/currents) have their own mutual-exclusion rules and don't count.
 
 ## NASA GIBS (`gibsSatellite.ts` + `useMapLayers`)
 
@@ -108,3 +109,22 @@ currents) have their own mutual-exclusion rules and don't count.
 - Toggle in the Camadas menu («Satélite NASA», `data-map-gibs-sat-toggle`),
   persisted to `ventu.map.gibsSat` localStorage, disabled in hero embeds.
 - Attribution: «Imagery © NASA GIBS (EOSDIS/MODIS Terra)».
+
+## GOES-East Clean IR (`goesIr.ts` + `useMapLayers`)
+
+- `goesIrFrames(nowMs)` — 12 TIME slots of 10 min ending ~45 min behind
+  wall-clock (GIBS publishing latency); `goesIrTileUrl(iso)` builds the
+  `…/GOES-East_ABI_Band13_Clean_Infrared/default/<ISO>/GoogleMapsCompatible_Level6/{z}/{y}/{x}.png`
+  template per frame.
+- One persistent `L.tileLayer` per frame on the `ventu-goes-ir` pane
+  (z 206); switching frames swaps opacity (0.85 active), warms frame+1,
+  discards idle pool layers on `movestart`. Black no-data tiles reuse the
+  `gibsTileMaskBlank` mask.
+- Shared `RadarCarousel` with `SatelliteDish` icon, Lisbon-wall-clock badge
+  (`goesIrFrameClock`), gap/stale labels (cadence 10, stale > 120 min),
+  NASA attribution node. The fullscreen HUD only owns the *radar* scrubber
+  — the IR carousel keeps its floating play + range in fullscreen too (offset
+  +84 px when radar is also on), otherwise frames were unreachable there.
+- Toggle in the Camadas menu («Satélite IR (10 min)»,
+  `data-map-goes-ir-toggle`), persisted to `ventu.goes-ir.state`
+  localStorage, deep link `?goesIr=1`, included in the share-view URL.
