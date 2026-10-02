@@ -1,27 +1,7 @@
 {
   "source": "ipma",
-  "fetchedAt": "2026-10-02T13:14:33.291Z",
+  "fetchedAt": "2026-10-02T15:50:25.297Z",
   "warnings": [
-    {
-      "areaCode": "ACE",
-      "areaLabel": "Angra do Heroísmo",
-      "type": "Precipitação",
-      "level": "orange",
-      "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada",
-      "startTime": "2026-10-02T08:16:00",
-      "endTime": "2026-10-02T15:00:00",
-      "relevant": true
-    },
-    {
-      "areaCode": "AOC",
-      "areaLabel": "Santa Cruz das Flores",
-      "type": "Precipitação",
-      "level": "orange",
-      "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada.",
-      "startTime": "2026-10-02T08:16:00",
-      "endTime": "2026-10-02T15:00:00",
-      "relevant": true
-    },
     {
       "areaCode": "AOR",
       "areaLabel": "Vila do Porto",
@@ -61,20 +41,244 @@
       "startTime": "2026-10-03T00:00:00",
       "endTime": "2026-10-03T10:00:00",
       "relevant": true
+    },
+    {
+      "areaCode": "BGC",
+      "areaLabel": "Bragança",
+      "type": "Trovoada",
+      "level": "yellow",
+      "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+      "startTime": "2026-10-03T12:00:00",
+      "endTime": "2026-10-03T21:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "VIS",
+      "areaLabel": "Viseu",
+      "type": "Trovoada",
+      "level": "yellow",
+      "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+      "startTime": "2026-10-03T12:00:00",
+      "endTime": "2026-10-03T21:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "EVR",
+      "areaLabel": "Évora",
+      "type": "Trovoada",
+      "level": "yellow",
+      "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+      "startTime": "2026-10-03T12:00:00",
+      "endTime": "2026-10-03T21:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "GDA",
+      "areaLabel": "Guarda",
+      "type": "Trovoada",
+      "level": "yellow",
+      "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+      "startTime": "2026-10-03T12:00:00",
+      "endTime": "2026-10-03T21:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "VRL",
+      "areaLabel": "Vila Real",
+      "type": "Trovoada",
+      "level": "yellow",
+      "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+      "startTime": "2026-10-03T12:00:00",
+      "endTime": "2026-10-03T21:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "STM",
+      "areaLabel": "Santarém",
+      "type": "Trovoada",
+      "level": "yellow",
+      "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+      "startTime": "2026-10-03T12:00:00",
+      "endTime": "2026-10-03T21:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "CBO",
+      "areaLabel": "Castelo Branco",
+      "type": "Trovoada",
+      "level": "yellow",
+      "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+      "startTime": "2026-10-03T12:00:00",
+      "endTime": "2026-10-03T21:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "CBR",
+      "areaLabel": "Coimbra",
+      "type": "Trovoada",
+      "level": "yellow",
+      "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+      "startTime": "2026-10-03T12:00:00",
+      "endTime": "2026-10-03T21:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "PTG",
+      "areaLabel": "Portalegre",
+      "type": "Trovoada",
+      "level": "yellow",
+      "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+      "startTime": "2026-10-03T12:00:00",
+      "endTime": "2026-10-03T21:00:00",
+      "relevant": true
     }
   ],
   "spotWarnings": {
-    "praia-vitoria": [
+    "quiaios": [
       {
-        "areaCode": "ACE",
-        "areaLabel": "Angra do Heroísmo",
-        "type": "Precipitação",
-        "level": "orange",
-        "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada",
-        "startTime": "2026-10-02T08:16:00",
-        "endTime": "2026-10-02T15:00:00",
+        "areaCode": "CBR",
+        "areaLabel": "Coimbra",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-03T12:00:00",
+        "endTime": "2026-10-03T21:00:00",
         "relevant": true
-      },
+      }
+    ],
+    "figueira-foz": [
+      {
+        "areaCode": "CBR",
+        "areaLabel": "Coimbra",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-03T12:00:00",
+        "endTime": "2026-10-03T21:00:00",
+        "relevant": true
+      }
+    ],
+    "foz-arelho": [
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-03T12:00:00",
+        "endTime": "2026-10-03T21:00:00",
+        "relevant": true
+      }
+    ],
+    "foil-foz-arelho": [
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-03T12:00:00",
+        "endTime": "2026-10-03T21:00:00",
+        "relevant": true
+      }
+    ],
+    "obidos-lagoon": [
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-03T12:00:00",
+        "endTime": "2026-10-03T21:00:00",
+        "relevant": true
+      }
+    ],
+    "obidos-lagoon-sul": [
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-03T12:00:00",
+        "endTime": "2026-10-03T21:00:00",
+        "relevant": true
+      }
+    ],
+    "obidos-lagoon-foz": [
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-03T12:00:00",
+        "endTime": "2026-10-03T21:00:00",
+        "relevant": true
+      }
+    ],
+    "foz-arelho-beach": [
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-03T12:00:00",
+        "endTime": "2026-10-03T21:00:00",
+        "relevant": true
+      }
+    ],
+    "praia-del-rey": [
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-03T12:00:00",
+        "endTime": "2026-10-03T21:00:00",
+        "relevant": true
+      }
+    ],
+    "almagreira": [
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-03T12:00:00",
+        "endTime": "2026-10-03T21:00:00",
+        "relevant": true
+      }
+    ],
+    "baleal": [
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-03T12:00:00",
+        "endTime": "2026-10-03T21:00:00",
+        "relevant": true
+      }
+    ],
+    "supertubos": [
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-03T12:00:00",
+        "endTime": "2026-10-03T21:00:00",
+        "relevant": true
+      }
+    ],
+    "praia-vitoria": [
       {
         "areaCode": "ACE",
         "areaLabel": "Angra do Heroísmo",
@@ -91,16 +295,6 @@
         "areaCode": "ACE",
         "areaLabel": "Angra do Heroísmo",
         "type": "Precipitação",
-        "level": "orange",
-        "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada",
-        "startTime": "2026-10-02T08:16:00",
-        "endTime": "2026-10-02T15:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "ACE",
-        "areaLabel": "Angra do Heroísmo",
-        "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada",
         "startTime": "2026-10-02T15:00:00",
@@ -109,16 +303,6 @@
       }
     ],
     "almoxarife": [
-      {
-        "areaCode": "ACE",
-        "areaLabel": "Angra do Heroísmo",
-        "type": "Precipitação",
-        "level": "orange",
-        "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada",
-        "startTime": "2026-10-02T08:16:00",
-        "endTime": "2026-10-02T15:00:00",
-        "relevant": true
-      },
       {
         "areaCode": "ACE",
         "areaLabel": "Angra do Heroísmo",
@@ -284,6 +468,30 @@
         "relevant": true
       }
     ],
+    "consolacao": [
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-03T12:00:00",
+        "endTime": "2026-10-03T21:00:00",
+        "relevant": true
+      }
+    ],
+    "areia-branca": [
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-03T12:00:00",
+        "endTime": "2026-10-03T21:00:00",
+        "relevant": true
+      }
+    ],
     "calhetas": [
       {
         "areaCode": "AOR",
@@ -355,16 +563,6 @@
         "areaCode": "ACE",
         "areaLabel": "Angra do Heroísmo",
         "type": "Precipitação",
-        "level": "orange",
-        "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada",
-        "startTime": "2026-10-02T08:16:00",
-        "endTime": "2026-10-02T15:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "ACE",
-        "areaLabel": "Angra do Heroísmo",
-        "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada",
         "startTime": "2026-10-02T15:00:00",
@@ -377,16 +575,6 @@
         "areaCode": "ACE",
         "areaLabel": "Angra do Heroísmo",
         "type": "Precipitação",
-        "level": "orange",
-        "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada",
-        "startTime": "2026-10-02T08:16:00",
-        "endTime": "2026-10-02T15:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "ACE",
-        "areaLabel": "Angra do Heroísmo",
-        "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada",
         "startTime": "2026-10-02T15:00:00",
@@ -395,16 +583,6 @@
       }
     ],
     "faja-cubres": [
-      {
-        "areaCode": "ACE",
-        "areaLabel": "Angra do Heroísmo",
-        "type": "Precipitação",
-        "level": "orange",
-        "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada",
-        "startTime": "2026-10-02T08:16:00",
-        "endTime": "2026-10-02T15:00:00",
-        "relevant": true
-      },
       {
         "areaCode": "ACE",
         "areaLabel": "Angra do Heroísmo",
