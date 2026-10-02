@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-10-02T15:50:26.723Z",
+  "fetchedAt": "2026-10-02T18:37:58.109Z",
   "windowDays": 90,
   "dayCount": 31,
   "days": [
@@ -27205,6 +27205,20 @@
           "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=f0d7dab8-87f1-42e3-a5c3-51909c60b345"
         },
         {
+          "id": 18733,
+          "ref": "ANAV NR 2224/26",
+          "category": "Requisitos de segurança maritima",
+          "source": "ih",
+          "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=798a27a4-d50c-446c-aac7-f6f0328eac8a"
+        },
+        {
+          "id": 18735,
+          "ref": "ANAV NR 2225/26",
+          "category": "Requisitos de segurança maritima",
+          "source": "ih",
+          "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=a59c4d11-6e2f-4679-9ea8-9518fd928e9e"
+        },
+        {
           "id": 1000182,
           "ref": "ANAV NR 121/21",
           "category": "SEGURANÇA DA NAVEGAÇÃO - AVISO À NAVEGAÇÃO LOCAL",
@@ -27751,13 +27765,6 @@
           "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=f40c08d1-b18c-40b9-9055-4866e14cb1be"
         },
         {
-          "id": 1004200,
-          "ref": "ANAV NR 99/23",
-          "category": "ASSINALAMENTO MARITIMO",
-          "source": "ih",
-          "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=167e9341-f4a4-4e25-998a-d82e86653612"
-        },
-        {
           "id": 1004206,
           "ref": "ANAV NR 13/24",
           "category": "ÁREA PILOTO PRODUÇÃO AQUÍCOLA DA ARMONA - BÓIAS APAGADAS E FORA DE POSIÇÃO",
@@ -27868,13 +27875,6 @@
           "category": "FAROLINS DE ENFIAMENTO DO PORTO DAS POÇAS",
           "source": "ih",
           "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=c2445e53-e4ef-4414-8f96-b37471e5a46d"
-        },
-        {
-          "id": 1006274,
-          "ref": "ANAV NR 190/24",
-          "category": "ASSINALAMENTO MARITIMO",
-          "source": "ih",
-          "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=b76e6f20-88a2-4918-a876-4aa3986840e1"
         },
         {
           "id": 1006285,
@@ -28267,6 +28267,27 @@
           "category": "Amarra e Ferro Perdidos",
           "source": "ih",
           "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=e27ab869-0d62-4be6-bdc6-2bf347ebbe09"
+        },
+        {
+          "id": 1010405,
+          "ref": "ANAV NR 25/26",
+          "category": "SINALIZAÇÃO",
+          "source": "ih",
+          "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=c498fc0c-1cbe-4bc4-adaa-ff15971721c9"
+        },
+        {
+          "id": 1010421,
+          "ref": "ANAV NR 11/26",
+          "category": "INTERDIÇÃO DE ÁREA",
+          "source": "ih",
+          "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=d761712f-0c61-4ecc-b295-bce5670e449a"
+        },
+        {
+          "id": 1010469,
+          "ref": "ANAV NR 14/26",
+          "category": "SEGURANÇA DA NAVEGAÇÃO - ENSAIOS EQUIPAMENTOS CIENTÍFICOS",
+          "source": "ih",
+          "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=4e0960df-713b-4f61-84f0-4d50ca832f19"
         },
         {
           "id": 2017253,
@@ -29198,6 +29219,18 @@
       "nDays": 21
     },
     {
+      "ref": "ANAV NR 11/26",
+      "category": "INTERDIÇÃO DE ÁREA",
+      "source": "ih",
+      "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=d761712f-0c61-4ecc-b295-bce5670e449a",
+      "firstSeen": "2026-10-02",
+      "lastSeen": "2026-10-02",
+      "daysInForce": [
+        "2026-10-02"
+      ],
+      "nDays": 1
+    },
+    {
       "ref": "ANAV NR 110/25",
       "category": "PLANO DE SALVAMENTO MARÍTIMO",
       "source": "ih",
@@ -29867,6 +29900,18 @@
         "2026-10-02"
       ],
       "nDays": 21
+    },
+    {
+      "ref": "ANAV NR 14/26",
+      "category": "SEGURANÇA DA NAVEGAÇÃO - ENSAIOS EQUIPAMENTOS CIENTÍFICOS",
+      "source": "ih",
+      "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=4e0960df-713b-4f61-84f0-4d50ca832f19",
+      "firstSeen": "2026-10-02",
+      "lastSeen": "2026-10-02",
+      "daysInForce": [
+        "2026-10-02"
+      ],
+      "nDays": 1
     },
     {
       "ref": "ANAV NR 1410/26",
@@ -30721,38 +30766,6 @@
       "nDays": 21
     },
     {
-      "ref": "ANAV NR 190/24",
-      "category": "ASSINALAMENTO MARITIMO",
-      "source": "ih",
-      "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=b76e6f20-88a2-4918-a876-4aa3986840e1",
-      "firstSeen": "2026-09-11",
-      "lastSeen": "2026-10-02",
-      "daysInForce": [
-        "2026-09-11",
-        "2026-09-12",
-        "2026-09-13",
-        "2026-09-14",
-        "2026-09-15",
-        "2026-09-16",
-        "2026-09-18",
-        "2026-09-19",
-        "2026-09-20",
-        "2026-09-21",
-        "2026-09-22",
-        "2026-09-23",
-        "2026-09-24",
-        "2026-09-25",
-        "2026-09-26",
-        "2026-09-27",
-        "2026-09-28",
-        "2026-09-29",
-        "2026-09-30",
-        "2026-10-01",
-        "2026-10-02"
-      ],
-      "nDays": 21
-    },
-    {
       "ref": "ANAV NR 1901/26",
       "category": "Animais Marinhos - Interação",
       "source": "ih",
@@ -31301,6 +31314,30 @@
       "nDays": 1
     },
     {
+      "ref": "ANAV NR 2224/26",
+      "category": "Requisitos de segurança maritima",
+      "source": "ih",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=798a27a4-d50c-446c-aac7-f6f0328eac8a",
+      "firstSeen": "2026-10-02",
+      "lastSeen": "2026-10-02",
+      "daysInForce": [
+        "2026-10-02"
+      ],
+      "nDays": 1
+    },
+    {
+      "ref": "ANAV NR 2225/26",
+      "category": "Requisitos de segurança maritima",
+      "source": "ih",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=a59c4d11-6e2f-4679-9ea8-9518fd928e9e",
+      "firstSeen": "2026-10-02",
+      "lastSeen": "2026-10-02",
+      "daysInForce": [
+        "2026-10-02"
+      ],
+      "nDays": 1
+    },
+    {
       "ref": "ANAV NR 226/25",
       "category": "Cancelamento ANAV 200/25",
       "source": "ih",
@@ -31462,9 +31499,9 @@
     },
     {
       "ref": "ANAV NR 25/26",
-      "category": "Entrada do Porto de Lisboa – Assinalamento Marítimo",
+      "category": "SINALIZAÇÃO",
       "source": "ih",
-      "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=d2adbf87-95a4-4dbf-a0d9-06064869fbe9",
+      "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=c498fc0c-1cbe-4bc4-adaa-ff15971721c9",
       "firstSeen": "2026-09-11",
       "lastSeen": "2026-10-02",
       "daysInForce": [
@@ -33661,12 +33698,12 @@
       "nDays": 21
     },
     {
-      "ref": "ANAV NR 99/23",
+      "ref": "ANAV NR 190/24",
       "category": "ASSINALAMENTO MARITIMO",
       "source": "ih",
-      "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=167e9341-f4a4-4e25-998a-d82e86653612",
+      "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=b76e6f20-88a2-4918-a876-4aa3986840e1",
       "firstSeen": "2026-09-11",
-      "lastSeen": "2026-10-02",
+      "lastSeen": "2026-10-01",
       "daysInForce": [
         "2026-09-11",
         "2026-09-12",
@@ -33687,10 +33724,9 @@
         "2026-09-28",
         "2026-09-29",
         "2026-09-30",
-        "2026-10-01",
-        "2026-10-02"
+        "2026-10-01"
       ],
-      "nDays": 21
+      "nDays": 20
     },
     {
       "ref": "ANAV NR 2200/26",
@@ -33746,6 +33782,37 @@
       "category": "LANÇAMENTO DE FOGO DE ARTIFÍCIO",
       "source": "ih",
       "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=dbd0e838-1288-47ae-9a24-08027ff2adb1",
+      "firstSeen": "2026-09-11",
+      "lastSeen": "2026-10-01",
+      "daysInForce": [
+        "2026-09-11",
+        "2026-09-12",
+        "2026-09-13",
+        "2026-09-14",
+        "2026-09-15",
+        "2026-09-16",
+        "2026-09-18",
+        "2026-09-19",
+        "2026-09-20",
+        "2026-09-21",
+        "2026-09-22",
+        "2026-09-23",
+        "2026-09-24",
+        "2026-09-25",
+        "2026-09-26",
+        "2026-09-27",
+        "2026-09-28",
+        "2026-09-29",
+        "2026-09-30",
+        "2026-10-01"
+      ],
+      "nDays": 20
+    },
+    {
+      "ref": "ANAV NR 99/23",
+      "category": "ASSINALAMENTO MARITIMO",
+      "source": "ih",
+      "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=167e9341-f4a4-4e25-998a-d82e86653612",
       "firstSeen": "2026-09-11",
       "lastSeen": "2026-10-01",
       "daysInForce": [
