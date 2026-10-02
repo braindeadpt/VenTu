@@ -1,6 +1,6 @@
 {
   "source": "forecast-skill-regression",
-  "checkedAt": "2026-10-01T23:13:59.863Z",
+  "checkedAt": "2026-10-02T04:06:53.333Z",
   "windowDays": 60,
   "recentDays": 7,
   "baselineDays": 21,
@@ -31,7 +31,7 @@
         "snapshots": 8,
         "rmse": 0.22875,
         "me": 0.025,
-        "n": 657.125
+        "n": 657.75
       },
       "baseline": {
         "snapshots": 20,
@@ -57,7 +57,7 @@
         "snapshots": 8,
         "rmse": 0.49875,
         "me": -0.43999999999999995,
-        "n": 656.5
+        "n": 657.125
       },
       "baseline": {
         "snapshots": 14,
@@ -81,9 +81,9 @@
       "origin": "wmo-es",
       "recent": {
         "snapshots": 8,
-        "rmse": 0.495,
-        "me": 0.35875,
-        "n": 500.5
+        "rmse": 0.4975,
+        "me": 0.36,
+        "n": 500.875
       },
       "baseline": {
         "snapshots": 20,
@@ -91,7 +91,7 @@
         "me": 0.2735,
         "n": 250.65
       },
-      "rmseDelta": 0.13,
+      "rmseDelta": 0.14,
       "meAbsDelta": 0.09,
       "verdict": "ok"
     },
@@ -102,7 +102,7 @@
         "snapshots": 8,
         "rmse": 0.4987499999999999,
         "me": 0.43750000000000006,
-        "n": 501.5
+        "n": 501.875
       },
       "baseline": {
         "snapshots": 20,
@@ -118,9 +118,9 @@
       "name": "Nazaré Costeira (WMO)",
       "recent": {
         "snapshots": 8,
-        "rmse": 0.23,
-        "me": 0.025,
-        "n": 480.125
+        "rmse": 0.23500000000000001,
+        "me": 0.02625,
+        "n": 480.5
       },
       "baseline": {
         "snapshots": 20,
@@ -140,8 +140,8 @@
       "name": "IH (Datawell)",
       "recent": {
         "days": 8,
-        "n": 3020.13,
-        "me": 0.08971193245312693
+        "n": 3022,
+        "me": 0.08997683653209794
       },
       "baseline": {
         "days": 20,
@@ -158,8 +158,8 @@
       "name": "WMO-ES (Copernicus)",
       "recent": {
         "days": 8,
-        "n": 1482.13,
-        "me": 0.2777759973011723
+        "n": 1483.25,
+        "me": 0.2786591943367605
       },
       "baseline": {
         "days": 20,
