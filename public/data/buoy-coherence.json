@@ -1,11 +1,11 @@
 {
   "day": "20261002",
-  "fetchedAt": "2026-10-02T18:49:01.877Z",
+  "fetchedAt": "2026-10-02T23:36:44.101Z",
   "minPairs": 3,
   "minAccumulatedPairs": 10,
   "archive": {
     "windowDays": 30,
-    "pairHourCount": 740,
+    "pairHourCount": 745,
     "path": "buoy-coherence-archive.json"
   },
   "daily": {
@@ -53,8 +53,8 @@
         "coherent": 1,
         "review": 0,
         "incoherent": 0,
-        "insufficient": 16,
-        "days": 17,
+        "insufficient": 17,
+        "days": 18,
         "incoherentRatio": 0
       },
       "6200084|6201077": {
@@ -62,8 +62,8 @@
         "coherent": 1,
         "review": 0,
         "incoherent": 0,
-        "insufficient": 16,
-        "days": 17,
+        "insufficient": 17,
+        "days": 18,
         "incoherentRatio": 0
       }
     },
@@ -1491,8 +1491,56 @@
       "suboptimal": []
     }
   },
-  "regionsAuditedAt": "2026-10-02T18:57:58.142Z",
+  "regionsAuditedAt": "2026-10-02T23:39:24.948Z",
   "pairs": [
+    {
+      "pair": "Cabo Silleiro × Datawell ao largo do Porto",
+      "codes": [
+        "6200084",
+        "6201077"
+      ],
+      "distanceKm": 96.8,
+      "ptSource": "wmo",
+      "n": 22,
+      "meanDeltaM": -0.2,
+      "meanAbsDeltaM": 0.2,
+      "maxAbsDeltaM": 0.7,
+      "corr": 0.97,
+      "verdict": "coherent",
+      "firstHour": "2026-09-03T08",
+      "lastHour": "2026-10-02T13",
+      "hours": [
+        {
+          "6200084": 3.4000000953674316,
+          "6201077": 2.690000057220459,
+          "hour": "2026-10-02T13"
+        }
+      ]
+    },
+    {
+      "pair": "Villano-Sisargas × Datawell ao largo do Porto",
+      "codes": [
+        "6200083",
+        "6201077"
+      ],
+      "distanceKm": 243.5,
+      "ptSource": "wmo",
+      "n": 22,
+      "meanDeltaM": -0.3,
+      "meanAbsDeltaM": 0.3,
+      "maxAbsDeltaM": 1.1,
+      "corr": 0.9,
+      "verdict": "coherent",
+      "firstHour": "2026-09-03T08",
+      "lastHour": "2026-10-02T13",
+      "hours": [
+        {
+          "6200083": 3.2799999713897705,
+          "6201077": 2.690000057220459,
+          "hour": "2026-10-02T13"
+        }
+      ]
+    },
     {
       "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
       "codes": [
@@ -1501,14 +1549,14 @@
       ],
       "distanceKm": 285.3,
       "ptSource": "wmo",
-      "n": 539,
+      "n": 542,
       "meanDeltaM": -0.1,
       "meanAbsDeltaM": 0.4,
       "maxAbsDeltaM": 2.8,
       "corr": 0.77,
       "verdict": "coherent",
-      "firstHour": "2026-09-02T19",
-      "lastHour": "2026-10-02T16",
+      "firstHour": "2026-09-03T00",
+      "lastHour": "2026-10-02T21",
       "hours": [
         {
           "6200084": 5.389999866485596,
@@ -1594,6 +1642,31 @@
           "6200084": 3.049999952316284,
           "6200199": 2.6367199420928955,
           "hour": "2026-10-02T16"
+        },
+        {
+          "6200084": 3.1600000858306885,
+          "6200199": 2.3290998935699463,
+          "hour": "2026-10-02T17"
+        },
+        {
+          "6200084": 3.4000000953674316,
+          "6200199": 2.768549919128418,
+          "hour": "2026-10-02T18"
+        },
+        {
+          "6200084": 3.049999952316284,
+          "6200199": 2.973629951477051,
+          "hour": "2026-10-02T19"
+        },
+        {
+          "6200084": 2.930000066757202,
+          "6200199": 2.8271501064300537,
+          "hour": "2026-10-02T20"
+        },
+        {
+          "6200084": 2.930000066757202,
+          "6200199": 2.7099599838256836,
+          "hour": "2026-10-02T21"
         }
       ]
     }

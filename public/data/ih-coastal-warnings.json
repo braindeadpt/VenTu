@@ -469,38 +469,6 @@
       ]
     },
     {
-      "id": 18727,
-      "ref": "ANAV NR 2221/26",
-      "category": "Requisitos de segurança maritima",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=5a9227e0-3fb6-4813-8cf7-649ee2d1bf2c",
-      "source": "ih",
-      "collection": "nav_warning_coastal",
-      "polygons": [
-        [
-          [
-            -8.525009,
-            37.058794
-          ],
-          [
-            -8.525009,
-            37.12233
-          ],
-          [
-            -8.355464,
-            37.12233
-          ],
-          [
-            -8.355464,
-            37.058794
-          ],
-          [
-            -8.525009,
-            37.058794
-          ]
-        ]
-      ]
-    },
-    {
       "id": 18729,
       "ref": "ANAV NR 2222/26",
       "category": "Requisitos de segurança maritima",
@@ -8179,7 +8147,6 @@
     ],
     "ferragudo": [
       18697,
-      18727,
       1000318,
       1001007,
       1001008,
@@ -8399,7 +8366,6 @@
       2018247
     ],
     "canavial": [
-      18727,
       1001008,
       2017793
     ],
@@ -8474,7 +8440,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-10-02T18:49:20.365Z",
+  "fetchedAt": "2026-10-02T23:36:56.194Z",
   "sourceCollection": "nav_warning_coastal+nav_warning_local+orca_anavnet_point",
   "sourceUrl": "https://ogcapi.hidrografico.pt/collections/nav_warning_coastal"
 }
