@@ -1,6 +1,6 @@
 {
   "source": "forecast-skill-regression",
-  "checkedAt": "2026-10-02T04:06:53.333Z",
+  "checkedAt": "2026-10-02T07:07:46.432Z",
   "windowDays": 60,
   "recentDays": 7,
   "baselineDays": 21,
@@ -29,9 +29,9 @@
       "origin": "ih",
       "recent": {
         "snapshots": 8,
-        "rmse": 0.22875,
-        "me": 0.025,
-        "n": 657.75
+        "rmse": 0.23,
+        "me": 0.026250000000000002,
+        "n": 658.125
       },
       "baseline": {
         "snapshots": 20,
@@ -57,7 +57,7 @@
         "snapshots": 8,
         "rmse": 0.49875,
         "me": -0.43999999999999995,
-        "n": 657.125
+        "n": 657.5
       },
       "baseline": {
         "snapshots": 14,
@@ -81,9 +81,9 @@
       "origin": "wmo-es",
       "recent": {
         "snapshots": 8,
-        "rmse": 0.4975,
-        "me": 0.36,
-        "n": 500.875
+        "rmse": 0.49874999999999997,
+        "me": 0.36125,
+        "n": 501.25
       },
       "baseline": {
         "snapshots": 20,
@@ -102,7 +102,7 @@
         "snapshots": 8,
         "rmse": 0.4987499999999999,
         "me": 0.43750000000000006,
-        "n": 501.875
+        "n": 502.25
       },
       "baseline": {
         "snapshots": 20,
@@ -118,9 +118,9 @@
       "name": "Nazaré Costeira (WMO)",
       "recent": {
         "snapshots": 8,
-        "rmse": 0.23500000000000001,
-        "me": 0.02625,
-        "n": 480.5
+        "rmse": 0.23750000000000002,
+        "me": 0.0275,
+        "n": 480.875
       },
       "baseline": {
         "snapshots": 20,
@@ -128,7 +128,7 @@
         "me": 0.026000000000000013,
         "n": 237.8
       },
-      "rmseDelta": 0.06,
+      "rmseDelta": 0.07,
       "meAbsDelta": 0,
       "verdict": "ok"
     }
@@ -140,8 +140,8 @@
       "name": "IH (Datawell)",
       "recent": {
         "days": 8,
-        "n": 3022,
-        "me": 0.08997683653209794
+        "n": 3023.13,
+        "me": 0.09025139549307422
       },
       "baseline": {
         "days": 20,
@@ -158,8 +158,8 @@
       "name": "WMO-ES (Copernicus)",
       "recent": {
         "days": 8,
-        "n": 1483.25,
-        "me": 0.2786591943367605
+        "n": 1484.38,
+        "me": 0.27955115789473683
       },
       "baseline": {
         "days": 20,
