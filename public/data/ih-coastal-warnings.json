@@ -405,6 +405,38 @@
       ]
     },
     {
+      "id": 18721,
+      "ref": "ANAV NR 2218/26",
+      "category": "Requisitos de segurança maritima",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=7745d33e-3eb1-4714-89de-6ca08c4cef5a",
+      "source": "ih",
+      "collection": "nav_warning_coastal",
+      "polygons": [
+        [
+          [
+            -16.908895,
+            32.641254
+          ],
+          [
+            -16.908895,
+            32.644362
+          ],
+          [
+            -16.899026,
+            32.644362
+          ],
+          [
+            -16.899026,
+            32.641254
+          ],
+          [
+            -16.908895,
+            32.641254
+          ]
+        ]
+      ]
+    },
+    {
       "id": 1000182,
       "ref": "ANAV NR 121/21",
       "category": "SEGURANÇA DA NAVEGAÇÃO - AVISO À NAVEGAÇÃO LOCAL",
@@ -6473,38 +6505,6 @@
       ]
     },
     {
-      "id": 1009910,
-      "ref": "ANAV NR 357/25",
-      "category": "LANÇAMENTO DE FOGO DE ARTIFÍCIO",
-      "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=dbd0e838-1288-47ae-9a24-08027ff2adb1",
-      "source": "ih",
-      "collection": "nav_warning_local",
-      "polygons": [
-        [
-          [
-            -8.474928,
-            37.093848
-          ],
-          [
-            -8.474928,
-            37.099017
-          ],
-          [
-            -8.471065,
-            37.099017
-          ],
-          [
-            -8.471065,
-            37.093848
-          ],
-          [
-            -8.474928,
-            37.093848
-          ]
-        ]
-      ]
-    },
-    {
       "id": 1009974,
       "ref": "ANAV NR 1/26",
       "category": "Baliza Nº2 - APAGADA",
@@ -6916,6 +6916,70 @@
           [
             -8.752633,
             41.335447
+          ]
+        ]
+      ]
+    },
+    {
+      "id": 1010344,
+      "ref": "ANAV NR 13/26",
+      "category": "ABERTURA DOS PORTOS DOS MOSTEIROS, RABO DE PEIXE, PORTO FORMOSO, POVOAÇÃO, VILA FRANCA DO CAMPO, CALOURA E CARNEIROS",
+      "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=d5a03966-f0f0-480e-b768-f449699ad5b7",
+      "source": "ih",
+      "collection": "nav_warning_local",
+      "polygons": [
+        [
+          [
+            -25.946034,
+            37.668603
+          ],
+          [
+            -25.946034,
+            37.942031
+          ],
+          [
+            -25.050869,
+            37.942031
+          ],
+          [
+            -25.050869,
+            37.668603
+          ],
+          [
+            -25.946034,
+            37.668603
+          ]
+        ]
+      ]
+    },
+    {
+      "id": 1010379,
+      "ref": "ANAV NR 22/26",
+      "category": "Amarra e Ferro Perdidos",
+      "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=e27ab869-0d62-4be6-bdc6-2bf347ebbe09",
+      "source": "ih",
+      "collection": "nav_warning_local",
+      "polygons": [
+        [
+          [
+            -9.421427,
+            38.659912
+          ],
+          [
+            -9.421427,
+            38.674521
+          ],
+          [
+            -9.391222,
+            38.674521
+          ],
+          [
+            -9.391222,
+            38.659912
+          ],
+          [
+            -9.421427,
+            38.659912
           ]
         ]
       ]
@@ -7626,19 +7690,24 @@
       2017849
     ],
     "mosteiros": [
-      18683
+      18683,
+      1010344
     ],
     "monte-verde": [
-      18683
+      18683,
+      1010344
     ],
     "santa-barbara": [
-      18683
+      18683,
+      1010344
     ],
     "milicias": [
-      18683
+      18683,
+      1010344
     ],
     "agua-alto": [
-      18683
+      18683,
+      1010344
     ],
     "amoreira": [
       2017815
@@ -7855,7 +7924,8 @@
       18683
     ],
     "ponta-delgada": [
-      18683
+      18683,
+      1010344
     ],
     "sao-vicente-madeira": [
       1000459
@@ -7955,10 +8025,12 @@
       1000459
     ],
     "calhetas": [
-      18683
+      18683,
+      1010344
     ],
     "ribeira-quente": [
-      18683
+      18683,
+      1010344
     ],
     "formosa-santa-maria": [
       18683
@@ -7999,7 +8071,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-10-02T08:38:46.943Z",
+  "fetchedAt": "2026-10-02T10:07:19.215Z",
   "sourceCollection": "nav_warning_coastal+nav_warning_local+orca_anavnet_point",
   "sourceUrl": "https://ogcapi.hidrografico.pt/collections/nav_warning_coastal"
 }
