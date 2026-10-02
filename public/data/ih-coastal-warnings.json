@@ -437,6 +437,38 @@
       ]
     },
     {
+      "id": 18725,
+      "ref": "ANAV NR 2220/26",
+      "category": "Requisitos de segurança maritima",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=a2ee23ab-e7c2-46f3-976b-3acf424ce2f3",
+      "source": "ih",
+      "collection": "nav_warning_coastal",
+      "polygons": [
+        [
+          [
+            -8.891658,
+            40.538852
+          ],
+          [
+            -8.891658,
+            40.688969
+          ],
+          [
+            -8.604711,
+            40.688969
+          ],
+          [
+            -8.604711,
+            40.538852
+          ],
+          [
+            -8.891658,
+            40.538852
+          ]
+        ]
+      ]
+    },
+    {
       "id": 1000182,
       "ref": "ANAV NR 121/21",
       "category": "SEGURANÇA DA NAVEGAÇÃO - AVISO À NAVEGAÇÃO LOCAL",
@@ -7545,9 +7577,11 @@
       1000708
     ],
     "sao-jacinto": [
+      18725,
       1000711
     ],
     "costa-nova": [
+      18725,
       1000711
     ],
     "leirosa": [
@@ -7949,6 +7983,7 @@
       1000459
     ],
     "barra-aveiro": [
+      18725,
       1000711,
       1010210
     ],
@@ -8071,7 +8106,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-10-02T10:07:19.215Z",
+  "fetchedAt": "2026-10-02T13:07:32.787Z",
   "sourceCollection": "nav_warning_coastal+nav_warning_local+orca_anavnet_point",
   "sourceUrl": "https://ogcapi.hidrografico.pt/collections/nav_warning_coastal"
 }
