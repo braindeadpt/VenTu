@@ -1,6 +1,6 @@
 {
   "source": "forecast-skill-regression",
-  "checkedAt": "2026-10-03T04:37:13.334Z",
+  "checkedAt": "2026-10-03T07:09:07.030Z",
   "windowDays": 60,
   "recentDays": 7,
   "baselineDays": 21,
@@ -30,8 +30,8 @@
       "recent": {
         "snapshots": 8,
         "rmse": 0.23750000000000002,
-        "me": 0.03125,
-        "n": 667.125
+        "me": 0.0325,
+        "n": 667.625
       },
       "baseline": {
         "snapshots": 20,
@@ -57,7 +57,7 @@
         "snapshots": 8,
         "rmse": 0.49624999999999997,
         "me": -0.43624999999999997,
-        "n": 667
+        "n": 667.375
       },
       "baseline": {
         "snapshots": 14,
@@ -83,7 +83,7 @@
         "snapshots": 8,
         "rmse": 0.5299999999999999,
         "me": 0.38249999999999995,
-        "n": 510.625
+        "n": 511
       },
       "baseline": {
         "snapshots": 20,
@@ -102,7 +102,7 @@
         "snapshots": 8,
         "rmse": 0.505,
         "me": 0.4412500000000001,
-        "n": 511.375
+        "n": 511.75
       },
       "baseline": {
         "snapshots": 20,
@@ -118,9 +118,9 @@
       "name": "Nazaré Costeira (WMO)",
       "recent": {
         "snapshots": 8,
-        "rmse": 0.25625000000000003,
+        "rmse": 0.2575,
         "me": 0.036250000000000004,
-        "n": 490.625
+        "n": 491
       },
       "baseline": {
         "snapshots": 20,
@@ -140,8 +140,8 @@
       "name": "IH (Datawell)",
       "recent": {
         "days": 8,
-        "n": 3052.25,
-        "me": 0.10367679580637235
+        "n": 3053.38,
+        "me": 0.10392311786138289
       },
       "baseline": {
         "days": 20,
@@ -158,8 +158,8 @@
       "name": "WMO-ES (Copernicus)",
       "recent": {
         "days": 8,
-        "n": 1512.63,
-        "me": 0.2905900338814974
+        "n": 1513.75,
+        "me": 0.29062180016515277
       },
       "baseline": {
         "days": 20,
