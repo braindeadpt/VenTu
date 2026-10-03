@@ -1,11 +1,11 @@
 {
   "day": "20261003",
-  "fetchedAt": "2026-10-03T17:18:03.852Z",
+  "fetchedAt": "2026-10-03T19:32:05.734Z",
   "minPairs": 3,
   "minAccumulatedPairs": 10,
   "archive": {
     "windowDays": 30,
-    "pairHourCount": 731,
+    "pairHourCount": 733,
     "path": "buoy-coherence-archive.json"
   },
   "daily": {
@@ -743,14 +743,14 @@
       ]
     },
     "Ovar": {
-      "spotCount": 5,
-      "withObservedWave": 5,
+      "spotCount": 6,
+      "withObservedWave": 6,
       "bySource": {
-        "wmo-buoy": 5
+        "wmo-buoy": 6
       },
-      "audited": 5,
+      "audited": 6,
       "attachedIsClosest": 0,
-      "attachedNotClosest": 5,
+      "attachedNotClosest": 6,
       "onlySource": 0,
       "notClosest": [
         {
@@ -765,6 +765,13 @@
           "winner": "wmo-buoy",
           "reason": "wmo-only",
           "attachedKm": 144,
+          "altKm": 0
+        },
+        {
+          "spot": "cortegaca",
+          "winner": "wmo-buoy",
+          "reason": "wmo-only",
+          "attachedKm": 146,
           "altKm": 0
         },
         {
@@ -789,7 +796,7 @@
           "altKm": 0
         }
       ],
-      "calibrated": 5,
+      "calibrated": 6,
       "calibrationRefs": {
         "6200084→6201077": {
           "esCode": "6200084",
@@ -803,13 +810,14 @@
           "spots": [
             "barrinha-esmoriz",
             "esmoriz",
+            "cortegaca",
             "cortegaca-sul",
             "maceda",
             "furadouro"
           ]
         }
       },
-      "suboptimalRefs": 5,
+      "suboptimalRefs": 6,
       "suboptimal": [
         {
           "spot": "barrinha-esmoriz",
@@ -828,6 +836,15 @@
           "nearestPtCode": "4",
           "nearestPtName": "CSA92/D",
           "nearestPtKm": 48.07381268475458
+        },
+        {
+          "spot": "cortegaca",
+          "esCode": "6200084",
+          "ptRefCode": "6201077",
+          "ptRefKm": 49.49022542252787,
+          "nearestPtCode": "4",
+          "nearestPtName": "CSA92/D",
+          "nearestPtKm": 49.359914915423275
         },
         {
           "spot": "cortegaca-sul",
@@ -1882,14 +1899,14 @@
       "suboptimal": []
     },
     "Faro": {
-      "spotCount": 4,
-      "withObservedWave": 4,
+      "spotCount": 5,
+      "withObservedWave": 5,
       "bySource": {
-        "ih-buoy": 4
+        "ih-buoy": 5
       },
-      "audited": 4,
+      "audited": 5,
       "attachedIsClosest": 0,
-      "attachedNotClosest": 4,
+      "attachedNotClosest": 5,
       "onlySource": 0,
       "notClosest": [
         {
@@ -1912,6 +1929,13 @@
           "reason": "ih-fresh",
           "attachedKm": 142,
           "altKm": 96
+        },
+        {
+          "spot": "armona",
+          "winner": "ih-buoy",
+          "reason": "ih-fresh",
+          "attachedKm": 142,
+          "altKm": 94
         },
         {
           "spot": "garrão",
@@ -1957,6 +1981,30 @@
       "suboptimalRefs": 0,
       "suboptimal": []
     },
+    "Vila Real de Santo António": {
+      "spotCount": 1,
+      "withObservedWave": 1,
+      "bySource": {
+        "ih-buoy": 1
+      },
+      "audited": 1,
+      "attachedIsClosest": 0,
+      "attachedNotClosest": 1,
+      "onlySource": 0,
+      "notClosest": [
+        {
+          "spot": "cacela-velha",
+          "winner": "ih-buoy",
+          "reason": "ih-fresh",
+          "attachedKm": 149,
+          "altKm": 90
+        }
+      ],
+      "calibrated": 0,
+      "calibrationRefs": {},
+      "suboptimalRefs": 0,
+      "suboptimal": []
+    },
     "Santa Maria": {
       "spotCount": 2,
       "withObservedWave": 0,
@@ -1966,6 +2014,30 @@
       "attachedNotClosest": 0,
       "onlySource": 0,
       "notClosest": [],
+      "calibrated": 0,
+      "calibrationRefs": {},
+      "suboptimalRefs": 0,
+      "suboptimal": []
+    },
+    "Açores": {
+      "spotCount": 1,
+      "withObservedWave": 1,
+      "bySource": {
+        "ih-buoy": 1
+      },
+      "audited": 1,
+      "attachedIsClosest": 0,
+      "attachedNotClosest": 1,
+      "onlySource": 0,
+      "notClosest": [
+        {
+          "spot": "ponta-delgada",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 249,
+          "altKm": 0
+        }
+      ],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -2170,7 +2242,7 @@
       "suboptimal": []
     }
   },
-  "regionsAuditedAt": "2026-10-03T17:32:04.465Z",
+  "regionsAuditedAt": "2026-10-03T19:34:50.123Z",
   "pairs": [
     {
       "pair": "Cabo Silleiro × Datawell ao largo do Porto",
@@ -2248,14 +2320,14 @@
       ],
       "distanceKm": 285.3,
       "ptSource": "wmo",
-      "n": 541,
+      "n": 543,
       "meanDeltaM": -0.1,
       "meanAbsDeltaM": 0.4,
       "maxAbsDeltaM": 2.8,
       "corr": 0.76,
       "verdict": "coherent",
       "firstHour": "2026-09-04T00",
-      "lastHour": "2026-10-03T15",
+      "lastHour": "2026-10-03T17",
       "hours": [
         {
           "6200084": 2.5799999237060547,
@@ -2336,6 +2408,16 @@
           "6200084": 2.109999895095825,
           "6200199": 1.9189499616622925,
           "hour": "2026-10-03T15"
+        },
+        {
+          "6200084": 1.7599999904632568,
+          "6200199": 1.9042999744415283,
+          "hour": "2026-10-03T16"
+        },
+        {
+          "6200084": 1.8799999952316284,
+          "6200199": 1.875,
+          "hour": "2026-10-03T17"
         }
       ]
     }
