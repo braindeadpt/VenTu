@@ -1,136 +1,738 @@
 {
   "source": "ipma",
-  "fetchedAt": "2026-10-03T23:05:18.747Z",
+  "fetchedAt": "2026-10-04T04:06:51.229Z",
   "warnings": [
     {
-      "areaCode": "AOR",
-      "areaLabel": "Vila do Porto",
-      "type": "Precipitação",
+      "areaCode": "EVR",
+      "areaLabel": "Évora",
+      "type": "Trovoada",
       "level": "yellow",
-      "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada",
-      "startTime": "2026-10-03T18:43:00",
-      "endTime": "2026-10-04T00:00:00",
+      "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+      "startTime": "2026-10-04T12:00:00",
+      "endTime": "2026-10-04T21:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "STB",
+      "areaLabel": "Setúbal",
+      "type": "Trovoada",
+      "level": "yellow",
+      "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+      "startTime": "2026-10-04T12:00:00",
+      "endTime": "2026-10-04T21:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "STM",
+      "areaLabel": "Santarém",
+      "type": "Trovoada",
+      "level": "yellow",
+      "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+      "startTime": "2026-10-04T12:00:00",
+      "endTime": "2026-10-04T21:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "LSB",
+      "areaLabel": "Lisboa",
+      "type": "Trovoada",
+      "level": "yellow",
+      "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+      "startTime": "2026-10-04T12:00:00",
+      "endTime": "2026-10-04T21:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "BJA",
+      "areaLabel": "Beja",
+      "type": "Trovoada",
+      "level": "yellow",
+      "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+      "startTime": "2026-10-04T12:00:00",
+      "endTime": "2026-10-04T21:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "PTG",
+      "areaLabel": "Portalegre",
+      "type": "Trovoada",
+      "level": "yellow",
+      "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+      "startTime": "2026-10-04T12:00:00",
+      "endTime": "2026-10-04T21:00:00",
       "relevant": true
     }
   ],
   "spotWarnings": {
-    "mosteiros": [
+    "foz-arelho": [
       {
-        "areaCode": "AOR",
-        "areaLabel": "Vila do Porto",
-        "type": "Precipitação",
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Trovoada",
         "level": "yellow",
-        "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada",
-        "startTime": "2026-10-03T18:43:00",
-        "endTime": "2026-10-04T00:00:00",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-04T12:00:00",
+        "endTime": "2026-10-04T21:00:00",
         "relevant": true
       }
     ],
-    "monte-verde": [
+    "foil-foz-arelho": [
       {
-        "areaCode": "AOR",
-        "areaLabel": "Vila do Porto",
-        "type": "Precipitação",
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Trovoada",
         "level": "yellow",
-        "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada",
-        "startTime": "2026-10-03T18:43:00",
-        "endTime": "2026-10-04T00:00:00",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-04T12:00:00",
+        "endTime": "2026-10-04T21:00:00",
         "relevant": true
       }
     ],
-    "santa-barbara": [
+    "obidos-lagoon": [
       {
-        "areaCode": "AOR",
-        "areaLabel": "Vila do Porto",
-        "type": "Precipitação",
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Trovoada",
         "level": "yellow",
-        "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada",
-        "startTime": "2026-10-03T18:43:00",
-        "endTime": "2026-10-04T00:00:00",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-04T12:00:00",
+        "endTime": "2026-10-04T21:00:00",
         "relevant": true
       }
     ],
-    "milicias": [
+    "obidos-lagoon-sul": [
       {
-        "areaCode": "AOR",
-        "areaLabel": "Vila do Porto",
-        "type": "Precipitação",
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Trovoada",
         "level": "yellow",
-        "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada",
-        "startTime": "2026-10-03T18:43:00",
-        "endTime": "2026-10-04T00:00:00",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-04T12:00:00",
+        "endTime": "2026-10-04T21:00:00",
         "relevant": true
       }
     ],
-    "agua-alto": [
+    "obidos-lagoon-foz": [
       {
-        "areaCode": "AOR",
-        "areaLabel": "Vila do Porto",
-        "type": "Precipitação",
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Trovoada",
         "level": "yellow",
-        "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada",
-        "startTime": "2026-10-03T18:43:00",
-        "endTime": "2026-10-04T00:00:00",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-04T12:00:00",
+        "endTime": "2026-10-04T21:00:00",
         "relevant": true
       }
     ],
-    "anjos": [
+    "foz-arelho-beach": [
       {
-        "areaCode": "AOR",
-        "areaLabel": "Vila do Porto",
-        "type": "Precipitação",
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Trovoada",
         "level": "yellow",
-        "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada",
-        "startTime": "2026-10-03T18:43:00",
-        "endTime": "2026-10-04T00:00:00",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-04T12:00:00",
+        "endTime": "2026-10-04T21:00:00",
         "relevant": true
       }
     ],
-    "ponta-delgada": [
+    "praia-del-rey": [
       {
-        "areaCode": "AOR",
-        "areaLabel": "Vila do Porto",
-        "type": "Precipitação",
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Trovoada",
         "level": "yellow",
-        "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada",
-        "startTime": "2026-10-03T18:43:00",
-        "endTime": "2026-10-04T00:00:00",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-04T12:00:00",
+        "endTime": "2026-10-04T21:00:00",
         "relevant": true
       }
     ],
-    "calhetas": [
+    "almagreira": [
       {
-        "areaCode": "AOR",
-        "areaLabel": "Vila do Porto",
-        "type": "Precipitação",
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Trovoada",
         "level": "yellow",
-        "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada",
-        "startTime": "2026-10-03T18:43:00",
-        "endTime": "2026-10-04T00:00:00",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-04T12:00:00",
+        "endTime": "2026-10-04T21:00:00",
         "relevant": true
       }
     ],
-    "ribeira-quente": [
+    "baleal": [
       {
-        "areaCode": "AOR",
-        "areaLabel": "Vila do Porto",
-        "type": "Precipitação",
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Trovoada",
         "level": "yellow",
-        "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada",
-        "startTime": "2026-10-03T18:43:00",
-        "endTime": "2026-10-04T00:00:00",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-04T12:00:00",
+        "endTime": "2026-10-04T21:00:00",
         "relevant": true
       }
     ],
-    "formosa-santa-maria": [
+    "supertubos": [
       {
-        "areaCode": "AOR",
-        "areaLabel": "Vila do Porto",
-        "type": "Precipitação",
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Trovoada",
         "level": "yellow",
-        "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada",
-        "startTime": "2026-10-03T18:43:00",
-        "endTime": "2026-10-04T00:00:00",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-04T12:00:00",
+        "endTime": "2026-10-04T21:00:00",
+        "relevant": true
+      }
+    ],
+    "foz-sizandro": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-04T12:00:00",
+        "endTime": "2026-10-04T21:00:00",
+        "relevant": true
+      }
+    ],
+    "coxos": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-04T12:00:00",
+        "endTime": "2026-10-04T21:00:00",
+        "relevant": true
+      }
+    ],
+    "ribeira-ilhas": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-04T12:00:00",
+        "endTime": "2026-10-04T21:00:00",
+        "relevant": true
+      }
+    ],
+    "empa": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-04T12:00:00",
+        "endTime": "2026-10-04T21:00:00",
+        "relevant": true
+      }
+    ],
+    "sao-lourenco": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-04T12:00:00",
+        "endTime": "2026-10-04T21:00:00",
+        "relevant": true
+      }
+    ],
+    "pedra-branca": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-04T12:00:00",
+        "endTime": "2026-10-04T21:00:00",
+        "relevant": true
+      }
+    ],
+    "sao-sebastiao": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-04T12:00:00",
+        "endTime": "2026-10-04T21:00:00",
+        "relevant": true
+      }
+    ],
+    "foz-lizandro": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-04T12:00:00",
+        "endTime": "2026-10-04T21:00:00",
+        "relevant": true
+      }
+    ],
+    "praia-grande-sintra": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-04T12:00:00",
+        "endTime": "2026-10-04T21:00:00",
+        "relevant": true
+      }
+    ],
+    "adraga": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-04T12:00:00",
+        "endTime": "2026-10-04T21:00:00",
+        "relevant": true
+      }
+    ],
+    "guincho": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-04T12:00:00",
+        "endTime": "2026-10-04T21:00:00",
+        "relevant": true
+      }
+    ],
+    "seixal-bay": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-04T12:00:00",
+        "endTime": "2026-10-04T21:00:00",
+        "relevant": true
+      }
+    ],
+    "parede": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-04T12:00:00",
+        "endTime": "2026-10-04T21:00:00",
+        "relevant": true
+      }
+    ],
+    "carcavelos": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-04T12:00:00",
+        "endTime": "2026-10-04T21:00:00",
+        "relevant": true
+      }
+    ],
+    "nova-vaga": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-04T12:00:00",
+        "endTime": "2026-10-04T21:00:00",
+        "relevant": true
+      }
+    ],
+    "sao-joao-caparica": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-04T12:00:00",
+        "endTime": "2026-10-04T21:00:00",
+        "relevant": true
+      }
+    ],
+    "costa-caparica": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-04T12:00:00",
+        "endTime": "2026-10-04T21:00:00",
+        "relevant": true
+      }
+    ],
+    "fonte-telha": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-04T12:00:00",
+        "endTime": "2026-10-04T21:00:00",
+        "relevant": true
+      }
+    ],
+    "ponta-dos-corvos": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-04T12:00:00",
+        "endTime": "2026-10-04T21:00:00",
+        "relevant": true
+      }
+    ],
+    "trafaria": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-04T12:00:00",
+        "endTime": "2026-10-04T21:00:00",
+        "relevant": true
+      }
+    ],
+    "cova-do-vapor": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-04T12:00:00",
+        "endTime": "2026-10-04T21:00:00",
+        "relevant": true
+      }
+    ],
+    "praia-da-rainha": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-04T12:00:00",
+        "endTime": "2026-10-04T21:00:00",
+        "relevant": true
+      }
+    ],
+    "lagoa-albufeira": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-04T12:00:00",
+        "endTime": "2026-10-04T21:00:00",
+        "relevant": true
+      }
+    ],
+    "foil-lagoa-albufeira": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-04T12:00:00",
+        "endTime": "2026-10-04T21:00:00",
+        "relevant": true
+      }
+    ],
+    "praia-lagoa-albufeira": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-04T12:00:00",
+        "endTime": "2026-10-04T21:00:00",
+        "relevant": true
+      }
+    ],
+    "troia": [
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-04T12:00:00",
+        "endTime": "2026-10-04T21:00:00",
+        "relevant": true
+      }
+    ],
+    "comporta": [
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-04T12:00:00",
+        "endTime": "2026-10-04T21:00:00",
+        "relevant": true
+      }
+    ],
+    "carvalhal-comporta": [
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-04T12:00:00",
+        "endTime": "2026-10-04T21:00:00",
+        "relevant": true
+      }
+    ],
+    "alqueva": [
+      {
+        "areaCode": "BJA",
+        "areaLabel": "Beja",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-04T12:00:00",
+        "endTime": "2026-10-04T21:00:00",
+        "relevant": true
+      }
+    ],
+    "melides": [
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-04T12:00:00",
+        "endTime": "2026-10-04T21:00:00",
+        "relevant": true
+      }
+    ],
+    "sines": [
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-04T12:00:00",
+        "endTime": "2026-10-04T21:00:00",
+        "relevant": true
+      }
+    ],
+    "sao-torpes": [
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-04T12:00:00",
+        "endTime": "2026-10-04T21:00:00",
+        "relevant": true
+      }
+    ],
+    "porto-covo": [
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-04T12:00:00",
+        "endTime": "2026-10-04T21:00:00",
+        "relevant": true
+      }
+    ],
+    "malhao": [
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-04T12:00:00",
+        "endTime": "2026-10-04T21:00:00",
+        "relevant": true
+      }
+    ],
+    "vila-nova-milfontes": [
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-04T12:00:00",
+        "endTime": "2026-10-04T21:00:00",
+        "relevant": true
+      }
+    ],
+    "alteirinhos": [
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-04T12:00:00",
+        "endTime": "2026-10-04T21:00:00",
+        "relevant": true
+      }
+    ],
+    "santa-cruz": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-04T12:00:00",
+        "endTime": "2026-10-04T21:00:00",
+        "relevant": true
+      }
+    ],
+    "consolacao": [
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-04T12:00:00",
+        "endTime": "2026-10-04T21:00:00",
+        "relevant": true
+      }
+    ],
+    "areia-branca": [
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-04T12:00:00",
+        "endTime": "2026-10-04T21:00:00",
+        "relevant": true
+      }
+    ],
+    "cave-ericeira": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-04T12:00:00",
+        "endTime": "2026-10-04T21:00:00",
+        "relevant": true
+      }
+    ],
+    "pescadores-ericeira": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-04T12:00:00",
+        "endTime": "2026-10-04T21:00:00",
+        "relevant": true
+      }
+    ],
+    "crazy-left": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-04T12:00:00",
+        "endTime": "2026-10-04T21:00:00",
+        "relevant": true
+      }
+    ],
+    "meco": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-04T12:00:00",
+        "endTime": "2026-10-04T21:00:00",
+        "relevant": true
+      }
+    ],
+    "lagoa-santo-andre": [
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-04T12:00:00",
+        "endTime": "2026-10-04T21:00:00",
+        "relevant": true
+      }
+    ],
+    "lagoa-sancha": [
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-04T12:00:00",
+        "endTime": "2026-10-04T21:00:00",
+        "relevant": true
+      }
+    ],
+    "pessegueiro": [
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-04T12:00:00",
+        "endTime": "2026-10-04T21:00:00",
         "relevant": true
       }
     ]
