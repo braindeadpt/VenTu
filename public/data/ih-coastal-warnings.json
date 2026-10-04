@@ -7558,6 +7558,21 @@
       "radiusKm": 25,
       "eventAt": "2026-09-25T00:00:00.000Z",
       "polygons": []
+    },
+    {
+      "id": 2018749,
+      "ref": "ANAV NR 2235/26",
+      "category": "Animais Marinhos - Interação",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=c8970130-e835-45b8-93f9-4f399344e8c8",
+      "source": "ih",
+      "collection": "orca_anavnet_point",
+      "center": [
+        -9.2795,
+        38.467833
+      ],
+      "radiusKm": 25,
+      "eventAt": "2026-10-04T00:00:00.000Z",
+      "polygons": []
     }
   ],
   "coverage": {
@@ -7777,27 +7792,33 @@
     ],
     "parede": [
       1000782,
-      2017877
+      2017877,
+      2018749
     ],
     "carcavelos": [
       1000782,
-      2017877
+      2017877,
+      2018749
     ],
     "nova-vaga": [
-      1000782
+      1000782,
+      2018749
     ],
     "sao-joao-caparica": [
-      1000782
+      1000782,
+      2018749
     ],
     "costa-caparica": [
-      1000782
+      1000782,
+      2018749
     ],
     "fonte-telha": [
       18731,
       1000782,
       2017839,
       2018289,
-      2018667
+      2018667,
+      2018749
     ],
     "ponta-dos-corvos": [
       18731,
@@ -7805,15 +7826,18 @@
     ],
     "trafaria": [
       18731,
-      1000782
+      1000782,
+      2018749
     ],
     "cova-do-vapor": [
       18731,
       1000782,
-      2017877
+      2017877,
+      2018749
     ],
     "praia-da-rainha": [
-      1000782
+      1000782,
+      2018749
     ],
     "almoxarife": [
       18683,
@@ -7826,21 +7850,24 @@
       2017849,
       2018177,
       2018289,
-      2018667
+      2018667,
+      2018749
     ],
     "foil-lagoa-albufeira": [
       2017839,
       2017849,
       2018177,
       2018289,
-      2018667
+      2018667,
+      2018749
     ],
     "praia-lagoa-albufeira": [
       2017839,
       2017849,
       2018177,
       2018289,
-      2018667
+      2018667,
+      2018749
     ],
     "troia": [
       1000786,
@@ -8147,7 +8174,8 @@
       2017849,
       2018177,
       2018289,
-      2018667
+      2018667,
+      2018749
     ],
     "garrão": [
       1000816,
@@ -8241,7 +8269,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-10-04T15:23:26.874Z",
+  "fetchedAt": "2026-10-04T18:07:47.071Z",
   "sourceCollection": "nav_warning_coastal+nav_warning_local+orca_anavnet_point",
   "sourceUrl": "https://ogcapi.hidrografico.pt/collections/nav_warning_coastal"
 }

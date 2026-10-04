@@ -1,11 +1,11 @@
 {
   "day": "20261004",
-  "fetchedAt": "2026-10-04T15:23:13.769Z",
+  "fetchedAt": "2026-10-04T18:07:29.284Z",
   "minPairs": 3,
   "minAccumulatedPairs": 10,
   "archive": {
     "windowDays": 30,
-    "pairHourCount": 718,
+    "pairHourCount": 719,
     "path": "buoy-coherence-archive.json"
   },
   "daily": {
@@ -14,12 +14,12 @@
     "trend": {
       "6200084|6200199": {
         "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
-        "coherent": 27,
+        "coherent": 26,
         "review": 2,
         "incoherent": 1,
-        "insufficient": 2,
+        "insufficient": 3,
         "days": 32,
-        "incoherentRatio": 0.033
+        "incoherentRatio": 0.034
       },
       "6200083|6201079": {
         "pair": "Villano-Sisargas × Datawell ao largo de Faro",
@@ -1491,7 +1491,7 @@
       "suboptimal": []
     }
   },
-  "regionsAuditedAt": "2026-10-04T15:25:38.997Z",
+  "regionsAuditedAt": "2026-10-04T18:16:48.338Z",
   "pairs": [
     {
       "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
@@ -1501,14 +1501,14 @@
       ],
       "distanceKm": 285.3,
       "ptSource": "wmo",
-      "n": 545,
+      "n": 546,
       "meanDeltaM": -0.1,
       "meanAbsDeltaM": 0.4,
       "maxAbsDeltaM": 2.8,
       "corr": 0.75,
       "verdict": "coherent",
-      "firstHour": "2026-09-04T16",
-      "lastHour": "2026-10-04T13",
+      "firstHour": "2026-09-04T19",
+      "lastHour": "2026-10-04T16",
       "hours": [
         {
           "6200084": 1.8799999952316284,
@@ -1579,6 +1579,21 @@
           "6200084": 1.5199999809265137,
           "6200199": 2.0068399906158447,
           "hour": "2026-10-04T13"
+        },
+        {
+          "6200084": 1.5199999809265137,
+          "6200199": 1.8896499872207642,
+          "hour": "2026-10-04T14"
+        },
+        {
+          "6200084": 1.6399999856948853,
+          "6200199": 1.7578099966049194,
+          "hour": "2026-10-04T15"
+        },
+        {
+          "6200084": 1.5199999809265137,
+          "6200199": 1.625980019569397,
+          "hour": "2026-10-04T16"
         }
       ]
     }
