@@ -1,11 +1,11 @@
 {
   "day": "20261004",
-  "fetchedAt": "2026-10-04T07:07:11.989Z",
+  "fetchedAt": "2026-10-04T08:50:57.266Z",
   "minPairs": 3,
   "minAccumulatedPairs": 10,
   "archive": {
     "windowDays": 30,
-    "pairHourCount": 729,
+    "pairHourCount": 726,
     "path": "buoy-coherence-archive.json"
   },
   "daily": {
@@ -23,28 +23,28 @@
       },
       "6200083|6201079": {
         "pair": "Villano-Sisargas × Datawell ao largo de Faro",
-        "coherent": 4,
+        "coherent": 3,
         "review": 2,
         "incoherent": 3,
-        "insufficient": 5,
+        "insufficient": 6,
         "days": 14,
-        "incoherentRatio": 0.333
+        "incoherentRatio": 0.375
       },
       "6200084|6201079": {
         "pair": "Cabo Silleiro × Datawell ao largo de Faro",
-        "coherent": 5,
+        "coherent": 4,
         "review": 4,
         "incoherent": 0,
-        "insufficient": 5,
+        "insufficient": 6,
         "days": 14,
         "incoherentRatio": 0
       },
       "6200085|6201079": {
         "pair": "Golfo de Cádiz × Datawell ao largo de Faro",
-        "coherent": 9,
+        "coherent": 8,
         "review": 0,
         "incoherent": 0,
-        "insufficient": 5,
+        "insufficient": 6,
         "days": 14,
         "incoherentRatio": 0
       },
@@ -2379,7 +2379,7 @@
       "suboptimal": []
     }
   },
-  "regionsAuditedAt": "2026-10-04T07:10:40.850Z",
+  "regionsAuditedAt": "2026-10-04T08:51:09.685Z",
   "pairs": [
     {
       "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
@@ -2395,8 +2395,8 @@
       "maxAbsDeltaM": 2.8,
       "corr": 0.76,
       "verdict": "coherent",
-      "firstHour": "2026-09-04T08",
-      "lastHour": "2026-10-04T05",
+      "firstHour": "2026-09-04T09",
+      "lastHour": "2026-10-04T06",
       "hours": [
         {
           "6200084": 1.8799999952316284,
@@ -2427,6 +2427,11 @@
           "6200084": 2.109999895095825,
           "6200199": 1.5673799514770508,
           "hour": "2026-10-04T05"
+        },
+        {
+          "6200084": 1.9900000095367432,
+          "6200199": 1.6699199676513672,
+          "hour": "2026-10-04T06"
         }
       ]
     }

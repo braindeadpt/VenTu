@@ -1,14 +1,34 @@
 {
   "source": "ipma",
-  "fetchedAt": "2026-10-04T07:07:25.036Z",
+  "fetchedAt": "2026-10-04T08:50:57.922Z",
   "warnings": [
+    {
+      "areaCode": "EVR",
+      "areaLabel": "Évora",
+      "type": "Trovoada",
+      "level": "orange",
+      "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos severos localizados, como: trovoada; precipitação localmente muito forte, com acumulação entre 20 a 40 mm em 1h; granizo com diâmetro igual ou superior a 2 cm; rajadas iguais ou superiores a 90 km/h.",
+      "startTime": "2026-10-04T07:18:00",
+      "endTime": "2026-10-04T09:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "BJA",
+      "areaLabel": "Beja",
+      "type": "Trovoada",
+      "level": "orange",
+      "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos severos localizados, como: trovoada; precipitação localmente muito forte, com acumulação entre 20 a 40 mm em 1h; granizo com diâmetro igual ou superior a 2 cm; rajadas iguais ou superiores a 90 km/h.",
+      "startTime": "2026-10-04T07:18:00",
+      "endTime": "2026-10-04T09:00:00",
+      "relevant": true
+    },
     {
       "areaCode": "EVR",
       "areaLabel": "Évora",
       "type": "Trovoada",
       "level": "yellow",
       "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-      "startTime": "2026-10-04T12:00:00",
+      "startTime": "2026-10-04T09:00:00",
       "endTime": "2026-10-04T21:00:00",
       "relevant": true
     },
@@ -48,7 +68,7 @@
       "type": "Trovoada",
       "level": "yellow",
       "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-      "startTime": "2026-10-04T12:00:00",
+      "startTime": "2026-10-04T09:00:00",
       "endTime": "2026-10-04T21:00:00",
       "relevant": true
     },
@@ -58,7 +78,7 @@
       "type": "Trovoada",
       "level": "yellow",
       "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-      "startTime": "2026-10-04T12:00:00",
+      "startTime": "2026-10-04T07:18:00",
       "endTime": "2026-10-04T21:00:00",
       "relevant": true
     }
@@ -525,9 +545,19 @@
         "areaCode": "BJA",
         "areaLabel": "Beja",
         "type": "Trovoada",
+        "level": "orange",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos severos localizados, como: trovoada; precipitação localmente muito forte, com acumulação entre 20 a 40 mm em 1h; granizo com diâmetro igual ou superior a 2 cm; rajadas iguais ou superiores a 90 km/h.",
+        "startTime": "2026-10-04T07:18:00",
+        "endTime": "2026-10-04T09:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "BJA",
+        "areaLabel": "Beja",
+        "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-04T12:00:00",
+        "startTime": "2026-10-04T09:00:00",
         "endTime": "2026-10-04T21:00:00",
         "relevant": true
       }
