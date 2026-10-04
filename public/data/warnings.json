@@ -1,15 +1,25 @@
 {
   "source": "ipma",
-  "fetchedAt": "2026-10-04T09:48:42.585Z",
+  "fetchedAt": "2026-10-04T12:37:20.836Z",
   "warnings": [
     {
-      "areaCode": "EVR",
-      "areaLabel": "Évora",
+      "areaCode": "STB",
+      "areaLabel": "Setúbal",
       "type": "Trovoada",
       "level": "orange",
       "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos severos localizados, como: trovoada; precipitação localmente muito forte, com acumulação entre 20 a 40 mm em 1h; granizo com diâmetro igual ou superior a 2 cm; rajadas iguais ou superiores a 90 km/h.",
-      "startTime": "2026-10-04T08:43:00",
-      "endTime": "2026-10-04T11:00:00",
+      "startTime": "2026-10-04T11:26:00",
+      "endTime": "2026-10-04T15:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "BJA",
+      "areaLabel": "Beja",
+      "type": "Trovoada",
+      "level": "orange",
+      "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos severos localizados, como: trovoada; precipitação localmente muito forte, com acumulação entre 20 a 40 mm em 1h; granizo com diâmetro igual ou superior a 2 cm; rajadas iguais ou superiores a 90 km/h.",
+      "startTime": "2026-10-04T11:26:00",
+      "endTime": "2026-10-04T15:00:00",
       "relevant": true
     },
     {
@@ -18,7 +28,7 @@
       "type": "Trovoada",
       "level": "yellow",
       "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-      "startTime": "2026-10-04T11:00:00",
+      "startTime": "2026-10-04T11:26:00",
       "endTime": "2026-10-04T21:00:00",
       "relevant": true
     },
@@ -28,7 +38,7 @@
       "type": "Trovoada",
       "level": "yellow",
       "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-      "startTime": "2026-10-04T12:00:00",
+      "startTime": "2026-10-04T15:00:00",
       "endTime": "2026-10-04T21:00:00",
       "relevant": true
     },
@@ -68,7 +78,7 @@
       "type": "Trovoada",
       "level": "yellow",
       "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-      "startTime": "2026-10-04T09:00:00",
+      "startTime": "2026-10-04T15:00:00",
       "endTime": "2026-10-04T21:00:00",
       "relevant": true
     },
@@ -98,7 +108,7 @@
       "type": "Trovoada",
       "level": "yellow",
       "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-      "startTime": "2026-10-04T08:43:00",
+      "startTime": "2026-10-04T11:26:00",
       "endTime": "2026-10-04T21:00:00",
       "relevant": true
     }
@@ -601,9 +611,19 @@
         "areaCode": "STB",
         "areaLabel": "Setúbal",
         "type": "Trovoada",
+        "level": "orange",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos severos localizados, como: trovoada; precipitação localmente muito forte, com acumulação entre 20 a 40 mm em 1h; granizo com diâmetro igual ou superior a 2 cm; rajadas iguais ou superiores a 90 km/h.",
+        "startTime": "2026-10-04T11:26:00",
+        "endTime": "2026-10-04T15:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
+        "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-04T12:00:00",
+        "startTime": "2026-10-04T15:00:00",
         "endTime": "2026-10-04T21:00:00",
         "relevant": true
       }
@@ -613,9 +633,19 @@
         "areaCode": "STB",
         "areaLabel": "Setúbal",
         "type": "Trovoada",
+        "level": "orange",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos severos localizados, como: trovoada; precipitação localmente muito forte, com acumulação entre 20 a 40 mm em 1h; granizo com diâmetro igual ou superior a 2 cm; rajadas iguais ou superiores a 90 km/h.",
+        "startTime": "2026-10-04T11:26:00",
+        "endTime": "2026-10-04T15:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
+        "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-04T12:00:00",
+        "startTime": "2026-10-04T15:00:00",
         "endTime": "2026-10-04T21:00:00",
         "relevant": true
       }
@@ -625,9 +655,19 @@
         "areaCode": "STB",
         "areaLabel": "Setúbal",
         "type": "Trovoada",
+        "level": "orange",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos severos localizados, como: trovoada; precipitação localmente muito forte, com acumulação entre 20 a 40 mm em 1h; granizo com diâmetro igual ou superior a 2 cm; rajadas iguais ou superiores a 90 km/h.",
+        "startTime": "2026-10-04T11:26:00",
+        "endTime": "2026-10-04T15:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
+        "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-04T12:00:00",
+        "startTime": "2026-10-04T15:00:00",
         "endTime": "2026-10-04T21:00:00",
         "relevant": true
       }
@@ -637,9 +677,19 @@
         "areaCode": "BJA",
         "areaLabel": "Beja",
         "type": "Trovoada",
+        "level": "orange",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos severos localizados, como: trovoada; precipitação localmente muito forte, com acumulação entre 20 a 40 mm em 1h; granizo com diâmetro igual ou superior a 2 cm; rajadas iguais ou superiores a 90 km/h.",
+        "startTime": "2026-10-04T11:26:00",
+        "endTime": "2026-10-04T15:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "BJA",
+        "areaLabel": "Beja",
+        "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-04T09:00:00",
+        "startTime": "2026-10-04T15:00:00",
         "endTime": "2026-10-04T21:00:00",
         "relevant": true
       }
@@ -649,9 +699,19 @@
         "areaCode": "STB",
         "areaLabel": "Setúbal",
         "type": "Trovoada",
+        "level": "orange",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos severos localizados, como: trovoada; precipitação localmente muito forte, com acumulação entre 20 a 40 mm em 1h; granizo com diâmetro igual ou superior a 2 cm; rajadas iguais ou superiores a 90 km/h.",
+        "startTime": "2026-10-04T11:26:00",
+        "endTime": "2026-10-04T15:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
+        "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-04T12:00:00",
+        "startTime": "2026-10-04T15:00:00",
         "endTime": "2026-10-04T21:00:00",
         "relevant": true
       }
@@ -661,9 +721,19 @@
         "areaCode": "STB",
         "areaLabel": "Setúbal",
         "type": "Trovoada",
+        "level": "orange",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos severos localizados, como: trovoada; precipitação localmente muito forte, com acumulação entre 20 a 40 mm em 1h; granizo com diâmetro igual ou superior a 2 cm; rajadas iguais ou superiores a 90 km/h.",
+        "startTime": "2026-10-04T11:26:00",
+        "endTime": "2026-10-04T15:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
+        "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-04T12:00:00",
+        "startTime": "2026-10-04T15:00:00",
         "endTime": "2026-10-04T21:00:00",
         "relevant": true
       }
@@ -673,9 +743,19 @@
         "areaCode": "STB",
         "areaLabel": "Setúbal",
         "type": "Trovoada",
+        "level": "orange",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos severos localizados, como: trovoada; precipitação localmente muito forte, com acumulação entre 20 a 40 mm em 1h; granizo com diâmetro igual ou superior a 2 cm; rajadas iguais ou superiores a 90 km/h.",
+        "startTime": "2026-10-04T11:26:00",
+        "endTime": "2026-10-04T15:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
+        "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-04T12:00:00",
+        "startTime": "2026-10-04T15:00:00",
         "endTime": "2026-10-04T21:00:00",
         "relevant": true
       }
@@ -685,9 +765,19 @@
         "areaCode": "STB",
         "areaLabel": "Setúbal",
         "type": "Trovoada",
+        "level": "orange",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos severos localizados, como: trovoada; precipitação localmente muito forte, com acumulação entre 20 a 40 mm em 1h; granizo com diâmetro igual ou superior a 2 cm; rajadas iguais ou superiores a 90 km/h.",
+        "startTime": "2026-10-04T11:26:00",
+        "endTime": "2026-10-04T15:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
+        "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-04T12:00:00",
+        "startTime": "2026-10-04T15:00:00",
         "endTime": "2026-10-04T21:00:00",
         "relevant": true
       }
@@ -697,9 +787,19 @@
         "areaCode": "STB",
         "areaLabel": "Setúbal",
         "type": "Trovoada",
+        "level": "orange",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos severos localizados, como: trovoada; precipitação localmente muito forte, com acumulação entre 20 a 40 mm em 1h; granizo com diâmetro igual ou superior a 2 cm; rajadas iguais ou superiores a 90 km/h.",
+        "startTime": "2026-10-04T11:26:00",
+        "endTime": "2026-10-04T15:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
+        "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-04T12:00:00",
+        "startTime": "2026-10-04T15:00:00",
         "endTime": "2026-10-04T21:00:00",
         "relevant": true
       }
@@ -709,9 +809,19 @@
         "areaCode": "STB",
         "areaLabel": "Setúbal",
         "type": "Trovoada",
+        "level": "orange",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos severos localizados, como: trovoada; precipitação localmente muito forte, com acumulação entre 20 a 40 mm em 1h; granizo com diâmetro igual ou superior a 2 cm; rajadas iguais ou superiores a 90 km/h.",
+        "startTime": "2026-10-04T11:26:00",
+        "endTime": "2026-10-04T15:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
+        "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-04T12:00:00",
+        "startTime": "2026-10-04T15:00:00",
         "endTime": "2026-10-04T21:00:00",
         "relevant": true
       }
@@ -721,9 +831,19 @@
         "areaCode": "STB",
         "areaLabel": "Setúbal",
         "type": "Trovoada",
+        "level": "orange",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos severos localizados, como: trovoada; precipitação localmente muito forte, com acumulação entre 20 a 40 mm em 1h; granizo com diâmetro igual ou superior a 2 cm; rajadas iguais ou superiores a 90 km/h.",
+        "startTime": "2026-10-04T11:26:00",
+        "endTime": "2026-10-04T15:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
+        "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-04T12:00:00",
+        "startTime": "2026-10-04T15:00:00",
         "endTime": "2026-10-04T21:00:00",
         "relevant": true
       }
@@ -829,9 +949,19 @@
         "areaCode": "STB",
         "areaLabel": "Setúbal",
         "type": "Trovoada",
+        "level": "orange",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos severos localizados, como: trovoada; precipitação localmente muito forte, com acumulação entre 20 a 40 mm em 1h; granizo com diâmetro igual ou superior a 2 cm; rajadas iguais ou superiores a 90 km/h.",
+        "startTime": "2026-10-04T11:26:00",
+        "endTime": "2026-10-04T15:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
+        "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-04T12:00:00",
+        "startTime": "2026-10-04T15:00:00",
         "endTime": "2026-10-04T21:00:00",
         "relevant": true
       }
@@ -841,9 +971,19 @@
         "areaCode": "STB",
         "areaLabel": "Setúbal",
         "type": "Trovoada",
+        "level": "orange",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos severos localizados, como: trovoada; precipitação localmente muito forte, com acumulação entre 20 a 40 mm em 1h; granizo com diâmetro igual ou superior a 2 cm; rajadas iguais ou superiores a 90 km/h.",
+        "startTime": "2026-10-04T11:26:00",
+        "endTime": "2026-10-04T15:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
+        "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-04T12:00:00",
+        "startTime": "2026-10-04T15:00:00",
         "endTime": "2026-10-04T21:00:00",
         "relevant": true
       }
@@ -853,9 +993,19 @@
         "areaCode": "STB",
         "areaLabel": "Setúbal",
         "type": "Trovoada",
+        "level": "orange",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos severos localizados, como: trovoada; precipitação localmente muito forte, com acumulação entre 20 a 40 mm em 1h; granizo com diâmetro igual ou superior a 2 cm; rajadas iguais ou superiores a 90 km/h.",
+        "startTime": "2026-10-04T11:26:00",
+        "endTime": "2026-10-04T15:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
+        "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-04T12:00:00",
+        "startTime": "2026-10-04T15:00:00",
         "endTime": "2026-10-04T21:00:00",
         "relevant": true
       }
