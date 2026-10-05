@@ -1,6 +1,6 @@
 {
   "source": "forecast-skill-regression",
-  "checkedAt": "2026-10-05T16:25:50.070Z",
+  "checkedAt": "2026-10-05T19:07:27.550Z",
   "windowDays": 60,
   "recentDays": 7,
   "baselineDays": 21,
@@ -23,8 +23,8 @@
       "recent": {
         "snapshots": 7,
         "rmse": 0.4857142857142857,
-        "me": 0.3628571428571429,
-        "n": 608
+        "me": 0.3642857142857143,
+        "n": 608.2857142857143
       },
       "baseline": {
         "snapshots": 4,
@@ -62,7 +62,7 @@
         "snapshots": 7,
         "rmse": 0.17857142857142855,
         "me": 0.08285714285714285,
-        "n": 413.2857142857143
+        "n": 412.85714285714283
       },
       "baseline": {
         "snapshots": 4,
@@ -100,7 +100,7 @@
         "snapshots": 7,
         "rmse": 0.8242857142857142,
         "me": 0.6228571428571428,
-        "n": 674.8571428571429
+        "n": 674.7142857142857
       },
       "baseline": {
         "snapshots": 4,
@@ -176,15 +176,15 @@
       "name": "IH (Datawell)",
       "recent": {
         "days": 7,
-        "n": 3054.57,
-        "me": 0.1360195491534936
+        "n": 3054.29,
+        "me": 0.13630963517305894
       },
       "baseline": {
         "days": 20,
         "n": 2047.2,
         "me": 0.3710533899960923
       },
-      "meAbsDelta": -0.24,
+      "meAbsDelta": -0.23,
       "nDeltaFraction": null,
       "verdict": "ok",
       "reasons": []
