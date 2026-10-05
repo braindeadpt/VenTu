@@ -1,83 +1,28 @@
 {
-  "date": "2026-10-04",
-  "generatedAt": "2026-10-04T03:37:13.513Z",
-  "topSpot": "Nazaré",
-  "topSpotSlug": "nazare",
+  "date": "2026-10-05",
+  "generatedAt": "2026-10-05T03:07:09.750Z",
+  "topSpot": "Supertubos",
+  "topSpotSlug": "supertubos",
   "pt": {
-    "headline": "Hoje é dia de Nazaré! 🌊",
-    "advice": "Melhor janela: 6:00h. Ondas de 1.6m com 2 nós de vento.",
+    "headline": "Hoje é dia de Supertubos! 🌊",
+    "advice": "Melhor janela: 6:00h. Ondas de 1.3m com 5 nós de vento. ⚓ Avisos à Navegação Costeiros (IH): ANAV NR 12/24 — Edital n.º 712 de 2024",
     "bestTime": "6:00",
     "wetsuit": "3/2mm",
     "crowdTip": "Chega cedo para evitar crowd!",
-    "moonTideLine": "Quarto minguante · Transição · baixa-mar 17:00"
+    "moonTideLine": "Quarto minguante · Transição · baixa-mar 05:00"
   },
   "en": {
-    "headline": "Today is Nazaré day! 🌊",
-    "advice": "Best window: 6:00. 1.6m waves with 2 knot wind.",
+    "headline": "Today is Supertubos day! 🌊",
+    "advice": "Best window: 6:00. 1.3m waves with 5 knot wind. ⚓ Coastal navigation warnings (IH): ANAV NR 12/24 — Edital n.º 712 de 2024",
     "bestTime": "6:00",
     "wetsuit": "3/2mm",
     "crowdTip": "Get there early to beat the crowd!",
-    "moonTideLine": "Last quarter · Transition · low tide 17:00"
+    "moonTideLine": "Last quarter · Transition · low tide 05:00"
   },
   "spots": [
     {
-      "name": "Nazaré",
-      "slug": "nazare",
-      "score": 83,
-      "scoreForecast": 83,
-      "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
-    },
-    {
-      "name": "Ribeira d'Ilhas",
-      "slug": "ribeira-ilhas",
-      "score": 83,
-      "scoreForecast": 83,
-      "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
-    },
-    {
-      "name": "Coxos",
-      "slug": "coxos",
-      "score": 83,
-      "scoreForecast": 83,
-      "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
-    },
-    {
       "name": "Supertubos",
       "slug": "supertubos",
-      "score": 82,
-      "scoreForecast": 82,
-      "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
-    },
-    {
-      "name": "Guincho",
-      "slug": "guincho",
-      "score": 82,
-      "scoreForecast": 82,
-      "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
-    },
-    {
-      "name": "Arrifana",
-      "slug": "arrifana",
       "score": 81,
       "scoreForecast": 81,
       "scoreSource": "previsão",
@@ -87,8 +32,52 @@
       "enReason": "Excellent conditions"
     },
     {
-      "name": "Carcavelos",
-      "slug": "carcavelos",
+      "name": "Nazaré",
+      "slug": "nazare",
+      "score": 81,
+      "scoreForecast": 81,
+      "scoreSource": "previsão",
+      "scoreMeta": null,
+      "verdict": "go",
+      "ptReason": "Condições excelentes",
+      "enReason": "Excellent conditions"
+    },
+    {
+      "name": "Ribeira d'Ilhas",
+      "slug": "ribeira-ilhas",
+      "score": 81,
+      "scoreForecast": 81,
+      "scoreSource": "previsão",
+      "scoreMeta": null,
+      "verdict": "go",
+      "ptReason": "Condições excelentes",
+      "enReason": "Excellent conditions"
+    },
+    {
+      "name": "Coxos",
+      "slug": "coxos",
+      "score": 81,
+      "scoreForecast": 81,
+      "scoreSource": "previsão",
+      "scoreMeta": null,
+      "verdict": "go",
+      "ptReason": "Condições excelentes",
+      "enReason": "Excellent conditions"
+    },
+    {
+      "name": "Guincho",
+      "slug": "guincho",
+      "score": 80,
+      "scoreForecast": 80,
+      "scoreSource": "previsão",
+      "scoreMeta": null,
+      "verdict": "go",
+      "ptReason": "Condições excelentes",
+      "enReason": "Excellent conditions"
+    },
+    {
+      "name": "Arrifana",
+      "slug": "arrifana",
       "score": 79,
       "scoreForecast": 79,
       "scoreSource": "previsão",
@@ -96,10 +85,21 @@
       "verdict": "go",
       "ptReason": "Condições excelentes",
       "enReason": "Excellent conditions"
+    },
+    {
+      "name": "Carcavelos",
+      "slug": "carcavelos",
+      "score": 60,
+      "scoreForecast": 60,
+      "scoreSource": "previsão",
+      "scoreMeta": null,
+      "verdict": "maybe",
+      "ptReason": "Condições razoáveis",
+      "enReason": "Fair conditions"
     }
   ],
-  "topScore": 83,
-  "topScoreForecast": 83,
+  "topScore": 81,
+  "topScoreForecast": 81,
   "topScoreSource": "previsão",
   "topScoreMeta": null
 }
