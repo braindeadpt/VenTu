@@ -1,452 +1,770 @@
 {
-  "source": "ipma",
-  "fetchedAt": "2026-10-05T12:07:24.588Z",
+  "source": "meteoalarm",
+  "fetchedAt": "2026-10-05T15:37:44.585Z",
   "warnings": [
     {
-      "areaCode": "GDA",
-      "areaLabel": "Guarda",
-      "type": "Trovoada",
-      "level": "orange",
-      "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-      "startTime": "2026-10-05T12:00:00",
-      "endTime": "2026-10-06T00:00:00",
-      "relevant": true
-    },
-    {
-      "areaCode": "STM",
-      "areaLabel": "Santarém",
-      "type": "Trovoada",
-      "level": "orange",
-      "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-      "startTime": "2026-10-05T12:00:00",
-      "endTime": "2026-10-05T21:00:00",
-      "relevant": true
-    },
-    {
-      "areaCode": "CBO",
-      "areaLabel": "Castelo Branco",
-      "type": "Trovoada",
-      "level": "orange",
-      "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-      "startTime": "2026-10-05T12:00:00",
-      "endTime": "2026-10-05T21:00:00",
-      "relevant": true
-    },
-    {
-      "areaCode": "BGC",
-      "areaLabel": "Bragança",
-      "type": "Trovoada",
-      "level": "yellow",
-      "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-      "startTime": "2026-10-05T15:00:00",
-      "endTime": "2026-10-06T00:00:00",
-      "relevant": true
-    },
-    {
-      "areaCode": "VIS",
-      "areaLabel": "Viseu",
-      "type": "Trovoada",
-      "level": "yellow",
-      "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-      "startTime": "2026-10-05T15:00:00",
-      "endTime": "2026-10-06T00:00:00",
-      "relevant": true
-    },
-    {
-      "areaCode": "EVR",
-      "areaLabel": "Évora",
-      "type": "Trovoada",
-      "level": "yellow",
-      "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-      "startTime": "2026-10-05T12:00:00",
-      "endTime": "2026-10-05T21:00:00",
-      "relevant": true
-    },
-    {
-      "areaCode": "VRL",
+      "areaCode": "Vila Real",
       "areaLabel": "Vila Real",
       "type": "Trovoada",
       "level": "yellow",
       "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-      "startTime": "2026-10-05T15:00:00",
-      "endTime": "2026-10-06T00:00:00",
+      "startTime": "2026-10-05T16:00:00.000Z",
+      "endTime": "2026-10-06T00:00:00.000Z",
       "relevant": true
     },
     {
-      "areaCode": "LRA",
-      "areaLabel": "Leiria",
+      "areaCode": "Castelo Branco",
+      "areaLabel": "Castelo Branco",
+      "type": "Trovoada",
+      "level": "orange",
+      "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+      "startTime": "2026-10-05T12:00:00.000Z",
+      "endTime": "2026-10-05T21:00:00.000Z",
+      "relevant": true
+    },
+    {
+      "areaCode": "Guarda",
+      "areaLabel": "Guarda",
+      "type": "Trovoada",
+      "level": "orange",
+      "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+      "startTime": "2026-10-05T12:00:00.000Z",
+      "endTime": "2026-10-06T00:00:00.000Z",
+      "relevant": true
+    },
+    {
+      "areaCode": "Viseu",
+      "areaLabel": "Viseu",
       "type": "Trovoada",
       "level": "yellow",
       "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-      "startTime": "2026-10-05T12:00:00",
-      "endTime": "2026-10-05T21:00:00",
+      "startTime": "2026-10-05T16:00:00.000Z",
+      "endTime": "2026-10-06T00:00:00.000Z",
       "relevant": true
     },
     {
-      "areaCode": "AVR",
+      "areaCode": "Santarém",
+      "areaLabel": "Santarém",
+      "type": "Trovoada",
+      "level": "orange",
+      "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+      "startTime": "2026-10-05T12:00:00.000Z",
+      "endTime": "2026-10-05T21:00:00.000Z",
+      "relevant": true
+    },
+    {
+      "areaCode": "Bragança",
+      "areaLabel": "Bragança",
+      "type": "Trovoada",
+      "level": "yellow",
+      "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+      "startTime": "2026-10-05T16:00:00.000Z",
+      "endTime": "2026-10-06T00:00:00.000Z",
+      "relevant": true
+    },
+    {
+      "areaCode": "Aveiro",
       "areaLabel": "Aveiro",
       "type": "Trovoada",
       "level": "yellow",
       "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-      "startTime": "2026-10-05T15:00:00",
-      "endTime": "2026-10-06T00:00:00",
+      "startTime": "2026-10-05T16:00:00.000Z",
+      "endTime": "2026-10-06T00:00:00.000Z",
       "relevant": true
     },
     {
-      "areaCode": "CBR",
-      "areaLabel": "Coimbra",
+      "areaCode": "Bragança",
+      "areaLabel": "Bragança",
       "type": "Trovoada",
       "level": "yellow",
       "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-      "startTime": "2026-10-05T12:00:00",
-      "endTime": "2026-10-05T21:00:00",
+      "startTime": "2026-10-05T15:00:00.000Z",
+      "endTime": "2026-10-06T00:00:00.000Z",
       "relevant": true
     },
     {
-      "areaCode": "PTG",
-      "areaLabel": "Portalegre",
+      "areaCode": "Leiria",
+      "areaLabel": "Leiria",
       "type": "Trovoada",
       "level": "yellow",
       "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-      "startTime": "2026-10-05T12:00:00",
-      "endTime": "2026-10-05T21:00:00",
+      "startTime": "2026-10-05T12:00:00.000Z",
+      "endTime": "2026-10-05T21:00:00.000Z",
+      "relevant": true
+    },
+    {
+      "areaCode": "Viseu",
+      "areaLabel": "Viseu",
+      "type": "Trovoada",
+      "level": "yellow",
+      "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+      "startTime": "2026-10-05T15:00:00.000Z",
+      "endTime": "2026-10-06T00:00:00.000Z",
+      "relevant": true
+    },
+    {
+      "areaCode": "Vila Real",
+      "areaLabel": "Vila Real",
+      "type": "Trovoada",
+      "level": "yellow",
+      "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+      "startTime": "2026-10-05T15:00:00.000Z",
+      "endTime": "2026-10-06T00:00:00.000Z",
+      "relevant": true
+    },
+    {
+      "areaCode": "Aveiro",
+      "areaLabel": "Aveiro",
+      "type": "Trovoada",
+      "level": "yellow",
+      "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+      "startTime": "2026-10-05T15:00:00.000Z",
+      "endTime": "2026-10-06T00:00:00.000Z",
       "relevant": true
     }
   ],
   "spotWarnings": {
-    "murtosa": [
+    "praia-da-lomba": [
       {
-        "areaCode": "AVR",
+        "areaCode": "Aveiro",
         "areaLabel": "Aveiro",
         "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-05T15:00:00",
-        "endTime": "2026-10-06T00:00:00",
+        "startTime": "2026-10-05T16:00:00.000Z",
+        "endTime": "2026-10-06T00:00:00.000Z",
+        "relevant": true
+      },
+      {
+        "areaCode": "Aveiro",
+        "areaLabel": "Aveiro",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-05T15:00:00.000Z",
+        "endTime": "2026-10-06T00:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "aguda": [
+      {
+        "areaCode": "Aveiro",
+        "areaLabel": "Aveiro",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-05T16:00:00.000Z",
+        "endTime": "2026-10-06T00:00:00.000Z",
+        "relevant": true
+      },
+      {
+        "areaCode": "Aveiro",
+        "areaLabel": "Aveiro",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-05T15:00:00.000Z",
+        "endTime": "2026-10-06T00:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "espinho": [
+      {
+        "areaCode": "Aveiro",
+        "areaLabel": "Aveiro",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-05T16:00:00.000Z",
+        "endTime": "2026-10-06T00:00:00.000Z",
+        "relevant": true
+      },
+      {
+        "areaCode": "Aveiro",
+        "areaLabel": "Aveiro",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-05T15:00:00.000Z",
+        "endTime": "2026-10-06T00:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "praia-37": [
+      {
+        "areaCode": "Aveiro",
+        "areaLabel": "Aveiro",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-05T16:00:00.000Z",
+        "endTime": "2026-10-06T00:00:00.000Z",
+        "relevant": true
+      },
+      {
+        "areaCode": "Aveiro",
+        "areaLabel": "Aveiro",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-05T15:00:00.000Z",
+        "endTime": "2026-10-06T00:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "bairro-piscatorio": [
+      {
+        "areaCode": "Aveiro",
+        "areaLabel": "Aveiro",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-05T16:00:00.000Z",
+        "endTime": "2026-10-06T00:00:00.000Z",
+        "relevant": true
+      },
+      {
+        "areaCode": "Aveiro",
+        "areaLabel": "Aveiro",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-05T15:00:00.000Z",
+        "endTime": "2026-10-06T00:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "paramos": [
+      {
+        "areaCode": "Aveiro",
+        "areaLabel": "Aveiro",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-05T16:00:00.000Z",
+        "endTime": "2026-10-06T00:00:00.000Z",
+        "relevant": true
+      },
+      {
+        "areaCode": "Aveiro",
+        "areaLabel": "Aveiro",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-05T15:00:00.000Z",
+        "endTime": "2026-10-06T00:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "barrinha-esmoriz": [
+      {
+        "areaCode": "Aveiro",
+        "areaLabel": "Aveiro",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-05T16:00:00.000Z",
+        "endTime": "2026-10-06T00:00:00.000Z",
+        "relevant": true
+      },
+      {
+        "areaCode": "Aveiro",
+        "areaLabel": "Aveiro",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-05T15:00:00.000Z",
+        "endTime": "2026-10-06T00:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "esmoriz": [
+      {
+        "areaCode": "Aveiro",
+        "areaLabel": "Aveiro",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-05T16:00:00.000Z",
+        "endTime": "2026-10-06T00:00:00.000Z",
+        "relevant": true
+      },
+      {
+        "areaCode": "Aveiro",
+        "areaLabel": "Aveiro",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-05T15:00:00.000Z",
+        "endTime": "2026-10-06T00:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "cortegaca": [
+      {
+        "areaCode": "Aveiro",
+        "areaLabel": "Aveiro",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-05T16:00:00.000Z",
+        "endTime": "2026-10-06T00:00:00.000Z",
+        "relevant": true
+      },
+      {
+        "areaCode": "Aveiro",
+        "areaLabel": "Aveiro",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-05T15:00:00.000Z",
+        "endTime": "2026-10-06T00:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "cortegaca-sul": [
+      {
+        "areaCode": "Aveiro",
+        "areaLabel": "Aveiro",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-05T16:00:00.000Z",
+        "endTime": "2026-10-06T00:00:00.000Z",
+        "relevant": true
+      },
+      {
+        "areaCode": "Aveiro",
+        "areaLabel": "Aveiro",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-05T15:00:00.000Z",
+        "endTime": "2026-10-06T00:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "maceda": [
+      {
+        "areaCode": "Aveiro",
+        "areaLabel": "Aveiro",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-05T16:00:00.000Z",
+        "endTime": "2026-10-06T00:00:00.000Z",
+        "relevant": true
+      },
+      {
+        "areaCode": "Aveiro",
+        "areaLabel": "Aveiro",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-05T15:00:00.000Z",
+        "endTime": "2026-10-06T00:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "murtosa": [
+      {
+        "areaCode": "Aveiro",
+        "areaLabel": "Aveiro",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-05T16:00:00.000Z",
+        "endTime": "2026-10-06T00:00:00.000Z",
+        "relevant": true
+      },
+      {
+        "areaCode": "Aveiro",
+        "areaLabel": "Aveiro",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-05T15:00:00.000Z",
+        "endTime": "2026-10-06T00:00:00.000Z",
         "relevant": true
       }
     ],
     "ria-torreira": [
       {
-        "areaCode": "AVR",
+        "areaCode": "Aveiro",
         "areaLabel": "Aveiro",
         "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-05T15:00:00",
-        "endTime": "2026-10-06T00:00:00",
+        "startTime": "2026-10-05T16:00:00.000Z",
+        "endTime": "2026-10-06T00:00:00.000Z",
+        "relevant": true
+      },
+      {
+        "areaCode": "Aveiro",
+        "areaLabel": "Aveiro",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-05T15:00:00.000Z",
+        "endTime": "2026-10-06T00:00:00.000Z",
         "relevant": true
       }
     ],
     "praia-torreira": [
       {
-        "areaCode": "AVR",
+        "areaCode": "Aveiro",
         "areaLabel": "Aveiro",
         "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-05T15:00:00",
-        "endTime": "2026-10-06T00:00:00",
+        "startTime": "2026-10-05T16:00:00.000Z",
+        "endTime": "2026-10-06T00:00:00.000Z",
+        "relevant": true
+      },
+      {
+        "areaCode": "Aveiro",
+        "areaLabel": "Aveiro",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-05T15:00:00.000Z",
+        "endTime": "2026-10-06T00:00:00.000Z",
         "relevant": true
       }
     ],
     "muranzel": [
       {
-        "areaCode": "AVR",
+        "areaCode": "Aveiro",
         "areaLabel": "Aveiro",
         "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-05T15:00:00",
-        "endTime": "2026-10-06T00:00:00",
+        "startTime": "2026-10-05T16:00:00.000Z",
+        "endTime": "2026-10-06T00:00:00.000Z",
+        "relevant": true
+      },
+      {
+        "areaCode": "Aveiro",
+        "areaLabel": "Aveiro",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-05T15:00:00.000Z",
+        "endTime": "2026-10-06T00:00:00.000Z",
         "relevant": true
       }
     ],
     "furadouro": [
       {
-        "areaCode": "AVR",
+        "areaCode": "Aveiro",
         "areaLabel": "Aveiro",
         "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-05T15:00:00",
-        "endTime": "2026-10-06T00:00:00",
+        "startTime": "2026-10-05T16:00:00.000Z",
+        "endTime": "2026-10-06T00:00:00.000Z",
+        "relevant": true
+      },
+      {
+        "areaCode": "Aveiro",
+        "areaLabel": "Aveiro",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-05T15:00:00.000Z",
+        "endTime": "2026-10-06T00:00:00.000Z",
         "relevant": true
       }
     ],
     "sao-jacinto": [
       {
-        "areaCode": "AVR",
+        "areaCode": "Aveiro",
         "areaLabel": "Aveiro",
         "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-05T15:00:00",
-        "endTime": "2026-10-06T00:00:00",
+        "startTime": "2026-10-05T16:00:00.000Z",
+        "endTime": "2026-10-06T00:00:00.000Z",
+        "relevant": true
+      },
+      {
+        "areaCode": "Aveiro",
+        "areaLabel": "Aveiro",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-05T15:00:00.000Z",
+        "endTime": "2026-10-06T00:00:00.000Z",
         "relevant": true
       }
     ],
     "costa-nova": [
       {
-        "areaCode": "AVR",
+        "areaCode": "Aveiro",
         "areaLabel": "Aveiro",
         "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-05T15:00:00",
-        "endTime": "2026-10-06T00:00:00",
+        "startTime": "2026-10-05T16:00:00.000Z",
+        "endTime": "2026-10-06T00:00:00.000Z",
         "relevant": true
-      }
-    ],
-    "tocha": [
+      },
       {
-        "areaCode": "AVR",
+        "areaCode": "Aveiro",
         "areaLabel": "Aveiro",
         "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-05T15:00:00",
-        "endTime": "2026-10-06T00:00:00",
-        "relevant": true
-      }
-    ],
-    "quiaios": [
-      {
-        "areaCode": "CBR",
-        "areaLabel": "Coimbra",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-05T12:00:00",
-        "endTime": "2026-10-05T21:00:00",
-        "relevant": true
-      }
-    ],
-    "figueira-foz": [
-      {
-        "areaCode": "CBR",
-        "areaLabel": "Coimbra",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-05T12:00:00",
-        "endTime": "2026-10-05T21:00:00",
+        "startTime": "2026-10-05T15:00:00.000Z",
+        "endTime": "2026-10-06T00:00:00.000Z",
         "relevant": true
       }
     ],
     "leirosa": [
       {
-        "areaCode": "LRA",
+        "areaCode": "Leiria",
         "areaLabel": "Leiria",
         "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-05T12:00:00",
-        "endTime": "2026-10-05T21:00:00",
+        "startTime": "2026-10-05T12:00:00.000Z",
+        "endTime": "2026-10-05T21:00:00.000Z",
         "relevant": true
       }
     ],
     "praia-da-vieira": [
       {
-        "areaCode": "LRA",
+        "areaCode": "Leiria",
         "areaLabel": "Leiria",
         "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-05T12:00:00",
-        "endTime": "2026-10-05T21:00:00",
+        "startTime": "2026-10-05T12:00:00.000Z",
+        "endTime": "2026-10-05T21:00:00.000Z",
         "relevant": true
       }
     ],
     "castelo-bode": [
       {
-        "areaCode": "LRA",
+        "areaCode": "Santarém",
+        "areaLabel": "Santarém",
+        "type": "Trovoada",
+        "level": "orange",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-05T12:00:00.000Z",
+        "endTime": "2026-10-05T21:00:00.000Z",
+        "relevant": true
+      },
+      {
+        "areaCode": "Leiria",
         "areaLabel": "Leiria",
         "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-05T12:00:00",
-        "endTime": "2026-10-05T21:00:00",
+        "startTime": "2026-10-05T12:00:00.000Z",
+        "endTime": "2026-10-05T21:00:00.000Z",
         "relevant": true
       }
     ],
     "nazare": [
       {
-        "areaCode": "LRA",
+        "areaCode": "Leiria",
         "areaLabel": "Leiria",
         "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-05T12:00:00",
-        "endTime": "2026-10-05T21:00:00",
+        "startTime": "2026-10-05T12:00:00.000Z",
+        "endTime": "2026-10-05T21:00:00.000Z",
         "relevant": true
       }
     ],
     "foz-arelho": [
       {
-        "areaCode": "STM",
-        "areaLabel": "Santarém",
+        "areaCode": "Leiria",
+        "areaLabel": "Leiria",
         "type": "Trovoada",
-        "level": "orange",
+        "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-05T12:00:00",
-        "endTime": "2026-10-05T21:00:00",
+        "startTime": "2026-10-05T12:00:00.000Z",
+        "endTime": "2026-10-05T21:00:00.000Z",
         "relevant": true
       }
     ],
     "foil-foz-arelho": [
       {
-        "areaCode": "STM",
-        "areaLabel": "Santarém",
+        "areaCode": "Leiria",
+        "areaLabel": "Leiria",
         "type": "Trovoada",
-        "level": "orange",
+        "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-05T12:00:00",
-        "endTime": "2026-10-05T21:00:00",
+        "startTime": "2026-10-05T12:00:00.000Z",
+        "endTime": "2026-10-05T21:00:00.000Z",
         "relevant": true
       }
     ],
     "obidos-lagoon": [
       {
-        "areaCode": "STM",
-        "areaLabel": "Santarém",
+        "areaCode": "Leiria",
+        "areaLabel": "Leiria",
         "type": "Trovoada",
-        "level": "orange",
+        "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-05T12:00:00",
-        "endTime": "2026-10-05T21:00:00",
+        "startTime": "2026-10-05T12:00:00.000Z",
+        "endTime": "2026-10-05T21:00:00.000Z",
         "relevant": true
       }
     ],
     "obidos-lagoon-sul": [
       {
-        "areaCode": "STM",
-        "areaLabel": "Santarém",
+        "areaCode": "Leiria",
+        "areaLabel": "Leiria",
         "type": "Trovoada",
-        "level": "orange",
+        "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-05T12:00:00",
-        "endTime": "2026-10-05T21:00:00",
+        "startTime": "2026-10-05T12:00:00.000Z",
+        "endTime": "2026-10-05T21:00:00.000Z",
         "relevant": true
       }
     ],
     "obidos-lagoon-foz": [
       {
-        "areaCode": "STM",
-        "areaLabel": "Santarém",
+        "areaCode": "Leiria",
+        "areaLabel": "Leiria",
         "type": "Trovoada",
-        "level": "orange",
+        "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-05T12:00:00",
-        "endTime": "2026-10-05T21:00:00",
+        "startTime": "2026-10-05T12:00:00.000Z",
+        "endTime": "2026-10-05T21:00:00.000Z",
         "relevant": true
       }
     ],
     "foz-arelho-beach": [
       {
-        "areaCode": "STM",
-        "areaLabel": "Santarém",
+        "areaCode": "Leiria",
+        "areaLabel": "Leiria",
         "type": "Trovoada",
-        "level": "orange",
+        "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-05T12:00:00",
-        "endTime": "2026-10-05T21:00:00",
+        "startTime": "2026-10-05T12:00:00.000Z",
+        "endTime": "2026-10-05T21:00:00.000Z",
         "relevant": true
       }
     ],
     "praia-del-rey": [
       {
-        "areaCode": "STM",
-        "areaLabel": "Santarém",
+        "areaCode": "Leiria",
+        "areaLabel": "Leiria",
         "type": "Trovoada",
-        "level": "orange",
+        "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-05T12:00:00",
-        "endTime": "2026-10-05T21:00:00",
+        "startTime": "2026-10-05T12:00:00.000Z",
+        "endTime": "2026-10-05T21:00:00.000Z",
         "relevant": true
       }
     ],
     "almagreira": [
       {
-        "areaCode": "STM",
-        "areaLabel": "Santarém",
+        "areaCode": "Leiria",
+        "areaLabel": "Leiria",
         "type": "Trovoada",
-        "level": "orange",
+        "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-05T12:00:00",
-        "endTime": "2026-10-05T21:00:00",
+        "startTime": "2026-10-05T12:00:00.000Z",
+        "endTime": "2026-10-05T21:00:00.000Z",
         "relevant": true
       }
     ],
     "baleal": [
       {
-        "areaCode": "STM",
-        "areaLabel": "Santarém",
+        "areaCode": "Leiria",
+        "areaLabel": "Leiria",
         "type": "Trovoada",
-        "level": "orange",
+        "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-05T12:00:00",
-        "endTime": "2026-10-05T21:00:00",
+        "startTime": "2026-10-05T12:00:00.000Z",
+        "endTime": "2026-10-05T21:00:00.000Z",
         "relevant": true
       }
     ],
     "supertubos": [
       {
-        "areaCode": "STM",
+        "areaCode": "Leiria",
+        "areaLabel": "Leiria",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-05T12:00:00.000Z",
+        "endTime": "2026-10-05T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "seixal-bay": [
+      {
+        "areaCode": "Santarém",
         "areaLabel": "Santarém",
         "type": "Trovoada",
         "level": "orange",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-05T12:00:00",
-        "endTime": "2026-10-05T21:00:00",
+        "startTime": "2026-10-05T12:00:00.000Z",
+        "endTime": "2026-10-05T21:00:00.000Z",
         "relevant": true
       }
     ],
     "barra-aveiro": [
       {
-        "areaCode": "AVR",
+        "areaCode": "Aveiro",
         "areaLabel": "Aveiro",
         "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-05T15:00:00",
-        "endTime": "2026-10-06T00:00:00",
+        "startTime": "2026-10-05T16:00:00.000Z",
+        "endTime": "2026-10-06T00:00:00.000Z",
+        "relevant": true
+      },
+      {
+        "areaCode": "Aveiro",
+        "areaLabel": "Aveiro",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-10-05T15:00:00.000Z",
+        "endTime": "2026-10-06T00:00:00.000Z",
         "relevant": true
       }
     ],
     "consolacao": [
       {
-        "areaCode": "STM",
-        "areaLabel": "Santarém",
+        "areaCode": "Leiria",
+        "areaLabel": "Leiria",
         "type": "Trovoada",
-        "level": "orange",
+        "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-05T12:00:00",
-        "endTime": "2026-10-05T21:00:00",
+        "startTime": "2026-10-05T12:00:00.000Z",
+        "endTime": "2026-10-05T21:00:00.000Z",
         "relevant": true
       }
     ],
     "areia-branca": [
       {
-        "areaCode": "STM",
-        "areaLabel": "Santarém",
+        "areaCode": "Leiria",
+        "areaLabel": "Leiria",
         "type": "Trovoada",
-        "level": "orange",
+        "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-05T12:00:00",
-        "endTime": "2026-10-05T21:00:00",
+        "startTime": "2026-10-05T12:00:00.000Z",
+        "endTime": "2026-10-05T21:00:00.000Z",
         "relevant": true
       }
     ],
     "sao-martinho-porto": [
       {
-        "areaCode": "LRA",
+        "areaCode": "Leiria",
         "areaLabel": "Leiria",
         "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-05T12:00:00",
-        "endTime": "2026-10-05T21:00:00",
+        "startTime": "2026-10-05T12:00:00.000Z",
+        "endTime": "2026-10-05T21:00:00.000Z",
         "relevant": true
       }
     ]

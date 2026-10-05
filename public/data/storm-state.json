@@ -1,6 +1,6 @@
 {
   "source": "ventu-storm-state",
-  "fetchedAt": "2026-10-05T12:07:29.225Z",
+  "fetchedAt": "2026-10-05T15:37:58.402Z",
   "radar": {
     "frameTime": "2026-10-05T11:55:00.000Z",
     "compareFrameTime": "2026-10-05T11:40:00.000Z",
@@ -354,7 +354,7 @@
           "kmh": 14
         }
       },
-      "warnLevel": null,
+      "warnLevel": "yellow",
       "inStormCone": false
     },
     "salgueiros": {
@@ -410,7 +410,7 @@
         "intensity": "heavy",
         "approach": null
       },
-      "warnLevel": null,
+      "warnLevel": "yellow",
       "inStormCone": false
     },
     "espinho": {
@@ -425,7 +425,7 @@
           "kmh": 12
         }
       },
-      "warnLevel": null,
+      "warnLevel": "yellow",
       "inStormCone": false
     },
     "praia-37": {
@@ -440,7 +440,7 @@
           "kmh": 12
         }
       },
-      "warnLevel": null,
+      "warnLevel": "yellow",
       "inStormCone": false
     },
     "bairro-piscatorio": {
@@ -455,7 +455,7 @@
           "kmh": 12
         }
       },
-      "warnLevel": null,
+      "warnLevel": "yellow",
       "inStormCone": false
     },
     "paramos": {
@@ -470,7 +470,7 @@
           "kmh": 16
         }
       },
-      "warnLevel": null,
+      "warnLevel": "yellow",
       "inStormCone": false
     },
     "barrinha-esmoriz": {
@@ -485,7 +485,7 @@
           "kmh": 17
         }
       },
-      "warnLevel": null,
+      "warnLevel": "yellow",
       "inStormCone": false
     },
     "esmoriz": {
@@ -500,7 +500,7 @@
           "kmh": 18
         }
       },
-      "warnLevel": null,
+      "warnLevel": "yellow",
       "inStormCone": false
     },
     "cortegaca": {
@@ -515,7 +515,7 @@
           "kmh": 21
         }
       },
-      "warnLevel": null,
+      "warnLevel": "yellow",
       "inStormCone": false
     },
     "cortegaca-sul": {
@@ -530,7 +530,7 @@
           "kmh": 22
         }
       },
-      "warnLevel": null,
+      "warnLevel": "yellow",
       "inStormCone": false
     },
     "maceda": {
@@ -545,7 +545,7 @@
           "kmh": 24
         }
       },
-      "warnLevel": null,
+      "warnLevel": "yellow",
       "inStormCone": false
     },
     "murtosa": {
@@ -665,7 +665,7 @@
           "kmh": 49
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "quiaios": {
@@ -680,7 +680,7 @@
           "kmh": 48
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "figueira-foz": {
@@ -695,7 +695,7 @@
           "kmh": 55
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "leirosa": {
@@ -740,7 +740,7 @@
           "kmh": 56
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": "orange",
       "inStormCone": false
     },
     "nazare": {
@@ -770,7 +770,7 @@
           "kmh": 14
         }
       },
-      "warnLevel": "orange",
+      "warnLevel": "yellow",
       "inStormCone": false
     },
     "foil-foz-arelho": {
@@ -785,7 +785,7 @@
           "kmh": 14
         }
       },
-      "warnLevel": "orange",
+      "warnLevel": "yellow",
       "inStormCone": false
     },
     "obidos-lagoon": {
@@ -800,7 +800,7 @@
           "kmh": 10
         }
       },
-      "warnLevel": "orange",
+      "warnLevel": "yellow",
       "inStormCone": false
     },
     "obidos-lagoon-sul": {
@@ -815,7 +815,7 @@
           "kmh": 11
         }
       },
-      "warnLevel": "orange",
+      "warnLevel": "yellow",
       "inStormCone": false
     },
     "obidos-lagoon-foz": {
@@ -830,7 +830,7 @@
           "kmh": 12
         }
       },
-      "warnLevel": "orange",
+      "warnLevel": "yellow",
       "inStormCone": false
     },
     "foz-arelho-beach": {
@@ -845,7 +845,7 @@
           "kmh": 11
         }
       },
-      "warnLevel": "orange",
+      "warnLevel": "yellow",
       "inStormCone": false
     },
     "praia-del-rey": {
@@ -860,7 +860,7 @@
           "kmh": 15
         }
       },
-      "warnLevel": "orange",
+      "warnLevel": "yellow",
       "inStormCone": false
     },
     "almagreira": {
@@ -875,7 +875,7 @@
           "kmh": 23
         }
       },
-      "warnLevel": "orange",
+      "warnLevel": "yellow",
       "inStormCone": false
     },
     "baleal": {
@@ -890,7 +890,7 @@
           "kmh": 29
         }
       },
-      "warnLevel": "orange",
+      "warnLevel": "yellow",
       "inStormCone": false
     },
     "supertubos": {
@@ -905,7 +905,7 @@
           "kmh": 31
         }
       },
-      "warnLevel": "orange",
+      "warnLevel": "yellow",
       "inStormCone": false
     },
     "foz-sizandro": {
@@ -1085,7 +1085,7 @@
           "kmh": 50
         }
       },
-      "warnLevel": null,
+      "warnLevel": "orange",
       "inStormCone": false
     },
     "praia-vitoria": {
@@ -2175,7 +2175,7 @@
           "kmh": 24
         }
       },
-      "warnLevel": "orange",
+      "warnLevel": "yellow",
       "inStormCone": false
     },
     "areia-branca": {
@@ -2186,7 +2186,7 @@
         "intensity": "moderate",
         "approach": null
       },
-      "warnLevel": "orange",
+      "warnLevel": "yellow",
       "inStormCone": false
     },
     "sao-martinho-porto": {
