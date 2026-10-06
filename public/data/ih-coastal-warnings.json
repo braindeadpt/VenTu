@@ -341,6 +341,38 @@
       ]
     },
     {
+      "id": 18761,
+      "ref": "ANAV NR 2256/26",
+      "category": "Requisitos de segurança maritima",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=ea0ae9e4-1d6b-482b-8a64-ed8ef3ee65aa",
+      "source": "ih",
+      "collection": "nav_warning_coastal",
+      "polygons": [
+        [
+          [
+            -8.817752,
+            41.323717
+          ],
+          [
+            -8.817752,
+            41.409261
+          ],
+          [
+            -8.792353,
+            41.409261
+          ],
+          [
+            -8.792353,
+            41.323717
+          ],
+          [
+            -8.817752,
+            41.323717
+          ]
+        ]
+      ]
+    },
+    {
       "id": 1000182,
       "ref": "ANAV NR 121/21",
       "category": "SEGURANÇA DA NAVEGAÇÃO - AVISO À NAVEGAÇÃO LOCAL",
@@ -7365,6 +7397,21 @@
       "radiusKm": 25,
       "eventAt": "2026-10-04T00:00:00.000Z",
       "polygons": []
+    },
+    {
+      "id": 2018763,
+      "ref": "ANAV NR 2257/26",
+      "category": "Animais Marinhos - Interação",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=b1131dc4-7236-4ba6-a77b-4df961025a97",
+      "source": "ih",
+      "collection": "orca_anavnet_point",
+      "center": [
+        -9.501667,
+        39.436667
+      ],
+      "radiusKm": 25,
+      "eventAt": "2026-10-06T00:00:00.000Z",
+      "polygons": []
     }
   ],
   "coverage": {
@@ -7531,11 +7578,31 @@
     "praia-da-vieira": [
       2018335
     ],
+    "obidos-lagoon": [
+      2018763
+    ],
+    "obidos-lagoon-sul": [
+      2018763
+    ],
     "obidos-lagoon-foz": [
-      1005730
+      1005730,
+      2018763
+    ],
+    "foz-arelho-beach": [
+      2018763
+    ],
+    "praia-del-rey": [
+      2018763
+    ],
+    "almagreira": [
+      2018763
+    ],
+    "baleal": [
+      2018763
     ],
     "supertubos": [
-      1005730
+      1005730,
+      2018763
     ],
     "foz-sizandro": [
       1005730,
@@ -7947,7 +8014,11 @@
       2018213
     ],
     "consolacao": [
-      1005730
+      1005730,
+      2018763
+    ],
+    "areia-branca": [
+      2018763
     ],
     "cave-ericeira": [
       2018213
@@ -8060,7 +8131,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-10-06T13:37:34.164Z",
+  "fetchedAt": "2026-10-06T16:55:40.526Z",
   "sourceCollection": "nav_warning_coastal+nav_warning_local+orca_anavnet_point",
   "sourceUrl": "https://ogcapi.hidrografico.pt/collections/nav_warning_coastal"
 }
