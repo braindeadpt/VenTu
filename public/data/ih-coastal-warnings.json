@@ -309,6 +309,38 @@
       ]
     },
     {
+      "id": 18757,
+      "ref": "ANAV NR 2254/26",
+      "category": "Requisitos de segurança maritima",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=5f5d5fe5-d9c8-43c7-92fc-45a66a86c04d",
+      "source": "ih",
+      "collection": "nav_warning_coastal",
+      "polygons": [
+        [
+          [
+            -8.537646,
+            37.061205
+          ],
+          [
+            -8.537646,
+            37.133498
+          ],
+          [
+            -8.359864,
+            37.133498
+          ],
+          [
+            -8.359864,
+            37.061205
+          ],
+          [
+            -8.537646,
+            37.061205
+          ]
+        ]
+      ]
+    },
+    {
       "id": 1000182,
       "ref": "ANAV NR 121/21",
       "category": "SEGURANÇA DA NAVEGAÇÃO - AVISO À NAVEGAÇÃO LOCAL",
@@ -7732,6 +7764,7 @@
     ],
     "ferragudo": [
       18697,
+      18757,
       1000318,
       1001007,
       1001008,
@@ -7756,6 +7789,7 @@
     ],
     "praia-rocha": [
       18697,
+      18757,
       1000318,
       1001007,
       1001008,
@@ -7951,6 +7985,7 @@
       2018247
     ],
     "canavial": [
+      18757,
       1001008,
       2017793
     ],
@@ -8025,7 +8060,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-10-06T07:36:03.647Z",
+  "fetchedAt": "2026-10-06T10:37:24.327Z",
   "sourceCollection": "nav_warning_coastal+nav_warning_local+orca_anavnet_point",
   "sourceUrl": "https://ogcapi.hidrografico.pt/collections/nav_warning_coastal"
 }

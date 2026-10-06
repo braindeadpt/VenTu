@@ -1,11 +1,11 @@
 {
   "day": "20261006",
-  "fetchedAt": "2026-10-06T07:35:50.739Z",
+  "fetchedAt": "2026-10-06T10:37:10.226Z",
   "minPairs": 3,
   "minAccumulatedPairs": 10,
   "archive": {
     "windowDays": 30,
-    "pairHourCount": 702,
+    "pairHourCount": 693,
     "path": "buoy-coherence-archive.json"
   },
   "daily": {
@@ -23,28 +23,28 @@
       },
       "6200083|6201079": {
         "pair": "Villano-Sisargas × Datawell ao largo de Faro",
-        "coherent": 3,
+        "coherent": 2,
         "review": 2,
         "incoherent": 2,
-        "insufficient": 7,
+        "insufficient": 8,
         "days": 14,
-        "incoherentRatio": 0.286
+        "incoherentRatio": 0.333
       },
       "6200084|6201079": {
         "pair": "Cabo Silleiro × Datawell ao largo de Faro",
-        "coherent": 3,
+        "coherent": 2,
         "review": 4,
         "incoherent": 0,
-        "insufficient": 7,
+        "insufficient": 8,
         "days": 14,
         "incoherentRatio": 0
       },
       "6200085|6201079": {
         "pair": "Golfo de Cádiz × Datawell ao largo de Faro",
-        "coherent": 7,
+        "coherent": 6,
         "review": 0,
         "incoherent": 0,
-        "insufficient": 7,
+        "insufficient": 8,
         "days": 14,
         "incoherentRatio": 0
       },
@@ -1491,7 +1491,7 @@
       "suboptimal": []
     }
   },
-  "regionsAuditedAt": "2026-10-06T07:44:51.620Z",
+  "regionsAuditedAt": "2026-10-06T10:45:16.512Z",
   "pairs": [
     {
       "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
@@ -1505,10 +1505,10 @@
       "meanDeltaM": -0.1,
       "meanAbsDeltaM": 0.4,
       "maxAbsDeltaM": 2.8,
-      "corr": 0.74,
+      "corr": 0.75,
       "verdict": "coherent",
-      "firstHour": "2026-09-06T08",
-      "lastHour": "2026-10-06T05",
+      "firstHour": "2026-09-06T11",
+      "lastHour": "2026-10-06T08",
       "hours": [
         {
           "6200084": 1.0499999523162842,
@@ -1539,6 +1539,21 @@
           "6200084": 1.1699999570846558,
           "6200199": 0.8789100050926208,
           "hour": "2026-10-06T05"
+        },
+        {
+          "6200084": 1.0499999523162842,
+          "6200199": 0.9521499872207642,
+          "hour": "2026-10-06T06"
+        },
+        {
+          "6200084": 1.0499999523162842,
+          "6200199": 0.8935499787330627,
+          "hour": "2026-10-06T07"
+        },
+        {
+          "6200084": 1.0499999523162842,
+          "6200199": 0.8349599838256836,
+          "hour": "2026-10-06T08"
         }
       ]
     }
