@@ -233,7 +233,7 @@ jobs:
       # bloqueia o pipeline (o mapa cai para o fallback GOES-IR/GIBS).
       - name: Setup Python (MTG-I1 fetch)
         if: steps.gate.outputs.mode != 'skip' && env.EUMETSAT_CONSUMER_KEY != ''
-        uses: actions/setup-python@a26af69c585f6c535c46f6be84476aa53dbb0f89 # v5
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: '3.12'
 
