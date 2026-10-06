@@ -47,10 +47,43 @@ jobs:
         # has also been flaky today (503 / network timeouts), so endpoint
         # errors are retried with backoff. The gate stays honest: a real high+
         # finding fails immediately, and 5 endpoint failures still fail the step.
+        #
+        # Allowlist (advisory GHSA id → remove when a patched release lands):
+        #   GHSA-vfj7-8cjw-p6xm — braces ≤3.0.3 stack-exhaustion DoS. No patched
+        #   release exists (micromatch/braces#70). Dev-only transitive dep
+        #   (chokidar/fast-glob globs); unreachable in the static-export site.
         run: |
           npm install -g npm@11 >/dev/null 2>&1 || true
           for i in 1 2 3 4 5; do
-            out=$(npm audit --audit-level=high 2>&1) && { printf '%s\n' "$out"; exit 0; }
+            out=$(npm audit --json 2>&1) || true
+            if printf '%s\n' "$out" | grep -q '"auditReportVersion"'; then
+              printf '%s\n' "$out" | node -e '
+                let d = "";
+                process.stdin.on("data", (c) => (d += c)).on("end", () => {
+                  const allow = new Set(["GHSA-vfj7-8cjw-p6xm"]);
+                  const bad = [];
+                  for (const [name, v] of Object.entries(
+                    JSON.parse(d).vulnerabilities || {},
+                  )) {
+                    for (const via of Array.isArray(v.via) ? v.via : [v.via]) {
+                      if (
+                        via && typeof via === "object" &&
+                        ["high", "critical"].includes(via.severity) &&
+                        !allow.has((via.url || "").split("/").pop())
+                      ) {
+                        bad.push(`${name} (${via.url || via.title || "?"})`);
+                      }
+                    }
+                  }
+                  if (bad.length) {
+                    console.log("high+ advisories outside allowlist:");
+                    for (const b of bad) console.log("  " + b);
+                    process.exit(1);
+                  }
+                  console.log("audit clean (allowlisted advisories only)");
+                });'
+              exit $?
+            fi
             if printf '%s\n' "$out" | grep -qE "audit endpoint returned an error|network timeout|Service Unavailable|Bad Request|ECONNRESET|ETIMEDOUT"; then
               echo "registry audit endpoint flake (attempt ${i}/5) — retrying"
               sleep 20
