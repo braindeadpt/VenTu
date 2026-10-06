@@ -120,6 +120,9 @@ const DATA_FILE_BUDGETS_MB = {
   'storms.json': 0.2,
   // storm-state: {radar{state,distKm,...},warnLevel,inStormCone} × 185 — ~50 KB.
   'storm-state.json': 0.1,
+  // sat-mtg: manifest de frames MTG-I1 (~12 entradas) — os PNGs em
+  // data/sat-mtg/frames/ são imagens (~0.9 MB cada), fora deste check.
+  'sat-mtg.json': 0.1,
 };
 
 const budgetBytes = BUDGET_MB * 1024 * 1024;

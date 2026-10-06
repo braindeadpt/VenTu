@@ -46,7 +46,7 @@ const HUD_SPORTS = [
 
 function readMapSearchParams(): {
   radar: boolean;
-  isobaths: boolean;
+  nauticalChart: boolean;
   hours: boolean;
   hourOfDay: number | null;
   buoys: boolean;
@@ -54,9 +54,6 @@ function readMapSearchParams(): {
   sst: boolean;
   currents: boolean;
   wind: boolean;
-  bathymetry: boolean;
-  seamarks: boolean;
-  gibsSat: boolean;
   goesIr: boolean;
   storms: boolean;
   warnAreas: boolean;
@@ -68,7 +65,7 @@ function readMapSearchParams(): {
 } {
   const empty = {
     radar: false,
-    isobaths: false,
+    nauticalChart: false,
     hours: false,
     hourOfDay: null,
     buoys: false,
@@ -76,9 +73,6 @@ function readMapSearchParams(): {
     sst: false,
     currents: false,
     wind: false,
-    bathymetry: false,
-    seamarks: false,
-    gibsSat: false,
     goesIr: false,
     storms: false,
     warnAreas: false,
@@ -96,7 +90,13 @@ function readMapSearchParams(): {
   const z = Number.parseFloat(params.get('z') ?? '');
   return {
     radar: params.get('radar') === '1',
-    isobaths: params.get('isobaths') === '1',
+    // «Carta náutica» (Fase 3): a key nova + as três legadas de partilha
+    // antiga (?isobaths/?bathymetry/?seamarks=1) ligam o mesmo toggle.
+    nauticalChart:
+      params.get('nauticalChart') === '1' ||
+      params.get('isobaths') === '1' ||
+      params.get('bathymetry') === '1' ||
+      params.get('seamarks') === '1',
     hours: params.get('hours') === '1' || hourOfDay != null,
     hourOfDay,
     buoys: params.get('buoys') === '1',
@@ -104,9 +104,6 @@ function readMapSearchParams(): {
     sst: params.get('sst') === '1',
     currents: params.get('currents') === '1',
     wind: params.get('wind') === '1',
-    bathymetry: params.get('bathymetry') === '1',
-    seamarks: params.get('seamarks') === '1',
-    gibsSat: params.get('gibsSat') === '1',
     goesIr: params.get('goesIr') === '1',
     storms: params.get('storms') === '1',
     warnAreas: params.get('warnAreas') === '1',
@@ -145,7 +142,7 @@ export default function MapaFullscreenClient({
   // com o radar já ligado. Só lido no arranque; o toggle manual continua a
   // mandar (o estado do mapa é dono do radar depois disto).
   const [initialRadar, setInitialRadar] = useState(false);
-  const [initialIsobaths, setInitialIsobaths] = useState(false);
+  const [initialNauticalChart, setInitialNauticalChart] = useState(false);
   const [initialHours, setInitialHours] = useState(false);
   const [initialHourOfDay, setInitialHourOfDay] = useState<number | null>(null);
   const [initialBuoys, setInitialBuoys] = useState(false);
@@ -153,9 +150,6 @@ export default function MapaFullscreenClient({
   const [initialSst, setInitialSst] = useState(false);
   const [initialCurrents, setInitialCurrents] = useState(false);
   const [initialWind, setInitialWind] = useState(false);
-  const [initialBathymetry, setInitialBathymetry] = useState(false);
-  const [initialSeamarks, setInitialSeamarks] = useState(false);
-  const [initialGibsSat, setInitialGibsSat] = useState(false);
   const [initialGoesIr, setInitialGoesIr] = useState(false);
   const [initialStorms, setInitialStorms] = useState(false);
   const [initialWarnAreas, setInitialWarnAreas] = useState(false);
@@ -175,7 +169,7 @@ export default function MapaFullscreenClient({
     deepLinksCapturedRef.current = true;
     const s = readMapSearchParams();
     setInitialRadar(s.radar);
-    setInitialIsobaths(s.isobaths);
+    setInitialNauticalChart(s.nauticalChart);
     setInitialHours(s.hours);
     setInitialHourOfDay(s.hourOfDay);
     setInitialBuoys(s.buoys);
@@ -183,9 +177,6 @@ export default function MapaFullscreenClient({
     setInitialSst(s.sst);
     setInitialCurrents(s.currents);
     setInitialWind(s.wind);
-    setInitialBathymetry(s.bathymetry);
-    setInitialSeamarks(s.seamarks);
-    setInitialGibsSat(s.gibsSat);
     setInitialGoesIr(s.goesIr);
     setInitialStorms(s.storms);
     setInitialWarnAreas(s.warnAreas);
@@ -307,7 +298,7 @@ export default function MapaFullscreenClient({
         locale={locale}
         initialFullscreen
         initialRadarEnabled={initialRadar}
-        initialIsobathsEnabled={initialIsobaths}
+        initialNauticalChartEnabled={initialNauticalChart}
         initialHoursEnabled={initialHours}
         initialHourOfDay={initialHourOfDay}
         initialBuoysEnabled={initialBuoys}
@@ -315,9 +306,6 @@ export default function MapaFullscreenClient({
         initialSstEnabled={initialSst}
         initialCurrentsEnabled={initialCurrents}
         initialWindEnabled={initialWind}
-        initialBathymetryEnabled={initialBathymetry}
-        initialSeamarksEnabled={initialSeamarks}
-        initialGibsSatEnabled={initialGibsSat}
         initialGoesIrEnabled={initialGoesIr}
         initialStormsEnabled={initialStorms}
         initialWarnAreasEnabled={initialWarnAreas}

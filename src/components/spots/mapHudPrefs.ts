@@ -2,6 +2,7 @@ import {
   MAP_CLUSTER_LS_KEY,
   MAP_WIND_LS_KEY,
   MAP_ONLY_ON_LS_KEY,
+  MAP_NAUTICAL_CHART_LS_KEY,
   MAP_ISOBATHS_LS_KEY,
   MAP_COASTAL_LS_KEY,
   MAP_BATHYMETRY_LS_KEY,
@@ -63,17 +64,24 @@ export function readOnlyOnPref(): boolean {
 }
 
 /**
- * Isóbatas: devolve a preferência persistida (`'1'`/`'0'`) ou `undefined` se
- * nunca foi tocada — o default (ligado no hero, desligado nos restantes mapas)
- * fica para o chamador encaixar, já que difere por embedMode. undefined ≠ off:
- * assim um utilizador novo vê o default correcto do mapa em que está.
+ * Carta náutica (Fase 3 — isóbatas + batimetria + seamarks num toggle):
+ * preferência persistida (`'1'`/`'0'`) ou `undefined` se nunca foi tocada —
+ * o default (ligado no hero, desligado nos restantes mapas) fica para o
+ * chamador encaixar, já que difere por embedMode. undefined ≠ off.
+ *
+ * Migração: sem a key nova, cai nas três keys legadas — qualquer uma ligada
+ * liga a carta; alguma explicitamente desligada ('0') respeita o off.
  */
-export function readIsobathsPref(): boolean | undefined {
+export function readNauticalChartPref(): boolean | undefined {
   if (typeof window === 'undefined') return undefined;
   try {
-    const v = localStorage.getItem(MAP_ISOBATHS_LS_KEY);
+    const v = localStorage.getItem(MAP_NAUTICAL_CHART_LS_KEY);
     if (v === '1') return true;
     if (v === '0') return false;
+    const legacy = [MAP_ISOBATHS_LS_KEY, MAP_BATHYMETRY_LS_KEY, MAP_SEAMARKS_LS_KEY]
+      .map((k) => localStorage.getItem(k));
+    if (legacy.includes('1')) return true;
+    if (legacy.includes('0')) return false;
   } catch {
     /* noop */
   }
@@ -88,36 +96,6 @@ export function readCoastalWarningsPref(): boolean | undefined {
   if (typeof window === 'undefined') return undefined;
   try {
     const v = localStorage.getItem(MAP_COASTAL_LS_KEY);
-    if (v === '1') return true;
-    if (v === '0') return false;
-  } catch {
-    /* noop */
-  }
-  return undefined;
-}
-
-/**
- * Batimetria EMODnet: preferência persistida (`'1'`/`'0'`); default desligado.
- */
-export function readBathymetryPref(): boolean | undefined {
-  if (typeof window === 'undefined') return undefined;
-  try {
-    const v = localStorage.getItem(MAP_BATHYMETRY_LS_KEY);
-    if (v === '1') return true;
-    if (v === '0') return false;
-  } catch {
-    /* noop */
-  }
-  return undefined;
-}
-
-/**
- * Seamarks OpenSeaMap: preferência persistida (`'1'`/`'0'`); default desligado.
- */
-export function readSeamarksPref(): boolean | undefined {
-  if (typeof window === 'undefined') return undefined;
-  try {
-    const v = localStorage.getItem(MAP_SEAMARKS_LS_KEY);
     if (v === '1') return true;
     if (v === '0') return false;
   } catch {

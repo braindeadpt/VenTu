@@ -82,11 +82,11 @@ const browser = await chromium.launch();
   // 5. Paridade de estado dos toggles de camadas (desktop: MapControls no topo direito)
   const state = await page.evaluate(() => {
     const r = {};
-    const toggles = document.querySelectorAll('[data-map-currents-toggle],[data-map-sst-toggle],[data-map-isobaths-toggle],[data-map-radar-toggle]');
+    const toggles = document.querySelectorAll('[data-map-currents-toggle],[data-map-sst-toggle],[data-map-nautical-chart-toggle],[data-map-radar-toggle]');
     for (const t of toggles) {
       const k = t.getAttribute('data-map-currents-toggle') !== null ? 'currents'
         : t.getAttribute('data-map-sst-toggle') !== null ? 'sst'
-        : t.getAttribute('data-map-isobaths-toggle') !== null ? 'isobaths'
+        : t.getAttribute('data-map-nautical-chart-toggle') !== null ? 'nauticalChart'
         : 'radar';
       r[k] = { pressed: t.getAttribute('aria-pressed'), disabled: t.disabled ?? null };
     }

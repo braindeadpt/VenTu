@@ -88,7 +88,7 @@ for (const theme of ['dark', 'ocean']) {
   await page.waitForTimeout(1200);
   out.desktop.popup = await scan(page, 'popup');
   // layers + legends (hours + isobaths + currents)
-  await page.goto(BASE + '/pt/mapa/?hours=1&isobaths=1&currents=1', { waitUntil: 'domcontentloaded', timeout: 90_000 });
+  await page.goto(BASE + '/pt/mapa/?hours=1&nauticalChart=1&currents=1', { waitUntil: 'domcontentloaded', timeout: 90_000 });
   await page.waitForSelector('.leaflet-container', { timeout: 45_000 });
   await page.waitForSelector('[aria-label="Modo explorar"]', { timeout: 30_000 });
   if (theme === 'ocean') {

@@ -71,7 +71,7 @@ interface SpotMapInteractiveProps {
   embedMode?: 'default' | 'hero';
   initialFullscreen?: boolean;
   initialRadarEnabled?: boolean;
-  initialIsobathsEnabled?: boolean;
+  initialNauticalChartEnabled?: boolean;
   initialHoursEnabled?: boolean;
   initialHourOfDay?: number | null;
   initialBuoysEnabled?: boolean;
@@ -79,9 +79,6 @@ interface SpotMapInteractiveProps {
   initialSstEnabled?: boolean;
   initialCurrentsEnabled?: boolean;
   initialWindEnabled?: boolean;
-  initialBathymetryEnabled?: boolean;
-  initialSeamarksEnabled?: boolean;
-  initialGibsSatEnabled?: boolean;
   initialGoesIrEnabled?: boolean;
   initialStormsEnabled?: boolean;
   initialWarnAreasEnabled?: boolean;
@@ -106,7 +103,7 @@ export default function SpotMapInteractive({
   embedMode = 'default',
   initialFullscreen = false,
   initialRadarEnabled = false,
-  initialIsobathsEnabled = false,
+  initialNauticalChartEnabled = false,
   initialHoursEnabled = false,
   initialHourOfDay = null,
   initialBuoysEnabled = false,
@@ -114,9 +111,6 @@ export default function SpotMapInteractive({
   initialSstEnabled = false,
   initialCurrentsEnabled = false,
   initialWindEnabled = false,
-  initialBathymetryEnabled = false,
-  initialSeamarksEnabled = false,
-  initialGibsSatEnabled = false,
   initialGoesIrEnabled = false,
   initialStormsEnabled = false,
   initialWarnAreasEnabled = false,
@@ -223,13 +217,10 @@ export default function SpotMapInteractive({
     isHeroEmbed,
     focusSpotId,
     initialRadarEnabled,
-    initialIsobathsEnabled,
+    initialNauticalChartEnabled,
     initialHoursEnabled,
     initialHourOfDay,
     initialBuoysEnabled,
-    initialBathymetryEnabled,
-    initialSeamarksEnabled,
-    initialGibsSatEnabled,
     initialGoesIrEnabled,
     initialStormsEnabled,
     initialWarnAreasEnabled,
@@ -242,12 +233,9 @@ export default function SpotMapInteractive({
     toggleRadar, handleRadarFrameChange, handleRadarUserPausedChange,
     handleResetRadar, handleRadarImmersionOpen,
     radarFrameList, radarLabel, radarHint, radarUnavailable, radarAttributionLabel,
-    isobathsEnabled, isobathsData, toggleIsobaths,
-    bathymetryEnabled, toggleBathymetry,
-    seamarksEnabled, toggleSeamarks,
-    gibsSatEnabled, toggleGibsSat,
+    nauticalChartEnabled, isobathsData, toggleNauticalChart,
     goesIrEnabled, toggleGoesIr,
-    goesIrFrameList, goesIrFrameIndex, goesIrUserPaused,
+    goesIrFrameList, goesIrFrameIndex, goesIrUserPaused, goesIrSource,
     handleGoesIrFrameChange, handleGoesIrUserPausedChange,
     stormsEnabled, stormsUnavailable, toggleStorms,
     warnAreasEnabled, warnAreasUnavailable, toggleWarnAreas,
@@ -265,7 +253,8 @@ export default function SpotMapInteractive({
   const showWindOnMarkers = windEnabled && !isHeroEmbed;
   const activeCluster = isHeroEmbed ? true : clusterEnabled;
 
-  // Deep links ?radar=1 / ?isobaths=1 handled by useMapLayers initial state —
+  // Deep links ?radar=1 / ?nauticalChart=1 (e legado ?isobaths=1) handled
+  // by useMapLayers initial state —
   // sem efeitos de mount nem toque na preferência persistida (que só se grava
   // ao desligar ou ao toggle manual). Um efeito aqui seria uma corrida com o
   // mount do mapa (chunk dinâmico) e poderia nunca correr ou togglar duas vezes.
@@ -436,15 +425,12 @@ export default function SpotMapInteractive({
     hoursFrame,
     hoursUserPaused,
     hoursFile,
-    isobathsEnabled,
+    nauticalChartEnabled,
     buoysEnabled,
     hsEnabled,
     sstEnabled,
     currentsEnabled,
     basemapMode,
-    bathymetryEnabled,
-    seamarksEnabled,
-    gibsSatEnabled,
     goesIrEnabled,
     stormsEnabled,
     warnAreasEnabled,
@@ -551,6 +537,20 @@ export default function SpotMapInteractive({
     handleBasemapChange(mode);
   }, [handleBasemapChange]);
 
+  // Ligar a camada «Satélite» sobre o basemap vectorial deixa a foto/MTG
+  // por cima de linhas de mapa — sobre o basemap de imagem funde-se.
+  // Rising edge: só na transição off→on (o utilizador pode voltar atrás
+  // manualmente sem a lógica lhe competir); deep link ?goesIr=1 também
+  // sugere uma vez (o ref nasce a false).
+  const goesIrWasOnRef = useRef(false);
+  useEffect(() => {
+    const was = goesIrWasOnRef.current;
+    goesIrWasOnRef.current = goesIrEnabled;
+    if (goesIrEnabled && !was && basemapMode === 'map') {
+      handleBasemapChange('satellite');
+    }
+  }, [goesIrEnabled, basemapMode, handleBasemapChange]);
+
   // ── Contexto partilhado (zonas consomem dados/acções via useMapUi*) ──
   const selectSpot = useCallback((spotId: string) => {
     onSpotSelectRef.current?.(spotId);
@@ -610,7 +610,7 @@ export default function SpotMapInteractive({
     radarEnabled,
     radarPrefSet,
     radarUnavailable,
-    isobathsEnabled,
+    nauticalChartEnabled,
     onlyOnEnabled,
     coastalWarningsEnabled,
     fullscreenLabel: t.hero.exploreMap,
@@ -641,16 +641,8 @@ export default function SpotMapInteractive({
     currentsUnavailable,
     currentsLabel: layerCopy.currentsLabel,
     currentsHint: layerCopy.currentsHint,
-    isobathsLabel: layerCopy.isobathsLabel,
-    bathymetryEnabled,
-    bathymetryLabel: layerCopy.bathymetryLabel,
-    bathymetryHint: layerCopy.bathymetryHint,
-    seamarksEnabled,
-    seamarksLabel: layerCopy.seamarksLabel,
-    seamarksHint: layerCopy.seamarksHint,
-    gibsSatEnabled,
-    gibsSatLabel: layerCopy.gibsSatLabel,
-    gibsSatHint: layerCopy.gibsSatHint,
+    nauticalChartLabel: layerCopy.nauticalChartLabel,
+    nauticalChartHint: layerCopy.nauticalChartHint,
     goesIrEnabled,
     goesIrLabel: layerCopy.satIrLabel,
     goesIrHint: layerCopy.satIrHint,
@@ -687,10 +679,7 @@ export default function SpotMapInteractive({
     toggleHs,
     toggleSst,
     toggleCurrents,
-    toggleIsobaths,
-    toggleBathymetry,
-    toggleSeamarks,
-    toggleGibsSat,
+    toggleNauticalChart,
     toggleGoesIr,
     toggleStorms,
     toggleWarnAreas,
@@ -731,8 +720,9 @@ export default function SpotMapInteractive({
         data-map-hs={hsEnabled ? 'true' : 'false'}
         data-map-sst={sstEnabled ? 'true' : 'false'}
         data-map-currents={currentsEnabled ? 'true' : 'false'}
-        data-map-bathymetry={bathymetryEnabled ? 'true' : 'false'}
-        data-map-seamarks={seamarksEnabled ? 'true' : 'false'}
+        data-map-nautical-chart={nauticalChartEnabled ? 'true' : 'false'}
+        data-map-bathymetry={nauticalChartEnabled && !isHeroEmbed ? 'true' : 'false'}
+        data-map-seamarks={nauticalChartEnabled && !isHeroEmbed ? 'true' : 'false'}
         data-map-hero-teaser={isHeroEmbed ? 'true' : undefined}
       >
         {!isReady && (
@@ -764,7 +754,7 @@ export default function SpotMapInteractive({
               controls={controls}
               locateLabel={t.map.locateMe}
               shareLabel={t.map.shareView}
-              isobathsEnabled={isobathsEnabled}
+              nauticalChartEnabled={nauticalChartEnabled}
               isobathsData={isobathsData}
               radarLift={radarLift}
               legendLayerProps={legendLayerProps}
@@ -789,10 +779,10 @@ export default function SpotMapInteractive({
               radarResetLabel={layerCopy.radarResetLabel}
               toggleRadar={toggleRadar}
               handleResetRadar={handleResetRadar}
-              isobathsEnabled={isobathsEnabled}
-              isobathsLabel={layerCopy.isobathsLabel}
-              isobathsHint={layerCopy.isobathsHint}
-              toggleIsobaths={toggleIsobaths}
+              nauticalChartEnabled={nauticalChartEnabled}
+              nauticalChartLabel={layerCopy.nauticalChartLabel}
+              nauticalChartHint={layerCopy.nauticalChartHint}
+              toggleNauticalChart={toggleNauticalChart}
               radarData={radarData}
               radarFrameList={radarFrameList}
               radarFrameIndex={radarFrameIndex}
@@ -810,6 +800,7 @@ export default function SpotMapInteractive({
               goesIrFrameList={goesIrFrameList}
               goesIrFrameIndex={goesIrFrameIndex}
               goesIrUserPaused={goesIrUserPaused}
+              goesIrSource={goesIrSource}
               handleGoesIrFrameChange={handleGoesIrFrameChange}
               handleGoesIrUserPausedChange={handleGoesIrUserPausedChange}
             />

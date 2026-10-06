@@ -84,7 +84,7 @@ const LAYERS = [
   { name: 'correntes', param: 'currents', attr: 'data-map-currents-toggle', lsKey: 'ventu.map.currents', inMenu: true },
   { name: 'temperatura (SST)', param: 'sst', attr: 'data-map-sst-toggle', lsKey: 'ventu.map.sst', inMenu: true },
   { name: 'altura significativa (HS)', param: 'hs', attr: 'data-map-hs-toggle', lsKey: 'ventu.map.hs', inMenu: true },
-  { name: 'isóbatas', param: 'isobaths', attr: 'data-map-isobaths-toggle', lsKey: 'ventu.map.isobaths', inMenu: true },
+  { name: 'carta náutica', param: 'nauticalChart', attr: 'data-map-nautical-chart-toggle', lsKey: 'ventu.map.nauticalChart', inMenu: true },
   { name: 'radar IPMA', param: 'radar', attr: 'data-map-radar-toggle', lsKey: 'ventu.radar.state', inMenu: true },
 ] as const;
 

@@ -1,5 +1,10 @@
 /** NASA GIBS — GOES-East ABI Band 13 «Clean IR», keyless (B5 do
- *  docs/STORM-STUDY.md).
+ *  docs/STORM-STUDY.md) — FALLBACK do carrossel de satélite IR.
+ *
+ *  A fonte primária é a nossa pipeline MTG-I1 (src/lib/mtgSat.ts —
+ *  Meteosat a 0° cobre PT na resolução nativa ~2 km); este módulo só
+ *  entra quando public/data/sat-mtg.json está ausente ou stale.
+ *
  *
  *  O produto é infravermelho limpo a 10 min: os topos frios das nuvens
  *  mostram células de tempestade a formar-se sobre o Atlântico — a peça
@@ -126,9 +131,8 @@ export const GOES_IR_BOUNDS: [[number, number], [number, number]] = [
 export const GOES_IR_ATTRIBUTION =
   'Imagery © <a href="https://earthdata.nasa.gov/gibs">NASA GIBS</a> (GOES-East ABI Band 13 Clean IR)';
 
-/** Pane própria: mesmo nível do GIBS true-color (205) — a imagem IR é
- *  contexto de céu por baixo de bathymetry (210), fields (345+) e radar
- *  (400). Se o MODIS estiver ligado ao mesmo tempo, o IR fica por cima
- *  (o utilizador pediu a camada mais recente por último). */
+/** Pane própria logo acima do hillshade (201) — a imagem IR é contexto
+ *  de céu por baixo de bathymetry (210), fields (345+) e radar (400).
+ *  (O antigo MODIS true-color vivia no z205 — removido na Fase 3.) */
 export const MAP_GOES_IR_PANE = 'ventu-goes-ir';
 export const MAP_GOES_IR_PANE_Z = '206';

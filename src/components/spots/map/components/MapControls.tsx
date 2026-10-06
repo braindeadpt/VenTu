@@ -1,6 +1,6 @@
 'use client';
 
-import { Maximize2, Minimize2, MapPin, Layers, Wind, HelpCircle, CloudRain, RotateCcw, Waves, Zap, Anchor, Clock, LifeBuoy, Activity, Navigation, Thermometer, Mountain, Sailboat, Satellite, SatelliteDish, CloudLightning, AlertTriangle } from 'lucide-react';
+import { Maximize2, Minimize2, MapPin, Layers, Wind, HelpCircle, CloudRain, RotateCcw, Zap, Anchor, Clock, LifeBuoy, Activity, Navigation, Thermometer, Sailboat, SatelliteDish, CloudLightning, AlertTriangle } from 'lucide-react';
 import MapLayersMenu, { type MapLayersMenuItem } from './MapLayersMenu';
 
 export interface MapControlsProps {
@@ -12,9 +12,7 @@ export interface MapControlsProps {
   radarEnabled: boolean;
   radarPrefSet: boolean;
   radarUnavailable: boolean;
-  isobathsEnabled: boolean;
-  bathymetryEnabled: boolean;
-  seamarksEnabled: boolean;
+  nauticalChartEnabled: boolean;
   onlyOnEnabled: boolean;
   coastalWarningsEnabled: boolean;
   // Labels
@@ -45,14 +43,8 @@ export interface MapControlsProps {
   currentsUnavailable: boolean;
   currentsLabel: string;
   currentsHint: string;
-  isobathsLabel: string;
-  bathymetryLabel: string;
-  bathymetryHint: string;
-  seamarksLabel: string;
-  seamarksHint: string;
-  gibsSatEnabled: boolean;
-  gibsSatLabel: string;
-  gibsSatHint: string;
+  nauticalChartLabel: string;
+  nauticalChartHint: string;
   goesIrEnabled: boolean;
   goesIrLabel: string;
   goesIrHint: string;
@@ -87,10 +79,7 @@ export interface MapControlsProps {
   toggleHs: () => void;
   toggleSst: () => void;
   toggleCurrents: () => void;
-  toggleIsobaths: () => void;
-  toggleBathymetry: () => void;
-  toggleSeamarks: () => void;
-  toggleGibsSat: () => void;
+  toggleNauticalChart: () => void;
   toggleGoesIr: () => void;
   toggleStorms: () => void;
   toggleWarnAreas: () => void;
@@ -140,16 +129,6 @@ export function buildLayerMenuItems(p: MapControlsProps): MapLayersMenuItem[] {
             resetLabel: p.radarResetLabel,
           },
           {
-            key: 'gibsSat',
-            label: p.gibsSatLabel,
-            hint: p.gibsSatHint,
-            icon: <Satellite className="w-4 h-4" aria-hidden />,
-            pressed: p.gibsSatEnabled,
-            onToggle: p.toggleGibsSat,
-            toggleAttr: 'data-map-gibs-sat-toggle',
-            iconClass: 'text-data-water',
-          },
-          {
             key: 'goesIr',
             label: p.goesIrLabel,
             hint: p.goesIrHint,
@@ -159,17 +138,18 @@ export function buildLayerMenuItems(p: MapControlsProps): MapLayersMenuItem[] {
             toggleAttr: 'data-map-goes-ir-toggle',
             iconClass: 'text-data-period',
           },
-          {
+          // Camada sazonal: sem tempestades activas esconde-se em vez de
+          // ficar desactivada na lista (mesmo padrão do sheet — Fase 3).
+          ...(p.stormsUnavailable ? [] : [{
             key: 'storms',
             label: p.stormsLabel,
             hint: p.stormsHint,
             icon: <CloudLightning className="w-4 h-4" aria-hidden />,
             pressed: p.stormsEnabled,
-            disabled: p.stormsUnavailable,
             onToggle: p.toggleStorms,
             toggleAttr: 'data-map-storms-toggle',
             iconClass: 'text-score-poor',
-          },
+          } satisfies MapLayersMenuItem]),
           {
             key: 'hs',
             label: p.hsLabel,
@@ -216,46 +196,27 @@ export function buildLayerMenuItems(p: MapControlsProps): MapLayersMenuItem[] {
         ] satisfies MapLayersMenuItem[])
       : []),
     {
-      key: 'isobaths',
-      label: p.isobathsLabel,
-      hint: p.isobathsLabel,
-      icon: <Waves className="w-4 h-4" aria-hidden />,
-      pressed: p.isobathsEnabled,
-      onToggle: p.toggleIsobaths,
-      toggleAttr: 'data-map-isobaths-toggle',
-      iconClass: 'text-data-waves',
-    },
-    {
-      key: 'bathymetry',
-      label: p.bathymetryLabel,
-      hint: p.bathymetryHint,
-      icon: <Mountain className="w-4 h-4" aria-hidden />,
-      pressed: p.bathymetryEnabled,
-      onToggle: p.toggleBathymetry,
-      toggleAttr: 'data-map-bathymetry-toggle',
+      key: 'nauticalChart',
+      label: p.nauticalChartLabel,
+      hint: p.nauticalChartHint,
+      icon: <Sailboat className="w-4 h-4" aria-hidden />,
+      pressed: p.nauticalChartEnabled,
+      onToggle: p.toggleNauticalChart,
+      toggleAttr: 'data-map-nautical-chart-toggle',
       iconClass: 'text-data-water',
     },
-    {
-      key: 'seamarks',
-      label: p.seamarksLabel,
-      hint: p.seamarksHint,
-      icon: <Sailboat className="w-4 h-4" aria-hidden />,
-      pressed: p.seamarksEnabled,
-      onToggle: p.toggleSeamarks,
-      toggleAttr: 'data-map-seamarks-toggle',
-      iconClass: 'text-score-good',
-    },
-    {
+    // Sem áreas sob aviso activo a camada não pinta nada → esconde-se
+    // (mesmo padrão das tempestades — Fase 3).
+    ...(p.warnAreasUnavailable ? [] : [{
       key: 'warnAreas',
       label: p.warnAreasLabel,
       hint: p.warnAreasHint,
       icon: <AlertTriangle className="w-4 h-4" aria-hidden />,
       pressed: p.warnAreasEnabled,
-      disabled: p.warnAreasUnavailable,
       onToggle: p.toggleWarnAreas,
       toggleAttr: 'data-map-warn-areas-toggle',
       iconClass: 'text-score-poor',
-    },
+    } satisfies MapLayersMenuItem]),
     {
       key: 'coastalWarnings',
       label: p.coastalWarningsLabel,

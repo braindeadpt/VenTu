@@ -44,54 +44,38 @@ export interface MapLayersMenuItem {
 const GROUP_OF: Record<string, MapLayerGroup> = {
   hours: 'time',
   radar: 'time',
-  gibsSat: 'time',
   goesIr: 'time',
-  storms: 'time',
-  warnAreas: 'time',
-  isobaths: 'sea',
   hs: 'sea',
   sst: 'sea',
   currents: 'sea',
-  bathymetry: 'sea',
   buoys: 'nav',
-  seamarks: 'nav',
+  nauticalChart: 'nav',
   coastalWarnings: 'nav',
 };
 const GROUP_ORDER: MapLayerGroup[] = ['time', 'sea', 'nav'];
-/** Ordem das linhas dentro de cada grupo (maquete: 48 h, radar, satélite
- *  NASA, satélite IR, tempestades, áreas de aviso; isóbatas, Hs, SST,
- *  correntes, batimetria; boias, sinalização, avisos). */
+/** Ordem das linhas dentro de cada grupo (maquete: 48 h, radar, satélite;
+ *  Hs, SST, correntes; boias, carta náutica, avisos). */
 const ORDER_OF: Record<string, number> = {
   hours: 0,
   radar: 1,
-  gibsSat: 2,
-  goesIr: 3,
-  storms: 4,
-  warnAreas: 5,
-  isobaths: 0,
-  hs: 1,
-  sst: 2,
-  currents: 3,
-  bathymetry: 4,
+  goesIr: 2,
+  hs: 0,
+  sst: 1,
+  currents: 2,
   buoys: 0,
-  seamarks: 1,
+  nauticalChart: 1,
   coastalWarnings: 2,
 };
 
 const NAME_KEY: Record<string, keyof mapUiLayersDict> = {
   hours: 'layerHours',
   radar: 'layerRadar',
-  gibsSat: 'layerGibsSat',
   goesIr: 'layerSatelliteIr',
-  storms: 'layerStorms',
-  warnAreas: 'layerWarnAreas',
-  isobaths: 'layerIsobaths',
   hs: 'layerHs',
   sst: 'layerSst',
   currents: 'layerCurrents',
-  bathymetry: 'layerBathymetry',
   buoys: 'layerBuoys',
-  seamarks: 'layerSeamarks',
+  nauticalChart: 'layerNauticalChart',
   coastalWarnings: 'layerWarnings',
 };
 
@@ -204,8 +188,27 @@ type Translation = ReturnType<typeof getTranslation>;
  *  tanto os itens do strip (M2) como os do sheet (M5). */
 function miniLegendFor(key: string, t: Translation): React.ReactNode {
   switch (key) {
-    case 'isobaths':
-      return <IsobathsMiniLegend />;
+    case 'radar':
+      return (
+        <LegendRamp
+          gradient="linear-gradient(to right, rgb(140 200 255 / 0.7), rgb(80 210 140 / 0.8) 30%, rgb(250 220 70 / 0.85) 52%, rgb(245 130 40 / 0.9) 72%, rgb(215 50 45 / 0.95))"
+          labels={['0.5', '4', '16', '64+']}
+        />
+      );
+    case 'nauticalChart':
+      // «Carta náutica» funde isóbatas + batimetria + seamarks — a
+      // mini-legenda empilha as três escalas (mesma ordem visual do mapa:
+      // fundo → linhas → sinais).
+      return (
+        <div className="flex flex-col gap-2">
+          <LegendRamp
+            gradient="linear-gradient(to right, #ef4444 0%, #fbbf24 12%, #4ade80 30%, #22d3ee 52%, #1d4ed8 75%, #081c3f 100%)"
+            labels={['0', '500', '4000+']}
+          />
+          <IsobathsMiniLegend />
+          <SeamarksMiniLegend marksLabel={t.map.seamarksLegendMarks} />
+        </div>
+      );
     case 'hs':
       return (
         <LegendRamp
@@ -222,15 +225,6 @@ function miniLegendFor(key: string, t: Translation): React.ReactNode {
       );
     case 'currents':
       return <CurrentsMiniLegend />;
-    case 'bathymetry':
-      return (
-        <LegendRamp
-          gradient="linear-gradient(to right, #ef4444 0%, #fbbf24 12%, #4ade80 30%, #22d3ee 52%, #1d4ed8 75%, #081c3f 100%)"
-          labels={['0', '500', '4000+']}
-        />
-      );
-    case 'seamarks':
-      return <SeamarksMiniLegend marksLabel={t.map.seamarksLegendMarks} />;
     case 'coastalWarnings':
       return (
         <WarningsMiniLegend

@@ -36,6 +36,9 @@ interface MapLegendProps {
      *  do scrubber/sheet para o cartão nunca colidir (scroll interno). */
     maxHeight?: number;
   };
+  /** Rampa de precipitação do radar IPMA quando a camada está activa. */
+  radarTitle?: string;
+  radarVisible?: boolean;
   /** Legenda de profundidade das isóbatas quando a camada está activa. */
   isobathsTitle?: string;
   isobathsVisible?: boolean;
@@ -106,6 +109,8 @@ export default function MapLegend({
   placement = 'map',
   embedded = false,
   chrome,
+  radarTitle,
+  radarVisible = false,
   isobathsTitle,
   isobathsVisible = false,
   hsTitle,
@@ -137,15 +142,38 @@ export default function MapLegend({
   // the content visible regardless of `collapsed`); below lg the user taps
   // the header to expand it.
   useEffect(() => {
-    if (placement !== 'hero' && (isobathsVisible || hsVisible || sstVisible || currentsVisible || windVisible || bathymetryVisible || seamarksVisible || warningsVisible)) {
+    if (placement !== 'hero' && (radarVisible || isobathsVisible || hsVisible || sstVisible || currentsVisible || windVisible || bathymetryVisible || seamarksVisible || warningsVisible)) {
       setCollapsed(false);
     }
-  }, [placement, isobathsVisible, hsVisible, sstVisible, currentsVisible, windVisible, bathymetryVisible, seamarksVisible, warningsVisible]);
+  }, [placement, radarVisible, isobathsVisible, hsVisible, sstVisible, currentsVisible, windVisible, bathymetryVisible, seamarksVisible, warningsVisible]);
 
   const scoreTitle = t.mapUiChrome.legendScoreTitle;
 
   const layerSections = (
     <>
+      {radarVisible && radarTitle && (
+        <div className="mt-2 pt-2 border-t border-divider" data-map-radar-legend>
+          <p className="text-[10px] font-semibold uppercase tracking-wide text-fg-subtle mb-1">
+            {radarTitle}
+          </p>
+          {/* Aproximação da paleta de precipitação IPMA (fraca azul →
+              moderada verde/amarelo → forte laranja/vermelho), classes
+              de intensidade em mm/h como na legenda oficial. */}
+          <div
+            className="h-2 rounded mb-1"
+            style={{
+              background:
+                'linear-gradient(to right, rgb(140 200 255 / 0.7), rgb(80 210 140 / 0.8) 30%, rgb(250 220 70 / 0.85) 52%, rgb(245 130 40 / 0.9) 72%, rgb(215 50 45 / 0.95))',
+            }}
+          />
+          <div className="flex justify-between text-[9px] font-mono tabular-nums text-fg-subtle">
+            <span>0.5</span>
+            <span>4</span>
+            <span>16</span>
+            <span>64+</span>
+          </div>
+        </div>
+      )}
       {isobathsVisible && isobathsTitle && (
         <div className="mt-2 pt-2 border-t border-divider" data-testid="isobaths-legend-inline">
           <p className="text-[10px] font-semibold uppercase tracking-wide text-fg-subtle mb-1">

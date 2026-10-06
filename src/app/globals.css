@@ -910,15 +910,54 @@ html:has([data-embed-widget]) body {
 .leaflet-hs-pane,
 .leaflet-sst-pane,
 .leaflet-currents-pane,
+.leaflet-ventu-hillshade-pane,
+.leaflet-ventu-labels-pane,
 .ventu-hs-overlay,
 .ventu-sst-overlay,
 .ventu-current-canvas {
   pointer-events: none;
 }
+
+/*
+ * Stack do basemap (Fase 1): hillshade Esri num pane logo acima do tilePane
+ * e toponímia num pane acima de todos os dados. Os tiles World_Hillshade
+ * são opacos e maioritariamente quase brancos (relevo em sombras cinzentas)
+ * — o blend correcto é multiply nos DOIS temas: deixa o branco passar e
+ * só escurece as encostas.
+ *
+ * O blend tem de ficar no PANE (não na .leaflet-layer): dentro de um pane
+ * com z-index/transform o backdrop do filho é só o próprio pane vazio —
+ * o multiply aplicava-se a nada e os tiles opacos cobriam o basemap.
+ * Com blend no pane, o grupo inteiro compõe contra o tilePane por baixo.
+ * O isolate do .leaflet-container mantém o blend dentro do mapa.
+ */
+.leaflet-ventu-hillshade-pane {
+  mix-blend-mode: multiply;
+  opacity: 0.5;
+}
+.leaflet-container[data-map-theme='dark'] .leaflet-ventu-hillshade-pane {
+  opacity: 0.65;
+}
+/* Satélite: sem hillshade (a imagem já tem relevo), as labels Esri
+   Boundaries_and_Places trazem halo próprio — nada a fazer aqui. */
 .ventu-hs-overlay,
 .ventu-sst-overlay {
   transition: opacity 200ms ease;
   image-rendering: auto;
+}
+
+/*
+ * Carrossel do satélite (ventu-goes-ir-pane): os swaps de frame fazem-se
+ * por setOpacity instantâneo no pool de imageOverlay/tileLayer — entre
+ * frames vis↔ir (crepúsculo) ou fotos inteiras (VIS diurno) o corte seco
+ * lia-se como «flash». Um fade dissolve a troca: a transição fica legível
+ * mas suave. Em reduced-motion mantém-se o corte instantâneo.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  .leaflet-ventu-goes-ir-pane .leaflet-image-layer,
+  .leaflet-ventu-goes-ir-pane .leaflet-layer {
+    transition: opacity 420ms ease;
+  }
 }
 .ventu-current-canvas {
   position: absolute;

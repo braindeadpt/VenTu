@@ -18,6 +18,7 @@ const { readPipelineMeta, writePipelineMeta } = require('./lib/pipelineMeta');
 const { loadBuoyLayerStatus, applyBuoyLayerStreak } = require('./lib/buoyLayerHealth');
 const {
   loadRadarLayerStatus,
+  loadSatLayerStatus,
   loadWarningsLayerStatus,
   buildCoastalWarningsLayer,
   applyLayerStreak,
@@ -382,12 +383,14 @@ async function updateConditions() {
     console.log(line);
     console.log(`::warning title=Open-Meteo quota::${line}`);
   }
-  const { buoyLayer, radarLayer, warningsLayer, coastalWarningsLayer, tideLayer } = buildPipelineLayers({ metaRoot, previousMeta: prevMeta, loadBuoyLayerStatus, applyBuoyLayerStreak, loadRadarLayerStatus, loadWarningsLayerStatus, applyLayerStreak, buildCoastalWarningsLayer, loadTidesLayerStatus });
-  writePipelineMeta('full', new Date(), metaRoot, { buoyLayer, radarLayer, warningsLayer, coastalWarningsLayer, tideLayer, openMeteoUsage: { weightedCalls: usage.weightedCalls, requests: usage.requests, retries: usage.retries, spotsFetched: usage.spotsFetched, mode: useMultiModel ? 'day' : 'night', weightedPerSpot, waveModels: WAVE_MODELS.length, windModels: WIND_MODELS.length, dayUtc: usageDayUtc, dailyWeightedCalls } });
+  const { buoyLayer, radarLayer, satLayer, warningsLayer, coastalWarningsLayer, tideLayer } = buildPipelineLayers({ metaRoot, previousMeta: prevMeta, loadBuoyLayerStatus, applyBuoyLayerStreak, loadRadarLayerStatus, loadSatLayerStatus, loadWarningsLayerStatus, applyLayerStreak, buildCoastalWarningsLayer, loadTidesLayerStatus });
+  writePipelineMeta('full', new Date(), metaRoot, { buoyLayer, radarLayer, satLayer, warningsLayer, coastalWarningsLayer, tideLayer, openMeteoUsage: { weightedCalls: usage.weightedCalls, requests: usage.requests, retries: usage.retries, spotsFetched: usage.spotsFetched, mode: useMultiModel ? 'day' : 'night', weightedPerSpot, waveModels: WAVE_MODELS.length, windModels: WIND_MODELS.length, dayUtc: usageDayUtc, dailyWeightedCalls } });
   if (buoyLayer) console.log(`🌊 Camada de boias: ${buoyLayer.status} (key ${buoyLayer.apiKeyConfigured ? '✓' : '✗'}, wave data ${buoyLayer.hasWaveData ? '✓' : '✗'}${buoyLayer.newestReadingAt ? `, última leitura ${buoyLayer.newestReadingAt}` : ''}${buoyLayer.streak > 0 ? `, streak down/stale: ${buoyLayer.streak} runs` : ''})`);
   else console.log('🌊 Camada de boias: sem ih-buoys.json (primeiro run)');
   if (radarLayer) console.log(`📡 Camada de radar: ${radarLayer.status}${radarLayer.frameTime ? ` · frame ${radarLayer.frameTime}` : ''}${radarLayer.streak > 0 ? `, streak down/stale: ${radarLayer.streak} runs` : ''}`);
   else console.log('📡 Camada de radar: sem radar.json (primeiro run)');
+  if (satLayer) console.log(`🛰️  Camada de satélite MTG-I1: ${satLayer.status}${satLayer.frameTime ? ` · frame ${satLayer.frameTime}` : ''}${satLayer.frames ? ` · ${satLayer.frames} frames` : ''}${satLayer.streak > 0 ? `, streak down/stale: ${satLayer.streak} runs` : ''}`);
+  else console.log('🛰️  Camada de satélite MTG-I1: sem sat-mtg.json (sem credenciais ou primeiro run)');
   if (warningsLayer) console.log(`⚠️  Camada de avisos: ${warningsLayer.status} · ${warningsLayer.activeWarnings ?? 0} avisos activos (${warningsLayer.source ?? '?'}${warningsLayer.fetchedAt ? `, ${warningsLayer.fetchedAt}` : ''})${warningsLayer.streak > 0 ? `, streak down/stale: ${warningsLayer.streak} runs` : ''}`);
   else console.log('⚠️  Camada de avisos: sem warnings.json (primeiro run)');
   if (coastalWarningsLayer) console.log(`⚓ Camada de avisos costeiros: ${coastalWarningsLayer.status} · ${coastalWarningsLayer.activeWarnings ?? 0} avisos em vigor, ${coastalWarningsLayer.coveredSpots ?? 0} spots cobertos${coastalWarningsLayer.fetchedAt ? ` · fetch ${coastalWarningsLayer.fetchedAt}` : ''}${coastalWarningsLayer.streak > 0 ? `, streak down/stale: ${coastalWarningsLayer.streak} runs` : ''}`);

@@ -16,8 +16,8 @@ Toda a escolha de fonte em baixo foi avaliada contra este rectângulo:
 | Zona | Fonte primária de «tempestade» |
 |---|---|
 | Costa/continente PT+ES | IPMA avisos (polígonos) + radar IPMA animado + avisos IH |
-| Atlântico até Açores | **NHC cone/track** (ciclones) + **GOES-East IR 10 min** (nuvens/células) |
-| Madeira / Canárias / Norte de África | IPMA/MET avisos + GOES-East IR + NHC quando aplicável |
+| Atlântico até Açores | **NHC cone/track** (ciclones) + **Satélite IR 10 min** — MTG-I1 primário, GOES-East fallback (nuvens/células) |
+| Madeira / Canárias / Norte de África | IPMA/MET avisos + Satélite IR + NHC quando aplicável |
 
 ## Fontes oficiais prontas — verificadas ao vivo (2026-09)
 
@@ -36,16 +36,27 @@ Toda a escolha de fonte em baixo foi avaliada contra este rectângulo:
 - Encaixa no padrão do projecto: fetcher → `storms.json` → camada Leaflet
   (cone + linha de track + etiqueta classe/vento) + estado por spot.
 
-### B. NASA GIBS — GOES-East ABI Band13 Clean IR ✅ (satélite quase-real)
+### B. Satélite — MTG-I1 primário (EUMETSAT), GOES-East/GIBS fallback ✅
 
-- Verificado no WMTS epsg3857 que já usamos: camada
+- **Primário (2026-10):** `scripts/fetch-mtg-ir.py` — Meteosat MTG-I1 FCI
+  via EUMETSAT Data Tailor (ROI Ibéria+Atlântico 28–52°N, 34°W–1°E, ~2 km/px).
+  Produto por elevação solar: de dia `natural_color` (foto opaca), de noite
+  `ir_105` → radiância→BT (Planck) → paleta topo-de-nuvem translúcida →
+  WebP + `sat-mtg.json`. Meteosat a 0° dá PT na resolução nativa ~2 km —
+  resolve o caveat do limbo GOES abaixo. Licença: frames ≥1 h = «Core»
+  CC-BY-4.0.
+- **Fallback:** GIBS `GOES-East_ABI_Band13_Clean_Infrared` (mesmo
+  carrossel; entra quando `sat-mtg.json` está ausente ou >3 h stale).
+
+- Detalhe do fallback GIBS: camada
   `GOES-East_ABI_Band13_Clean_Infrared`, **cadência PT10M** no capabilities,
   tile real servido (PNG ~70 KB, `GoogleMapsCompatible_Level6`).
 - Tops de nuvens frias = células de tempestade a formar-se no Atlântico —
   o «a aproximar-se» visível ~1000 km antes da costa.
-- Mesma infra da camada GIBS existente (`GIBS_SATELLITE_URL` + pane) —
-  muda o layer id, o tile matrix `Level6` (~1,2 km/px, aceitável p/ nuvens)
-  e o slot TIME com timestamp a 10 min.
+- Mesma infra GIBS WMTS — muda o layer id, o tile matrix `Level6`
+  (~1,2 km/px, aceitável p/ nuvens) e o slot TIME com timestamp a 10 min.
+  *(A antiga camada GIBS true-color/MODIS que aqui servia de referência
+  foi removida na Fase 3 — ficou só esta IR.)*
 - Caveat honesto: Portugal continental fica perto do limbo do disco GOES
   (satélite a 75°W) — resolução degrada a Este; para a costa o radar IPMA
   continua a ser a fonte fina. Açores/Madeira/Atlântico = cobertura plena.
@@ -174,13 +185,15 @@ o comportamento E1c fica intacto (migration opcional, degrada limpo).
 - Flag `warn` em `user_alert_prefs` + path no evaluator + template ×5 locales.
 - Reusa tokens/confirm/unsubscribe/cooldowns existentes.
 
-### B5 — Satélite IR animado (fonte B)
+### B5 — Satélite animado (fonte B)
 
-**Estado: implementado** — `src/lib/goesIr.ts` (camada
+**Estado: implementado — primário MTG-I1, fallback GIBS.** Pipeline
+`scripts/fetch-mtg-ir.py` (FCI vis/ir → `sat-mtg.json` + WebPs) alimenta
+`L.imageOverlay`s; `src/lib/goesIr.ts` fica como fallback (camada
 `GOES-East_ABI_Band13_Clean_Infrared`, `GoogleMapsCompatible_Level6`,
 PT10M; carrossel de 12 slots a terminar ~45 min atrás — latência real do
 produto medida no capabilities) + tileLayer num pane próprio (206, logo
-acima do GIBS true-color) + `RadarCarousel` generalizado
+acima do hillshade) + `RadarCarousel` generalizado
 (`cadenceMin`/`icon`/`attribution`/`staleMaxAgeMin`/relógio Lisbon-TZ) +
 item «Satélite IR (10 min)» no grupo TEMPO (menu desktop + sheet,
 `data-map-goes-ir-toggle`) + 5.ª key no cap de raster pesadas +

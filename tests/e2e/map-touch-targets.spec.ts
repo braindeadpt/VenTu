@@ -110,7 +110,7 @@ test.describe('Mapa — alvos de toque ≥44px', () => {
   test.describe('mobile homepage — chips do hero', () => {
     test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, serviceWorkers: 'block', reducedMotion: 'reduce' });
 
-    test('botões radar e isóbatas ≥44×44', async ({ page }) => {
+    test('botões radar e carta náutica ≥44×44', async ({ page }) => {
       await preseedWindRingLegend(page);
       await page.goto('/pt/', { waitUntil: 'domcontentloaded', timeout: 60_000 });
       await waitHydrated(page);
@@ -120,8 +120,8 @@ test.describe('Mapa — alvos de toque ≥44px', () => {
 
       const radar = hero.getByRole('button', { name: /Radar/i }).first();
       await expectMinTargetSize(radar, 'chip radar do hero');
-      const isobaths = hero.getByRole('button', { name: /isóbatas/i }).first();
-      await expectMinTargetSize(isobaths, 'chip isóbatas do hero');
+      const chart = hero.getByRole('button', { name: /Carta náutica/i }).first();
+      await expectMinTargetSize(chart, 'chip carta náutica do hero');
     });
   });
 });

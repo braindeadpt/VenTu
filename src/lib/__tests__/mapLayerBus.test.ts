@@ -9,25 +9,25 @@ import {
 
 describe('planHeavyRasterEnable (§8 — máx. 2 raster pesadas)', () => {
   it('abaixo do limite: acrescenta sem evicção', () => {
-    const r = planHeavyRasterEnable(['bathymetry'], 'seamarks');
+    const r = planHeavyRasterEnable(['radar'], 'nauticalChart');
     expect(r.evict).toBeUndefined();
-    expect(r.order).toEqual(['bathymetry', 'seamarks']);
+    expect(r.order).toEqual(['radar', 'nauticalChart']);
   });
 
   it('na 3.ª: desliga a mais antiga e roda a ordem', () => {
-    const r = planHeavyRasterEnable(['bathymetry', 'seamarks'], 'radar');
-    expect(r.evict).toBe('bathymetry');
-    expect(r.order).toEqual(['seamarks', 'radar']);
+    const r = planHeavyRasterEnable(['nauticalChart', 'goesIr'], 'radar');
+    expect(r.evict).toBe('nauticalChart');
+    expect(r.order).toEqual(['goesIr', 'radar']);
   });
 
   it('re-activar uma já ligada passa-a para o fim (fica «mais recente»)', () => {
-    const r = planHeavyRasterEnable(['bathymetry', 'radar'], 'bathymetry');
+    const r = planHeavyRasterEnable(['nauticalChart', 'radar'], 'nauticalChart');
     expect(r.evict).toBeUndefined();
-    expect(r.order).toEqual(['radar', 'bathymetry']);
+    expect(r.order).toEqual(['radar', 'nauticalChart']);
   });
 
-  it('constantes: 5 pesadas conhecidas, máximo 2', () => {
-    expect(MAP_HEAVY_RASTER_KEYS).toEqual(['radar', 'bathymetry', 'seamarks', 'gibsSat', 'goesIr']);
+  it('constantes: 3 pesadas conhecidas, máximo 2', () => {
+    expect(MAP_HEAVY_RASTER_KEYS).toEqual(['radar', 'nauticalChart', 'goesIr']);
     expect(MAP_HEAVY_RASTER_MAX).toBe(2);
   });
 });

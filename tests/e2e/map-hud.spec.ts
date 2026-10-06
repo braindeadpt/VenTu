@@ -29,20 +29,55 @@ import { expandMapHudFilters } from './helpers/map-hud';
 
 const SPORTS = ['surf', 'kitesurf', 'windsurf', 'wakeboard', 'bodyboard', 'sup', 'foil'] as const;
 
-/** 16 steps × 3 h from 08:00 Lisbon. Index 0 = 08h, index 3 = 17h (nearest to 18h). */
+/**
+ * 16 steps × 3 h ancorados em AGORA (wall time Europe/Lisbon). Index 0 =
+ * passo corrente; a grelha mantém horas ≡2 (mod 3) — como o original
+ * 08h→17h — por isso 17:00 existe sempre e `?t=18` aterra lá (17 < 20).
+ * A fixture fixa 2026-09-03 apodrecia com o calendário: passado o fim da
+ * série, «Agora» caía no último passo e os testes rebentavam sem tocar no
+ * código (achado na Fase 3, 2026-10-05).
+ */
+const lisbonNowParts = Object.fromEntries(
+  new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Europe/Lisbon',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    hour12: false,
+  })
+    .formatToParts(new Date())
+    .filter((x) => x.type !== 'literal')
+    .map((x) => [x.type, x.value]),
+);
+const currentLisbonHour = Number(lisbonNowParts.hour);
+// Passos desde a hora ≡2 mod3 mais recente (0–2). Se recuar atravessa a
+// meia-noite, o índice 0 pertence ao dia civil anterior em Lisboa.
+const hoursBack = (currentLisbonHour - 2 + 24) % 3;
+const startLisbonHour = (currentLisbonHour - hoursBack + 24) % 24;
+const startDayOffset = currentLisbonHour - hoursBack < 0 ? -1 : 0;
 const TIMES = Array.from({ length: 16 }, (_, i) => {
-  const h = 8 + i * 3;
-  const day = 3 + Math.floor(h / 24);
-  const hh = String(h % 24).padStart(2, '0');
-  return `2026-09-${String(day).padStart(2, '0')}T${hh}:00`;
+  const total = startLisbonHour + i * 3;
+  const dayOffset = startDayOffset + Math.floor(total / 24);
+  const hh = String(total % 24).padStart(2, '0');
+  const day = new Date(
+    Date.UTC(
+      Number(lisbonNowParts.year),
+      Number(lisbonNowParts.month) - 1,
+      Number(lisbonNowParts.day) + dayOffset,
+    ),
+  );
+  return `${day.toISOString().slice(0, 10)}T${hh}:00`;
 });
+/** Etiqueta «HH:MM» do passo — a hora da string naive é a própria label. */
+const hhmm = (index: number) => TIMES[index].slice(-5);
 
-function series(at: Record<number, number>): number[] {
-  return TIMES.map((_, i) => at[i] ?? 40);
+function series(at: Record<number, number>, fill = 40): number[] {
+  return TIMES.map((_, i) => at[i] ?? fill);
 }
 
-function spotRow(at: Record<number, number>) {
-  const s = series(at);
+function spotRow(at: Record<number, number>, fill = 40) {
+  const s = series(at, fill);
   const row: Record<string, number[]> = { best: s };
   for (const sport of SPORTS) row[sport] = s;
   return row;
@@ -53,7 +88,7 @@ function spotRow(at: Record<number, number>) {
  * correntes/SST): mantém a linha do track leve e determinística.
  */
 const MAP_HOURS_MINIMAL_STUB = {
-  generatedAt: '2026-09-03T07:00:00.000Z',
+  generatedAt: new Date().toISOString(),
   stepHours: 3,
   times: TIMES,
   sports: SPORTS,
@@ -62,12 +97,24 @@ const MAP_HOURS_MINIMAL_STUB = {
   },
 };
 
+/** Índice do passo das 17:00 dentro da grelha ancorada — já não é sempre 3. */
+const IDX_17 = ((17 - startLisbonHour + 24) % 24) / 3;
+/**
+ * Variante para o deep link `?t=18`: o 88 tem de estar no índice do passo
+ * das 17:00 (o passo que `indexForHourOfDay` escolhe), onde quer que ele
+ * caia na grelha ancorada em agora — inclusive no índice 0.
+ */
+const MAP_HOURS_T18_STUB = {
+  ...MAP_HOURS_MINIMAL_STUB,
+  spots: { nazare: spotRow({ [IDX_17]: 88 }) },
+};
+
 /**
  * Fixture com correntes + SST → os toggles de camadas nascem disponíveis
  * (não disabled) na secção de hit-test dos toggles.
  */
 const MAP_HOURS_STUB = {
-  generatedAt: '2026-09-03T07:00:00.000Z',
+  generatedAt: new Date().toISOString(),
   stepHours: 3,
   times: TIMES,
   sports: SPORTS,
@@ -124,13 +171,19 @@ const RADAR_STUB = {
 
 async function openMapa(
   page: Page,
-  opts: { query?: string; radar?: boolean; layers?: boolean; buoy?: 'noKey' | 'stale' } = {},
+  opts: {
+    query?: string;
+    radar?: boolean;
+    layers?: boolean;
+    buoy?: 'noKey' | 'stale';
+    hoursStub?: typeof MAP_HOURS_MINIMAL_STUB;
+  } = {},
 ): Promise<void> {
   await preseedWindRingLegend(page);
   await page.addInitScript(() => {
     localStorage.setItem('ventu.map.cluster', '0');
   });
-  await interceptMapHours(page, opts.layers ? MAP_HOURS_STUB : MAP_HOURS_MINIMAL_STUB);
+  await interceptMapHours(page, opts.hoursStub ?? (opts.layers ? MAP_HOURS_STUB : MAP_HOURS_MINIMAL_STUB));
   if (opts.radar) await interceptRadar(page, RADAR_STUB);
   if (opts.buoy === 'noKey') {
     await interceptIhBuoys(page, IH_NO_KEY);
@@ -422,7 +475,7 @@ test.describe('Explorar /mapa — garantias consolidadas (sheet mobile + painel 
       for (const t of [
         { name: 'correntes', attr: 'data-map-currents-toggle', lsKey: 'ventu.map.currents', lsValue: '1' },
         { name: 'temperatura (SST)', attr: 'data-map-sst-toggle', lsKey: 'ventu.map.sst', lsValue: '1' },
-        { name: 'isóbatas', attr: 'data-map-isobaths-toggle', lsKey: 'ventu.map.isobaths', lsValue: '1' },
+        { name: 'carta náutica', attr: 'data-map-nautical-chart-toggle', lsKey: 'ventu.map.nauticalChart', lsValue: '1' },
         { name: 'radar IPMA', attr: 'data-map-radar-toggle', lsKey: 'ventu.radar.state', lsValue: null },
       ]) {
         test(`toggle «${t.name}» é o elemento de topo no sheet e persiste após recarga`, async ({ page }) => {
@@ -474,7 +527,15 @@ test.describe('Explorar /mapa — garantias consolidadas (sheet mobile + painel 
       reducedMotion: 'reduce',
     });
 
-    test('deep link ?hours=1 liga o trilho; 08h→17h muda o score da Nazaré', async ({ page }) => {
+    test('deep link ?hours=1 liga o trilho; passo corrente→+9h muda o score da Nazaré', async ({
+      page,
+    }) => {
+      // Autoplay do trilho pausado — sem isto o frame avança 1 passo/segundo
+      // e as leituras de header/score ficam corridas (o deep link vence o
+      // frame gravado — useMapHours.ts).
+      await page.addInitScript(() => {
+        localStorage.setItem('ventu.map.hours', JSON.stringify({ paused: true, frame: 0 }));
+      });
       await openMapa(page, { query: '?hours=1' });
 
       await expect(page.locator('[data-map-hours="true"]')).toBeVisible();
@@ -482,18 +543,21 @@ test.describe('Explorar /mapa — garantias consolidadas (sheet mobile + painel 
       await expect(track).toBeVisible({ timeout: 15_000 });
       // UX v3 §3 — a pill mostra «Agora · HH:MM» ao vivo e o cabeçalho do
       // scrubber «agora»/«qui 17:00» (formato da maquete, não «17h»).
-      await expect(page.locator('[data-map-time-pill]')).toContainText('08:00');
+      await expect(page.locator('[data-map-time-pill]')).toContainText(hhmm(0));
 
       await expectNazareScore(page, '20');
 
       const slider = page.locator('[data-map-hours-scrubber] input[type="range"]');
       await slider.fill('3');
-      await expect(track).toContainText('17:00');
+      await expect(track).toContainText(hhmm(3));
       await expectNazareScore(page, '88');
     });
 
     test('deep link ?t=18 parte no passo mais próximo (17h)', async ({ page }) => {
-      await openMapa(page, { query: '?hours=1&t=18' });
+      await page.addInitScript(() => {
+        localStorage.setItem('ventu.map.hours', JSON.stringify({ paused: true, frame: 0 }));
+      });
+      await openMapa(page, { query: '?hours=1&t=18', hoursStub: MAP_HOURS_T18_STUB });
 
       const track = page.locator('[data-map-time-track-mode="hours"]');
       await expect(track).toBeVisible({ timeout: 15_000 });
@@ -509,12 +573,12 @@ test.describe('Explorar /mapa — garantias consolidadas (sheet mobile + painel 
       await expect(track).toBeVisible({ timeout: 15_000 });
       const slider = page.locator('[data-map-hours-scrubber] input[type="range"]');
       await slider.fill('0');
-      await expect(page.locator('[data-map-time-pill]')).toContainText('08:00');
+      await expect(page.locator('[data-map-time-pill]')).toContainText(hhmm(0));
       await expect(page.locator('[data-map-hours-play]')).toBeVisible();
       await expectNazareScore(page, '20');
 
       await slider.fill('3');
-      await expect(track).toContainText('17:00');
+      await expect(track).toContainText(hhmm(3));
       await expectNazareScore(page, '88');
     });
   });
@@ -527,7 +591,12 @@ test.describe('Explorar /mapa — garantias consolidadas (sheet mobile + painel 
       reducedMotion: 'reduce',
     });
 
-    test('sheet no telemóvel: ?hours=1 abre no estado half e 08h→17h muda o mapa', async ({ page }) => {
+    test('sheet no telemóvel: ?hours=1 abre no estado half e mudar o passo muda o mapa', async ({
+      page,
+    }) => {
+      await page.addInitScript(() => {
+        localStorage.setItem('ventu.map.hours', JSON.stringify({ paused: true, frame: 0 }));
+      });
       await openMapa(page, { query: '?hours=1' });
 
       // O deep link abre o sheet no estado «half» — onde vive o trilho.
@@ -539,11 +608,11 @@ test.describe('Explorar /mapa — garantias consolidadas (sheet mobile + painel 
       await expect(page.locator('[data-map-hours-toggle]')).toBeVisible({ timeout: 15_000 });
       const track = page.locator('[data-map-time-track-mode="hours"]');
       await expect(track).toBeVisible({ timeout: 15_000 });
-      await expect(page.locator('[data-map-time-pill]')).toContainText('08:00');
+      await expect(page.locator('[data-map-time-pill]')).toContainText(hhmm(0));
 
       const slider = page.locator('[data-map-hours-scrubber] input[type="range"]');
       await slider.fill('3');
-      await expect(track).toContainText('17:00');
+      await expect(track).toContainText(hhmm(3));
     });
   });
 

@@ -10,16 +10,13 @@ import { DEFAULT_REGION } from '@/lib/gridFilters';
  */
 export interface MapShareLayers {
   radar?: boolean;
-  isobaths?: boolean;
   hours?: boolean;
   buoys?: boolean;
   hs?: boolean;
   sst?: boolean;
   currents?: boolean;
   wind?: boolean;
-  bathymetry?: boolean;
-  seamarks?: boolean;
-  gibsSat?: boolean;
+  nauticalChart?: boolean;
   goesIr?: boolean;
   storms?: boolean;
   warnAreas?: boolean;
@@ -48,8 +45,8 @@ export function buildMapShareSearch(view: MapShareView): string {
     params.set('region', view.region);
   }
   for (const key of [
-    'radar', 'isobaths', 'hours', 'buoys', 'hs', 'sst', 'currents',
-    'wind', 'bathymetry', 'seamarks', 'gibsSat', 'goesIr',
+    'radar', 'hours', 'buoys', 'hs', 'sst', 'currents',
+    'wind', 'nauticalChart', 'goesIr',
     'storms', 'warnAreas', 'coastalWarnings',
   ] as const) {
     if (view.layers?.[key]) params.set(key, '1');

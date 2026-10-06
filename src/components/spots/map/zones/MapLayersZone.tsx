@@ -13,8 +13,8 @@ import { useCallback, useEffect, useMemo } from 'react';
 import type L from 'leaflet';
 import {
   Activity, Anchor, Clock, CloudRain, LifeBuoy,
-  Mountain, Navigation, Sailboat, Satellite, SatelliteDish, CloudLightning,
-  Thermometer, Waves, AlertTriangle,
+  Navigation, Sailboat, SatelliteDish, CloudLightning,
+  Thermometer, AlertTriangle,
 } from 'lucide-react';
 import { getTranslation } from '@/lib/i18n';
 import {
@@ -50,13 +50,10 @@ interface UseMapLayersBaseParams {
   isHeroEmbed: boolean;
   focusSpotId?: string;
   initialRadarEnabled: boolean;
-  initialIsobathsEnabled: boolean;
+  initialNauticalChartEnabled: boolean;
   initialHoursEnabled: boolean;
   initialHourOfDay: number | null;
   initialBuoysEnabled: boolean;
-  initialBathymetryEnabled: boolean;
-  initialSeamarksEnabled: boolean;
-  initialGibsSatEnabled: boolean;
   initialGoesIrEnabled: boolean;
   initialStormsEnabled: boolean;
   initialWarnAreasEnabled: boolean;
@@ -77,13 +74,10 @@ export function useMapLayersBase({
   isHeroEmbed,
   focusSpotId,
   initialRadarEnabled,
-  initialIsobathsEnabled,
+  initialNauticalChartEnabled,
   initialHoursEnabled,
   initialHourOfDay,
   initialBuoysEnabled,
-  initialBathymetryEnabled,
-  initialSeamarksEnabled,
-  initialGibsSatEnabled,
   initialGoesIrEnabled,
   initialStormsEnabled,
   initialWarnAreasEnabled,
@@ -99,10 +93,7 @@ export function useMapLayersBase({
     isHeroEmbed,
     focusSpotId,
     initialRadarEnabled,
-    initialIsobathsEnabled,
-    initialBathymetryEnabled,
-    initialSeamarksEnabled,
-    initialGibsSatEnabled,
+    initialNauticalChartEnabled,
     initialGoesIrEnabled,
     initialCoastalWarningsEnabled,
     initialStormsEnabled,
@@ -188,14 +179,8 @@ export interface MapLayerCopy {
   sstHint: string;
   currentsLabel: string;
   currentsHint: string;
-  isobathsLabel: string;
-  isobathsHint: string;
-  bathymetryLabel: string;
-  bathymetryHint: string;
-  seamarksLabel: string;
-  seamarksHint: string;
-  gibsSatLabel: string;
-  gibsSatHint: string;
+  nauticalChartLabel: string;
+  nauticalChartHint: string;
   satIrLabel: string;
   satIrHint: string;
   stormsLabel: string;
@@ -245,10 +230,7 @@ export function useMapLayersFields({
     radarEnabled, radarLabel, radarHint, radarUnavailable, toggleRadar,
     hoursFile, hoursLive, hoursFrame, hoursOn, hoursUnavailable, toggleHours,
     buoysEnabled, toggleBuoys,
-    isobathsEnabled, isobathsData, toggleIsobaths,
-    bathymetryEnabled, toggleBathymetry,
-    seamarksEnabled, toggleSeamarks,
-    gibsSatEnabled, toggleGibsSat,
+    nauticalChartEnabled, isobathsData, toggleNauticalChart,
     goesIrEnabled, toggleGoesIr,
     stormsEnabled, stormsUnavailable, toggleStorms,
     warnAreasEnabled, warnAreasUnavailable, toggleWarnAreas,
@@ -337,14 +319,8 @@ export function useMapLayersFields({
     sstHint: t.map.sstHint,
     currentsLabel: currentsEnabled ? t.map.hideCurrents : t.map.showCurrents,
     currentsHint: t.map.currentsHint,
-    isobathsLabel: isobathsEnabled ? t.map.hideIsobaths : t.map.showIsobaths,
-    isobathsHint: t.map.isobathsHint,
-    bathymetryLabel: bathymetryEnabled ? t.map.hideBathymetry : t.map.showBathymetry,
-    bathymetryHint: t.map.bathymetryHint,
-    seamarksLabel: seamarksEnabled ? t.map.hideSeamarks : t.map.showSeamarks,
-    seamarksHint: t.map.seamarksHint,
-    gibsSatLabel: t.mapUiLayers.layerGibsSat,
-    gibsSatHint: t.map.gibsSatHint,
+    nauticalChartLabel: t.mapUiLayers.layerNauticalChart,
+    nauticalChartHint: t.map.nauticalChartHint,
     satIrLabel: t.mapUiLayers.layerSatelliteIr,
     satIrHint: t.map.satIrHint,
     stormsLabel: t.mapUiLayers.layerStorms,
@@ -357,7 +333,7 @@ export function useMapLayersFields({
   }), [
     radarLabel, radarHint,
     hoursOn, buoysEnabled, hsEnabled, sstEnabled, currentsEnabled,
-    isobathsEnabled, bathymetryEnabled, seamarksEnabled, coastalWarningsLabel,
+    coastalWarningsLabel,
     t,
   ]);
 
@@ -393,17 +369,6 @@ export function useMapLayersFields({
       iconClass: 'text-data-waves',
     },
     {
-      key: 'gibsSat',
-      group: 'time',
-      label: lyr.layerGibsSat,
-      hint: layerCopy.gibsSatHint,
-      icon: <Satellite className="w-4 h-4" aria-hidden />,
-      pressed: gibsSatEnabled,
-      onToggle: toggleGibsSat,
-      toggleAttr: 'data-map-gibs-sat-toggle',
-      iconClass: 'text-data-water',
-    },
-    {
       key: 'goesIr',
       group: 'time',
       label: lyr.layerSatelliteIr,
@@ -414,49 +379,32 @@ export function useMapLayersFields({
       toggleAttr: 'data-map-goes-ir-toggle',
       iconClass: 'text-data-period',
     },
-    {
+    // Camadas sazonais/de evento: sem tempestades activas na região (ou
+    // ficheiro stale) e sem áreas sob aviso, o toggle que não pinta nada
+    // ESCONDE-SE em vez de ocupar a lista desactivado — volta a aparecer
+    // sozinho quando houver dados (Fase 3 — consolidação do menu).
+    ...(stormsUnavailable ? [] : [{
       key: 'storms',
       group: 'time',
       label: lyr.layerStorms,
-      // Sem tempestades activas na região ou ficheiro stale → o toggle que
-      // não pinta nada desactiva-se em vez de parecer avariado.
-      hint: stormsUnavailable
-        ? `${layerCopy.stormsHint} — ${lyr.unavailable}`
-        : layerCopy.stormsHint,
+      hint: layerCopy.stormsHint,
       icon: <CloudLightning className="w-4 h-4" aria-hidden />,
       pressed: stormsEnabled,
-      disabled: stormsUnavailable,
       onToggle: toggleStorms,
       toggleAttr: 'data-map-storms-toggle',
       iconClass: 'text-score-poor',
-    },
-    {
+    } satisfies MapLayersMenuItem]),
+    ...(warnAreasUnavailable ? [] : [{
       key: 'warnAreas',
       group: 'time',
       label: lyr.layerWarnAreas,
-      // Geometria em falta ou warnings resolvidos sem área sob aviso →
-      // desactiva-se em vez de pintar nada (mesmo padrão do storms).
-      hint: warnAreasUnavailable
-        ? `${layerCopy.warnAreasHint} — ${lyr.unavailable}`
-        : layerCopy.warnAreasHint,
+      hint: layerCopy.warnAreasHint,
       icon: <AlertTriangle className="w-4 h-4" aria-hidden />,
       pressed: warnAreasEnabled,
-      disabled: warnAreasUnavailable,
       onToggle: toggleWarnAreas,
       toggleAttr: 'data-map-warn-areas-toggle',
       iconClass: 'text-score-poor',
-    },
-    {
-      key: 'isobaths',
-      group: 'sea',
-      label: lyr.layerIsobaths,
-      hint: layerCopy.isobathsHint,
-      icon: <Waves className="w-4 h-4" aria-hidden />,
-      pressed: isobathsEnabled,
-      onToggle: toggleIsobaths,
-      toggleAttr: 'data-map-isobaths-toggle',
-      iconClass: 'text-data-waves',
-    },
+    } satisfies MapLayersMenuItem]),
     {
       key: 'hs',
       group: 'sea',
@@ -494,17 +442,6 @@ export function useMapLayersFields({
       iconClass: 'text-data-water',
     },
     {
-      key: 'bathymetry',
-      group: 'sea',
-      label: lyr.layerBathymetry,
-      hint: layerCopy.bathymetryHint,
-      icon: <Mountain className="w-4 h-4" aria-hidden />,
-      pressed: bathymetryEnabled,
-      onToggle: toggleBathymetry,
-      toggleAttr: 'data-map-bathymetry-toggle',
-      iconClass: 'text-data-water',
-    },
-    {
       key: 'buoys',
       group: 'nav',
       label: lyr.layerBuoys,
@@ -516,15 +453,15 @@ export function useMapLayersFields({
       iconClass: 'text-data-waves',
     },
     {
-      key: 'seamarks',
+      key: 'nauticalChart',
       group: 'nav',
-      label: lyr.layerSeamarks,
-      hint: layerCopy.seamarksHint,
+      label: lyr.layerNauticalChart,
+      hint: layerCopy.nauticalChartHint,
       icon: <Sailboat className="w-4 h-4" aria-hidden />,
-      pressed: seamarksEnabled,
-      onToggle: toggleSeamarks,
-      toggleAttr: 'data-map-seamarks-toggle',
-      iconClass: 'text-score-good',
+      pressed: nauticalChartEnabled,
+      onToggle: toggleNauticalChart,
+      toggleAttr: 'data-map-nautical-chart-toggle',
+      iconClass: 'text-data-water',
     },
     {
       key: 'coastalWarnings',
@@ -541,15 +478,12 @@ export function useMapLayersFields({
     layerCopy, lyr,
     radarUnavailable, radarEnabled, toggleRadar,
     hoursUnavailable, hoursOn, toggleHours,
-    gibsSatEnabled, toggleGibsSat,
     goesIrEnabled, toggleGoesIr,
     hsUnavailable, hsEnabled, toggleHs,
     sstUnavailable, sstEnabled, toggleSst,
     currentsUnavailable, currentsEnabled, toggleCurrents,
     buoysEnabled, toggleBuoys,
-    isobathsEnabled, toggleIsobaths,
-    bathymetryEnabled, toggleBathymetry,
-    seamarksEnabled, toggleSeamarks,
+    nauticalChartEnabled, toggleNauticalChart,
     stormsEnabled, stormsUnavailable, toggleStorms,
     warnAreasEnabled, warnAreasUnavailable, toggleWarnAreas,
     coastalWarningsEnabled, toggleCoastalWarnings,
@@ -558,8 +492,10 @@ export function useMapLayersFields({
   // Legenda — props partilhadas entre a flutuante (desktop) e a embutida
   // no <details> do sheet (mobile). Uma só legenda por superfície.
   const legendLayerProps = {
+    radarTitle: t.map.radarLegend,
+    radarVisible: radarEnabled,
     isobathsTitle: t.map.isobathsLegend,
-    isobathsVisible: isobathsEnabled && isobathsData != null,
+    isobathsVisible: nauticalChartEnabled && isobathsData != null,
     hsTitle: t.map.hsLegend,
     hsVisible: hsEnabled,
     sstTitle: t.map.sstLegend,
@@ -569,10 +505,12 @@ export function useMapLayersFields({
     windTitle: t.map.windLegend,
     windVisible: isFullscreen && !isHeroEmbed && windEnabled,
     bathymetryTitle: t.map.bathymetryLegend,
-    bathymetryVisible: bathymetryEnabled,
+    // Em hero embeds a «Carta náutica» resume-se às isóbatas — batimetria e
+    // seamarks não pintam lá, logo a legenda também não as mostra.
+    bathymetryVisible: nauticalChartEnabled && !isHeroEmbed,
     bathymetryContoursLabel: t.map.bathymetryContours,
     seamarksTitle: t.map.seamarksLegend,
-    seamarksVisible: seamarksEnabled,
+    seamarksVisible: nauticalChartEnabled && !isHeroEmbed,
     seamarksMarksLabel: t.map.seamarksLegendMarks,
     warningsTitle: t.map.coastalWarningsLegend,
     warningsVisible: isFullscreen && !isHeroEmbed && coastalWarningsEnabled,

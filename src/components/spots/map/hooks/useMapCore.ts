@@ -20,6 +20,14 @@ import {
   cartoBasemapKey,
   watchTileLayer,
   CARTO_TILE_HANG_MS,
+  ESRI_HILLSHADE_URL,
+  ESRI_HILLSHADE_NATIVE_MAX_ZOOM,
+  ESRI_BOUNDARIES_PLACES_URL,
+  esriReferenceLabelsUrl,
+  MAP_HILLSHADE_PANE,
+  MAP_HILLSHADE_PANE_Z,
+  MAP_LABELS_PANE,
+  MAP_LABELS_PANE_Z,
   type BasemapLoadState,
 } from '@/lib/map-constants';
 import { createClusterIconFunction } from '@/components/spots/MapClusterIcon';
@@ -146,6 +154,7 @@ function attachBasemap(
   mode: BasemapMode,
   dark: boolean,
   tileLayerRef: React.MutableRefObject<L.TileLayer | null>,
+  auxLayersRef: React.MutableRefObject<L.LayerGroup | null>,
   fallbackCleanupRef: React.MutableRefObject<(() => void) | null>,
   onTileState: (state: BasemapLoadState) => void,
 ): void {
@@ -158,6 +167,14 @@ function attachBasemap(
       /* noop */
     }
     tileLayerRef.current = null;
+  }
+  if (auxLayersRef.current) {
+    try {
+      map.removeLayer(auxLayersRef.current);
+    } catch {
+      /* noop */
+    }
+    auxLayersRef.current = null;
   }
   onTileState('loading');
 
@@ -175,6 +192,48 @@ function attachBasemap(
   // até ao release — o comportamento que o Leaflet já aplica por defeito
   // no mobile, estendido ao desktop pela mesma razão de performance.
   const tilePerf = { updateWhenIdle: true } as const;
+
+  // Stack auxiliar do basemap — reconstruído a cada attach (modo/tema):
+  //   «mapa»      → hillshade Esri (pane 201, blend-mode em globals.css)
+  //   ambos       → toponímia/fronteiras (pane 450 — acima de radar e
+  //                 fields, abaixo dos marcadores): Gray Reference no modo
+  //                 mapa, Boundaries_and_Places no satélite.
+  // A mesma string de atribuição auxiliar entra nas duas layers — o
+  // controlo de atribuição do Leaflet faz dedupe por texto (aparece uma
+  // vez, e sem o OSM que o basemap já credita).
+  const attachAuxStack = () => {
+    const ensurePane = (name: string, z: string) => {
+      let p = map.getPane(name);
+      if (!p) p = map.createPane(name);
+      p.style.zIndex = z;
+      p.style.pointerEvents = 'none';
+      // Panes custom nascem sem a classe — sem ela o conteúdo ficava parado
+      // durante o pinch zoom e «saltava» no moveend (o tilePane nativo tem-na).
+      p.classList.add('leaflet-zoom-animated');
+    };
+    const aux = Leaflet.layerGroup();
+    if (mode === 'map') {
+      ensurePane(MAP_HILLSHADE_PANE, MAP_HILLSHADE_PANE_Z);
+      Leaflet.tileLayer(ESRI_HILLSHADE_URL, {
+        pane: MAP_HILLSHADE_PANE,
+        className: 'ventu-hillshade',
+        attribution: TILE_ATTRIBUTIONS.esriAux,
+        maxNativeZoom: ESRI_HILLSHADE_NATIVE_MAX_ZOOM,
+        maxZoom: MAX_ZOOM,
+        ...tilePerf,
+      }).addTo(aux);
+    }
+    ensurePane(MAP_LABELS_PANE, MAP_LABELS_PANE_Z);
+    Leaflet.tileLayer(mode === 'satellite' ? ESRI_BOUNDARIES_PLACES_URL : esriReferenceLabelsUrl(dark), {
+      pane: MAP_LABELS_PANE,
+      attribution: TILE_ATTRIBUTIONS.esriAux,
+      maxZoom: MAX_ZOOM,
+      ...tilePerf,
+    }).addTo(aux);
+    aux.addTo(map);
+    auxLayersRef.current = aux;
+  };
+
   if (mode === 'satellite') {
     const layer = Leaflet.tileLayer(TILE_URLS.satellite, {
       attribution: TILE_ATTRIBUTIONS.esri,
@@ -187,6 +246,7 @@ function attachBasemap(
     // miss the initial batch and skew the all-errored verdict.
     watch(layer, () => onTileState('failed'));
     layer.addTo(map);
+    attachAuxStack();
     return;
   }
 
@@ -221,12 +281,14 @@ function attachBasemap(
     watch(rasterLayer, () => onTileState('failed'));
   }
   rasterLayer.addTo(map);
+  attachAuxStack();
 }
 
 export function useMapCore({ containerRef, isHeroEmbed, locale = 'pt', initialViewBounds = null, exploreChrome, initialBasemap }: UseMapCoreOptions): UseMapCoreReturn {
   const mapInstanceRef = useRef<L.Map | null>(null);
   const LRef = useRef<typeof L | null>(null);
   const tileLayerRef = useRef<L.TileLayer | null>(null);
+  const auxLayersRef = useRef<L.LayerGroup | null>(null);
   const clusterGroupRef = useRef<L.MarkerClusterGroup | null>(null);
   const markersGroupRef = useRef<L.LayerGroup | null>(null);
   const radarOverlayRef = useRef<L.ImageOverlay | null>(null);
@@ -295,7 +357,7 @@ export function useMapCore({ containerRef, isHeroEmbed, locale = 'pt', initialVi
           setAutoRecoverTick((t) => t + 1); // nova tentativa limitada
         }
       };
-      attachBasemap(Leaflet, map, basemapModeRef.current, isDarkRef.current, tileLayerRef, tileFallbackCleanupRef, onSilent);
+      attachBasemap(Leaflet, map, basemapModeRef.current, isDarkRef.current, tileLayerRef, auxLayersRef, tileFallbackCleanupRef, onSilent);
       tileSignatureRef.current = tileSignature(basemapModeRef.current, isDarkRef.current);
     }, exhausted ? AUTO_RECOVER_SLOW_MS : AUTO_RECOVER_INTERVAL_MS);
     return () => clearTimeout(timer);
@@ -405,6 +467,7 @@ export function useMapCore({ containerRef, isHeroEmbed, locale = 'pt', initialVi
       clusterGroupRef.current = null;
       markersGroupRef.current = null;
       tileLayerRef.current = null;
+      auxLayersRef.current = null;
       tileSignatureRef.current = null;
       tileFallbackCleanupRef.current?.();
       tileFallbackCleanupRef.current = null;
@@ -509,7 +572,7 @@ export function useMapCore({ containerRef, isHeroEmbed, locale = 'pt', initialVi
           );
         }
 
-        attachBasemap(Leaflet, created, initialBasemap, initialDark, tileLayerRef, tileFallbackCleanupRef, handleTileState);
+        attachBasemap(Leaflet, created, initialBasemap, initialDark, tileLayerRef, auxLayersRef, tileFallbackCleanupRef, handleTileState);
         tileSignatureRef.current = tileSignature(initialBasemap, initialDark);
 
         // Top-left, NOT bottom-right: the /mapa explore HUD (and the spots
@@ -618,7 +681,7 @@ export function useMapCore({ containerRef, isHeroEmbed, locale = 'pt', initialVi
     if (tileSignatureRef.current === next && tileLayerRef.current) return;
 
     stopAutoRecover();
-    attachBasemap(Leaflet, map, basemapMode, isDark, tileLayerRef, tileFallbackCleanupRef, handleTileState);
+    attachBasemap(Leaflet, map, basemapMode, isDark, tileLayerRef, auxLayersRef, tileFallbackCleanupRef, handleTileState);
     tileSignatureRef.current = next;
   }, [basemapMode, isDark, isReady, handleTileState, stopAutoRecover]);
 
@@ -638,7 +701,7 @@ export function useMapCore({ containerRef, isHeroEmbed, locale = 'pt', initialVi
     const map = mapInstanceRef.current;
     if (!Leaflet || !map) return;
     stopAutoRecover();
-    attachBasemap(Leaflet, map, basemapMode, isDark, tileLayerRef, tileFallbackCleanupRef, handleTileState);
+    attachBasemap(Leaflet, map, basemapMode, isDark, tileLayerRef, auxLayersRef, tileFallbackCleanupRef, handleTileState);
     tileSignatureRef.current = tileSignature(basemapMode, isDark);
   }, [basemapMode, isDark, mapInstanceRef, LRef, tileLayerRef, tileFallbackCleanupRef, handleTileState, stopAutoRecover]);
 

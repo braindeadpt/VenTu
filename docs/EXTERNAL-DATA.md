@@ -85,15 +85,36 @@ https://nomads.ncep.noaa.gov/cgi-bin/filter_gfswave.pl
 
 **Phase A — near-zero cost, do first** — **IMPLEMENTADA (2026-09-29)**
 
-1. ✅ **GIBS map layer** («Satélite NASA») — `L.TileLayer` no pane
-   `ventu-gibs-sat` (z205), MODIS Terra true-color com o slot `default` do
-   WMTS a servir sempre a data mais recente (no-store). Conta para o cap de
-   raster pesadas (máx. 2 de radar/batimetria/seamarks/gibsSat), persiste em
-   `ventu.map.gibsSat`, atribuição NASA incluída. Ficheiros:
-   `src/lib/gibsSatellite.ts`, `useMapLayers.ts`, CSP meta + terraform.
-   *Nota: ficou só o true-color — o SST medido (MUR) ficou fora porque o
-   campo SST do modelo já existe e duplicaria a leitura; pode entrar depois
-   como camada «SST observada» se fizer falta.*
+1. ~~✅ **GIBS map layer** («Satélite NASA»)~~ — **REMOVIDA (Fase 3)**. O
+   MODIS Terra true-color (cadência diária, quase sempre nublado sobre a
+   costa) saiu do mapa. O toggle «Satélite IR» (`ventu.map.goesIr`,
+   `?goesIr=1`, `data-map-goes-ir-toggle`, pane `ventu-goes-ir` z206) é hoje
+   servido **primário pela pipeline MTG-I1** (`fetch-mtg-ir.py` →
+   `sat-mtg.json` + frames WebP, EUMETSAT Data Tailor — Meteosat a 0° cobre
+   PT na resolução nativa ~2 km) com **fallback GOES-East GIBS** keyless
+   quando o manifest está ausente/stale. `src/lib/gibsSatellite.ts` sobrevive
+   só com `gibsTileMaskBlank` (máscara de tiles sem dados do fallback).
+   Conta para o cap de raster pesadas (máx. 2 de radar/nauticalChart/goesIr).
+
+   **MTG-I1 FCI — VIS de dia / IR de noite** — `scripts/fetch-mtg-ir.py`
+   (Python: eumdac + rasterio + pillow, `scripts/requirements-mtg.txt`):
+   procura ciclos FDHSI (`EO:EUM:DAT:0662`), submete jobs Data Tailor
+   (janela de 3 concurrent — quota da conta), ambos com projection
+   geographic + resample 0.02°/px sobre a ROI `ventu_iberia_atlantic`
+   (28–52°N/34°W–1°E). A escolha por slot é solar (elevação > ~15° sobre o
+   centro da ROI — abaixo disso a foto sai demasiado escura): de dia usa a
+   chain `ventu_fci_vis_png` (filtro
+   `natural_color` → foto RGB opaca, re-encodada WebP); de noite usa
+   `ventu_fci_ir_geotiff_hr` (filter `ir_105_effective_radiance`) e
+   converte radiância → temperatura de brilho (Planck, ν=954.7 cm⁻¹) →
+   paleta de topo de nuvem translúcida → WebP RGBA. Manifest
+   `sat-mtg.json` carrega `kind` por frame. Creds:
+   `EUMETSAT_CONSUMER_KEY/_SECRET` (eoportal → api.eumetsat.int/api-key,
+   registo gratuito). **Licença**: a cadência horária serve frames ≥1 h =
+   «Core» CC-BY-4.0; frames <1 h são «Recommended» (grátis só para
+   investigação/educação/pessoal) — não subir a cadência sem rever.
+   *Nota: o SST medido (MUR) continua de fora — o campo SST do modelo já
+   cobre a leitura; pode entrar como camada «SST observada» se fizer falta.*
 2. ✅ **POWER climatology** — `scripts/fetch-climatology.js` →
    `public/data/climatology.json` (uma entrada por spot: vento/ar/chuva
    mensais + anuais, baseline MERRA-2 2001–2020). Não entra na cadência

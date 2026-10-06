@@ -40,7 +40,7 @@ const TOGGLES = [
   'data-map-sst-toggle',
   'data-map-currents-toggle',
   'data-map-buoys-toggle',
-  'data-map-isobaths-toggle',
+  'data-map-nautical-chart-toggle',
 ] as const;
 
 describe('mapToggleAttributes (selectores estáveis dos toggles de camada)', () => {

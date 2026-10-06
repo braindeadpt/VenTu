@@ -47,52 +47,45 @@ import {
 import { warningLevelLabel, warningTypeLabel } from '@/lib/ipmaWarnings';
 import { useIpmaWarnings } from '@/hooks/useIpmaWarnings';
 import {
-  MAP_ISOBATHS_LS_KEY,
+  MAP_NAUTICAL_CHART_LS_KEY,
   MAP_COASTAL_LS_KEY,
-  MAP_BATHYMETRY_LS_KEY,
   EMODNET_BATHYMETRY_WMS_URL,
   EMODNET_BATHYMETRY_WMS_LAYER,
   EMODNET_BATHYMETRY_CONTOURS_LAYER,
   EMODNET_BATHYMETRY_ATTRIBUTION,
   MAP_BATHYMETRY_PANE,
   MAP_BATHYMETRY_PANE_Z,
-  MAP_SEAMARKS_LS_KEY,
   OPENSEAMAP_SEAMARKS_URL,
   OPENSEAMAP_ATTRIBUTION,
   MAP_SEAMARKS_PANE,
   MAP_SEAMARKS_PANE_Z,
-  MAP_GIBS_SAT_LS_KEY,
 } from '@/lib/map-constants';
 import {
-  GIBS_SATELLITE_URL,
-  GIBS_SATELLITE_NATIVE_MAX_ZOOM,
-  GIBS_SATELLITE_ATTRIBUTION,
-  MAP_GIBS_SAT_PANE,
-  MAP_GIBS_SAT_PANE_Z,
-  gibsPreviousDayUtc,
-  gibsSatelliteDayUrl,
   gibsAttachTileMask,
 } from '@/lib/gibsSatellite';
+import { readNauticalChartPref } from '../../mapHudPrefs';
 import {
   goesIrFrames,
   GOES_IR_ATTRIBUTION,
-  GOES_IR_BOUNDS,
   GOES_IR_NATIVE_MAX_ZOOM,
   MAP_GOES_IR_PANE,
   MAP_GOES_IR_PANE_Z,
   type GoesIrFrame,
 } from '@/lib/goesIr';
 import {
+  fetchMtgSatManifest,
+  mtgSatBounds,
+  mtgSatFrames,
+  mtgSatIsFresh,
+  MTG_SAT_ATTRIBUTION,
+  MTG_SAT_OPACITY,
+} from '@/lib/mtgSat';
+import {
   readGoesIrEnabledPref,
   readGoesIrPref,
   writeGoesIrEnabledPref,
   writeGoesIrPref,
 } from '@/lib/goesIrPrefs';
-import {
-  meteosatIrFrames,
-  createMeteosatIrLayer,
-} from '@/lib/meteosatIr';
-import { irApplyPaletteToTile } from '@/lib/irPaletteTile';
 import {
   IPMA_RADAR_ATTRIBUTION_LABEL_PT,
   IPMA_RADAR_ATTRIBUTION_LABEL_EN,
@@ -114,12 +107,10 @@ interface UseMapLayersOptions {
   isHeroEmbed: boolean;
   focusSpotId?: string;
   initialRadarEnabled: boolean;
-  initialIsobathsEnabled: boolean;
-  // Deep links ?<layer>=1 (partilha de vista) — forçam ON à entrada sem
-  // gravar a preferência persistida (mesmo padrão do ?radar=1).
-  initialBathymetryEnabled: boolean;
-  initialSeamarksEnabled: boolean;
-  initialGibsSatEnabled: boolean;
+  // Deep links ?nauticalChart=1 (e os legados ?isobaths/?bathymetry/
+  // ?seamarks=1, resolvidos no MapaFullscreenClient) — forçam ON à entrada
+  // sem gravar a preferência persistida (mesmo padrão do ?radar=1).
+  initialNauticalChartEnabled: boolean;
   initialGoesIrEnabled: boolean;
   initialCoastalWarningsEnabled: boolean;
   initialStormsEnabled: boolean;
@@ -161,23 +152,17 @@ interface UseMapLayersReturn {
   radarHint: string;
   radarUnavailable: boolean;
   radarAttributionLabel: string;
-  // Isobaths
-  isobathsEnabled: boolean;
+  // Carta náutica — isóbatas IH + batimetria EMODnet + seamarks OpenSeaMap
+  // ligam-se em conjunto (toggle único, Fase 3).
+  nauticalChartEnabled: boolean;
   isobathsData: IsobathContoursFile | null | undefined;
-  toggleIsobaths: () => void;
-  // Bathymetry (EMODnet WMS)
-  bathymetryEnabled: boolean;
-  toggleBathymetry: () => void;
-  // Seamarks (OpenSeaMap raster tiles)
-  seamarksEnabled: boolean;
-  toggleSeamarks: () => void;
-  // Satélite NASA GIBS (raster true-color «hoje»)
-  gibsSatEnabled: boolean;
-  toggleGibsSat: () => void;
+  toggleNauticalChart: () => void;
   // Satélite IR GOES-East (carrossel 10 min — B5)
   goesIrEnabled: boolean;
   toggleGoesIr: () => void;
   goesIrFrameList: GoesIrFrame[];
+  /** 'mtg' = pipeline EUMETSAT (frames locais); 'gibs' = fallback NASA. */
+  goesIrSource: 'mtg' | 'gibs';
   goesIrFrameIndex: number;
   goesIrUserPaused: boolean;
   handleGoesIrFrameChange: (value: number) => void;
@@ -208,10 +193,7 @@ export function useMapLayers({
   isHeroEmbed,
   focusSpotId,
   initialRadarEnabled,
-  initialIsobathsEnabled,
-  initialBathymetryEnabled,
-  initialSeamarksEnabled,
-  initialGibsSatEnabled,
+  initialNauticalChartEnabled,
   initialGoesIrEnabled,
   initialCoastalWarningsEnabled,
   initialStormsEnabled,
@@ -257,17 +239,15 @@ export function useMapLayers({
   useEffect(() => { radarUserPausedRef.current = radarUserPaused; }, [radarUserPaused]);
 
   // ── Limite de raster pesadas (map-v3 §8) ──
-  // Máximo 2 de {radar, bathymetry, seamarks} activas — a 3.ª desliga a mais
-  // antiga e emite `ventu:map-raster-off` para a UI mostrar o toast. Os
-  // setters são registados pelas secções de cada camada (heavySetRef) porque
-  // esta máquina é declarada antes delas no corpo do hook.
+  // Máximo 2 de {radar, nauticalChart, goesIr} activas — a 3.ª desliga a
+  // mais antiga e emite `ventu:map-raster-off` para a UI mostrar o toast.
+  // Os setters são registados pelas secções de cada camada (heavySetRef)
+  // porque esta máquina é declarada antes delas no corpo do hook.
   const heavySetRef = useRef<Partial<Record<MapHeavyRasterKey, (next: boolean) => void>>>({});
   const heavyOrderRef = useRef<MapHeavyRasterKey[]>([]);
   const heavyOnRef = useRef<Record<MapHeavyRasterKey, boolean>>({
     radar: false,
-    bathymetry: false,
-    seamarks: false,
-    gibsSat: false,
+    nauticalChart: false,
     goesIr: false,
   });
 
@@ -476,29 +456,47 @@ export function useMapLayers({
   const radarUnavailable = radarData === null;
   const radarAttributionLabel = getTranslation(locale).spotsMap.radarAttribution;
 
-  // ── Isobaths ──
-  const [isobathsEnabled, setIsIsobathsEnabled] = useState<boolean>(() => {
+  // ── Carta náutica — isóbatas IH + batimetria EMODnet + seamarks
+  //    OpenSeaMap num único toggle (Fase 3) ──
+  // As três fontes sobrepunham-se conceptualmente (referência
+  // submarina/náutica): um toggle «Carta náutica» liga-as em conjunto.
+  // Nos hero embeds só as isóbatas pintam (batimetria/seamarks são gated
+  // por isHeroEmbed nos efeitos abaixo — o default ON do hero não pesa).
+  const [nauticalChartEnabled, setNauticalChartEnabled] = useState<boolean>(() => {
     if (typeof window === 'undefined') return false;
-    // Deep link ?isobaths=1 (partilhar o overlay) liga as isóbatas à entrada,
-    // sobrepondo a preferência persistida SEM a gravar — o toggle manual é o
-    // único dono da preferência depois disto (mesmo padrão do deep link ?radar=1).
-    if (initialIsobathsEnabled) return true;
+    // Deep link ?nauticalChart=1 (ou os legados ?isobaths/?bathymetry/
+    // ?seamarks=1) liga a carta à entrada, sobrepondo a preferência
+    // persistida SEM a gravar — o toggle manual é o único dono depois disto
+    // (mesmo padrão do deep link ?radar=1).
+    if (initialNauticalChartEnabled) return true;
     if (!isHeroEmbed && !isFullscreen) return false;
-    const saved = (() => {
-      try {
-        const v = localStorage.getItem(MAP_ISOBATHS_LS_KEY);
-        if (v === '1') return true;
-        if (v === '0') return false;
-      } catch { /* noop */ }
-      return undefined;
-    })();
+    const saved = readNauticalChartPref();
     if (saved !== undefined) return saved;
     return isHeroEmbed;
   });
+
+  const toggleNauticalChart = useCallback(() => {
+    toggleHeavy('nauticalChart', (next) => {
+      setNauticalChartEnabled(next);
+      try { localStorage.setItem(MAP_NAUTICAL_CHART_LS_KEY, next ? '1' : '0'); } catch { /* noop */ }
+    });
+  }, [toggleHeavy]);
+
+  // Registo no cap de raster — usado quando outra pesada a desliga.
+  useEffect(() => {
+    const setters = heavySetRef.current;
+    setters.nauticalChart = (next: boolean) => {
+      setNauticalChartEnabled(next);
+      try { localStorage.setItem(MAP_NAUTICAL_CHART_LS_KEY, next ? '1' : '0'); } catch { /* noop */ }
+    };
+    return () => { delete setters.nauticalChart; };
+  }, []);
+
+  // ── Isobaths ──
   const [isobathsData, setIsIsobathsData] = useState<IsobathContoursFile | null | undefined>(undefined);
 
   useEffect(() => {
-    if (!isobathsEnabled) {
+    if (!nauticalChartEnabled) {
       if (isobathsLayerRef.current) {
         mapInstanceRef.current?.removeLayer(isobathsLayerRef.current);
         isobathsLayerRef.current = null;
@@ -584,32 +582,15 @@ export function useMapLayers({
       isobathsLayerRef.current = null;
       map.attributionControl?.removeAttribution(attr);
     };
-  }, [isobathsEnabled, isReady, isobathsData, locale, mapInstanceRef, LRef, isobathsLayerRef]);
-
-  const toggleIsobaths = useCallback(() => {
-    setIsIsobathsEnabled((prev) => {
-      const next = !prev;
-      try { localStorage.setItem(MAP_ISOBATHS_LS_KEY, next ? '1' : '0'); } catch { /* noop */ }
-      return next;
-    });
-  }, []);
+  }, [nauticalChartEnabled, isReady, isobathsData, locale, mapInstanceRef, LRef, isobathsLayerRef]);
 
   // ── Bathymetry (EMODnet WMS) ──
   // Sombreado contínuo de profundidade — relevo submarino (bancos, canhões,
-  // talude) por baixo das isóbatas. Tiles WMS keyless; camada opcional,
-  // desligada por omissão, best-effort (falhas de tile não tocam no mapa).
-  const [bathymetryEnabled, setBathymetryEnabled] = useState<boolean>(() => {
-    if (typeof window === 'undefined' || isHeroEmbed) return false;
-    if (initialBathymetryEnabled) return true;
-    try {
-      return localStorage.getItem(MAP_BATHYMETRY_LS_KEY) === '1';
-    } catch {
-      return false;
-    }
-  });
-
+  // talude) por baixo das isóbatas. Tiles WMS keyless; best-effort (falhas
+  // de tile não tocam no mapa). Fora dos hero embeds — a «Carta náutica»
+  // aí resume-se às isóbatas.
   useEffect(() => {
-    if (!bathymetryEnabled || !isReady) return;
+    if (!nauticalChartEnabled || isHeroEmbed || !isReady) return;
     const map = mapInstanceRef.current;
     const Leaflet = LRef.current;
     if (!map || !Leaflet) return;
@@ -647,41 +628,15 @@ export function useMapLayers({
       if (map.hasLayer(layer)) map.removeLayer(layer);
       if (map.hasLayer(contours)) map.removeLayer(contours);
     };
-  }, [bathymetryEnabled, isReady, mapInstanceRef, LRef]);
-
-  const toggleBathymetry = useCallback(() => {
-    toggleHeavy('bathymetry', (next) => {
-      setBathymetryEnabled(next);
-      try { localStorage.setItem(MAP_BATHYMETRY_LS_KEY, next ? '1' : '0'); } catch { /* noop */ }
-    });
-  }, [toggleHeavy]);
-
-  // Registo no cap de raster — usado quando outra pesada a desliga.
-  useEffect(() => {
-    const setters = heavySetRef.current;
-    setters.bathymetry = (next: boolean) => {
-      setBathymetryEnabled(next);
-      try { localStorage.setItem(MAP_BATHYMETRY_LS_KEY, next ? '1' : '0'); } catch { /* noop */ }
-    };
-    return () => { delete setters.bathymetry; };
-  }, []);
+  }, [nauticalChartEnabled, isHeroEmbed, isReady, mapInstanceRef, LRef]);
 
   // ── Seamarks (OpenSeaMap tiles) ──
   // Sinalização náutica (balizas, faróis, rochas, perigos, fundeadouros) —
-  // contexto cartográfico para os avisos IH e as zonas de orca. Camada
-  // opt-in: raster transparente por cima dos fields, por baixo dos markers.
-  const [seamarksEnabled, setSeamarksEnabled] = useState<boolean>(() => {
-    if (typeof window === 'undefined' || isHeroEmbed) return false;
-    if (initialSeamarksEnabled) return true;
-    try {
-      return localStorage.getItem(MAP_SEAMARKS_LS_KEY) === '1';
-    } catch {
-      return false;
-    }
-  });
-
+  // contexto cartográfico para os avisos IH e as zonas de orca. Raster
+  // transparente por cima dos fields, por baixo dos markers. Também fora
+  // dos hero embeds (mesmo gate da batimetria).
   useEffect(() => {
-    if (!seamarksEnabled || !isReady) return;
+    if (!nauticalChartEnabled || isHeroEmbed || !isReady) return;
     const map = mapInstanceRef.current;
     const Leaflet = LRef.current;
     if (!map || !Leaflet) return;
@@ -703,113 +658,14 @@ export function useMapLayers({
     return () => {
       if (map.hasLayer(layer)) map.removeLayer(layer);
     };
-  }, [seamarksEnabled, isReady, mapInstanceRef, LRef]);
+  }, [nauticalChartEnabled, isHeroEmbed, isReady, mapInstanceRef, LRef]);
 
-  const toggleSeamarks = useCallback(() => {
-    toggleHeavy('seamarks', (next) => {
-      setSeamarksEnabled(next);
-      try { localStorage.setItem(MAP_SEAMARKS_LS_KEY, next ? '1' : '0'); } catch { /* noop */ }
-    });
-  }, [toggleHeavy]);
-
-  // Registo no cap de raster — usado quando outra pesada a desliga.
-  useEffect(() => {
-    const setters = heavySetRef.current;
-    setters.seamarks = (next: boolean) => {
-      setSeamarksEnabled(next);
-      try { localStorage.setItem(MAP_SEAMARKS_LS_KEY, next ? '1' : '0'); } catch { /* noop */ }
-    };
-    return () => { delete setters.seamarks; };
-  }, []);
-
-  // ── Satélite NASA GIBS (MODIS Terra true-color) ──
-  // Imagem real do último passe de satélite — nuvens e frentes a chegar.
-  // O slot `default` da URL serve sempre a data mais recente (no-store, o
-  // browser revalida). Raster opaca num pane logo acima do basemap: enquanto
-  // ligada substitui a carta, com fields/radar/marcadores por cima. Opt-in,
-  // conta para o cap de raster pesadas.
-  const [gibsSatEnabled, setGibsSatEnabled] = useState<boolean>(() => {
-    if (typeof window === 'undefined' || isHeroEmbed) return false;
-    if (initialGibsSatEnabled) return true;
-    try {
-      return localStorage.getItem(MAP_GIBS_SAT_LS_KEY) === '1';
-    } catch {
-      return false;
-    }
-  });
-
-  useEffect(() => {
-    if (!gibsSatEnabled || !isReady) return;
-    const map = mapInstanceRef.current;
-    const Leaflet = LRef.current;
-    if (!map || !Leaflet) return;
-
-    let pane = map.getPane(MAP_GIBS_SAT_PANE);
-    if (!pane) pane = map.createPane(MAP_GIBS_SAT_PANE);
-    pane.style.zIndex = MAP_GIBS_SAT_PANE_Z;
-    pane.style.pointerEvents = 'none';
-
-    const options = {
-      pane: MAP_GIBS_SAT_PANE,
-      opacity: 1,
-      attribution: GIBS_SATELLITE_ATTRIBUTION,
-      className: 'ventu-gibs-sat',
-      maxNativeZoom: GIBS_SATELLITE_NATIVE_MAX_ZOOM,
-      maxZoom: 19,
-      // CORS permite ler os pixels (o GIBS manda ACAO:*) — ver tileload.
-      crossOrigin: true,
-      // Durante o gesto de zoom o Leaflet estica os tiles existentes e só
-      // pede no fim: sem isto cada tick intermédio disparava dezenas de
-      // máscaras de canvas na main thread (jank que parecia «crash»).
-      updateWhenZooming: false,
-      updateWhenIdle: true,
-    } as const;
-    // Duas camadas empilhadas (ver gibsSatellite.ts): ONTEM por baixo, HOJE
-    // por cima. O mosaico de hoje só se preenche depois do passe — de manhã é
-    // todo «sem dados» e, sozinho, a opção ficava ligada sem mostrar nada.
-    const layers = [
-      Leaflet.tileLayer(gibsSatelliteDayUrl(gibsPreviousDayUtc()), { ...options, zIndex: 1 }),
-      Leaflet.tileLayer(GIBS_SATELLITE_URL, { ...options, zIndex: 2 }),
-    ];
-    // Tiles «sem dados» são pretos (noite/fora do disco, nesga de swath) —
-    // sem isto a camada opaca cobre o mapa todo de preto. A máscara torna o
-    // preto transparente: em cima deixa ver o dia anterior, em baixo o
-    // basemap. Esconder→mascarar→revelar evita o flash preto a cada zoom.
-    for (const layer of layers) {
-      gibsAttachTileMask(layer);
-      layer.addTo(map);
-    }
-
-    return () => {
-      for (const layer of layers) if (map.hasLayer(layer)) map.removeLayer(layer);
-    };
-  }, [gibsSatEnabled, isReady, mapInstanceRef, LRef]);
-
-  const toggleGibsSat = useCallback(() => {
-    toggleHeavy('gibsSat', (next) => {
-      setGibsSatEnabled(next);
-      try { localStorage.setItem(MAP_GIBS_SAT_LS_KEY, next ? '1' : '0'); } catch { /* noop */ }
-    });
-  }, [toggleHeavy]);
-
-  // Registo no cap de raster — usado quando outra pesada a desliga.
-  useEffect(() => {
-    const setters = heavySetRef.current;
-    setters.gibsSat = (next: boolean) => {
-      setGibsSatEnabled(next);
-      try { localStorage.setItem(MAP_GIBS_SAT_LS_KEY, next ? '1' : '0'); } catch { /* noop */ }
-    };
-    return () => { delete setters.gibsSat; };
-  }, []);
-
-  // ── Satélite IR (B5 — carrossel, Meteosat primário + GOES-East fallback) ──
-  // Motor primário: EUMETView WMS Meteosat-11 IR10.8 a 15 min — Portugal no
-  // centro do disco (o GOES-East punha PT no limbo; ver
-  // docs/audits/SATELLITE-IR-OPTIONS.md). Fallback por-frame: se o Meteosat
-  // falhar (tiles em erro), o frame usa GOES-East GIBS — mantém a camada
-  // viva se o serviço estatal estiver em baixo.
-  // Slots TIME reais; cada frame é um layer persistente — trocar de frame é
-  // trocar opacidade (zero refetch, transição instantânea).
+  // ── Satélite IR (carrossel 10 min) ──
+  // Fonte primária: MTG-I1 FCI IR10.5 servido pela nossa pipeline
+  // (public/data/sat-mtg.json + PNGs por frame — Meteosat a 0° vê PT na
+  // resolução nativa ~2 km, vs o limbo oriental do GOES-East).
+  // Fallback: GOES-East via GIBS tiles quando o manifest está morto/
+  // stale (pipeline parada) — a camada nunca fica muda em silêncio.
   const [goesIrEnabled, setGoesIrEnabled] = useState<boolean>(() => {
     if (typeof window === 'undefined' || isHeroEmbed) return false;
     if (initialGoesIrEnabled) return true;
@@ -821,6 +677,7 @@ export function useMapLayers({
     return readGoesIrPref().paused;
   });
   const [goesIrFrameList, setGoesIrFrameList] = useState<GoesIrFrame[]>([]);
+  const [goesIrSource, setGoesIrSource] = useState<'mtg' | 'gibs'>('gibs');
   const goesIrFrameIndexRef = useRef(0);
   const goesIrUserPausedRef = useRef(goesIrUserPaused);
   const goesIrActivateRef = useRef<((i: number) => void) | null>(null);
@@ -835,177 +692,165 @@ export function useMapLayers({
     const Leaflet = LRef.current;
     if (!Leaflet) return;
 
-    // Slots do carrossel = METEOSAT (15 min, ~30 min de lag — todos os
-    // tiles já estão publicados; o badge/cadência segue o produto primário).
-    // `frames` (GOES 10 min) mantém-se para o fallback por-frame.
-    const frames = goesIrFrames();
-    const meteosatFrames = meteosatIrFrames();
-    // O carrossel só consome `frameTime` (relógio/contador) — `url` é
-    // preenchido vazio: o motor primário é WMS por `time=`, não template.
-    setGoesIrFrameList(
-      meteosatFrames.map((f) => ({ url: '', frameTime: f.frameTime })),
-    );
-    const savedFrame = Math.max(
-      0,
-      Math.min(meteosatFrames.length - 1, readGoesIrPref().frame),
-    );
-    goesIrFrameIndexRef.current = savedFrame;
-    setGoesIrFrameIndex(savedFrame);
+    let cancelled = false;
+    let cleanupLayers: (() => void) | null = null;
 
-    let pane = map.getPane(MAP_GOES_IR_PANE);
-    if (!pane) pane = map.createPane(MAP_GOES_IR_PANE);
-    pane.style.zIndex = MAP_GOES_IR_PANE_Z;
-    pane.style.pointerEvents = 'none';
+    const init = async () => {
+      // Tenta a nossa pipeline primeiro — Meteosat MTG-I1 a 0° é o satélite
+      // certo para PT (~2 km, disco cheio). Manifest morto/ausente → GIBS.
+      const manifest = await fetchMtgSatManifest();
+      if (cancelled) return;
+      const useMtg = manifest !== null && mtgSatIsFresh(manifest);
 
-    // Um TileLayer por frame — o GIBS serve `no-store`, por isso `setUrl`
-    // (padrão do radar) re-pede todos os tiles a cada tick e a camada
-    // aparece/desaparece. Com um layer persistente por frame, trocar de
-    // frame é só trocar a opacidade: zero refetch, transição instantânea.
-    const pool = new Map<number, L.TileLayer>();
-    const warm = new Set<number>();
-    const failed = new Set<number>();
-    let activeIdx = -1;
-    let wantedIdx = -1;
+      const frames: GoesIrFrame[] = useMtg
+        ? mtgSatFrames(manifest)
+        : goesIrFrames();
+      if (!frames.length) return;
+      setGoesIrSource(useMtg ? 'mtg' : 'gibs');
+      setGoesIrFrameList(frames);
+      const savedFrame = Math.max(0, Math.min(frames.length - 1, readGoesIrPref().frame));
+      goesIrFrameIndexRef.current = savedFrame;
+      setGoesIrFrameIndex(savedFrame);
 
-    /** Camada GOES-East de fallback para um frame (mesma config de antes). */
-    const ensureGoes = (i: number): L.TileLayer => {
-      const layer = Leaflet.tileLayer(frames[i].url, {
-        pane: MAP_GOES_IR_PANE,
-        opacity: 0,
-        attribution: GOES_IR_ATTRIBUTION,
-        className: 'ventu-goes-ir',
-        maxNativeZoom: GOES_IR_NATIVE_MAX_ZOOM,
-        maxZoom: 19,
-        // Fora do disco o GIBS só serve preto — ao fazer zoom-out não pedir
-        // o vazio (ver GOES_IR_BOUNDS): menos tiles a mascarar, sem flashes.
-        bounds: GOES_IR_BOUNDS,
-        crossOrigin: true,
-        updateWhenZooming: false,
-        updateWhenIdle: true,
-      });
-      gibsAttachTileMask(layer);
-      layer.on('load', () => warm.add(i));
-      layer.addTo(map);
-      pool.set(i, layer);
-      return layer;
-    };
+      let pane = map.getPane(MAP_GOES_IR_PANE);
+      if (!pane) pane = map.createPane(MAP_GOES_IR_PANE);
+      pane.style.zIndex = MAP_GOES_IR_PANE_Z;
+      pane.style.pointerEvents = 'none';
 
-    const ensure = (i: number): L.TileLayer => {
-      const existing = pool.get(i);
-      if (existing) return existing;
-      // Meteosat falhou neste frame → fallback directo ao GOES.
-      if (failed.has(i)) return ensureGoes(i);
+      // Uma camada persistente por frame — trocar de frame é só trocar a
+      // opacidade: zero refetch, transição instantânea. MTG usa
+      // imageOverlay (PNG sobre a bbox fixa); GIBS usa tileLayer (a
+      // pirâmide WMTS serve `no-store`, por isso `setUrl` re-pedia tudo).
+      const opacity = useMtg ? MTG_SAT_OPACITY : 0.85;
+      const attribution = useMtg ? MTG_SAT_ATTRIBUTION : GOES_IR_ATTRIBUTION;
+      const bounds = useMtg ? mtgSatBounds(manifest) : null;
+      const pool = new Map<number, L.ImageOverlay | L.TileLayer>();
+      const warm = new Set<number>();
+      let activeIdx = -1;
+      let wantedIdx = -1;
 
-      // Primário: EUMETView WMS Meteosat-11 IR10.8 (15 min, PT centrado).
-      // Um WMSTileLayer por frame com `time=` fixo — trocar de frame é só
-      // opacidade. O tileload passa pela mesma máscara GIBS (o servidor
-      // também manda fundo preto fora do disco) + paleta Infra+.
-      const layer = createMeteosatIrLayer(Leaflet, meteosatFrames[i].time, MAP_GOES_IR_PANE);
-      layer.setOpacity(0);
-      gibsAttachTileMask(layer);
-      layer.on('tileload', (e: L.TileEvent) => {
-        // Paleta Infra+ depois da máscara (a máscara decide alpha, a paleta
-        // só tinge pixels opacos). Erros aquí não podem partir a camada.
-        const tile = e.tile as HTMLImageElement | undefined;
-        try {
-          if (tile) irApplyPaletteToTile(tile);
-        } catch { /* noop */ }
-      });
-      // Fallback: se NENHUM tile do frame Meteosat chegar, marca falha e
-      // troca para GOES-East no próximo activate (serviço em baixo, CORS
-      // quebrado, produto retirado — tudo a caminho do mesmo guard).
-      // Dois caminhos de detecção: 3+ tileerrors (falha rápida) OU — caso o
-      // viewport só peça 1-2 tiles — um timer de segurança de 12 s sem
-      // nenhum tile OK (o EUMETView responde em <2 s em serviço normal).
-      let ok = 0;
-      let bad = 0;
-      let failedThis = false;
-      const failToGoes = () => {
-        // Efeito limpo (toggle off, remount) → pool esvaziado: não reativar
-        // nada sobre um mapa que já não é nosso.
-        if (!pool.has(i) || failedThis) return;
-        failedThis = true;
-        failed.add(i);
-        clearTimeout(guard);
-        if (map.hasLayer(layer)) map.removeLayer(layer);
-        pool.delete(i);
-        if (wantedIdx === i) {
-          wantedIdx = -1;
-          activate(i); // re-activate já em GOES
+      const ensure = (i: number): L.ImageOverlay | L.TileLayer => {
+        let layer = pool.get(i);
+        if (layer) return layer;
+        if (bounds) {
+          layer = Leaflet.imageOverlay(frames[i].url, bounds, {
+            pane: MAP_GOES_IR_PANE,
+            opacity: 0,
+            attribution,
+            className: 'ventu-goes-ir',
+            interactive: false,
+          });
+        } else {
+          const tl = Leaflet.tileLayer(frames[i].url, {
+            pane: MAP_GOES_IR_PANE,
+            opacity: 0,
+            attribution,
+            className: 'ventu-goes-ir',
+            maxNativeZoom: GOES_IR_NATIVE_MAX_ZOOM,
+            maxZoom: 19,
+            crossOrigin: true,
+            updateWhenZooming: false,
+            updateWhenIdle: true,
+          });
+          // Fora do disco GOES o GIBS serve preto — tríade anti-flash:
+          // esconde no tileloadstart, mascara ao carregar, revela conteúdo.
+          gibsAttachTileMask(tl);
+          layer = tl;
         }
+        layer.on('load', () => warm.add(i));
+        // Falha transitória (dev server ocupado, rede) — sai do pool para a
+        // próxima activação criar a camada de novo, em vez de segurar o
+        // frame anterior até à volta seguinte do carrossel.
+        layer.on('error', () => {
+          pool.delete(i);
+          warm.delete(i);
+          if (map.hasLayer(layer)) map.removeLayer(layer);
+          if (wantedIdx === i) wantedIdx = activeIdx;
+        });
+        layer.addTo(map);
+        pool.set(i, layer);
+        return layer;
       };
-      const guard = setTimeout(() => {
-        if (ok === 0) failToGoes();
-      }, 12_000);
-      layer.on('tileload', () => {
-        ok += 1;
-        if (ok === 1) clearTimeout(guard);
-      });
-      layer.on('tileerror', () => {
-        bad += 1;
-        if (ok === 0 && bad >= 3) failToGoes();
-      });
-      layer.on('load', () => warm.add(i));
-      layer.addTo(map);
-      pool.set(i, layer);
-      return layer;
-    };
 
-    const activate = (i: number) => {
-      if (i === wantedIdx) return;
-      wantedIdx = i;
-      const layer = ensure(i);
-      const show = () => {
-        if (wantedIdx !== i) return;
-        activeIdx = i;
-        pool.forEach((l, k) => l.setOpacity(k === i ? 0.85 : 0));
+      // Em zoom de mundo a ROI da camada é um rectângulo pequeno a meio do
+      // mapa — esbate-se gradualmente (z≤3 → 40%) para o patch não ler
+      // como «sticker». A partir de z≈5 fica a opacidade plena.
+      const zoomAlpha = () => {
+        const z = map.getZoom();
+        return z <= 3 ? 0.4 : z >= 5 ? 1 : 0.4 + (z - 3) * 0.3;
       };
-      // Frame já visto → troca instantânea; frame frio → mantém o anterior
-      // visível até o novo pintar (sem buraco na animação).
-      if (warm.has(i)) show();
-      else layer.once('load', show);
-      // Aquece o próximo frame — o tick seguinte é instantâneo.
-      ensure((i + 1) % meteosatFrames.length);
-    };
-    goesIrActivateRef.current = activate;
-    activate(savedFrame);
+      const showActive = () => {
+        pool.forEach((l, k) =>
+          l.setOpacity(k === activeIdx ? opacity * zoomAlpha() : 0),
+        );
+      };
+      const activate = (i: number) => {
+        if (i === wantedIdx) return;
+        wantedIdx = i;
+        const layer = ensure(i);
+        const show = () => {
+          if (wantedIdx !== i) return;
+          activeIdx = i;
+          showActive();
+        };
+        // Frame já visto → troca instantânea; frame frio → mantém o
+        // anterior visível até o novo pintar (sem buraco na animação).
+        if (warm.has(i)) show();
+        else layer.once('load', show);
+        // Aquece o próximo frame — o tick seguinte é instantâneo.
+        ensure((i + 1) % frames.length);
+      };
+      goesIrActivateRef.current = activate;
+      activate(savedFrame);
+      // «zoom» dispara continuamente durante pinch/scroll — o esbatimento
+      // acompanha a animação em vez de saltar no zoomend.
+      map.on('zoom', showActive);
 
-    // Num pan/zoom os tiles do pool ficam obsoletos — descarta os não
-    // activos para não refazer 12 camadas a cada movimento. O wanted (a
-    // aquecer) sobrevive: antes era deitado fora a cada movestart e o tick
-    // seguinte re-pedia tudo ao GIBS (`no-store`) — flashes e rajadas de
-    // rede em cada pan/zoom no desktop.
-    const onMoveStart = () => {
-      pool.forEach((l, k) => {
-        if (k === activeIdx || k === wantedIdx) return;
-        if (map.hasLayer(l)) map.removeLayer(l);
-        pool.delete(k);
-        warm.delete(k);
+      // Aquecimento ocioso do resto do pool: cada frame frio que o sweep
+      // apanha segurava o anterior ~1-2 s (fetch+decode de ~800 KB) —
+      // o «flash da imagem antiga». Escalonado para não competir com o
+      // primeiro paint; imageOverlays já quentes ficam no pool de vez.
+      frames.forEach((_, idx) => {
+        window.setTimeout(() => {
+          if (!cancelled) ensure(idx);
+        }, 800 + idx * 350);
       });
-    };
-    // O arranque faz fit/flyTo (movestart): se o pool nasceu a meio desse
-    // movimento e nenhum frame ainda pintou (activeIdx=-1), o wipe acima
-    // removia TUDO e nada voltava a chamar activate — a camada ficava
-    // ligada no toggle mas invisível para sempre. No fim de cada movimento
-    // repõe-se o frame corrente se ele não sobreviveu.
-    const onMoveEnd = () => {
-      const idx = goesIrFrameIndexRef.current;
-      if (idx < 0 || idx >= meteosatFrames.length) return;
-      const layer = pool.get(idx);
-      if (layer && map.hasLayer(layer)) return;
-      wantedIdx = -1;
-      activate(idx);
-    };
-    map.on('movestart', onMoveStart);
-    map.on('moveend', onMoveEnd);
 
+      // Num pan/zoom os tiles do pool ficam obsoletos — mas isso só se
+      // aplica ao fallback GIBS (tileLayer: a grelha depende do viewport e
+      // do zoom). imageOverlay é geo-ancorado — a mesma imagem serve
+      // qualquer pan/zoom — e descartar forçava refetch+decode de cada
+      // frame frio depois de cada movimento do mapa.
+      const onMoveStart = bounds
+        ? null
+        : () => {
+            pool.forEach((l, k) => {
+              if (k === activeIdx) return;
+              if (map.hasLayer(l)) map.removeLayer(l);
+              pool.delete(k);
+              warm.delete(k);
+              // O layer removido podia ter um 'load' pendente — sem isto o
+              // re-pedido do mesmo frame seria ignorado pelo guard de wantedIdx.
+              if (k === wantedIdx) wantedIdx = activeIdx;
+            });
+          };
+      if (onMoveStart) map.on('movestart', onMoveStart);
+
+      cleanupLayers = () => {
+        map.off('zoom', showActive);
+        if (onMoveStart) map.off('movestart', onMoveStart);
+        goesIrActivateRef.current = null;
+        pool.forEach((l) => { if (map.hasLayer(l)) map.removeLayer(l); });
+        pool.clear();
+        warm.clear();
+      };
+    };
+
+    init();
     return () => {
-      map.off('movestart', onMoveStart);
-      map.off('moveend', onMoveEnd);
-      goesIrActivateRef.current = null;
-      pool.forEach((l) => { if (map.hasLayer(l)) map.removeLayer(l); });
-      pool.clear();
-      warm.clear();
+      cancelled = true;
+      cleanupLayers?.();
+      if (goesIrActivateRef.current) goesIrActivateRef.current = null;
     };
   }, [goesIrEnabled, isReady, mapInstanceRef, LRef]);
 
@@ -1048,9 +893,7 @@ export function useMapLayers({
   useEffect(() => {
     const on: Record<MapHeavyRasterKey, boolean> = {
       radar: radarEnabled,
-      bathymetry: bathymetryEnabled,
-      seamarks: seamarksEnabled,
-      gibsSat: gibsSatEnabled,
+      nauticalChart: nauticalChartEnabled,
       goesIr: goesIrEnabled,
     };
     for (const k of MAP_HEAVY_RASTER_KEYS) {
@@ -1069,7 +912,7 @@ export function useMapLayers({
       heavyOrderRef.current = heavyOrderRef.current.slice(1);
       heavySetRef.current[oldest]?.(false);
     }
-  }, [radarEnabled, bathymetryEnabled, seamarksEnabled, gibsSatEnabled, goesIrEnabled]);
+  }, [radarEnabled, nauticalChartEnabled, goesIrEnabled]);
 
   // ── Coastal Warnings ──
   const [coastalWarningsEnabled, setCoastalWarningsEnabled] = useState<boolean>(() => {
@@ -1561,12 +1404,9 @@ export function useMapLayers({
     toggleRadar, handleRadarFrameChange, handleRadarUserPausedChange,
     handleResetRadar, handleRadarImmersionOpen,
     radarFrameList, radarLabel, radarHint, radarUnavailable, radarAttributionLabel,
-    isobathsEnabled, isobathsData, toggleIsobaths,
-    bathymetryEnabled, toggleBathymetry,
-    seamarksEnabled, toggleSeamarks,
-    gibsSatEnabled, toggleGibsSat,
+    nauticalChartEnabled, isobathsData, toggleNauticalChart,
     goesIrEnabled, toggleGoesIr,
-    goesIrFrameList, goesIrFrameIndex, goesIrUserPaused,
+    goesIrFrameList, goesIrFrameIndex, goesIrUserPaused, goesIrSource,
     handleGoesIrFrameChange, handleGoesIrUserPausedChange,
     coastalWarningsEnabled, coastalWarningsData, toggleCoastalWarnings, coastalWarningsLabel,
     stormsEnabled, stormsData, stormsUnavailable, toggleStorms, stormsLabel,

@@ -52,6 +52,8 @@ jobs:
       IH_API_KEY: ${{ secrets.IH_API_KEY }}
       METEOALARM_API_KEY: ${{ secrets.METEOALARM_API_KEY }}
       METEOGATE_API_KEY: ${{ secrets.METEOGATE_API_KEY }}
+      EUMETSAT_CONSUMER_KEY: ${{ secrets.EUMETSAT_CONSUMER_KEY }}
+      EUMETSAT_CONSUMER_SECRET: ${{ secrets.EUMETSAT_CONSUMER_SECRET }}
     outputs:
       mode: ${{ steps.gate.outputs.mode }}
     steps:
@@ -221,6 +223,26 @@ jobs:
       - name: Fetch IPMA radar frame
         if: steps.gate.outputs.mode != 'skip'
         run: node scripts/fetch-ipma-radar.js
+
+      # Satélite Meteosat MTG-I1 (FCI) — EUMETSAT Data Tailor subtrai o
+      # disco para a ROI Ibéria+Atlântico server-side (~2 km/px). Produto
+      # por elevação solar: natural-color de dia, IR 10.5 µm colorizado de
+      # noite; o script grava WebP + sat-mtg.json (ver fetch-mtg-ir.py).
+      # Cadência do workflow = horária → frames ≥1 h = dados «Core» CC-BY.
+      # continue-on-error: overlay opcional — um outage EUMETSAT nunca
+      # bloqueia o pipeline (o mapa cai para o fallback GOES-IR/GIBS).
+      - name: Setup Python (MTG-I1 fetch)
+        if: steps.gate.outputs.mode != 'skip' && env.EUMETSAT_CONSUMER_KEY != ''
+        uses: actions/setup-python@a26af69c585f6c535c46f6be84476aa53dbb0f89 # v5
+        with:
+          python-version: '3.12'
+
+      - name: Fetch MTG-I1 FCI frames (EUMETSAT Data Tailor)
+        if: steps.gate.outputs.mode != 'skip' && env.EUMETSAT_CONSUMER_KEY != ''
+        continue-on-error: true
+        run: |
+          python -m pip install -q -r scripts/requirements-mtg.txt
+          python scripts/fetch-mtg-ir.py
 
       # Estado de tempestade por spot (B1): eco do radar IPMA por spot —
       # distância/intensidade + deslocamento do centróide («a aproximar-se»

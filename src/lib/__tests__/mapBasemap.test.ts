@@ -26,17 +26,17 @@ describe('getMapRasterBasemap', () => {
     expect(light.attribution).toBe(TILE_ATTRIBUTIONS.esri);
   });
 
-  it('com key → Carto dark/light com ?key= e crédito CARTO', () => {
+  it('com key → Carto dark/light nolabels com ?key= e crédito CARTO', () => {
     vi.stubEnv('NEXT_PUBLIC_CARTO_API_KEY', 'test-key');
     const dark = getMapRasterBasemap(true);
-    expect(dark.url).toContain('basemaps.cartocdn.com/dark_all/');
+    expect(dark.url).toContain('basemaps.cartocdn.com/dark_nolabels/');
     expect(dark.url).toContain('key=test-key');
     expect(dark.url).not.toContain('{r}');
     expect(dark.attribution).toBe(TILE_ATTRIBUTIONS.carto);
     expect(dark.subdomains).toBe('abcd');
 
     const light = getMapRasterBasemap(false);
-    expect(light.url).toContain('light_all');
+    expect(light.url).toContain('light_nolabels');
     expect(light.url).toContain('key=test-key');
     expect(light.url).not.toContain('{r}');
   });

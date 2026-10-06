@@ -16,6 +16,11 @@ const NAZARE_CONTOURS = {
   },
 };
 
+const PNG_PIXEL = Buffer.from(
+  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==',
+  'base64',
+);
+
 async function interceptContours(page: import('@playwright/test').Page): Promise<void> {
   await page.route('**/data/isobaths-contours.json', async (route) => {
     await route.fulfill({
@@ -24,6 +29,14 @@ async function interceptContours(page: import('@playwright/test').Page): Promise
       body: JSON.stringify(NAZARE_CONTOURS),
     });
   });
+  // A «Carta náutica» fundida liga os três sub-layers — EMODnet e
+  // OpenSeaMap disparam com as isóbatas; sem interceptação o networkidle
+  // do goto pendura nos hosts reais (spec hermética).
+  for (const host of ['**/ows.emodnet-bathymetry.eu/**', '**/tiles.openseamap.org/**']) {
+    await page.route(host, async (route) => {
+      await route.fulfill({ status: 200, contentType: 'image/png', body: PNG_PIXEL });
+    });
+  }
 }
 
 /**
@@ -120,15 +133,16 @@ test.describe('Isóbatas — camada no mapa interactivo (/mapa)', () => {
     await page.goto('/pt/mapa/', { waitUntil: 'networkidle', timeout: 60_000 });
     await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
 
-    // C4: o toggle de isóbatas vive no menu «Camadas».
+    // C4: o toggle «Carta náutica» (isóbatas+batimetria+seamarks, Fase 3)
+    // vive no menu «Camadas».
     await openMapLayersMenu(page);
-    const toggle = page.locator('[data-map-isobaths-toggle]');
+    const toggle = page.locator('[data-map-nautical-chart-toggle]');
     await expect(toggle).toBeVisible({ timeout: 15_000 });
     await expect(toggle).toHaveAttribute('aria-pressed', 'false');
 
     await toggle.click();
     // M5: o item do menu tem nome estável — o estado vai em aria-pressed.
-    const active = page.locator('[data-map-isobaths-toggle]');
+    const active = page.locator('[data-map-nautical-chart-toggle]');
     await expect(active).toBeVisible({ timeout: 15_000 });
     await expect(active).toHaveAttribute('aria-pressed', 'true');
     // Legenda inline (dentro da MapLegend) com as três profundidades.
@@ -156,10 +170,10 @@ test.describe('Isóbatas — camada no mapa interactivo (/mapa)', () => {
   });
 });
 
-test.describe('Isóbatas — preferência persistida e deep link (?isobaths=1)', () => {
+test.describe('Carta náutica — preferência persistida e deep link (?isobaths=1 legado)', () => {
   test.use({ serviceWorkers: 'block' });
 
-  const LS_KEY = 'ventu.map.isobaths';
+  const LS_KEY = 'ventu.map.nauticalChart';
 
   async function openMapa(page: import('@playwright/test').Page, qs = '') {
     await interceptContours(page);
@@ -167,10 +181,18 @@ test.describe('Isóbatas — preferência persistida e deep link (?isobaths=1)',
     await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
   }
 
-  test('?isobaths=1 liga as isóbatas à entrada (ao lado do radar)', async ({ page }) => {
+  test('?nauticalChart=1 liga a carta à entrada (ao lado do radar)', async ({ page }) => {
+    await openMapa(page, '?nauticalChart=1');
+    await openMapLayersMenu(page);
+    const active = page.locator('[data-map-nautical-chart-toggle]');
+    await expect(active).toBeVisible({ timeout: 15_000 });
+    await expect(active).toHaveAttribute('aria-pressed', 'true');
+  });
+
+  test('?isobaths=1 (link de partilha legado) também liga a carta', async ({ page }) => {
     await openMapa(page, '?isobaths=1');
     await openMapLayersMenu(page);
-    const active = page.locator('[data-map-isobaths-toggle]');
+    const active = page.locator('[data-map-nautical-chart-toggle]');
     await expect(active).toBeVisible({ timeout: 15_000 });
     await expect(active).toHaveAttribute('aria-pressed', 'true');
   });
@@ -179,25 +201,34 @@ test.describe('Isóbatas — preferência persistida e deep link (?isobaths=1)',
     await page.addInitScript((key) => localStorage.setItem(key, '0'), LS_KEY);
     await openMapa(page);
     await openMapLayersMenu(page);
-    const off = page.locator('[data-map-isobaths-toggle]');
+    const off = page.locator('[data-map-nautical-chart-toggle]');
     await expect(off).toBeVisible({ timeout: 15_000 });
     await expect(off).toHaveAttribute('aria-pressed', 'false');
+  });
+
+  test('a key legada isóbatas=1 migra para a carta ligada', async ({ page }) => {
+    await page.addInitScript(() => localStorage.setItem('ventu.map.isobaths', '1'));
+    await openMapa(page);
+    await openMapLayersMenu(page);
+    const active = page.locator('[data-map-nautical-chart-toggle]');
+    await expect(active).toBeVisible({ timeout: 15_000 });
+    await expect(active).toHaveAttribute('aria-pressed', 'true');
   });
 
   test('toggle grava a preferência em localStorage', async ({ page }) => {
     await openMapa(page);
     await openMapLayersMenu(page);
-    const off = page.locator('[data-map-isobaths-toggle]');
+    const off = page.locator('[data-map-nautical-chart-toggle]');
     await expect(off).toBeVisible({ timeout: 15_000 });
     await off.click();
-    await expect(page.locator('[data-map-isobaths-toggle]')).toHaveAttribute(
+    await expect(page.locator('[data-map-nautical-chart-toggle]')).toHaveAttribute(
       'aria-pressed', 'true', { timeout: 15_000 },
     );
     expect(await page.evaluate((key) => localStorage.getItem(key), LS_KEY)).toBe('1');
   });
 });
 
-test.describe('Isóbatas — hero da homepage (TopMap), camada partilhada', () => {
+test.describe('Carta náutica — hero da homepage (TopMap), camada partilhada', () => {
   test.use({ serviceWorkers: 'block' });
 
   test('o toggle está ligado por omissão no hero e desliga/religa a camada', async ({
@@ -207,24 +238,19 @@ test.describe('Isóbatas — hero da homepage (TopMap), camada partilhada', () =
     const hero = page.getByRole('region', { name: /Mapa interactivo/i });
     await expect(hero).toBeVisible({ timeout: 20_000 });
 
-    // A camada partilhada do SpotMapInteractive arranca ligada no hero.
-    await expect(hero.getByRole('button', { name: 'Ocultar isóbatas' })).toBeVisible(
-      { timeout: 15_000 },
-    );
-    const on = hero.getByRole('button', { name: 'Ocultar isóbatas' });
-    await expect(on).toHaveAttribute('aria-pressed', 'true');
+    // A camada partilhada do SpotMapInteractive arranca ligada no hero —
+    // o botão «Carta náutica» tem nome estável (o estado vai em aria-pressed).
+    const toggle = hero.getByRole('button', { name: 'Carta náutica' });
+    await expect(toggle).toBeVisible({ timeout: 15_000 });
+    await expect(toggle).toHaveAttribute('aria-pressed', 'true');
 
-    // Desligar: o botão passa a «Isóbatas 8/16/30 m» (pronto a ligar de novo).
-    await on.click();
-    const off = hero.getByRole('button', { name: 'Isóbatas 8/16/30 m' });
-    await expect(off).toBeVisible({ timeout: 15_000 });
-    await expect(off).toHaveAttribute('aria-pressed', 'false');
+    // Desligar.
+    await toggle.click();
+    await expect(toggle).toHaveAttribute('aria-pressed', 'false', { timeout: 15_000 });
 
     // Voltar a ligar: a camada desenha polylines no pane de overlays.
-    await off.click();
-    await expect(hero.getByRole('button', { name: 'Ocultar isóbatas' })).toBeVisible({
-      timeout: 15_000,
-    });
+    await toggle.click();
+    await expect(toggle).toHaveAttribute('aria-pressed', 'true', { timeout: 15_000 });
     await expect(hero.locator('.leaflet-overlay-pane path').first()).toBeVisible({
       timeout: 20_000,
     });

@@ -8,8 +8,39 @@ import { waitHydrated } from './helpers/hydration';
  * toast, e a acção de enquadramento por área exposta aos chips de ilha.
  */
 
+const PNG_1PX = Buffer.from(
+  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==',
+  'base64',
+);
+
 async function openMapa(page: Page) {
   await preseedWindRingLegend(page);
+  // Satélite IR hermético: manifest MTG fresco + frames locais stub; se a
+  // fixture algum dia ficar stale o fallback é GIBS (NASA) — também stub
+  // para a spec nunca sair da rede local.
+  const t = new Date();
+  await page.route('**/data/sat-mtg.json*', (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        source: 'eumetsat-mtg-fci',
+        fetchedAt: t.toISOString(),
+        cadenceMin: 10,
+        bounds: { south: 28, west: -34, north: 52, east: 1 },
+        attribution: 'EUMETSAT',
+        frames: [
+          { frameTime: t.toISOString(), imagePath: 'sat-mtg/frames/vis-a.webp', kind: 'vis' },
+        ],
+      }),
+    }),
+  );
+  await page.route('**/data/sat-mtg/frames/*', (route) =>
+    route.fulfill({ status: 200, contentType: 'image/png', body: PNG_1PX }),
+  );
+  await page.route('**/gibs.earthdata.nasa.gov/**', (route) =>
+    route.fulfill({ status: 200, contentType: 'image/png', body: PNG_1PX }),
+  );
   await page.addInitScript(() => {
     localStorage.setItem('ventu.mapdebug', '1');
     localStorage.setItem('ventu.map.cluster', '0');
@@ -46,14 +77,15 @@ test.describe('Menu Camadas v3 — grupos e basemap (desktop)', () => {
     await expect(radioSat).toHaveAttribute('aria-checked', 'false');
 
     // Linha de camada: nome substantivo + descrição muted + switch (aria-pressed).
-    const isob = pop.locator('[data-map-isobaths-toggle]');
-    await expect(isob).toContainText('Isóbatas');
-    await expect(isob).toHaveAttribute('aria-pressed', 'false');
+    const chart = pop.locator('[data-map-nautical-chart-toggle]');
+    await expect(chart).toContainText('Carta náutica');
+    await expect(chart).toHaveAttribute('aria-pressed', 'false');
 
-    // Ao ligar aparece a mini-legenda inline (8/16/30 m).
-    await isob.click();
-    await expect(isob).toHaveAttribute('aria-pressed', 'true');
-    await expect(pop.locator('[data-map-layer-minilegend="isobaths"]')).toBeVisible();
+    // Ao ligar aparece a mini-legenda composta (batimetria + isóbatas 8/16/30 m
+    // + sinais). Fase 3: um toggle liga as três camadas internas.
+    await chart.click();
+    await expect(chart).toHaveAttribute('aria-pressed', 'true');
+    await expect(pop.locator('[data-map-layer-minilegend="nauticalChart"]')).toBeVisible();
     await expect(pop.getByText('8 m', { exact: false }).first()).toBeVisible();
   });
 
@@ -104,29 +136,36 @@ test.describe('Menu Camadas v3 — grupos e basemap (desktop)', () => {
     const pop = popover(page);
     await expect(pop).toBeVisible({ timeout: 15_000 });
 
-    // Liga batimetria + sinalização (2 raster pesadas).
-    await pop.locator('[data-map-bathymetry-toggle]').click();
-    await expect(pop.locator('[data-map-bathymetry-toggle]')).toHaveAttribute('aria-pressed', 'true');
-    await pop.locator('[data-map-seamarks-toggle]').click();
-    await expect(pop.locator('[data-map-seamarks-toggle]')).toHaveAttribute('aria-pressed', 'true');
+    // Liga carta náutica + satélite IR (2 raster pesadas — a carta fundida
+    // conta como UMA no cap, Fase 3).
+    await pop.locator('[data-map-nautical-chart-toggle]').click();
+    await expect(pop.locator('[data-map-nautical-chart-toggle]')).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+    await pop.locator('[data-map-goes-ir-toggle]').click();
+    await expect(pop.locator('[data-map-goes-ir-toggle]')).toHaveAttribute('aria-pressed', 'true');
 
     // 3.ª pesada (radar — vive no menu «Camadas» no cromo v3, não num
-    // strip): desliga a mais antiga (batimetria). O popover fica aberto.
+    // strip): desliga a mais antiga (carta náutica). O popover fica aberto.
     await pop.locator('[data-map-radar-toggle]').click();
     await expect(pop.locator('[data-map-radar-toggle]')).toHaveAttribute(
       'aria-pressed',
       'true',
     );
 
-    // Toast localizado «Batimetria — camada desligada…».
+    // Toast localizado «Carta náutica — camada desligada…».
     await expect(
-      page.getByText(/Batimetria — camada desligada para manter o mapa fluido/),
+      page.getByText(/Carta náutica — camada desligada para manter o mapa fluido/),
     ).toBeVisible({ timeout: 10_000 });
 
-    // Estado resultante: seamarks + radar ligados, batimetria desligada —
+    // Estado resultante: satélite + radar ligados, carta náutica desligada —
     // tudo verificável no popover ainda aberto.
-    await expect(pop.locator('[data-map-seamarks-toggle]')).toHaveAttribute('aria-pressed', 'true');
-    await expect(pop.locator('[data-map-bathymetry-toggle]')).toHaveAttribute('aria-pressed', 'false');
+    await expect(pop.locator('[data-map-goes-ir-toggle]')).toHaveAttribute('aria-pressed', 'true');
+    await expect(pop.locator('[data-map-nautical-chart-toggle]')).toHaveAttribute(
+      'aria-pressed',
+      'false',
+    );
   });
 });
 

@@ -10,6 +10,10 @@ export const TILE_ATTRIBUTIONS = {
     '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
   esri:
     '&copy; <a href="https://www.esri.com/">Esri</a>, &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+  // Camadas auxiliares (hillshade + toponímia de referência): o crédito OSM
+  // já sai na atribuição do basemap — repetir «contributors» duplicava a
+  // linha no controlo (contrato: uma única vez).
+  esriAux: '&copy; <a href="https://www.esri.com/">Esri</a> & contributors',
 } as const;
 
 export type RasterBasemap = {
@@ -34,8 +38,11 @@ export function getEsriRasterBasemap(isDark: boolean): RasterBasemap {
 
 /**
  * Light/dark raster basemap for Leaflet.
- * With NEXT_PUBLIC_CARTO_API_KEY → original Carto dark/light tiles.
- * Without it → Esri World Canvas (already allowed by CSP; no watermark).
+ * With NEXT_PUBLIC_CARTO_API_KEY → Carto dark/light **nolabels** — a
+ * toponímia não fica queimada no fundo: entra pelo pane «labels» acima
+ * dos fields (canvas limpo estilo carta, à imagem do WX Agora).
+ * Without it → Esri World Canvas (already allowed by CSP; no watermark)
+ * que já nasce sem labels (o crédito da referência fica na camada de cima).
  *
  * Carto `{r}` (`@2x`) is omitted: retina suffixes 404/fail with the free key
  * and leave Leaflet on the grey empty canvas.
@@ -43,7 +50,7 @@ export function getEsriRasterBasemap(isDark: boolean): RasterBasemap {
 export function getMapRasterBasemap(isDark: boolean): RasterBasemap {
   const key = cartoBasemapKey();
   if (key) {
-    const style = isDark ? 'dark_all' : 'light_all';
+    const style = isDark ? 'dark_nolabels' : 'light_nolabels';
     return {
       url: `https://{s}.basemaps.cartocdn.com/${style}/{z}/{x}/{y}.png?key=${encodeURIComponent(key)}`,
       attribution: TILE_ATTRIBUTIONS.carto,
@@ -160,15 +167,18 @@ export function rasterTileLayerOptions(isDark: boolean): RasterBasemap & { maxZo
 export const MAP_CLUSTER_LS_KEY = 'ventu.map.cluster';
 export const MAP_WIND_LS_KEY = 'ventu.map.wind';
 export const MAP_ONLY_ON_LS_KEY = 'ventu.map.onlyOn';
-export const MAP_ISOBATHS_LS_KEY = 'ventu.map.isobaths';
 export const MAP_COASTAL_LS_KEY = 'ventu.map.coastalWarnings';
 export const MAP_BUOYS_LS_KEY = 'ventu.map.buoys';
 export const MAP_HS_LS_KEY = 'ventu.map.hs';
 export const MAP_CURRENTS_LS_KEY = 'ventu.map.currents';
 export const MAP_SST_LS_KEY = 'ventu.map.sst';
+// «Carta náutica» (Fase 3) — isóbatas + batimetria + seamarks num toggle.
+// As três keys legadas ficam só para a migração em readNauticalChartPref
+// (e podem ficar órfãs em browsers antigos — é inócuo; idem `ventu.map.gibsSat`).
+export const MAP_NAUTICAL_CHART_LS_KEY = 'ventu.map.nauticalChart';
+export const MAP_ISOBATHS_LS_KEY = 'ventu.map.isobaths';
 export const MAP_BATHYMETRY_LS_KEY = 'ventu.map.bathymetry';
 export const MAP_SEAMARKS_LS_KEY = 'ventu.map.seamarks';
-export const MAP_GIBS_SAT_LS_KEY = 'ventu.map.gibsSat';
 
 /** EMODnet Bathymetry WMS (Copernicus) — sombreado contínuo de profundidade.
  *  Keyless, CC BY 4.0. mean_multicolour: azul-claro em águas baixas → azul
@@ -196,6 +206,31 @@ export const MAP_SEAMARKS_PANE = 'ventu-seamarks';
 export const MAP_SEAMARKS_PANE_Z = '370';
 export const OPENSEAMAP_ATTRIBUTION =
   'Seamarks © <a href="https://map.openseamap.org/">OpenSeaMap</a> (CC BY-SA 2.0), data © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> (ODbL)';
+
+/** Esri Elevation World_Hillshade — relevo sombreado global, keyless, no
+ *  mesmo host do basemap de fallback (CSP já cobre server.arcgisonline).
+ *  Pane próprio logo acima do tilePane (200) e por baixo de todos os dados:
+ *  o blend-mode (multiply no claro, soft-light no escuro) vive em
+ *  globals.css — a textura 3D que o canvas plano não tinha. */
+export const ESRI_HILLSHADE_URL =
+  'https://server.arcgisonline.com/ArcGIS/rest/services/Elevation/World_Hillshade/MapServer/tile/{z}/{y}/{x}';
+export const MAP_HILLSHADE_PANE = 'ventu-hillshade';
+export const MAP_HILLSHADE_PANE_Z = '201';
+/** Fim da cobertura nativa do serviço global — acima o Leaflet faz upscale. */
+export const ESRI_HILLSHADE_NATIVE_MAX_ZOOM = 14;
+
+/** Toponímia + fronteiras por cima de TODOS os dados — acima do radar (400)
+ *  e dos fields (345–370), abaixo dos marcadores (600+). Basemap nasce
+ *  nolabels; os nomes ficam sempre legíveis por cima de chuva/Hs/avisos.
+ *  No modo «mapa» é o Gray Reference do tema; no satélite é
+ *  Boundaries_and_Places (halo próprio para imagem aérea). Keyless, Esri. */
+export const MAP_LABELS_PANE = 'ventu-labels';
+export const MAP_LABELS_PANE_Z = '450';
+export function esriReferenceLabelsUrl(isDark: boolean): string {
+  return `https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_${isDark ? 'Dark' : 'Light'}_Gray_Reference/MapServer/tile/{z}/{y}/{x}`;
+}
+export const ESRI_BOUNDARIES_PLACES_URL =
+  'https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}';
 
 export const CLUSTER_CONFIG = {
   chunkedLoading: true,

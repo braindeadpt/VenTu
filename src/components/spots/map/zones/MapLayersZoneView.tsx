@@ -11,7 +11,7 @@
  */
 
 import { useEffect } from 'react';
-import { CloudRain, RotateCcw, SatelliteDish, Waves } from 'lucide-react';
+import { CloudRain, RotateCcw, Sailboat, SatelliteDish } from 'lucide-react';
 import { useToast } from '@/components/ui/ToastProvider';
 import {
   MAP_RASTER_OFF_EVENT,
@@ -22,13 +22,10 @@ import type { IpmaRadarData } from '@/lib/ipmaRadar';
 import {
   goesIrFrameClock,
   goesIrFrameFullClock,
+  GOES_IR_CADENCE_MIN,
   GOES_IR_STALE_MAX_AGE_MIN,
 } from '@/lib/goesIr';
-import {
-  meteosatIrFrameClock,
-  meteosatIrFrameFullClock,
-  METEOSAT_IR_CADENCE_MIN,
-} from '@/lib/meteosatIr';
+import { MTG_SAT_CADENCE_MIN, MTG_SAT_STALE_MAX_AGE_MIN } from '@/lib/mtgSat';
 import { OpenMeteoAttribution } from '@/lib/openMeteoAttribution';
 import MapLayerToggle from '../../MapLayerToggle';
 import type { BasemapMode } from '../../MapLayerToggle';
@@ -56,10 +53,10 @@ interface MapLayersZoneProps {
   radarResetLabel: string;
   toggleRadar: () => void;
   handleResetRadar: () => void;
-  isobathsEnabled: boolean;
-  isobathsLabel: string;
-  isobathsHint: string;
-  toggleIsobaths: () => void;
+  nauticalChartEnabled: boolean;
+  nauticalChartLabel: string;
+  nauticalChartHint: string;
+  toggleNauticalChart: () => void;
   // Carrossel de radar
   radarData: IpmaRadarData | null | undefined;
   radarFrameList: Array<{ url: string; frameTime: string | null }>;
@@ -74,13 +71,13 @@ interface MapLayersZoneProps {
   handleRadarFrameChange: (index: number) => void;
   handleRadarUserPausedChange: (paused: boolean) => void;
   handleRadarImmersionOpen: () => void;
-  // Carrossel de satélite IR (Meteosat 15 min, fallback GOES) — mesmo
-  // componente do radar. `url` não é usado pelo motor WMS (o pool usa
-  // `time=`), mantido para o tipo comum do carrossel.
+  // Carrossel de satélite IR (MTG-I1 com fallback GOES-East, 10 min) —
+  // mesmo componente do radar.
   goesIrEnabled: boolean;
   goesIrFrameList: Array<{ url: string; frameTime: string }>;
   goesIrFrameIndex: number;
   goesIrUserPaused: boolean;
+  goesIrSource: 'mtg' | 'gibs';
   handleGoesIrFrameChange: (index: number) => void;
   handleGoesIrUserPausedChange: (paused: boolean) => void;
 }
@@ -102,10 +99,10 @@ export default function MapLayersZone({
   radarResetLabel,
   toggleRadar,
   handleResetRadar,
-  isobathsEnabled,
-  isobathsLabel,
-  isobathsHint,
-  toggleIsobaths,
+  nauticalChartEnabled,
+  nauticalChartLabel,
+  nauticalChartHint,
+  toggleNauticalChart,
   radarData,
   radarFrameList,
   radarFrameIndex,
@@ -123,6 +120,7 @@ export default function MapLayersZone({
   goesIrFrameList,
   goesIrFrameIndex,
   goesIrUserPaused,
+  goesIrSource,
   handleGoesIrFrameChange,
   handleGoesIrUserPausedChange,
 }: MapLayersZoneProps) {
@@ -136,9 +134,7 @@ export default function MapLayersZone({
       if (!key) return;
       const names: Record<MapHeavyRasterKey, string> = {
         radar: t.mapUiLayers.layerRadar,
-        bathymetry: t.mapUiLayers.layerBathymetry,
-        seamarks: t.mapUiLayers.layerSeamarks,
-        gibsSat: t.mapUiLayers.layerGibsSat,
+        nauticalChart: t.mapUiLayers.layerNauticalChart,
         goesIr: t.mapUiLayers.layerSatelliteIr,
       };
       showToast(t.mapUiLayers.rasterCapToast.replace('{layer}', names[key]));
@@ -199,9 +195,9 @@ export default function MapLayersZone({
               </button>
             )}
           </div>
-          <button type="button" onClick={toggleIsobaths} aria-label={isobathsLabel} title={isobathsHint} aria-pressed={isobathsEnabled} className="absolute top-[70px] right-3 z-[1000] inline-flex min-h-[44px] min-w-[44px] justify-center items-center gap-1.5 px-2.5 py-1.5 rounded-md text-meta-sm font-medium text-fg bg-bg-elevated/90 border border-divider shadow-card backdrop-blur-sm hover:bg-bg-elevated transition-colors pointer-events-auto">
-            <Waves className="w-3.5 h-3.5 text-data-waves" aria-hidden />
-            <span className="hidden sm:inline">{isobathsLabel}</span>
+          <button type="button" onClick={toggleNauticalChart} aria-label={nauticalChartLabel} title={nauticalChartHint} aria-pressed={nauticalChartEnabled} className="absolute top-[70px] right-3 z-[1000] inline-flex min-h-[44px] min-w-[44px] justify-center items-center gap-1.5 px-2.5 py-1.5 rounded-md text-meta-sm font-medium text-fg bg-bg-elevated/90 border border-divider shadow-card backdrop-blur-sm hover:bg-bg-elevated transition-colors pointer-events-auto">
+            <Sailboat className="w-3.5 h-3.5 text-data-water" aria-hidden />
+            <span className="hidden sm:inline">{nauticalChartLabel}</span>
           </button>
         </>
       )}
@@ -263,28 +259,40 @@ export default function MapLayersZone({
             stale: t.map.radarStale,
           }}
           icon={<SatelliteDish className="w-3.5 h-3.5 text-data-period" aria-hidden />}
-          cadenceMin={METEOSAT_IR_CADENCE_MIN}
-          staleMaxAgeMin={GOES_IR_STALE_MAX_AGE_MIN}
-          frameClock={meteosatIrFrameClock}
-          frameFullClock={meteosatIrFrameFullClock}
+          cadenceMin={goesIrSource === 'mtg' ? MTG_SAT_CADENCE_MIN : GOES_IR_CADENCE_MIN}
+          staleMaxAgeMin={goesIrSource === 'mtg' ? MTG_SAT_STALE_MAX_AGE_MIN : GOES_IR_STALE_MAX_AGE_MIN}
+          frameClock={goesIrFrameClock}
+          frameFullClock={goesIrFrameFullClock}
           // O HUD do fullscreen só é dono do scrubber do RADAR — o IR
           // mantém o seu flutuante (play + régua) em todas as superfícies.
           // Sem isto, com o IR ligado no /mapa não havia como mudar de
           // frame: o carrossel escondia os controlos e o HUD não os rendia.
           attribution={(
             <>
-              <a
-                href="https://user.eumetsat.int/data-access/eumetview"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="pointer-events-auto underline hover:text-fg transition-colors"
-              >
-                Meteosat-11 © EUMETSAT
-              </a>
+              {goesIrSource === 'mtg' ? (
+                <a
+                  href="https://www.eumetsat.int"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="pointer-events-auto underline hover:text-fg transition-colors"
+                >
+                  MTG-I1 © EUMETSAT
+                </a>
+              ) : (
+                <a
+                  href="https://earthdata.nasa.gov/gibs"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="pointer-events-auto underline hover:text-fg transition-colors"
+                >
+                  GOES-East © NASA GIBS
+                </a>
+              )}
               <span aria-hidden className="text-fg-muted">·</span>
               <OpenMeteoAttribution className="pointer-events-auto underline hover:text-fg transition-colors" />
             </>
           )}
+          hideScrubber={isFullscreen}
         />
       )}
     </>

@@ -102,8 +102,8 @@ const ES_COGNATES = new Set([
   'Tipo',               // espanhol correcto = PT
   'Nada encontrado',    // espanhol correcto = PT
   'Verificado',         // espanhol correcto = PT
-  'Satélite IR',        // «Satélite» é espanhol correcto = PT
-  'Satélite IR (10 min)', // idem — nome da camada IR
+  'Satélite (10 min)',  // «Satélite» é espanhol correcto = PT — nome da camada
+                        // VIS/IR adaptativa (ex-«Satélite IR»)
   'Ver perfil',         // espanhol correcto = PT
   'Filtros',            // espanhol correcto = PT (painel/sheet «Explorar», M3)
   'Filtros ({count})',  // espanhol correcto = PT (idem)
@@ -218,6 +218,7 @@ const ES_COGNATES = new Set([
   'Mar',                               // espanhol correcto = PT (grupo «Mar» do menu Camadas, §8)
   'Próximas 48 h',                     // espanhol correcto = PT (camada «48 h» do menu, §8)
   'Isóbatas',                          // espanhol correcto = PT (camada de isóbatas)
+  'Carta náutica',                     // espanhol correcto = PT (camada «Carta náutica», Fase 3)
   'Altura significativa (Hs)',         // espanhol correcto = PT (camada Hs)
   'Continente',                        // espanhol correcto = PT (chip de área §10)
 ]);

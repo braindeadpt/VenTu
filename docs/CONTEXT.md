@@ -586,7 +586,7 @@ O `ci.yml` corre três passos Playwright: `critical-routes` (smoke de 18 rotas: 
 | `spot-dashboard` | 5 | Dashboard da página de spot: métricas, score e secções-chave |
 | `confidence-badge` | 2 | Badge de confiança da previsão (multi-modelo) |
 | `mar-perigoso` | 6 | Aviso de Agitação Marítima: strip no spot, Dawn Patrol, badge no card do mapa e chip na sticky bar (desktop + mobile) |
-| `isobaths` | 11 | Isóbatas IH (8/16/30 m): camada no mapa, legenda de profundidade, distâncias no dashboard, deep link `?isobaths=1` |
+| `isobaths` | 10 | «Carta náutica» (isóbatas IH 8/16/30 m + batimetria + seamarks): toggle fundido no mapa, legenda, distâncias no dashboard, deep links `?nauticalChart=1` e legado `?isobaths=1`, migração de prefs |
 | `topnow-wave-badge` | 9 | Badge do score de onda no TopNow (homepage): correcção (boia / viés regional, incl. deltaM negativo) vs só previsão; boia fresca ganha ao viés no mesmo row; leitura velha → nenhum badge; caminho SSG baked (wave-bias.json no build) |
 | `coastal-nav-warnings` | 8 | Avisos à navegação costeiros IH + ES cross-border: secção no spot, overlay de polígonos, deep link ao detalhe |
 | `data-sources` | 13 | Fontes de dados: tabela de atribuições pt/en, citação Open-Meteo (DOI) com paridade pt/en em fontes e About, cartão IH_API_KEY (+ linha de degradação da camada de boias), sitemap + hreflang, atribuições no mapa/footer |

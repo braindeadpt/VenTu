@@ -36,12 +36,11 @@ test.describe('Map attribution (Leaflet control)', () => {
   test.use({ serviceWorkers: 'block', reducedMotion: 'reduce' });
   test.describe.configure({ timeout: 60_000 });
 
-  test('créditos EMODnet/OpenSeaMap aparecem com camadas ligadas via localStorage', async ({
+  test('créditos EMODnet/OpenSeaMap aparecem com a «Carta náutica» ligada via localStorage', async ({
     page,
   }) => {
     await page.addInitScript(() => {
-      localStorage.setItem('ventu.map.bathymetry', '1');
-      localStorage.setItem('ventu.map.seamarks', '1');
+      localStorage.setItem('ventu.map.nauticalChart', '1');
     });
     await openMapa(page);
 
@@ -49,28 +48,24 @@ test.describe('Map attribution (Leaflet control)', () => {
     await expect(attribution(page)).toContainText('OpenSeaMap');
   });
 
-  test('ligar as camadas pelo menu «Camadas» junta os créditos', async ({ page }) => {
+  test('ligar a «Carta náutica» pelo menu «Camadas» junta os créditos', async ({ page }) => {
     await openMapa(page);
 
     await expect(attribution(page)).not.toContainText('EMODnet');
     await expect(attribution(page)).not.toContainText('OpenSeaMap');
 
     await openMapLayersMenu(page);
-    const bathymetryToggle = page.locator('[data-map-bathymetry-toggle]').first();
-    await expect(bathymetryToggle).toBeAttached({ timeout: 20_000 });
-    await bathymetryToggle.dispatchEvent('click');
+    const nauticalToggle = page.locator('[data-map-nautical-chart-toggle]').first();
+    await expect(nauticalToggle).toBeAttached({ timeout: 20_000 });
+    await nauticalToggle.dispatchEvent('click');
+    // Um toggle liga as três camadas internas — EMODnet e OpenSeaMap chegam juntos.
     await expect(attribution(page)).toContainText('EMODnet', { timeout: 15_000 });
-
-    const seamarksToggle = page.locator('[data-map-seamarks-toggle]').first();
-    await expect(seamarksToggle).toBeAttached({ timeout: 20_000 });
-    await seamarksToggle.dispatchEvent('click');
     await expect(attribution(page)).toContainText('OpenSeaMap', { timeout: 15_000 });
   });
 
   test('créditos das camadas sobrevivem ao satélite e à troca de tema', async ({ page }) => {
     await page.addInitScript(() => {
-      localStorage.setItem('ventu.map.bathymetry', '1');
-      localStorage.setItem('ventu.map.seamarks', '1');
+      localStorage.setItem('ventu.map.nauticalChart', '1');
     });
     await openMapa(page);
 
@@ -92,10 +87,9 @@ test.describe('Map attribution (Leaflet control)', () => {
     await expect(attribution(page)).toContainText(/Esri/);
   });
 
-  test('desligar as camadas remove os créditos', async ({ page }) => {
+  test('desligar a «Carta náutica» remove os créditos', async ({ page }) => {
     await page.addInitScript(() => {
-      localStorage.setItem('ventu.map.bathymetry', '1');
-      localStorage.setItem('ventu.map.seamarks', '1');
+      localStorage.setItem('ventu.map.nauticalChart', '1');
     });
     await openMapa(page);
 
@@ -103,8 +97,7 @@ test.describe('Map attribution (Leaflet control)', () => {
     await expect(attribution(page)).toContainText('OpenSeaMap');
 
     await openMapLayersMenu(page);
-    await page.locator('[data-map-bathymetry-toggle]').first().dispatchEvent('click');
-    await page.locator('[data-map-seamarks-toggle]').first().dispatchEvent('click');
+    await page.locator('[data-map-nautical-chart-toggle]').first().dispatchEvent('click');
 
     await expect(attribution(page)).not.toContainText('EMODnet', { timeout: 15_000 });
     await expect(attribution(page)).not.toContainText('OpenSeaMap');

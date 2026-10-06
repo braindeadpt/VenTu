@@ -275,10 +275,10 @@ describe('evaluateDataLayerHealth (unificado)', () => {
   it('todas ok → level ok com linhas ok (inclui marés warnOnly)', () => {
     const r = evaluateDataLayerHealth(allOk);
     expect(r.level).toBe('ok');
-    expect(r.oks).toHaveLength(4);
+    expect(r.oks).toHaveLength(5);
     expect(r.failures).toHaveLength(0);
     expect(r.warnings).toHaveLength(0);
-    expect(r.layers.map((l) => l.key)).toEqual(['buoyLayer', 'radarLayer', 'warningsLayer', 'tideLayer']);
+    expect(r.layers.map((l) => l.key)).toEqual(['buoyLayer', 'radarLayer', 'warningsLayer', 'tideLayer', 'satLayer']);
   });
 
   it('uma camada no limiar de aviso → level warn com ::warning:: isolada', () => {
@@ -289,7 +289,7 @@ describe('evaluateDataLayerHealth (unificado)', () => {
     expect(r.level).toBe('warn');
     expect(r.warnings).toHaveLength(1);
     expect(r.warnings[0]).toMatch(/^::warning::Avisos IPMA\/MeteoAlarm em 'stale' há 4 runs/);
-    expect(r.oks).toHaveLength(3);
+    expect(r.oks).toHaveLength(4);
   });
 
   it('camadas suplementares no limiar de falha → ::warning:: e NUNCA level fail', () => {
@@ -357,7 +357,7 @@ describe('evaluateDataLayerHealth (unificado)', () => {
   it('meta null/incompleto não rebenta (camadas vazias = ok)', () => {
     const r = evaluateDataLayerHealth(null);
     expect(r.level).toBe('ok');
-    expect(r.oks).toHaveLength(4);
+    expect(r.oks).toHaveLength(5);
   });
 
   it('marés warnOnly: stale com streak ≥ limiar de falha → ::warning:: e NUNCA level fail', () => {

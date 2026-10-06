@@ -35,7 +35,7 @@ interface MapChromeZoneProps {
   locateLabel: string;
   shareLabel: string;
   // Legenda de camadas (props montadas pela zona de camadas)
-  isobathsEnabled: boolean;
+  nauticalChartEnabled: boolean;
   isobathsData: IsobathContoursFile | null | undefined;
   radarLift: number;
   legendLayerProps: MapLayersFields['legendLayerProps'];
@@ -63,7 +63,7 @@ export default function MapChromeZone({
   controls,
   locateLabel,
   shareLabel,
-  isobathsEnabled,
+  nauticalChartEnabled,
   isobathsData,
   radarLift,
   legendLayerProps,
@@ -224,7 +224,7 @@ export default function MapChromeZone({
           {...legendLayerProps}
         />
       ) : (
-        (!isHeroEmbed || (isobathsEnabled && isobathsData != null)) && (
+        (!isHeroEmbed || (nauticalChartEnabled && isobathsData != null)) && (
           <MapLegend
             locale={locale}
             reserveHudSpace={isFullscreen && isMobile}

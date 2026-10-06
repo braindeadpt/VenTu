@@ -60,16 +60,13 @@ interface UseMapChromeZoneParams {
   hoursFrame: number;
   hoursUserPaused: boolean;
   hoursFile: MapHoursFile | null | undefined;
-  isobathsEnabled: boolean;
+  nauticalChartEnabled: boolean;
   buoysEnabled: boolean;
   hsEnabled: boolean;
   sstEnabled: boolean;
   currentsEnabled: boolean;
   // Camadas restantes do contrato de partilha (?<layer>=1) + basemap.
   basemapMode: BasemapMode;
-  bathymetryEnabled: boolean;
-  seamarksEnabled: boolean;
-  gibsSatEnabled: boolean;
   goesIrEnabled: boolean;
   stormsEnabled: boolean;
   warnAreasEnabled: boolean;
@@ -100,15 +97,12 @@ export function useMapChromeZone({
   hoursFrame,
   hoursUserPaused,
   hoursFile,
-  isobathsEnabled,
+  nauticalChartEnabled,
   buoysEnabled,
   hsEnabled,
   sstEnabled,
   currentsEnabled,
   basemapMode,
-  bathymetryEnabled,
-  seamarksEnabled,
-  gibsSatEnabled,
   goesIrEnabled,
   stormsEnabled,
   warnAreasEnabled,
@@ -268,16 +262,13 @@ export function useMapChromeZone({
       region: selectedRegion,
       layers: {
         radar: radarEnabled,
-        isobaths: isobathsEnabled,
         hours: hoursOn,
         buoys: buoysEnabled,
         hs: hsEnabled,
         sst: sstEnabled,
         currents: currentsEnabled,
         wind: windEnabled,
-        bathymetry: bathymetryEnabled,
-        seamarks: seamarksEnabled,
-        gibsSat: gibsSatEnabled,
+        nauticalChart: nauticalChartEnabled,
         goesIr: goesIrEnabled,
         storms: stormsEnabled,
         warnAreas: warnAreasEnabled,
@@ -297,9 +288,9 @@ export function useMapChromeZone({
     }
   }, [
     mapInstanceRef, locale, selectedSport, selectedRegion,
-    radarEnabled, isobathsEnabled, hoursOn, buoysEnabled,
+    radarEnabled, nauticalChartEnabled, hoursOn, buoysEnabled,
     hsEnabled, sstEnabled, currentsEnabled, windEnabled, basemapMode,
-    bathymetryEnabled, seamarksEnabled, gibsSatEnabled, goesIrEnabled,
+    goesIrEnabled,
     stormsEnabled, warnAreasEnabled, coastalWarningsEnabled,
     showToast, t.map.shareCopied,
   ]);

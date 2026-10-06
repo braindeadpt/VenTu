@@ -8,17 +8,19 @@ rewriting the map core.
 
 | z-index | Pane | Layer | Notes |
 |---|---|---|---|
-| — | `tilePane` | basemap (CARTO light/dark, Esri satellite) | Leaflet default |
-| 205 | `ventu-gibs-sat` | **NASA GIBS true-color** (MODIS Terra, «hoje») | opaque raster — real imagery from the latest satellite pass (clouds/fronts); `default` TIME slot always serves the newest date (`no-store`); `maxNativeZoom: 9`, stretched above; keyless; `gibs.earthdata.nasa.gov` in CSP img-src (meta + terraform); counts toward the heavy-raster cap |
-| 206 | `ventu-meteosat-ir` / `ventu-goes-ir` | **Satélite IR** (15-min carousel) | translucent raster (opacity 0.85) — cold cloud tops; primary engine **EUMETView WMS Meteosat-11 IR10.8** (`msg_fes:ir108`, keyless, CORS `*`, PT centred in the 0° disk — see `docs/audits/SATELLITE-IR-OPTIONS.md`) with per-frame fallback to **GOES-East GIBS** after 3 tileerrors or 12 s without a successful tile; frames tinted with the Infra+ cold-top palette (`irPalette.ts`) after the mask; counts toward the heavy-raster cap |
-| 210 | `ventu-bathymetry` | **EMODnet bathymetry WMS** (`emodnet:mean_multicolour` + `emodnet:contours`) | opt-in depth shading + 50–5000 m contours (island coverage — IH isobaths are mainland-only); host in CSP img-src (meta + terraform) |
-| 340 | — | isobaths (canvas image) | static, below fields |
+| — | `tilePane` | basemap (CARTO light/dark **no-labels**, Esri satellite) | Leaflet default — labels moved to `ventu-labels` so data overlays never cover toponymy |
+| 201 | `ventu-hillshade` | **Esri World_Hillshade** | terrain relief under the basemap; `mix-blend-mode: multiply` **on the pane** (blends against the tile pane below — inside the pane it composes against nothing); opacity per theme in `globals.css` |
+| 206 | `ventu-goes-ir` | **GOES-East ABI Band 13 Clean IR** (NASA GIBS WMTS) | animated carousel — 12 frames × 10 min ending ~45 min back; stretched above `maxNativeZoom: 6`; keyless; `gibs.earthdata.nasa.gov` in CSP img-src; counts toward the heavy-raster cap |
+| 210 | `ventu-bathymetry` | **EMODnet bathymetry WMS** (`emodnet:mean_multicolour` + `emodnet:contours`) | part of «Carta náutica» — depth shading + 50–5000 m contours (island coverage — IH isobaths are mainland-only); host in CSP img-src (meta + terraform) |
+| 340 | — | isobaths (canvas image) | part of «Carta náutica» — static, below fields |
 | 345 | `windfield` | **wind particle field** | ambient, animated |
 | 348 | `sst` | SST ribbon | mutually exclusive w/ Hs |
 | 350 | `hs` | Hs swell field + crest isolines | mutually exclusive w/ SST |
 | 355 | — | tide ribbons | |
 | 360 | `currents` | current ticks | vector marks, not flow |
+| 370 | `ventu-seamarks` | **OpenSeaMap seamark tiles** | part of «Carta náutica» — buoys/beacons/harbours above the fields, below markers |
 | 400 | `overlayPane` | radar IPMA frames | Leaflet default |
+| 450 | `ventu-labels` | **toponymy/boundaries** (Esri Gray Reference or Boundaries_and_Places) | above every data overlay, below markers — labels stay legible over radar/satellite |
 | 600+ | `markerPane` | spot pins, wind arcs, clusters | always on top |
 
 ## Field-layer contract (`useMap*Field`)
@@ -92,63 +94,58 @@ marker/overlay stack and surface through the existing warning/chip channels.
 
 ## Heavy raster cap
 
-`MAP_HEAVY_RASTER_KEYS` (`src/lib/mapLayerBus.ts`) = `radar`, `bathymetry`,
-`seamarks`, `gibsSat`, `goesIr` — max **2 active** (`MAP_HEAVY_RASTER_MAX`);
-turning on a third evicts the oldest (toast names the evicted layer).
-GIBS true-color is opaque — it replaces the basemap visually, so it competes
-with the other raster overlays for the same slot. The vector canvas fields
-(Hs/SST/wind/currents) have their own mutual-exclusion rules and don't count.
+`MAP_HEAVY_RASTER_KEYS` (`src/lib/mapLayerBus.ts`) = `radar`, `nauticalChart`,
+`goesIr` — max **2 active** (`MAP_HEAVY_RASTER_MAX`); turning on a third
+evicts the oldest (toast names the evicted layer). The merged «Carta
+náutica» counts as ONE layer even though it paints three sub-layers
+(bathymetry WMS + isobaths + seamark tiles). The vector canvas fields
+(Hs/SST/wind/currents) have their own mutual-exclusion rules and don't
+count.
 
-## NASA GIBS (`gibsSatellite.ts` + `useMapLayers`)
+## Carta náutica (merged nautical layers)
 
-- `GIBS_SATELLITE_URL` — WMTS REST `…/MODIS_Terra_CorrectedReflectance_TrueColor/default/default/GoogleMapsCompatible_Level9/{z}/{y}/{x}.jpg`.
-  The `default` TIME segment always resolves to the latest available date —
-  no client-side date math; `Cache-Control: no-store` keeps «today» fresh.
-- `L.tileLayer` on `ventu-gibs-sat` pane, `pointerEvents: none`,
-  `maxNativeZoom: 9` (~250 m/px — clouds, not street detail),
-  `updateWhenZooming: false` (stretches cached tiles during the gesture —
-  fetching per intermediate zoom melted the main thread with canvas masks).
-- Anti-flash tríade via `gibsAttachTileMask` (also used by GOES-IR): hide on
-  `tileloadstart` → `gibsTileMaskBlank` on `tileload` (idempotent via
-  `dataset.ventuMasked` — re-masking every mixed tile twice cost a full
-  256² `getImageData` + `toDataURL` each) → reveal content, keep 100 %
-  no-data hidden. Without the hide step, black no-data tiles painted one
-  frame before being hidden — black flashing on every zoom-out.
-- Toggle in the Camadas menu («Satélite NASA», `data-map-gibs-sat-toggle`),
-  persisted to `ventu.map.gibsSat` localStorage, disabled in hero embeds.
-- Attribution: «Imagery © NASA GIBS (EOSDIS/MODIS Terra)».
+One user-facing toggle — `data-map-nautical-chart-toggle`, persisted to
+`ventu.map.nauticalChart`, shared as `?nauticalChart=1` — drives three
+sub-layers together: IH isobaths (canvas, 8/16/30 m), EMODnet bathymetry
+WMS and OpenSeaMap seamark tiles. In hero embeds only the isobaths paint
+(bathymetry/seamarks are fullscreen-only). `readNauticalChartPref()`
+migrates the legacy `ventu.map.isobaths`/`.bathymetry`/`.seamarks` keys,
+and the three legacy share params (`?isobaths=1` etc.) still enable it.
 
-## Satellite IR — Meteosat-11 primary + GOES-East fallback (`meteosatIr.ts`, `goesIr.ts` + `useMapLayers`)
+## Satélite — MTG-I1 primário, GOES-East fallback (`mtgSat.ts` + `goesIr.ts`)
 
-- **Primary engine: EUMETView WMS** (`meteosatIr.ts`) — Meteosat-11 SEVIRI
-  IR10.8 (`msg_fes:ir108`), 15-min cadence, ~30 min lag, full 0° disk
-  (±77°, `METEOSAT_IR_BOUNDS`). Portugal sits in the *centre* of the disk —
-  unlike GOES-East, where it was smeared at the eastern limb (physics:
-  sub-satellite ~75°W, GIBS has no Meteosat). Keyless, `ACAO: *`,
-  measured 512² over PT in 0.4–0.6 s (2026-10-01,
-  `docs/audits/SATELLITE-IR-OPTIONS.md`). CSP: `view.eumetsat.int` in
-  img-src (meta + terraform).
-- `L.tileLayer.wms` per frame with fixed `time=` on the shared IR pane
-  (z 206); switching frames swaps opacity (0.85 active), warms frame+1,
-  discards idle pool layers on `movestart` (active + warming survive).
-- **Per-frame fallback to GOES-East GIBS** (`goesIr.ts`, 10-min slots):
-  3+ `tileerror`s on a frame, or 12 s without any successful tile, evict
-  the Meteosat layer for that frame and `activate` re-runs on GOES — the
-  layer never dies when the state service is down. The carousel badge/
-  cadence follow the primary product (15 min).
-- **Infra+ cold-top palette** (`irPalette.ts` + `irPaletteTile.ts`):
-  after the GIBS mask, pixels with brightness ≥ 150 (~240 K) are tinted
-  blue→cyan→green→yellow→red by severity (Windy/EUMETSAT enhancement
-  scheme, `cwg.eumetsat.int/color-enhancements`); ground/sea keep the
-  grayscale. Runs once per tile (dataset guard, same as the mask).
-- Attribution: «Meteosat-11 © EUMETSAT» linking to the EUMETView page.
-- Toggle `data-map-goes-ir-toggle`, persisted to `ventu.goes-ir.state`,
-  deep link `?goesIr=1`, included in the share-view URL (unchanged).
-- Shared `RadarCarousel` with `SatelliteDish` icon, Lisbon-wall-clock badge
-  (`goesIrFrameClock`), gap/stale labels (cadence 10, stale > 120 min),
-  NASA attribution node. The fullscreen HUD only owns the *radar* scrubber
-  — the IR carousel keeps its floating play + range in fullscreen too (offset
-  +84 px when radar is also on), otherwise frames were unreachable there.
-- Toggle in the Camadas menu («Satélite IR (10 min)»,
-  `data-map-goes-ir-toggle`), persisted to `ventu.goes-ir.state`
-  localStorage, deep link `?goesIr=1`, included in the share-view URL.
+- **Primary source**: `scripts/fetch-mtg-ir.py` (hourly, inside
+  `update-data.yml`) pulls FCI Level-1c via EUMETSAT Data Tailor —
+  server-side subset to the `ventu_iberia_atlantic` ROI (28–52°N,
+  34°W–1°E), resampled to ~2 km/px (0.02°). Two products per slot,
+  chosen by solar elevation over the ROI centre (> ~15° = day —
+  below that the natural-color photo is too dark to read). Minority
+  unification: if fewer than 3 slots of one product would land inside
+  a loop of the other, they are rendered as the dominant product — a
+  lone daylight photo inside a night-IR sweep reads as a flash.
+  - **`vis` (day)** — predefined `natural_color` filter → PNG RGB →
+    opaque photo re-encoded to WebP.
+  - **`ir` (night)** — `ir_105_effective_radiance` GeoTIFF → Planck
+    brightness temperature → translucent cloud-top palette (warm surface
+    ~12% alpha so the basemap reads through) → WebP.
+  Output: `public/data/sat-mtg/frames/{vis,ir}-*.webp` +
+  `sat-mtg.json` manifest (`{bounds, frames[{frameTime,imagePath,kind}]}`).
+  Meteosat at 0° sees PT at near-native ~2 km — vs the GOES-East limb.
+- **Frontend**: `useMapLayers` fetches the manifest when the toggle goes
+  on; fresh manifest (< `MTG_SAT_STALE_MAX_AGE_MIN` = 3 h) → pool of
+  `L.imageOverlay` (one per frame, opacity swap with a 320 ms fade) on the
+  same `ventu-goes-ir` pane (z 206). Overlays are geo-anchored — the pool
+  is never discarded on pan/zoom (that discard exists only for the GIBS
+  tile fallback) and remaining frames are warmed idle right after init, so
+  the sweep never holds a stale frame while a cold one fetches; dead/absent
+  manifest → **GIBS fallback**
+  (`goesIrFrames()` tiles, same carousel, `gibsTileMaskBlank` still masks
+  off-disc black tiles). `goesIrSource` ('mtg'|'gibs') switches the
+  carousel attribution (EUMETSAT vs NASA GIBS).
+- Toggle «Satélite», `data-map-goes-ir-toggle`, persisted to
+  `ventu.map.goesIr`, shared as `?goesIr=1` — unchanged contracts.
+- Licence note: frames served are typically ≥1 h old = EUMETSAT «Core»
+  (CC-BY-4.0); sub-hour FCI is «Recommended» (free only for
+  research/education/personal). See docs/EXTERNAL-DATA.md.
+- `gibsSatellite.ts` now only exports `gibsTileMaskBlank`. The MODIS
+  true-color layer was removed (Fase 3).

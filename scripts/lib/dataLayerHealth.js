@@ -36,6 +36,9 @@ const path = require('path');
 
 /** Um frame de radar não deve ter mais de 25 min — o IPMA publica de 5 em 5. */
 const RADAR_MAX_AGE_MINUTES = 25;
+/** Satélite MTG-I1 via pipeline (1/h) — frame mais recente com >3 h = stale
+ *  (mesmo limiar do badge do carrossel no mapa, MTG_SAT_STALE_MAX_AGE_MIN). */
+const SAT_MAX_AGE_HOURS = 3;
 /** Avisos mudam devagar — fetchedAt com mais de 24 h conta como stale. */
 const WARNINGS_MAX_AGE_HOURS = 24;
 /** Avisos costeiros do IH mudam devagar (nav_warning_coastal) — mesma janela. */
@@ -70,6 +73,10 @@ const LAYERS = [
   // avisa a partir do warnAfter e fica por aí; a visibilidade é o chip do
   // About + os logs do workflow, não o exit code do job.
   { key: 'tideLayer', label: 'Marés IH (observadas)', warnOnly: true },
+  // Satélite MTG-I1: warnOnly — overlay opcional; um outage EUMETSAT ou o
+  // Data Tailor cheio deixam o mapa a cair para o fallback GOES-IR/GIBS,
+  // logo nunca pode falhar o job.
+  { key: 'satLayer', label: 'Satélite MTG-I1 (IR 10.5)', warnOnly: true },
 ];
 
 function isoAgeHours(iso, nowMs) {
@@ -87,6 +94,16 @@ function deriveRadarLayerStatus(file, nowMs = Date.now()) {
   const ageMin = isoAgeHours(frameTime, nowMs) * 60;
   if (!Number.isFinite(ageMin) || ageMin < 0) return 'down';
   return ageMin <= RADAR_MAX_AGE_MINUTES ? 'ok' : 'stale';
+}
+
+/** Derivação pura — estado da camada de satélite MTG-I1 (sat-mtg.json). */
+function deriveSatLayerStatus(file, nowMs = Date.now()) {
+  if (!file) return 'down';
+  const frameTime = file.frames?.[0]?.frameTime ?? null;
+  if (!frameTime) return 'down';
+  const ageHours = isoAgeHours(frameTime, nowMs);
+  if (ageHours == null || ageHours < 0) return 'down';
+  return ageHours <= SAT_MAX_AGE_HOURS ? 'ok' : 'stale';
 }
 
 /** Derivação pura — estado da camada de avisos. */
@@ -135,6 +152,24 @@ function loadRadarLayerStatus(rootDir = path.join(__dirname, '..', '..'), nowMs 
   const out = { status: deriveRadarLayerStatus(file, nowMs) };
   const frameTime = file.frameTime ?? file.frames?.[0]?.frameTime ?? null;
   if (typeof frameTime === 'string') out.frameTime = frameTime;
+  return out;
+}
+
+/**
+ * Carrega sat-mtg.json e deriva o estado. Null quando o ficheiro falta
+ * (pipeline EUMETSAT ainda não correu — sem credenciais no env).
+ */
+function loadSatLayerStatus(rootDir = path.join(__dirname, '..', '..'), nowMs = Date.now()) {
+  let file;
+  try {
+    file = JSON.parse(fs.readFileSync(path.join(rootDir, 'public', 'data', 'sat-mtg.json'), 'utf-8'));
+  } catch {
+    return null;
+  }
+  const out = { status: deriveSatLayerStatus(file, nowMs) };
+  const frameTime = file.frames?.[0]?.frameTime;
+  if (typeof frameTime === 'string') out.frameTime = frameTime;
+  if (Array.isArray(file.frames)) out.frames = file.frames.length;
   return out;
 }
 
@@ -407,13 +442,16 @@ module.exports = {
   WARNINGS_MAX_AGE_HOURS,
   COASTAL_MAX_AGE_HOURS,
   TIDES_MAX_AGE_HOURS,
+  SAT_MAX_AGE_HOURS,
   DEFAULT_WARN_AFTER,
   DEFAULT_FAIL_AFTER,
   deriveRadarLayerStatus,
+  deriveSatLayerStatus,
   deriveWarningsLayerStatus,
   deriveCoastalWarningsLayerStatus,
   deriveTidesLayerStatus,
   loadRadarLayerStatus,
+  loadSatLayerStatus,
   loadWarningsLayerStatus,
   loadCoastalWarningsLayerStatus,
   loadTidesLayerStatus,

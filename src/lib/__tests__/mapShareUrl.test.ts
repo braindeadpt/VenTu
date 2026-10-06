@@ -19,7 +19,7 @@ describe('buildMapShareSearch', () => {
     expect(p.get('sst')).toBe('1');
     expect(p.get('hs')).toBeNull();
     expect(p.get('currents')).toBeNull();
-    expect(p.get('isobaths')).toBeNull();
+    expect(p.get('nauticalChart')).toBeNull();
     expect(p.get('hours')).toBeNull();
   });
 
@@ -29,12 +29,12 @@ describe('buildMapShareSearch', () => {
       sport: 'surf',
       basemap: 'satellite',
       layers: {
-        wind: true, bathymetry: true, seamarks: true, gibsSat: true,
+        wind: true, nauticalChart: true,
         goesIr: true, storms: true, warnAreas: true, coastalWarnings: true,
       },
     });
     const p = new URLSearchParams(qs);
-    for (const k of ['wind', 'bathymetry', 'seamarks', 'gibsSat', 'goesIr', 'storms', 'warnAreas', 'coastalWarnings']) {
+    for (const k of ['wind', 'nauticalChart', 'goesIr', 'storms', 'warnAreas', 'coastalWarnings']) {
       expect(p.get(k), k).toBe('1');
     }
     expect(p.get('basemap')).toBe('sat');
@@ -79,10 +79,10 @@ describe('buildMapShareUrl', () => {
     const url = buildMapShareUrl('https://ventu.surf/pt/mapa/', {
       center: [38.7, -9.4],
       sport: 'surf',
-      layers: { isobaths: true },
+      layers: { nauticalChart: true },
     });
     expect(url).toContain('https://ventu.surf/pt/mapa/?');
     expect(url).toContain('lat=38.700');
-    expect(url).toContain('isobaths=1');
+    expect(url).toContain('nauticalChart=1');
   });
 });
