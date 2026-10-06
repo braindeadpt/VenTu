@@ -91,32 +91,22 @@
       ],
       "calibrated": 1,
       "calibrationRefs": {
-        "6200084→6200199": {
+        "6200084→6201077": {
           "esCode": "6200084",
           "esName": "Cabo Silleiro",
-          "ptRefCode": "6200199",
-          "ptRefName": "Nazaré Costeira (WMO)",
-          "ptRefArea": "Nazaré",
-          "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
-          "me": -0.1,
-          "n": 538,
+          "ptRefCode": "6201077",
+          "ptRefName": "Datawell ao largo do Porto",
+          "ptRefArea": "Porto",
+          "pair": "Cabo Silleiro × Datawell ao largo do Porto",
+          "me": -0.2,
+          "n": 24,
           "spots": [
             "moledo"
           ]
         }
       },
       "suboptimalRefs": 0,
-      "suboptimal": [
-        {
-          "spot": "moledo",
-          "esCode": "6200084",
-          "ptRefCode": "6200199",
-          "ptRefKm": 256.0891080060405,
-          "nearestPtCode": "4",
-          "nearestPtName": "CSA92/D",
-          "nearestPtKm": 60.03361936580006
-        }
-      ]
+      "suboptimal": []
     },
     "Viana do Castelo": {
       "spotCount": 8,
@@ -188,15 +178,15 @@
       ],
       "calibrated": 8,
       "calibrationRefs": {
-        "6200084→6200199": {
+        "6200084→6201077": {
           "esCode": "6200084",
           "esName": "Cabo Silleiro",
-          "ptRefCode": "6200199",
-          "ptRefName": "Nazaré Costeira (WMO)",
-          "ptRefArea": "Nazaré",
-          "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
-          "me": -0.1,
-          "n": 538,
+          "ptRefCode": "6201077",
+          "ptRefName": "Datawell ao largo do Porto",
+          "ptRefArea": "Porto",
+          "pair": "Cabo Silleiro × Datawell ao largo do Porto",
+          "me": -0.2,
+          "n": 24,
           "spots": [
             "vila-praia-ancora",
             "afife",
@@ -210,80 +200,7 @@
         }
       },
       "suboptimalRefs": 0,
-      "suboptimal": [
-        {
-          "spot": "vila-praia-ancora",
-          "esCode": "6200084",
-          "ptRefCode": "6200199",
-          "ptRefKm": 252.79494216152003,
-          "nearestPtCode": "4",
-          "nearestPtName": "CSA92/D",
-          "nearestPtKm": 56.83725903037779
-        },
-        {
-          "spot": "afife",
-          "esCode": "6200084",
-          "ptRefCode": "6200199",
-          "ptRefKm": 248.2812563816016,
-          "nearestPtCode": "4",
-          "nearestPtName": "CSA92/D",
-          "nearestPtKm": 52.251954993525956
-        },
-        {
-          "spot": "castelo-neiva",
-          "esCode": "6200084",
-          "ptRefCode": "6200199",
-          "ptRefKm": 245.7282059457399,
-          "nearestPtCode": "4",
-          "nearestPtName": "CSA92/D",
-          "nearestPtKm": 50.165911186433014
-        },
-        {
-          "spot": "amorosa",
-          "esCode": "6200084",
-          "ptRefCode": "6200199",
-          "ptRefKm": 239.8877558516748,
-          "nearestPtCode": "4",
-          "nearestPtName": "CSA92/D",
-          "nearestPtKm": 44.14913998124936
-        },
-        {
-          "spot": "cabedelo",
-          "esCode": "6200084",
-          "ptRefCode": "6200199",
-          "ptRefKm": 237.75996809176803,
-          "nearestPtCode": "4",
-          "nearestPtName": "CSA92/D",
-          "nearestPtKm": 42.28768124430723
-        },
-        {
-          "spot": "foil-cabedelo",
-          "esCode": "6200084",
-          "ptRefCode": "6200199",
-          "ptRefKm": 237.75996809176803,
-          "nearestPtCode": "4",
-          "nearestPtName": "CSA92/D",
-          "nearestPtKm": 42.28768124430723
-        },
-        {
-          "spot": "cabedelo-wakepark",
-          "esCode": "6200084",
-          "ptRefCode": "6200199",
-          "ptRefKm": 239.18095271512033,
-          "nearestPtCode": "4",
-          "nearestPtName": "CSA92/D",
-          "nearestPtKm": 43.64718807946496
-        },
-        {
-          "spot": "rodanho",
-          "esCode": "6200084",
-          "ptRefCode": "6200199",
-          "ptRefKm": 236.52988921344956,
-          "nearestPtCode": "4",
-          "nearestPtName": "CSA92/D",
-          "nearestPtKm": 41.221907708056136
-        }
-      ]
+      "suboptimal": []
     },
     "Esposende": {
       "spotCount": 9,
@@ -362,15 +279,15 @@
       ],
       "calibrated": 7,
       "calibrationRefs": {
-        "6200084→6200199": {
+        "6200084→6201077": {
           "esCode": "6200084",
           "esName": "Cabo Silleiro",
-          "ptRefCode": "6200199",
-          "ptRefName": "Nazaré Costeira (WMO)",
-          "ptRefArea": "Nazaré",
-          "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
-          "me": -0.1,
-          "n": 538,
+          "ptRefCode": "6201077",
+          "ptRefName": "Datawell ao largo do Porto",
+          "ptRefArea": "Porto",
+          "pair": "Cabo Silleiro × Datawell ao largo do Porto",
+          "me": -0.2,
+          "n": 24,
           "spots": [
             "ofir",
             "esposende",
@@ -383,71 +300,7 @@
         }
       },
       "suboptimalRefs": 0,
-      "suboptimal": [
-        {
-          "spot": "ofir",
-          "esCode": "6200084",
-          "ptRefCode": "6200199",
-          "ptRefKm": 223.89766913681618,
-          "nearestPtCode": "4",
-          "nearestPtName": "CSA92/D",
-          "nearestPtKm": 30.46765636091669
-        },
-        {
-          "spot": "esposende",
-          "esCode": "6200084",
-          "ptRefCode": "6200199",
-          "ptRefKm": 222.08686842440406,
-          "nearestPtCode": "4",
-          "nearestPtName": "CSA92/D",
-          "nearestPtKm": 28.920007732413914
-        },
-        {
-          "spot": "esposende-praia",
-          "esCode": "6200084",
-          "ptRefCode": "6200199",
-          "ptRefKm": 222.69061389457516,
-          "nearestPtCode": "4",
-          "nearestPtName": "CSA92/D",
-          "nearestPtKm": 29.437901225034324
-        },
-        {
-          "spot": "fao",
-          "esCode": "6200084",
-          "ptRefCode": "6200199",
-          "ptRefKm": 219.9942092663957,
-          "nearestPtCode": "4",
-          "nearestPtName": "CSA92/D",
-          "nearestPtKm": 27.955402159750385
-        },
-        {
-          "spot": "apulia",
-          "esCode": "6200084",
-          "ptRefCode": "6200199",
-          "ptRefKm": 216.85515886313974,
-          "nearestPtCode": "4",
-          "nearestPtName": "CSA92/D",
-          "nearestPtKm": 26.053641759189087
-        },
-        {
-          "spot": "fao-ofir-surf",
-          "esCode": "6200084",
-          "ptRefCode": "6200199",
-          "ptRefKm": 221.17395782365344,
-          "nearestPtCode": "4",
-          "nearestPtName": "CSA92/D",
-          "nearestPtKm": 28.129353547751005
-        },
-        {
-          "spot": "ofir-praia",
-          "esCode": "6200084",
-          "ptRefCode": "6200199",
-          "ptRefKm": 220.5374724824482,
-          "nearestPtCode": "4",
-          "nearestPtName": "CSA92/D",
-          "nearestPtKm": 27.692467778299093
-        }
-      ]
+      "suboptimal": []
     },
     "Porto": {
       "spotCount": 12,
@@ -547,15 +400,15 @@
       ],
       "calibrated": 12,
       "calibrationRefs": {
-        "6200084→6200199": {
+        "6200084→6201077": {
           "esCode": "6200084",
           "esName": "Cabo Silleiro",
-          "ptRefCode": "6200199",
-          "ptRefName": "Nazaré Costeira (WMO)",
-          "ptRefArea": "Nazaré",
-          "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
-          "me": -0.1,
-          "n": 538,
+          "ptRefCode": "6201077",
+          "ptRefName": "Datawell ao largo do Porto",
+          "ptRefArea": "Porto",
+          "pair": "Cabo Silleiro × Datawell ao largo do Porto",
+          "me": -0.2,
+          "n": 24,
           "spots": [
             "povoa-varzim",
             "leca-palmeira",
@@ -564,7 +417,6 @@
             "marina-afurada-foil",
             "salgueiros",
             "sereia-costa-verde",
-            "canide-sul",
             "aguda",
             "espinho",
             "vila-cha",
@@ -712,15 +564,15 @@
       ],
       "calibrated": 2,
       "calibrationRefs": {
-        "6200084→6200199": {
+        "6200084→6201077": {
           "esCode": "6200084",
           "esName": "Cabo Silleiro",
-          "ptRefCode": "6200199",
-          "ptRefName": "Nazaré Costeira (WMO)",
-          "ptRefArea": "Nazaré",
-          "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
-          "me": -0.1,
-          "n": 538,
+          "ptRefCode": "6201077",
+          "ptRefName": "Datawell ao largo do Porto",
+          "ptRefArea": "Porto",
+          "pair": "Cabo Silleiro × Datawell ao largo do Porto",
+          "me": -0.2,
+          "n": 24,
           "spots": [
             "azurara",
             "mindelo"
@@ -770,15 +622,15 @@
       ],
       "calibrated": 1,
       "calibrationRefs": {
-        "6200084→6200199": {
+        "6200084→6201077": {
           "esCode": "6200084",
           "esName": "Cabo Silleiro",
-          "ptRefCode": "6200199",
-          "ptRefName": "Nazaré Costeira (WMO)",
-          "ptRefArea": "Nazaré",
-          "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
-          "me": -0.1,
-          "n": 538,
+          "ptRefCode": "6201077",
+          "ptRefName": "Datawell ao largo do Porto",
+          "ptRefArea": "Porto",
+          "pair": "Cabo Silleiro × Datawell ao largo do Porto",
+          "me": -0.2,
+          "n": 24,
           "spots": [
             "praia-da-lomba"
           ]
@@ -832,15 +684,15 @@
       ],
       "calibrated": 3,
       "calibrationRefs": {
-        "6200084→6200199": {
+        "6200084→6201077": {
           "esCode": "6200084",
           "esName": "Cabo Silleiro",
-          "ptRefCode": "6200199",
-          "ptRefName": "Nazaré Costeira (WMO)",
-          "ptRefArea": "Nazaré",
-          "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
-          "me": -0.1,
-          "n": 538,
+          "ptRefCode": "6201077",
+          "ptRefName": "Datawell ao largo do Porto",
+          "ptRefArea": "Porto",
+          "pair": "Cabo Silleiro × Datawell ao largo do Porto",
+          "me": -0.2,
+          "n": 24,
           "spots": [
             "praia-37",
             "bairro-piscatorio",
@@ -935,15 +787,15 @@
       ],
       "calibrated": 6,
       "calibrationRefs": {
-        "6200084→6200199": {
+        "6200084→6201077": {
           "esCode": "6200084",
           "esName": "Cabo Silleiro",
-          "ptRefCode": "6200199",
-          "ptRefName": "Nazaré Costeira (WMO)",
-          "ptRefArea": "Nazaré",
-          "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
-          "me": -0.1,
-          "n": 538,
+          "ptRefCode": "6201077",
+          "ptRefName": "Datawell ao largo do Porto",
+          "ptRefArea": "Porto",
+          "pair": "Cabo Silleiro × Datawell ao largo do Porto",
+          "me": -0.2,
+          "n": 24,
           "spots": [
             "barrinha-esmoriz",
             "esmoriz",
@@ -1728,15 +1580,15 @@
       ],
       "calibrated": 1,
       "calibrationRefs": {
-        "6200084→6200199": {
+        "6200084→6201077": {
           "esCode": "6200084",
           "esName": "Cabo Silleiro",
-          "ptRefCode": "6200199",
-          "ptRefName": "Nazaré Costeira (WMO)",
-          "ptRefArea": "Nazaré",
-          "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
-          "me": -0.1,
-          "n": 538,
+          "ptRefCode": "6201077",
+          "ptRefName": "Datawell ao largo do Porto",
+          "ptRefArea": "Porto",
+          "pair": "Cabo Silleiro × Datawell ao largo do Porto",
+          "me": -0.2,
+          "n": 24,
           "spots": [
             "ilha-do-ermal"
           ]

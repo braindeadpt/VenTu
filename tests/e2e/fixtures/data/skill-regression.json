@@ -20,8 +20,20 @@
     "4": {
       "name": "CSA92/D",
       "origin": "ih",
-      "recentSnapshots": 1,
-      "baselineSnapshots": 1,
+      "recent": {
+        "snapshots": 7,
+        "rmse": 0.5114285714285715,
+        "me": 0.38285714285714284,
+        "n": 607.2857142857143
+      },
+      "baseline": {
+        "snapshots": 5,
+        "rmse": 0.39,
+        "me": 0.308,
+        "n": 567
+      },
+      "rmseDelta": 0.12,
+      "meAbsDelta": 0.07,
       "verdict": "insufficient"
     },
     "19": {
@@ -46,8 +58,20 @@
     "20": {
       "name": "CSA82/D",
       "origin": "ih",
-      "recentSnapshots": 1,
-      "baselineSnapshots": 2,
+      "recent": {
+        "snapshots": 7,
+        "rmse": 0.18285714285714283,
+        "me": 0.08857142857142856,
+        "n": 387
+      },
+      "baseline": {
+        "snapshots": 5,
+        "rmse": 0.17,
+        "me": 0.07,
+        "n": 492
+      },
+      "rmseDelta": 0.01,
+      "meAbsDelta": 0.02,
       "verdict": "insufficient"
     },
     "33": {
@@ -72,8 +96,20 @@
     "86": {
       "name": "BOND5",
       "origin": "ih",
-      "recentSnapshots": 1,
-      "baselineSnapshots": 2,
+      "recent": {
+        "snapshots": 7,
+        "rmse": 0.8485714285714285,
+        "me": 0.6514285714285714,
+        "n": 672.8571428571429
+      },
+      "baseline": {
+        "snapshots": 5,
+        "rmse": 0.664,
+        "me": 0.45,
+        "n": 634.4
+      },
+      "rmseDelta": 0.18,
+      "meAbsDelta": 0.2,
       "verdict": "insufficient"
     },
     "6200084": {
