@@ -263,6 +263,13 @@ async function gotoSpot(
   locale: 'pt' | 'en' = 'pt',
 ) {
   await interceptConditions(page, guinchoTransform(mode));
+  // Hermético: o wave-bias.json REAL passou a existir no build (pipeline
+  // escreve-o) e cobre Cascais — sem este stub o fallback client-side
+  // aplicava a correcção regional nos cenários «sem correcção» e o spec
+  // ficava dependente do dia em que corre. Os testes que exercitam o
+  // fallback stub o ficheiro com interceptWaveBias depois de chamar
+  // interceptConditions directamente (não passam por aqui).
+  await interceptWaveBias(page, { fetchedAt: null, regions: {} });
 
   await page.goto(`/${locale}/spots/${SPOT_SLUG}/`);
   await expect(page.getByRole('heading', { level: 1, name: /Guincho/i })).toBeVisible({

@@ -74,13 +74,19 @@ test.describe('wind ring legend', () => {
     // expansor era engolido — o mapa nunca montava (flake sob carga).
     await waitHydrated(page);
     // Em ≥1024 px o embed nasce ABERTO (efeito de mount do SpotGridClient) —
-    // clicar no expansor fechava-o e o .leaflet-container nunca aparecia.
-    // O clique só faz sentido quando o mapa arranca fechado.
+    // mas a leitura de aria-expanded pode cair ANTES do efeito correr (o
+    // atributo ainda não reflete o estado final): clicar aí fecha um mapa
+    // que estava a abrir e o .leaflet-container nunca aparecia. Retry
+    // até o container existir — um clique engolido ou prematuro é retomado.
     const expander = page.getByRole('button', { name: /Mapa ·|Map ·/i });
-    if ((await expander.getAttribute('aria-expanded')) !== 'true') {
-      await expander.click();
-    }
-    await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
+    await expect(async () => {
+      if ((await expander.getAttribute('aria-expanded')) !== 'true') {
+        await expander.click();
+      }
+      await expect(page.locator('.leaflet-container').first()).toBeVisible({
+        timeout: 4_000,
+      });
+    }).toPass({ timeout: 30_000 });
 
     const dialog = page.getByRole('dialog', { name: /Ler o vento no mapa/i });
     await expect(dialog).toBeHidden({ timeout: 5_000 });

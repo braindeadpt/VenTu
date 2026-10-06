@@ -308,13 +308,16 @@ test.describe('Fontes de dados (data sources)', () => {
     await expect(page.locator('.leaflet-control-attribution')).toContainText('CC BY 4.0');
   });
 
-  test('controlo de atribuição mostra Carto/OSM no mapa e Esri no satélite', async ({
+  test('controlo de atribuição mostra Carto/OSM + Esri aux no mapa e Esri no satélite', async ({
     page,
   }) => {
-    // Com NEXT_PUBLIC_CARTO_API_KEY no build: modo mapa = Carto dark/light.
-    // Satélite continua Esri imagery. Builds sem key (PRs do dependabot —
-    // secrets de repo não entram nesses runs — e builds locais) caem no
-    // fallback OSM: aí a asserção verifica o modo sem Carto, não ignora-o.
+    // Com NEXT_PUBLIC_CARTO_API_KEY no build: modo mapa = Carto dark/light
+    // + camadas auxiliares Esri (hillshade pane 201 + toponímia de
+    // referência acima dos fields) — o crédito «© Esri & contributors» é
+    // obrigatório nesse modo. Satélite = Esri imagery. Builds sem key (PRs
+    // do dependabot — secrets de repo não entram nesses runs — e builds
+    // locais) caem no raster Esri canvas: aí a asserção verifica o modo
+    // sem Carto, não ignora-o.
     await page.goto('/pt/mapa/', { waitUntil: 'networkidle', timeout: 60_000 });
     await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
     const attribution = page.locator('.leaflet-control-attribution');
@@ -322,10 +325,11 @@ test.describe('Fontes de dados (data sources)', () => {
       timeout: 15_000,
     });
     await expect(attribution).toContainText('OpenStreetMap');
+    // Esri está presente nos dois modos (aux no mapa, imagery no satélite).
+    await expect(attribution).toContainText(/Esri/);
     const keyedBuild = (await attribution.textContent())?.includes('CARTO');
     if (keyedBuild) {
       await expect(attribution).toContainText('CARTO');
-      await expect(attribution).not.toContainText(/Esri/);
     }
     // M5: o rádio de basemap vive dentro do menu «Camadas» → abrir primeiro.
     await openMapLayersMenu(page);
