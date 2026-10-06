@@ -106,6 +106,12 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add tests/e2e/visual-regression.spec.ts-snapshots tests/e2e/fixtures/data
           git commit -m "chore(visual): refresh Linux baselines (fixture only on shape change)"
+          # O `npm run build` regenera ficheiros TRACKED fora dos paths do
+          # commit (spots:lite, manifest, og images em public/**) — ficam
+          # unstaged e o `git rebase` abaixo recusa com «You have unstaged
+          # changes» (falha de 2026-10-06). O commit já contém tudo o que
+          # interessa: descarta o drift de build antes do rebase.
+          git checkout -- .
           # O registo corre ~10 min: se o main avançar nesse intervalo, um
           # `git push` simples é rejeitado (non-fast-forward) e as baselines
           # perdem-se no runner efémero — incidente de 2026-09-23 01:45, que
