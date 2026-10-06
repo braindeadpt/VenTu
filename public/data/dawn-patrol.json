@@ -1,105 +1,129 @@
 {
   "date": "2026-10-06",
-  "topSpot": "Coxos",
-  "topSpotSlug": "coxos",
+  "generatedAt": "2026-10-06T03:31:45.254Z",
+  "topSpot": "Supertubos",
+  "topSpotSlug": "supertubos",
   "pt": {
-    "headline": "Coxos oferece ondas perfeitas hoje!",
-    "advice": "Ondas de 1 m com período de 9 s e vento leve de 2 kt criam condições ideais. Aviso à navegação costeira ANAV NR 1727/26 (Animais Marinhos - Avistamento) em vigor na zona – surfe com cautela. Chegue cedo para evitar a multidão.",
-    "bestTime": "08:00",
+    "headline": "Hoje é dia de Supertubos! 🌊",
+    "advice": "Melhor janela: 6:00h. Ondas de 1.0m com 2 nós de vento. ⚓ Avisos à Navegação Costeiros (IH): ANAV NR 12/24 — Edital n.º 712 de 2024",
+    "bestTime": "6:00",
     "wetsuit": "3/2mm",
-    "crowdTip": "Chegue antes das 9h para pegar as melhores seções.",
+    "crowdTip": "Chega cedo para evitar crowd!",
     "moonTideLine": "Lua minguante · Marés mortas · baixa-mar 07:00"
   },
   "en": {
-    "headline": "Coxos serves perfect waves today!",
-    "advice": "1 m waves with a 9‑second period and light 2‑kt wind create ideal conditions. Coastal navigation warning ANAV NR 1727/26 (Marine Animals – Sighting) is in effect – surf with caution. Arrive early to beat the crowd.",
-    "bestTime": "08:00",
+    "headline": "Today is Supertubos day! 🌊",
+    "advice": "Best window: 6:00. 1.0m waves with 2 knot wind. ⚓ Coastal navigation warnings (IH): ANAV NR 12/24 — Edital n.º 712 de 2024",
+    "bestTime": "6:00",
     "wetsuit": "3/2mm",
-    "crowdTip": "Arrive before 9 am to grab the best sections.",
+    "crowdTip": "Get there early to beat the crowd!",
     "moonTideLine": "Waning crescent · Neap tides · low tide 07:00"
   },
   "spots": [
     {
       "name": "Supertubos",
       "slug": "supertubos",
-      "score": 59,
-      "verdict": "skip",
-      "ptReason": "Score baixo (59) e ondas pequenas; melhor procurar spots com maior pontuação.",
-      "enReason": "Low score (59) and small waves; better to surf spots with higher ratings.",
+      "score": 56,
       "scoreForecast": 59,
-      "scoreSource": "previsão",
-      "scoreMeta": null
+      "scoreSource": "boia",
+      "scoreMeta": {
+        "stationName": "CSA83/1D",
+        "distanceKm": 162.7
+      },
+      "verdict": "maybe",
+      "ptReason": "Condições razoáveis",
+      "enReason": "Fair conditions"
     },
     {
       "name": "Guincho",
       "slug": "guincho",
-      "score": 58,
-      "verdict": "skip",
-      "ptReason": "Score abaixo de 60 e ondas curtas; não compensa o esforço.",
-      "enReason": "Score below 60 and short waves; not worth the effort.",
+      "score": 56,
       "scoreForecast": 58,
-      "scoreSource": "previsão",
-      "scoreMeta": null
+      "scoreSource": "boia",
+      "scoreMeta": {
+        "stationName": "CSA83/1D",
+        "distanceKm": 101.9
+      },
+      "verdict": "maybe",
+      "ptReason": "Condições razoáveis",
+      "enReason": "Fair conditions"
     },
     {
       "name": "Nazaré",
       "slug": "nazare",
-      "score": 59,
-      "verdict": "skip",
-      "ptReason": "Mesmo score baixo (59) e condições semelhantes a Supertubos; melhor outro spot.",
-      "enReason": "Same low score (59) and similar conditions to Supertubos; choose another spot.",
+      "score": 56,
       "scoreForecast": 59,
-      "scoreSource": "previsão",
-      "scoreMeta": null
+      "scoreSource": "boia",
+      "scoreMeta": {
+        "stationName": "CSA83/1D",
+        "distanceKm": 186.8
+      },
+      "verdict": "maybe",
+      "ptReason": "Condições razoáveis",
+      "enReason": "Fair conditions"
     },
     {
       "name": "Ribeira d'Ilhas",
       "slug": "ribeira-ilhas",
-      "score": 78,
-      "verdict": "go",
-      "ptReason": "Score alto (78) e boas ondas; vento ligeiro, porém ainda surfável.",
-      "enReason": "High score (78) with good waves; light wind still surfable.",
+      "score": 56,
       "scoreForecast": 78,
-      "scoreSource": "previsão",
-      "scoreMeta": null
+      "scoreSource": "boia",
+      "scoreMeta": {
+        "stationName": "CSA83/1D",
+        "distanceKm": 126.1
+      },
+      "verdict": "maybe",
+      "ptReason": "Condições razoáveis",
+      "enReason": "Fair conditions"
     },
     {
       "name": "Coxos",
       "slug": "coxos",
-      "score": 78,
-      "verdict": "go",
-      "ptReason": "Score excelente (78), vento leve (2 kt) e água um pouco mais quente; condições ideais.",
-      "enReason": "Excellent score (78), light wind (2 kt) and slightly warmer water; ideal conditions.",
+      "score": 56,
       "scoreForecast": 78,
-      "scoreSource": "previsão",
-      "scoreMeta": null
+      "scoreSource": "boia",
+      "scoreMeta": {
+        "stationName": "CSA83/1D",
+        "distanceKm": 127.4
+      },
+      "verdict": "maybe",
+      "ptReason": "Condições razoáveis",
+      "enReason": "Fair conditions"
     },
     {
       "name": "Arrifana",
       "slug": "arrifana",
-      "score": 58,
-      "verdict": "skip",
-      "ptReason": "Score baixo (58) e ondas menores; não atrai surfistas experientes.",
-      "enReason": "Low score (58) and smaller waves; not attractive for experienced surfers.",
+      "score": 56,
       "scoreForecast": 58,
-      "scoreSource": "previsão",
-      "scoreMeta": null
+      "scoreSource": "boia",
+      "scoreMeta": {
+        "stationName": "CSA83/1D",
+        "distanceKm": 70.2
+      },
+      "verdict": "maybe",
+      "ptReason": "Condições razoáveis",
+      "enReason": "Fair conditions"
     },
     {
       "name": "Carcavelos",
       "slug": "carcavelos",
-      "score": 55,
-      "verdict": "skip",
-      "ptReason": "Score mais baixo (55) e condições menos consistentes; melhor escolher outro spot.",
-      "enReason": "Lowest score (55) and less consistent conditions; better to pick another spot.",
+      "score": 56,
       "scoreForecast": 55,
-      "scoreSource": "previsão",
-      "scoreMeta": null
+      "scoreSource": "boia",
+      "scoreMeta": {
+        "stationName": "CSA83/1D",
+        "distanceKm": 91.4
+      },
+      "verdict": "maybe",
+      "ptReason": "Condições razoáveis",
+      "enReason": "Fair conditions"
     }
   ],
-  "generatedAt": "2026-10-06T03:07:10.010Z",
-  "topScore": 78,
-  "topScoreForecast": 78,
-  "topScoreSource": "previsão",
-  "topScoreMeta": null
+  "topScore": 56,
+  "topScoreForecast": 59,
+  "topScoreSource": "boia",
+  "topScoreMeta": {
+    "stationName": "CSA83/1D",
+    "distanceKm": 162.7
+  }
 }
