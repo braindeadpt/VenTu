@@ -107,7 +107,9 @@ https://nomads.ncep.noaa.gov/cgi-bin/filter_gfswave.pl
    `natural_color` → foto RGB opaca, re-encodada WebP); de noite usa
    `ventu_fci_ir_geotiff_hr` (filter `ir_105_effective_radiance`) e
    converte radiância → temperatura de brilho (Planck, ν=954.7 cm⁻¹) →
-   paleta de topo de nuvem translúcida → WebP RGBA. Manifest
+   paleta de topo de nuvem translúcida → WebP RGBA (saída 1400×960 =
+   0,025°/px, q70 + alpha q70, ~0,3 MB/frame; retenção máx. 12 frames — ver
+   docs/DATA-HISTORY.md). Manifest
    `sat-mtg.json` carrega `kind` por frame. Creds:
    `EUMETSAT_CONSUMER_KEY/_SECRET` (eoportal → api.eumetsat.int/api-key,
    registo gratuito). **Licença**: a cadência horária serve frames ≥1 h =

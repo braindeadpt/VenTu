@@ -56,9 +56,15 @@ for attempt in $(seq 1 10); do
   # A pasta de frames é só do passo de radar e vem inteira, já podada, no
   # backup: esvaziá-la antes do cp deixa-a igual ao backup (as removidas
   # entram como deleções no git add -f abaixo).
-  if [ -d "$DATA_BACKUP/public-data/radar/frames" ]; then
-    rm -rf public/data/radar/frames
-  fi
+  # O mesmo vale para os frames do satélite MTG (sat-mtg/frames): o
+  # fetch-mtg-ir.py poda as antigas e o commit-and-push troca a pasta por
+  # inteiro, mas o checkout de origin/main trazia-as de volta — 46 frames
+  # (36.6 MB) a 7 out com o manifest a usar 4, CI parada no orçamento.
+  for frames_dir in radar/frames sat-mtg/frames; do
+    if [ -d "$DATA_BACKUP/public-data/$frames_dir" ]; then
+      rm -rf "public/data/$frames_dir"
+    fi
+  done
   cp -a "$DATA_BACKUP/public-data/." public/data/
   if [ "$HAS_STATE" = 1 ]; then
     mkdir -p data-state

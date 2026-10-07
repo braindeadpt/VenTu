@@ -26,6 +26,25 @@ const ROOT = path.join(__dirname, '..');
 const BUDGET = { maxFiles: 300, maxBytes: 32 * 1024 * 1024 };
 
 /**
+ * Sub-orçamentos das pastas de frames binários com janela de retenção fixa.
+ * Não alargam o tecto global — apertam-no: uma fuga de retenção numa destas
+ * pastas falha aqui, com o nome da pasta, antes de comer a folga do total.
+ *
+ * sat-mtg/frames: o fetch-mtg-ir.py mantém no máximo 12 frames (MAX_FRAMES)
+ * a ~0.26–0.31 MB (WebP q70, 1400×960) ≈ 3.6 MB. 5 MB dá folga para cenas
+ * com muita nuvem sem deixar passar uma acumulação (46 frames / 36.6 MB a
+ * 2026-10-07, ver docs/DATA-HISTORY.md).
+ */
+const GROUP_BUDGETS = [
+  {
+    prefix: 'public/data/sat-mtg/frames/',
+    label: 'sat-mtg/frames',
+    maxFiles: 12,
+    maxBytes: 5 * 1024 * 1024,
+  },
+];
+
+/**
  * @param {{ files: string[], sizes: number[] }} input caminhos trackeados e bytes
  * @returns {{ files: number, bytes: number, violations: string[] }}
  */
@@ -41,6 +60,24 @@ function evaluateDataBudget({ files, sizes }) {
     violations.push(
       `${(totalBytes / 1024 / 1024).toFixed(1)} MB trackeados em public/data (orçamento ${BUDGET.maxBytes / 1024 / 1024} MB)`,
     );
+  }
+  for (const g of GROUP_BUDGETS) {
+    let n = 0;
+    let bytes = 0;
+    files.forEach((f, i) => {
+      if (f.startsWith(g.prefix)) {
+        n += 1;
+        bytes += sizes[i] || 0;
+      }
+    });
+    if (n > g.maxFiles) {
+      violations.push(`${n} ficheiros em public/data/${g.label} (orçamento ${g.maxFiles})`);
+    }
+    if (bytes > g.maxBytes) {
+      violations.push(
+        `${(bytes / 1024 / 1024).toFixed(1)} MB em public/data/${g.label} (orçamento ${g.maxBytes / 1024 / 1024} MB)`,
+      );
+    }
   }
   return { files: files.length, bytes: totalBytes, violations };
 }
@@ -74,6 +111,6 @@ function main() {
   );
 }
 
-module.exports = { evaluateDataBudget, BUDGET };
+module.exports = { evaluateDataBudget, BUDGET, GROUP_BUDGETS };
 
 if (require.main === module) main();
