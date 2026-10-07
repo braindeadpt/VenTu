@@ -49,6 +49,14 @@ function isZoomAnimating(map: L.Map): boolean {
   return Boolean((map as L.Map & { _animatingZoom?: boolean })._animatingZoom);
 }
 
+/** Regime do campo de vento (useMapWindField) aplicado às correntes:
+ *  cap a 30 fps (o custo é o fill `destination-in` de ecrã inteiro),
+ *  canvas a DPR 1 no modo animado, e pausa ao fim de ~8 s sem interacção
+ *  (o último frame fica congelado; qualquer gesto acorda o loop). */
+const CURRENTS_FRAME_MS = 1000 / 30;
+const CURRENTS_IDLE_PAUSE_MS = 8_000;
+const CURRENTS_CANVAS_DPR = 1;
+
 function cssRgbToken(el: Element, name: string, fallback: string): string {
   const raw = getComputedStyle(el).getPropertyValue(name).trim();
   return raw || fallback;
@@ -252,7 +260,7 @@ export function useMapCurrentsField({
 
       const sizeCanvas = () => {
         const size = map.getSize();
-        const dpr = Math.min(2, window.devicePixelRatio || 1);
+        const dpr = CURRENTS_CANVAS_DPR;
         const w = Math.round(size.x * dpr);
         const h = Math.round(size.y * dpr);
         if (canvas.width !== w || canvas.height !== h) {
@@ -290,19 +298,31 @@ export function useMapCurrentsField({
         for (const p of particles) p.hasPrev = false;
       };
 
+      // Gesto (pan/zoom/drag): o canvas esconde-se e o loop não advecta
+      // nem desenha; ao assentar limpa, respawna no novo framing e volta.
+      const interacting = { current: false };
+      const idle = { lastActive: performance.now(), paused: false };
+      let frameAcc = 0;
       const tick = (t: number) => {
         rafRef.current = 0;
-        if (document.hidden || isZoomAnimating(map)) {
+        if (idle.paused) return; // congelado — wake() retoma
+        if (interacting.current || document.hidden || isZoomAnimating(map)) {
           rafRef.current = requestAnimationFrame(tick);
           lastTRef.current = t;
           return;
         }
-        const dt = Math.min(0.05, Math.max(0.001, (t - lastTRef.current) / 1000 || 0.016));
+        frameAcc += lastTRef.current ? t - lastTRef.current : CURRENTS_FRAME_MS;
         lastTRef.current = t;
+        // Cap ~30 fps: salta frames sem saltar tempo (dt acumulado).
+        if (frameAcc < CURRENTS_FRAME_MS) {
+          rafRef.current = requestAnimationFrame(tick);
+          return;
+        }
+        const dt = Math.min(0.05, Math.max(0.001, frameAcc / 1000));
+        frameAcc = 0;
         const ctx = canvas.getContext('2d');
-        if (!ctx) return;
         const { size, dpr } = sizeCanvas();
-        if (size.x < 2 || size.y < 2) {
+        if (!ctx || size.x < 2 || size.y < 2) {
           rafRef.current = requestAnimationFrame(tick);
           return;
         }
@@ -332,32 +352,70 @@ export function useMapCurrentsField({
           opacity,
           { width: size.x, height: size.y },
         );
+        if (t - idle.lastActive > CURRENTS_IDLE_PAUSE_MS) {
+          idle.paused = true;
+          host.setAttribute('data-map-currents-paused', 'true');
+          return;
+        }
         rafRef.current = requestAnimationFrame(tick);
       };
 
-      const onZoomEnd = () => {
+      const wake = () => {
+        idle.lastActive = performance.now();
+        if (!idle.paused) return;
+        idle.paused = false;
+        host.setAttribute('data-map-currents-paused', 'false');
+        frameAcc = 0;
+        lastTRef.current = 0;
+        if (!rafRef.current) rafRef.current = requestAnimationFrame(tick);
+      };
+
+      const onGestureStart = () => {
+        interacting.current = true;
+        canvas.style.visibility = 'hidden';
+        wake();
+      };
+      const onGestureEnd = () => {
+        if (zoomRafRef.current) cancelAnimationFrame(zoomRafRef.current);
+        // Par de rAF: repinta depois de a animação de zoom assentar.
         zoomRafRef.current = requestAnimationFrame(() => {
           zoomRafRef.current = requestAnimationFrame(() => {
             zoomRafRef.current = 0;
+            interacting.current = false;
             canvas.style.visibility = '';
             clearCanvas();
             respawnAll();
+            wake();
           });
         });
       };
 
       respawnAll();
       map.on('zoomstart', onZoomStart);
-      map.on('zoomend', onZoomEnd);
-      map.on('move', clearCanvas);
+      map.on('movestart', onGestureStart);
+      map.on('zoomstart', onGestureStart);
+      map.on('dragstart', onGestureStart);
+      map.on('moveend', onGestureEnd);
+      map.on('zoomend', onGestureEnd);
+      host.addEventListener('pointermove', wake, { passive: true });
+      host.addEventListener('pointerdown', wake, { passive: true });
+      host.addEventListener('touchstart', wake, { passive: true });
+      host.setAttribute('data-map-currents-paused', 'false');
       lastTRef.current = 0;
       rafRef.current = requestAnimationFrame(tick);
 
       return () => {
         themeObserver.disconnect();
         map.off('zoomstart', onZoomStart);
-        map.off('zoomend', onZoomEnd);
-        map.off('move', clearCanvas);
+        map.off('movestart', onGestureStart);
+        map.off('zoomstart', onGestureStart);
+        map.off('dragstart', onGestureStart);
+        map.off('moveend', onGestureEnd);
+        map.off('zoomend', onGestureEnd);
+        host.removeEventListener('pointermove', wake);
+        host.removeEventListener('pointerdown', wake);
+        host.removeEventListener('touchstart', wake);
+        host.removeAttribute('data-map-currents-paused');
         if (rafRef.current) {
           cancelAnimationFrame(rafRef.current);
           rafRef.current = 0;
