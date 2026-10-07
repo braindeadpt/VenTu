@@ -87,11 +87,16 @@ function windowForSport(
   return upcomingAsToday(data.upcomingWindowsBySport?.[sport], sport, nowMs);
 }
 
-/** Melhor janela de um spot para o filtro activo (sem trocar de desporto). */
+/**
+ * Melhor janela de um spot para o filtro activo (sem trocar de desporto).
+ * Com `all`, `sports` limita os desportos considerados (modo adaptativo da
+ * home: os mesmos de «A bombar agora» e do ticker).
+ */
 export function heroWindowForSpot(
   data: HomepageSpotData,
   filter: GridSportFilter,
   nowMs: number,
+  sports?: readonly SportType[],
 ): BestWindowToday | null {
   if (filter === 'big-wave') {
     if (data.spot.type !== 'big-wave') return null;
@@ -101,8 +106,11 @@ export function heroWindowForSpot(
     if (!getCompatibleSports(data.spot).includes(filter)) return null;
     return windowForSport(data, filter, nowMs);
   }
-  let best: BestWindowToday | null = data.bestWindowToday ?? null;
+  const allowed = (sport: SportType) => !sports || sports.includes(sport);
+  const baked = data.bestWindowToday ?? null;
+  let best: BestWindowToday | null = baked && allowed(baked.sport) ? baked : null;
   for (const sport of getCompatibleSports(data.spot)) {
+    if (!allowed(sport)) continue;
     const w = windowForSport(data, sport, nowMs);
     if (w && (!best || w.score > best.score)) best = w;
   }
@@ -114,6 +122,7 @@ export function pickHeroBestWindow(
   filter: GridSportFilter,
   area: MapAreaKey | null,
   nowMs: number,
+  sports?: readonly SportType[],
 ): HeroBestWindowPick | null {
   const bounds = area ? MAP_AREA_BOUNDS[area] : null;
   let bestInArea: HeroBestWindowPick | null = null;
@@ -128,7 +137,7 @@ export function pickHeroBestWindow(
   };
 
   for (const data of spotsData) {
-    const window = heroWindowForSpot(data, filter, nowMs);
+    const window = heroWindowForSpot(data, filter, nowMs, sports);
     if (!window) continue;
     const inArea = bounds ? isInMapArea(data.spot.lat, data.spot.lon, bounds) : true;
     const pick: HeroBestWindowPick = { data, window, inArea };

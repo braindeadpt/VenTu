@@ -14,6 +14,43 @@ const VALID_FILTERS: GridSportFilter[] = [
   'all', 'surf', 'bodyboard', 'kitesurf', 'windsurf', 'big-wave', 'foil', 'sup', 'wakeboard',
 ]
 
+/**
+ * Desporto ESCOLHIDO pelo utilizador nos pills da homepage. Separado de
+ * `ventu:sport`, que o grid e o /mapa gravam automaticamente (incl. o
+ * default «surf» no mount) e por isso não distingue escolha de omissão.
+ */
+export const LS_SPORT_CHOSEN_KEY = 'ventu:sport-chosen'
+
+/** Desporto escolhido explicitamente nos pills da home, ou null. */
+export function readChosenSportFromStorage(): GridSportFilter | null {
+  if (typeof window === 'undefined') return null
+  try {
+    const v = localStorage.getItem(LS_SPORT_CHOSEN_KEY)
+    return v && VALID_FILTERS.includes(v as GridSportFilter) ? (v as GridSportFilter) : null
+  } catch {
+    return null
+  }
+}
+
+/** Grava a escolha explícita (clique num pill da home). */
+export function rememberChosenSport(sport: GridSportFilter) {
+  if (typeof window === 'undefined') return
+  try {
+    localStorage.setItem(LS_SPORT_CHOSEN_KEY, sport)
+    localStorage.setItem(LS_SPORT_KEY, sport)
+  } catch {
+    /* noop */
+  }
+}
+
+/**
+ * «A bombar agora», ticker e banner seguem as condições (todos os
+ * desportos) quando o utilizador não escolheu desporto ou escolheu «Todos».
+ */
+export function isConditionDriven(sport: GridSportFilter, explicit: boolean): boolean {
+  return !explicit || sport === 'all'
+}
+
 export interface HomepageSpotData {
   spot: Spot
   conditions: MarineConditionsFields
@@ -134,10 +171,82 @@ export interface TopNowCard {
 /** Cards por defeito quando o filtro é um desporto concreto. */
 export const TOP_NOW_SINGLE_SPORT_CARDS = 4
 
+/** Cards de «A bombar agora» no modo adaptativo (sem desporto escolhido / «Todos»). */
+export const TOP_NOW_AUTO_CARDS = 4
+
+/** Máximo de cards do mesmo desporto no modo adaptativo. */
+export const TOP_NOW_MAX_PER_SPORT = 2
+
+interface TopNowCandidate {
+  sport: TopNowSport
+  data: HomepageSpotData
+  score: number
+}
+
+function byScoreThenSlug(a: TopNowCandidate, b: TopNowCandidate): number {
+  if (b.score !== a.score) return b.score - a.score
+  if (a.data.spot.slug !== b.data.spot.slug) return a.data.spot.slug < b.data.spot.slug ? -1 : 1
+  return TOP_NOW_SPORTS.indexOf(a.sport) - TOP_NOW_SPORTS.indexOf(b.sport)
+}
+
 /**
- * Cards de «A bombar agora» para o filtro activo do hero.
- * - `all`: um card por desporto de TOP_NOW_SPORTS (comportamento original).
- * - desporto concreto: os melhores spots desse desporto ≥ `minScore`.
+ * Modo adaptativo de «A bombar agora»: o que está mesmo a dar agora, em
+ * todos os desportos de TOP_NOW_SPORTS. Dia de ondulação → surf; dia de vento
+ * → kite/windsurf; dia misto → ambos.
+ *
+ * - Só pares (spot, desporto) ≥ `minScore` (Bom, o mesmo limiar do ticker).
+ * - No máximo `TOP_NOW_MAX_PER_SPORT` cards por desporto e um card por spot
+ *   (um spot de surf+bodyboard não ocupa dois lugares).
+ * - 1.ª passagem: o melhor card de cada desporto a bombar (por ordem do seu
+ *   melhor score), para um dia misto mostrar sempre os dois lados; 2.ª
+ *   passagem: completa por score. O resultado sai ordenado por score.
+ */
+function getAdaptiveTopNowCards(
+  spotsData: HomepageSpotData[],
+  maxCards: number,
+  minScore: number,
+): TopNowCard[] {
+  const candidates: TopNowCandidate[] = []
+  for (const data of spotsData) {
+    for (const sport of TOP_NOW_SPORTS) {
+      const score = getScoreForFilter(data, sport)
+      if (score >= minScore) candidates.push({ sport, data, score })
+    }
+  }
+  candidates.sort(byScoreThenSlug)
+
+  const picked: TopNowCandidate[] = []
+  const usedSpots = new Set<string>()
+  const perSport = new Map<TopNowSport, number>()
+  const take = (c: TopNowCandidate) => {
+    picked.push(c)
+    usedSpots.add(c.data.spot.slug)
+    perSport.set(c.sport, (perSport.get(c.sport) ?? 0) + 1)
+  }
+
+  // 1.ª passagem — diversidade: o melhor spot livre de cada desporto a bombar.
+  for (const c of candidates) {
+    if (picked.length >= maxCards) break
+    if (perSport.has(c.sport) || usedSpots.has(c.data.spot.slug)) continue
+    take(c)
+  }
+  // 2.ª passagem — completa por score, respeitando o tecto por desporto.
+  for (const c of candidates) {
+    if (picked.length >= maxCards) break
+    if (usedSpots.has(c.data.spot.slug)) continue
+    if ((perSport.get(c.sport) ?? 0) >= TOP_NOW_MAX_PER_SPORT) continue
+    take(c)
+  }
+
+  return picked.sort(byScoreThenSlug).map(({ sport, data }) => ({ sport, data }))
+}
+
+/**
+ * Cards de «A bombar agora».
+ * - `all` (modo adaptativo — desporto não escolhido ou «Todos»): até
+ *   `TOP_NOW_AUTO_CARDS` spots ≥ Bom de todos os desportos, por score, no
+ *   máximo `TOP_NOW_MAX_PER_SPORT` por desporto (ver getAdaptiveTopNowCards).
+ * - desporto concreto escolhido: os melhores spots desse desporto ≥ `minScore`.
  */
 export function getTopNowCards(
   spotsData: HomepageSpotData[],
@@ -146,12 +255,7 @@ export function getTopNowCards(
   minScore: number = TOP_NOW_MIN_SCORE,
 ): TopNowCard[] {
   if (sport === 'all') {
-    const cards: TopNowCard[] = []
-    for (const s of TOP_NOW_SPORTS) {
-      const data = getTopSpotForSport(spotsData, s, minScore)
-      if (data) cards.push({ sport: s, data })
-    }
-    return cards.slice(0, maxCards ?? TOP_NOW_SPORTS.length)
+    return getAdaptiveTopNowCards(spotsData, maxCards ?? TOP_NOW_AUTO_CARDS, minScore)
   }
   return sortSpotsBySport(spotsData, sport)
     .filter((d) => spotMatchesFeaturedFilter(d, sport, minScore))
@@ -169,7 +273,8 @@ export function getTopNowExcludedSlugs(spotsData: HomepageSpotData[]): string[] 
   return slugs
 }
 
-/** Unique spots with score ≥ threshold for surf, kitesurf or windsurf. */
+/** Spots únicos com score ≥ threshold em algum desporto de TOP_NOW_SPORTS
+ *  (contagem do ticker no modo adaptativo — mesma base de «A bombar agora»). */
 export function getTotalOnCount(
   spotsData: HomepageSpotData[],
   threshold = 70,

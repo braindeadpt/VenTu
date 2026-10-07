@@ -1351,7 +1351,7 @@ export const translationsDe = {
     signupNudgeBody: 'Du bekommst die Bedingungen deiner Spots jeden Morgen (~7:30). Erstelle ein kostenloses Konto.',
     tickerAria: 'Aktualisierung der Vorhersagen und Datenquellen',
     noSportsFiring: 'Gerade läuft keine Sportart',
-    onlyFiringSpots: 'Nur laufende Spots · nach Sportart',
+    onlyFiringSpots: 'Nur laufende Spots · was gerade geht, über alle Sportarten',
     onlyFiringSpotsSport: 'Nur laufende Spots · {sport}',
     favoritesFresh: 'Favoriten mit frischen Bedingungen — antippen zum Öffnen',
     noGoodWindows: 'Keine guten Fenster in den nächsten 48 h',
