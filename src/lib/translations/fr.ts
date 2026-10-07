@@ -1351,7 +1351,7 @@ export const translationsFr = {
     signupNudgeBody: 'Tu reçois les conditions de tes spots chaque matin (~7h30). Crée un compte gratuit.',
     tickerAria: 'Mise à jour des prévisions et sources de données',
     noSportsFiring: 'Aucun sport ne marche en ce moment',
-    onlyFiringSpots: 'Seulement les spots qui marchent · par sport',
+    onlyFiringSpots: 'Seulement les spots qui marchent · ce qui donne, tous sports confondus',
     onlyFiringSpotsSport: 'Seulement les spots qui marchent · {sport}',
     favoritesFresh: 'Favoris avec conditions fraîches — touche pour ouvrir',
     noGoodWindows: 'Aucune bonne fenêtre dans les prochaines 48 h',
