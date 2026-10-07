@@ -117,7 +117,8 @@ and the three legacy share params (`?isobaths=1` etc.) still enable it.
 - **Primary source**: `scripts/fetch-mtg-ir.py` (hourly, inside
   `update-data.yml`) pulls FCI Level-1c via EUMETSAT Data Tailor —
   server-side subset to the `ventu_iberia_atlantic` ROI (28–52°N,
-  34°W–1°E), resampled to ~2 km/px (0.02°). Two products per slot,
+  34°W–1°E), resampled to ~2 km/px (0.02°), written as 1400×960 WebP (0.025°,
+  q70, ≤ 12 frames retained). Two products per slot,
   chosen by solar elevation over the ROI centre (> ~15° = day —
   below that the natural-color photo is too dark to read). Minority
   unification: if fewer than 3 slots of one product would land inside

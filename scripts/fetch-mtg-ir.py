@@ -63,6 +63,25 @@ ROI_NSWE = [52.0, 28.0, -34.0, 1.0]
 BOUNDS = {"south": ROI_NSWE[1], "west": ROI_NSWE[2], "north": ROI_NSWE[0], "east": ROI_NSWE[3]}
 
 FRAME_COUNT = 12          # ~2 h a cadência de 10 min
+# Retenção: o manifest e a pasta de frames nunca passam de MAX_FRAMES (o
+# carrossel do mapa usa todos os frames do manifest, como os 12 do GOES).
+# Tudo o que o manifest não referencia é apagado — ver prune_frames e
+# docs/DATA-HISTORY.md (orçamento de public/data no CI).
+MAX_FRAMES = FRAME_COUNT
+
+# Saída: 0.025°/px sobre a ROI → 1400×960. O Tailor entrega 0.02°/px
+# (1750×1200), mas o FCI IR é ~2 km no nadir e ~2.5–3 km sobre a Ibéria, por
+# isso 0.025° continua perto do nativo (a pixelização reportada a 2026-10-05
+# era a ~0.045°). WebP q70 + alpha_quality 70 (alpha com perda): ~0.26–0.31
+# MB/frame em vez de ~0.81–1.0 MB a q85/alpha sem perda — medido em frames
+# reais IR e VIS a 2026-10-07. 12 frames ≈ 3.6 MB; com q85 e sem poda a
+# pasta chegou a 36.6 MB e partiu o orçamento de 32 MB de public/data.
+OUTPUT_RES_DEG = 0.025
+OUTPUT_SIZE = (
+    round((ROI_NSWE[3] - ROI_NSWE[2]) / OUTPUT_RES_DEG),  # largura (W→E)
+    round((ROI_NSWE[0] - ROI_NSWE[1]) / OUTPUT_RES_DEG),  # altura (S→N)
+)
+WEBP_OPTIONS = {"quality": 70, "alpha_quality": 70, "method": 4}
 LOOKBACK_MIN = FRAME_COUNT * 10 + 30
 JOB_POLL_S = 10
 # Janela TOTAL (não por job) para o Data Tailor. Um run saudável demora 5–8 min.
@@ -261,12 +280,93 @@ def sensing_start(product_id: str) -> str | None:
     return dt.strftime("%Y-%m-%dT%H:%M:%S.000Z")
 
 
+def retain_frames(frames: list[dict], max_frames: int = MAX_FRAMES) -> list[dict]:
+    """Mais recentes primeiro, sem duplicados (mesmo imagePath), cortado a
+    `max_frames` — é esta lista que vai para o manifest."""
+    seen = set()
+    out = []
+    for f in sorted(frames, key=lambda f: f["frameTime"], reverse=True):
+        if f["imagePath"] in seen:
+            continue
+        seen.add(f["imagePath"])
+        out.append(f)
+    return out[:max_frames]
+
+
+def prune_frames(out_dir: Path, frames: list[dict]) -> list[str]:
+    """Apaga da pasta de frames tudo o que `frames` não referencia (.webp e
+    .png). Devolve os nomes apagados. Sem isto os frames acumulavam no git
+    (46 ficheiros / 36.6 MB a 2026-10-07 com o manifest a usar 4)."""
+    keep = {f["imagePath"].rsplit("/", 1)[-1] for f in frames}
+    removed = []
+    if not out_dir.is_dir():
+        return removed
+    for old in sorted(out_dir.iterdir()):
+        if old.suffix in (".png", ".webp") and old.name not in keep:
+            old.unlink()
+            removed.append(old.name)
+    return removed
+
+
+def read_manifest_frames(manifest: Path = MANIFEST) -> list[dict] | None:
+    """Frames do manifest actual, ou None se não existir / não servir."""
+    try:
+        data = json.loads(manifest.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+    frames = data.get("frames") if isinstance(data, dict) else None
+    if not isinstance(frames, list):
+        return None
+    return [
+        f for f in frames
+        if isinstance(f, dict) and isinstance(f.get("imagePath"), str)
+        and isinstance(f.get("frameTime"), str)
+    ]
+
+
+def defensive_prune(out_dir: Path = OUT_DIR, manifest: Path = MANIFEST) -> list[str]:
+    """Limpeza ANTES do fetch (como o fetch-ipma-radar.js): fica só o que o
+    manifest actual referencia, cortado a MAX_FRAMES. Uma corrida que morreu
+    a meio (timeout do passo, Tailor pendurado) deixava frames órfãos — a
+    seguinte limpa-os em vez de os deixar acumular no git. Sem manifest
+    legível não apaga nada (não há referência do que é válido)."""
+    frames = read_manifest_frames(manifest)
+    if frames is None:
+        return []
+    return prune_frames(out_dir, retain_frames(frames))
+
+
+def save_frame(img, path: Path) -> None:
+    """Redimensiona para OUTPUT_SIZE e grava WebP com WEBP_OPTIONS."""
+    from PIL import Image
+
+    if img.size != OUTPUT_SIZE:
+        img = img.resize(OUTPUT_SIZE, Image.LANCZOS)
+    img.save(path, "WEBP", **WEBP_OPTIONS)
+
+
+def write_manifest(frames: list[dict]) -> None:
+    manifest = {
+        "source": "eumetsat-mtg-fci",
+        "fetchedAt": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.000Z"),
+        "cadenceMin": 10,
+        "bounds": BOUNDS,
+        "attribution": "EUMETSAT",
+        "frames": frames,
+    }
+    MANIFEST.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
+
+
 def main() -> int:
     key = os.environ.get("EUMETSAT_CONSUMER_KEY")
     secret = os.environ.get("EUMETSAT_CONSUMER_SECRET")
     if not key or not secret:
         print("⚠️  EUMETSAT_CONSUMER_KEY/SECRET em falta — salto MTG-IR (soft fail).")
         return 0
+
+    removed = defensive_prune()
+    if removed:
+        print(f"  limpeza defensiva: {len(removed)} frames fora do manifest apagados")
 
     try:
         import numpy  # noqa: F401
@@ -337,16 +437,9 @@ def main() -> int:
     prods = todo
     print(f"  {len(existing_frames)} frames já em disco; {len(prods)} por processar")
     if not prods and existing_frames:
-        frames = sorted(existing_frames, key=lambda f: f["frameTime"], reverse=True)
-        manifest = {
-            "source": "eumetsat-mtg-fci",
-            "fetchedAt": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.000Z"),
-            "cadenceMin": 10,
-            "bounds": BOUNDS,
-            "attribution": "EUMETSAT",
-            "frames": frames,
-        }
-        MANIFEST.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
+        frames = retain_frames(existing_frames)
+        prune_frames(OUT_DIR, frames)
+        write_manifest(frames)
         print(f"🛰️  sat-mtg.json reescrito: {len(frames)} frames (todos em disco)")
         return 0
     if not prods:
@@ -425,7 +518,7 @@ def main() -> int:
             img = Image.fromarray(rgba, "RGBA").filter(
                 ImageFilter.GaussianBlur(0.5),
             )
-            img.save(OUT_DIR / name, "WEBP", quality=85, method=4)
+            save_frame(img, OUT_DIR / name)
             frames.append({
                 "frameTime": t_iso,
                 "imagePath": f"sat-mtg/frames/{name}",
@@ -446,13 +539,13 @@ def main() -> int:
         ).astype("uint8")
         # Suavizado sub-pixel: o FCI nativo é ~2 km e a overlay estica-se
         # com CSS — um blur ligeiro tira os bordos de escada do grid sem
-        # lavar as células convectivas (σ < 1 px de fonte). WebP q85/m4:
-        # ~0.75 MB/frame com alpha contínuo (PNG saía a ~2.9 MB); method=6
-        # custa ~140 s/frame nesta máquina por ~3% de ganho — fica m4.
+        # lavar as células convectivas (σ < 1 px de fonte). Gravação em
+        # save_frame (OUTPUT_SIZE + WEBP_OPTIONS, ver topo); method=6 custa
+        # ~140 s/frame nesta máquina por ~3% de ganho — fica m4.
         img = Image.fromarray(rgba, "RGBA").filter(
             ImageFilter.GaussianBlur(0.8),
         )
-        img.save(OUT_DIR / name, "WEBP", quality=85, method=4)
+        save_frame(img, OUT_DIR / name)
         frames.append({
             "frameTime": t_iso,
             "imagePath": f"sat-mtg/frames/{name}",
@@ -514,21 +607,9 @@ def main() -> int:
         print("⚠️  nenhum frame produzido — mantenho o manifest actual.")
         return 1
 
-    frames.sort(key=lambda f: f["frameTime"], reverse=True)
-    keep = {f["imagePath"].rsplit("/", 1)[-1] for f in frames}
-    for old in OUT_DIR.iterdir():
-        if old.suffix in (".png", ".webp") and old.name not in keep:
-            old.unlink()
-
-    manifest = {
-        "source": "eumetsat-mtg-fci",
-        "fetchedAt": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.000Z"),
-        "cadenceMin": 10,
-        "bounds": BOUNDS,
-        "attribution": "EUMETSAT",
-        "frames": frames,
-    }
-    MANIFEST.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
+    frames = retain_frames(frames)
+    prune_frames(OUT_DIR, frames)
+    write_manifest(frames)
     print(f"🛰️  sat-mtg.json: {len(frames)} frames, newest {frames[0]['frameTime']}")
     return 0
 

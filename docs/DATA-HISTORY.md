@@ -38,6 +38,32 @@ normal, falha antes de se tornar um problema de histórico.
 > defensiva antes do fetch**, deixando só o que o manifesto actual referencia —
 > uma corrida falhada é limpa pela seguinte, em vez de acumular no git.
 
+> 2026-10-07: o guard disparou a **64,7 MB** (283 ficheiros) —
+> `public/data/sat-mtg/frames/` tinha **46 frames / 36,6 MB** com o manifest a
+> usar 4. Mesma classe de bug do radar a 23–24 set: (1) o
+> `scripts/push-data-update.sh` faz checkout de `origin/main` e `cp -a` por
+> cima, por isso os frames que o `fetch-mtg-ir.py` podava voltavam do origin
+> em cada commit do bot; (2) o script só podava no caminho «frames novos» — o
+> caminho «tudo já em disco» e as corridas mortas a meio (Data Tailor
+> pendurado) não podavam nada. Corrigido no pipeline, sem mexer no tecto:
+> - `push-data-update.sh` esvazia `radar/frames` **e** `sat-mtg/frames` antes
+>   do `cp -a` (as removidas entram como deleções no `git add -f`);
+> - `fetch-mtg-ir.py`: retenção explícita (`MAX_FRAMES = 12`, a janela do
+>   carrossel), limpeza defensiva antes do fetch (fica só o que o manifest
+>   actual referencia) e poda em todos os caminhos que escrevem o manifest;
+> - frames mais leves: saída a 0,025°/px (1400×960, perto do nativo FCI IR
+>   sobre a Ibéria) e WebP q70 + `alpha_quality` 70 — **~0,26–0,31 MB/frame**
+>   em vez de ~0,81–1,0 MB; 12 frames ≈ 3,6 MB;
+> - sub-orçamento no guard: `sat-mtg/frames` ≤ 12 ficheiros / 5 MB. Aperta,
+>   não alarga — uma fuga nesta pasta falha com o nome dela antes de comer a
+>   folga do total.
+>
+> Depois da correcção: **241 ficheiros / 29,1 MB**. Atenção à folga: o resto
+> de `public/data` (sem satélite) passou de 24,1 MB (23 set) para ~28 MB — os
+> 12 frames MTG cabem (~31,5 MB no pior caso), mas o próximo corte tem de vir
+> do lado dos forecasts (`forecasts/` e `forecasts.json` pesam ~11 MB cada;
+> ver «Médio prazo»), não de subir o tecto.
+
 ## Porque cresce
 
 `scripts/push-data-update.sh` corre `git add -f public/data/` a cada ~30 min e
