@@ -65,7 +65,11 @@ BOUNDS = {"south": ROI_NSWE[1], "west": ROI_NSWE[2], "north": ROI_NSWE[0], "east
 FRAME_COUNT = 12          # ~2 h a cadência de 10 min
 LOOKBACK_MIN = FRAME_COUNT * 10 + 30
 JOB_POLL_S = 10
-JOB_TIMEOUT_S = 600
+# Janela TOTAL (não por job) para o Data Tailor. Um run saudável demora 5–8 min.
+# Era 40 min (4 × 10 min) — MAIS que o limite de 30 min do job do
+# workflow: com o Tailor lento o job era morto antes de o script desistir e
+# arrastava o pipeline todo. 8 min < timeout do passo (12) < timeout do job (30).
+WINDOW_TIMEOUT_S = 480
 # O stream_output do eumdac fica por vezes preso a meio de um download
 # (socket aberto, zero bytes) — timeout duro por socket + um retry.
 socket.setdefaulttimeout(180)
@@ -357,7 +361,7 @@ def main() -> int:
     jobs = {}        # pid -> Customisation em voo
     pending = []     # pids por ordem de submissão
     done_jobs = {}
-    deadline = time.time() + JOB_TIMEOUT_S * 4  # a janela toda (não por job)
+    deadline = time.time() + WINDOW_TIMEOUT_S  # a janela toda (não por job)
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     frames = []
@@ -492,6 +496,18 @@ def main() -> int:
                 time.sleep(JOB_POLL_S)
         if pending:
             print(f"  ⏱️  {len(pending)} jobs por terminar — sigo com os DONE.")
+            # O Tailor aceita no máximo 3 customizações queued+running por conta:
+            # jobs deixados a meio ocupariam as vagas do run seguinte. Melhor
+            # esforço — um erro aqui nunca impede de gravar o manifest.
+            for pid in pending:
+                try:
+                    jobs[pid].kill()
+                except Exception:
+                    pass
+                try:
+                    jobs[pid].delete()
+                except Exception:
+                    pass
 
     frames.extend(existing_frames)
     if not frames:

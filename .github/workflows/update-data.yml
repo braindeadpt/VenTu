@@ -240,6 +240,12 @@ jobs:
       - name: Fetch MTG-I1 FCI frames (EUMETSAT Data Tailor)
         if: steps.gate.outputs.mode != 'skip' && env.EUMETSAT_CONSUMER_KEY != ''
         continue-on-error: true
+        # Timeout PRÓPRIO do passo: `continue-on-error` não protege de um passo
+        # PENDURADO — o Data Tailor deixou de terminar a 7 out (~10:05 UTC) e
+        # cada run ficava no passo até ao limite de 30 min do job, que matava o
+        # job INTEIRO: nenhuma run publicou dados durante 5 h. Com isto o passo
+        # falha ao fim de 12 min e o pipeline segue sem satélite MTG.
+        timeout-minutes: 12
         run: |
           python -m pip install -q -r scripts/requirements-mtg.txt
           python scripts/fetch-mtg-ir.py
