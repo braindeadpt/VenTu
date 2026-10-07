@@ -19,6 +19,7 @@ import { MAP_SPORT_FILTERS, getMapSportFilterLabel } from '@/lib/mapSportFilters
 import {
   DEFAULT_REGION,
   DEFAULT_SPORT,
+  MAINLAND_REGION,
   readGridFiltersFromWindow,
   syncGridFiltersToUrl,
 } from '@/lib/gridFilters';
@@ -132,7 +133,15 @@ export default function MapaFullscreenClient({
   const router = useRouter();
   const isPt = locale === 'pt';
   const t = getTranslation(locale as 'pt' | 'en');
-  const regionList = useMemo(() => regions as readonly string[], [regions]);
+  // O mapa acrescenta a pseudo-região «Continente» (pill + select) logo a
+  // seguir a «Todos» — as outras superfícies continuam com MACRO_REGIONS.
+  const regionList = useMemo<readonly string[]>(() => {
+    if (regions.includes(MAINLAND_REGION)) return regions;
+    const i = regions.indexOf(DEFAULT_REGION);
+    return i === -1
+      ? [MAINLAND_REGION, ...regions]
+      : [...regions.slice(0, i + 1), MAINLAND_REGION, ...regions.slice(i + 1)];
+  }, [regions]);
   const liveSpotsData = useLiveGridSpotData(spotsData, { deferRefreshMs: 5000 });
 
   const [sport, setSport] = useState<GridSportFilter>(DEFAULT_SPORT);
@@ -159,15 +168,25 @@ export default function MapaFullscreenClient({
   const [initialCenter, setInitialCenter] = useState<[number, number] | undefined>();
   const [initialZoom, setInitialZoom] = useState<number | undefined>();
 
-  // Capture deep links before syncGridFiltersToUrl rewrites the query.
-  // StrictMode dev: o segundo mount corre DEPOIS do primeiro useEffect ter
-  // rescrito a URL para ?sport=all — sem o guard, os deep links eram todos
-  // repostos a false (só afectava dev; a build corre efeitos uma vez).
+  // O mapa só monta DEPOIS de os deep links e filtros estarem capturados.
+  // Antes, os props `initial*` chegavam por este layout effect e, ao reentrar
+  // no /mapa por navegação client-side (chunk do mapa já resolvido), o filho
+  // montava com os valores por omissão — vento, basemap, carta, IR, avisos,
+  // tempestades, áreas e o estado do sheet ficavam presos ao default.
+  const [paramsReady, setParamsReady] = useState(false);
+  // StrictMode dev: o segundo mount não volta a capturar (o estado mantém-se).
   const deepLinksCapturedRef = useRef(false);
   useLayoutEffect(() => {
     if (deepLinksCapturedRef.current) return;
     deepLinksCapturedRef.current = true;
     const s = readMapSearchParams();
+    const { sport: urlSport, region: urlRegion } = readGridFiltersFromWindow(regionList);
+    // Sem ?sport= o /mapa lembra a modalidade guardada (a mesma key da
+    // homepage); o deep link vence sempre, mesmo ?sport=all.
+    const hasSportParam = new URLSearchParams(window.location.search).has('sport');
+    setSport(hasSportParam ? urlSport : readSportFromStorage());
+    setRegion(urlRegion);
+    setDifficulty(readMapDifficultyFromStorage());
     setInitialRadar(s.radar);
     setInitialNauticalChart(s.nauticalChart);
     setInitialHours(s.hours);
@@ -185,28 +204,24 @@ export default function MapaFullscreenClient({
     setFocusSpotId(s.spot);
     setInitialCenter(s.center);
     setInitialZoom(s.zoom);
-  }, []);
-
-  useEffect(() => {
-    const { sport: urlSport, region: urlRegion } = readGridFiltersFromWindow(regionList);
-    // Sem ?sport= o /mapa lembra a modalidade guardada (a mesma key da
-    // homepage); o deep link vence sempre, mesmo ?sport=all.
-    const hasSportParam = new URLSearchParams(window.location.search).has('sport');
-    setSport(hasSportParam ? urlSport : readSportFromStorage());
-    setRegion(urlRegion);
-    setDifficulty(readMapDifficultyFromStorage());
+    setParamsReady(true);
   }, [regionList]);
 
   useEffect(() => {
+    // Antes da captura os valores são os defaults — gravar/sincronizar aqui
+    // escrevia `sport=all` transitório no URL e no localStorage.
+    if (!paramsReady) return;
     try {
       localStorage.setItem(LS_SPORT_KEY, sport);
       localStorage.setItem(MAP_DIFFICULTY_LS_KEY, difficulty);
     } catch {
       /* noop */
     }
+    // Merge: só toca em sport/region — camadas, ?spot, ?lat/lon/z, ?t e
+    // ?basemap ficam no URL.
     syncGridFiltersToUrl(sport, region, regionList);
     dispatchSportChange(sport);
-  }, [sport, region, difficulty, regionList]);
+  }, [paramsReady, sport, region, difficulty, regionList]);
 
   // Scroll lock for the fullscreen map page. The cleanup intentionally does
   // NOT unlock: reactStrictMode double-invokes effects in dev, and the
@@ -236,8 +251,10 @@ export default function MapaFullscreenClient({
   const handleRegionChange = useCallback((next: string) => setRegion(next), []);
   const handleDifficultyChange = useCallback((next: MapDifficultyFilter) => setDifficulty(next), []);
 
+  // «Limpar filtros» limpa região/território, nível (e «Só a bombar», no
+  // componente) — a modalidade fica: é a escolha principal e tem o seu
+  // próprio chip «×».
   const handleReset = useCallback(() => {
-    setSport(DEFAULT_SPORT);
     setRegion(DEFAULT_REGION);
     setDifficulty('all');
   }, []);
@@ -258,8 +275,7 @@ export default function MapaFullscreenClient({
     [liveSpotsData, sport, locale, router],
   );
 
-  const showClearFilters =
-    sport !== DEFAULT_SPORT || region !== DEFAULT_REGION || difficulty !== 'all';
+  const showClearFilters = region !== DEFAULT_REGION || difficulty !== 'all';
 
   const mapHud = {
     locale,
@@ -291,8 +307,10 @@ export default function MapaFullscreenClient({
   return (
     <div className="relative h-[calc(100dvh-4rem)] w-full" aria-label={t.spotsMap.fullscreenMap}>
       <h1 className="sr-only">{getTranslation(locale).pages.mapMetaTitle}</h1>
+      {paramsReady ? (
       <SpotMapInteractive
         spotsData={filtered}
+        fieldSpotsData={liveSpotsData}
         selectedSport={sport}
         selectedRegion={region}
         locale={locale}
@@ -319,6 +337,11 @@ export default function MapaFullscreenClient({
         onSpotSelect={handleSpotSelect}
         mapHud={mapHud}
       />
+      ) : (
+        <div className="flex h-full min-h-[320px] items-center justify-center bg-surface-1/[0.04]">
+          <div className="w-8 h-8 rounded-full border-2 border-data-waves/30 border-t-data-waves animate-spin" />
+        </div>
+      )}
     </div>
   );
 }
