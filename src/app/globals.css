@@ -150,6 +150,12 @@ html:has([data-embed-widget]) body {
     display: none;
   }
 
+  /* Dawn Patrol (slot de topo da home): o espaço é reservado no SSR e só se
+   * mostra quando o bootstrap pré-paint marcou a janela da manhã — sem CLS. */
+  html:not([data-dawn-window]) .dawn-top-slot {
+    display: none;
+  }
+
   /* Homepage hero map: first paint shows the static poster (HeroMapPoster)
    * instead of a loading ring; when the Leaflet map initializes it stamps
    * data-map-ready on the hero section and the poster fades out, revealing
