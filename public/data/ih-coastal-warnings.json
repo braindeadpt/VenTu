@@ -7380,6 +7380,21 @@
       "radiusKm": 25,
       "eventAt": "2026-10-06T00:00:00.000Z",
       "polygons": []
+    },
+    {
+      "id": 2018765,
+      "ref": "ANAV NR 2260/26",
+      "category": "Animais Marinhos - Interação",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=75ccf066-d15b-4b2a-89cf-1b182df04296",
+      "source": "ih",
+      "collection": "orca_anavnet_point",
+      "center": [
+        -9.546667,
+        40.228333
+      ],
+      "radiusKm": 25,
+      "eventAt": "2026-10-07T00:00:00.000Z",
+      "polygons": []
     }
   ],
   "coverage": {
@@ -8096,7 +8111,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-10-07T17:06:44.026Z",
+  "fetchedAt": "2026-10-07T22:06:45.944Z",
   "sourceCollection": "nav_warning_coastal+nav_warning_local+orca_anavnet_point",
   "sourceUrl": "https://ogcapi.hidrografico.pt/collections/nav_warning_coastal"
 }
