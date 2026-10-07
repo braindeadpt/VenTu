@@ -58,6 +58,18 @@ describe('hydration gate (zero placeholder flash)', () => {
     expect(dawnSlots).not.toContain('isMorning === null');
   });
 
+  it('o slot de topo do Dawn Patrol reserva o espaço no SSR (sem CLS) e o pré-paint decide a visibilidade', () => {
+    const rootLayout = read('src/app/layout.tsx');
+    // Bootstrap pré-paint carimba a janela da manhã no <html>…
+    expect(rootLayout).toContain("setAttribute('data-dawn-window'");
+    expect(rootLayout).toContain('<InlineScript html={dawnWindowScript} />');
+    // …o CSS esconde o slot fora dela…
+    expect(css).toMatch(/html:not\(\[data-dawn-window\]\)\s+\.dawn-top-slot/);
+    // …e o componente SSRa o slot (não retorna null antes do mount).
+    expect(dawnSlots).toContain('className="dawn-top-slot"');
+    expect(dawnSlots).toContain('isMorning === false');
+  });
+
   it('o arquivo de notícias SSRa o shell real (gate news) sem spin de placeholder', () => {
     expect(news).toContain('data-hydration-gate="news"');
     expect(news).not.toContain('animate-spin');

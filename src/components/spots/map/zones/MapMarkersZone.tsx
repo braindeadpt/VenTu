@@ -57,6 +57,8 @@ interface UseMapMarkersZoneParams {
   /** Moldura do modo Explorar (painel recolhido/aberto) — descontada no fit. */
   mapHud: MapHudProps | undefined;
   panelCollapsed: boolean;
+  /** Deep link com vista própria (?lat&lon&z / ?spot=) — sem fit inicial. */
+  skipInitialFit?: boolean;
 }
 
 export function useMapMarkersZone({
@@ -85,6 +87,7 @@ export function useMapMarkersZone({
   setSheetSpot,
   mapHud,
   panelCollapsed,
+  skipInitialFit = false,
 }: UseMapMarkersZoneParams) {
   const router = useRouter();
   const reducedMotion = usePrefersReducedMotion();
@@ -115,6 +118,7 @@ export function useMapMarkersZone({
     exploreChrome: resolveExploreChrome(exploreMode, isMobile, panelCollapsed),
     reducedMotion,
     moreAriaTemplate: getTranslation(locale).mapUiMarkers.moreSpotsNearby,
+    skipInitialFit,
   });
 
   // ── Popup click handler ──

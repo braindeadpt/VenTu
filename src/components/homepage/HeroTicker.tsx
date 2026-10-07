@@ -97,15 +97,30 @@ export default function HeroTicker({
 
   return (
     <div
-      role="status"
-      aria-live="polite"
-      aria-label={statusLine ? `${statusLine}. ${t.homepage.tickerAria}` : t.homepage.tickerAria}
-      className="pointer-events-auto w-full px-0 sm:px-1 py-0"
+      role="group"
+      aria-label={t.homepage.tickerAria}
+      className="pointer-events-auto w-full min-w-0 px-0 sm:px-1 py-0"
     >
-      <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-meta">
+      {/* Região live SÓ com a linha de estado («3 spots a bombar»): a hora e
+          as fontes mudam a cada refresh e eram re-anunciadas inteiras pelos
+          leitores de ecrã. Fica fora do ecrã; a versão visível é aria-hidden. */}
+      <span
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+        className="sr-only"
+        suppressHydrationWarning
+      >
+        {statusLine ?? ''}
+      </span>
+      <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-meta min-w-0">
         {statusLine ? (
           <>
-            <span className="font-medium text-fg shrink-0" suppressHydrationWarning>
+            <span
+              aria-hidden
+              className="font-medium text-fg min-w-0 max-w-full"
+              suppressHydrationWarning
+            >
               {statusLine}
             </span>
             {SEP}

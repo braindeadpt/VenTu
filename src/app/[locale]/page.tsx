@@ -1,5 +1,7 @@
 import { getTranslation, locales } from '@/lib/i18n';
+import { SPORTS_COUNT } from '@/lib/sportRatings';
 import { loadSpotListings } from '@/lib/load-spot-data';
+import { toHomepageSpotLite } from '@/lib/homepageSpotLite';
 import { pipelineSchedule } from '@/lib/dataPipelineSchedule';
 import { loadPipelineMeta, resolveDisplayUpdatedTs } from '@/lib/pipelineMeta';
 import HomeAdaptive from '@/components/homepage/HomeAdaptive';
@@ -34,21 +36,25 @@ export default async function HomePage({
   // to the live clock (React #418 guard — same pattern as the spot page).
   const bakedAtMs = Date.now();
 
+  // Payload RSC: sem descrições/dicas/perigos (só a página do spot os usa).
+  const homeSpotsData = spotsData.map(toHomepageSpotLite);
+
   return (
     <div className="min-h-screen bg-bg-base">
       <MapTilePreconnect />
       <h1 className="sr-only">
         {t.hero.seoH1
           .replace('{count}', String(spotsData.length))
+          .replace('{sports}', String(SPORTS_COUNT))
           .replace('{schedule}', pipelineSchedule(locale))}
       </h1>
 
       <HomeAdaptive
         locale={locale}
-        spotsData={spotsData}
+        spotsData={homeSpotsData}
         maxTs={maxTs}
         spotCount={spotsData.length}
-        sportsCount={7}
+        sportsCount={SPORTS_COUNT}
         buoyLayer={pipelineMeta?.buoyLayer ?? null}
         coastalWarningsLayer={pipelineMeta?.coastalWarningsLayer ?? null}
         bakedAtMs={bakedAtMs}

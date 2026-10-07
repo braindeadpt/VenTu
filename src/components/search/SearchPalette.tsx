@@ -173,6 +173,9 @@ export default function SearchPalette({ locale, onClose }: SearchPaletteProps) {
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
       if (e.key === 'Escape') {
+        // preventDefault: o mapa em ecrã inteiro ignora Escapes já tratados
+        // (senão fechar a pesquisa também saía do /mapa).
+        e.preventDefault();
         onClose();
         return;
       }
@@ -223,7 +226,10 @@ export default function SearchPalette({ locale, onClose }: SearchPaletteProps) {
   useEffect(() => {
     inputRef.current?.focus();
     const handler = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        onClose();
+      }
       if ((e.key === 'k' && (e.metaKey || e.ctrlKey))) {
         e.preventDefault();
         onClose();

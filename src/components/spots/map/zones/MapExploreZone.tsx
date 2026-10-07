@@ -14,8 +14,8 @@ import {
   HelpCircle, Layers, MapPin, Wind,
 } from 'lucide-react';
 import { getTranslation } from '@/lib/i18n';
-import { localizedSpotName, localizedSpotRegion } from '@/lib/localizedSpotText';
-import { DEFAULT_REGION } from '@/lib/gridFilters';
+import { localizedSpotDisplayName, localizedSpotRegion } from '@/lib/localizedSpotText';
+import { DEFAULT_REGION, MAINLAND_REGION } from '@/lib/gridFilters';
 import { includeSpotInViewportBounds } from '../../mapViewportBounds';
 import type { GridSportFilter } from '@/lib/sportRatings';
 import type { MapFullscreenHudProps } from '../../mapHudTypes';
@@ -31,11 +31,13 @@ import type { MapListJump, MapSpotListRow } from '../components/MapSpotList';
 type MapTranslation = ReturnType<typeof getTranslation>;
 type MapHudProps = Omit<MapFullscreenHudProps, 'isPt' | 'visible'>;
 
-/** Bounds dos chips «Saltar para» — os mesmos JUMPS da maquete aprovada. */
-const MAP_LIST_JUMP_BOUNDS: Record<string, { s: number; n: number; w: number; e: number }> = {
-  cont: { s: 36.9, n: 42.2, w: -9.6, e: -7.3 },
-  az: { s: 36.9, n: 39.8, w: -31.4, e: -24.9 },
-  ma: { s: 32.55, n: 33.15, w: -17.35, e: -16.25 },
+/** Chips de território → valor do filtro de região (o mesmo do select).
+ *  Os bounds de cada território vivem em `TERRITORY_BOUNDS`
+ *  (mapViewportBounds) e são o fallback do enquadramento dos marcadores. */
+const MAP_LIST_JUMP_REGION: Record<string, string> = {
+  cont: MAINLAND_REGION,
+  az: 'Açores',
+  ma: 'Madeira',
 };
 
 // ─── Estado: sheet (3 estados), painel, altura aberta, lista e extras ───
@@ -163,7 +165,7 @@ export function useMapExploreZone({
       .map((d) => {
         return {
           spotId: d.spot.id,
-          name: localizedSpotName(d.spot, locale),
+          name: localizedSpotDisplayName(d.spot, locale),
           region: localizedSpotRegion(d.spot, locale),
           score: getBestScore(d, selectedSport, hourScores?.get(d.spot.id)),
           factors: getSpotScoreFactors({
@@ -209,31 +211,32 @@ export function useMapExploreZone({
     };
   }, [isReady, isFullscreen, mapHud, buildRows, mapInstanceRef]);
 
-  // Chips «Saltar para» no cabeçalho da lista — bounds da maquete
-  // (JUMPS): Continente / Açores / Madeira. §11: flyTo da lista = 600 ms
-  // (easeOutCubic — o easing interno do flyToBounds do Leaflet).
+  // Chips de território (Continente / Açores / Madeira) — toggles do MESMO
+  // filtro de região do select: premir filtra e enquadra (o efeito dos
+  // marcadores re-enquadra na mudança de filtro, sem animação — respeita
+  // reduced-motion); premir outra vez limpa. Antes só faziam flyToBounds com
+  // a região em «Todos», e como os marcadores/lista excluem as ilhas fora de
+  // um filtro de ilha, «Surf + Açores» mostrava 0 spots.
+  const onRegionChange = mapHud?.onRegionChange;
   const jumpTo = useCallback(
     (id: string) => {
-      const map = mapInstanceRef.current;
-      const b = MAP_LIST_JUMP_BOUNDS[id];
-      if (!map || !b) return;
-      map.flyToBounds(
-        [
-          [b.s, b.w],
-          [b.n, b.e],
-        ],
-        { duration: 0.6 },
-      );
+      const region = MAP_LIST_JUMP_REGION[id];
+      if (!region || !onRegionChange) return;
+      onRegionChange(selectedRegion === region ? DEFAULT_REGION : region);
     },
-    [mapInstanceRef],
+    [onRegionChange, selectedRegion],
   );
+  // Só os territórios que o host aceita como região (o /mapa junta
+  // «Continente»; outras superfícies com MACRO_REGIONS ficam com as ilhas).
+  const hudRegions = mapHud?.regions;
   const jumps: MapListJump[] = useMemo(
-    () => [
-      { id: 'cont', label: t.mapUiExplore.continent },
-      { id: 'az', label: 'Açores' },
-      { id: 'ma', label: 'Madeira' },
-    ],
-    [t.mapUiExplore.continent],
+    () =>
+      [
+        { id: 'cont', label: t.mapUiLayers.areaContinent, pressed: selectedRegion === MAINLAND_REGION },
+        { id: 'az', label: t.mapUiLayers.areaAzores, pressed: selectedRegion === 'Açores' },
+        { id: 'ma', label: t.mapUiLayers.areaMadeira, pressed: selectedRegion === 'Madeira' },
+      ].filter((j) => !hudRegions || hudRegions.includes(MAP_LIST_JUMP_REGION[j.id])),
+    [t.mapUiLayers.areaContinent, t.mapUiLayers.areaAzores, t.mapUiLayers.areaMadeira, selectedRegion, hudRegions],
   );
 
   return {

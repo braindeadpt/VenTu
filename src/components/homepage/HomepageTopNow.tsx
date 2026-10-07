@@ -9,13 +9,12 @@ import Button from '@/components/ui/Button';
 import EmptyState from '@/components/ui/EmptyState';
 import { getPlayfulEmptyCopy } from '@/lib/emptyStateCopy';
 import {
-  TOP_NOW_SPORTS,
   getScoreForFilter,
-  getTopSpotForSport,
-  type HomepageSpotData,
-  type TopNowSport,
   getSportLabel,
+  getTopNowCards,
+  type HomepageSpotData,
 } from '@/lib/homepageSport';
+import type { GridSportFilter } from '@/lib/sportRatings';
 import { getCalmWaterMetricLabel } from '@/lib/spotWaterContext';
 import { tierPhrase } from '@/lib/voice';
 import SpotListCard from '@/components/spots/SpotListCard';
@@ -27,6 +26,9 @@ import BuoyLayerNotice from '@/components/spots/BuoyLayerNotice';
 
 interface HomepageTopNowProps {
   spotsData: HomepageSpotData[];
+  /** Filtro de desporto do hero: «Todos» = um card por desporto; um desporto
+   *  concreto = os melhores spots a bombar nesse desporto. */
+  sport?: GridSportFilter;
   locale: string;
   /** Cap cards (e.g. 4 for returning visitors). Default: all TOP_NOW sports. */
   maxCards?: number;
@@ -35,14 +37,13 @@ interface HomepageTopNowProps {
   bakedAtMs: number;
 }
 
-const SPORT_ACCENTS: Record<TopNowSport, TopNowSport> = {
-  surf: 'surf',
-  kitesurf: 'kitesurf',
-  windsurf: 'windsurf',
-  bodyboard: 'bodyboard',
-};
-
-export default function HomepageTopNow({ spotsData, locale, maxCards, bakedAtMs }: HomepageTopNowProps) {
+export default function HomepageTopNow({
+  spotsData,
+  sport: activeSport = 'all',
+  locale,
+  maxCards,
+  bakedAtMs,
+}: HomepageTopNowProps) {
   const isPt = locale === 'pt';
   const t = getTranslation(locale);
   const [mounted, setMounted] = useState(false);
@@ -61,14 +62,14 @@ export default function HomepageTopNow({ spotsData, locale, maxCards, bakedAtMs 
   // TopNow sem rebuild, tal como na página de spot.
   const liveSpotsData = useLiveGridSpotData(spotsData);
 
-  // Only sports that are actually «a bombar» (≥ Bom / 60) — never Fraco under that title
-  const cards = TOP_NOW_SPORTS.map((sport) => {
-    const data = getTopSpotForSport(liveSpotsData, sport);
-    if (!data) return null;
-    return { sport, data };
-  })
-    .filter((entry): entry is { sport: TopNowSport; data: HomepageSpotData } => entry !== null)
-    .slice(0, maxCards ?? TOP_NOW_SPORTS.length);
+  // Only spots actually «a bombar» (≥ Bom / 60) — never Fraco under that title.
+  // Reage ao filtro do hero: com um desporto activo mostra os melhores spots
+  // desse desporto (antes ficava sempre um card por desporto).
+  const cards = getTopNowCards(liveSpotsData, activeSport, maxCards);
+  const subtitle =
+    activeSport === 'all'
+      ? t.homepage.onlyFiringSpots
+      : t.homepage.onlyFiringSpotsSport.replace('{sport}', getSportLabel(activeSport, locale));
 
   return (
     <section
@@ -79,7 +80,7 @@ export default function HomepageTopNow({ spotsData, locale, maxCards, bakedAtMs 
         {t.homepage.firingNow}
       </h2>
       <p className="text-meta text-fg-muted mb-4">
-        {cards.length === 0 ? t.homepage.noSportsFiring : t.homepage.onlyFiringSpots}
+        {cards.length === 0 ? t.homepage.noSportsFiring : subtitle}
       </p>
 
       {/* Camada de boias global desactivada/em baixo — o mesmo aviso honesto da
@@ -120,7 +121,7 @@ export default function HomepageTopNow({ spotsData, locale, maxCards, bakedAtMs 
 
             return (
               <li
-                key={sport}
+                key={`${sport}:${data.spot.slug}`}
                 className="stagger-fade-in motion-reduce:animate-none"
                 style={{ '--stagger-delay': i * 40 } as React.CSSProperties}
               >
@@ -135,7 +136,7 @@ export default function HomepageTopNow({ spotsData, locale, maxCards, bakedAtMs 
                   href={spotDetailHref(locale, data.spot.slug, sport)}
                   locale={cardLocale}
                   sportLabel={sportLabel}
-                  sportAccent={SPORT_ACCENTS[sport]}
+                  sportAccent={sport === 'big-wave' ? 'surf' : sport}
                   calmWaterLabel={getCalmWaterMetricLabel(
                     data.spot,
                     data.conditions.waveHeight,

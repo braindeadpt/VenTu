@@ -380,20 +380,22 @@ export function useMapLayers({
       if (!isFullscreen) setRadarLift(0);
       return;
     }
-    const hud = document.querySelector('[data-map-hud-collapsed]');
-    if (!hud) return;
     // A porção VISÍVEL: o bottom sheet tem altura fixa e anda por translateY
     // (o rect.height não muda durante o arrasto — só o rect.top reflecte o
-    // quanto está à mostra). O intervalo cobre o translateY, que não dispara
-    // ResizeObserver.
-    const measure = () =>
-      setRadarLift(Math.max(0, Math.round(window.innerHeight - hud.getBoundingClientRect().top)));
+    // quanto está à mostra). O sheet monta DEPOIS de `isReady` (zonas em
+    // startTransition + chunk dinâmico): procura-se o elemento em cada
+    // medida em vez de desistir à primeira — antes o lift ficava a 0 para
+    // sempre. Os carrosséis de radar/IR já não dependem disto no mobile
+    // (posicionam-se por `--sheet-lift`); a legenda continua a usar o lift.
+    const measure = () => {
+      const hud = document.querySelector('[data-map-hud-collapsed]');
+      setRadarLift(
+        hud ? Math.max(0, Math.round(window.innerHeight - hud.getBoundingClientRect().top)) : 0,
+      );
+    };
     measure();
-    const ro = new ResizeObserver(measure);
-    ro.observe(hud);
     const iv = window.setInterval(measure, 250);
     return () => {
-      ro.disconnect();
       window.clearInterval(iv);
     };
   }, [isFullscreen, isReady]);

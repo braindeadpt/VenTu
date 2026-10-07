@@ -1,7 +1,7 @@
 'use client';
 
 import { getTranslation } from '@/lib/i18n';
-import { localizedSpotName } from '@/lib/localizedSpotText';
+import { localizedSpotDisplayName } from '@/lib/localizedSpotText';
 import { useEffect, useRef } from 'react';
 import { ArrowLeft, X } from 'lucide-react';
 import type { GridSportFilter } from '@/lib/sportRatings';
@@ -150,7 +150,7 @@ export default function MapSpotSheet({
         </div>
 
         <div id="map-spot-sheet-title" className="sr-only">
-          {localizedSpotName(data.spot, locale)}
+          {localizedSpotDisplayName(data.spot, locale)}
         </div>
 
         <SpotCardContent

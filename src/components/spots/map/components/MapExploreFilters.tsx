@@ -18,7 +18,7 @@
 import { useId } from 'react';
 import { ChevronDown, X } from 'lucide-react';
 import { getTranslation } from '@/lib/i18n';
-import { DEFAULT_REGION } from '@/lib/gridFilters';
+import { DEFAULT_REGION, MAINLAND_REGION } from '@/lib/gridFilters';
 import type { GridSportFilter } from '@/lib/sportRatings';
 import type { MapDifficultyFilter } from '@/lib/mapDifficulty';
 import type { MapHudSportOption } from '../../mapHudTypes';
@@ -190,13 +190,24 @@ export default function MapExploreFilters({
   const uid = useId().replace(/[:]/g, '');
   const sportLabelId = `${idPrefix}-sport-label-${uid}`;
 
+  // Territórios com rótulo localizado (o resto das regiões continua com o
+  // nome PT — é o valor do filtro).
+  const regionLabel = (r: string) =>
+    r === MAINLAND_REGION
+      ? t.mapUiLayers.areaContinent
+      : r === 'Açores'
+        ? t.mapUiLayers.areaAzores
+        : r === 'Madeira'
+          ? t.mapUiLayers.areaMadeira
+          : r;
+
   const chips: { key: string; label: string; clear: () => void }[] = [];
   if (selectedSport !== 'all') {
     const label = sports.find((s) => s.id === selectedSport)?.label ?? selectedSport;
     chips.push({ key: 'sport', label, clear: () => onSportChange('all') });
   }
   if (selectedRegion !== DEFAULT_REGION) {
-    chips.push({ key: 'region', label: selectedRegion, clear: () => onRegionChange(DEFAULT_REGION) });
+    chips.push({ key: 'region', label: regionLabel(selectedRegion), clear: () => onRegionChange(DEFAULT_REGION) });
   }
   if (selectedDifficulty !== 'all') {
     const label = difficulties.find((d) => d.id === selectedDifficulty)?.label ?? selectedDifficulty;
@@ -206,6 +217,9 @@ export default function MapExploreFilters({
     chips.push({ key: 'onlyOn', label: t.map.onlyOn, clear: onToggleOnlyOn });
   }
 
+  // «Limpar» nunca mexe na modalidade (ver handleReset do /mapa) — aparece
+  // quando há região/nível ou «Só a bombar» activos.
+  const showClear = showClearFilters || onlyOnEnabled;
   const clearAll = () => {
     onResetFilters();
     if (onlyOnEnabled) onToggleOnlyOn();
@@ -243,7 +257,7 @@ export default function MapExploreFilters({
           id={`${idPrefix}-region-${uid}`}
           label={t.spotsMap.region}
           value={selectedRegion}
-          options={regions.map((r) => ({ id: r, label: r }))}
+          options={regions.map((r) => ({ id: r, label: regionLabel(r) }))}
           onChange={onRegionChange}
         />
         <FieldSelect
@@ -272,7 +286,7 @@ export default function MapExploreFilters({
       </div>
 
       {/* Chips dos filtros activos + «Limpar». */}
-      {(chips.length > 0 || showClearFilters) && (
+      {(chips.length > 0 || showClear) && (
         <div className="flex flex-wrap items-center gap-1.5">
           {chips.map((c) => (
             <button
@@ -286,7 +300,7 @@ export default function MapExploreFilters({
               <X className="h-3 w-3 text-fg-subtle" aria-hidden />
             </button>
           ))}
-          {showClearFilters && (
+          {showClear && (
             <button
               type="button"
               onClick={clearAll}

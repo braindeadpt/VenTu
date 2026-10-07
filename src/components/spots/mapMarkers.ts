@@ -11,6 +11,7 @@ import { getSpotImage } from '@/lib/spotImage';
 import { getSpotDetailHref } from '@/lib/mapSpotDetail';
 import { renderSpotPopup } from './SpotPopupContent';
 import { getBestScore, type MapSpotData } from './mapSpotData';
+import { localizedSpotDisplayName } from '@/lib/localizedSpotText';
 
 export function buildMarkerIcon(
   Leaflet: typeof L,
@@ -143,7 +144,8 @@ export function createSpotMarker(
   marker.on('add', () => {
     const el = marker.getElement();
     if (!el) return;
-    if (!el.hasAttribute('aria-label')) el.setAttribute('aria-label', spot.name);
+    // Nome localizado — o mesmo da lista e do tooltip.
+    if (!el.hasAttribute('aria-label')) el.setAttribute('aria-label', localizedSpotDisplayName(spot, locale));
     // Ponte de hover com a lista «Nesta vista» (M3 §5): a linha liga
     // .ventu-list-hover neste elemento e o hover do marcador realça a linha.
     el.setAttribute('data-spot-id', spot.id);
@@ -675,7 +677,9 @@ export function createV3SpotMarker(
     if (!el.hasAttribute('aria-label')) {
       // O badge «+N» é aria-hidden, por isso a contagem do grupo entra no
       // nome do marcador — senão o leitor de ecrã perdia a informação.
-      el.setAttribute('aria-label', moreAriaLabel ? `${spot.name} · ${moreAriaLabel}` : spot.name);
+      // Nome localizado — o mesmo da lista «Nesta vista» e do tooltip.
+      const name = localizedSpotDisplayName(spot, options.locale);
+      el.setAttribute('aria-label', moreAriaLabel ? `${name} · ${moreAriaLabel}` : name);
     }
     // Ponte de hover com a lista «Nesta vista» (M3 §5) — igual ao
     // marcador clássico: a linha liga .ventu-list-hover neste elemento e
