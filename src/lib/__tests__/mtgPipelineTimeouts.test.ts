@@ -60,3 +60,47 @@ describe('passo MTG do update-data — não pode pendurar o pipeline', () => {
     expect(script).not.toMatch(/JOB_TIMEOUT_S\s*\*\s*4/);
   });
 });
+
+describe('passo MTG do update-data — nunca bloqueia os dados centrais', () => {
+  const idx = (name: string) => {
+    const i = workflow.indexOf(`- name: ${name}`);
+    expect(i, `passo «${name}» existe`).toBeGreaterThanOrEqual(0);
+    return i;
+  };
+
+  it('corre DEPOIS de «Update Conditions» e do upload do artefacto central', () => {
+    const mtg = idx(MTG_STEP);
+    expect(mtg).toBeGreaterThan(idx('Update Conditions (Open-Meteo)'));
+    expect(mtg).toBeGreaterThan(idx('Upload fresh data artifact'));
+  });
+
+  it('tem orçamento: salta o MTG se o job já gastou demasiado tempo', () => {
+    const gate = stepBlock('MTG budget gate');
+    const budget = Number(gate.match(/-lt\s+(\d+)/)![1]);
+    const stepMin = Number(stepBlock(MTG_STEP).match(/timeout-minutes:\s*(\d+)/)![1]);
+    const job = Number(
+      workflow.match(/update-conditions:[\s\S]*?\n {4}timeout-minutes:\s*(\d+)/)![1],
+    );
+    // pior caso: orçamento + passo + ~2 min de upload < limite do job
+    expect(budget + stepMin * 60 + 120).toBeLessThan(job * 60);
+    expect(stepBlock(MTG_STEP)).toMatch(/steps\.mtgbudget\.outputs\.ok == 'true'/);
+  });
+
+  it('o relógio do job arranca antes do checkout', () => {
+    expect(idx('Job clock')).toBeLessThan(idx('Checkout'));
+  });
+
+  it('os frames MTG seguem em artefacto próprio, aplicado no commit-and-push', () => {
+    expect(stepBlock('Upload MTG frames artifact')).toMatch(/name:\s*ventu-mtg/);
+    const dl = stepBlock('Download MTG frames artifact (optional)');
+    expect(dl, 'sem artefacto MTG o commit-and-push não pode falhar').toMatch(
+      /continue-on-error:\s*true/,
+    );
+  });
+
+  it('o update-conditions não descarrega o histórico git inteiro', () => {
+    const job = workflow.match(/update-conditions:[\s\S]*?- name: Schedule gate/)![0];
+    expect(job).toMatch(/^\s+fetch-depth:\s*1\s*$/m);
+    expect(job).not.toMatch(/^\s+fetch-depth:\s*0\s*$/m);
+  });
+});

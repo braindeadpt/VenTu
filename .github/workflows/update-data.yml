@@ -57,10 +57,23 @@ jobs:
     outputs:
       mode: ${{ steps.gate.outputs.mode }}
     steps:
+      # Primeiro passo: marca o início do job para o orçamento do passo MTG
+      # (ver «MTG budget gate» no fim do job). Tem de vir ANTES do checkout —
+      # o checkout também gasta os 30 min do job.
+      - name: Job clock
+        id: clock
+        run: echo "t0=$(date +%s)" >> "$GITHUB_OUTPUT"
+
       - name: Checkout
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        # Este job NÃO usa histórico git: nenhum passo nem script que ele corre
+        # chama git log/rev-list/merge-base/show (verificado a 7 out — os scripts
+        # que usam histórico são do CI e do deploy). O pack tem 1,8 GiB e
+        # fetch-depth: 0 descarregava-o todo de 30 em 30 min: um checkout chegou
+        # a demorar 18 min (normal ~1 min) e comeu o orçamento do job. O
+        # commit-and-push faz o seu próprio checkout.
         with:
-          fetch-depth: 0
+          fetch-depth: 1
 
       - name: Schedule gate (Europe/Lisbon)
         id: gate
@@ -224,32 +237,6 @@ jobs:
         if: steps.gate.outputs.mode != 'skip'
         run: node scripts/fetch-ipma-radar.js
 
-      # Satélite Meteosat MTG-I1 (FCI) — EUMETSAT Data Tailor subtrai o
-      # disco para a ROI Ibéria+Atlântico server-side (~2 km/px). Produto
-      # por elevação solar: natural-color de dia, IR 10.5 µm colorizado de
-      # noite; o script grava WebP + sat-mtg.json (ver fetch-mtg-ir.py).
-      # Cadência do workflow = horária → frames ≥1 h = dados «Core» CC-BY.
-      # continue-on-error: overlay opcional — um outage EUMETSAT nunca
-      # bloqueia o pipeline (o mapa cai para o fallback GOES-IR/GIBS).
-      - name: Setup Python (MTG-I1 fetch)
-        if: steps.gate.outputs.mode != 'skip' && env.EUMETSAT_CONSUMER_KEY != ''
-        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
-        with:
-          python-version: '3.12'
-
-      - name: Fetch MTG-I1 FCI frames (EUMETSAT Data Tailor)
-        if: steps.gate.outputs.mode != 'skip' && env.EUMETSAT_CONSUMER_KEY != ''
-        continue-on-error: true
-        # Timeout PRÓPRIO do passo: `continue-on-error` não protege de um passo
-        # PENDURADO — o Data Tailor deixou de terminar a 7 out (~10:05 UTC) e
-        # cada run ficava no passo até ao limite de 30 min do job, que matava o
-        # job INTEIRO: nenhuma run publicou dados durante 5 h. Com isto o passo
-        # falha ao fim de 12 min e o pipeline segue sem satélite MTG.
-        timeout-minutes: 12
-        run: |
-          python -m pip install -q -r scripts/requirements-mtg.txt
-          python scripts/fetch-mtg-ir.py
-
       # Estado de tempestade por spot (B1): eco do radar IPMA por spot —
       # distância/intensidade + deslocamento do centróide («a aproximar-se»
       # medido, não previsto) + nível máximo de aviso IPMA + cone NHC.
@@ -362,6 +349,60 @@ jobs:
           if-no-files-found: error
           retention-days: 1
 
+      # Satélite Meteosat MTG-I1 (FCI) — EUMETSAT Data Tailor subtrai o
+      # disco para a ROI Ibéria+Atlântico server-side (~2 km/px). Produto
+      # por elevação solar: natural-color de dia, IR 10.5 µm colorizado de
+      # noite; o script grava WebP + sat-mtg.json (ver fetch-mtg-ir.py).
+      #
+      # CORRE POR ÚLTIMO, depois do upload do artefacto central: é um overlay
+      # opcional e nunca pode bloquear os dados centrais. A 7 out o Data Tailor
+      # deixou de terminar e, estando antes de «Update Conditions», cada run
+      # ficava no passo até ao limite de 30 min do job — 5 h sem dados. Três
+      # protecções: (1) vem depois do upload central; (2) o orçamento abaixo
+      # salta o passo se o job já gastou ≥13 min (13 + 12 + ~1 de upload = 26
+      # < 30, logo o MTG nunca empurra o job para o limite); (3) timeout próprio
+      # de 12 min com continue-on-error. Os frames seguem num artefacto à parte
+      # (ventu-mtg) que o commit-and-push aplica se existir.
+      - name: MTG budget gate
+        id: mtgbudget
+        if: steps.gate.outputs.mode != 'skip' && env.EUMETSAT_CONSUMER_KEY != ''
+        run: |
+          elapsed=$(( $(date +%s) - ${{ steps.clock.outputs.t0 }} ))
+          if [ "$elapsed" -lt 780 ]; then
+            echo "ok=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::MTG saltado — o job já gastou ${elapsed}s (orçamento 780s)"
+          fi
+
+      - name: Setup Python (MTG-I1 fetch)
+        if: steps.mtgbudget.outputs.ok == 'true'
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.12'
+
+      - name: Fetch MTG-I1 FCI frames (EUMETSAT Data Tailor)
+        id: mtg
+        if: steps.mtgbudget.outputs.ok == 'true'
+        continue-on-error: true
+        # Timeout PRÓPRIO do passo: `continue-on-error` não protege de um passo
+        # PENDURADO. Ao expirar o passo falha e o pipeline segue sem satélite.
+        timeout-minutes: 12
+        run: |
+          python -m pip install -q -r scripts/requirements-mtg.txt
+          python scripts/fetch-mtg-ir.py
+
+      - name: Upload MTG frames artifact
+        if: steps.mtg.outcome == 'success'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: ventu-mtg
+          path: |
+            public/data/sat-mtg
+            public/data/sat-mtg.json
+          if-no-files-found: ignore
+          retention-days: 1
+
   # ── 2. Validation gate (no build): UTF-8 + JSON + schema + TTL ──
   validate-data:
     if: needs.update-conditions.outputs.mode != 'skip'
@@ -471,12 +512,35 @@ jobs:
           name: ventu-data
           path: /tmp/ventu-data
 
+      # Frames MTG deste run (opcional): o passo MTG corre depois do upload
+      # central e pode ter sido saltado, falhado ou cortado — sem artefacto
+      # ficam as frames do último commit, que já vêm no artefacto central.
+      - name: Download MTG frames artifact (optional)
+        continue-on-error: true
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: ventu-mtg
+          path: /tmp/ventu-mtg
+
       - name: Stage fresh data into public/data (+ data-state)
         run: |
           rm -rf public/data data-state
           mkdir -p public/data data-state
           cp -a /tmp/ventu-data/public/data/. public/data/
           if [ -d /tmp/ventu-data/data-state ]; then cp -a /tmp/ventu-data/data-state/. data-state/; fi
+          # MTG: troca a pasta de frames por INTEIRO (o script poda as antigas
+          # localmente) e o manifest. O layout do artefacto depende do ancestral
+          # comum dos caminhos — aceita os dois.
+          mtg=/tmp/ventu-mtg
+          if [ -d "$mtg/public/data" ]; then mtg="$mtg/public/data"; fi
+          if [ -d "$mtg/sat-mtg" ] && [ -f "$mtg/sat-mtg.json" ]; then
+            rm -rf public/data/sat-mtg
+            cp -a "$mtg/sat-mtg" public/data/sat-mtg
+            cp -a "$mtg/sat-mtg.json" public/data/sat-mtg.json
+            echo "MTG: frames deste run aplicadas ($(ls public/data/sat-mtg/frames | wc -l) ficheiros)"
+          else
+            echo "MTG: sem artefacto neste run — ficam as frames do último commit"
+          fi
 
       - name: Commit and Push
         run: |
