@@ -1,6 +1,6 @@
 'use client';
 
-import { Maximize2, Minimize2, MapPin, Layers, Wind, HelpCircle, CloudRain, RotateCcw, Zap, Anchor, Clock, LifeBuoy, Activity, Navigation, Thermometer, Sailboat, SatelliteDish, CloudLightning, AlertTriangle } from 'lucide-react';
+import { Maximize2, Minimize2, MapPin, Layers, Wind, HelpCircle, CloudRain, RotateCcw, Zap, Anchor, Clock, LifeBuoy, Activity, Navigation, Waves, Thermometer, Sailboat, SatelliteDish, CloudLightning, AlertTriangle } from 'lucide-react';
 import MapLayersMenu, { type MapLayersMenuItem } from './MapLayersMenu';
 
 export interface MapControlsProps {
@@ -43,6 +43,12 @@ export interface MapControlsProps {
   currentsUnavailable: boolean;
   currentsLabel: string;
   currentsHint: string;
+  /** Camada «Ondulação» (grelha de modelo) — só no /mapa. */
+  swellEnabled?: boolean;
+  swellUnavailable?: boolean;
+  swellLabel?: string;
+  swellHint?: string;
+  toggleSwell?: () => void;
   nauticalChartLabel: string;
   nauticalChartHint: string;
   goesIrEnabled: boolean;
@@ -150,6 +156,18 @@ export function buildLayerMenuItems(p: MapControlsProps): MapLayersMenuItem[] {
             toggleAttr: 'data-map-storms-toggle',
             iconClass: 'text-score-poor',
           } satisfies MapLayersMenuItem]),
+          ...(p.toggleSwell && p.swellLabel
+            ? [{
+                key: 'swell',
+                label: p.swellLabel,
+                hint: p.swellEnabled && p.swellUnavailable ? `${p.swellHint ?? ''} — indisponível` : p.swellHint,
+                icon: <Waves className="w-4 h-4" aria-hidden />,
+                pressed: !!p.swellEnabled,
+                onToggle: p.toggleSwell,
+                toggleAttr: 'data-map-swell-toggle',
+                iconClass: 'text-data-waves',
+              } satisfies MapLayersMenuItem]
+            : []),
           {
             key: 'hs',
             label: p.hsLabel,

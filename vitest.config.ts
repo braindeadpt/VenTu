@@ -104,6 +104,7 @@ export default defineConfig({
       'scripts/lib/__tests__/i18nDebt.test.js',
       'scripts/lib/__tests__/ihHealthGate.test.js',
       'scripts/lib/__tests__/cronDelivery.test.js',
+      'scripts/lib/__tests__/seaGrid.test.js',
     ],
   },
   resolve: {

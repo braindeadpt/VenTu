@@ -54,6 +54,7 @@ function readMapSearchParams(): {
   hs: boolean;
   sst: boolean;
   currents: boolean;
+  swell: boolean;
   wind: boolean;
   goesIr: boolean;
   storms: boolean;
@@ -73,6 +74,7 @@ function readMapSearchParams(): {
     hs: false,
     sst: false,
     currents: false,
+    swell: false,
     wind: false,
     goesIr: false,
     storms: false,
@@ -104,6 +106,8 @@ function readMapSearchParams(): {
     hs: params.get('hs') === '1' && params.get('sst') !== '1',
     sst: params.get('sst') === '1',
     currents: params.get('currents') === '1',
+    // «Ondulação» exclui o Hs IDW e a SST (os três pintam o mar inteiro).
+    swell: params.get('swell') === '1',
     wind: params.get('wind') === '1',
     goesIr: params.get('goesIr') === '1',
     storms: params.get('storms') === '1',
@@ -158,6 +162,7 @@ export default function MapaFullscreenClient({
   const [initialHs, setInitialHs] = useState(false);
   const [initialSst, setInitialSst] = useState(false);
   const [initialCurrents, setInitialCurrents] = useState(false);
+  const [initialSwell, setInitialSwell] = useState(false);
   const [initialWind, setInitialWind] = useState(false);
   const [initialGoesIr, setInitialGoesIr] = useState(false);
   const [initialStorms, setInitialStorms] = useState(false);
@@ -195,6 +200,7 @@ export default function MapaFullscreenClient({
     setInitialHs(s.hs);
     setInitialSst(s.sst);
     setInitialCurrents(s.currents);
+    setInitialSwell(s.swell);
     setInitialWind(s.wind);
     setInitialGoesIr(s.goesIr);
     setInitialStorms(s.storms);
@@ -323,6 +329,7 @@ export default function MapaFullscreenClient({
         initialHsEnabled={initialHs}
         initialSstEnabled={initialSst}
         initialCurrentsEnabled={initialCurrents}
+        initialSwellEnabled={initialSwell}
         initialWindEnabled={initialWind}
         initialGoesIrEnabled={initialGoesIr}
         initialStormsEnabled={initialStorms}

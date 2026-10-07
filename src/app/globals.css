@@ -970,6 +970,64 @@ html:has([data-embed-widget]) body {
   left: 0;
   top: 0;
 }
+
+/*
+ * Camada «Ondulação» (useMapSwellField): campo de Hs + isolinhas + símbolos
+ * num canvas, cristas animadas noutro. Tooltip de leitura no ponteiro fino
+ * — mesma linguagem da maquete aprovada (cartão escuro, valores tabulares),
+ * sempre escuro por cima do campo de cor nos dois temas.
+ */
+.ventu-swell-field,
+.ventu-swell-crests {
+  position: absolute;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+}
+.ventu-swell-tip {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 950;
+  min-width: 190px;
+  max-width: 260px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: rgb(6 18 31 / 0.92);
+  border: 1px solid rgb(150 200 230 / 0.22);
+  color: #eef7fc;
+  font-size: 11px;
+  line-height: 1.35;
+  pointer-events: none;
+  box-shadow: 0 6px 18px rgb(0 0 0 / 0.35);
+}
+.ventu-swell-tip[hidden] {
+  display: none;
+}
+.ventu-swell-tip__h {
+  margin: 0 0 4px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.ventu-swell-tip__r {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: #9fc0d4;
+  font-variant-numeric: tabular-nums;
+}
+.ventu-swell-tip__r > span:last-child {
+  color: #eef7fc;
+  text-align: right;
+}
+.ventu-swell-tip__sw {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 6px;
+  border-radius: 2px;
+  vertical-align: -0.5px;
+}
 /*
  * Tailwind preflight sets `img { max-width: 100% }`. Leaflet ImageOverlay
  * sizes the <img> to the projected bounds (often larger than the viewport

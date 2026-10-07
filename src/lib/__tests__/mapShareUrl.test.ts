@@ -86,3 +86,22 @@ describe('buildMapShareUrl', () => {
     expect(url).toContain('nauticalChart=1');
   });
 });
+
+describe('camada «Ondulação» no URL', () => {
+  it('a partilha escreve swell=1', async () => {
+    const { buildMapShareSearch } = await import('../mapShareUrl');
+    const p = new URLSearchParams(
+      buildMapShareSearch({ center: [39, -9], sport: 'surf', layers: { swell: true, wind: true } }),
+    );
+    expect(p.get('swell')).toBe('1');
+    expect(p.get('wind')).toBe('1');
+  });
+
+  it('mergeMapLayerParam liga/desliga sem tocar nos outros params', async () => {
+    const { mergeMapLayerParam } = await import('../mapShareUrl');
+    expect(mergeMapLayerParam('?sport=surf&lat=39&radar=1', 'swell', true)).toBe('?sport=surf&lat=39&radar=1&swell=1');
+    expect(mergeMapLayerParam('?sport=surf&swell=1&z=9', 'swell', false)).toBe('?sport=surf&z=9');
+    expect(mergeMapLayerParam('', 'swell', false)).toBe('');
+    expect(mergeMapLayerParam('?swell=1', 'swell', true)).toBe('?swell=1');
+  });
+});

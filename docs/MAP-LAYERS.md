@@ -13,7 +13,8 @@ rewriting the map core.
 | 206 | `ventu-goes-ir` | **GOES-East ABI Band 13 Clean IR** (NASA GIBS WMTS) | animated carousel — 12 frames × 10 min ending ~45 min back; stretched above `maxNativeZoom: 6`; keyless; `gibs.earthdata.nasa.gov` in CSP img-src; counts toward the heavy-raster cap |
 | 210 | `ventu-bathymetry` | **EMODnet bathymetry WMS** (`emodnet:mean_multicolour` + `emodnet:contours`) | part of «Carta náutica» — depth shading + 50–5000 m contours (island coverage — IH isobaths are mainland-only); host in CSP img-src (meta + terraform) |
 | 340 | — | isobaths (canvas image) | part of «Carta náutica» — static, below fields |
-| 345 | `windfield` | **wind particle field** | ambient, animated |
+| 342 | `swellfield` | **«Ondulação»** — Hs colour field + 0.5 m isolines + spot swell symbols (canvas) and slow swell crests (second canvas) | from `sea-grid.json`; mutually exclusive w/ Hs and SST; wind particles draw on top (as in the approved mockup) |
+| 345 | `windfield` | **wind particle field** | ambient, animated; colour by knots |
 | 348 | `sst` | SST ribbon | mutually exclusive w/ Hs |
 | 350 | `hs` | Hs swell field + crest isolines | mutually exclusive w/ SST |
 | 355 | — | tide ribbons | |
@@ -72,8 +73,59 @@ Each field = `src/lib/map*Field.ts` (pure: samples → IDW grid → draw) +
 - Trail persistence via `destination-in` fade (`MAP_WIND_FADE`).
 - Close-zoom detail stays on the **pin wind arcs** (`mapWindArrow`) — the
   field is ambient context, the arc is exact reading.
-- Colour: `--data-wind` token (violet-700 light / violet-400 dark) — works
-  on light/dark/satellite without per-basemap branching.
+- Source: `sea-grid.json` (model grid, see below) when it covers the active
+  hour — the field then covers the whole sea box and does not depend on
+  which spots exist or are filtered; the spot IDW from map-hours stays as
+  the fallback.
+- Colour: the knot scale of the approved mockup (`WIND_KT_STOPS` in
+  `mapSwellField.ts`, 0–40 kn) — particles are batched into 14 colour bins
+  (one stroke per bin) and take the colour of the cell they are in, not the
+  one they spawned in. Legend shows the same bar with the current grid
+  min–max marked.
+
+## Sea grid (`public/data/sea-grid.json`)
+
+- Built by `scripts/build-sea-grid.js` in `update-data.yml` (full runs, only
+  when the file is ≥ 5.5 h old): Open-Meteo forecast (`wind_speed_10m`,
+  `wind_direction_10m`) + marine (`wave_height`, `swell_wave_*`, fallback
+  `wave_*`) on a regular **0.5° grid** over three boxes (mainland incl.
+  Galicia/Gulf of Cádiz, Azores, Madeira), **55 hourly steps** from the
+  current hour. ~394 locations per API per run (deep-inland Iberia skipped);
+  the calls are added to `pipeline-meta.json` `openMeteoUsage.dailyWeightedCalls`.
+- Compact format (v1): `u`/`v` (0.25 m/s, offset 128), `hs` (0.1 m), `dir`
+  (360/256°), `per` (0.1 s) as Uint8 arrays, base64, layout `[t][node]`;
+  255 = no data. ~160 KB raw, ~80 KB gzip. Format + quantization in
+  `scripts/lib/seaGrid.js`, decoder in `src/lib/seaGrid.ts` (`parseSeaGrid`,
+  `seaGridFrame`, `sampleSeaGrid`). The decoder extends swell one ring into
+  coast/land nodes so the bilinear field reaches the shoreline; land is cut
+  with `pointOnLand`.
+- Time: `t0` (unix s) + `stepHours` — the 48 h scrubber maps its
+  map-hours step (Lisbon local) to a fractional index; «Agora» uses the
+  wall clock. Older than 30 h or not covering the hour → swell hides,
+  wind falls back to IDW.
+
+## «Ondulação» layer (`mapSwellField` + `useMapSwellField`)
+
+- Toggle `data-map-swell-toggle`, pref `ventu.map.swell`, deep link and
+  share `?swell=1`, mirrored to the URL on toggle (merge, other params kept).
+- Hs field: bilinear sample per 3 px (4 px mobile) of the view, drawn
+  upscaled with smoothing; alpha fades with the share of valid sea nodes.
+- Isolines every 0.5 m (marching squares on the grid refined ×4/×8/×16 by
+  zoom; land and coast-edge cells are NaN so lines never cross land), one
+  label per level with constant pixel size.
+- Crests: triangular lattice with **constant screen-pixel spacing (30 px)**
+  anchored to the map's world-pixel origin (pans keep crests over the same
+  sea), rebuilt on every `zoomend`/`moveend`; each frame is cleared (no
+  trails) and the pane is `leaflet-zoom-hide`, so nothing is stretched or
+  smeared across zoom levels. 30 fps cap, pauses after 20 s idle,
+  `document.hidden` skip, 6 alpha bins → 6 strokes per frame.
+- Spot symbols (visible ocean spots, 34 px collision): arrow in the swell
+  direction with length ∝ Hs (12–72 px), chevrons by period (< 8 s · 8–11 ·
+  11–14 · ≥ 14 s), constant pixel size.
+- Tooltip (fine pointer only, `aria-hidden`; the legend carries the text):
+  position, wind (when the wind layer is on), Hs, period, swell direction,
+  Lisbon time.
+- `prefers-reduced-motion`: field + isolines + symbols, no crests.
 
 ## Future layers — where they land
 

@@ -16,6 +16,8 @@ import {
   MAP_HS_STEP_DEG_MOBILE,
   type FieldSpot,
 } from '@/lib/mapHsField';
+import { sampleSeaGrid, type SeaGrid, type SeaGridFrame, type SeaSample } from '@/lib/seaGrid';
+import { WIND_KT_MAX, WIND_KT_STOPS, rampColor } from '@/lib/mapSwellField';
 
 export const MAP_WIND_PANE = 'windfield';
 /** Ambient layer — below Hs (350) and currents (360), above tiles. */
@@ -326,6 +328,55 @@ export function spawnWindParticle(
   return null;
 }
 
+/** Força em nós de uma célula de vento (a cor das partículas). */
+export function windCellKt(cell: FlowCell): number {
+  return cell.spd * MS_TO_KT;
+}
+
+/**
+ * Grelha de fluxo a partir da grelha regular de modelo (`sea-grid.json`) —
+ * substitui o IDW entre spots: o vento cobre o mar inteiro da caixa, não
+ * depende de que spots existem e não muda com os filtros. Mantém a forma
+ * `WindFieldGrid` para o resto do campo (spawn, advecção, desenho) ficar igual.
+ * Terra (máscara GADM) fica null; o campo esbate nos últimos ~0,6° da caixa.
+ */
+export function buildWindFieldGridsFromSea(
+  sea: Pick<SeaGrid, 'boxes' | 'step'>,
+  frame: SeaGridFrame,
+  opts: { mobile?: boolean } = {},
+): WindFieldGrid[] {
+  const out: WindFieldGrid[] = [];
+  const step = opts.mobile ? 0.1 : 0.05;
+  const s: SeaSample = { u: 0, v: 0, kt: 0, windFrom: 0, hs: NaN, per: NaN, swellFrom: 0, pe: 0, pn: 0, w: 0, edge: 1 };
+  for (const b of sea.boxes) {
+    const west = b.west;
+    const south = b.south;
+    const east = b.west + (b.nx - 1) * sea.step;
+    const north = b.south + (b.ny - 1) * sea.step;
+    const gstep = Math.max(step, (east - west) / 200);
+    const cols = Math.max(2, Math.ceil((east - west) / gstep));
+    const rows = Math.max(2, Math.ceil((north - south) / gstep));
+    const grid: Array<WindCell | null> = new Array(cols * rows).fill(null);
+    for (let y = 0; y < rows; y++) {
+      const lat = north - ((y + 0.5) / rows) * (north - south);
+      for (let x = 0; x < cols; x++) {
+        const lon = west + ((x + 0.5) / cols) * (east - west);
+        if (pointOnLand(lat, lon)) continue;
+        const edge = Math.min(lon - west, east - lon, lat - south, north - lat);
+        const falloff = Math.max(0, Math.min(1, edge / 0.6));
+        if (falloff <= 0.05) continue;
+        const hit = sampleSeaGrid(sea, frame, lat, lon, s);
+        if (!hit || !Number.isFinite(hit.u) || !Number.isFinite(hit.v)) continue;
+        const spd = Math.hypot(hit.u, hit.v);
+        if (spd < MAP_WIND_MIN_MS) continue;
+        grid[y * cols + x] = { u: hit.u, v: hit.v, spd, kt: spd * MS_TO_KT, falloff, nlat: lat, nlon: lon };
+      }
+    }
+    out.push({ id: b.id, south, west, north, east, cols, rows, grid });
+  }
+  return out;
+}
+
 /** Web-mercator meters per pixel at `lat`/`zoom`. */
 export function metersPerPixel(lat: number, zoom: number): number {
   return (156543.03392 * Math.cos((lat * Math.PI) / 180)) / Math.pow(2, zoom);
@@ -342,10 +393,13 @@ export function advectWindParticle(
   dtSec: number,
   zoom: number,
   pxPerMs = MAP_WIND_PX_PER_S_PER_MS,
+  /** Vento: a cor segue o nó ONDE a partícula está (não o do spawn). */
+  trackStrength?: (cell: FlowCell) => number,
 ): boolean {
   const hit = windCellAnywhere(grids, p.lat, p.lon);
   if (!hit || hit.cell.falloff < 0.08) return false;
   const { cell } = hit;
+  if (trackStrength) p.kt = trackStrength(cell);
   const cosLat = Math.max(0.35, Math.cos((p.lat * Math.PI) / 180));
   // m/s → m/s visuais: v_px = spd · K  →  m = v_px · mpp  →  deg
   const mPerPx = metersPerPixel(p.lat, zoom);
@@ -394,5 +448,72 @@ export function drawWindParticles(
     p.px = pt.x;
     p.py = pt.y;
     p.hasPrev = true;
+  }
+}
+
+/** Classes de cor das partículas (agrupar traços por cor = poucos strokes). */
+export const WIND_COLOR_BINS = 14;
+
+export function windKtBin(kt: number): number {
+  const b = Math.floor((kt / WIND_KT_MAX) * WIND_COLOR_BINS);
+  return b < 0 ? 0 : b >= WIND_COLOR_BINS ? WIND_COLOR_BINS - 1 : b;
+}
+
+const WIND_BIN_RGB: string[] = Array.from({ length: WIND_COLOR_BINS }, (_, b) =>
+  rampColor(WIND_KT_STOPS, ((b + 0.5) / WIND_COLOR_BINS) * WIND_KT_MAX).join(' '),
+);
+
+/** Cor 'r g b' da classe de nós (a mesma escala da legenda). */
+export function windBinRgb(bin: number): string {
+  return WIND_BIN_RGB[Math.max(0, Math.min(WIND_COLOR_BINS - 1, bin))];
+}
+
+/**
+ * Mesmo traço do campo de sempre (segmento prev→now, espessura por força,
+ * rasto pelo fade do hook), mas com a COR da escala de nós da maquete. Os
+ * segmentos são agrupados por classe de cor — um stroke por classe.
+ */
+export function drawWindParticlesByKt(
+  ctx: CanvasRenderingContext2D,
+  particles: WindParticle[],
+  project: (lat: number, lon: number) => { x: number; y: number },
+  opacityScale = 1,
+  view?: { width: number; height: number },
+): void {
+  ctx.lineCap = 'round';
+  const maxX = view ? view.width + 8 : 8192;
+  const maxY = view ? view.height + 8 : 8192;
+  const thin: number[][] = Array.from({ length: WIND_COLOR_BINS }, () => []);
+  const thick: number[][] = Array.from({ length: WIND_COLOR_BINS }, () => []);
+  for (const p of particles) {
+    const pt = project(p.lat, p.lon);
+    if (p.hasPrev) {
+      const { x, y } = pt;
+      if (x > -8 && y > -8 && x < maxX && y < maxY) {
+        (p.kt > 15 ? thick : thin)[windKtBin(p.kt)].push(p.px, p.py, x, y);
+      }
+    }
+    p.px = pt.x;
+    p.py = pt.y;
+    p.hasPrev = true;
+  }
+  for (let pass = 0; pass < 2; pass++) {
+    const set = pass ? thick : thin;
+    ctx.lineWidth = pass ? 1.7 : 1.2;
+    for (let b = 0; b < WIND_COLOR_BINS; b++) {
+      const arr = set[b];
+      if (!arr.length) continue;
+      const kt = ((b + 0.5) / WIND_COLOR_BINS) * WIND_KT_MAX;
+      // A cor carrega a intensidade — alpha sobe com a força, com tecto, para
+      // o vento continuar a ser ambiente por baixo da ondulação/marcadores.
+      const a = Math.min(0.85, 0.42 + kt / 45) * opacityScale;
+      ctx.strokeStyle = `rgb(${WIND_BIN_RGB[b]} / ${a.toFixed(3)})`;
+      ctx.beginPath();
+      for (let q = 0; q < arr.length; q += 4) {
+        ctx.moveTo(arr[q], arr[q + 1]);
+        ctx.lineTo(arr[q + 2], arr[q + 3]);
+      }
+      ctx.stroke();
+    }
   }
 }

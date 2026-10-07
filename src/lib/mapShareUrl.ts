@@ -15,6 +15,8 @@ export interface MapShareLayers {
   hs?: boolean;
   sst?: boolean;
   currents?: boolean;
+  /** Camada «Ondulação» (grelha de modelo). */
+  swell?: boolean;
   wind?: boolean;
   nauticalChart?: boolean;
   goesIr?: boolean;
@@ -45,7 +47,7 @@ export function buildMapShareSearch(view: MapShareView): string {
     params.set('region', view.region);
   }
   for (const key of [
-    'radar', 'hours', 'buoys', 'hs', 'sst', 'currents',
+    'radar', 'hours', 'buoys', 'hs', 'sst', 'currents', 'swell',
     'wind', 'nauticalChart', 'goesIr',
     'storms', 'warnAreas', 'coastalWarnings',
   ] as const) {
@@ -58,4 +60,24 @@ export function buildMapShareSearch(view: MapShareView): string {
 /** `base` sem query — ex. `${origin}/pt/mapa/`. */
 export function buildMapShareUrl(base: string, view: MapShareView): string {
   return `${base}${buildMapShareSearch(view)}`;
+}
+
+/**
+ * Liga/desliga um param de camada (`key=1`) por cima da query EXISTENTE —
+ * os outros params (sport, region, lat/lon/z, t, outras camadas) ficam.
+ */
+export function mergeMapLayerParam(currentSearch: string, key: string, on: boolean): string {
+  const params = new URLSearchParams(currentSearch);
+  if (on) params.set(key, '1');
+  else params.delete(key);
+  const qs = params.toString();
+  return qs ? `?${qs}` : '';
+}
+
+/** `replaceState` do param de camada no URL actual (sem nova entrada no histórico). */
+export function setMapLayerUrlParam(key: string, on: boolean): void {
+  if (typeof window === 'undefined') return;
+  const search = mergeMapLayerParam(window.location.search, key, on);
+  if (search === window.location.search || (search === '' && window.location.search === '')) return;
+  window.history.replaceState(window.history.state, '', `${window.location.pathname}${search}${window.location.hash}`);
 }
