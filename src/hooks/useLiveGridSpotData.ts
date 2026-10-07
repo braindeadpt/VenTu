@@ -7,6 +7,13 @@ import { loadConditionsJson } from '@/lib/spotDataCache';
 import { loadWaveBiasRegions } from '@/lib/waveBias';
 
 const REFRESH_MS = 15 * 60 * 1000;
+/** Voltar ao separador só refresca se o último refresh tiver ≥ 5 min. */
+export const VISIBILITY_REFRESH_MIN_MS = 5 * 60 * 1000;
+
+/** Decide se o regresso ao separador justifica um refresh (pura, testável). */
+export function shouldRefreshOnVisible(lastRefreshAt: number, nowMs: number): boolean {
+  return nowMs - lastRefreshAt >= VISIBILITY_REFRESH_MIN_MS;
+}
 
 export interface UseLiveGridSpotDataOptions {
   /** Delay first refresh so map can paint (e.g. fullscreen /mapa on mobile). */
@@ -15,7 +22,9 @@ export interface UseLiveGridSpotDataOptions {
 
 /**
  * Hydrates grid/map spot rows with fresh conditions.json.
- * Re-fetches on mount, when the tab becomes visible, and every 15 min.
+ * Re-fetches on mount, when the tab becomes visible (≥ 5 min desde o último
+ * refresh), and every 15 min while the tab is visible. Os vários consumidores
+ * da mesma página partilham um único download (dedupe em spotDataCache).
  */
 export function useLiveGridSpotData<T extends GridSpotData>(
   initial: T[],
@@ -33,8 +42,10 @@ export function useLiveGridSpotData<T extends GridSpotData>(
     let intervalId: number | undefined;
     let deferId: number | undefined;
     const deferred = deferRefreshMs > 0;
+    let lastRefreshAt = 0;
 
     const refresh = () => {
+      lastRefreshAt = Date.now();
       // wave-bias.json (client, session cache) alimenta o fallback do viés
       // regional no refresh do mapa/grid — o mesmo gate da página de spot,
       // nunca bloqueia o carregamento (404/corrupt → null).
@@ -62,7 +73,12 @@ export function useLiveGridSpotData<T extends GridSpotData>(
     };
 
     const startPolling = () => {
-      intervalId = window.setInterval(refresh, REFRESH_MS);
+      intervalId = window.setInterval(() => {
+        // Separador escondido: não gastar 765 KB a cada 15 min — o
+        // visibilitychange trata do refresh quando o utilizador voltar.
+        if (document.hidden) return;
+        refresh();
+      }, REFRESH_MS);
     };
 
     if (deferRefreshMs > 0) {
@@ -82,7 +98,10 @@ export function useLiveGridSpotData<T extends GridSpotData>(
     }
 
     const onVis = () => {
-      if (document.visibilityState === 'visible') refresh();
+      if (document.visibilityState !== 'visible') return;
+      // Antes do primeiro refresh (deferido) não há nada a antecipar.
+      if (lastRefreshAt === 0) return;
+      if (shouldRefreshOnVisible(lastRefreshAt, Date.now())) refresh();
     };
     document.addEventListener('visibilitychange', onVis);
 
