@@ -5,9 +5,9 @@ import { getBestScore } from '../../mapSpotData';
 import type { MapMarkerWarning } from '@/lib/mapWindArrow';
 import type { GridSportFilter } from '@/lib/sportRatings';
 import type { MapSpotSheetData } from '../../MapSpotSheet';
-import { includeSpotInViewportBounds } from '../../mapViewportBounds';
+import { includeSpotInViewportBounds, territoryBoundsFor } from '../../mapViewportBounds';
 import { DEFAULT_REGION } from '@/lib/gridFilters';
-import { localizedSpotName } from '@/lib/localizedSpotText';
+import { localizedSpotDisplayName } from '@/lib/localizedSpotText';
 import {
   applyExploreMapFit,
   applyV3LayoutIcon,
@@ -86,6 +86,11 @@ interface UseMapMarkersParams {
   reducedMotion?: boolean;
   /** aria-label do badge «+N» com `{n}` para a contagem (i18n da zona). */
   moreAriaTemplate?: string;
+  /**
+   * A vista inicial já tem dono (deep link ?lat&lon&z ou ?spot=): a
+   * primeira passagem dos marcadores NÃO re-enquadra o país inteiro.
+   */
+  skipInitialFit?: boolean;
 }
 
 /**
@@ -119,6 +124,7 @@ export function useMapMarkers({
   closePopupAndSheet,
   reducedMotion = false,
   moreAriaTemplate,
+  skipInitialFit = false,
 }: UseMapMarkersParams) {
   const [allowMarkers, setAllowMarkers] = useState(false);
   // Ref e não dependência: recolher o painel não deve re-correr o efeito dos
@@ -173,8 +179,16 @@ export function useMapMarkers({
     if (filterBoundsKeyRef.current !== boundsKey) {
       const isFirstKey = filterBoundsKeyRef.current === '';
       filterBoundsKeyRef.current = boundsKey;
-      didFitBoundsRef.current = false;
-      userNavigatedRef.current = false;
+      if (isFirstKey) {
+        // A primeira chave não é uma mudança de filtro: corre depois do
+        // setView do ?lat&lon&z e do flyTo do ?spot= (rIC de ≤900 ms) — não
+        // pode apagar a navegação que já houve nem re-enquadrar por cima
+        // de um deep link.
+        didFitBoundsRef.current = skipInitialFit;
+      } else {
+        didFitBoundsRef.current = false;
+        userNavigatedRef.current = false;
+      }
       // Mudança deliberada de filtro — fecha o que estiver aberto. A PRIMEIRA
       // chave não é uma mudança: o deep link ?spot= abre a pré-visualização
       // antes deste efeito ter clusterReady, e fechá-la aqui matava o cartão
@@ -201,7 +215,11 @@ export function useMapMarkers({
     // fica o re-enquadre por mudança de filtro, uma vez por chave e nunca
     // depois de o utilizador navegar).
     if (!didFitBoundsRef.current && !userNavigatedRef.current) {
-      const boundsArr = exploreViewBoundsFromSpots(visibleSpots, selectedRegion ?? '');
+      // Filtro de território sem spots (ex. kitesurf + Madeira): enquadra o
+      // território na mesma, para o mapa não ficar parado noutro sítio.
+      const boundsArr =
+        exploreViewBoundsFromSpots(visibleSpots, selectedRegion ?? '') ??
+        territoryBoundsFor(selectedRegion ?? '');
       if (boundsArr) {
         didFitBoundsRef.current = true;
         map.invalidateSize({ animate: false });
@@ -312,7 +330,7 @@ export function useMapMarkers({
           return;
         }
         const p = map.latLngToContainerPoint([d.spot.lat, d.spot.lon]);
-        tip.textContent = localizedSpotName(d.spot, locale);
+        tip.textContent = localizedSpotDisplayName(d.spot, locale);
         tip.style.transform = `translate(${Math.round(p.x + 22)}px, ${Math.round(p.y - 12)}px)`;
         tip.style.opacity = '1';
       };
@@ -560,7 +578,7 @@ export function useMapMarkers({
     }
 
     return () => { markerChunkCancelRef.current = true; };
-  }, [allowMarkers, visibleSpots, onlyOnEnabled, selectedSport, selectedRegion, isReady, clusterReady, activeCluster, showWindOnMarkers, locale, onSpotSelect, onMarkerInteract, isMobile, isHeroEmbed, warningsBySpot, hourScores, mapInstanceRef, LRef, clusterGroupRef, markersGroupRef, markersCacheRef, setSheetSpot, closePopupAndSheet, exploreMode, reducedMotion, moreAriaTemplate]);
+  }, [allowMarkers, visibleSpots, onlyOnEnabled, selectedSport, selectedRegion, isReady, clusterReady, activeCluster, showWindOnMarkers, locale, onSpotSelect, onMarkerInteract, isMobile, isHeroEmbed, warningsBySpot, hourScores, mapInstanceRef, LRef, clusterGroupRef, markersGroupRef, markersCacheRef, setSheetSpot, closePopupAndSheet, exploreMode, reducedMotion, moreAriaTemplate, skipInitialFit]);
 
   // ── Allow markers after delay ──
   // M7-F (TBT): a 1ª passagem de marcadores (LOD/colisão + fila chunked)

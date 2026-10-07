@@ -10,6 +10,7 @@ import { pickRailAxisLabelsPx, railAxisCandidates } from '@/lib/verdict/railAxis
 import { getScoreCssVar } from '@/lib/scoreThresholds';
 import type { getTranslation } from '@/lib/i18n';
 import { useMapUiData } from './MapUiContext';
+import { includeSpotInViewportBounds } from '../mapViewportBounds';
 
 /** Avanço do Geist Mono (600/1000 em) a 10 px — os ticks do eixo. */
 const AXIS_CHAR_PX = 6;
@@ -84,7 +85,7 @@ export default function MapTimeChrome({
   onSizeChange,
   timeTrackChips,
 }: MapTimeChromeProps) {
-  const { visibleSpots, sport } = useMapUiData();
+  const { visibleSpots, sport, region } = useMapUiData();
   const scrubRef = useRef<HTMLElement | null>(null);
 
   const times = hoursTimes;
@@ -96,26 +97,32 @@ export default function MapTimeChrome({
   /* Os bounds vivem no ref do Leaflet — leitura adiada para um callback
      (mesmo padrão do buildRows do MapExploreZone: react-hooks/refs proíbe
      `.current` em corpo de render/memo). */
-  const computeBest = useCallback((): number[] => {
+  /* `null` = nenhum spot na vista com score nesse passo → «—». Mesma regra
+     de enquadramento da lista e dos marcadores (includeSpotInViewportBounds):
+     antes, com as ilhas no ecrã mas fora do filtro, a lista dizia «0 spots»
+     e o valuetext ainda anunciava «melhor score na vista 55». */
+  const computeBest = useCallback((): (number | null)[] => {
     if (!hoursFile || !n) return [];
     const bounds = mapInstanceRef.current?.getBounds();
-    const inView = bounds
-      ? visibleSpots.filter((s) => bounds.contains([s.spot.lat, s.spot.lon]))
-      : visibleSpots;
+    const inView = visibleSpots.filter(
+      (s) =>
+        includeSpotInViewportBounds(s.spot, region) &&
+        (!bounds || bounds.contains([s.spot.lat, s.spot.lon])),
+    );
     return Array.from({ length: n }, (_, i) => {
-      let b = 0;
+      let b: number | null = null;
       for (const s of inView) {
         const v = scoreAtHour(hoursFile, s.spot.id, sport, i);
-        if (v != null && v > b) b = v;
+        if (v != null && (b == null || v > b)) b = v;
       }
       return b;
     });
-  }, [hoursFile, n, visibleSpots, sport, mapInstanceRef]);
+  }, [hoursFile, n, visibleSpots, sport, region, mapInstanceRef]);
 
   /* `best` em estado: a leitura dos bounds do Leaflet é um ref — não pode
      correr no render (react-hooks/refs). Recalcula quando os dados mudam
      E no moveend — as barras seguem o «melhor score na vista» da maquete. */
-  const [best, setBest] = useState<number[]>([]);
+  const [best, setBest] = useState<(number | null)[]>([]);
   useEffect(() => {
     const update = () => setBest(computeBest());
     update();
@@ -200,9 +207,10 @@ export default function MapTimeChrome({
   /* Pill: ao vivo → «Agora · 16:00»; futuro → «qui 17:00» tingido pelo
      escalão do melhor score desse passo; camada off → «Agora». O cabeçalho
      do scrubber mostra «agora»/«qui 17:00» (mesmo formato da maquete). */
+  const frameBest = best[frame] ?? null;
   const pillStyle: CSSProperties | undefined =
-    hoursOn && !live && best[frame] !== undefined
-      ? ({ '--verdict': getScoreCssVar(best[frame]) } as CSSProperties)
+    hoursOn && !live && frameBest != null
+      ? ({ '--verdict': getScoreCssVar(frameBest) } as CSSProperties)
       : undefined;
 
   const stepLabel =
@@ -337,7 +345,7 @@ export default function MapTimeChrome({
                 aria-label={timeScrubLabel}
                 aria-valuetext={scrubValueText
                   .replace('{time}', formatHourLong(frameTime, locale))
-                  .replace('{score}', String(best[frame] ?? 0))}
+                  .replace('{score}', frameBest == null ? '—' : String(frameBest))}
                 onChange={(e) => {
                   // Maquete: qualquer interacção pára o autoplay.
                   onUserPausedChange(true);

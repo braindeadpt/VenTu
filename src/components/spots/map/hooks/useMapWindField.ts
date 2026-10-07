@@ -115,10 +115,23 @@ export function useMapWindField({
     () => (windOn ? buildWindFieldGrids(samples, { mobile: isMobile }) : []),
     [windOn, samples, isMobile],
   );
+  const hasGrids = grids.length > 0;
+
+  // As grelhas mudam a cada tick das 48 h e a cada refresh de dados. Passam
+  // por ref: o canvas, os listeners e as partículas ficam vivos (antes o
+  // efeito era desmontado e o campo voltava a opacity 0 + fade-in — piscava
+  // a cada 1,5 s). Este efeito vem ANTES do principal, por isso a ref já tem
+  // as grelhas novas quando o principal corre.
+  const gridsRef = useRef(grids);
+  const onGridsChangeRef = useRef<(() => void) | null>(null);
+  useEffect(() => {
+    gridsRef.current = grids;
+    onGridsChangeRef.current?.();
+  }, [grids]);
 
   useEffect(() => {
     const map = mapInstanceRef.current;
-    if (!windOn || !grids.length) {
+    if (!windOn || !hasGrids) {
       if (canvasRef.current) {
         canvasRef.current.remove();
         canvasRef.current = null;
@@ -185,7 +198,7 @@ export function useMapWindField({
       const target = particleTarget();
       for (let i = 0; i < target; i++) {
         const p: WindParticle = { lat: 0, lon: 0, px: 0, py: 0, hasPrev: false, life: 0, kt: 0, jit: 1 };
-        if (spawnWindParticle(grids, view, p)) particles.push(p);
+        if (spawnWindParticle(gridsRef.current, view, p)) particles.push(p);
       }
     };
 
@@ -208,7 +221,7 @@ export function useMapWindField({
       for (const p of particles) {
         let drawn = false;
         for (let s = 0; s < steps; s++) {
-          if (!advectWindParticle(grids, p, 0.016, zoom)) break;
+          if (!advectWindParticle(gridsRef.current, p, 0.016, zoom)) break;
           const pt = project(p.lat, p.lon);
           if (drawn) {
             const k = s / steps;
@@ -284,9 +297,10 @@ export function useMapWindField({
       const dt = Math.min(0.05, frameAcc / 1000);
       frameAcc = 0;
       const ctx = canvas.getContext('2d');
-      if (!ctx) return;
       const { size, dpr } = sizeCanvas();
-      if (size.x < 2 || size.y < 2) {
+      // Sem contexto (canvas ainda sem layout) ou mapa sem tamanho: volta a
+      // tentar no próximo frame em vez de matar o loop para sempre.
+      if (!ctx || size.x < 2 || size.y < 2) {
         rafRef.current = requestAnimationFrame(tick);
         return;
       }
@@ -310,12 +324,12 @@ export function useMapWindField({
       if (particles.length > target) particles.length = target;
       while (particles.length < target) {
         const np: WindParticle = { lat: 0, lon: 0, px: 0, py: 0, hasPrev: false, life: 0, kt: 0, jit: 1 };
-        if (!spawnWindParticle(grids, view, np)) break;
+        if (!spawnWindParticle(gridsRef.current, view, np)) break;
         particles.push(np);
       }
       for (const p of particles) {
-        if (!advectWindParticle(grids, p, dt, zoom)) {
-          if (!spawnWindParticle(grids, view, p)) {
+        if (!advectWindParticle(gridsRef.current, p, dt, zoom)) {
+          if (!spawnWindParticle(gridsRef.current, view, p)) {
             // fora do campo nesta vista — volta a tentar com vida curta
             p.life = 30;
           }
@@ -432,10 +446,26 @@ export function useMapWindField({
     host.addEventListener('pointermove', wake, { passive: true });
     host.addEventListener('pointerdown', wake, { passive: true });
     host.addEventListener('touchstart', wake, { passive: true });
+    // Grelhas novas (tick das 48 h, refresh): sem teardown — acorda o loop
+    // (as partículas fora do campo novo respawnam sozinhas) ou repinta as
+    // streamlines estáticas.
+    onGridsChangeRef.current = () => {
+      if (reducedMotion) {
+        if (!interacting.current) paintStatic();
+        return;
+      }
+      wake();
+    };
+
     // §9 — o campo nasce a 0 e entra com fade de 300 ms (não «pisca»).
     canvas.style.opacity = '0';
     host.setAttribute('data-map-windfield-visible', 'false');
-    requestAnimationFrame(() => setWindVisible(true, 300));
+    // Id guardado: o cleanup cancela-o (senão um fade-in pendente deixava
+    // data-map-windfield-visible="true" depois de desligar a camada).
+    let fadeInRaf = requestAnimationFrame(() => {
+      fadeInRaf = 0;
+      setWindVisible(true, 300);
+    });
     if (reducedMotion) paintStatic();
     else {
       lastT = 0;
@@ -449,6 +479,8 @@ export function useMapWindField({
     el.setAttribute('data-map-windfield-target', String(particleTarget()));
 
     return () => {
+      onGridsChangeRef.current = null;
+      if (fadeInRaf) cancelAnimationFrame(fadeInRaf);
       themeObs.disconnect();
       map.off('movestart', onGestureStart);
       map.off('zoomstart', onGestureStart);
@@ -479,7 +511,7 @@ export function useMapWindField({
         el2.removeAttribute('data-map-windfield-target');
       }
     };
-  }, [windOn, isReady, grids, isMobile, reducedMotion, mapInstanceRef, LRef]);
+  }, [windOn, isReady, hasGrids, isMobile, reducedMotion, mapInstanceRef, LRef]);
 
   return { windFieldOn: windOn, windFieldUnavailable: file !== null && !file?.wind };
 }

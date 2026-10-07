@@ -7,6 +7,12 @@ interface GeolocationState {
   longitude: number | null;
   error: string | null;
   loading: boolean;
+  /**
+   * Instante (Date.now) de cada posição recebida. Com `maximumAge` o
+   * browser devolve as MESMAS coordenadas num segundo pedido — os
+   * consumidores dependem disto para reagir a cada pedido.
+   */
+  fixedAt: number | null;
 }
 
 export function useGeolocation() {
@@ -15,6 +21,7 @@ export function useGeolocation() {
     longitude: null,
     error: null,
     loading: false,
+    fixedAt: null,
   });
 
   const requestLocation = useCallback(() => {
@@ -32,6 +39,7 @@ export function useGeolocation() {
           longitude: position.coords.longitude,
           error: null,
           loading: false,
+          fixedAt: Date.now(),
         });
       },
       (error) => {

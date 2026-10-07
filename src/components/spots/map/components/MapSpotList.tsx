@@ -37,6 +37,8 @@ export interface MapSpotListRow {
 export interface MapListJump {
   id: string;
   label: string;
+  /** Território activo (filtro de região) — toggle com aria-pressed. */
+  pressed?: boolean;
 }
 
 interface MapSpotListProps {
@@ -218,7 +220,13 @@ const MapSpotList = memo(function MapSpotList({
                 key={j.id}
                 type="button"
                 onClick={() => onJump?.(j.id)}
-                className="inline-flex min-h-[28px] items-center rounded-pill border border-divider px-2.5 text-meta-sm font-medium text-fg-muted transition-colors duration-150 hover:bg-surface-2/[0.08] hover:text-fg"
+                aria-pressed={j.pressed ?? false}
+                data-map-jump={j.id}
+                className={
+                  j.pressed
+                    ? 'inline-flex min-h-[28px] items-center rounded-pill border border-accent/60 bg-accent/15 px-2.5 text-meta-sm font-semibold text-fg transition-colors duration-150 hover:bg-accent/20'
+                    : 'inline-flex min-h-[28px] items-center rounded-pill border border-divider px-2.5 text-meta-sm font-medium text-fg-muted transition-colors duration-150 hover:bg-surface-2/[0.08] hover:text-fg'
+                }
               >
                 {j.label}
               </button>

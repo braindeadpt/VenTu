@@ -10,7 +10,7 @@
  * fora da tarefa única de avaliação do chunk principal.
  */
 
-import { useEffect } from 'react';
+import { useEffect, type CSSProperties } from 'react';
 import { CloudRain, RotateCcw, Sailboat, SatelliteDish } from 'lucide-react';
 import { useToast } from '@/components/ui/ToastProvider';
 import {
@@ -26,7 +26,6 @@ import {
   GOES_IR_STALE_MAX_AGE_MIN,
 } from '@/lib/goesIr';
 import { MTG_SAT_CADENCE_MIN, MTG_SAT_STALE_MAX_AGE_MIN } from '@/lib/mtgSat';
-import { OpenMeteoAttribution } from '@/lib/openMeteoAttribution';
 import MapLayerToggle from '../../MapLayerToggle';
 import type { BasemapMode } from '../../MapLayerToggle';
 import RadarCarousel from '../../RadarCarousel';
@@ -63,7 +62,6 @@ interface MapLayersZoneProps {
   radarFrameIndex: number;
   radarBusyCount: number;
   radarUserPaused: boolean;
-  radarLift: number;
   radarAttributionLabel: string;
   radarScrubbing: boolean;
   hoursOn: boolean;
@@ -108,7 +106,6 @@ export default function MapLayersZone({
   radarFrameIndex,
   radarBusyCount,
   radarUserPaused,
-  radarLift,
   radarAttributionLabel,
   radarScrubbing,
   hoursOn,
@@ -128,6 +125,25 @@ export default function MapLayersZone({
   // `ventu:map-raster-off` e aqui mostra-se «X desligado para manter o mapa
   // fluido» localizado (o toast é a única superfície React do evento).
   const { showToast } = useToast();
+
+  // Carrosséis de radar/IR no ecrã inteiro.
+  //  • Mobile: colados ao topo VISÍVEL do sheet via `--sheet-lift` (publicado
+  //    pelo MapExploreSheet em cada snap/arrasto, já com +12 px de respiro) e
+  //    com a mesma duração de snap — antes usavam uma medida única feita
+  //    antes de o sheet existir e ficavam por baixo dele (z-1000 < z-1100).
+  //  • Desktop: à direita do painel via `--map-panel-offset` (publicado pelo
+  //    MapSpotPanel) em vez do literal 364 px, que deixava 4 px tapados.
+  const fullscreenCarouselStyle = (extraBottom: number): CSSProperties =>
+    isMobile
+      ? {
+          bottom: `calc(max(var(--sheet-lift, 0px), 32px) + ${extraBottom}px)`,
+          left: 8,
+          transition: 'bottom var(--sheet-snap-ms, 0ms) cubic-bezier(0.32,0.72,0,1)',
+        }
+      : {
+          bottom: 32 + extraBottom,
+          left: panelCollapsed ? 64 : 'var(--map-panel-offset, 380px)',
+        };
   useEffect(() => {
     const onRasterOff = (e: Event) => {
       const key = (e as CustomEvent<{ key: MapHeavyRasterKey }>).detail?.key;
@@ -205,14 +221,7 @@ export default function MapLayersZone({
       {radarEnabled && radarData && (
         <RadarCarousel
           className={isHeroEmbed ? 'absolute bottom-20 right-3 z-[1000] pointer-events-auto' : isFullscreen ? 'absolute z-[1000]' : 'absolute bottom-8 left-2 sm:left-auto sm:right-2 z-[1000] max-w-[min(100%,320px)] sm:max-w-none'}
-          style={isFullscreen
-            ? {
-                bottom: Math.max(radarLift + 12, 32),
-                // O painel desktop ocupa a margem esquerda — o carrossel
-                // desvia para a direita do painel (ou do rail recolhido).
-                left: isMobile ? 8 : panelCollapsed ? 64 : 364,
-              }
-            : undefined}
+          style={isFullscreen ? fullscreenCarouselStyle(0) : undefined}
           frames={radarFrameList}
           frameIndex={radarFrameIndex}
           onFrameChange={handleRadarFrameChange}
@@ -235,10 +244,7 @@ export default function MapLayersZone({
             // Com o radar também ligado, o badge do IR sobe ~84 px para não
             // o tapar (o cap de raster permite as duas em simultâneo).
             ...(isFullscreen
-              ? {
-                  bottom: Math.max(radarLift + 12, 32) + (radarEnabled ? 84 : 0),
-                  left: isMobile ? 8 : panelCollapsed ? 64 : 364,
-                }
+              ? fullscreenCarouselStyle(radarEnabled ? 84 : 0)
               : { bottom: radarEnabled ? 104 : undefined }),
           }}
           frames={goesIrFrameList}
@@ -263,10 +269,6 @@ export default function MapLayersZone({
           staleMaxAgeMin={goesIrSource === 'mtg' ? MTG_SAT_STALE_MAX_AGE_MIN : GOES_IR_STALE_MAX_AGE_MIN}
           frameClock={goesIrFrameClock}
           frameFullClock={goesIrFrameFullClock}
-          // O HUD do fullscreen só é dono do scrubber do RADAR — o IR
-          // mantém o seu flutuante (play + régua) em todas as superfícies.
-          // Sem isto, com o IR ligado no /mapa não havia como mudar de
-          // frame: o carrossel escondia os controlos e o HUD não os rendia.
           attribution={(
             <>
               {goesIrSource === 'mtg' ? (
@@ -288,11 +290,14 @@ export default function MapLayersZone({
                   GOES-East © NASA GIBS
                 </a>
               )}
-              <span aria-hidden className="text-fg-muted">·</span>
-              <OpenMeteoAttribution className="pointer-events-auto underline hover:text-fg transition-colors" />
             </>
           )}
-          hideScrubber={isFullscreen}
+          // O HUD do fullscreen só é dono do scrubber do RADAR — o IR
+          // mantém o seu flutuante (play + régua) em todas as superfícies.
+          // Sem isto, com o IR ligado no /mapa não havia como pausar nem
+          // mudar de frame. (O Open-Meteo não é fonte do satélite — saiu
+          // dos créditos do IR.)
+          hideScrubber={false}
         />
       )}
     </>

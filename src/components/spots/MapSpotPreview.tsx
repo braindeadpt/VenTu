@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { getTranslation } from '@/lib/i18n';
 import { getSportLabel } from '@/lib/homepageSport';
-import { localizedSpotName, localizedSpotRegion } from '@/lib/localizedSpotText';
+import { localizedSpotDisplayName, localizedSpotRegion } from '@/lib/localizedSpotText';
 import { ArrowRight, Clock, Droplets, Waves, Wind, X, Zap } from 'lucide-react';
 import type { MapMarkerWarning } from '@/lib/mapWindArrow';
 import type { Spot } from '@/types';
@@ -89,7 +89,7 @@ export default function MapSpotPreview({
       <div className="space-y-1">
         <div className="flex flex-wrap items-center gap-2">
           <h2 className="font-display text-h3 text-fg font-semibold">
-            {localizedSpotName(spot, locale)}
+            {localizedSpotDisplayName(spot, locale)}
           </h2>
           <ConfidenceBadge
             confidence={conditions.confidence}
@@ -393,7 +393,7 @@ export function SpotCardContent({
     <div>
       <div className="flex flex-wrap items-center gap-2">
         <h3 className="font-display text-xl text-fg font-semibold leading-tight pr-8">
-          {localizedSpotName(spot, locale)}
+          {localizedSpotDisplayName(spot, locale)}
         </h3>
         <ConfidenceBadge
           confidence={conditions.confidence}
@@ -573,7 +573,12 @@ export function MapSpotCard({
       const markerInner = root.querySelector<HTMLElement>(spotSel);
       if (markerInner) {
         const iconEl = markerInner.closest<HTMLElement>('.leaflet-marker-icon');
-        if (iconEl) iconEl.style.zIndex = '800';
+        if (iconEl && iconEl.style.zIndex !== '800') {
+          // Guarda o z-index do Leaflet (posição y + offset) para o repor
+          // ao fechar — senão o marcador ficava por cima de todos.
+          iconEl.dataset.v3prevZ = iconEl.style.zIndex;
+          iconEl.style.zIndex = '800';
+        }
         const disc = markerInner.querySelector<HTMLElement>('.v3in');
         const dotEl = markerInner.querySelector<HTMLElement>('.v3dot > i');
         if (disc && !disc.dataset.v3sel) {
@@ -610,6 +615,11 @@ export function MapSpotCard({
     return () => {
       cancelAnimationFrame(raf);
       const markerInner = root.querySelector<HTMLElement>(spotSel);
+      const iconEl = markerInner?.closest<HTMLElement>('.leaflet-marker-icon');
+      if (iconEl && iconEl.dataset.v3prevZ !== undefined) {
+        iconEl.style.zIndex = iconEl.dataset.v3prevZ;
+        delete iconEl.dataset.v3prevZ;
+      }
       const disc = markerInner?.querySelector<HTMLElement>('.v3in');
       const dotEl = markerInner?.querySelector<HTMLElement>('.v3dot > i');
       if (disc?.dataset.v3sel) {

@@ -29,7 +29,7 @@ export function useMapLocate({
   labels: MapLocateLabels;
   onToast: (message: string) => void;
 }) {
-  const { latitude, longitude, error, loading, requestLocation } = useGeolocation();
+  const { latitude, longitude, fixedAt, error, loading, requestLocation } = useGeolocation();
   const markerRef = useRef<L.Marker | null>(null);
   const reducedMotion = usePrefersReducedMotion();
   const labelsRef = useRef(labels);
@@ -43,7 +43,9 @@ export function useMapLocate({
     requestLocation();
   }, [requestLocation]);
 
-  // Posição recebida — centra e (re)marca o ponto «estás aqui».
+  // Posição recebida — centra e (re)marca o ponto «estás aqui». `fixedAt`
+  // muda em cada pedido: o 2.º toque (mesmas coords, cache de 5 min) volta a
+  // centrar depois de o utilizador ter feito pan.
   useEffect(() => {
     if (latitude == null || longitude == null || !isReady) return;
     const map = mapInstanceRef.current;
@@ -74,7 +76,7 @@ export function useMapLocate({
     return () => {
       cancelled = true;
     };
-  }, [latitude, longitude, isReady, reducedMotion, mapInstanceRef]);
+  }, [latitude, longitude, fixedAt, isReady, reducedMotion, mapInstanceRef]);
 
   // Erros — mensagem curta por causa, sem quebrar o mapa.
   useEffect(() => {
