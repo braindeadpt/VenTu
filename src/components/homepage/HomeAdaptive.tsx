@@ -67,12 +67,14 @@ export default function HomeAdaptive({
         variant={isReturning ? 'compact' : 'featured'}
         buoyLayer={buoyLayer}
         coastalWarningsLayer={coastalWarningsLayer}
+        bakedAtMs={bakedAtMs}
       />
 
       <WaveDivider />
 
       <HomepageTopNow
         spotsData={spotsData}
+        sport={activeSport}
         locale={locale}
         maxCards={isReturning ? 4 : undefined}
         bakedAtMs={bakedAtMs}

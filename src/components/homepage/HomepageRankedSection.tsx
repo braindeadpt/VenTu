@@ -12,6 +12,7 @@ import { spotDetailHref } from '@/lib/gridSpotScore';
 import { getScoreTokens } from '@/lib/sportScore';
 import type { UpcomingWindow } from '@/lib/bestWindowToday';
 import { useLiveGridSpotData } from '@/hooks/useLiveGridSpotData';
+import { formatUpcomingWindowLabel } from '@/lib/upcomingWindowLabel';
 import SpotRankedTable from '@/components/spots/SpotRankedTable';
 import { cn } from '@/lib/cn';
 
@@ -58,10 +59,6 @@ function dayDiff(startIso: string, nowMs: number): number {
   const a = new Date(lisbonDayKey(startIso) + 'T00:00:00Z').getTime();
   const b = new Date(lisbonDayFmt.format(new Date(nowMs)) + 'T00:00:00Z').getTime();
   return Math.round((a - b) / 86_400_000);
-}
-
-function hourOf(iso: string): string {
-  return iso.slice(11, 13);
 }
 
 /**
@@ -215,6 +212,13 @@ export default function HomepageRankedSection({
             <ul className="list-none m-0 p-0 divide-y divide-divider/60">
               {rows.map((r) => {
                 const tokens = getScoreTokens(r.window.score);
+                const label = formatUpcomingWindowLabel(
+                  r.window.startIso,
+                  r.window.endIso,
+                  dayLabel,
+                  locale,
+                  t.tomorrow,
+                );
                 return (
                   <li key={r.slug}>
                     <Link
@@ -222,10 +226,8 @@ export default function HomepageRankedSection({
                       className="flex min-h-[44px] items-center gap-2 py-1.5 rounded-sm transition-colors duration-150 hover:bg-surface-2/[0.06] -mx-1 px-1"
                     >
                       <span className="font-mono tabular-nums text-meta text-fg whitespace-nowrap">
-                        {dayLabel(r.window.startIso)}{' '}
-                        <span className="text-fg-muted">
-                          {hourOf(r.window.startIso)}–{hourOf(r.window.endIso)}h
-                        </span>
+                        {label.day}{' '}
+                        <span className="text-fg-muted">{label.hours}</span>
                       </span>
                       <span className="min-w-0 flex-1 truncate text-meta text-fg">
                         {r.name}

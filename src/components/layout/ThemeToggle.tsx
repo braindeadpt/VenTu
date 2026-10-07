@@ -33,7 +33,7 @@ interface ThemeToggleProps {
  * This component leans on that: it server-renders the real button with BOTH
  * icons in the markup and lets CSS pick the visible one from the html class —
  * the correct icon is on screen from the very first paint in either theme.
- * React state (label + aria-pressed) catches up at hydration; there is no
+ * React state (the action label) catches up at hydration; there is no
  * attribute divergence between server and client render, so no #418.
  */
 export default function ThemeToggle({ locale }: ThemeToggleProps) {
@@ -44,7 +44,7 @@ export default function ThemeToggle({ locale }: ThemeToggleProps) {
   const [isLight, setIsLight] = useState<boolean | null>(null);
 
   // Read the authoritative class (set pre-paint by the bootstrap script) once,
-  // so label + aria-pressed match what is actually on screen after hydration.
+  // so the action label matches what is actually on screen after hydration.
   useEffect(() => {
     setIsLight(document.documentElement.classList.contains('theme-ocean'));
   }, []);
@@ -65,8 +65,10 @@ export default function ThemeToggle({ locale }: ThemeToggleProps) {
       onClick={toggle}
       className="theme-toggle inline-flex items-center justify-center w-11 h-11 shrink-0 rounded-lg text-fg-muted hover:text-fg hover:bg-surface-2/[0.08] transition-colors"
       title={label}
+      // Rótulo de ACÇÃO que muda com o estado («Alternar para tema escuro»)
+      // e SEM aria-pressed: os dois juntos liam-se ao contrário no tema claro
+      // (pressed=true + «para tema escuro» ⇒ «o escuro está activo»).
       aria-label={label}
-      aria-pressed={isLight ?? false}
     >
       {/* Both icons always rendered; CSS shows the one matching the html class. */}
       <Sun className="theme-toggle-icon-sun w-5 h-5" aria-hidden />

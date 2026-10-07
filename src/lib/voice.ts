@@ -16,11 +16,30 @@ export function spotsOnLine(count: number, locale: string): string {
   return `${count} ${spotWord} ${onLabel(locale)}`;
 }
 
-export function heroStatusLine(onCount: number, locale: string): string {
+function capitalizeFirst(text: string): string {
+  return text.charAt(0).toLocaleUpperCase() + text.slice(1);
+}
+
+/**
+ * Linha de estado do ticker do hero.
+ *
+ * `onCount` tem de vir do mesmo limiar que o banner «Melhor janela» e o
+ * «A bombar agora» (≥ Bom — `TOP_NOW_MIN_SCORE`). Quando nada está a bombar
+ * agora mas há uma janela ≥ Bom mais logo (`goodWindowLater`), o ticker não
+ * pode dizer «mar de espelho» ao lado de um banner «Bom 70».
+ * A frase começa sempre em maiúscula — em minúscula parecia cortada.
+ */
+export function heroStatusLine(
+  onCount: number,
+  locale: string,
+  options?: { goodWindowLater?: boolean },
+): string {
   if (onCount > 0) {
     return spotsOnLine(onCount, locale);
   }
-  return `${calmLabel(locale)} ${getTranslation(locale).voice.heroCalmTail}`;
+  const voice = getTranslation(locale).voice;
+  if (options?.goodWindowLater) return voice.heroWindowLater;
+  return capitalizeFirst(`${calmLabel(locale)} ${voice.heroCalmTail}`);
 }
 
 /** Short tier phrase for cards / hover — separate from score tier labels in sportScore. */
