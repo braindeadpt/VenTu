@@ -68,3 +68,22 @@ describe('spotMatchesSportFilter', () => {
     expect(spotMatchesSportFilter(surfOnly, 'kitesurf')).toBe(false);
   });
 });
+
+describe('filterGridSpots — territórios do mapa', () => {
+  const ericeira = data(spot({ id: 'eri', slug: 'eri', region: 'Ericeira' }), { surf: 60 });
+  const vitoria = data(spot({ id: 'vit', slug: 'vit', region: 'Terceira', lat: 38.7, lon: -27 }), { surf: 55 });
+  const paul = data(spot({ id: 'paul', slug: 'paul', region: 'Madeira', lat: 32.7, lon: -17.2 }), { surf: 50 });
+  const all = [ericeira, vitoria, paul];
+
+  it('Açores inclui os spots de surf das ilhas (ex. Terceira)', () => {
+    expect(filterGridSpots(all, 'surf', 'Açores').map((d) => d.spot.id)).toEqual(['vit']);
+  });
+
+  it('Continente exclui Açores e Madeira', () => {
+    expect(filterGridSpots(all, 'surf', 'Continente').map((d) => d.spot.id)).toEqual(['eri']);
+  });
+
+  it('Todos mantém tudo', () => {
+    expect(filterGridSpots(all, 'surf', 'Todos')).toHaveLength(3);
+  });
+});
