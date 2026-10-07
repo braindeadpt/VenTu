@@ -3,7 +3,7 @@ import { getCompatibleSports, type SportType, type GridSportFilter } from '@/lib
 import type { SportScore } from '@/lib/sportScore';
 import type { Spot } from '@/types';
 import type { MarineConditionsFields } from '@/lib/marineConditions';
-import { DEFAULT_REGION } from '@/lib/gridFilters';
+import { DEFAULT_REGION, MAINLAND_REGION } from '@/lib/gridFilters';
 import { getGridSpotScore } from '@/lib/gridSpotScore';
 import { SCORE_TIER_THRESHOLDS } from '@/lib/sportScore';
 
@@ -41,7 +41,10 @@ export function spotMeetsPlayableScore(
 
 export function spotMatchesRegionFilter(data: GridSpotData, region: string): boolean {
   if (region === DEFAULT_REGION) return true;
-  return getMacroRegion(data.spot.region) === region;
+  const macro = getMacroRegion(data.spot.region);
+  // Pseudo-região do mapa: «Continente» = tudo menos as ilhas.
+  if (region === MAINLAND_REGION) return macro !== 'Açores' && macro !== 'Madeira';
+  return macro === region;
 }
 
 /** «Só ON» — spot meets minimum score for the selected sport filter. */
