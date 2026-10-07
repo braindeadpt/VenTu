@@ -14,7 +14,15 @@ describe('voice', () => {
 
   it('heroStatusLine switches between on and calm', () => {
     expect(heroStatusLine(2, 'pt')).toContain('a bombar');
-    expect(heroStatusLine(0, 'pt')).toContain('mar de espelho');
+    expect(heroStatusLine(0, 'pt')).toBe('Mar de espelho — vê o mapa na mesma');
+  });
+
+  it('heroStatusLine não diz «mar de espelho» quando há janela boa mais logo', () => {
+    const line = heroStatusLine(0, 'pt', { goodWindowLater: true });
+    expect(line).not.toContain('mar de espelho');
+    expect(line).toBe('Nada a bombar agora — há janela boa mais logo');
+    // Spots a bombar agora têm prioridade sobre a janela futura.
+    expect(heroStatusLine(3, 'pt', { goodWindowLater: true })).toBe('3 spots a bombar');
   });
 
   it('tierPhrase maps score tiers to short phrases', () => {
