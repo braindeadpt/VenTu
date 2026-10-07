@@ -126,6 +126,39 @@ export function getTopSpotForSport(
   return sorted.find((d) => getScoreForFilter(d, sport) >= minScore) ?? null
 }
 
+export interface TopNowCard {
+  sport: Exclude<GridSportFilter, 'all'>
+  data: HomepageSpotData
+}
+
+/** Cards por defeito quando o filtro é um desporto concreto. */
+export const TOP_NOW_SINGLE_SPORT_CARDS = 4
+
+/**
+ * Cards de «A bombar agora» para o filtro activo do hero.
+ * - `all`: um card por desporto de TOP_NOW_SPORTS (comportamento original).
+ * - desporto concreto: os melhores spots desse desporto ≥ `minScore`.
+ */
+export function getTopNowCards(
+  spotsData: HomepageSpotData[],
+  sport: GridSportFilter,
+  maxCards?: number,
+  minScore: number = TOP_NOW_MIN_SCORE,
+): TopNowCard[] {
+  if (sport === 'all') {
+    const cards: TopNowCard[] = []
+    for (const s of TOP_NOW_SPORTS) {
+      const data = getTopSpotForSport(spotsData, s, minScore)
+      if (data) cards.push({ sport: s, data })
+    }
+    return cards.slice(0, maxCards ?? TOP_NOW_SPORTS.length)
+  }
+  return sortSpotsBySport(spotsData, sport)
+    .filter((d) => spotMatchesFeaturedFilter(d, sport, minScore))
+    .slice(0, maxCards ?? TOP_NOW_SINGLE_SPORT_CARDS)
+    .map((data) => ({ sport, data }))
+}
+
 /** Spot slugs featured in home "Top agora" — exclude from ranked list below map. */
 export function getTopNowExcludedSlugs(spotsData: HomepageSpotData[]): string[] {
   const slugs: string[] = []
