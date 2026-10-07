@@ -34,6 +34,8 @@ const PT = {
   score: 'Score',
   weekdays: ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sáb'],
   mapLabel: 'Mapa animado de vento e ondulação em Portugal continental',
+  metaTitle: 'Mar vivo · Lab VenTu',
+  metaDescription: 'Protótipo: vento e ondulação animados sobre a costa portuguesa nas próximas 48 h.',
 };
 
 type Strings = typeof PT;
@@ -69,6 +71,8 @@ const EN: Strings = {
   score: 'Score',
   weekdays: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
   mapLabel: 'Animated wind and swell map of mainland Portugal',
+  metaTitle: 'Living sea · VenTu Lab',
+  metaDescription: 'Prototype: animated wind and swell along the Portuguese coast over the next 48 h.',
 };
 
 export type MarVivoStrings = Strings;
