@@ -31,7 +31,15 @@ import {
 
   getOnCount,
 
+  getTotalOnCount,
+
+  isConditionDriven,
+
+  rememberChosenSport,
+
   TOP_NOW_MIN_SCORE,
+
+  TOP_NOW_SPORTS,
 
   type HomepageSpotData,
 
@@ -39,7 +47,7 @@ import {
 
 import { buildGridFiltersSearch, syncGridFiltersToUrl } from '@/lib/gridFilters';
 
-import { useUrlGridSport } from '@/hooks/useUrlGridSport';
+import { useHomeSport } from '@/hooks/useUrlGridSport';
 import { useLiveGridSpotData } from '@/hooks/useLiveGridSpotData';
 
 import { MACRO_REGIONS } from '@/lib/regions';
@@ -156,7 +164,11 @@ export default function HomepageMapHero({
 
   const regions = useMemo(() => [...MACRO_REGIONS], []);
 
-  const sport = useUrlGridSport(regions, 'surf');
+  const { sport, explicit: sportChosen } = useHomeSport(regions, 'surf');
+
+  // Sem desporto escolhido (ou «Todos») o banner e o ticker seguem as
+  // condições em todos os desportos — o mesmo modo de «A bombar agora».
+  const conditionDriven = isConditionDriven(sport, sportChosen);
 
   const sportFilters = isFeatured ? HERO_SPORT_FILTERS : MAP_SPORT_FILTERS;
 
@@ -208,9 +220,12 @@ export default function HomepageMapHero({
 
   const heroPick = useMemo(
 
-    () => pickHeroBestWindow(liveSpotsData, sport, mapArea, clockMs),
+    () =>
+      conditionDriven
+        ? pickHeroBestWindow(liveSpotsData, 'all', mapArea, clockMs, TOP_NOW_SPORTS)
+        : pickHeroBestWindow(liveSpotsData, sport, mapArea, clockMs),
 
-    [liveSpotsData, sport, mapArea, clockMs],
+    [liveSpotsData, sport, conditionDriven, mapArea, clockMs],
 
   );
 
@@ -226,9 +241,12 @@ export default function HomepageMapHero({
   // «A bombar agora») e a mesma fonte (dados live + janela do banner).
   const onCount = useMemo(
 
-    () => getOnCount(liveSpotsData, sport, TOP_NOW_MIN_SCORE),
+    () =>
+      conditionDriven
+        ? getTotalOnCount(liveSpotsData, TOP_NOW_MIN_SCORE)
+        : getOnCount(liveSpotsData, sport, TOP_NOW_MIN_SCORE),
 
-    [liveSpotsData, sport],
+    [liveSpotsData, sport, conditionDriven],
 
   );
 
@@ -242,15 +260,8 @@ export default function HomepageMapHero({
 
   const handleSportChange = (next: GridSportFilter) => {
 
-    try {
-
-      localStorage.setItem('ventu:sport', next);
-
-    } catch {
-
-      /* noop */
-
-    }
+    // Clique num pill = escolha explícita (fica guardada para a próxima visita).
+    rememberChosenSport(next);
 
     syncGridFiltersToUrl(next, DEFAULT_REGION, regions);
 
