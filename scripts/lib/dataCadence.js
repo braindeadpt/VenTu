@@ -3,7 +3,8 @@
  * pipeline (workflow data-cadence-alert.yml).
  *
  * Complements pipelineStaleness.js (meta-file age) with the signal the
- * user actually sees: has a commit touching public/data/** landed recently?
+ * user actually sees: has a CONDITIONS commit (one touching
+ * public/data/pipeline-meta.json — never news/dawn-patrol) landed recently?
  * The two checks share the SAME thresholds (STALE_ALERT_HOURS_DAY/NIGHT,
  * 3h day / 5h night) so they can never disagree about what "stale" means —
  * but they fail independently:

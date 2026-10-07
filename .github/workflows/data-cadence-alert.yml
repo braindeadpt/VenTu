@@ -3,7 +3,9 @@ name: Data Cadence Alert
 # Heartbeat commit-based do pipeline: enquanto o staleness-alert lê os
 # timestamps internos de pipeline-meta.json, este workflow mede a verdade
 # observável — quando foi a última vez que um commit a tocar em
-# public/data/** ATERROU (committer date via API de commits do GitHub).
+# public/data/pipeline-meta.json ATERROU (committer date via API de commits
+# do GitHub). Só o commit de condições reescreve esse ficheiro — commits
+# editoriais (news, dawn patrol) não contam como prova de vida.
 # Um push que falhou depois da geração, um meta escrito mas nunca
 # commitado, ou um scheduler que deixou de disparar são invisíveis ao
 # ficheiro mas aparecem aqui assim que o último commit de dados passa o

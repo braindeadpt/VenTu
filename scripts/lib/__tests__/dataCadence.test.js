@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { createRequire } from 'module';
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
 
 const require = createRequire(import.meta.url);
 const { evaluateDataCadence } = require('../dataCadence.js');
@@ -71,5 +73,25 @@ describe('evaluateDataCadence', () => {
     const t = DAY - 4 * 3600_000;
     expect(evaluateDataCadence(t, DAY, { dayHours: 5 }).stale).toBe(false);
     expect(evaluateDataCadence(t, DAY, { dayHours: 3 }).stale).toBe(true);
+  });
+});
+
+// 7 out 2026: o cadence contava QUALQUER commit em public/data/** — um commit
+// de news.json (13:10) fez-o ler «fresco» e fechar a issue data-stale aberta
+// pelo staleness-alert, com as condições mortas desde as 07:32. O sinal tem de
+// ser o ficheiro que só o commit de condições reescreve.
+describe('sinal do cadence heartbeat', () => {
+  const src = readFileSync(
+    path.join(process.cwd(), 'scripts', 'check-data-cadence.js'),
+    'utf8',
+  );
+
+  it('mede o commit de pipeline-meta.json, não a pasta public/data inteira', () => {
+    expect(src).toMatch(/const DATA_PATH = 'public\/data\/pipeline-meta\.json';/);
+    expect(src).not.toMatch(/const DATA_PATH = 'public\/data';/);
+  });
+
+  it('usa DATA_PATH no filtro da API de commits', () => {
+    expect(src).toMatch(/commits\?path=\$\{DATA_PATH\}/);
   });
 });

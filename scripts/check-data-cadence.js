@@ -3,10 +3,18 @@
  * VenTu — Data cadence heartbeat (workflow data-cadence-alert.yml).
  *
  * The commit-based pair of eyes for the data pipeline: resolves the most
- * recent commit touching public/data/** via the GitHub commits API and
- * alerts when NO DATA COMMIT has landed for longer than the staleness
- * threshold (3h day / 5h night — the SAME thresholds as
+ * recent commit touching public/data/pipeline-meta.json via the GitHub
+ * commits API and alerts when NO CONDITIONS COMMIT has landed for longer
+ * than the staleness threshold (3h day / 5h night — the SAME thresholds as
  * check-pipeline-staleness.js, shared via pipelineStaleness.js).
+ *
+ * Signal = pipeline-meta.json, NOT public/data/**: only the conditions
+ * commit ("auto: update conditions and spots index") rewrites it. Editorial
+ * commits (news.json, dawn-patrol.json) also touch public/data and used to
+ * count as proof of life: on 2026-10-07 a news commit at 13:10 made this
+ * monitor read "fresh" and CLOSE the data-stale issue the staleness-alert
+ * had opened at 10:35, while conditions had been dead since 07:32. Both
+ * monitors now watch the same signal, so the shared label cannot flap.
  *
  * Why commit-based when staleness-alert.yml already reads
  * pipeline-meta.json? Because "no data commit landed" is the observable
@@ -49,8 +57,12 @@ const { sendTelegramMessage } = require('./lib/telegram');
 
 const OUTAGE_LABEL = process.env.OUTAGE_LABEL || 'data-stale';
 const REPO = process.env.GITHUB_REPOSITORY || 'braindeadpt/VenTu';
-/** Path filter for the commits API — commits touching public/data only. */
-const DATA_PATH = 'public/data';
+/**
+ * Path filter for the commits API. Deliberately the meta file and not the
+ * public/data folder: editorial commits (news, dawn patrol) touch the
+ * folder without proving the conditions pipeline is alive.
+ */
+const DATA_PATH = 'public/data/pipeline-meta.json';
 
 const RADAR_OUTAGE_LABEL = process.env.RADAR_OUTAGE_LABEL || 'ipma-radar-outage';
 const RADAR_MANIFEST_URL = process.env.RADAR_MANIFEST_URL || 'https://www.ipma.pt/resources.www/transf/radar/imgs-radar.json';
@@ -71,7 +83,7 @@ function ghAvailable() {
   return Boolean(process.env.GH_TOKEN || process.env.GITHUB_TOKEN) && gh('--version') !== null;
 }
 
-/** Most recent public/data commit's committer date (ms), or null. */
+/** Most recent pipeline-meta.json commit's committer date (ms), or null. */
 function lastDataCommitAt() {
   const out = gh(
     'api', `repos/${REPO}/commits?path=${DATA_PATH}&per_page=1`,
@@ -117,9 +129,9 @@ function dispatchKeepAlive() {
 
 function staleBody(s) {
   return [
-    `Nenhum commit de dados (\`${DATA_PATH}/**\`) aterrou há **${fmt(s.ageHours)}** (limiar: ${s.thresholdHours} h ${s.isDaytime ? 'dia' : 'noite'}) — pipeline morto ou push a falhar.`,
+    `Nenhum commit de dados de condições (\`${DATA_PATH}\`) aterrou há **${fmt(s.ageHours)}** (limiar: ${s.thresholdHours} h ${s.isDaytime ? 'dia' : 'noite'}) — pipeline morto ou push a falhar.`,
     '',
-    '- Medido pelo **committer date** do último commit que toca `public/data/` (API de commits do GitHub), não por timestamps internos de ficheiros.',
+    '- Medido pelo **committer date** do último commit que toca `public/data/pipeline-meta.json` (só o commit de condições o reescreve; commits editoriais como news/dawn-patrol não contam) (API de commits do GitHub), não por timestamps internos de ficheiros.',
     '- Isto apanha um push falhado depois da geração, um meta nunca refrescado, ou um scheduler que parou de disparar — antes de qualquer TTL validator (que só corre QUANDO o pipeline corre).',
     '',
     'Receita:',
@@ -131,7 +143,7 @@ function staleBody(s) {
 }
 
 function recoveryBody() {
-  return `✅ Cadência de dados recuperou — voltou a aterrar um commit em \`${DATA_PATH}/**\` (${nowUtc()}). A fechar o incidente; confirmar o fim-a-fim com um run do \`update-data\`.`;
+  return `✅ Cadência de dados recuperou — voltou a aterrar um commit de condições em \`${DATA_PATH}\` (${nowUtc()}). A fechar o incidente; confirmar o fim-a-fim com um run do \`update-data\`.`;
 }
 
 // ── Radar probe (mesma maquina de estados do monitor-ipma-radar.sh) ──
