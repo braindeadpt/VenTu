@@ -64,6 +64,8 @@ const NOINDEX_ROUTE_PATHS = [
   // URLs — never indexed, but they bake and must keep working.
   '/alerts/confirm/',
   '/alerts/unsubscribe/',
+  // Lab «Mar vivo» (protótipo do hero, noindex) — baked mas fora do sitemap.
+  '/lab/mar-vivo/',
 ];
 
 /** A baked page smaller than this has prerendered nothing useful. */

@@ -10,7 +10,9 @@
  * (MarVivoLoader), por isso o maplibre-gl não entra no bundle de outras páginas.
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import maplibregl, { type Map as MlMap } from 'maplibre-gl';
+// maplibre-gl v6 é ESM-only e não tem export default: import de namespace.
+import * as maplibregl from 'maplibre-gl';
+import type { Map as MlMap } from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { Pause, Play, Waves, Wind } from 'lucide-react';
 import type { MapHoursFile } from '@/lib/mapHours';
@@ -23,6 +25,12 @@ import { SwellCrestLayer } from './swellLayer';
 import { formatLisbonLabel, lisbonLocalToUtcMs, nightVeilOpacity, sunAltitudeDeg } from './time';
 import type { MarVivoMode, ScoreThresholds, SeedSpot, SwellSnapshot } from './types';
 import { WindParticleLayer } from './windLayer';
+
+// v6: com bundler o worker tem de ser indicado uma vez (instalação oficial
+// para webpack/Turbopack). O Next emite-o como asset com hash no nosso origin —
+// mesmo origin, por isso o CSP `worker-src 'self'` chega; `blob:` fica para o
+// caso de o maplibre ter de «lavar» um worker cross-origin num Blob URL.
+maplibregl.setWorkerUrl(new URL('maplibre-gl/dist/maplibre-gl-worker.mjs', import.meta.url).toString());
 
 export interface MarVivoMapProps {
   locale: string;
