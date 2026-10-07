@@ -31,7 +31,7 @@ import {
 
   getOnCount,
 
-  getTopSpotForSport,
+  TOP_NOW_MIN_SCORE,
 
   type HomepageSpotData,
 
@@ -50,19 +50,11 @@ import BestWindowBanner from '@/components/homepage/BestWindowBanner';
 
 import HeroTicker from '@/components/homepage/HeroTicker';
 
-import {
+import { toBestWindowWithTier, type BestWindow } from '@/lib/bestWindow';
 
-  formatBestWindowHours,
+import { pickHeroBestWindow } from '@/lib/heroBestWindow';
 
-  toBestWindowWithTier,
-
-  type BestWindow,
-
-} from '@/lib/bestWindow';
-
-import { resolveBestWindowForSport } from '@/lib/bestWindowToday';
-
-import { SPORT_LABELS, type SportType } from '@/lib/sportRatings';
+import { MAP_FIT_AREA_EVENT, isMapAreaKey, type MapAreaKey } from '@/lib/mapLayerBus';
 
 
 
@@ -132,6 +124,9 @@ interface HomepageMapHeroProps {
   buoyLayer?: import('@/lib/pipelineMeta').BuoyLayerMeta | null;
   /** Coastal warnings (IH) layer state from pipeline-meta.json (ticker). */
   coastalWarningsLayer?: import('@/lib/pipelineMeta').CoastalWarningsLayerMeta | null;
+  /** Build-time clock (SSG): o banner usa-o no primeiro paint (paridade de
+   *  hidratação) e passa ao relógio real depois do mount. */
+  bakedAtMs: number;
 }
 
 export default function HomepageMapHero({
@@ -141,6 +136,7 @@ export default function HomepageMapHero({
   variant = 'featured',
   buoyLayer,
   coastalWarningsLayer,
+  bakedAtMs,
 }: HomepageMapHeroProps) {
 
   const isPt = locale === 'pt';
@@ -179,43 +175,70 @@ export default function HomepageMapHero({
 
 
 
-  const onCount = useMemo(() => getOnCount(liveSpotsData, sport), [liveSpotsData, sport]);
+  // Área que o mapa do hero está a mostrar: abre no continente; os chips de
+  // área (Açores/Madeira) reenquadram-no via `ventu:map-fit-area`. O banner
+  // só promove um spot fora desta área se não houver janela nenhuma nela.
+  const [mapArea, setMapArea] = useState<MapAreaKey>('continent');
 
-  const liveLine = heroStatusLine(onCount, locale);
+  useEffect(() => {
+
+    const onFitArea = (e: Event) => {
+
+      const detail = (e as CustomEvent<unknown>).detail;
+
+      if (isMapAreaKey(detail)) setMapArea(detail);
+
+    };
+
+    window.addEventListener(MAP_FIT_AREA_EVENT, onFitArea);
+
+    return () => window.removeEventListener(MAP_FIT_AREA_EVENT, onFitArea);
+
+  }, []);
+
+  // Relógio do banner: bake no primeiro paint (sem #418), real após o mount e
+  // a cada refresh dos dados.
+  const [clockMs, setClockMs] = useState(bakedAtMs);
+
+  useEffect(() => {
+
+    setClockMs(Date.now());
+
+  }, [liveSpotsData]);
+
+  const heroPick = useMemo(
+
+    () => pickHeroBestWindow(liveSpotsData, sport, mapArea, clockMs),
+
+    [liveSpotsData, sport, mapArea, clockMs],
+
+  );
+
+  const bestWindow: BestWindow | null = useMemo(
+
+    () => (heroPick ? toBestWindowWithTier(heroPick.window) : null),
+
+    [heroPick],
+
+  );
+
+  // Ticker e banner falam a mesma língua: o mesmo limiar (≥ Bom, igual ao
+  // «A bombar agora») e a mesma fonte (dados live + janela do banner).
+  const onCount = useMemo(
+
+    () => getOnCount(liveSpotsData, sport, TOP_NOW_MIN_SCORE),
+
+    [liveSpotsData, sport],
+
+  );
+
+  const liveLine = heroStatusLine(onCount, locale, {
+
+    goodWindowLater: (heroPick?.window.score ?? 0) >= TOP_NOW_MIN_SCORE,
+
+  });
 
 
-
-  const topSpot = useMemo(() => {
-    // Best available for hero tip — not the «A bombar» threshold
-    const ts = getTopSpotForSport(
-      liveSpotsData,
-      sport as 'surf' | 'kitesurf' | 'windsurf' | 'bodyboard',
-      1,
-    );
-    return ts;
-  }, [liveSpotsData, sport]);
-
-
-
-  const bestWindow: BestWindow | null = useMemo(() => {
-
-    if (!topSpot) return null;
-
-    const sportFilter = sport === 'all' ? 'all' : (sport as SportType);
-
-    const resolved = resolveBestWindowForSport(
-
-      topSpot.bestWindowToday,
-
-      topSpot.bestWindowsBySport,
-
-      sportFilter,
-
-    );
-
-    return resolved ? toBestWindowWithTier(resolved) : null;
-
-  }, [topSpot, sport]);
 
   const handleSportChange = (next: GridSportFilter) => {
 
@@ -245,31 +268,37 @@ export default function HomepageMapHero({
       <section
         role="region"
         aria-label={t.homepage.interactiveMap}
-        className="relative w-full h-[clamp(220px,38vh,360px)] rounded-surface overflow-hidden border border-divider mx-4 sm:mx-6 lg:mx-auto max-w-7xl touch-pan-y bg-bg-base"
-        data-map-ready={mapReady}
+        className="px-4 sm:px-6 lg:px-8"
       >
-        <h2 className="sr-only">{t.homepage.liveMap}</h2>
-        <HeroMapPoster locale={locale} />
-        <div className="absolute inset-0 z-0 [&_.leaflet-marker-icon]:pointer-events-auto">
-          <SpotMapInteractive
-            spotsData={filtered}
-            selectedSport={sport}
-            selectedRegion={DEFAULT_REGION}
-            locale={locale}
-            embedMode="hero"
-            onReady={() => setMapReady(true)}
-          />
-        </div>
-        <div className="absolute top-3 left-3 z-20 pointer-events-auto">
-          <Button
-            href={`/${locale}/mapa/${buildGridFiltersSearch(sport, DEFAULT_REGION, regions)}`}
-            size="md"
-            locale={isPt ? 'pt' : 'en'}
-            className="shadow-card"
-            rightIcon={<Maximize2 className="w-4 h-4" aria-hidden />}
-          >
-            {t.homepage.exploreMap}
-          </Button>
+        {/* w-full + mx-4 na mesma caixa somava 32 px à largura (overflow
+            horizontal abaixo de lg): a margem passa a padding do invólucro. */}
+        <div
+          className="relative w-full max-w-7xl mx-auto h-[clamp(220px,38vh,360px)] rounded-surface overflow-hidden border border-divider touch-pan-y bg-bg-base"
+          data-map-ready={mapReady}
+        >
+          <h2 className="sr-only">{t.homepage.liveMap}</h2>
+          <HeroMapPoster locale={locale} />
+          <div className="absolute inset-0 z-0 [&_.leaflet-marker-icon]:pointer-events-auto">
+            <SpotMapInteractive
+              spotsData={filtered}
+              selectedSport={sport}
+              selectedRegion={DEFAULT_REGION}
+              locale={locale}
+              embedMode="hero"
+              onReady={() => setMapReady(true)}
+            />
+          </div>
+          <div className="absolute top-3 left-3 z-20 pointer-events-auto">
+            <Button
+              href={`/${locale}/mapa/${buildGridFiltersSearch(sport, DEFAULT_REGION, regions)}`}
+              size="md"
+              locale={locale}
+              className="shadow-card"
+              rightIcon={<Maximize2 className="w-4 h-4" aria-hidden />}
+            >
+              {t.homepage.exploreMap}
+            </Button>
+          </div>
         </div>
       </section>
     );
@@ -419,7 +448,7 @@ export default function HomepageMapHero({
 
                 size="lg"
 
-                locale={isPt ? 'pt' : 'en'}
+                locale={locale}
 
                 className="shadow-card shrink-0"
 
@@ -439,15 +468,15 @@ export default function HomepageMapHero({
 
             </div>
 
-            {bestWindow && topSpot && (
+            {bestWindow && heroPick && (
               <div
                 className="stagger-fade-in motion-reduce:animate-none pt-1"
                 style={{ '--stagger-delay': 280 } as React.CSSProperties}
               >
                 <BestWindowBanner
                   window={bestWindow}
-                  spotSlug={topSpot.spot.slug}
-                  spotName={isPt ? topSpot.spot.name : topSpot.spot.nameEn}
+                  spotSlug={heroPick.data.spot.slug}
+                  spotName={isPt ? heroPick.data.spot.name : heroPick.data.spot.nameEn}
                   locale={locale}
                 />
               </div>
