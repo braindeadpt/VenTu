@@ -56,6 +56,12 @@ type MapHudProps = Omit<MapFullscreenHudProps, 'isPt' | 'visible'>;
 
 interface SpotMapInteractiveProps {
   spotsData: SpotData[];
+  /**
+   * Spots que alimentam os campos ambientais (Hs, SST, correntes, vento) —
+   * SEM os filtros de modalidade/região/nível/«Só a bombar». Por omissão
+   * usa `spotsData`.
+   */
+  fieldSpotsData?: SpotData[];
   selectedSport: GridSportFilter;
   selectedRegion: string;
   locale: string;
@@ -93,6 +99,7 @@ interface SpotMapInteractiveProps {
 
 export default function SpotMapInteractive({
   spotsData,
+  fieldSpotsData,
   selectedSport,
   selectedRegion,
   locale,
@@ -324,6 +331,21 @@ export default function SpotMapInteractive({
     if (!isFullscreen && !sheetSpot) return;
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return;
+      // Um overlay por cima (pesquisa, legenda do vento, menu de camadas,
+      // diálogo) já tratou este Escape — fecha só a camada de cima e NUNCA
+      // sai do /mapa para a homepage.
+      if (e.defaultPrevented) return;
+      // Escape a escrever num campo de texto (ex. pesquisa) nunca sai do mapa.
+      const target = e.target as HTMLElement | null;
+      if (
+        target &&
+        (target.isContentEditable ||
+          target instanceof HTMLTextAreaElement ||
+          (target instanceof HTMLInputElement &&
+            !['range', 'checkbox', 'radio', 'button', 'submit'].includes(target.type)))
+      ) {
+        return;
+      }
       if (sheetSpot) { e.preventDefault(); setSheetSpot(null); return; }
       if (isFullscreen) exitFullscreen();
     };
@@ -370,16 +392,20 @@ export default function SpotMapInteractive({
     return spotsData.filter((d) => spotMeetsOnFilter(d, selectedSport));
   }, [spotsData, onlyOnEnabled, selectedSport, hourScores]);
 
+  // Campos ambientais (Hs/SST/correntes/vento) interpolam a partir de TODOS
+  // os spots vivos — o mar não muda com o filtro de modalidade/região/nível
+  // nem com «Só a bombar».
+  const fieldSource = fieldSpotsData ?? spotsData;
   const hsSpots = useMemo(
     () =>
-      visibleSpots.map((d) => ({
+      fieldSource.map((d) => ({
         id: d.spot.id,
         lat: d.spot.lat,
         lon: d.spot.lon,
         type: d.spot.type,
         bestSwell: d.spot.bestSwell,
       })),
-    [visibleSpots],
+    [fieldSource],
   );
 
   // ── Zona de camadas: campos interpolados + itens do menu + legenda ──
@@ -505,6 +531,9 @@ export default function SpotMapInteractive({
     setSheetSpot,
     mapHud,
     panelCollapsed,
+    // Deep link com vista própria — a primeira passagem dos marcadores não
+    // re-enquadra o país por cima dela.
+    skipInitialFit: Boolean(initialCenter || focusSpotId),
   });
   const { focusMapSpot } = markers;
 
@@ -788,7 +817,6 @@ export default function SpotMapInteractive({
               radarFrameIndex={radarFrameIndex}
               radarBusyCount={radarBusySources.size}
               radarUserPaused={radarUserPaused}
-              radarLift={radarLift}
               radarAttributionLabel={radarAttributionLabel}
               radarScrubbing={radarScrubbing}
               hoursOn={hoursOn}
