@@ -26,11 +26,12 @@ import BuoyLayerNotice from '@/components/spots/BuoyLayerNotice';
 
 interface HomepageTopNowProps {
   spotsData: HomepageSpotData[];
-  /** Filtro de desporto do hero: «Todos» = um card por desporto; um desporto
-   *  concreto = os melhores spots a bombar nesse desporto. */
+  /** `all` = modo adaptativo (desporto não escolhido ou «Todos»): o que está a
+   *  bombar em todos os desportos, ≤2 por desporto; um desporto concreto
+   *  (escolhido pelo utilizador) = os melhores spots a bombar nesse desporto. */
   sport?: GridSportFilter;
   locale: string;
-  /** Cap cards (e.g. 4 for returning visitors). Default: all TOP_NOW sports. */
+  /** Cap cards (e.g. 4 for returning visitors). Default: 4. */
   maxCards?: number;
   /** Build-time clock (SSG) — freshness gates use it until mount, then the
    *  live clock takes over (React #418 guard, same as the spot page). */
@@ -63,8 +64,9 @@ export default function HomepageTopNow({
   const liveSpotsData = useLiveGridSpotData(spotsData);
 
   // Only spots actually «a bombar» (≥ Bom / 60) — never Fraco under that title.
-  // Reage ao filtro do hero: com um desporto activo mostra os melhores spots
-  // desse desporto (antes ficava sempre um card por desporto).
+  // Por defeito segue as condições (surf num dia de ondulação, kite/windsurf
+  // num dia de vento, ambos num dia misto); com um desporto escolhido mostra
+  // os melhores spots desse desporto.
   const cards = getTopNowCards(liveSpotsData, activeSport, maxCards);
   const subtitle =
     activeSport === 'all'
