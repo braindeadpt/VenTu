@@ -98,6 +98,21 @@ const themeScript = `
 `;
 
 /**
+ * Pre-paint Dawn Patrol window (05h–12h, relógio local — o mesmo de
+ * `isDawnPatrolWindow`). Carimba `data-dawn-window` no <html> antes do
+ * primeiro paint para o slot do Dawn Patrol da home reservar o espaço logo no
+ * SSR em vez de aparecer depois da hidratação (CLS).
+ */
+const dawnWindowScript = `
+  (function () {
+    try {
+      var h = new Date().getHours();
+      if (h >= 5 && h < 12) document.documentElement.setAttribute('data-dawn-window', '');
+    } catch (e) { /* noop */ }
+  })();
+`;
+
+/**
  * Pre-paint locale redirect. Only runs on the root `/` (any other path is
  * already locale-prefixed). Priority: localStorage('ventu:locale') →
  * navigator.language → 'pt'. Supported: pt, en, es, de, fr.
@@ -159,6 +174,7 @@ export default function RootLayout({
       <head>
         <InlineScript html={localeRedirectScript} />
         <InlineScript html={themeScript} />
+        <InlineScript html={dawnWindowScript} />
       </head>
       <body className="min-h-screen bg-bg-base text-fg font-sans antialiased">
         {children}
