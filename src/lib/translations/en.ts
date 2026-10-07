@@ -1272,7 +1272,7 @@ export const translationsEn = {
     signupNudgeBody: 'Get your spots\' conditions every morning (~7:30 AM). Create a free account.',
     tickerAria: 'Forecast update time and data sources',
     noSportsFiring: 'No sports firing right now',
-    onlyFiringSpots: 'Only firing spots · by sport',
+    onlyFiringSpots: 'Only firing spots · whatever is working, across every sport',
     onlyFiringSpotsSport: 'Only firing spots · {sport}',
     favoritesFresh: 'Favorites with fresh conditions — tap to open',
     noGoodWindows: 'No good windows in the next 48h',
