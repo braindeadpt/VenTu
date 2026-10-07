@@ -37,6 +37,16 @@ describe('includeSpotInViewportBounds', () => {
     const madeira = spot({ id: 'seixal', region: 'Madeira' });
     expect(includeSpotInViewportBounds(madeira, 'Madeira')).toBe(true);
   });
+
+  it('Continente: inclui o continente e exclui as ilhas', () => {
+    expect(includeSpotInViewportBounds(spot({ id: 'eri', region: 'Ericeira' }), 'Continente')).toBe(true);
+    expect(includeSpotInViewportBounds(spot({ id: 'vit', region: 'Terceira' }), 'Continente')).toBe(false);
+    expect(includeSpotInViewportBounds(spot({ id: 'paul', region: 'Madeira' }), 'Continente')).toBe(false);
+  });
+
+  it('Açores: inclui Terceira (Praia da Vitória)', () => {
+    expect(includeSpotInViewportBounds(spot({ id: 'praia-vitoria', region: 'Terceira' }), 'Açores')).toBe(true);
+  });
 });
 
 describe('getBestScore', () => {
