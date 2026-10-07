@@ -20,6 +20,13 @@ export const SPORT_LABELS: Record<SportType, { pt: string; en: string }> = {
 export const ALL_SPORTS: SportType[] = ['surf', 'kitesurf', 'windsurf', 'wakeboard', 'bodyboard', 'sup', 'foil']
 
 /**
+ * Número de desportos com score — fonte única para «N desportos» na home
+ * (TrustStrip, H1 SEO). Big Wave é uma modalidade de surf (menu Modalidades),
+ * não um desporto com score próprio, por isso não conta aqui.
+ */
+export const SPORTS_COUNT = ALL_SPORTS.length
+
+/**
  * Maps spot.type → compatible sports when spot.compatibleSports is not set.
  * Multisport = most water sports except wakeboard (cable park, different geo).
  */
