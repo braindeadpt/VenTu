@@ -1280,7 +1280,7 @@ export const translationsPt = {
     signupNudgeBody: 'Recebes as condições dos teus spots todas as manhãs (~7h30). Cria conta gratuita.',
     tickerAria: 'Actualização das previsões e fontes de dados',
     noSportsFiring: 'Nenhum desporto a bombar neste momento',
-    onlyFiringSpots: 'Só spots a bombar · por desporto',
+    onlyFiringSpots: 'Só spots a bombar · o que estiver a dar, em todos os desportos',
     onlyFiringSpotsSport: 'Só spots a bombar · {sport}',
     favoritesFresh: 'Favoritos com condições frescas — toca para ver o spot',
     noGoodWindows: 'Sem janelas boas nas próximas 48h',
