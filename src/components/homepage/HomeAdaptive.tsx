@@ -3,9 +3,9 @@
 import { useMemo } from 'react';
 import { useAuth } from '@/contexts/AuthProvider';
 import { useHasFavorites } from '@/hooks/useHasFavorites';
-import type { HomepageSpotData } from '@/lib/homepageSport';
+import { isConditionDriven, type HomepageSpotData } from '@/lib/homepageSport';
 import type { GridSportFilter } from '@/lib/sportRatings';
-import { useUrlGridSport } from '@/hooks/useUrlGridSport';
+import { useHomeSport } from '@/hooks/useUrlGridSport';
 import { DEFAULT_REGION } from '@/lib/gridFilters';
 import { MACRO_REGIONS } from '@/lib/regions';
 import HomepageMapHero from '@/components/homepage/HomepageMapHero';
@@ -44,7 +44,12 @@ export default function HomeAdaptive({
   const { favorites } = useAuth();
   const isReturning = hasFavorites === true;
   const regions = useMemo(() => [...MACRO_REGIONS], []);
-  const activeSport = useUrlGridSport(regions, 'surf');
+  const { sport: activeSport, explicit: sportChosen } = useHomeSport(regions, 'surf');
+  // «A bombar agora» só fica preso a um desporto quando o utilizador o
+  // escolheu; por defeito (ou com «Todos») mostra o que está mesmo a dar.
+  const topNowSport: GridSportFilter = isConditionDriven(activeSport, sportChosen)
+    ? 'all'
+    : activeSport;
 
   return (
     <>
@@ -74,7 +79,7 @@ export default function HomeAdaptive({
 
       <HomepageTopNow
         spotsData={spotsData}
-        sport={activeSport}
+        sport={topNowSport}
         locale={locale}
         maxCards={isReturning ? 4 : undefined}
         bakedAtMs={bakedAtMs}
