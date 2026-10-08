@@ -305,12 +305,19 @@ test.describe('Mapa — dismiss dos overlays é hit-testável (desktop + mobile)
       });
       await page.goto('/pt/spots/', { waitUntil: 'domcontentloaded', timeout: 60_000 });
       await waitHydrated(page);
-      // ≥1024 px: o embed nasce aberto — clicar fechava-o (ver
-      // wind-ring-legend). Só se expande quando vem recolhido.
+      // ≥1024 px o embed nasce aberto, mas o auto-abrir corre num useEffect
+      // do SpotGridClient que pode aterrar DEPOIS do beacon de hidratação:
+      // ler `aria-expanded` uma vez e clicar logo apanhava às vezes o «false»
+      // do SSR e o clique FECHAVA o mapa que estava a abrir (flaky no CI:
+      // .leaflet-container nunca aparecia em 30 s). Mesmo padrão do
+      // wind-ring-legend: retry até o container existir.
       const expander = page.getByRole('button', { name: /Mapa ·|Map ·/i });
-      if ((await expander.getAttribute('aria-expanded')) !== 'true') {
-        await expander.click();
-      }
+      await expect(async () => {
+        if ((await expander.getAttribute('aria-expanded')) !== 'true') {
+          await expander.click();
+        }
+        await expect(page.locator('.leaflet-container').first()).toBeVisible({ timeout: 4_000 });
+      }).toPass({ timeout: 30_000 });
       await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
       const help = page.getByRole('button', { name: /Como ler o vento no mapa/i });
       await expect(help).toBeVisible({ timeout: 20_000 });

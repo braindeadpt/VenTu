@@ -561,7 +561,13 @@ test.describe('Explorar /mapa — garantias consolidadas (sheet mobile + painel 
 
       const track = page.locator('[data-map-time-track-mode="hours"]');
       await expect(track).toBeVisible({ timeout: 15_000 });
-      await expect(track).toContainText('17:00');
+      // O passo escolhido tem de ser o das 17:00, onde quer que caia na grelha.
+      const slider = page.locator('[data-map-hours-scrubber] input[type="range"]');
+      await expect(slider).toHaveValue(String(IDX_17));
+      // Entre as 17:00 e as 17:59 de Lisboa o passo das 17:00 é o índice 0 —
+      // o passo corrente, que o cabeçalho rotula «Agora» (UX v3 §3), não
+      // «17:00». Fora dessa hora o cabeçalho mostra a hora do passo.
+      await expect(track).toContainText(IDX_17 === 0 ? 'Agora' : '17:00');
       await expectNazareScore(page, '88');
     });
 
