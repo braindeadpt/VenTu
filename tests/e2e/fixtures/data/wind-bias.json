@@ -4,24 +4,6 @@
   "minPairs": 10,
   "pairCount": 5959,
   "stations": {
-    "metar|LPLA": {
-      "station": "Lajes (METAR)",
-      "source": "metar",
-      "n": 11,
-      "me": 1.3,
-      "mae": 2.5,
-      "rmse": 3,
-      "lastUpdated": "2026-09-07T11:00:00.000Z"
-    },
-    "metar|LPMA": {
-      "station": "Madeira (METAR)",
-      "source": "metar",
-      "n": 34,
-      "me": 7,
-      "mae": 7,
-      "rmse": 7.9,
-      "lastUpdated": "2026-09-08T07:30:00.000Z"
-    },
     "ipma|Viana Do Castelo - Fonte Louçã (CIM)": {
       "station": "Viana Do Castelo - Fonte Louçã (CIM)",
       "source": "ipma",
@@ -56,24 +38,6 @@
       "me": 1.3,
       "mae": 2.3,
       "rmse": 2.7,
-      "lastUpdated": "2026-09-08T06:00:00.000Z"
-    },
-    "ipma|S. Gens": {
-      "station": "S. Gens",
-      "source": "ipma",
-      "n": 69,
-      "me": -2.4,
-      "mae": 2.5,
-      "rmse": 3.2,
-      "lastUpdated": "2026-09-08T06:00:00.000Z"
-    },
-    "ipma|Porto, Serra do Pilar": {
-      "station": "Porto, Serra do Pilar",
-      "source": "ipma",
-      "n": 92,
-      "me": 2.7,
-      "mae": 3,
-      "rmse": 3.6,
       "lastUpdated": "2026-09-08T06:00:00.000Z"
     },
     "ipma|Luzim": {
@@ -121,14 +85,14 @@
       "rmse": 2.4,
       "lastUpdated": "2026-09-08T06:00:00.000Z"
     },
-    "ipma|São Pedro de Moel": {
-      "station": "São Pedro de Moel",
+    "ipma|Leiria (Aeródromo)": {
+      "station": "Leiria (Aeródromo)",
       "source": "ipma",
-      "n": 34,
-      "me": 2.7,
-      "mae": 3.1,
-      "rmse": 3.6,
-      "lastUpdated": "2026-09-08T06:00:00.000Z"
+      "n": 11,
+      "me": 0.6,
+      "mae": 2.1,
+      "rmse": 2.5,
+      "lastUpdated": "2026-09-15T08:00:00.000Z"
     },
     "ipma|Tomar, Valdonas": {
       "station": "Tomar, Valdonas",
@@ -319,14 +283,14 @@
       "rmse": 10.4,
       "lastUpdated": "2026-09-08T06:00:00.000Z"
     },
-    "ipma|P. Delgada (Obs. A. Chaves)": {
-      "station": "P. Delgada (Obs. A. Chaves)",
+    "ipma|P. Delgada (Aeródromo)": {
+      "station": "P. Delgada (Aeródromo)",
       "source": "ipma",
-      "n": 46,
-      "me": -1.2,
-      "mae": 2.4,
+      "n": 24,
+      "me": 0.3,
+      "mae": 2.1,
       "rmse": 2.8,
-      "lastUpdated": "2026-09-08T06:00:00.000Z"
+      "lastUpdated": "2026-09-07T22:00:00.000Z"
     },
     "ipma|Zambujeira": {
       "station": "Zambujeira",
@@ -490,6 +454,15 @@
       "rmse": 3.7,
       "lastUpdated": "2026-09-08T06:00:00.000Z"
     },
+    "metar|LPMA": {
+      "station": "Madeira (METAR)",
+      "source": "metar",
+      "n": 34,
+      "me": 7,
+      "mae": 7,
+      "rmse": 7.9,
+      "lastUpdated": "2026-09-08T07:30:00.000Z"
+    },
     "ipma|Madeira, Calheta": {
       "station": "Madeira, Calheta",
       "source": "ipma",
@@ -526,50 +499,41 @@
       "rmse": 6.6,
       "lastUpdated": "2026-09-08T05:00:00.000Z"
     },
-    "ipma|Lisboa, Tapada da Ajuda": {
-      "station": "Lisboa, Tapada da Ajuda",
-      "source": "ipma",
-      "n": 55,
-      "me": -0.8,
-      "mae": 1.2,
+    "ecowitt|TAP Teste 3": {
+      "station": "TAP Teste 3",
+      "source": "ecowitt",
+      "n": 110,
+      "me": 0,
+      "mae": 1.9,
+      "rmse": 2.2,
+      "lastUpdated": "2026-09-03T19:38:31.000Z"
+    },
+    "metar|LPPR": {
+      "station": "Porto (METAR)",
+      "source": "metar",
+      "n": 14,
+      "me": 0.5,
+      "mae": 1.4,
       "rmse": 1.6,
-      "lastUpdated": "2026-09-08T06:00:00.000Z"
+      "lastUpdated": "2026-09-03T19:30:00.000Z"
     },
-    "ipma|P. Delgada (Aeródromo)": {
-      "station": "P. Delgada (Aeródromo)",
-      "source": "ipma",
-      "n": 24,
-      "me": 0.3,
-      "mae": 2.1,
-      "rmse": 2.8,
-      "lastUpdated": "2026-09-07T22:00:00.000Z"
+    "metar|LPLA": {
+      "station": "Lajes (METAR)",
+      "source": "metar",
+      "n": 11,
+      "me": 1.3,
+      "mae": 2.5,
+      "rmse": 3,
+      "lastUpdated": "2026-09-07T11:00:00.000Z"
     },
-    "ipma|Santa Maria (Aeródromo)": {
-      "station": "Santa Maria (Aeródromo)",
-      "source": "ipma",
-      "n": 27,
-      "me": -3.1,
-      "mae": 3.9,
-      "rmse": 4.3,
-      "lastUpdated": "2026-09-07T09:00:00.000Z"
-    },
-    "ipma|Santa Maria / Maia (DROTRH)": {
-      "station": "Santa Maria / Maia (DROTRH)",
-      "source": "ipma",
-      "n": 12,
-      "me": -4.7,
-      "mae": 4.7,
-      "rmse": 5.5,
-      "lastUpdated": "2026-09-22T12:00:00.000Z"
-    },
-    "ipma|Barcelos (CIM)": {
-      "station": "Barcelos (CIM)",
-      "source": "ipma",
-      "n": 20,
-      "me": -0.6,
-      "mae": 1.8,
-      "rmse": 2.1,
-      "lastUpdated": "2026-09-07T09:00:00.000Z"
+    "metar|LPAZ": {
+      "station": "Santa Maria (METAR)",
+      "source": "metar",
+      "n": 16,
+      "me": -1.5,
+      "mae": 5.5,
+      "rmse": 6.4,
+      "lastUpdated": "2026-10-05T09:00:00.000Z"
     },
     "ipma|Pico (Aeródromo)": {
       "station": "Pico (Aeródromo)",
@@ -589,41 +553,50 @@
       "rmse": 3,
       "lastUpdated": "2026-09-07T09:00:00.000Z"
     },
-    "ipma|Leiria (Aeródromo)": {
-      "station": "Leiria (Aeródromo)",
+    "ipma|Barcelos (CIM)": {
+      "station": "Barcelos (CIM)",
       "source": "ipma",
-      "n": 11,
-      "me": 0.6,
-      "mae": 2.1,
-      "rmse": 2.5,
-      "lastUpdated": "2026-09-15T08:00:00.000Z"
+      "n": 20,
+      "me": -0.6,
+      "mae": 1.8,
+      "rmse": 2.1,
+      "lastUpdated": "2026-09-07T09:00:00.000Z"
     },
-    "ecowitt|TAP Teste 3": {
-      "station": "TAP Teste 3",
-      "source": "ecowitt",
-      "n": 110,
-      "me": 0,
-      "mae": 1.9,
-      "rmse": 2.2,
-      "lastUpdated": "2026-09-03T19:38:31.000Z"
-    },
-    "metar|LPPR": {
-      "station": "Porto (METAR)",
-      "source": "metar",
-      "n": 14,
-      "me": 0.5,
-      "mae": 1.4,
+    "ipma|Lisboa, Tapada da Ajuda": {
+      "station": "Lisboa, Tapada da Ajuda",
+      "source": "ipma",
+      "n": 55,
+      "me": -0.8,
+      "mae": 1.2,
       "rmse": 1.6,
-      "lastUpdated": "2026-09-03T19:30:00.000Z"
+      "lastUpdated": "2026-09-08T06:00:00.000Z"
     },
-    "metar|LPAZ": {
-      "station": "Santa Maria (METAR)",
-      "source": "metar",
-      "n": 16,
-      "me": -1.5,
-      "mae": 5.5,
-      "rmse": 6.4,
-      "lastUpdated": "2026-10-05T09:00:00.000Z"
+    "ipma|P. Delgada (Obs. A. Chaves)": {
+      "station": "P. Delgada (Obs. A. Chaves)",
+      "source": "ipma",
+      "n": 46,
+      "me": -1.2,
+      "mae": 2.4,
+      "rmse": 2.8,
+      "lastUpdated": "2026-09-08T06:00:00.000Z"
+    },
+    "ipma|Santa Maria (Aeródromo)": {
+      "station": "Santa Maria (Aeródromo)",
+      "source": "ipma",
+      "n": 27,
+      "me": -3.1,
+      "mae": 3.9,
+      "rmse": 4.3,
+      "lastUpdated": "2026-09-07T09:00:00.000Z"
+    },
+    "ipma|São Pedro de Moel": {
+      "station": "São Pedro de Moel",
+      "source": "ipma",
+      "n": 34,
+      "me": 2.7,
+      "mae": 3.1,
+      "rmse": 3.6,
+      "lastUpdated": "2026-09-08T06:00:00.000Z"
     },
     "metar|LPPD": {
       "station": "Ponta Delgada (METAR)",
@@ -633,6 +606,15 @@
       "mae": 1.3,
       "rmse": 1.5,
       "lastUpdated": "2026-09-27T08:30:00.000Z"
+    },
+    "ipma|Santa Maria / Maia (DROTRH)": {
+      "station": "Santa Maria / Maia (DROTRH)",
+      "source": "ipma",
+      "n": 12,
+      "me": -4.7,
+      "mae": 4.7,
+      "rmse": 5.5,
+      "lastUpdated": "2026-09-22T12:00:00.000Z"
     },
     "ipma|Lisboa (Geofísico)": {
       "station": "Lisboa (Geofísico)",
