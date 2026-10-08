@@ -1,129 +1,129 @@
 {
-  "date": "2026-10-07",
-  "generatedAt": "2026-10-07T03:36:59.430Z",
-  "topSpot": "Guincho",
-  "topSpotSlug": "guincho",
+  "date": "2026-10-08",
+  "topSpot": "Nazaré",
+  "topSpotSlug": "nazare",
   "pt": {
-    "headline": "Hoje é dia de Guincho! 🌊",
-    "advice": "Melhor janela: 11:00h. Ondas de 1.0m com 7 nós de vento. ⚓ Avisos à Navegação Costeiros (IH): ANAV NR 1445/26 — Animais Marinhos - Interação · ANAV NR 1727/26 — Animais Marinhos - Avistamento",
-    "bestTime": "11:00",
-    "wetsuit": "2mm shorty",
-    "crowdTip": "Chega cedo para evitar crowd!",
-    "moonTideLine": "Lua minguante · Marés mortas · baixa-mar 08:00"
+    "headline": "Ondas perfeitas e vento leve em Nazaré – não perca!",
+    "advice": "Nazaré oferece ondas de 2,3 m com período de 8 s e vento suave de 4 kt. Não há avisos costeiros ativos, o que garante segurança. Chegue cedo para aproveitar as melhores condições antes da multidão.",
+    "bestTime": "08:30",
+    "wetsuit": "3/2mm full suit",
+    "crowdTip": "Chegue cedo para evitar a multidão",
+    "moonTideLine": "Lua minguante · Transição · baixa-mar 21:00"
   },
   "en": {
-    "headline": "Today is Guincho day! 🌊",
-    "advice": "Best window: 11:00. 1.0m waves with 7 knot wind. ⚓ Coastal navigation warnings (IH): ANAV NR 1445/26 — Animais Marinhos - Interação · ANAV NR 1727/26 — Animais Marinhos - Avistamento",
-    "bestTime": "11:00",
-    "wetsuit": "2mm shorty",
-    "crowdTip": "Get there early to beat the crowd!",
-    "moonTideLine": "Waning crescent · Neap tides · low tide 08:00"
+    "headline": "Perfect waves and light wind at Nazaré – seize the day!",
+    "advice": "Nazaré provides 2.3 m waves with an 8‑second period and a gentle 4‑kt wind. No coastal alerts are active, ensuring safety. Arrive early to catch the best conditions before the crowd builds.",
+    "bestTime": "08:30",
+    "wetsuit": "3/2mm full suit",
+    "crowdTip": "Get there early to beat the crowd",
+    "moonTideLine": "Waning crescent · Transition · low tide 21:00"
   },
   "spots": [
     {
-      "name": "Guincho",
-      "slug": "guincho",
-      "score": 58,
-      "scoreForecast": 59,
-      "scoreSource": "boia",
-      "scoreMeta": {
-        "stationName": "CSA83/1D",
-        "distanceKm": 101.9
-      },
-      "verdict": "maybe",
-      "ptReason": "Condições razoáveis",
-      "enReason": "Fair conditions"
-    },
-    {
-      "name": "Nazaré",
-      "slug": "nazare",
-      "score": 58,
-      "scoreForecast": 79,
-      "scoreSource": "boia",
-      "scoreMeta": {
-        "stationName": "CSA83/1D",
-        "distanceKm": 186.8
-      },
-      "verdict": "maybe",
-      "ptReason": "Condições razoáveis",
-      "enReason": "Fair conditions"
-    },
-    {
-      "name": "Coxos",
-      "slug": "coxos",
-      "score": 58,
-      "scoreForecast": 78,
-      "scoreSource": "boia",
-      "scoreMeta": {
-        "stationName": "CSA83/1D",
-        "distanceKm": 127.4
-      },
-      "verdict": "maybe",
-      "ptReason": "Condições razoáveis",
-      "enReason": "Fair conditions"
-    },
-    {
-      "name": "Ribeira d'Ilhas",
-      "slug": "ribeira-ilhas",
-      "score": 55,
-      "scoreForecast": 76,
-      "scoreSource": "boia",
-      "scoreMeta": {
-        "stationName": "CSA83/1D",
-        "distanceKm": 126.1
-      },
-      "verdict": "maybe",
-      "ptReason": "Condições razoáveis",
-      "enReason": "Fair conditions"
-    },
-    {
-      "name": "Carcavelos",
-      "slug": "carcavelos",
-      "score": 55,
-      "scoreForecast": 52,
-      "scoreSource": "boia",
-      "scoreMeta": {
-        "stationName": "CSA83/1D",
-        "distanceKm": 91.4
-      },
-      "verdict": "maybe",
-      "ptReason": "Condições razoáveis",
-      "enReason": "Fair conditions"
-    },
-    {
       "name": "Supertubos",
       "slug": "supertubos",
-      "score": 54,
-      "scoreForecast": 75,
+      "score": 78,
+      "verdict": "maybe",
+      "ptReason": "Ondas boas, mas vento de 8 kt pode atrapalhar a performance.",
+      "enReason": "Good waves, but an 8‑kt wind may hinder performance.",
+      "scoreForecast": 89,
       "scoreSource": "boia",
       "scoreMeta": {
         "stationName": "CSA83/1D",
         "distanceKm": 162.7
-      },
-      "verdict": "maybe",
-      "ptReason": "Condições razoáveis",
-      "enReason": "Fair conditions"
+      }
+    },
+    {
+      "name": "Guincho",
+      "slug": "guincho",
+      "score": 78,
+      "verdict": "go",
+      "ptReason": "Ondas consistentes e vento leve de 4 kt, condições ótimas.",
+      "enReason": "Consistent waves and light 4‑kt wind, optimal conditions.",
+      "scoreForecast": 87,
+      "scoreSource": "boia",
+      "scoreMeta": {
+        "stationName": "CSA83/1D",
+        "distanceKm": 101.9
+      }
+    },
+    {
+      "name": "Nazaré",
+      "slug": "nazare",
+      "score": 78,
+      "verdict": "go",
+      "ptReason": "Ondas perfeitas, vento leve e sem avisos costeiros.",
+      "enReason": "Perfect waves, light wind and no coastal alerts.",
+      "scoreForecast": 89,
+      "scoreSource": "boia",
+      "scoreMeta": {
+        "stationName": "CSA83/1D",
+        "distanceKm": 186.8
+      }
+    },
+    {
+      "name": "Ribeira d'Ilhas",
+      "slug": "ribeira-ilhas",
+      "score": 71,
+      "verdict": "skip",
+      "ptReason": "Vento muito forte (15 kt) torna a sessão difícil e cansativa.",
+      "enReason": "Very strong 15‑kt wind makes the session difficult and tiring.",
+      "scoreForecast": 83,
+      "scoreSource": "boia",
+      "scoreMeta": {
+        "stationName": "CSA83/1D",
+        "distanceKm": 126.1
+      }
+    },
+    {
+      "name": "Coxos",
+      "slug": "coxos",
+      "score": 78,
+      "verdict": "go",
+      "ptReason": "Ondas boas e vento leve de 5 kt, apesar dos avisos de fauna marinha.",
+      "enReason": "Good waves and light 5‑kt wind, despite marine‑life alerts.",
+      "scoreForecast": 89,
+      "scoreSource": "boia",
+      "scoreMeta": {
+        "stationName": "CSA83/1D",
+        "distanceKm": 127.4
+      }
     },
     {
       "name": "Arrifana",
       "slug": "arrifana",
-      "score": 54,
-      "scoreForecast": 53,
+      "score": 75,
+      "verdict": "maybe",
+      "ptReason": "Ondas menores (1,5 m) mas ainda surfáveis; atenção ao plano de salvamento.",
+      "enReason": "Smaller (1.5 m) but still surfable waves; heed the rescue plan.",
+      "scoreForecast": 79,
       "scoreSource": "boia",
       "scoreMeta": {
         "stationName": "CSA83/1D",
         "distanceKm": 70.2
-      },
-      "verdict": "maybe",
-      "ptReason": "Condições razoáveis",
-      "enReason": "Fair conditions"
+      }
+    },
+    {
+      "name": "Carcavelos",
+      "slug": "carcavelos",
+      "score": 78,
+      "verdict": "go",
+      "ptReason": "Ondas adequadas e vento quase nulo (3 kt), ótimo para todos os níveis.",
+      "enReason": "Adequate waves and almost no wind (3 kt), great for all skill levels.",
+      "scoreForecast": 83,
+      "scoreSource": "boia",
+      "scoreMeta": {
+        "stationName": "CSA83/1D",
+        "distanceKm": 91.4
+      }
     }
   ],
-  "topScore": 58,
-  "topScoreForecast": 59,
+  "generatedAt": "2026-10-08T03:22:46.946Z",
+  "topScore": 78,
+  "topScoreForecast": 89,
   "topScoreSource": "boia",
   "topScoreMeta": {
     "stationName": "CSA83/1D",
-    "distanceKm": 101.9
+    "distanceKm": 186.8
   }
 }
