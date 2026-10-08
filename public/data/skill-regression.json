@@ -1,6 +1,6 @@
 {
   "source": "forecast-skill-regression",
-  "checkedAt": "2026-10-08T06:06:30.288Z",
+  "checkedAt": "2026-10-08T07:25:14.160Z",
   "windowDays": 60,
   "recentDays": 7,
   "baselineDays": 21,
@@ -24,7 +24,7 @@
         "snapshots": 8,
         "rmse": 0.5412499999999999,
         "me": 0.4075,
-        "n": 604.5
+        "n": 604.75
       },
       "baseline": {
         "snapshots": 6,
@@ -43,7 +43,7 @@
         "snapshots": 8,
         "rmse": 0.275,
         "me": 0.07125000000000001,
-        "n": 671.75
+        "n": 671.875
       },
       "baseline": {
         "snapshots": 20,
@@ -81,7 +81,7 @@
         "snapshots": 8,
         "rmse": 0.48624999999999996,
         "me": -0.42500000000000004,
-        "n": 672.625
+        "n": 672.75
       },
       "baseline": {
         "snapshots": 14,
@@ -100,7 +100,7 @@
         "snapshots": 8,
         "rmse": 0.8674999999999999,
         "me": 0.6799999999999999,
-        "n": 668.875
+        "n": 669.125
       },
       "baseline": {
         "snapshots": 6,
@@ -119,7 +119,7 @@
         "snapshots": 8,
         "rmse": 0.67375,
         "me": 0.50625,
-        "n": 522.75
+        "n": 522.875
       },
       "baseline": {
         "snapshots": 20,
@@ -138,7 +138,7 @@
         "snapshots": 8,
         "rmse": 0.51,
         "me": 0.42750000000000005,
-        "n": 522.875
+        "n": 523
       },
       "baseline": {
         "snapshots": 20,
@@ -156,7 +156,7 @@
         "snapshots": 8,
         "rmse": 0.34874999999999995,
         "me": 0.095,
-        "n": 507
+        "n": 507.125
       },
       "baseline": {
         "snapshots": 20,
@@ -176,8 +176,8 @@
       "name": "IH (Datawell)",
       "recent": {
         "days": 8,
-        "n": 2965.13,
-        "me": 0.16767421272290375
+        "n": 2965.88,
+        "me": 0.16771652547730434
       },
       "baseline": {
         "days": 20,
@@ -194,8 +194,8 @@
       "name": "WMO-ES (Copernicus)",
       "recent": {
         "days": 8,
-        "n": 1552.63,
-        "me": 0.3456138797198294
+        "n": 1553,
+        "me": 0.3456181584030908
       },
       "baseline": {
         "days": 20,
