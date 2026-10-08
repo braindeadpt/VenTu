@@ -9,13 +9,18 @@ import {
   MAP_WIND_PANE_Z,
   advectWindParticle,
   buildWindFieldGrids,
+  buildWindFieldGridsFromSea,
   collectWindSamples,
-  drawWindParticles,
+  drawWindParticlesByKt,
   spawnWindParticle,
+  windBinRgb,
+  windCellKt,
+  windKtBin,
   windParticleTarget,
   type WindParticle,
 } from '@/lib/mapWindField';
 import type { FieldSpot } from '@/lib/mapHsField';
+import type { SeaGrid, SeaGridFrame } from '@/lib/seaGrid';
 
 interface UseMapWindFieldOptions {
   mapInstanceRef: React.MutableRefObject<L.Map | null>;
@@ -29,6 +34,9 @@ interface UseMapWindFieldOptions {
   hoursLive: boolean;
   hoursFrame: number;
   spots: FieldSpot[];
+  /** Grelha de modelo (sea-grid.json) — quando cobre a hora pedida substitui o IDW dos spots. */
+  seaGrid?: SeaGrid | null;
+  seaFrame?: SeaGridFrame | null;
 }
 
 function isZoomAnimating(map: L.Map): boolean {
@@ -75,6 +83,8 @@ export function useMapWindField({
   hoursLive,
   hoursFrame,
   spots,
+  seaGrid = null,
+  seaFrame = null,
 }: UseMapWindFieldOptions) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const rafRef = useRef(0);
@@ -105,16 +115,34 @@ export function useMapWindField({
   }, [wantsField, hoursFile, selfFile]);
 
   const file = hoursFile ?? selfFile;
-  const windOn = wantsField && !!file?.wind;
+  // Grelha de modelo primeiro (cobre o mar todo, independente dos spots e
+  // dos filtros); o IDW entre spots fica como fallback sem sea-grid.json.
+  const fromSea = wantsField && !!seaGrid && !!seaFrame;
+  const windOn = wantsField && (fromSea || !!file?.wind);
   const frame = hoursLive ? hoursFrame : 0;
   const samples = useMemo(
-    () => (windOn && file ? collectWindSamples(file, spots, frame) : []),
-    [windOn, file, spots, frame],
+    () => (windOn && !fromSea && file ? collectWindSamples(file, spots, frame) : []),
+    [windOn, fromSea, file, spots, frame],
   );
-  const grids = useMemo(
-    () => (windOn ? buildWindFieldGrids(samples, { mobile: isMobile }) : []),
-    [windOn, samples, isMobile],
-  );
+  const grids = useMemo(() => {
+    if (!windOn) return [];
+    if (fromSea && seaGrid && seaFrame) return buildWindFieldGridsFromSea(seaGrid, seaFrame, { mobile: isMobile });
+    return buildWindFieldGrids(samples, { mobile: isMobile });
+  }, [windOn, fromSea, seaGrid, seaFrame, samples, isMobile]);
+  // Intervalo em nós para a legenda («Agora: 4–22 kn na grelha»).
+  const windRange = useMemo(() => {
+    if (!windOn) return null;
+    if (fromSea && seaFrame) return { min: seaFrame.windMinKt, max: seaFrame.windMaxKt };
+    if (!samples.length) return null;
+    let min = Infinity;
+    let max = 0;
+    for (const s of samples) {
+      const kt = s.spd * 1.943844;
+      if (kt < min) min = kt;
+      if (kt > max) max = kt;
+    }
+    return { min, max };
+  }, [windOn, fromSea, seaFrame, samples]);
   const hasGrids = grids.length > 0;
 
   // As grelhas mudam a cada tick das 48 h e a cada refresh de dados. Passam
@@ -161,8 +189,8 @@ export function useMapWindField({
     }
 
     const host = map.getContainer();
-    // Cor segue o tema — antes era lida uma vez no mount e ficava presa ao
-    // tema inicial até o layer ser re-ligado.
+    // A cor das partículas é a escala de nós (maquete) — o token do tema só
+    // fica exposto em data-map-windfield-color para debug/e2e.
     const colorRef = { current: cssRgbToken(host, '--data-wind', '167 139 250') };
     const particles = particlesRef.current;
     // §9 — o pool ajusta-se ao zoom em vez de um budget fixo (denso em z alto).
@@ -221,13 +249,13 @@ export function useMapWindField({
       for (const p of particles) {
         let drawn = false;
         for (let s = 0; s < steps; s++) {
-          if (!advectWindParticle(gridsRef.current, p, 0.016, zoom)) break;
+          if (!advectWindParticle(gridsRef.current, p, 0.016, zoom, undefined, windCellKt)) break;
           const pt = project(p.lat, p.lon);
           if (drawn) {
             const k = s / steps;
-            // §9 — mesmo tecto de 45% do modo animado.
-            const a = Math.min(0.45, 0.18 + p.kt / 45) * (1 - k * k);
-            ctx.strokeStyle = `rgb(${colorRef.current} / ${a.toFixed(3)})`;
+            // Mesma escala de nós do modo animado; rasto esbate para o fim.
+            const a = Math.min(0.85, 0.42 + p.kt / 45) * (1 - k * k);
+            ctx.strokeStyle = `rgb(${windBinRgb(windKtBin(p.kt))} / ${a.toFixed(3)})`;
             ctx.lineWidth = (p.kt > 19 ? 1.7 : 1.15) * (1 - k * 0.5);
             ctx.beginPath();
             ctx.moveTo(p.px, p.py);
@@ -328,22 +356,22 @@ export function useMapWindField({
         particles.push(np);
       }
       for (const p of particles) {
-        if (!advectWindParticle(gridsRef.current, p, dt, zoom)) {
+        // Velocidade ∝ vento (u,v em m/s × px/s por m/s) e cor pelo nó actual.
+        if (!advectWindParticle(gridsRef.current, p, dt, zoom, undefined, windCellKt)) {
           if (!spawnWindParticle(gridsRef.current, view, p)) {
             // fora do campo nesta vista — volta a tentar com vida curta
             p.life = 30;
           }
         }
       }
-      drawWindParticles(
+      drawWindParticlesByKt(
         ctx,
         particles,
         (lat, lon) => {
           const p = map.latLngToLayerPoint([lat, lon]);
           return { x: p.x - origin.x, y: p.y - origin.y };
         },
-        colorRef.current,
-        isMobile ? 0.8 : 1,
+        isMobile ? 0.85 : 1,
         { width: size.x, height: size.y },
       );
       // Congela depois de desenhar este frame — o rasto fica visível.
@@ -513,5 +541,10 @@ export function useMapWindField({
     };
   }, [windOn, isReady, hasGrids, isMobile, reducedMotion, mapInstanceRef, LRef]);
 
-  return { windFieldOn: windOn, windFieldUnavailable: file !== null && !file?.wind };
+  return {
+    windFieldOn: windOn,
+    windFieldUnavailable: !fromSea && file !== null && !file?.wind,
+    windFieldFromSea: fromSea,
+    windRange,
+  };
 }

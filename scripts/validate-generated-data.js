@@ -282,6 +282,25 @@ if (mapHours !== undefined) {
   warn('map-hours.json missing — 48h map scores off (observations run or first run)');
 }
 
+// ── 3c. sea-grid.json — grelha de vento + ondulação do /mapa (camada suave)
+// Gerada só de 6 em 6 h; ausente ou velha = o mapa cai no IDW dos spots.
+const seaGrid = read('sea-grid.json');
+if (seaGrid !== undefined) {
+  const n = Array.isArray(seaGrid.boxes)
+    ? seaGrid.boxes.reduce((acc, b) => acc + (b && b.nx * b.ny), 0)
+    : -1;
+  check('seaGrid.shape', seaGrid.v === 1 && n === seaGrid.n && seaGrid.nt >= 13, `v=${seaGrid.v} n=${seaGrid.n}/${n} nt=${seaGrid.nt}`);
+  const want = Math.ceil((seaGrid.n * seaGrid.nt) / 3) * 4;
+  const badFields = ['u', 'v', 'hs', 'dir', 'per'].filter(
+    (k) => typeof seaGrid.fields?.[k] !== 'string' || seaGrid.fields[k].length !== want,
+  );
+  check('seaGrid.fields', badFields.length === 0, `field(s) with wrong length: ${badFields.join(', ')}`);
+  const ageH = (Date.now() - Date.parse(seaGrid.generatedAt)) / 3600_000;
+  if (!(ageH < 30)) warn(`sea-grid.json is ${Number.isFinite(ageH) ? ageH.toFixed(1) : '?'} h old — map wind/swell fall back to spot IDW`);
+} else if (MODE === 'full') {
+  warn('sea-grid.json missing — map swell layer off, wind uses spot IDW');
+}
+
 // ── 4. Cross-file integrity: conditions and forecasts cover the same spots ──
 if (conditions !== undefined && forecasts !== undefined) {
   const cKeys = Object.keys(conditions);

@@ -65,6 +65,7 @@ interface UseMapChromeZoneParams {
   hsEnabled: boolean;
   sstEnabled: boolean;
   currentsEnabled: boolean;
+  swellEnabled?: boolean;
   // Camadas restantes do contrato de partilha (?<layer>=1) + basemap.
   basemapMode: BasemapMode;
   goesIrEnabled: boolean;
@@ -102,6 +103,7 @@ export function useMapChromeZone({
   hsEnabled,
   sstEnabled,
   currentsEnabled,
+  swellEnabled = false,
   basemapMode,
   goesIrEnabled,
   stormsEnabled,
@@ -267,6 +269,7 @@ export function useMapChromeZone({
         hs: hsEnabled,
         sst: sstEnabled,
         currents: currentsEnabled,
+        swell: swellEnabled,
         wind: windEnabled,
         nauticalChart: nauticalChartEnabled,
         goesIr: goesIrEnabled,
@@ -289,7 +292,7 @@ export function useMapChromeZone({
   }, [
     mapInstanceRef, locale, selectedSport, selectedRegion,
     radarEnabled, nauticalChartEnabled, hoursOn, buoysEnabled,
-    hsEnabled, sstEnabled, currentsEnabled, windEnabled, basemapMode,
+    hsEnabled, sstEnabled, currentsEnabled, swellEnabled, windEnabled, basemapMode,
     goesIrEnabled,
     stormsEnabled, warnAreasEnabled, coastalWarningsEnabled,
     showToast, t.map.shareCopied,

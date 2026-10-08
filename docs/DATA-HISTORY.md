@@ -64,6 +64,14 @@ normal, falha antes de se tornar um problema de histórico.
 > do lado dos forecasts (`forecasts/` e `forecasts.json` pesam ~11 MB cada;
 > ver «Médio prazo»), não de subir o tecto.
 
+> 2026-10-08: entra `public/data/sea-grid.json` (vento + ondulação em grelha
+> de 0,5° × 55 h para o /mapa, `scripts/build-sea-grid.js`). Um só ficheiro
+> reescrito (sem arquivo nem frames), **~160 KB** (bytes quantizados em
+> base64, ~80 KB gzip) — +1 ficheiro e +0,16 MB na árvore. Só é regenerado
+> quando tem ≥ 5,5 h, por isso entra no histórico ~4×/dia (~0,6 MB/dia de
+> blobs, contra ~1,1 MB por corrida do `forecasts.json`). Tecto próprio de
+> 0,5 MB em `check-payload-budgets.js`.
+
 ## Porque cresce
 
 `scripts/push-data-update.sh` corre `git add -f public/data/` a cada ~30 min e

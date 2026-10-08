@@ -124,6 +124,10 @@ const DATA_FILE_BUDGETS_MB = {
   // data/sat-mtg/frames/ (~0.3 MB cada) ficam fora deste check; o tecto
   // deles está no sub-orçamento de check-data-history-budget.js.
   'sat-mtg.json': 0.1,
+  // sea-grid: vento + ondulação a 0,5° × 55 h em bytes base64 (~160 KB,
+  // ~80 KB gzip). 0,5 MB apanha uma regressão de formato (arrays de números
+  // custariam ~1,2 MB) ou uma grelha mais fina sem rever a quota.
+  'sea-grid.json': 0.5,
 };
 
 const budgetBytes = BUDGET_MB * 1024 * 1024;

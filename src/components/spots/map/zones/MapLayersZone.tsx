@@ -14,7 +14,7 @@ import type L from 'leaflet';
 import {
   Activity, Anchor, Clock, CloudRain, LifeBuoy,
   Navigation, Sailboat, SatelliteDish, CloudLightning,
-  Thermometer, AlertTriangle,
+  Thermometer, AlertTriangle, Waves,
 } from 'lucide-react';
 import { getTranslation } from '@/lib/i18n';
 import {
@@ -30,6 +30,9 @@ import { useMapHsField } from '../hooks/useMapHsField';
 import { useMapSstField } from '../hooks/useMapSstField';
 import { useMapCurrentsField } from '../hooks/useMapCurrentsField';
 import { useMapWindField } from '../hooks/useMapWindField';
+import { useMapSwellField, useSwellToggle } from '../hooks/useMapSwellField';
+import { useSeaGrid, useSeaGridFrame } from '../hooks/useSeaGrid';
+import { setMapLayerUrlParam } from '@/lib/mapShareUrl';
 import type { FieldSpot } from '@/lib/mapHsField';
 
 type MapTranslation = ReturnType<typeof getTranslation>;
@@ -179,6 +182,8 @@ export interface MapLayerCopy {
   sstHint: string;
   currentsLabel: string;
   currentsHint: string;
+  swellLabel: string;
+  swellHint: string;
   nauticalChartLabel: string;
   nauticalChartHint: string;
   satIrLabel: string;
@@ -202,6 +207,11 @@ interface UseMapLayersFieldsParams {
   initialHsEnabled: boolean;
   initialSstEnabled: boolean;
   initialCurrentsEnabled: boolean;
+  /** Deep link `?swell=1` — camada «Ondulação». */
+  initialSwellEnabled?: boolean;
+  /** Spots com símbolo de ondulação (os visíveis no mapa, já filtrados). */
+  swellSpots?: FieldSpot[];
+  locale?: string;
   /** Estado base (radar/48 h/boias/etc.) — lido pelos itens do menu e legenda. */
   base: MapLayersBase;
   /** Spots mínimos para os campos interpolados (mesma fonte dos marcadores). */
@@ -221,6 +231,9 @@ export function useMapLayersFields({
   initialHsEnabled,
   initialSstEnabled,
   initialCurrentsEnabled,
+  initialSwellEnabled = false,
+  swellSpots,
+  locale = 'pt',
   base,
   hsSpots,
   windEnabled,
@@ -276,7 +289,16 @@ export function useMapLayersFields({
     hoursFrame,
     spots: hsSpots,
   });
-  useMapWindField({
+  // Grelha de modelo (sea-grid.json) partilhada pelo vento e pela
+  // «Ondulação» — só pedida quando uma das duas está ligada no fullscreen.
+  const { swellWanted, toggleSwell: toggleSwellRaw, disableSwell } = useSwellToggle({
+    initialEnabled: initialSwellEnabled,
+  });
+  const fieldsSurface = isFullscreen && !isHeroEmbed;
+  const seaGrid = useSeaGrid(fieldsSurface && (windEnabled || swellWanted));
+  const seaFrame = useSeaGridFrame(seaGrid, hoursFile, hoursLive, hoursFrame);
+
+  const { windFieldOn, windRange } = useMapWindField({
     mapInstanceRef,
     LRef,
     isReady,
@@ -288,21 +310,62 @@ export function useMapLayersFields({
     hoursLive,
     hoursFrame,
     spots: hsSpots,
+    seaGrid,
+    seaFrame,
   });
+
+  const { swellOn, swellUnavailable, swellRange } = useMapSwellField({
+    mapInstanceRef,
+    LRef,
+    isReady,
+    isFullscreen,
+    isHeroEmbed,
+    isMobile,
+    enabled: swellWanted,
+    seaGrid,
+    seaFrame,
+    spots: swellSpots ?? hsSpots,
+    locale,
+    windOn: windFieldOn,
+    labels: t.mapUiLayers,
+  });
+  // Botão do menu: «ligada» = o utilizador pediu a camada (mesmo enquanto a
+  // grelha carrega); o desenho segue `swellOn`.
+  const swellEnabled = fieldsSurface && swellWanted;
 
   useEffect(() => {
     if (sstEnabled && hsEnabled) disableHs();
   }, [sstEnabled, hsEnabled, disableHs]);
 
+  // «Ondulação», Hs (IDW) e SST pintam o mar inteiro — uma de cada vez.
+  useEffect(() => {
+    if (!swellEnabled) return;
+    if (hsEnabled) disableHs();
+    if (sstEnabled) disableSst();
+  }, [swellEnabled, hsEnabled, sstEnabled, disableHs, disableSst]);
+
   const toggleHs = useCallback(() => {
     if (!hsEnabled && sstEnabled) disableSst();
+    if (!hsEnabled && swellWanted) disableSwell();
     toggleHsRaw();
-  }, [hsEnabled, sstEnabled, toggleHsRaw, disableSst]);
+  }, [hsEnabled, sstEnabled, swellWanted, toggleHsRaw, disableSst, disableSwell]);
 
   const toggleSst = useCallback(() => {
     if (!sstEnabled && hsEnabled) disableHs();
+    if (!sstEnabled && swellWanted) disableSwell();
     toggleSstRaw();
-  }, [sstEnabled, hsEnabled, toggleSstRaw, disableHs]);
+  }, [sstEnabled, hsEnabled, swellWanted, toggleSstRaw, disableHs, disableSwell]);
+
+  const toggleSwell = useCallback(() => {
+    toggleSwellRaw();
+  }, [toggleSwellRaw]);
+
+  // URL acompanha a camada (merge — os outros params ficam): um reload ou
+  // um link copiado da barra mantém a «Ondulação». Só no /mapa.
+  useEffect(() => {
+    if (!fieldsSurface) return;
+    setMapLayerUrlParam('swell', swellWanted);
+  }, [fieldsSurface, swellWanted]);
 
   const layerCopy = useMemo<MapLayerCopy>(() => ({
     radarLabel,
@@ -319,6 +382,8 @@ export function useMapLayersFields({
     sstHint: t.map.sstHint,
     currentsLabel: currentsEnabled ? t.map.hideCurrents : t.map.showCurrents,
     currentsHint: t.map.currentsHint,
+    swellLabel: t.mapUiLayers.layerSwell,
+    swellHint: t.mapUiLayers.swellHint,
     nauticalChartLabel: t.mapUiLayers.layerNauticalChart,
     nauticalChartHint: t.map.nauticalChartHint,
     satIrLabel: t.mapUiLayers.layerSatelliteIr,
@@ -406,6 +471,17 @@ export function useMapLayersFields({
       iconClass: 'text-score-poor',
     } satisfies MapLayersMenuItem]),
     {
+      key: 'swell',
+      group: 'sea',
+      label: lyr.layerSwell,
+      hint: swellEnabled && swellUnavailable ? `${layerCopy.swellHint} — ${lyr.unavailable}` : layerCopy.swellHint,
+      icon: <Waves className="w-4 h-4" aria-hidden />,
+      pressed: swellEnabled,
+      onToggle: toggleSwell,
+      toggleAttr: 'data-map-swell-toggle',
+      iconClass: 'text-data-waves',
+    },
+    {
       key: 'hs',
       group: 'sea',
       label: lyr.layerHs,
@@ -479,6 +555,7 @@ export function useMapLayersFields({
     radarUnavailable, radarEnabled, toggleRadar,
     hoursUnavailable, hoursOn, toggleHours,
     goesIrEnabled, toggleGoesIr,
+    swellEnabled, swellUnavailable, toggleSwell,
     hsUnavailable, hsEnabled, toggleHs,
     sstUnavailable, sstEnabled, toggleSst,
     currentsUnavailable, currentsEnabled, toggleCurrents,
@@ -504,6 +581,10 @@ export function useMapLayersFields({
     currentsVisible: currentsEnabled,
     windTitle: t.map.windLegend,
     windVisible: isFullscreen && !isHeroEmbed && windEnabled,
+    windRange: windFieldOn ? windRange : null,
+    swellVisible: swellOn,
+    swellRange,
+    seaLegendCopy: t.mapUiLayers,
     bathymetryTitle: t.map.bathymetryLegend,
     // Em hero embeds a «Carta náutica» resume-se às isóbatas — batimetria e
     // seamarks não pintam lá, logo a legenda também não as mostra.
@@ -522,6 +603,7 @@ export function useMapLayersFields({
     hsEnabled, hsUnavailable, toggleHs,
     sstEnabled, sstUnavailable, toggleSst,
     currentsEnabled, currentsUnavailable, toggleCurrents,
+    swellEnabled, swellUnavailable, toggleSwell,
     layerCopy, sheetLayers, legendLayerProps,
   };
 }

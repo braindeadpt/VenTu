@@ -1,5 +1,6 @@
 'use client';
 
+import { HS_M_STOPS, legendGradient } from '@/lib/mapSwellField';
 import { useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Layers, Map as MapIcon, RotateCcw, Satellite } from 'lucide-react';
@@ -45,6 +46,7 @@ const GROUP_OF: Record<string, MapLayerGroup> = {
   hours: 'time',
   radar: 'time',
   goesIr: 'time',
+  swell: 'sea',
   hs: 'sea',
   sst: 'sea',
   currents: 'sea',
@@ -59,9 +61,10 @@ const ORDER_OF: Record<string, number> = {
   hours: 0,
   radar: 1,
   goesIr: 2,
-  hs: 0,
-  sst: 1,
-  currents: 2,
+  swell: 0,
+  hs: 1,
+  sst: 2,
+  currents: 3,
   buoys: 0,
   nauticalChart: 1,
   coastalWarnings: 2,
@@ -71,6 +74,7 @@ const NAME_KEY: Record<string, keyof mapUiLayersDict> = {
   hours: 'layerHours',
   radar: 'layerRadar',
   goesIr: 'layerSatelliteIr',
+  swell: 'layerSwell',
   hs: 'layerHs',
   sst: 'layerSst',
   currents: 'layerCurrents',
@@ -208,6 +212,14 @@ function miniLegendFor(key: string, t: Translation): React.ReactNode {
           <IsobathsMiniLegend />
           <SeamarksMiniLegend marksLabel={t.map.seamarksLegendMarks} />
         </div>
+      );
+    case 'swell':
+      // Mesma escala de Hs da camada (maquete), até 3,5 m.
+      return (
+        <LegendRamp
+          gradient={legendGradient(HS_M_STOPS, 3.5)}
+          labels={['0', '1', '2', '3']}
+        />
       );
     case 'hs':
       return (

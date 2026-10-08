@@ -1,5 +1,7 @@
 'use client';
 
+import { SwellLegend, WindKtLegend } from '@/components/spots/SeaFieldLegend';
+import type { mapUiLayersDict } from '@/lib/translations/mapUi/layers';
 import { getTranslation } from '@/lib/i18n';
 import { useEffect, useState } from 'react';
 import { getScoreTierLabel, type ScoreTier } from '@/lib/sportScore';
@@ -50,6 +52,12 @@ interface MapLegendProps {
   currentsVisible?: boolean;
   windTitle?: string;
   windVisible?: boolean;
+  /** Intervalo de vento (nós) na grelha à hora activa — legenda por cor. */
+  windRange?: { min: number; max: number } | null;
+  /** Camada «Ondulação» (grelha de modelo). */
+  swellVisible?: boolean;
+  swellRange?: { min: number; max: number } | null;
+  seaLegendCopy?: mapUiLayersDict;
   bathymetryTitle?: string;
   bathymetryVisible?: boolean;
   bathymetryContoursLabel?: string;
@@ -121,6 +129,10 @@ export default function MapLegend({
   currentsVisible = false,
   windTitle,
   windVisible = false,
+  windRange = null,
+  swellVisible = false,
+  swellRange = null,
+  seaLegendCopy,
   bathymetryTitle,
   bathymetryVisible = false,
   bathymetryContoursLabel,
@@ -142,10 +154,10 @@ export default function MapLegend({
   // the content visible regardless of `collapsed`); below lg the user taps
   // the header to expand it.
   useEffect(() => {
-    if (placement !== 'hero' && (radarVisible || isobathsVisible || hsVisible || sstVisible || currentsVisible || windVisible || bathymetryVisible || seamarksVisible || warningsVisible)) {
+    if (placement !== 'hero' && (radarVisible || isobathsVisible || hsVisible || sstVisible || currentsVisible || windVisible || swellVisible || bathymetryVisible || seamarksVisible || warningsVisible)) {
       setCollapsed(false);
     }
-  }, [placement, radarVisible, isobathsVisible, hsVisible, sstVisible, currentsVisible, windVisible, bathymetryVisible, seamarksVisible, warningsVisible]);
+  }, [placement, radarVisible, isobathsVisible, hsVisible, sstVisible, currentsVisible, windVisible, swellVisible, bathymetryVisible, seamarksVisible, warningsVisible]);
 
   const scoreTitle = t.mapUiChrome.legendScoreTitle;
 
@@ -265,13 +277,24 @@ export default function MapLegend({
           </div>
         </div>
       )}
+      {swellVisible && seaLegendCopy && (
+        <div className="mt-2 pt-2 border-t border-divider" data-map-swell-legend>
+          <p className="text-[10px] font-semibold uppercase tracking-wide text-fg-subtle mb-1">
+            {seaLegendCopy.swellLegend}
+          </p>
+          <SwellLegend range={swellRange} copy={seaLegendCopy} locale={locale} />
+        </div>
+      )}
       {windVisible && windTitle && (
         <div className="mt-2 pt-2 border-t border-divider" data-map-wind-legend>
           <p className="text-[10px] font-semibold uppercase tracking-wide text-fg-subtle mb-1">
             {windTitle}
           </p>
-          {/* Amostras reais — mesma cor/espessura das partículas de vento
-              (maquete: 5 kt / 15 kt / 25+ kt). */}
+          {/* Escala em nós da maquete — a cor das partículas segue-a. Sem
+              grelha nem intervalo, ficam as amostras de espessura antigas. */}
+          {seaLegendCopy && windRange ? (
+            <WindKtLegend range={windRange} copy={seaLegendCopy} />
+          ) : (
           <div className="grid grid-cols-3 gap-1.5 text-center text-[11px] text-fg-muted">
             {[
               { w: 1.4, op: 0.55, label: '5 kt' },
@@ -292,6 +315,7 @@ export default function MapLegend({
               </span>
             ))}
           </div>
+          )}
         </div>
       )}
       {bathymetryVisible && bathymetryTitle && (

@@ -306,6 +306,20 @@ jobs:
           echo "::error::Open-Meteo update failed after 3 attempts"
           exit 1
 
+      # Grelha regular de vento + ondulação (0,5°, 54 h horárias) para as
+      # camadas «Vento» e «Ondulação» do /mapa — substitui o IDW entre spots.
+      # Só em corridas full e só quando o ficheiro tem ≥ 5,5 h (os modelos
+      # saem de 6 em 6 h): ~4×/dia × ~790 chamadas ponderadas, somadas ao
+      # contador diário do pipeline-meta.json. Um único ficheiro reescrito
+      # (~160 KB), sem arquivo — o orçamento está em check-payload-budgets.js.
+      # Falha suave: fica o último commitado; o mapa cai no IDW dos spots
+      # quando a grelha não cobre a hora pedida (> 30 h de idade).
+      - name: Build sea grid (wind + swell, Open-Meteo 0.5°)
+        if: steps.gate.outputs.mode == 'full'
+        continue-on-error: true
+        timeout-minutes: 6
+        run: node scripts/build-sea-grid.js
+
       - name: Merge IPMA + Ecowitt observations
         if: steps.gate.outputs.mode != 'skip'
         env:

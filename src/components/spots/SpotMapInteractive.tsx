@@ -1,5 +1,6 @@
 'use client';
 
+import { isOceanFieldSpot } from '@/lib/mapHsField';
 import { useEffect, useRef, useState, useCallback, useMemo, startTransition, type ComponentProps } from 'react';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
@@ -84,6 +85,8 @@ interface SpotMapInteractiveProps {
   initialHsEnabled?: boolean;
   initialSstEnabled?: boolean;
   initialCurrentsEnabled?: boolean;
+  /** Deep link `?swell=1` — camada «Ondulação» (grelha de modelo). */
+  initialSwellEnabled?: boolean;
   initialWindEnabled?: boolean;
   initialGoesIrEnabled?: boolean;
   initialStormsEnabled?: boolean;
@@ -117,6 +120,7 @@ export default function SpotMapInteractive({
   initialHsEnabled = false,
   initialSstEnabled = false,
   initialCurrentsEnabled = false,
+  initialSwellEnabled = false,
   initialWindEnabled = false,
   initialGoesIrEnabled = false,
   initialStormsEnabled = false,
@@ -408,6 +412,16 @@ export default function SpotMapInteractive({
     [fieldSource],
   );
 
+  // Símbolos de ondulação (seta + chevrons) só nos spots VISÍVEIS — o campo
+  // em si vem da grelha de modelo e não depende de filtros.
+  const swellSpots = useMemo(
+    () =>
+      visibleSpots
+        .filter((d) => isOceanFieldSpot({ type: d.spot.type, bestSwell: d.spot.bestSwell }))
+        .map((d) => ({ id: d.spot.id, lat: d.spot.lat, lon: d.spot.lon })),
+    [visibleSpots],
+  );
+
   // ── Zona de camadas: campos interpolados + itens do menu + legenda ──
   const fields = useMapLayersFields({
     mapInstanceRef,
@@ -419,6 +433,9 @@ export default function SpotMapInteractive({
     initialHsEnabled,
     initialSstEnabled,
     initialCurrentsEnabled,
+    initialSwellEnabled,
+    swellSpots,
+    locale,
     base: layersBase,
     hsSpots,
     windEnabled,
@@ -428,6 +445,7 @@ export default function SpotMapInteractive({
     hsEnabled, hsUnavailable, toggleHs,
     sstEnabled, sstUnavailable, toggleSst,
     currentsEnabled, currentsUnavailable, toggleCurrents,
+    swellEnabled, swellUnavailable, toggleSwell,
     layerCopy, sheetLayers, legendLayerProps,
   } = fields;
 
@@ -456,6 +474,7 @@ export default function SpotMapInteractive({
     hsEnabled,
     sstEnabled,
     currentsEnabled,
+    swellEnabled,
     basemapMode,
     goesIrEnabled,
     stormsEnabled,
@@ -670,6 +689,11 @@ export default function SpotMapInteractive({
     currentsUnavailable,
     currentsLabel: layerCopy.currentsLabel,
     currentsHint: layerCopy.currentsHint,
+    swellEnabled,
+    swellUnavailable,
+    swellLabel: layerCopy.swellLabel,
+    swellHint: layerCopy.swellHint,
+    toggleSwell,
     nauticalChartLabel: layerCopy.nauticalChartLabel,
     nauticalChartHint: layerCopy.nauticalChartHint,
     goesIrEnabled,
