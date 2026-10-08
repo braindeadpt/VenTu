@@ -83,11 +83,23 @@ for (const vp of [
       const box = (await g.boundingBox())!;
       expect(box.x).toBeGreaterThanOrEqual(0);
       expect(box.x + box.width).toBeLessThanOrEqual(vp.width);
-      expect(Math.abs(box.x + box.width / 2 - vp.width / 2)).toBeLessThan(4);
+      // Topo-centro da faixa LIVRE do mapa: sem painel, o centro do ecrã; com
+      // o painel «Explorar» aberto (desktop ≥ 768), o selector e a pill
+      // centram-se à direita dele (globals.css, --map-panel-offset) — um
+      // centro absoluto ficava por baixo do painel. Mede contra o painel real.
+      const panel = page.locator('[data-map-panel="open"]').filter({ visible: true }).first();
+      const panelBox = (await panel.count()) ? await panel.boundingBox() : null;
+      const freeLeft = panelBox ? panelBox.x + panelBox.width : 0;
+      expect(box.x).toBeGreaterThanOrEqual(freeLeft);
+      const pill = await page.locator('[data-map-time-pill]').boundingBox();
+      if (pill) {
+        // Selector e pill partilham o mesmo eixo vertical.
+        expect(Math.abs(box.x + box.width / 2 - (pill.x + pill.width / 2))).toBeLessThan(4);
+        expect(pill.y).toBeGreaterThanOrEqual(box.y + box.height);
+      }
+      if (!panelBox) expect(Math.abs(box.x + box.width / 2 - vp.width / 2)).toBeLessThan(4);
       const stack = await page.locator('[data-map-control-stack]').boundingBox();
       if (stack) expect(box.x + box.width).toBeLessThanOrEqual(stack.x);
-      const pill = await page.locator('[data-map-time-pill]').boundingBox();
-      if (pill) expect(pill.y).toBeGreaterThanOrEqual(box.y + box.height);
       for (const name of ['Vento', 'Ondulação', 'Nenhum'] as const) {
         const r = (await radio(page, name).boundingBox())!;
         expect(r.height).toBeGreaterThanOrEqual(36);
@@ -96,23 +108,27 @@ for (const vp of [
 
     test('exclusivo: Ondulação desliga o vento e vice-versa; Nenhum desliga os dois', async ({ page }) => {
       await openMapa(page, '?wind=1');
+      // `data-map-swell` vive no .leaflet-container (useMapSwellField);
+      // `data-map-wind` é espelho do shell `[data-map-fullscreen]`, como
+      // data-map-cluster/hs/sst — lê-se cada um no seu dono.
       const map = page.locator('.leaflet-container');
+      const shell = page.locator('[data-map-fullscreen]');
       await expect(radio(page, 'Vento')).toHaveAttribute('aria-checked', 'true', { timeout: 15_000 });
-      await expect(map).toHaveAttribute('data-map-wind', 'true');
+      await expect(shell).toHaveAttribute('data-map-wind', 'true');
 
       await radio(page, 'Ondulação').click();
       await expect(radio(page, 'Ondulação')).toHaveAttribute('aria-checked', 'true');
-      await expect(map).toHaveAttribute('data-map-wind', 'false');
+      await expect(shell).toHaveAttribute('data-map-wind', 'false');
       await expect(map).toHaveAttribute('data-map-swell', 'true', { timeout: 15_000 });
       await expect.poll(() => new URL(page.url()).searchParams.get('swell')).toBe('1');
 
       await radio(page, 'Vento').click();
-      await expect(map).toHaveAttribute('data-map-wind', 'true');
+      await expect(shell).toHaveAttribute('data-map-wind', 'true');
       await expect(map).toHaveAttribute('data-map-swell', 'false', { timeout: 15_000 });
       await expect.poll(() => new URL(page.url()).searchParams.get('swell')).toBeNull();
 
       await radio(page, 'Nenhum').click();
-      await expect(map).toHaveAttribute('data-map-wind', 'false');
+      await expect(shell).toHaveAttribute('data-map-wind', 'false');
       await expect(map).toHaveAttribute('data-map-swell', 'false');
       await expect.poll(() => new URL(page.url()).searchParams.get('wind')).toBe('0');
       expect(await page.evaluate(() => localStorage.getItem('ventu.map.wind'))).toBe('0');
@@ -143,7 +159,7 @@ test.describe('Selector — teclado, deep links e legenda', () => {
   test('?swell=1 vence a pref de vento; ?wind=0 abre em «Nenhum»', async ({ page }) => {
     await openMapa(page, '?swell=1', { 'ventu.map.wind': '1' });
     await expect(radio(page, 'Ondulação')).toHaveAttribute('aria-checked', 'true', { timeout: 15_000 });
-    await expect(page.locator('.leaflet-container')).toHaveAttribute('data-map-wind', 'false');
+    await expect(page.locator('[data-map-fullscreen]')).toHaveAttribute('data-map-wind', 'false');
 
     await page.goto('/pt/mapa/?wind=0', { waitUntil: 'domcontentloaded', timeout: 60_000 });
     await page.evaluate(() => localStorage.setItem('ventu.map.wind', '1'));

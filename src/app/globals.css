@@ -2158,6 +2158,16 @@ body:has(header[data-header-compact='true']) [data-map-fullscreen='true'].top-16
     left: 12px;
     right: 64px;
   }
+  /* Sheet «open» (88% do ecrã): o topo do sheet e o grabber sobem até à
+     faixa do selector (top-3) e da pill (top 60 px), ambos a z-1150 acima do
+     sheet (z-1100) — a pill roubava o toque no grabber e o ciclo
+     open→peek ficava preso. Com a lista aberta o mapa está tapado: o cromo
+     do topo sai (sem foco nem toque) e volta no half/peek. */
+  [data-map-fullscreen='true']:has([data-explore-sheet='open']) [data-map-time-pill],
+  [data-map-fullscreen='true']:has([data-explore-sheet='open']) [data-map-sea-mode-switch] {
+    visibility: hidden;
+    pointer-events: none;
+  }
 }
 
 /* §11 — popovers do cromo (legenda, scrubber 48 h, menu «Camadas»):
