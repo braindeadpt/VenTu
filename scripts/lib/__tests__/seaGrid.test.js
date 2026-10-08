@@ -1,5 +1,6 @@
 /**
- * Testes das partes puras do build-sea-grid.js (grelha de vento + ondulação).
+ * Testes das partes puras do build-sea-grid.js (v3: GFS + WW3 em grelha via
+ * ERDDAP do PacIOOS) e do encoder v2 que os stubs e2e ainda usam.
  */
 import { describe, expect, it } from 'vitest';
 import { createRequire } from 'module';
@@ -7,88 +8,136 @@ import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 const sg = require('../seaGrid.js');
 
-describe('seaGrid — grelha e quantização', () => {
-  it('caixas: fundo atlântico a 1° + três caixas costeiras a 0,5°, na mesma malha', () => {
-    const { boxes, nodes } = sg.buildNodes();
-    expect(boxes.map((b) => [b.id, b.step])).toEqual([
-      ['mainland', 0.5],
-      ['azores', 0.5],
-      ['madeira', 0.5],
-      ['atlantic', 1],
+describe('seaGrid v3 — caixas, pedidos e CSV do ERDDAP', () => {
+  it('três caixas aninhadas na malha de 0,5°, domínio muito maior que o /mapa', () => {
+    expect(sg.TIERS.map((t) => [t.id, t.step])).toEqual([
+      ['core', 0.5],
+      ['regional', 1],
+      ['ocean', 2],
     ]);
-    expect(nodes.length).toBe(boxes.reduce((n, b) => n + b.nx * b.ny, 0));
-    const atl = boxes[3];
-    // domínio da maquete: 26,5–46,5 N × 34,5–0,5 W
-    expect(atl.west).toBe(-34.5);
-    expect(atl.south).toBe(26.5);
-    expect(atl.west + (atl.nx - 1) * atl.step).toBe(-0.5);
-    expect(atl.south + (atl.ny - 1) * atl.step).toBe(46.5);
-    // todos os nós caem na malha de 0,5° (nós coincidentes partilham o pedido)
-    for (const n of nodes) {
-      expect(Math.abs(n.lat * 2 - Math.round(n.lat * 2))).toBeLessThan(1e-9);
-      expect(Math.abs(n.lon * 2 - Math.round(n.lon * 2))).toBeLessThan(1e-9);
+    const ocean = sg.TIERS[2];
+    expect(ocean).toMatchObject({ south: 0, north: 72, west: -100, east: 44 });
+    for (let k = 1; k < sg.TIERS.length; k++) {
+      const a = sg.TIERS[k - 1];
+      const b = sg.TIERS[k];
+      // cada caixa contém a anterior com folga ≥ esbatido
+      expect(b.west).toBeLessThanOrEqual(a.west - 4);
+      expect(b.east).toBeGreaterThanOrEqual(a.east + 4);
+      expect(b.south).toBeLessThanOrEqual(a.south - 4);
+      expect(b.north).toBeGreaterThanOrEqual(a.north + 4);
     }
+    for (const t of sg.TIERS) {
+      for (const x of [t.south, t.north, t.west, t.east]) expect(Number.isInteger(x / t.step)).toBe(true);
+    }
+    expect(sg.tierDims(sg.TIERS[0])).toEqual({ nx: 89, ny: 57 });
+    expect(sg.SEA_GRID_FADE_DEG).toBeGreaterThanOrEqual(3);
   });
 
-  it('selecção de nós pela máscara de terra: terra funda fora, finas só na costa', () => {
-    const { nodes } = sg.buildNodes();
-    const at = (lat, lon, box) => nodes.find((n, k) => n.lat === lat && n.lon === lon && (!box || k >= box));
-    // Madrid (terra funda) — nem a fina nem a grossa pedem
-    expect(nodes.filter((n) => n.lat === 40.5 && n.lon === -3.5).every((n) => !n.fetch)).toBe(true);
-    // mar ao largo de Peniche (costa) — pedido
-    expect(at(39.5, -9.5).fetch).toBe(true);
-    // costa cantábrica e golfo de Cádis entram na caixa fina
-    expect(at(43.5, -6.0).fetch).toBe(true);
-    expect(at(36.5, -6.5).fetch).toBe(true);
-    // mar aberto na caixa fina (longe da costa) — fica para o fundo de 1°
-    expect(at(36.5, -11.5).fetch).toBe(false);
-    // ... e o fundo pede-o
-    expect(nodes.filter((n) => n.lat === 36.5 && n.lon === -11.5).some((n) => n.fetch)).toBe(true);
-    // sem máscara: heurística v1
-    const legacy = sg.buildNodes(sg.BOXES, null);
-    expect(legacy.nodes.find((n) => n.lat === 40.5 && n.lon === -7).fetch).toBe(false);
+  it('pickTimes: múltiplos de 3 h desde agora (floor) até +48 h', () => {
+    const now = Date.UTC(2026, 9, 8, 19, 40);
+    const t = sg.pickTimes(now);
+    expect(t[0]).toBe(Date.UTC(2026, 9, 8, 18) / 1000);
+    expect(t.length).toBe(17);
+    expect(t[16] - t[0]).toBe(48 * 3600);
   });
 
-  it('quota: localizações únicas por API e por corrida cabem no orçamento', () => {
-    const { nodes } = sg.buildNodes();
-    const unique = sg.uniqueFetchKeys(nodes).size;
-    // nós coincidentes (0,5° ∩ 1°) contam uma vez
-    expect(unique).toBeLessThan(nodes.filter((n) => n.fetch).length);
-    // 2 APIs × ≤ 900 localizações ≤ 1 800 chamadas por corrida
-    expect(unique).toBeLessThanOrEqual(900);
-    expect(sg.SEA_GRID_MIN_AGE_HOURS).toBeGreaterThanOrEqual(11.5);
+  it('erddapUrls: lon 0–359,5, caixa que cruza Greenwich em dois pedaços, stride por passo', () => {
+    const times = [Date.UTC(2026, 9, 8, 18) / 1000, Date.UTC(2026, 9, 10, 18) / 1000];
+    const urls = sg.erddapUrls(sg.ERDDAP_WAVE, sg.TIERS[1], times);
+    expect(urls).toHaveLength(2);
+    expect(urls[0]).toContain('/ww3_global.csv?Thgt[(2026-10-08T18:00:00Z):3:(2026-10-10T18:00:00Z)][(0.0)][(14):2:(60)][(304):2:(359)]');
+    expect(urls[1]).toContain('[(14):2:(60)][(0):2:(14)]');
+    for (const v of ['sdir', 'sper', 'Tdir', 'Tper']) expect(urls[0]).toContain(`,${v}[`);
+    const wind = sg.erddapUrls(sg.ERDDAP_WIND, sg.TIERS[2], times);
+    expect(wind[0]).toContain('/ncep_global.csv?ugrd10m[(2026-10-08T18:00:00Z):1:(2026-10-10T18:00:00Z)][(0):4:(72)][(260):4:(358)]');
+    expect(wind[1]).toContain('[(0):4:(72)][(0):4:(44)]');
+    expect(wind[0]).not.toContain('[(0.0)]');
   });
 
-  it('guarda da quota: gasto de hoje + resto do pipeline (pior caso) + grelha ≤ 9 000', () => {
-    // dia inteiro pela frente (00:00 UTC): as 11 corridas full do verão = 8 326
-    const midnight = Date.UTC(2026, 9, 8, 0, 0);
-    expect(sg.projectConditionsCalls(midnight)).toBe(8326);
-    // às 22:20 UTC só falta a corrida das 00 h de Lisboa (23:17 UTC)
-    expect(sg.projectConditionsCalls(Date.UTC(2026, 9, 8, 22, 20))).toBe(362);
-    const noon = Date.UTC(2026, 9, 8, 11, 20);
-    const day = (used) => ({ openMeteoUsage: { dayUtc: '2026-10-08', dailyWeightedCalls: used, spotsFetched: 181 } });
-    // dia real típico (medido: ~1–2,5k ao meio-dia) → corre
-    const ok = sg.seaGridQuotaCheck(day(2475), 1680, noon);
-    expect(ok).toMatchObject({ ok: true, usedToday: 2475, cost: 1680 });
-    expect(ok.projected).toBe(2475 + ok.rest + 1680);
-    // dia no pior caso teórico (todas as âncoras multi-modelo) → salta
-    expect(sg.seaGridQuotaCheck(day(4706), 1680, noon).ok).toBe(false);
-    // contador de ontem não conta
-    const stale = { openMeteoUsage: { dayUtc: '2026-10-07', dailyWeightedCalls: 9000 } };
-    expect(sg.seaGridQuotaCheck(stale, 1680, noon).usedToday).toBe(0);
+  it('parseErddapCsv + gridFromRows: lon > 180 → negativa, NaN → nulo, malha da caixa', () => {
+    const csv = [
+      'time,depth,latitude,longitude,Thgt,sdir',
+      'UTC,m,degrees_north,degrees_east,meters,degrees',
+      '2026-10-08T18:00:00Z,0.0,38.0,350.0,1.5,300.0',
+      '2026-10-08T18:00:00Z,0.0,38.0,350.5,NaN,NaN',
+      '2026-10-08T21:00:00Z,0.0,38.5,350.0,1.7,310.0',
+      '2026-10-08T21:00:00Z,0.0,38.25,350.0,9,9',
+      '',
+    ].join('\n');
+    const rows = sg.parseErddapCsv(csv, ['Thgt', 'sdir']);
+    expect(rows[0]).toEqual({ time: Date.UTC(2026, 9, 8, 18) / 1000, lat: 38, lon: -10, vals: [1.5, 300] });
+    expect(rows[1].vals).toEqual([null, null]);
+    expect(() => sg.parseErddapCsv('a,b\n', ['Thgt'])).toThrow();
+    const tier = { id: 'x', step: 0.5, south: 38, north: 38.5, west: -10, east: -9.5 };
+    const times = [Date.UTC(2026, 9, 8, 18) / 1000, Date.UTC(2026, 9, 8, 21) / 1000];
+    const g = sg.gridFromRows(rows, tier, times, 2);
+    expect(g).toMatchObject({ nx: 2, ny: 2, n: 4, hit: 3 }); // 38.25 fora da malha
+    expect(g.arrays[0][0]).toBeCloseTo(1.5);
+    expect(Number.isNaN(g.arrays[0][1])).toBe(true);
+    expect(g.arrays[0][4 + 2]).toBeCloseTo(1.7);
   });
 
+  it('storedMask: só mar do WW3 (ou mar só-vento) e caixas grossas fora do interior da fina', () => {
+    const tiers = [
+      { id: 'f', step: 0.5, south: 36, north: 44, west: -14, east: -6 },
+      { id: 'c', step: 1, south: 30, north: 50, west: -20, east: 0 },
+    ];
+    const { nx, ny } = sg.tierDims(tiers[1]);
+    const hs = new Float32Array(nx * ny).fill(1);
+    hs[0] = NaN; // terra
+    const keep = sg.storedMask(tiers, 1, hs, 1);
+    expect(keep[0]).toBe(0);
+    // centro da fina (40N 10W) não fica na grossa…
+    expect(keep[(40 - 30) * nx + (-10 + 20)]).toBe(0);
+    // …mas a zona de fusão (≤ 2° para dentro da borda da fina) fica
+    expect(keep[(40 - 30) * nx + (-13 + 20)]).toBe(1);
+    expect(sg.inWindOnlySea(38, 15)).toBe(true);
+    expect(sg.inWindOnlySea(38, -20)).toBe(false);
+  });
+
+  it('encodeGriddedSeaGrid: v3, bytes por campo, swell com fallback para a onda total', () => {
+    const tiers = [{ id: 'x', step: 0.5, south: 0, north: 0.5, west: 0, east: 0 }];
+    const times = [100, 100 + 3 * 3600];
+    const F = (a) => Float32Array.from(a);
+    const data = [{
+      u: F([3, 0, 3, 0]), v: F([-2, 0, -2, 0]),
+      hs: F([1.5, NaN, 1.6, NaN]),
+      sdir: F([300, NaN, NaN, NaN]), sper: F([12, NaN, NaN, NaN]),
+      tdir: F([290, NaN, 280, NaN]), tper: F([8, NaN, 7, NaN]),
+    }];
+    const f = sg.encodeGriddedSeaGrid({ tiers, data, times, generatedAt: 'g', source: 's' });
+    expect(f).toMatchObject({ v: 3, t0: 100, stepHours: 3, nt: 2, n: 1, fade: 4, nodata: 255 });
+    expect(f.scale.u).toBe(0.5);
+    expect(f.boxes[0]).toMatchObject({ id: 'x', nx: 1, ny: 2, offset: 0, count: 1 });
+    const b = (k) => [...Buffer.from(f.fields[k], 'base64')];
+    expect(b('u')).toEqual([134, 134]);
+    expect(b('v')).toEqual([124, 124]);
+    expect(b('hs')).toEqual([15, 16]);
+    expect(b('per')).toEqual([120, 70]); // t1 sem swell → onda total
+    expect(b('dir')).toEqual([sg.encodeDir(300), sg.encodeDir(280)]);
+  });
+
+  it('frescura: só v3, 5,5 h', () => {
+    const now = Date.UTC(2026, 9, 8, 12);
+    expect(sg.isSeaGridFresh({ v: 3, generatedAt: new Date(now - 3 * 3600_000).toISOString() }, now)).toBe(true);
+    expect(sg.isSeaGridFresh({ v: 3, generatedAt: new Date(now - 6 * 3600_000).toISOString() }, now)).toBe(false);
+    expect(sg.isSeaGridFresh({ v: 2, generatedAt: new Date(now - 3600_000).toISOString() }, now)).toBe(false);
+    expect(sg.isSeaGridFresh(null, now)).toBe(false);
+  });
+});
+
+describe('quantização (partilhada v2/v3)', () => {
   it('vento: m/s + direcção DE ONDE → bytes u/v do vector (para onde sopra)', () => {
-    // Nortada de 10 m/s (de N, 0°) sopra para sul: u≈0, v=-10
     const [u, v] = sg.encodeWind(10, 0);
     expect((u - 128) * sg.SCALE.u).toBeCloseTo(0, 5);
     expect((v - 128) * sg.SCALE.v).toBeCloseTo(-10, 5);
-    // De oeste (270°) a 4 m/s → para leste: u=+4
     const [u2] = sg.encodeWind(4, 270);
     expect((u2 - 128) * sg.SCALE.u).toBeCloseTo(4, 5);
     expect(sg.encodeWind(null, 10)).toEqual([sg.NODATA, sg.NODATA]);
-    // satura em ±31,75 m/s sem colidir com o nodata
     expect(sg.encodeWind(60, 270)[0]).toBe(254);
+    // v3: 0,5 m/s → ±63,5 m/s
+    expect(sg.encodeUV(-63.5, 40)).toEqual([1, 208]);
+    expect(sg.encodeUV(NaN, 1)).toEqual([sg.NODATA, sg.NODATA]);
   });
 
   it('Hs, período e direcção: passo, nodata e o 255 reservado', () => {
@@ -104,16 +153,7 @@ describe('seaGrid — grelha e quantização', () => {
     expect(sg.encodeDir(359.9)).toBe(0);
   });
 
-  it('pickTimeIndices parte da hora corrente', () => {
-    const t0 = Date.UTC(2026, 9, 7, 0) / 1000;
-    const times = Array.from({ length: 96 }, (_, k) => t0 + k * 3600);
-    const now = Date.UTC(2026, 9, 7, 5, 40);
-    const idx = sg.pickTimeIndices(times, now, 54);
-    expect(times[idx[0]]).toBe(Date.UTC(2026, 9, 7, 5) / 1000);
-    expect(idx.length).toBe(55);
-  });
-
-  it('encodeSeaGrid v2: só os nós com `store` entram; máscara por caixa', () => {
+  it('encodeSeaGrid v2 (stubs e2e): só os nós com `store`, máscara por caixa', () => {
     const boxes = [
       { id: 'f', west: 0, south: 0, nx: 2, ny: 2, step: 0.5, first: 0 },
       { id: 'c', west: 0, south: 0, nx: 2, ny: 2, step: 1, first: 4 },
@@ -132,49 +172,8 @@ describe('seaGrid — grelha e quantização', () => {
     });
     expect(f.v).toBe(2);
     expect(f.n).toBe(6);
-    expect(f.step).toBe(0.5);
     expect(f.boxes[0]).toMatchObject({ id: 'f', step: 0.5, offset: 0, count: 2 });
     expect([...Buffer.from(f.boxes[0].mask, 'base64')]).toEqual([0b1001]);
-    expect(f.boxes[1]).toMatchObject({ id: 'c', step: 1, offset: 2, count: 4 });
     expect(f.boxes[1].mask).toBeUndefined();
-    expect(Buffer.from(f.fields.u, 'base64').length).toBe(6);
-  });
-
-  it('encodeSeaGrid: layout [t][nó], swell com fallback para a onda total', () => {
-    const boxes = [{ id: 'x', west: 0, south: 0, nx: 2, ny: 1, offset: 0 }];
-    const nodes = [{ lat: 0, lon: 0, fetch: true }, { lat: 0, lon: 0.5, fetch: true }];
-    const wind = [
-      { wind_speed_10m: [5, 6], wind_direction_10m: [0, 90] },
-      null,
-    ];
-    const marine = [
-      { wave_height: [1.5, 1.6], swell_wave_direction: [300, 300], swell_wave_period: [12, 12] },
-      { wave_height: [0.8, null], swell_wave_direction: [null, null], swell_wave_period: [null, null], wave_direction: [270, 270], wave_period: [6, 6] },
-    ];
-    const f = sg.encodeSeaGrid({ boxes, nodes, wind, marine, times: [100, 3700], idx: [0, 1], generatedAt: 'g', source: 's' });
-    expect(f).toMatchObject({ v: 2, t0: 100, nt: 2, n: 2, stepHours: 1, nodata: 255 });
-    const hs = Buffer.from(f.fields.hs, 'base64');
-    const per = Buffer.from(f.fields.per, 'base64');
-    const u = Buffer.from(f.fields.u, 'base64');
-    expect([...hs]).toEqual([15, 8, 16, 255]);
-    // nó 1 sem swell usa wave_period
-    expect([...per]).toEqual([120, 60, 120, 255]);
-    // nó 1 sem vento pedido → nodata
-    expect(u[1]).toBe(255);
-    expect(u[2]).toBe(128 - 24); // 6 m/s de E → u = -6 → -24 passos
-  });
-
-  it('frescura (11,5 h, só v2) e soma ao contador diário da quota', () => {
-    const now = Date.UTC(2026, 9, 7, 12);
-    expect(sg.isSeaGridFresh({ v: 2, generatedAt: new Date(now - 6 * 3600_000).toISOString() }, now)).toBe(true);
-    expect(sg.isSeaGridFresh({ v: 2, generatedAt: new Date(now - 12 * 3600_000).toISOString() }, now)).toBe(false);
-    // um ficheiro v1 é refeito logo (formato antigo, só 3 caixas)
-    expect(sg.isSeaGridFresh({ v: 1, generatedAt: new Date(now - 3600_000).toISOString() }, now)).toBe(false);
-    expect(sg.isSeaGridFresh(null, now)).toBe(false);
-    const meta = { openMeteoUsage: { dayUtc: '2026-10-07', dailyWeightedCalls: 3000, weightedCalls: 363 } };
-    const out = sg.bumpOpenMeteoUsage(meta, 788, now);
-    expect(out.openMeteoUsage).toMatchObject({ dailyWeightedCalls: 3788, seaGridCalls: 788, weightedCalls: 363 });
-    const next = sg.bumpOpenMeteoUsage(meta, 788, Date.UTC(2026, 9, 8, 1));
-    expect(next.openMeteoUsage.dailyWeightedCalls).toBe(788);
   });
 });

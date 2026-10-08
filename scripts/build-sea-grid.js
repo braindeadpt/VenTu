@@ -2,51 +2,49 @@
 'use strict';
 
 /**
- * build-sea-grid.js — grelha de vento + ondulação sobre o mar inteiro do
- * /mapa (Açores → Marrocos → golfo da Biscaia), 54 h horárias, para as
- * camadas «Vento» e «Ondulação». Fundo a 1° + caixas costeiras a 0,5°
- * (continente com Galiza/Cantábrico e golfo de Cádis, Açores, Madeira) —
- * caixas e selecção de nós em scripts/lib/seaGrid.js.
+ * build-sea-grid.js — grelha de vento + ondulação do /mapa (camadas «Vento» e
+ * «Ondulação»), v3: modelos em GRELHA, sem quota por chamada.
  *
- * Corre no job de dados (update-data.yml), depois do «Update Conditions», só
- * em corridas `full`, só quando o ficheiro tem ≥ 11,5 h (≤ 2 corridas/dia) e
- * só se a quota deixar: gasto de hoje + o que o pipeline ainda vai gastar
- * até à meia-noite UTC (pior caso) + esta grelha ≤ 9 000 (90 % de 10k). O
- * gasto entra no contador diário de pipeline-meta.json
- * (openMeteoUsage.dailyWeightedCalls). Falha suave: sem ficheiro novo fica o
- * último commitado; o cliente cai no IDW dos spots quando a grelha não cobre
- * a hora pedida.
+ * Fontes (ERDDAP do PacIOOS — Universidade do Havai / NOAA IOOS, griddap CSV,
+ * sem chave):
+ *   - ncep_global  NOAA GFS 0,5°, tri-horário, 8 dias: ugrd10m, vgrd10m (m/s)
+ *   - ww3_global   WaveWatch III global 0,5°, horário, ~7 dias: Thgt (Hs),
+ *                  sdir/sper (swell), Tdir/Tper (onda total — fallback)
+ *   https://pae-paha.pacioos.hawaii.edu/erddap/griddap/ncep_global.html
+ *   https://pae-paha.pacioos.hawaii.edu/erddap/griddap/ww3_global.html
+ * Zero chamadas ao Open-Meteo (a guarda de quota da v2 desapareceu).
  *
- * Fontes (as mesmas do pipeline):
- *   - api.open-meteo.com/v1/forecast        wind_speed_10m, wind_direction_10m (best_match)
- *   - marine-api.open-meteo.com/v1/marine   wave_height, swell_wave_direction/period,
- *                                            wave_direction/period (fallback sem swell)
- * Várias coordenadas por pedido (`latitude=a,b&longitude=c,d`); cada
- * localização conta como 1 chamada para a quota, por isso os lotes são
- * pequenos e espaçados (50 a cada 6 s ≈ 500/min < 600/min do plano livre).
- *
+ * Domínio: três caixas sobrepostas (scripts/lib/seaGrid.js TIERS) — núcleo
+ * 0,5°, regional 1°, oceano 2° (0–72 N × 100 W–44 E) — 0–48 h de 3 em 3 h.
  * Formato e quantização: scripts/lib/seaGrid.js. Leitura: src/lib/seaGrid.ts.
  *
- * Uso: node scripts/build-sea-grid.js [--force] [--no-quota-guard] [--out public/data/sea-grid.json] [--hours 54]
- * Env: OPEN_METEO_FORECAST_URL / OPEN_METEO_MARINE_URL (override para testes locais).
+ * Corre num job PRÓPRIO do update-data.yml (com timeout próprio, fora do
+ * orçamento do MTG); só refaz quando o ficheiro tem ≥ 5,5 h. Falha suave:
+ * sem ficheiro novo fica o último commitado (o cliente aceita até 30 h).
+ *
+ * Uso: node scripts/build-sea-grid.js [--force] [--out public/data/sea-grid.json] [--hours 54]
+ * Env: SEA_GRID_ERDDAP_BASE (override do servidor, para testes locais).
  */
 
 const fs = require('fs');
 const path = require('path');
 const {
-  buildNodes,
-  encodeSeaGrid,
-  pickTimeIndices,
-  isSeaGridFresh,
-  bumpOpenMeteoUsage,
-  uniqueFetchKeys,
-  seaGridQuotaCheck,
+  TIERS,
+  ERDDAP_BASE,
+  ERDDAP_WIND,
+  ERDDAP_WAVE,
+  SEA_GRID_HOURS,
   SEA_GRID_MIN_AGE_HOURS,
+  pickTimes,
+  erddapUrls,
+  parseErddapCsv,
+  gridFromRows,
+  encodeGriddedSeaGrid,
+  isSeaGridFresh,
 } = require('./lib/seaGrid');
 
-const BATCH = 50;
-const BATCH_PAUSE_MS = Number(process.env.SEA_GRID_PAUSE_MS) || 6_000;
 const UA = 'VenTu sea-grid (ventu.surf; github.com/braindeadpt/VenTu)';
+const REQ_TIMEOUT_MS = 120_000;
 
 function arg(name, fallback) {
   const i = process.argv.indexOf(name);
@@ -55,59 +53,42 @@ function arg(name, fallback) {
 
 const ROOT = path.join(__dirname, '..');
 const OUT = path.resolve(arg('--out', path.join(ROOT, 'public', 'data', 'sea-grid.json')));
-const META = path.join(ROOT, 'public', 'data', 'pipeline-meta.json');
-const HOURS = Math.max(12, Math.min(96, Number(arg('--hours', '54')) || 54));
+const HOURS = Math.max(24, Math.min(96, Number(arg('--hours', String(SEA_GRID_HOURS))) || SEA_GRID_HOURS));
 const FORCE = process.argv.includes('--force');
-const NO_QUOTA_GUARD = process.argv.includes('--no-quota-guard');
-const FORECAST_URL = process.env.OPEN_METEO_FORECAST_URL || 'https://api.open-meteo.com/v1/forecast';
-const MARINE_URL = process.env.OPEN_METEO_MARINE_URL || 'https://marine-api.open-meteo.com/v1/marine';
+const BASE = process.env.SEA_GRID_ERDDAP_BASE || ERDDAP_BASE;
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-async function fetchJson(url, attempt = 1) {
-  const res = await fetch(url, { headers: { 'User-Agent': UA } });
-  if (res.status === 429 && attempt <= 3) {
-    // limite por minuto (600) — espera a janela seguinte, com recuo
-    await sleep(attempt * 62_000);
-    return fetchJson(url, attempt + 1);
+async function fetchText(url, attempt = 1) {
+  const ctl = new AbortController();
+  const timer = setTimeout(() => ctl.abort(), REQ_TIMEOUT_MS);
+  try {
+    const res = await fetch(url, { headers: { 'User-Agent': UA, 'Accept-Encoding': 'gzip' }, signal: ctl.signal });
+    if (!res.ok) throw new Error(`${res.status} ${url.slice(0, 140)}…`);
+    return await res.text();
+  } catch (err) {
+    // O ERDDAP recarrega os datasets de vez em quando (404 «unknown
+    // datasetID» durante segundos) — 4 tentativas com recuo crescente.
+    if (attempt >= 4) throw err;
+    console.log(`  tentativa ${attempt} falhou (${String(err.cause?.code ?? err.message).slice(0, 160)}) — repete`);
+    await sleep(attempt * 20_000);
+    return fetchText(url, attempt + 1);
+  } finally {
+    clearTimeout(timer);
   }
-  if (!res.ok) throw new Error(`${res.status} ${url.slice(0, 100)}…`);
-  return res.json();
 }
 
-/**
- * Pede cada localização única uma vez e devolve um array alinhado com `nodes`
- * (null onde o nó não é pedido). `marineFar`: o marine devolve a célula de
- * mar mais próxima — longe do pedido (> 0,3°) é terra: fica sem dado em vez
- * de copiar o mar do lado.
- */
-async function fetchBatched(base, hourly, nodes, extra, counter, marineFar = false) {
-  const keys = [...uniqueFetchKeys(nodes).entries()];
-  const byKey = new Map();
-  for (let b = 0; b < keys.length; b += BATCH) {
-    const chunk = keys.slice(b, b + BATCH);
-    const params = new URLSearchParams({
-      latitude: chunk.map(([, p]) => p.lat).join(','),
-      longitude: chunk.map(([, p]) => p.lon).join(','),
-      hourly: hourly.join(','),
-      timeformat: 'unixtime',
-      timezone: 'GMT',
-      forecast_days: '4',
-      ...extra,
-    });
-    const json = await fetchJson(`${base}?${params}`);
-    const list = Array.isArray(json) ? json : [json];
-    if (list.length !== chunk.length) throw new Error(`esperava ${chunk.length} localizações, veio ${list.length}`);
-    counter.calls += chunk.length;
-    list.forEach((loc, i) => {
-      const [key, p] = chunk[i];
-      const far = marineFar && (Math.abs(loc.latitude - p.lat) > 0.3 || Math.abs(loc.longitude - p.lon) > 0.3);
-      byKey.set(key, far ? null : { ...loc.hourly });
-    });
-    console.log(`  ${new URL(base).host} ${Math.min(b + BATCH, keys.length)}/${keys.length}`);
-    if (b + BATCH < keys.length) await sleep(BATCH_PAUSE_MS);
+/** Uma caixa de um dataset → arrays densos [t][nó] por variável. */
+async function fetchTier(spec, tier, times) {
+  const rows = [];
+  for (const url of erddapUrls(spec, tier, times, BASE)) {
+    const text = await fetchText(url);
+    for (const r of parseErddapCsv(text, spec.vars)) rows.push(r);
   }
-  return nodes.map((n) => (n.fetch ? byKey.get(n.key) ?? null : null));
+  const g = gridFromRows(rows, tier, times, spec.vars.length);
+  const want = g.n * times.length;
+  if (g.hit < want * 0.98) throw new Error(`${spec.dataset}/${tier.id}: ${g.hit}/${want} valores na malha`);
+  return g.arrays;
 }
 
 function readJson(p) {
@@ -121,76 +102,38 @@ function readJson(p) {
 async function main() {
   const now = Date.now();
   if (!FORCE && isSeaGridFresh(readJson(OUT), now)) {
-    console.log(`[sea-grid] ficheiro com < ${SEA_GRID_MIN_AGE_HOURS} h — salta (usar --force para refazer)`);
+    console.log(`[sea-grid] ficheiro v3 com < ${SEA_GRID_MIN_AGE_HOURS} h — salta (usar --force para refazer)`);
     return;
   }
-  const { boxes, nodes } = buildNodes();
-  const asked = uniqueFetchKeys(nodes).size;
-  const desc = boxes.map((b) => `${b.id} ${b.step}°`).join(', ');
-  console.log(`[sea-grid] ${nodes.length} nós (${desc}); ${asked} localizações por API, ${HOURS} h`);
-  if (!NO_QUOTA_GUARD) {
-    const q = seaGridQuotaCheck(readJson(META), asked * 2, now);
-    console.log(
-      `[sea-grid] quota: hoje ${q.usedToday} + pipeline até 00 UTC ${q.rest} + grelha ${q.cost} = ${q.projected} (tecto ${q.cap})`,
-    );
-    if (!q.ok) {
-      console.log('::notice title=sea-grid::quota Open-Meteo apertada hoje — grelha não refeita (fica a anterior)');
-      return;
-    }
+  const times = pickTimes(now, HOURS);
+  console.log(
+    `[sea-grid] ERDDAP ${new URL(BASE).host}: ${TIERS.map((t) => `${t.id} ${t.step}°`).join(', ')}; ` +
+      `${times.length} instantes (${new Date(times[0] * 1000).toISOString()} +${HOURS} h)`,
+  );
+  // Caixa a caixa, vento e ondas em paralelo (2 pedidos de cada vez — com 6
+  // em simultâneo o servidor recusava ligações, «fetch failed»).
+  const data = [];
+  for (const tier of TIERS) {
+    const [[u, v], [hs, sdir, sper, tdir, tper]] = await Promise.all([
+      fetchTier(ERDDAP_WIND, tier, times),
+      fetchTier(ERDDAP_WAVE, tier, times),
+    ]);
+    console.log(`  ${tier.id}: ok`);
+    data.push({ u, v, hs, sdir, sper, tdir, tper });
   }
-  const counter = { calls: 0 };
-  let wind;
-  let marine;
-  try {
-    wind = await fetchBatched(
-      FORECAST_URL,
-      ['wind_speed_10m', 'wind_direction_10m'],
-      nodes,
-      { wind_speed_unit: 'ms' },
-      counter,
-    );
-    marine = await fetchBatched(
-      MARINE_URL,
-      ['wave_height', 'swell_wave_direction', 'swell_wave_period', 'wave_direction', 'wave_period'],
-      nodes,
-      { cell_selection: 'sea' },
-      counter,
-      true,
-    );
-  } finally {
-    // Mesmo numa falha a meio, o que já foi gasto conta para a quota.
-    if (counter.calls > 0 && fs.existsSync(META)) {
-      const meta = readJson(META);
-      if (meta) fs.writeFileSync(META, `${JSON.stringify(bumpOpenMeteoUsage(meta, counter.calls, now), null, 2)}\n`);
-    }
-    console.log(`[sea-grid] ${counter.calls} chamadas ponderadas ao Open-Meteo`);
-  }
-
-  const ref = wind.find((w) => w && Array.isArray(w.time));
-  if (!ref) throw new Error('sem séries de vento');
-  const idx = pickTimeIndices(ref.time, now, HOURS);
-  if (idx.length < 13) throw new Error(`só ${idx.length} horas disponíveis`);
-  // As séries do marine têm o mesmo eixo horário (mesmo forecast_days/GMT);
-  // um desalinhamento invalidava a ondulação inteira — falha alto.
-  const mref = marine.find((m) => m && Array.isArray(m.time));
-  if (!mref || mref.time[idx[0]] !== ref.time[idx[0]]) throw new Error('eixo horário do marine ≠ do vento');
-
-  const file = encodeSeaGrid({
-    boxes,
-    nodes,
-    wind,
-    marine,
-    times: ref.time,
-    idx,
+  const file = encodeGriddedSeaGrid({
+    tiers: TIERS,
+    data,
+    times,
     generatedAt: new Date(now).toISOString(),
-    source: 'Open-Meteo forecast (best_match) + marine (best_match); 1° Atlantic + 0.5° coastal',
+    source: 'NOAA GFS 0.5° (10 m wind) + WaveWatch III global 0.5° via PacIOOS ERDDAP; 0.5°/1°/2° nested',
   });
   const tmp = `${OUT}.tmp`;
   fs.mkdirSync(path.dirname(OUT), { recursive: true });
   fs.writeFileSync(tmp, JSON.stringify(file));
   fs.renameSync(tmp, OUT);
   const kb = (fs.statSync(OUT).size / 1024).toFixed(1);
-  console.log(`[sea-grid] ${file.nt} horas × ${file.n} nós → ${path.relative(ROOT, OUT)} (${kb} KB)`);
+  console.log(`[sea-grid] ${file.nt} instantes × ${file.n} nós → ${path.relative(ROOT, OUT)} (${kb} KB)`);
 }
 
 main().catch((err) => {

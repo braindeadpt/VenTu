@@ -31,7 +31,7 @@ import { useMapSstField } from '../hooks/useMapSstField';
 import { useMapCurrentsField } from '../hooks/useMapCurrentsField';
 import { useMapWindField } from '../hooks/useMapWindField';
 import { useMapSwellField, useSwellToggle } from '../hooks/useMapSwellField';
-import { useSeaGrid, useSeaGridFrame } from '../hooks/useSeaGrid';
+import { useSeaDomainBounds, useSeaGrid, useSeaGridFrame } from '../hooks/useSeaGrid';
 import { setMapSeaModeUrlParams } from '@/lib/mapShareUrl';
 import type { MapSeaMode } from '../components/MapSeaModeSwitch';
 import type { FieldSpot } from '@/lib/mapHsField';
@@ -300,6 +300,8 @@ export function useMapLayersFields({
   });
   const fieldsSurface = isFullscreen && !isHeroEmbed;
   const seaGrid = useSeaGrid(fieldsSurface && (windEnabled || swellWanted));
+  // Pan/zoom-out do fullscreen dentro do domínio do campo (sem rectângulo).
+  useSeaDomainBounds(mapInstanceRef, LRef, isReady, fieldsSurface);
   const seaFrame = useSeaGridFrame(seaGrid, hoursFile, hoursLive, hoursFrame);
 
   const { windFieldOn, windRange } = useMapWindField({

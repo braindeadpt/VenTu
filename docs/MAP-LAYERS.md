@@ -101,58 +101,93 @@ Each field = `src/lib/map*Field.ts` (pure: samples → IDW grid → draw) +
 
 ## Sea grid (`public/data/sea-grid.json`)
 
-- Built by `scripts/build-sea-grid.js` in `update-data.yml` (full runs, only
-  when the file is ≥ 11.5 h old, and only if the quota guard allows — see
-  below): Open-Meteo forecast (`wind_speed_10m`, `wind_direction_10m`) +
-  marine (`wave_height`, `swell_wave_*`, fallback `wave_*`), **55 hourly
-  steps** from the current hour.
-- **Boxes (v2)** — all on the same 0.5° lattice, so coincident nodes are
-  requested once:
-  | id | step | extent | nodes fetched |
-  |---|---|---|---|
-  | `atlantic` | 1° | 26.5–46.5 N × 34.5–0.5 W (Azores → Morocco → Biscay) | sea nodes (sea within 0.6 cell) |
-  | `mainland` | 0.5° | 35.5–44.5 N × 11.5–1.5 W (incl. Galicia, Cantabrian coast, Gulf of Cádiz, Strait) | coastal only (land ≤ 1°, sea ≤ 0.6 cell) |
-  | `azores` | 0.5° | 36.5–40 N × 31.5–24.5 W | coastal only |
-  | `madeira` | 0.5° | 32–34 N × 18–15.5 W | coastal only |
-  Node selection uses `land-mask.json` (falls back to the v1 deep-inland
-  heuristic without it). **~840 unique locations per API per run**
-  (atlantic 651 + coastal 263, minus coincident nodes).
-- Compact format **v2**: per-box `step`, `offset`/`count` over the *stored*
-  nodes and an optional `mask` (base64 bitset, LSB first) — open sea far
-  from the coast in the fine boxes and deep land take no bytes. Fields `u`/`v`
-  (0.25 m/s, offset 128), `hs` (0.1 m), `dir` (360/256°), `per` (0.1 s) as
-  Uint8, base64, layout `[t][stored node]`; 255 = no data. **~330 KB raw,
-  ~190 KB gzip** (v1 was ~160/~80 KB for three boxes). v1 files still parse
-  (`legacy`: non-overlapping boxes, half-cell border, one-cell feather).
-  Format + quantization in `scripts/lib/seaGrid.js`; decoder in
-  `src/lib/seaGrid.ts` (`parseSeaGrid` expands to the full nx·ny layout with
-  NaN for missing nodes, then dilates swell one ring into land/coast nodes).
-- **Sampler** (`sampleSeaGrid`): boxes containing the point, finest first.
-  Each fine box contributes with weight `smoothstep(d / (2·step))` (d = distance
-  inside its node hull → the blend spans the last **2 fine cells**) times
-  the share of valid nodes under the point; whatever weight is left goes to
-  the next coarser box. Open sea where the fine box stores no nodes falls
-  through to the 1° backdrop. No seams, no box edges. The outermost box sets
-  `edge`, a ~1° feather to the outer domain border (v1: one cell).
-  `seaGridExtent` = union of the boxes; isolines are computed on one
-  lattice (finest step / refine, anchored to multiples of the step, cropped
-  to the view + 40 %) instead of per box, so overlapping boxes never draw
-  twice.
-- **Quota** (Open-Meteo free tier: 10 000 weighted calls/day, 600/min):
-  1 location = 1 call (≤ 10 variables, ≤ 14 days). Per run 2 × ~840 ≈
-  **1 680** calls; at most **2 runs/day** (11.5 h gate) → ≤ 3 360/day.
-  `update-conditions` is budgeted at ~7 964 (winter) / ~8 326 (summer) per
-  day in the worst case (all multi-model anchors land; measured days in
-  Oct 2026 were ~3 000–5 400). The script therefore runs a **guard**:
-  today's `openMeteoUsage.dailyWeightedCalls` + the conditions calls still
-  scheduled until 00 UTC (worst case, from `updateSchedule.js`) + this grid
-  must be ≤ **9 000** (90 %), otherwise it skips and the previous file stays.
-  Requests go in batches of 50 every 6 s (~500/min). Calls are added to
-  `pipeline-meta.json` `openMeteoUsage.dailyWeightedCalls` / `seaGridCalls`.
-- Time: `t0` (unix s) + `stepHours` — the 48 h scrubber maps its
-  map-hours step (Lisbon local) to a fractional index; «Agora» uses the
-  wall clock. Older than 30 h or not covering the hour → swell hides,
-  wind falls back to IDW.
+- **v3 (2026-10): gridded models, no per-call quota, zero Open-Meteo calls.**
+  Built by `scripts/build-sea-grid.js` in its **own job** `sea-grid` of
+  `update-data.yml` (parallel to `validate-data`, `timeout-minutes: 8`,
+  `continue-on-error`) — never inside `update-conditions`, so it cannot
+  touch the MTG time budget. Only rebuilds when the committed file is
+  ≥ 5.5 h old (≈ 4×/day, the GFS cycle); the run takes ~15–60 s.
+- **Source**: PacIOOS ERDDAP (University of Hawaiʻi / NOAA IOOS), griddap CSV,
+  keyless:
+  - `ncep_global` — NOAA **GFS 0.5°**, 3-hourly, 8 days: `ugrd10m`, `vgrd10m`;
+  - `ww3_global` — **WaveWatch III global 0.5°**, hourly, ~7 days: `Thgt`
+    (Hs), `sdir`/`sper` (swell), `Tdir`/`Tper` (total sea, fallback).
+  `https://pae-paha.pacioos.hawaii.edu/erddap/griddap/{ncep_global,ww3_global}.html`.
+  The ERDDAP reloads datasets now and then (404 «unknown datasetID» for a
+  few seconds) → 4 attempts with growing back-off, 2 requests at a time.
+  **The PacIOOS WW3 has no Mediterranean / Black Sea / Baltic** (Hs = NaN):
+  those seas get wind only (`WIND_ONLY_SEAS` stores their nodes) and the
+  swell layer shows nothing there.
+- **Domain / boxes** (`TIERS`, all on the 0.5° lattice, nested, finest first):
+  | id | step | extent |
+  |---|---|---|
+  | `core` | 0.5° | 24–52 N × 38 W–6 E (Azores, Madeira, Canaries, Iberia, Biscay, Alborán) |
+  | `regional` | 1° | 14–60 N × 56 W–14 E |
+  | `ocean` | 2° | **0–72 N × 100 W–44 E** (whole North Atlantic + Med + North Sea) |
+  Stored nodes: WW3 sea (or a wind-only sea), and in a coarse box only
+  outside the finer box's interior (shrunk by the 2-cell blend + one coarse
+  cell). **17 steps, 0–48 h every 3 h.** `fade: 4` = 4° feather at the outer
+  border only.
+- Format **v3** = v2 + `fade` (+ `stepHours: 3`, `u`/`v` at 0.5 m/s, offset
+  128 → ±63.5 m/s). **~810 KB raw, ~380 KB gzip** (~7 300 stored nodes),
+  lazy (only fetched with «Vento»/«Ondulação» on in fullscreen). v1/v2 still
+  parse (the e2e stubs use the v2 encoder `encodeSeaGrid`).
+- **Nearest-sea fill (v3, `fillFromSea`)**: after decoding, every box is
+  filled ring by ring (BFS, 8-neighbours, mean of already-filled
+  neighbours): wind over the whole box, swell up to 1.5° from model sea plus
+  a 1.5° coverage fade (`cov`). Bilinear sampling right at the coast thus
+  reads real sea values — **no dark gap** between the field and the beach —
+  and the vector clip below makes the edge crisp. Where WW3 has no sea at
+  all (Med) the coverage fades with distance, never with a straight cut.
+- **Sampler** (`sampleSeaGrid`): unchanged multi-box blend (finest first,
+  `smoothstep` over the last 2 fine cells); `w` = coverage-weighted share of
+  valid swell nodes; `edge` = `fade` feather at the outer border.
+- **No rectangle**: `useSeaDomainBounds` (fullscreen `/mapa` only) sets
+  `maxBounds` to the domain **inside the fade** (4–68 N × 96 W–40 E,
+  `SEA_DOMAIN_VIEW_BOUNDS`, viscosity 1) and `minZoom` to the smallest zoom
+  whose whole view fits in it (`getBoundsZoom(bounds, true)`, ≥ 3, redone on
+  resize; 4 on a 1440×900 desktop). The field border never reaches the
+  screen at any zoom.
+- Time: `t0` (unix s) + `stepHours` — the 48 h scrubber maps its map-hours
+  step (Lisbon local) to a fractional index; «Agora» uses the wall clock.
+  Older than 30 h or not covering the hour → swell hides, wind falls back to
+  IDW.
+
+## Vector land clip (`src/lib/landClip.ts`, `public/geo/land-clip/`)
+
+- Wind and «Ondulação» no longer clip land with the raster `pointOnLand`
+  (staircase of ~500 m cells, black gap). The field is drawn first, then
+  land is **cut away with polygons projected to the screen**
+  (`destination-out`, even-odd, Canvas2D anti-aliasing) — crisp coast at
+  every zoom.
+- Polygons baked offline by `scripts/bake-land-clip.py` (shapely; result
+  committed, static, not pipeline data): **GADM 4.1 PT+ES at full
+  resolution** (matches the basemap coastline) + **Natural Earth 10m land**
+  for everything else (France, Morocco, the UK, America, Africa, islands).
+  **Inland waters are land**: 1 km morphological closing around Iberia
+  (Ria de Aveiro, Ria Formosa, Óbidos, Mondego…), explicit closers for the
+  Tejo and Sado mouths, holes < 3000 km² filled. Open coast stays exact.
+- Four zoom tiers (`index.json`): z0–4 (180° tiles), z5–6 (20°), z7–8 (10°),
+  z ≥ 9 (5°), each simplified to ~0.6 px at its reference zoom. Rings are
+  integer world pixels (Web Mercator, Leaflet's EPSG:3857 convention) at
+  the tier's quantisation zoom, delta-encoded. 3.2 MB on disk in ~670
+  files, but a view only fetches the tiles it touches (**~10–60 KB gzip**).
+- One `Path2D` per (tier, tile set) is built once in quantised coordinates
+  and drawn with a transform (`scale 2^(zoom−zq)`, canvas origin) — pans and
+  zooms never re-project vertices. Until the view's tiles arrive nothing is
+  painted (never land colouring while loading); if `index.json` is missing
+  the old raster mask is the fallback (`data-map-*-clip="raster"`).
+- **Screen land mask** (`buildScreenLandMask`): the same path rasterised at
+  half resolution once per view (shared by both layers, cached by view
+  key). Wind particles spawning or moving onto land die and respawn at sea;
+  swell crests, isoline labels and the tooltip check it too. Isolines are
+  drawn before the cut, so they stop exactly at the coast; spot symbols are
+  drawn after it (spots live on the beach).
+- Shared paint code: `src/lib/seaFieldPaint.ts` (raster, isolines,
+  projection) — the hooks and the offline visual check render through the
+  same functions. Test hooks: `data-map-swell-clip` /
+  `data-map-windfield-clip` = `vector` | `raster` | `loading`.
+- The raster `land-mask.json` stays for Hs/SST/currents and as fallback.
 
 ## «Vento | Ondulação | Nenhum» selector (`MapSeaModeSwitch`)
 
@@ -181,10 +216,14 @@ Each field = `src/lib/map*Field.ts` (pure: samples → IDW grid → draw) +
 - Selected via the top selector (above); pref `ventu.map.swell`, deep link
   and share `?swell=1`, mirrored to the URL (merge, other params kept).
 - Hs field: bilinear sample per 3 px (4 px mobile) of the view, drawn
-  upscaled with smoothing; alpha fades with the share of valid sea nodes.
+  upscaled with smoothing; alpha fades only at the domain border and where
+  the model has no sea (v3 is filled up to the coast); land is then cut by
+  the vector clip.
 - Isolines every 0.5 m (marching squares on the grid refined ×4/×8/×16 by
-  zoom; land and coast-edge cells are NaN so lines never cross land), one
-  label per level with constant pixel size.
+  zoom, two NaN-aware box-blur passes of half a grid cell and the level
+  taken half a quantum low — Hs is quantised to 0.1 m, which otherwise
+  drew staircases on plateaus), clipped by the land cut; one label per level
+  with constant pixel size, never on land.
 - Crests: triangular lattice with **constant screen-pixel spacing (30 px)**
   anchored to the map's world-pixel origin (pans keep crests over the same
   sea), rebuilt on every `zoomend`/`moveend`; each frame is cleared (no

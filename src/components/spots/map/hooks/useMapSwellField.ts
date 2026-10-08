@@ -4,10 +4,18 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import type L from 'leaflet';
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 import { pointOnLand } from '@/lib/landMask';
+import {
+  buildScreenLandMask,
+  cutLand,
+  landClipViewSync,
+  LAND_CLIP_WAIT_MS,
+  prepareLandClip,
+  screenMaskAt,
+  type LandClipView,
+  type ScreenLandMask,
+} from '@/lib/landClip';
 import type { FieldSpot } from '@/lib/mapHsField';
 import {
-  HS_M_MAX,
-  HS_M_STOPS,
   MAP_SWELL_LS_KEY,
   MAP_SWELL_PANE,
   MAP_SWELL_PANE_Z,
@@ -17,16 +25,21 @@ import {
   crestPhase,
   fmt1,
   hsColor,
-  isolineLevels,
-  marchingSquares,
-  pickIsolineLabel,
-  rampLut,
   swellArrowLengthPx,
   swellChevrons,
   windKtColor,
-  type Seg,
 } from '@/lib/mapSwellField';
-import { sampleSeaGrid, seaGridExtent, type SeaGrid, type SeaGridFrame, type SeaSample } from '@/lib/seaGrid';
+import {
+  buildIsolinesLatLon,
+  drawIsolines,
+  emptySample,
+  isoRefine,
+  paintSwellRaster,
+  type IsoLevels,
+  type ScreenView,
+} from '@/lib/seaFieldPaint';
+import { sampleSeaGrid, type SeaGrid, type SeaGridFrame } from '@/lib/seaGrid';
+import { mapScreenView, mapClipBounds } from './mapScreenView';
 
 /** Rótulos do tooltip (t.mapUiLayers). */
 export interface SwellTooltipLabels {
@@ -114,7 +127,6 @@ interface UseMapSwellFieldOptions {
   labels: SwellTooltipLabels;
 }
 
-const HS_LUT = rampLut(HS_M_STOPS, HS_M_MAX);
 const CREST_FRAME_MS = 1000 / 30;
 /** Cristas congelam ao fim de 20 s sem interacção (o último frame fica). */
 const CREST_IDLE_PAUSE_MS = 20_000;
@@ -125,91 +137,9 @@ function isZoomAnimating(map: L.Map): boolean {
   return Boolean((map as L.Map & { _animatingZoom?: boolean })._animatingZoom);
 }
 
-function emptySample(): SeaSample {
-  return { u: 0, v: 0, kt: 0, windFrom: 0, hs: NaN, per: NaN, swellFrom: 0, pe: 0, pn: 0, w: 0, edge: 1 };
-}
-
-/** Subdivisão da grelha para as isolinhas — mais fina a zoom alto (linhas suaves). */
-function isoRefine(zoom: number): number {
-  if (zoom < 7) return 4;
-  if (zoom < 9) return 8;
-  return 16;
-}
-
 interface IsoCache {
   key: string;
-  levels: Array<{ level: number; segs: Array<readonly [readonly [number, number], readonly [number, number]]> }>;
-}
-
-/** Região (lat/lon) onde as isolinhas são calculadas — a vista com margem. */
-interface IsoView {
-  south: number;
-  west: number;
-  north: number;
-  east: number;
-}
-
-const ISO_MAX_SAMPLES = 90_000;
-
-/**
- * Malha das isolinhas: passo = passo mais fino da grelha / `refine`, ancorada
- * a múltiplos do passo (o pan não faz as linhas «tremer») e recortada à vista
- * com margem ∩ domínio da grelha. Uma só malha para todas as caixas — com
- * caixas sobrepostas (v2) iterar por caixa duplicava linhas na zona de fusão.
- */
-export function isolineLattice(
-  grid: Pick<SeaGrid, 'boxes' | 'step'> & { legacy?: boolean },
-  refine: number,
-  view: IsoView,
-): { south: number; west: number; d: number; ni: number; nj: number } | null {
-  const ext = seaGridExtent(grid);
-  let d = grid.step / refine;
-  const west0 = Math.max(ext.west, view.west);
-  const east0 = Math.min(ext.east, view.east);
-  const south0 = Math.max(ext.south, view.south);
-  const north0 = Math.min(ext.north, view.north);
-  if (!(east0 > west0 && north0 > south0)) return null;
-  while (((east0 - west0) / d) * ((north0 - south0) / d) > ISO_MAX_SAMPLES) d *= 2;
-  const west = Math.floor(west0 / d) * d;
-  const south = Math.floor(south0 / d) * d;
-  const ni = Math.ceil((east0 - west) / d) + 1;
-  const nj = Math.ceil((north0 - south) / d) + 1;
-  return { south, west, d, ni, nj };
-}
-
-/**
- * Isolinhas em lat/lon (cache por instante + subdivisão + região). Valores
- * de terra (máscara de terra) e de borda de costa/domínio (peso de mar < 0,5)
- * ficam NaN — as linhas não atravessam terra nem a borda exterior.
- */
-function buildIsolinesLatLon(grid: SeaGrid, frame: SeaGridFrame, refine: number, view: IsoView): IsoCache['levels'] {
-  const s = emptySample();
-  const out: IsoCache['levels'] = [];
-  const levels = isolineLevels(frame.hsMin, frame.hsMax);
-  if (!levels.length) return out;
-  const lat0 = isolineLattice(grid, refine, view);
-  if (!lat0) return out;
-  const { south, west, d, ni, nj } = lat0;
-  const g = new Float32Array(ni * nj);
-  for (let j = 0; j < nj; j++) {
-    const lat = south + j * d;
-    for (let i = 0; i < ni; i++) {
-      const lon = west + i * d;
-      const hit = sampleSeaGrid(grid, frame, lat, lon, s);
-      g[j * ni + i] = hit && hit.w * hit.edge >= 0.5 && !pointOnLand(lat, lon) ? hit.hs : NaN;
-    }
-  }
-  for (const lv of levels) {
-    const segs = marchingSquares(g, ni, nj, lv);
-    out.push({
-      level: lv,
-      segs: segs.map(([p, q]) => [
-        [south + p[1] * d, west + p[0] * d],
-        [south + q[1] * d, west + q[0] * d],
-      ] as const),
-    });
-  }
-  return out;
+  levels: IsoLevels;
 }
 
 interface CrestCell {
@@ -350,104 +280,65 @@ export function useMapSwellField({
       return size;
     };
 
-    const paintRaster = (ctx: CanvasRenderingContext2D, W: number, H: number) => {
-      const { seaGrid: grid, seaFrame: frame } = dataRef.current;
-      if (!grid || !frame) return;
-      const rw = Math.ceil(W / RS);
-      const rh = Math.ceil(H / RS);
-      if (raster.width !== rw || raster.height !== rh) {
-        raster.width = rw;
-        raster.height = rh;
+    // Recorte vectorial da terra + máscara de ecrã da vista actual (refeitos
+    // a cada repaint; os mosaicos e o Path2D ficam em cache em landClip.ts).
+    let clip: LandClipView | null = null;
+    let landMask: ScreenLandMask | null = null;
+    let clipPending = false;
+    let clipMissing = false;
+    // Recorte atrasado (> LAND_CLIP_WAIT_MS): desenha já com a máscara raster
+    // e repinta com o corte vectorial quando os mosaicos chegarem.
+    let clipSlow = false;
+    const isLandPx = (x: number, y: number) => (landMask ? screenMaskAt(landMask, x, y) : false);
+
+    /** Recorte pronto para a vista? Senão pede-o e repinta quando chegar. */
+    const ensureClip = (view: ScreenView): boolean => {
+      const bounds = mapClipBounds(map, 0.1);
+      clip = landClipViewSync(bounds, view.zoom);
+      if (clip) {
+        landMask = buildScreenLandMask(clip, view.zoom, view.origin, view.W, view.H, 2);
+        return true;
       }
-      const rctx = raster.getContext('2d');
-      if (!rctx) return;
-      const img = rctx.createImageData(rw, rh);
-      const d = img.data;
-      // Mercator: lon só depende de x e lat só de y.
-      const lons = new Float64Array(rw);
-      const lats = new Float64Array(rh);
-      for (let x = 0; x < rw; x++) lons[x] = map.containerPointToLatLng([(x + 0.5) * RS, 0]).lng;
-      for (let y = 0; y < rh; y++) lats[y] = map.containerPointToLatLng([0, (y + 0.5) * RS]).lat;
-      let p = 0;
-      for (let y = 0; y < rh; y++) {
-        const lat = lats[y];
-        for (let x = 0; x < rw; x++, p += 4) {
-          const lon = lons[x];
-          const hit = sampleSeaGrid(grid, frame, lat, lon, sample);
-          if (!hit || Number.isNaN(hit.hs) || pointOnLand(lat, lon)) {
-            d[p + 3] = 0;
-            continue;
-          }
-          const a = Math.min(1, Math.max(0, (hit.w - 0.2) / 0.4)) * hit.edge;
-          const k = Math.max(0, Math.min(255, Math.round((hit.hs / HS_M_MAX) * 255))) * 3;
-          d[p] = HS_LUT[k];
-          d[p + 1] = HS_LUT[k + 1];
-          d[p + 2] = HS_LUT[k + 2];
-          d[p + 3] = a * 215;
-        }
+      landMask = null;
+      if (clipMissing) return true; // sem índice: desenha sem recorte (raster abaixo)
+      if (!clipPending) {
+        clipPending = true;
+        const slowTimer = window.setTimeout(() => {
+          if (!clipPending || clipSlow) return;
+          clipSlow = true;
+          repaintRef.current?.();
+        }, LAND_CLIP_WAIT_MS);
+        prepareLandClip(bounds, view.zoom).then((lv) => {
+          window.clearTimeout(slowTimer);
+          clipPending = false;
+          if (!lv) clipMissing = true;
+          repaintRef.current?.();
+        });
       }
-      rctx.putImageData(img, 0, 0);
-      ctx.imageSmoothingEnabled = true;
-      ctx.drawImage(raster, 0, 0, rw * RS, rh * RS);
+      return clipSlow;
     };
 
-    const paintIsolines = (ctx: CanvasRenderingContext2D, origin: L.Point, W: number, H: number) => {
+    const paintIsolines = (ctx: CanvasRenderingContext2D, view: ScreenView) => {
       const { seaGrid: grid, seaFrame: frame, locale: loc } = dataRef.current;
       if (!grid || !frame) return;
-      const refine = isoRefine(map.getZoom());
+      const refine = isoRefine(view.zoom);
       // Vista com 40 % de margem, arredondada a 0,5° — o pan dentro da margem
       // reaproveita a cache; fora dela recalcula só a região nova.
       const vb = map.getBounds();
       const padLat = (vb.getNorth() - vb.getSouth()) * 0.4;
       const padLon = (vb.getEast() - vb.getWest()) * 0.4;
       const q = (x: number, up: boolean) => (up ? Math.ceil(x * 2) : Math.floor(x * 2)) / 2;
-      const view = {
+      const region = {
         south: q(vb.getSouth() - padLat, false),
         west: q(vb.getWest() - padLon, false),
         north: q(vb.getNorth() + padLat, true),
         east: q(vb.getEast() + padLon, true),
       };
-      const key = `${frame.tf.toFixed(4)}|${refine}|${grid.generatedAt}|${view.south},${view.west},${view.north},${view.east}`;
+      const key = `${frame.tf.toFixed(4)}|${refine}|${grid.generatedAt}|${region.south},${region.west},${region.north},${region.east}`;
       if (!isoCache || isoCache.key !== key) {
-        isoCache = { key, levels: buildIsolinesLatLon(grid, frame, refine, view) };
+        isoCache = { key, levels: buildIsolinesLatLon(grid, frame, refine, region) };
       }
-      ctx.lineCap = 'round';
-      const margin = { x0: 40, y0: 72, x1: W - 40, y1: H - 120 };
-      const target = { x: W * 0.32, y: H * 0.42 };
-      const labelsOut: ReturnType<typeof pickIsolineLabel>[] = [];
-      for (const L0 of isoCache.levels) {
-        const whole = Math.abs(L0.level - Math.round(L0.level)) < 0.01;
-        ctx.strokeStyle = whole ? 'rgba(235,248,255,0.62)' : 'rgba(235,248,255,0.32)';
-        ctx.lineWidth = whole ? 1.3 : 0.9;
-        ctx.beginPath();
-        const px: Seg[] = [];
-        for (const [a, b] of L0.segs) {
-          const pa = project(a[0], a[1], origin);
-          const pb = project(b[0], b[1], origin);
-          if ((pa.x < -20 && pb.x < -20) || (pa.y < -20 && pb.y < -20) || (pa.x > W + 20 && pb.x > W + 20) || (pa.y > H + 20 && pb.y > H + 20)) continue;
-          ctx.moveTo(pa.x, pa.y);
-          ctx.lineTo(pb.x, pb.y);
-          px.push([[pa.x, pa.y], [pb.x, pb.y]]);
-        }
-        ctx.stroke();
-        labelsOut.push(pickIsolineLabel(px, L0.level, margin, target));
-      }
-      ctx.font = `600 10px ${fontFamily}`;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      for (const lab of labelsOut) {
-        if (!lab) continue;
-        const text = `${fmt1(lab.level, loc)} m`;
-        ctx.save();
-        ctx.translate(lab.x, lab.y);
-        ctx.rotate(lab.angle);
-        const w = ctx.measureText(text).width + 8;
-        ctx.fillStyle = 'rgba(6,18,31,0.78)';
-        ctx.fillRect(-w / 2, -7, w, 14);
-        ctx.fillStyle = '#eaf6ff';
-        ctx.fillText(text, 0, 0.5);
-        ctx.restore();
-      }
+      drawIsolines(ctx, isoCache.levels, view, loc, fontFamily, landMask ? isLandPx : undefined);
     };
 
     const spotSwell = (s: FieldSpot) => {
@@ -520,7 +411,8 @@ export function useMapSwellField({
       if (!grid || !frame) return;
       for (const c of lattice) {
         const ll = map.containerPointToLatLng([c.x, c.y]);
-        const hit = pointOnLand(ll.lat, ll.lng) ? null : sampleSeaGrid(grid, frame, ll.lat, ll.lng, sample);
+        const land = landMask ? isLandPx(c.x, c.y) : pointOnLand(ll.lat, ll.lng);
+        const hit = land ? null : sampleSeaGrid(grid, frame, ll.lat, ll.lng, sample);
         if (!hit || Number.isNaN(hit.hs) || hit.w < 0.5) {
           c.w = 0;
           continue;
@@ -562,14 +454,27 @@ export function useMapSwellField({
       Leaflet.DomUtil.setPosition(crests, canvasOrigin);
       fctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       fctx.clearRect(0, 0, W, H);
-      fctx.globalAlpha = 0.86;
-      paintRaster(fctx, W, H);
-      fctx.globalAlpha = 1;
-      paintIsolines(fctx, canvasOrigin, W, H);
-      paintSymbols(fctx, canvasOrigin, W, H);
+      const view = mapScreenView(map);
+      // Sem o recorte da vista ainda carregado não se pinta nada (nunca terra
+      // pintada «à espera») durante LAND_CLIP_WAIT_MS; depois pinta com a
+      // máscara raster e o pedido repinta quando os mosaicos chegarem.
+      const ready = ensureClip(view);
+      host.setAttribute('data-map-swell-clip', clip ? 'vector' : ready ? 'raster' : 'loading');
+      const { seaGrid: grid, seaFrame: fr } = dataRef.current;
+      if (ready && grid && fr) {
+        fctx.globalAlpha = 0.86;
+        // Sem índice do recorte (404): cai na máscara raster antiga.
+        paintSwellRaster(fctx, raster, grid, fr, view, RS, clip ? undefined : pointOnLand);
+        fctx.globalAlpha = 1;
+        paintIsolines(fctx, view);
+        // Corte vectorial da terra (rias, lagoas e estuários contam como
+        // terra) — anti-aliased, nítido a qualquer zoom.
+        if (clip) cutLand(fctx, clip, view.zoom, view.origin, dpr);
+        paintSymbols(fctx, canvasOrigin, W, H);
+      }
       const frame = dataRef.current.seaFrame;
       if (frame) host.setAttribute('data-map-swell-max', frame.hsMax.toFixed(1));
-      if (!reducedMotion) rebuildLattice(W, H);
+      if (!reducedMotion && ready) rebuildLattice(W, H);
       else {
         const cctx = crests.getContext('2d');
         cctx?.clearRect(0, 0, crests.width, crests.height);
@@ -615,6 +520,14 @@ export function useMapSwellField({
         const L0 = 5 + Math.min(4, c.hs) * 5.5;
         const qx = -c.ey * L0;
         const qy = c.ex * L0;
+        // Nenhuma crista entra em terra (máscara do recorte vectorial).
+        if (landMask) {
+          const ax = x - qx - c.ex * L0 * 0.3;
+          const ay = y - qy - c.ey * L0 * 0.3;
+          const bx = x + qx - c.ex * L0 * 0.3;
+          const by = y + qy - c.ey * L0 * 0.3;
+          if (isLandPx(ax, ay) || isLandPx(bx, by) || isLandPx(x + c.ex * L0 * 0.25, y + c.ey * L0 * 0.25)) continue;
+        }
         const bin = Math.min(CREST_ALPHA_BINS - 1, Math.floor(a * CREST_ALPHA_BINS));
         alphaBins[bin].push(
           x - qx - c.ex * L0 * 0.3, y - qy - c.ey * L0 * 0.3,
@@ -700,7 +613,7 @@ export function useMapSwellField({
       const { lat, lng } = e.latlng;
       const hit = sampleSeaGrid(grid, frame, lat, lng, emptySample());
       if (!hit) return hideTip();
-      const land = pointOnLand(lat, lng);
+      const land = landMask ? isLandPx(e.containerPoint.x, e.containerPoint.y) : pointOnLand(lat, lng);
       const swell = !land && !Number.isNaN(hit.hs) && hit.w >= 0.4;
       const head = `${fmt1(Math.abs(lat), loc)}° ${lat >= 0 ? 'N' : 'S'} · ${fmt1(Math.abs(lng), loc)}° ${
         lng >= 0 ? 'E' : loc === 'pt' || loc === 'es' || loc === 'fr' ? 'O' : 'W'

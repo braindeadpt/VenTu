@@ -124,11 +124,12 @@ const DATA_FILE_BUDGETS_MB = {
   // data/sat-mtg/frames/ (~0.3 MB cada) ficam fora deste check; o tecto
   // deles está no sub-orçamento de check-data-history-budget.js.
   'sat-mtg.json': 0.1,
-  // sea-grid (v2): vento + ondulação × 55 h em bytes base64 — fundo atlântico
-  // a 1° + caixas costeiras a 0,5°, só nós guardados (~915) → ~330 KB cru,
-  // ~190 KB gzip. 0,45 MB apanha uma regressão de formato (arrays de números
-  // custariam > 2 MB) ou uma grelha mais fina sem rever a quota.
-  'sea-grid.json': 0.45,
+  // sea-grid (v3): vento GFS + ondulação WW3 × 17 instantes (0–48 h, 3 h) em
+  // bytes base64 — Atlântico Norte inteiro em 0,5°/1°/2°, só nós de mar
+  // (~7 300) → ~810 KB cru, ~380 KB gzip (pedido só com Vento/Ondulação
+  // ligados no /mapa). 1 MB apanha uma regressão de formato (arrays de
+  // números custariam > 5 MB) ou uma caixa fina maior sem rever o orçamento.
+  'sea-grid.json': 1,
   // land-mask: máscara de terra do domínio do /mapa (transições por linha,
   // ~500 m) — ~26 KB cru, ~13 KB gzip. Estática (scripts/bake-land-mask.mjs).
   'land-mask.json': 0.05,
