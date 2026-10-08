@@ -79,6 +79,11 @@ test.describe('Map wind field', () => {
     });
     const { wind: _omit, ...noWind } = MAP_HOURS_STUB;
     await interceptMapHours(page, noWind);
+    // Desde o #138 o vento também vem da grelha do mar (sea-grid.json); para
+    // testar a ausência total de dados de vento, a grelha também tem de faltar.
+    await page.route('**/data/sea-grid.json*', (route) =>
+      route.fulfill({ status: 404, contentType: 'application/json', body: '{}' }),
+    );
     await page.goto('/pt/mapa/', { waitUntil: 'domcontentloaded', timeout: 60_000 });
     await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
     const map = page.locator('.leaflet-container');

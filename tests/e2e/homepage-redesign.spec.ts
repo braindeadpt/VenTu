@@ -31,10 +31,14 @@ test.describe('Homepage redesign', () => {
     await expect(
       page.getByRole('heading', { name: /Firing now/i }),
     ).toBeVisible({ timeout: 15_000 });
-    // «Only firing spots · by sport» — o rótulo EN do TopNow, não o placeholder pt.
+    // «Only firing spots · …» — o rótulo EN do TopNow, não o placeholder pt.
+    // Desde o #135 o sufixo varia (modo adaptativo «across every sport» ou o
+    // desporto escolhido), por isso só o prefixo é fixo.
     // Scoped to main: home streams the hero/TopNow in a hidden S: container;
     // during the reveal window an unscoped getByText can match both copies.
-    await expect(page.locator('#main-content').getByText('Only firing spots · by sport')).toBeVisible();
+    await expect(
+      page.locator('#main-content').getByText(/^Only firing spots · /).first(),
+    ).toBeVisible();
   });
 
   test('no full spot grid filters on home', async ({ page }) => {
