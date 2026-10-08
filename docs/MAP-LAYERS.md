@@ -13,10 +13,10 @@ rewriting the map core.
 | 206 | `ventu-goes-ir` | **GOES-East ABI Band 13 Clean IR** (NASA GIBS WMTS) | animated carousel — 12 frames × 10 min ending ~45 min back; stretched above `maxNativeZoom: 6`; keyless; `gibs.earthdata.nasa.gov` in CSP img-src; counts toward the heavy-raster cap |
 | 210 | `ventu-bathymetry` | **EMODnet bathymetry WMS** (`emodnet:mean_multicolour` + `emodnet:contours`) | part of «Carta náutica» — depth shading + 50–5000 m contours (island coverage — IH isobaths are mainland-only); host in CSP img-src (meta + terraform) |
 | 340 | — | isobaths (canvas image) | part of «Carta náutica» — static, below fields |
-| 342 | `swellfield` | **«Ondulação»** — Hs colour field + 0.5 m isolines + spot swell symbols (canvas) and slow swell crests (second canvas) | from `sea-grid.json`; mutually exclusive w/ Hs and SST; wind particles draw on top (as in the approved mockup) |
+| 342 | `swellfield` | **«Ondulação»** — Hs colour field + 0.5 m isolines + spot swell symbols (canvas) and slow swell crests (second canvas) | from `sea-grid.json`; driven by the top «Vento \| Ondulação \| Nenhum» selector — mutually exclusive w/ wind and SST |
 | 345 | `windfield` | **wind particle field** | ambient, animated; colour by knots |
 | 348 | `sst` | SST ribbon | mutually exclusive w/ Hs |
-| 350 | `hs` | Hs swell field + crest isolines | mutually exclusive w/ SST |
+| 350 | `hs` | legacy Hs IDW field (spot interpolation) | **not in any menu since 2026-10** — `?hs=1` and a stored `ventu.map.hs` pref migrate to «Ondulação»; code kept, never enabled |
 | 355 | — | tide ribbons | |
 | 360 | `currents` | current ticks | vector marks, not flow |
 | 370 | `ventu-seamarks` | **OpenSeaMap seamark tiles** | part of «Carta náutica» — buoys/beacons/harbours above the fields, below markers |
@@ -40,11 +40,20 @@ Each field = `src/lib/map*Field.ts` (pure: samples → IDW grid → draw) +
   field inland. Directional fields interpolate `u/v` components, never raw
   angles. Each field owns its water mask (`currentTickOnWater`,
   `windCellOnWater`) — tune per layer.
-- **Land mask** (`src/lib/landMask.ts`): GADM 4.1 level-0 coastlines for
-  PT+ES baked to `landRings.ts` (`scripts/bake-land-rings.mjs` regenerates)
-  and scanline-rasterized at ~600 m → `pointOnLand(lat,lon)` is O(1) and
-  gates every field (mainland, Azores and Madeira alike). Replaces the old
-  per-coast heuristics that left island interiors painted.
+- **Land mask** (`src/lib/landMask.ts`), two tiers behind one
+  `pointOnLand(lat,lon)`:
+  1. bundled GADM 4.1 PT+ES raster (`landRings.ts`, `scripts/bake-land-rings.mjs`)
+     at ~600 m, lat 32–43 N — always there, sync;
+  2. **lazy full-domain mask** `public/data/land-mask.json` (**~26 KB raw,
+     ~13 KB gzip**) baked by `scripts/bake-land-mask.mjs` over 26.5–46.5 N ×
+     34–1 W at 0.005° (~500 m): GADM rings for Iberia/Azores/Madeira +
+     Natural Earth 50m land for the rest (Morocco, France, Canaries,
+     Gibraltar). Stored as per-row transition columns (varint, base64);
+     the client keeps the transitions and binary-searches them (no bitmap).
+     `useSeaGrid` loads it in parallel with the grid and only hands the grid
+     out once it settled, so wind/«Ondulação» never paint Galicia, the
+     Cantabrian coast, Andalusia or Morocco. Once loaded it also serves
+     SST/currents. Regenerate: `node scripts/bake-land-mask.mjs [--ne ne_50m_land.geojson]`.
 - **View-locked raster** (Hs/SST tiles): the image overlay renders only the
   padded view bounds at ~260 cells across, so the band stays smooth at any
   zoom (fixed-resolution tiles went blocky when zoomed). Painted width is
@@ -74,9 +83,16 @@ Each field = `src/lib/map*Field.ts` (pure: samples → IDW grid → draw) +
 - Close-zoom detail stays on the **pin wind arcs** (`mapWindArrow`) — the
   field is ambient context, the arc is exact reading.
 - Source: `sea-grid.json` (model grid, see below) when it covers the active
-  hour — the field then covers the whole sea box and does not depend on
-  which spots exist or are filtered; the spot IDW from map-hours stays as
-  the fallback.
+  hour — the field then covers the whole sea (Azores → Morocco → Biscay)
+  and does not depend on which spots exist or are filtered; the spot IDW
+  from map-hours stays as the fallback.
+- Sea-grid grids (`buildWindFieldGridsFromSea`): one flow grid per 0.5° box
+  (first) + one domain grid for the rest of the ocean, all filled from the
+  multi-box sampler (no seams between grids). Grids carry `landClip`:
+  `windCellAnywhere` rejects any particle position on land
+  (`pointOnLand`), so particles stop exactly at the coastline (mask
+  resolution, ~500 m) instead of at cell resolution. The field fades over
+  the last ~1° of the outer domain (`edge`).
 - Colour: the knot scale of the approved mockup (`WIND_KT_STOPS` in
   `mapSwellField.ts`, 0–40 kn) — particles are batched into 14 colour bins
   (one stroke per bin) and take the colour of the cell they are in, not the
@@ -86,28 +102,84 @@ Each field = `src/lib/map*Field.ts` (pure: samples → IDW grid → draw) +
 ## Sea grid (`public/data/sea-grid.json`)
 
 - Built by `scripts/build-sea-grid.js` in `update-data.yml` (full runs, only
-  when the file is ≥ 5.5 h old): Open-Meteo forecast (`wind_speed_10m`,
-  `wind_direction_10m`) + marine (`wave_height`, `swell_wave_*`, fallback
-  `wave_*`) on a regular **0.5° grid** over three boxes (mainland incl.
-  Galicia/Gulf of Cádiz, Azores, Madeira), **55 hourly steps** from the
-  current hour. ~394 locations per API per run (deep-inland Iberia skipped);
-  the calls are added to `pipeline-meta.json` `openMeteoUsage.dailyWeightedCalls`.
-- Compact format (v1): `u`/`v` (0.25 m/s, offset 128), `hs` (0.1 m), `dir`
-  (360/256°), `per` (0.1 s) as Uint8 arrays, base64, layout `[t][node]`;
-  255 = no data. ~160 KB raw, ~80 KB gzip. Format + quantization in
-  `scripts/lib/seaGrid.js`, decoder in `src/lib/seaGrid.ts` (`parseSeaGrid`,
-  `seaGridFrame`, `sampleSeaGrid`). The decoder extends swell one ring into
-  coast/land nodes so the bilinear field reaches the shoreline; land is cut
-  with `pointOnLand`.
+  when the file is ≥ 11.5 h old, and only if the quota guard allows — see
+  below): Open-Meteo forecast (`wind_speed_10m`, `wind_direction_10m`) +
+  marine (`wave_height`, `swell_wave_*`, fallback `wave_*`), **55 hourly
+  steps** from the current hour.
+- **Boxes (v2)** — all on the same 0.5° lattice, so coincident nodes are
+  requested once:
+  | id | step | extent | nodes fetched |
+  |---|---|---|---|
+  | `atlantic` | 1° | 26.5–46.5 N × 34.5–0.5 W (Azores → Morocco → Biscay) | sea nodes (sea within 0.6 cell) |
+  | `mainland` | 0.5° | 35.5–44.5 N × 11.5–1.5 W (incl. Galicia, Cantabrian coast, Gulf of Cádiz, Strait) | coastal only (land ≤ 1°, sea ≤ 0.6 cell) |
+  | `azores` | 0.5° | 36.5–40 N × 31.5–24.5 W | coastal only |
+  | `madeira` | 0.5° | 32–34 N × 18–15.5 W | coastal only |
+  Node selection uses `land-mask.json` (falls back to the v1 deep-inland
+  heuristic without it). **~840 unique locations per API per run**
+  (atlantic 651 + coastal 263, minus coincident nodes).
+- Compact format **v2**: per-box `step`, `offset`/`count` over the *stored*
+  nodes and an optional `mask` (base64 bitset, LSB first) — open sea far
+  from the coast in the fine boxes and deep land take no bytes. Fields `u`/`v`
+  (0.25 m/s, offset 128), `hs` (0.1 m), `dir` (360/256°), `per` (0.1 s) as
+  Uint8, base64, layout `[t][stored node]`; 255 = no data. **~330 KB raw,
+  ~190 KB gzip** (v1 was ~160/~80 KB for three boxes). v1 files still parse
+  (`legacy`: non-overlapping boxes, half-cell border, one-cell feather).
+  Format + quantization in `scripts/lib/seaGrid.js`; decoder in
+  `src/lib/seaGrid.ts` (`parseSeaGrid` expands to the full nx·ny layout with
+  NaN for missing nodes, then dilates swell one ring into land/coast nodes).
+- **Sampler** (`sampleSeaGrid`): boxes containing the point, finest first.
+  Each fine box contributes with weight `smoothstep(d / (2·step))` (d = distance
+  inside its node hull → the blend spans the last **2 fine cells**) times
+  the share of valid nodes under the point; whatever weight is left goes to
+  the next coarser box. Open sea where the fine box stores no nodes falls
+  through to the 1° backdrop. No seams, no box edges. The outermost box sets
+  `edge`, a ~1° feather to the outer domain border (v1: one cell).
+  `seaGridExtent` = union of the boxes; isolines are computed on one
+  lattice (finest step / refine, anchored to multiples of the step, cropped
+  to the view + 40 %) instead of per box, so overlapping boxes never draw
+  twice.
+- **Quota** (Open-Meteo free tier: 10 000 weighted calls/day, 600/min):
+  1 location = 1 call (≤ 10 variables, ≤ 14 days). Per run 2 × ~840 ≈
+  **1 680** calls; at most **2 runs/day** (11.5 h gate) → ≤ 3 360/day.
+  `update-conditions` is budgeted at ~7 964 (winter) / ~8 326 (summer) per
+  day in the worst case (all multi-model anchors land; measured days in
+  Oct 2026 were ~3 000–5 400). The script therefore runs a **guard**:
+  today's `openMeteoUsage.dailyWeightedCalls` + the conditions calls still
+  scheduled until 00 UTC (worst case, from `updateSchedule.js`) + this grid
+  must be ≤ **9 000** (90 %), otherwise it skips and the previous file stays.
+  Requests go in batches of 50 every 6 s (~500/min). Calls are added to
+  `pipeline-meta.json` `openMeteoUsage.dailyWeightedCalls` / `seaGridCalls`.
 - Time: `t0` (unix s) + `stepHours` — the 48 h scrubber maps its
   map-hours step (Lisbon local) to a fractional index; «Agora» uses the
   wall clock. Older than 30 h or not covering the hour → swell hides,
   wind falls back to IDW.
 
+## «Vento | Ondulação | Nenhum» selector (`MapSeaModeSwitch`)
+
+- Always visible on `/mapa` (fullscreen, not hero embeds), top-centre; the
+  time pill sits right below it (`top-[60px]`), the mobile legend below
+  both (`top-28`). With the desktop panel open both re-centre on the free
+  strip (`globals.css`, `--map-panel-offset`).
+- `role="radiogroup"` + `role="radio"`/`aria-checked`, roving tabindex,
+  ←/→/↑/↓/Home/End, visible focus ring, 36 px pill + 44 px hit area.
+  Labels `mapUiLayers.seaModeGroup|seaModeWind|layerSwell|seaModeNone`
+  (PT/EN/ES/DE/FR).
+- Drives the existing toggles, mutually exclusive on `/mapa`: «Vento» =
+  wind field + pin wind arcs (`ventu.map.wind`), «Ondulação» = swell layer
+  (`ventu.map.swell`), «Nenhum» = both off. Turning wind on anywhere else
+  (stack button, explore sheet) turns swell off and vice versa; at mount
+  with both on (pref + `?swell=1`) swell wins.
+- URL: `?swell=1` (swell), `?wind=1` / no param (wind), `?wind=0` (none —
+  needed because wind defaults on on desktop). Legacy `?hs=1` → swell.
+  Share links follow the same contract (`windOff` → `wind=0`).
+- The legend follows the selection (wind knots bar ↔ «Ondulação · Hs (m)»).
+- «Ondulação» and the old IDW «Altura significativa (Hs)» are no longer in
+  the «Camadas» menu (desktop popover or mobile sheet): one source of truth.
+
 ## «Ondulação» layer (`mapSwellField` + `useMapSwellField`)
 
-- Toggle `data-map-swell-toggle`, pref `ventu.map.swell`, deep link and
-  share `?swell=1`, mirrored to the URL on toggle (merge, other params kept).
+- Selected via the top selector (above); pref `ventu.map.swell`, deep link
+  and share `?swell=1`, mirrored to the URL (merge, other params kept).
 - Hs field: bilinear sample per 3 px (4 px mobile) of the view, drawn
   upscaled with smoothing; alpha fades with the share of valid sea nodes.
 - Isolines every 0.5 m (marching squares on the grid refined ×4/×8/×16 by

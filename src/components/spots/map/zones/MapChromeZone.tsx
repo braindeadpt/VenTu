@@ -271,6 +271,7 @@ export function useMapChromeZone({
         currents: currentsEnabled,
         swell: swellEnabled,
         wind: windEnabled,
+        windOff: !windEnabled && !swellEnabled,
         nauticalChart: nauticalChartEnabled,
         goesIr: goesIrEnabled,
         storms: stormsEnabled,

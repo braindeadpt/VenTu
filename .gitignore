@@ -101,6 +101,8 @@ public/data/
 # IPMA station nearest-spot map (regenerate with npm run obs:map)
 !public/data/ipma-station-map.json
 !public/data/ipma-station-map.meta.json
+# Land mask for the /mapa field layers (static; regenerate with scripts/bake-land-mask.mjs)
+!public/data/land-mask.json
 
 # Terraform (S7 — Cloudflare ruleset; nunca commitar state/tfvars)
 terraform/.terraform/

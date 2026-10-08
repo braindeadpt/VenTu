@@ -1,6 +1,6 @@
 'use client';
 
-import { Maximize2, Minimize2, MapPin, Layers, Wind, HelpCircle, CloudRain, RotateCcw, Zap, Anchor, Clock, LifeBuoy, Activity, Navigation, Waves, Thermometer, Sailboat, SatelliteDish, CloudLightning, AlertTriangle } from 'lucide-react';
+import { Maximize2, Minimize2, MapPin, Layers, Wind, HelpCircle, CloudRain, RotateCcw, Zap, Anchor, Clock, LifeBuoy, Navigation, Thermometer, Sailboat, SatelliteDish, CloudLightning, AlertTriangle } from 'lucide-react';
 import MapLayersMenu, { type MapLayersMenuItem } from './MapLayersMenu';
 
 export interface MapControlsProps {
@@ -156,29 +156,8 @@ export function buildLayerMenuItems(p: MapControlsProps): MapLayersMenuItem[] {
             toggleAttr: 'data-map-storms-toggle',
             iconClass: 'text-score-poor',
           } satisfies MapLayersMenuItem]),
-          ...(p.toggleSwell && p.swellLabel
-            ? [{
-                key: 'swell',
-                label: p.swellLabel,
-                hint: p.swellEnabled && p.swellUnavailable ? `${p.swellHint ?? ''} — indisponível` : p.swellHint,
-                icon: <Waves className="w-4 h-4" aria-hidden />,
-                pressed: !!p.swellEnabled,
-                onToggle: p.toggleSwell,
-                toggleAttr: 'data-map-swell-toggle',
-                iconClass: 'text-data-waves',
-              } satisfies MapLayersMenuItem]
-            : []),
-          {
-            key: 'hs',
-            label: p.hsLabel,
-            hint: p.hsUnavailable ? `${p.hsHint} — indisponível` : p.hsHint,
-            icon: <Activity className="w-4 h-4" aria-hidden />,
-            pressed: p.hsEnabled,
-            disabled: p.hsUnavailable,
-            onToggle: p.toggleHs,
-            toggleAttr: 'data-map-hs-toggle',
-            iconClass: 'text-data-waves',
-          },
+          // «Ondulação» e vento: selector «Vento | Ondulação | Nenhum» no topo
+          // do /mapa. O Hs IDW antigo saiu (fonte única: a «Ondulação»).
           {
             key: 'sst',
             label: p.sstLabel,

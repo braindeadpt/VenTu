@@ -1,11 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import { createRequire } from 'module';
 import {
+  SEA_GRID_BLEND_CELLS,
   dilateSwell,
   lisbonLocalToEpochMs,
   parseSeaGrid,
   sampleSeaGrid,
   seaGridBoxAt,
+  seaGridExtent,
   seaGridFrame,
   seaGridTimeIndex,
 } from '../seaGrid';
@@ -39,6 +41,17 @@ function synthetic() {
   return JSON.parse(JSON.stringify(raw));
 }
 
+/** O mesmo ficheiro no formato v1 (um `step` global, caixas sem `step`/`count`). */
+function syntheticV1() {
+  const raw = synthetic();
+  raw.v = 1;
+  for (const b of raw.boxes) {
+    delete b.step;
+    delete b.count;
+  }
+  return raw;
+}
+
 describe('parseSeaGrid', () => {
   it('descodifica bytes → unidades físicas e rejeita formas erradas', () => {
     const g = parseSeaGrid(synthetic())!;
@@ -54,7 +67,7 @@ describe('parseSeaGrid', () => {
     expect(g.pe[0]).toBeGreaterThan(0.69);
     expect(g.pn[0]).toBeLessThan(-0.69);
     expect(parseSeaGrid(null)).toBeNull();
-    expect(parseSeaGrid({ ...synthetic(), v: 2 })).toBeNull();
+    expect(parseSeaGrid({ ...synthetic(), v: 3 })).toBeNull();
     const bad = synthetic();
     bad.fields.hs = bad.fields.hs.slice(0, 4);
     expect(parseSeaGrid(bad)).toBeNull();
@@ -113,8 +126,9 @@ describe('tempo', () => {
 });
 
 describe('sampleSeaGrid', () => {
-  it('bilinear dentro da caixa, null fora; direcção de onde vem', () => {
-    const g = parseSeaGrid(synthetic())!;
+  it('bilinear dentro da caixa, null fora; direcção de onde vem (v1)', () => {
+    const g = parseSeaGrid(syntheticV1())!;
+    expect(g.legacy).toBe(true);
     const f = seaGridFrame(g, 0);
     const mid = sampleSeaGrid(g, f, 38.25, -9.75)!;
     expect(mid.hs).toBeCloseTo(1.5, 4);
@@ -129,5 +143,121 @@ describe('sampleSeaGrid', () => {
     expect(sampleSeaGrid(g, f, 38.25, -10.2)!.edge).toBeCloseTo(0.1, 5);
     expect(sampleSeaGrid(g, f, 38.25, -9.75)!.edge).toBe(1);
     expect(seaGridBoxAt(g, 38.74, -8.76)).not.toBeNull();
+  });
+});
+
+// ── v2: caixas sobrepostas, máscara de nós, fusão fina → grossa ──────────
+
+const HOURS = { times: [1_800_000_000, 1_800_003_600], idx: [0, 1] };
+
+/** Uma caixa grossa (1°) uniforme e uma fina (0,5°) com outro valor por dentro. */
+function nested({ fineStoredAll = true } = {}) {
+  const boxes: Array<{ id: string; west: number; south: number; nx: number; ny: number; step: number }> = [
+    { id: 'fine', west: -12, south: 36, nx: 9, ny: 9, step: 0.5 }, // -12..-8, 36..40
+    { id: 'coarse', west: -16, south: 32, nx: 13, ny: 13, step: 1 }, // -16..-4, 32..44
+  ];
+  const nodes: Array<{ lat: number; lon: number; fetch: boolean; store: boolean; box: string }> = [];
+  for (const b of boxes) {
+    for (let j = 0; j < b.ny; j++) {
+      for (let i = 0; i < b.nx; i++) {
+        // fina: só a metade leste é «costeira» quando fineStoredAll = false
+        const keep = b.id === 'coarse' || fineStoredAll || i >= 4;
+        nodes.push({ lat: b.south + j * b.step, lon: b.west + i * b.step, fetch: keep, store: keep, box: b.id });
+      }
+    }
+  }
+  const wind = nodes.map((n) =>
+    n.fetch ? { wind_speed_10m: n.box === 'fine' ? [20, 20] : [10, 10], wind_direction_10m: [270, 270] } : null,
+  );
+  const marine = nodes.map((n) =>
+    n.fetch
+      ? { wave_height: n.box === 'fine' ? [3, 3] : [1, 1], swell_wave_direction: [300, 300], swell_wave_period: [12, 12] }
+      : null,
+  );
+  const raw = enc.encodeSeaGrid({ boxes, nodes, wind, marine, ...HOURS, generatedAt: 'g', source: 's' });
+  return JSON.parse(JSON.stringify(raw));
+}
+
+describe('sea-grid v2', () => {
+  it('máscara de nós: só os guardados ocupam bytes; os outros ficam NaN', () => {
+    const raw = nested({ fineStoredAll: false });
+    expect(raw.v).toBe(2);
+    expect(raw.boxes[0]).toMatchObject({ id: 'fine', step: 0.5, offset: 0, count: 45 });
+    expect(typeof raw.boxes[0].mask).toBe('string');
+    expect(raw.boxes[1].mask).toBeUndefined();
+    expect(raw.n).toBe(45 + 169);
+    const g = parseSeaGrid(raw)!;
+    expect(g.legacy).toBe(false);
+    expect(g.n).toBe(81 + 169); // layout completo
+    expect(g.step).toBe(0.5);
+    // nó (0,0) da fina não guardado → NaN (o dilate só enche vizinhos de nós válidos)
+    expect(Number.isNaN(g.u[0])).toBe(true);
+    expect(g.u[4]).toBeCloseTo(20, 4);
+    // máscara com contagem errada → rejeita
+    const bad = nested({ fineStoredAll: false });
+    bad.boxes[0].count = 44;
+    expect(parseSeaGrid(bad)).toBeNull();
+  });
+
+  it('prefere a caixa mais fina e funde na grossa sem costura', () => {
+    const g = parseSeaGrid(nested())!;
+    const f = seaGridFrame(g, 0);
+    expect(seaGridBoxAt(g, 38, -10)!.id).toBe('fine');
+    expect(seaGridExtent(g)).toEqual({ west: -16, south: 32, east: -4, north: 44 });
+    // interior da fina (≥ 2 células da borda): valor da fina
+    const inside = sampleSeaGrid(g, f, 38, -10)!;
+    expect(inside.hs).toBeCloseTo(3, 3);
+    expect(inside.kt).toBeCloseTo(20 * 1.943844, 2);
+    // na borda da fina: valor da grossa
+    expect(sampleSeaGrid(g, f, 38, -12)!.hs).toBeCloseTo(1, 3);
+    // a meio da faixa de fusão: entre os dois
+    const half = sampleSeaGrid(g, f, 38, -12 + (SEA_GRID_BLEND_CELLS * 0.5) / 2)!;
+    expect(half.hs).toBeGreaterThan(1.5);
+    expect(half.hs).toBeLessThan(2.5);
+    // fora da fina, dentro da grossa: grossa
+    expect(sampleSeaGrid(g, f, 38, -14)!.hs).toBeCloseTo(1, 3);
+    // sem saltos: atravessar a borda da fina em passos de 0,01° nunca muda > 0,1 m
+    let prev = sampleSeaGrid(g, f, 38, -13)!.hs;
+    let maxJump = 0;
+    for (let lon = -12.99; lon <= -10; lon += 0.01) {
+      const h = sampleSeaGrid(g, f, 38, lon)!.hs;
+      maxJump = Math.max(maxJump, Math.abs(h - prev));
+      prev = h;
+    }
+    expect(maxJump).toBeLessThan(0.1);
+    expect(inside.w).toBeCloseTo(1, 5);
+  });
+
+  it('nós finos não guardados (mar aberto longe da costa) caem na grossa', () => {
+    const g = parseSeaGrid(nested({ fineStoredAll: false }))!;
+    const f = seaGridFrame(g, 0);
+    // metade oeste da fina sem nós → grossa; metade leste → fina
+    expect(sampleSeaGrid(g, f, 38, -11.4)!.hs).toBeCloseTo(1, 3);
+    expect(sampleSeaGrid(g, f, 38, -9)!.hs).toBeCloseTo(3, 3);
+    expect(sampleSeaGrid(g, f, 38, -11.4)!.w).toBeCloseTo(1, 5);
+  });
+
+  it('borda exterior do domínio esbatida ao longo de ~1°, sem corte recto', () => {
+    const g = parseSeaGrid(nested())!;
+    const f = seaGridFrame(g, 0);
+    expect(sampleSeaGrid(g, f, 38, -16)!.edge).toBeCloseTo(0, 5);
+    expect(sampleSeaGrid(g, f, 38, -15.5)!.edge).toBeCloseTo(0.5, 5);
+    expect(sampleSeaGrid(g, f, 38, -15)!.edge).toBeCloseTo(1, 5);
+    expect(sampleSeaGrid(g, f, 43.75, -10)!.edge).toBeCloseTo(0.25, 5);
+    expect(sampleSeaGrid(g, f, 38, -16.1)).toBeNull();
+  });
+
+  it('o ficheiro publicado (se existir) descodifica e cobre Açores → Biscaia', async () => {
+    const fs = await import('fs');
+    const path = await import('path');
+    const file = path.join(__dirname, '../../../public/data/sea-grid.json');
+    if (!fs.existsSync(file)) return;
+    const g = parseSeaGrid(JSON.parse(fs.readFileSync(file, 'utf8')));
+    expect(g).not.toBeNull();
+    const ext = seaGridExtent(g!);
+    expect(ext.west).toBeLessThanOrEqual(-34);
+    expect(ext.east).toBeGreaterThanOrEqual(-1);
+    expect(ext.south).toBeLessThanOrEqual(27);
+    expect(ext.north).toBeGreaterThanOrEqual(46.5);
   });
 });

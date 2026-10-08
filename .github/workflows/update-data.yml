@@ -306,19 +306,22 @@ jobs:
           echo "::error::Open-Meteo update failed after 3 attempts"
           exit 1
 
-      # Grelha regular de vento + ondulação (0,5°, 54 h horárias) para as
-      # camadas «Vento» e «Ondulação» do /mapa — substitui o IDW entre spots.
-      # Só em corridas full e só quando o ficheiro tem ≥ 5,5 h (os modelos
-      # saem de 6 em 6 h): ~4×/dia × ~790 chamadas ponderadas, somadas ao
-      # contador diário do pipeline-meta.json. Um único ficheiro reescrito
-      # (~160 KB), sem arquivo — o orçamento está em check-payload-budgets.js.
-      # Falha suave: fica o último commitado; o mapa cai no IDW dos spots
+      # Grelha de vento + ondulação (54 h horárias) para as camadas «Vento» e
+      # «Ondulação» do /mapa — o mar inteiro dos Açores a Marrocos e à Biscaia:
+      # fundo a 1° + caixas costeiras a 0,5° (~840 localizações × 2 APIs ≈
+      # 1 680 chamadas ponderadas por corrida). Só em corridas full, só quando
+      # o ficheiro tem ≥ 11,5 h (≤ 2×/dia) e só se a quota deixar: gasto de
+      # hoje + o que o pipeline ainda gasta até às 00 UTC (pior caso) + a
+      # grelha ≤ 9 000/dia (90 % de 10k) — senão fica a anterior. Um único
+      # ficheiro reescrito (~330 KB), sem arquivo — o orçamento está em
+      # check-payload-budgets.js. Falha suave: o mapa cai no IDW dos spots
       # quando a grelha não cobre a hora pedida (> 30 h de idade).
-      - name: Build sea grid (wind + swell, Open-Meteo 0.5°)
+      - name: Build sea grid (wind + swell, Open-Meteo 1° + 0.5° coastal)
         # Também corre fora de «full» quando o ficheiro não existe (arranque).
         if: steps.gate.outputs.mode == 'full' || (steps.gate.outputs.mode != 'skip' && hashFiles('public/data/sea-grid.json') == '')
         continue-on-error: true
-        timeout-minutes: 6
+        # 34 lotes de 50 a cada 6 s (< 600/min) ≈ 4–5 min; folga para 429.
+        timeout-minutes: 10
         run: node scripts/build-sea-grid.js
 
       - name: Merge IPMA + Ecowitt observations

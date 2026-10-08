@@ -72,6 +72,13 @@ normal, falha antes de se tornar um problema de histórico.
 > blobs, contra ~1,1 MB por corrida do `forecasts.json`). Tecto próprio de
 > 0,5 MB em `check-payload-budgets.js`.
 
+> 2026-10-08 (tarde): `sea-grid.json` passa a v2 — oceano inteiro (fundo a 1°
+> + caixas costeiras a 0,5°), **~330 KB** (~190 KB gzip), mas regenerado no
+> máximo 2×/dia (portão de 11,5 h + guarda de quota) → ≤ ~0,66 MB/dia de
+> blobs (antes ~0,6 MB/dia a 4×/dia). Tecto 0,45 MB. Entra também
+> `public/data/land-mask.json` (~26 KB, estático, versionado como ficheiro
+> normal — excepção no .gitignore), tecto 0,05 MB.
+
 ## Porque cresce
 
 `scripts/push-data-update.sh` corre `git add -f public/data/` a cada ~30 min e

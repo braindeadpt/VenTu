@@ -405,7 +405,7 @@ export default function MapLegend({
         data-map-legend-card
         className={`absolute z-[1140] rounded-modal border border-divider bg-bg-elevated shadow-card px-3.5 py-3 ${
           chrome.mobile
-            ? 'top-16 right-16 w-[220px] overflow-y-auto overscroll-contain'
+            ? 'top-28 right-16 w-[220px] overflow-y-auto overscroll-contain'
             : 'right-3 w-[236px]'
         }`}
         style={

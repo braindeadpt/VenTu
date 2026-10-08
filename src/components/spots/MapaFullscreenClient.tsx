@@ -56,6 +56,7 @@ function readMapSearchParams(): {
   currents: boolean;
   swell: boolean;
   wind: boolean;
+  windOff: boolean;
   goesIr: boolean;
   storms: boolean;
   warnAreas: boolean;
@@ -76,6 +77,7 @@ function readMapSearchParams(): {
     currents: false,
     swell: false,
     wind: false,
+    windOff: false,
     goesIr: false,
     storms: false,
     warnAreas: false,
@@ -103,12 +105,16 @@ function readMapSearchParams(): {
     hours: params.get('hours') === '1' || hourOfDay != null,
     hourOfDay,
     buoys: params.get('buoys') === '1',
-    hs: params.get('hs') === '1' && params.get('sst') !== '1',
+    // O Hs IDW saiu do menu: um ?hs=1 antigo abre a «Ondulação» (abaixo).
+    hs: false,
     sst: params.get('sst') === '1',
     currents: params.get('currents') === '1',
-    // «Ondulação» exclui o Hs IDW e a SST (os três pintam o mar inteiro).
-    swell: params.get('swell') === '1',
-    wind: params.get('wind') === '1',
+    // «Ondulação» exclui a SST (as duas pintam o mar inteiro) e o vento
+    // (selector «Vento | Ondulação | Nenhum»). Legado: ?hs=1 → «Ondulação».
+    swell: params.get('swell') === '1' || (params.get('hs') === '1' && params.get('sst') !== '1'),
+    wind: params.get('wind') === '1' && params.get('swell') !== '1',
+    // «Nenhum» partilhado: ?wind=0 força o vento desligado (sem gravar a pref).
+    windOff: params.get('wind') === '0',
     goesIr: params.get('goesIr') === '1',
     storms: params.get('storms') === '1',
     warnAreas: params.get('warnAreas') === '1',
@@ -164,6 +170,7 @@ export default function MapaFullscreenClient({
   const [initialCurrents, setInitialCurrents] = useState(false);
   const [initialSwell, setInitialSwell] = useState(false);
   const [initialWind, setInitialWind] = useState(false);
+  const [initialWindOff, setInitialWindOff] = useState(false);
   const [initialGoesIr, setInitialGoesIr] = useState(false);
   const [initialStorms, setInitialStorms] = useState(false);
   const [initialWarnAreas, setInitialWarnAreas] = useState(false);
@@ -202,6 +209,7 @@ export default function MapaFullscreenClient({
     setInitialCurrents(s.currents);
     setInitialSwell(s.swell);
     setInitialWind(s.wind);
+    setInitialWindOff(s.windOff);
     setInitialGoesIr(s.goesIr);
     setInitialStorms(s.storms);
     setInitialWarnAreas(s.warnAreas);
@@ -331,6 +339,7 @@ export default function MapaFullscreenClient({
         initialCurrentsEnabled={initialCurrents}
         initialSwellEnabled={initialSwell}
         initialWindEnabled={initialWind}
+        initialWindDisabled={initialWindOff}
         initialGoesIrEnabled={initialGoesIr}
         initialStormsEnabled={initialStorms}
         initialWarnAreasEnabled={initialWarnAreas}

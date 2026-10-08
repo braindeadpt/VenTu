@@ -26,7 +26,7 @@ import {
   windKtColor,
   type Seg,
 } from '@/lib/mapSwellField';
-import { sampleSeaGrid, type SeaGrid, type SeaGridFrame, type SeaSample } from '@/lib/seaGrid';
+import { sampleSeaGrid, seaGridExtent, type SeaGrid, type SeaGridFrame, type SeaSample } from '@/lib/seaGrid';
 
 /** Rótulos do tooltip (t.mapUiLayers). */
 export interface SwellTooltipLabels {
@@ -86,7 +86,14 @@ export function useSwellToggle({ initialEnabled }: UseSwellToggleOptions) {
     setEnabled(false);
     persist(false);
   }, []);
-  return { swellWanted: enabled, toggleSwell: toggle, disableSwell };
+  /** Estado explícito — o selector «Vento | Ondulação | Nenhum». */
+  const setSwell = useCallback((on: boolean) => {
+    if (enabledRef.current === on) return;
+    enabledRef.current = on;
+    setEnabled(on);
+    persist(on);
+  }, []);
+  return { swellWanted: enabled, toggleSwell: toggle, disableSwell, setSwell };
 }
 
 interface UseMapSwellFieldOptions {
@@ -134,43 +141,74 @@ interface IsoCache {
   levels: Array<{ level: number; segs: Array<readonly [readonly [number, number], readonly [number, number]]> }>;
 }
 
+/** Região (lat/lon) onde as isolinhas são calculadas — a vista com margem. */
+interface IsoView {
+  south: number;
+  west: number;
+  north: number;
+  east: number;
+}
+
+const ISO_MAX_SAMPLES = 90_000;
+
 /**
- * Isolinhas em lat/lon (cache por instante + subdivisão). Valores de terra
- * (máscara GADM) e de borda de costa (peso de mar < 0,5) ficam NaN — as
- * linhas não atravessam terra.
+ * Malha das isolinhas: passo = passo mais fino da grelha / `refine`, ancorada
+ * a múltiplos do passo (o pan não faz as linhas «tremer») e recortada à vista
+ * com margem ∩ domínio da grelha. Uma só malha para todas as caixas — com
+ * caixas sobrepostas (v2) iterar por caixa duplicava linhas na zona de fusão.
  */
-function buildIsolinesLatLon(grid: SeaGrid, frame: SeaGridFrame, refine: number): IsoCache['levels'] {
+export function isolineLattice(
+  grid: Pick<SeaGrid, 'boxes' | 'step'> & { legacy?: boolean },
+  refine: number,
+  view: IsoView,
+): { south: number; west: number; d: number; ni: number; nj: number } | null {
+  const ext = seaGridExtent(grid);
+  let d = grid.step / refine;
+  const west0 = Math.max(ext.west, view.west);
+  const east0 = Math.min(ext.east, view.east);
+  const south0 = Math.max(ext.south, view.south);
+  const north0 = Math.min(ext.north, view.north);
+  if (!(east0 > west0 && north0 > south0)) return null;
+  while (((east0 - west0) / d) * ((north0 - south0) / d) > ISO_MAX_SAMPLES) d *= 2;
+  const west = Math.floor(west0 / d) * d;
+  const south = Math.floor(south0 / d) * d;
+  const ni = Math.ceil((east0 - west) / d) + 1;
+  const nj = Math.ceil((north0 - south) / d) + 1;
+  return { south, west, d, ni, nj };
+}
+
+/**
+ * Isolinhas em lat/lon (cache por instante + subdivisão + região). Valores
+ * de terra (máscara de terra) e de borda de costa/domínio (peso de mar < 0,5)
+ * ficam NaN — as linhas não atravessam terra nem a borda exterior.
+ */
+function buildIsolinesLatLon(grid: SeaGrid, frame: SeaGridFrame, refine: number, view: IsoView): IsoCache['levels'] {
   const s = emptySample();
   const out: IsoCache['levels'] = [];
   const levels = isolineLevels(frame.hsMin, frame.hsMax);
   if (!levels.length) return out;
-  const perLevel = new Map<number, IsoCache['levels'][number]['segs']>();
-  for (const lv of levels) perLevel.set(lv, []);
-  for (const b of grid.boxes) {
-    const ni = (b.nx - 1) * refine + 1;
-    const nj = (b.ny - 1) * refine + 1;
-    const d = grid.step / refine;
-    const g = new Float32Array(ni * nj);
-    for (let j = 0; j < nj; j++) {
-      const lat = b.south + j * d;
-      for (let i = 0; i < ni; i++) {
-        const lon = b.west + i * d;
-        const hit = sampleSeaGrid(grid, frame, lat, lon, s);
-        g[j * ni + i] = hit && hit.w * hit.edge >= 0.5 && !pointOnLand(lat, lon) ? hit.hs : NaN;
-      }
-    }
-    for (const lv of levels) {
-      const segs = marchingSquares(g, ni, nj, lv);
-      const dst = perLevel.get(lv)!;
-      for (const [p, q] of segs) {
-        dst.push([
-          [b.south + p[1] * d, b.west + p[0] * d],
-          [b.south + q[1] * d, b.west + q[0] * d],
-        ]);
-      }
+  const lat0 = isolineLattice(grid, refine, view);
+  if (!lat0) return out;
+  const { south, west, d, ni, nj } = lat0;
+  const g = new Float32Array(ni * nj);
+  for (let j = 0; j < nj; j++) {
+    const lat = south + j * d;
+    for (let i = 0; i < ni; i++) {
+      const lon = west + i * d;
+      const hit = sampleSeaGrid(grid, frame, lat, lon, s);
+      g[j * ni + i] = hit && hit.w * hit.edge >= 0.5 && !pointOnLand(lat, lon) ? hit.hs : NaN;
     }
   }
-  for (const lv of levels) out.push({ level: lv, segs: perLevel.get(lv)! });
+  for (const lv of levels) {
+    const segs = marchingSquares(g, ni, nj, lv);
+    out.push({
+      level: lv,
+      segs: segs.map(([p, q]) => [
+        [south + p[1] * d, west + p[0] * d],
+        [south + q[1] * d, west + q[0] * d],
+      ] as const),
+    });
+  }
   return out;
 }
 
@@ -357,9 +395,21 @@ export function useMapSwellField({
       const { seaGrid: grid, seaFrame: frame, locale: loc } = dataRef.current;
       if (!grid || !frame) return;
       const refine = isoRefine(map.getZoom());
-      const key = `${frame.tf.toFixed(4)}|${refine}|${grid.generatedAt}`;
+      // Vista com 40 % de margem, arredondada a 0,5° — o pan dentro da margem
+      // reaproveita a cache; fora dela recalcula só a região nova.
+      const vb = map.getBounds();
+      const padLat = (vb.getNorth() - vb.getSouth()) * 0.4;
+      const padLon = (vb.getEast() - vb.getWest()) * 0.4;
+      const q = (x: number, up: boolean) => (up ? Math.ceil(x * 2) : Math.floor(x * 2)) / 2;
+      const view = {
+        south: q(vb.getSouth() - padLat, false),
+        west: q(vb.getWest() - padLon, false),
+        north: q(vb.getNorth() + padLat, true),
+        east: q(vb.getEast() + padLon, true),
+      };
+      const key = `${frame.tf.toFixed(4)}|${refine}|${grid.generatedAt}|${view.south},${view.west},${view.north},${view.east}`;
       if (!isoCache || isoCache.key !== key) {
-        isoCache = { key, levels: buildIsolinesLatLon(grid, frame, refine) };
+        isoCache = { key, levels: buildIsolinesLatLon(grid, frame, refine, view) };
       }
       ctx.lineCap = 'round';
       const margin = { x0: 40, y0: 72, x1: W - 40, y1: H - 120 };

@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import type { MapHoursFile } from '@/lib/mapHours';
+import { loadLandMask } from '@/lib/landMask';
 import {
   fetchSeaGrid,
   lisbonLocalToEpochMs,
@@ -16,6 +17,11 @@ import {
  * «Ondulação». `fetchSeaGrid` deduplica pedidos e tem TTL, por isso os dois
  * consumidores pedem o ficheiro uma vez.
  *
+ * A máscara de terra do domínio inteiro (`land-mask.json`, ~14 KB gzip) é
+ * pedida em paralelo e a grelha só é entregue depois de ela chegar (ou
+ * falhar) — o primeiro desenho já corta a costa da Galiza/Cantábrico/
+ * Marrocos; sem ela fica a máscara GADM PT+ES embutida.
+ *
  * `undefined` = a carregar; `null` = sem ficheiro (ou velho/malformado).
  */
 export function useSeaGrid(wanted: boolean): SeaGrid | null | undefined {
@@ -24,7 +30,7 @@ export function useSeaGrid(wanted: boolean): SeaGrid | null | undefined {
     if (!wanted) return;
     let cancelled = false;
     const load = () =>
-      fetchSeaGrid().then((g) => {
+      Promise.all([fetchSeaGrid(), loadLandMask()]).then(([g]) => {
         if (!cancelled) setGrid(g);
       });
     load();

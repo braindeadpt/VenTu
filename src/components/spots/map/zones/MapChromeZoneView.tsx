@@ -17,6 +17,7 @@ import MapControlStack from '../components/MapControlStack';
 import MapLegend from '../../MapLegend';
 import WindRingLegend from '../../WindRingLegend';
 import MapTimeChrome from '../MapTimeChrome';
+import MapSeaModeSwitch, { type MapSeaMode } from '../components/MapSeaModeSwitch';
 import type { IsobathContoursFile } from '@/lib/isobaths';
 import type { MapChromeState } from './MapChromeZone';
 import type { MapLayersFields } from './MapLayersZone';
@@ -52,6 +53,9 @@ interface MapChromeZoneProps {
     'timeTrackChips'
   >;
   windButtonRef: React.RefObject<HTMLButtonElement | null>;
+  /** Selector «Vento | Ondulação | Nenhum» (só /mapa fullscreen). */
+  seaMode?: MapSeaMode;
+  onSeaModeChange?: (mode: MapSeaMode) => void;
 }
 
 export default function MapChromeZone({
@@ -69,6 +73,8 @@ export default function MapChromeZone({
   legendLayerProps,
   state,
   windButtonRef,
+  seaMode,
+  onSeaModeChange,
 }: MapChromeZoneProps) {
   const {
     locate, locating, handleShareView,
@@ -89,7 +95,8 @@ export default function MapChromeZone({
   // A legenda sobe por cima do scrubber aberto (40 px base + altura + 12 px).
   const legendBottom = state.scrubOpen && state.hoursOn ? state.scrubH + 52 : 34;
 
-  // §12 — no mobile a legenda ancora no topo (top-16, por baixo da pill);
+  // §12 — no mobile a legenda ancora no topo (top-28, por baixo do selector
+  // «Vento | Ondulação | Nenhum» e da pill);
   // a altura é limitada ao espaço livre acima do scrubber aberto ou do
   // topo do sheet, com scroll interno — nunca colide a 390 px.
   const [legendCap, setLegendCap] = useState<number | undefined>(undefined);
@@ -110,9 +117,9 @@ export default function MapChromeZone({
         ?.getBoundingClientRect().top;
       const bound =
         Math.min(scrubTop ?? Number.POSITIVE_INFINITY, sheetTop ?? Number.POSITIVE_INFINITY, window.innerHeight) - 8;
-      // A legenda ancora a top-16 dentro do shell (que começa sob o header
-      // de 48 px) → topo absoluto = 48 + 64 = 112.
-      const next = Math.round(bound - 112);
+      // A legenda ancora a top-28 dentro do shell (que começa sob o header
+      // de 48 px; por baixo do selector e da pill) → topo absoluto = 48 + 112 = 160.
+      const next = Math.round(bound - 160);
       setLegendCap((prev) => (prev === next ? prev : next));
       raf = requestAnimationFrame(measure);
     };
@@ -165,6 +172,23 @@ export default function MapChromeZone({
         />
       ) : (
         <MapControls {...controls} />
+      )}
+
+      {/* Selector «Vento | Ondulação | Nenhum» — topo-centro, sempre visível
+          (maquete aprovada); a pill de tempo fica logo por baixo. */}
+      {isFullscreen && !isHeroEmbed && seaMode && onSeaModeChange && (
+        <div data-map-sea-mode-switch className="absolute top-3 left-1/2 z-[1150] -translate-x-1/2">
+          <MapSeaModeSwitch
+            value={seaMode}
+            onChange={onSeaModeChange}
+            labels={{
+              group: t.mapUiLayers.seaModeGroup,
+              wind: t.mapUiLayers.seaModeWind,
+              swell: t.mapUiLayers.layerSwell,
+              none: t.mapUiLayers.seaModeNone,
+            }}
+          />
+        </div>
       )}
 
       {/* Pill «Agora · HH:MM» + scrubber 48 h — topo e fundo centrados. */}
