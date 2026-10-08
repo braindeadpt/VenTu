@@ -315,7 +315,8 @@ jobs:
       # Falha suave: fica o último commitado; o mapa cai no IDW dos spots
       # quando a grelha não cobre a hora pedida (> 30 h de idade).
       - name: Build sea grid (wind + swell, Open-Meteo 0.5°)
-        if: steps.gate.outputs.mode == 'full'
+        # Também corre fora de «full» quando o ficheiro não existe (arranque).
+        if: steps.gate.outputs.mode == 'full' || (steps.gate.outputs.mode != 'skip' && hashFiles('public/data/sea-grid.json') == '')
         continue-on-error: true
         timeout-minutes: 6
         run: node scripts/build-sea-grid.js
