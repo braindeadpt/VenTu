@@ -1,7 +1,7 @@
-import { createRequire } from 'module';
 import { test, expect, type Page } from '@playwright/test';
 import { interceptMapHours } from './helpers/conditions';
 import { preseedWindRingLegend } from './helpers/map-setup';
+import { encodeSeaGrid } from '../../scripts/lib/seaGrid.js';
 
 /**
  * Selector «Vento | Ondulação | Nenhum» do /mapa (maquete aprovada):
@@ -11,8 +11,6 @@ import { preseedWindRingLegend } from './helpers/map-setup';
  * commitado envelhece e o cliente rejeita > 30 h).
  */
 
-const require = createRequire(import.meta.url);
-const enc = require('../../scripts/lib/seaGrid.js');
 
 function seaGridStub() {
   const boxes = [
@@ -34,7 +32,7 @@ function seaGridStub() {
     swell_wave_direction: times.map(() => 300),
     swell_wave_period: times.map(() => 12),
   }));
-  return enc.encodeSeaGrid({ boxes, nodes, wind, marine, times, idx, generatedAt: new Date().toISOString(), source: 'e2e' });
+  return encodeSeaGrid({ boxes, nodes, wind, marine, times, idx, generatedAt: new Date().toISOString(), source: 'e2e' });
 }
 
 const TIMES = Array.from({ length: 16 }, (_, i) => {
