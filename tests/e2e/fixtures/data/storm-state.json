@@ -24,7 +24,7 @@
           "kmh": 27
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "vila-praia-ancora": {
@@ -39,7 +39,7 @@
           "kmh": 26
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "afife": {
@@ -54,7 +54,7 @@
           "kmh": 25
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "castelo-neiva": {
@@ -69,7 +69,7 @@
           "kmh": 25
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "amorosa": {
@@ -84,7 +84,7 @@
           "kmh": 24
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "cabedelo": {
@@ -99,7 +99,7 @@
           "kmh": 23
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "foil-cabedelo": {
@@ -114,7 +114,7 @@
           "kmh": 23
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "cabedelo-wakepark": {
@@ -129,7 +129,7 @@
           "kmh": 24
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "rodanho": {
@@ -144,7 +144,7 @@
           "kmh": 23
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "ofir": {
@@ -153,9 +153,13 @@
         "distKm": 0,
         "dirDeg": 95,
         "intensity": "heavy",
-        "approach": null
+        "approach": {
+          "state": "approaching",
+          "deg": 266,
+          "kmh": 22
+        }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "esposende": {
@@ -170,7 +174,7 @@
           "kmh": 23
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "esposende-praia": {
@@ -185,7 +189,7 @@
           "kmh": 23
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "fao": {
@@ -200,7 +204,7 @@
           "kmh": 23
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "apulia": {
@@ -215,7 +219,7 @@
           "kmh": 23
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "povoa-varzim": {
@@ -230,7 +234,7 @@
           "kmh": 25
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "azurara": {
@@ -245,7 +249,7 @@
           "kmh": 25
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "leca-palmeira": {
@@ -260,7 +264,7 @@
           "kmh": 22
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "matosinhos": {
@@ -275,7 +279,7 @@
           "kmh": 21
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "cabedelo-douro": {
@@ -290,7 +294,7 @@
           "kmh": 19
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "marina-afurada-foil": {
@@ -305,7 +309,7 @@
           "kmh": 19
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "foil-fao-cavado": {
@@ -320,7 +324,7 @@
           "kmh": 23
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "foil-esposende-piscinas": {
@@ -335,7 +339,7 @@
           "kmh": 23
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "praia-da-lomba": {
@@ -350,7 +354,7 @@
           "kmh": 15
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "salgueiros": {
@@ -365,7 +369,7 @@
           "kmh": 19
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "sereia-costa-verde": {
@@ -380,7 +384,7 @@
           "kmh": 18
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "canide-sul": {
@@ -395,7 +399,7 @@
           "kmh": 18
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "aguda": {
@@ -410,7 +414,7 @@
           "kmh": 16
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "espinho": {
@@ -425,7 +429,7 @@
           "kmh": 14
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "praia-37": {
@@ -440,7 +444,7 @@
           "kmh": 15
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "bairro-piscatorio": {
@@ -455,7 +459,7 @@
           "kmh": 14
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "paramos": {
@@ -470,7 +474,7 @@
           "kmh": 14
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "barrinha-esmoriz": {
@@ -485,7 +489,7 @@
           "kmh": 13
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "esmoriz": {
@@ -500,7 +504,7 @@
           "kmh": 13
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "cortegaca": {
@@ -515,7 +519,7 @@
           "kmh": 13
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "cortegaca-sul": {
@@ -530,7 +534,7 @@
           "kmh": 13
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "maceda": {
@@ -545,7 +549,7 @@
           "kmh": 13
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "murtosa": {
@@ -560,7 +564,7 @@
           "kmh": 9
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "ria-torreira": {
@@ -575,7 +579,7 @@
           "kmh": 10
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "praia-torreira": {
@@ -590,7 +594,7 @@
           "kmh": 11
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "muranzel": {
@@ -605,7 +609,7 @@
           "kmh": 12
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "furadouro": {
@@ -620,7 +624,7 @@
           "kmh": 11
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "sao-jacinto": {
@@ -635,7 +639,7 @@
           "kmh": 13
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "costa-nova": {
@@ -650,7 +654,7 @@
           "kmh": 12
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "tocha": {
@@ -665,7 +669,7 @@
           "kmh": 15
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "quiaios": {
@@ -680,7 +684,7 @@
           "kmh": 13
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "figueira-foz": {
@@ -695,7 +699,7 @@
           "kmh": 12
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "leirosa": {
@@ -1351,11 +1355,11 @@
         "intensity": "moderate",
         "approach": {
           "state": "receding",
-          "deg": 298,
-          "kmh": 48
+          "deg": null,
+          "kmh": null
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "ilha-do-ermal": {
@@ -1370,7 +1374,7 @@
           "kmh": 16
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "melides": {
@@ -1749,7 +1753,11 @@
         "distKm": 0,
         "dirDeg": 95,
         "intensity": "heavy",
-        "approach": null
+        "approach": {
+          "state": "receding",
+          "deg": 5,
+          "kmh": 56
+        }
       },
       "warnLevel": null,
       "inStormCone": false
@@ -1760,7 +1768,11 @@
         "distKm": 2,
         "dirDeg": 93,
         "intensity": "heavy",
-        "approach": null
+        "approach": {
+          "state": "receding",
+          "deg": 357,
+          "kmh": 49
+        }
       },
       "warnLevel": null,
       "inStormCone": false
@@ -1771,7 +1783,11 @@
         "distKm": 6,
         "dirDeg": 89,
         "intensity": "heavy",
-        "approach": null
+        "approach": {
+          "state": "receding",
+          "deg": 352,
+          "kmh": 45
+        }
       },
       "warnLevel": null,
       "inStormCone": false
@@ -1782,7 +1798,11 @@
         "distKm": 6,
         "dirDeg": 91,
         "intensity": "heavy",
-        "approach": null
+        "approach": {
+          "state": "receding",
+          "deg": 349,
+          "kmh": 45
+        }
       },
       "warnLevel": null,
       "inStormCone": false
@@ -1988,7 +2008,11 @@
         "distKm": 18,
         "dirDeg": 81,
         "intensity": "heavy",
-        "approach": null
+        "approach": {
+          "state": "receding",
+          "deg": 340,
+          "kmh": 44
+        }
       },
       "warnLevel": null,
       "inStormCone": false
@@ -1999,7 +2023,11 @@
         "distKm": 15,
         "dirDeg": 82,
         "intensity": "heavy",
-        "approach": null
+        "approach": {
+          "state": "receding",
+          "deg": 340,
+          "kmh": 39
+        }
       },
       "warnLevel": null,
       "inStormCone": false
@@ -2010,7 +2038,11 @@
         "distKm": 10,
         "dirDeg": 87,
         "intensity": "heavy",
-        "approach": null
+        "approach": {
+          "state": "receding",
+          "deg": 340,
+          "kmh": 42
+        }
       },
       "warnLevel": null,
       "inStormCone": false
@@ -2102,7 +2134,7 @@
           "kmh": 12
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "vila-cha": {
@@ -2117,7 +2149,7 @@
           "kmh": 25
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "santa-cruz": {
@@ -2437,7 +2469,7 @@
           "kmh": 23
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "ofir-praia": {
@@ -2452,7 +2484,7 @@
           "kmh": 23
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "mindelo": {
@@ -2467,7 +2499,7 @@
           "kmh": 25
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "aterro": {
@@ -2482,7 +2514,7 @@
           "kmh": 23
         }
       },
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     }
   }
