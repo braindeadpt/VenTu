@@ -79,6 +79,18 @@ normal, falha antes de se tornar um problema de histórico.
 > `public/data/land-mask.json` (~26 KB, estático, versionado como ficheiro
 > normal — excepção no .gitignore), tecto 0,05 MB.
 
+> 2026-10-08 (noite): `sea-grid.json` passa a **v3** — GFS 0,5° + WaveWatch
+> III do ERDDAP do PacIOOS (sem quota, zero chamadas ao Open-Meteo), Atlântico
+> Norte inteiro (0–72 N × 100 W–44 E em 0,5°/1°/2°), 0–48 h de 3 em 3 h.
+> **~810 KB** cru (~380 KB gzip), regenerado ~4×/dia (portão de 5,5 h) num
+> job próprio → ~3,2 MB/dia de blobs no histórico (antes ≤ ~0,66 MB/dia).
+> É o maior custo novo da árvore depois dos forecasts: se a folga apertar,
+> o primeiro corte é passar o portão a 11,5 h (2×/dia, ~1,6 MB/dia) — o
+> cliente aceita 30 h. Tecto 1 MB em `check-payload-budgets.js`. O recorte
+> vectorial da terra (`public/geo/land-clip/`, ~3,2 MB em ~670 ficheiros) é
+> estático e fica fora de `public/data` (não conta para este orçamento nem
+> muda com o pipeline).
+
 ## Porque cresce
 
 `scripts/push-data-update.sh` corre `git add -f public/data/` a cada ~30 min e

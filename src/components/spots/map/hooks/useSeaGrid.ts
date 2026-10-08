@@ -1,9 +1,12 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import type L from 'leaflet';
 import type { MapHoursFile } from '@/lib/mapHours';
 import { loadLandMask } from '@/lib/landMask';
 import {
+  SEA_DOMAIN_MIN_ZOOM,
+  SEA_DOMAIN_VIEW_BOUNDS,
   fetchSeaGrid,
   lisbonLocalToEpochMs,
   seaGridFrame,
@@ -17,10 +20,10 @@ import {
  * «Ondulação». `fetchSeaGrid` deduplica pedidos e tem TTL, por isso os dois
  * consumidores pedem o ficheiro uma vez.
  *
- * A máscara de terra do domínio inteiro (`land-mask.json`, ~14 KB gzip) é
- * pedida em paralelo e a grelha só é entregue depois de ela chegar (ou
- * falhar) — o primeiro desenho já corta a costa da Galiza/Cantábrico/
- * Marrocos; sem ela fica a máscara GADM PT+ES embutida.
+ * O recorte da costa é vectorial (landClip.ts, pedido por vista pelos
+ * hooks). A máscara raster `land-mask.json` continua a ser pedida em
+ * paralelo: é o fallback quando o índice do recorte falha e serve as outras
+ * camadas (Hs/SST/correntes).
  *
  * `undefined` = a carregar; `null` = sem ficheiro (ou velho/malformado).
  */
@@ -79,4 +82,44 @@ export function useSeaGridFrame(
     if (tf == null) return null;
     return seaGridFrame(grid, tf);
   }, [grid, epoch]);
+}
+
+/**
+ * Limites do /mapa fullscreen coerentes com o domínio da grelha do mar
+ * (v3: 0–72 N × 100 W–44 E, esbatido 4° na borda): o pan fica no INTERIOR do
+ * esbatido (`maxBounds`, viscosidade 1) e o zoom-out mínimo é o menor zoom
+ * em que a vista inteira cabe nesse interior (refeito ao redimensionar).
+ * Assim a borda do campo nunca chega ao ecrã — não há «rectângulo» a zoom
+ * nenhum. Fora do fullscreen (hero, mini-mapas) nada muda.
+ */
+export function useSeaDomainBounds(
+  mapInstanceRef: React.MutableRefObject<L.Map | null>,
+  LRef: React.MutableRefObject<typeof L | null>,
+  isReady: boolean,
+  enabled: boolean,
+): void {
+  useEffect(() => {
+    const map = mapInstanceRef.current;
+    const Leaflet = LRef.current;
+    if (!enabled || !isReady || !map || !Leaflet) return;
+    const b = SEA_DOMAIN_VIEW_BOUNDS;
+    const bounds = Leaflet.latLngBounds([b.south, b.west], [b.north, b.east]);
+    const prevMin = map.getMinZoom();
+    const prevViscosity = map.options.maxBoundsViscosity;
+    const apply = () => {
+      const z = Math.max(SEA_DOMAIN_MIN_ZOOM, Math.ceil(map.getBoundsZoom(bounds, true) - 1e-6));
+      map.setMinZoom(z);
+      if (map.getZoom() < z) map.setZoom(z, { animate: false });
+    };
+    map.options.maxBoundsViscosity = 1;
+    map.setMaxBounds(bounds);
+    apply();
+    map.on('resize', apply);
+    return () => {
+      map.off('resize', apply);
+      map.setMaxBounds(undefined as unknown as L.LatLngBounds);
+      map.setMinZoom(prevMin);
+      map.options.maxBoundsViscosity = prevViscosity;
+    };
+  }, [enabled, isReady, mapInstanceRef, LRef]);
 }

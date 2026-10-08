@@ -283,15 +283,16 @@ if (mapHours !== undefined) {
 }
 
 // ── 3c. sea-grid.json — grelha de vento + ondulação do /mapa (camada suave)
-// Gerada no máximo de 12 em 12 h (e só com folga de quota); ausente ou velha =
-// o mapa cai no IDW dos spots. v2: caixas com passo próprio e máscara de nós
-// guardados (`count` por caixa); v1 (formato antigo) continua válido.
+// v3 (GFS + WW3 em grelha via ERDDAP do PacIOOS, sem quota): refeita de 6 em
+// 6 h num job próprio; ausente ou velha = o mapa cai no IDW dos spots. v2/v3:
+// caixas com passo próprio e máscara de nós guardados (`count` por caixa);
+// v3 acrescenta `fade` (esbatido da borda). v1 continua válido.
 const seaGrid = read('sea-grid.json');
 if (seaGrid !== undefined) {
   const boxes = Array.isArray(seaGrid.boxes) ? seaGrid.boxes : [];
   let n = -1;
   let offsetsOk = boxes.length > 0;
-  if (seaGrid.v === 2) {
+  if (seaGrid.v === 2 || seaGrid.v === 3) {
     n = 0;
     for (const b of boxes) {
       const total = b && b.nx * b.ny;
@@ -305,7 +306,11 @@ if (seaGrid !== undefined) {
   }
   check(
     'seaGrid.shape',
-    (seaGrid.v === 1 || seaGrid.v === 2) && offsetsOk && n === seaGrid.n && seaGrid.nt >= 13,
+    (seaGrid.v === 1 || seaGrid.v === 2 || seaGrid.v === 3) &&
+      offsetsOk &&
+      n === seaGrid.n &&
+      seaGrid.nt >= (seaGrid.v === 3 ? 17 : 13) &&
+      (seaGrid.v !== 3 || (seaGrid.stepHours === 3 && seaGrid.fade > 0)),
     `v=${seaGrid.v} n=${seaGrid.n}/${n} nt=${seaGrid.nt}`,
   );
   const want = Math.ceil((seaGrid.n * seaGrid.nt) / 3) * 4;

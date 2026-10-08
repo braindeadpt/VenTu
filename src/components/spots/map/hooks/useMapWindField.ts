@@ -21,6 +21,17 @@ import {
 } from '@/lib/mapWindField';
 import type { FieldSpot } from '@/lib/mapHsField';
 import type { SeaGrid, SeaGridFrame } from '@/lib/seaGrid';
+import {
+  LAND_CLIP_WAIT_MS,
+  buildScreenLandMask,
+  landClipViewSync,
+  prepareLandClip,
+  screenMaskAt,
+  type ScreenLandMask,
+} from '@/lib/landClip';
+import { pointOnLand } from '@/lib/landMask';
+import { toScreen, type ScreenView } from '@/lib/seaFieldPaint';
+import { mapClipBounds, mapScreenView } from './mapScreenView';
 
 interface UseMapWindFieldOptions {
   mapInstanceRef: React.MutableRefObject<L.Map | null>;
@@ -220,13 +231,77 @@ export function useMapWindField({
       };
     };
 
+    // Recorte vectorial da terra (landClip.ts): máscara de ecrã da vista,
+    // refeita quando a vista muda. Uma partícula que entra em terra morre e
+    // renasce no mar — o rasto pára na linha de costa ao píxel. Até o
+    // recorte da vista chegar não se desenha nada (nunca vento em terra)
+    // durante LAND_CLIP_WAIT_MS; depois desenha com a máscara raster
+    // (`pointOnLand`) e passa ao corte vectorial quando os mosaicos chegarem.
+    const clipState = {
+      mask: null as ScreenLandMask | null,
+      view: null as ScreenView | null,
+      pending: false,
+      missing: false,
+      slow: false,
+      disposed: false,
+    };
+    const refreshClip = (): boolean => {
+      const v = mapScreenView(map);
+      clipState.view = v;
+      const bounds = mapClipBounds(map, 0.1);
+      const lv = landClipViewSync(bounds, v.zoom);
+      if (lv) {
+        clipState.mask = buildScreenLandMask(lv, v.zoom, v.origin, v.W, v.H, 2);
+        host.setAttribute('data-map-windfield-clip', 'vector');
+        return true;
+      }
+      clipState.mask = null;
+      if (clipState.missing) {
+        host.setAttribute('data-map-windfield-clip', 'raster');
+        return true;
+      }
+      if (!clipState.pending) {
+        clipState.pending = true;
+        const slowTimer = window.setTimeout(() => {
+          if (clipState.disposed || !clipState.pending || clipState.slow) return;
+          clipState.slow = true;
+          host.setAttribute('data-map-windfield-clip', 'raster');
+          respawnAll();
+          if (reducedMotion) paintStatic();
+          else wake();
+        }, LAND_CLIP_WAIT_MS);
+        prepareLandClip(bounds, v.zoom).then((got) => {
+          window.clearTimeout(slowTimer);
+          clipState.pending = false;
+          if (clipState.disposed) return;
+          if (!got) clipState.missing = true;
+          if (refreshClip()) {
+            respawnAll();
+            if (reducedMotion) paintStatic();
+            else wake();
+          }
+        });
+      }
+      host.setAttribute('data-map-windfield-clip', clipState.slow ? 'raster' : 'loading');
+      return clipState.slow;
+    };
+    const onLand = (lat: number, lon: number): boolean => {
+      const m = clipState.mask;
+      const v = clipState.view;
+      if (!m || !v) return clipState.missing || clipState.slow ? pointOnLand(lat, lon) : false;
+      const p = toScreen(v, lat, lon);
+      return screenMaskAt(m, p.x, p.y);
+    };
+    const clipReady = () => !!clipState.mask || clipState.missing || clipState.slow;
+
     const respawnAll = () => {
       particles.length = 0;
+      if (!clipReady()) return;
       const view = spawnView();
       const target = particleTarget();
       for (let i = 0; i < target; i++) {
         const p: WindParticle = { lat: 0, lon: 0, px: 0, py: 0, hasPrev: false, life: 0, kt: 0, jit: 1 };
-        if (spawnWindParticle(gridsRef.current, view, p)) particles.push(p);
+        if (spawnWindParticle(gridsRef.current, view, p, Math.random, undefined, onLand)) particles.push(p);
       }
     };
 
@@ -249,7 +324,7 @@ export function useMapWindField({
       for (const p of particles) {
         let drawn = false;
         for (let s = 0; s < steps; s++) {
-          if (!advectWindParticle(gridsRef.current, p, 0.016, zoom, undefined, windCellKt)) break;
+          if (!advectWindParticle(gridsRef.current, p, 0.016, zoom, undefined, windCellKt) || onLand(p.lat, p.lon)) break;
           const pt = project(p.lat, p.lon);
           if (drawn) {
             const k = s / steps;
@@ -349,16 +424,21 @@ export function useMapWindField({
         lastTargetAttr = target;
         host.setAttribute('data-map-windfield-target', String(target));
       }
+      if (!clipReady()) {
+        rafRef.current = requestAnimationFrame(tick);
+        return;
+      }
       if (particles.length > target) particles.length = target;
       while (particles.length < target) {
         const np: WindParticle = { lat: 0, lon: 0, px: 0, py: 0, hasPrev: false, life: 0, kt: 0, jit: 1 };
-        if (!spawnWindParticle(gridsRef.current, view, np)) break;
+        if (!spawnWindParticle(gridsRef.current, view, np, Math.random, undefined, onLand)) break;
         particles.push(np);
       }
       for (const p of particles) {
         // Velocidade ∝ vento (u,v em m/s × px/s por m/s) e cor pelo nó actual.
-        if (!advectWindParticle(gridsRef.current, p, dt, zoom, undefined, windCellKt)) {
-          if (!spawnWindParticle(gridsRef.current, view, p)) {
+        // Em terra (recorte vectorial) a partícula morre e renasce no mar.
+        if (!advectWindParticle(gridsRef.current, p, dt, zoom, undefined, windCellKt) || onLand(p.lat, p.lon)) {
+          if (!spawnWindParticle(gridsRef.current, view, p, Math.random, undefined, onLand)) {
             // fora do campo nesta vista — volta a tentar com vida curta
             p.life = 30;
           }
@@ -435,6 +515,7 @@ export function useMapWindField({
           ctx.setTransform(1, 0, 0, 1, 0, 0);
           ctx.clearRect(0, 0, size.x, size.y);
         }
+        refreshClip();
         respawnAll();
         // Publica já o alvo do novo zoom — não espera pelo próximo frame
         // desenhado (o loop pode ainda estar a drenar o cap de 30 fps).
@@ -457,6 +538,7 @@ export function useMapWindField({
       attributeFilter: ['class'],
     });
 
+    refreshClip();
     respawnAll();
     map.on('movestart', onGestureStart);
     map.on('zoomstart', onGestureStart);
@@ -507,6 +589,7 @@ export function useMapWindField({
     el.setAttribute('data-map-windfield-target', String(particleTarget()));
 
     return () => {
+      clipState.disposed = true;
       onGridsChangeRef.current = null;
       if (fadeInRaf) cancelAnimationFrame(fadeInRaf);
       themeObs.disconnect();

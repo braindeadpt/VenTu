@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import { createRequire } from 'module';
 import {
+  SEA_DOMAIN,
+  SEA_DOMAIN_VIEW_BOUNDS,
+  applyFillPlan,
+  buildFillPlan,
   SEA_GRID_BLEND_CELLS,
   dilateSwell,
   lisbonLocalToEpochMs,
@@ -67,7 +71,7 @@ describe('parseSeaGrid', () => {
     expect(g.pe[0]).toBeGreaterThan(0.69);
     expect(g.pn[0]).toBeLessThan(-0.69);
     expect(parseSeaGrid(null)).toBeNull();
-    expect(parseSeaGrid({ ...synthetic(), v: 3 })).toBeNull();
+    expect(parseSeaGrid({ ...synthetic(), v: 4 })).toBeNull();
     const bad = synthetic();
     bad.fields.hs = bad.fields.hs.slice(0, 4);
     expect(parseSeaGrid(bad)).toBeNull();
@@ -247,7 +251,7 @@ describe('sea-grid v2', () => {
     expect(sampleSeaGrid(g, f, 38, -16.1)).toBeNull();
   });
 
-  it('o ficheiro publicado (se existir) descodifica e cobre Açores → Biscaia', async () => {
+  it('o ficheiro publicado (se existir) descodifica e cobre o Atlântico Norte inteiro', async () => {
     const fs = await import('fs');
     const path = await import('path');
     const file = path.join(__dirname, '../../../public/data/sea-grid.json');
@@ -259,5 +263,90 @@ describe('sea-grid v2', () => {
     expect(ext.east).toBeGreaterThanOrEqual(-1);
     expect(ext.south).toBeLessThanOrEqual(27);
     expect(ext.north).toBeGreaterThanOrEqual(46.5);
+    if (g!.version === 3) {
+      // domínio v3 muito maior que qualquer vista do /mapa
+      expect(ext).toMatchObject({ west: SEA_DOMAIN.west, east: SEA_DOMAIN.east, south: SEA_DOMAIN.south, north: SEA_DOMAIN.north });
+      const f = seaGridFrame(g!, 0);
+      // sem faixa vazia na costa: Aveiro, na praia, lê ondulação e vento de mar
+      const beach = sampleSeaGrid(g!, f, 40.64, -8.75)!;
+      expect(beach.hs).toBeGreaterThan(0);
+      expect(beach.w).toBeGreaterThan(0.95);
+      expect(Number.isFinite(beach.u)).toBe(true);
+      // Mediterrâneo central: o WW3 não tem ondulação lá (só vento)
+      const med = sampleSeaGrid(g!, f, 38, 15)!;
+      expect(med.w).toBeLessThan(0.05);
+      expect(Number.isFinite(med.u)).toBe(true);
+      // o interior do pan do /mapa nunca toca no esbatido
+      const b = SEA_DOMAIN_VIEW_BOUNDS;
+      for (const [la, lo] of [[b.south, b.west], [b.north, b.east], [b.south, b.east], [b.north, b.west]]) {
+        expect(sampleSeaGrid(g!, f, la, lo)!.edge).toBe(1);
+      }
+    }
+  });
+});
+
+describe('v3 — grelha de modelo preenchida (GFS + WW3)', () => {
+  it('buildFillPlan: anéis BFS a partir do mar; alcance limitado', () => {
+    // 5×1: mar só no nó 0
+    const plan = buildFillPlan(5, 1, [1, 0, 0, 0, 0]);
+    expect([...plan.order]).toEqual([1, 2, 3, 4]);
+    const a = new Float32Array([2, NaN, NaN, NaN, NaN]);
+    applyFillPlan(plan, a, 0);
+    expect([...a]).toEqual([2, 2, 2, 2, 2]);
+    const rings = new Int32Array(5);
+    const short = buildFillPlan(5, 1, [1, 0, 0, 0, 0], 2, rings);
+    expect([...short.order]).toEqual([1, 2]);
+    expect([...rings]).toEqual([0, 1, 2, -1, -1]);
+    // média dos vizinhos já preenchidos (8-vizinhança)
+    const p2 = buildFillPlan(3, 1, [1, 0, 1]);
+    const b = new Float32Array([1, NaN, 3]);
+    applyFillPlan(p2, b, 0);
+    expect(b[1]).toBe(2);
+  });
+
+  it('parse v3: terra preenchida com o mar mais próximo, cobertura esbatida, fade da borda', () => {
+    const sg = enc;
+    const tiers = [{ id: 'core', step: 0.5, south: 38, north: 40, west: -11, east: -8 }];
+    const nx = 7;
+    const ny = 5;
+    const n = nx * ny;
+    const times = [1_800_000_000, 1_800_000_000 + 3 * 3600];
+    const nan = () => new Float32Array(times.length * n).fill(NaN);
+    const d = { u: nan(), v: nan(), hs: nan(), sdir: nan(), sper: nan(), tdir: nan(), tper: nan() };
+    // mar a oeste de -9.5 (i ≤ 3), «terra» a leste
+    for (let t = 0; t < times.length; t++) {
+      for (let j = 0; j < ny; j++) {
+        for (let i = 0; i < nx; i++) {
+          const o = t * n + j * nx + i;
+          d.u[o] = 4;
+          d.v[o] = -2;
+          if (i <= 3) {
+            d.hs[o] = 2;
+            d.sdir[o] = 300;
+            d.sper[o] = 12;
+          }
+        }
+      }
+    }
+    const file = sg.encodeGriddedSeaGrid({ tiers, data: [d], times, generatedAt: new Date().toISOString(), source: 't' });
+    expect(file.v).toBe(3);
+    expect(file.fade).toBe(4);
+    expect(file.stepHours).toBe(3);
+    expect(file.n).toBe(4 * ny); // só nós de mar guardados
+    const g = parseSeaGrid(file)!;
+    expect(g.version).toBe(3);
+    const f = seaGridFrame(g, 0.5);
+    // nó de terra a 1 célula da costa: valor do mar, cobertura cheia
+    const k1 = g.boxes[0].offset + 2 * nx + 4;
+    expect(f.hs[k1]).toBeCloseTo(2, 5);
+    expect(g.cov![k1]).toBe(1);
+    expect(f.u[k1]).toBeCloseTo(4, 5);
+    // bilinear junto à costa = mar a sério (sem faixa escura)
+    const s = sampleSeaGrid(g, f, 39, -9.3)!;
+    expect(s.hs).toBeCloseTo(2, 4);
+    expect(s.w).toBeCloseTo(1, 4);
+    expect(s.swellFrom).toBeCloseTo(300, 0);
+    // esbatido de 4° (v3) — a caixa de teste é toda «borda»
+    expect(s.edge).toBeLessThan(1);
   });
 });

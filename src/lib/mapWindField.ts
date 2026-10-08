@@ -312,10 +312,13 @@ export function spawnWindParticle(
   out: WindParticle,
   rand: () => number = Math.random,
   strengthOf: (cell: FlowCell) => number = (c) => c.spd * MS_TO_KT,
+  /** Recorte vectorial (v3): pontos em terra na máscara de ecrã não nascem. */
+  onLand?: (lat: number, lon: number) => boolean,
 ): WindParticle | null {
   for (let tries = 0; tries < 24; tries++) {
     const lat = view.south + rand() * (view.north - view.south);
     const lon = view.west + rand() * (view.east - view.west);
+    if (onLand?.(lat, lon)) continue;
     const hit = windCellAnywhere(grids, lat, lon);
     if (!hit) continue;
     const { cell } = hit;
@@ -353,10 +356,12 @@ export function windCellKt(cell: FlowCell): number {
  * corte na costa é por partícula (`landClip` → `pointOnLand`), exacto à
  * resolução da máscara (~500 m) em vez de à da célula. O campo esbate na
  * borda exterior do domínio (`edge` do amostrador).
+ * v3 (GFS/WW3 em grelha, preenchida sobre terra): sem `landClip` — o corte
+ * da costa é a máscara de ecrã do recorte vectorial (landClip.ts), no hook.
  * v1: uma grelha por caixa, esbatida nos últimos ~0,6° (como antes).
  */
 export function buildWindFieldGridsFromSea(
-  sea: Pick<SeaGrid, 'boxes' | 'step'> & { legacy?: boolean },
+  sea: Pick<SeaGrid, 'boxes' | 'step'> & { legacy?: boolean; version?: number; fade?: number },
   frame: SeaGridFrame,
   opts: { mobile?: boolean } = {},
 ): WindFieldGrid[] {
@@ -390,7 +395,10 @@ export function buildWindFieldGridsFromSea(
         grid[y * cols + x] = { u: hit.u, v: hit.v, spd, kt: spd * MS_TO_KT, falloff, nlat: lat, nlon: lon };
       }
     }
-    out.push({ id, south, west, north, east, cols, rows, grid, landClip: true });
+    // v3: a grelha vem preenchida sobre terra e a costa é cortada por vector
+    // no ecrã (o hook mata partículas em terra pela máscara de ecrã) — o
+    // `pointOnLand` raster (~500 m, só no domínio antigo) deixava a escada.
+    out.push({ id, south, west, north, east, cols, rows, grid, landClip: sea.version !== 3 });
   };
 
   if (sea.legacy) {
@@ -435,7 +443,10 @@ export function buildWindFieldGridsFromSea(
     ext.north,
     Math.max(minStep * 2, (ext.east - ext.west) / (opts.mobile ? 180 : 260)),
     (_lat, _lon, hit) => hit.edge,
-    insideFine,
+    // v3: a grelha de domínio cobre também o interior das finas — uma
+    // partícula que sai da fina pela borda continua na de domínio sem cair
+    // num buraco (deixava linhas de costura no Atlântico a 56 W / 14 N).
+    sea.version === 3 ? undefined : insideFine,
   );
   return out;
 }

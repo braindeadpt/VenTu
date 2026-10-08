@@ -35,6 +35,8 @@ export interface SeaGridRawBox extends SeaGridBox {
 
 export interface SeaGridRaw {
   v: number;
+  /** v3: esbatido (°) da borda exterior do domínio */
+  fade?: number;
   generatedAt: string;
   source?: string;
   step: number;
@@ -55,6 +57,14 @@ export interface SeaGrid {
   step: number;
   /** v1: caixas sem sobreposição, borda esbatida numa célula (comportamento antigo) */
   legacy?: boolean;
+  /** formato do ficheiro (1, 2 ou 3) */
+  version?: number;
+  /**
+   * v3: esbatido (°) da borda exterior do domínio. Terra e nós em falta
+   * vêm preenchidos com o mar mais próximo (`fillFromSea`): o bilinear lê
+   * valores de mar até à linha de costa e o recorte vectorial faz a costa.
+   */
+  fade?: number;
   /** unix s da primeira hora */
   t0: number;
   stepHours: number;
@@ -71,6 +81,13 @@ export interface SeaGrid {
   /** vector unitário de PROPAGAÇÃO da ondulação (este, norte) */
   pe: Float32Array;
   pn: Float32Array;
+  /**
+   * v3: cobertura da ondulação por nó (0–1, sem tempo): 1 no mar do modelo e
+   * até SEA_GRID_SWELL_FILL_DEG da costa; desce a 0 nos anéis seguintes —
+   * onde o WW3 não tem mar (Mediterrâneo, Báltico) a cor esbate-se pela
+   * distância, sem corte recto.
+   */
+  cov?: Float32Array;
 }
 
 /** Valores de um instante (já interpolados no tempo), por nó. */
@@ -182,6 +199,150 @@ export function dilateSwell(
   }
 }
 
+/**
+ * Plano de preenchimento «mar mais próximo» de uma caixa: anéis BFS
+ * (8-vizinhos) a partir dos nós válidos; cada nó do anel r recebe a média dos
+ * vizinhos já preenchidos (anéis < r). Calculado uma vez por caixa (a terra
+ * não muda com o tempo) e aplicado a cada instante/campo.
+ * `order[k]` = nó a preencher; `nbr[start[k]..start[k+1]]` = os seus dadores.
+ */
+export interface FillPlan {
+  order: Int32Array;
+  start: Int32Array;
+  nbr: Int32Array;
+}
+
+export function buildFillPlan(
+  nx: number,
+  ny: number,
+  valid: ArrayLike<number | boolean>,
+  maxRings = Infinity,
+  ringsOut?: Int32Array,
+): FillPlan {
+  const n = nx * ny;
+  const ring = new Int32Array(n).fill(-1);
+  let frontier: number[] = [];
+  for (let q = 0; q < n; q++) {
+    if (valid[q]) {
+      ring[q] = 0;
+      frontier.push(q);
+    }
+  }
+  const order: number[] = [];
+  const start: number[] = [0];
+  const nbr: number[] = [];
+  let r = 0;
+  while (frontier.length && r < maxRings) {
+    r++;
+    const next: number[] = [];
+    for (const q of frontier) {
+      const i = q % nx;
+      const j = (q - i) / nx;
+      for (let dj = -1; dj <= 1; dj++) {
+        for (let di = -1; di <= 1; di++) {
+          if (!di && !dj) continue;
+          const ii = i + di;
+          const jj = j + dj;
+          if (ii < 0 || jj < 0 || ii >= nx || jj >= ny) continue;
+          const p = jj * nx + ii;
+          if (ring[p] !== -1) continue;
+          ring[p] = r;
+          next.push(p);
+        }
+      }
+    }
+    for (const p of next) {
+      const i = p % nx;
+      const j = (p - i) / nx;
+      for (let dj = -1; dj <= 1; dj++) {
+        for (let di = -1; di <= 1; di++) {
+          if (!di && !dj) continue;
+          const ii = i + di;
+          const jj = j + dj;
+          if (ii < 0 || jj < 0 || ii >= nx || jj >= ny) continue;
+          const d = jj * nx + ii;
+          if (ring[d] >= 0 && ring[d] < r) nbr.push(d);
+        }
+      }
+      order.push(p);
+      start.push(nbr.length);
+    }
+    frontier = next;
+  }
+  if (ringsOut) ringsOut.set(ring);
+  return { order: Int32Array.from(order), start: Int32Array.from(start), nbr: Int32Array.from(nbr) };
+}
+
+/** Aplica o plano a um campo (in place) a partir de `base`. */
+export function applyFillPlan(plan: FillPlan, arr: Float32Array, base: number): void {
+  const { order, start, nbr } = plan;
+  for (let k = 0; k < order.length; k++) {
+    let s = 0;
+    let c = 0;
+    for (let q = start[k]; q < start[k + 1]; q++) {
+      const x = arr[base + nbr[q]];
+      if (Number.isNaN(x)) continue;
+      s += x;
+      c++;
+    }
+    arr[base + order[k]] = c ? s / c : NaN;
+  }
+}
+
+/**
+ * Alcance (°) do preenchimento da ondulação: chega para cobrir a faixa
+ * costeira que o WW3 a 0,5° deixa vazia (a célula «terra» do modelo junto à
+ * costa) sem inventar ondulação em mares que o modelo não tem (Mediterrâneo,
+ * Báltico). O vento enche a caixa toda — terra é cortada por vector.
+ */
+export const SEA_GRID_SWELL_FILL_DEG = 1.5;
+/** …e esbate a cobertura nos ~1,5° seguintes. */
+export const SEA_GRID_SWELL_FADE_DEG = 1.5;
+
+/**
+ * v3: preenche terra e nós em falta de todas as caixas com o mar mais
+ * próximo (vento: a caixa toda; ondulação: até SEA_GRID_SWELL_FILL_DEG). A
+ * direcção de propagação é renormalizada.
+ */
+export function fillFromSea(grid: Pick<SeaGrid, 'boxes' | 'n' | 'nt' | 'u' | 'v' | 'hs' | 'per' | 'pe' | 'pn'>): Float32Array {
+  const cov = new Float32Array(grid.n);
+  for (const b of grid.boxes) {
+    const total = b.nx * b.ny;
+    const valid = new Uint8Array(total);
+    for (let q = 0; q < total; q++) valid[q] = Number.isNaN(grid.hs[b.offset + q]) ? 0 : 1;
+    const wvalid = new Uint8Array(total);
+    for (let q = 0; q < total; q++) wvalid[q] = Number.isNaN(grid.u[b.offset + q]) ? 0 : 1;
+    const st = b.step ?? 0.5;
+    const full = Math.max(1, Math.ceil(SEA_GRID_SWELL_FILL_DEG / st - 1e-9));
+    const fade = Math.max(1, Math.ceil(SEA_GRID_SWELL_FADE_DEG / st - 1e-9));
+    const rings = new Int32Array(total);
+    const plan = buildFillPlan(b.nx, b.ny, valid, full + fade, rings);
+    for (let q = 0; q < total; q++) {
+      const r = rings[q];
+      cov[b.offset + q] = r < 0 ? 0 : r <= full ? 1 : Math.max(0, 1 - (r - full) / (fade + 1));
+    }
+    const wplan = buildFillPlan(b.nx, b.ny, wvalid);
+    for (let t = 0; t < grid.nt; t++) {
+      const base = t * grid.n + b.offset;
+      applyFillPlan(wplan, grid.u, base);
+      applyFillPlan(wplan, grid.v, base);
+      applyFillPlan(plan, grid.hs, base);
+      applyFillPlan(plan, grid.per, base);
+      applyFillPlan(plan, grid.pe, base);
+      applyFillPlan(plan, grid.pn, base);
+      for (let k = 0; k < plan.order.length; k++) {
+        const o = base + plan.order[k];
+        const L = Math.hypot(grid.pe[o], grid.pn[o]);
+        if (L > 1e-6) {
+          grid.pe[o] /= L;
+          grid.pn[o] /= L;
+        }
+      }
+    }
+  }
+  return cov;
+}
+
 const MAX_BOX_NODES = 200_000;
 
 /**
@@ -192,9 +353,10 @@ const MAX_BOX_NODES = 200_000;
 export function parseSeaGrid(raw: unknown): SeaGrid | null {
   if (!raw || typeof raw !== 'object') return null;
   const r = raw as Partial<SeaGridRaw>;
-  if ((r.v !== 1 && r.v !== 2) || !isNum(r.n) || !isNum(r.nt) || !isNum(r.t0) || !isNum(r.step) || r.step <= 0) return null;
+  if ((r.v !== 1 && r.v !== 2 && r.v !== 3) || !isNum(r.n) || !isNum(r.nt) || !isNum(r.t0) || !isNum(r.step) || r.step <= 0) return null;
   if (!Array.isArray(r.boxes) || !r.boxes.length || !r.fields || !r.scale) return null;
-  const v2 = r.v === 2;
+  const v2 = r.v === 2 || r.v === 3;
+  const v3 = r.v === 3;
   const packedN = r.n;
   const nt = r.nt;
   // Índice completo de cada nó guardado (k empacotado → índice no layout nx·ny).
@@ -271,13 +433,20 @@ export function parseSeaGrid(raw: unknown): SeaGrid | null {
       pn[o] = -Math.cos(from);
     }
   }
-  for (let t = 0; t < nt; t++) {
-    for (const b of boxes) dilateSwell(b, t * n, hs, per, pe, pn, 1);
+  let cov: Float32Array | undefined;
+  if (v3) {
+    cov = fillFromSea({ boxes, n, nt, u, v, hs, per, pe, pn });
+  } else {
+    for (let t = 0; t < nt; t++) {
+      for (const b of boxes) dilateSwell(b, t * n, hs, per, pe, pn, 1);
+    }
   }
   return {
     generatedAt: String(r.generatedAt ?? ''),
     step: Math.min(...boxes.map((b) => b.step ?? r.step!)),
     legacy: !v2,
+    version: r.v,
+    ...(v3 ? { fade: isNum(r.fade) && r.fade > 0 ? r.fade : SEA_GRID_V3_FADE_DEG } : {}),
     t0: r.t0,
     stepHours: isNum(r.stepHours) && r.stepHours > 0 ? r.stepHours : 1,
     nt,
@@ -289,6 +458,7 @@ export function parseSeaGrid(raw: unknown): SeaGrid | null {
     per,
     pe,
     pn,
+    ...(cov ? { cov } : {}),
   };
 }
 
@@ -403,11 +573,28 @@ export function seaGridFrame(grid: SeaGrid, tf: number, out?: SeaGridFrame): Sea
   return fr;
 }
 
-type GridGeom = Pick<SeaGrid, 'boxes' | 'step'> & { legacy?: boolean };
+type GridGeom = Pick<SeaGrid, 'boxes' | 'step'> & { legacy?: boolean; fade?: number; cov?: Float32Array };
+
+/**
+ * Domínio da grelha v3 (scripts/lib/seaGrid.js TIERS, caixa «ocean»): o
+ * Atlântico Norte inteiro + Mediterrâneo + mar do Norte, esbatido 4° na borda.
+ * O /mapa fullscreen limita pan/zoom-out ao INTERIOR do esbatido
+ * (`SEA_DOMAIN_VIEW_BOUNDS`) — a borda do campo nunca chega ao ecrã.
+ */
+export const SEA_GRID_V3_FADE_DEG = 4;
+export const SEA_DOMAIN = Object.freeze({ south: 0, north: 72, west: -100, east: 44 });
+/** Zoom-out mínimo absoluto do /mapa fullscreen (o real é o do encaixe da vista). */
+export const SEA_DOMAIN_MIN_ZOOM = 3;
+export const SEA_DOMAIN_VIEW_BOUNDS = Object.freeze({
+  south: SEA_DOMAIN.south + SEA_GRID_V3_FADE_DEG,
+  north: SEA_DOMAIN.north - SEA_GRID_V3_FADE_DEG,
+  west: SEA_DOMAIN.west + SEA_GRID_V3_FADE_DEG,
+  east: SEA_DOMAIN.east - SEA_GRID_V3_FADE_DEG,
+});
 
 const boxStep = (grid: GridGeom, b: SeaGridBox): number => b.step ?? grid.step;
 
-/** Feather da borda exterior do domínio (v2): ~1° até à cor cheia. */
+/** Feather da borda exterior do domínio (v2): ~1° até à cor cheia (v3: `fade`, 4°). */
 export const SEA_GRID_OUTER_FEATHER_DEG = 1;
 /** Fusão fina → grossa: 2 células finas para dentro da borda da caixa fina. */
 export const SEA_GRID_BLEND_CELLS = 2;
@@ -455,6 +642,7 @@ interface BoxGeom {
 /** Caixas ordenadas da mais fina para a mais grossa, com o envelope — por grelha. */
 const geomCache = new WeakMap<SeaGridBox[], { legacy: boolean; step: number; list: BoxGeom[] }>();
 
+
 function sortedGeom(grid: GridGeom): BoxGeom[] {
   const legacy = !!grid.legacy;
   const hit = geomCache.get(grid.boxes);
@@ -500,6 +688,7 @@ interface Bilinear {
 }
 
 function bilinear(grid: GridGeom, b: SeaGridBox, frame: SeaGridFrame, lat: number, lon: number, o: Bilinear): Bilinear {
+  const cov = grid.cov;
   const st = boxStep(grid, b);
   const gi = Math.max(0, Math.min(b.nx - 1.000001, (lon - b.west) / st));
   const gj = Math.max(0, Math.min(b.ny - 1.000001, (lat - b.south) / st));
@@ -522,11 +711,13 @@ function bilinear(grid: GridGeom, b: SeaGridBox, frame: SeaGridFrame, lat: numbe
     }
     const h = frame.hs[k];
     if (!Number.isNaN(h)) {
-      o.wh += w;
-      o.sh += h * w;
-      o.sp += frame.per[k] * w;
-      o.se += frame.pe[k] * w;
-      o.sn += frame.pn[k] * w;
+      // v3: o peso do nó escala com a cobertura (esbatido longe do mar do modelo).
+      const wc = cov ? w * cov[k] : w;
+      o.wh += wc;
+      o.sh += h * wc;
+      o.sp += frame.per[k] * wc;
+      o.se += frame.pe[k] * wc;
+      o.sn += frame.pn[k] * wc;
     }
   }
   return o;
@@ -572,7 +763,7 @@ export function sampleSeaGrid(
     const d = Math.min(lon - h.w, h.e - lon, lat - h.s, h.n - lat);
     const f = last ? 1 : smooth(d / (SEA_GRID_BLEND_CELLS * st));
     if (last) {
-      const feather = grid.legacy ? st : Math.max(st, SEA_GRID_OUTER_FEATHER_DEG);
+      const feather = grid.legacy ? st : Math.max(st, grid.fade ?? SEA_GRID_OUTER_FEATHER_DEG);
       edge = Math.max(0, Math.min(1, d / feather));
     }
     if (f <= 0) continue;
