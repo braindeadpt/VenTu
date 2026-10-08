@@ -9,12 +9,12 @@
  * alteração de comportamento.
  */
 
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import type L from 'leaflet';
 import {
-  Activity, Anchor, Clock, CloudRain, LifeBuoy,
+  Anchor, Clock, CloudRain, LifeBuoy,
   Navigation, Sailboat, SatelliteDish, CloudLightning,
-  Thermometer, AlertTriangle, Waves,
+  Thermometer, AlertTriangle, 
 } from 'lucide-react';
 import { getTranslation } from '@/lib/i18n';
 import {
@@ -32,7 +32,8 @@ import { useMapCurrentsField } from '../hooks/useMapCurrentsField';
 import { useMapWindField } from '../hooks/useMapWindField';
 import { useMapSwellField, useSwellToggle } from '../hooks/useMapSwellField';
 import { useSeaGrid, useSeaGridFrame } from '../hooks/useSeaGrid';
-import { setMapLayerUrlParam } from '@/lib/mapShareUrl';
+import { setMapSeaModeUrlParams } from '@/lib/mapShareUrl';
+import type { MapSeaMode } from '../components/MapSeaModeSwitch';
 import type { FieldSpot } from '@/lib/mapHsField';
 
 type MapTranslation = ReturnType<typeof getTranslation>;
@@ -218,6 +219,8 @@ interface UseMapLayersFieldsParams {
   hsSpots: FieldSpot[];
   /** Toggle de vento partilhado — o campo segue os anéis dos pins. */
   windEnabled: boolean;
+  /** Liga/desliga o vento (com pref) — o selector «Vento | Ondulação | Nenhum». */
+  setWindOn?: (on: boolean) => void;
   t: MapTranslation;
 }
 
@@ -237,6 +240,7 @@ export function useMapLayersFields({
   base,
   hsSpots,
   windEnabled,
+  setWindOn,
   t,
 }: UseMapLayersFieldsParams) {
   const {
@@ -291,7 +295,7 @@ export function useMapLayersFields({
   });
   // Grelha de modelo (sea-grid.json) partilhada pelo vento e pela
   // «Ondulação» — só pedida quando uma das duas está ligada no fullscreen.
-  const { swellWanted, toggleSwell: toggleSwellRaw, disableSwell } = useSwellToggle({
+  const { swellWanted, toggleSwell: toggleSwellRaw, disableSwell, setSwell } = useSwellToggle({
     initialEnabled: initialSwellEnabled,
   });
   const fieldsSurface = isFullscreen && !isHeroEmbed;
@@ -360,12 +364,51 @@ export function useMapLayersFields({
     toggleSwellRaw();
   }, [toggleSwellRaw]);
 
-  // URL acompanha a camada (merge — os outros params ficam): um reload ou
-  // um link copiado da barra mantém a «Ondulação». Só no /mapa.
+  // «Altura significativa (Hs)» (IDW entre spots) saiu do menu — a
+  // «Ondulação» (grelha de modelo) é a fonte única. Um ?hs=1 antigo já chega
+  // aqui como ?swell=1 (readMapSearchParams); uma pref gravada do Hs migra
+  // para a «Ondulação» uma vez e desliga o IDW.
+  useEffect(() => {
+    if (!hsEnabled) return;
+    disableHs();
+    setSwell(true);
+  }, [hsEnabled, disableHs, setSwell]);
+
+  // Vento e «Ondulação» são exclusivos no /mapa (selector no topo): a última
+  // a ser ligada ganha; no arranque com as duas ligadas (pref + ?swell=1) ganha
+  // a «Ondulação».
+  const prevWindRef = useRef(windEnabled);
+  const prevSwellRef = useRef(swellWanted);
+  useEffect(() => {
+    const windTurnedOn = windEnabled && !prevWindRef.current;
+    const swellTurnedOn = swellWanted && !prevSwellRef.current;
+    prevWindRef.current = windEnabled;
+    prevSwellRef.current = swellWanted;
+    if (!fieldsSurface || !windEnabled || !swellWanted) return;
+    if (windTurnedOn && !swellTurnedOn) disableSwell();
+    else setWindOn?.(false);
+  }, [fieldsSurface, windEnabled, swellWanted, disableSwell, setWindOn]);
+
+  const seaMode: MapSeaMode = swellWanted ? 'swell' : windEnabled ? 'wind' : 'none';
+  const setSeaMode = useCallback(
+    (mode: MapSeaMode) => {
+      if (mode === 'swell') {
+        setWindOn?.(false);
+        setSwell(true);
+      } else {
+        setSwell(false);
+        setWindOn?.(mode === 'wind');
+      }
+    },
+    [setSwell, setWindOn],
+  );
+
+  // URL acompanha o selector (merge — os outros params ficam): um reload ou
+  // um link copiado da barra mantém a escolha. Só no /mapa.
   useEffect(() => {
     if (!fieldsSurface) return;
-    setMapLayerUrlParam('swell', swellWanted);
-  }, [fieldsSurface, swellWanted]);
+    setMapSeaModeUrlParams(seaMode);
+  }, [fieldsSurface, seaMode]);
 
   const layerCopy = useMemo<MapLayerCopy>(() => ({
     radarLabel,
@@ -470,29 +513,8 @@ export function useMapLayersFields({
       toggleAttr: 'data-map-warn-areas-toggle',
       iconClass: 'text-score-poor',
     } satisfies MapLayersMenuItem]),
-    {
-      key: 'swell',
-      group: 'sea',
-      label: lyr.layerSwell,
-      hint: swellEnabled && swellUnavailable ? `${layerCopy.swellHint} — ${lyr.unavailable}` : layerCopy.swellHint,
-      icon: <Waves className="w-4 h-4" aria-hidden />,
-      pressed: swellEnabled,
-      onToggle: toggleSwell,
-      toggleAttr: 'data-map-swell-toggle',
-      iconClass: 'text-data-waves',
-    },
-    {
-      key: 'hs',
-      group: 'sea',
-      label: lyr.layerHs,
-      hint: hsUnavailable ? `${layerCopy.hsHint} — ${lyr.unavailable}` : layerCopy.hsHint,
-      icon: <Activity className="w-4 h-4" aria-hidden />,
-      pressed: hsEnabled,
-      disabled: hsUnavailable,
-      onToggle: toggleHs,
-      toggleAttr: 'data-map-hs-toggle',
-      iconClass: 'text-data-waves',
-    },
+    // «Ondulação» e o vento vivem no selector do topo (MapSeaModeSwitch);
+    // o Hs IDW antigo saiu — uma só fonte para a altura das ondas.
     {
       key: 'sst',
       group: 'sea',
@@ -555,8 +577,6 @@ export function useMapLayersFields({
     radarUnavailable, radarEnabled, toggleRadar,
     hoursUnavailable, hoursOn, toggleHours,
     goesIrEnabled, toggleGoesIr,
-    swellEnabled, swellUnavailable, toggleSwell,
-    hsUnavailable, hsEnabled, toggleHs,
     sstUnavailable, sstEnabled, toggleSst,
     currentsUnavailable, currentsEnabled, toggleCurrents,
     buoysEnabled, toggleBuoys,
@@ -604,6 +624,7 @@ export function useMapLayersFields({
     sstEnabled, sstUnavailable, toggleSst,
     currentsEnabled, currentsUnavailable, toggleCurrents,
     swellEnabled, swellUnavailable, toggleSwell,
+    seaMode, setSeaMode,
     layerCopy, sheetLayers, legendLayerProps,
   };
 }

@@ -36,7 +36,8 @@ const layersMenu = read('src/components/spots/map/components/MapLayersMenu.tsx')
 const TOGGLES = [
   'data-map-radar-toggle',
   'data-map-hours-toggle',
-  'data-map-hs-toggle',
+  // 'data-map-hs-toggle' saiu (2026-10): o Hs IDW deu lugar à «Ondulação»,
+  // que vive no selector «Vento | Ondulação | Nenhum» (radiogroup, abaixo).
   'data-map-sst-toggle',
   'data-map-currents-toggle',
   'data-map-buoys-toggle',

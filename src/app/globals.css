@@ -2143,7 +2143,8 @@ body:has(header[data-header-compact='true']) [data-map-fullscreen='true'].top-16
     left: var(--map-panel-offset, 380px);
   }
   /* Idem para a pill: centro da faixa livre = offset + (vw − offset − 12)/2. */
-  [data-map-fullscreen='true']:has([data-map-panel='open']) [data-map-time-pill] {
+  [data-map-fullscreen='true']:has([data-map-panel='open']) [data-map-time-pill],
+  [data-map-fullscreen='true']:has([data-map-panel='open']) [data-map-sea-mode-switch] {
     left: calc(50% + (var(--map-panel-offset, 380px) - 12px) / 2);
   }
 }

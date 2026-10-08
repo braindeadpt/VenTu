@@ -18,6 +18,11 @@ export interface MapShareLayers {
   /** Camada «Ondulação» (grelha de modelo). */
   swell?: boolean;
   wind?: boolean;
+  /**
+   * Selector em «Nenhum»: partilha `wind=0` — sem isto quem abre o link com a
+   * pref de vento ligada (default no desktop) via o vento.
+   */
+  windOff?: boolean;
   nauticalChart?: boolean;
   goesIr?: boolean;
   storms?: boolean;
@@ -53,6 +58,7 @@ export function buildMapShareSearch(view: MapShareView): string {
   ] as const) {
     if (view.layers?.[key]) params.set(key, '1');
   }
+  if (view.layers?.windOff && !view.layers.wind && !view.layers.swell) params.set('wind', '0');
   if (view.basemap === 'satellite') params.set('basemap', 'sat');
   return `?${params.toString()}`;
 }
@@ -78,6 +84,38 @@ export function mergeMapLayerParam(currentSearch: string, key: string, on: boole
 export function setMapLayerUrlParam(key: string, on: boolean): void {
   if (typeof window === 'undefined') return;
   const search = mergeMapLayerParam(window.location.search, key, on);
+  if (search === window.location.search || (search === '' && window.location.search === '')) return;
+  window.history.replaceState(window.history.state, '', `${window.location.pathname}${search}${window.location.hash}`);
+}
+
+/**
+ * Selector «Vento | Ondulação | Nenhum» no URL, por cima da query existente:
+ *   swell → `swell=1` (sem `wind`)
+ *   wind  → sem `swell`; um `wind=0` antigo passa a `wind=1` (não acrescenta
+ *           `wind=1` quando não há — o vento é o default no desktop)
+ *   none  → `wind=0` (sem `swell`)
+ * O `hs=1` legado sai sempre (agora é a «Ondulação»).
+ */
+export function mergeSeaModeParams(currentSearch: string, mode: 'wind' | 'swell' | 'none'): string {
+  const params = new URLSearchParams(currentSearch);
+  params.delete('hs');
+  if (mode === 'swell') {
+    params.set('swell', '1');
+    params.delete('wind');
+  } else if (mode === 'wind') {
+    params.delete('swell');
+    if (params.has('wind')) params.set('wind', '1');
+  } else {
+    params.delete('swell');
+    params.set('wind', '0');
+  }
+  const qs = params.toString();
+  return qs ? `?${qs}` : '';
+}
+
+export function setMapSeaModeUrlParams(mode: 'wind' | 'swell' | 'none'): void {
+  if (typeof window === 'undefined') return;
+  const search = mergeSeaModeParams(window.location.search, mode);
   if (search === window.location.search || (search === '' && window.location.search === '')) return;
   window.history.replaceState(window.history.state, '', `${window.location.pathname}${search}${window.location.hash}`);
 }

@@ -283,13 +283,31 @@ if (mapHours !== undefined) {
 }
 
 // ── 3c. sea-grid.json — grelha de vento + ondulação do /mapa (camada suave)
-// Gerada só de 6 em 6 h; ausente ou velha = o mapa cai no IDW dos spots.
+// Gerada no máximo de 12 em 12 h (e só com folga de quota); ausente ou velha =
+// o mapa cai no IDW dos spots. v2: caixas com passo próprio e máscara de nós
+// guardados (`count` por caixa); v1 (formato antigo) continua válido.
 const seaGrid = read('sea-grid.json');
 if (seaGrid !== undefined) {
-  const n = Array.isArray(seaGrid.boxes)
-    ? seaGrid.boxes.reduce((acc, b) => acc + (b && b.nx * b.ny), 0)
-    : -1;
-  check('seaGrid.shape', seaGrid.v === 1 && n === seaGrid.n && seaGrid.nt >= 13, `v=${seaGrid.v} n=${seaGrid.n}/${n} nt=${seaGrid.nt}`);
+  const boxes = Array.isArray(seaGrid.boxes) ? seaGrid.boxes : [];
+  let n = -1;
+  let offsetsOk = boxes.length > 0;
+  if (seaGrid.v === 2) {
+    n = 0;
+    for (const b of boxes) {
+      const total = b && b.nx * b.ny;
+      const count = b && Number.isInteger(b.count) ? b.count : total;
+      if (!b || b.offset !== n || !(b.step > 0) || !(count > 0) || count > total) offsetsOk = false;
+      if (b && typeof b.mask === 'string' && Buffer.from(b.mask, 'base64').length < Math.ceil(total / 8)) offsetsOk = false;
+      n += count;
+    }
+  } else if (seaGrid.v === 1) {
+    n = boxes.reduce((acc, b) => acc + (b && b.nx * b.ny), 0);
+  }
+  check(
+    'seaGrid.shape',
+    (seaGrid.v === 1 || seaGrid.v === 2) && offsetsOk && n === seaGrid.n && seaGrid.nt >= 13,
+    `v=${seaGrid.v} n=${seaGrid.n}/${n} nt=${seaGrid.nt}`,
+  );
   const want = Math.ceil((seaGrid.n * seaGrid.nt) / 3) * 4;
   const badFields = ['u', 'v', 'hs', 'dir', 'per'].filter(
     (k) => typeof seaGrid.fields?.[k] !== 'string' || seaGrid.fields[k].length !== want,
@@ -299,6 +317,21 @@ if (seaGrid !== undefined) {
   if (!(ageH < 30)) warn(`sea-grid.json is ${Number.isFinite(ageH) ? ageH.toFixed(1) : '?'} h old — map wind/swell fall back to spot IDW`);
 } else if (MODE === 'full') {
   warn('sea-grid.json missing — map swell layer off, wind uses spot IDW');
+}
+
+// ── 3d. land-mask.json — máscara de terra do /mapa (estática, baked) ──
+const landMask = read('land-mask.json');
+if (landMask !== undefined) {
+  const okShape =
+    landMask.v === 1 &&
+    typeof landMask.runs === 'string' &&
+    Number.isInteger(landMask.cols) &&
+    Number.isInteger(landMask.rows) &&
+    landMask.step > 0 &&
+    landMask.cols <= 65535;
+  check('landMask.shape', okShape, `v=${landMask.v} cols=${landMask.cols} rows=${landMask.rows}`);
+} else {
+  warn('land-mask.json missing — map fields clip land with the bundled PT+ES mask only');
 }
 
 // ── 4. Cross-file integrity: conditions and forecasts cover the same spots ──

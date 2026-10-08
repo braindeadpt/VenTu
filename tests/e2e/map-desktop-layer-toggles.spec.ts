@@ -83,7 +83,9 @@ async function closeAndReopen(page: Page, query = ''): Promise<void> {
 const LAYERS = [
   { name: 'correntes', param: 'currents', attr: 'data-map-currents-toggle', lsKey: 'ventu.map.currents', inMenu: true },
   { name: 'temperatura (SST)', param: 'sst', attr: 'data-map-sst-toggle', lsKey: 'ventu.map.sst', inMenu: true },
-  { name: 'altura significativa (HS)', param: 'hs', attr: 'data-map-hs-toggle', lsKey: 'ventu.map.hs', inMenu: true },
+  // «Altura significativa (HS)» saiu do menu (2026-10): a «Ondulação» da
+  // grelha de modelo substitui-a e vive no selector do topo — ver
+  // map-sea-mode.spec.ts (inclui o ?hs=1 legado).
   { name: 'carta náutica', param: 'nauticalChart', attr: 'data-map-nautical-chart-toggle', lsKey: 'ventu.map.nauticalChart', inMenu: true },
   { name: 'radar IPMA', param: 'radar', attr: 'data-map-radar-toggle', lsKey: 'ventu.radar.state', inMenu: true },
 ] as const;

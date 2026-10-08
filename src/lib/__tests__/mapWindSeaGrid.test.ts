@@ -13,8 +13,25 @@ import {
 import type { SeaGridFrame } from '@/lib/seaGrid';
 import { rampColor, WIND_KT_STOPS } from '@/lib/mapSwellField';
 
-/** Caixa no mar aberto a oeste de Portugal (sem terra na máscara GADM). */
-const SEA = { step: 0.5, boxes: [{ id: 'sea', west: -14, south: 38, nx: 5, ny: 5, offset: 0 }] };
+/** Caixa no mar aberto a oeste de Portugal (sem terra na máscara GADM) — ficheiro v1. */
+const SEA = { step: 0.5, legacy: true, boxes: [{ id: 'sea', west: -14, south: 38, nx: 5, ny: 5, offset: 0 }] };
+
+/** v2: fundo de 1° sobre a costa de Lisboa + caixa fina de 0,5° encostada a ela. */
+const SEA_V2 = {
+  step: 0.5,
+  boxes: [
+    { id: 'fine', west: -11, south: 37, nx: 7, ny: 7, offset: 0, step: 0.5 }, // -11..-8, 37..40
+    { id: 'atlantic', west: -16, south: 33, nx: 11, ny: 11, offset: 49, step: 1 }, // -16..-6, 33..43
+  ],
+};
+
+function frameN(n: number, u: number, v: number): SeaGridFrame {
+  const fill = (x: number) => new Float32Array(n).fill(x);
+  return {
+    tf: 0, u: fill(u), v: fill(v), hs: fill(1), per: fill(10), pe: fill(1), pn: fill(0),
+    windMinKt: 0, windMaxKt: 0, hsMin: 1, hsMax: 1,
+  };
+}
 
 function frame(u: number, v: number): SeaGridFrame {
   const n = 25;
@@ -38,6 +55,22 @@ describe('vento a partir da grelha de modelo', () => {
     // vento abaixo do mínimo não gera células
     const calm = buildWindFieldGridsFromSea(SEA, frame(0.1, 0));
     expect(calm[0].grid.every((c) => c === null)).toBe(true);
+  });
+
+  it('v2: grelha fina primeiro + grelha de domínio; corte na costa por partícula', () => {
+    const grids = buildWindFieldGridsFromSea(SEA_V2, frameN(49 + 121, 6, 0));
+    expect(grids.map((g) => g.id)).toEqual(['fine', 'domain']);
+    expect(grids.every((g) => g.landClip)).toBe(true);
+    // mar dentro da fina → célula da fina; mar fora → domínio
+    expect(windCellAnywhere(grids, 38.5, -10)!.grid.id).toBe('fine');
+    expect(windCellAnywhere(grids, 36, -14)!.grid.id).toBe('domain');
+    // terra (Lisboa / interior do Alentejo) → nenhuma partícula, mesmo com
+    // vento válido nos nós
+    expect(windCellAnywhere(grids, 38.72, -9.14)).toBeNull();
+    expect(windCellAnywhere(grids, 38.5, -8.2)).toBeNull();
+    // borda exterior do domínio esbatida (~1°)
+    expect(windCellAnywhere(grids, 36, -14)!.cell.falloff).toBe(1);
+    expect(windCellAnywhere(grids, 36, -15.8)?.cell.falloff ?? 0).toBeLessThan(0.3);
   });
 
   it('velocidade das partículas ∝ vento e cor pelo nó onde estão', () => {

@@ -229,7 +229,7 @@ export default function MapTimeChrome({
         aria-controls="map-hours-scrubber-card"
         onClick={onToggleScrub}
         style={pillStyle}
-        className="absolute top-3 left-1/2 z-[1150] inline-flex h-11 -translate-x-1/2 items-center gap-1.5 rounded-pill border border-divider bg-bg-elevated px-3.5 text-[13px] text-fg shadow-card transition-colors hover:border-divider-strong"
+        className="absolute top-[60px] left-1/2 z-[1150] inline-flex h-11 -translate-x-1/2 items-center gap-1.5 rounded-pill border border-divider bg-bg-elevated px-3.5 text-[13px] text-fg shadow-card transition-colors hover:border-divider-strong"
       >
         {!hoursOn || n === 0 ? (
           <span className="font-medium">{timeNow}</span>

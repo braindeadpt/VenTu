@@ -321,6 +321,11 @@ public/data/               conditions.json, forecasts.json, news.json, dawn-patr
   + `openMeteoUsage` no `pipeline-meta.json` (`weightedCalls`, `requests`, `retries`,
   `spotsFetched`, `mode`, `weightedPerSpot`) — comparar com o orçamento acima para
   detectar desvios (spot novo, retries a mais, modelo adicionado).
+- **Grelha do mar do /mapa** (`scripts/build-sea-grid.js`, `sea-grid.json`):
+  ~840 localizações × 2 APIs ≈ **1 680 ponderadas por corrida**, no máximo
+  **2 corridas/dia** (portão de 11,5 h) e só com folga: gasto de hoje + o que
+  o pipeline ainda gasta até às 00 UTC (pior caso) + a grelha ≤ **9 000**
+  (90 %) — senão salta e fica a anterior. Detalhe em docs/MAP-LAYERS.md.
 - Trade-off honesto: entre âncoras, o windBlend (ICON-EU+mediana) não é
   recalculado — scores usam best_match e o badge de confiança fica degradado.
 

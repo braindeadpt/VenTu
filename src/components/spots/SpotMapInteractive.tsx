@@ -88,6 +88,8 @@ interface SpotMapInteractiveProps {
   /** Deep link `?swell=1` — camada «Ondulação» (grelha de modelo). */
   initialSwellEnabled?: boolean;
   initialWindEnabled?: boolean;
+  /** Deep link `?wind=0` — selector «Nenhum» partilhado: força o vento desligado. */
+  initialWindDisabled?: boolean;
   initialGoesIrEnabled?: boolean;
   initialStormsEnabled?: boolean;
   initialWarnAreasEnabled?: boolean;
@@ -122,6 +124,7 @@ export default function SpotMapInteractive({
   initialCurrentsEnabled = false,
   initialSwellEnabled = false,
   initialWindEnabled = false,
+  initialWindDisabled = false,
   initialGoesIrEnabled = false,
   initialStormsEnabled = false,
   initialWarnAreasEnabled = false,
@@ -209,7 +212,9 @@ export default function SpotMapInteractive({
   //    MapUiContext — docs/design/MAP-ZONES.md) ──
   const [clusterEnabled, setClusterEnabled] = useState(readClusterPref);
   // Deep link ?wind=1 — mesma semântica do ?radar=1: força ON sem gravar a pref.
-  const [windEnabled, setWindEnabled] = useState<boolean>(() => initialWindEnabled || readWindPref());
+  const [windEnabled, setWindEnabled] = useState<boolean>(
+    () => !initialWindDisabled && (initialWindEnabled || readWindPref()),
+  );
   const [onlyOnEnabled, setOnlyOnEnabled] = useState(readOnlyOnPref);
   const [isFullscreen, setIsFullscreen] = useState(initialFullscreen);
   const [sheetSpot, setSheetSpot] = useState<MapSpotSheetData | null>(null);
@@ -321,6 +326,11 @@ export default function SpotMapInteractive({
       try { localStorage.setItem(MAP_WIND_LS_KEY, next ? '1' : '0'); } catch { /* noop */ }
       return next;
     });
+  }, []);
+  // Estado explícito (selector «Vento | Ondulação | Nenhum» do /mapa).
+  const setWindOn = useCallback((on: boolean) => {
+    setWindEnabled(on);
+    try { localStorage.setItem(MAP_WIND_LS_KEY, on ? '1' : '0'); } catch { /* noop */ }
   }, []);
   const toggleOnlyOn = useCallback(() => {
     setOnlyOnEnabled((prev) => {
@@ -439,6 +449,7 @@ export default function SpotMapInteractive({
     base: layersBase,
     hsSpots,
     windEnabled,
+    setWindOn,
     t,
   });
   const {
@@ -446,6 +457,7 @@ export default function SpotMapInteractive({
     sstEnabled, sstUnavailable, toggleSst,
     currentsEnabled, currentsUnavailable, toggleCurrents,
     swellEnabled, swellUnavailable, toggleSwell,
+    seaMode, setSeaMode,
     layerCopy, sheetLayers, legendLayerProps,
   } = fields;
 
@@ -813,6 +825,8 @@ export default function SpotMapInteractive({
               legendLayerProps={legendLayerProps}
               state={chrome}
               windButtonRef={windButtonRef}
+              seaMode={seaMode}
+              onSeaModeChange={setSeaMode}
             />
 
             <MapLayersZone

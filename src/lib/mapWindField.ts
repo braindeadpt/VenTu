@@ -16,7 +16,7 @@ import {
   MAP_HS_STEP_DEG_MOBILE,
   type FieldSpot,
 } from '@/lib/mapHsField';
-import { sampleSeaGrid, type SeaGrid, type SeaGridFrame, type SeaSample } from '@/lib/seaGrid';
+import { sampleSeaGrid, seaGridExtent, type SeaGrid, type SeaGridFrame, type SeaSample } from '@/lib/seaGrid';
 import { WIND_KT_MAX, WIND_KT_STOPS, rampColor } from '@/lib/mapSwellField';
 
 export const MAP_WIND_PANE = 'windfield';
@@ -112,6 +112,12 @@ export interface FlowFieldGrid {
   cols: number;
   rows: number;
   grid: Array<FlowCell | null>;
+  /**
+   * Corte exacto na linha de costa por partícula (`pointOnLand`) — grelhas
+   * da sea-grid, cujas células podem atravessar a costa. A pesquisa pára
+   * aqui: um ponto em terra não cai para a grelha seguinte.
+   */
+  landClip?: boolean;
 }
 
 type WindCell = FlowCell & { kt: number };
@@ -212,6 +218,7 @@ export function windCellAnywhere(
 ): { cell: FlowCell; grid: FlowFieldGrid } | null {
   for (const g of grids) {
     if (lat < g.south || lat > g.north || lon < g.west || lon > g.east) continue;
+    if (g.landClip && pointOnLand(lat, lon)) return null;
     const cell = windCellAt(g, lat, lon);
     if (cell) return { cell, grid: g };
   }
@@ -335,25 +342,37 @@ export function windCellKt(cell: FlowCell): number {
 
 /**
  * Grelha de fluxo a partir da grelha regular de modelo (`sea-grid.json`) —
- * substitui o IDW entre spots: o vento cobre o mar inteiro da caixa, não
- * depende de que spots existem e não muda com os filtros. Mantém a forma
+ * substitui o IDW entre spots: o vento cobre o mar inteiro, não depende de
+ * que spots existem e não muda com os filtros. Mantém a forma
  * `WindFieldGrid` para o resto do campo (spawn, advecção, desenho) ficar igual.
- * Terra (máscara GADM) fica null; o campo esbate nos últimos ~0,6° da caixa.
+ *
+ * v2 (caixas sobrepostas): uma grelha fina por caixa de 0,5° (primeiro — o
+ * `windCellAnywhere` usa a primeira que responde) e uma grelha de domínio
+ * para o resto do oceano; os valores vêm todos do amostrador multi-caixa,
+ * por isso não há costura entre grelhas. As células não saltam terra: o
+ * corte na costa é por partícula (`landClip` → `pointOnLand`), exacto à
+ * resolução da máscara (~500 m) em vez de à da célula. O campo esbate na
+ * borda exterior do domínio (`edge` do amostrador).
+ * v1: uma grelha por caixa, esbatida nos últimos ~0,6° (como antes).
  */
 export function buildWindFieldGridsFromSea(
-  sea: Pick<SeaGrid, 'boxes' | 'step'>,
+  sea: Pick<SeaGrid, 'boxes' | 'step'> & { legacy?: boolean },
   frame: SeaGridFrame,
   opts: { mobile?: boolean } = {},
 ): WindFieldGrid[] {
   const out: WindFieldGrid[] = [];
-  const step = opts.mobile ? 0.1 : 0.05;
+  const minStep = opts.mobile ? 0.1 : 0.05;
   const s: SeaSample = { u: 0, v: 0, kt: 0, windFrom: 0, hs: NaN, per: NaN, swellFrom: 0, pe: 0, pn: 0, w: 0, edge: 1 };
-  for (const b of sea.boxes) {
-    const west = b.west;
-    const south = b.south;
-    const east = b.west + (b.nx - 1) * sea.step;
-    const north = b.south + (b.ny - 1) * sea.step;
-    const gstep = Math.max(step, (east - west) / 200);
+  const build = (
+    id: string,
+    west: number,
+    south: number,
+    east: number,
+    north: number,
+    gstep: number,
+    falloffAt: (lat: number, lon: number, hit: SeaSample) => number,
+    skip?: (lat: number, lon: number) => boolean,
+  ) => {
     const cols = Math.max(2, Math.ceil((east - west) / gstep));
     const rows = Math.max(2, Math.ceil((north - south) / gstep));
     const grid: Array<WindCell | null> = new Array(cols * rows).fill(null);
@@ -361,19 +380,63 @@ export function buildWindFieldGridsFromSea(
       const lat = north - ((y + 0.5) / rows) * (north - south);
       for (let x = 0; x < cols; x++) {
         const lon = west + ((x + 0.5) / cols) * (east - west);
-        if (pointOnLand(lat, lon)) continue;
-        const edge = Math.min(lon - west, east - lon, lat - south, north - lat);
-        const falloff = Math.max(0, Math.min(1, edge / 0.6));
-        if (falloff <= 0.05) continue;
+        if (skip?.(lat, lon)) continue;
         const hit = sampleSeaGrid(sea, frame, lat, lon, s);
         if (!hit || !Number.isFinite(hit.u) || !Number.isFinite(hit.v)) continue;
+        const falloff = falloffAt(lat, lon, hit);
+        if (falloff <= 0.05) continue;
         const spd = Math.hypot(hit.u, hit.v);
         if (spd < MAP_WIND_MIN_MS) continue;
         grid[y * cols + x] = { u: hit.u, v: hit.v, spd, kt: spd * MS_TO_KT, falloff, nlat: lat, nlon: lon };
       }
     }
-    out.push({ id: b.id, south, west, north, east, cols, rows, grid });
+    out.push({ id, south, west, north, east, cols, rows, grid, landClip: true });
+  };
+
+  if (sea.legacy) {
+    for (const b of sea.boxes) {
+      const st = b.step ?? sea.step;
+      const west = b.west;
+      const south = b.south;
+      const east = b.west + (b.nx - 1) * st;
+      const north = b.south + (b.ny - 1) * st;
+      build(
+        b.id,
+        west,
+        south,
+        east,
+        north,
+        Math.max(minStep, (east - west) / 200),
+        (lat, lon) => Math.max(0, Math.min(1, Math.min(lon - west, east - lon, lat - south, north - lat) / 0.6)),
+        (lat, lon) => pointOnLand(lat, lon),
+      );
+    }
+    return out;
   }
+
+  const ext = seaGridExtent(sea);
+  const steps = sea.boxes.map((b) => b.step ?? sea.step);
+  const coarse = Math.max(...steps);
+  const fine = sea.boxes.filter((b) => (b.step ?? sea.step) < coarse);
+  const hulls = fine.map((b) => {
+    const st = b.step ?? sea.step;
+    return { b, w: b.west, s: b.south, e: b.west + (b.nx - 1) * st, n: b.south + (b.ny - 1) * st };
+  });
+  for (const h of hulls) {
+    build(h.b.id, h.w, h.s, h.e, h.n, Math.max(minStep, (h.e - h.w) / 200), (_lat, _lon, hit) => hit.edge);
+  }
+  const insideFine = (lat: number, lon: number) =>
+    hulls.some((h) => lon >= h.w && lon <= h.e && lat >= h.s && lat <= h.n);
+  build(
+    'domain',
+    ext.west,
+    ext.south,
+    ext.east,
+    ext.north,
+    Math.max(minStep * 2, (ext.east - ext.west) / (opts.mobile ? 180 : 260)),
+    (_lat, _lon, hit) => hit.edge,
+    insideFine,
+  );
   return out;
 }
 

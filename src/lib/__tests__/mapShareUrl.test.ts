@@ -104,4 +104,26 @@ describe('camada «Ondulação» no URL', () => {
     expect(mergeMapLayerParam('', 'swell', false)).toBe('');
     expect(mergeMapLayerParam('?swell=1', 'swell', true)).toBe('?swell=1');
   });
+
+  it('mergeSeaModeParams: selector «Vento | Ondulação | Nenhum» no URL', async () => {
+    const { mergeSeaModeParams } = await import('../mapShareUrl');
+    expect(mergeSeaModeParams('?sport=surf&wind=0', 'swell')).toBe('?sport=surf&swell=1');
+    expect(mergeSeaModeParams('?sport=surf&swell=1', 'wind')).toBe('?sport=surf');
+    expect(mergeSeaModeParams('?wind=0&z=7', 'wind')).toBe('?wind=1&z=7');
+    expect(mergeSeaModeParams('?swell=1&z=7', 'none')).toBe('?z=7&wind=0');
+    // ?hs=1 legado sai (é a «Ondulação» agora)
+    expect(mergeSeaModeParams('?hs=1', 'swell')).toBe('?swell=1');
+    expect(mergeSeaModeParams('', 'wind')).toBe('');
+  });
+
+  it('partilha do «Nenhum» leva wind=0; com vento ou ondulação não', () => {
+    const none = new URLSearchParams(buildMapShareSearch({ center: [38, -9], sport: 'surf', layers: { windOff: true } }));
+    expect(none.get('wind')).toBe('0');
+    const swell = new URLSearchParams(
+      buildMapShareSearch({ center: [38, -9], sport: 'surf', layers: { swell: true, windOff: true } }),
+    );
+    expect(swell.get('wind')).toBeNull();
+    expect(swell.get('swell')).toBe('1');
+  });
 });
+
