@@ -38,7 +38,12 @@ export default defineConfig({
   // workers, relatório) deixava o processo vivo indefinidamente. Este
   // globalTimeout aborta QUALQUER run (local ou CI) que exceda 20 min — as
   // suites normais acabam em ~1.5–10 min, por isso a margem é ~2×.
-  globalTimeout: 20 * 60_000,
+  // Excepção: o audit diário VENTU_FULL_AUDIT navega TODAS as rotas (~2300
+  // em 2026-10, a crescer com o directório) com workers=2 — precisou de
+  // >20 min e falhava diariamente por timeout, não por defeito. 40 min
+  // dá ~1.6× de margem; se voltar a falhar por tempo, a resposta certa é
+  // sharding por grupo de rotas, não mais minutos.
+  globalTimeout: process.env.VENTU_FULL_AUDIT === '1' ? 40 * 60_000 : 20 * 60_000,
   fullyParallel: !process.env.CI,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
