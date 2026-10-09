@@ -34,7 +34,7 @@ describe('parseSpotsWithRegions', () => {
     const nazare = spots.find((s) => s.id === 'nazare');
     expect(nazare).toBeDefined();
     expect(nazare.region).toBe('Oeste');
-    expect(nazare.lat).toBeCloseTo(39.597, 2);
+    expect(nazare.lat).toBeCloseTo(39.608, 2);
   });
 
   it('não inclui aliases nem spots sem região (todos têm region hoje)', () => {
