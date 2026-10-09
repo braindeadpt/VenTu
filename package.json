@@ -77,6 +77,7 @@
     "spots:lite": "tsx scripts/generate-spots-lite.ts",
     "spots:aerials": "node scripts/generate-spot-aerials.mjs",
     "sitemap:generate": "node scripts/generate-sitemap.js",
+    "rss:generate": "node scripts/generate-rss.js",
     "og:generate": "node scripts/generate-og-image.mjs && node scripts/generate-spot-og-images.mjs && node scripts/generate-region-og-images.mjs && node scripts/generate-favicons.mjs",
     "spots:validate": "node scripts/validate-spots.js",
     "pages:validate": "node scripts/validate-page-slugs.js",

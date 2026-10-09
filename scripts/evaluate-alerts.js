@@ -280,7 +280,16 @@ async function sendEmail(to, subject, html, opts = {}) {
     return false;
   }
 
-  const payload = { from: FROM_EMAIL, to: [to], subject, html, text: htmlToText(html) };
+  // reply_to: alerts@ventu.surf não é uma caixa real — as respostas iam dar
+  // bounce. Cloudflare Email Routing entrega contacto@ à caixa do operador.
+  const payload = {
+    from: FROM_EMAIL,
+    reply_to: process.env.RESEND_REPLY_TO || 'contacto@ventu.surf',
+    to: [to],
+    subject,
+    html,
+    text: htmlToText(html),
+  };
   // Static export (output: 'export') — no server to handle RFC 8058 one-click POST.
   // Keep List-Unsubscribe (HTTPS link) only; do not advertise List-Unsubscribe-Post.
   if (opts.unsubscribeUrl) {

@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Wind, Github, Heart, ExternalLink, ChevronDown } from 'lucide-react';
+import { Wind, Github, Heart, ExternalLink, ChevronDown, Rss, Mail } from 'lucide-react';
 import FeedbackForm from '@/components/FeedbackForm';
 import DailyStreak from '@/components/layout/DailyStreak';
 import { getTranslation } from '@/lib/i18n';
@@ -97,6 +97,12 @@ export default function Footer({ locale }: FooterProps) {
                 </Link>
               </li>
               <li>
+                <a href={locale === 'pt' ? '/rss.xml' : '/rss-en.xml'} className={linkClass}>
+                  <Rss className="w-4 h-4 mr-1" aria-hidden />
+                  {t.footer.rssFeed}
+                </a>
+              </li>
+              <li>
                 <Link href={`/${locale}/sazonalidade/`} className={linkClass}>
                   {t.nav.sazonalidade}
                 </Link>
@@ -174,6 +180,13 @@ export default function Footer({ locale }: FooterProps) {
               </li>
               <li>{t.footer.attribNews}</li>
               <li className="pt-2 flex flex-col gap-1">
+                <a
+                  href="mailto:contacto@ventu.surf"
+                  className="inline-flex items-center gap-2 min-h-[44px] md:min-h-0 text-sm text-fg-muted hover:text-fg transition-colors"
+                >
+                  <Mail className="w-4 h-4" />
+                  contacto@ventu.surf
+                </a>
                 <a
                   href="https://github.com/braindeadpt/ventu"
                   target="_blank"
