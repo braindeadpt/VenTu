@@ -1,83 +1,5 @@
 {
   "buoys": {
-    "6200024": {
-      "code": "6200024",
-      "name": "Bilbao",
-      "area": "Cantábrico",
-      "country": "ES",
-      "lat": 43.63999938964844,
-      "lon": -3.0399999618530273,
-      "latest": {
-        "date": "2026-10-08T15:00:00.000Z",
-        "hs": 2.700000047683716,
-        "tp": 9.569999694824219,
-        "dir": 322,
-        "hmax": 4.21999979019165,
-        "sst": 20.25
-      }
-    },
-    "6200025": {
-      "code": "6200025",
-      "name": "Cabo Peñas",
-      "area": "Astúrias",
-      "country": "ES",
-      "lat": 43.75,
-      "lon": -6.179999828338623,
-      "latest": {
-        "date": "2026-10-08T15:00:00.000Z",
-        "hs": 2.700000047683716,
-        "tp": 9.180000305175781,
-        "dir": 335,
-        "sst": 18.489999771118164
-      }
-    },
-    "6200083": {
-      "code": "6200083",
-      "name": "Villano-Sisargas",
-      "area": "Galiza",
-      "country": "ES",
-      "lat": 43.5,
-      "lon": -9.210000038146973,
-      "latest": {
-        "date": "2026-10-08T15:00:00.000Z",
-        "hs": 2.3399999141693115,
-        "tp": 9.180000305175781,
-        "dir": 2,
-        "hmax": 3.7200000286102295,
-        "sst": 16.200000762939453
-      }
-    },
-    "6200084": {
-      "code": "6200084",
-      "name": "Cabo Silleiro",
-      "area": "Galiza",
-      "country": "ES",
-      "lat": 42.119998931884766,
-      "lon": -9.430000305175781,
-      "latest": {
-        "date": "2026-10-08T15:00:00.000Z",
-        "hs": 2.2300000190734863,
-        "tp": 9.180000305175781,
-        "dir": 343,
-        "sst": 19.899999618530273
-      }
-    },
-    "6200085": {
-      "code": "6200085",
-      "name": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "country": "ES",
-      "lat": 36.4900016784668,
-      "lon": -6.960000038146973,
-      "latest": {
-        "date": "2026-10-08T15:00:00.000Z",
-        "hs": 0.4699999988079071,
-        "tp": 7.230000019073486,
-        "dir": 306,
-        "hmax": 0.6899999976158142,
-        "sst": 21.700000762939453
-      }
-    },
     "6200199": {
       "code": "6200199",
       "name": "Nazaré Costeira (WMO)",
@@ -86,229 +8,217 @@
       "lat": 39.560001373291016,
       "lon": -9.210000038146973,
       "latest": {
-        "date": "2026-10-08T17:00:00.000Z",
-        "hs": 2.7832000255584717,
-        "tp": 9.550800323486328,
-        "hmax": 4.306640148162842
+        "date": "2026-10-09T03:00:00.000Z",
+        "hs": 2.2851600646972656,
+        "tp": 8.964799880981445,
+        "hmax": 3.1494100093841553
       }
     }
   },
   "spotMapping": {
-    "moledo": {
-      "code": "6200084",
-      "stationTitle": "Cabo Silleiro",
-      "area": "Galiza",
-      "distanceKm": 55.8
-    },
-    "vila-praia-ancora": {
-      "code": "6200084",
-      "stationTitle": "Cabo Silleiro",
-      "area": "Galiza",
-      "distanceKm": 58.6
-    },
     "afife": {
-      "code": "6200084",
-      "stationTitle": "Cabo Silleiro",
-      "area": "Galiza",
-      "distanceKm": 59.9
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 248.3
     },
     "castelo-neiva": {
-      "code": "6200084",
-      "stationTitle": "Cabo Silleiro",
-      "area": "Galiza",
-      "distanceKm": 65.1
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 245.7
     },
     "amorosa": {
-      "code": "6200084",
-      "stationTitle": "Cabo Silleiro",
-      "area": "Galiza",
-      "distanceKm": 67
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 239.9
     },
     "cabedelo": {
-      "code": "6200084",
-      "stationTitle": "Cabo Silleiro",
-      "area": "Galiza",
-      "distanceKm": 69.6
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 237.8
     },
     "foil-cabedelo": {
-      "code": "6200084",
-      "stationTitle": "Cabo Silleiro",
-      "area": "Galiza",
-      "distanceKm": 69.6
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 237.8
     },
     "cabedelo-wakepark": {
-      "code": "6200084",
-      "stationTitle": "Cabo Silleiro",
-      "area": "Galiza",
-      "distanceKm": 68.5
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 239.2
     },
     "rodanho": {
-      "code": "6200084",
-      "stationTitle": "Cabo Silleiro",
-      "area": "Galiza",
-      "distanceKm": 71
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 236.5
     },
     "ofir": {
-      "code": "6200084",
-      "stationTitle": "Cabo Silleiro",
-      "area": "Galiza",
-      "distanceKm": 82.9
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 223.9
     },
     "esposende": {
-      "code": "6200084",
-      "stationTitle": "Cabo Silleiro",
-      "area": "Galiza",
-      "distanceKm": 84.3
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 222.1
     },
     "esposende-praia": {
-      "code": "6200084",
-      "stationTitle": "Cabo Silleiro",
-      "area": "Galiza",
-      "distanceKm": 83.8
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 222.7
     },
     "fao": {
-      "code": "6200084",
-      "stationTitle": "Cabo Silleiro",
-      "area": "Galiza",
-      "distanceKm": 87.1
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 220
     },
     "apulia": {
-      "code": "6200084",
-      "stationTitle": "Cabo Silleiro",
-      "area": "Galiza",
-      "distanceKm": 90.3
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 216.9
     },
     "povoa-varzim": {
-      "code": "6200084",
-      "stationTitle": "Cabo Silleiro",
-      "area": "Galiza",
-      "distanceKm": 99.6
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 205.6
     },
     "azurara": {
-      "code": "6200084",
-      "stationTitle": "Cabo Silleiro",
-      "area": "Galiza",
-      "distanceKm": 104
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 201.6
     },
     "leca-palmeira": {
-      "code": "6200084",
-      "stationTitle": "Cabo Silleiro",
-      "area": "Galiza",
-      "distanceKm": 119.7
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 186.1
     },
     "matosinhos": {
-      "code": "6200084",
-      "stationTitle": "Cabo Silleiro",
-      "area": "Galiza",
-      "distanceKm": 121.5
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 185.1
     },
     "cabedelo-douro": {
-      "code": "6200084",
-      "stationTitle": "Cabo Silleiro",
-      "area": "Galiza",
-      "distanceKm": 126.1
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 181.6
     },
     "marina-afurada-foil": {
-      "code": "6200084",
-      "stationTitle": "Cabo Silleiro",
-      "area": "Galiza",
-      "distanceKm": 126.6
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 182.1
     },
     "foil-fao-cavado": {
-      "code": "6200084",
-      "stationTitle": "Cabo Silleiro",
-      "area": "Galiza",
-      "distanceKm": 85
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 221.3
     },
     "foil-esposende-piscinas": {
-      "code": "6200084",
-      "stationTitle": "Cabo Silleiro",
-      "area": "Galiza",
-      "distanceKm": 84.9
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 221.8
     },
     "praia-da-lomba": {
-      "code": "6200084",
-      "stationTitle": "Cabo Silleiro",
-      "area": "Galiza",
-      "distanceKm": 144.2
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 181
     },
     "salgueiros": {
-      "code": "6200084",
-      "stationTitle": "Cabo Silleiro",
-      "area": "Galiza",
-      "distanceKm": 128.1
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 179.5
     },
     "sereia-costa-verde": {
-      "code": "6200084",
-      "stationTitle": "Cabo Silleiro",
-      "area": "Galiza",
-      "distanceKm": 128.4
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 179.2
     },
     "canide-sul": {
-      "code": "6200084",
-      "stationTitle": "Cabo Silleiro",
-      "area": "Galiza",
-      "distanceKm": 128.9
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 178.7
     },
     "aguda": {
-      "code": "6200084",
-      "stationTitle": "Cabo Silleiro",
-      "area": "Galiza",
-      "distanceKm": 135.1
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 172.4
     },
     "espinho": {
-      "code": "6200084",
-      "stationTitle": "Cabo Silleiro",
-      "area": "Galiza",
-      "distanceKm": 140.1
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 168
     },
     "praia-37": {
-      "code": "6200084",
-      "stationTitle": "Cabo Silleiro",
-      "area": "Galiza",
-      "distanceKm": 140.3
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 167.4
     },
     "bairro-piscatorio": {
-      "code": "6200084",
-      "stationTitle": "Cabo Silleiro",
-      "area": "Galiza",
-      "distanceKm": 140.7
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 166.9
     },
     "paramos": {
-      "code": "6200084",
-      "stationTitle": "Cabo Silleiro",
-      "area": "Galiza",
-      "distanceKm": 142.9
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 164.4
     },
     "barrinha-esmoriz": {
-      "code": "6200084",
-      "stationTitle": "Cabo Silleiro",
-      "area": "Galiza",
-      "distanceKm": 144.1
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 163.6
     },
     "esmoriz": {
-      "code": "6200084",
-      "stationTitle": "Cabo Silleiro",
-      "area": "Galiza",
-      "distanceKm": 144.2
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 162.8
     },
     "cortegaca": {
-      "code": "6200084",
-      "stationTitle": "Cabo Silleiro",
-      "area": "Galiza",
-      "distanceKm": 145.6
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 161
     },
     "cortegaca-sul": {
-      "code": "6200084",
-      "stationTitle": "Cabo Silleiro",
-      "area": "Galiza",
-      "distanceKm": 146.6
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 159.8
     },
     "maceda": {
-      "code": "6200084",
-      "stationTitle": "Cabo Silleiro",
-      "area": "Galiza",
-      "distanceKm": 147.9
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 158.3
     },
     "murtosa": {
       "code": "6200199",
@@ -335,10 +245,10 @@
       "distanceKm": 135.3
     },
     "furadouro": {
-      "code": "6200084",
-      "stationTitle": "Cabo Silleiro",
-      "area": "Galiza",
-      "distanceKm": 152.3
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 153.8
     },
     "sao-jacinto": {
       "code": "6200199",
@@ -623,16 +533,16 @@
       "distanceKm": 149.2
     },
     "alqueva": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 196
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 211.6
     },
     "ilha-do-ermal": {
-      "code": "6200084",
-      "stationTitle": "Cabo Silleiro",
-      "area": "Galiza",
-      "distanceKm": 122.5
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 243.9
     },
     "melides": {
       "code": "6200199",
@@ -671,238 +581,40 @@
       "distanceKm": 207.6
     },
     "alteirinhos": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 206.7
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 215.6
     },
     "zambujeira": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 198.8
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 229.5
     },
     "carvalhal": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 197.7
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 231.9
     },
     "odeceixe": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 194.5
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 238.2
     },
     "amoreira": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 192.9
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 247.8
     },
     "monte-clerigo": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 193.6
-    },
-    "arrifana": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 191.4
-    },
-    "vale-figueiras": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 188.2
-    },
-    "bordeira": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 189.6
-    },
-    "amado": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 188.7
-    },
-    "barriga": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 188.1
-    },
-    "castelejo": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 190.2
-    },
-    "luz": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 171.1
-    },
-    "burgau": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 174.4
-    },
-    "salema": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 177.9
-    },
-    "cordoama": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 187.9
-    },
-    "ferragudo": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 155.6
-    },
-    "vila-real-santo-antonio": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 88.8
-    },
-    "monte-gordo": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 88.5
-    },
-    "praia-verde": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 90.8
-    },
-    "altura": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 89.5
-    },
-    "praia-rocha": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 156.4
-    },
-    "alvor": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 163.5
-    },
-    "foil-alvor": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 163.5
-    },
-    "lagos": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 166
-    },
-    "lagos-wakepark": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 166.7
-    },
-    "beliche": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 188.9
-    },
-    "martinhal": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 184.8
-    },
-    "barrinha-faro": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 104.6
-    },
-    "fuseta": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 92.9
-    },
-    "ilha-faro": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 106
-    },
-    "faro-mar": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 108.9
-    },
-    "culatra": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 95.6
-    },
-    "armona": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 94.4
-    },
-    "ilha-tavira": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 90.6
-    },
-    "cabanas-tavira": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 91
-    },
-    "cacela-velha": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 90.2
-    },
-    "zavial": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 180.8
-    },
-    "tonel": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 186.2
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 248.7
     },
     "barra-aveiro": {
       "code": "6200199",
@@ -911,10 +623,10 @@
       "distanceKm": 126.1
     },
     "vila-cha": {
-      "code": "6200084",
-      "stationTitle": "Cabo Silleiro",
-      "area": "Galiza",
-      "distanceKm": 108.6
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 196.6
     },
     "santa-cruz": {
       "code": "6200199",
@@ -982,69 +694,33 @@
       "area": "Nazaré",
       "distanceKm": 195.6
     },
-    "garrão": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 103.9
-    },
-    "falesia": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 124.6
-    },
-    "tres-irmaos": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 162.1
-    },
-    "canavial": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 145.4
-    },
-    "armacao-pera": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 141.5
-    },
-    "mareta": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 185.5
-    },
     "fao-ofir-surf": {
-      "code": "6200084",
-      "stationTitle": "Cabo Silleiro",
-      "area": "Galiza",
-      "distanceKm": 84.9
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 221.2
     },
     "ofir-praia": {
-      "code": "6200084",
-      "stationTitle": "Cabo Silleiro",
-      "area": "Galiza",
-      "distanceKm": 85.6
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 220.5
     },
     "mindelo": {
-      "code": "6200084",
-      "stationTitle": "Cabo Silleiro",
-      "area": "Galiza",
-      "distanceKm": 106.8
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 198.5
     },
     "aterro": {
-      "code": "6200084",
-      "stationTitle": "Cabo Silleiro",
-      "area": "Galiza",
-      "distanceKm": 117.5
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 188
     }
   },
-  "day": "20261008",
-  "fetchedAt": "2026-10-08T19:36:03.112Z",
+  "day": "20261009",
+  "fetchedAt": "2026-10-09T05:06:06.520Z",
   "hasWaveData": true,
   "note": "Fallback independente para o observedWave do IH (via WMO/GTS → Copernicus, sem key)."
 }
