@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-10-09T09:40:14.240Z",
+  "fetchedAt": "2026-10-09T12:36:23.280Z",
   "windowDays": 90,
   "dayCount": 38,
   "days": [
@@ -36543,6 +36543,13 @@
           "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=ea0ae9e4-1d6b-482b-8a64-ed8ef3ee65aa"
         },
         {
+          "id": 18767,
+          "ref": "ANAV NR 2269/26",
+          "category": "Requisitos de segurança maritima",
+          "source": "ih",
+          "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=1c58ced1-e3af-43a5-954e-2eaea9b03f6c"
+        },
+        {
           "id": 1000182,
           "ref": "ANAV NR 121/21",
           "category": "SEGURANÇA DA NAVEGAÇÃO - AVISO À NAVEGAÇÃO LOCAL",
@@ -37822,6 +37829,13 @@
           "category": "Animais Marinhos - Interação",
           "source": "ih",
           "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=75ccf066-d15b-4b2a-89cf-1b182df04296"
+        },
+        {
+          "id": 2018769,
+          "ref": "ANAV NR 2270/26",
+          "category": "Animais Marinhos - Avistamento",
+          "source": "ih",
+          "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=dd0afb4f-54df-4865-bf04-0ae3e1b563d5"
         }
       ]
     }
@@ -41291,6 +41305,30 @@
         "2026-10-09"
       ],
       "nDays": 3
+    },
+    {
+      "ref": "ANAV NR 2269/26",
+      "category": "Requisitos de segurança maritima",
+      "source": "ih",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=1c58ced1-e3af-43a5-954e-2eaea9b03f6c",
+      "firstSeen": "2026-10-09",
+      "lastSeen": "2026-10-09",
+      "daysInForce": [
+        "2026-10-09"
+      ],
+      "nDays": 1
+    },
+    {
+      "ref": "ANAV NR 2270/26",
+      "category": "Animais Marinhos - Avistamento",
+      "source": "ih",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=dd0afb4f-54df-4865-bf04-0ae3e1b563d5",
+      "firstSeen": "2026-10-09",
+      "lastSeen": "2026-10-09",
+      "daysInForce": [
+        "2026-10-09"
+      ],
+      "nDays": 1
     },
     {
       "ref": "ANAV NR 238/25",

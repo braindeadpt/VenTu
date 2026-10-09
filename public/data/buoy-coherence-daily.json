@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-10-09T09:39:59.556Z",
+  "fetchedAt": "2026-10-09T12:36:10.954Z",
   "windowDays": 180,
   "days": [
     {
@@ -558,7 +558,7 @@
           ],
           "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
           "verdict": "coherent",
-          "n": 11,
+          "n": 8,
           "meanAbsDeltaM": 0.2,
           "meanDeltaM": 0.2
         },
@@ -580,9 +580,9 @@
           ],
           "pair": "Villano-Sisargas × Datawell ao largo de Faro",
           "verdict": "insufficient",
-          "n": 2,
-          "meanAbsDeltaM": 1.5,
-          "meanDeltaM": -1.5
+          "n": 1,
+          "meanAbsDeltaM": 1.3,
+          "meanDeltaM": -1.3
         },
         {
           "codes": [
@@ -602,9 +602,9 @@
           ],
           "pair": "Cabo Silleiro × Datawell ao largo de Faro",
           "verdict": "insufficient",
-          "n": 2,
-          "meanAbsDeltaM": 1.2,
-          "meanDeltaM": -1.2
+          "n": 1,
+          "meanAbsDeltaM": 1.1,
+          "meanDeltaM": -1.1
         },
         {
           "codes": [
@@ -613,9 +613,9 @@
           ],
           "pair": "Golfo de Cádiz × Datawell ao largo de Faro",
           "verdict": "insufficient",
-          "n": 2,
-          "meanAbsDeltaM": 0.2,
-          "meanDeltaM": -0.2
+          "n": 1,
+          "meanAbsDeltaM": 0,
+          "meanDeltaM": 0
         }
       ]
     },
@@ -1534,9 +1534,31 @@
           ],
           "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
           "verdict": "coherent",
-          "n": 8,
-          "meanAbsDeltaM": 0.1,
-          "meanDeltaM": 0
+          "n": 11,
+          "meanAbsDeltaM": 0.2,
+          "meanDeltaM": 0.1
+        },
+        {
+          "codes": [
+            "6200083",
+            "6201077"
+          ],
+          "pair": "Villano-Sisargas × Datawell ao largo do Porto",
+          "verdict": "insufficient",
+          "n": 1,
+          "meanAbsDeltaM": 0.2,
+          "meanDeltaM": -0.2
+        },
+        {
+          "codes": [
+            "6200084",
+            "6201077"
+          ],
+          "pair": "Cabo Silleiro × Datawell ao largo do Porto",
+          "verdict": "insufficient",
+          "n": 1,
+          "meanAbsDeltaM": 0.5,
+          "meanDeltaM": -0.5
         }
       ]
     }
