@@ -344,6 +344,8 @@ export const translationsEn = {
     feedback: 'Feedback',
     reportar: 'Report an issue',
     fontes: 'Official sources',
+    rssFeed: 'RSS feed',
+    contact: 'Contact',
   },
   common: { loading: 'Loading...', error: 'Error loading data', refresh: 'Refresh', close: 'Close', today: 'Today', tomorrow: 'Tomorrow', now: 'Now' },
   theme: { toggle: 'Switch theme', toggleDark: 'Switch to dark theme', toggleLight: 'Switch to light theme' },

@@ -97,3 +97,17 @@ Deterministic keyword blacklist (`scripts/news/spam-filter.js`):
 
 GitHub Actions: `0 */3 * * *` (every 3 hours)
 Uses secrets: `GEMINI_API_KEY`, `GROQ_API_KEY`, `CEREBRAS_API_KEY`
+
+## Feeds RSS do VenTu (outbound)
+
+`scripts/generate-rss.js` emite `public/rss.xml` (PT) e `public/rss-en.xml`
+(EN) a partir de `news.json` — RSS 2.0 + atom self-link, links para as
+páginas internas `/news/{slug}/`, `<source>` com o URL externo original.
+
+- Determinístico: `<lastBuildDate>` = pubDate do item mais recente (zero
+  churn em input igual).
+- Regenerado no `update-news.yml` só quando `news.json` muda (mesmo gate
+  do sitemap).
+- Descoberta: `<link rel="alternate" type="application/rss+xml">` em todas
+  as páginas via `alternates.types` (`src/lib/seo.ts` + `news/[slug]` que
+  mantém alternates à mão). Link visível no footer.

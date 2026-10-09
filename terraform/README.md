@@ -8,7 +8,8 @@ mesmo resultado.
 | Ficheiro | O que é |
 |---|---|
 | `main.tf` | 2 `cloudflare_ruleset`: `ventu_security_headers` (fase `http_response_headers_transform`, 2 regras: catch-all + `/embed/*`) e `ventu_cache_rules` (fase `http_request_cache_settings`, 3 regras: C1 `/_next/static/*` 1y, C2 `/data/*` 5min, C3 `/sw.js` bypass) |
-| `variables.tf` | Inputs: token, zona, e os dois CSPs (defaults = SECURITY-HEADERS.md; ⚠️ manter em sincronia com `CSPMeta.tsx`) |
+| `email.tf` | **Recepção `@ventu.surf`** (inerte até às vars estarem preenchidas): Email Routing + MX Cloudflare + `contacto@` → caixa pessoal + SPF apex + DMARC `rua=` — ver secção própria abaixo |
+| `variables.tf` | Inputs: token, zona, os dois CSPs (defaults = SECURITY-HEADERS.md; ⚠️ manter em sincronia com `CSPMeta.tsx`), e as vars de Email Routing |
 | `terraform.tfvars.example` | Template de configuração local (gitignored) |
 
 ## Aplicação passo a passo (runbook)
@@ -175,3 +176,41 @@ terraform destroy        # remove os 2 rulesets (headers + cache deixam de ser s
   `CF-Cache-Status: DYNAMIC` de propósito).
 - **Plano free:** máx. 10 Cache Rules ativas (este módulo usa 3) e ficheiro
   cacheável máx. 512 MB (irrelevante para HTML/JSON).
+
+## Recepção de email (`email.tf`)
+
+Contexto: o envio já funciona (Resend, autenticado em `send.ventu.surf` +
+DKIM `resend._domainkey`); a recepção **falhava** porque o apex não tinha MX.
+
+**Estado (2026-10-07): já está live via painel** — Email Routing activo,
+`contacto@ventu.surf → busntech.net@gmail.com` (destino verified), MX
+`route1/2/3.mx.cloudflare.net` + SPF apex + DKIM `cf2024-1._domainkey`
+propagados, e `_dmarc` actualizado com `rua=`. O `email.tf` espelha esse
+estado mas está **inerte por omissão** (`count = 0` sem as vars); para
+adoptar como IaC precisa de `terraform import` dos recursos existentes —
+um `apply` directo falharia com "record already exists".
+
+Se algum dia se gerir daqui:
+
+1. **Token**: precisa de `Zone > DNS: Edit` + `Email Routing: Edit` na zona
+   (o token de Transform Rules não chega).
+2. **Vars** no `terraform.tfvars`: `cloudflare_account_id` (Account ID no
+   painel, barra lateral direita de qualquer zona) e `email_forward_to`.
+3. `terraform plan` → **8 a criar** (3 MX, SPF apex, routing address,
+   settings, rule, DMARC — este último precisa de `terraform import` do
+   registo `_dmarc` existente **antes** do apply, ver comentário no ficheiro).
+4. **Verificação manual obrigatória**: a Cloudflare manda um email ao
+   destino (`email_forward_to`); a forward rule só entrega depois do clique.
+   Se o apply falhar na rule por causa disso, clicar e repetir o apply.
+5. Validar: `dig MX ventu.surf` deve dar `route1/2/3.mx.cloudflare.net` e um
+   email externo para `contacto@ventu.surf` deve chegar à caixa.
+
+**O que foi feito pelo painel** (o caminho que correu): Email Routing →
+Routing rules → *Create routing rule* → `contacto` @ `ventu.surf` →
+*Send to an email* → destino; depois Email Routing → Settings →
+*Add missing records* (cria MX + DKIM + SPF). Catch-all fica Drop/Disabled.
+
+Não toca no Resend: o envio continua autenticado no subdomínio `send.` (SPF
+SES) e o apex ganha apenas recepção. DMARC fica `p=none` com `rua=` a apontar
+para a caixa nova — endurecer para `quarantine` só depois de relatórios
+limpos durante algumas semanas.

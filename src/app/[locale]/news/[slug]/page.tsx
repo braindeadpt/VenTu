@@ -59,6 +59,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         fr: `/fr/news/${slug}/`,
         'x-default': `/pt/news/${slug}/`,
       },
+      types: {
+        'application/rss+xml': [
+          { url: '/rss.xml', title: 'VenTu — Notícias náuticas (PT)' },
+          { url: '/rss-en.xml', title: 'VenTu News (EN)' },
+        ],
+      },
     },
     openGraph: {
       title,

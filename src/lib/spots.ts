@@ -569,7 +569,7 @@ export const spots: Spot[] = [
     },
   {
       id: 'nazare', slug: 'nazare', name: 'Nazaré', nameEn: 'Nazare',
-      region: 'Oeste', regionEn: 'West Coast', lat: 39.597, lon: -9.073,
+      region: 'Oeste', regionEn: 'West Coast', lat: 39.608, lon: -9.086,
       coastOrientation: 270,
       type: 'big-wave', difficulty: 'expert', bestWind: 'N, NNE', bestSwell: 'W, WNW',
       description: 'Famoso pelas maiores ondas do mundo. Praia do Norte é o palco do Big Wave Surfing. Canal submarino amplifica ondas gigantescas.',
