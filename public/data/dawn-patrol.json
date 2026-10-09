@@ -1,129 +1,105 @@
 {
-  "date": "2026-10-08",
-  "topSpot": "Guincho",
-  "topSpotSlug": "guincho",
+  "date": "2026-10-09",
+  "topSpot": "Ribeira d'Ilhas",
+  "topSpotSlug": "ribeira-ilhas",
   "pt": {
-    "headline": "Guincho oferece ondas perfeitas e vento leve – surf ideal hoje!",
-    "advice": "As ondas de 2,1 m com período de 9 s e vento fraco (4 kt) criam condições excelentes. Use fato 3/2 mm e chegue cedo para evitar a maioria da gente. Aviso à navegação costeira ANAV NR 1445/26 e ANAV NR 1727/26 em vigor na zona.",
-    "bestTime": "09:30",
-    "wetsuit": "3/2mm",
-    "crowdTip": "Chegue antes das 09:00 para pegar a melhor parte da onda antes da lotação.",
-    "moonTideLine": "Lua minguante · Transição · baixa-mar 21:00"
+    "headline": "Ondas perfeitas e vento leve na Ribeira d'Ilhas!",
+    "advice": "Aproveite ondas de 2,1 m com período de 9 s e vento de 6 kt, ideal para manobras. Aviso à navegação costeira ANAV NR 1727/26 (Animais Marinhos - Avistamento) em vigor na zona – fique atento, mas nada impede de surfar. Chegue cedo para garantir seu pico.",
+    "bestTime": "07:30",
+    "wetsuit": "3/2 mm",
+    "crowdTip": "Chegue antes das 08:00 para evitar a maior parte da multidão.",
+    "moonTideLine": "Lua minguante · Transição · baixa-mar 09:00"
   },
   "en": {
-    "headline": "Guincho serves clean waves with light wind – perfect surf today!",
-    "advice": "2.1 m waves with a 9‑second period and a light 4‑kt wind give excellent conditions. Wear a 3/2 mm wetsuit and get there early to beat the crowd. Coastal navigation warning ANAV NR 1445/26 and ANAV NR 1727/26 in effect.",
-    "bestTime": "09:30",
-    "wetsuit": "3/2mm",
-    "crowdTip": "Arrive before 09:00 to catch the best sections before it gets busy.",
-    "moonTideLine": "Waning crescent · Transition · low tide 21:00"
+    "headline": "Perfect waves and light wind at Ribeira d'Ilhas!",
+    "advice": "Take advantage of 2.1 m waves with a 9‑second period and 6 kt wind, perfect for maneuvers. Coastal navigation warning ANAV NR 1727/26 (Marine Animals – Sighting) is in effect – stay aware but it won’t stop you. Arrive early to claim your peak.",
+    "bestTime": "07:30",
+    "wetsuit": "3/2 mm",
+    "crowdTip": "Get there before 08:00 to beat most of the crowd.",
+    "moonTideLine": "Waning crescent · Transition · low tide 09:00"
   },
   "spots": [
     {
       "name": "Supertubos",
       "slug": "supertubos",
-      "score": 78,
+      "score": 86,
       "verdict": "go",
-      "ptReason": "Ondas boas (2,3 m) e vento moderado (8 kt). Avisos de interação com animais marinhos, mas sem risco imediato.",
-      "enReason": "Good 2.3 m waves and moderate 8‑kt wind. Marine‑animal interaction warnings present but no immediate danger.",
-      "scoreForecast": 89,
-      "scoreSource": "boia",
-      "scoreMeta": {
-        "stationName": "CSA83/1D",
-        "distanceKm": 162.7
-      }
+      "ptReason": "Ondas consistentes de 2 m e vento moderado (6 kt). Aviso costeiro ANAV NR 12/24 e NR 2257/26 em vigor.",
+      "enReason": "Consistent 2 m waves and moderate wind (6 kt). Coastal warnings ANAV NR 12/24 and NR 2257/26 active.",
+      "scoreForecast": 86,
+      "scoreSource": "previsão",
+      "scoreMeta": null
     },
     {
       "name": "Guincho",
       "slug": "guincho",
-      "score": 78,
-      "verdict": "go",
-      "ptReason": "Ondas consistentes, vento leve e temperatura agradável. Avisos de animais marinhos, porém seguros.",
-      "enReason": "Consistent waves, light wind and comfortable water temperature. Marine‑animal warnings but safe.",
-      "scoreForecast": 87,
-      "scoreSource": "boia",
-      "scoreMeta": {
-        "stationName": "CSA83/1D",
-        "distanceKm": 101.9
-      }
+      "score": 86,
+      "verdict": "maybe",
+      "ptReason": "Vento mais forte (9 kt) pode atrapalhar a qualidade das ondas de 1,9 m.",
+      "enReason": "Higher wind (9 kt) may affect the quality of the 1.9 m waves.",
+      "scoreForecast": 86,
+      "scoreSource": "previsão",
+      "scoreMeta": null
     },
     {
       "name": "Nazaré",
       "slug": "nazare",
-      "score": 78,
-      "verdict": "go",
-      "ptReason": "Ondas de 2,3 m e vento fraco (4 kt). Boa escolha se quiser menos lotação que Supertubos.",
-      "enReason": "2.3 m waves with a light 4‑kt wind. Good option if you prefer slightly fewer crowds than Supertubos.",
-      "scoreForecast": 89,
-      "scoreSource": "boia",
-      "scoreMeta": {
-        "stationName": "CSA83/1D",
-        "distanceKm": 186.8
-      }
+      "score": 86,
+      "verdict": "maybe",
+      "ptReason": "Ondas boas, mas vento quase nulo pode gerar swell irregular; atenção ao tráfego de barcos.",
+      "enReason": "Good waves, but almost no wind can cause irregular swell; watch for boat traffic.",
+      "scoreForecast": 86,
+      "scoreSource": "previsão",
+      "scoreMeta": null
     },
     {
       "name": "Ribeira d'Ilhas",
       "slug": "ribeira-ilhas",
-      "score": 71,
-      "verdict": "maybe",
-      "ptReason": "Maior onda (2,5 m) mas vento forte (15 kt) que pode atrapalhar a performance.",
-      "enReason": "Largest wave (2.5 m) but strong 15‑kt wind may hinder performance.",
-      "scoreForecast": 83,
-      "scoreSource": "boia",
-      "scoreMeta": {
-        "stationName": "CSA83/1D",
-        "distanceKm": 126.1
-      }
+      "score": 87,
+      "verdict": "go",
+      "ptReason": "Maior altura (2,1 m) e vento leve (6 kt). Aviso ANAV NR 1727/26 em vigor.",
+      "enReason": "Higher height (2.1 m) and light wind (6 kt). Coastal warning ANAV NR 1727/26 active.",
+      "scoreForecast": 87,
+      "scoreSource": "previsão",
+      "scoreMeta": null
     },
     {
       "name": "Coxos",
       "slug": "coxos",
-      "score": 78,
+      "score": 87,
       "verdict": "go",
-      "ptReason": "Ondas de 2,3 m, vento leve (5 kt) e boa pontuação. Aviso de avistamento de animais marinhos.",
-      "enReason": "2.3 m waves, light 5‑kt wind and solid score. Marine‑animal sighting warning.",
-      "scoreForecast": 89,
-      "scoreSource": "boia",
-      "scoreMeta": {
-        "stationName": "CSA83/1D",
-        "distanceKm": 127.4
-      }
+      "ptReason": "Ondas de 2,1 m e vento de 6 kt, excelente para tubos. Aviso ANAV NR 1727/26 em vigor.",
+      "enReason": "2.1 m waves and 6 kt wind, excellent for barrels. Coastal warning ANAV NR 1727/26 active.",
+      "scoreForecast": 87,
+      "scoreSource": "previsão",
+      "scoreMeta": null
     },
     {
       "name": "Arrifana",
       "slug": "arrifana",
-      "score": 75,
+      "score": 83,
       "verdict": "maybe",
-      "ptReason": "Ondas menores (1,5 m) e vento moderado (6 kt). Ainda surfável, mas menos emocionante.",
-      "enReason": "Smaller 1.5 m waves and moderate 6‑kt wind. Rideable but less exciting.",
-      "scoreForecast": 79,
-      "scoreSource": "boia",
-      "scoreMeta": {
-        "stationName": "CSA83/1D",
-        "distanceKm": 70.2
-      }
+      "ptReason": "Ondas menores (1,7 m) e vento muito leve (3 kt); pode ser menos excitante.",
+      "enReason": "Smaller waves (1.7 m) and very light wind (3 kt); may be less exciting.",
+      "scoreForecast": 83,
+      "scoreSource": "previsão",
+      "scoreMeta": null
     },
     {
       "name": "Carcavelos",
       "slug": "carcavelos",
-      "score": 78,
-      "verdict": "maybe",
-      "ptReason": "Ondas curtas (1,6 m) e vento muito leve (3 kt). Avisos múltiplos de interação com animais marinhos; pode ficar lotado.",
-      "enReason": "Short 1.6 m waves and very light 3‑kt wind. Multiple marine‑animal interaction warnings; may be crowded.",
-      "scoreForecast": 83,
-      "scoreSource": "boia",
-      "scoreMeta": {
-        "stationName": "CSA83/1D",
-        "distanceKm": 91.4
-      }
+      "score": 82,
+      "verdict": "skip",
+      "ptReason": "Ondas curtas (1,5 m) e vento forte (8 kt) dificultam a surfabilidade. Avisos ANAV NR 00/14, 1445/26 e 2235/26 em vigor.",
+      "enReason": "Short waves (1.5 m) and strong wind (8 kt) hinder surfability. Coastal warnings ANAV NR 00/14, 1445/26 and 2235/26 active.",
+      "scoreForecast": 82,
+      "scoreSource": "previsão",
+      "scoreMeta": null
     }
   ],
-  "generatedAt": "2026-10-08T03:36:19.399Z",
-  "topScore": 78,
+  "generatedAt": "2026-10-09T03:06:19.077Z",
+  "topScore": 87,
   "topScoreForecast": 87,
-  "topScoreSource": "boia",
-  "topScoreMeta": {
-    "stationName": "CSA83/1D",
-    "distanceKm": 101.9
-  }
+  "topScoreSource": "previsão",
+  "topScoreMeta": null
 }
