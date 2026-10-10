@@ -1,6 +1,6 @@
 {
   "day": "20261010",
-  "fetchedAt": "2026-10-10T05:06:09.652Z",
+  "fetchedAt": "2026-10-10T05:29:14.905Z",
   "minPairs": 3,
   "minAccumulatedPairs": 10,
   "archive": {
@@ -286,14 +286,14 @@
       ]
     },
     "Esposende": {
-      "spotCount": 9,
-      "withObservedWave": 9,
+      "spotCount": 8,
+      "withObservedWave": 8,
       "bySource": {
-        "wmo-buoy": 9
+        "wmo-buoy": 8
       },
-      "audited": 9,
+      "audited": 8,
       "attachedIsClosest": 0,
-      "attachedNotClosest": 9,
+      "attachedNotClosest": 8,
       "onlySource": 0,
       "notClosest": [
         {
@@ -325,13 +325,6 @@
           "altKm": 0
         },
         {
-          "spot": "apulia",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 90,
-          "altKm": 0
-        },
-        {
           "spot": "fao-ofir-surf",
           "winner": "wmo-buoy",
           "reason": "wmo-only",
@@ -360,7 +353,7 @@
           "altKm": 0
         }
       ],
-      "calibrated": 7,
+      "calibrated": 6,
       "calibrationRefs": {
         "6200084→6200199": {
           "esCode": "6200084",
@@ -376,13 +369,12 @@
             "esposende",
             "esposende-praia",
             "fao",
-            "apulia",
             "fao-ofir-surf",
             "ofir-praia"
           ]
         }
       },
-      "suboptimalRefs": 7,
+      "suboptimalRefs": 6,
       "suboptimal": [
         {
           "spot": "ofir",
@@ -419,15 +411,6 @@
           "nearestPtCode": "4",
           "nearestPtName": "CSA92/D",
           "nearestPtKm": 27.955402159750385
-        },
-        {
-          "spot": "apulia",
-          "esCode": "6200084",
-          "ptRefCode": "6200199",
-          "ptRefKm": 216.85515886313974,
-          "nearestPtCode": "4",
-          "nearestPtName": "CSA92/D",
-          "nearestPtKm": 26.053641759189087
         },
         {
           "spot": "fao-ofir-surf",
@@ -798,23 +781,16 @@
       ]
     },
     "Espinho": {
-      "spotCount": 3,
-      "withObservedWave": 3,
+      "spotCount": 2,
+      "withObservedWave": 2,
       "bySource": {
-        "wmo-buoy": 3
+        "wmo-buoy": 2
       },
-      "audited": 3,
+      "audited": 2,
       "attachedIsClosest": 0,
-      "attachedNotClosest": 3,
+      "attachedNotClosest": 2,
       "onlySource": 0,
       "notClosest": [
-        {
-          "spot": "praia-37",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 140,
-          "altKm": 0
-        },
         {
           "spot": "bairro-piscatorio",
           "winner": "wmo-buoy",
@@ -830,7 +806,7 @@
           "altKm": 0
         }
       ],
-      "calibrated": 3,
+      "calibrated": 2,
       "calibrationRefs": {
         "6200084→6200199": {
           "esCode": "6200084",
@@ -842,23 +818,13 @@
           "me": -0.2,
           "n": 544,
           "spots": [
-            "praia-37",
             "bairro-piscatorio",
             "paramos"
           ]
         }
       },
-      "suboptimalRefs": 3,
+      "suboptimalRefs": 2,
       "suboptimal": [
-        {
-          "spot": "praia-37",
-          "esCode": "6200084",
-          "ptRefCode": "6200199",
-          "ptRefKm": 167.40963152922527,
-          "nearestPtCode": "4",
-          "nearestPtName": "CSA92/D",
-          "nearestPtKm": 44.6850335858117
-        },
         {
           "spot": "bairro-piscatorio",
           "esCode": "6200084",
@@ -880,25 +846,18 @@
       ]
     },
     "Ovar": {
-      "spotCount": 6,
-      "withObservedWave": 6,
+      "spotCount": 5,
+      "withObservedWave": 5,
       "bySource": {
-        "wmo-buoy": 6
+        "wmo-buoy": 5
       },
-      "audited": 6,
+      "audited": 5,
       "attachedIsClosest": 0,
-      "attachedNotClosest": 6,
+      "attachedNotClosest": 5,
       "onlySource": 0,
       "notClosest": [
         {
           "spot": "barrinha-esmoriz",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 144,
-          "altKm": 0
-        },
-        {
-          "spot": "esmoriz",
           "winner": "wmo-buoy",
           "reason": "wmo-only",
           "attachedKm": 144,
@@ -933,7 +892,7 @@
           "altKm": 0
         }
       ],
-      "calibrated": 6,
+      "calibrated": 5,
       "calibrationRefs": {
         "6200084→6200199": {
           "esCode": "6200084",
@@ -946,7 +905,6 @@
           "n": 544,
           "spots": [
             "barrinha-esmoriz",
-            "esmoriz",
             "cortegaca",
             "cortegaca-sul",
             "maceda",
@@ -954,7 +912,7 @@
           ]
         }
       },
-      "suboptimalRefs": 6,
+      "suboptimalRefs": 5,
       "suboptimal": [
         {
           "spot": "barrinha-esmoriz",
@@ -964,15 +922,6 @@
           "nearestPtCode": "4",
           "nearestPtName": "CSA92/D",
           "nearestPtKm": 48.20580877006854
-        },
-        {
-          "spot": "esmoriz",
-          "esCode": "6200084",
-          "ptRefCode": "6200199",
-          "ptRefKm": 162.77021293433435,
-          "nearestPtCode": "4",
-          "nearestPtName": "CSA92/D",
-          "nearestPtKm": 48.07381268475458
         },
         {
           "spot": "cortegaca",
@@ -1103,14 +1052,14 @@
       "suboptimal": []
     },
     "Figueira da Foz": {
-      "spotCount": 3,
-      "withObservedWave": 3,
+      "spotCount": 2,
+      "withObservedWave": 2,
       "bySource": {
-        "wmo-buoy": 3
+        "wmo-buoy": 2
       },
-      "audited": 3,
+      "audited": 2,
       "attachedIsClosest": 0,
-      "attachedNotClosest": 3,
+      "attachedNotClosest": 2,
       "onlySource": 0,
       "notClosest": [
         {
@@ -1118,13 +1067,6 @@
           "winner": "wmo-buoy",
           "reason": "wmo-only",
           "attachedKm": 78,
-          "altKm": 0
-        },
-        {
-          "spot": "figueira-foz",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 72,
           "altKm": 0
         },
         {
@@ -2379,7 +2321,7 @@
       "suboptimal": []
     }
   },
-  "regionsAuditedAt": "2026-10-10T05:15:29.140Z",
+  "regionsAuditedAt": "2026-10-10T05:43:07.327Z",
   "pairs": [
     {
       "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
