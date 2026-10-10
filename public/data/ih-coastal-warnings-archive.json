@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-10-10T16:36:43.858Z",
+  "fetchedAt": "2026-10-10T18:35:48.059Z",
   "windowDays": 90,
   "dayCount": 39,
   "days": [
@@ -37871,13 +37871,6 @@
           "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=b47853b4-da63-4743-a9ea-3d49a4277e91"
         },
         {
-          "id": 18697,
-          "ref": "ANAV NR 2197/26",
-          "category": "Requisitos de segurança maritima",
-          "source": "ih",
-          "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=f023faff-5eae-4caf-b594-e11493414c73"
-        },
-        {
           "id": 18761,
           "ref": "ANAV NR 2256/26",
           "category": "Requisitos de segurança maritima",
@@ -42476,28 +42469,6 @@
       "nDays": 13
     },
     {
-      "ref": "ANAV NR 2197/26",
-      "category": "Requisitos de segurança maritima",
-      "source": "ih",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=f023faff-5eae-4caf-b594-e11493414c73",
-      "firstSeen": "2026-09-30",
-      "lastSeen": "2026-10-10",
-      "daysInForce": [
-        "2026-09-30",
-        "2026-10-01",
-        "2026-10-02",
-        "2026-10-03",
-        "2026-10-04",
-        "2026-10-05",
-        "2026-10-06",
-        "2026-10-07",
-        "2026-10-08",
-        "2026-10-09",
-        "2026-10-10"
-      ],
-      "nDays": 11
-    },
-    {
       "ref": "ANAV NR 22/25",
       "category": "AVISO À NAVEGAÇÃO - INSTALAÇÃO DE BOIA LiDAR FLS 200",
       "source": "ih",
@@ -45717,6 +45688,27 @@
         "2026-10-09"
       ],
       "nDays": 13
+    },
+    {
+      "ref": "ANAV NR 2197/26",
+      "category": "Requisitos de segurança maritima",
+      "source": "ih",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=f023faff-5eae-4caf-b594-e11493414c73",
+      "firstSeen": "2026-09-30",
+      "lastSeen": "2026-10-09",
+      "daysInForce": [
+        "2026-09-30",
+        "2026-10-01",
+        "2026-10-02",
+        "2026-10-03",
+        "2026-10-04",
+        "2026-10-05",
+        "2026-10-06",
+        "2026-10-07",
+        "2026-10-08",
+        "2026-10-09"
+      ],
+      "nDays": 10
     },
     {
       "ref": "ANAV NR 2254/26",
