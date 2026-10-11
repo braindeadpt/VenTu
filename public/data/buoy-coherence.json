@@ -1,11 +1,11 @@
 {
   "day": "20261011",
-  "fetchedAt": "2026-10-11T05:26:20.582Z",
+  "fetchedAt": "2026-10-11T08:36:13.010Z",
   "minPairs": 3,
   "minAccumulatedPairs": 10,
   "archive": {
     "windowDays": 30,
-    "pairHourCount": 631,
+    "pairHourCount": 623,
     "path": "buoy-coherence-archive.json"
   },
   "daily": {
@@ -111,13 +111,13 @@
       "suboptimal": []
     },
     "Esposende": {
-      "spotCount": 8,
-      "withObservedWave": 8,
+      "spotCount": 9,
+      "withObservedWave": 9,
       "bySource": {
-        "ih-buoy": 8
+        "ih-buoy": 9
       },
-      "audited": 8,
-      "attachedIsClosest": 8,
+      "audited": 9,
+      "attachedIsClosest": 9,
       "attachedNotClosest": 0,
       "onlySource": 0,
       "notClosest": [],
@@ -191,13 +191,13 @@
       "suboptimal": []
     },
     "Ovar": {
-      "spotCount": 5,
-      "withObservedWave": 5,
+      "spotCount": 6,
+      "withObservedWave": 6,
       "bySource": {
-        "ih-buoy": 5
+        "ih-buoy": 6
       },
-      "audited": 5,
-      "attachedIsClosest": 5,
+      "audited": 6,
+      "attachedIsClosest": 6,
       "attachedNotClosest": 0,
       "onlySource": 0,
       "notClosest": [],
@@ -1491,7 +1491,7 @@
       "suboptimal": []
     }
   },
-  "regionsAuditedAt": "2026-10-11T05:36:44.269Z",
+  "regionsAuditedAt": "2026-10-11T08:44:10.436Z",
   "pairs": [
     {
       "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
@@ -1507,8 +1507,8 @@
       "maxAbsDeltaM": 2.8,
       "corr": 0.76,
       "verdict": "coherent",
-      "firstHour": "2026-09-11T06",
-      "lastHour": "2026-10-11T03",
+      "firstHour": "2026-09-11T09",
+      "lastHour": "2026-10-11T06",
       "hours": [
         {
           "6200084": 1.1699999570846558,
@@ -1529,6 +1529,21 @@
           "6200084": 1.1699999570846558,
           "6200199": 1.1718800067901611,
           "hour": "2026-10-11T03"
+        },
+        {
+          "6200084": 1.0499999523162842,
+          "6200199": 1.1279300451278687,
+          "hour": "2026-10-11T04"
+        },
+        {
+          "6200084": 1.0499999523162842,
+          "6200199": 1.1718800067901611,
+          "hour": "2026-10-11T05"
+        },
+        {
+          "6200084": 1.2899999618530273,
+          "6200199": 1.1718800067901611,
+          "hour": "2026-10-11T06"
         }
       ]
     }
