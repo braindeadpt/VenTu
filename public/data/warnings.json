@@ -1,7 +1,17 @@
 {
   "source": "ipma",
-  "fetchedAt": "2026-10-11T09:20:49.863Z",
+  "fetchedAt": "2026-10-11T12:06:38.261Z",
   "warnings": [
+    {
+      "areaCode": "ACE",
+      "areaLabel": "Angra do Heroísmo",
+      "type": "Precipitação",
+      "level": "yellow",
+      "text": "Precipitação por vezes FORTE, podendo ser acompanha de trovoada.",
+      "startTime": "2026-10-12T00:00:00",
+      "endTime": "2026-10-12T09:00:00",
+      "relevant": true
+    },
     {
       "areaCode": "AOC",
       "areaLabel": "Santa Cruz das Flores",
@@ -13,5 +23,78 @@
       "relevant": true
     }
   ],
-  "spotWarnings": {}
+  "spotWarnings": {
+    "praia-vitoria": [
+      {
+        "areaCode": "ACE",
+        "areaLabel": "Angra do Heroísmo",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Precipitação por vezes FORTE, podendo ser acompanha de trovoada.",
+        "startTime": "2026-10-12T00:00:00",
+        "endTime": "2026-10-12T09:00:00",
+        "relevant": true
+      }
+    ],
+    "santa-catarina-terceira": [
+      {
+        "areaCode": "ACE",
+        "areaLabel": "Angra do Heroísmo",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Precipitação por vezes FORTE, podendo ser acompanha de trovoada.",
+        "startTime": "2026-10-12T00:00:00",
+        "endTime": "2026-10-12T09:00:00",
+        "relevant": true
+      }
+    ],
+    "almoxarife": [
+      {
+        "areaCode": "ACE",
+        "areaLabel": "Angra do Heroísmo",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Precipitação por vezes FORTE, podendo ser acompanha de trovoada.",
+        "startTime": "2026-10-12T00:00:00",
+        "endTime": "2026-10-12T09:00:00",
+        "relevant": true
+      }
+    ],
+    "porto-martins": [
+      {
+        "areaCode": "ACE",
+        "areaLabel": "Angra do Heroísmo",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Precipitação por vezes FORTE, podendo ser acompanha de trovoada.",
+        "startTime": "2026-10-12T00:00:00",
+        "endTime": "2026-10-12T09:00:00",
+        "relevant": true
+      }
+    ],
+    "cachorro-pico": [
+      {
+        "areaCode": "ACE",
+        "areaLabel": "Angra do Heroísmo",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Precipitação por vezes FORTE, podendo ser acompanha de trovoada.",
+        "startTime": "2026-10-12T00:00:00",
+        "endTime": "2026-10-12T09:00:00",
+        "relevant": true
+      }
+    ],
+    "faja-cubres": [
+      {
+        "areaCode": "ACE",
+        "areaLabel": "Angra do Heroísmo",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Precipitação por vezes FORTE, podendo ser acompanha de trovoada.",
+        "startTime": "2026-10-12T00:00:00",
+        "endTime": "2026-10-12T09:00:00",
+        "relevant": true
+      }
+    ]
+  }
 }
