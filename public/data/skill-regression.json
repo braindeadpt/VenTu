@@ -1,6 +1,6 @@
 {
   "source": "forecast-skill-regression",
-  "checkedAt": "2026-10-11T19:06:15.247Z",
+  "checkedAt": "2026-10-11T23:43:41.618Z",
   "windowDays": 60,
   "recentDays": 7,
   "baselineDays": 21,
@@ -21,10 +21,10 @@
       "name": "CSA92/D",
       "origin": "ih",
       "recent": {
-        "snapshots": 7,
-        "rmse": 0.5814285714285715,
-        "me": 0.45285714285714285,
-        "n": 611
+        "snapshots": 8,
+        "rmse": 0.5825,
+        "me": 0.45499999999999996,
+        "n": 611.625
       },
       "baseline": {
         "snapshots": 10,
@@ -40,10 +40,10 @@
       "name": "CSA83/1D",
       "origin": "ih",
       "recent": {
-        "snapshots": 7,
+        "snapshots": 8,
         "rmse": 0.28,
-        "me": 0.10285714285714286,
-        "n": 673.8571428571429
+        "me": 0.10625,
+        "n": 673.75
       },
       "baseline": {
         "snapshots": 20,
@@ -59,10 +59,10 @@
       "name": "CSA82/D",
       "origin": "ih",
       "recent": {
-        "snapshots": 7,
-        "rmse": 0.20714285714285713,
-        "me": 0.12714285714285717,
-        "n": 264
+        "snapshots": 8,
+        "rmse": 0.2075,
+        "me": 0.12875000000000003,
+        "n": 254.5
       },
       "baseline": {
         "snapshots": 10,
@@ -78,10 +78,10 @@
       "name": "CSA94",
       "origin": "ih",
       "recent": {
-        "snapshots": 7,
-        "rmse": 0.48857142857142855,
-        "me": -0.42714285714285716,
-        "n": 674.8571428571429
+        "snapshots": 8,
+        "rmse": 0.49124999999999996,
+        "me": -0.42875,
+        "n": 674.75
       },
       "baseline": {
         "snapshots": 14,
@@ -97,10 +97,10 @@
       "name": "BOND5",
       "origin": "ih",
       "recent": {
-        "snapshots": 7,
-        "rmse": 0.8842857142857142,
-        "me": 0.7085714285714284,
-        "n": 672.2857142857143
+        "snapshots": 8,
+        "rmse": 0.8837499999999999,
+        "me": 0.7074999999999999,
+        "n": 672.25
       },
       "baseline": {
         "snapshots": 10,
@@ -116,10 +116,10 @@
       "name": "Cabo Silleiro",
       "origin": "wmo-es",
       "recent": {
-        "snapshots": 7,
-        "rmse": 0.7199999999999999,
-        "me": 0.5657142857142857,
-        "n": 525.7142857142857
+        "snapshots": 8,
+        "rmse": 0.72125,
+        "me": 0.5675,
+        "n": 527.125
       },
       "baseline": {
         "snapshots": 20,
@@ -127,7 +127,7 @@
         "me": 0.3430000000000001,
         "n": 421.55
       },
-      "rmseDelta": 0.25,
+      "rmseDelta": 0.26,
       "meAbsDelta": 0.22,
       "verdict": "ok"
     },
@@ -135,10 +135,10 @@
       "name": "Golfo de Cádiz",
       "origin": "wmo-es",
       "recent": {
-        "snapshots": 7,
-        "rmse": 0.49714285714285716,
-        "me": 0.40857142857142864,
-        "n": 525.7142857142857
+        "snapshots": 8,
+        "rmse": 0.49375,
+        "me": 0.40625000000000006,
+        "n": 527.125
       },
       "baseline": {
         "snapshots": 20,
@@ -147,16 +147,16 @@
         "n": 422.4
       },
       "rmseDelta": 0.01,
-      "meAbsDelta": -0.02,
+      "meAbsDelta": -0.03,
       "verdict": "ok"
     },
     "6200199": {
       "name": "Nazaré Costeira (WMO)",
       "recent": {
-        "snapshots": 7,
+        "snapshots": 8,
         "rmse": 0.37,
-        "me": 0.12714285714285717,
-        "n": 514.8571428571429
+        "me": 0.12875000000000003,
+        "n": 516.75
       },
       "baseline": {
         "snapshots": 20,
@@ -175,9 +175,9 @@
       "platform": "ih",
       "name": "IH (Datawell)",
       "recent": {
-        "days": 7,
-        "n": 2896,
-        "me": 0.19577249408050512
+        "days": 8,
+        "n": 2886.88,
+        "me": 0.19683351374756441
       },
       "baseline": {
         "days": 20,
@@ -193,9 +193,9 @@
       "platform": "wmo-es",
       "name": "WMO-ES (Copernicus)",
       "recent": {
-        "days": 7,
-        "n": 1566.29,
-        "me": 0.36883710324699015
+        "days": 8,
+        "n": 1571,
+        "me": 0.3691136218968809
       },
       "baseline": {
         "days": 20,

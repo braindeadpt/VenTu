@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-10-11T19:06:11.941Z",
+  "fetchedAt": "2026-10-11T23:43:35.875Z",
   "snapshots": [
     {
       "day": "2026-09-01",
@@ -2795,6 +2795,77 @@
       "n": 526,
       "me": 0.14,
       "rmse": 0.38
+    },
+    {
+      "day": "2026-10-12",
+      "buoyId": "4",
+      "origin": "ih",
+      "name": "CSA92/D",
+      "n": 616,
+      "me": 0.47,
+      "rmse": 0.59
+    },
+    {
+      "day": "2026-10-12",
+      "buoyId": "19",
+      "origin": "ih",
+      "name": "CSA83/1D",
+      "n": 673,
+      "me": 0.13,
+      "rmse": 0.28
+    },
+    {
+      "day": "2026-10-12",
+      "buoyId": "20",
+      "origin": "ih",
+      "name": "CSA82/D",
+      "n": 188,
+      "me": 0.14,
+      "rmse": 0.21
+    },
+    {
+      "day": "2026-10-12",
+      "buoyId": "33",
+      "origin": "ih",
+      "name": "CSA94",
+      "n": 674,
+      "me": -0.44,
+      "rmse": 0.51
+    },
+    {
+      "day": "2026-10-12",
+      "buoyId": "86",
+      "origin": "ih",
+      "name": "BOND5",
+      "n": 672,
+      "me": 0.7,
+      "rmse": 0.88
+    },
+    {
+      "day": "2026-10-12",
+      "buoyId": "6200084",
+      "origin": "wmo-es",
+      "name": "Cabo Silleiro",
+      "n": 537,
+      "me": 0.58,
+      "rmse": 0.73
+    },
+    {
+      "day": "2026-10-12",
+      "buoyId": "6200085",
+      "origin": "wmo-es",
+      "name": "Golfo de Cádiz",
+      "n": 537,
+      "me": 0.39,
+      "rmse": 0.47
+    },
+    {
+      "day": "2026-10-12",
+      "buoyId": "6200199",
+      "name": "Nazaré Costeira (WMO)",
+      "n": 530,
+      "me": 0.14,
+      "rmse": 0.37
     }
   ]
 }
