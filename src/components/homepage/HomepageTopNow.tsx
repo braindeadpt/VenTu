@@ -18,6 +18,7 @@ import type { GridSportFilter } from '@/lib/sportRatings';
 import { getCalmWaterMetricLabel } from '@/lib/spotWaterContext';
 import { tierPhrase } from '@/lib/voice';
 import SpotListCard from '@/components/spots/SpotListCard';
+import { getExplainedWindSafety } from '@/lib/spotScoreFactors';
 import { useIpmaWarnings } from '@/hooks/useIpmaWarnings';
 import { useLiveGridSpotData } from '@/hooks/useLiveGridSpotData';
 import { strongestSpotWarning, warningBadgeLabel } from '@/lib/ipmaWarnings';
@@ -146,6 +147,7 @@ export default function HomepageTopNow({
                   )}
                   statusLine={statusLine}
                   warning={warningBadge}
+                  windSafety={getExplainedWindSafety(data.spot, data.allScores, sport)}
                   waveCorrection={waveCorrection}
                   observedWaveAt={data.conditions.observedWave?.observedAt ?? null}
                   observedWaveSource={data.conditions.observedWave?.source ?? null}

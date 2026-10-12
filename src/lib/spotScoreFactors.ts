@@ -13,7 +13,7 @@
 import type { Spot } from '@/types';
 import type { SportType, GridSportFilter } from '@/lib/sportRatings';
 import { getCompatibleSports } from '@/lib/sportRatings';
-import type { SportScore } from '@/lib/sportScore';
+import type { SportScore, WindSafetyLevel } from '@/lib/sportScore';
 import { classifyWind } from '@/lib/sportScore';
 import type { MarineConditionsFields } from '@/lib/marineConditions';
 import { MS_TO_KNOTS } from '@/lib/waveEnergy';
@@ -83,6 +83,19 @@ function windRelLabel(windCat: string, locale: string): string {
 }
 
 /** O desporto explicado: o seleccionado no mapa, ou o melhor quando 'all'. */
+/**
+ * Aviso de segurança da direcção do vento (windSportDirectionSafety) do
+ * desporto explicado — o mesmo que o score e os factores descrevem.
+ */
+export function getExplainedWindSafety(
+  spot: Spot,
+  allScores: Record<SportType, SportScore>,
+  sport: GridSportFilter,
+): WindSafetyLevel | null {
+  const explained = resolveExplainedSport(spot, allScores, sport);
+  return (explained && allScores[explained]?.directionSafety) || null;
+}
+
 export function resolveExplainedSport(
   spot: Spot,
   allScores: Record<SportType, SportScore>,

@@ -22,6 +22,7 @@ import {
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 import { useCountUp } from '@/components/spots/verdict/useCountUp';
 import SpotLevelToday from '@/components/spots/SpotLevelToday';
+import WindSafetyNote from '@/components/ui/WindSafetyNote';
 import FavoriteButton from '@/components/FavoriteButton';
 import SpotAlertPopover from '@/components/spots/SpotAlertPopover';
 import SpotMoreMenu from '@/components/spots/verdict/SpotMoreMenu';
@@ -149,6 +150,9 @@ export default function SpotVerdictHero({
   // está coberto». Sem esta distinção uma série expirada aparecia como
   // «Agora» — mentira sobre o dado.
   const showObservedSources = isNow || !nowResolved;
+  // Segurança offshore (windSportDirectionSafety) descreve o vento de agora —
+  // mesma regra dos factores: só quando a hora mostrada é «agora».
+  const windSafety = isNow || !nowResolved ? score.directionSafety ?? null : null;
   // A pill segue a mesma regra: antes de montar diz «Agora» (não «Previsão»,
   // mais comprida — no mobile partia a linha da hora e a página saltava).
   const showAsNow = isNow || !nowResolved;
@@ -314,6 +318,9 @@ export default function SpotVerdictHero({
           <p className="mt-1 text-meta-sm text-fg-muted leading-snug truncate lg:hidden">
             {why}
           </p>
+        )}
+        {windSafety && (
+          <WindSafetyNote level={windSafety} locale={locale} className="mt-2" />
         )}
         <div className="mt-2 lg:hidden">
           <SpotLevelToday difficulty={spot.difficulty} score={target} locale={locale} />
