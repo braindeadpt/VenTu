@@ -1,6 +1,6 @@
 ## O que muda
 
-<!-- Uma frase clara. Problema → solução. Liga a issue se existir: "Fecha #123". -->
+<!-- Uma frase clara. Problema → solução. Liga a issue se existir: "Closes #123" (keyword inglesa — fecha a issue no merge). -->
 
 ## Como testar
 

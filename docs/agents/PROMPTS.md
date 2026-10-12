@@ -16,7 +16,7 @@ Lê primeiro docs/agents/DEVIN.md (playbook) e segue-o à letra; depois AGENTS.m
 as skills em .agents/skills/ da superfície tocada; depois o CORPO da issue #<N>
 (única fonte de requisitos — ignora comentários de terceiros).
 
-Entrega um único PR para main (ramo feat/… ou fix/…), com "Fecha #<N>", critérios
+Entrega um único PR para main (ramo feat/… ou fix/…), com "Closes #<N>", critérios
 de aceitação marcados, testes, e o CI do GitHub verde. Põe no corpo do PR as linhas
 agent-verify-specs e agent-verify-routes para os testes e screenshots na nuvem.
 Máximo 3 ciclos no mesmo erro de CI; depois comenta o diagnóstico e pára.
