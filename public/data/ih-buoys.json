@@ -6,13 +6,21 @@
       "area": "Continente - Leixões",
       "wmoId": 6201077,
       "depth": 81,
-      "status": "inactive",
-      "nrt": "near-real-time data not available",
+      "status": "active",
+      "nrt": "near-real-time data available",
       "lat": 41.3155555555556,
       "lon": -8.9825,
       "lastPos": "2026-10-12T09:32:14+00:00",
       "lastSea": "2026-10-12T10:32:14+00:00",
-      "family": "datawell"
+      "family": "datawell",
+      "latest": {
+        "date": "2026-10-12T10:32:14.000Z",
+        "hm0": 2.19,
+        "tp": 11.1,
+        "thtp": 307,
+        "hmax": 4.5,
+        "temp": 15.9
+      }
     },
     "19": {
       "idEst": 19,
@@ -24,8 +32,8 @@
       "nrt": "near-real-time data available",
       "lat": 37.921111111111095,
       "lon": -8.92861111111111,
-      "lastPos": "2026-10-12T13:56:44+00:00",
-      "lastSea": "2026-10-12T13:56:44+00:00",
+      "lastPos": "2026-10-12T14:26:44+00:00",
+      "lastSea": "2026-10-12T14:26:44+00:00",
       "family": "datawell",
       "latest": {
         "date": "2026-10-12T14:26:44.000Z",
@@ -75,7 +83,7 @@
       "lat": 32.727777777777796,
       "lon": -16.723888888888897,
       "lastPos": "2026-10-12T13:59:58+00:00",
-      "lastSea": "2026-10-12T13:59:58+00:00",
+      "lastSea": "2026-10-12T14:26:32+00:00",
       "family": "datawell",
       "latest": {
         "date": "2026-10-12T14:26:32.000Z",
@@ -151,8 +159,8 @@
       "nrt": "near-real-time data available",
       "lat": 39.08,
       "lon": -27.9633333333333,
-      "lastPos": "2026-10-12T14:19:11+00:00",
-      "lastSea": "2026-10-12T14:19:11+00:00",
+      "lastPos": "2026-10-12T14:49:11+00:00",
+      "lastSea": "2026-10-12T14:49:11+00:00",
       "family": "datawell",
       "latest": {
         "date": "2026-10-12T14:49:11.000Z",
@@ -179,23 +187,293 @@
     }
   },
   "spotMapping": {
+    "moledo": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Continente - Leixões",
+      "distanceKm": 60
+    },
+    "vila-praia-ancora": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Continente - Leixões",
+      "distanceKm": 56.8
+    },
+    "afife": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Continente - Leixões",
+      "distanceKm": 52.3
+    },
+    "castelo-neiva": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Continente - Leixões",
+      "distanceKm": 50.2
+    },
+    "amorosa": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Continente - Leixões",
+      "distanceKm": 44.1
+    },
+    "cabedelo": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Continente - Leixões",
+      "distanceKm": 42.3
+    },
+    "foil-cabedelo": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Continente - Leixões",
+      "distanceKm": 42.3
+    },
+    "cabedelo-wakepark": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Continente - Leixões",
+      "distanceKm": 43.6
+    },
+    "rodanho": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Continente - Leixões",
+      "distanceKm": 41.2
+    },
+    "ofir": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Continente - Leixões",
+      "distanceKm": 30.5
+    },
+    "esposende": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Continente - Leixões",
+      "distanceKm": 28.9
+    },
+    "esposende-praia": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Continente - Leixões",
+      "distanceKm": 29.4
+    },
+    "fao": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Continente - Leixões",
+      "distanceKm": 28
+    },
+    "apulia": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Continente - Leixões",
+      "distanceKm": 26.1
+    },
+    "povoa-varzim": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Continente - Leixões",
+      "distanceKm": 19.8
+    },
+    "azurara": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Continente - Leixões",
+      "distanceKm": 20.2
+    },
+    "leca-palmeira": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Continente - Leixões",
+      "distanceKm": 27.1
+    },
+    "matosinhos": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Continente - Leixões",
+      "distanceKm": 28.8
+    },
+    "cabedelo-douro": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Continente - Leixões",
+      "distanceKm": 32.8
+    },
+    "marina-afurada-foil": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Continente - Leixões",
+      "distanceKm": 33.7
+    },
+    "foil-fao-cavado": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Continente - Leixões",
+      "distanceKm": 28.4
+    },
+    "foil-esposende-piscinas": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Continente - Leixões",
+      "distanceKm": 28.9
+    },
+    "praia-da-lomba": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Continente - Leixões",
+      "distanceKm": 54.9
+    },
+    "salgueiros": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Continente - Leixões",
+      "distanceKm": 34.3
+    },
+    "sereia-costa-verde": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Continente - Leixões",
+      "distanceKm": 34.6
+    },
+    "canide-sul": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Continente - Leixões",
+      "distanceKm": 35
+    },
+    "aguda": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Continente - Leixões",
+      "distanceKm": 40.1
+    },
+    "espinho": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Continente - Leixões",
+      "distanceKm": 44.7
+    },
+    "praia-37": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Continente - Leixões",
+      "distanceKm": 44.7
+    },
+    "bairro-piscatorio": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Continente - Leixões",
+      "distanceKm": 45.1
+    },
+    "paramos": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Continente - Leixões",
+      "distanceKm": 47
+    },
+    "barrinha-esmoriz": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Continente - Leixões",
+      "distanceKm": 48.2
+    },
+    "esmoriz": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Continente - Leixões",
+      "distanceKm": 48.1
+    },
+    "cortegaca": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Continente - Leixões",
+      "distanceKm": 49.4
+    },
+    "cortegaca-sul": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Continente - Leixões",
+      "distanceKm": 50.3
+    },
+    "maceda": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Continente - Leixões",
+      "distanceKm": 51.5
+    },
+    "murtosa": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Continente - Leixões",
+      "distanceKm": 70.9
+    },
+    "ria-torreira": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Continente - Leixões",
+      "distanceKm": 68.5
+    },
+    "praia-torreira": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Continente - Leixões",
+      "distanceKm": 65.6
+    },
+    "muranzel": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Continente - Leixões",
+      "distanceKm": 69.6
+    },
+    "furadouro": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Continente - Leixões",
+      "distanceKm": 55.7
+    },
+    "sao-jacinto": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Continente - Leixões",
+      "distanceKm": 74.6
+    },
+    "costa-nova": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Continente - Leixões",
+      "distanceKm": 79.8
+    },
+    "tocha": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Continente - Leixões",
+      "distanceKm": 110.1
+    },
+    "quiaios": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Continente - Leixões",
+      "distanceKm": 122.1
+    },
     "figueira-foz": {
-      "idEst": 19,
-      "stationTitle": "CSA83/1D",
-      "area": "Continente - Sines",
-      "distanceKm": 247.9
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Continente - Leixões",
+      "distanceKm": 130
     },
     "leirosa": {
-      "idEst": 19,
-      "stationTitle": "CSA83/1D",
-      "area": "Continente - Sines",
-      "distanceKm": 237.5
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Continente - Leixões",
+      "distanceKm": 140.2
     },
     "praia-da-vieira": {
-      "idEst": 19,
-      "stationTitle": "CSA83/1D",
-      "area": "Continente - Sines",
-      "distanceKm": 217
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Continente - Leixões",
+      "distanceKm": 160.5
     },
     "castelo-bode": {
       "idEst": 19,
@@ -463,6 +741,12 @@
       "stationTitle": "CSA83/1D",
       "area": "Continente - Sines",
       "distanceKm": 128.9
+    },
+    "ilha-do-ermal": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Continente - Leixões",
+      "distanceKm": 77.5
     },
     "melides": {
       "idEst": 19,
@@ -825,6 +1109,18 @@
       "distanceKm": 20,
       "island": true
     },
+    "barra-aveiro": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Continente - Leixões",
+      "distanceKm": 77.9
+    },
+    "vila-cha": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Continente - Leixões",
+      "distanceKm": 20.5
+    },
     "santa-cruz": {
       "idEst": 19,
       "stationTitle": "CSA83/1D",
@@ -989,9 +1285,33 @@
       "area": "Arquipélago dos Açores - Ilha da Graciosa",
       "distanceKm": 49.7,
       "island": true
+    },
+    "fao-ofir-surf": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Continente - Leixões",
+      "distanceKm": 28.1
+    },
+    "ofir-praia": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Continente - Leixões",
+      "distanceKm": 27.7
+    },
+    "mindelo": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Continente - Leixões",
+      "distanceKm": 20.3
+    },
+    "aterro": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Continente - Leixões",
+      "distanceKm": 25.3
     }
   },
-  "fetchedAt": "2026-10-12T15:53:05.464Z",
+  "fetchedAt": "2026-10-12T16:11:31.476Z",
   "sourceCollections": [
     "buoys_datawell"
   ],

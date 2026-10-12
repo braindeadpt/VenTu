@@ -1,11 +1,11 @@
 {
   "day": "20261012",
-  "fetchedAt": "2026-10-12T15:53:24.851Z",
+  "fetchedAt": "2026-10-12T16:11:49.940Z",
   "minPairs": 3,
   "minAccumulatedPairs": 10,
   "archive": {
     "windowDays": 30,
-    "pairHourCount": 617,
+    "pairHourCount": 618,
     "path": "buoy-coherence-archive.json"
   },
   "daily": {
@@ -14,12 +14,12 @@
     "trend": {
       "6200084|6200199": {
         "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
-        "coherent": 29,
+        "coherent": 28,
         "review": 2,
         "incoherent": 1,
-        "insufficient": 8,
+        "insufficient": 9,
         "days": 40,
-        "incoherentRatio": 0.031
+        "incoherentRatio": 0.032
       },
       "6200083|6201079": {
         "pair": "Villano-Sisargas × Datawell ao largo de Faro",
@@ -2242,7 +2242,7 @@
       "suboptimal": []
     }
   },
-  "regionsAuditedAt": "2026-10-12T15:56:30.430Z",
+  "regionsAuditedAt": "2026-10-12T16:15:29.017Z",
   "pairs": [
     {
       "pair": "Cabo Silleiro × Datawell ao largo do Porto",
@@ -2310,14 +2310,14 @@
       ],
       "distanceKm": 285.3,
       "ptSource": "wmo",
-      "n": 545,
+      "n": 546,
       "meanDeltaM": -0.2,
       "meanAbsDeltaM": 0.4,
       "maxAbsDeltaM": 2.8,
       "corr": 0.75,
       "verdict": "coherent",
-      "firstHour": "2026-09-12T16",
-      "lastHour": "2026-10-12T12",
+      "firstHour": "2026-09-12T17",
+      "lastHour": "2026-10-12T14",
       "hours": [
         {
           "6200084": 1.409999966621399,
@@ -2383,6 +2383,16 @@
           "6200084": 2.3399999141693115,
           "6200199": 2.065429925918579,
           "hour": "2026-10-12T12"
+        },
+        {
+          "6200084": 2.4600000381469727,
+          "6200199": 2.1679699420928955,
+          "hour": "2026-10-12T13"
+        },
+        {
+          "6200084": 2.2300000190734863,
+          "6200199": 1.9189499616622925,
+          "hour": "2026-10-12T14"
         }
       ]
     }
