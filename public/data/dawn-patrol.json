@@ -1,105 +1,105 @@
 {
-  "date": "2026-10-11",
-  "generatedAt": "2026-10-11T03:36:21.897Z",
+  "date": "2026-10-12",
   "topSpot": "Nazaré",
   "topSpotSlug": "nazare",
   "pt": {
-    "headline": "Hoje é dia de Nazaré! 🌊",
-    "advice": "Melhor janela: 11:00h. Ondas de 1.3m com 9 nós de vento. ⚓ Avisos à Navegação Costeiros (IH): ANAV NR 2269/26 — Requisitos de segurança maritima",
-    "bestTime": "11:00",
+    "headline": "Nazaré oferece as melhores ondas da manhã!",
+    "advice": "Ondas de 1,7 m com período de 10 s e vento leve (5 kt) prometem sessões consistentes. A água está em 16,8 °C, então um fato 3/2 mm é ideal. Sem avisos costeiros na zona, o pico costuma estar menos cheio nas primeiras horas.",
+    "bestTime": "09:30",
     "wetsuit": "3/2mm",
-    "crowdTip": "Chega cedo para evitar crowd!",
-    "moonTideLine": "Lua nova · Transição · baixa-mar 10:00"
+    "crowdTip": "Chegue cedo; Nazaré costuma estar menos lotada antes das 10 h.",
+    "moonTideLine": "Lua nova · Transição · baixa-mar 11:00"
   },
   "en": {
-    "headline": "Today is Nazaré day! 🌊",
-    "advice": "Best window: 11:00. 1.3m waves with 9 knot wind. ⚓ Coastal navigation warnings (IH): ANAV NR 2269/26 — Requisitos de segurança maritima",
-    "bestTime": "11:00",
+    "headline": "Nazaré serves the best morning surf!",
+    "advice": "1.7 m waves with a 10‑second period and light wind (5 kt) give a solid session. Water is 16.8 °C, so a 3/2 mm wetsuit is recommended. No coastal warnings are active, and the spot is usually quieter early.",
+    "bestTime": "09:30",
     "wetsuit": "3/2mm",
-    "crowdTip": "Get there early to beat the crowd!",
-    "moonTideLine": "New moon · Transition · low tide 10:00"
+    "crowdTip": "Get there early; Nazaré is typically less crowded before 10 am.",
+    "moonTideLine": "New moon · Transition · low tide 11:00"
   },
   "spots": [
     {
-      "name": "Nazaré",
-      "slug": "nazare",
-      "score": 81,
-      "scoreForecast": 81,
-      "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
-    },
-    {
-      "name": "Ribeira d'Ilhas",
-      "slug": "ribeira-ilhas",
-      "score": 81,
-      "scoreForecast": 81,
-      "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
-    },
-    {
       "name": "Supertubos",
       "slug": "supertubos",
-      "score": 80,
-      "scoreForecast": 80,
-      "scoreSource": "previsão",
-      "scoreMeta": null,
+      "score": 88,
       "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
-    },
-    {
-      "name": "Coxos",
-      "slug": "coxos",
-      "score": 80,
-      "scoreForecast": 80,
+      "ptReason": "Ondas boas e período adequado, mas há avisos de interação com animais marinhos (ANAV NR 12/24 e NR 2257/26).",
+      "enReason": "Good waves and period, but coastal warnings for marine animal interaction (ANAV NR 12/24 & NR 2257/26).",
+      "scoreForecast": 88,
       "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
+      "scoreMeta": null
     },
     {
       "name": "Guincho",
       "slug": "guincho",
-      "score": 79,
-      "scoreForecast": 79,
-      "scoreSource": "previsão",
-      "scoreMeta": null,
+      "score": 87,
       "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
+      "ptReason": "Ondas consistentes; atenção aos avisos de interação e avistamento de animais marinhos (ANAV NR 1445/26 e NR 1727/26).",
+      "enReason": "Consistent waves; watch for marine animal interaction and sighting warnings (ANAV NR 1445/26 & NR 1727/26).",
+      "scoreForecast": 87,
+      "scoreSource": "previsão",
+      "scoreMeta": null
+    },
+    {
+      "name": "Nazaré",
+      "slug": "nazare",
+      "score": 89,
+      "verdict": "go",
+      "ptReason": "Melhor combinação de onda, vento leve e sem avisos costeiros ativos.",
+      "enReason": "Best mix of wave size, light wind, and no active coastal warnings.",
+      "scoreForecast": 89,
+      "scoreSource": "previsão",
+      "scoreMeta": null
+    },
+    {
+      "name": "Ribeira d'Ilhas",
+      "slug": "ribeira-ilhas",
+      "score": 89,
+      "verdict": "go",
+      "ptReason": "Ótimas ondas e vento calmo, porém há aviso de avistamento de animais marinhos (ANAV NR 1727/26).",
+      "enReason": "Great waves and calm wind, but there is a marine animal sighting warning (ANAV NR 1727/26).",
+      "scoreForecast": 89,
+      "scoreSource": "previsão",
+      "scoreMeta": null
+    },
+    {
+      "name": "Coxos",
+      "slug": "coxos",
+      "score": 88,
+      "verdict": "go",
+      "ptReason": "Ondas de qualidade; atenção ao aviso de avistamento de animais marinhos (ANAV NR 1727/26).",
+      "enReason": "Quality waves; be aware of the marine animal sighting warning (ANAV NR 1727/26).",
+      "scoreForecast": 88,
+      "scoreSource": "previsão",
+      "scoreMeta": null
     },
     {
       "name": "Arrifana",
       "slug": "arrifana",
-      "score": 73,
-      "scoreForecast": 73,
+      "score": 79,
+      "verdict": "skip",
+      "ptReason": "Score baixo, vento mais forte (8 kt) e aviso de plano de salvamento marítimo (ANAV NR 2/22).",
+      "enReason": "Low score, stronger wind (8 kt) and a maritime rescue plan warning (ANAV NR 2/22).",
+      "scoreForecast": 79,
       "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
+      "scoreMeta": null
     },
     {
       "name": "Carcavelos",
       "slug": "carcavelos",
-      "score": 57,
-      "scoreForecast": 57,
-      "scoreSource": "previsão",
-      "scoreMeta": null,
+      "score": 84,
       "verdict": "maybe",
-      "ptReason": "Condições razoáveis",
-      "enReason": "Fair conditions"
+      "ptReason": "Ondas menores e vento muito leve, mas há vários avisos de interação com animais marinhos (ANAV NR 00/14, 1445/26, 2235/26).",
+      "enReason": "Smaller waves and very light wind, but multiple marine animal interaction warnings (ANAV NR 00/14, 1445/26, 2235/26).",
+      "scoreForecast": 84,
+      "scoreSource": "previsão",
+      "scoreMeta": null
     }
   ],
-  "topScore": 81,
-  "topScoreForecast": 81,
+  "generatedAt": "2026-10-12T03:06:16.652Z",
+  "topScore": 89,
+  "topScoreForecast": 89,
   "topScoreSource": "previsão",
   "topScoreMeta": null
 }
