@@ -103,12 +103,12 @@
     "manifest:generate": "node scripts/generate-manifest.js"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.117.2",
+    "@supabase/supabase-js": "^2.117.3",
     "geist": "^1.7.2",
     "leaflet": "^1.9.4",
     "leaflet.markercluster": "^1.5.3",
     "lucide-react": "^0.577.0",
-    "next": "^16.3.8",
+    "next": "^16.4.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
@@ -125,7 +125,7 @@
     "eslint-config-next": "^16.3.8",
     "h5wasm": "^0.10.3",
     "lighthouse": "^13.5.0",
-    "postcss": "^8.5.28",
+    "postcss": "^8.5.29",
     "postcss-import": "^17.0.0",
     "serve": "^14.2.6",
     "sharp": "^0.35.3",
