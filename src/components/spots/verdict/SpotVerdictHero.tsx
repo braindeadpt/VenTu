@@ -232,11 +232,12 @@ export default function SpotVerdictHero({
           <div className="min-w-0 lg:col-span-7 space-y-1.5">
             <p className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-meta-sm text-fg-muted">
               <MapPin className="w-3.5 h-3.5 shrink-0" aria-hidden />
-              {/* CORRECCOES-24SET §2: região+coordenadas no mesmo par —
-                  nowrap mantém «Cascais · 38,73° N · 9,42° W» junto (se não
-                  couber, o par inteiro passa para a linha seguinte). */}
+              {/* Região e «· coordenadas» são duas unidades nowrap irmãs: o
+                  <p> faz wrap entre elas. Um só bloco nowrap transbordava a
+                  coluna do nome a 390 px (#194); assim, se não couber, as
+                  coordenadas passam inteiras para a linha seguinte. */}
+              <span className="whitespace-nowrap">{region}</span>
               <span className="inline-flex items-center gap-x-2 whitespace-nowrap">
-                <span>{region}</span>
                 <span aria-hidden>·</span>
                 <span className="font-mono tabular-nums">{coords}</span>
               </span>
