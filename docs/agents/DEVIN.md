@@ -85,7 +85,7 @@ Corrige e volta a fazer push. **Máximo 3 ciclos** no mesmo erro; depois comenta
 - [ ] Todos os critérios de aceitação da issue marcados no PR, ou justificados um a um.
 - [ ] `ci.yml` verde no último commit.
 - [ ] `agent-verify` verde com screenshots 390/1440 das rotas tocadas (link no PR).
-- [ ] Corpo do PR segue `.github/PULL_REQUEST_TEMPLATE.md` e inclui `Fecha #<N>`.
+- [ ] Corpo do PR segue `.github/PULL_REQUEST_TEMPLATE.md` e inclui `Closes #<N>` (keyword inglesa — fecha a issue automaticamente no merge; «Fecha» não funciona).
 - [ ] Riscos, decisões e o que ficou de fora em «Notas para quem revê».
 - [ ] Sem ficheiros gerados acidentais (`out/`, `.next/`, `test-results/`, PNGs fora das baselines).
 

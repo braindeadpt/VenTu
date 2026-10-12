@@ -1,0 +1,43 @@
+name: Agent delivered — limpar etiquetas
+
+# Fecha o ciclo quando um PR de agente é merged: nas issues ligadas por
+# "Closes/Fixes/Resolves/Fecha #N" no corpo do PR remove agent:ready/agent:working
+# e comenta «entregue em #PR». Também tira agent:verify do próprio PR.
+# Só corre em merges — PRs fechados sem merge são ignorados.
+
+on:
+  pull_request:
+    types: [closed]
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  delivered:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Limpar etiquetas e anunciar nas issues ligadas
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          issues=$(printf '%s\n' "$PR_BODY" | grep -oiE '(close[sd]?|fix(e[sd])?|resolve[sd]?|fecha)[[:space:]]*#[0-9]+' | grep -oE '[0-9]+$' | sort -u)
+
+          gh pr edit "$PR_NUMBER" -R "$GITHUB_REPOSITORY" --remove-label agent:verify 2>/dev/null || true
+
+          if [ -z "$issues" ]; then
+            echo "Sem issues ligadas — nada a fazer."
+            exit 0
+          fi
+
+          for n in $issues; do
+            gh issue edit "$n" -R "$GITHUB_REPOSITORY" --remove-label agent:ready --remove-label agent:working || true
+            gh issue comment "$n" -R "$GITHUB_REPOSITORY" --body "✅ Entregue em #${PR_NUMBER} (${PR_URL})"
+            echo "issue #$n actualizada"
+          done
