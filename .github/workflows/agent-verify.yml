@@ -1,0 +1,148 @@
+name: Agent verify (testes e screenshots na nuvem)
+
+# Testes completos na nuvem para PRs de agentes, sem depender da VM do agente:
+# build de produção + specs Playwright escolhidos + screenshots 390/1440 das
+# rotas tocadas, publicados como artefacto e resumidos num comentário no PR.
+#
+# Dispara:
+#  - em PRs com a etiqueta `agent:verify` (a cada push novo);
+#  - manualmente (workflow_dispatch) com ref, specs e rotas.
+# O CI normal (ci.yml) continua a ser o gate de merge; isto é o "olho" visual.
+
+on:
+  pull_request:
+    types: [labeled, synchronize, reopened]
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Ramo ou SHA a testar'
+        required: true
+        default: main
+      specs:
+        description: 'Specs Playwright separados por espaço (vazio = test:e2e:core)'
+        required: false
+        default: ''
+      routes:
+        description: 'Rotas para screenshots, separadas por espaço'
+        required: false
+        default: '/pt/ /pt/spots/ribeira-ilhas/ /pt/mapa/'
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: agent-verify-${{ github.event.pull_request.number || github.event.inputs.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (contains(github.event.pull_request.labels.*.name, 'agent:verify') &&
+       github.event.pull_request.head.repo.full_name == github.repository)
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          ref: ${{ github.event.inputs.ref || github.event.pull_request.head.sha }}
+
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - run: npm ci
+
+      - name: Resolver specs e rotas
+        id: cfg
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+          IN_SPECS: ${{ github.event.inputs.specs }}
+          IN_ROUTES: ${{ github.event.inputs.routes }}
+        run: |
+          # Num PR, o agente pode declarar no corpo:
+          #   agent-verify-specs: home-adaptive spot-dashboard
+          #   agent-verify-routes: /pt/ /pt/spots/carcavelos/
+          specs="$IN_SPECS"; routes="$IN_ROUTES"
+          if [ -n "$PR_BODY" ]; then
+            s=$(printf '%s\n' "$PR_BODY" | sed -n 's/^agent-verify-specs:[[:space:]]*//p' | head -1 | tr -cd 'a-zA-Z0-9_./ -')
+            r=$(printf '%s\n' "$PR_BODY" | sed -n 's/^agent-verify-routes:[[:space:]]*//p' | head -1 | tr -cd 'a-zA-Z0-9_./?=&% -')
+            [ -n "$s" ] && specs="$s"; [ -n "$r" ] && routes="$r"
+          fi
+          [ -z "$routes" ] && routes="/pt/ /pt/spots/ribeira-ilhas/ /pt/mapa/"
+          echo "specs=$specs" >> "$GITHUB_OUTPUT"
+          echo "routes=$routes" >> "$GITHUB_OUTPUT"
+
+      - name: Build spots index
+        run: npm run spots:index && npm run spots:lite
+
+      - name: Build
+        env:
+          NODE_OPTIONS: '--max-old-space-size=4096'
+          NEXT_PUBLIC_BASE_PATH: ''
+          NEXT_PUBLIC_OBS_WORKER_URL: ${{ vars.NEXT_PUBLIC_OBS_WORKER_URL || 'https://ventu-observations.busntech-net.workers.dev' }}
+        run: node scripts/build-e2e.mjs
+
+      - name: Cache Playwright Chromium
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/package-lock.json') }}
+
+      - run: npx playwright install --with-deps chromium
+
+      - name: E2E (specs pedidos ou core)
+        id: e2e
+        continue-on-error: true
+        env:
+          CI: true
+          SPECS: ${{ steps.cfg.outputs.specs }}
+        run: |
+          if [ -n "$SPECS" ]; then npx playwright test $SPECS --reporter=line,html
+          else timeout 900 npm run test:e2e:core -- --reporter=line,html; fi
+
+      - name: Screenshots 390 e 1440
+        env:
+          ROUTES: ${{ steps.cfg.outputs.routes }}
+        run: node scripts/agent-screenshots.mjs --out agent-shots $ROUTES
+
+      - name: Publicar artefactos
+        id: art
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: agent-verify-${{ github.run_id }}
+          path: |
+            agent-shots/
+            playwright-report/
+            test-results/
+          retention-days: 14
+
+      - name: Comentar no PR
+        if: github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+          OUTCOME: ${{ steps.e2e.outcome }}
+          ART: ${{ steps.art.outputs.artifact-url }}
+          RUN: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          icon=$([ "$OUTCOME" = success ] && echo "✅" || echo "❌")
+          {
+            echo "### ${icon} Agent verify (nuvem)"
+            echo ""
+            echo "- E2E: **${OUTCOME}**"
+            echo "- Screenshots 390/1440 + relatório Playwright: ${ART}"
+            echo "- Run: ${RUN}"
+            echo ""
+            echo "<details><summary>Ficheiros</summary>"
+            echo ""
+            ls agent-shots | sed 's/^/- /'
+            echo "</details>"
+          } > comment.md
+          gh pr comment "$PR" -R "$GITHUB_REPOSITORY" --body-file comment.md
+
+      - name: Falhar se o E2E falhou
+        if: steps.e2e.outcome != 'success'
+        run: exit 1
