@@ -6,3 +6,9 @@
 
 cloudflare_api_token = "CHANGE_ME__zone_edit_token"
 zone_name            = "ventu.surf"
+
+# Email Routing (email.tf) — só preciso se fores gerir a recepção de
+# email via Terraform em vez do painel. Vazio = email.tf inerte.
+# O token precisa de `Zone > DNS: Edit` + `Email Routing: Edit`.
+# cloudflare_account_id = "CHANGE_ME__account_id"
+# email_forward_to      = "a-tua-caixa@exemplo.com"

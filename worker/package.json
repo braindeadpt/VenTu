@@ -10,5 +10,8 @@
     "@cloudflare/workers-types": "^4.20250525.0",
     "typescript": "^5.0.0",
     "wrangler": "^4.143.1"
+  },
+  "overrides": {
+    "sharp": "0.35.5"
   }
 }

@@ -404,6 +404,8 @@ export const translationsDe = {
     feedback: 'Feedback',
     reportar: 'Fehler melden',
     fontes: 'Offizielle Quellen',
+    rssFeed: 'RSS-Feed',
+    contact: 'Kontakt',
   },
   common: {
     loading: 'Wird geladen...',

@@ -381,9 +381,15 @@ test.describe('Fontes de dados (data sources)', () => {
     ).toBeVisible({ timeout: 20_000 });
 
     // Alternates localizados no <head> (o Next emite o atributo como hrefLang),
-    // mais o `x-default` (→ PT, o defaultLocale do site).
-    const alternates = page.locator('link[rel="alternate"]');
+    // mais o `x-default` (→ PT, o defaultLocale do site). O selector filtra
+    // por [hreflang]: os links RSS (alternates.types em buildPageMetadata)
+    // também são rel="alternate" mas não têm hreflang.
+    const alternates = page.locator('link[rel="alternate"][hreflang]');
     await expect(alternates).toHaveCount(HREFLANG_LOCALES.length + 1);
+    // Feeds RSS declarados em todas as páginas (PT + EN).
+    await expect(
+      page.locator('link[rel="alternate"][type="application/rss+xml"]'),
+    ).toHaveCount(2);
     for (const loc of HREFLANG_LOCALES) {
       // Seletor por hreflang: o `x-default` aponta para o mesmo URL que o `pt`.
       const link = page.locator(`link[rel="alternate"][hreflang="${loc}"]`);

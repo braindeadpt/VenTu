@@ -4,7 +4,7 @@ import { openMapLayersMenu } from './helpers/map-setup';
 
 /**
  * Contornos simplificados (isobaths-contours.json) com linhas perto da
- * Nazaré (lat 39.597, lon -9.073) — vértices dentro do raio de 14 km.
+ * Nazaré (lat 39.608, lon -9.086) — vértices dentro do raio de 14 km.
  */
 const NAZARE_CONTOURS = {
   depths: [8, 16, 30],

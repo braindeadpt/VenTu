@@ -167,6 +167,12 @@ export function buildPageMetadata(input: PageSeoInput): Metadata {
     alternates: {
       canonical: canonicalPath,
       languages,
+      types: {
+        'application/rss+xml': [
+          { url: '/rss.xml', title: 'VenTu — Notícias náuticas (PT)' },
+          { url: '/rss-en.xml', title: 'VenTu News (EN)' },
+        ],
+      },
     },
     openGraph: {
       title,

@@ -346,6 +346,8 @@ export const translationsPt = {
     feedback: 'Feedback',
     reportar: 'Reportar erro',
     fontes: 'Fontes oficiais',
+    rssFeed: 'Feed RSS',
+    contact: 'Contacto',
   },
   common: { loading: 'A carregar...', error: 'Erro ao carregar dados', refresh: 'Atualizar', close: 'Fechar', today: 'Hoje', tomorrow: 'Amanhã', now: 'Agora' },
   theme: { toggle: 'Alternar tema', toggleDark: 'Alternar para tema escuro', toggleLight: 'Alternar para tema claro' },

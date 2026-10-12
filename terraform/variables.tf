@@ -9,6 +9,26 @@ variable "zone_name" {
   type        = string
 }
 
+# ── Email Routing (email.tf) ──
+variable "cloudflare_account_id" {
+  description = "Account ID Cloudflare — o routing address é account-level (email.tf)"
+  type        = string
+  default     = ""
+}
+
+variable "email_forward_to" {
+  description = "Caixa pessoal que recebe contacto@ventu.surf (destino do Email Routing)"
+  type        = string
+  sensitive   = true
+  default     = ""
+}
+
+variable "email_dmarc_rua" {
+  description = "Endereço que recebe relatórios DMARC agregados (rua=)"
+  type        = string
+  default     = "contacto@ventu.surf"
+}
+
 # ⚠️ Mantém os CSPs abaixo em sincronia com o CSP_META de src/components/CSPMeta.tsx
 # (a meta permanece como fallback; header + meta idênticos = intersecção sem conflito).
 # Única diferença entre os dois: frame-ancestors.

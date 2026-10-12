@@ -87,7 +87,7 @@ function seaWarningPromptLine(sea) {
 const TOP_SPOTS = [
   { name: 'Supertubos', slug: 'supertubos', lat: 39.336, lon: -9.364, region: 'Peniche', type: 'surf' },
   { name: 'Guincho', slug: 'guincho', lat: 38.733, lon: -9.473, region: 'Cascais', type: 'surf' },
-  { name: 'Nazaré', slug: 'nazare', lat: 39.597, lon: -9.073, region: 'Nazaré', type: 'big-wave' },
+  { name: 'Nazaré', slug: 'nazare', lat: 39.608, lon: -9.086, region: 'Nazaré', type: 'big-wave' },
   { name: 'Ribeira d\'Ilhas', slug: 'ribeira-ilhas', lat: 39.489, lon: -9.364, region: 'Ericeira', type: 'surf' },
   { name: 'Coxos', slug: 'coxos', lat: 38.934, lon: -9.434, region: 'Ericeira', type: 'surf' },
   { name: 'Arrifana', slug: 'arrifana', lat: 37.294, lon: -8.864, region: 'Algarve', type: 'surf' },

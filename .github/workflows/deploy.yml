@@ -159,11 +159,23 @@ jobs:
           NEXT_PUBLIC_CARTO_API_KEY: ${{ secrets.NEXT_PUBLIC_CARTO_API_KEY }}
         run: |
           set -o pipefail
-          npm run build 2>&1 | tee build.log || {
-            echo "::error::BUILD FAILED - Last 200 lines:"
-            tail -200 build.log
-            exit 1
-          }
+          # next/font/google faz fetch das fontes em build-time — uma falha de
+          # rede transitória no runner matava o build inteiro (flakes de
+          # 2026-10-11 e 2026-10-12). Uma retry cobre o caso sem mascarar
+          # erros reais: a segunda falha continua a falhar o job.
+          for attempt in 1 2; do
+            if npm run build 2>&1 | tee build.log; then
+              break
+            fi
+            if [ "$attempt" = "2" ]; then
+              echo "::error::BUILD FAILED (attempt ${attempt}/2) - Last 200 lines:"
+              tail -200 build.log
+              exit 1
+            fi
+            echo "::warning::Build attempt ${attempt} failed — retrying once (transient font/registry fetch?)"
+            rm -rf .next
+            sleep 10
+          done
 
       - name: Validate _headers security directives
         run: node scripts/check-headers-file.js

@@ -1,7 +1,8 @@
 name: Full Route Audit (daily)
 
-# The complete browser route audit — every one of the ~1585 discovered routes
-# navigated in a real Chromium — runs here on a schedule instead of on every
+# The complete browser route audit — every discovered route (~2300 em
+# 2026-10; era ~1585 quando este workflow foi escrito) navigated in a real
+# Chromium — runs here on a schedule instead of on every
 # push. Per-push CI keeps the cheap dimensions on every commit:
 #   - scripts/check-export-routes.js: all routes present in the static export,
 #     browserless, seconds (the HTTP half of the old audit);
@@ -35,8 +36,10 @@ concurrency:
 jobs:
   full-audit:
     runs-on: ubuntu-latest
-    # ~1600 navigations at CI-core speed ≈ the old 14 min, plus build.
-    timeout-minutes: 45
+    # ~2300 navigations at CI-core speed (workers=2) ≈ 20–25 min de audit,
+    # mais ~5 min de build — o globalTimeout VENTU_FULL_AUDIT (40 min) e este
+    # limite precisam de crescer juntos; ver playwright.config.ts.
+    timeout-minutes: 60
     steps:
       - name: Checkout
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
