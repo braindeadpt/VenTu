@@ -14,7 +14,7 @@ import type { Spot } from '@/types';
 import type { SportType, GridSportFilter } from '@/lib/sportRatings';
 import { getCompatibleSports } from '@/lib/sportRatings';
 import type { SportScore, WindSafetyLevel } from '@/lib/sportScore';
-import { classifyWind } from '@/lib/sportScore';
+import { classifyWind, isWindDirectionSport, windSportDirectionSafety } from '@/lib/sportScore';
 import type { MarineConditionsFields } from '@/lib/marineConditions';
 import { MS_TO_KNOTS } from '@/lib/waveEnergy';
 import { getCardinalLabel } from '@/lib/wind';
@@ -70,7 +70,9 @@ function factorLocale(locale: string): FactorLocale {
 
 /** Rótulo canónico da relação de vento (chaves windRel* de
  *  spotPage/instruments — as mesmas do WindCard) para a saída do
- *  classifyWind. M7: substitui as abreviaturas «s-off/s-on/off/on». */
+ *  classifyWind ou, nos desportos de vento, da banda de
+ *  windSportDirectionSafety (#195: inclui cross-shore).
+ *  M7: substitui as abreviaturas «s-off/s-on/off/on». */
 function windRelLabel(windCat: string, locale: string): string {
   const rel = getTranslation(locale).spotPageInstruments;
   switch (windCat) {
@@ -78,6 +80,7 @@ function windRelLabel(windCat: string, locale: string): string {
     case 'onshore': return rel.windRelOnshore;
     case 'side-offshore': return rel.windRelCrossOff;
     case 'side-onshore': return rel.windRelCrossOn;
+    case 'cross-shore': return rel.windRelCross;
     default: return windCat;
   }
 }
@@ -126,7 +129,7 @@ function factorKind(factorEn: string): ScoreFactorKind | 'windcat' {
   if (/^[\d.]+°C water$/.test(f)) return 'water';
   if (f === 'Flat water') return 'flat';
   if (f === 'Small waves') return 'waves';
-  if (f === 'offshore' || f === 'onshore' || f === 'side-offshore' || f === 'side-onshore') return 'windcat';
+  if (f === 'offshore' || f === 'onshore' || f === 'side-offshore' || f === 'side-onshore' || f === 'cross-shore') return 'windcat';
   if (/wind/i.test(f)) return 'wind';
   return 'other';
 }
@@ -140,7 +143,11 @@ export function getSpotScoreFactors(input: SpotScoreFactorsInput): ScoreFactorSe
   const score = explained ? allScores[explained] : undefined;
 
   const windKt = Math.round(conditions.windSpeed * MS_TO_KNOTS);
-  const windCat = classifyWind(spot, conditions.windDirection);
+  // Desportos de vento: a mesma banda que pontua (#195) — um vento a 80°
+  // é cross-shore no score e na label. Surf e restantes: classifyWind.
+  const windCat = explained && isWindDirectionSport(explained)
+    ? windSportDirectionSafety(spot, conditions.windDirection).direction
+    : classifyWind(spot, conditions.windDirection);
   const waveH = conditions.waveHeight;
   const periodS = Math.round(conditions.wavePeriod);
   // M7: decimais pela i18n do site («1,6 m» em pt/es/de/fr) e relação de
