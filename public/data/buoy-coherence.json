@@ -1,11 +1,11 @@
 {
   "day": "20261012",
-  "fetchedAt": "2026-10-12T04:36:07.869Z",
+  "fetchedAt": "2026-10-12T05:57:24.276Z",
   "minPairs": 3,
   "minAccumulatedPairs": 10,
   "archive": {
     "windowDays": 30,
-    "pairHourCount": 629,
+    "pairHourCount": 630,
     "path": "buoy-coherence-archive.json"
   },
   "daily": {
@@ -127,13 +127,13 @@
       "suboptimal": []
     },
     "Porto": {
-      "spotCount": 12,
-      "withObservedWave": 12,
+      "spotCount": 11,
+      "withObservedWave": 11,
       "bySource": {
-        "ih-buoy": 12
+        "ih-buoy": 11
       },
-      "audited": 12,
-      "attachedIsClosest": 12,
+      "audited": 11,
+      "attachedIsClosest": 11,
       "attachedNotClosest": 0,
       "onlySource": 0,
       "notClosest": [],
@@ -1491,7 +1491,7 @@
       "suboptimal": []
     }
   },
-  "regionsAuditedAt": "2026-10-12T04:45:16.526Z",
+  "regionsAuditedAt": "2026-10-12T06:08:41.714Z",
   "pairs": [
     {
       "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
@@ -1501,14 +1501,14 @@
       ],
       "distanceKm": 285.3,
       "ptSource": "wmo",
-      "n": 547,
+      "n": 548,
       "meanDeltaM": -0.2,
       "meanAbsDeltaM": 0.4,
       "maxAbsDeltaM": 2.8,
       "corr": 0.76,
       "verdict": "coherent",
-      "firstHour": "2026-09-12T05",
-      "lastHour": "2026-10-12T03",
+      "firstHour": "2026-09-12T06",
+      "lastHour": "2026-10-12T05",
       "hours": [
         {
           "6200084": 1.409999966621399,
@@ -1529,6 +1529,16 @@
           "6200084": 1.7599999904632568,
           "6200199": 1.3183599710464478,
           "hour": "2026-10-12T03"
+        },
+        {
+          "6200084": 2.109999895095825,
+          "6200199": 1.157230019569397,
+          "hour": "2026-10-12T04"
+        },
+        {
+          "6200084": 2.5799999237060547,
+          "6200199": 1.1279300451278687,
+          "hour": "2026-10-12T05"
         }
       ]
     }
