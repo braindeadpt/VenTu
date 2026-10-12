@@ -100,3 +100,25 @@ describe('SpotPopupContent (contrato de layout do popup)', () => {
     expect(html).toContain('18kt NW');
   });
 });
+describe('SpotPopupContent — aviso de segurança offshore (#179)', () => {
+  it('mostra a nota de deriva em texto visível com role="note"', () => {
+    const allScores = makeScores(30);
+    allScores.kitesurf = {
+      ...allScores.kitesurf,
+      score: 25,
+      directionSafety: 'offshore',
+    };
+    const html = render({ allScores, highlightSport: 'kitesurf' });
+    expect(html).toContain('role="note"');
+    expect(html).toContain('data-wind-safety="offshore"');
+    expect(html).toContain('Vento offshore: perigo de deriva para o mar');
+  });
+
+  it('side-offshore em EN e sem nota quando não há componente offshore', () => {
+    const allScores = makeScores(60);
+    allScores.windsurf = { ...allScores.windsurf, directionSafety: 'side-offshore' };
+    const en = render({ allScores, highlightSport: 'windsurf', locale: 'en' });
+    expect(en).toContain('Offshore component: advanced riders with boat support only');
+    expect(render({ allScores: makeScores(60), highlightSport: 'kitesurf' })).not.toContain('data-wind-safety');
+  });
+});

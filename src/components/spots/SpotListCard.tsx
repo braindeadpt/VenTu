@@ -13,6 +13,8 @@ import ScoreWaveSourceBadge from '@/components/ui/ScoreWaveSourceBadge';
 import WaveCalibrationTag from '@/components/ui/WaveCalibrationTag';
 import WaveSourceAttributionNote from '@/components/ui/WaveSourceAttributionNote';
 import WarningPill from '@/components/ui/WarningPill';
+import WindSafetyNote from '@/components/ui/WindSafetyNote';
+import type { WindSafetyLevel } from '@/lib/sportScore';
 import { getSpotListCardHoverLine } from '@/lib/spotListCardDelight';
 import type { ConfidenceDetail, ConfidenceTier } from '@/lib/forecastConfidence';
 import { waveFactorSuffix, type ScoreWaveCorrection } from '@/lib/scoreConditions';
@@ -46,6 +48,8 @@ interface SpotListCardProps {
   statusLine?: string;
   /** Active sea-state/wind IPMA warning — small badge on the card. */
   warning?: MapMarkerWarning | null;
+  /** Offshore wind safety note (windSportDirectionSafety) for the scored sport. */
+  windSafety?: WindSafetyLevel | null;
   /**
    * Wave correction (resolveScoreWaveCorrection) — renders the
    * «Corrigido pela boia X» badge with ME/n in the metrics row (TopNow).
@@ -88,6 +92,7 @@ export default function SpotListCard({
   spot,
   statusLine,
   warning,
+  windSafety = null,
   waveCorrection,
   observedWaveAt,
   observedWaveSource,
@@ -227,6 +232,8 @@ export default function SpotListCard({
             )}
           </div>
         </div>
+
+        {windSafety && <WindSafetyNote level={windSafety} locale={locale} variant="compact" />}
 
         <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-meta-sm text-fg-muted font-mono tabular-nums mt-auto" data-visual-dynamic>
           {calmWaterLabel ? (

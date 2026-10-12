@@ -366,10 +366,8 @@ describe('Representative conditions — surf bom', () => {
 })
 
 describe('Representative conditions — kite bom', () => {
-  it('kite ideal: 20kt side-offshore wind, small waves, warm water', () => {
-    // Guincho (coastOrientation=270)
-    // Wind from 350° → |350-270|=80° → side-onshore
-    // Let's use wind from 10° instead: |10-270|=260 → norm=100 → side-offshore
+  it('kite ideal: 20kt cross-shore wind, small waves, warm water', () => {
+    // Guincho (coastOrientation=270): wind from 10° → 100° from onshore → cross-shore
     const guincho = spotBySlug('guincho')
     const c: Conditions = {
       waveHeight: 0.5,
@@ -387,7 +385,7 @@ describe('Representative conditions — kite bom', () => {
     expect(result.warning).toBeUndefined()
   })
 
-  it('kite scores lower on onshore wind vs side-offshore (same speed)', () => {
+  it('kite scores lower on onshore wind vs cross-shore (same speed)', () => {
     const guincho = spotBySlug('guincho')
     const sideOffshore: Conditions = {
       waveHeight: 0.5, wavePeriod: 8, waveDirection: 270,
@@ -471,18 +469,23 @@ describe('sportScore — validation cases', () => {
     expect(result.score).toBeGreaterThanOrEqual(70)
   })
 
-  it('ideal kite (~20kt) with 1m waves scores ≥70', () => {
+  it('ideal kite (~20kt) with 1m waves scores ≥70 — cross-shore, not offshore', () => {
     const moledo = spotBySlug('moledo')
     const ideal: Conditions = {
       waveHeight: 1,
       wavePeriod: 8,
       waveDirection: 270,
       windSpeed: 10,
-      windDirection: 90,
+      windDirection: 0,
       windGust: 12,
       waterTemp: 18,
     }
     const result = getSportScore(moledo, 'kitesurf', ideal)
     expect(result.score).toBeGreaterThanOrEqual(70)
+    // Antes (#179): o mesmo vento de 90° (offshore em Moledo, costa a 270°)
+    // dava ≥70. Agora é perigo de deriva → FLAT com aviso.
+    const offshore = getSportScore(moledo, 'kitesurf', { ...ideal, windDirection: 90 })
+    expect(offshore.score).toBeLessThanOrEqual(25)
+    expect(offshore.directionSafety).toBe('offshore')
   })
 })

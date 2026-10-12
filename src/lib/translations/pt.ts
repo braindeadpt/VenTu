@@ -1662,6 +1662,11 @@ export const translationsPt = {
     lisboa: 'Lisboa',
     acores: 'Açores',
   },
+  /** Aviso de segurança da direcção do vento (kite/windsurf/foil) — windSportDirectionSafety. */
+  windSafety: {
+    sideOffshore: 'Componente offshore: só avançados com barco de apoio',
+    offshore: 'Vento offshore: perigo de deriva para o mar',
+  },
   spotPageVerdict: spotPageVerdict.pt,
   spotPageInstruments: spotPageInstruments.pt,
   spotPageForecast: spotPageForecast.pt,

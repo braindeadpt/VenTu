@@ -7,6 +7,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { Waves, Wind, Droplets, Eye, ArrowUpRight } from 'lucide-react';
 import type { MapMarkerWarning } from '@/lib/mapWindArrow';
 import WarningPill from '@/components/ui/WarningPill';
+import WindSafetyNote from '@/components/ui/WindSafetyNote';
 import type { Spot } from '@/types';
 import type { SportType } from '@/lib/sportRatings';
 import { SPORT_LABELS } from '@/lib/sportRatings';
@@ -14,7 +15,7 @@ import type { SportScore } from '@/lib/sportScore';
 import { getScoreTokens } from '@/lib/sportScore';
 import type { MarineConditionsFields } from '@/lib/marineConditions';
 import type { GridSportFilter } from '@/lib/sportRatings';
-import { getSpotScoreFactors, scoreFactorClass } from '@/lib/spotScoreFactors';
+import { getExplainedWindSafety, getSpotScoreFactors, scoreFactorClass } from '@/lib/spotScoreFactors';
 import { getDifficultyLabel } from '@/lib/mapDifficulty';
 import { getGoogleMapsDirectionsUrl } from '@/lib/mapSpotDetail';
 import type { WindRelation } from '@/lib/wind';
@@ -86,6 +87,7 @@ export function SpotPopupContent({
     ? getSportLabel(topSport[0], locale)
     : null;
   const tokens = topScore > 0 ? getScoreTokens(topScore) : null;
+  const windSafety = getExplainedWindSafety(spot, allScores, highlightSport ?? 'all');
   const scoreFactors = conditions
     ? getSpotScoreFactors({
         spot,
@@ -176,6 +178,11 @@ export function SpotPopupContent({
       </div>
 
       {warningPill && <div className="px-2.5 pb-1.5">{warningPill}</div>}
+      {windSafety && (
+        <div className="px-2.5 pb-1.5">
+          <WindSafetyNote level={windSafety} locale={locale} variant="popup" />
+        </div>
+      )}
 
       {/* Wind reading — cardinal + kt + relation dot (matches map ring colour) */}
       <div className="px-2.5 pb-2">

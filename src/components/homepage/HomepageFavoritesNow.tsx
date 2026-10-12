@@ -14,6 +14,7 @@ import {
 } from '@/lib/homepageSport';
 import { tierPhrase } from '@/lib/voice';
 import SpotListCard from '@/components/spots/SpotListCard';
+import { getExplainedWindSafety } from '@/lib/spotScoreFactors';
 
 interface HomepageFavoritesNowProps {
   locale: string;
@@ -89,6 +90,7 @@ export default function HomepageFavoritesNow({
                 sportLabel={sportLabel}
                 sportAccent={sport}
                 statusLine={statusLine}
+                windSafety={getExplainedWindSafety(data.spot, data.allScores, sport)}
               />
             </li>
           );

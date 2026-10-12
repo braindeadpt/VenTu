@@ -62,6 +62,18 @@ Lê este ficheiro antes de qualquer trabalho no repo. Define o estado do project
 
 **Testes:** `src/lib/__tests__/sportScore.test.ts` (20+ casos). Correr `npm test`.
 
+**Direcção do vento nos desportos de vento (#179):** kite, windsurf e foil (e o futuro wing) usam `windSportDirectionSafety(spot, windDir)` em `src/lib/sportScore.ts` — uma só regra, também usada por `windQualityTier`. Ângulo entre o vento e o onshore puro (`coastOrientation`):
+
+| Banda | Ângulo do onshore | Pontos de direcção | Score total | Aviso visível |
+|---|---|---|---|---|
+| onshore | 0–40° | 50 % | — | — |
+| side-onshore | 41–69° | 80 % | — | — |
+| cross-shore | 70–100° | 100 % (máximo) | — | — |
+| side-offshore | 101–140° | 30 % | — | «Componente offshore: só avançados com barco de apoio» |
+| offshore | 141–180° | 0 % | cap a 25 (FLAT/FECHADO) | «Vento offshore: perigo de deriva para o mar» |
+
+*Porquê:* com vento cross/side-onshore o rider faz bordos ao longo da costa e, se cair ou o equipamento falhar, o vento devolve-o à praia — é o ideal. Onshore puro é seguro mas dá chop e dificulta sair da rebentação (pontuação parcial). Qualquer componente offshore empurra para o mar, e junto à praia o vento chega rajado e com buracos (sombra de terra): side-offshore só é aceitável para avançados com barco de apoio, offshore puro é um perigo de deriva — por isso o score total fica em FLAT/FECHADO, independentemente da intensidade. O kite reserva a margem dos pontos de direcção (`withDirectionHeadroom`) para que uma sessão saturada (vento+rajada+mar+água > 100) continue a ordenar por direcção. O aviso sai em `SportScore.warning`/`warningEn` e `directionSafety`; a UI mostra-o em texto com `role="note"` (`WindSafetyNote`) no veredicto do spot, nos cartões da homepage (Top Now/Favoritos) e no mapa (cartão/sheet e popup). Textos em `windSafety` (`src/lib/translations/*`). Testes: `src/lib/__tests__/windSportDirectionSafety.test.ts` (mock com costa a 270°).
+
 **`compatibleSports`:** 185/185 explícitos. Validação CI: `npm run spots:validate` (`scripts/validate-spots.js`).
 
 **Proveniência (gramática única, 2026-09-07):** cada número mostra de onde vem (tier `measured` | `adjusted` | `modeled` | `degraded`, eixo `wave`→`wind`→`calibration`→`confidence`→`freshness`) através de UM componente — `ProvenanceChip` (`title` no hover + popover portalizado para toque/teclado; `interactive={false}` = span estático dentro de cards-link) — definido em `src/lib/provenance.ts` e `src/components/ui/ProvenanceChip.tsx`. Convertidos: `ConfidenceBadge`, `DataSourceBadge`, `ScoreWaveSourceBadge`, `ScoreWindSourceBadge`, `WaveCalibrationTag`; selectores `data-*` antigos preservados via `chipAttrs`/`popoverAttrs`. Ao mexer em chips de origem/frescura/calibração, usar este componente — não criar um oitavo dialecto.

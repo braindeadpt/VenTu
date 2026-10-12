@@ -18,7 +18,7 @@ import { getCardinalLabel, getWindRelationLabel, getWindRelationToCoast, getWind
 import { getDifficultyLabel } from '@/lib/mapDifficulty';
 import { getGoogleMapsDirectionsUrl, getSpotDetailHref } from '@/lib/mapSpotDetail';
 import { getMapSpotNarrative } from '@/lib/mapSpotNarrative';
-import { getSpotScoreFactors, scoreFactorClass } from '@/lib/spotScoreFactors';
+import { getExplainedWindSafety, getSpotScoreFactors, scoreFactorClass } from '@/lib/spotScoreFactors';
 import { getMapTideLine } from '@/lib/spotTideRelevance';
 import { fetchMapHours, type MapHoursFile } from '@/lib/mapHours';
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
@@ -27,6 +27,7 @@ import ScoreBadge from '@/components/ui/ScoreBadge';
 import ConfidenceBadge from '@/components/ui/ConfidenceBadge';
 import Button from '@/components/ui/Button';
 import WarningPill from '@/components/ui/WarningPill';
+import WindSafetyNote from '@/components/ui/WindSafetyNote';
 
 export interface MapSpotPreviewData {
   spot: Spot;
@@ -73,6 +74,7 @@ export default function MapSpotPreview({
   const narrative = getMapSpotNarrative(spot, conditions, allScores, highlightSport, locale);
   const tideLine = getMapTideLine(spot, conditions, locale);
   const scoreFactors = getSpotScoreFactors({ spot, conditions, allScores, sport: highlightSport, locale });
+  const windSafety = getExplainedWindSafety(spot, allScores, highlightSport);
   const windRelation =
     spot.coastOrientation !== undefined
       ? getWindRelationToCoast(conditions.windDirection, spot.coastOrientation)
@@ -113,6 +115,7 @@ export default function MapSpotPreview({
       </div>
 
       {warning && <WarningPill warning={warning} locale={locale} variant="default" />}
+      {windSafety && <WindSafetyNote level={windSafety} locale={locale} />}
 
       <div className="flex flex-wrap gap-1.5" role="list" aria-label={getTranslation(locale).ranked.scoresBySport}>
         {sortedSports.map((sport) => {
@@ -380,6 +383,8 @@ export function SpotCardContent({
     sport: highlightSport,
     locale,
   });
+  // Nota offshore descreve o vento de agora — escondida ao percorrer horas.
+  const windSafety = hoursFrame === 0 ? getExplainedWindSafety(spot, allScores, highlightSport) : null;
   const sportLabel =
     highlightSport === 'all' ? t.mapUiMarkers.bestModality : getSportLabel(highlightSport, locale);
   // CORRECCOES-24SET (M6#2): o vento conta-se UMA vez — na linha de
@@ -434,6 +439,7 @@ export function SpotCardContent({
           <WarningPill warning={warning} locale={locale} variant="default" />
         </div>
       ) : null}
+      {windSafety && <WindSafetyNote level={windSafety} locale={locale} className="mt-2" />}
 
       {scoreFactors.length > 0 && (
         <p
