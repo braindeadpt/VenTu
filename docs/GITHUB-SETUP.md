@@ -89,6 +89,31 @@ bloqueia). Localmente:
 
 ---
 
+## Fluxo com agentes (Devin)
+
+Uma issue com a etiqueta `agent:ready` abre uma sessão Devin
+(`.github/workflows/devin-dispatch.yml`), que implementa a issue num PR; o
+`.github/workflows/agent-verify.yml` corre build, specs e screenshots 390/1440
+na nuvem e comenta o resultado no PR. O `ci.yml` continua a ser o gate de merge.
+
+Secrets e variáveis (Settings → Secrets and variables → Actions):
+
+- `DEVIN_API_KEY` — chave de um service user com `org.devins.use`
+- `DEVIN_ORG_ID` — id da organização Devin (`org-…`)
+- `DEVIN_MAX_ACU` (variável, opcional) — limite de ACUs por sessão (default 20)
+
+Etiquetas:
+
+- `agent:ready` — numa issue, aplicada por admin/maintain: dispara o Devin.
+- `agent:working` — substitui automaticamente `agent:ready` quando a sessão arranca.
+- `agent:verify` — num PR do próprio repo: corre o `agent-verify` a cada push,
+  com as linhas `agent-verify-specs:` e `agent-verify-routes:` do corpo do PR.
+
+Playbook do agente: **[docs/agents/DEVIN.md](./agents/DEVIN.md)** ·
+prompts prontos: **[docs/agents/PROMPTS.md](./agents/PROMPTS.md)**.
+
+---
+
 ## Quick Setup Checklist
 
 - [ ] Enable branch protection for `main`
