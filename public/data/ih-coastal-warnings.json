@@ -6893,6 +6893,38 @@
       ]
     },
     {
+      "id": 1010565,
+      "ref": "ANAV NR 6/26",
+      "category": "BOIA N.º 4 (LL 811.9) - RETIRADA",
+      "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=a94ffd65-63e4-49f6-a0e7-02c225543d68",
+      "source": "ih",
+      "collection": "nav_warning_local",
+      "polygons": [
+        [
+          [
+            -27.989677,
+            39.035453
+          ],
+          [
+            -27.989677,
+            39.066514
+          ],
+          [
+            -27.925663,
+            39.066514
+          ],
+          [
+            -27.925663,
+            39.035453
+          ],
+          [
+            -27.989677,
+            39.035453
+          ]
+        ]
+      ]
+    },
+    {
       "id": 2017253,
       "ref": "ANAV NR 0956/26",
       "category": "Animais Marinhos - Avistamento",
@@ -8089,7 +8121,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-10-13T14:36:33.563Z",
+  "fetchedAt": "2026-10-13T17:36:38.643Z",
   "sourceCollection": "nav_warning_coastal+nav_warning_local+orca_anavnet_point",
   "sourceUrl": "https://ogcapi.hidrografico.pt/collections/nav_warning_coastal"
 }
