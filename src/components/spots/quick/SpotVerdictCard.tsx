@@ -180,7 +180,8 @@ export default function SpotVerdictCard({
           aria-valuemax={100}
           aria-valuenow={target}
           aria-valuetext={`${target} / 100 — ${bandLabel}`}
-          className="font-mono text-num-xl tabular-nums text-fg"
+          className="font-mono text-num-xl tabular-nums"
+          style={{ color: 'var(--verdict)' }}
           data-visual-dynamic
         >
           {displayScore}
