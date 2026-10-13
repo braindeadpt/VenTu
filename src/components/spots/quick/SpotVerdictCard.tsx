@@ -15,6 +15,7 @@ import { getTranslation } from '@/lib/i18n';
 import { MS_TO_KNOTS } from '@/lib/waveEnergy';
 import { useCountUp } from '@/components/spots/verdict/useCountUp';
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
+import DataSourceBadge from '@/components/ui/DataSourceBadge';
 import {
   useSpotTimelineData,
   useSpotTimelineIndex,
@@ -30,6 +31,7 @@ interface VerdictConditions {
   updatedAt?: string;
   confidence?: import('@/lib/forecastConfidence').ConfidenceTier;
   confidenceDetail?: import('@/lib/forecastConfidence').ConfidenceDetail;
+  source?: 'real' | 'mock';
   tideLabel?: string;
 }
 
@@ -184,6 +186,9 @@ export default function SpotVerdictCard({
           {displayScore}
           <span className="text-num-lg text-fg-subtle"> /100</span>
         </span>
+        {conditions.source === 'mock' && (
+          <DataSourceBadge source="mock" locale={locale} size="sm" />
+        )}
         {confLabel && (
           <span
             className={cn(

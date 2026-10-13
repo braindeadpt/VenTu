@@ -146,8 +146,11 @@ test.describe('#184 — estado de erro', () => {
 
     // O estado de erro real do produto não é um crash: fetchMarineData nunca
     // lança — devolve dados estimados e a página compõe com a marca DEMO
-    // («Dados estimados — API indisponível») visível para o utilizador.
-    await expect(page.getByText(/DEMO/)).toBeVisible({ timeout: 30_000 });
+    // («Dados estimados — API indisponível») junto do score, no ponto de
+    // decisão — legível a 390, na mesma linha flex-wrap do veredicto.
+    await expect(
+      page.locator('[data-verdict-card]').getByText('DEMO'),
+    ).toBeVisible({ timeout: 30_000 });
     // E o deck continua funcional — sem NaN na mini-praia nem erro de página.
     await expect(page.locator('[data-verdict-card]')).toBeVisible();
     expect(await svgNaNCount(page)).toBe(0);
