@@ -23,11 +23,11 @@ const VIEWPORTS = [
   { name: '1440', width: 1440, height: 900 },
 ] as const;
 
-async function openSpot(page: Page) {
-  await page.goto(SPOT_URL);
-  await expect(
-    page.getByRole('heading', { level: 1, name: /Guincho/i }),
-  ).toBeVisible({ timeout: 20_000 });
+async function openSpot(page: Page, url: string = SPOT_URL, name: RegExp = /Guincho/i) {
+  await page.goto(url);
+  await expect(page.getByRole('heading', { level: 1, name })).toBeVisible({
+    timeout: 20_000,
+  });
   await expect(page.getByRole('slider')).toBeVisible({ timeout: 20_000 });
   await page.waitForSelector('html.is-hydrated', { timeout: 20_000 });
 }
@@ -73,6 +73,24 @@ async function axisRects(page: Page) {
         return { left: r.left, right: r.right, text: el.textContent ?? '' };
       })
       .sort((a, b) => a.left - b.left);
+  });
+}
+
+/**
+ * Blocos do hero (h1, p) com texto cortado por overflow. Os `truncate` são
+ * corte intencional com reticências — ficam de fora.
+ */
+async function heroClipped(page: Page) {
+  return page.evaluate(() => {
+    const out: string[] = [];
+    const hero = document.querySelector('#agora');
+    hero?.querySelectorAll('h1, p').forEach((el) => {
+      if (el.classList.contains('truncate')) return;
+      if (el.scrollWidth > el.clientWidth + 1) {
+        out.push(el.tagName + ':' + (el.textContent ?? '').slice(0, 30));
+      }
+    });
+    return out;
   });
 }
 
@@ -216,25 +234,36 @@ for (const vp of VIEWPORTS) {
 
     test('sem clipping de texto no hero e na régua', async ({ page }) => {
       await openSpot(page);
-      const clipped = await page.evaluate(() => {
-        const out: string[] = [];
-        // Elementos truncados por design (truncate) devem ter scrollWidth
-        // <= clientWidth... não — truncate CORTA texto. Aqui verificamos o
-        // contrário: nenhum texto visível está cortado por overflow sem
-        // ellipsis intencional. Medimos os blocos que não são truncate.
-        const hero = document.querySelector('#agora');
-        hero?.querySelectorAll('h1, p').forEach((el) => {
-          if (el.classList.contains('truncate')) return;
-          if (el.scrollWidth > el.clientWidth + 1) {
-            out.push(el.tagName + ':' + (el.textContent ?? '').slice(0, 30));
-          }
-        });
-        return out;
-      });
-      expect(clipped).toEqual([]);
+      expect(await heroClipped(page)).toEqual([]);
     });
   });
 }
+
+/**
+ * #194 — região + coordenadas a 390 px: o par era um só bloco nowrap e
+ * transbordava a coluna do nome (Guincho ~6 px, Nazaré EN ~29 px). Cobre
+ * PT e EN nos dois spots onde o par é mais largo.
+ */
+const CLIP_SPOTS = [
+  { url: '/pt/spots/guincho/', name: /Guincho/i },
+  { url: '/en/spots/guincho/', name: /Guincho/i },
+  { url: '/pt/spots/nazare/', name: /Nazar/i },
+  { url: '/en/spots/nazare/', name: /Nazar/i },
+] as const;
+
+test.describe('SP-A @ 390px — hero sem clipping em PT/EN', () => {
+  test.use({
+    serviceWorkers: 'block',
+    viewport: { width: 390, height: 844 },
+  });
+
+  for (const s of CLIP_SPOTS) {
+    test(`sem clipping de texto no hero — ${s.url}`, async ({ page }) => {
+      await openSpot(page, s.url, s.name);
+      expect(await heroClipped(page)).toEqual([]);
+    });
+  }
+});
 
 test.describe('SP-D — prefers-reduced-motion', () => {
   test.use({
