@@ -1,7 +1,6 @@
 /** French shell translations — mirrors en/pt keys in i18n.ts */
 import { pipelineSchedule } from '@/lib/dataPipelineSchedule';
 import { spotPageVerdict } from '@/lib/translations/spotPage/verdict';
-import { spotPageQuick } from '@/lib/translations/spotPage/quick';
 import { spotPageInstruments } from '@/lib/translations/spotPage/instruments';
 import { spotPageForecast } from '@/lib/translations/spotPage/forecast';
 import { spotPageContext } from '@/lib/translations/spotPage/context';
@@ -1740,7 +1739,6 @@ export const translationsFr = {
     offshore: 'Vent offshore : risque de dérive vers le large',
   },
   spotPageVerdict: spotPageVerdict.fr,
-  spotPageQuick: spotPageQuick.fr,
   spotPageInstruments: spotPageInstruments.fr,
   spotPageForecast: spotPageForecast.fr,
   spotPageContext: spotPageContext.fr,

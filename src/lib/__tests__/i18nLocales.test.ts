@@ -56,11 +56,6 @@ const SHARED_TOKENS = new Set([
   '{lo}–{hi}',
   // «Radar IPMA» — nome do instrumento/instituição, igual em todas as línguas.
   'Radar IPMA {time}',
-  // Nome próprio do país — idêntico em pt/en/es/de/fr (breadcrumb §184).
-  'Portugal',
-  // Jargão náutico adoptado em pt/en/es/de/fr para as bandas finas de
-  // direcção de vento (#179/#195) — não há termo consagrado por língua.
-  'side-onshore', 'cross-shore', 'side-offshore',
 ]);
 
 /**
@@ -218,9 +213,6 @@ const ES_COGNATES = new Set([
   'gate cross-border {day}: {codes}',  // espanhol correcto = PT (nota de gate)
   'Alerta',                            // espanhol correcto = PT (categoria de notícia)
   'Centro de kite',                    // espanhol correcto = PT (tipo de estabelecimento)
-  'Para ti',                           // espanhol correcto = PT (secção «Para ti» §184)
-  'Ir {when}',                         // espanhol correcto = PT (CTA da janela §184)
-  'pico',                              // espanhol correcto = PT (hora de pico §184)
   'Botas',                             // espanhol correcto = PT (equipamento: botas)
   'Norte',                             // espanhol correcto = PT (região Norte)
   'Centro',                            // espanhol correcto = PT (região Centro)
@@ -284,11 +276,6 @@ const EN_COGNATES = new Set([
   'APA · InfoÁgua',
   // Intervalo numérico puro da banda de score — interpolação sem palavras.
   '{lo}–{hi}',
-  // Nome próprio do país — idêntico em PT e EN (breadcrumb §184).
-  'Portugal',
-  // Jargão náutico adoptado em PT e EN para as bandas finas de direcção
-  // de vento (#179/#195) — a mesma grafia nas duas línguas.
-  'side-onshore', 'cross-shore', 'side-offshore',
 ]);
 
 /** Allowlist por locale — cada valor idêntico ao pt tem de estar justificado. */

@@ -29,8 +29,7 @@ async function openSpot(page: Page) {
 }
 
 const slider = (page: Page) => page.getByRole('slider');
-// #184: o score/meter saiu do hero para o cartão de veredicto do deck rápido.
-const meter = (page: Page) => page.locator('[data-verdict-card]').getByRole('meter');
+const meter = (page: Page) => page.locator('#agora').getByRole('meter');
 
 /** Score mostrado no pill da barra fixa (testid explícito — os tabs também têm mini-scores).
  *  CORRECCOES-24SET §1: a barra está sempre visível (getByRole resolve), mas
@@ -65,9 +64,6 @@ test.describe('S2A — régua de 48 h comanda veredicto e barra', () => {
     await openSpot(page);
 
     const before = await meter(page).getAttribute('aria-valuenow');
-    // #184: a régua vive no fim do contentor — fora do viewport inicial em
-    // desktop. Sem scroll o rato cai fora da página e o arrasto não regista.
-    await slider(page).scrollIntoViewIfNeeded();
     const track = await slider(page).boundingBox();
     expect(track).not.toBeNull();
 
@@ -160,7 +156,7 @@ test.describe('S2A — régua de 48 h comanda veredicto e barra', () => {
       page.evaluate(() => {
         const rail = document.querySelector('[role="slider"]');
         const selBar = rail?.querySelector('rect[fill="var(--verdict)"]');
-        const meterEl = document.querySelector('[data-verdict-card] [role="meter"]');
+        const meterEl = document.querySelector('#agora [role="meter"]');
         return {
           barFill: selBar ? getComputedStyle(selBar).fill : null,
           scoreColor: meterEl ? getComputedStyle(meterEl).color : null,
@@ -242,8 +238,7 @@ test.describe('S2A — reduced motion', () => {
     // Sem animação: o texto visível é já o valor final (== aria-valuenow).
     const now = await meter(page).getAttribute('aria-valuenow');
     expect(now).not.toBe(before);
-    // O meter mostra «{score} /100» — compara-se o número inicial.
     const shown = await meter(page).textContent();
-    expect(Number(shown?.match(/\d+/)?.[0])).toBe(Number(now));
+    expect(Number(shown)).toBe(Number(now));
   });
 });

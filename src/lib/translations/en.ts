@@ -1,7 +1,6 @@
 /** English (en) — full dictionary, mirrors pt key shape */
 import { pipelineSchedule } from '@/lib/dataPipelineSchedule';
 import { spotPageVerdict } from '@/lib/translations/spotPage/verdict';
-import { spotPageQuick } from '@/lib/translations/spotPage/quick';
 import { spotPageInstruments } from '@/lib/translations/spotPage/instruments';
 import { spotPageForecast } from '@/lib/translations/spotPage/forecast';
 import { spotPageContext } from '@/lib/translations/spotPage/context';
@@ -1661,7 +1660,6 @@ export const translationsEn = {
     offshore: 'Offshore wind: risk of drifting out to sea',
   },
   spotPageVerdict: spotPageVerdict.en,
-  spotPageQuick: spotPageQuick.en,
   spotPageInstruments: spotPageInstruments.en,
   spotPageForecast: spotPageForecast.en,
   spotPageContext: spotPageContext.en,
