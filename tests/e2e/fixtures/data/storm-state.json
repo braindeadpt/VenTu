@@ -723,7 +723,11 @@
         "distKm": 21,
         "dirDeg": 27,
         "intensity": "heavy",
-        "approach": null
+        "approach": {
+          "state": "approaching",
+          "deg": 200,
+          "kmh": 35
+        }
       },
       "warnLevel": null,
       "inStormCone": false
@@ -734,7 +738,11 @@
         "distKm": 0,
         "dirDeg": 298,
         "intensity": "heavy",
-        "approach": null
+        "approach": {
+          "state": "approaching",
+          "deg": 193,
+          "kmh": 27
+        }
       },
       "warnLevel": null,
       "inStormCone": false
@@ -747,8 +755,8 @@
         "intensity": "heavy",
         "approach": {
           "state": "approaching",
-          "deg": null,
-          "kmh": null
+          "deg": 130,
+          "kmh": 13
         }
       },
       "warnLevel": null,
@@ -880,7 +888,11 @@
         "distKm": 9,
         "dirDeg": 136,
         "intensity": "moderate",
-        "approach": null
+        "approach": {
+          "state": "receding",
+          "deg": 161,
+          "kmh": 14
+        }
       },
       "warnLevel": null,
       "inStormCone": false
@@ -891,7 +903,11 @@
         "distKm": 5,
         "dirDeg": 138,
         "intensity": "moderate",
-        "approach": null
+        "approach": {
+          "state": "receding",
+          "deg": 167,
+          "kmh": 14
+        }
       },
       "warnLevel": null,
       "inStormCone": false
@@ -917,7 +933,11 @@
         "distKm": 0,
         "dirDeg": 171,
         "intensity": "heavy",
-        "approach": null
+        "approach": {
+          "state": "approaching",
+          "deg": 182,
+          "kmh": 62
+        }
       },
       "warnLevel": null,
       "inStormCone": false
@@ -928,7 +948,11 @@
         "distKm": 0,
         "dirDeg": 175,
         "intensity": "heavy",
-        "approach": null
+        "approach": {
+          "state": "approaching",
+          "deg": 183,
+          "kmh": 62
+        }
       },
       "warnLevel": null,
       "inStormCone": false
@@ -939,7 +963,11 @@
         "distKm": 0,
         "dirDeg": 174,
         "intensity": "heavy",
-        "approach": null
+        "approach": {
+          "state": "approaching",
+          "deg": 182,
+          "kmh": 62
+        }
       },
       "warnLevel": null,
       "inStormCone": false
@@ -950,7 +978,11 @@
         "distKm": 0,
         "dirDeg": 177,
         "intensity": "heavy",
-        "approach": null
+        "approach": {
+          "state": "approaching",
+          "deg": 183,
+          "kmh": 63
+        }
       },
       "warnLevel": null,
       "inStormCone": false
@@ -961,7 +993,11 @@
         "distKm": 0,
         "dirDeg": 180,
         "intensity": "heavy",
-        "approach": null
+        "approach": {
+          "state": "approaching",
+          "deg": 183,
+          "kmh": 64
+        }
       },
       "warnLevel": null,
       "inStormCone": false
@@ -972,7 +1008,11 @@
         "distKm": 0,
         "dirDeg": 179,
         "intensity": "heavy",
-        "approach": null
+        "approach": {
+          "state": "approaching",
+          "deg": 183,
+          "kmh": 65
+        }
       },
       "warnLevel": null,
       "inStormCone": false
@@ -1043,7 +1083,11 @@
         "distKm": 0,
         "dirDeg": 299,
         "intensity": "moderate",
-        "approach": null
+        "approach": {
+          "state": "receding",
+          "deg": 174,
+          "kmh": 89
+        }
       },
       "warnLevel": null,
       "inStormCone": false
@@ -1064,7 +1108,11 @@
         "distKm": 0,
         "dirDeg": 308,
         "intensity": "heavy",
-        "approach": null
+        "approach": {
+          "state": "receding",
+          "deg": 168,
+          "kmh": 56
+        }
       },
       "warnLevel": null,
       "inStormCone": false
@@ -1075,7 +1123,11 @@
         "distKm": 0,
         "dirDeg": 308,
         "intensity": "heavy",
-        "approach": null
+        "approach": {
+          "state": "receding",
+          "deg": 168,
+          "kmh": 55
+        }
       },
       "warnLevel": null,
       "inStormCone": false
@@ -1086,7 +1138,11 @@
         "distKm": 0,
         "dirDeg": 306,
         "intensity": "heavy",
-        "approach": null
+        "approach": {
+          "state": "receding",
+          "deg": 160,
+          "kmh": 55
+        }
       },
       "warnLevel": null,
       "inStormCone": false
@@ -1097,7 +1153,11 @@
         "distKm": 0,
         "dirDeg": 307,
         "intensity": "heavy",
-        "approach": null
+        "approach": {
+          "state": "receding",
+          "deg": 162,
+          "kmh": 55
+        }
       },
       "warnLevel": null,
       "inStormCone": false
@@ -1108,7 +1168,11 @@
         "distKm": 0,
         "dirDeg": 307,
         "intensity": "heavy",
-        "approach": null
+        "approach": {
+          "state": "receding",
+          "deg": 159,
+          "kmh": 59
+        }
       },
       "warnLevel": null,
       "inStormCone": false
@@ -1119,7 +1183,11 @@
         "distKm": 0,
         "dirDeg": 309,
         "intensity": "heavy",
-        "approach": null
+        "approach": {
+          "state": "receding",
+          "deg": 152,
+          "kmh": 59
+        }
       },
       "warnLevel": null,
       "inStormCone": false
@@ -1130,7 +1198,11 @@
         "distKm": 0,
         "dirDeg": 305,
         "intensity": "moderate",
-        "approach": null
+        "approach": {
+          "state": "receding",
+          "deg": 159,
+          "kmh": 63
+        }
       },
       "warnLevel": null,
       "inStormCone": false
@@ -1141,7 +1213,11 @@
         "distKm": 0,
         "dirDeg": 306,
         "intensity": "heavy",
-        "approach": null
+        "approach": {
+          "state": "receding",
+          "deg": 162,
+          "kmh": 55
+        }
       },
       "warnLevel": null,
       "inStormCone": false
@@ -1152,7 +1228,11 @@
         "distKm": 0,
         "dirDeg": 307,
         "intensity": "heavy",
-        "approach": null
+        "approach": {
+          "state": "receding",
+          "deg": 164,
+          "kmh": 53
+        }
       },
       "warnLevel": null,
       "inStormCone": false
@@ -1163,7 +1243,11 @@
         "distKm": 0,
         "dirDeg": 307,
         "intensity": "heavy",
-        "approach": null
+        "approach": {
+          "state": "receding",
+          "deg": 158,
+          "kmh": 61
+        }
       },
       "warnLevel": null,
       "inStormCone": false
@@ -1181,8 +1265,8 @@
         "intensity": "moderate",
         "approach": {
           "state": "approaching",
-          "deg": null,
-          "kmh": null
+          "deg": 151,
+          "kmh": 52
         }
       },
       "warnLevel": null,
@@ -1196,8 +1280,8 @@
         "intensity": "moderate",
         "approach": {
           "state": "approaching",
-          "deg": null,
-          "kmh": null
+          "deg": 151,
+          "kmh": 52
         }
       },
       "warnLevel": null,
@@ -1211,8 +1295,8 @@
         "intensity": "heavy",
         "approach": {
           "state": "approaching",
-          "deg": null,
-          "kmh": null
+          "deg": 150,
+          "kmh": 55
         }
       },
       "warnLevel": null,
@@ -1224,7 +1308,11 @@
         "distKm": 0,
         "dirDeg": 310,
         "intensity": "moderate",
-        "approach": null
+        "approach": {
+          "state": "receding",
+          "deg": 161,
+          "kmh": 46
+        }
       },
       "warnLevel": null,
       "inStormCone": false
@@ -1235,7 +1323,11 @@
         "distKm": 3,
         "dirDeg": 313,
         "intensity": "moderate",
-        "approach": null
+        "approach": {
+          "state": "receding",
+          "deg": 167,
+          "kmh": 47
+        }
       },
       "warnLevel": null,
       "inStormCone": false
@@ -1246,7 +1338,11 @@
         "distKm": 2,
         "dirDeg": 317,
         "intensity": "moderate",
-        "approach": null
+        "approach": {
+          "state": "receding",
+          "deg": 165,
+          "kmh": 51
+        }
       },
       "warnLevel": null,
       "inStormCone": false
@@ -1287,7 +1383,11 @@
         "distKm": 2,
         "dirDeg": 317,
         "intensity": "moderate",
-        "approach": null
+        "approach": {
+          "state": "receding",
+          "deg": 162,
+          "kmh": 34
+        }
       },
       "warnLevel": null,
       "inStormCone": false
@@ -1298,7 +1398,11 @@
         "distKm": 10,
         "dirDeg": 317,
         "intensity": "moderate",
-        "approach": null
+        "approach": {
+          "state": "receding",
+          "deg": 126,
+          "kmh": 23
+        }
       },
       "warnLevel": null,
       "inStormCone": false
@@ -1309,7 +1413,11 @@
         "distKm": 10,
         "dirDeg": 317,
         "intensity": "moderate",
-        "approach": null
+        "approach": {
+          "state": "receding",
+          "deg": 141,
+          "kmh": 16
+        }
       },
       "warnLevel": null,
       "inStormCone": false
@@ -1350,7 +1458,11 @@
         "distKm": 5,
         "dirDeg": 317,
         "intensity": "moderate",
-        "approach": null
+        "approach": {
+          "state": "receding",
+          "deg": 27,
+          "kmh": 22
+        }
       },
       "warnLevel": null,
       "inStormCone": false
@@ -1641,7 +1753,11 @@
         "distKm": 0,
         "dirDeg": 95,
         "intensity": "heavy",
-        "approach": null
+        "approach": {
+          "state": "approaching",
+          "deg": 349,
+          "kmh": 49
+        }
       },
       "warnLevel": null,
       "inStormCone": false
@@ -1652,7 +1768,11 @@
         "distKm": 2,
         "dirDeg": 93,
         "intensity": "heavy",
-        "approach": null
+        "approach": {
+          "state": "approaching",
+          "deg": 351,
+          "kmh": 50
+        }
       },
       "warnLevel": null,
       "inStormCone": false
@@ -1663,7 +1783,11 @@
         "distKm": 6,
         "dirDeg": 89,
         "intensity": "heavy",
-        "approach": null
+        "approach": {
+          "state": "approaching",
+          "deg": 348,
+          "kmh": 54
+        }
       },
       "warnLevel": null,
       "inStormCone": false
@@ -1674,7 +1798,11 @@
         "distKm": 6,
         "dirDeg": 91,
         "intensity": "heavy",
-        "approach": null
+        "approach": {
+          "state": "approaching",
+          "deg": 349,
+          "kmh": 54
+        }
       },
       "warnLevel": null,
       "inStormCone": false
@@ -1880,7 +2008,11 @@
         "distKm": 18,
         "dirDeg": 81,
         "intensity": "heavy",
-        "approach": null
+        "approach": {
+          "state": "approaching",
+          "deg": 348,
+          "kmh": 56
+        }
       },
       "warnLevel": null,
       "inStormCone": false
@@ -1891,7 +2023,11 @@
         "distKm": 15,
         "dirDeg": 82,
         "intensity": "heavy",
-        "approach": null
+        "approach": {
+          "state": "approaching",
+          "deg": 347,
+          "kmh": 56
+        }
       },
       "warnLevel": null,
       "inStormCone": false
@@ -1902,7 +2038,11 @@
         "distKm": 10,
         "dirDeg": 87,
         "intensity": "heavy",
-        "approach": null
+        "approach": {
+          "state": "approaching",
+          "deg": 348,
+          "kmh": 58
+        }
       },
       "warnLevel": null,
       "inStormCone": false
@@ -2050,8 +2190,8 @@
         "intensity": "moderate",
         "approach": {
           "state": "receding",
-          "deg": null,
-          "kmh": null
+          "deg": 180,
+          "kmh": 27
         }
       },
       "warnLevel": null,
@@ -2078,7 +2218,11 @@
         "distKm": 0,
         "dirDeg": 179,
         "intensity": "heavy",
-        "approach": null
+        "approach": {
+          "state": "approaching",
+          "deg": 183,
+          "kmh": 65
+        }
       },
       "warnLevel": null,
       "inStormCone": false
@@ -2089,7 +2233,11 @@
         "distKm": 0,
         "dirDeg": 182,
         "intensity": "heavy",
-        "approach": null
+        "approach": {
+          "state": "approaching",
+          "deg": 183,
+          "kmh": 66
+        }
       },
       "warnLevel": null,
       "inStormCone": false
@@ -2100,7 +2248,11 @@
         "distKm": 0,
         "dirDeg": 184,
         "intensity": "heavy",
-        "approach": null
+        "approach": {
+          "state": "approaching",
+          "deg": 182,
+          "kmh": 67
+        }
       },
       "warnLevel": null,
       "inStormCone": false
@@ -2111,7 +2263,11 @@
         "distKm": 0,
         "dirDeg": 314,
         "intensity": "heavy",
-        "approach": null
+        "approach": {
+          "state": "receding",
+          "deg": 150,
+          "kmh": 55
+        }
       },
       "warnLevel": null,
       "inStormCone": false
@@ -2122,7 +2278,11 @@
         "distKm": 3,
         "dirDeg": 317,
         "intensity": "moderate",
-        "approach": null
+        "approach": {
+          "state": "receding",
+          "deg": 160,
+          "kmh": 26
+        }
       },
       "warnLevel": null,
       "inStormCone": false
@@ -2133,7 +2293,11 @@
         "distKm": 6,
         "dirDeg": 316,
         "intensity": "moderate",
-        "approach": null
+        "approach": {
+          "state": "receding",
+          "deg": 164,
+          "kmh": 23
+        }
       },
       "warnLevel": null,
       "inStormCone": false
