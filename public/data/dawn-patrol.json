@@ -1,105 +1,105 @@
 {
-  "date": "2026-10-12",
-  "generatedAt": "2026-10-12T03:36:14.518Z",
+  "date": "2026-10-13",
   "topSpot": "Nazaré",
   "topSpotSlug": "nazare",
   "pt": {
-    "headline": "Hoje é dia de Nazaré! 🌊",
-    "advice": "Melhor janela: 10:00h. Ondas de 1.7m com 4 nós de vento.",
-    "bestTime": "10:00",
+    "headline": "Nazaré oferece ondas perfeitas e mar calmo — vá cedo!",
+    "advice": "Ondas de 1.7 m com período de 10 s e vento leve (3 kt) criam condições ideais. A água está a 16.7 °C, use fato 3/2 mm. Sem avisos costeiros na zona, mas chegue cedo para evitar a multidão.",
+    "bestTime": "08:00",
     "wetsuit": "3/2mm",
-    "crowdTip": "Chega cedo para evitar crowd!",
-    "moonTideLine": "Lua nova · Transição · baixa-mar 11:00"
+    "crowdTip": "Chegue antes das 09h para pegar a melhor seção antes da lotação.",
+    "moonTideLine": "Lua nova · Marés vivas · baixa-mar 11:00"
   },
   "en": {
-    "headline": "Today is Nazaré day! 🌊",
-    "advice": "Best window: 10:00. 1.7m waves with 4 knot wind.",
-    "bestTime": "10:00",
+    "headline": "Nazaré serves perfect waves and calm sea — hit the line early!",
+    "advice": "Waves at 1.7 m with a 10 s period and light wind (3 kt) give ideal conditions. Water is 16.7 °C, wear a 3/2 mm wetsuit. No coastal warnings in the area, but arrive early to beat the crowd.",
+    "bestTime": "08:00",
     "wetsuit": "3/2mm",
-    "crowdTip": "Get there early to beat the crowd!",
-    "moonTideLine": "New moon · Transition · low tide 11:00"
+    "crowdTip": "Get there before 9 am to catch the best section before it fills up.",
+    "moonTideLine": "New moon · Spring tides · low tide 11:00"
   },
   "spots": [
     {
-      "name": "Nazaré",
-      "slug": "nazare",
-      "score": 89,
-      "scoreForecast": 89,
-      "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
-    },
-    {
-      "name": "Ribeira d'Ilhas",
-      "slug": "ribeira-ilhas",
-      "score": 89,
-      "scoreForecast": 89,
-      "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
-    },
-    {
       "name": "Supertubos",
       "slug": "supertubos",
-      "score": 88,
-      "scoreForecast": 88,
+      "score": 82,
+      "verdict": "maybe",
+      "ptReason": "Ondas boas, mas há avisos ANAV NR 12/24 e NR 2257/26 de interação marinha.",
+      "enReason": "Decent waves, but coastal warnings ANAV NR 12/24 and NR 2257/26 for marine interaction.",
+      "scoreForecast": 82,
       "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
-    },
-    {
-      "name": "Coxos",
-      "slug": "coxos",
-      "score": 88,
-      "scoreForecast": 88,
-      "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
+      "scoreMeta": null
     },
     {
       "name": "Guincho",
       "slug": "guincho",
-      "score": 87,
-      "scoreForecast": 87,
+      "score": 82,
+      "verdict": "maybe",
+      "ptReason": "Condições semelhantes a Supertubos, porém com avisos ANAV NR 1445/26 e NR 1727/26.",
+      "enReason": "Similar conditions to Supertubos, but with ANAV NR 1445/26 and NR 1727/26 warnings.",
+      "scoreForecast": 82,
       "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
+      "scoreMeta": null
     },
     {
-      "name": "Carcavelos",
-      "slug": "carcavelos",
+      "name": "Nazaré",
+      "slug": "nazare",
       "score": 84,
+      "verdict": "go",
+      "ptReason": "Melhor pontuação, ondas consistentes e sem avisos costeiros.",
+      "enReason": "Highest score, consistent waves and no coastal warnings.",
       "scoreForecast": 84,
       "scoreSource": "previsão",
-      "scoreMeta": null,
+      "scoreMeta": null
+    },
+    {
+      "name": "Ribeira d'Ilhas",
+      "slug": "ribeira-ilhas",
+      "score": 83,
       "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
+      "ptReason": "Ótimas ondas e apenas aviso de avistamento de animais marinhos (NR 1727/26).",
+      "enReason": "Great waves with only a marine wildlife sighting warning (NR 1727/26).",
+      "scoreForecast": 83,
+      "scoreSource": "previsão",
+      "scoreMeta": null
+    },
+    {
+      "name": "Coxos",
+      "slug": "coxos",
+      "score": 83,
+      "verdict": "go",
+      "ptReason": "Ondas de qualidade e aviso único de avistamento de animais marinhos (NR 1727/26).",
+      "enReason": "Quality waves and a single marine wildlife sighting warning (NR 1727/26).",
+      "scoreForecast": 83,
+      "scoreSource": "previsão",
+      "scoreMeta": null
     },
     {
       "name": "Arrifana",
       "slug": "arrifana",
-      "score": 79,
-      "scoreForecast": 79,
+      "score": 82,
+      "verdict": "maybe",
+      "ptReason": "Boa onda, mas há aviso do Plano de Salvamento Marítimo Lagos (NR 2/22).",
+      "enReason": "Good wave, but there is a Lagos Maritime Rescue Plan warning (NR 2/22).",
+      "scoreForecast": 82,
       "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
+      "scoreMeta": null
+    },
+    {
+      "name": "Carcavelos",
+      "slug": "carcavelos",
+      "score": 81,
+      "verdict": "skip",
+      "ptReason": "Ondas menores e múltiplos avisos de interação e segurança (NR 00/14, NR 1445/26, NR 2235/26).",
+      "enReason": "Smaller waves and multiple interaction and safety warnings (NR 00/14, NR 1445/26, NR 2235/26).",
+      "scoreForecast": 81,
+      "scoreSource": "previsão",
+      "scoreMeta": null
     }
   ],
-  "topScore": 89,
-  "topScoreForecast": 89,
+  "generatedAt": "2026-10-13T03:06:27.188Z",
+  "topScore": 84,
+  "topScoreForecast": 84,
   "topScoreSource": "previsão",
   "topScoreMeta": null
 }
