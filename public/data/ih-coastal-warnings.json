@@ -7403,6 +7403,21 @@
       "radiusKm": 25,
       "eventAt": "2026-10-10T00:00:00.000Z",
       "polygons": []
+    },
+    {
+      "id": 2018801,
+      "ref": "ANAV NR 2303/26",
+      "category": "Animais Marinhos - Interação",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=898f7785-27a7-49dc-9ecb-e82d9b83d75c",
+      "source": "ih",
+      "collection": "orca_anavnet_point",
+      "center": [
+        -8.794167,
+        41.377667
+      ],
+      "radiusKm": 25,
+      "eventAt": "2026-10-13T00:00:00.000Z",
+      "polygons": []
     }
   ],
   "coverage": {
@@ -7449,37 +7464,45 @@
     ],
     "ofir": [
       1009684,
-      2018401
+      2018401,
+      2018801
     ],
     "esposende": [
       1000657,
       1009684,
-      2018401
+      2018401,
+      2018801
     ],
     "esposende-praia": [
       1000657,
       1009684,
-      2018401
+      2018401,
+      2018801
     ],
     "fao": [
-      2018401
+      2018401,
+      2018801
     ],
     "apulia": [
-      2018401
+      2018401,
+      2018801
     ],
     "povoa-varzim": [
       2018383,
-      2018401
+      2018401,
+      2018801
     ],
     "azurara": [
       2018383,
-      2018401
+      2018401,
+      2018801
     ],
     "leca-palmeira": [
       1000201,
       1000202,
       1000709,
-      2018383
+      2018383,
+      2018801
     ],
     "matosinhos": [
       1000201,
@@ -7487,7 +7510,8 @@
       1000709,
       1000777,
       1010316,
-      2018383
+      2018383,
+      2018801
     ],
     "cabedelo-douro": [
       1000201,
@@ -7504,12 +7528,14 @@
     "foil-fao-cavado": [
       1000657,
       1009684,
-      2018401
+      2018401,
+      2018801
     ],
     "foil-esposende-piscinas": [
       1000657,
       1009684,
-      2018401
+      2018401,
+      2018801
     ],
     "praia-da-lomba": [
       1000708
@@ -7998,7 +8024,8 @@
     ],
     "vila-cha": [
       2018383,
-      2018401
+      2018401,
+      2018801
     ],
     "santa-cruz": [
       2018213
@@ -8100,19 +8127,23 @@
     ],
     "fao-ofir-surf": [
       1009684,
-      2018401
+      2018401,
+      2018801
     ],
     "ofir-praia": [
       1009684,
-      2018401
+      2018401,
+      2018801
     ],
     "mindelo": [
       2018383,
-      2018401
+      2018401,
+      2018801
     ],
     "aterro": [
       1000709,
-      2018383
+      2018383,
+      2018801
     ]
   },
   "es": [],
@@ -8121,7 +8152,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-10-13T17:36:38.643Z",
+  "fetchedAt": "2026-10-13T19:17:43.036Z",
   "sourceCollection": "nav_warning_coastal+nav_warning_local+orca_anavnet_point",
   "sourceUrl": "https://ogcapi.hidrografico.pt/collections/nav_warning_coastal"
 }
