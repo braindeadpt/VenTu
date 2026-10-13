@@ -1,6 +1,7 @@
 /** German shell translations — mirrors en/pt keys in i18n.ts */
 import { pipelineSchedule } from '@/lib/dataPipelineSchedule';
 import { spotPageVerdict } from '@/lib/translations/spotPage/verdict';
+import { spotPageQuick } from '@/lib/translations/spotPage/quick';
 import { spotPageInstruments } from '@/lib/translations/spotPage/instruments';
 import { spotPageForecast } from '@/lib/translations/spotPage/forecast';
 import { spotPageContext } from '@/lib/translations/spotPage/context';
@@ -1739,6 +1740,7 @@ export const translationsDe = {
     offshore: 'Ablandiger Wind: Gefahr, aufs Meer abzutreiben',
   },
   spotPageVerdict: spotPageVerdict.de,
+  spotPageQuick: spotPageQuick.de,
   spotPageInstruments: spotPageInstruments.de,
   spotPageForecast: spotPageForecast.de,
   spotPageContext: spotPageContext.de,
