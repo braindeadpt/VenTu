@@ -47,6 +47,8 @@ import SpotVerdictSection from '@/components/spots/page/SpotVerdictSection';
 import SpotInstrumentsSection from '@/components/spots/page/SpotInstrumentsSection';
 import SpotForecastSection from '@/components/spots/page/SpotForecastSection';
 import SpotContextSection from '@/components/spots/page/SpotContextSection';
+import SpotQuickDeck from '@/components/spots/quick/SpotQuickDeck';
+import SpotTimeRail from '@/components/spots/verdict/SpotTimeRail';
 import type { ObservedConditions } from '@/lib/observations';
 import type { ObservedWave, ObservedWaveMeta } from '@/lib/observedWave';
 import type { VentuEvent } from '@/types/events';
@@ -128,6 +130,8 @@ interface SpotData {
     time: string;
     waveHeight: number;
     wavePeriod: number;
+    /** Direcção do mar total (seta de ondulação da mini-praia, #184). */
+    waveDirection?: number;
     windSpeed: number;
     windDirection: number;
     windGust: number;
@@ -725,7 +729,7 @@ export default function SpotDetailClient({
       />
 
       <div
-        className="min-h-screen bg-bg-base pb-10"
+        className="min-h-screen bg-bg-base pb-[200px] lg:pb-10"
         data-community-tips={communityOverlay ? 'ready' : 'pending'}
       >
         {/* Eixo de tempo partilhado — uma hora escolhida comanda o veredicto,
@@ -757,14 +761,26 @@ export default function SpotDetailClient({
             sportLabel={SPORT_LABELS[selectedSport][isPt ? 'pt' : 'en']}
             onSelectSport={setSelectedSport}
             sportTabsAria={tv.sportTabsAria}
-            whenToGoTitle={td.whenToGo}
             freshnessNowMs={freshnessNowMs}
           />
 
-          {/* Coluna única — ordem do contrato: Instrumentos → Previsão →
-              Contexto (grelha 1→3 interna). */}
+          {/* Deck rápido + aprofundar — ordem do contrato #184:
+              veredicto/mini-praia/para-ti/instrumentos/planear em grelha
+              com áreas nomeadas, depois Previsão → Contexto. */}
           <div className="max-w-6xl mx-auto px-4 pt-4 space-y-4">
-            <SpotInstrumentsSection
+            <SpotQuickDeck
+              spot={spot}
+              locale={locale}
+              conditions={conditions}
+              forecast={spotData.forecast}
+              score={score}
+              allScores={allScores}
+              tabSports={tabSports}
+              selectedSport={selectedSport}
+              onSelectSport={setSelectedSport}
+              sportTabsAria={tv.sportTabsAria}
+              instruments={
+                <SpotInstrumentsSection
               spot={spot}
               locale={locale}
               conditions={conditions}
@@ -804,6 +820,8 @@ export default function SpotDetailClient({
               }}
               freshnessNowMs={freshnessNowMs}
               ariaLabel={t.spotPageInstruments.sectionTitle}
+                />
+              }
             />
 
             <SpotForecastSection
@@ -851,6 +869,15 @@ export default function SpotDetailClient({
                 level: t.spots.level,
               }}
             />
+          </div>
+
+          {/* §3 — régua de 48 h no eixo partilhado: fixa em baixo no
+              mobile (178 px + safe area, contrato #184) e no fundo do
+              contentor a partir de lg. */}
+          <div className="fixed inset-x-0 bottom-0 z-40 border-t border-divider bg-bg-base pb-[env(safe-area-inset-bottom)] lg:static lg:border-t-0 lg:bg-transparent">
+            <div className="mx-auto max-w-6xl px-4">
+              <SpotTimeRail spot={spot} locale={locale} title={td.whenToGo} />
+            </div>
           </div>
           </SpotPageAccent>
         </SpotTimelineProvider>

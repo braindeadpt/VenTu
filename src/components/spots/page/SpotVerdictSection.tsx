@@ -15,7 +15,6 @@ import type {
 import SpotSafetyStrip from '@/components/spots/verdict/SpotSafetyStrip';
 import SpotVerdictHero from '@/components/spots/verdict/SpotVerdictHero';
 import SpotUnifiedBar from '@/components/spots/verdict/SpotUnifiedBar';
-import SpotTimeRail from '@/components/spots/verdict/SpotTimeRail';
 
 /** Condições actuais do spot — campos consumidos pelo hero + barra sticky. */
 export interface SpotVerdictConditions {
@@ -47,7 +46,9 @@ export interface SpotVerdictConditions {
  *    nível hoje, fonte/confiança → #como-sabemos, acções + menu «Mais».
  * §2 SpotUnifiedBar — uma só barra fixa: tabs modalidade + score + hora +
  *    âncoras (cota --ventu-spot-sticky-top).
- * §3 SpotTimeRail (#quando) — régua de 48 h no eixo de tempo partilhado.
+ * §3 SpotTimeRail (#quando) saiu daqui na #184: a régua de 48 h fica no
+ *    fundo do contentor (fixa em baixo no mobile), composta pelo
+ *    SpotDetailClient junto do deck rápido.
  *
  * Os componentes antigos (SpotDetailHero, SpotStickyBar, SessionStrip,
  * SpotVerdict, WhenToGoCard) foram removidos na limpeza SP-D — já não eram
@@ -82,8 +83,6 @@ export interface SpotVerdictSectionProps {
   onSelectSport: (sport: SportType) => void;
   /** aria-label da tablist (tv.sportTabsAria). */
   sportTabsAria: string;
-  /** «Quando ir». */
-  whenToGoTitle: string;
   /** Relógio de frescura (bakedAtMs até montar — guarda React #418). */
   freshnessNowMs?: number;
 }
@@ -106,7 +105,6 @@ export default function SpotVerdictSection({
   sportLabel,
   onSelectSport,
   sportTabsAria,
-  whenToGoTitle,
   freshnessNowMs,
 }: SpotVerdictSectionProps) {
   return (
@@ -146,9 +144,6 @@ export default function SpotVerdictSection({
         sportTabsAria={sportTabsAria}
         nowScoreFallback={score.score}
       />
-
-      {/* §3 — «Quando ir»: régua de 48 h no eixo partilhado. */}
-      <SpotTimeRail spot={spot} locale={locale} title={whenToGoTitle} />
     </div>
   );
 }
