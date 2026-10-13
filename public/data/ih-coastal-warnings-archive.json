@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-10-12T23:15:31.848Z",
+  "fetchedAt": "2026-10-13T03:34:15.585Z",
   "windowDays": 90,
   "dayCount": 42,
   "days": [
@@ -41897,13 +41897,6 @@
           "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=b47853b4-da63-4743-a9ea-3d49a4277e91"
         },
         {
-          "id": 18761,
-          "ref": "ANAV NR 2256/26",
-          "category": "Requisitos de segurança maritima",
-          "source": "ih",
-          "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=ea0ae9e4-1d6b-482b-8a64-ed8ef3ee65aa"
-        },
-        {
           "id": 18781,
           "ref": "ANAV NR 2278/26",
           "category": "Requisitos de segurança maritima",
@@ -46884,25 +46877,6 @@
       "nDays": 10
     },
     {
-      "ref": "ANAV NR 2256/26",
-      "category": "Requisitos de segurança maritima",
-      "source": "ih",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=ea0ae9e4-1d6b-482b-8a64-ed8ef3ee65aa",
-      "firstSeen": "2026-10-06",
-      "lastSeen": "2026-10-13",
-      "daysInForce": [
-        "2026-10-06",
-        "2026-10-07",
-        "2026-10-08",
-        "2026-10-09",
-        "2026-10-10",
-        "2026-10-11",
-        "2026-10-12",
-        "2026-10-13"
-      ],
-      "nDays": 8
-    },
-    {
       "ref": "ANAV NR 2257/26",
       "category": "Animais Marinhos - Interação",
       "source": "ih",
@@ -50182,6 +50156,24 @@
         "2026-10-13"
       ],
       "nDays": 32
+    },
+    {
+      "ref": "ANAV NR 2256/26",
+      "category": "Requisitos de segurança maritima",
+      "source": "ih",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=ea0ae9e4-1d6b-482b-8a64-ed8ef3ee65aa",
+      "firstSeen": "2026-10-06",
+      "lastSeen": "2026-10-12",
+      "daysInForce": [
+        "2026-10-06",
+        "2026-10-07",
+        "2026-10-08",
+        "2026-10-09",
+        "2026-10-10",
+        "2026-10-11",
+        "2026-10-12"
+      ],
+      "nDays": 7
     },
     {
       "ref": "ANAV NR 2272/26",
