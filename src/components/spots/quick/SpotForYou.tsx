@@ -74,8 +74,11 @@ export default function SpotForYou({
       <h2 className="font-display text-lg font-semibold text-fg">
         {tq.forYou}
       </h2>
+      {/* radiogroup — não tablist: a página já tem UM tablist de
+          modalidade na barra unificada (os specs contam exactamente 1);
+          escolha exclusiva ⇔ radio/aria-checked é a semântica certa. */}
       <div
-        role="tablist"
+        role="radiogroup"
         aria-label={sportTabsAria}
         className="grid auto-cols-fr grid-flow-col gap-1 rounded-input border border-divider bg-surface-1/[0.04] p-1 overflow-x-auto"
       >
@@ -85,8 +88,8 @@ export default function SpotForYou({
             <button
               key={s}
               type="button"
-              role="tab"
-              aria-selected={active}
+              role="radio"
+              aria-checked={active}
               onClick={() => onSelectSport(s)}
               className={cn(
                 'min-h-[44px] whitespace-nowrap rounded-input px-3 text-sm font-medium',

@@ -57,8 +57,9 @@ test.describe('#184 — estado normal', () => {
     const card = page.locator('[data-verdict-card]');
     await expect(card.getByRole('meter')).toBeVisible();
     await expect(card.getByText(/Épico|Bom|Razoável|Fraco|N\/A/)).toBeVisible();
-    // «Para ti»: pills de desporto + frase.
-    await expect(page.locator('[data-for-you] [role="tablist"]')).toBeVisible();
+    // «Para ti»: pills de desporto (radiogroup — o único tablist da página
+    // é o da barra unificada) + frase.
+    await expect(page.locator('[data-for-you] [role="radiogroup"]')).toBeVisible();
     // «Planear».
     await expect(page.locator('[data-plan-card]')).toBeVisible();
     // Mini-praia: descrição textual equivalente e sem NaN.
