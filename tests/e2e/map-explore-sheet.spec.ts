@@ -201,7 +201,7 @@ test.describe('Lista sincronizada do /mapa — sheet mobile', () => {
         document.querySelectorAll<HTMLElement>(
           '.leaflet-marker-icon.spot-marker [data-spot-score]',
         ),
-      ).map((el) => Number(el.getAttribute('data-spot-score')));
+      ).map((el) => Math.round(Number(el.getAttribute('data-spot-score')) / 10)); // nota /10 (#210)
       return scores.length ? Math.max(...scores) : -1;
     });
     expect(bestScore).toBe(maxMarker);
@@ -232,7 +232,7 @@ test.describe('Lista sincronizada do /mapa — sheet mobile', () => {
     await page.locator('[data-sheet-grabber]').click(); // → open
     const row = page.locator('[role="option"][data-spot-id="nazare"]');
     await expect(row).toBeVisible({ timeout: 15_000 });
-    expect(await rowScore(row)).toBe(20);
+    expect(await rowScore(row)).toBe(2); // 20 → nota 2
 
     // Scrub para as 17h (índice 3) → marcador e linha sobem juntos para 88.
     // Ciclo do grabber: open → peek; o helper leva peek → half (scrubber).
@@ -242,7 +242,7 @@ test.describe('Lista sincronizada do /mapa — sheet mobile', () => {
     await expect(markerScore).toHaveAttribute('data-spot-score', '88', { timeout: 15_000 });
     await page.locator('[data-sheet-grabber]').click(); // half → open
     await expect(row).toBeVisible({ timeout: 15_000 });
-    expect(await rowScore(row)).toBe(88);
+    expect(await rowScore(row)).toBe(9); // 88 → nota 9
   });
 
   test('deep link ?spot= abre a pré-visualização do spot (v3)', async ({ page }) => {
@@ -520,7 +520,7 @@ test.describe('Lista sincronizada do /mapa — painel desktop', () => {
         document.querySelectorAll<HTMLElement>(
           '.leaflet-marker-icon.spot-marker [data-spot-score]',
         ),
-      ).map((el) => Number(el.getAttribute('data-spot-score')));
+      ).map((el) => Math.round(Number(el.getAttribute('data-spot-score')) / 10)); // nota /10 (#210)
       return scores.length ? Math.max(...scores) : -1;
     });
     expect(scores[0]).toBe(maxMarker);
