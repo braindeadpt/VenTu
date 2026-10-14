@@ -50,6 +50,9 @@ export const COR = {
   fundo: '#03101C',
 } as const;
 
+/** Cores da terra por cota (0 m, 60, 150, 300 m): mais verde e mais clara a subir, como o pinhal e a rocha da maquete. */
+export const TERRA_COTAS = [COR.terra, mix(COR.terra, COR.pinhal, 0.7), mix(COR.pinhal, COR.rocha, 0.35), mix(COR.rocha, '#56677B', 0.25)] as const;
+
 /** Faixas de profundidade (m): 0 (0–5) … 7 (100+), claro junto à praia. */
 export const PROF_FAIXAS = [5, 10, 20, 30, 50, 75, 100] as const;
 const OC = ['#0F4A73', '#0C3E63', '#0A3354', '#082A47', '#06213A', '#04182C'];

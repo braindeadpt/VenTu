@@ -4,14 +4,19 @@
  * inicial). Exige WebGL2 (verificado antes de o importar).
  *
  * Terreno: AWS Terrain Tiles (terrarium). O relevo usa um protocolo que corta
- * o mar a 0 m (mar plano, como na maquete); a cor do mar e da terra vem de
- * duas camadas `color-relief` sobre o mesmo DEM sem corte (a batimetria dá as
- * faixas de profundidade; a terra fica por cima das frentes de onda).
+ * o mar a 0 m (mar plano, como na maquete). Como na maquete, o mar é pintado
+ * por faixas de profundidade vectoriais (isóbatas aproximadas de
+ * `geoDaPraia`: a nota da hora junto à praia, azuis do Atlântico ao largo) e
+ * a terra, a areia e a linha de costa saem da mesma geografia; um
+ * `color-relief` por baixo cobre a terra para lá da área calculada.
  * Atribuição: © OpenStreetMap · AWS Terrain Tiles · MapLibre (na figura).
  */
-import maplibregl, { type Map as MLMap, type StyleSpecification, type ExpressionSpecification } from 'maplibre-gl';
-import { aplicarLuz, camara, corMar, COR, frentesOnda, luz, PROF_FAIXAS, type Camara } from '@/lib/praiaCena';
+import * as maplibregl from 'maplibre-gl';
+import { type Map as MLMap, type StyleSpecification, type ExpressionSpecification } from 'maplibre-gl';
+import { aplicarLuz, camara, corMar, COR, frentesOnda, luz, TERRA_COTAS, type Camara } from '@/lib/praiaCena';
+import { frentesGeo, multiPoligono, type GeoPraia } from '@/lib/praiaGeo';
 import type { BandaK } from '@/lib/modalidades';
+import { geoDaPraia } from './praiaRelevo';
 
 const TILES = 's3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png';
 const PROTO = 'ventuclamp';
@@ -75,15 +80,35 @@ export interface HandleMapa {
   destruir(): void;
 }
 
-function corMarExpr(b: BandaK, L: ReturnType<typeof luz>): ExpressionSpecification {
-  // degraus emulados com paragens muito próximas (color-relief só interpola)
-  const e: unknown[] = ['interpolate', ['linear'], ['elevation'], -6000, corMar(b, 7, L)];
-  for (let i = PROF_FAIXAS.length - 1; i >= 0; i--) {
-    const d = PROF_FAIXAS[i];
-    e.push(-d - 0.01, corMar(b, i + 1, L), -d + 0.01, corMar(b, i, L));
-  }
-  e.push(0, corMar(b, 0, L), 9000, corMar(b, 0, L));
+/** Cor de cada faixa de profundidade (propriedade `i` do GeoJSON). */
+function corFaixasExpr(b: BandaK, L: ReturnType<typeof luz>): ExpressionSpecification {
+  const e: unknown[] = ['match', ['get', 'i']];
+  for (let i = 0; i < 7; i++) e.push(i, corMar(b, i, L));
+  e.push(corMar(b, 6, L));
   return e as ExpressionSpecification;
+}
+/** Terra por cota (as mesmas cores da vista plana). */
+function corRelevoExpr(L: ReturnType<typeof luz>): ExpressionSpecification {
+  const e: unknown[] = ['match', ['get', 'k']];
+  TERRA_COTAS.slice(1).forEach((c, k) => e.push(k, aplicarLuz(c, L)));
+  e.push(aplicarLuz(TERRA_COTAS[1], L));
+  return e as ExpressionSpecification;
+}
+const VAZIO = { type: 'FeatureCollection' as const, features: [] };
+/** GeoJSON das camadas da praia a partir da geografia vectorial. */
+export function geojsonDaPraia(g: GeoPraia) {
+  const fc = (aneis: GeoPraia['terra'], props: Record<string, number> = {}) => ({
+    type: 'Feature' as const,
+    properties: props,
+    geometry: { type: 'MultiPolygon' as const, coordinates: multiPoligono(aneis) },
+  });
+  return {
+    // do fundo (i = 6, < 100 m) para a praia (i = 0, < 5 m): a ordem das features é a ordem de pintura
+    faixas: { type: 'FeatureCollection' as const, features: g.faixas.map((f, i) => fc(f, { i })).reverse() },
+    terra: { type: 'FeatureCollection' as const, features: [fc(g.terra)] },
+    areia: { type: 'FeatureCollection' as const, features: [fc(g.areia)] },
+    relevo: { type: 'FeatureCollection' as const, features: g.relevo.map((r, k) => fc(r, { k })) },
+  };
 }
 function corTerraExpr(L: ReturnType<typeof luz>): ExpressionSpecification {
   const t = aplicarLuz(COR.terra, L);
@@ -108,7 +133,20 @@ const hillPaint = (e: EstadoCena, L: ReturnType<typeof luz>) => ({
   'hillshade-accent-color': '#0B1D2A',
 });
 
+/**
+ * MapLibre 6 (ES module): o worker vem de `public/vendor/` (copiado de
+ * node_modules no prebuild, `scripts/copy-maplibre-worker.mjs`), da mesma
+ * origem: a CSP mantém `worker-src 'self' blob:`.
+ */
+let workerOk = false;
+function configurarWorker() {
+  if (workerOk) return;
+  workerOk = true;
+  maplibregl.setWorkerUrl(`/vendor/maplibre-gl-worker-${maplibregl.getVersion()}.mjs`);
+}
+
 export function criarMapa(o: OpcoesMapa): HandleMapa {
+  configurarWorker();
   registarProtocolo();
   const L0 = luz(o.estado.sunEl, o.estado.cloud);
   const demClamp = { type: 'raster-dem' as const, tiles: [`${PROTO}://${TILES}`], encoding: 'terrarium' as const, tileSize: 256, maxzoom: 14 };
@@ -119,12 +157,16 @@ export function criarMapa(o: OpcoesMapa): HandleMapa {
       demH: { ...demClamp },
       demR: { type: 'raster-dem', tiles: [`https://${TILES}`], encoding: 'terrarium', tileSize: 256, maxzoom: 13 },
       frentes: { type: 'geojson', data: { type: 'FeatureCollection', features: [] } },
+      faixas: { type: 'geojson', data: VAZIO },
+      terraG: { type: 'geojson', data: VAZIO },
+      areiaG: { type: 'geojson', data: VAZIO },
+      relevoG: { type: 'geojson', data: VAZIO },
     },
     terrain: { source: 'demT', exaggeration: 1.5 },
     sky: skyDe(L0),
     layers: [
-      { id: 'bg', type: 'background', paint: { 'background-color': corMar(o.estado.banda, 6, L0) } },
-      { id: 'mar', type: 'color-relief', source: 'demR', paint: { 'color-relief-color': corMarExpr(o.estado.banda, L0) } },
+      { id: 'bg', type: 'background', paint: { 'background-color': corMar(o.estado.banda, 7, L0) } },
+      { id: 'mar', type: 'fill', source: 'faixas', paint: { 'fill-color': corFaixasExpr(o.estado.banda, L0), 'fill-antialias': false } },
       {
         id: 'frentes',
         type: 'line',
@@ -133,7 +175,11 @@ export function criarMapa(o: OpcoesMapa): HandleMapa {
         paint: { 'line-color': '#F3F8FB', 'line-width': 1.6, 'line-opacity': 0.7 },
       },
       { id: 'terra', type: 'color-relief', source: 'demR', paint: { 'color-relief-color': corTerraExpr(L0) } },
+      { id: 'terraG', type: 'fill', source: 'terraG', paint: { 'fill-color': aplicarLuz(COR.terra, L0) } },
+      { id: 'relevoG', type: 'fill', source: 'relevoG', paint: { 'fill-color': corRelevoExpr(L0), 'fill-opacity': 0.85 } },
+      { id: 'areiaG', type: 'fill', source: 'areiaG', paint: { 'fill-color': aplicarLuz(COR.areia, L0) } },
       { id: 'sombra', type: 'hillshade', source: 'demH', paint: hillPaint(o.estado, L0) },
+      { id: 'costa', type: 'line', source: 'terraG', paint: { 'line-color': '#F3F8FB', 'line-width': 1.4, 'line-opacity': 0.7 } },
     ],
   } as StyleSpecification;
 
@@ -179,7 +225,9 @@ export function criarMapa(o: OpcoesMapa): HandleMapa {
   });
   const frentes = (t: number) => {
     if (!ok) return;
-    const segs = frentesOnda(o.ll, o.praiaVirada, estado.sd, estado.tp, estado.hs, t);
+    const segs = geoOk
+      ? frentesGeo(geoOk.ondas, estado.sd, estado.tp, estado.hs, t, o.desktop)
+      : frentesOnda(o.ll, o.praiaVirada, estado.sd, estado.tp, estado.hs, t);
     const src = m.getSource('frentes') as maplibregl.GeoJSONSource | undefined;
     src?.setData({ type: 'Feature', properties: {}, geometry: { type: 'MultiLineString', coordinates: segs } });
   };
@@ -187,20 +235,40 @@ export function criarMapa(o: OpcoesMapa): HandleMapa {
     estado = e;
     if (!ok) return;
     const L = luz(e.sunEl, e.cloud);
-    m.setPaintProperty('bg', 'background-color', corMar(e.banda, 6, L));
-    m.setPaintProperty('mar', 'color-relief-color', corMarExpr(e.banda, L));
+    m.setPaintProperty('bg', 'background-color', corMar(e.banda, 7, L));
+    m.setPaintProperty('mar', 'fill-color', corFaixasExpr(e.banda, L));
     m.setPaintProperty('terra', 'color-relief-color', corTerraExpr(L));
-    Object.entries(hillPaint(e, L)).forEach(([k, v]) => m.setPaintProperty('sombra', k, v));
+    m.setPaintProperty('terraG', 'fill-color', aplicarLuz(COR.terra, L));
+    m.setPaintProperty('areiaG', 'fill-color', aplicarLuz(COR.areia, L));
+    m.setPaintProperty('relevoG', 'fill-color', corRelevoExpr(L));
+    (Object.entries(hillPaint(e, L)) as Array<[keyof maplibregl.AllPaintProperties, never]>).forEach(([k, v]) => m.setPaintProperty('sombra', k, v));
     m.setSky(skyDe(L));
     m.setPaintProperty('frentes', 'line-width', 1 + e.hs * 0.6);
     m.setPaintProperty('frentes', 'line-opacity', Math.max(0.4, Math.min(0.75, 0.35 + e.hs * 0.12)));
     if (o.reduz) frentes(0);
   };
+  // a geografia (costa, faixas, areia) carrega em paralelo com o estilo
+  const geo = geoDaPraia(o.ll);
+  let geoOk: GeoPraia | null = null;
+  let vivo = true;
   m.on('load', () => {
     ok = true;
     pinta(estado);
     frentes(o.captura ? 3.2 : 0);
-    m.once('idle', () => o.onPronto());
+    void geo.then((g) => {
+      if (!vivo) return;
+      if (g) {
+        const gj = geojsonDaPraia(g);
+        (m.getSource('faixas') as maplibregl.GeoJSONSource | undefined)?.setData(gj.faixas);
+        (m.getSource('terraG') as maplibregl.GeoJSONSource | undefined)?.setData(gj.terra);
+        (m.getSource('areiaG') as maplibregl.GeoJSONSource | undefined)?.setData(gj.areia);
+        (m.getSource('relevoG') as maplibregl.GeoJSONSource | undefined)?.setData(gj.relevo);
+        geoOk = g;
+        frentes(o.captura ? 3.2 : 0);
+      }
+      m.once('idle', () => vivo && o.onPronto());
+      m.triggerRepaint();
+    });
   });
   return {
     pinta,
@@ -217,6 +285,7 @@ export function criarMapa(o: OpcoesMapa): HandleMapa {
       return l ? [l.lng, l.lat] : null;
     },
     destruir() {
+      vivo = false;
       m.remove();
     },
   };

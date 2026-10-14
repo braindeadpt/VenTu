@@ -10,7 +10,9 @@
   },
   "homepage": "https://ventu.surf",
   "scripts": {
+    "predev": "node scripts/copy-maplibre-worker.mjs",
     "dev": "next dev",
+    "prebuild": "node scripts/copy-maplibre-worker.mjs",
     "build": "npm run og:generate && npm run spots:lite && npm run manifest:generate && next build && node scripts/fixup-next-segment-paths.js",
     "build:e2e": "node scripts/build-e2e.mjs",
     "start": "next start",
@@ -108,7 +110,7 @@
     "leaflet": "^1.9.4",
     "leaflet.markercluster": "^1.5.3",
     "lucide-react": "^0.577.0",
-    "maplibre-gl": "^5.24.0",
+    "maplibre-gl": "^6.4.1",
     "next": "^16.4.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
