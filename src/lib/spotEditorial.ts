@@ -38,7 +38,13 @@ export interface EditorialSpot {
    * o nome da praia, o ponto onde fica e os lugares a mostrar. Sem isto, a
    * cena usa o nome do spot, o pico e as localidades OSM.
    */
-  rotulos?: { praia: string; ll: [number, number]; lugares: Array<{ n: string; ll: [number, number]; ele?: number }> };
+  rotulos?: {
+    praia: string;
+    ll: [number, number];
+    /** centro da vista plana (a caixa da maquete), quando difere do centro da câmara 3D */
+    centroPlano?: [number, number];
+    lugares: Array<{ n: string; ll: [number, number]; ele?: number }>;
+  };
   /** Valores derivados da orientação (sem entrada editorial). */
   estimado: boolean;
   maqueteId?: string;

@@ -3,7 +3,7 @@
  * faixas de profundidade a crescer para o largo e costa no sítio certo.
  */
 import { describe, expect, it } from 'vitest';
-import { aneisGrelha, areaAnel, construirGeo, distancia, multiPoligono } from '@/lib/praiaGeo';
+import { aneisGrelha, areaAnel, construirGeo, distancia, encadeia, multiPoligono } from '@/lib/praiaGeo';
 import { PROF_FAIXAS } from '@/lib/praiaCena';
 
 const grelha = (nx: number, ny: number, f: (i: number, j: number) => number) => {
@@ -89,5 +89,25 @@ describe('praiaGeo · praia sintética', () => {
     expect(mp.length).toBeGreaterThan(0);
     const ext = mp[0][0] as unknown as Array<[number, number]>;
     expect(areaAnel(ext.slice(0, -1))).toBeLessThan(0);
+  });
+});
+
+describe('encadeia (frentes de onda em linhas contínuas)', () => {
+  it('junta segmentos com extremos comuns, em qualquer sentido, sem perder pontos', () => {
+    const P = (x: number): [number, number] => [-9.5 + x * 0.001, 38.7 + x * 0.0005];
+    // linha 0-1-2-3-4 partida em segmentos desordenados e alguns invertidos, mais um solto
+    const segs: Array<Array<[number, number]>> = [
+      [P(2), P(3)],
+      [P(1), P(0)],
+      [P(3), P(4)],
+      [P(2), P(1)],
+      [[0, 0], [0, 1]],
+    ];
+    const l = encadeia(segs);
+    expect(l).toHaveLength(2);
+    const longa = l.find((x) => x.length === 5)!;
+    const xs = longa.map((p) => Math.round((p[0] + 9.5) * 1000));
+    expect(xs[0] === 0 ? xs : [...xs].reverse()).toEqual([0, 1, 2, 3, 4]);
+    expect(l.find((x) => x.length === 2)).toEqual([[0, 0], [0, 1]]);
   });
 });

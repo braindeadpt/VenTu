@@ -62,7 +62,7 @@ export default function SpotV6({ spot, nome, local, locale, linhas, agoraMs, fot
   const [agora, setAgora] = useState(agoraMs);
   const [i, setI] = useState(0);
   const [pendH, setPendH] = useState<number | null>(null);
-  const [flags, setFlags] = useState({ plano: false, captura: false, estudo: false, vivo: false });
+  const [flags, setFlags] = useState({ plano: false, estudo: false, vivo: false });
 
   // depois de montar: relógio real, ?d= / ventu.modalidade, ?h=, ?webgl=0, ?estudo=1
   useEffect(() => {
@@ -76,7 +76,7 @@ export default function SpotV6({ spot, nome, local, locale, linhas, agoraMs, fot
     }
     const hq = Number(p.get('h'));
     if (Number.isFinite(hq) && hq > 0) setPendH(Math.floor(hq));
-    setFlags({ plano: p.get('webgl') === '0', captura: p.has('captura'), estudo: p.get('estudo') === '1', vivo: true });
+    setFlags({ plano: p.get('webgl') === '0', estudo: p.get('estudo') === '1', vivo: true });
     const ouve = (e: Event) => {
       const v = (e as CustomEvent).detail;
       if (isModalidade(v)) setD(v);
@@ -149,7 +149,7 @@ export default function SpotV6({ spot, nome, local, locale, linhas, agoraMs, fot
 
   return (
     <div
-      className={`v6${flags.vivo ? ' vivo' : ''}${temNoite ? ' e-noite' : ''}${flags.captura ? ' captura' : ''}`}
+      className={`v6${flags.vivo ? ' vivo' : ''}${temNoite ? ' e-noite' : ''}`}
       data-testid="spot-v6"
       data-modalidade={d}
       data-hora={h.t}
@@ -193,7 +193,6 @@ export default function SpotV6({ spot, nome, local, locale, linhas, agoraMs, fot
           d={d}
           copy={copy}
           forcarPlano={flags.plano}
-          captura={flags.captura}
           rotulos={ed.rotulos}
         />
       </div>

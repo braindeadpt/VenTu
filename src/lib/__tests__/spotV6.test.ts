@@ -113,6 +113,14 @@ describe('construirHoras: um objecto por hora a partir do forecast', () => {
     expect(d.faltam).toEqual(expect.arrayContaining(['rain', 'cloud']));
     expect(Object.keys(d.sol).length).toBeGreaterThanOrEqual(2);
   });
+  it('chuva e nuvens no feed (precipitation, cloudCover) → lidas e fora de faltam', () => {
+    const s = serie(60).map((l) => ({ ...l, precipitation: 2.5, cloudCover: 100 }));
+    const x = construirHoras(s, { lat: guincho.lat, lon: guincho.lon, praiaVirada: ed.praiaVirada }, agora);
+    expect(x.horas[0].rain).toBe(2.5);
+    expect(x.horas[0].cloud).toBe(100);
+    expect(x.faltam).not.toContain('rain');
+    expect(x.faltam).not.toContain('cloud');
+  });
   it('sem chuva o motor não penaliza (degrada sem penalização)', () => {
     const sp = spotModalidadeDe(ed);
     const com0 = avaliaHoras(sp, 'kite', d.horas.map((h) => ({ ...h, rain: 0 })));

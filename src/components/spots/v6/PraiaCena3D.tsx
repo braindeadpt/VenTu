@@ -39,7 +39,6 @@ export interface PraiaCena3DProps {
   d: Modalidade;
   copy: SpotPageV6Copy;
   forcarPlano: boolean;
-  captura: boolean;
   /** rótulos editoriais (spotEditorial.rotulos): substituem o nome, o pico, os vizinhos e as localidades */
   rotulos?: EditorialSpot['rotulos'];
 }
@@ -56,7 +55,7 @@ export function temWebGL2(): boolean {
 type Modo = 'poster' | '3d' | 'plano';
 type Proj = { proj: (ll: [number, number]) => { x: number; y: number } | null; unproj: (p: [number, number]) => [number, number] | null };
 
-export default function PraiaCena3D({ nome, ll, idEstatico, praiaVirada, vizinhos, h, banda, d, copy: c, forcarPlano, captura, rotulos }: PraiaCena3DProps) {
+export default function PraiaCena3D({ nome, ll, idEstatico, praiaVirada, vizinhos, h, banda, d, copy: c, forcarPlano, rotulos }: PraiaCena3DProps) {
   const fig = useRef<HTMLElement>(null);
   const mapaEl = useRef<HTMLDivElement>(null);
   const planoEl = useRef<HTMLCanvasElement>(null);
@@ -106,8 +105,14 @@ export default function PraiaCena3D({ nome, ll, idEstatico, praiaVirada, vizinho
       if (!g && nPeq >= 3) break;
       if (out.some((o) => o.t === t)) continue;
       const s = p.proj(q);
-      if (!s || s.x < 60 || s.x > W - 60 || s.y < 70 || s.y > H - 40) continue;
-      if (!g && out.some((o) => Math.abs(o.x - s.x) < 130 && Math.abs(o.y - s.y) < 34)) continue;
+      // rótulos editoriais: posições escolhidas à mão (as da maquete), só se cortam os que saem do ecrã;
+      // os automáticos (nome, picos, vizinhos, localidades) não se podem sobrepor.
+      if (rotulos) {
+        if (!s || s.x < 50 || s.x > W - 50 || s.y < 60 || s.y > H - 30) continue;
+      } else {
+        if (!s || s.x < 60 || s.x > W - 60 || s.y < 70 || s.y > H - 40) continue;
+        if (!g && out.some((o) => Math.abs(o.x - s.x) < 130 && Math.abs(o.y - s.y) < 34)) continue;
+      }
       out.push({ t, x: Math.round(s.x), y: Math.round(s.y - (g ? 22 : 0)), grande: g, ele });
       if (!g) nPeq++;
     }
@@ -219,7 +224,7 @@ export default function PraiaCena3D({ nome, ll, idEstatico, praiaVirada, vizinho
       requestAnimationFrame(() => {
         if (!planoEl.current) return;
         const cam = camara(ll, praiaVirada, desk.current);
-        plano.current = criarPlano(planoEl.current, ll, idEstatico, cam.center, praiaVirada, desk.current, estadoRef.current, () => setPronto(true));
+        plano.current = criarPlano(planoEl.current, ll, idEstatico, rotulos?.centroPlano ?? cam.center, praiaVirada, desk.current, estadoRef.current, () => setPronto(true));
         proj.current = plano.current;
         vento.current?.tamanho();
         campoVento();
@@ -247,7 +252,6 @@ export default function PraiaCena3D({ nome, ll, idEstatico, praiaVirada, vizinho
           praiaVirada,
           desktop: desk.current,
           reduz: reduz.current,
-          captura,
           estado: estadoRef.current,
           onPronto: () => {
             posLbls();
@@ -255,10 +259,7 @@ export default function PraiaCena3D({ nome, ll, idEstatico, praiaVirada, vizinho
             if (!reduz.current) {
               vento.current?.iniciar();
               campoVento();
-              if (captura) {
-                vento.current?.avanca(90);
-                mapa.current?.frentes(3.2);
-              } else raf = requestAnimationFrame(anima);
+              raf = requestAnimationFrame(anima);
             }
             setTimeout(() => setPronto(true), 400);
           },

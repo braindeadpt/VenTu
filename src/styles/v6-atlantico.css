@@ -145,6 +145,7 @@
 .v6 canvas.vento{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2}
 .v6 .top-lbl{font:800 13px/1 var(--txt);letter-spacing:.06em;color:var(--espuma);text-shadow:0 1px 4px #000,0 0 10px rgba(0,0,0,.7);white-space:nowrap}
 .v6 .top-lbl.grande{font:900 italic 20px/1 var(--disp);letter-spacing:.02em;text-transform:uppercase;background:var(--band);color:var(--band-t);text-shadow:none;padding:5px 9px 4px;border-radius:8px}
+.v6 .top-lbl i{font-style:normal;color:var(--nevoa);font-weight:600}
 .v6 .lbl-abs{position:absolute;z-index:3;transform:translate(-50%,-50%);pointer-events:none}
 .v6 .cena-ferr{position:absolute;z-index:4;right:12px;top:12px;display:flex;gap:8px;align-items:center}
 .v6 .vento-chip{display:flex;align-items:center;gap:8px;background:rgba(3,14,24,.84);border-radius:999px;padding:8px 12px;font:700 14px/1 var(--txt);box-shadow:inset 0 0 0 1.5px rgba(243,248,251,.16)}
@@ -228,8 +229,6 @@
   .v6.vivo .foto.kb img,.v6.vivo .swell svg{animation:none}
   .v6 .modo .pista,.v6 .agulha,.v6 .foto img,.v6 .estudo summary svg{transition:none}
 }
-/* capturas: Ken Burns congelado (o mesmo da maquete com ?shot=1) */
-.v6.captura.vivo .foto.kb img{animation:none;transform:scale(1.06)}
 
 /* ---------- acções do spot (como chegar, favorito, alerta, câmara, mais) ---------- */
 .v6 .acoes{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:24px 16px 0}

@@ -39,6 +39,10 @@ export interface LinhaForecast {
   waterTemp?: number;
   airTemp?: number;
   tideHeight?: number;
+  /** Precipitação (mm/h), quando o feed a traz (o actual ainda não traz: fica null e o motor ignora-a). */
+  precipitation?: number;
+  /** Nebulosidade (%), quando o feed a traz. */
+  cloudCover?: number;
 }
 
 export interface HoraSpot extends HoraModalidade {
@@ -138,8 +142,8 @@ export function construirHoras(
       sd: n360(num(l.waveDirection) ?? num(l.swellDirection) ?? local.praiaVirada),
       tide,
       tideUp: !!tideUp,
-      cloud: null,
-      rain: null,
+      cloud: num(l.cloudCover) ?? null,
+      rain: num(l.precipitation) ?? null,
       sunEl: s.el,
       sunAz: s.az,
       agua: num(l.waterTemp),
@@ -162,7 +166,9 @@ export function construirHoras(
       const j = validas.findIndex((x) => x.time === e.time);
       return { ...extremoAfinado(validas, j, e.time as string), tipo: e.type === 'high' ? 'PM' : 'BM' } as MareExtremo;
     });
-  const faltam: DadosHoras['faltam'] = ['rain', 'cloud'];
+  const faltam: DadosHoras['faltam'] = [];
+  if (horas.every((h) => h.rain == null)) faltam.push('rain');
+  if (horas.every((h) => h.cloud == null)) faltam.push('cloud');
   if (horas.every((h) => !Number.isFinite(h.tide))) faltam.push('tide');
   return { horas, sol, mares, faltam, semAgora };
 }

@@ -550,14 +550,14 @@ function suavizaCampo(T: Float32Array, nx: number, ny: number, n: number): void 
 
 /**
  * Frentes de onda (segmentos [lon, lat]) junto à costa: isócronas do campo de
- * chegada espaçadas de 2 (desktop) ou 3 (telemóvel) períodos e animadas pela
+ * chegada espaçadas de 2 (desktop) ou 3 (telemóvel) períodos (× `escala`) e animadas pela
  * fase `t` (s), como na maquete. Só até `maxDist` m da costa.
  */
-export function frentesGeo(g: GrelhaOndas, sd: number, tp: number, hs: number, t: number, desktop: boolean, maxDist = 3200): Array<Array<[number, number]>> {
+export function frentesGeo(g: GrelhaOndas, sd: number, tp: number, hs: number, t: number, desktop: boolean, maxDist = 3200, escala = 1): Array<Array<[number, number]>> {
   if (!(hs > 0.15) || !(tp > 0)) return [];
   const T = campoChegada(g, sd);
   const { nx, ny } = g;
-  const Lam = tp * (desktop ? 2 : 3);
+  const Lam = tp * (desktop ? 2 : 3) * escala;
   const ph = (((t * 8) % Lam) + Lam) % Lam;
   const segs: Array<Array<[number, number]>> = [];
   const ll = (x: number, y: number): [number, number] => [g.w + x * g.dlon, g.n - y * g.dlat];
@@ -587,7 +587,55 @@ export function frentesGeo(g: GrelhaOndas, sd: number, tp: number, hs: number, t
         if (pts.length >= 2) segs.push(pts.slice(0, 2));
       }
     }
-  return segs;
+  return encadeia(segs);
+}
+
+/**
+ * Junta os segmentos de 2 pontos do marching squares em linhas contínuas
+ * (extremos iguais a ~1 cm). Desenhados soltos, com `line-cap: round` e
+ * opacidade < 1, os remates sobrepostos faziam «contas» ao longo de cada frente.
+ */
+export function encadeia(segs: Array<Array<[number, number]>>): Array<Array<[number, number]>> {
+  const chave = (p: [number, number]) => `${Math.round(p[0] * 1e7)},${Math.round(p[1] * 1e7)}`;
+  const porPonto = new Map<string, number[]>();
+  segs.forEach((sg, i) => {
+    for (const p of [sg[0], sg[sg.length - 1]]) {
+      const c = chave(p);
+      const l = porPonto.get(c);
+      if (l) l.push(i);
+      else porPonto.set(c, [i]);
+    }
+  });
+  const usado = new Uint8Array(segs.length);
+  const outro = (p: [number, number], i: number): number => {
+    const l = porPonto.get(chave(p));
+    if (!l) return -1;
+    for (const j of l) if (j !== i && !usado[j]) return j;
+    return -1;
+  };
+  const out: Array<Array<[number, number]>> = [];
+  for (let i = 0; i < segs.length; i++) {
+    if (usado[i]) continue;
+    usado[i] = 1;
+    const linha: Array<[number, number]> = [...segs[i]];
+    // estende para a frente e depois para trás
+    for (const frente of [true, false]) {
+      let cur = i;
+      for (;;) {
+        const p = frente ? linha[linha.length - 1] : linha[0];
+        const j = outro(p, cur);
+        if (j < 0) break;
+        usado[j] = 1;
+        const sg = segs[j];
+        const pj = chave(sg[0]) === chave(p) ? sg.slice(1) : sg.slice(0, -1).reverse();
+        if (frente) linha.push(...pj);
+        else linha.unshift(...pj.reverse());
+        cur = j;
+      }
+    }
+    out.push(linha);
+  }
+  return out;
 }
 
 function dentro(p: readonly [number, number], a: Anel): boolean {

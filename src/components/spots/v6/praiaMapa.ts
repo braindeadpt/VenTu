@@ -66,7 +66,6 @@ export interface OpcoesMapa {
   praiaVirada: number;
   desktop: boolean;
   reduz: boolean;
-  captura: boolean;
   estado: EstadoCena;
   onPronto: () => void;
   onMexe: (inicio: boolean, porUtilizador: boolean) => void;
@@ -224,7 +223,7 @@ export function criarMapa(o: OpcoesMapa): HandleMapa {
     pitchWithRotate: false,
     attributionControl: false,
     fadeDuration: 0,
-    canvasContextAttributes: { preserveDrawingBuffer: o.captura, contextType: 'webgl2' },
+    canvasContextAttributes: { contextType: 'webgl2' },
     maxBounds: [
       [o.ll[0] - 0.16, o.ll[1] - 0.12],
       [o.ll[0] + 0.16, o.ll[1] + 0.12],
@@ -249,7 +248,10 @@ export function criarMapa(o: OpcoesMapa): HandleMapa {
   const frentes = (t: number) => {
     if (!ok) return;
     const segs = geoOk
-      ? frentesGeo(geoOk.ondas, estado.sd, estado.tp, estado.hs, t, o.desktop)
+      ? // ×0,7 (telemóvel) / ×0,8 (desktop) no 3D: em perspectiva, com o campo a 5° (a maquete só tem
+        // 280/300/320) e suavizado, as frentes saíam ~1,4× mais espaçadas do que nas capturas da maquete.
+        // A vista plana fica no espaçamento da maquete (escala 1), que já lhe era igual.
+        frentesGeo(geoOk.ondas, estado.sd, estado.tp, estado.hs, t, o.desktop, 3200, o.desktop ? 0.8 : 0.7)
       : frentesOnda(o.ll, o.praiaVirada, estado.sd, estado.tp, estado.hs, t);
     const src = m.getSource('frentes') as maplibregl.GeoJSONSource | undefined;
     src?.setData({ type: 'Feature', properties: {}, geometry: { type: 'MultiLineString', coordinates: segs } });
@@ -281,7 +283,7 @@ export function criarMapa(o: OpcoesMapa): HandleMapa {
   m.on('load', () => {
     ok = true;
     pinta(estado);
-    frentes(o.captura ? 3.2 : 0);
+    frentes(0);
     void geo.then((g) => {
       if (!vivo) return;
       if (g) {
@@ -295,7 +297,7 @@ export function criarMapa(o: OpcoesMapa): HandleMapa {
         (m.getSource('rochaG') as maplibregl.GeoJSONSource | undefined)?.setData(gj.rocha);
         (m.getSource('estradasG') as maplibregl.GeoJSONSource | undefined)?.setData(gj.estradas);
         geoOk = g;
-        frentes(o.captura ? 3.2 : 0);
+        frentes(0);
       }
       m.once('idle', () => vivo && o.onPronto());
       m.triggerRepaint();
