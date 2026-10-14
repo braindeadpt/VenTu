@@ -61,6 +61,8 @@ export interface EstadoCena {
 export interface OpcoesMapa {
   container: HTMLElement;
   ll: [number, number];
+  /** id do spot com geografia estática (spots curados) */
+  idEstatico?: string;
   praiaVirada: number;
   desktop: boolean;
   reduz: boolean;
@@ -107,7 +109,15 @@ export function geojsonDaPraia(g: GeoPraia) {
     faixas: { type: 'FeatureCollection' as const, features: g.faixas.map((f, i) => fc(f, { i })).reverse() },
     terra: { type: 'FeatureCollection' as const, features: [fc(g.terra)] },
     areia: { type: 'FeatureCollection' as const, features: [fc(g.areia)] },
-    relevo: { type: 'FeatureCollection' as const, features: g.relevo.map((r, k) => fc(r, { k })) },
+    // com as camadas OSM (spots curados), como na maquete: sem as cotas
+    relevo: { type: 'FeatureCollection' as const, features: g.pinhal ? [] : g.relevo.map((r, k) => fc(r, { k })) },
+    pinhal: { type: 'FeatureCollection' as const, features: g.pinhal ? [fc(g.pinhal)] : [] },
+    urbano: { type: 'FeatureCollection' as const, features: g.urbano ? [fc(g.urbano)] : [] },
+    rocha: { type: 'FeatureCollection' as const, features: g.rocha ? [fc(g.rocha)] : [] },
+    estradas: {
+      type: 'FeatureCollection' as const,
+      features: g.estradas?.length ? [{ type: 'Feature' as const, properties: {}, geometry: { type: 'MultiLineString' as const, coordinates: g.estradas } }] : [],
+    },
   };
 }
 function corTerraExpr(L: ReturnType<typeof luz>): ExpressionSpecification {
@@ -161,6 +171,10 @@ export function criarMapa(o: OpcoesMapa): HandleMapa {
       terraG: { type: 'geojson', data: VAZIO },
       areiaG: { type: 'geojson', data: VAZIO },
       relevoG: { type: 'geojson', data: VAZIO },
+      pinhalG: { type: 'geojson', data: VAZIO },
+      urbanoG: { type: 'geojson', data: VAZIO },
+      rochaG: { type: 'geojson', data: VAZIO },
+      estradasG: { type: 'geojson', data: VAZIO },
     },
     terrain: { source: 'demT', exaggeration: 1.5 },
     sky: skyDe(L0),
@@ -177,8 +191,17 @@ export function criarMapa(o: OpcoesMapa): HandleMapa {
       { id: 'terra', type: 'color-relief', source: 'demR', paint: { 'color-relief-color': corTerraExpr(L0) } },
       { id: 'terraG', type: 'fill', source: 'terraG', paint: { 'fill-color': aplicarLuz(COR.terra, L0) } },
       { id: 'relevoG', type: 'fill', source: 'relevoG', paint: { 'fill-color': corRelevoExpr(L0), 'fill-opacity': 0.85 } },
+      { id: 'urbanoG', type: 'fill', source: 'urbanoG', paint: { 'fill-color': aplicarLuz(COR.urb, L0), 'fill-opacity': 0.8 } },
+      { id: 'pinhalG', type: 'fill', source: 'pinhalG', paint: { 'fill-color': aplicarLuz(COR.pinhal, L0), 'fill-opacity': 0.8 } },
+      { id: 'rochaG', type: 'fill', source: 'rochaG', paint: { 'fill-color': aplicarLuz(COR.rocha, L0), 'fill-opacity': 0.9 } },
       { id: 'areiaG', type: 'fill', source: 'areiaG', paint: { 'fill-color': aplicarLuz(COR.areia, L0) } },
       { id: 'sombra', type: 'hillshade', source: 'demH', paint: hillPaint(o.estado, L0) },
+      {
+        id: 'estradasG',
+        type: 'line',
+        source: 'estradasG',
+        paint: { 'line-color': aplicarLuz(COR.estrada, L0), 'line-width': ['interpolate', ['linear'], ['zoom'], 12, 0.6, 15, 1.6], 'line-opacity': 0.6 },
+      },
       { id: 'costa', type: 'line', source: 'terraG', paint: { 'line-color': '#F3F8FB', 'line-width': 1.4, 'line-opacity': 0.7 } },
     ],
   } as StyleSpecification;
@@ -241,6 +264,10 @@ export function criarMapa(o: OpcoesMapa): HandleMapa {
     m.setPaintProperty('terraG', 'fill-color', aplicarLuz(COR.terra, L));
     m.setPaintProperty('areiaG', 'fill-color', aplicarLuz(COR.areia, L));
     m.setPaintProperty('relevoG', 'fill-color', corRelevoExpr(L));
+    m.setPaintProperty('urbanoG', 'fill-color', aplicarLuz(COR.urb, L));
+    m.setPaintProperty('pinhalG', 'fill-color', aplicarLuz(COR.pinhal, L));
+    m.setPaintProperty('rochaG', 'fill-color', aplicarLuz(COR.rocha, L));
+    m.setPaintProperty('estradasG', 'line-color', aplicarLuz(COR.estrada, L));
     (Object.entries(hillPaint(e, L)) as Array<[keyof maplibregl.AllPaintProperties, never]>).forEach(([k, v]) => m.setPaintProperty('sombra', k, v));
     m.setSky(skyDe(L));
     m.setPaintProperty('frentes', 'line-width', 1 + e.hs * 0.6);
@@ -248,7 +275,7 @@ export function criarMapa(o: OpcoesMapa): HandleMapa {
     if (o.reduz) frentes(0);
   };
   // a geografia (costa, faixas, areia) carrega em paralelo com o estilo
-  const geo = geoDaPraia(o.ll);
+  const geo = geoDaPraia(o.ll, o.idEstatico);
   let geoOk: GeoPraia | null = null;
   let vivo = true;
   m.on('load', () => {
@@ -263,6 +290,10 @@ export function criarMapa(o: OpcoesMapa): HandleMapa {
         (m.getSource('terraG') as maplibregl.GeoJSONSource | undefined)?.setData(gj.terra);
         (m.getSource('areiaG') as maplibregl.GeoJSONSource | undefined)?.setData(gj.areia);
         (m.getSource('relevoG') as maplibregl.GeoJSONSource | undefined)?.setData(gj.relevo);
+        (m.getSource('pinhalG') as maplibregl.GeoJSONSource | undefined)?.setData(gj.pinhal);
+        (m.getSource('urbanoG') as maplibregl.GeoJSONSource | undefined)?.setData(gj.urbano);
+        (m.getSource('rochaG') as maplibregl.GeoJSONSource | undefined)?.setData(gj.rocha);
+        (m.getSource('estradasG') as maplibregl.GeoJSONSource | undefined)?.setData(gj.estradas);
         geoOk = g;
         frentes(o.captura ? 3.2 : 0);
       }

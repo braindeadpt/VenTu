@@ -110,6 +110,7 @@ export const spotPageV6 = {
     vistaPlana: 'Vista plana: este aparelho não mostra 3D. As cores e o vento seguem a hora escolhida.',
     vistaPlanaReduz: 'Vista plana e parada (movimento reduzido). As cores e o vento seguem a hora escolhida.',
     chipVento: '{r} {w} nós · até {g}',
+    altitude: '{m} m',
     legenda:
       'O mar tem a cor da nota da hora; quanto mais claro, melhor. Traços brancos: o vento a correr. Linhas de espuma: a ondulação a entrar.',
     atribuicaoRelevo: 'relevo',
@@ -248,6 +249,7 @@ export const spotPageV6 = {
     vistaPlana: 'Flat view: this device cannot show 3D. Colours and wind follow the chosen hour.',
     vistaPlanaReduz: 'Flat, still view (reduced motion). Colours and wind follow the chosen hour.',
     chipVento: '{r} {w} kn · up to {g}',
+    altitude: '{m} m',
     legenda:
       "The sea takes the colour of the hour's score; lighter is better. White strokes: the wind. Foam lines: the swell coming in.",
     atribuicaoRelevo: 'terrain',

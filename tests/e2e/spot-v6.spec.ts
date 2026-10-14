@@ -222,11 +222,11 @@ test.describe('#184 spot v6 — praia em 3D', () => {
 
   test('sem WebGL2: fallback plano estático com setas, rótulo e legenda', async ({ page }) => {
     await page.addInitScript(() => {
-      const orig = HTMLCanvasElement.prototype.getContext;
-      // @ts-expect-error substituição de teste
-      HTMLCanvasElement.prototype.getContext = function (tipo: string, ...r: unknown[]) {
+      // substituição de teste: sem contextos WebGL
+      const proto = HTMLCanvasElement.prototype as unknown as { getContext: (tipo: string, ...r: unknown[]) => unknown };
+      const orig = proto.getContext;
+      proto.getContext = function (this: HTMLCanvasElement, tipo: string, ...r: unknown[]) {
         if (tipo === 'webgl2' || tipo === 'webgl' || tipo === 'experimental-webgl') return null;
-        // @ts-expect-error substituição de teste
         return orig.call(this, tipo, ...r);
       };
     });

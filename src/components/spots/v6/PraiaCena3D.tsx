@@ -29,6 +29,8 @@ export interface Vizinho {
 export interface PraiaCena3DProps {
   nome: string;
   ll: [number, number];
+  /** id do spot com geografia estática (spots curados: costa e camadas OSM) */
+  idEstatico?: string;
   praiaVirada: number;
   vizinhos: readonly Vizinho[];
   h: HoraSpot;
@@ -51,7 +53,7 @@ export function temWebGL2(): boolean {
 type Modo = 'poster' | '3d' | 'plano';
 type Proj = { proj: (ll: [number, number]) => { x: number; y: number } | null; unproj: (p: [number, number]) => [number, number] | null };
 
-export default function PraiaCena3D({ nome, ll, praiaVirada, vizinhos, h, banda, d, copy: c, forcarPlano, captura }: PraiaCena3DProps) {
+export default function PraiaCena3D({ nome, ll, idEstatico, praiaVirada, vizinhos, h, banda, d, copy: c, forcarPlano, captura }: PraiaCena3DProps) {
   const fig = useRef<HTMLElement>(null);
   const mapaEl = useRef<HTMLDivElement>(null);
   const planoEl = useRef<HTMLCanvasElement>(null);
@@ -72,25 +74,37 @@ export default function PraiaCena3D({ nome, ll, praiaVirada, vizinhos, h, banda,
     forcarRef.current = forcarPlano;
   }, [forcarPlano]);
   const [movido, setMovido] = useState(false);
-  const [lbls, setLbls] = useState<Array<{ t: string; x: number; y: number; grande: boolean }>>([]);
+  const [lbls, setLbls] = useState<Array<{ t: string; x: number; y: number; grande: boolean; ele?: number }>>([]);
+  /* rótulos da geografia estática (spots curados): o pico mais alto e as localidades do OSM */
+  const extras = useRef<Array<{ t: string; ll: [number, number]; ele?: number }>>([]);
   const [pronto, setPronto] = useState(false);
 
   const [reduzido, setReduzido] = useState(false);
 
-  /* rótulos: o spot (grande, na cor da banda) e os vizinhos que caibam */
+  /* rótulos: o spot (grande, na cor da banda), o pico, os vizinhos e as localidades que caibam */
   const posLbls = () => {
     const p = proj.current;
     const f = fig.current;
     if (!p || !f) return;
     const W = f.clientWidth;
     const H = f.clientHeight;
-    const out: Array<{ t: string; x: number; y: number; grande: boolean }> = [];
-    const todos: Array<[string, [number, number], boolean]> = [[nome, ll, true], ...vizinhos.map((v) => [v.nome, v.ll, false] as [string, [number, number], boolean])];
-    for (const [t, q, g] of todos) {
+    const out: Array<{ t: string; x: number; y: number; grande: boolean; ele?: number }> = [];
+    const ex = extras.current;
+    const todos: Array<[string, [number, number], boolean, number | undefined]> = [
+      [nome, ll, true, undefined],
+      ...ex.filter((e) => e.ele !== undefined).map((e) => [e.t, e.ll, false, e.ele] as [string, [number, number], boolean, number | undefined]),
+      ...vizinhos.map((v) => [v.nome, v.ll, false, undefined] as [string, [number, number], boolean, number | undefined]),
+      ...ex.filter((e) => e.ele === undefined).map((e) => [e.t, e.ll, false, undefined] as [string, [number, number], boolean, number | undefined]),
+    ];
+    let nPeq = 0;
+    for (const [t, q, g, ele] of todos) {
+      if (!g && nPeq >= 3) break;
+      if (out.some((o) => o.t === t)) continue;
       const s = p.proj(q);
-      if (!s || s.x < 50 || s.x > W - 50 || s.y < 60 || s.y > H - 30) continue;
-      if (!g && out.some((o) => Math.abs(o.x - s.x) < 110 && Math.abs(o.y - s.y) < 28)) continue;
-      out.push({ t, x: Math.round(s.x), y: Math.round(s.y - (g ? 22 : 0)), grande: g });
+      if (!s || s.x < 60 || s.x > W - 60 || s.y < 70 || s.y > H - 40) continue;
+      if (!g && out.some((o) => Math.abs(o.x - s.x) < 130 && Math.abs(o.y - s.y) < 34)) continue;
+      out.push({ t, x: Math.round(s.x), y: Math.round(s.y - (g ? 22 : 0)), grande: g, ele });
+      if (!g) nPeq++;
     }
     setLbls(out);
   };
@@ -170,6 +184,17 @@ export default function PraiaCena3D({ nome, ll, praiaVirada, vizinhos, h, banda,
         largura: desk.current ? 1.8 : 1.6,
         alfa: 0.9,
       });
+    if (idEstatico)
+      void import('./praiaRelevo')
+        .then((m) => m.geoDaPraia(ll, idEstatico))
+        .then((g) => {
+          if (!g) return;
+          extras.current = [
+            ...(g.picos ?? []).slice(0, 1).map((p) => ({ t: p.n, ll: p.ll, ele: p.ele })),
+            ...(g.lugares ?? []).map((l) => ({ t: l.n, ll: l.ll })),
+          ];
+          posLbls();
+        });
     let iniciado = false;
     let visivel = false;
     let raf = 0;
@@ -190,7 +215,7 @@ export default function PraiaCena3D({ nome, ll, praiaVirada, vizinhos, h, banda,
       requestAnimationFrame(() => {
         if (!planoEl.current) return;
         const cam = camara(ll, praiaVirada, desk.current);
-        plano.current = criarPlano(planoEl.current, ll, cam.center, praiaVirada, desk.current, estadoRef.current, () => setPronto(true));
+        plano.current = criarPlano(planoEl.current, ll, idEstatico, cam.center, praiaVirada, desk.current, estadoRef.current, () => setPronto(true));
         proj.current = plano.current;
         vento.current?.tamanho();
         campoVento();
@@ -214,6 +239,7 @@ export default function PraiaCena3D({ nome, ll, praiaVirada, vizinhos, h, banda,
         const hm = criarMapa({
           container: mapaEl.current,
           ll,
+          idEstatico,
           praiaVirada,
           desktop: desk.current,
           reduz: reduz.current,
@@ -314,6 +340,7 @@ export default function PraiaCena3D({ nome, ll, praiaVirada, vizinhos, h, banda,
           {lbls.map((l) => (
             <div key={l.t} className={`lbl-abs top-lbl${l.grande ? ' grande' : ''}`} style={{ left: l.x, top: l.y }}>
               {l.t}
+              {l.ele !== undefined ? <i> {fmtCopy(c.altitude, { m: l.ele })}</i> : null}
             </div>
           ))}
         </div>

@@ -5,7 +5,7 @@
  * e a geografia ficam em cache por spot (o mapa e a vista plana não os pedem
  * duas vezes; o browser reutiliza os PNG que o MapLibre já pediu).
  */
-import { construirGeo, type Amostrador, type GeoPraia } from '@/lib/praiaGeo';
+import { construirGeo, geoDeEstatico, type Amostrador, type GeoEstatico, type GeoPraia } from '@/lib/praiaGeo';
 
 export const URL_TERRARIUM = (z: number, x: number, y: number) =>
   `https://s3.amazonaws.com/elevation-tiles-prod/terrarium/${z}/${x}/${y}.png`;
@@ -100,10 +100,31 @@ export async function amostrador(z: number, bbox: [number, number, number, numbe
   };
 }
 
-/** Geografia vectorial da praia (costa, faixas de profundidade, areia, cotas), em cache por spot. */
-export function geoDaPraia(ll: [number, number]): Promise<GeoPraia | null> {
+/**
+ * Geografia vectorial da praia (costa, faixas de profundidade, areia, cotas),
+ * em cache por spot. Spots curados (`idEstatico`): lê primeiro o ficheiro
+ * pré-gerado da mesma origem (`/geo/praia/<id>.json`, com a costa e as
+ * camadas básicas do OpenStreetMap); se faltar, calcula a partir do relevo.
+ */
+export function geoDaPraia(ll: [number, number], idEstatico?: string): Promise<GeoPraia | null> {
   const k = ll.join(',');
   let p = geos.get(k);
+  if (!p && idEstatico) {
+    p = fetch(`/geo/praia/${encodeURIComponent(idEstatico)}.json`)
+      .then((r) => (r.ok ? (r.json() as Promise<GeoEstatico>) : null))
+      .then((j) => (j ? geoDeEstatico(j) : null))
+      .catch(() => null)
+      .then((g) => g ?? geoDoRelevo(ll));
+    geos.set(k, p);
+    return p;
+  }
+  if (!p) p = geoDoRelevo(ll);
+  return p;
+}
+
+function geoDoRelevo(ll: [number, number]): Promise<GeoPraia | null> {
+  const k = ll.join(',');
+  let p = geos.get(k + ':dem');
   if (!p) {
     const bbox: [number, number, number, number] = [
       ll[0] - AREA_GEO.meiaLon,
@@ -114,9 +135,13 @@ export function geoDaPraia(ll: [number, number]): Promise<GeoPraia | null> {
     p = Promise.all([amostrador(12, bbox), amostrador(10, bbox)])
       .then(([fino, largo]) => (fino ? construirGeo(ll, AREA_GEO, fino, largo) : null))
       .catch(() => null);
+    geos.set(k + ':dem', p);
     geos.set(k, p);
     void p.then((g) => {
-      if (!g) geos.delete(k);
+      if (!g) {
+        geos.delete(k + ':dem');
+        geos.delete(k);
+      }
     });
   }
   return p;

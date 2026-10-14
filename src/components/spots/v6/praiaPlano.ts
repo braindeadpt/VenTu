@@ -38,6 +38,7 @@ export interface HandlePlano {
 export function criarPlano(
   canvas: HTMLCanvasElement,
   ll: [number, number],
+  idEstatico: string | undefined,
   centro: [number, number],
   praiaVirada: number,
   desktop: boolean,
@@ -64,7 +65,7 @@ export function criarPlano(
   let estado = estado0;
   let vivo = true;
   let geo: GeoPraia | null = null;
-  let caminhos: { faixas: Path2D[]; terra: Path2D; areia: Path2D; relevo: Path2D[] } | null = null;
+  let caminhos: { faixas: Path2D[]; terra: Path2D; areia: Path2D; relevo: Path2D[]; urbano: Path2D; pinhal: Path2D; rocha: Path2D; estradas: Path2D } | null = null;
 
   const caminho = (aneis: Anel[]) => {
     const p = new Path2D();
@@ -76,6 +77,17 @@ export function criarPlano(
       });
       p.closePath();
     }
+    return p;
+  };
+
+  const linhas = (ls: Anel[]) => {
+    const p = new Path2D();
+    for (const l of ls)
+      l.forEach((q, k) => {
+        const s = proj(q);
+        if (k) p.lineTo(s.x, s.y);
+        else p.moveTo(s.x, s.y);
+      });
     return p;
   };
 
@@ -114,8 +126,23 @@ export function criarPlano(
         ctx.fillStyle = aplicarLuz(TERRA_COTAS[k + 1], L);
         ctx.fill(p, 'evenodd');
       });
+      // camadas OSM (spots curados), como na maquete
+      ctx.globalAlpha = 0.8;
+      ctx.fillStyle = aplicarLuz(COR.urb, L);
+      ctx.fill(caminhos.urbano, 'evenodd');
+      ctx.fillStyle = aplicarLuz(COR.pinhal, L);
+      ctx.fill(caminhos.pinhal, 'evenodd');
+      ctx.globalAlpha = 0.9;
+      ctx.fillStyle = aplicarLuz(COR.rocha, L);
+      ctx.fill(caminhos.rocha, 'evenodd');
+      ctx.globalAlpha = 1;
       ctx.fillStyle = aplicarLuz(COR.areia, L);
       ctx.fill(caminhos.areia, 'evenodd');
+      ctx.strokeStyle = aplicarLuz(COR.estrada, L);
+      ctx.globalAlpha = 0.6;
+      ctx.lineWidth = 1;
+      ctx.stroke(caminhos.estradas);
+      ctx.globalAlpha = 1;
       ctx.strokeStyle = 'rgba(243,248,251,.7)';
       ctx.lineWidth = 1.4;
       ctx.stroke(caminhos.terra);
@@ -129,13 +156,17 @@ export function criarPlano(
       faixas: g.faixas.map(caminho),
       terra: caminho(g.terra),
       areia: caminho(g.areia),
-      relevo: g.relevo.map(caminho),
+      relevo: g.pinhal ? [] : g.relevo.map(caminho),
+      urbano: caminho(g.urbano ?? []),
+      pinhal: caminho(g.pinhal ?? []),
+      rocha: caminho(g.rocha ?? []),
+      estradas: linhas(g.estradas ?? []),
     };
     desenha();
   };
 
   desenha();
-  geoDaPraia(ll)
+  geoDaPraia(ll, idEstatico)
     .then(usar)
     .finally(() => vivo && onPronto());
   return {

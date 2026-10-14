@@ -185,6 +185,7 @@ export default function SpotV6({ spot, nome, local, locale, linhas, agoraMs, fot
         <PraiaCena3D
           nome={nome}
           ll={[spot.lon, spot.lat]}
+          idEstatico={ed.estimado ? undefined : spot.id}
           praiaVirada={ed.praiaVirada}
           vizinhos={vizinhos}
           h={h}

@@ -36,6 +36,67 @@ export interface GeoPraia {
   relevo: Anel[][];
   /** profundidade numa grelha grossa (para as frentes de onda), ver `frentesGeo` */
   ondas: GrelhaOndas;
+  /** camadas OSM básicas (só nos spots com geografia estática, `public/geo/praia/<id>.json`) */
+  pinhal?: Anel[];
+  urbano?: Anel[];
+  rocha?: Anel[];
+  estradas?: Anel[];
+  lugares?: Array<{ n: string; ll: [number, number] }>;
+  picos?: Array<{ n: string; ll: [number, number]; ele: number }>;
+}
+
+/** Formato do ficheiro estático `public/geo/praia/<id>.json` (scripts/gen-praia-geo.mjs). */
+export interface GeoEstatico {
+  v: 1;
+  bbox: [number, number, number, number];
+  faixas: Anel[][];
+  terra: Anel[];
+  relevo: Anel[][];
+  areia: Anel[];
+  pinhal: Anel[];
+  urbano: Anel[];
+  rocha: Anel[];
+  estradas: Anel[];
+  lugares: Array<{ n: string; ll: [number, number] }>;
+  picos: Array<{ n: string; ll: [number, number]; ele: number }>;
+  ondas: { nx: number; ny: number; w: number; n: number; dlon: number; dlat: number; res: number; prof: string; dist: string };
+}
+
+const b64 = (s: string): Uint8Array => {
+  if (typeof atob === 'function') {
+    const bin = atob(s);
+    const u = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i);
+    return u;
+  }
+  return new Uint8Array(Buffer.from(s, 'base64'));
+};
+/** Lê a geografia estática pré-gerada (OSM + relevo) para o formato usado pela cena. */
+export function geoDeEstatico(j: GeoEstatico): GeoPraia | null {
+  if (!j || j.v !== 1 || !Array.isArray(j.faixas)) return null;
+  const o = j.ondas;
+  const p8 = b64(o.prof);
+  const d8 = b64(o.dist);
+  const prof = new Float32Array(o.nx * o.ny);
+  const dist = new Float32Array(o.nx * o.ny);
+  for (let k = 0; k < prof.length; k++) {
+    prof[k] = p8[k] === 255 ? NaN : p8[k];
+    dist[k] = d8[k] * 20;
+  }
+  return {
+    bbox: j.bbox,
+    faixas: j.faixas,
+    terra: j.terra,
+    areia: j.areia,
+    relevo: j.relevo,
+    pinhal: j.pinhal,
+    urbano: j.urbano,
+    rocha: j.rocha,
+    estradas: j.estradas,
+    lugares: j.lugares,
+    picos: j.picos,
+    ondas: { nx: o.nx, ny: o.ny, w: o.w, n: o.n, dlon: o.dlon, dlat: o.dlat, res: o.res, prof, dist, campos: new Map() },
+  };
 }
 
 export interface GrelhaOndas {
@@ -60,6 +121,9 @@ export interface OpcoesGeo {
   meiaLat: number;
   /** lado da célula em metros */
   res: number;
+  /** simplificação (células) e iterações de Chaikin dos anéis (por omissão 0,35 e 2) */
+  tol?: number;
+  iter?: number;
 }
 
 const clamp = (x: number, a: number, b: number) => Math.max(a, Math.min(b, x));
@@ -303,13 +367,14 @@ export function construirGeo(ll: [number, number], o: OpcoesGeo, fino: Amostrado
   prof = desfoca(prof, nx, ny, 1);
   for (let k = 0; k < n; k++) if (ehTerra[k]) prof[k] = 0;
 
-  const tol = 0.35;
+  const tol = o.tol ?? 0.35;
+  const iter = o.iter ?? 2;
   const minA = 3;
   const paraLL = (a: Array<[number, number]>): Anel => a.map(([x, y]) => [+(W + x * dlon).toFixed(6), +(N - y * dlat).toFixed(6)]);
   const aneis = (campo: Float32Array): Anel[] =>
     aneisGrelha(campo, nx, ny)
       .filter((a) => Math.abs(areaAnel(a)) >= minA)
-      .map((a) => alisa(a, tol))
+      .map((a) => alisa(a, tol, iter))
       .filter((a) => a.length >= 3)
       .map(paraLL);
 
