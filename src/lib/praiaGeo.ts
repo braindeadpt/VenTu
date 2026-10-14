@@ -41,6 +41,8 @@ export interface GeoPraia {
   urbano?: Anel[];
   rocha?: Anel[];
   estradas?: Anel[];
+  /** limites administrativos em terra (OSM `boundary`, concelho e acima), linhas [lon, lat] */
+  limites?: Anel[];
   lugares?: Array<{ n: string; ll: [number, number] }>;
   picos?: Array<{ n: string; ll: [number, number]; ele: number }>;
 }
@@ -57,6 +59,8 @@ export interface GeoEstatico {
   urbano: Anel[];
   rocha: Anel[];
   estradas: Anel[];
+  /** opcional: ficheiros gerados antes dos limites não o têm */
+  limites?: Anel[];
   lugares: Array<{ n: string; ll: [number, number] }>;
   picos: Array<{ n: string; ll: [number, number]; ele: number }>;
   ondas: { nx: number; ny: number; w: number; n: number; dlon: number; dlat: number; res: number; prof: string; dist: string };
@@ -93,6 +97,7 @@ export function geoDeEstatico(j: GeoEstatico): GeoPraia | null {
     urbano: j.urbano,
     rocha: j.rocha,
     estradas: j.estradas,
+    limites: Array.isArray(j.limites) ? j.limites : [],
     lugares: j.lugares,
     picos: j.picos,
     ondas: { nx: o.nx, ny: o.ny, w: o.w, n: o.n, dlon: o.dlon, dlat: o.dlat, res: o.res, prof, dist, campos: new Map() },
@@ -554,8 +559,21 @@ function suavizaCampo(T: Float32Array, nx: number, ny: number, n: number): void 
  * chegada espaçadas de 2 (desktop) ou 3 (telemóvel) períodos (× `escala`) e animadas pela
  * fase `t` (s), como na maquete. Só até `maxDist` m da costa. `passoRumo`:
  * arredondamento do rumo da ondulação para escolher o campo (ver `campoChegada`).
+ * `janela` (opcional): só as células cujo centro [lon, lat] passa (a caixa das
+ * frentes da maquete, ver `janelaFrentes`).
  */
-export function frentesGeo(g: GrelhaOndas, sd: number, tp: number, hs: number, t: number, desktop: boolean, maxDist = 3200, escala = 1, passoRumo = 5): Array<Array<[number, number]>> {
+export function frentesGeo(
+  g: GrelhaOndas,
+  sd: number,
+  tp: number,
+  hs: number,
+  t: number,
+  desktop: boolean,
+  maxDist = 3200,
+  escala = 1,
+  passoRumo = 5,
+  janela?: (lon: number, lat: number) => boolean,
+): Array<Array<[number, number]>> {
   if (!(hs > 0.15) || !(tp > 0)) return [];
   const T = campoChegada(g, sd, passoRumo);
   const { nx, ny } = g;
@@ -567,6 +585,7 @@ export function frentesGeo(g: GrelhaOndas, sd: number, tp: number, hs: number, t
     for (let i = 0; i < nx - 1; i++) {
       const k = j * nx + i;
       if (g.dist[k] > maxDist) continue;
+      if (janela && !janela(g.w + (i + 0.5) * g.dlon, g.n - (j + 0.5) * g.dlat)) continue;
       const a = T[k];
       const b = T[k + 1];
       const c = T[k + nx + 1];
@@ -590,6 +609,34 @@ export function frentesGeo(g: GrelhaOndas, sd: number, tp: number, hs: number, t
       }
     }
   return encadeia(segs);
+}
+
+/**
+ * Caixa das frentes da vista plana, como a da maquete no Guincho: lá as
+ * frentes só se calculam a oeste de −9,508° e entre 38,712° e 38,758° de
+ * latitude (spot em −9,472°/38,732°, praia virada a oeste). Em metros, a
+ * partir do spot: até 3127 m para o largo, 2211 m para a esquerda e 2874 m
+ * para a direita de quem olha o mar; noutros spots roda com `praiaVirada`.
+ * Com `caixa` editorial [oeste, sul, este, norte] usa-a tal e qual.
+ */
+export const JANELA_FRENTES = { largo: 3127, esquerda: 2211, direita: 2874 } as const;
+export function janelaFrentes(ll: [number, number], praiaVirada: number, caixa?: [number, number, number, number]): (lon: number, lat: number) => boolean {
+  if (caixa) return (lon, lat) => lon >= caixa[0] && lon <= caixa[2] && lat >= caixa[1] && lat <= caixa[3];
+  const mx = 111320 * Math.cos((ll[1] * Math.PI) / 180);
+  const my = 110540;
+  const th = (praiaVirada * Math.PI) / 180;
+  // u: para o largo; r: para a direita de quem olha o mar (este, norte)
+  const ux = Math.sin(th);
+  const uy = Math.cos(th);
+  const rx = Math.cos(th);
+  const ry = -Math.sin(th);
+  return (lon, lat) => {
+    const x = (lon - ll[0]) * mx;
+    const y = (lat - ll[1]) * my;
+    const largo = x * ux + y * uy;
+    const lado = x * rx + y * ry;
+    return largo <= JANELA_FRENTES.largo && lado >= -JANELA_FRENTES.esquerda && lado <= JANELA_FRENTES.direita;
+  };
 }
 
 /**

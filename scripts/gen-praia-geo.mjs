@@ -8,7 +8,7 @@
  * Fontes (descarregadas uma vez para uma cache local com curl):
  *  - OpenStreetMap via tiles vectoriais OpenFreeMap (OpenMapTiles, z13):
  *    oceano (linha de costa), pinhal/mato, urbano, areia, rocha, estradas,
- *    localidades e picos (© OpenStreetMap contributors, ODbL);
+ *    limites administrativos, localidades e picos (© OpenStreetMap contributors, ODbL);
  *  - AWS Terrain Tiles (terrarium) z12 (relevo) e z10 (batimetria).
  * O cálculo das faixas de profundidade, da areia, das cotas e da grelha das
  * frentes de onda é o mesmo do browser (`src/lib/praiaGeo.ts`, via o
@@ -179,7 +179,7 @@ const ZV = 13;
 function osm(bbox) {
   const [x0, y0] = tileXY(bbox[0], bbox[3], ZV);
   const [x1, y1] = tileXY(bbox[2], bbox[1], ZV);
-  const out = { oceano: [], pinhal: [], urbano: [], areia: [], rocha: [], estradas: [], lugares: [], picos: [] };
+  const out = { oceano: [], pinhal: [], urbano: [], areia: [], rocha: [], estradas: [], limites: [], lugares: [], picos: [] };
   for (let x = x0; x <= x1; x++)
     for (let y = y0; y <= y1; y++) {
       const url = URL_VT.replace('{z}', ZV).replace('{x}', x).replace('{y}', y);
@@ -213,6 +213,11 @@ function osm(bbox) {
       cada('transportation', (f) => {
         if (f.type === 2 && ['motorway', 'trunk', 'primary', 'secondary', 'tertiary'].includes(f.properties.class) && f.properties.brunnel !== 'tunnel') out.estradas.push(...conv(f));
       });
+      // limites administrativos em terra (concelho e acima: admin_level 4–7; OpenMapTiles `boundary`, sem os marítimos)
+      cada('boundary', (f) => {
+        const lv = Number(f.properties.admin_level);
+        if (f.type === 2 && !f.properties.maritime && lv >= 4 && lv <= 7) out.limites.push(...conv(f));
+      });
       cada('place', (f) => {
         const c = f.properties.class;
         if (['town', 'village', 'city', 'suburb', 'hamlet'].includes(c) && f.properties.name) {
@@ -223,6 +228,26 @@ function osm(bbox) {
       cada('mountain_peak', (f) => {
         if (f.properties.name && f.properties.ele) out.picos.push({ n: f.properties.name, ll: conv(f)[0][0], ele: Math.round(f.properties.ele) });
       });
+    }
+  return out;
+}
+
+/* oceano OSM em z14 (o zoom máximo do OpenFreeMap, o mesmo da maquete) só na área visível: a costa fina */
+function oceanoZ14(bbox) {
+  const z = 14;
+  const [x0, y0] = tileXY(bbox[0], bbox[3], z);
+  const [x1, y1] = tileXY(bbox[2], bbox[1], z);
+  const out = [];
+  for (let x = x0; x <= x1; x++)
+    for (let y = y0; y <= y1; y++) {
+      const b = baixa(URL_VT.replace('{z}', z).replace('{x}', x).replace('{y}', y), path.join(CACHE, `v${z}_${x}_${y}.pbf`));
+      if (!b) return null; // sem a área completa fica o z13
+      const l = new VectorTile(new Pbf(b)).layers.water;
+      if (!l) continue;
+      for (let i = 0; i < l.length; i++) {
+        const f = l.feature(i);
+        if (f.properties.class === 'ocean' && f.type === 3) out.push(f.loadGeometry().map((a) => a.map((p) => tile2ll(x + p.x / f.extent, y + p.y / f.extent, z))));
+      }
     }
   return out;
 }
@@ -274,6 +299,51 @@ function camadaRaster(polis, grade, minCel = 6, so = null) {
 }
 
 const r5 = (v) => Math.round(v * 1e5) / 1e5;
+/*
+ * Terra (linha de costa) directamente do oceano OSM, numa grelha fina de
+ * RES_COSTA m: como a maquete (`land = bbox − oceano OSM`, fecho de 3 m,
+ * ilhéus < 2e-7 °² fora, simplify 0,00006° ≈ 5 m). Antes a costa saía da
+ * grelha de 40 m suavizada (Chaikin) e ficava mais lisa que a da maquete.
+ * Na área visível (AREA_OSM) usa o oceano do z14, como a maquete; fora dela
+ * o do z13. Grelha de 5 m sem desfocagem (os recortes da rocha ficam) e
+ * Douglas–Peucker com a tolerância da maquete (0,00006°), sem Chaikin.
+ */
+const RES_COSTA = 5;
+function terraOSM(polis, grade, polis14, lim) {
+  const k = grade.dlon / AREA.res;
+  const fina = {
+    nx: Math.ceil((grade.nx - 1) * (AREA.res / RES_COSTA)) + 1,
+    ny: Math.ceil((grade.ny - 1) * (AREA.res / RES_COSTA)) + 1,
+    w: grade.w,
+    n: grade.n,
+    dlon: k * RES_COSTA,
+    dlat: (grade.dlat / AREA.res) * RES_COSTA,
+  };
+  const oc = rasterizaOceano(polis, fina);
+  if (polis14 && polis14.length) {
+    // na área visível (AREA_OSM) a costa vem do z14
+    const oc14 = rasterizaOceano(polis14, fina);
+    for (let j = 0; j < fina.ny; j++) {
+      const lat = fina.n - j * fina.dlat;
+      if (lat < lim[1] || lat > lim[3]) continue;
+      for (let i = 0; i < fina.nx; i++) {
+        const lon = fina.w + i * fina.dlon;
+        if (lon >= lim[0] && lon <= lim[2]) oc[j * fina.nx + i] = oc14[j * fina.nx + i];
+      }
+    }
+  }
+  const b = new Float32Array(oc.length);
+  for (let i = 0; i < oc.length; i++) b[i] = oc[i] ? -0.5 : 0.5;
+  const minCel = 2e-7 / (fina.dlon * fina.dlat); // ilhéus < 2e-7 °² fora (como a maquete)
+  const tolCel = 0.00006 / fina.dlon; // simplify 0,00006° da maquete, em células
+  return aneisGrelha(b, fina.nx, fina.ny)
+    .filter((a) => Math.abs(areaAnel(a)) >= minCel)
+    .map((a) => alisa(a, tolCel, 0))
+    .filter((a) => a.length >= 3)
+    .map((a) => a.map(([x, y]) => [r5(fina.w + x * fina.dlon), r5(fina.n - y * fina.dlat)]));
+}
+
+
 const arred = (a) => a.map((p) => [r5(p[0]), r5(p[1])]);
 function simplPolis(polis, tolGraus, minArea) {
   const out = [];
@@ -380,13 +450,14 @@ for (const id of ids) {
     fonte: '© OpenStreetMap contributors (ODbL), OpenFreeMap; AWS Terrain Tiles',
     bbox: g.bbox.map(r5),
     faixas: g.faixas.map((f) => f.map(arred)),
-    terra: g.terra.map(arred),
+    terra: oceano ? terraOSM(o.oceano, grade, oceanoZ14(lim), lim) : g.terra.map(arred),
     relevo: g.relevo.map((f) => f.map(arred)),
     areia: o.areia.length ? camadaRaster(corta(o.areia), grade, 2, terraM) : g.areia.map(arred),
     pinhal: camadaRaster(corta(o.pinhal), grade, 8, terraM),
     urbano: camadaRaster(corta(o.urbano), grade, 8, terraM),
     rocha: camadaRaster(corta(o.rocha), grade, 4, terraM),
     estradas: simplLinhas(o.estradas.filter((l) => l.some(dentro)), tol * 2.5),
+    limites: simplLinhas(o.limites.filter((l) => l.some(dentro)), tol),
     lugares,
     picos,
     ondas: {
@@ -404,7 +475,7 @@ for (const id of ids) {
   const txt = JSON.stringify(saida);
   fs.writeFileSync(path.join(OUT, `${id}.json`), txt);
   console.log(
-    `${id}: ${(txt.length / 1024).toFixed(0)} KB (gzip ${(zlib.gzipSync(txt).length / 1024).toFixed(0)} KB) · oceano OSM ${oceano ? 'sim' : 'não'} · pinhal ${saida.pinhal.length} · urbano ${saida.urbano.length} · estradas ${saida.estradas.length} · lugares ${lugares.map((l) => l.n).join(', ')}`,
+    `${id}: ${(txt.length / 1024).toFixed(0)} KB (gzip ${(zlib.gzipSync(txt).length / 1024).toFixed(0)} KB) · oceano OSM ${oceano ? 'sim' : 'não'} · pinhal ${saida.pinhal.length} · urbano ${saida.urbano.length} · estradas ${saida.estradas.length} · limites ${saida.limites.length} · costa ${saida.terra.reduce((n, a) => n + a.length, 0)} pts · lugares ${lugares.map((l) => l.n).join(', ')}`,
   );
 }
 fs.rmSync(tmp, { recursive: true, force: true });

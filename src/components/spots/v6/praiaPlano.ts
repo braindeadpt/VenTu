@@ -9,7 +9,7 @@
  * da banda, os rótulos e a grelha de setas.
  */
 import { aplicarLuz, COR, corMar, frentesOnda, luz, TERRA_COTAS } from '@/lib/praiaCena';
-import { frentesGeo } from '@/lib/praiaGeo';
+import { frentesGeo, janelaFrentes } from '@/lib/praiaGeo';
 import type { Anel, GeoPraia } from '@/lib/praiaGeo';
 import { geoDaPraia } from './praiaRelevo';
 import type { EstadoCena } from './praiaMapa';
@@ -44,6 +44,7 @@ export function criarPlano(
   desktop: boolean,
   estado0: EstadoCena,
   onPronto: () => void,
+  caixaFrentes?: [number, number, number, number],
 ): HandlePlano {
   const r = canvas.getBoundingClientRect();
   const W = Math.max(1, Math.round(r.width));
@@ -52,6 +53,7 @@ export function criarPlano(
   canvas.width = Math.round(W * dpr);
   canvas.height = Math.round(H * dpr);
   const ctx = canvas.getContext('2d');
+  const janela = janelaFrentes(ll, praiaVirada, caixaFrentes);
   const z = desktop ? 13 : 12;
   // px CSS por px de tile: a escala da vista plana da maquete (caixa de 0,10° × 0,085° no Guincho)
   const esc = desktop ? 1.45 : 1.76;
@@ -106,8 +108,9 @@ export function criarPlano(
         ctx.fill(caminhos.faixas[i], 'evenodd');
       }
     }
-    // frentes de onda paradas (a vista plana é estática); a terra tapa-as. Rumo a 20°, como no 3D e na maquete
-    const segs = geo ? frentesGeo(geo.ondas, e.sd, e.tp, e.hs, 3.2, desktop, 3200, 1, 20) : frentesOnda(ll, praiaVirada, e.sd, e.tp, e.hs, 3.2);
+    // frentes de onda paradas (a vista plana é estática); a terra tapa-as. Rumo a 20°, como no 3D e na maquete.
+    // Só dentro da caixa das frentes da maquete (até ~3,1 km para o largo do spot): antes iam até à borda da vista
+    const segs = geo ? frentesGeo(geo.ondas, e.sd, e.tp, e.hs, 3.2, desktop, 3200, 1, 20, janela) : frentesOnda(ll, praiaVirada, e.sd, e.tp, e.hs, 3.2);
     ctx.strokeStyle = 'rgba(243,248,251,.7)';
     ctx.lineWidth = 1 + e.hs * 0.6;
     ctx.lineCap = 'round';

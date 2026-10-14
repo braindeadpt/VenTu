@@ -2,8 +2,10 @@
  * Geografia vectorial da cena da praia (#184): contornos fechados, buracos,
  * faixas de profundidade a crescer para o largo e costa no sítio certo.
  */
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { aneisGrelha, areaAnel, campoChegada, construirGeo, distancia, encadeia, multiPoligono } from '@/lib/praiaGeo';
+import { aneisGrelha, areaAnel, campoChegada, construirGeo, distancia, encadeia, frentesGeo, geoDeEstatico, janelaFrentes, JANELA_FRENTES, multiPoligono, type GeoEstatico } from '@/lib/praiaGeo';
 import { PROF_FAIXAS } from '@/lib/praiaCena';
 
 const grelha = (nx: number, ny: number, f: (i: number, j: number) => number) => {
@@ -96,6 +98,114 @@ describe('praiaGeo · praia sintética', () => {
     expect(campoChegada(geo.ondas, 311)).toBe(campoChegada(geo.ondas, 310));
     expect(campoChegada(geo.ondas, 311)).not.toBe(campoChegada(geo.ondas, 320));
     expect(campoChegada(geo.ondas, 355, 20)).toBe(campoChegada(geo.ondas, 0));
+  });
+});
+
+describe('janelaFrentes (caixa das frentes da vista plana, a da maquete)', () => {
+  const ll: [number, number] = [-9.472, 38.732];
+  const mx = 111320 * Math.cos((ll[1] * Math.PI) / 180);
+  const my = 110540;
+  const em = (dx: number, dy: number) => [ll[0] + dx / mx, ll[1] + dy / my] as const;
+
+  it('praia virada a oeste: até 3127 m para o largo, 2211 m a sul e 2874 m a norte do spot (Guincho da maquete)', () => {
+    const j = janelaFrentes(ll, 270);
+    expect(j(...em(-3000, 0))).toBe(true);
+    expect(j(...em(-3250, 0))).toBe(false);
+    expect(j(...em(-1000, -2100))).toBe(true);
+    expect(j(...em(-1000, -2300))).toBe(false);
+    expect(j(...em(-1000, 2800))).toBe(true);
+    expect(j(...em(-1000, 2950))).toBe(false);
+    // em terra (para leste) não corta: a terra já tapa as frentes
+    expect(j(...em(5000, 0))).toBe(true);
+    // os limites em graus batem com a caixa da maquete (−9,508° e 38,712°–38,758°)
+    expect(ll[0] - JANELA_FRENTES.largo / mx).toBeCloseTo(-9.508, 3);
+    expect(ll[1] - JANELA_FRENTES.esquerda / my).toBeCloseTo(38.712, 3);
+    expect(ll[1] + JANELA_FRENTES.direita / my).toBeCloseTo(38.758, 3);
+  });
+
+  it('roda com a praia: virada a norte, o largo é para norte e a direita é para leste', () => {
+    const j = janelaFrentes(ll, 0);
+    expect(j(...em(0, 3000))).toBe(true);
+    expect(j(...em(0, 3250))).toBe(false);
+    expect(j(...em(2800, 1000))).toBe(true);
+    expect(j(...em(2950, 1000))).toBe(false);
+    expect(j(...em(-2300, 1000))).toBe(false);
+  });
+
+  it('com caixa editorial usa-a tal e qual', () => {
+    const j = janelaFrentes(ll, 280, [-9.508, 38.712, -9.4, 38.758]);
+    expect(j(-9.507, 38.74)).toBe(true);
+    expect(j(-9.509, 38.74)).toBe(false);
+    expect(j(-9.49, 38.711)).toBe(false);
+    expect(j(-9.49, 38.759)).toBe(false);
+  });
+
+  it('frentesGeo com janela: nenhum ponto fora da caixa e menos frentes do que sem ela', () => {
+    const fino = (lon: number) => (lon > -9.47 ? (lon + 9.47) * 4000 : 0);
+    const largo = (lon: number) => (lon > -9.47 ? 50 : -80);
+    const geo = construirGeo([-9.47, 38.73], { meiaLon: 0.06, meiaLat: 0.04, res: 60 }, fino, largo);
+    const caixa: [number, number, number, number] = [-9.5, 38.715, -9.4, 38.745];
+    const todas = frentesGeo(geo.ondas, 280, 11, 1.4, 3.2, false, 3200, 1, 20);
+    const dentro = frentesGeo(geo.ondas, 280, 11, 1.4, 3.2, false, 3200, 1, 20, janelaFrentes([-9.47, 38.73], 270, caixa));
+    const pts = (l: Array<Array<[number, number]>>) => l.flat();
+    expect(pts(dentro).length).toBeGreaterThan(0);
+    expect(pts(dentro).length).toBeLessThan(pts(todas).length);
+    // cada ponto fica a menos de uma célula da grelha das ondas da caixa (o teste é ao centro da célula)
+    const m = Math.max(geo.ondas.dlon, geo.ondas.dlat);
+    for (const [lon, lat] of pts(dentro)) {
+      expect(lon).toBeGreaterThanOrEqual(caixa[0] - m);
+      expect(lat).toBeGreaterThanOrEqual(caixa[1] - m);
+      expect(lat).toBeLessThanOrEqual(caixa[3] + m);
+    }
+    expect(Math.min(...pts(todas).map((p) => p[0]))).toBeLessThan(caixa[0] - m);
+  });
+});
+
+describe('geoDeEstatico (ficheiro de public/geo/praia)', () => {
+  const base = (extra: Partial<GeoEstatico> = {}): GeoEstatico => ({
+    v: 1,
+    bbox: [-9.6, 38.6, -9.3, 38.9],
+    faixas: [[]],
+    terra: [],
+    relevo: [],
+    areia: [],
+    pinhal: [],
+    urbano: [],
+    rocha: [],
+    estradas: [],
+    lugares: [],
+    picos: [],
+    ondas: { nx: 1, ny: 1, w: -9.6, n: 38.9, dlon: 0.001, dlat: 0.001, res: 120, prof: 'Cg==', dist: 'AQ==' },
+    ...extra,
+  });
+
+  it('passa os limites administrativos (linhas [lon, lat])', () => {
+    const lim = [[[-9.4838, 38.7573], [-9.4476, 38.7676]]] as GeoEstatico['estradas'];
+    const g = geoDeEstatico(base({ limites: lim }));
+    expect(g?.limites).toEqual(lim);
+  });
+
+  it('ficheiros sem limites (gerados antes) dão uma lista vazia', () => {
+    expect(geoDeEstatico(base())?.limites).toEqual([]);
+  });
+});
+
+describe('geografia estática do Guincho (public/geo/praia/guincho.json)', () => {
+  const j = JSON.parse(readFileSync(path.join(process.cwd(), 'public/geo/praia/guincho.json'), 'utf8')) as GeoEstatico;
+  const caixa = [-9.53, 38.7, -9.43, 38.785];
+  const naCaixa = (p: [number, number]) => p[0] >= caixa[0] && p[0] <= caixa[2] && p[1] >= caixa[1] && p[1] <= caixa[3];
+
+  it('costa com o detalhe da maquete (OSM z14, simplify 0,00006°): pelo menos 400 vértices na vista plana', () => {
+    // a maquete tem 601 vértices nesta caixa; a costa da grelha de 40 m suavizada tinha 476 no ficheiro todo
+    const n = j.terra.reduce((s, a) => s + a.filter(naCaixa).length, 0);
+    expect(n).toBeGreaterThan(400);
+  });
+
+  it('traz o limite de concelho Cascais–Sintra em terra, a norte da praia', () => {
+    expect(j.limites?.length).toBeGreaterThan(0);
+    const pts = (j.limites ?? []).flat().filter(naCaixa);
+    expect(pts.length).toBeGreaterThan(5);
+    expect(pts.some((p) => p[1] > 38.75 && p[1] < 38.775)).toBe(true);
   });
 });
 

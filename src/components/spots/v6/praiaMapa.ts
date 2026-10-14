@@ -96,6 +96,8 @@ function corRelevoExpr(L: ReturnType<typeof luz>): ExpressionSpecification {
   return e as ExpressionSpecification;
 }
 const VAZIO = { type: 'FeatureCollection' as const, features: [] };
+/** espaçamento das frentes no 3D a 1440 (desktop): 0,8 deixava-as ~1,4× mais juntas do que na maquete */
+const ESCALA_FRENTES_DESK = 1.12;
 /** GeoJSON das camadas da praia a partir da geografia vectorial. */
 export function geojsonDaPraia(g: GeoPraia) {
   const fc = (aneis: GeoPraia['terra'], props: Record<string, number> = {}) => ({
@@ -116,6 +118,10 @@ export function geojsonDaPraia(g: GeoPraia) {
     estradas: {
       type: 'FeatureCollection' as const,
       features: g.estradas?.length ? [{ type: 'Feature' as const, properties: {}, geometry: { type: 'MultiLineString' as const, coordinates: g.estradas } }] : [],
+    },
+    limites: {
+      type: 'FeatureCollection' as const,
+      features: g.limites?.length ? [{ type: 'Feature' as const, properties: {}, geometry: { type: 'MultiLineString' as const, coordinates: g.limites } }] : [],
     },
   };
 }
@@ -174,6 +180,7 @@ export function criarMapa(o: OpcoesMapa): HandleMapa {
       urbanoG: { type: 'geojson', data: VAZIO },
       rochaG: { type: 'geojson', data: VAZIO },
       estradasG: { type: 'geojson', data: VAZIO },
+      limitesG: { type: 'geojson', data: VAZIO },
     },
     terrain: { source: 'demT', exaggeration: 1.5 },
     sky: skyDe(L0),
@@ -200,6 +207,14 @@ export function criarMapa(o: OpcoesMapa): HandleMapa {
         type: 'line',
         source: 'estradasG',
         paint: { 'line-color': aplicarLuz(COR.estrada, L0), 'line-width': ['interpolate', ['linear'], ['zoom'], 12, 0.6, 15, 1.6], 'line-opacity': 0.6 },
+      },
+      // tracejado em terra (a maquete tem um, que lá é o contorno da caixa da terra): aqui, dados reais,
+      // os limites administrativos do OSM (concelho e acima)
+      {
+        id: 'limitesG',
+        type: 'line',
+        source: 'limitesG',
+        paint: { 'line-color': '#F3F8FB', 'line-width': 1.2, 'line-opacity': 0.7, 'line-dasharray': [2, 2] },
       },
       { id: 'costa', type: 'line', source: 'terraG', paint: { 'line-color': '#F3F8FB', 'line-width': 1.4, 'line-opacity': 0.7 } },
     ],
@@ -248,12 +263,12 @@ export function criarMapa(o: OpcoesMapa): HandleMapa {
   const frentes = (t: number) => {
     if (!ok) return;
     const segs = geoOk
-      ? // ×0,7 (telemóvel) / ×0,8 (desktop) no 3D: em perspectiva e com o campo suavizado, as frentes
-        // saíam ~1,4× mais espaçadas do que nas capturas da maquete. A vista plana fica no espaçamento
-        // da maquete (escala 1), que já lhe era igual. Rumo arredondado a 20° (passoRumo), a mesma regra
+      ? // ×0,7 (telemóvel) / ×ESCALA_FRENTES_DESK no 3D: medido nas capturas (frentes que cruzam
+        // linhas horizontais da cena), é o que iguala a densidade da maquete em cada largura. A vista
+        // plana fica no espaçamento da maquete (escala 1), que já lhe era igual. Rumo arredondado a 20° (passoRumo), a mesma regra
         // da maquete (campos de 280/300/320): para 311° usa o campo de 320°, como ela, e as frentes
         // junto à costa ficam com a mesma orientação.
-        frentesGeo(geoOk.ondas, estado.sd, estado.tp, estado.hs, t, o.desktop, 3200, o.desktop ? 0.8 : 0.7, 20)
+        frentesGeo(geoOk.ondas, estado.sd, estado.tp, estado.hs, t, o.desktop, 3200, o.desktop ? ESCALA_FRENTES_DESK : 0.7, 20)
       : frentesOnda(o.ll, o.praiaVirada, estado.sd, estado.tp, estado.hs, t);
     const src = m.getSource('frentes') as maplibregl.GeoJSONSource | undefined;
     src?.setData({ type: 'Feature', properties: {}, geometry: { type: 'MultiLineString', coordinates: segs } });
@@ -298,6 +313,7 @@ export function criarMapa(o: OpcoesMapa): HandleMapa {
         (m.getSource('urbanoG') as maplibregl.GeoJSONSource | undefined)?.setData(gj.urbano);
         (m.getSource('rochaG') as maplibregl.GeoJSONSource | undefined)?.setData(gj.rocha);
         (m.getSource('estradasG') as maplibregl.GeoJSONSource | undefined)?.setData(gj.estradas);
+        (m.getSource('limitesG') as maplibregl.GeoJSONSource | undefined)?.setData(gj.limites);
         geoOk = g;
         frentes(0);
       }

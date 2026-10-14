@@ -43,6 +43,8 @@ export interface EditorialSpot {
     ll: [number, number];
     /** centro da vista plana (a caixa da maquete), quando difere do centro da câmara 3D */
     centroPlano?: [number, number];
+    /** caixa das frentes de onda na vista plana [oeste, sul, este, norte] (a da maquete), quando difere da regra geral */
+    caixaFrentes?: [number, number, number, number];
     lugares: Array<{ n: string; ll: [number, number]; ele?: number }>;
   };
   /** Valores derivados da orientação (sem entrada editorial). */
