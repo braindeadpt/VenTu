@@ -4,7 +4,7 @@
 import { getTranslation } from '@/lib/i18n';
 import { Spot } from '@/types'
 import { SportType, getCompatibleSports } from './sportRatings'
-import { SCORE_TIER_THRESHOLDS, scoreTierFromScore } from './nota'
+import { SCORE_TIER_THRESHOLDS, notaToScore, scoreTierFromScore } from './nota'
 
 export interface Conditions {
   waveHeight: number
@@ -164,10 +164,18 @@ export type WindSportDirection =
 /** Offshore component that must be surfaced as a safety note. */
 export type WindSafetyLevel = 'side-offshore' | 'offshore'
 
-/** Offshore wind caps the whole wind-sport score here (FLAT band). */
-export const WIND_SPORT_OFFSHORE_SCORE_CAP = 25
+/** Offshore wind caps the whole wind-sport nota here (/10, #210). */
+export const WIND_SPORT_OFFSHORE_SCORE_CAP = 2.5
 /** Tecto do score com vento curto (kite/windsurf) — valor da fórmula, independente das bandas (#210). */
 const WIND_SHORT_SCORE_CAP = 39
+
+/** Side-offshore caps the whole wind-sport nota here (/10, #195) — never Bom/Muito bom. */
+export const WIND_SPORT_SIDE_OFFSHORE_SCORE_CAP = 5.0
+
+/** Sports scored with `windSportDirectionSafety` (wing joins when it lands). */
+export function isWindDirectionSport(sport: SportType): boolean {
+  return sport === 'kitesurf' || sport === 'windsurf' || sport === 'foil'
+}
 
 export interface WindSportDirectionSafety {
   direction: WindSportDirection
@@ -176,7 +184,7 @@ export interface WindSportDirectionSafety {
   /** Share (0–1) of the sport's direction points. */
   dirFactor: number
   safety: WindSafetyLevel | null
-  /** Upper bound for the total score, or null when uncapped. */
+  /** Upper bound for the total nota (/10), or null when uncapped. */
   scoreCap: number | null
 }
 
@@ -203,7 +211,7 @@ function angleFromOnshore(spot: Spot, windDir: number): number {
  * when it lands). Cross-shore / side-onshore are ideal; pure onshore is
  * rideable but choppy; any offshore component drifts the rider out to sea
  * with gusty, holey wind near the beach — partial points + a note for
- * side-offshore, zero points + a total score cap for straight offshore.
+ * side-offshore, zero points; both cap the total nota (5,0 / 2,5 /10).
  */
 export function windSportDirectionSafety(spot: Spot, windDir: number): WindSportDirectionSafety {
   const angle = angleFromOnshore(spot, windDir)
@@ -217,7 +225,12 @@ export function windSportDirectionSafety(spot: Spot, windDir: number): WindSport
     angleFromOnshore: angle,
     dirFactor: band.dirFactor,
     safety,
-    scoreCap: band.direction === 'offshore' ? WIND_SPORT_OFFSHORE_SCORE_CAP : null,
+    scoreCap:
+      band.direction === 'offshore'
+        ? WIND_SPORT_OFFSHORE_SCORE_CAP
+        : band.direction === 'side-offshore'
+          ? WIND_SPORT_SIDE_OFFSHORE_SCORE_CAP
+          : null,
   }
 }
 
@@ -235,13 +248,13 @@ function withDirectionHeadroom(score: number, dirPts: number, maxDirPts: number)
   return Math.min(score - dirPts, 100 - maxDirPts) + dirPts
 }
 
-/** Applies the offshore cap and the visible safety warning to a wind-sport score. */
+/** Applies the offshore / side-offshore cap and the visible safety warning to a wind-sport score. */
 function applyWindSafety(
   result: SportScore,
   dir: WindSportDirectionSafety,
 ): SportScore {
   if (!dir.safety) return result
-  const score = dir.scoreCap !== null ? Math.min(result.score, dir.scoreCap) : result.score
+  const score = dir.scoreCap !== null ? Math.min(result.score, notaToScore(dir.scoreCap)) : result.score
   const pt = getTranslation('pt').windSafety
   const en = getTranslation('en').windSafety
   const key = dir.safety === 'offshore' ? 'offshore' : 'sideOffshore'
@@ -321,10 +334,9 @@ function scoreKitesurf(spot: Spot, c: Conditions): SportScore {
   if (windKt < KITE_CONFIG.WIND_PTS_MIN_KT) {
     score = Math.round(windKt * KITE_CONFIG.WIND_MARGINAL_PTS_PER_KT)
     if (windKt >= 8) {
-      const kiteWindCat = classifyWind(spot, c.windDirection)
       const dirPts = Math.round(windDirFactor(dirSafety, KITE_CONFIG.WIND_DIR_PTS_MAX) * 0.5)
       score += dirPts
-      if (dirPts > 0) pushFactor(`Vento ${windCategoryLabel(kiteWindCat)}`, `${windCategoryLabel(kiteWindCat)} wind`)
+      if (dirPts > 0) pushFactor(`Vento ${dirSafety.direction}`, `${dirSafety.direction} wind`)
     }
     score = Math.min(score, WIND_SHORT_SCORE_CAP)
     pushFactor('Vento insuficiente', 'Not enough wind')
@@ -362,11 +374,11 @@ function scoreKitesurf(spot: Spot, c: Conditions): SportScore {
       score += KITE_CONFIG.WAVE_MED_PTS
     }
 
-    const kiteWindCat = classifyWind(spot, c.windDirection)
     const dirPts = windDirFactor(dirSafety, KITE_CONFIG.WIND_DIR_PTS_MAX)
     score += dirPts
-    // «Xkt vento» já está na lista — a categoria vai nua para não repetir.
-    if (dirPts > 0) pushFactor(windCategoryLabel(kiteWindCat), windCategoryLabel(kiteWindCat))
+    // «Xkt vento» já está na lista — a direcção vai nua para não repetir.
+    // A label vem da mesma banda que pontua (#195), não do classifyWind.
+    if (dirPts > 0) pushFactor(dirSafety.direction, dirSafety.direction)
 
     score += Math.min(c.waterTemp * KITE_CONFIG.TEMP_PTS_PER_DEG, KITE_CONFIG.TEMP_PTS_MAX)
     score = withDirectionHeadroom(score, dirPts, KITE_CONFIG.WIND_DIR_PTS_MAX)
@@ -400,10 +412,9 @@ function scoreWindsurf(spot: Spot, c: Conditions): SportScore {
   if (windKt < WIND_CONFIG.WIND_PTS_MIN_KT) {
     score = Math.round(windKt * WIND_CONFIG.WIND_MARGINAL_PTS_PER_KT)
     if (windKt >= 10) {
-      const windCategory = classifyWind(spot, c.windDirection)
       const dirPts = Math.round(windDirFactor(dirSafety, WIND_CONFIG.WIND_DIR_PTS_MAX) * 0.5)
       score += dirPts
-      if (dirPts > 0) pushFactor(`Vento ${windCategoryLabel(windCategory)}`, `${windCategoryLabel(windCategory)} wind`)
+      if (dirPts > 0) pushFactor(`Vento ${dirSafety.direction}`, `${dirSafety.direction} wind`)
     }
     score = Math.min(score, WIND_SHORT_SCORE_CAP)
     pushFactor('Vento insuficiente', 'Not enough wind')
@@ -423,10 +434,9 @@ function scoreWindsurf(spot: Spot, c: Conditions): SportScore {
       score += WIND_CONFIG.WAVE_OTHER_PTS
     }
 
-    const windCategory = classifyWind(spot, c.windDirection)
     const windDirPts = windDirFactor(dirSafety, WIND_CONFIG.WIND_DIR_PTS_MAX)
     score += windDirPts
-    if (windDirPts > 0) pushFactor(windCategoryLabel(windCategory), windCategoryLabel(windCategory))
+    if (windDirPts > 0) pushFactor(dirSafety.direction, dirSafety.direction)
 
     score += Math.min(c.waterTemp * WIND_CONFIG.TEMP_PTS_PER_DEG, WIND_CONFIG.TEMP_PTS_MAX)
   }
@@ -610,10 +620,9 @@ function scoreFoil(spot: Spot, c: Conditions): SportScore {
 
   // Wind direction: cross-shore ideal, offshore unsafe (0-8 pts, cap)
   const dirSafety = windSportDirectionSafety(spot, c.windDirection)
-  const category = classifyWind(spot, c.windDirection)
   const dirPts = windDirFactor(dirSafety, FOIL_CONFIG.WIND_DIR_PTS_MAX)
   score += dirPts
-  if (dirPts > 0) pushFactor(windCategoryLabel(category), windCategoryLabel(category))
+  if (dirPts > 0) pushFactor(dirSafety.direction, dirSafety.direction)
 
   score += Math.min(c.waterTemp * FOIL_CONFIG.TEMP_PTS_PER_DEG, FOIL_CONFIG.TEMP_PTS_MAX)
 
@@ -629,15 +638,6 @@ function scoreFoil(spot: Spot, c: Conditions): SportScore {
 }
 
 // ─── Helpers ───
-
-function windCategoryLabel(category: WindCategory): string {
-  switch (category) {
-    case 'offshore': return 'offshore'
-    case 'side-offshore': return 'side-offshore'
-    case 'side-onshore': return 'side-onshore'
-    case 'onshore': return 'onshore'
-  }
-}
 
 export { SCORE_TIER_THRESHOLDS }
 
@@ -760,8 +760,7 @@ export function windQualityTier(
   windDirection: number,
   sport: SportType,
 ): 'good' | 'fair' | 'poor' | null {
-  const windSport = sport === 'kitesurf' || sport === 'windsurf' || sport === 'foil'
-  if (windSport) {
+  if (isWindDirectionSport(sport)) {
     const { direction } = windSportDirectionSafety(spot, windDirection)
     if (direction === 'cross-shore' || direction === 'side-onshore') return 'good'
     if (direction === 'onshore') return 'fair'
