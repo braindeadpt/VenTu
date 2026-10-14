@@ -4,6 +4,7 @@
 import { getTranslation } from '@/lib/i18n';
 import { Spot } from '@/types'
 import { SportType, getCompatibleSports } from './sportRatings'
+import { SCORE_TIER_THRESHOLDS, scoreTierFromScore } from './nota'
 
 export interface Conditions {
   waveHeight: number
@@ -165,6 +166,8 @@ export type WindSafetyLevel = 'side-offshore' | 'offshore'
 
 /** Offshore wind caps the whole wind-sport score here (FLAT band). */
 export const WIND_SPORT_OFFSHORE_SCORE_CAP = 25
+/** Tecto do score com vento curto (kite/windsurf) — valor da fórmula, independente das bandas (#210). */
+const WIND_SHORT_SCORE_CAP = 39
 
 export interface WindSportDirectionSafety {
   direction: WindSportDirection
@@ -323,12 +326,12 @@ function scoreKitesurf(spot: Spot, c: Conditions): SportScore {
       score += dirPts
       if (dirPts > 0) pushFactor(`Vento ${windCategoryLabel(kiteWindCat)}`, `${windCategoryLabel(kiteWindCat)} wind`)
     }
-    score = Math.min(score, SCORE_TIER_THRESHOLDS.fair - 1)
+    score = Math.min(score, WIND_SHORT_SCORE_CAP)
     pushFactor('Vento insuficiente', 'Not enough wind')
   } else if (windKt < KITE_CONFIG.WIND_SESSION_MIN_KT) {
     score = Math.round(windKt * KITE_CONFIG.WIND_PTS_PER_KT)
     pushFactor(`${windKt.toFixed(0)}kt vento fraco`, `${windKt.toFixed(0)}kt light wind`)
-    score = Math.min(score, SCORE_TIER_THRESHOLDS.fair - 1)
+    score = Math.min(score, WIND_SHORT_SCORE_CAP)
   } else {
     let windScore = 0
     if (windKt >= KITE_CONFIG.WIND_IDEAL_MIN_KT && windKt <= KITE_CONFIG.WIND_IDEAL_MAX_KT) {
@@ -402,7 +405,7 @@ function scoreWindsurf(spot: Spot, c: Conditions): SportScore {
       score += dirPts
       if (dirPts > 0) pushFactor(`Vento ${windCategoryLabel(windCategory)}`, `${windCategoryLabel(windCategory)} wind`)
     }
-    score = Math.min(score, SCORE_TIER_THRESHOLDS.fair - 1)
+    score = Math.min(score, WIND_SHORT_SCORE_CAP)
     pushFactor('Vento insuficiente', 'Not enough wind')
   } else {
     if (windKt >= WIND_CONFIG.WIND_IDEAL_MIN_KT && windKt <= WIND_CONFIG.WIND_IDEAL_MAX_KT) {
@@ -636,21 +639,12 @@ function windCategoryLabel(category: WindCategory): string {
   }
 }
 
-/** Score tier thresholds — aligned with globals.css (80 / 60 / 40 / 20). */
-export const SCORE_TIER_THRESHOLDS = {
-  epic: 80,
-  good: 60,
-  fair: 40,
-  poor: 20,
-} as const
+export { SCORE_TIER_THRESHOLDS }
 
 function getRatingLabels(score: number): { rating: string; ratingEn: string } {
-  if (score >= SCORE_TIER_THRESHOLDS.epic) return { rating: 'Épico!', ratingEn: 'Epic!' }
-  if (score >= SCORE_TIER_THRESHOLDS.good) return { rating: 'Bom', ratingEn: 'Good' }
-  if (score >= SCORE_TIER_THRESHOLDS.fair) return { rating: 'Razoável', ratingEn: 'Fair' }
-  if (score >= SCORE_TIER_THRESHOLDS.poor) return { rating: 'Fraco', ratingEn: 'Poor' }
-  if (score > 0) return { rating: 'Mau', ratingEn: 'Bad' }
-  return { rating: 'N/A', ratingEn: 'N/A' }
+  if (!(score > 0)) return { rating: 'N/A', ratingEn: 'N/A' }
+  const tier = scoreTierFromScore(score)
+  return { rating: getScoreTierLabel(tier, 'pt'), ratingEn: getScoreTierLabel(tier, 'en') }
 }
 
 // ─── Main Export ───
@@ -721,11 +715,7 @@ export interface ScoreTokens {
 }
 
 function scoreTierName(score: number): ScoreTier {
-  if (score >= SCORE_TIER_THRESHOLDS.epic) return 'epic'
-  if (score >= SCORE_TIER_THRESHOLDS.good) return 'good'
-  if (score >= SCORE_TIER_THRESHOLDS.fair) return 'fair'
-  if (score >= SCORE_TIER_THRESHOLDS.poor) return 'poor'
-  return 'closed'
+  return scoreTierFromScore(score)
 }
 
 /** Single source of truth for score → design-system colour tokens. */

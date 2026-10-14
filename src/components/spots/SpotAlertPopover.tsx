@@ -1,5 +1,6 @@
 'use client';
 
+import { NOTA_MAX, notaMinScore, scoreToNota } from '@/lib/nota';
 import { getSportLabel } from '@/lib/homepageSport';
 import { getTranslation } from '@/lib/i18n';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -42,7 +43,7 @@ export default function SpotAlertPopover({
   const { session, requestLogin, favorites, isFavorite, toggleFavorite } = useAuth();
   const [open, setOpen] = useState(false);
   const [pendingOpen, setPendingOpen] = useState(false);
-  const [minScore, setMinScore] = useState(70);
+  const [minScore, setMinScore] = useState(notaMinScore(7));
   const [alertMode, setAlertMode] = useState<AlertMode>('digest');
   const [existing, setExisting] = useState<UserAlertPrefs | null>(null);
   const [saving, setSaving] = useState(false);
@@ -197,16 +198,16 @@ export default function SpotAlertPopover({
                   <div className="flex items-center gap-2">
                     <input
                       type="range"
-                      min={30}
-                      max={100}
-                      step={5}
-                      value={minScore}
-                      onChange={(e) => setMinScore(Number(e.target.value))}
+                      min={3}
+                      max={NOTA_MAX}
+                      step={1}
+                      value={scoreToNota(minScore)}
+                      onChange={(e) => setMinScore(notaMinScore(Number(e.target.value)))}
                       className="flex-1 accent-accent"
                       aria-label={t.minScoreAria}
                     />
                     <span className="font-mono tabular-nums text-meta font-semibold text-fg w-8 text-right">
-                      {minScore}
+                      {scoreToNota(minScore)}
                     </span>
                   </div>
                 </div>
@@ -240,7 +241,7 @@ export default function SpotAlertPopover({
                   <p className="text-meta-sm text-fg-muted border-l-2 border-score-fair/60 pl-2">
                     {t.replacesCurrent
                       .replace('{sport}', existing.sport)
-                      .replace('{score}', String(existing.min_score))}
+                      .replace('{score}', String(scoreToNota(existing.min_score)))}
                   </p>
                 )}
 

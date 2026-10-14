@@ -54,7 +54,7 @@ test.describe('Dawn Patrol — score recalibrado no hero', () => {
     await page.clock.setFixedTime(new Date('2026-08-15T08:00:00Z'));
   });
 
-  test('boia fresca → hero mostra «Score: 78» com sufixo «(boia)» e tooltip da previsão', async ({
+  test('boia fresca → hero mostra «Score: 8/10» (78 → nota 8) com sufixo «(boia)» e tooltip da previsão', async ({
     page,
   }) => {
     await interceptData(page, 'dawn-patrol.json', dawnPatrolFixture());
@@ -62,7 +62,8 @@ test.describe('Dawn Patrol — score recalibrado no hero', () => {
 
     const scoreLine = page.getByText(/Score:/i).first();
     await expect(scoreLine).toBeVisible({ timeout: 20_000 });
-    await expect(scoreLine).toContainText('78');
+    await expect(scoreLine).toContainText('8/10');
+    await expect(scoreLine).not.toContainText('78');
     // Sufixo honesto — a boia recalibrou o score.
     const suffix = scoreLine.getByText('(boia)');
     await expect(suffix).toBeVisible();
@@ -82,7 +83,8 @@ test.describe('Dawn Patrol — score recalibrado no hero', () => {
 
     const scoreLine = page.getByText(/Score:/i).first();
     await expect(scoreLine).toBeVisible({ timeout: 20_000 });
-    await expect(scoreLine).toContainText('78');
+    await expect(scoreLine).toContainText('8/10');
+    await expect(scoreLine).not.toContainText('78');
     const suffix = scoreLine.getByText('(viés regional)');
     await expect(suffix).toBeVisible();
     await expect(suffix).toHaveAttribute(
@@ -100,7 +102,8 @@ test.describe('Dawn Patrol — score recalibrado no hero', () => {
 
     const scoreLine = page.getByText(/Score:/i).first();
     await expect(scoreLine).toBeVisible({ timeout: 20_000 });
-    await expect(scoreLine).toContainText('78');
+    await expect(scoreLine).toContainText('8/10');
+    await expect(scoreLine).not.toContainText('78');
     await expect(scoreLine.getByText(/\(boia\)|\(viés regional\)|\(buoy\)|\(regional bias\)/)).toHaveCount(0);
   });
 });

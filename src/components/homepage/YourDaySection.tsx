@@ -1,5 +1,6 @@
 'use client';
 
+import { scoreToNota } from '@/lib/nota';
 import { localizedSpotName, localizedSpotRegion } from '@/lib/localizedSpotText';
 import { getTranslation } from '@/lib/i18n';
 import { useMemo } from 'react';
@@ -150,9 +151,9 @@ export default function YourDaySection({
                     tokens.text,
                     tokens.border,
                   ].join(' ')}
-                  aria-label={`${sportLabel}: ${score}`}
+                  aria-label={`${sportLabel}: ${scoreToNota(score)}/10`}
                 >
-                  {Math.round(score)}
+                  {scoreToNota(score)}
                 </span>
 
                 {/* Info */}

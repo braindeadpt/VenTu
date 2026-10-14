@@ -1,5 +1,6 @@
 'use client';
 
+import { scoreToNota } from '@/lib/nota';
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import type { Spot } from '@/types';
@@ -210,7 +211,7 @@ export default function CompareHourlyTable({
                   return (
                     <td key={col.spot.id} className="py-1.5 px-3 whitespace-nowrap">
                       <span className={cn('font-mono font-semibold tabular-nums', tokens.text)}>
-                        {cell.score}
+                        {scoreToNota(cell.score)}
                       </span>
                       <span className="ml-2 font-mono tabular-nums text-meta-sm text-fg-muted">
                         {cell.waveHeight.toFixed(1)}m · {cell.windKt}kt

@@ -347,11 +347,11 @@ test.describe('Cromo do /mapa — UX v3 §1–§4', () => {
       const legend = page.locator('[data-map-legend-card]');
       await expect(legend).toBeVisible({ timeout: 10_000 }); // desktop: aberta por defeito
 
-      // Rótulos canónicos (getScoreTierLabel) + intervalos 80–100 … 0–19.
-      for (const label of ['Épico', 'Bom', 'Razoável', 'Fraco', 'Fechado']) {
+      // Rótulos canónicos (getScoreTierLabel) + intervalos da nota /10.
+      for (const label of ['Muito bom', 'Bom', 'Dá', 'Fraco', 'Não dá']) {
         await expect(legend).toContainText(label);
       }
-      for (const range of ['80–100', '60–79', '40–59', '20–39', '0–19']) {
+      for (const range of ['9–10', '7–8', '5–6', '3–4', '0–2']) {
         await expect(legend).toContainText(range);
       }
 

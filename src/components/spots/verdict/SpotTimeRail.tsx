@@ -1,5 +1,6 @@
 'use client';
 
+import { SCORE_TIER_THRESHOLDS, scoreToNota } from '@/lib/nota';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Pause, Play } from 'lucide-react';
 import type { Spot } from '@/types';
@@ -31,7 +32,7 @@ const PAGE_STEP = 6;
 /** Debounce do aria-live durante o arrasto. */
 const ANNOUNCE_MS = 450;
 /** Limiar «Bom» — tracejado e janelas partilham este corte. */
-const GOOD_THRESHOLD = 60;
+const GOOD_THRESHOLD = SCORE_TIER_THRESHOLDS.good;
 /** Gap mínimo entre rótulos do eixo, em píxeis (spec §3). */
 const AXIS_GAP_PX = 8;
 /** Stagger por barra ao mudar de modalidade: 6 ms, teto de 80 ms de delay
@@ -125,7 +126,7 @@ export default function SpotTimeRail({ spot, locale, title }: SpotTimeRailProps)
   const selHour = hours[index];
   const selBand = scoreBand(selScore ?? 0);
   const valueText = selHour
-    ? `${formatHourLong(selHour, locale)}: ${tv.scoreWord} ${selScore ?? 0}, ${(
+    ? `${formatHourLong(selHour, locale)}: ${tv.scoreWord} ${scoreToNota(selScore ?? 0)}/10, ${(
         isPt ? selBand.labelPt : selBand.labelEn
       ).toUpperCase()}`
     : '';
@@ -608,7 +609,7 @@ export default function SpotTimeRail({ spot, locale, title }: SpotTimeRailProps)
           className="absolute left-1 font-mono text-[11px] tabular-nums text-fg-subtle pointer-events-none"
           style={{ top: `${(1 - GOOD_THRESHOLD / 100) * 100}%`, transform: 'translateY(-50%)' }}
         >
-          {GOOD_THRESHOLD}
+          {scoreToNota(GOOD_THRESHOLD)}
         </span>
 
         {/* Tooltip — só pointer:fine (setTip ignora touch); segue o cursor
@@ -628,7 +629,7 @@ export default function SpotTimeRail({ spot, locale, title }: SpotTimeRailProps)
               transition: reducedMotion ? 'none' : 'transform 120ms ease-out',
             }}
           >
-            {formatHourLabel(tipHour, locale)} · {displayScores[tip.gi] ?? 0}
+            {formatHourLabel(tipHour, locale)} · {scoreToNota(displayScores[tip.gi] ?? 0)}
             {tipMetrics && (
               <>
                 {' · '}

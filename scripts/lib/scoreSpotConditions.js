@@ -14,8 +14,9 @@ function loadScoring() {
   const { spots } = require('../../src/lib/spots.ts');
   const { getSportScore } = require('../../src/lib/sportScore.ts');
   const { rawToScoreInput, resolveScoreWaveSource } = require('../../src/lib/scoreConditions.ts');
+  const nota = require('../../src/lib/nota.ts');
   const byId = Object.fromEntries(spots.map((s) => [s.id, s]));
-  cached = { byId, getSportScore, rawToScoreInput, resolveScoreWaveSource };
+  cached = { byId, getSportScore, rawToScoreInput, resolveScoreWaveSource, scoreToNota: nota.scoreToNota };
   return cached;
 }
 
@@ -43,4 +44,9 @@ function computeScore(spotId, sport, conditionsJson) {
   return { score, source };
 }
 
-module.exports = { computeScore };
+/** Score 0–100 → nota inteira /10 que o site mostra (`src/lib/nota.ts`, #210). */
+function scoreToNota(score) {
+  return loadScoring().scoreToNota(score);
+}
+
+module.exports = { computeScore, scoreToNota };

@@ -1,5 +1,6 @@
 'use client';
 
+import { scoreToNota } from '@/lib/nota';
 import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { getSpotBySlug, spots } from '@/lib/spots';
@@ -93,9 +94,9 @@ export default function EmbedSpotWidget({ slug }: { slug: string }) {
           {score != null && tokens && (
             <div
               className={`shrink-0 w-12 h-12 rounded-full flex items-center justify-center font-mono font-bold text-lg tabular-nums border ${tokens.text} ${tokens.bg} ${tokens.border}`}
-              aria-label={`Score ${score}`}
+              aria-label={`${scoreToNota(score)}/10`}
             >
-              {Math.round(score)}
+              {scoreToNota(score)}
             </div>
           )}
         </div>

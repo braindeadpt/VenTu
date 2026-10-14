@@ -8,6 +8,6 @@ test.describe('Spot detail hero gauge', () => {
     await page.goto(`/pt/spots/${firstSlug}/`);
 
     await expect(page.getByRole('meter')).toBeVisible({ timeout: 15_000 });
-    await expect(page.getByText(/Épico|Bom|Razoável|Fraco|N\/A/i).first()).toBeVisible();
+    await expect(page.getByText(/Muito bom|Bom|Dá|Fraco|Não dá|N\/A/i).first()).toBeVisible();
   });
 });

@@ -64,7 +64,7 @@ describe('getMapSpotNarrative', () => {
     };
     const scores = {
       ...emptyScores,
-      surf: { score: 82, rating: 'Épico', ratingEn: 'Epic', factors: [], factorsEn: [], primaryFactor: 'waves' },
+      surf: { score: 88, rating: 'Muito bom', ratingEn: 'Very good', factors: [], factorsEn: [], primaryFactor: 'waves' },
     };
     const line = getMapSpotNarrative(surfSpot, conditions, scores, 'surf', 'en');
     expect(line).toContain('classic day');

@@ -5,6 +5,7 @@
  * offshore / onshore / cross relative to coastOrientation.
  */
 
+import { scoreToNota } from '@/lib/nota';
 import {
   getCardinalLabel,
   getWindRelationLabel,
@@ -220,7 +221,7 @@ export function buildWindRingSvg(
 }
 
 function buildPinSvg(score: number, scoreRgb: string): string {
-  const scoreLabel = Math.round(score);
+  const scoreLabel = scoreToNota(score);
 
   return `
     <g class="ventu-marker-pin">

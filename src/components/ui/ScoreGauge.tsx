@@ -1,5 +1,6 @@
 'use client';
 
+import { scoreTierFromScore, scoreToNota } from '@/lib/nota';
 import { useEffect, useRef, useState } from 'react';
 
 /* ═══════════════════════════════════════════════════════════════════════
@@ -18,7 +19,7 @@ import { useEffect, useRef, useState } from 'react';
  *
  *  @example
  *  // Large hero gauge with label + sublabel
- *  <ScoreGauge score={91} label="Kite" sublabel="/100" size="lg" />
+ *  <ScoreGauge score={91} label="Kite" sublabel="/10" size="lg" />
  *
  *  ═══════════════════════════════════════════════════════════════════════ */
 
@@ -27,24 +28,16 @@ type ScoreVariant = 'epic' | 'good' | 'fair' | 'poor' | 'closed';
 type SizeKey = 'sm' | 'md' | 'lg';
 
 interface ScoreGaugeProps {
-  /** Score 0–100. Values outside this range are clamped. */
+  /** Score 0–100 (shown as nota /10). Values outside this range are clamped. */
   score: number;
   /** Label shown below the number (e.g. sport name). */
   label?: string;
   /** Gauge size. Default: 'md'. */
   size?: SizeKey;
-  /** Sublabel shown next to label, smaller (e.g. "/100"). */
+  /** Sublabel shown next to label, smaller (e.g. "/10"). */
   sublabel?: string;
 }
 
-/* ──────────── score → variant mapping ──────────── */
-function getScoreVariant(score: number): ScoreVariant {
-  if (score >= 80) return 'epic';
-  if (score >= 60) return 'good';
-  if (score >= 40) return 'fair';
-  if (score >= 20) return 'poor';
-  return 'closed';
-}
 
 /* ──────────── size configuration ──────────── */
 interface SizeConfig {
@@ -82,7 +75,8 @@ export default function ScoreGauge({
   sublabel,
 }: ScoreGaugeProps) {
   const clamped = Math.min(100, Math.max(0, score));
-  const variant = getScoreVariant(clamped);
+  const variant: ScoreVariant = scoreTierFromScore(clamped);
+  const nota = scoreToNota(clamped);
   const cfg = SIZE_CONFIG[size];
 
   /* ───── Static-export safe: show final value in HTML, animate arc via CSS ───── */
@@ -126,15 +120,15 @@ export default function ScoreGauge({
 
   /* ───── accessibility label ───── */
   const ariaLabel = label
-    ? `${label} score: ${clamped} out of 100`
-    : `Score: ${clamped} out of 100`;
+    ? `${label}: ${nota} / 10`
+    : `${nota} / 10`;
 
   return (
     <div
       role="meter"
-      aria-valuenow={clamped}
+      aria-valuenow={nota}
       aria-valuemin={0}
-      aria-valuemax={100}
+      aria-valuemax={10}
       aria-label={ariaLabel}
       className="inline-flex flex-col items-center"
     >
@@ -194,7 +188,7 @@ export default function ScoreGauge({
             style={{ color: scoreColor }}
             aria-hidden="true"
           >
-            {Math.round(animatedScore || clamped)}
+            {scoreToNota(animatedScore || clamped)}
           </span>
         </div>
       </div>

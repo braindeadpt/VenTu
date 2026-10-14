@@ -1,5 +1,6 @@
 'use client';
 
+import { scoreToNota } from '@/lib/nota';
 import { useState, useEffect, useCallback } from 'react';
 import { Sunrise, Clock, Shirt, Users, ChevronDown, ChevronUp, Zap, AlertTriangle, Waves, Anchor } from 'lucide-react';
 import MoonIcon from '@/components/ui/MoonIcon';
@@ -398,7 +399,7 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
               <Zap className="w-4 h-4 text-accent shrink-0" aria-hidden />
               <span>
                 Score:{' '}
-                <span className="font-bold text-fg tabular-nums">{data.topScore}</span>
+                <span className="font-bold text-fg tabular-nums">{scoreToNota(data.topScore)}/10</span>
                 {data.topScoreSource && data.topScoreSource !== 'previsão' && (
                   <span
                     className="ml-1.5 inline-flex items-center px-1.5 py-0.5 rounded-md text-xs font-semibold bg-accent/15 text-accent border border-accent/30 cursor-help"
@@ -505,7 +506,7 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
                   <span className="text-xs text-fg-subtle truncate hidden sm:inline">{isPt ? spot.ptReason : spot.enReason}</span>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
-                  <div className="h-2 w-20 rounded-full bg-surface-2/[0.08] overflow-hidden" role="progressbar" aria-valuenow={spot.score} aria-valuemin={0} aria-valuemax={100}>
+                  <div className="h-2 w-20 rounded-full bg-surface-2/[0.08] overflow-hidden" role="progressbar" aria-valuenow={scoreToNota(spot.score)} aria-valuemin={0} aria-valuemax={10}>
                     <div
                       className="h-full rounded-full bg-gradient-to-r from-windDir-offshore to-data-waves transition-all duration-700 ease-out motion-reduce:transition-none"
                       style={{ width: barAnimated ? `${spot.score}%` : '0%' }}
@@ -521,7 +522,7 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
                       t,
                     )}
                   >
-                    {spot.score}
+                    {scoreToNota(spot.score)}
                   </span>
                 </div>
               </Link>

@@ -71,7 +71,7 @@ describe('wind ring marker', () => {
     expect(svg).not.toContain('ventu-wind-wedge');
     expect(svg).not.toContain('ventu-wind-arrow');
     expect(svg).toContain(`viewBox="0 0 ${MARKER_VIEWBOX_W}`);
-    expect(svg).toContain('>78<');
+    expect(svg).toContain('>8<');
   });
 
   it('pin has no tail — dense clusters must not overlap tail triangles', () => {

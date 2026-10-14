@@ -318,7 +318,7 @@ test.describe('SP-A — tooltip da régua (desktop)', () => {
     const tip = page.getByTestId('spot-rail-tooltip');
     await expect(tip).toBeVisible();
     // «14:00 · 72 …» — hora local + score (e métricas se o fetch resolveu).
-    await expect(tip).toContainText(/\d{2}:\d{2} · \d{1,3}/);
+    await expect(tip).toContainText(/\d{2}:\d{2} · (10|\d)\b/);
   });
 
   test('o tooltip desaparece ao sair da régua', async ({ page }) => {

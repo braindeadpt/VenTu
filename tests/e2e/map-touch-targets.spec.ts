@@ -63,8 +63,8 @@ test.describe('Mapa — alvos de toque ≥44px', () => {
       // UX v3 §4 — a régua usa amostras redondas (h-3.5) com os rótulos
       // canónicos de getScoreTierLabel; o selector antigo (.h-2) era das
       // barras de gradiente das camadas, que só existem com camadas ligadas.
-      await expect(legend.getByText('Épico')).toBeVisible();
-      await expect(legend.getByText('Fechado')).toBeVisible();
+      await expect(legend.getByText('Muito bom')).toBeVisible();
+      await expect(legend.getByText('Não dá')).toBeVisible();
     });
   });
 

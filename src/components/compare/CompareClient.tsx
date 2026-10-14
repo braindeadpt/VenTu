@@ -1,5 +1,6 @@
 'use client';
 
+import { scoreToNota } from '@/lib/nota';
 import { useState, useEffect, useMemo } from 'react';
 import { Trophy, Wind, Waves, Clock, ArrowLeft, Crown, Medal, Award, Check, Search, X } from 'lucide-react';
 import { spots } from '@/lib/spots';
@@ -371,7 +372,7 @@ export default function CompareClient() {
           <span
             className={`ml-auto shrink-0 font-mono text-sm font-semibold tabular-nums ${getScoreTokens(spotScore).text}`}
           >
-            {spotScore}
+            {scoreToNota(spotScore)}
           </span>
         )}
       </button>
@@ -599,7 +600,7 @@ export default function CompareClient() {
             {isPt ? winner.allScores[selectedSport]?.rating : winner.allScores[selectedSport]?.ratingEn}
           </p>
           <div className={`text-display-lg font-mono tabular-nums ${winnerTokens.text} mt-4`}>
-            {winnerScore}/100
+            {scoreToNota(winnerScore)}/10
           </div>
         </div>
 
@@ -648,8 +649,8 @@ export default function CompareClient() {
                 )}
 
                 <div className="text-center my-4">
-                  <div className={`text-display-lg font-mono tabular-nums ${tokens.text}`}>{score?.score || 0}</div>
-                  <div className="text-meta-sm text-fg-muted">/100</div>
+                  <div className={`text-display-lg font-mono tabular-nums ${tokens.text}`}>{scoreToNota(score?.score || 0)}</div>
+                  <div className="text-meta-sm text-fg-muted">/10</div>
                 </div>
 
                 <dl className="space-y-2 text-sm">

@@ -189,9 +189,9 @@ test.describe('S2A — régua de 48 h comanda veredicto e barra', () => {
   test('aria-valuetext descreve hora, score e banda', async ({ page }) => {
     await openSpot(page);
     const vt = await slider(page).getAttribute('aria-valuetext');
-    // Ex.: «qui 17 set, 12:00: score 93, ÉPICO». \p{L} e não \w: o \w do JS
+    // Ex.: «qui 17 set, 12:00: score 9/10, MUITO BOM». \p{L} e não \w: o \w do JS
     // não apanha letras acentuadas e «sáb» falhava todos os sábados.
-    expect(vt).toMatch(/\p{L}{3} \d{1,2} \p{L}{3}, \d{2}:\d{2}: score \d{1,3}, (ÉPICO|BOM|FUN|FLAT|FECHADO)/u);
+    expect(vt).toMatch(/\p{L}{3} \d{1,2} \p{L}{3}, \d{2}:\d{2}: score \d{1,2}\/10, (MUITO BOM|BOM|DÁ|FRACO|NÃO DÁ)/u);
   });
 
   test('menu «Mais»: abre por teclado, Esc fecha e devolve o foco', async ({ page }) => {

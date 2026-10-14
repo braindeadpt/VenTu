@@ -14,17 +14,17 @@ import { isSafetyNavWarning, safetyNavWarnings } from '@/lib/verdict/navWarningS
 import ihCoastalWarnings from '../../../public/data/ih-coastal-warnings.json';
 import { getScoreTierLabel } from '@/lib/sportScore';
 
-describe('scoreBand — limites canónicos (80/60/40/20)', () => {
+describe('scoreBand — limites canónicos da nota /10 (85/65/45/25)', () => {
   it.each([
     [0, 'closed'],
-    [19, 'closed'],
-    [20, 'poor'],
-    [39, 'poor'],
-    [40, 'fair'],
-    [59, 'fair'],
-    [60, 'good'],
-    [79, 'good'],
-    [80, 'epic'],
+    [24, 'closed'],
+    [25, 'poor'],
+    [44, 'poor'],
+    [45, 'fair'],
+    [64, 'fair'],
+    [65, 'good'],
+    [84, 'good'],
+    [85, 'epic'],
     [100, 'epic'],
   ] as const)('score %i → banda %s', (score, key) => {
     expect(scoreBand(score).key).toBe(key);
@@ -114,35 +114,35 @@ describe('formatWindowLabel — etiqueta «melhor» da régua', () => {
 
   it('mesmo dia: «ter 06–14h» + pico sem repetir o weekday', () => {
     // ter 15 → índices 6..13 são ter 06h..13h; fim exclusivo = 14h.
-    expect(lbl(6, 13, scoresWith({ 10: 78 }))).toBe('ter 06–14h · pico 10h (78)');
+    expect(lbl(6, 13, scoresWith({ 10: 78 }))).toBe('ter 06–14h · pico 10h (8)');
   });
 
   it('passa a meia-noite: «ter 22h – qua 14h»', () => {
     expect(lbl(22, 37, scoresWith({ 30: 82 }))).toBe(
-      'ter 22h – qua 14h · pico qua 06h (82)',
+      'ter 22h – qua 14h · pico qua 06h (8)',
     );
   });
 
   it('acaba às 23h: fim exclusivo escreve «00h» do dia seguinte, nunca «24h»', () => {
     expect(lbl(18, 23, scoresWith({ 20: 70 }))).toBe(
-      'ter 18h – qua 00h · pico ter 20h (70)',
+      'ter 18h – qua 00h · pico ter 20h (7)',
     );
   });
 
   it('janela começou antes da janela visível: início é «agora»', () => {
     // Janela real 02h..20h mas a régua só mostra a partir de 10h.
     expect(lbl(2, 20, scoresWith({ 15: 90 }), 10, 48)).toBe(
-      'agora–21h · pico ter 15h (90)',
+      'agora–21h · pico ter 15h (9)',
     );
   });
 
   it('janela de 1 hora: «ter 06–07h»', () => {
-    expect(lbl(6, 6, scoresWith({ 6: 65 }))).toBe('ter 06–07h · pico 06h (65)');
+    expect(lbl(6, 6, scoresWith({ 6: 65 }))).toBe('ter 06–07h · pico 06h (7)');
   });
 
   it('en: dias e palavras em inglês', () => {
     expect(lbl(6, 13, scoresWith({ 10: 78 }), 0, 48, 'en')).toBe(
-      'Tue 06–14h · peak 10h (78)',
+      'Tue 06–14h · peak 10h (8)',
     );
   });
 
@@ -151,20 +151,20 @@ describe('formatWindowLabel — etiqueta «melhor» da régua', () => {
     // real (100 no índice 60, fora do ecrã) não pode ser anunciado — o pico
     // procura-se só em [30, 47]: qua 16h (85).
     const scores = scoresWith({ 40: 85, 60: 100 });
-    expect(lbl(30, 70, scores)).toBe('qua 06h – qui 00h · pico qua 16h (85)');
+    expect(lbl(30, 70, scores)).toBe('qua 06h – qui 00h · pico qua 16h (9)');
   });
 
   it('pico na parte cortada atrás também não se anuncia', () => {
     // Janela 02h..20h visível a partir de 10h; máximo real às 04h (índice 4).
     expect(lbl(2, 20, scoresWith({ 4: 95, 15: 90 }), 10, 48)).toBe(
-      'agora–21h · pico ter 15h (90)',
+      'agora–21h · pico ter 15h (9)',
     );
   });
 
   it('cobre >70 % do eixo visível → «bom quase todo o período» + pico', () => {
     // Visível [5,47] = 43/48 ≈ 90 % — sem range de horas, com pico visível.
     expect(lbl(5, 50, scoresWith({ 40: 85 }))).toBe(
-      'bom quase todo o período · pico qua 16h (85)',
+      'bom quase todo o período · pico qua 16h (9)',
     );
     // O limiar é estrito: 34/48 ≈ 71 % já é «quase todo»; 33/48 ≈ 69 % não.
     expect(lbl(5, 38, scoresWith({ 10: 70 }))).toContain(
@@ -177,7 +177,7 @@ describe('formatWindowLabel — etiqueta «melhor» da régua', () => {
 
   it('en: «good almost the whole period»', () => {
     expect(lbl(5, 50, scoresWith({ 40: 85 }), 0, 48, 'en')).toBe(
-      'good almost the whole period · peak Wed 16h (85)',
+      'good almost the whole period · peak Wed 16h (9)',
     );
   });
 

@@ -4,7 +4,7 @@ import { getScoreTokens } from '@/lib/sportScore';
 
 describe('scoreThresholds', () => {
   it('aligns map rgb tier with ScoreBadge tokens at boundary scores', () => {
-    const cases = [0, 19, 20, 39, 40, 59, 60, 79, 80, 100];
+    const cases = [0, 24, 25, 44, 45, 64, 65, 84, 85, 100];
     for (const score of cases) {
       expect(getScoreTier(score)).toBe(getScoreTokens(score).tier);
     }

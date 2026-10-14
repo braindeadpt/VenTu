@@ -1,3 +1,4 @@
+import { scoreToNota } from '@/lib/nota';
 import { cn } from '@/lib/cn';
 import { getScoreTokens, getScoreTierLabel } from '@/lib/sportScore';
 
@@ -32,7 +33,7 @@ export default function ScoreBadge({
         className,
       )}
     >
-      <span data-visual-dynamic>{score}</span>
+      <span data-visual-dynamic>{scoreToNota(score)}</span>
       {showLabel && (
         <span
           className={cn(

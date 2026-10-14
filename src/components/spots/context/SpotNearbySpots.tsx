@@ -1,5 +1,6 @@
 'use client';
 
+import { scoreToNota } from '@/lib/nota';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { getTranslation } from '@/lib/i18n';
 import { spots } from '@/lib/spots';
@@ -111,7 +112,7 @@ export default function SpotNearbySpots({ spot, locale, selectedSport }: SpotNea
                     data-nearby-score={s.id}
                     data-score-tier={tokens.tier}
                   >
-                    {score}
+                    {scoreToNota(score)}
                   </span>
                 ) : (
                   <span
