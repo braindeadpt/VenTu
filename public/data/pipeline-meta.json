@@ -1,51 +1,51 @@
 {
-  "lastRunAt": "2026-10-14T07:10:34.260Z",
+  "lastRunAt": "2026-10-14T08:03:33.101Z",
   "lastRunMode": "observations",
-  "observationsUpdatedAt": "2026-10-14T07:10:34.260Z",
+  "observationsUpdatedAt": "2026-10-14T08:03:33.101Z",
   "fullUpdatedAt": "2026-10-14T07:10:27.430Z",
-  "displayUpdatedAt": "2026-10-14T07:10:34.260Z",
+  "displayUpdatedAt": "2026-10-14T08:03:33.101Z",
   "buoyLayer": {
     "status": "ok",
     "apiKeyConfigured": true,
     "hasWaveData": true,
-    "newestReadingAt": "2026-10-14T05:49:13.000Z",
+    "newestReadingAt": "2026-10-14T06:49:13.000Z",
     "fugro": {
       "status": "missing"
     },
     "wmo": {
       "status": "ok",
       "hasWaveData": true,
-      "newestReadingAt": "2026-10-14T05:00:00.000Z"
+      "newestReadingAt": "2026-10-14T06:00:00.000Z"
     },
     "streak": 0,
     "lastStatus": "ok",
-    "streakUpdatedAt": "2026-10-14T07:10:34.258Z",
-    "lastOkAt": "2026-10-14T07:10:34.258Z",
+    "streakUpdatedAt": "2026-10-14T08:03:33.099Z",
+    "lastOkAt": "2026-10-14T08:03:33.099Z",
     "fugroRejectedStreak": 0
   },
   "radarLayer": {
     "status": "ok",
-    "frameTime": "2026-10-14T06:55:00.000Z",
+    "frameTime": "2026-10-14T07:50:00.000Z",
     "streak": 0,
     "lastStatus": "ok",
-    "streakUpdatedAt": "2026-10-14T07:10:34.258Z",
-    "lastOkAt": "2026-10-14T07:10:34.258Z"
+    "streakUpdatedAt": "2026-10-14T08:03:33.099Z",
+    "lastOkAt": "2026-10-14T08:03:33.099Z"
   },
   "warningsLayer": {
     "status": "ok",
     "activeWarnings": 0,
     "source": "ipma",
-    "fetchedAt": "2026-10-14T07:06:26.422Z",
+    "fetchedAt": "2026-10-14T08:03:22.087Z",
     "streak": 0,
     "lastStatus": "ok",
-    "streakUpdatedAt": "2026-10-14T07:10:34.258Z",
-    "lastOkAt": "2026-10-14T07:10:34.258Z"
+    "streakUpdatedAt": "2026-10-14T08:03:33.099Z",
+    "lastOkAt": "2026-10-14T08:03:33.099Z"
   },
   "coastalWarningsLayer": {
     "status": "ok",
     "activeWarnings": 194,
     "coveredSpots": 151,
-    "fetchedAt": "2026-10-14T07:06:27.510Z",
+    "fetchedAt": "2026-10-14T08:03:23.086Z",
     "es": {
       "configured": false,
       "status": "disabled",
@@ -54,18 +54,18 @@
     },
     "streak": 0,
     "lastStatus": "ok",
-    "streakUpdatedAt": "2026-10-14T07:10:34.259Z",
-    "lastOkAt": "2026-10-14T07:10:34.259Z"
+    "streakUpdatedAt": "2026-10-14T08:03:33.100Z",
+    "lastOkAt": "2026-10-14T08:03:33.100Z"
   },
   "tideLayer": {
     "status": "ok",
     "stations": 34,
     "mappedSpots": 185,
-    "fetchedAt": "2026-10-14T07:05:52.224Z",
+    "fetchedAt": "2026-10-14T08:03:01.306Z",
     "streak": 0,
     "lastStatus": "ok",
-    "streakUpdatedAt": "2026-10-14T07:10:34.260Z",
-    "lastOkAt": "2026-10-14T07:10:34.260Z"
+    "streakUpdatedAt": "2026-10-14T08:03:33.101Z",
+    "lastOkAt": "2026-10-14T08:03:33.101Z"
   },
   "openMeteoUsage": {
     "weightedCalls": 371,
