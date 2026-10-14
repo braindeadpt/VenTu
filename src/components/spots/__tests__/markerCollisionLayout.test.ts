@@ -183,7 +183,7 @@ describe('buildV3MarkerIcon — marcador da maquete', () => {
     expect(icon.iconAnchor).toEqual([17, 17]);
     expect(icon.html).toContain('data-v3spot="nazare"');
     expect(icon.html).toContain('data-spot-score="82"');
-    expect(icon.html).toContain('>82</span>');
+    expect(icon.html).toContain('>8</span>');
     expect(icon.html).toContain('rgb(var(--bg-base))');
   });
 

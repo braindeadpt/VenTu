@@ -55,24 +55,37 @@ Lê este ficheiro antes de qualquer trabalho no repo. Define o estado do project
 
 | Ficheiro | Função |
 |---|---|
-| `src/lib/sportScore.ts` | Scores 0–100 por modalidade, `getHourlyScores`, `getRelevantSports` |
+| `src/lib/sportScore.ts` | Motor: scores 0–100 internos por modalidade, `getHourlyScores`, `getRelevantSports` |
+| `src/lib/nota.ts` | Escala única visível (#210): nota /10 inteira (`scoreToNota` = round(score/10)), bandas e limiares |
 | `src/lib/sportRatings.ts` | `SportType`, `getCompatibleSports`, `TYPE_TO_SPORTS` fallback |
 | `src/lib/homepageSport.ts` | Sort/ticker/hero por modalidade preferida (`ventu-preferred-sport`) |
 | `src/lib/gridFilters.ts` | Sync URL ↔ filtros do grid |
+
+**Escala da nota (#210):** o site mostra só a nota /10, arredondada a inteiro; o motor continua em 0–100. Bandas (sobre a nota arredondada), definidas só em `src/lib/nota.ts`:
+
+| Banda | Nota /10 | Score 0–100 equivalente (`notaMinScore`) |
+|---|---|---|
+| Não dá | 0–2 (< 3) | 0–24 |
+| Fraco | 3–4 | 25–44 |
+| Dá | 5–6 | 45–64 |
+| Bom | 7–8 | 65–84 |
+| Muito bom | 9–10 (≥ 9) | 85–100 |
+
+Limiares/filtros: «nota ≥ n» ⇔ «score ≥ 10·n − 5» (ex. «Só a bombar» = nota ≥ 7 = score ≥ 65). Testes: `src/lib/__tests__/nota.test.ts`.
 
 **Testes:** `src/lib/__tests__/sportScore.test.ts` (20+ casos). Correr `npm test`.
 
 **Direcção do vento nos desportos de vento (#179):** kite, windsurf e foil (e o futuro wing) usam `windSportDirectionSafety(spot, windDir)` em `src/lib/sportScore.ts` — uma só regra, também usada por `windQualityTier`. Ângulo entre o vento e o onshore puro (`coastOrientation`):
 
-| Banda | Ângulo do onshore | Pontos de direcção | Score total | Aviso visível |
+| Banda | Ângulo do onshore | Pontos de direcção | Nota total | Aviso visível |
 |---|---|---|---|---|
 | onshore | 0–40° | 50 % | — | — |
 | side-onshore | 41–69° | 80 % | — | — |
 | cross-shore | 70–100° | 100 % (máximo) | — | — |
-| side-offshore | 101–140° | 30 % | — | «Componente offshore: só avançados com barco de apoio» |
-| offshore | 141–180° | 0 % | cap a 25 (FLAT/FECHADO) | «Vento offshore: perigo de deriva para o mar» |
+| side-offshore | 101–140° | 30 % | cap a 5,0/10 (`WIND_SPORT_SIDE_OFFSHORE_SCORE_CAP`, #195/#210) — nunca Bom nem Muito bom | «Componente offshore: só avançados com barco de apoio» |
+| offshore | 141–180° | 0 % | cap a 2,5/10 (`WIND_SPORT_OFFSHORE_SCORE_CAP`) — Fraco/Não dá | «Vento offshore: perigo de deriva para o mar» |
 
-*Porquê:* com vento cross/side-onshore o rider faz bordos ao longo da costa e, se cair ou o equipamento falhar, o vento devolve-o à praia — é o ideal. Onshore puro é seguro mas dá chop e dificulta sair da rebentação (pontuação parcial). Qualquer componente offshore empurra para o mar, e junto à praia o vento chega rajado e com buracos (sombra de terra): side-offshore só é aceitável para avançados com barco de apoio, offshore puro é um perigo de deriva — por isso o score total fica em FLAT/FECHADO, independentemente da intensidade. O kite reserva a margem dos pontos de direcção (`withDirectionHeadroom`) para que uma sessão saturada (vento+rajada+mar+água > 100) continue a ordenar por direcção. O aviso sai em `SportScore.warning`/`warningEn` e `directionSafety`; a UI mostra-o em texto com `role="note"` (`WindSafetyNote`) no veredicto do spot, nos cartões da homepage (Top Now/Favoritos) e no mapa (cartão/sheet e popup). Textos em `windSafety` (`src/lib/translations/*`). Testes: `src/lib/__tests__/windSportDirectionSafety.test.ts` (mock com costa a 270°).
+*Porquê:* com vento cross/side-onshore o rider faz bordos ao longo da costa e, se cair ou o equipamento falhar, o vento devolve-o à praia — é o ideal. Onshore puro é seguro mas dá chop e dificulta sair da rebentação (pontuação parcial). Qualquer componente offshore empurra para o mar, e junto à praia o vento chega rajado e com buracos (sombra de terra): side-offshore só é aceitável para avançados com barco de apoio — por isso a nota total nunca passa de 5,0/10 (#195: sem cap, 25 kt side-offshore chegava a ~7–8/10 e dizia «vai» a um intermédio) —, offshore puro é um perigo de deriva — por isso a nota total fica em 2,5/10 (Fraco/Não dá), independentemente da intensidade. Os dois caps estão em /10 e aplicam-se no mesmo sítio (`applyWindSafety`, via `notaToScore`). O kite reserva a margem dos pontos de direcção (`withDirectionHeadroom`) para que uma sessão saturada (vento+rajada+mar+água > 100) continue a ordenar por direcção. O aviso sai em `SportScore.warning`/`warningEn` e `directionSafety`; a UI mostra-o em texto com `role="note"` (`WindSafetyNote`) no veredicto do spot, nos cartões da homepage (Top Now/Favoritos) e no mapa (cartão/sheet e popup). Textos em `windSafety` (`src/lib/translations/*`). **Label alinhada (#195):** nos desportos de vento (`isWindDirectionSport`) a label de direcção dos factores vem de `windSportDirectionSafety(...).direction` — um vento a 80° do onshore é cross-shore no score e na linha «porquê» (`windRelCross`: PT «Cross», EN «Cross-shore»); o surf e os restantes consumidores de `classifyWind` (incluindo o chip do `WindCard`) ficam iguais. Testes: `src/lib/__tests__/windSportDirectionSafety.test.ts` (mock com costa a 270°).
 
 **`compatibleSports`:** 185/185 explícitos. Validação CI: `npm run spots:validate` (`scripts/validate-spots.js`).
 

@@ -3,7 +3,7 @@
  * Must match getScoreTokens() in sportScore.ts.
  */
 import type { ScoreTier } from '@/lib/sportScore';
-import { SCORE_TIER_THRESHOLDS } from '@/lib/sportScore';
+import { SCORE_TIER_THRESHOLDS, scoreTierFromScore } from '@/lib/nota';
 
 export { SCORE_TIER_THRESHOLDS };
 
@@ -16,11 +16,7 @@ const TIER_CSS_VARS: Record<ScoreTier, string> = {
 };
 
 export function getScoreTier(score: number): ScoreTier {
-  if (score >= SCORE_TIER_THRESHOLDS.epic) return 'epic';
-  if (score >= SCORE_TIER_THRESHOLDS.good) return 'good';
-  if (score >= SCORE_TIER_THRESHOLDS.fair) return 'fair';
-  if (score >= SCORE_TIER_THRESHOLDS.poor) return 'poor';
-  return 'closed';
+  return scoreTierFromScore(score);
 }
 
 export function getScoreCssVar(score: number): string {

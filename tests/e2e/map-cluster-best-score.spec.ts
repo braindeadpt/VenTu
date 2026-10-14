@@ -1,3 +1,4 @@
+import { scoreToNota } from '../../src/lib/nota';
 import { test, expect } from '@playwright/test';
 import type { Page } from '@playwright/test';
 import { preseedWindRingLegend } from './helpers/map-setup';
@@ -166,10 +167,10 @@ test.describe('Clusters clássicos — embeds fora do modo Explorar (hero)', () 
     for (const c of clusters) {
       if (c.max === null) continue;
       scored++;
-      expect(Number(c.score), `cluster de ${c.total} spots`).toBe(c.max);
+      expect(Number(c.score), `cluster de ${c.total} spots`).toBe(scoreToNota(c.max));
       expect(Number(c.count), `cluster de ${c.total} spots`).toBe(c.total);
-      expect(c.label).toMatch(/Melhor score|Best score/);
-      expect(c.label).toContain(String(c.max));
+      expect(c.label).toMatch(/Melhor nota|Best rating/);
+      expect(c.label).toContain(`${scoreToNota(c.max)}/10`);
       expect(c.label).toContain(String(c.total));
     }
     expect(scored).toBeGreaterThan(0);

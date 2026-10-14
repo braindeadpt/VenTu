@@ -1,3 +1,4 @@
+import { scoreToNota } from '@/lib/nota';
 import { formatWeekday } from '@/lib/verdict/formatHourLabel';
 
 /**
@@ -106,7 +107,7 @@ export function formatWindowLabel(
   const peak = PEAK_WORD[locale] ?? PEAK_WORD.en;
   const peakPart =
     peakIso && typeof peakScore === 'number'
-      ? ` · ${peak} ${formatWeekday(peakIso, locale)} ${hh(peakIso)}h (${peakScore})`
+      ? ` · ${peak} ${formatWeekday(peakIso, locale)} ${hh(peakIso)}h (${scoreToNota(peakScore)})`
       : '';
 
   // Janela quase total: a faixa não precisa de horas — diz-se o que é.
@@ -140,7 +141,7 @@ export function formatWindowLabel(
     peakIso && typeof peakScore === 'number'
       ? ` · ${peak} ${
           showPeakDay ? `${formatWeekday(peakIso, locale)} ` : ''
-        }${hh(peakIso)}h (${peakScore})`
+        }${hh(peakIso)}h (${scoreToNota(peakScore)})`
       : '';
 
   return `${range}${peakInline}`;

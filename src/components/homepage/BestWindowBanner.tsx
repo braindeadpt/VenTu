@@ -1,3 +1,4 @@
+import { scoreToNota } from '@/lib/nota';
 import { getTranslation } from '@/lib/i18n';
 import { getScoreTokens } from '@/lib/sportScore';
 import type { BestWindowToday } from '@/lib/bestWindowToday';
@@ -57,7 +58,7 @@ export default function BestWindowBanner({
           'border',
         ].join(' ')}
       >
-        {Math.round(score)}
+        {scoreToNota(score)}
       </span>
       <div className="flex flex-col min-w-0">
         <span className="text-body-sm font-semibold text-fg truncate">

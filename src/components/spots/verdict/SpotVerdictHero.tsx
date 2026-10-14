@@ -1,5 +1,6 @@
 'use client';
 
+import { scoreToNota } from '@/lib/nota';
 import type { ReactNode } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, MapPin, Navigation, Video } from 'lucide-react';
@@ -70,7 +71,7 @@ const lowerFirst = (s: string) => (s ? s.charAt(0).toLowerCase() + s.slice(1) : 
 /**
  * §1 da spec v3 — «posso ir?». Grelha de 12 colunas no desktop: 1–7 levam
  * voltar/região·coords/nome/linha de tempo; 8–12 levam o score (mono,
- * --verdict), «/100», a banda e a frase de porquê. No mobile o nome e o
+ * --verdict), «/10», a banda e a frase de porquê. No mobile o nome e o
  * score partilham a mesma linha (o nome quebra, o score nunca sai).
  *
  * Hierarquia de acções: 1 primária («Como chegar», flex-1 no mobile) +
@@ -287,17 +288,17 @@ export default function SpotVerdictHero({
               <span
                 role="meter"
                 aria-valuemin={0}
-                aria-valuemax={100}
-                aria-valuenow={target}
-                aria-valuetext={`${target} / 100 — ${bandLabel}`}
+                aria-valuemax={10}
+                aria-valuenow={scoreToNota(target)}
+                aria-valuetext={`${scoreToNota(target)} / 10 — ${bandLabel}`}
                 aria-label={tv.sectionTitle}
                 className="font-mono font-medium tabular-nums leading-[0.84] tracking-[-0.05em] text-[64px] lg:text-[104px]"
                 style={{ color: 'var(--verdict)' }}
                 data-visual-dynamic
               >
-                {displayScore}
+                {scoreToNota(displayScore)}
               </span>
-              <span className="font-mono text-num-lg text-fg-subtle">/100</span>
+              <span className="font-mono text-num-lg text-fg-subtle">/10</span>
             </div>
             <span
               className="font-display text-meta-sm lg:text-lg font-semibold uppercase tracking-[0.18em] leading-none"

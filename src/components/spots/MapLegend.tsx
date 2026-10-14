@@ -5,6 +5,7 @@ import type { mapUiLayersDict } from '@/lib/translations/mapUi/layers';
 import { getTranslation } from '@/lib/i18n';
 import { useEffect, useState } from 'react';
 import { getScoreTierLabel, type ScoreTier } from '@/lib/sportScore';
+import { NOTA_MAX, scoreToNota } from '@/lib/nota';
 import { getScoreTier, SCORE_THRESHOLD_STEPS } from '@/lib/scoreThresholds';
 import { ChevronDown } from 'lucide-react';
 import IsobathLegend from './IsobathLegend';
@@ -73,8 +74,7 @@ interface MapLegendProps {
 /**
  * Régua de scores — 5 escalões discretos com os rótulos canónicos
  * (`getScoreTierLabel`) e os intervalos das SCORE_TIER_THRESHOLDS
- * (ÉPICO 80–100 · BOM 60–79 · … · FECHADO 0–19). A maquete mostrava
- * «FUN»/«FLAT» — a spec manda usar a fonte canónica.
+ * em nota /10 (Muito bom 9–10 · Bom 7–8 · Dá 5–6 · Fraco 3–4 · Não dá 0–2).
  */
 function ScoreScale({ locale, title }: { locale: string; title: string }) {
   const t = getTranslation(locale);
@@ -86,7 +86,8 @@ function ScoreScale({ locale, title }: { locale: string; title: string }) {
       <ul className="flex flex-col gap-1">
         {SCORE_THRESHOLD_STEPS.map((step, i) => {
           const tier: ScoreTier = getScoreTier(step.min);
-          const hi = i === 0 ? 100 : SCORE_THRESHOLD_STEPS[i - 1].min - 1;
+          const lo = scoreToNota(step.min);
+          const hi = i === 0 ? NOTA_MAX : scoreToNota(SCORE_THRESHOLD_STEPS[i - 1].min) - 1;
           return (
             <li key={step.cssVar} className="grid grid-cols-[14px_1fr_auto] items-center gap-x-2">
               <i
@@ -98,7 +99,7 @@ function ScoreScale({ locale, title }: { locale: string; title: string }) {
                 {getScoreTierLabel(tier, locale)}
               </span>
               <span className="font-mono tabular-nums text-[11px] text-fg-muted">
-                {step.min}–{hi}
+                {lo}–{hi}
               </span>
             </li>
           );

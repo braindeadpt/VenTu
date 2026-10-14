@@ -1,3 +1,4 @@
+import { scoreToNota } from '@/lib/nota';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Bell, MapPin } from 'lucide-react';
@@ -102,7 +103,7 @@ export default async function AlertsPage({
                         {SPORT_LABELS[spot.bestSport as keyof typeof SPORT_LABELS]?.[locale === 'pt' ? 'pt' : 'en'] ?? spot.bestSport}
                       </span>
                       <span className={`text-sm font-semibold ${getScoreTokens(spot.bestScore).text}`}>
-                        {spot.bestScore}
+                        {scoreToNota(spot.bestScore)}
                       </span>
                     </span>
                   )}

@@ -1,5 +1,6 @@
 'use client';
 
+import { scoreToNota } from '@/lib/nota';
 import { localizedSpotName, localizedSpotRegion } from '@/lib/localizedSpotText';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -157,7 +158,7 @@ export default function SpotRankedTable({
                       className={cn('font-mono font-semibold tabular-nums', tokens.text)}
                       title={getScoreTierLabel(tokens.tier, locale)}
                     >
-                      {score}
+                      {scoreToNota(score)}
                     </span>
                   </td>
                   <td className="py-2 px-2 min-w-0">
@@ -219,7 +220,7 @@ export default function SpotRankedTable({
                         <span
                           className={cn('ml-1.5 text-meta-sm', getScoreTokens(bestWindow.score).text)}
                         >
-                          {bestWindow.score}
+                          {scoreToNota(bestWindow.score)}
                         </span>
                       </span>
                     ) : (

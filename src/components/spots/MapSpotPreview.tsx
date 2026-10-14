@@ -1,5 +1,6 @@
 'use client';
 
+import { scoreToNota } from '@/lib/nota';
 import { useEffect, useRef, useState } from 'react';
 import { getTranslation } from '@/lib/i18n';
 import { getSportLabel } from '@/lib/homepageSport';
@@ -419,7 +420,7 @@ export function SpotCardContent({
           style={{ fontSize: 44, color: scoreColor }}
           data-card-score={score}
         >
-          {score}
+          {scoreToNota(score)}
         </span>
         <span
           className="font-display font-semibold uppercase"

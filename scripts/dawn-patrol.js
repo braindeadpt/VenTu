@@ -13,6 +13,7 @@ const { atomicWriteJson } = require('./lib/atomicWriteJson.js');
 const { callLLM } = require('./llm-fallback');
 const { attachMoonTideLines } = require('./lib/attachMoonTide');
 const { morningScore, resolveMorningRecalibration } = require('./lib/dawnPatrolScore');
+const { scoreToNota } = require('./lib/scoreSpotConditions');
 const { coastalWarningsForSpot, coastalWarningLine } = require('./lib/ihCoastalWarnings');
 const { seaWarningForSpot, seaWarningLine } = require('./lib/ipmaWarnings');
 
@@ -238,7 +239,7 @@ ${s.name} (${s.region}):
 - Ondas: ${s.bestWindow.waveHeight.toFixed(1)}m @ ${s.bestWindow.wavePeriod.toFixed(0)}s
 - Vento: ${(s.bestWindow.windSpeed * 1.94384).toFixed(0)} nós
 - Água: ${s.bestWindow.waterTemp?.toFixed(1) ?? '--'}°C
-- Score: ${s.score}/100${s.scoreSource === 'previsão' ? '' : ' (corrigido: ' + s.scoreSource + ')'}
+- Nota: ${scoreToNota(s.score)}/10${s.scoreSource === 'previsão' ? '' : ' (corrigido: ' + s.scoreSource + ')'}
 ${coastal.length > 0
   ? `- Avisos costeiros (IH): ${coastal.map((c) => `${c.ref}${c.category ? ` (${c.category})` : ''}`).join('; ')}`
   : ''}${seaWarningPromptLine(sea)}`;

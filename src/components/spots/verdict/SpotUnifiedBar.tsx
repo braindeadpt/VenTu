@@ -1,5 +1,6 @@
 'use client';
 
+import { scoreToNota } from '@/lib/nota';
 import { useEffect, useRef, useState } from 'react';
 import type { SportType } from '@/lib/sportRatings';
 import type { SportScore } from '@/lib/sportScore';
@@ -198,7 +199,7 @@ export default function SpotUnifiedBar({
             style={{ color: 'var(--verdict)' }}
             data-visual-dynamic
           >
-            {shownScore}
+            {shownScore == null ? shownScore : scoreToNota(shownScore)}
           </span>
           <span className="font-mono text-num-sm tabular-nums text-fg">
             {selectedHour ? formatHourLabel(selectedHour, locale) : '--:--'}

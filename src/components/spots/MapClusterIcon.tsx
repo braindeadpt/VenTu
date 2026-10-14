@@ -1,5 +1,6 @@
 'use client';
 
+import { scoreToNota } from '@/lib/nota';
 import type L from 'leaflet';
 import { getScoreRgb } from '@/lib/scoreThresholds';
 
@@ -67,11 +68,11 @@ const AREA_PHRASE: Record<ClusterLocale, Record<'spots' | 'places', string>> = {
 };
 
 const BEST_SCORE_PHRASE: Record<ClusterLocale, string> = {
-  pt: 'Melhor score',
-  en: 'Best score',
-  es: 'Mejor score',
-  de: 'Bester Score',
-  fr: 'Meilleur score',
+  pt: 'Melhor nota',
+  en: 'Best rating',
+  es: 'Mejor nota',
+  de: 'Beste Note',
+  fr: 'Meilleure note',
 };
 
 /**
@@ -81,7 +82,7 @@ const BEST_SCORE_PHRASE: Record<ClusterLocale, string> = {
  * nome. Os números vivem em <text> de SVG (que o axe nao conta como texto
  * acessivel) ou em divs onde o nome seria so «80» — sem dizer 80 do que,
  * nem que ha uma accao. Dai a etiqueta explicita, escondida visualmente:
- * «Melhor score 80 · 12 spots nesta zona — ampliar».
+ * «Melhor nota 8/10 · 12 spots nesta zona — ampliar».
  */
 export function clusterLabel(
   total: number,
@@ -92,7 +93,7 @@ export function clusterLabel(
   const l = clusterLocale(locale);
   const base = `${total} ${AREA_PHRASE[l][kind]}`;
   if (kind === 'spots' && bestScore !== null) {
-    return `${BEST_SCORE_PHRASE[l]} ${bestScore} · ${base}`;
+    return `${BEST_SCORE_PHRASE[l]} ${scoreToNota(bestScore)}/10 · ${base}`;
   }
   return base;
 }
@@ -139,7 +140,7 @@ export function createClusterIconFunction(
           ${
             bestScore === null
               ? total
-              : `<span data-cluster-score style="color:${scoreColor}">${bestScore}</span>${countBadge}`
+              : `<span data-cluster-score style="color:${scoreColor}">${scoreToNota(bestScore)}</span>${countBadge}`
           }
         </div>
       `;
@@ -232,7 +233,7 @@ export function createClusterIconFunction(
           font-size="${fontSize}" font-weight="700"
           fill="${bestScore === null ? 'rgb(var(--fg))' : scoreColor}"
           clip-path="url(#${clipId})"
-        >${bestScore === null ? total : bestScore}</text>
+        >${bestScore === null ? total : scoreToNota(bestScore)}</text>
         ${badge}
       </svg>
     `;

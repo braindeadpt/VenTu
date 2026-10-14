@@ -9,9 +9,9 @@ export interface ScoreBand {
 }
 
 /**
- * Banda do score 0–100 (ÉPICO 80+, BOM 60+, FUN 40+, FLAT 20+, FECHADO <20) —
- * mesmos limites e rótulos que `getScoreTierLabel`/`getScoreTier`, a fonte
- * canónica do produto. Scores fora de 0–100 são clampados aos extremos.
+ * Banda de um score 0–100 — a banda da nota /10 que se mostra (`nota.ts`:
+ * Não dá < 3 ≤ Fraco < 5 ≤ Dá < 7 ≤ Bom < 9 ≤ Muito bom), com os rótulos de
+ * `getScoreTierLabel`. Scores fora de 0–100 são clampados aos extremos.
  */
 export function scoreBand(score: number): ScoreBand {
   const clamped = Math.max(0, Math.min(100, score));

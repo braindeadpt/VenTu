@@ -49,14 +49,14 @@ describe('bestClusterScore', () => {
 
 describe('clusterLabel', () => {
   it('inclui melhor score e contagem (pt)', () => {
-    expect(clusterLabel(12, 80, 'pt', 'spots')).toBe('Melhor score 80 · 12 spots nesta zona — ampliar');
+    expect(clusterLabel(12, 80, 'pt', 'spots')).toBe('Melhor nota 8/10 · 12 spots nesta zona — ampliar');
   });
 
   it('en/es/de/fr', () => {
-    expect(clusterLabel(12, 80, 'en', 'spots')).toContain('Best score 80 · 12 spots');
-    expect(clusterLabel(12, 80, 'es', 'spots')).toContain('Mejor score 80 · 12 spots');
-    expect(clusterLabel(12, 80, 'de', 'spots')).toContain('Bester Score 80 · 12 Spots');
-    expect(clusterLabel(12, 80, 'fr', 'spots')).toContain('Meilleur score 80 · 12 spots');
+    expect(clusterLabel(12, 80, 'en', 'spots')).toContain('Best rating 8/10 · 12 spots');
+    expect(clusterLabel(12, 80, 'es', 'spots')).toContain('Mejor nota 8/10 · 12 spots');
+    expect(clusterLabel(12, 80, 'de', 'spots')).toContain('Beste Note 8/10 · 12 Spots');
+    expect(clusterLabel(12, 80, 'fr', 'spots')).toContain('Meilleure note 8/10 · 12 spots');
   });
 
   it('sem score cai na etiqueta só de contagem', () => {
@@ -69,7 +69,7 @@ describe('clusterLabel', () => {
   });
 
   it('locale desconhecido cai em en', () => {
-    expect(clusterLabel(3, 50, 'ja', 'spots')).toContain('Best score 50 · 3 spots');
+    expect(clusterLabel(3, 50, 'ja', 'spots')).toContain('Best rating 5/10 · 3 spots');
   });
 });
 
@@ -77,7 +77,7 @@ describe('createClusterIconFunction — html', () => {
   it('mostra o melhor score (não a contagem) como número principal', () => {
     const html = iconHtml([{ spotScore: 41 }, { spotScore: 92 }, { spotScore: 55 }], { simple: true });
     expect(html).toContain('data-cluster-score');
-    expect(html).toMatch(/<span data-cluster-score[^>]*>92<\/span>/);
+    expect(html).toMatch(/<span data-cluster-score[^>]*>9<\/span>/);
     expect(html).toContain('data-cluster-count');
     expect(html).toMatch(/<span data-cluster-count[^>]*>3<\/span>/);
   });
@@ -93,7 +93,7 @@ describe('createClusterIconFunction — html', () => {
     const fn = createClusterIconFunction(fakeL, { locale: 'pt', simple: false });
     const html = (fn(cluster([{ spotScore: 70 }, { spotScore: 30 }])) as unknown as DivIconOpts).html;
     expect(html).toContain('data-cluster-score');
-    expect(html).toContain('>70</text>');
+    expect(html).toContain('>7</text>');
     expect(html).toContain('data-cluster-count');
   });
 

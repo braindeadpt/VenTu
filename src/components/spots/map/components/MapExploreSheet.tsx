@@ -1,5 +1,6 @@
 'use client';
 
+import { scoreToNota } from '@/lib/nota';
 import { getTranslation } from '@/lib/i18n';
 import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
 import { ChevronDown, Minimize2, SlidersHorizontal } from 'lucide-react';
@@ -465,7 +466,7 @@ export default function MapExploreSheet({
             data-sheet-best
           >
             <span className={`grid h-10 w-10 shrink-0 place-items-center rounded-[10px] font-mono text-sm font-semibold tabular-nums ${bestTok.bg} ${bestTok.text}`}>
-              {best.score}
+              {scoreToNota(best.score)}
             </span>
             <span className="min-w-0">
               <span className="block text-[10px] font-semibold uppercase tracking-wide text-fg-subtle">

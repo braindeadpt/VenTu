@@ -27,7 +27,7 @@ const COOLDOWN_MS = 3 * 60 * 60 * 1000;
 const DIGEST_HOUR_LISBON = 7;
 
 const { escapeHtml, safeLocale } = require('./lib/htmlEscape');
-const { computeScore } = require('./lib/scoreSpotConditions');
+const { computeScore, scoreToNota } = require('./lib/scoreSpotConditions');
 const { seaWarningForSpot, seaWarningLine, seaWarningEmailLine } = require('./lib/ipmaWarnings');
 const {
   coastalWarningsForSpot,
@@ -413,11 +413,11 @@ async function sendLegacyVerification(sub) {
   const unsub = alertPath(sub.locale, 'unsubscribe', sub.verify_token);
   const slug = escapeHtml(sub.spot_slug);
   const sport = escapeHtml(sub.sport);
-  const minScore = escapeHtml(sub.min_score);
+  const minScore = escapeHtml(scoreToNota(sub.min_score));
   const subject = isPt ? 'Confirma o teu alerta VenTu' : 'Confirm your VenTu alert';
   const html = isPt
-    ? `<p>Confirma o alerta para <strong>${slug}</strong> (${sport}, score ≥ ${minScore}):</p><p><a href="${link}">Confirmar alerta</a></p>`
-    : `<p>Confirm alert for <strong>${slug}</strong> (${sport}, score ≥ ${minScore}):</p><p><a href="${link}">Confirm alert</a></p>`;
+    ? `<p>Confirma o alerta para <strong>${slug}</strong> (${sport}, nota ≥ ${minScore}/10):</p><p><a href="${link}">Confirmar alerta</a></p>`
+    : `<p>Confirm alert for <strong>${slug}</strong> (${sport}, rating ≥ ${minScore}/10):</p><p><a href="${link}">Confirm alert</a></p>`;
   await sendEmail(sub.email, subject, html, { unsubscribeUrl: unsub });
 }
 
@@ -427,7 +427,7 @@ async function sendUserVerification(pref, favoriteCount) {
   const link = alertPath(pref.locale, 'confirm', pref.verify_token);
   const unsub = alertPath(pref.locale, 'unsubscribe', pref.verify_token);
   const sport = escapeHtml(pref.sport);
-  const minScore = escapeHtml(pref.min_score);
+  const minScore = escapeHtml(scoreToNota(pref.min_score));
   const count = escapeHtml(favoriteCount);
   const subject = isPt
     ? 'Confirma alertas VenTu nos teus favoritos'
@@ -441,8 +441,8 @@ async function sendUserVerification(pref, favoriteCount) {
       : 'daily digest (~7:30 AM)';
   const warnNote = pref.warn === true ? (isPt ? ' + avisos oficiais' : ' + official warnings') : '';
   const html = isPt
-    ? `<p>Confirma alertas por email para <strong>${count}</strong> spot(s) favorito(s) (${sport}, score ≥ ${minScore}, ${freqNote}${warnNote}):</p><p><a href="${link}">Confirmar alertas</a></p>`
-    : `<p>Confirm email alerts for <strong>${count}</strong> favorite spot(s) (${sport}, score ≥ ${minScore}, ${freqNote}${warnNote}):</p><p><a href="${link}">Confirm alerts</a></p>`;
+    ? `<p>Confirma alertas por email para <strong>${count}</strong> spot(s) favorito(s) (${sport}, nota ≥ ${minScore}/10, ${freqNote}${warnNote}):</p><p><a href="${link}">Confirmar alertas</a></p>`
+    : `<p>Confirm email alerts for <strong>${count}</strong> favorite spot(s) (${sport}, rating ≥ ${minScore}/10, ${freqNote}${warnNote}):</p><p><a href="${link}">Confirm alerts</a></p>`;
   await sendEmail(pref.email, subject, html, { unsubscribeUrl: unsub });
 }
 
@@ -475,7 +475,7 @@ async function evaluateLegacySubscriptions(slugToId, conditions, warnings, coast
 
     const scored = computeScore(spotId, sub.sport, conditions);
     if (scored === null || scored.score < sub.min_score) continue;
-    const score = scored.score;
+    const score = scoreToNota(scored.score);
     const sourceNote = scoreSourceNote(scored.source, sub.locale !== 'en');
 
     const isPt = sub.locale !== 'en';
@@ -483,7 +483,7 @@ async function evaluateLegacySubscriptions(slugToId, conditions, warnings, coast
     const unsub = alertPath(sub.locale, 'unsubscribe', sub.verify_token);
     const slug = escapeHtml(sub.spot_slug);
     const sport = escapeHtml(sub.sport);
-    const minScore = escapeHtml(sub.min_score);
+    const minScore = escapeHtml(scoreToNota(sub.min_score));
     const seaWarn = seaWarningForSpot(warnings, spotId);
     // Email: linha «Mar perigoso» com área + texto oficial do IPMA (contexto
     // além do rótulo compacto); o Telegram continua compacto.
@@ -494,10 +494,10 @@ async function evaluateLegacySubscriptions(slugToId, conditions, warnings, coast
     const coastalHtml = coastalWarn.length
       ? `<p><strong>${escapeHtml(coastalWarningLine(coastalWarn, isPt))}</strong></p>`
       : '';
-    const subject = `VenTu — ${sub.spot_slug}: score ${score} (${sub.sport})`;
+    const subject = `VenTu — ${sub.spot_slug}: ${score}/10 (${sub.sport})`;
     const html = `${seaHtml}${coastalHtml}${isPt
-      ? `<p>Condições boas em <strong>${slug}</strong>!</p><p>Score ${sport}: <strong>${score}</strong>/100${sourceNote} (limiar ${minScore})</p><p><a href="${spotUrl}">Ver spot</a></p><p><a href="${unsub}">Cancelar alerta</a></p>`
-      : `<p>Good conditions at <strong>${slug}</strong>!</p><p>${sport} score: <strong>${score}</strong>/100${sourceNote} (threshold ${minScore})</p><p><a href="${spotUrl}">View spot</a></p><p><a href="${unsub}">Unsubscribe</a></p>`}`;
+      ? `<p>Condições boas em <strong>${slug}</strong>!</p><p>Nota ${sport}: <strong>${score}</strong>/10${sourceNote} (limiar ${minScore}/10)</p><p><a href="${spotUrl}">Ver spot</a></p><p><a href="${unsub}">Cancelar alerta</a></p>`
+      : `<p>Good conditions at <strong>${slug}</strong>!</p><p>${sport} rating: <strong>${score}</strong>/10${sourceNote} (threshold ${minScore}/10)</p><p><a href="${spotUrl}">View spot</a></p><p><a href="${unsub}">Unsubscribe</a></p>`}`;
 
     const ok = await sendEmail(sub.email, subject, html, { unsubscribeUrl: unsub });
     if (ok) {
@@ -633,7 +633,7 @@ async function evaluateUserFavoritesAlerts(idToSlug, conditions, warnings, coast
           .filter(Boolean)
           .map(escapeHtml)
           .join('<br/>');
-        return `<li><a href="${spotUrl}"><strong>${escapeHtml(slug)}</strong></a> — score ${escapeHtml(score)}/100${note}${safetyLine ? `<br/><strong>${safetyLine}</strong>` : ''}</li>`;
+        return `<li><a href="${spotUrl}"><strong>${escapeHtml(slug)}</strong></a> — ${escapeHtml(scoreToNota(score))}/10${note}${safetyLine ? `<br/><strong>${safetyLine}</strong>` : ''}</li>`;
       })
       .join('');
 
@@ -657,7 +657,7 @@ async function evaluateUserFavoritesAlerts(idToSlug, conditions, warnings, coast
     if (chatId) {
       const tgLines = firing
       .map(({ slug, score, source, seaWarn, coastalWarn, triggers }) => {
-        const line = `• ${slug} — ${score}/100${scoreSourceNote(source, isPt)}`;
+        const line = `• ${slug} — ${scoreToNota(score)}/10${scoreSourceNote(source, isPt)}`;
         const safetyLine = [
           seaWarningLine(seaWarn, isPt),
           coastalWarningLine(coastalWarn, isPt),

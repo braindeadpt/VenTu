@@ -1,5 +1,6 @@
 'use client';
 
+import { scoreToNota } from '@/lib/nota';
 import { useEffect, useState } from 'react';
 import { LogOut, Heart, User, Bell, GraduationCap } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthProvider';
@@ -101,7 +102,7 @@ export default function AccountClient({ locale }: { locale: string }) {
                 : !alertPrefs.verified
                   ? f.alertsAwaiting
                   : f.alertsActive
-                      .replace('{score}', String(alertPrefs.min_score))
+                      .replace('{score}', String(scoreToNota(alertPrefs.min_score)))
                       .replace('{mode}', alertModeLabel(alertPrefs.alert_mode, locale))}
             </p>
           </div>

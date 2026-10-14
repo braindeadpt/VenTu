@@ -71,7 +71,7 @@ describe('SpotPopupContent (contrato de layout do popup)', () => {
     // está o close do Leaflet; antes o badge ficava por baixo dele.
     expect(html).toContain('right-12');
     expect(html).not.toContain('top-1.5 right-1.5');
-    expect(html).toContain('>72</span>');
+    expect(html).toContain('>7</span>');
   });
 
   it('sem score (>0) nenhum, não renderiza o badge de score', () => {

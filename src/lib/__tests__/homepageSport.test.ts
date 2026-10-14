@@ -53,7 +53,7 @@ describe('getTopSpotForSport «A bombar» threshold', () => {
     const data = [
       row('vrsa', { kitesurf: 30 }, ['kitesurf']),
       row('alvor', { windsurf: 34 }, ['windsurf']),
-      row('ribeira', { bodyboard: 61 }, ['bodyboard']),
+      row('ribeira', { bodyboard: 66 }, ['bodyboard']),
     ];
     expect(getTopSpotForSport(data, 'kitesurf')).toBeNull();
     expect(getTopSpotForSport(data, 'windsurf')).toBeNull();
@@ -66,7 +66,7 @@ describe('getTopSpotForSport «A bombar» threshold', () => {
   });
 
   it('requires Bom+ by default', () => {
-    expect(TOP_NOW_MIN_SCORE).toBe(60);
+    expect(TOP_NOW_MIN_SCORE).toBe(65);
     const data = [row('x', { surf: 56 }, ['surf'])];
     expect(getTopSpotForSport(data, 'surf')).toBeNull();
     expect(getTopSpotForSport(data, 'surf', 56)?.spot.slug).toBe('x');

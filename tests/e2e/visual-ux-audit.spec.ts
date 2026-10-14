@@ -512,7 +512,8 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
 
       // Veredicto: score da hora escolhida e UMA acção primária «Como chegar».
       const verdict = page.locator('[id="agora"]');
-      await expect(verdict.getByText('/100')).toBeVisible();
+      await expect(verdict.getByText('/10', { exact: true })).toBeVisible();
+      await expect(verdict.getByText('/100')).toHaveCount(0);
       await expect(verdict.getByRole('link', { name: /Como chegar|Get directions/i })).toHaveCount(1);
 
       // Uma só régua de tempo na página.

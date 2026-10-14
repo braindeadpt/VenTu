@@ -17,10 +17,12 @@ export const spotPageInstruments = {
     chipOutWindow: 'fora da janela',
     tideRising: 'a encher',
     tideFalling: 'a vazar',
-    // Chip do vento — classifyWind (mesma classificação do score, §4 v3)
+    // Chip do vento — classifyWind (mesma classificação do score, §4 v3);
+    // windRelCross só nos factores dos desportos de vento (#195).
     windRelOnshore: 'Onshore',
     windRelCrossOn: 'Cross-on',
     windRelCrossOff: 'Cross-off',
+    windRelCross: 'Cross',
     windRelOffshore: 'Offshore',
     // Leituras ({dir}=ponto cardeal, {g}/{h}/{p}=valores, {dirs}=direcções, {t}=hora)
     windSub: 'de {dir} · rajadas {g} kt',
@@ -90,6 +92,7 @@ export const spotPageInstruments = {
     windRelOnshore: 'Onshore',
     windRelCrossOn: 'Cross-on',
     windRelCrossOff: 'Cross-off',
+    windRelCross: 'Cross-shore',
     windRelOffshore: 'Offshore',
     windSub: 'from {dir} · gusts {g} kt',
     idealFoot: 'ideal {dirs}',
@@ -149,6 +152,7 @@ export const spotPageInstruments = {
     windRelOnshore: 'Onshore',
     windRelCrossOn: 'Side-onshore',
     windRelCrossOff: 'Side-offshore',
+    windRelCross: 'Cross-shore',
     windRelOffshore: 'Offshore',
     windSub: 'de {dir} · rachas {g} kt',
     idealFoot: 'ideal {dirs}',
@@ -208,6 +212,7 @@ export const spotPageInstruments = {
     windRelOnshore: 'Onshore',
     windRelCrossOn: 'Side-onshore',
     windRelCrossOff: 'Side-offshore',
+    windRelCross: 'Cross-shore',
     windRelOffshore: 'Offshore',
     windSub: 'aus {dir} · Böen {g} kt',
     idealFoot: 'ideal {dirs}',
@@ -267,6 +272,7 @@ export const spotPageInstruments = {
     windRelOnshore: 'Onshore',
     windRelCrossOn: 'Side-onshore',
     windRelCrossOff: 'Side-offshore',
+    windRelCross: 'Cross-shore',
     windRelOffshore: 'Offshore',
     windSub: 'de {dir} · rafales {g} kt',
     idealFoot: 'idéal {dirs}',

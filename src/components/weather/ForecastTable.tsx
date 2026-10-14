@@ -1,5 +1,6 @@
 'use client';
 
+import { scoreToNota } from '@/lib/nota';
 import { getSportLabel } from '@/lib/homepageSport';
 import { useMemo, useState, useEffect, useRef, useCallback } from 'react';
 
@@ -219,7 +220,7 @@ function buildTooltip(h: ForecastHour, sportLabel?: string): string {
   ];
   if (gustKt !== undefined) parts.push(`gust ${gustKt}kt`);
   if (h.waterTemp !== undefined) parts.push(`water ${h.waterTemp.toFixed(1)}°C`);
-  if (h.score !== undefined) parts.push(`score ${h.score}${sportLabel ? ` (${sportLabel})` : ''}`);
+  if (h.score !== undefined) parts.push(`${scoreToNota(h.score)}/10${sportLabel ? ` (${sportLabel})` : ''}`);
   return parts.join(' · ');
 }
 

@@ -1,3 +1,4 @@
+import { scoreToNota } from '@/lib/nota';
 import type L from 'leaflet';
 import type { Spot } from '@/types';
 import type { GridSportFilter } from '@/lib/sportRatings';
@@ -586,7 +587,7 @@ export function buildV3MarkerIcon(Leaflet: typeof L, opts: V3MarkerIconOptions):
   const html = `<div class="v3mk" data-v3spot="${escapeHtmlText(spotId)}" data-v3kind="full" data-spot-score="${Math.round(
     score,
   )}" style="position:relative;width:${V3_MARKER_SIZE}px;height:${V3_MARKER_SIZE}px;cursor:pointer">` +
-    `<span class="v3in" style="display:grid;place-items:center;width:100%;height:100%;border-radius:50%;background:${tierBg};color:${ink};font:600 13px/1 var(--font-geist-mono,ui-monospace,monospace);font-variant-numeric:tabular-nums;box-shadow:0 0 0 2px rgb(var(--bg-base)),0 2px 6px rgba(0,0,0,.25);transition:transform .12s ease-out,box-shadow .16s ease-out">${Math.round(
+    `<span class="v3in" style="display:grid;place-items:center;width:100%;height:100%;border-radius:50%;background:${tierBg};color:${ink};font:600 13px/1 var(--font-geist-mono,ui-monospace,monospace);font-variant-numeric:tabular-nums;box-shadow:0 0 0 2px rgb(var(--bg-base)),0 2px 6px rgba(0,0,0,.25);transition:transform .12s ease-out,box-shadow .16s ease-out">${scoreToNota(
       score,
     )}</span>${tick}${badge}</div>`;
   return Leaflet.divIcon({

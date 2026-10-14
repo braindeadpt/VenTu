@@ -1,5 +1,6 @@
 'use client';
 
+import { NOTA_MAX, notaMinScore, scoreToNota } from '@/lib/nota';
 import { useCallback, useEffect, useState } from 'react';
 import { Bell, Send, X } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthProvider';
@@ -30,7 +31,7 @@ export default function FavoritesAlertsPanel({ locale, favoriteCount }: Favorite
   const [prefs, setPrefs] = useState<UserAlertPrefs | null>(null);
   const [loading, setLoading] = useState(true);
   const [sport, setSport] = useState<SportType>('kitesurf');
-  const [minScore, setMinScore] = useState(70);
+  const [minScore, setMinScore] = useState(notaMinScore(7));
   const [alertMode, setAlertMode] = useState<AlertMode>('digest');
   const [warn, setWarn] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -181,11 +182,11 @@ export default function FavoritesAlertsPanel({ locale, favoriteCount }: Favorite
             <input
               id="fav-alerts-minscore"
               type="number"
-              min={30}
-              max={100}
-              step={5}
-              value={minScore}
-              onChange={(e) => setMinScore(Number(e.target.value))}
+              min={3}
+              max={NOTA_MAX}
+              step={1}
+              value={scoreToNota(minScore)}
+              onChange={(e) => setMinScore(notaMinScore(Number(e.target.value)))}
               className="w-full px-3 py-2 rounded-lg bg-surface-1/[0.04] border border-divider text-sm text-fg font-mono tabular-nums"
             />
           </div>

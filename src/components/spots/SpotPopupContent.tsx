@@ -1,5 +1,6 @@
 'use client';
 
+import { scoreToNota } from '@/lib/nota';
 import { getTranslation } from '@/lib/i18n';
 import { getSportLabel } from '@/lib/homepageSport';
 import { localizedSpotName, localizedSpotRegion } from '@/lib/localizedSpotText';
@@ -131,9 +132,9 @@ export function SpotPopupContent({
                 tokens.text,
                 tokens.border,
               ].join(' ')}
-              aria-label={topSportLabel ? `${topSportLabel}: ${topScore}` : `Score: ${topScore}`}
+              aria-label={topSportLabel ? `${topSportLabel}: ${scoreToNota(topScore)}/10` : `${scoreToNota(topScore)}/10`}
             >
-              {topScore}
+              {scoreToNota(topScore)}
             </span>
             {topSportLabel && (
               <span className="text-[10px] text-fg-muted font-sans">{topSportLabel}</span>

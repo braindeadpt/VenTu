@@ -1,5 +1,6 @@
 'use client';
 
+import { scoreToNota } from '@/lib/nota';
 import { cn } from '@/lib/cn';
 import type { SportType } from '@/lib/sportRatings';
 import { SPORT_LABELS } from '@/lib/sportRatings';
@@ -43,7 +44,7 @@ export default function SportTab({ sport, score, active, onClick, locale }: Spor
             : cn(tokens.bg, tokens.text, 'border', tokens.border, 'rounded-pill px-1.5 py-0.5'),
         )}
       >
-        {score}
+        {scoreToNota(score)}
       </span>
     </button>
   );

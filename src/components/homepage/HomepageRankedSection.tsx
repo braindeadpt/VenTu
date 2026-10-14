@@ -1,5 +1,6 @@
 'use client';
 
+import { scoreToNota } from '@/lib/nota';
 import { localizedSpotName, localizedSpotRegion } from '@/lib/localizedSpotText';
 import { DATE_LOCALE } from '@/lib/dataFreshness';
 import { getTranslation } from '@/lib/i18n';
@@ -238,7 +239,7 @@ export default function HomepageRankedSection({
                       <span
                         className={cn('font-mono font-semibold tabular-nums text-meta', tokens.text)}
                       >
-                        {r.window.score}
+                        {scoreToNota(r.window.score)}
                       </span>
                     </Link>
                   </li>

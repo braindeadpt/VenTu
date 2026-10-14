@@ -214,8 +214,8 @@ describe('getSportScore', () => {
       waterTemp: 20,
     }
     const result = getSportScore(spot, 'surf', epic)
-    expect(result.rating).toMatch(/Épico|Bom/)
-    expect(result.ratingEn).toMatch(/Epic|Good/)
+    expect(result.rating).toMatch(/Muito bom|Bom/)
+    expect(result.ratingEn).toMatch(/Very good|Good/)
   })
 
   it('Unknown sport returns N/A', () => {
@@ -285,18 +285,18 @@ describe('getScoreColor', () => {
 
 describe('getScoreTokens', () => {
   it('uses unified thresholds aligned with globals.css', () => {
-    expect(getScoreTokens(80).tier).toBe('epic')
-    expect(getScoreTokens(79).tier).toBe('good')
-    expect(getScoreTokens(60).tier).toBe('good')
-    expect(getScoreTokens(59).tier).toBe('fair')
-    expect(getScoreTokens(40).tier).toBe('fair')
-    expect(getScoreTokens(39).tier).toBe('poor')
-    expect(getScoreTokens(20).tier).toBe('poor')
-    expect(getScoreTokens(19).tier).toBe('closed')
+    expect(getScoreTokens(85).tier).toBe('epic')
+    expect(getScoreTokens(84).tier).toBe('good')
+    expect(getScoreTokens(65).tier).toBe('good')
+    expect(getScoreTokens(64).tier).toBe('fair')
+    expect(getScoreTokens(45).tier).toBe('fair')
+    expect(getScoreTokens(44).tier).toBe('poor')
+    expect(getScoreTokens(25).tier).toBe('poor')
+    expect(getScoreTokens(24).tier).toBe('closed')
   })
 
   it('exports documented threshold constants', () => {
-    expect(SCORE_TIER_THRESHOLDS).toEqual({ epic: 80, good: 60, fair: 40, poor: 20 })
+    expect(SCORE_TIER_THRESHOLDS).toEqual({ epic: 85, good: 65, fair: 45, poor: 25 })
   })
 })
 

@@ -1,5 +1,6 @@
 'use client';
 
+import { scoreToNota } from '@/lib/nota';
 import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { ChevronRight, Thermometer, Timer, Waves, Wind } from 'lucide-react';
 import { getScoreTokens } from '@/lib/sportScore';
@@ -281,7 +282,7 @@ const MapSpotList = memo(function MapSpotList({
                 <span
                   className={`grid h-11 w-11 shrink-0 place-items-center rounded-[10px] font-mono text-base font-semibold tabular-nums ${tok.bg} ${tok.text}`}
                 >
-                  {row.score}
+                  {scoreToNota(row.score)}
                 </span>
                 <span className="min-w-0">
                   {/* Nome até duas linhas, sem reticências (maquete). */}

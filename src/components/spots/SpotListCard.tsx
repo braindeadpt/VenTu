@@ -1,5 +1,6 @@
 'use client';
 
+import { scoreToNota } from '@/lib/nota';
 import { getTranslation } from '@/lib/i18n';
 import { useEffect, useRef, useState } from 'react';
 import { ArrowRight, Clock, Wind, Waves } from 'lucide-react';
@@ -218,7 +219,7 @@ export default function SpotListCard({
                 scoreTokens.text,
               )}
             >
-              {score}
+              {scoreToNota(score)}
             </span>
             <span className={cn('mt-1 text-meta-sm font-medium', scoreTokens.text)}>
               {scoreTierLabel}
