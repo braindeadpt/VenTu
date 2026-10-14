@@ -1,129 +1,105 @@
 {
-  "date": "2026-10-13",
+  "date": "2026-10-14",
   "topSpot": "Nazaré",
   "topSpotSlug": "nazare",
   "pt": {
-    "headline": "Nazaré oferece ondas limpas e vento leve hoje",
-    "advice": "As ondas de 1,7 m com período de 10 s e vento de apenas 3 kt criam condições perfeitas. Sem avisos costeiros, é seguro para todos os níveis. Aproveite a maré alta para melhor performance.",
-    "bestTime": "09:00",
+    "headline": "Nazaré oferece ondas perfeitas e vento calmo hoje",
+    "advice": "Ondas de 1.3 m com período de 9 s e vento de apenas 2 kt criam condições ideais. A água está em torno de 16.6 °C, use fato 3/2 mm. Não há avisos costeiros ativos, mas mantenha atenção ao tráfego de barcos.",
+    "bestTime": "09:30",
     "wetsuit": "3/2mm",
-    "crowdTip": "Chegue cedo; ainda pode ficar movimentado ao meio‑dia.",
-    "moonTideLine": "Lua nova · Marés vivas · baixa-mar 11:00"
+    "crowdTip": "Chegue cedo para evitar a maioria dos surfistas que chegam ao meio‑dia.",
+    "moonTideLine": "Lua crescente · Marés vivas · baixa-mar 12:00"
   },
   "en": {
-    "headline": "Nazaré serves clean waves and light wind today",
-    "advice": "1.7 m waves with a 10 s period and only 3 kt wind give perfect conditions. No coastal alerts, safe for all levels. Hit the high tide for optimal shape.",
-    "bestTime": "09:00",
+    "headline": "Nazaré serves perfect waves and light wind today",
+    "advice": "1.3 m waves with a 9 s period and only 2 kt of wind create ideal conditions. Water is about 16.6 °C, wear a 3/2 mm wetsuit. No coastal alerts are active, but stay aware of boat traffic.",
+    "bestTime": "09:30",
     "wetsuit": "3/2mm",
-    "crowdTip": "Get there early; it may get busy by midday.",
-    "moonTideLine": "New moon · Spring tides · low tide 11:00"
+    "crowdTip": "Get there early to beat the bulk of surfers who show up around midday.",
+    "moonTideLine": "Waxing crescent · Spring tides · low tide 12:00"
   },
   "spots": [
     {
       "name": "Supertubos",
       "slug": "supertubos",
-      "score": 83,
+      "score": 80,
       "verdict": "maybe",
-      "ptReason": "Boa onda, mas há avisos de navegação (ANAV NR 12/24) e interação com fauna marinha; surfe com atenção.",
-      "enReason": "Good waves, but navigation (ANAV NR 12/24) and marine wildlife interaction alerts are active; surf with caution.",
-      "scoreForecast": 82,
-      "scoreSource": "boia",
-      "scoreMeta": {
-        "stationName": "CSA83/1D",
-        "distanceKm": 162.7
-      }
+      "ptReason": "Boas ondas, mas há avisos de interação com animais marinhos; surfe com cautela.",
+      "enReason": "Good waves, but marine‑animal interaction alerts are in force; surf with caution.",
+      "scoreForecast": 80,
+      "scoreSource": "previsão",
+      "scoreMeta": null
     },
     {
       "name": "Guincho",
       "slug": "guincho",
-      "score": 83,
+      "score": 80,
       "verdict": "maybe",
-      "ptReason": "Ondas consistentes, porém avisos de interação com fauna marinha (ANAV NR 1445/26, 1727/26); atenção ao surf.",
-      "enReason": "Consistent waves, but marine wildlife interaction alerts (ANAV NR 1445/26, 1727/26) are in force; stay alert.",
-      "scoreForecast": 82,
-      "scoreSource": "boia",
-      "scoreMeta": {
-        "stationName": "CSA83/1D",
-        "distanceKm": 101.9
-      }
+      "ptReason": "Condições favoráveis, porém avisos de interação e avistamento de animais marinhos.",
+      "enReason": "Favourable conditions, but alerts for marine‑animal interaction and sightings.",
+      "scoreForecast": 80,
+      "scoreSource": "previsão",
+      "scoreMeta": null
     },
     {
       "name": "Nazaré",
       "slug": "nazare",
-      "score": 83,
+      "score": 80,
       "verdict": "go",
-      "ptReason": "Ondas consistentes, vento leve e sem avisos costeiros, ideal para todos os níveis.",
-      "enReason": "Consistent waves, light wind and no coastal alerts, ideal for all skill levels.",
-      "scoreForecast": 84,
-      "scoreSource": "boia",
-      "scoreMeta": {
-        "stationName": "CSA83/1D",
-        "distanceKm": 188.1
-      }
+      "ptReason": "Melhor combinação de ondas, vento leve e sem avisos costeiros.",
+      "enReason": "Best combination of wave size, light wind and no coastal alerts.",
+      "scoreForecast": 80,
+      "scoreSource": "previsão",
+      "scoreMeta": null
     },
     {
       "name": "Ribeira d'Ilhas",
       "slug": "ribeira-ilhas",
-      "score": 83,
+      "score": 80,
       "verdict": "maybe",
-      "ptReason": "Boa onda, mas aviso de avistamento de fauna marinha (ANAV NR 1727/26); pode surf‑se com cautela.",
-      "enReason": "Good waves, but a marine wildlife sighting alert (ANAV NR 1727/26) is active; surf with care.",
-      "scoreForecast": 83,
-      "scoreSource": "boia",
-      "scoreMeta": {
-        "stationName": "CSA83/1D",
-        "distanceKm": 126.1
-      }
+      "ptReason": "Ondas boas, mas vento um pouco mais forte (5 kt) e aviso de avistamento de animais.",
+      "enReason": "Good waves, slightly stronger wind (5 kt) and a marine‑animal sighting alert.",
+      "scoreForecast": 80,
+      "scoreSource": "previsão",
+      "scoreMeta": null
     },
     {
       "name": "Coxos",
       "slug": "coxos",
-      "score": 83,
+      "score": 80,
       "verdict": "maybe",
-      "ptReason": "Ondas boas, porém há aviso de avistamento de fauna marinha (ANAV NR 1727/26); atenção ao entrar na água.",
-      "enReason": "Decent waves, but a marine wildlife sighting alert (ANAV NR 1727/26) is in effect; stay vigilant.",
-      "scoreForecast": 83,
-      "scoreSource": "boia",
-      "scoreMeta": {
-        "stationName": "CSA83/1D",
-        "distanceKm": 127.4
-      }
+      "ptReason": "Condições ótimas, porém há aviso de avistamento de animais marinhos.",
+      "enReason": "Great conditions, but a marine‑animal sighting alert is active.",
+      "scoreForecast": 80,
+      "scoreSource": "previsão",
+      "scoreMeta": null
     },
     {
       "name": "Arrifana",
       "slug": "arrifana",
-      "score": 83,
-      "verdict": "go",
-      "ptReason": "Ondas adequadas e aviso apenas de plano de salvamento marítimo; surf seguro se seguir instruções.",
-      "enReason": "Suitable waves and only a maritime rescue plan alert; safe to surf if you follow instructions.",
-      "scoreForecast": 82,
-      "scoreSource": "boia",
-      "scoreMeta": {
-        "stationName": "CSA83/1D",
-        "distanceKm": 70.2
-      }
+      "score": 80,
+      "verdict": "maybe",
+      "ptReason": "Ondas consistentes e vento leve, porém há plano de salvamento marítimo em vigor.",
+      "enReason": "Consistent waves and light wind, but a maritime rescue plan alert is in force.",
+      "scoreForecast": 80,
+      "scoreSource": "previsão",
+      "scoreMeta": null
     },
     {
       "name": "Carcavelos",
       "slug": "carcavelos",
-      "score": 83,
+      "score": 78,
       "verdict": "skip",
-      "ptReason": "Múltiplos avisos de interação com fauna e normas de navegação (ANAV NR 00/14, 1445/26, 2235/26); melhor evitar hoje.",
-      "enReason": "Multiple marine wildlife interaction and navigation safety alerts (ANAV NR 00/14, 1445/26, 2235/26); better to skip today.",
-      "scoreForecast": 81,
-      "scoreSource": "boia",
-      "scoreMeta": {
-        "stationName": "CSA83/1D",
-        "distanceKm": 91.4
-      }
+      "ptReason": "Menor pontuação, três avisos costeiros e ondas ligeiramente menores.",
+      "enReason": "Lower score, three coastal alerts and slightly smaller waves.",
+      "scoreForecast": 78,
+      "scoreSource": "previsão",
+      "scoreMeta": null
     }
   ],
-  "generatedAt": "2026-10-13T03:51:12.627Z",
-  "topScore": 83,
-  "topScoreForecast": 84,
-  "topScoreSource": "boia",
-  "topScoreMeta": {
-    "stationName": "CSA83/1D",
-    "distanceKm": 188.1
-  }
+  "generatedAt": "2026-10-14T03:06:25.596Z",
+  "topScore": 80,
+  "topScoreForecast": 80,
+  "topScoreSource": "previsão",
+  "topScoreMeta": null
 }
