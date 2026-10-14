@@ -508,8 +508,44 @@ export function campoChegada(g: GrelhaOndas, sd: number): Float32Array {
   let mn = Infinity;
   for (let k = 0; k < T.length; k++) if (T[k] < mn) mn = T[k];
   for (let k = 0; k < T.length; k++) T[k] = Number.isFinite(T[k]) ? T[k] - mn : NaN;
+  suavizaCampo(T, nx, ny, 4);
   g.campos.set(chave, T);
   return T;
+}
+
+/**
+ * Média 3 × 3 (só células de mar) repetida `n` vezes: o Dijkstra numa grelha
+ * de 16 vizinhos deixa isócronas em serra (anisotropia da métrica); a média
+ * tira-lhes os dentes sem mexer no traçado geral da refracção.
+ */
+function suavizaCampo(T: Float32Array, nx: number, ny: number, n: number): void {
+  const tmp = new Float32Array(T.length);
+  for (let it = 0; it < n; it++) {
+    for (let j = 0; j < ny; j++)
+      for (let i = 0; i < nx; i++) {
+        const k = j * nx + i;
+        if (Number.isNaN(T[k])) {
+          tmp[k] = NaN;
+          continue;
+        }
+        let s = 0;
+        let c = 0;
+        for (let dj = -1; dj <= 1; dj++) {
+          const jj = j + dj;
+          if (jj < 0 || jj >= ny) continue;
+          for (let di = -1; di <= 1; di++) {
+            const ii = i + di;
+            if (ii < 0 || ii >= nx) continue;
+            const v = T[jj * nx + ii];
+            if (Number.isNaN(v)) continue;
+            s += v;
+            c++;
+          }
+        }
+        tmp[k] = s / c;
+      }
+    T.set(tmp);
+  }
 }
 
 /**

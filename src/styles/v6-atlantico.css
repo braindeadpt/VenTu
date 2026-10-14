@@ -29,12 +29,12 @@
 .v6 .top{position:absolute;inset:0 0 auto 0;z-index:30;display:flex;align-items:center;gap:12px;padding:12px 16px;
   background:linear-gradient(180deg,rgba(3,14,24,.78),rgba(3,14,24,0))}
 .v6 .voltar{display:inline-flex;align-items:center;gap:4px;min-height:44px;min-width:44px;padding:0 12px 0 6px;border-radius:999px;background:rgba(3,14,24,.55);
-  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);text-decoration:none;font:700 16px/1 var(--txt)}
+  backdrop-filter:blur(8px);text-decoration:none;font:700 16px/1 var(--txt)}
 .v6 .top .esp{flex:1}
 
 /* ---------- selector kite / surf (ModalidadeToggle) ---------- */
 .v6 .modo{display:inline-grid;grid-template-columns:1fr 1fr;padding:4px;border-radius:999px;background:rgba(3,14,24,.62);
-  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:inset 0 0 0 1.5px rgba(243,248,251,.22);position:relative}
+  backdrop-filter:blur(10px);box-shadow:inset 0 0 0 1.5px rgba(243,248,251,.22);position:relative}
 .v6 .modo button{position:relative;z-index:1;border:0;background:none;min-height:44px;min-width:76px;padding:0 16px;border-radius:999px;cursor:pointer;
   font:800 italic 21px/1 var(--disp);text-transform:uppercase;letter-spacing:.02em;display:flex;align-items:center;justify-content:center;gap:7px;color:var(--espuma)}
 .v6 .modo button svg{width:20px;height:20px;flex:none}
@@ -78,7 +78,7 @@
 .v6 .hero .foto{bottom:auto;height:var(--fh,64%);top:calc(var(--fh,64%) * var(--up,0) * -1);-webkit-mask-image:linear-gradient(180deg,#000 84%,transparent 100%);mask-image:linear-gradient(180deg,#000 84%,transparent 100%)}
 .v6 .hero .veu{position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(3,14,24,.62) 0,rgba(3,14,24,0) 13%,rgba(3,14,24,0) 38%,rgba(3,14,24,.72) 50%,rgba(3,14,24,.94) 58%,var(--abismo) var(--fh,64%))}
 .v6 .hero .foto.desce{-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 16%,#000 84%,transparent 100%);mask-image:linear-gradient(180deg,transparent 0,#000 16%,#000 84%,transparent 100%)}
-.v6 .hero .credito-foto{top:78px;bottom:auto;right:12px;background:rgba(3,14,24,.5);padding:3px 6px;border-radius:5px}
+.v6 .hero .credito-foto{top:89px;bottom:auto;right:12px;background:rgba(3,14,24,.5);padding:3px 6px;border-radius:5px}
 .v6 .hero-in{position:relative;z-index:3;padding:96px 16px 30px}
 .v6.e-noite .hero .foto img{filter:brightness(.42) saturate(.6) hue-rotate(10deg)}
 .v6 .foto img{transition:filter .5s}
@@ -98,13 +98,15 @@
 
 /* ---------- régua de 48 horas (fixa em baixo no telemóvel) ---------- */
 .v6 .regua{position:fixed;left:0;right:0;bottom:0;z-index:20;padding:8px 12px calc(10px + env(safe-area-inset-bottom));background:rgba(3,14,24,.92);
-  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--linha)}
+  backdrop-filter:blur(14px);border-top:1px solid var(--linha)}
 .v6 .r-cab{display:flex;align-items:center;gap:8px;margin-bottom:6px}
 .v6 .r-cab h2{margin:0;font:800 12px/1 var(--txt);letter-spacing:.14em;text-transform:uppercase;color:var(--nevoa);flex:1}
 .v6 .r-cab output{font:900 22px/1 var(--disp);color:var(--espuma);white-space:nowrap}
-.v6 .r-cab button{width:44px;height:44px;border-radius:12px;border:0;background:var(--mar);color:var(--espuma);display:grid;place-items:center;cursor:pointer;flex:none}
+/* setas: o desenho da maquete (44 × 40) com a área de toque a 44 × 44 (margem negativa, não mexe na altura da régua) */
+.v6 .r-cab button{width:44px;height:44px;margin:-2px 0;border-radius:12px;border:0;background:none;color:var(--espuma);display:grid;place-items:center;cursor:pointer;flex:none;position:relative}
+.v6 .r-cab button::before{content:'';position:absolute;inset:2px 0;border-radius:12px;background:var(--mar)}
 .v6 .r-cab button:disabled{opacity:.35;cursor:default}
-.v6 .r-cab button svg{width:22px;height:22px}
+.v6 .r-cab button svg{width:22px;height:22px;position:relative}
 .v6 .faixa-wrap{position:relative;height:46px;touch-action:none;cursor:pointer;outline-offset:4px}
 .v6 .faixa{display:flex;height:100%;gap:1px;border-radius:10px;overflow:hidden}
 .v6 .faixa i{flex:1;background:var(--c)}
@@ -153,7 +155,7 @@
 .v6 .cena.sem-webgl .estatica{display:block}
 .v6 .cena-sec .leg{padding:12px 16px 0}
 .v6 .credito-mapa{position:absolute;z-index:4;left:8px;bottom:6px;font:500 10.5px/1.2 var(--txt);color:rgba(243,248,251,.75);margin:0}
-.v6 .credito-mapa a{color:inherit}
+.v6 .credito-mapa a{color:inherit;text-decoration:underline}
 /* MapLibre: só o essencial do maplibre-gl.css (sem controlos) */
 .v6 .maplibregl-map{overflow:hidden;position:relative;-webkit-tap-highlight-color:rgba(0,0,0,0)}
 .v6 .maplibregl-canvas{position:absolute;left:0;top:0}
@@ -196,7 +198,7 @@
   .v6 .hero .veu{background:linear-gradient(90deg,rgba(3,14,24,.95) 0,rgba(3,14,24,.88) 44%,rgba(3,14,24,.5) 66%,rgba(3,14,24,0) 86%),linear-gradient(180deg,rgba(3,14,24,.5) 0,rgba(3,14,24,0) 20%,rgba(3,14,24,0) 70%,rgba(3,14,24,.85) 100%)}
   .v6 .top{padding:16px 32px}
   .v6 .hero-in{padding:0 40px 40px;max-width:1240px}
-  .v6 .hero .credito-foto{top:84px}
+  .v6 .hero .credito-foto{top:95px}
   .v6 .ver{grid-template-columns:auto auto;justify-content:start;gap:28px}
   .v6 .ver .nota{--fs:170px}
   .v6 .ver .pal{font-size:72px}

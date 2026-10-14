@@ -194,9 +194,9 @@ export default function SpotV6({ spot, nome, local, locale, linhas, agoraMs, fot
           copy={copy}
           forcarPlano={flags.plano}
           captura={flags.captura}
+          rotulos={ed.rotulos}
         />
       </div>
-      {acoes}
       <EstudarSpot
         key={flags.estudo ? 'aberto' : 'fechado'}
         horas={H}
@@ -211,6 +211,8 @@ export default function SpotV6({ spot, nome, local, locale, linhas, agoraMs, fot
         locale={locale}
         abertoInicial={flags.estudo}
       />
+      {/* acções do spot (fora da maquete): depois do «Estudar o spot», para o Porquê e a praia 3D seguirem a maquete */}
+      {acoes}
       <p className="falta-dados" data-testid="falta-dados">
         {dados.faltam.includes('rain') ? copy.faltaChuvaNuvens : null}
       </p>

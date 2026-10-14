@@ -72,6 +72,35 @@ const num = (x: unknown): number | undefined => (typeof x === 'number' && Number
 const r1 = (x: number) => Math.round(x * 10) / 10;
 const n360 = (x: number) => ((Math.round(x) % 360) + 360) % 360;
 
+/**
+ * Hora e altura de um extremo de maré afinadas ao minuto: a série é horária,
+ * por isso o extremo encontrado cai na hora cheia mais próxima; uma parábola
+ * pelos três pontos (j-1, j, j+1) dá o instante do vértice (±30 min) e a sua
+ * altura, como as tabelas de marés («preia-mar às 16h50»).
+ */
+function extremoAfinado(validas: readonly LinhaForecast[], j: number, t: string): { t: string; h: number } {
+  const zh = (l: LinhaForecast | undefined) => {
+    const v = num(l?.tideHeight);
+    return v == null ? NaN : v + NIVEL_MEDIO_ZH;
+  };
+  const y1 = zh(validas[j]);
+  const base = { t: t.slice(0, 16), h: Number.isFinite(y1) ? r1(y1) : NaN };
+  const y0 = zh(validas[j - 1]);
+  const y2 = zh(validas[j + 1]);
+  if (j <= 0 || !Number.isFinite(y0) || !Number.isFinite(y1) || !Number.isFinite(y2)) return base;
+  const den = y0 - 2 * y1 + y2;
+  if (Math.abs(den) < 1e-9) return base;
+  const dx = Math.max(-0.5, Math.min(0.5, (0.5 * (y0 - y2)) / den));
+  const m = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/.exec(t);
+  if (!m) return base;
+  // aritmética de relógio local (as horas da série são de Lisboa, sem fuso): UTC só como calculadora
+  const ms = Date.UTC(+m[1], +m[2] - 1, +m[3], +m[4], +m[5]) + Math.round(dx * 60) * 60000;
+  const d = new Date(ms);
+  const p2 = (x: number) => String(x).padStart(2, '0');
+  const tt = `${d.getUTCFullYear()}-${p2(d.getUTCMonth() + 1)}-${p2(d.getUTCDate())}T${p2(d.getUTCHours())}:${p2(d.getUTCMinutes())}`;
+  return { t: tt, h: r1(y1 - 0.25 * (y0 - y2) * dx) };
+}
+
 export function construirHoras(
   linhas: readonly LinhaForecast[],
   local: { lat: number; lon: number; praiaVirada: number },
@@ -130,8 +159,8 @@ export function construirHoras(
   )
     .filter((e) => typeof e.time === 'string')
     .map((e) => {
-      const l = validas.find((x) => x.time === e.time);
-      return { t: (e.time as string).slice(0, 16), tipo: e.type === 'high' ? 'PM' : 'BM', h: mareZH(l) } as MareExtremo;
+      const j = validas.findIndex((x) => x.time === e.time);
+      return { ...extremoAfinado(validas, j, e.time as string), tipo: e.type === 'high' ? 'PM' : 'BM' } as MareExtremo;
     });
   const faltam: DadosHoras['faltam'] = ['rain', 'cloud'];
   if (horas.every((h) => !Number.isFinite(h.tide))) faltam.push('tide');

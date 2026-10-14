@@ -18,6 +18,7 @@ import { rumo } from '@/lib/spotVeredicto';
 import { fmtCopy, type SpotPageV6Copy } from '@/lib/translations/spotPage/v6';
 import type { BandaK, Modalidade } from '@/lib/modalidades';
 import type { HoraSpot } from '@/lib/horaSpot';
+import type { EditorialSpot } from '@/lib/spotEditorial';
 import type { EstadoCena, HandleMapa } from './praiaMapa';
 import type { HandlePlano } from './praiaPlano';
 
@@ -39,6 +40,8 @@ export interface PraiaCena3DProps {
   copy: SpotPageV6Copy;
   forcarPlano: boolean;
   captura: boolean;
+  /** rótulos editoriais (spotEditorial.rotulos): substituem o nome, o pico, os vizinhos e as localidades */
+  rotulos?: EditorialSpot['rotulos'];
 }
 
 export function temWebGL2(): boolean {
@@ -53,7 +56,7 @@ export function temWebGL2(): boolean {
 type Modo = 'poster' | '3d' | 'plano';
 type Proj = { proj: (ll: [number, number]) => { x: number; y: number } | null; unproj: (p: [number, number]) => [number, number] | null };
 
-export default function PraiaCena3D({ nome, ll, idEstatico, praiaVirada, vizinhos, h, banda, d, copy: c, forcarPlano, captura }: PraiaCena3DProps) {
+export default function PraiaCena3D({ nome, ll, idEstatico, praiaVirada, vizinhos, h, banda, d, copy: c, forcarPlano, captura, rotulos }: PraiaCena3DProps) {
   const fig = useRef<HTMLElement>(null);
   const mapaEl = useRef<HTMLDivElement>(null);
   const planoEl = useRef<HTMLCanvasElement>(null);
@@ -79,7 +82,6 @@ export default function PraiaCena3D({ nome, ll, idEstatico, praiaVirada, vizinho
   const extras = useRef<Array<{ t: string; ll: [number, number]; ele?: number }>>([]);
   const [pronto, setPronto] = useState(false);
 
-  const [reduzido, setReduzido] = useState(false);
 
   /* rótulos: o spot (grande, na cor da banda), o pico, os vizinhos e as localidades que caibam */
   const posLbls = () => {
@@ -90,12 +92,15 @@ export default function PraiaCena3D({ nome, ll, idEstatico, praiaVirada, vizinho
     const H = f.clientHeight;
     const out: Array<{ t: string; x: number; y: number; grande: boolean; ele?: number }> = [];
     const ex = extras.current;
-    const todos: Array<[string, [number, number], boolean, number | undefined]> = [
+    type R = [string, [number, number], boolean, number | undefined];
+    const todos: R[] = rotulos
+      ? [[rotulos.praia, rotulos.ll, true, undefined], ...rotulos.lugares.map((l) => [l.n, l.ll, false, l.ele] as R)]
+      : [
       [nome, ll, true, undefined],
       ...ex.filter((e) => e.ele !== undefined).map((e) => [e.t, e.ll, false, e.ele] as [string, [number, number], boolean, number | undefined]),
       ...vizinhos.map((v) => [v.nome, v.ll, false, undefined] as [string, [number, number], boolean, number | undefined]),
       ...ex.filter((e) => e.ele === undefined).map((e) => [e.t, e.ll, false, undefined] as [string, [number, number], boolean, number | undefined]),
-    ];
+      ];
     let nPeq = 0;
     for (const [t, q, g, ele] of todos) {
       if (!g && nPeq >= 3) break;
@@ -172,7 +177,6 @@ export default function PraiaCena3D({ nome, ll, idEstatico, praiaVirada, vizinho
     const f = fig.current;
     if (!f) return;
     reduz.current = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    setReduzido(reduz.current);
     desk.current = window.matchMedia('(min-width: 1024px)').matches;
     if (ventoEl.current)
       vento.current = criarVento(ventoEl.current, {
@@ -365,7 +369,7 @@ export default function PraiaCena3D({ nome, ll, idEstatico, praiaVirada, vizinho
             </button>
           ) : null}
         </div>
-        <p className="estatica">{reduzido ? c.vistaPlanaReduz : c.vistaPlana}</p>
+        <p className="estatica">{c.vistaPlana}</p>
         <p className="credito-mapa">
           © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> · {c.atribuicaoRelevo}{' '}
           <a href="https://registry.opendata.aws/terrain-tiles/">AWS Terrain Tiles</a> ×1,5 · MapLibre

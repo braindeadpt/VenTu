@@ -53,7 +53,8 @@ export function criarPlano(
   canvas.height = Math.round(H * dpr);
   const ctx = canvas.getContext('2d');
   const z = desktop ? 13 : 12;
-  const esc = desktop ? 1 : 1.35; // px CSS por px de tile
+  // px CSS por px de tile: a escala da vista plana da maquete (caixa de 0,10° × 0,085° no Guincho)
+  const esc = desktop ? 1.45 : 1.76;
   const c = merc(centro[0], centro[1], z);
   const ox = c.x - W / (2 * esc);
   const oy = c.y - H / (2 * esc);

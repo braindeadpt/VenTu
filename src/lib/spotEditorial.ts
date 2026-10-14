@@ -33,6 +33,12 @@ export interface EditorialSpot {
   tipoAgua: TipoAgua;
   atencao?: { pt: string; en: string };
   melhorMare?: { pt: string; en: string };
+  /**
+   * Rótulos da praia em 3D escolhidos à mão (como os da maquete no Guincho):
+   * o nome da praia, o ponto onde fica e os lugares a mostrar. Sem isto, a
+   * cena usa o nome do spot, o pico e as localidades OSM.
+   */
+  rotulos?: { praia: string; ll: [number, number]; lugares: Array<{ n: string; ll: [number, number]; ele?: number }> };
   /** Valores derivados da orientação (sem entrada editorial). */
   estimado: boolean;
   maqueteId?: string;

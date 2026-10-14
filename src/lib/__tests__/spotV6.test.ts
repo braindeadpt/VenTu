@@ -91,6 +91,19 @@ describe('construirHoras: um objecto por hora a partir do forecast', () => {
     }
     expect(d.mares.length).toBeGreaterThan(2);
   });
+  it('maré: extremos afinados ao minuto (parábola pelos 3 pontos horários)', () => {
+    // seno de período 12,4 h: preia-mar em k = 3,1 + 12,4 = 15,5 h → 15h30, 3,2 m ZH
+    const pm = d.mares.find((m) => m.tipo === 'PM' && m.t.startsWith('2026-10-14T15'));
+    expect(pm).toBeDefined();
+    const min = +pm!.t.slice(11, 13) * 60 + +pm!.t.slice(14, 16);
+    expect(Math.abs(min - (15 * 60 + 30))).toBeLessThanOrEqual(3);
+    expect(pm!.h).toBeCloseTo(1.2 + NIVEL_MEDIO_ZH, 1);
+    // baixa-mar em k = 9,3 + 12,4 = 21,7 h → 21h42, 0,8 m ZH
+    const bm = d.mares.find((m) => m.tipo === 'BM' && m.t.startsWith('2026-10-14T21'));
+    expect(bm).toBeDefined();
+    const minB = +bm!.t.slice(11, 13) * 60 + +bm!.t.slice(14, 16);
+    expect(Math.abs(minB - (21 * 60 + 42))).toBeLessThanOrEqual(3);
+  });
   it('sol calculado em cliente (NOAA); sem chuva nem nuvens na fonte → null e dito', () => {
     const p = posicaoSol(instanteLisboa('2026-10-14T14:00'), guincho.lat, guincho.lon);
     expect(d.horas[0].sunEl).toBe(p.el);

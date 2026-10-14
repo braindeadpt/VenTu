@@ -107,8 +107,7 @@ export const spotPageV6 = {
     cenaSubSurf: 'Ondulação e vento da hora, vista do mar.',
     cenaAria: 'Vista 3D da praia de {spot}, vista do mar, com o mar na cor da nota e o vento em movimento',
     recentrar: 'Voltar ao enquadramento inicial',
-    vistaPlana: 'Vista plana: este aparelho não mostra 3D. As cores e o vento seguem a hora escolhida.',
-    vistaPlanaReduz: 'Vista plana e parada (movimento reduzido). As cores e o vento seguem a hora escolhida.',
+    vistaPlana: 'Vista plana: este aparelho não mostra 3D. As cores, o vento e as ondas seguem a hora escolhida.',
     chipVento: '{r} {w} nós · até {g}',
     altitude: '{m} m',
     legenda:
@@ -246,8 +245,7 @@ export const spotPageV6 = {
     cenaSubSurf: "This hour's swell and wind, seen from the sea.",
     cenaAria: '3D view of {spot} beach from the sea, the sea tinted by the score and the wind moving',
     recentrar: 'Back to the initial view',
-    vistaPlana: 'Flat view: this device cannot show 3D. Colours and wind follow the chosen hour.',
-    vistaPlanaReduz: 'Flat, still view (reduced motion). Colours and wind follow the chosen hour.',
+    vistaPlana: 'Flat view: this device cannot show 3D. Colours, wind and waves follow the chosen hour.',
     chipVento: '{r} {w} kn · up to {g}',
     altitude: '{m} m',
     legenda:
