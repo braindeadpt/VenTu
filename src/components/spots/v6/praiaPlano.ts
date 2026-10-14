@@ -106,8 +106,8 @@ export function criarPlano(
         ctx.fill(caminhos.faixas[i], 'evenodd');
       }
     }
-    // frentes de onda paradas (a vista plana é estática); a terra tapa-as
-    const segs = geo ? frentesGeo(geo.ondas, e.sd, e.tp, e.hs, 3.2, desktop) : frentesOnda(ll, praiaVirada, e.sd, e.tp, e.hs, 3.2);
+    // frentes de onda paradas (a vista plana é estática); a terra tapa-as. Rumo a 20°, como no 3D e na maquete
+    const segs = geo ? frentesGeo(geo.ondas, e.sd, e.tp, e.hs, 3.2, desktop, 3200, 1, 20) : frentesOnda(ll, praiaVirada, e.sd, e.tp, e.hs, 3.2);
     ctx.strokeStyle = 'rgba(243,248,251,.7)';
     ctx.lineWidth = 1 + e.hs * 0.6;
     ctx.lineCap = 'round';

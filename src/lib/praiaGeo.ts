@@ -412,10 +412,11 @@ export function construirGeo(ll: [number, number], o: OpcoesGeo, fino: Amostrado
  * Tempo de chegada (s) da ondulação vinda de `sd` (graus) a cada célula do
  * mar: refracção simples (Dijkstra com c = c0·√tanh(k·h), Tp de referência
  * 11 s), como o campo pré-calculado da maquete; parte das células fundas
- * como uma frente plana.
+ * como uma frente plana. O rumo é arredondado a `passo` graus (5 por omissão;
+ * a cena 3D usa 20, os rumos pré-calculados da maquete: 280/300/320).
  */
-export function campoChegada(g: GrelhaOndas, sd: number): Float32Array {
-  const chave = Math.round(sd / 5) * 5;
+export function campoChegada(g: GrelhaOndas, sd: number, passo = 5): Float32Array {
+  const chave = (((Math.round(sd / passo) * passo) % 360) + 360) % 360;
   const c = g.campos.get(chave);
   if (c) return c;
   const { nx, ny, prof, res } = g;
@@ -551,11 +552,12 @@ function suavizaCampo(T: Float32Array, nx: number, ny: number, n: number): void 
 /**
  * Frentes de onda (segmentos [lon, lat]) junto à costa: isócronas do campo de
  * chegada espaçadas de 2 (desktop) ou 3 (telemóvel) períodos (× `escala`) e animadas pela
- * fase `t` (s), como na maquete. Só até `maxDist` m da costa.
+ * fase `t` (s), como na maquete. Só até `maxDist` m da costa. `passoRumo`:
+ * arredondamento do rumo da ondulação para escolher o campo (ver `campoChegada`).
  */
-export function frentesGeo(g: GrelhaOndas, sd: number, tp: number, hs: number, t: number, desktop: boolean, maxDist = 3200, escala = 1): Array<Array<[number, number]>> {
+export function frentesGeo(g: GrelhaOndas, sd: number, tp: number, hs: number, t: number, desktop: boolean, maxDist = 3200, escala = 1, passoRumo = 5): Array<Array<[number, number]>> {
   if (!(hs > 0.15) || !(tp > 0)) return [];
-  const T = campoChegada(g, sd);
+  const T = campoChegada(g, sd, passoRumo);
   const { nx, ny } = g;
   const Lam = tp * (desktop ? 2 : 3) * escala;
   const ph = (((t * 8) % Lam) + Lam) % Lam;

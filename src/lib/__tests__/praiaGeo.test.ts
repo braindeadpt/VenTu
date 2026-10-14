@@ -3,7 +3,7 @@
  * faixas de profundidade a crescer para o largo e costa no sítio certo.
  */
 import { describe, expect, it } from 'vitest';
-import { aneisGrelha, areaAnel, construirGeo, distancia, encadeia, multiPoligono } from '@/lib/praiaGeo';
+import { aneisGrelha, areaAnel, campoChegada, construirGeo, distancia, encadeia, multiPoligono } from '@/lib/praiaGeo';
 import { PROF_FAIXAS } from '@/lib/praiaCena';
 
 const grelha = (nx: number, ny: number, f: (i: number, j: number) => number) => {
@@ -89,6 +89,13 @@ describe('praiaGeo · praia sintética', () => {
     expect(mp.length).toBeGreaterThan(0);
     const ext = mp[0][0] as unknown as Array<[number, number]>;
     expect(areaAnel(ext.slice(0, -1))).toBeLessThan(0);
+  });
+
+  it('campoChegada: passo 20 escolhe o rumo da maquete (311° → campo de 320°)', () => {
+    expect(campoChegada(geo.ondas, 311, 20)).toBe(campoChegada(geo.ondas, 320));
+    expect(campoChegada(geo.ondas, 311)).toBe(campoChegada(geo.ondas, 310));
+    expect(campoChegada(geo.ondas, 311)).not.toBe(campoChegada(geo.ondas, 320));
+    expect(campoChegada(geo.ondas, 355, 20)).toBe(campoChegada(geo.ondas, 0));
   });
 });
 

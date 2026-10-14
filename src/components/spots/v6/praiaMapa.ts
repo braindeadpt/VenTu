@@ -248,10 +248,12 @@ export function criarMapa(o: OpcoesMapa): HandleMapa {
   const frentes = (t: number) => {
     if (!ok) return;
     const segs = geoOk
-      ? // ×0,7 (telemóvel) / ×0,8 (desktop) no 3D: em perspectiva, com o campo a 5° (a maquete só tem
-        // 280/300/320) e suavizado, as frentes saíam ~1,4× mais espaçadas do que nas capturas da maquete.
-        // A vista plana fica no espaçamento da maquete (escala 1), que já lhe era igual.
-        frentesGeo(geoOk.ondas, estado.sd, estado.tp, estado.hs, t, o.desktop, 3200, o.desktop ? 0.8 : 0.7)
+      ? // ×0,7 (telemóvel) / ×0,8 (desktop) no 3D: em perspectiva e com o campo suavizado, as frentes
+        // saíam ~1,4× mais espaçadas do que nas capturas da maquete. A vista plana fica no espaçamento
+        // da maquete (escala 1), que já lhe era igual. Rumo arredondado a 20° (passoRumo), a mesma regra
+        // da maquete (campos de 280/300/320): para 311° usa o campo de 320°, como ela, e as frentes
+        // junto à costa ficam com a mesma orientação.
+        frentesGeo(geoOk.ondas, estado.sd, estado.tp, estado.hs, t, o.desktop, 3200, o.desktop ? 0.8 : 0.7, 20)
       : frentesOnda(o.ll, o.praiaVirada, estado.sd, estado.tp, estado.hs, t);
     const src = m.getSource('frentes') as maplibregl.GeoJSONSource | undefined;
     src?.setData({ type: 'Feature', properties: {}, geometry: { type: 'MultiLineString', coordinates: segs } });
