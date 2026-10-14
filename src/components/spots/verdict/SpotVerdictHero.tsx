@@ -2,12 +2,13 @@
 
 import type { ReactNode } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Navigation, Video } from 'lucide-react';
+import { ArrowLeft, MapPin, Navigation, Video } from 'lucide-react';
 import type { Spot } from '@/types';
 import type { SportType } from '@/lib/sportRatings';
 import type { SportScore } from '@/lib/sportScore';
 import type { SpotVerdictConditions } from '@/components/spots/page/SpotVerdictSection';
 import { getGoogleMapsDirectionsUrl } from '@/lib/mapSpotDetail';
+import { scoreBand } from '@/lib/verdict/scoreBand';
 import { getSpotScoreFactors } from '@/lib/spotScoreFactors';
 import { formatHourLong } from '@/lib/verdict/formatHourLabel';
 import { getDataFreshness, formatStaleAge } from '@/lib/dataFreshness';
@@ -18,11 +19,13 @@ import {
   useSpotTimelineData,
   useSpotTimelineIndex,
 } from '@/components/spots/timeline/useSpotTimeline';
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
+import { useCountUp } from '@/components/spots/verdict/useCountUp';
 import SpotLevelToday from '@/components/spots/SpotLevelToday';
+import WindSafetyNote from '@/components/ui/WindSafetyNote';
 import FavoriteButton from '@/components/FavoriteButton';
 import SpotAlertPopover from '@/components/spots/SpotAlertPopover';
 import SpotMoreMenu from '@/components/spots/verdict/SpotMoreMenu';
-import SpotBreadcrumb from '@/components/spots/quick/SpotBreadcrumb';
 import type {
   ScoreWaveCorrection,
   ScoreWaveSource,
@@ -49,6 +52,16 @@ interface SpotVerdictHeroProps {
   scoreWindSource?: ScoreWindSource;
   scoreWindCorrection?: ScoreWindCorrection | null;
   freshnessNowMs?: number;
+}
+
+/** '38.73° N' — coordenada com 2 casas e rótulo cardinal localizado. */
+function formatCoord(
+  v: number,
+  pos: string,
+  neg: string,
+  nf: Intl.NumberFormat,
+): string {
+  return `${nf.format(Math.abs(v))}° ${v >= 0 ? pos : neg}`;
 }
 
 /** Primeira letra minúscula — o segmento fica a meio de frase («…há 12h»). */
@@ -85,57 +98,31 @@ export default function SpotVerdictHero({
   freshnessNowMs,
 }: SpotVerdictHeroProps) {
   const isPt = locale === 'pt';
-  const t = getTranslation(locale);
-  const tv = t.spotPageVerdict;
-  const tq = t.spotPageQuick;
+  const tv = getTranslation(locale).spotPageVerdict;
   const { nowIndex, nowResolved } = useSpotTimelineData();
   const { selectedScore, selectedHour, isNow } = useSpotTimelineIndex();
+  const reducedMotion = usePrefersReducedMotion();
 
   const title = isPt ? spot.name : spot.nameEn;
   const region = isPt ? spot.region : spot.regionEn;
   const directionsUrl = getGoogleMapsDirectionsUrl(spot.lat, spot.lon);
 
-  // Score da hora escolhida — alimenta o «Nível hoje» (o display grande
-  // do score vive no SpotVerdictCard do deck rápido, #184).
+  // Score da hora escolhida (agora = corrigido; futuro = canónico).
   const target = selectedScore ?? score.score;
+  const displayScore = useCountUp(target, reducedMotion);
+  const band = scoreBand(target);
+  const bandLabel = (isPt ? band.labelPt : band.labelEn).toUpperCase();
 
-  // Linha meta do contrato: «Ericeira · Intermédio · Direita clássica» —
-  // região, nível e tipo de spot; os chips (Bandeira Azul, qualidade da
-  // água) vêm a seguir. Sem campos inventados: só o que o spot declara.
-  const DIFF_KEY: Record<Spot['difficulty'], keyof typeof t.spots> = {
-    beginner: 'beginner',
-    intermediate: 'intermediate',
-    advanced: 'advanced',
-    expert: 'expert',
-    all: 'allLevels',
-  };
-  const TYPE_KEY: Record<Spot['type'], keyof typeof t.spots | null> = {
-    surf: 'surf',
-    kitesurf: 'kitesurf',
-    windsurf: 'windsurf',
-    'big-wave': 'bigWave',
-    foil: 'foil',
-    wakeboard: 'wakeboard',
-    multisport: null,
-  };
-  const typeKey = TYPE_KEY[spot.type];
-  const metaParts = [
-    region,
-    t.spots[DIFF_KEY[spot.difficulty]] as string,
-    typeKey ? (t.spots[typeKey] as string) : null,
-  ].filter(Boolean);
-  const WQ_KEY: Record<string, keyof typeof t.spotPageContext> = {
-    excelente: 'wqClassExcellent',
-    excellent: 'wqClassExcellent',
-    boa: 'wqClassGood',
-    good: 'wqClassGood',
-    razoavel: 'wqClassSufficient',
-    fair: 'wqClassSufficient',
-    má: 'wqClassPoor',
-    poor: 'wqClassPoor',
-  };
-  const wq = isPt ? spot.waterQuality : spot.waterQualityEn;
-  const wqLabel = wq ? t.spotPageContext[WQ_KEY[wq]] : null;
+  const nf = new Intl.NumberFormat(isPt ? 'pt-PT' : 'en-GB', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+  const coords = `${formatCoord(spot.lat, tv.coordNorth, tv.coordSouth, nf)} · ${formatCoord(
+    spot.lon,
+    tv.coordEast,
+    tv.coordWest,
+    nf,
+  )}`;
 
   // Os factores descrevem as condições actuais — escondidos quando a hora
   // escolhida é previsão (mostrar factores de «agora» sobre uma hora futura
@@ -163,8 +150,9 @@ export default function SpotVerdictHero({
   // está coberto». Sem esta distinção uma série expirada aparecia como
   // «Agora» — mentira sobre o dado.
   const showObservedSources = isNow || !nowResolved;
-  // A nota de segurança offshore vive agora por cima do SpotVerdictCard
-  // (deck rápido #184, contrato «por cima do veredicto»).
+  // Segurança offshore (windSportDirectionSafety) descreve o vento de agora —
+  // mesma regra dos factores: só quando a hora mostrada é «agora».
+  const windSafety = isNow || !nowResolved ? score.directionSafety ?? null : null;
   // A pill segue a mesma regra: antes de montar diz «Agora» (não «Previsão»,
   // mais comprida — no mobile partia a linha da hora e a página saltava).
   const showAsNow = isNow || !nowResolved;
@@ -239,79 +227,103 @@ export default function SpotVerdictHero({
           {backLabel}
         </Link>
 
-        {/* Breadcrumb «Portugal › Região › Spot» (contrato #184). */}
-        <SpotBreadcrumb spot={spot} locale={locale} />
-
-        <div className="mt-1.5 space-y-1.5">
-          {/* h1 fluido — nunca transborda a 360/390 (#198): clamp entre
-              32 px e 64 px, com o nome a poder quebrar linha livremente. */}
-          <h1 className="font-display text-[clamp(2rem,9vw+0.5rem,4rem)] leading-[1.05] tracking-tight text-fg text-balance">
-            {title}
-          </h1>
-          <p className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-meta-sm text-fg-muted">
-            {metaParts.map((part, i) => (
-              <span key={i} className="inline-flex items-center gap-x-2">
-                {i > 0 && <span aria-hidden>·</span>}
-                {part}
+        {/* Grelha: [nome | score] no mobile; 1–7 | 8–12 a partir de lg. */}
+        <div className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-x-4 lg:grid-cols-12 lg:gap-8">
+          <div className="min-w-0 lg:col-span-7 space-y-1.5">
+            <p className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-meta-sm text-fg-muted">
+              <MapPin className="w-3.5 h-3.5 shrink-0" aria-hidden />
+              {/* Região e «· coordenadas» são duas unidades nowrap irmãs: o
+                  <p> faz wrap entre elas. Um só bloco nowrap transbordava a
+                  coluna do nome a 390 px (#194); assim, se não couber, as
+                  coordenadas passam inteiras para a linha seguinte. */}
+              <span className="whitespace-nowrap">{region}</span>
+              <span className="inline-flex items-center gap-x-2 whitespace-nowrap">
+                <span aria-hidden>·</span>
+                <span className="font-mono tabular-nums">{coords}</span>
               </span>
-            ))}
-          </p>
-          {(spot.blueFlag || wqLabel) && (
-            <p className="flex flex-wrap gap-2 pt-0.5">
-              {spot.blueFlag && (
-                <span className="rounded-pill border border-divider px-2.5 py-1 text-meta-sm text-fg-muted">
-                  {tq.flagBlue}
-                </span>
-              )}
-              {wqLabel && (
-                <span className="rounded-pill border border-divider px-2.5 py-1 text-meta-sm text-fg-muted">
-                  {wqLabel}
-                </span>
-              )}
             </p>
-          )}
-          {Number.isFinite(conditions.waterTemp) && conditions.waterTemp > 0 && (
-            <p className="text-meta-sm text-fg-muted">
-              {tq.waterTempLine.replace(
-                '{temp}',
-                String(Math.round(conditions.waterTemp)),
-              )}
+            <h1 className="font-display text-[48px] lg:text-[64px] leading-[1.05] tracking-tight text-fg">
+              {title}
+            </h1>
+            <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-meta-sm text-fg-muted">
+              <span className="font-mono tabular-nums text-fg">
+                {selectedHour ? formatHourLong(selectedHour, locale) : '--:--'}
+              </span>
+              {/* A pill existe sempre — invisível enquanto o relógio não está
+                  resolvido (HTML baked). Aparecer só depois da hidratação
+                  crescia a linha 4–5 px e empurrava a página (CLS 0,2).
+                  A visibilidade segue `nowResolved`, NÃO `nowIndex`: um
+                  `nowIndex` de −1 significa agora DUAS coisas — «ainda não
+                  medi» e «medi, mas a série expirou» — e no segundo caso o
+                  aviso tem de ser visível, porque dizer «Agora» seria
+                  mentir sobre o dado. */}
+              <span
+                aria-hidden={!nowResolved || undefined}
+                className={cn(
+                  'rounded-pill border px-2 py-0.5 text-meta-sm font-medium',
+                  !nowResolved && 'invisible',
+                  nowIndex < 0 || isNow
+                    ? 'border-divider-strong text-fg'
+                    : 'border-divider text-fg-muted',
+                )}
+              >
+                {nowIndex < 0
+                  ? tv.outsideCoverageLabel
+                  : isNow
+                    ? tv.nowLabel
+                    : tv.forecastLabel}
+              </span>
             </p>
-          )}
-          <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-meta-sm text-fg-muted">
-            <span className="font-mono tabular-nums text-fg">
-              {selectedHour ? formatHourLong(selectedHour, locale) : '--:--'}
-            </span>
-            {/* A pill existe sempre — invisível enquanto o relógio não está
-                resolvido (HTML baked). Aparecer só depois da hidratação
-                crescia a linha 4–5 px e empurrava a página (CLS 0,2).
-                A visibilidade segue `nowResolved`, NÃO `nowIndex`: um
-                `nowIndex` de −1 significa agora DUAS coisas — «ainda não
-                medi» e «medi, mas a série expirou» — e no segundo caso o
-                aviso tem de ser visível, porque dizer «Agora» seria
-                mentir sobre o dado. */}
+            {/* Nível do dia — na coluna só em ≥lg. Em <lg a coluna é
+                estreita (partilha a linha com o score) e a mensagem partia em
+                2 linhas contra 1 da caixa reservada: vai para linha própria. */}
+            <div className="hidden lg:block">
+              <SpotLevelToday difficulty={spot.difficulty} score={target} locale={locale} />
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-1 items-end text-right justify-self-end lg:col-span-5">
+            <div className="flex items-baseline gap-1.5">
+              <span
+                role="meter"
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-valuenow={target}
+                aria-valuetext={`${target} / 100 — ${bandLabel}`}
+                aria-label={tv.sectionTitle}
+                className="font-mono font-medium tabular-nums leading-[0.84] tracking-[-0.05em] text-[64px] lg:text-[104px]"
+                style={{ color: 'var(--verdict)' }}
+                data-visual-dynamic
+              >
+                {displayScore}
+              </span>
+              <span className="font-mono text-num-lg text-fg-subtle">/100</span>
+            </div>
             <span
-              aria-hidden={!nowResolved || undefined}
-              className={cn(
-                'rounded-pill border px-2 py-0.5 text-meta-sm font-medium',
-                !nowResolved && 'invisible',
-                nowIndex < 0 || isNow
-                  ? 'border-divider-strong text-fg'
-                  : 'border-divider text-fg-muted',
-              )}
+              className="font-display text-meta-sm lg:text-lg font-semibold uppercase tracking-[0.18em] leading-none"
+              style={{ color: 'var(--verdict)' }}
+              data-visual-dynamic
             >
-              {nowIndex < 0
-                ? tv.outsideCoverageLabel
-                : isNow
-                  ? tv.nowLabel
-                  : tv.forecastLabel}
+              {bandLabel}
             </span>
+            {why && (
+              <p className="hidden lg:block text-meta-sm text-fg-muted leading-snug max-w-[42ch] truncate">
+                {why}
+              </p>
+            )}
+          </div>
+        </div>
+
+        {/* Porquê — fora da coluna do score em <lg (linha própria, 1 linha). */}
+        {why && (
+          <p className="mt-1 text-meta-sm text-fg-muted leading-snug truncate lg:hidden">
+            {why}
           </p>
-          {why && (
-            <p className="text-meta-sm text-fg-muted leading-snug truncate">
-              {why}
-            </p>
-          )}
+        )}
+        {windSafety && (
+          <WindSafetyNote level={windSafety} locale={locale} className="mt-2" />
+        )}
+        <div className="mt-2 lg:hidden">
           <SpotLevelToday difficulty={spot.difficulty} score={target} locale={locale} />
         </div>
 

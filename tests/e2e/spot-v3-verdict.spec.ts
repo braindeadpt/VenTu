@@ -310,9 +310,6 @@ test.describe('SP-A — tooltip da régua (desktop)', () => {
   test('hover mostra hora e score no tooltip', async ({ page }) => {
     await openSpot(page);
     const rail = page.getByRole('slider');
-    // A régua vive no fim da página desde a #184 — é preciso trazê-la para
-    // o viewport antes do hover (o rato não atinge coordenadas fora do ecrã).
-    await rail.scrollIntoViewIfNeeded();
     const box = await rail.boundingBox();
     expect(box).not.toBeNull();
 
@@ -327,8 +324,6 @@ test.describe('SP-A — tooltip da régua (desktop)', () => {
   test('o tooltip desaparece ao sair da régua', async ({ page }) => {
     await openSpot(page);
     const rail = page.getByRole('slider');
-    // Idem: a régua está no fim da página (#184) — scroll antes do hover.
-    await rail.scrollIntoViewIfNeeded();
     const box = await rail.boundingBox();
     await page.mouse.move(box!.x + box!.width * 0.5, box!.y + box!.height / 2);
     await expect(page.getByTestId('spot-rail-tooltip')).toBeVisible();

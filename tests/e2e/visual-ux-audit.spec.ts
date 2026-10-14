@@ -510,11 +510,10 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
         await expect(page.locator('h2, details > summary').filter({ hasText: title }), String(title)).toHaveCount(1);
       }
 
-      // Veredicto: score da hora escolhida (cartão #184 do deck rápido) e
-      // UMA acção primária «Como chegar» (hero #agora).
-      const verdict = page.locator('[data-verdict-card]');
+      // Veredicto: score da hora escolhida e UMA acção primária «Como chegar».
+      const verdict = page.locator('[id="agora"]');
       await expect(verdict.getByText('/100')).toBeVisible();
-      await expect(page.locator('[id="agora"]').getByRole('link', { name: /Como chegar|Get directions/i })).toHaveCount(1);
+      await expect(verdict.getByRole('link', { name: /Como chegar|Get directions/i })).toHaveCount(1);
 
       // Uma só régua de tempo na página.
       await expect(page.getByRole('slider')).toHaveCount(1);
