@@ -1,16 +1,19 @@
-# Maquetes v5: página de spot e home
+# Maquetes: v6 «Atlântico» (aprovada) e v5 (visual substituído)
 
-Aprovadas pelo Pedro a 13 out 2026. São o **contrato visual** das issues #184 (página de spot v5: diorama 3D) e #183 (home v5: Costa viva). Substituem os contratos v4 do PR #199 para estas duas páginas.
+> **14 out 2026: a direcção aprovada é a v6 «Atlântico»** ([`v6-atlantico/`](v6-atlantico/)), contrato visual das issues #183 (home v6) e #184 (página de spot v6). O **visual** das v5 (calcário, Cinzel, rumos de portulano, ar de carta náutica) foi **recusado** pelo Pedro; as pastas [`spot/`](spot/) e [`home/`](home/) ficam como referência da arquitectura da informação e dos dados, **não** do aspecto.
+>
+> Mantém-se das v5: a IA das duas páginas, o **ranking único**, a **escala 0–10 e as bandas** (#210), a **regra de ouro** (abaixo), a régua de 48 h e a cena 3D do terreno. Muda: paleta e rampa das bandas (ver [`v6-atlantico/cores.md`](v6-atlantico/cores.md)), tipografia (Barlow Condensed + Barlow), fotografia, mapa da home ao lado do «VAI.», vento em partículas; e o âmbito passa a **só surf e kite**.
 
 | Pasta | O que é | Issue |
 |---|---|---|
-| [`spot/`](spot/) | Página de spot (Guincho): veredicto, diorama 3D, régua de 48 h, Porquê, Estudar o spot | #184 |
-| [`home/`](home/) | Home «Costa viva»: frase nacional, os três melhores, a costa em 3D, régua por blocos | #183 |
-| [`modalidades-def.json`](modalidades-def.json) | A definição única das modalidades: curvas, degraus, limiares e a lista de água plana | #183, #184 |
+| [`v6-atlantico/`](v6-atlantico/) | **v6 «Atlântico» (aprovada)**: `index.html` (home) e `guincho.html` (spot), capturas, paleta, créditos das fotos, paridade | #183, #184 |
+| [`spot/`](spot/) | v5 (visual substituído): página de spot (Guincho), veredicto, diorama 3D, régua de 48 h, Porquê, Estudar o spot | IA de #184 |
+| [`home/`](home/) | v5 (visual substituído): home «Costa viva», frase nacional, os três melhores, a costa em 3D, régua por blocos | IA de #183 |
+| [`modalidades-def.json`](modalidades-def.json) | A definição única das modalidades (na v6 só se usam as entradas `kite` e `surf`) | #183, #184 |
 | [`modalidades-avalia.js`](modalidades-avalia.js) | O motor de notas, o mesmo ficheiro nas duas páginas (browser e node) | #183, #184 |
-| [`teste-paridade-guincho.js`](teste-paridade-guincho.js) | Teste de paridade das maquetes: o Guincho dá a mesma nota no spot e na home | #183, #184 |
+| [`teste-paridade-guincho.js`](teste-paridade-guincho.js) | Teste de paridade das maquetes v5: o Guincho dá a mesma nota no spot e na home | #183, #184 |
 
-Cada `index.html` é autocontido (dados, geografia, motor e poster embutidos). Para o abrir, descarrega-o e abre-o no browser; precisa de rede para as fontes (Google Fonts), o MapLibre GL 4.7.1 (unpkg) e o relevo (AWS Terrain Tiles, terrarium). Parâmetros úteis: `?d=` (modalidade), `?webgl=0` (carta plana). A previsão é inventada (14–16 out 2026), mas coerente hora a hora.
+As maquetes v5 são `index.html` autocontidos (dados, geografia, motor e poster embutidos); precisam de rede para as fontes, o MapLibre GL 4.7.1 (unpkg) e o relevo (AWS Terrain Tiles, terrarium). A v6 traz as fontes e o MapLibre em `v6-atlantico/lib/` e só precisa de rede para o relevo. A previsão é inventada (14–16 out 2026), mas coerente hora a hora, e é a mesma nas duas versões (`v6-atlantico/verifica-paridade.js`: 0 diferenças).
 
 ## A regra de ouro
 
@@ -25,6 +28,9 @@ Corolários:
 - **A cor é só do veredicto.** O mar, a nota e a régua usam a mesma escala de bandas (Não dá < 3 ≤ Fraco < 5 ≤ Dá < 7 ≤ Bom < 9 ≤ Muito bom; Noite à parte).
 
 ## O selector de modalidades (igual nas duas páginas)
+
+> **v6: só Kite e Surf.** O menu «Mais», Windsurf, Foil, Bodyboard, Wakeboard e Onda grande ficam fora de âmbito por agora; o que está abaixo descreve as v5 e serve para o modelo de dados continuar extensível. A chave `ventu.modalidade` mantém o formato `{d, v}`.
+
 
 - Visíveis: **Kite** e **Surf**. Menu **«Mais ⌄»**: Windsurf, Foil, Bodyboard, Wakeboard.
 - **Foil** tem vertentes: Wing / Kite foil / Surf foil (sub-selector em linha).
@@ -41,3 +47,4 @@ Ficheiros pesados ou de trabalho, que não entram no repositório (nenhum fichei
 - Ficam só as fontes leves que explicam as regras: `home/fontes/nucleo.js` (ranking, blocos, frases), `home/fontes/LEIA-ME.md`, `home/fontes/critica.md` e `spot/fontes/verifica-paridade.js`. O `teste-paridade-guincho.js` lê os dois `index.html` com Playwright; os caminhos no ficheiro são os do ambiente onde foi feito e servem de referência para o teste do repositório.
 
 Contexto da auditoria que levou a estas maquetes (inventário de erros do site actual e benchmark de UX/UI): não está no repositório; o essencial está resumido nas issues.
+

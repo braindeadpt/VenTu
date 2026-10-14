@@ -1,4 +1,6 @@
-# Home v5: Costa viva (maquete aprovada)
+# Home v5: Costa viva (maquete aprovada) (SUBSTITUÍDA pela v6)
+
+> **Substituída (14 out 2026).** O visual desta maquete v5 (calcário, Cinzel, portulano, carta náutica) foi recusado pelo Pedro. O contrato de #183 é agora a **v6 «Atlântico»**: [`../v6-atlantico/`](../v6-atlantico/) (Home v6: Atlântico). Esta pasta fica só como referência da arquitectura da informação, do ranking único, da escala 0–10 e da regra de ouro, que a v6 mantém. Não implementar o aspecto daqui.
 
 Contrato visual da issue #183. Aprovada pelo Pedro a 13 out 2026. Mesma família visual da [página de spot](../spot/). Ler primeiro a [regra de ouro](../README.md#a-regra-de-ouro).
 
@@ -45,3 +47,4 @@ Contrato visual da issue #183. Aprovada pelo Pedro a 13 out 2026. Mesma família
 | [`captura-390x844-foil-wing.png`](capturas/captura-390x844-foil-wing.png) | Foil › Wing |
 | [`extra-390-wakeboard.png`](capturas/extra-390-wakeboard.png) | Wakeboard (só água plana) |
 | [`extra-390-surf-bigwave-qui-tarde.png`](capturas/extra-390-surf-bigwave-qui-tarde.png) | Surf em modo onda grande (Nazaré) |
+

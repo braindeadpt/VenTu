@@ -1,4 +1,6 @@
-# Página de spot v5: diorama 3D (maquete aprovada, Guincho)
+# Página de spot v5: diorama 3D (maquete aprovada, Guincho) (SUBSTITUÍDA pela v6)
+
+> **Substituída (14 out 2026).** O visual desta maquete v5 (calcário, Cinzel, portulano, carta náutica) foi recusado pelo Pedro. O contrato de #184 é agora a **v6 «Atlântico»**: [`../v6-atlantico/`](../v6-atlantico/) (Página de spot v6: Atlântico). Esta pasta fica só como referência da arquitectura da informação, do ranking único, da escala 0–10 e da regra de ouro, que a v6 mantém. Não implementar o aspecto daqui.
 
 Contrato visual da issue #184. Aprovada pelo Pedro a 13 out 2026. Ler primeiro a [regra de ouro](../README.md#a-regra-de-ouro).
 
@@ -45,3 +47,4 @@ Contrato visual da issue #184. Aprovada pelo Pedro a 13 out 2026. Ler primeiro a
 | [`modalidades-390x844-wakeboard.png`](capturas/modalidades-390x844-wakeboard.png) | Wakeboard num spot de mar: «Não é spot», mar cinzento |
 
 Nota: `captura-1440x900.png` e as `extra-*` são anteriores ao selector «Mais» e à regra do «até» (mostram «rajadas 28» e só Kite/Surf). Nesses dois pontos manda o `index.html` e as capturas `modalidades-*`.
+
