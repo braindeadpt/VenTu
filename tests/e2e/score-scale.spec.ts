@@ -21,7 +21,8 @@ const ROUTES = [
 const BAND = '(?:Muito bom|Bom|Dá|Fraco|Não dá|Very good|Good|OK|Poor|No go)';
 const NUM_THEN_BAND = new RegExp(`(?<![\\d.,])(\\d{2,3})\\s*(?:·|—|-)?\\s*${BAND}(?![\\p{L}])`, 'giu');
 const BAND_THEN_NUM = new RegExp(`(?<![\\p{L}])${BAND}\\s*(?:·|—|:)?\\s*(\\d{2,3})(?![\\d.,]|\\s*(?:km|m\\b|kt|°|%|h\\b|s\\b|min))`, 'giu');
-const OVER_TEN = /(?<![\d.,])(\d{2,3})\s*\/\s*10(?!\d)/g;
+// Só «n/10» com palavra de nota antes — «14/10» sozinho é uma data (dd/mm).
+const OVER_TEN = /(?:score|nota|rating|note|:)\s*(\d{2,3})\s*\/\s*10(?![\d/])/giu;
 
 function offenders(text: string): string[] {
   const out: string[] = [];
