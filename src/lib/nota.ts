@@ -29,6 +29,11 @@ export function scoreToNota(score: number): number {
   return Math.max(0, Math.min(NOTA_MAX, Math.round(score / 10)));
 }
 
+/** Nota /10 (aceita decimais) → score 0–100 equivalente, sem arredondar (tectos do motor). */
+export function notaToScore(nota: number): number {
+  return nota * (100 / NOTA_MAX);
+}
+
 /** Menor score 0–100 cuja nota é ≥ `nota` (mapeamento dos limiares). */
 export function notaMinScore(nota: number): number {
   if (!Number.isFinite(nota) || nota <= 0) return 0;

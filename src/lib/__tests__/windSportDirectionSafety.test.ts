@@ -8,6 +8,7 @@ import {
   type Conditions,
 } from '@/lib/sportScore'
 import { getSpotScoreFactors } from '@/lib/spotScoreFactors'
+import { scoreToNota } from '@/lib/nota'
 import { getTranslation } from '@/lib/i18n'
 import { scoreBand } from '@/lib/verdict/scoreBand'
 import type { Spot } from '@/types'
@@ -34,6 +35,9 @@ const MOCK_SPOT: Spot = {
 }
 
 const KT = 1 / 1.94384
+
+/** Nota /10 sem arredondar (os caps da #210 estão em /10). */
+const notaOf = (s: { score: number }) => s.score / 10
 
 /** 20 kt limpos: rajada baixa, mar pequeno, água amena. */
 function clean20kt(windDirection: number): Conditions {
@@ -72,8 +76,9 @@ describe('windSportDirectionSafety — bandas (costa a 270°)', () => {
     expect(windSportDirectionSafety(MOCK_SPOT, 270 + 70).direction).toBe('cross-shore')
     expect(windSportDirectionSafety(MOCK_SPOT, 270 - 100).direction).toBe('cross-shore')
     expect(windSportDirectionSafety(MOCK_SPOT, 90).scoreCap).toBe(WIND_SPORT_OFFSHORE_SCORE_CAP)
-    // #195: side-offshore deixou de ser null — cap 50, por simetria com o offshore.
-    expect(WIND_SPORT_SIDE_OFFSHORE_SCORE_CAP).toBe(50)
+    // #195/#210: side-offshore deixou de ser null — cap 5,0/10; offshore 2,5/10.
+    expect(WIND_SPORT_SIDE_OFFSHORE_SCORE_CAP).toBe(5)
+    expect(WIND_SPORT_OFFSHORE_SCORE_CAP).toBe(2.5)
     expect(windSportDirectionSafety(MOCK_SPOT, 45).scoreCap).toBe(WIND_SPORT_SIDE_OFFSHORE_SCORE_CAP)
     expect(windSportDirectionSafety(MOCK_SPOT, 135).scoreCap).toBe(WIND_SPORT_SIDE_OFFSHORE_SCORE_CAP)
     for (const d of [...DIRS.onshore, ...DIRS.sideOnshore, ...DIRS.cross]) {
@@ -85,8 +90,8 @@ describe('windSportDirectionSafety — bandas (costa a 270°)', () => {
 
 describe.each(['kitesurf', 'windsurf', 'foil'] as const)('%s a 20 kt limpos', (sport) => {
   const score = (dir: number) => getSportScore(MOCK_SPOT, sport, clean20kt(dir))
-  const minOf = (dirs: readonly number[]) => Math.min(...dirs.map((d) => score(d).score))
-  const maxOf = (dirs: readonly number[]) => Math.max(...dirs.map((d) => score(d).score))
+  const minOf = (dirs: readonly number[]) => Math.min(...dirs.map((d) => notaOf(score(d))))
+  const maxOf = (dirs: readonly number[]) => Math.max(...dirs.map((d) => notaOf(score(d))))
 
   it('ordem: cross ≥ side-on > onshore > side-off > offshore', () => {
     expect(minOf(DIRS.cross)).toBeGreaterThanOrEqual(maxOf(DIRS.sideOnshore))
@@ -103,10 +108,11 @@ describe.each(['kitesurf', 'windsurf', 'foil'] as const)('%s a 20 kt limpos', (s
     expect(cross.directionSafety).toBeUndefined()
   })
 
-  it('offshore → score ≤ 25 (FLAT) com aviso de deriva PT/EN', () => {
+  it('offshore → nota ≤ 2,5/10 (Fraco/Não dá) com aviso de deriva PT/EN', () => {
     const off = score(90)
-    expect(off.score).toBeLessThanOrEqual(25)
-    expect(['poor', 'closed']).toContain(scoreBand(off.score).key) // FLAT/FECHADO
+    expect(notaOf(off)).toBeLessThanOrEqual(2.5)
+    expect(scoreToNota(off.score)).toBeLessThanOrEqual(3)
+    expect(['poor', 'closed']).toContain(scoreBand(off.score).key) // Fraco/Não dá
     expect(off.directionSafety).toBe('offshore')
     expect(off.warning).toBe('Vento offshore: perigo de deriva para o mar')
     expect(off.warningEn).toBe(EN.offshore)
@@ -124,7 +130,7 @@ describe.each(['kitesurf', 'windsurf', 'foil'] as const)('%s a 20 kt limpos', (s
 
   it('cap offshore também com vento marginal', () => {
     const light = getSportScore(MOCK_SPOT, sport, { ...clean20kt(90), windSpeed: 13 * KT, windGust: 14 * KT })
-    expect(light.score).toBeLessThanOrEqual(WIND_SPORT_OFFSHORE_SCORE_CAP)
+    expect(notaOf(light)).toBeLessThanOrEqual(WIND_SPORT_OFFSHORE_SCORE_CAP)
     expect(light.directionSafety).toBe('offshore')
   })
 })
@@ -137,23 +143,25 @@ function clean25kt(windDirection: number): Conditions {
 describe.each(['kitesurf', 'windsurf', 'foil'] as const)('%s a 25 kt limpos (#195)', (sport) => {
   const score = (dir: number) => getSportScore(MOCK_SPOT, sport, clean25kt(dir))
 
-  it('side-offshore → score total ≤ 50, com o aviso actual', () => {
+  it('side-offshore a 45° e a 135° → nota ≤ 5,0/10 (nunca Bom/Muito bom), com o aviso actual', () => {
     for (const d of DIRS.sideOffshore) {
       const so = score(d)
-      expect(so.score).toBeLessThanOrEqual(WIND_SPORT_SIDE_OFFSHORE_SCORE_CAP)
+      expect(notaOf(so)).toBeLessThanOrEqual(5.0)
+      expect(scoreToNota(so.score)).toBeLessThanOrEqual(5)
+      expect(['good', 'epic']).not.toContain(scoreBand(so.score).key)
       expect(so.directionSafety).toBe('side-offshore')
       expect(so.warning).toBe(PT.sideOffshore)
       expect(so.warningEn).toBe(EN.sideOffshore)
     }
   })
 
-  it('cross-shore continua > 50', () => {
-    for (const d of DIRS.cross) expect(score(d).score).toBeGreaterThan(50)
+  it('cross-shore continua > 5,0/10', () => {
+    for (const d of DIRS.cross) expect(notaOf(score(d))).toBeGreaterThan(5.0)
   })
 
   it('ordem: cross ≥ side-on > onshore > side-off > offshore', () => {
-    const minOf = (dirs: readonly number[]) => Math.min(...dirs.map((d) => score(d).score))
-    const maxOf = (dirs: readonly number[]) => Math.max(...dirs.map((d) => score(d).score))
+    const minOf = (dirs: readonly number[]) => Math.min(...dirs.map((d) => notaOf(score(d))))
+    const maxOf = (dirs: readonly number[]) => Math.max(...dirs.map((d) => notaOf(score(d))))
     expect(minOf(DIRS.cross)).toBeGreaterThanOrEqual(maxOf(DIRS.sideOnshore))
     expect(minOf(DIRS.sideOnshore)).toBeGreaterThan(maxOf(DIRS.onshore))
     expect(minOf(DIRS.onshore)).toBeGreaterThan(maxOf(DIRS.sideOffshore))
