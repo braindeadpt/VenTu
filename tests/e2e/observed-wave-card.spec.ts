@@ -257,6 +257,27 @@ async function scrollToSettledBottom(page: import('@playwright/test').Page) {
   await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
 }
 
+/**
+ * Página de spot v6 (#184): a régua de 48 h substitui a barra unificada. No
+ * telemóvel é fixa em baixo (visível em toda a página, por isso desce-se até
+ * ao fim); no desktop é sticky no topo enquanto a página v6 está no ecrã, por
+ * isso desce-se até logo depois do hero. Devolve a régua já presa.
+ */
+async function scrollToPinnedRegua(page: import('@playwright/test').Page) {
+  const desktop = (page.viewportSize()?.width ?? 1280) >= 1024;
+  if (desktop) {
+    await page.evaluate(() => {
+      const h = document.querySelector('#agora') as HTMLElement;
+      window.scrollTo(0, h.getBoundingClientRect().bottom + window.scrollY + 80);
+    });
+  } else {
+    await scrollToSettledBottom(page);
+  }
+  const regua = page.getByTestId('regua-48h');
+  await expect(regua).toBeInViewport({ timeout: 15_000 });
+  return regua;
+}
+
 async function gotoSpot(
   page: import('@playwright/test').Page,
   mode: ObservedScenario,
@@ -984,21 +1005,22 @@ test.describe('Observed wave card (boia X a Y km)', () => {
     ).toHaveCount(0);
   });
 
-  test('barra unificada desktop: tabs/score estáveis e chip IH vs WMO na §7', async ({ page }) => {
-    // S3: a barra unificada está sempre montada (tabs + hora + score + aviso
-    // IPMA) — os chips de fonte de onda vivem na §7 «Como sabemos».
-    // v3: a barra só APARECE quando o hero sai do ecrã — scroll primeiro.
+  test('régua v6 desktop: selector e nota estáveis e chip IH vs WMO na §7', async ({ page }) => {
+    // Página de spot v6 (#184): a barra unificada deu lugar à régua de 48 h
+    // (sticky no topo no desktop) e ao selector Kite · Surf da barra de topo;
+    // os chips de fonte de onda continuam na §7 «Como sabemos».
     await gotoSpot(page, 'with-observed-wave');
     await page.evaluate(() => window.scrollTo(0, 1600));
 
-    const sticky = page.getByRole('region', { name: /Modalidade e hora escolhida|Sport and selected hour/i });
-    await expect(sticky).toBeVisible({ timeout: 15_000 });
-
-    // Um ÚNICO tablist exposto — o da barra — sem duplicação.
-    const tablists = page.getByRole('tablist');
-    await expect(tablists).toHaveCount(1);
-    await expect(tablists).toBeVisible();
-    await expect(sticky.locator('[role="tablist"]')).toHaveCount(1);
+    // Uma ÚNICA régua e um ÚNICO selector de modalidade — sem duplicação, e
+    // nenhum tablist antigo.
+    await expect(page.getByRole('slider')).toHaveCount(1);
+    await expect(page.getByRole('group', { name: 'Modalidade', exact: true })).toHaveCount(1);
+    await expect(page.getByRole('tablist')).toHaveCount(0);
+    // A nota do veredicto continua /10 com a fonte observada carregada.
+    const nota = page.locator('#agora [data-testid="spot-veredicto"] .nota');
+    await expect(nota).toHaveCount(1);
+    await expect(page.locator('#agora').getByText('/100')).toHaveCount(0);
 
     // Chip lado a lado IH vs WMO na §7 (desktop: secção sempre expandida).
     const chip = page
@@ -1011,51 +1033,42 @@ test.describe('Observed wave card (boia X a Y km)', () => {
     await expect(chip).toContainText('(5h, a 56 km)');
   });
 
-  test('sport tabs continuam visíveis e clicáveis após scroll com a sticky bar activa (desktop)', async ({
+  test('régua v6 continua presa e operável após scroll (desktop); o selector troca a modalidade', async ({
     page,
   }) => {
-    // A barra fica abaixo dos tabs (fix do overlap) — mas o que importa ao
-    // utilizador é que os tabs continuem a funcionar com a sticky activa. O
-    // Playwright só completa o click se o alvo for accionável (não obscurecido),
-    // logo um click OK é a prova de não-bloqueio pela barra.
+    // O que importa ao utilizador: com a régua presa, a hora continua a
+    // mudar (nada a cobre) e o selector Kite · Surf continua a trocar a
+    // modalidade. O Playwright só completa o clique se o alvo for accionável.
     await gotoSpot(page, 'with-observed-wave');
-
-    // Garante que os dados carregaram (badge do score na §7 — v3: saiu do
-    // hero) antes do scroll.
     await expect(
       page.locator('#como-sabemos').getByText('Corrigido pela boia CSA92/D'),
     ).toBeVisible({ timeout: 15_000 });
 
-    await scrollToSettledBottom(page);
-    const sticky = page.getByRole('region', { name: /Modalidade e hora escolhida|Sport and selected hour/i });
-    await expect(sticky).toBeVisible({ timeout: 15_000 });
+    const regua = await scrollToPinnedRegua(page);
+    const box = await regua.boundingBox();
+    expect(Math.round(box!.y)).toBe(0); // sticky no topo
+    const slider = regua.getByRole('slider');
+    const antes = Number(await slider.getAttribute('aria-valuenow'));
+    await regua.getByRole('button', { name: 'Hora seguinte' }).click();
+    await expect(slider).toHaveAttribute('aria-valuenow', String(antes + 1));
 
-    // Tabs visíveis com a sticky activa (o tablist sticky mantém-se no topo,
-    // a barra fica logo abaixo). Lê-se o estado real por nth(i) — o default
-    // activo depende da ordenação runtime dos compatibleSports, não é fixo.
-    const tablist = page.getByRole('tablist');
-    await expect(tablist).toBeVisible();
-    const tabs = tablist.getByRole('tab');
-    const n = await tabs.count();
-    expect(n).toBeGreaterThanOrEqual(2);
+    const grupo = page.getByRole('group', { name: 'Modalidade', exact: true });
+    const botoes = grupo.getByRole('button');
+    const n = await botoes.count();
+    expect(n).toBe(2);
     let activeIdx = -1;
     let targetIdx = -1;
     for (let i = 0; i < n; i++) {
-      const sel = await tabs.nth(i).getAttribute('aria-selected');
-      if (sel === 'true' && activeIdx === -1) activeIdx = i;
-      else if (sel !== 'true') targetIdx = i;
+      const p = await botoes.nth(i).getAttribute('aria-pressed');
+      if (p === 'true' && activeIdx === -1) activeIdx = i;
+      else if (p !== 'true') targetIdx = i;
     }
-    expect(activeIdx).toBeGreaterThanOrEqual(0); // algum tab está activo
+    expect(activeIdx).toBeGreaterThanOrEqual(0);
     expect(targetIdx).toBeGreaterThanOrEqual(0);
-
-    const target = tabs.nth(targetIdx);
-    await expect(target).toBeVisible();
-    // Clicar um tab não-activo com a sticky activa → a selecção muda. O
-    // Playwright só completa o click se o alvo for accionável (não obscurecido)
-    // — falharia se a barra cobrisse a linha de tabs.
+    const target = botoes.nth(targetIdx);
     await target.click();
-    await expect(target).toHaveAttribute('aria-selected', 'true');
-    await expect(tabs.nth(activeIdx)).toHaveAttribute('aria-selected', 'false');
+    await expect(target).toHaveAttribute('aria-pressed', 'true');
+    await expect(botoes.nth(activeIdx)).toHaveAttribute('aria-pressed', 'false');
   });
 
   test('detalhe mostra o rótulo «boia X a Y km · HH:MM» de fonte única (mobile)', async ({
@@ -1121,10 +1134,9 @@ test.describe('Observed wave card (boia X a Y km)', () => {
     // tabela fica sem sufixo de correcção.
     await gotoSpot(page, 'without-observed-wave');
 
-    const sticky = page.getByRole('region', { name: /Modalidade e hora escolhida|Sport and selected hour/i });
-    await expect(sticky).toBeVisible({ timeout: 15_000 });
+    const sticky = await scrollToPinnedRegua(page);
 
-    // Nenhum badge (nem o de correcção nem o de previsão pura) na barra.
+    // Nenhum badge (nem o de correcção nem o de previsão pura) na régua.
     await expect(sticky.getByText(/Corrigido|Só previsão/i)).toHaveCount(0);
     await expect(sticky.getByText(/\(boia\)|\(viés regional\)/i)).toHaveCount(0);
     await expect(
@@ -1221,15 +1233,13 @@ test.describe('Observed wave card (boia X a Y km)', () => {
     await page.setViewportSize({ width: 390, height: 844 });
     await gotoSpot(page, 'without-observed-wave');
 
-    const hero = page.locator('.spot-hero-card');
+    const hero = page.locator('#agora');
     await expect(hero.getByText(/boia .+ a \d+ km/)).toHaveCount(0);
     await expect(hero.locator('[data-wave-clock="true"]')).toHaveCount(0);
     await expect(hero.getByText(/onda medida/)).toHaveCount(0);
     await expect(page.getByLabel(/Fontes de onda observada \(IH vs WMO\)|Observed wave sources \(IH vs WMO\)/i)).toHaveCount(0);
 
-    await scrollToSettledBottom(page);
-    const sticky = page.getByRole('region', { name: /Modalidade e hora escolhida|Sport and selected hour/i });
-    await expect(sticky).toBeVisible({ timeout: 15_000 });
+    const sticky = await scrollToPinnedRegua(page);
     await expect(sticky.getByText(/boia .+ a \d+ km/)).toHaveCount(0);
     await expect(sticky.getByLabel(/Fontes de onda observada \(IH vs WMO\)|Observed wave sources \(IH vs WMO\)/i)).toHaveCount(0);
   });
@@ -1256,14 +1266,12 @@ test.describe('Observed wave card (boia X a Y km)', () => {
     await openWaveDetail(page);
     // Sem card nem compacto — nada é apresentado como onda observada fresca.
     await expect(page.getByLabel(/Onda observada \(boia\)|Observed wave \(buoy\)/i)).toHaveCount(0);
-    const hero = page.locator('.spot-hero-card');
+    const hero = page.locator('#agora');
     await expect(hero.getByText(/boia .+ a \d+ km/)).toHaveCount(0);
     await expect(hero.locator('[data-wave-clock="true"]')).toHaveCount(0);
     await expect(hero.getByText(/onda medida/)).toHaveCount(0);
 
-    await scrollToSettledBottom(page);
-    const sticky = page.getByRole('region', { name: /Modalidade e hora escolhida|Sport and selected hour/i });
-    await expect(sticky).toBeVisible({ timeout: 15_000 });
+    const sticky = await scrollToPinnedRegua(page);
     await expect(sticky.getByText(/boia .+ a \d+ km/)).toHaveCount(0);
     await expect(sticky.getByLabel(/Fontes de onda observada \(IH vs WMO\)|Observed wave sources \(IH vs WMO\)/i)).toHaveCount(0);
   });
@@ -1585,10 +1593,8 @@ test.describe('Observed wave card (boia X a Y km)', () => {
       /Aviso IPMA: Mar perigoso \(Laranja\) · Lisboa/,
     );
 
-    // Sticky bar desktop: mesmo chip compacto quando o hero sai de vista.
-    await scrollToSettledBottom(page);
-    const sticky = page.getByRole('region', { name: /Modalidade e hora escolhida|Sport and selected hour/i });
-    await expect(sticky).toBeVisible({ timeout: 15_000 });
+    // Régua v6 desktop: mesmo chip compacto quando o hero sai de vista.
+    const sticky = await scrollToPinnedRegua(page);
     const compact = sticky.locator('[data-map-warning="compact"]');
     await expect(compact).toBeVisible({ timeout: 10_000 });
     await expect(compact).toContainText('Mar perigoso');
@@ -1632,11 +1638,10 @@ test.describe('Observed wave card (boia X a Y km)', () => {
     const card = page.getByLabel(/Onda observada \(boia\)|Observed wave \(buoy\)/i);
     await expect(card).toBeVisible({ timeout: 15_000 });
 
-    await scrollToSettledBottom(page);
-    const sticky = page.getByRole('region', { name: /Modalidade e hora escolhida|Sport and selected hour/i });
-    await expect(sticky).toBeVisible({ timeout: 15_000 });
+    // Régua v6 fixa em baixo: acompanha a página até ao fim.
+    const sticky = await scrollToPinnedRegua(page);
 
-    // Chip compacto na barra móvel — mesmo rótulo e tooltip do desktop.
+    // Chip compacto na régua móvel — mesmo rótulo e tooltip do desktop.
     const compact = sticky.locator('[data-map-warning="compact"]');
     await expect(compact).toBeVisible({ timeout: 10_000 });
     await expect(compact).toContainText('Mar perigoso');

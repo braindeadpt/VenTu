@@ -1,0 +1,544 @@
+{
+ "_leia": "Campos editoriais dos spots curados (maquete v6, #184). Chave = id de src/lib/spots.ts. Spots sem entrada usam os defaults de src/lib/spotEditorial.ts (derivados de coastOrientation). Gerado a partir de docs/design/maquetes/home e v6-atlantico.",
+ "spots": {
+  "moledo": {
+   "maqueteId": "moledo",
+   "concelho": "Caminha",
+   "zona": "norte",
+   "praiaVirada": 270,
+   "kite": {
+    "bom": [
+     290,
+     20
+    ]
+   },
+   "surf": {
+    "janela": [
+     260,
+     320
+    ],
+    "terral": [
+     45,
+     120
+    ],
+    "tol": 25
+   },
+   "aguaPlana": false,
+   "tipoAgua": "mar-aberto"
+  },
+  "cabedelo": {
+   "maqueteId": "viana",
+   "concelho": "Viana do Castelo",
+   "zona": "norte",
+   "praiaVirada": 265,
+   "kite": {
+    "bom": [
+     290,
+     20
+    ]
+   },
+   "surf": {
+    "janela": [
+     250,
+     315
+    ],
+    "terral": [
+     45,
+     120
+    ],
+    "tol": 25
+   },
+   "aguaPlana": false,
+   "tipoAgua": "mar-aberto"
+  },
+  "esposende": {
+   "maqueteId": "esposende",
+   "concelho": "Esposende",
+   "zona": "norte",
+   "praiaVirada": 275,
+   "kite": {
+    "bom": [
+     290,
+     20
+    ]
+   },
+   "surf": {
+    "janela": [
+     260,
+     320
+    ],
+    "terral": [
+     45,
+     120
+    ],
+    "tol": 25
+   },
+   "aguaPlana": false,
+   "tipoAgua": "mar-aberto"
+  },
+  "matosinhos": {
+   "maqueteId": "matosinhos",
+   "concelho": "Matosinhos",
+   "zona": "norte",
+   "praiaVirada": 255,
+   "kite": {
+    "bom": [
+     280,
+     340
+    ]
+   },
+   "surf": {
+    "janela": [
+     250,
+     300
+    ],
+    "terral": [
+     45,
+     120
+    ],
+    "tol": 25
+   },
+   "aguaPlana": false,
+   "tipoAgua": "mar-aberto"
+  },
+  "espinho": {
+   "maqueteId": "espinho",
+   "concelho": "Espinho",
+   "zona": "norte",
+   "praiaVirada": 275,
+   "kite": {
+    "bom": [
+     290,
+     20
+    ]
+   },
+   "surf": {
+    "janela": [
+     260,
+     320
+    ],
+    "terral": [
+     45,
+     120
+    ],
+    "tol": 25
+   },
+   "aguaPlana": false,
+   "tipoAgua": "mar-aberto"
+  },
+  "nazare": {
+   "maqueteId": "nazare",
+   "concelho": "Nazaré",
+   "zona": "oeste",
+   "praiaVirada": 280,
+   "kite": {
+    "bom": [
+     300,
+     15
+    ]
+   },
+   "surf": {
+    "janela": [
+     265,
+     325
+    ],
+    "terral": [
+     50,
+     120
+    ],
+    "tol": 25
+   },
+   "aguaPlana": false,
+   "tipoAgua": "mar-aberto"
+  },
+  "obidos-lagoon": {
+   "maqueteId": "lagoa-obidos",
+   "concelho": "Óbidos",
+   "zona": "oeste",
+   "praiaVirada": 300,
+   "kite": {
+    "bom": [
+     300,
+     40
+    ]
+   },
+   "surf": {
+    "janela": [
+     280,
+     330
+    ],
+    "terral": [
+     90,
+     180
+    ],
+    "tol": 25
+   },
+   "aguaPlana": true,
+   "tipoAgua": "agua-plana"
+  },
+  "obidos-lagoon-sul": {
+   "maqueteId": "lagoa-obidos",
+   "concelho": "Óbidos",
+   "zona": "oeste",
+   "praiaVirada": 300,
+   "kite": {
+    "bom": [
+     300,
+     40
+    ]
+   },
+   "surf": {
+    "janela": [
+     280,
+     330
+    ],
+    "terral": [
+     90,
+     180
+    ],
+    "tol": 25
+   },
+   "aguaPlana": true,
+   "tipoAgua": "agua-plana",
+   "variante": "obidos-lagoon"
+  },
+  "obidos-lagoon-foz": {
+   "maqueteId": "lagoa-obidos",
+   "concelho": "Óbidos",
+   "zona": "oeste",
+   "praiaVirada": 300,
+   "kite": {
+    "bom": [
+     300,
+     40
+    ]
+   },
+   "surf": {
+    "janela": [
+     280,
+     330
+    ],
+    "terral": [
+     90,
+     180
+    ],
+    "tol": 25
+   },
+   "aguaPlana": true,
+   "tipoAgua": "agua-plana",
+   "variante": "obidos-lagoon"
+  },
+  "baleal": {
+   "maqueteId": "baleal",
+   "concelho": "Peniche",
+   "zona": "oeste",
+   "praiaVirada": 350,
+   "kite": {
+    "bom": [
+     300,
+     40
+    ]
+   },
+   "surf": {
+    "janela": [
+     300,
+     20
+    ],
+    "terral": [
+     120,
+     200
+    ],
+    "tol": 25
+   },
+   "aguaPlana": false,
+   "tipoAgua": "mar-aberto"
+  },
+  "supertubos": {
+   "maqueteId": "supertubos",
+   "concelho": "Peniche",
+   "zona": "oeste",
+   "praiaVirada": 235,
+   "kite": {
+    "bom": [
+     200,
+     270
+    ]
+   },
+   "surf": {
+    "janela": [
+     220,
+     290
+    ],
+    "terral": [
+     20,
+     90
+    ],
+    "tol": 25
+   },
+   "aguaPlana": false,
+   "tipoAgua": "mar-aberto"
+  },
+  "ribeira-ilhas": {
+   "maqueteId": "ribeira-ilhas",
+   "concelho": "Mafra",
+   "zona": "oeste",
+   "praiaVirada": 280,
+   "kite": {
+    "bom": [
+     300,
+     15
+    ]
+   },
+   "surf": {
+    "janela": [
+     270,
+     320
+    ],
+    "terral": [
+     45,
+     120
+    ],
+    "tol": 25
+   },
+   "aguaPlana": false,
+   "tipoAgua": "mar-aberto"
+  },
+  "guincho": {
+   "maqueteId": "guincho",
+   "concelho": "Cascais",
+   "zona": "lisboa",
+   "praiaVirada": 280,
+   "kite": {
+    "bom": [
+     300,
+     15
+    ],
+    "ideal": [
+     330,
+     360
+    ]
+   },
+   "surf": {
+    "janela": [
+     270,
+     320
+    ],
+    "terral": [
+     45,
+     120
+    ],
+    "tol": 25
+   },
+   "aguaPlana": false,
+   "tipoAgua": "mar-aberto",
+   "atencao": {
+    "pt": "correntes de retorno fortes; rochas no extremo norte; com vento de NE as rajadas descem das dunas",
+    "en": "strong rip currents; rocks at the north end; with NE wind the gusts come down off the dunes"
+   },
+   "melhorMare": {
+    "pt": "baixa a média; na preia-mar fica pouca areia",
+    "en": "low to mid; at high tide there is little sand left"
+   }
+  },
+  "carcavelos": {
+   "maqueteId": "carcavelos",
+   "concelho": "Cascais",
+   "zona": "lisboa",
+   "praiaVirada": 195,
+   "kite": {
+    "bom": [
+     180,
+     260
+    ]
+   },
+   "surf": {
+    "janela": [
+     190,
+     250
+    ],
+    "terral": [
+     330,
+     60
+    ],
+    "tol": 25
+   },
+   "aguaPlana": false,
+   "tipoAgua": "mar-aberto"
+  },
+  "costa-caparica": {
+   "maqueteId": "caparica",
+   "concelho": "Almada",
+   "zona": "lisboa",
+   "praiaVirada": 255,
+   "kite": {
+    "bom": [
+     290,
+     10
+    ]
+   },
+   "surf": {
+    "janela": [
+     240,
+     300
+    ],
+    "terral": [
+     45,
+     120
+    ],
+    "tol": 25
+   },
+   "aguaPlana": false,
+   "tipoAgua": "mar-aberto"
+  },
+  "fonte-telha": {
+   "maqueteId": "fonte-telha",
+   "concelho": "Almada",
+   "zona": "lisboa",
+   "praiaVirada": 250,
+   "kite": {
+    "bom": [
+     290,
+     10
+    ]
+   },
+   "surf": {
+    "janela": [
+     235,
+     295
+    ],
+    "terral": [
+     45,
+     120
+    ],
+    "tol": 25
+   },
+   "aguaPlana": false,
+   "tipoAgua": "mar-aberto"
+  },
+  "lagoa-albufeira": {
+   "maqueteId": "lagoa-albufeira",
+   "concelho": "Sesimbra",
+   "zona": "lisboa",
+   "praiaVirada": 260,
+   "kite": {
+    "bom": [
+     280,
+     30
+    ]
+   },
+   "surf": {
+    "janela": [
+     240,
+     300
+    ],
+    "terral": [
+     45,
+     120
+    ],
+    "tol": 25
+   },
+   "aguaPlana": true,
+   "tipoAgua": "agua-plana"
+  },
+  "arrifana": {
+   "maqueteId": "arrifana",
+   "concelho": "Aljezur",
+   "zona": "vicentina",
+   "praiaVirada": 265,
+   "kite": {
+    "bom": [
+     300,
+     15
+    ]
+   },
+   "surf": {
+    "janela": [
+     260,
+     330
+    ],
+    "terral": [
+     45,
+     120
+    ],
+    "tol": 25
+   },
+   "aguaPlana": false,
+   "tipoAgua": "mar-aberto"
+  },
+  "tonel": {
+   "maqueteId": "tonel",
+   "concelho": "Vila do Bispo",
+   "zona": "sagres",
+   "praiaVirada": 235,
+   "kite": {
+    "bom": [
+     200,
+     270
+    ]
+   },
+   "surf": {
+    "janela": [
+     225,
+     300
+    ],
+    "terral": [
+     0,
+     90
+    ],
+    "tol": 25
+   },
+   "aguaPlana": false,
+   "tipoAgua": "mar-aberto"
+  },
+  "martinhal": {
+   "maqueteId": "martinhal",
+   "concelho": "Vila do Bispo",
+   "zona": "sagres",
+   "praiaVirada": 150,
+   "kite": {
+    "bom": [
+     200,
+     270
+    ]
+   },
+   "surf": {
+    "janela": [
+     180,
+     240
+    ],
+    "terral": [
+     300,
+     30
+    ],
+    "tol": 25
+   },
+   "aguaPlana": false,
+   "tipoAgua": "mar-aberto"
+  },
+  "lagos": {
+   "maqueteId": "meia-praia",
+   "concelho": "Lagos",
+   "zona": "algarve",
+   "praiaVirada": 160,
+   "kite": {
+    "bom": [
+     200,
+     280
+    ]
+   },
+   "surf": {
+    "janela": [
+     170,
+     230
+    ],
+    "terral": [
+     320,
+     40
+    ],
+    "tol": 25
+   },
+   "aguaPlana": false,
+   "tipoAgua": "mar-aberto"
+  }
+ }
+}

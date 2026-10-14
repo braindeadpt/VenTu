@@ -1,50 +1,38 @@
 import { test, expect, type Page } from '@playwright/test';
+import { axisRects, heroClipped, openSpotV6 as openSpot, overlaps } from './helpers/spotV6';
 
 /**
- * SP-A — UX v3 §1–3 (docs/design/SPOT-UX-V3.md): geometria e colisões.
+ * SP-A → v6 (#184): geometria e colisões da página de spot «Atlântico».
  *
- *  §1 hero — acções numa única linha (390/768/1440), sem sobreposição de
- *     caixas, um único CTA cheio; etiquetas <640 px são só ícone.
- *  §2 barra — tabs sempre visíveis por baixo do hero (nunca fora da a11y
- *     tree); os extras (chip score+hora, aviso, âncoras) entram quando o
- *     hero sai do ecrã e a barra fica pinned a 64 px; o chip fica fixo à
- *     direita no mobile (gradiente de 24 px por trás) e as âncoras só
- *     existem no desktop.
- *  §3 régua — eixo sem etiquetas sobrepostas (a decisão é em píxeis no
- *     componente; aqui confirma-se nas caixas renderizadas), tooltip do
- *     desktop mostra hora+score ao pairar, e nada cria overflow horizontal.
+ *  §1 acções — numa única linha (390/768/1440), ≥ 44 px, sem sobreposição,
+ *     um único CTA cheio («Como chegar»). Na v6 vivem numa linha própria
+ *     (`spot-acoes`) por baixo do Porquê e da praia em 3D.
+ *  §2 régua — substitui a barra unificada: no telemóvel fica FIXA em baixo
+ *     (sempre no ecrã, também depois do scroll); no desktop (≥ 1024) fica
+ *     sticky no TOPO quando o hero sai; o selector Kite · Surf vive na barra
+ *     de topo sobre a foto (um só `role="group"`, botões ≥ 44 × 76).
+ *  §3 eixo da régua — etiquetas sem sobreposição em píxeis; tooltip do
+ *     desktop mostra hora + nota ao pairar; nada cria overflow horizontal.
  */
 
-const SPOT_URL = '/pt/spots/guincho/';
-const BAR_LABEL = 'Modalidade e hora escolhida';
 const VIEWPORTS = [
   { name: '390', width: 390, height: 844 },
   { name: '768', width: 768, height: 844 },
   { name: '1440', width: 1440, height: 900 },
 ] as const;
 
-async function openSpot(page: Page, url: string = SPOT_URL, name: RegExp = /Guincho/i) {
-  await page.goto(url);
-  await expect(page.getByRole('heading', { level: 1, name })).toBeVisible({
-    timeout: 20_000,
-  });
-  await expect(page.getByRole('slider')).toBeVisible({ timeout: 20_000 });
-  await page.waitForSelector('html.is-hydrated', { timeout: 20_000 });
-}
-
-/** Rects dos botões/links da linha de acções do hero (dentro de #agora). */
+/** Rects dos alvos da linha de acções. */
 async function actionRects(page: Page) {
   return page.evaluate(() => {
-    const hero = document.querySelector('#agora');
-    if (!hero) return [];
-    // A linha de acções é o flex que contém o CTA «Como chegar».
-    const cta = Array.from(hero.querySelectorAll('a, button')).find((el) =>
-      (el.getAttribute('href') ?? '').includes('google.com/maps/dir'),
-    );
-    const row = cta?.closest('div');
-    if (!cta || !row) return [];
-    const els = Array.from(row.querySelectorAll('a, button'));
-    return els
+    const row = document.querySelector('[data-testid="spot-acoes"]');
+    if (!row) return [];
+    // Alvos de topo: links e botões directos (o popover do alerta/menu «Mais»
+    // não está aberto).
+    return Array.from(row.querySelectorAll('a, button'))
+      .filter((el) => {
+        const r = el.getBoundingClientRect();
+        return r.width > 0 && r.height > 0;
+      })
       .map((el) => {
         const r = el.getBoundingClientRect();
         return {
@@ -60,173 +48,77 @@ async function actionRects(page: Page) {
   });
 }
 
-/** Rects das etiquetas visíveis do eixo da régua. */
-async function axisRects(page: Page) {
-  return page.evaluate(() => {
-    const rail = document.querySelector('[role="slider"]');
-    const axis = rail?.parentElement?.querySelector('div[aria-hidden="true"].relative.h-6')
-      ?? rail?.nextElementSibling;
-    if (!axis) return [];
-    return Array.from(axis.querySelectorAll('span'))
-      .map((el) => {
-        const r = el.getBoundingClientRect();
-        return { left: r.left, right: r.right, text: el.textContent ?? '' };
-      })
-      .sort((a, b) => a.left - b.left);
-  });
-}
-
-/**
- * Blocos do hero (h1, p) com texto cortado por overflow. Os `truncate` são
- * corte intencional com reticências — ficam de fora.
- */
-async function heroClipped(page: Page) {
-  return page.evaluate(() => {
-    const out: string[] = [];
-    const hero = document.querySelector('#agora');
-    hero?.querySelectorAll('h1, p').forEach((el) => {
-      if (el.classList.contains('truncate')) return;
-      if (el.scrollWidth > el.clientWidth + 1) {
-        out.push(el.tagName + ':' + (el.textContent ?? '').slice(0, 30));
-      }
-    });
-    return out;
-  });
-}
-
-const overlaps = (
-  rects: { left: number; right: number }[],
-  minGap = 0,
-): [string, string][] => {
-  const bad: [string, string][] = [];
-  for (let i = 1; i < rects.length; i++) {
-    if (rects[i].left < rects[i - 1].right + minGap) {
-      bad.push([String(i - 1), String(i)]);
-    }
-  }
-  return bad;
-};
-
 for (const vp of VIEWPORTS) {
   test.describe(`SP-A @ ${vp.name}px`, () => {
-    test.use({
-      serviceWorkers: 'block',
-      viewport: { width: vp.width, height: vp.height },
-    });
+    test.use({ serviceWorkers: 'block', viewport: { width: vp.width, height: vp.height } });
 
-    test('§1 acções do hero: uma linha, ≥44 px, sem sobreposição', async ({
-      page,
-    }) => {
+    test('§1 acções: uma linha, ≥44 px, sem sobreposição, um só CTA cheio', async ({ page }) => {
       await openSpot(page);
+      await page.getByTestId('spot-acoes').scrollIntoViewIfNeeded();
       const rects = await actionRects(page);
-      expect(rects.length).toBeGreaterThanOrEqual(4); // CTA + ♡ + alerta + cam/more
+      expect(rects.length).toBeGreaterThanOrEqual(4); // CTA + ♡ + alerta + cam/mais
 
-      // Uma só linha — o bug S10 era 3 linhas no mobile.
+      // Uma só linha (o bug S10 eram 3 linhas no mobile).
       const tops = new Set(rects.map((r) => r.top));
-      expect(tops.size).toBe(1);
-
-      // Alvos ≥44 px de altura e sem caixas sobrepostas.
-      for (const r of rects) {
-        expect(r.h).toBeGreaterThanOrEqual(44);
-      }
+      expect(tops.size, JSON.stringify(rects)).toBe(1);
+      for (const r of rects) expect(r.h, r.text).toBeGreaterThanOrEqual(44);
       expect(overlaps(rects)).toEqual([]);
 
-      // Exactamente UM CTA cheio (bg-accent) — «Como chegar».
-      const filled = await page.evaluate(() => {
-        const hero = document.querySelector('#agora');
-        if (!hero) return 0;
-        return Array.from(hero.querySelectorAll('a, button')).filter(
-          (el) => getComputedStyle(el).backgroundColor !== 'rgba(0, 0, 0, 0)'
-            && el.className.includes('bg-accent'),
-        ).length;
-      });
+      // Exactamente UM CTA cheio — «Como chegar» (Google Maps).
+      const filled = await page.evaluate(() =>
+        Array.from(document.querySelectorAll('[data-testid="spot-acoes"] .acao.primaria')).filter(
+          (el) =>
+            getComputedStyle(el).backgroundColor !== 'rgba(0, 0, 0, 0)' &&
+            (el.getAttribute('href') ?? '').includes('google.com/maps/dir'),
+        ).length,
+      );
       expect(filled).toBe(1);
 
-      // Sem overflow horizontal da página.
-      const fits = await page.evaluate(
-        () => document.documentElement.scrollWidth <= window.innerWidth,
-      );
+      const fits = await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth);
       expect(fits).toBe(true);
     });
 
-    test('§2 barra: tabs sempre visíveis, extras pinned a 64 px após scroll', async ({
-      page,
-    }) => {
+    test('§2 régua: fixa em baixo no telemóvel, sticky no topo no desktop', async ({ page }) => {
       await openSpot(page);
-      const bar = page.getByRole('region', { name: BAR_LABEL });
+      // Um só selector de modalidade na página, na barra de topo.
+      await expect(page.getByRole('group', { name: 'Modalidade', exact: true })).toHaveCount(1);
+      await expect(page.getByRole('tablist')).toHaveCount(0);
 
-      // CORRECCOES-24SET §1: a barra (tabs) está SEMPRE visível por baixo
-      // do hero — nunca sai da a11y tree; só os extras (chip/âncoras) se
-      // escondem enquanto o hero está no ecrã.
-      await expect(bar).toBeVisible();
-      const extrasHidden = await page.evaluate(() => {
-        const el = document.querySelector(
-          `[role="region"][aria-label="${'Modalidade e hora escolhida'}"]`,
-        );
-        const extras = el?.querySelector('[data-testid="spot-bar-extras"]');
-        return extras ? getComputedStyle(extras).visibility : null;
-      });
-      expect(extrasHidden).toBe('hidden');
-
-      // Depois do scroll: pinned a 64 px, extras visíveis, sem sobrepor.
-      await page.evaluate(() => window.scrollTo(0, 1600));
-      // Espera a transição de entrada dos extras (200 ms) assentar.
-      await page.waitForTimeout(350);
-
-      const g = await page.evaluate(() => {
-        const el = document.querySelector(
-          `[role="region"][aria-label="${'Modalidade e hora escolhida'}"]`,
-        );
-        const r = el?.getBoundingClientRect();
-        const chip = el?.querySelector('[data-testid="spot-bar-score"]');
-        const cr = chip?.getBoundingClientRect();
-        const nav = el?.querySelector('nav');
-        const nr = nav?.getBoundingClientRect();
-        return {
-          top: r ? Math.round(r.top) : null,
-          chipRight: cr ? Math.round(cr.right) : null,
-          navVisible: nr ? nr.width > 0 : false,
-          vw: window.innerWidth,
-        };
-      });
-      expect(g.top).toBe(64);
-      expect(g.chipRight).not.toBeNull();
-      // O chip fica dentro do viewport à direita (não é empurrado para fora).
-      expect(g.chipRight!).toBeLessThanOrEqual(g.vw);
-      expect(g.chipRight!).toBeGreaterThan(g.vw * 0.5);
-      // Âncoras só no desktop (≥1024) — escondidas em 390 e 768.
-      expect(g.navVisible).toBe(vp.width >= 1024);
-
-      // A última tab tem de conseguir sair debaixo do chip: com o tablist no
-      // fim do scroll, o bordo direito da última tab fica à esquerda do chip
-      // (a zona de 24 px do gradiente pertence ao chip).
-      const cleared = await page.evaluate(() => {
-        const el = document.querySelector(
-          `[role="region"][aria-label="${'Modalidade e hora escolhida'}"]`,
-        );
-        const list = el?.querySelector('[role="tablist"]');
-        if (!list) return null;
-        list.scrollLeft = list.scrollWidth; // fim do scroll
-        const tabs = Array.from(list.querySelectorAll('[role="tab"]'));
-        const last = tabs[tabs.length - 1];
-        const chipGroup = el!.querySelector('[data-testid="spot-bar-score"]')
-          ?.parentElement;
-        if (!last || !chipGroup) return null;
-        const lr = last.getBoundingClientRect();
-        const cr = chipGroup.getBoundingClientRect();
-        return { lastRight: lr.right, chipLeft: cr.left };
-      });
-      expect(cleared).not.toBeNull();
-      expect(cleared!.lastRight).toBeLessThanOrEqual(cleared!.chipLeft + 1);
+      const geo = () =>
+        page.evaluate(() => {
+          const r = document.querySelector('[data-testid="regua-48h"]')!.getBoundingClientRect();
+          const s = document.querySelector('[role="slider"]')!.getBoundingClientRect();
+          const hit = document.elementFromPoint(s.left + s.width / 2, s.top + s.height / 2);
+          return {
+            top: Math.round(r.top),
+            bottom: Math.round(r.bottom),
+            vh: window.innerHeight,
+            pos: getComputedStyle(document.querySelector('[data-testid="regua-48h"]')!).position,
+            hitInSlider: !!hit?.closest('[role="slider"]'),
+          };
+        });
+      const desktop = vp.width >= 1024;
+      const g0 = await geo();
+      if (!desktop) {
+        expect(g0.pos).toBe('fixed');
+        expect(Math.abs(g0.bottom - g0.vh)).toBeLessThanOrEqual(1);
+      } else {
+        expect(g0.pos).toBe('sticky');
+        // Por baixo do hero, no fluxo.
+        expect(g0.top).toBeGreaterThan(0);
+      }
+      // Depois do scroll a régua continua no ecrã e nada a cobre (hit-test).
+      await page.evaluate(() => window.scrollTo(0, 900));
+      await page.waitForTimeout(250);
+      const g1 = await geo();
+      if (!desktop) expect(Math.abs(g1.bottom - g1.vh)).toBeLessThanOrEqual(1);
+      else expect(g1.top).toBe(0);
+      expect(g1.hitInSlider).toBe(true);
     });
 
-    test('§3 eixo da régua: etiquetas sem sobreposição em píxeis', async ({
-      page,
-    }) => {
+    test('§3 eixo da régua: etiquetas sem sobreposição em píxeis', async ({ page }) => {
       await openSpot(page);
-      await page.locator('#quando').scrollIntoViewIfNeeded();
-      await page.waitForTimeout(400); // ResizeObserver + medida de fontes
-
+      await page.waitForTimeout(400); // fontes e layout
       const rects = await axisRects(page);
       expect(rects.length).toBeGreaterThanOrEqual(2); // dias sempre ancoram
       expect(overlaps(rects, 4)).toEqual([]);
@@ -240,9 +132,8 @@ for (const vp of VIEWPORTS) {
 }
 
 /**
- * #194 — região + coordenadas a 390 px: o par era um só bloco nowrap e
- * transbordava a coluna do nome (Guincho ~6 px, Nazaré EN ~29 px). Cobre
- * PT e EN nos dois spots onde o par é mais largo.
+ * #194 — a 390 px o nome e a linha «quando» não podem transbordar (Guincho e
+ * Nazaré, PT e EN).
  */
 const CLIP_SPOTS = [
   { url: '/pt/spots/guincho/', name: /Guincho/i },
@@ -252,73 +143,76 @@ const CLIP_SPOTS = [
 ] as const;
 
 test.describe('SP-A @ 390px — hero sem clipping em PT/EN', () => {
-  test.use({
-    serviceWorkers: 'block',
-    viewport: { width: 390, height: 844 },
-  });
-
+  test.use({ serviceWorkers: 'block', viewport: { width: 390, height: 844 } });
   for (const s of CLIP_SPOTS) {
     test(`sem clipping de texto no hero — ${s.url}`, async ({ page }) => {
-      await openSpot(page, s.url, s.name);
+      await openSpot(page, { url: s.url, name: s.name, alinhar: false });
       expect(await heroClipped(page)).toEqual([]);
+      const fits = await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth);
+      expect(fits).toBe(true);
     });
   }
 });
 
 test.describe('SP-D — prefers-reduced-motion', () => {
-  test.use({
-    serviceWorkers: 'block',
-    reducedMotion: 'reduce',
-    viewport: { width: 1440, height: 900 },
-  });
+  test.use({ serviceWorkers: 'block', reducedMotion: 'reduce', viewport: { width: 1440, height: 900 } });
 
-  test('trocar de modalidade e de hora não deixa animações em curso', async ({
-    page,
-  }) => {
+  test('trocar de modalidade e de hora não deixa animações em curso', async ({ page }) => {
     await openSpot(page);
-
-    // Troca de modalidade — as barras da régua animariam scaleY com stagger.
-    const tabs = page.getByRole('tab');
-    const count = await tabs.count();
-    for (let i = 0; i < count; i++) {
-      if ((await tabs.nth(i).getAttribute('aria-selected')) !== 'true') {
-        await tabs.nth(i).click();
+    // Troca de modalidade (a pista do selector deslizaria).
+    const grupo = page.getByRole('group', { name: 'Modalidade', exact: true });
+    const botoes = grupo.getByRole('button');
+    const n = await botoes.count();
+    for (let i = 0; i < n; i++) {
+      if ((await botoes.nth(i).getAttribute('aria-pressed')) !== 'true') {
+        await botoes.nth(i).click();
         break;
       }
     }
-
-    // Troca de hora — o tique da régua deslizaria 200 ms e o score faria
-    // count-up; em reduced-motion tudo é instantâneo.
+    await expect(page.getByTestId('spot-v6')).toHaveAttribute('data-modalidade', /kite|surf/);
+    // Troca de hora (a agulha deslizaria 150 ms; a foto teria Ken Burns).
     const rail = page.getByRole('slider');
     await rail.focus();
     await rail.press('ArrowRight');
-
-    // Nenhuma animação/transição CSS em curso (a guarda global reduz
-    // durações a 0.01 ms — 150 ms de espera é folga de sobra).
     await page.waitForTimeout(150);
-    const anims = await page.evaluate(() => document.getAnimations().length);
-    expect(anims).toBe(0);
+    // Nenhuma animação/transição com duração real: a guarda global reduz
+    // tudo a 0,01 ms. As de 0,01 ms acabam no frame seguinte — num browser
+    // lento (software GL) ainda podem aparecer «running» por um frame, por
+    // isso espera-se que esvaziem.
+    const reais = await page.evaluate(() =>
+      document.getAnimations().filter((a) => {
+        const t = (a.effect as KeyframeEffect | null)?.getComputedTiming();
+        const dur = Number(t?.duration ?? 0) + Number(t?.delay ?? 0);
+        return a.playState === 'running' && dur > 0.01;
+      }).map((a) => {
+        const x = a as CSSAnimation & CSSTransition;
+        const t = (a.effect as KeyframeEffect | null)?.target as Element | null;
+        return `${x.animationName ?? x.transitionProperty}@${t?.tagName ?? '?'}.${String(t?.className ?? '').slice(0, 40)}`;
+      }),
+    );
+    expect(reais).toEqual([]);
+    await expect
+      .poll(() => page.evaluate(() => document.getAnimations().filter((a) => a.playState === 'running').length), { timeout: 2_000 })
+      .toBe(0);
   });
 });
 
 test.describe('SP-A — tooltip da régua (desktop)', () => {
-  test.use({
-    serviceWorkers: 'block',
-    viewport: { width: 1440, height: 900 },
-  });
+  test.use({ serviceWorkers: 'block', viewport: { width: 1440, height: 900 } });
 
-  test('hover mostra hora e score no tooltip', async ({ page }) => {
+  test('hover mostra hora e nota no tooltip', async ({ page }) => {
     await openSpot(page);
     const rail = page.getByRole('slider');
     const box = await rail.boundingBox();
     expect(box).not.toBeNull();
-
-    // Paira a meio da régua — o tooltip segue o cursor.
+    const antes = await rail.getAttribute('aria-valuenow');
     await page.mouse.move(box!.x + box!.width * 0.6, box!.y + box!.height / 2);
     const tip = page.getByTestId('spot-rail-tooltip');
     await expect(tip).toBeVisible();
-    // «14:00 · 72 …» — hora local + score (e métricas se o fetch resolveu).
-    await expect(tip).toContainText(/\d{2}:\d{2} · (10|\d)\b/);
+    // «qui 15, 18h · 7/10» (ou a banda «Noite»).
+    await expect(tip).toContainText(/\d{1,2}h · ((10|\d)\/10|Noite)/);
+    // Pairar não muda a hora escolhida.
+    expect(await rail.getAttribute('aria-valuenow')).toBe(antes);
   });
 
   test('o tooltip desaparece ao sair da régua', async ({ page }) => {
@@ -327,7 +221,7 @@ test.describe('SP-A — tooltip da régua (desktop)', () => {
     const box = await rail.boundingBox();
     await page.mouse.move(box!.x + box!.width * 0.5, box!.y + box!.height / 2);
     await expect(page.getByTestId('spot-rail-tooltip')).toBeVisible();
-    await page.mouse.move(10, 10);
+    await page.mouse.move(10, 600);
     await expect(page.getByTestId('spot-rail-tooltip')).toBeHidden();
   });
 });

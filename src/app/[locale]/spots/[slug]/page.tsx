@@ -8,6 +8,22 @@ import { loadEvents } from '@/lib/load-events'
 import { loadSpotData } from '@/lib/load-spot-data'
 import SpotDetailClient from '@/components/spots/SpotDetailClient'
 import type { Metadata } from 'next'
+import { fotoDoSpot } from '@/lib/spotFotos'
+import { editorialDe } from '@/lib/spotEditorial'
+import { spotTagEn } from '@/lib/spotTagsEn'
+import type { Spot } from '@/types'
+
+/** Spots a menos de 7 km (rótulos da praia em 3D), sem variantes do próprio spot. */
+function vizinhosDe(spot: Spot, locale: string) {
+  const kx = Math.cos((spot.lat * Math.PI) / 180)
+  return spots
+    .filter((s) => s.id !== spot.id && !s.id.startsWith(`${spot.id}-`) && !spot.id.startsWith(`${s.id}-`))
+    .map((s) => ({ s, km: Math.hypot((s.lon - spot.lon) * kx, s.lat - spot.lat) * 111.32 }))
+    .filter((x) => x.km <= 7)
+    .sort((a, b) => a.km - b.km)
+    .slice(0, 6)
+    .map(({ s }) => ({ nome: localizedSpotName(s, locale), ll: [s.lon, s.lat] as [number, number] }))
+}
 
 type InitialData = NonNullable<ComponentProps<typeof SpotDetailClient>['initialData']>
 
@@ -72,9 +88,30 @@ export default async function SpotDetailPage({ params }: { params: Promise<{ loc
       }
     : null
 
+  // Página v6 (#184): fotos (com substitutas marcadas), vizinhos e textos da praia
+  // resolvidos no servidor — o cliente não carrega a lista de spots para isto.
+  const isPt = locale === 'pt'
+  const ed = editorialDe(spot)
+  const hazards = spot.hazards?.length
+    ? (isPt ? spot.hazards : spot.hazards.map(spotTagEn)).join('; ').toLowerCase()
+    : null
+  const v6 = {
+    nome: localizedSpotName(spot, locale),
+    local: localizedSpotRegion(spot, locale),
+    fotos: { kite: fotoDoSpot(spot, 'kite'), surf: fotoDoSpot(spot, 'surf') },
+    vizinhos: vizinhosDe(spot, locale),
+    atencao: ed.atencao ? (isPt ? ed.atencao.pt : ed.atencao.en) : hazards,
+    melhorMare: ed.melhorMare
+      ? isPt
+        ? ed.melhorMare.pt
+        : ed.melhorMare.en
+      : (isPt ? spot.localTips?.bestTide : spot.localTips?.bestTideEn ?? spot.localTips?.bestTide) ?? null,
+  }
+
   return (
     <>
       <SpotDetailClient
+        v6={v6}
         spot={spot}
         locale={locale}
         events={events}

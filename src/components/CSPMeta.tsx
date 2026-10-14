@@ -8,6 +8,8 @@
 //  - GoatCounter (analytics, optional)
 //  - Supabase (contributions feedback + admin, optional)
 //  - OpenStreetMap / Carto / ESRI tiles (Leaflet basemaps)
+//  - AWS Terrain Tiles (relevo da praia em 3D da página de spot v6, #184; MapLibre
+//    corre num worker blob: → worker-src)
 //  - Curated spot iframes: WeatherLink (Cabedelo), YouTube livecams, Surfline (wake park)
 // NOTE: 'unsafe-eval' is omitted in production (not needed for static export).
 // React dev requires eval() — this meta is skipped when NODE_ENV !== 'production'.
@@ -22,8 +24,9 @@ const CSP_META = {
   scriptSrc: "'self' 'unsafe-inline' https://gc.zgo.at",
   styleSrc: "'self' 'unsafe-inline'",
   fontSrc: "'self' data:",
-  imgSrc: "'self' data: blob: https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com https://server.arcgisonline.com https://*.supabase.co https://ows.emodnet-bathymetry.eu https://tiles.openseamap.org https://gibs.earthdata.nasa.gov https://view.eumetsat.int",
-  connectSrc: "'self' https://gc.zgo.at https://*.goatcounter.com https://*.supabase.co wss://*.supabase.co https://api.open-meteo.com https://marine-api.open-meteo.com https://*.workers.dev",
+  imgSrc: "'self' data: blob: https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com https://server.arcgisonline.com https://*.supabase.co https://ows.emodnet-bathymetry.eu https://tiles.openseamap.org https://gibs.earthdata.nasa.gov https://view.eumetsat.int https://s3.amazonaws.com",
+  connectSrc: "'self' https://gc.zgo.at https://*.goatcounter.com https://*.supabase.co wss://*.supabase.co https://api.open-meteo.com https://marine-api.open-meteo.com https://*.workers.dev https://s3.amazonaws.com",
+  workerSrc: "'self' blob:",
   frameSrc:
     "'self' https://www.openstreetmap.org https://www.youtube-nocookie.com https://www.youtube.com https://www.weatherlink.com https://embed.cdn-surfline.com",
   objectSrc: "'none'",

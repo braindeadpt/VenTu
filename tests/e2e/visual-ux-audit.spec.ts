@@ -7,6 +7,7 @@ import { preseedWindRingLegend } from './helpers/map-setup';
 import { attachPageHealthCollectors, assertHealthyPage } from './helpers/audit-utils';
 import { expandMapHudFilters } from './helpers/map-hud';
 import { waitHydrated } from './helpers/hydration';
+import { alignClockToForecast } from './helpers/conditions';
 import { openMapSpotSheet, showAllMapMarkers } from './helpers/map-sheet';
 
 type Viewport = 'desktop' | 'mobile';
@@ -475,8 +476,11 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
       await gotoHealthy(page, health, '/pt/spots/nazare/');
 
       await expect(page.locator('main')).toContainText(/Nazar/i, { timeout: 20_000 });
-      await page.getByRole('link', { name: /Voltar|Back/i }).first().click();
-      await expect(page).toHaveURL(/\/pt\/spots\/?/);
+      // Página de spot v6 (#184): «‹ Costa» na barra de topo volta à home.
+      const voltar = page.getByRole('link', { name: /Voltar à costa|Back to the coast/i });
+      await expect(voltar).toHaveCount(1);
+      await voltar.click();
+      await expect(page).toHaveURL(/\/pt\/?$/);
       await context.close();
     });
 
@@ -486,6 +490,8 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
       test.setTimeout(90_000);
       const context = await createContext(browser, viewport);
       const { page, health } = await setupPage(context, viewport);
+      // Hora de sol fixa: de noite o veredicto v6 é a lua, sem «/10».
+      await alignClockToForecast(page);
       await gotoHealthy(page, health, '/pt/spots/guincho/');
 
       await expect(page.getByRole('heading', { level: 1, name: /Guincho/i })).toBeVisible({
@@ -506,27 +512,37 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
       }
 
       // Títulos de secção únicos: <h2> em desktop, <summary> do accordion em mobile.
-      for (const title of [/Quando ir/, /Previsão horária|Hora a hora/, /No local/, /Chegar e estar/, /Perto daqui/, /Como sabemos/]) {
+      // v6 (#184): #quando é a régua de 48 h («48 horas»).
+      for (const title of [/^48 horas$/, /Previsão horária|Hora a hora/, /No local/, /Chegar e estar/, /Perto daqui/, /Como sabemos/]) {
         await expect(page.locator('h2, details > summary').filter({ hasText: title }), String(title)).toHaveCount(1);
       }
 
-      // Veredicto: score da hora escolhida e UMA acção primária «Como chegar».
+      // Veredicto: nota /10 da hora escolhida; UMA acção primária «Como
+      // chegar» na linha de acções v6 (por baixo do Porquê e da praia 3D).
       const verdict = page.locator('[id="agora"]');
       await expect(verdict.getByText('/10', { exact: true })).toBeVisible();
       await expect(verdict.getByText('/100')).toHaveCount(0);
-      await expect(verdict.getByRole('link', { name: /Como chegar|Get directions/i })).toHaveCount(1);
+      await expect(page.locator('main').getByText('/100')).toHaveCount(0);
+      const acoes = page.getByTestId('spot-acoes');
+      await expect(acoes.getByRole('link', { name: /Como chegar|Get directions/i })).toHaveCount(1);
+      await expect(acoes.locator('.acao.primaria')).toHaveCount(1);
 
       // Uma só régua de tempo na página.
       await expect(page.getByRole('slider')).toHaveCount(1);
 
-      // Tabs de modalidade (tablist da barra fixa): trocar marca a tab
-      // escolhida. v3: a barra só aparece quando o hero sai do ecrã — scroll.
-      await page.evaluate(() => window.scrollTo(0, 1600));
-      const kiteTab = page.getByRole('tab', { name: /Kitesurf/i }).first();
-      if (await kiteTab.isVisible()) {
-        await kiteTab.click();
-        await expect(kiteTab).toHaveAttribute('aria-selected', 'true');
-      }
+      // Selector Kite · Surf (barra de topo v6, um só grupo): trocar marca o
+      // botão escolhido e a página inteira passa à modalidade.
+      const grupo = page.getByRole('group', { name: 'Modalidade', exact: true });
+      await expect(grupo).toHaveCount(1);
+      const surf = grupo.getByRole('button', { name: 'Surf', exact: true });
+      const kite = grupo.getByRole('button', { name: 'Kite', exact: true });
+      await surf.click();
+      await expect(surf).toHaveAttribute('aria-pressed', 'true');
+      await expect(page.getByTestId('spot-v6')).toHaveAttribute('data-modalidade', 'surf');
+      await kite.click();
+      await expect(kite).toHaveAttribute('aria-pressed', 'true');
+      await expect(surf).toHaveAttribute('aria-pressed', 'false');
+      await expect(page.getByTestId('spot-v6')).toHaveAttribute('data-modalidade', 'kite');
 
       // Guincho: livecam curada (Surftotal) só como link de saída, nunca embed.
       await expect(page.getByRole('link', { name: /Ver ao vivo|Watch live/i })).toBeVisible();

@@ -17,8 +17,10 @@ const INSTRUMENTS = '#instrumentos';
 const LIST = `${SECTION} .forecast-hourly-list`;
 const ROW = `${LIST} [data-tl-col]`;
 const DAY_HEADER = `${LIST} .forecast-day-header`;
-const BAR_SCORE = '[data-testid="spot-bar-score"]';
-const STICKY_TOP = 64 + 48; // --ventu-spot-sticky-top + --ventu-spot-tabs-h
+// Página de spot v6 (#184): sem cabeçalho do site nem barra unificada nesta
+// rota — as cotas partilhadas (--ventu-spot-sticky-top + --ventu-spot-tabs-h)
+// ficam a 0 e os cabeçalhos de dia prendem-se ao topo do ecrã.
+const STICKY_TOP = 0;
 
 /** Índice global da timeline — verdade lida nos instrumentos. */
 async function globalIndex(page: Page): Promise<number> {
@@ -40,6 +42,13 @@ async function gotoGuincho({ page }: { page: Page }) {
   // O índice aterra na hora corrente num effect — /\d+/ passa já no 0
   // inicial. Espera a aterragem: a 1.ª célula data-tl-col é a hora
   // corrente (lista mobile e tabela desktop partilham o mesmo início).
+  // A 1.ª coluna só é a hora viva depois de o eixo montar (como em
+  // spot-v2-forecast): antes a lista fatia pelo relógio do bake.
+  await expect(page.locator(INSTRUMENTS)).toHaveAttribute(
+    'data-spot-timeline-live',
+    'true',
+    { timeout: 20_000 },
+  );
   const firstCol = await page
     .locator(`${SECTION} [data-tl-col]`)
     .first()
@@ -99,20 +108,17 @@ test.describe('SP-B — lista «Hora a hora» mobile (390 px)', () => {
     await expect(page.locator(ROW)).toHaveCount(72);
   });
 
-  test('toque numa linha muda o score da barra e a selecção da régua', async ({
+  test('toque numa linha muda a hora do veredicto e a selecção da régua', async ({
     page,
   }) => {
     const now = await globalIndex(page);
     const slider = page.getByRole('slider');
     const localNow = Number(await slider.getAttribute('aria-valuenow'));
     const offset = now - localNow;
+    const v6 = page.getByTestId('spot-v6');
+    const horaAntes = await v6.getAttribute('data-hora');
 
-    // Escolhe uma linha RENDERIZADA (a lista mostra as primeiras 24 h —
-    // a hora actual pode estar perto do fim da janela). Preferência por
-    // uma linha com score diferente do da barra, para o assert ser forte.
-    const barScore = page.locator(BAR_SCORE);
     await page.locator(LIST).scrollIntoViewIfNeeded();
-    const before = (await barScore.textContent())?.trim();
     // Só linhas dentro da janela da régua — o slider clampa o valor.
     const sMin = Number(await slider.getAttribute('aria-valuemin')) || 0;
     const sMax = Number(await slider.getAttribute('aria-valuemax')) || 47;
@@ -122,32 +128,12 @@ test.describe('SP-B — lista «Hora a hora» mobile (390 px)', () => {
         .evaluateAll((els) =>
           els.map((el) => Number(el.getAttribute('data-tl-col'))),
         )
-    ).filter((c) => c - offset >= sMin && c - offset <= sMax);
-    const chipOf = async (col: number) =>
-      (
-        await page
-          .locator(`${ROW}[data-tl-col="${col}"]`)
-          .locator('span')
-          .nth(1)
-          .textContent()
-      )?.trim() ?? '';
-    let target = -1;
-    let chipText = '';
-    for (const col of cols) {
-      if (col === now) continue;
-      const chip = await chipOf(col);
-      if (chip !== before) {
-        target = col;
-        chipText = chip;
-        break;
-      }
-    }
-    if (target < 0) {
-      // Fallback: qualquer linha ≠ «agora» — o índice muda na mesma.
-      target = cols.find((c) => c !== now) ?? cols[0];
-      chipText = await chipOf(target);
-    }
+    ).filter((c) => c - offset >= sMin && c - offset <= sMax && c !== now);
+    expect(cols.length).toBeGreaterThan(0);
+    // Uma linha a meio da lista, para o salto ser real.
+    const target = cols[Math.min(cols.length - 1, 5)];
     const row = page.locator(`${ROW}[data-tl-col="${target}"]`);
+    const horaLinha = (await row.locator('span').first().textContent())?.trim() ?? '';
     await row.scrollIntoViewIfNeeded();
     await row.click();
 
@@ -161,14 +147,15 @@ test.describe('SP-B — lista «Hora a hora» mobile (390 px)', () => {
       String(target),
     );
     // A régua aponta para a mesma hora (local = global − offset).
-    await expect(slider).toHaveAttribute(
-      'aria-valuenow',
-      String(target - offset),
-    );
+    await expect(slider).toHaveAttribute('aria-valuenow', String(target - offset));
     // A linha ficou seleccionada (destaque imperativo).
     await expect(row).toHaveAttribute('data-tl-selected', '');
-    // A barra fixa mostra o score da hora escolhida — o mesmo do chip.
-    await expect(barScore).toHaveText(chipText ?? '', { timeout: 10_000 });
+    // O veredicto v6 mostra a hora da linha tocada (o mesmo objecto da hora).
+    await expect(v6).not.toHaveAttribute('data-hora', horaAntes ?? '');
+    const hh = horaLinha.match(/\d{1,2}/)?.[0];
+    expect(hh, `hora da linha: «${horaLinha}»`).toBeTruthy();
+    await expect(v6).toHaveAttribute('data-hora', new RegExp(`T${hh!.padStart(2, '0')}:00$`));
+    await expect(page.getByTestId('spot-quando')).toContainText(`${Number(hh)}h`);
   });
 
   test('cabeçalhos de dia ficam sticky durante o scroll (bounding boxes)', async ({

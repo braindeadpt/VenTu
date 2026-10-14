@@ -59,7 +59,8 @@ test.describe('S3/SP-B — «Hora a hora» no eixo de tempo partilhado', () => {
     ).toBeVisible({ timeout: 20_000 });
     // Wait for landing, not just the SSR index=0: a slow hydration may
     // otherwise change the window offset after the test has read it.
-    await expect(page.locator('#agora').getByText('Agora', { exact: true })).toBeVisible();
+    // Régua v6 (#184): o rótulo «Agora · …» só aparece depois de aterrar na hora actual.
+    await expect(page.getByTestId('regua-hora')).toContainText(/^Agora · /, { timeout: 20_000 });
     // Secção hidratada e marcada pelo sync.
     await expect(page.locator(SECTION)).toHaveAttribute(
       'data-spot-timeline-index',

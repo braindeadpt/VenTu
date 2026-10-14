@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { waitHydrated } from './helpers/hydration';
+import { alignClockToForecast } from './helpers/conditions';
 import { installSupabaseMock } from './helpers/supabase-mock';
 
 test.describe('UI interactions audit', () => {
@@ -108,12 +109,16 @@ test.describe('UI interactions audit', () => {
   });
 
   test('spot detail: structured sections and sport tabs', async ({ page }) => {
+    // Hora de sol fixa: de noite a nota v6 (#184) é a lua, sem meter.
+    await alignClockToForecast(page);
     await page.goto('/pt/spots/guincho/');
     await expect(page.getByRole('heading', { level: 1, name: /Guincho/i })).toBeVisible({
       timeout: 20_000,
     });
 
-    await expect(page.getByRole('main').getByRole('meter')).toBeVisible();
+    const meter = page.getByRole('main').locator('#agora').getByRole('meter');
+    await expect(meter).toBeVisible();
+    await expect(meter).toHaveAttribute('aria-valuemax', '10');
     // S2B: a secção «Agora» do dashboard foi substituída pelo landmark
     // «Instrumentos» (h2 sr-only — getByRole apanha headings ocultos).
     await expect(
@@ -136,11 +141,18 @@ test.describe('UI interactions audit', () => {
       await page.getByRole('heading', { name: /Câmara ao vivo|Live camera/i }).count(),
     ).toBeLessThanOrEqual(1);
 
-    // As modalidades são tabs (role=tab + aria-selected) na barra única,
-    // sempre visíveis — CORRECCOES-24SET §1.
-    const kiteTab = page.getByRole('tab', { name: /Kitesurf/i });
-    await expect(kiteTab).toBeVisible();
-    await kiteTab.click();
-    await expect(kiteTab).toHaveAttribute('aria-selected', 'true');
+    // v6 (#184): as modalidades são o selector Kite · Surf da barra de topo
+    // (role=group + aria-pressed), um só na página.
+    await waitHydrated(page);
+    const grupo = page.getByRole('group', { name: 'Modalidade', exact: true });
+    await expect(grupo).toHaveCount(1);
+    const surf = grupo.getByRole('button', { name: 'Surf', exact: true });
+    const kite = grupo.getByRole('button', { name: 'Kite', exact: true });
+    await expect(kite).toBeVisible();
+    await surf.click();
+    await expect(surf).toHaveAttribute('aria-pressed', 'true');
+    await kite.click();
+    await expect(kite).toHaveAttribute('aria-pressed', 'true');
+    await expect(surf).toHaveAttribute('aria-pressed', 'false');
   });
 });
