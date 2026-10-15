@@ -71,17 +71,19 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
       const context = await createContext(browser, viewport);
       const { page, health } = await setupPage(context, viewport);
       await gotoHealthy(page, health, '/pt/');
+      await waitHydrated(page);
 
-      const hero = page.getByRole('region', { name: /Mapa interactivo/i });
-      await hero.getByRole('button', { name: 'Kitesurf', exact: true }).click();
-      await expect(page).toHaveURL(/sport=kitesurf/);
-      await expect(hero.getByRole('button', { name: 'Kitesurf', exact: true })).toHaveAttribute(
+      // #183: o filtro do hero é o selector Kite · Surf da home v6 (`?d=`, partilhado com o spot)
+      const modo = page.getByTestId('home-modo').getByRole('group', { name: 'Modalidade', exact: true });
+      await modo.getByRole('button', { name: 'Surf', exact: true }).click();
+      await expect(page).toHaveURL(/[?&]d=surf/);
+      await expect(modo.getByRole('button', { name: 'Surf', exact: true })).toHaveAttribute(
         'aria-pressed',
         'true',
       );
 
       await page.reload({ waitUntil: 'domcontentloaded' });
-      await expect(hero.getByRole('button', { name: 'Kitesurf', exact: true })).toHaveAttribute(
+      await expect(modo.getByRole('button', { name: 'Surf', exact: true })).toHaveAttribute(
         'aria-pressed',
         'true',
         { timeout: 10_000 },
@@ -121,12 +123,17 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
       await context.close();
     });
 
-    test('02 — Homepage: mapa Leaflet carrega', async ({ browser }) => {
+    test('02 — Homepage: mapa da costa carrega', async ({ browser }) => {
+      // #183: o mapa da home é o MapLibre 3D da v6 (com fallback plano); o Leaflet fica no /mapa (02c)
       const context = await createContext(browser, viewport);
       const { page, health } = await setupPage(context, viewport);
       await gotoHealthy(page, health, '/pt/');
-      await page.waitForSelector('.leaflet-container', { timeout: 20_000 });
-      await expect(page.locator('.leaflet-container')).toBeVisible();
+      const fig = page.getByRole('region', { name: /Mapa interactivo/i }).locator('figure');
+      await fig.scrollIntoViewIfNeeded();
+      await expect(fig).toBeVisible({ timeout: 20_000 });
+      await expect(fig).toHaveAttribute('data-modo', /^(3d|plano)$/, { timeout: 20_000 });
+      await expect(fig).toHaveAttribute('data-pronto', '1', { timeout: 30_000 });
+      await assertHealthyPage(page, health, { strictNetwork: false, strictConsole: false });
       await context.close();
     });
 

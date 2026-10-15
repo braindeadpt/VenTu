@@ -124,6 +124,9 @@ export default function Header({ locale }: HeaderProps) {
   // Página de spot v6 (#184): a barra de topo do spot («‹ Costa» + Kite/Surf)
   // fica sobre a foto e substitui o cabeçalho do site nesta rota.
   const isSpotV6 = new RegExp(`^/${locale}/spots/[^/]+/?$`).test(pathname);
+  // Home v6 (#183): o cabeçalho fica (mesma estrutura e comportamento) e veste os tokens v6
+  // (abismo, Barlow, linha #1E4361) — CSS em v6-home.css, docs/pr-183/cabecalho.md.
+  const isHomeV6 = new RegExp(`^/${locale}/?$`).test(pathname);
 
   const isActive = (href: string) => pathname === href.split('?')[0];
 
@@ -258,6 +261,7 @@ export default function Header({ locale }: HeaderProps) {
         onKeyDown={handleKeyDown}
         data-header-compact={isMapPage ? 'true' : undefined}
         hidden={isSpotV6 || undefined}
+        data-v6={isHomeV6 ? 'home' : undefined}
       >
         <div className="max-w-7xl mx-auto pl-[max(1.25rem,env(safe-area-inset-left))] pr-[max(1.25rem,env(safe-area-inset-right))] sm:px-6 lg:px-8">
           <div
@@ -268,10 +272,10 @@ export default function Header({ locale }: HeaderProps) {
             <div className="flex items-center gap-2.5 shrink-0 relative z-20 min-w-0">
               <Link
                 href={`/${locale}/`}
-                className="flex items-center gap-2 group shrink-0"
+                className="site-logo flex items-center gap-2 group shrink-0"
               >
                 <Wind className="w-7 h-7 sm:w-8 sm:h-8 text-accent group-hover:text-accent-hover transition-colors shrink-0" />
-                <span className="text-lg sm:text-xl font-bold text-fg tracking-tight">
+                <span className="site-logo-txt text-lg sm:text-xl font-bold text-fg tracking-tight">
                   Ven<span className="text-accent">Tu</span>
                 </span>
               </Link>

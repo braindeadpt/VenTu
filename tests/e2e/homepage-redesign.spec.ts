@@ -16,10 +16,11 @@ test.describe('Homepage redesign', () => {
   });
 
   test('map hero headline and explore link', async ({ page }) => {
-    await expect(
-      page.getByRole('heading', { name: /Onde está bom hoje/i }),
-    ).toBeVisible({ timeout: 15_000 });
-    await expect(page.getByRole('link', { name: /Explorar mapa/i })).toBeVisible();
+    // #183: o hero é a v6 — a palavra gigante («VAI.»/«Dá.»/«Não vai.»/«Noite.»), a frase
+    // nacional e o nº 1; o mapa completo continua a um toque («Mapa da costa» → /mapa).
+    await expect(page.getByTestId('home-palavra')).toHaveText(/^(Vai\.|Dá\.|Não vai\.|Noite\.)/, { timeout: 15_000 });
+    await expect(page.getByTestId('home-frase')).not.toBeEmpty();
+    await expect(page.getByRole('link', { name: /Mapa da costa/i })).toBeVisible();
   });
 
   test('top now section with firing title', async ({ page }) => {

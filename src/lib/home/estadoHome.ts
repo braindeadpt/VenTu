@@ -1,0 +1,145 @@
+/**
+ * Estado da home v6 (#183) para uma modalidade, um «agora» e um bloco: tudo o
+ * que a página pinta (palavra gigante, frase nacional, nº 1–3, régua, mapa)
+ * sai daqui, de UMA chamada a `ranking()` por bloco (lista única). Os
+ * componentes não fazem contas: só lêem este objecto.
+ * Lógica da maquete aprovada (`docs/design/maquetes/v6-atlantico/index.html`:
+ * `renderHero`, `renderOutros`, `renderRegua`, `renderLeg`).
+ */
+import { bandaRank, type BandaK, type Modalidade } from '@/lib/modalidades';
+import { ehNoite, type Bloco, type Linha, type Modelo } from './homeV6';
+
+export type Palavra = 'vai' | 'da' | 'naoVai' | 'noite';
+
+export interface CelulaRegua {
+  id: string;
+  n: number | null;
+  b: BandaK;
+  /** id do nº 1 desse bloco (o mesmo da lista). */
+  spot: string;
+  agora: boolean;
+  /** posição da seta «agora» dentro do bloco actual (%), ou null */
+  marca: number | null;
+  rotulo: string;
+  rotuloCurto: string;
+  aria: string;
+}
+
+export interface EstadoHome {
+  d: Modalidade;
+  agoraI: number;
+  blocos: Bloco[];
+  noiteAgora: boolean;
+  /** bloco escolhido (`null` = noite) */
+  bloco: Bloco | null;
+  /** bloco cujos dados se mostram (o escolhido, ou o próximo à noite) */
+  dados: Bloco | null;
+  /** id escolhido na régua («noite» incluído) */
+  bId: string | null;
+  noite: boolean;
+  palavra: Palavra;
+  /** banda da palavra e da página (a do nº 1; noite sem bloco) */
+  banda: BandaK;
+  frase: { txt: string; b: BandaK };
+  quando: { dia: string; forte: string; resto: string };
+  R: Linha[];
+  top: Linha[];
+  linhas: Array<{ l1: string; l2: string; pal: string | null; rk: string }>;
+  heroSpot: string | null;
+  rotulosTop: Linha[];
+  regua: Array<{ dia: 0 | 1; rot: string; celulas: CelulaRegua[] }>;
+  /** hora cujo vento e luz o mapa mostra */
+  horaMapa: number;
+  mapaQ: string;
+}
+
+export function estadoHome(M: Modelo, d: Modalidade, agoraIn: number, bPedido: string | null): EstadoHome {
+  const c = M.copy;
+  const agoraI = Math.max(0, Math.min(M.NH - 1, agoraIn));
+  const REF = M.spots.find((s) => s.id === 'guincho') ?? M.spots[0];
+  const noiteAgora = REF ? ehNoite(REF.h[agoraI].sunEl) : false;
+  const BL = M.blocos(agoraI);
+  const prox = BL.find((b) => !b.passado) ?? null;
+  const pedido = bPedido ? BL.find((b) => b.id === bPedido && !b.passado) : undefined;
+  let bId: string | null;
+  if (bPedido === 'noite' && noiteAgora) bId = 'noite';
+  else bId = (pedido ?? BL.find((b) => b.atual) ?? (noiteAgora ? null : prox))?.id ?? (noiteAgora ? 'noite' : null);
+  const bloco = bId && bId !== 'noite' ? (BL.find((b) => b.id === bId) ?? null) : null;
+  const dados = bloco ?? prox;
+  const nomeBloco = (b: Bloco) => c.nomeBloco(b.dia, b.k);
+
+  const R = dados ? M.ranking(d, dados, agoraI) : [];
+  const top = R.slice(0, 3);
+  const t0 = top[0];
+  const noite = !bloco;
+  const palavra: Palavra = noite || !t0 ? 'noite' : bandaRank(t0.b) >= 3 ? 'vai' : bandaRank(t0.b) === 2 ? 'da' : 'naoVai';
+  const banda: BandaK = noite || !t0 ? 'noite' : t0.b;
+  const fN = dados ? M.nacional(d, dados, agoraI) : { txt: c.noiteNaCosta, b: 'noite' as BandaK };
+  let txt = fN.txt;
+  if (noite && dados) txt = c.comBloco(nomeBloco(dados), fN.corpo || txt);
+
+  const dataDe = (i: number) => {
+    const t = M.t(i);
+    const wd = new Date(Date.UTC(+t.slice(0, 4), +t.slice(5, 7) - 1, +t.slice(8, 10))).getUTCDay();
+    return `${c.dias[wd]} ${+t.slice(8, 10)} ${c.meses[+t.slice(5, 7) - 1]}`;
+  };
+  const quando = !bloco
+    ? { dia: dataDe(agoraI), forte: c.horaH(M.hh(agoraI)), resto: c.noiteRot }
+    : bloco.atual
+      ? { dia: dataDe(agoraI), forte: c.horaH(M.hh(agoraI)), resto: c.agora }
+      : { dia: dataDe(bloco.a), forte: c.blocoNome[bloco.k], resto: c.intervalo(M.hh(bloco.a), M.hh(bloco.z) + 1) };
+
+  const rkQ = bloco && bloco.atual ? c.agora : dados ? nomeBloco(dados) : c.agora;
+  const linhas = dados
+    ? top.map((r, k) => ({ ...M.linha(r, d, dados), rk: c.nRank(k + 1, rkQ) }))
+    : [];
+
+  const regua: EstadoHome['regua'] = [];
+  for (const dia of [0, 1] as const) {
+    const vis = BL.filter((b) => b.dia === dia && !b.passado);
+    const celulas: CelulaRegua[] = vis.map((b) => {
+      const r = M.ranking(d, b, agoraI)[0];
+      return {
+        id: b.id,
+        n: r?.n ?? null,
+        b: r?.b ?? 'noite',
+        spot: r?.sp.id ?? '',
+        agora: b.atual,
+        marca: b.atual ? +(((agoraI - b.a + 0.5) / (b.z - b.a + 1)) * 100).toFixed(1) : null,
+        rotulo: b.atual ? c.agora : c.blocoNome[b.k],
+        rotuloCurto: b.atual ? c.agora : c.blocoCurto[b.k],
+        aria: r ? c.blocoAria(nomeBloco(b), b.atual, r.sp.nome, c.banda[r.b], r.n ?? 0) : nomeBloco(b),
+      };
+    });
+    if (dia === 0 && noiteAgora && !vis.length)
+      celulas.push({ id: 'noite', n: null, b: 'noite', spot: '', agora: true, marca: null, rotulo: c.noiteRot, rotuloCurto: c.noiteRot, aria: c.noiteAria });
+    if (!celulas.length) continue;
+    regua.push({ dia, rot: dia === 0 ? `${c.hoje}${!noiteAgora ? ' · ' + c.horaH(M.hh(agoraI)) : ''}` : c.amanha, celulas });
+  }
+
+  const horaMapa = !bloco ? agoraI : bloco.atual ? agoraI : bloco.luz;
+  const mapaQ = '· ' + (bloco && bloco.atual ? c.agora : dados ? nomeBloco(dados) : c.agora);
+
+  return {
+    d,
+    agoraI,
+    blocos: BL,
+    noiteAgora,
+    bloco,
+    dados,
+    bId,
+    noite,
+    palavra,
+    banda,
+    frase: { txt, b: fN.b },
+    quando,
+    R,
+    top,
+    linhas,
+    heroSpot: t0?.sp.id ?? null,
+    rotulosTop: top,
+    regua,
+    horaMapa,
+    mapaQ,
+  };
+}

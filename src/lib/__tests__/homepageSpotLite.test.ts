@@ -39,4 +39,25 @@ describe('toHomepageSpotLite', () => {
     // Não muta o original (cache de build partilhada entre páginas).
     expect(spot.description).toHaveLength(500);
   });
+
+  it('em pt retira os textos em inglês das notas; nas outras línguas fica tudo', () => {
+    const spot = { id: 'guincho', description: '', descriptionEn: '', hazards: [] } as unknown as Spot;
+    const nota = {
+      score: 74,
+      rating: 'Bom',
+      ratingEn: 'Good',
+      factors: ['2.1m ondas'],
+      factorsEn: ['2.1m waves'],
+      warning: 'Vento fraco',
+      warningEn: 'Light wind',
+      primaryFactor: '2.1m',
+    };
+    const row = { spot, conditions: {}, allScores: { surf: nota } } as unknown as HomepageSpotData;
+    const pt = toHomepageSpotLite(row, 'pt').allScores.surf as unknown as Record<string, unknown>;
+    expect(pt).toEqual({ score: 74, rating: 'Bom', factors: ['2.1m ondas'], warning: 'Vento fraco', primaryFactor: '2.1m' });
+    expect(toHomepageSpotLite(row, 'en').allScores.surf).toEqual(nota);
+    expect(toHomepageSpotLite(row).allScores.surf).toEqual(nota);
+    // não muta o original
+    expect(nota.ratingEn).toBe('Good');
+  });
 });

@@ -219,19 +219,23 @@ test.describe('Carta náutica — preferência persistida e deep link (?isobaths
   });
 });
 
-test.describe('Carta náutica — hero da homepage (TopMap), camada partilhada', () => {
+test.describe('Carta náutica — camada partilhada ligada à entrada (antigo hero da homepage)', () => {
+  // #183: o hero Leaflet da home (HomepageMapHero, carta ligada por omissão) saiu — a home v6
+  // tem o mapa 3D da costa. A mesma camada partilhada do SpotMapInteractive, ligada à entrada,
+  // vive no /mapa (deep link ?nauticalChart=1): o contrato «ligada → desliga → religa e desenha»
+  // fica coberto com as mesmas asserções.
   test.use({ serviceWorkers: 'block' });
 
-  test('o toggle está ligado por omissão no hero e desliga/religa a camada', async ({
+  test('o toggle arranca ligado e desliga/religa a camada', async ({
     page,
   }) => {
-    await page.goto('/pt/');
-    const hero = page.getByRole('region', { name: /Mapa interactivo/i });
-    await expect(hero).toBeVisible({ timeout: 20_000 });
+    await interceptContours(page);
+    await page.goto('/pt/mapa/?nauticalChart=1', { waitUntil: 'networkidle', timeout: 60_000 });
+    await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
+    await openMapLayersMenu(page);
 
-    // A camada partilhada do SpotMapInteractive arranca ligada no hero —
-    // o botão «Carta náutica» tem nome estável (o estado vai em aria-pressed).
-    const toggle = hero.getByRole('button', { name: 'Carta náutica' });
+    // O botão «Carta náutica» tem nome estável (o estado vai em aria-pressed).
+    const toggle = page.locator('[data-map-nautical-chart-toggle]');
     await expect(toggle).toBeVisible({ timeout: 15_000 });
     await expect(toggle).toHaveAttribute('aria-pressed', 'true');
 
@@ -242,7 +246,7 @@ test.describe('Carta náutica — hero da homepage (TopMap), camada partilhada',
     // Voltar a ligar: a camada desenha polylines no pane de overlays.
     await toggle.click();
     await expect(toggle).toHaveAttribute('aria-pressed', 'true', { timeout: 15_000 });
-    await expect(hero.locator('.leaflet-overlay-pane path').first()).toBeVisible({
+    await expect(page.locator('.leaflet-overlay-pane path').first()).toBeVisible({
       timeout: 20_000,
     });
   });

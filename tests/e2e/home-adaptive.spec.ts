@@ -11,10 +11,11 @@ test.describe('Home adaptive layout', () => {
   test('new visitor: featured map hero and top now', async ({ page }) => {
     await page.goto('/pt/');
 
-    await expect(
-      page.getByRole('heading', { name: /Onde está bom hoje/i }),
-    ).toBeVisible({ timeout: 20_000 });
-    await expect(page.getByRole('link', { name: /Explorar mapa/i })).toBeVisible();
+    // #183: o hero em destaque é a v6 (palavra, frase nacional, nº 1, mapa da costa)
+    await expect(page.getByTestId('home-hero')).toBeVisible({ timeout: 20_000 });
+    await expect(page.getByTestId('home-lider')).toBeVisible();
+    await expect(page.getByRole('region', { name: /Mapa interactivo/i })).toBeVisible();
+    await expect(page.getByRole('link', { name: /Mapa da costa/i })).toBeVisible();
     await expect(page.getByRole('heading', { name: /A bombar agora/i })).toBeVisible();
     await expect(page.getByRole('heading', { name: /Os teus spots, agora/i })).toHaveCount(0);
   });

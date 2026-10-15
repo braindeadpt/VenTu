@@ -135,6 +135,14 @@ const DATA_FILE_BUDGETS_MB = {
   'land-mask.json': 0.05,
 };
 
+// Static geometry in out/geo/ that a route fetches on load. costa-home.json
+// (#183): the home v6 coast map (land polygons of the PT coast, ~215 KB raw,
+// ~70 KB gzip; fetched after first paint by CostaMapa3D). ~1.2x today's size:
+// a finer simplification or a wider bbox must revisit the geometry, not this.
+const GEO_FILE_BUDGETS_MB = {
+  'costa-home.json': 0.26,
+};
+
 const budgetBytes = BUDGET_MB * 1024 * 1024;
 const breaches = [];
 let checked = 0;
@@ -178,6 +186,19 @@ if (fs.existsSync(dataDir)) {
     const mb = fs.statSync(full).size / (1024 * 1024);
     if (mb > budgetMb) {
       breaches.push(`data/${name}: ${mb.toFixed(1)} MB > ${budgetMb} MB budget`);
+    }
+  }
+}
+
+const geoDir = path.join(outDir, 'geo');
+if (!dataDirOverride && fs.existsSync(geoDir)) {
+  for (const [name, budgetMb] of Object.entries(GEO_FILE_BUDGETS_MB)) {
+    const full = path.join(geoDir, name);
+    if (!fs.existsSync(full)) continue;
+    dataChecked += 1;
+    const mb = fs.statSync(full).size / (1024 * 1024);
+    if (mb > budgetMb) {
+      breaches.push(`geo/${name}: ${mb.toFixed(2)} MB > ${budgetMb} MB budget`);
     }
   }
 }

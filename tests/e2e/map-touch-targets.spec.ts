@@ -10,13 +10,14 @@
  *  2. Tablet (768×1024, touch) — o mesmo piso para o toggle da legenda.
  *  3. Desktop (/pt/spots/) — rótulo do botão fullscreen vem do i18n
  *     ("Explorar mapa" / "Explore map"), nunca texto hard-coded.
- *  4. Mobile hero da homepage — chips radar/isóbatas ≥44×44.
+ *  4. Mobile — chips radar/carta náutica ≥44×44 (no /mapa: o hero Leaflet da home saiu no
+ *     #183) e os controlos do mapa da home v6 (Kite · Surf, «Abrir mapa») ≥44×44.
  *
  * (Os alvos do HUD «Modo explorar» — rádios, pills, densidade V3′ — vivem em
  * tests/e2e/map-hud.spec.ts.)
  */
 import { test, expect } from '@playwright/test';
-import { preseedWindRingLegend } from './helpers/map-setup';
+import { openMapLayersMenu, preseedWindRingLegend } from './helpers/map-setup';
 import { waitHydrated } from './helpers/hydration';
 
 async function expectMinTargetSize(
@@ -107,21 +108,37 @@ test.describe('Mapa — alvos de toque ≥44px', () => {
     });
   });
 
-  test.describe('mobile homepage — chips do hero', () => {
+  test.describe('mobile — chips radar/carta náutica e controlos do mapa da home', () => {
     test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, serviceWorkers: 'block', reducedMotion: 'reduce' });
 
-    test('botões radar e carta náutica ≥44×44', async ({ page }) => {
-      await preseedWindRingLegend(page);
+    test('botões radar e carta náutica ≥44×44 (camadas partilhadas, /mapa)', async ({ page }) => {
+      // #183: os chips viviam no hero Leaflet da home; as mesmas camadas vivem no /mapa
+      await openMapa(page);
+      await openMapLayersMenu(page);
+      const radar = page.getByRole('button', { name: /Radar/i }).filter({ visible: true }).first();
+      const chart = page.locator('[data-map-nautical-chart-toggle]').filter({ visible: true }).first();
+      // o menu entra com uma animação: mede-se a caixa depois de assentar (duas leituras iguais)
+      for (const loc of [radar, chart]) {
+        let antes = -1;
+        await expect
+          .poll(async () => { const h = (await loc.boundingBox())?.height ?? 0; const ok = h > 0 && h === antes; antes = h; return ok; }, { timeout: 5_000, intervals: [150] })
+          .toBe(true);
+      }
+      await expectMinTargetSize(radar, 'chip radar');
+      await expectMinTargetSize(chart, 'chip carta náutica');
+    });
+
+    test('home v6: Kite · Surf e «Abrir mapa» ≥44×44', async ({ page }) => {
       await page.goto('/pt/', { waitUntil: 'domcontentloaded', timeout: 60_000 });
       await waitHydrated(page);
-
+      const modo = page.getByTestId('home-modo').getByRole('group', { name: 'Modalidade', exact: true });
+      await expectMinTargetSize(modo.getByRole('button', { name: 'Kite', exact: true }), 'Kite');
+      await expectMinTargetSize(modo.getByRole('button', { name: 'Surf', exact: true }), 'Surf');
       const hero = page.getByRole('region', { name: /Mapa interactivo/i });
-      await expect(hero).toBeVisible({ timeout: 20_000 });
-
-      const radar = hero.getByRole('button', { name: /Radar/i }).first();
-      await expectMinTargetSize(radar, 'chip radar do hero');
-      const chart = hero.getByRole('button', { name: /Carta náutica/i }).first();
-      await expectMinTargetSize(chart, 'chip carta náutica do hero');
+      const abrir = hero.getByRole('button', { name: 'Abrir mapa' });
+      await abrir.scrollIntoViewIfNeeded();
+      await expectMinTargetSize(abrir, '«Abrir mapa»');
     });
   });
+
 });

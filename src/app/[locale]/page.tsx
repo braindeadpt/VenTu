@@ -5,7 +5,9 @@ import { toHomepageSpotLite } from '@/lib/homepageSpotLite';
 import { pipelineSchedule } from '@/lib/dataPipelineSchedule';
 import { loadPipelineMeta, resolveDisplayUpdatedTs } from '@/lib/pipelineMeta';
 import HomeAdaptive from '@/components/homepage/HomeAdaptive';
-import MapTilePreconnect from '@/components/MapTilePreconnect';
+import HomeV6 from '@/components/home/v6/HomeV6';
+import { costaCompacta, fotosCosta, metaCosta } from '@/lib/home/dadosHomeServidor';
+import { loadForecastsBySpot } from '@/lib/load-spot-data';
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -36,18 +38,24 @@ export default async function HomePage({
   // to the live clock (React #418 guard — same pattern as the spot page).
   const bakedAtMs = Date.now();
 
+  // #183 home v6: as horas dos 19 spots da costa (o objecto da hora da página de spot, das
+  // mesmas linhas do forecast), em colunas, 3 dias desde as 00h do build; o cliente escolhe
+  // hoje e amanhã com o relógio real.
+  const costa = costaCompacta(loadForecastsBySpot(), bakedAtMs);
+
   // Payload RSC: sem descrições/dicas/perigos (só a página do spot os usa).
-  const homeSpotsData = spotsData.map(toHomepageSpotLite);
+  const homeSpotsData = spotsData.map((r) => toHomepageSpotLite(r, locale));
 
   return (
     <div className="min-h-screen bg-bg-base">
-      <MapTilePreconnect />
       <h1 className="sr-only">
         {t.hero.seoH1
           .replace('{count}', String(spotsData.length))
           .replace('{sports}', String(SPORTS_COUNT))
           .replace('{schedule}', pipelineSchedule(locale))}
       </h1>
+
+      <HomeV6 locale={locale} costa={costa} meta={metaCosta()} fotos={fotosCosta(locale)} agoraMs={bakedAtMs} />
 
       <HomeAdaptive
         locale={locale}

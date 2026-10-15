@@ -23,6 +23,12 @@
  * Verified trip behaviour: with the sweep + canvas guard removed from the
  * build, both tests fail with the original "Cannot read properties of
  * undefined (reading 'save')" page error; with the fix they pass.
+ *
+ * #183: the homepage no longer embeds the Leaflet hero (home v6 has the
+ * MapLibre 3D coast map). The Leaflet A/B variants now run on /pt/mapa/ —
+ * the same SpotMapInteractive with the same canvas vector layers, unmounted
+ * by the same SPA navigations — and the home gets the same two shapes for its
+ * new map (C/D), so both map stacks stay locked.
  */
 import { test, expect } from '@playwright/test';
 import { preseedWindRingLegend } from './helpers/map-setup';
@@ -33,23 +39,36 @@ test.describe('Map unmount race (mobile)', () => {
   test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, serviceWorkers: 'block' });
   test.describe.configure({ timeout: 90_000 });
 
-  /** Load the homepage (hero map mounts) and collect page/console health. */
-  async function gotoHomeHealthy(page: import('@playwright/test').Page) {
+  /** Load /pt/mapa/ (Leaflet map mounts) and collect page/console health. */
+  async function gotoMapaHealthy(page: import('@playwright/test').Page) {
     await preseedWindRingLegend(page);
     const health = attachPageHealthCollectors(page);
-    await page.goto('/pt/', { waitUntil: 'domcontentloaded', timeout: 60_000 });
+    await page.goto('/pt/mapa/', { waitUntil: 'domcontentloaded', timeout: 60_000 });
     // Drawer/search taps later in these tests need the shell hydrated
     // (pre-hydration taps are silently swallowed — CI-only flake).
     await waitHydrated(page);
-    const hero = page.getByRole('region', { name: /Mapa interactivo/i });
-    await expect(hero.locator('.leaflet-container')).toBeVisible({ timeout: 20_000 });
-    await expect(hero.getByLabel(/Mapa dos spots/i)).toBeVisible({ timeout: 20_000 });
-    // Let the hero map finish initialising so the vector layers are mounted
+    const map = page.locator('.leaflet-container').first();
+    await expect(map).toBeVisible({ timeout: 30_000 });
+    await expect(page.getByLabel(/Mapa dos spots/i).first()).toBeVisible({ timeout: 20_000 });
+    // Let the map finish initialising so the vector layers are mounted
     // before the unmount (the CI failures happened mid-interaction, not at
     // first paint).
     await page.waitForTimeout(1500);
     await assertHealthyPage(page, health, { strictNetwork: false, strictConsole: false });
-    return { health, hero };
+    return { health, map };
+  }
+
+  /** Load the homepage (home v6 coast map mounts: 3D or flat) and collect health. */
+  async function gotoHomeHealthy(page: import('@playwright/test').Page) {
+    const health = attachPageHealthCollectors(page);
+    await page.goto('/pt/', { waitUntil: 'domcontentloaded', timeout: 60_000 });
+    await waitHydrated(page);
+    const fig = page.getByRole('region', { name: /Mapa interactivo/i }).locator('figure');
+    await fig.scrollIntoViewIfNeeded();
+    await expect(fig).toHaveAttribute('data-pronto', '1', { timeout: 30_000 });
+    await page.waitForTimeout(1500);
+    await assertHealthyPage(page, health, { strictNetwork: false, strictConsole: false });
+    return { health, map: fig };
   }
 
   /** Switch language PT → EN from the mobile drawer (SPA, unmounts the hero). */
@@ -57,7 +76,8 @@ test.describe('Map unmount race (mobile)', () => {
     const trigger = page.locator('button[aria-controls="mobile-nav"]');
     await trigger.click();
     await page.locator('#mobile-nav select').selectOption('en');
-    await expect(page).toHaveURL(/\/en\/?$/, { timeout: 10_000 });
+    // o /mapa mantém o estado na query (?sport=…&wind=…) ao trocar de língua
+    await expect(page).toHaveURL(/\/en\/(mapa\/)?(\?[^#]*)?$/, { timeout: 10_000 });
   }
 
   /** Search "Guincho" from the header palette and open the spot (SPA). */
@@ -69,29 +89,37 @@ test.describe('Map unmount race (mobile)', () => {
     await expect(page).toHaveURL(/\/pt\/spots\/guincho\/?/, { timeout: 10_000 });
   }
 
-  test('A — unmount the hero map via language switch (SPA) → zero uncaught errors', async ({ page }) => {
-    const { health } = await gotoHomeHealthy(page);
+  for (const [nome, abrir] of [
+    ['/pt/mapa/ (Leaflet)', gotoMapaHealthy],
+    ['home v6 (MapLibre)', gotoHomeHealthy],
+  ] as const) {
+    test(`A — unmount the map via language switch (SPA) → zero uncaught errors · ${nome}`, async ({ page }) => {
+      const { health } = await abrir(page);
 
-    await switchLocaleToEn(page);
+      await switchLocaleToEn(page);
 
-    // Let any straggler post-unmount frame fire before judging.
-    await page.waitForTimeout(500);
-    await assertHealthyPage(page, health, { strictNetwork: false, strictConsole: false });
-  });
+      // Let any straggler post-unmount frame fire before judging.
+      await page.waitForTimeout(500);
+      await assertHealthyPage(page, health, { strictNetwork: false, strictConsole: false });
+    });
 
-  test('B — zoom the hero map, then navigate away immediately → zero uncaught errors', async ({ page }) => {
-    const { health, hero } = await gotoHomeHealthy(page);
+    test(`B — zoom the map, then navigate away immediately → zero uncaught errors · ${nome}`, async ({ page }) => {
+      const { health, map } = await abrir(page);
 
-    // Animated double-click zoom on the hero map, then navigate away in the
-    // same burst so the unmount lands close to the zoom repaint window.
-    const box = await hero.locator('.leaflet-container').boundingBox();
-    if (!box) throw new Error('hero map container has no box');
-    await page.mouse.dblclick(box.x + box.width / 2, box.y + box.height / 2);
-    await page.waitForTimeout(80);
+      // Animated double-click zoom on the map, then navigate away in the
+      // same burst so the unmount lands close to the zoom repaint window.
+      const box = await map.boundingBox();
+      if (!box) throw new Error('map container has no box');
+      // No mapa da home o centro tem rótulos de spots (um clique abre o spot); o duplo clique cai no
+      // mar, a oeste da costa, onde não há rótulos — o zoom é o mesmo nos dois mapas.
+      const fx = nome.startsWith('home') ? 0.12 : 0.5;
+      await page.mouse.dblclick(box.x + box.width * fx, box.y + box.height / 2);
+      await page.waitForTimeout(80);
 
-    await searchAndOpenGuincho(page);
+      await searchAndOpenGuincho(page);
 
-    await page.waitForTimeout(500);
-    await assertHealthyPage(page, health, { strictNetwork: false, strictConsole: false });
-  });
+      await page.waitForTimeout(500);
+      await assertHealthyPage(page, health, { strictNetwork: false, strictConsole: false });
+    });
+  }
 });

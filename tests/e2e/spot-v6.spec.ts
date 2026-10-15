@@ -1,4 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
+import { waitHydrated } from './helpers/hydration';
 
 /**
  * #184 — página de spot v6 «Atlântico» (contrato: docs/design/maquetes/v6-atlantico).
@@ -185,8 +186,10 @@ test.describe('#184 spot v6 — ventu.modalidade {d, v}', () => {
 
   test('home → spot: Surf nos pills da home abre o spot em Surf', async ({ page }) => {
     await page.goto('/pt/');
-    const hero = page.getByRole('region', { name: /Mapa interactivo/i });
-    await hero.getByRole('button', { name: 'Surf', exact: true }).click();
+    // #183: na home v6 o selector Kite · Surf vive no hero (o mesmo ModalidadeToggle do spot)
+    const modo = page.getByTestId('home-modo').getByRole('group', { name: 'Modalidade', exact: true });
+    await waitHydrated(page);
+    await modo.getByRole('button', { name: 'Surf', exact: true }).click();
     await expect.poll(() => page.evaluate(() => localStorage.getItem('ventu.modalidade'))).toBe('{"d":"surf","v":{}}');
     await abre(page);
     await expect(page.getByRole('group', { name: 'Modalidade', exact: true }).getByRole('button', { name: 'Surf' })).toHaveAttribute(
@@ -199,8 +202,8 @@ test.describe('#184 spot v6 — ventu.modalidade {d, v}', () => {
     await abre(page, `${URL_G}?d=surf`);
     await page.getByRole('group', { name: 'Modalidade', exact: true }).getByRole('button', { name: 'Kite' }).click();
     await page.goto('/pt/');
-    const hero = page.getByRole('region', { name: /Mapa interactivo/i });
-    await expect(hero.getByRole('button', { name: 'Kitesurf', exact: true })).toHaveAttribute('aria-pressed', 'true', {
+    const modo = page.getByTestId('home-modo').getByRole('group', { name: 'Modalidade', exact: true });
+    await expect(modo.getByRole('button', { name: 'Kite', exact: true })).toHaveAttribute('aria-pressed', 'true', {
       timeout: 15_000,
     });
   });
