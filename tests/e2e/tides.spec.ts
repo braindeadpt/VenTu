@@ -81,6 +81,8 @@ test.describe('Marés (Porquê v6)', () => {
     for (const t of textos) {
       const mesmo = t.includes(citada![2]) && t.includes(`${citada![3]} m`) && t.startsWith(citada![1] === 'preia' ? 'Preia' : 'Baixa');
       expect(mesmo, `a maré do Porquê (${citada![0]}) repete-se na tabela: ${t}`).toBe(false);
+      // A altura de cada maré já está na coluna «Maré» da tabela hora a hora: aqui só tipo e hora.
+      expect(t, `altura repetida nas marés seguintes: ${t}`).not.toMatch(/\d+,\d\s*m\b/);
     }
   });
 
