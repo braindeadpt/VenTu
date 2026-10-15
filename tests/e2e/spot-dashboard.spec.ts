@@ -23,14 +23,13 @@ test.describe('Spot detail dashboard', () => {
   });
 
   test('logistics block shows parking and stay', async ({ page }) => {
-    // SPOT-UX-V3 §6: «Logística» deixou de ser um heading próprio no desktop —
-    // o conteúdo vive na linha B «Chegar e estar» (#chegar), com os cards
-    // Estacionamento · Comer · Dormir na coluna «stay». O scoping a #chegar
-    // também resolve o problema do container S: streamed fora de <main>.
+    // v6 (#184): «Chegar e estar» (#chegar) é um bloco do contexto do spot,
+    // logo a seguir ao «Estudar o spot», com Estacionamento · Comer · Dormir
+    // como linhas da lista (estilo da lista da praia).
     const chegar = page.locator('#chegar');
     await expect(chegar).toBeVisible();
-    await expect(chegar.getByText('Estacionamento', { exact: true })).toBeVisible();
-    await expect(chegar.getByText('Dormir', { exact: true })).toBeVisible();
+    await expect(chegar.locator('dt').filter({ hasText: /^Estacionamento$/ })).toBeVisible();
+    await expect(chegar.locator('dt').filter({ hasText: /^Dormir$/ })).toBeVisible();
   });
 
   test('EN logistics block translates facilities/hazards tags (never the PT token verbatim)', async ({ page }) => {
@@ -39,26 +38,32 @@ test.describe('Spot detail dashboard', () => {
       timeout: 20_000,
     });
 
-    // Card labels translated (spans, not headings). Scoped to main for the
-    // same streaming-reveal reason as the PT logistics test.
-    const main = page.locator('#main-content');
-    await expect(main.getByText('Facilities', { exact: true })).toBeVisible();
-    await expect(main.getByText('Hazards', { exact: true })).toBeVisible();
+    // Facilities: linha da lista em «Chegar e estar», com os tokens EN unidos
+    // («Parking · Restaurant · Kite school · WC»).
+    const chegar = page.locator('#chegar');
+    await expect(chegar.locator('dt').filter({ hasText: /^Facilities$/ })).toBeVisible();
+    await expect(chegar.getByText(/Parking · Restaurant · Kite school · WC/)).toBeVisible();
 
-    // Facilities body is the joined EN tokens («Parking · Restaurant · Kite school · WC»)
-    await expect(main.getByText(/Parking · Restaurant · Kite school · WC/)).toBeVisible();
-
-    // Hazards render as translated list items (listitem is not a name-from-contents
-    // role, so use a DOM locator — getByRole({ name }) never matches text here)
-    await expect(page.locator('li', { hasText: /^Strong wind$/ })).toBeVisible();
-    await expect(page.locator('li', { hasText: /^Currents$/ })).toBeVisible();
-    await expect(page.locator('li', { hasText: /^Rocks$/ })).toBeVisible();
+    // Hazards: um só sítio na v6, a linha «Watch out» do «Estudar o spot»
+    // (as dicas locais já não a repetem). Abre o <details> para a ler.
+    const estudo = page.locator('#estudo');
+    await estudo.locator('summary').click();
+    await expect(estudo).toHaveAttribute('open', '');
+    const atencao = estudo.locator('dt').filter({ hasText: /^Watch out$/ }).locator('xpath=following-sibling::dd[1]');
+    await expect(atencao).toBeVisible();
+    // Os três perigos do Guincho (vento forte, correntes, rochas), em inglês, na
+    // frase editorial da v6 («…rip currents; rocks…; with NE wind the gusts…»).
+    await expect(atencao).toContainText(/\bwind\b/i);
+    await expect(atencao).toContainText(/currents/i);
+    await expect(atencao).toContainText(/rocks/i);
+    await expect(page.locator('#chegar').getByText(/currents|rocks/i)).toHaveCount(0);
 
     // The PT tokens never leak into the EN UI
-    await expect(page.getByText('Estacionamento', { exact: true })).toHaveCount(0);
-    await expect(page.getByText('Escola kite', { exact: true })).toHaveCount(0);
-    await expect(page.getByText('Correntes', { exact: true })).toHaveCount(0);
-    await expect(page.getByText('Rochas', { exact: true })).toHaveCount(0);
+    const main = page.locator('#main-content');
+    await expect(main.getByText('Estacionamento', { exact: true })).toHaveCount(0);
+    await expect(main.getByText(/Escola kite/)).toHaveCount(0);
+    await expect(main.getByText(/Correntes/i)).toHaveCount(0);
+    await expect(main.getByText(/Rochas/i)).toHaveCount(0);
   });
 
   test('hero meter is visible on photo header', async ({ page }) => {

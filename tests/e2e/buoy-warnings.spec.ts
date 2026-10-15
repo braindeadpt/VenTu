@@ -24,28 +24,22 @@ import { expectTopmostHit } from './helpers/hit-test';
  * covers the spot there is data and nothing to warn about. When the WMO also
  * fails, the copy names it («WMO em baixo» / «só tem leituras antigas»).
  *
- * The conditions.json helper strips the spot's observedWave (the parent gate
- * `!freshObservedWave && !conditions.observedWave`), and ih-buoys.json +
- * wmo-buoys.json are crafted per state.
+ * ih-buoys.json + wmo-buoys.json are crafted per state.
  */
 
 const STALE_ISO = new Date(Date.now() - 5 * 3_600_000).toISOString();
 const FRESH_ISO = new Date().toISOString();
 
 /**
- * S2B: o BuoyLayerNotice/ObservedWaveCard vivem no painel de detalhe da
- * secção Instrumentos (#instrumentos → cartão «Onda»). Abre-o antes das
- * asserções — depois de um reload o painel está fechado outra vez.
+ * Página de spot v6 (#184): o aviso de boias vive na leitura da boia, no fim do
+ * «Estudar o spot» (decisão do Pedro, 2026-10-15). Abre o <details> antes das
+ * asserções (com retry: o clique pode cair antes da hidratação).
  */
-async function openWaveDetail(page: import('@playwright/test').Page) {
-  const detail = page.locator('#instrumentos-detalhe');
-  const button = page.locator("#instrumentos [data-instrument='wave'] button");
+async function abreEstudo(page: import('@playwright/test').Page) {
+  const estudo = page.locator('#estudo');
   await expect(async () => {
-    const attr = (await detail.count()) ? await detail.getAttribute('data-detail') : null;
-    if (attr !== 'wave') {
-      await button.click({ timeout: 3_000 });
-    }
-    await expect(detail).toHaveAttribute('data-detail', 'wave', { timeout: 1_000 });
+    if ((await estudo.getAttribute('open')) === null) await estudo.locator('summary').click({ timeout: 3_000 });
+    await expect(estudo).toHaveAttribute('open', '', { timeout: 1_000 });
   }).toPass({ timeout: 20_000 });
 }
 
@@ -76,7 +70,7 @@ const WMO_OK = {
   day: '20260815',
 };
 
-test.describe('Aviso de boias (BuoyLayerNotice)', () => {
+test.describe('Aviso de boias na página de spot v6 («Estudar o spot»)', () => {
   // O SW serve /data/* do cache e burla o page.route — ver helpers/conditions.ts.
   test.use({ serviceWorkers: 'block' });
 
@@ -88,8 +82,8 @@ test.describe('Aviso de boias (BuoyLayerNotice)', () => {
     await expect(page.getByRole('heading', { level: 1, name: /Guincho/i })).toBeVisible({
       timeout: 20_000,
     });
-    // S2B: o aviso está no painel de detalhe do instrumento «Onda».
-    await openWaveDetail(page);
+    // O aviso vive na leitura da boia, no fim do «Estudar o spot» (v6).
+    await abreEstudo(page);
   }
 
   test('no-key: «Onda observada desactivada» sem IH_API_KEY (+ WMO em baixo)', async ({ page }) => {
@@ -200,8 +194,8 @@ test.describe('Aviso de boias (BuoyLayerNotice)', () => {
     await expect(page.getByRole('heading', { level: 1, name: /Guincho/i })).toBeVisible({
       timeout: 20_000,
     });
-    // S2B: o card de onda observada está no painel de detalhe do instrumento.
-    await openWaveDetail(page);
+    // A leitura da boia vive no fim do «Estudar o spot» (v6).
+    await abreEstudo(page);
 
     // Nenhum dos títulos do aviso IH aparece (nem o «Onda observada desactivada»
     // do no-key, apesar de a key não estar configurada).
@@ -216,6 +210,7 @@ test.describe('Aviso de boias (BuoyLayerNotice)', () => {
     await expect(card.getByText(/boia Cabo Silleiro a 281 km/i).first()).toBeVisible();
   });
 });
+
 
 test.describe('Aviso de boias na homepage (BuoyLayerNotice scope=home)', () => {
   test.use({ serviceWorkers: 'block' });
@@ -441,20 +436,18 @@ test.describe('Aviso de boias — dispensa (localStorage)', () => {
     stations: { 4: { status: 'active', latest: { date: FRESH_ISO } } },
   };
 
-  async function gotoSpot(page: import('@playwright/test').Page) {
-    await interceptConditions(page, { spots: { guincho: withoutObservedWave } });
+  /** Homepage (BuoyLayerNotice scope=home): a mesma dispensa partilhada que o HUD do /mapa. */
+  async function gotoHome(page: import('@playwright/test').Page) {
     await interceptWmoBuoys(page, WMO_DOWN);
-    await page.goto('/pt/spots/guincho/');
-    await expect(page.getByRole('heading', { level: 1, name: /Guincho/i })).toBeVisible({
+    await page.goto('/pt/');
+    await expect(page.getByRole('heading', { name: /A bombar agora/i })).toBeVisible({
       timeout: 20_000,
     });
-    // S2B: o aviso está no painel de detalhe do instrumento «Onda».
-    await openWaveDetail(page);
   }
 
   test('dispensar («já vi») esconde o aviso e persiste no reload', async ({ page }) => {
     await interceptIhBuoys(page, IH_NO_KEY);
-    await gotoSpot(page);
+    await gotoHome(page);
 
     const notice = page.getByText('Onda observada desactivada');
     await expect(notice).toBeVisible({ timeout: 20_000 });
@@ -470,10 +463,9 @@ test.describe('Aviso de boias — dispensa (localStorage)', () => {
 
     // Reload (mesmas fixtures — os routes persistem) → continua escondido.
     await page.reload({ waitUntil: 'networkidle' });
-    await expect(page.getByRole('heading', { level: 1, name: /Guincho/i })).toBeVisible({
+    await expect(page.getByRole('heading', { name: /A bombar agora/i })).toBeVisible({
       timeout: 20_000,
     });
-    await openWaveDetail(page); // S2B: o reload volta a fechar o painel
     await expect(page.getByText('Onda observada desactivada')).toHaveCount(0);
     expect(
       await page.evaluate((k) => localStorage.getItem(k), DISMISS_KEY),
@@ -482,7 +474,7 @@ test.describe('Aviso de boias — dispensa (localStorage)', () => {
 
   test('camada saudável limpa a dispensa — a próxima falha volta a avisar', async ({ page }) => {
     await interceptIhBuoys(page, IH_NO_KEY);
-    await gotoSpot(page);
+    await gotoHome(page);
     await expect(page.getByText('Onda observada desactivada')).toBeVisible({ timeout: 20_000 });
     await page.getByRole('button', { name: 'Dispensar aviso das boias' }).click();
     await expect(page.getByText('Onda observada desactivada')).toHaveCount(0);
@@ -491,15 +483,14 @@ test.describe('Aviso de boias — dispensa (localStorage)', () => {
     // A camada fica saudável (IH fresca): sem aviso E a dispensa é removida.
     await interceptIhBuoys(page, IH_OK);
     await page.reload({ waitUntil: 'networkidle' });
-    await expect(page.getByRole('heading', { level: 1, name: /Guincho/i })).toBeVisible({
+    await expect(page.getByRole('heading', { name: /A bombar agora/i })).toBeVisible({
       timeout: 20_000,
     });
-    await openWaveDetail(page); // S2B: o reload volta a fechar o painel
     await expect(
       page.getByText(/Onda observada desactivada|Boias do IH indisponíveis|Leituras das boias antigas/),
     ).toHaveCount(0);
-    // S2B: a limpeza corre no mount do aviso (dentro do painel) após o
-    // health-check assíncrono — poll até a dispensa ser removida.
+    // A limpeza corre no mount do aviso após o health-check assíncrono —
+    // poll até a dispensa ser removida.
     await expect
       .poll(() => page.evaluate((k) => localStorage.getItem(k), DISMISS_KEY), {
         timeout: 20_000,
@@ -509,10 +500,9 @@ test.describe('Aviso de boias — dispensa (localStorage)', () => {
     // Volta ao no-key: a dispensa já não existe → o aviso reaparece.
     await interceptIhBuoys(page, IH_NO_KEY);
     await page.reload({ waitUntil: 'networkidle' });
-    await expect(page.getByRole('heading', { level: 1, name: /Guincho/i })).toBeVisible({
+    await expect(page.getByRole('heading', { name: /A bombar agora/i })).toBeVisible({
       timeout: 20_000,
     });
-    await openWaveDetail(page);
     await expect(page.getByText('Onda observada desactivada')).toBeVisible({ timeout: 20_000 });
   });
 

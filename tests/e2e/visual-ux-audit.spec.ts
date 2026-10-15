@@ -485,8 +485,12 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
     });
 
     test('16 — Spot detail: secções estruturadas sem duplicados', async ({ browser }) => {
-      // Contrato da página de spot v2 (docs/design/SPOT-PAGE.md): 8 secções com
-      // âncora própria, cada uma UMA vez; uma acção primária; uma régua de tempo.
+      // Página de spot v6 (#184), sem os duplicados: cada secção com âncora
+      // própria UMA vez; uma acção primária; uma régua de tempo. Saíram
+      // «Agora» (#instrumentos, repetia o Porquê), «Hora a hora» (#previsao,
+      // repetia a tabela do «Estudar o spot») e «Como sabemos» (#como-sabemos).
+      // «Perto daqui» (#perto) voltou em v6 (decisão do Pedro, 2026-10-15), e a
+      // boia, maré e lua, sol e ar, fundo e clima vivem no fim do «Estudar o spot».
       test.setTimeout(90_000);
       const context = await createContext(browser, viewport);
       const { page, health } = await setupPage(context, viewport);
@@ -499,23 +503,45 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
       });
       await waitHydrated(page);
 
-      // Em mobile as secções do contexto são accordions (o corpo só monta ao
-      // abrir) — abre-os todos para o DOM equivaler ao desktop.
+      // «Estudar o spot» é um <details> fechado: abre-o para o DOM ficar completo.
       await page.evaluate(() => {
         for (const d of document.querySelectorAll('main details:not([open])')) {
           (d as HTMLDetailsElement).open = true;
         }
       });
 
-      for (const id of ['agora', 'quando', 'instrumentos', 'previsao', 'no-local', 'chegar', 'perto', 'como-sabemos']) {
+      for (const id of ['agora', 'quando', 'porque-t', 'cena-t', 'estudo', 'medesabe-t', 'no-local', 'chegar', 'perto']) {
         await expect(page.locator(`[id="${id}"]`), `secção #${id}`).toHaveCount(1);
       }
+      for (const id of ['instrumentos', 'previsao', 'como-sabemos']) {
+        await expect(page.locator(`[id="${id}"]`), `secção retirada #${id}`).toHaveCount(0);
+      }
 
-      // Títulos de secção únicos: <h2> em desktop, <summary> do accordion em mobile.
-      // v6 (#184): #quando é a régua de 48 h («48 horas»).
-      for (const title of [/^48 horas$/, /Previsão horária|Hora a hora/, /No local/, /Chegar e estar/, /Perto daqui/, /Como sabemos/]) {
+      // Títulos de secção únicos (<h2>, ou o <summary> do «Estudar o spot»).
+      // #quando é a régua de 48 h («48 horas»).
+      for (const title of [/^48 horas$/, /^Porquê/, /^Estudar o spot$/, /^No local$/, /^Chegar e estar$/, /^Perto daqui$/]) {
         await expect(page.locator('h2, details > summary').filter({ hasText: title }), String(title)).toHaveCount(1);
       }
+      for (const title of [/Previsão horária/, /^Hora a hora$/, /Como sabemos/, /^Agora$/]) {
+        await expect(page.locator('h2').filter({ hasText: title }), `título retirado ${title}`).toHaveCount(0);
+      }
+
+      // Regra de ouro: um só vento, uma só onda e uma só maré da hora (o Porquê);
+      // a tabela hora a hora existe uma vez (a do «Estudar o spot»); a única
+      // outra tabela é a das marés seguintes, no «Maré e lua» (sem a do Porquê).
+      for (const f of ['vento', 'onda', 'mare']) {
+        await expect(page.locator(`[data-fator="${f}"]`), `cartão ${f}`).toHaveCount(1);
+      }
+      await expect(page.locator('main table:not([data-ec="mares"])')).toHaveCount(1);
+      await expect(page.locator('#estudo .tabela table')).toHaveCount(1);
+      await expect(page.locator('main table[data-ec="mares"]')).toHaveCount(await page.locator('#estudo [data-ec="mares"]').count());
+      expect(await page.locator('main table[data-ec="mares"]').count()).toBeLessThanOrEqual(1);
+      // Cada bloco do «O que se mede e o que se sabe» existe no máximo uma vez.
+      for (const b of ['boia', 'mare-lua', 'sol-ar', 'fundo', 'clima']) {
+        expect(await page.locator(`[data-ec="${b}"]`).count(), `bloco ${b}`).toBeLessThanOrEqual(1);
+      }
+      await expect(page.locator('[data-ec="boia"]')).toHaveCount(1);
+      await expect(page.locator('[data-ec="mare-lua"]')).toHaveCount(1);
 
       // Veredicto: nota /10 da hora escolhida; UMA acção primária «Como
       // chegar» na linha de acções v6 (por baixo do Porquê e da praia 3D).

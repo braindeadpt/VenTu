@@ -1,55 +1,33 @@
 'use client';
 
-import { useState, useEffect, useMemo, type CSSProperties, type ReactNode } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 
 import type { Spot } from '@/types';
 import { fetchMarineData, getCurrentConditions, getForecastData } from '@/lib/openmeteo';
-import {
-  getAllSportScores,
-  getRelevantSports,
-  getHourlyScores,
-} from '@/lib/sportScore';
+import { getAllSportScores, getRelevantSports } from '@/lib/sportScore';
 import type { SportType } from '@/lib/sportRatings';
 import { SPORT_LABELS } from '@/lib/sportRatings';
 import { getTranslation } from '@/lib/i18n';
-import { getGoogleMapsDirectionsUrl } from '@/lib/mapSpotDetail';
-import { getWindguruUrl } from '@/lib/windguru';
-import { buildTideSchedule, phaseFromConditionsStatus, type TideHourPoint } from '@/lib/tideSchedule';
 import { getConditionsDataId } from '@/lib/spotConditionsSource';
 import SeoHead from '@/components/SeoHead';
-import type { ForecastHour } from '@/components/weather/ForecastTable';
 
-import { findCurrentHourIndex } from '@/lib/openMeteoTime';
 import { getLocalTips } from '@/lib/spotTips';
 import { loadCommunityTips, mergeLocalTips } from '@/lib/communityTips';
 import { rememberDataUpdate } from '@/lib/dataCache';
 import { loadConditionsJson, loadForecastForSpot } from '@/lib/spotDataCache';
-import {
-  rawToScoreInput,
-  applyRegionalBiasFallback,
-  resolveScoreWaveCorrection,
-  resolveScoreWaveSource,
-} from '@/lib/scoreConditions';
+import { rawToScoreInput, applyRegionalBiasFallback } from '@/lib/scoreConditions';
 import { loadWaveBiasRegions } from '@/lib/waveBias';
-import {
-  resolveScoreWindCorrection,
-  resolveScoreWindSource,
-} from '@/lib/scoreConditions';
-import type { ScoreWindCorrection } from '@/lib/scoreConditions';
 import Skeleton from '@/components/ui/Skeleton';
 import ErrorState from '@/components/ui/ErrorState';
-import SpotTimelineProvider from '@/components/spots/timeline/SpotTimelineProvider';
-import { useSpotTimelineIndex } from '@/components/spots/timeline/useSpotTimeline';
-import { getScoreCssVar } from '@/lib/scoreThresholds';
 import SpotV6, { type SpotV6Props } from '@/components/spots/v6/SpotV6';
 import SpotAcoesV6 from '@/components/spots/v6/SpotAcoesV6';
 import SpotSafetyStrip from '@/components/spots/verdict/SpotSafetyStrip';
 import type { LinhaForecast } from '@/lib/horaSpot';
-import SpotInstrumentsSection from '@/components/spots/page/SpotInstrumentsSection';
-import SpotForecastSection from '@/components/spots/page/SpotForecastSection';
-import SpotContextSection from '@/components/spots/page/SpotContextSection';
+import SpotContextoV6 from '@/components/spots/v6/SpotContextoV6';
+import MedeSabeV6 from '@/components/spots/v6/MedeSabeV6';
+import { spotV6Copy } from '@/lib/translations/spotPage/v6';
 import type { ObservedConditions } from '@/lib/observations';
 import type { ObservedWave, ObservedWaveMeta } from '@/lib/observedWave';
 import type { VentuEvent } from '@/types/events';
@@ -141,32 +119,6 @@ interface SpotData {
   }>;
 }
 
-/** Acento da página: --verdict = tier do score da hora escolhida no eixo
- *  partilhado. UMA definição aqui — veredicto, instrumentos, previsão e
- *  contexto herdam a mesma cor. `contents` não cria caixa: o sticky da
- *  barra continua contido pelo mesmo ancestral de sempre. */
-function SpotPageAccent({
-  fallbackScore,
-  children,
-}: {
-  fallbackScore: number;
-  children: ReactNode;
-}) {
-  const { selectedScore } = useSpotTimelineIndex();
-  return (
-    <div
-      className="contents"
-      style={
-        {
-          '--verdict': `rgb(var(${getScoreCssVar(selectedScore ?? fallbackScore)}))`,
-        } as CSSProperties
-      }
-    >
-      {children}
-    </div>
-  );
-}
-
 export default function SpotDetailClient({
   spot,
   locale,
@@ -220,7 +172,6 @@ export default function SpotDetailClient({
   const isPt = locale === 'pt';
   const t = getTranslation(locale);
   const td = t.spotDetail;
-  const tv = t.spotVerify;
 
   const [spotData, setSpotData] = useState<SpotData | null>(
     forceLive ? null : (initialData ?? null),
@@ -244,21 +195,16 @@ export default function SpotDetailClient({
   const [loadError, setLoadError] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
 
-  // Baked pages render the freshness verdicts (buoy + wind observed blocks)
-  // with the BUILD clock. The first client paint must reproduce the bake
-  // exactly, or a reading crossing the 3h/6h gate between bake and
-  // hydration flips the subtree after hydration -> React #418. Until
-  // mount we evaluate freshness against the baked reference; after mount
-  // the live clock takes over (same mounted+useEffect pattern as
-  // AccountClient/PassaporteClient).
+  // As leituras medidas (boia) usam o relógio do BUILD até montar: o primeiro
+  // paint reproduz o bake e uma leitura a cruzar o gate de 3 h/6 h entre o
+  // bake e a hidratação não muda a árvore (React #418). Depois de montar,
+  // relógio real (padrão mounted+bakedAtMs).
   const [mounted, setMounted] = useState(false);
-
   useEffect(() => {
     setMounted(true);
   }, []);
-
   const freshnessNowMs = mounted ? undefined : bakedAtMs;
-  const [isMobile, setIsMobile] = useState(false);
+
   // null até o overlay chegar (fetch pós-montagem) — o wrapper expõe-o em
   // data-community-tips para as specs esperarem pelo último commit tardio.
   const [communityOverlay, setCommunityOverlay] = useState<Record<
@@ -267,35 +213,6 @@ export default function SpotDetailClient({
   > | null>(null);
 
   const { session } = useAuth();
-
-  const tideSchedule = useMemo(() => {
-    if (!spotData?.forecast?.length) return null;
-    return buildTideSchedule(spotData.forecast, {
-      locale: isPt ? 'pt' : 'en',
-      phaseOverride: phaseFromConditionsStatus(spotData.conditions.tideStatus),
-      // Same baked-clock pin as the freshness gates (React #418 guard): the
-      // next high/low tide times and the phase label are relative to `now`.
-      // Until mount we evaluate against the baked reference so the first paint
-      // reproduces the build exactly; after mount the live clock takes over.
-      now: freshnessNowMs != null ? new Date(freshnessNowMs) : undefined,
-    });
-  }, [spotData, isPt, freshnessNowMs]);
-
-  const tideHourly: TideHourPoint[] = useMemo(() => {
-    if (!spotData?.forecast?.length) return [];
-    return spotData.forecast.map((h) => ({
-      time: h.time,
-      tideHeight: h.tideHeight,
-    }));
-  }, [spotData]);
-
-  useEffect(() => {
-    const mq = window.matchMedia('(max-width: 767px)');
-    const update = () => setIsMobile(mq.matches);
-    update();
-    mq.addEventListener('change', update);
-    return () => mq.removeEventListener('change', update);
-  }, []);
 
   // Track anonymous spot views for the signup nudge
   useEffect(() => {
@@ -542,53 +459,16 @@ export default function SpotDetailClient({
     }
   }, [initialData]);
 
-  const hourlyScores = useMemo(() => {
-    if (!spotData || !spotData.forecast.length) return [];
-    const scores = getHourlyScores(spot, selectedSport, spotData.forecast, spotData.conditions);
-    // A hora corrente usa os dados actuais (correcções observadas já
-    // aplicadas no allScores) — a mesma fonte do badge do herói. O modelo
-    // só pontua as horas futuras: previsão manda no futuro, dados actuais
-    // mandam no agora, e badge/tabela/strip/veredicto contam o mesmo número.
-    const nowScore = spotData.allScores[selectedSport]?.score;
-    if (typeof nowScore === 'number') {
-      const nowIdx = findCurrentHourIndex(
-        spotData.forecast.map((f) => f.time),
-        new Date(freshnessNowMs ?? Date.now()),
-      );
-      if (nowIdx >= 0) scores[nowIdx] = nowScore;
+  // UV por hora e curva da maré do forecast cru (o objecto da hora v6 não os traz).
+  const uvPorHora = useMemo(() => {
+    const m: Record<string, number> = {};
+    for (const h of spotData?.forecast ?? []) {
+      if (typeof h.uvIndex === 'number' && Number.isFinite(h.uvIndex)) m[h.time.slice(0, 16)] = h.uvIndex;
     }
-    return scores;
-  }, [spot, selectedSport, spotData, freshnessNowMs]);
-
-  const forecastTableData: ForecastHour[] = useMemo(() => {
-    if (!spotData) return [];
-    return spotData.forecast.map((h, i) => ({
-      time: h.time,
-      waveHeight: h.waveHeight,
-      wavePeriod: h.wavePeriod,
-      windSpeed: h.windSpeed,
-      windDirection: h.windDirection,
-      windGust: h.windGust,
-      waterTemp: h.waterTemp,
-      tideHeight: h.tideHeight,
-      uvIndex: h.uvIndex,
-      score: hourlyScores[i],
-    }));
-  }, [spotData, hourlyScores]);
-
-  const directionsUrl = getGoogleMapsDirectionsUrl(spot.lat, spot.lon);
-  const windguruUrl = getWindguruUrl(
-    spot.slug,
-    isPt ? spot.name : spot.nameEn,
-    spot.lat,
-    spot.lon,
-  );
-
-  // Eixo de tempo partilhado (docs/design/SPOT-PAGE.md): as mesmas horas e
-  // scores canónicos que alimentam a ForecastTable — o veredicto, a régua e
-  // a tabela leem sempre o mesmo índice.
-  const timelineHours = useMemo(
-    () => spotData?.forecast.map((f) => f.time) ?? [],
+    return m;
+  }, [spotData]);
+  const mareCurva = useMemo(
+    () => (spotData?.forecast ?? []).map((h) => ({ time: h.time, tideHeight: h.tideHeight })),
     [spotData],
   );
 
@@ -632,47 +512,8 @@ export default function SpotDetailClient({
     );
   }
 
-  const { conditions, allScores } = spotData;
-  const relevantSports = getRelevantSports(spot, allScores);
-  // A mesma lista de tabs para a linha standalone e para a barra sticky — a
-  // ordem canónica (surf → wakeboard) filtrada pelos desportos relevantes.
-  const tabSports = (
-    ['surf', 'kitesurf', 'windsurf', 'foil', 'bodyboard', 'sup', 'wakeboard'] as SportType[]
-  ).filter((s) => relevantSports.includes(s));
+  const { allScores } = spotData;
 
-  const score = allScores[selectedSport] ?? allScores[relevantSports[0] ?? 'surf'];
-
-  const scoreWindSource = resolveScoreWindSource(
-    {
-    waveHeight: conditions.waveHeight,
-    wavePeriod: conditions.wavePeriod,
-    waveDirection: conditions.waveDirection,
-    windSpeed: conditions.windSpeed,
-    windDirection: conditions.windDirection,
-    windGust: conditions.windGust,
-    waterTemp: conditions.waterTemp,
-    observed: conditions.observed,
-    },
-    freshnessNowMs,
-  );
-  const scoreWindCorrection: ScoreWindCorrection | null =
-    resolveScoreWindCorrection({ ...conditions, windBias: conditions.windBias });
-  const scoreWaveSource = resolveScoreWaveSource(
-    {
-      ...conditions,
-      observedWave: conditions.observedWave,
-      waveBias: conditions.waveBias,
-    },
-    freshnessNowMs,
-  );
-  const scoreWaveCorrection = resolveScoreWaveCorrection(
-    {
-      ...conditions,
-      observedWave: conditions.observedWave,
-      waveBias: conditions.waveBias,
-    },
-    freshnessNowMs,
-  );
   const mergedLocalTipsRaw = mergeLocalTips(
     spot,
     getLocalTips(spot.slug),
@@ -731,137 +572,59 @@ export default function SpotDetailClient({
       />
 
       <div
-        className="min-h-screen bg-bg-base pb-10"
+        className="min-h-screen bg-bg-base"
         data-community-tips={communityOverlay ? 'ready' : 'pending'}
       >
-        {/* Eixo de tempo partilhado — uma hora escolhida comanda o veredicto,
-            a régua e a previsão (docs/design/SPOT-PAGE.md). */}
-        <SpotTimelineProvider
-          hours={timelineHours}
-          scores={hourlyScores}
-          nowScore={score.score}
-          mounted={mounted}
-          nowMs={freshnessNowMs}
-        >
-          <SpotPageAccent fallbackScore={score.score}>
-          {/* §0–3 — Página de spot v6 «Atlântico» (#184): veredicto /10, régua
-              de 48 h, Porquê, praia em 3D e «Estudar o spot», todos do mesmo
-              objecto da hora (src/lib/horaSpot.ts). */}
-          <SpotV6
-            spot={spot}
-            locale={locale}
-            linhas={(spotData?.forecast ?? []) as unknown as LinhaForecast[]}
-            agoraMs={bakedAtMs ?? 0}
-            onModalidade={(m) => {
-              const alvo: SportType = m === 'kite' ? 'kitesurf' : 'surf';
-              if (allScores[alvo]) setSelectedSport(alvo);
-            }}
-            seguranca={<SpotSafetyStrip spotId={spot.id} locale={locale} />}
-            acoes={
-              <SpotAcoesV6
-                spot={spot}
-                locale={locale}
-                sport={selectedSport}
-                directionsLabel={td.getDirections}
-                livecamLabel={getSpotLivecam(spot.slug) ? td.livecam : undefined}
-              />
-            }
-            {...v6}
-          />
-
-          {/* Coluna única — ordem do contrato: Instrumentos → Previsão →
-              Contexto (grelha 1→3 interna). */}
-          <div className="max-w-6xl mx-auto px-4 pt-4 space-y-4">
-            <SpotInstrumentsSection
+        {/* Página de spot v6 «Atlântico» (#184): veredicto /10, régua de 48 h,
+            Porquê, praia em 3D, «Estudar o spot» e o contexto que só o spot tem,
+            todos do mesmo objecto da hora (src/lib/horaSpot.ts). */}
+        <SpotV6
+          spot={spot}
+          locale={locale}
+          linhas={(spotData?.forecast ?? []) as unknown as LinhaForecast[]}
+          agoraMs={bakedAtMs ?? 0}
+          onModalidade={(m) => {
+            const alvo: SportType = m === 'kite' ? 'kitesurf' : 'surf';
+            if (allScores[alvo]) setSelectedSport(alvo);
+          }}
+          seguranca={<SpotSafetyStrip spotId={spot.id} locale={locale} />}
+          estudo={(h) => (
+            <MedeSabeV6
               spot={spot}
               locale={locale}
-              conditions={conditions}
-              tideSchedule={tideSchedule}
-              tideHourly={tideHourly}
-              selectedSport={selectedSport}
-              score={score}
-              copy={{
-                title: td.now,
-                subtitle: td.nowSubtitle,
-                gustLabel: td.gustLabel,
-                gustHint: td.gustHint,
-                uvLabel: td.uvLabel,
-                uvMaxLabel: td.uvMaxLabel,
-                uvHint: td.uvHint,
-                aqiLabel: td.aqiLabel,
-                aqiHint: td.aqiHint,
-                aqiLevels: {
-                  good: td.aqiLevelGood,
-                  fair: td.aqiLevelFair,
-                  moderate: td.aqiLevelModerate,
-                  poor: td.aqiLevelPoor,
-                  veryPoor: td.aqiLevelVeryPoor,
-                  extreme: td.aqiLevelExtreme,
-                },
-                seaStateTitle: td.seaStateTitle,
-                seaStateHint: td.seaStateHint,
-                windContextTitle: td.windContextTitle,
-                windRelationHints: {
-                  offshore: td.windOffshoreHint,
-                  onshore: td.windOnshoreHint,
-                  cross: td.windCrossHint,
-                },
-                radarFootnote: tv.radarFootnote,
-                verificationTitle: td.verificationTitle,
-                scoreFeedbackHint: td.scoreFeedbackHint,
-              }}
-              freshnessNowMs={freshnessNowMs}
-              ariaLabel={t.spotPageInstruments.sectionTitle}
+              copy={spotV6Copy(locale)}
+              t={h.t}
+              ehAgora={h.ehAgora}
+              mares={h.mares}
+              citada={h.citada}
+              mareCurva={mareCurva}
+              uvPorHora={uvPorHora}
+              c={spotData.conditions}
+              agoraMs={freshnessNowMs}
             />
-
-            <SpotForecastSection
-              locale={locale}
-              isPt={isPt}
-              isMobile={isMobile}
-              hours={forecastTableData}
-              coastOrientation={spot.coastOrientation}
-              sport={selectedSport}
-              windguruUrl={windguruUrl}
-              waveSource={scoreWaveSource}
-              waveCorrection={scoreWaveCorrection}
-              nowMs={freshnessNowMs}
-              copy={{
-                title: tv.hourlyForecast,
-                windguruLink: td.windguruLink,
-                forecastHint: td.forecastHint,
-                expandForecast: td.expandForecast,
-                collapseForecast: td.collapseForecast,
-                noForecast: td.noForecast,
-              }}
-            />
-
-            <SpotContextSection
+          )}
+          contexto={(h) => (
+            <SpotContextoV6
               spot={spot}
               locale={locale}
-              isMobile={isMobile}
               events={events}
-              mergedLocalTips={mergedLocalTips}
-              directionsUrl={directionsUrl}
-              selectedSport={selectedSport}
-              score={score}
-              conditions={conditions}
-              freshnessNowMs={freshnessNowMs}
-              copy={{
-                warningsRadar: td.warningsRadar,
-                livecam: td.livecam,
-                beachStation: td.beachStation,
-                logistics: td.logistics,
-                location: td.location,
-                aboutSpot: td.aboutSpot,
-                openGoogleMaps: td.openGoogleMaps,
-                openMapsLabel: td.openMapsLabel,
-                region: t.spots.region,
-                level: t.spots.level,
-              }}
+              dicas={mergedLocalTips}
+              aguaViva={spotData.conditions.waterQuality}
+              t={h.t}
+              sport={h.d === 'kite' ? 'kitesurf' : 'surf'}
             />
-          </div>
-          </SpotPageAccent>
-        </SpotTimelineProvider>
+          )}
+          acoes={
+            <SpotAcoesV6
+              spot={spot}
+              locale={locale}
+              sport={selectedSport}
+              directionsLabel={td.getDirections}
+              livecamLabel={getSpotLivecam(spot.slug) ? td.livecam : undefined}
+            />
+          }
+          {...v6}
+        />
       </div>
     </>
   );

@@ -119,16 +119,13 @@ test.describe('UI interactions audit', () => {
     const meter = page.getByRole('main').locator('#agora').getByRole('meter');
     await expect(meter).toBeVisible();
     await expect(meter).toHaveAttribute('aria-valuemax', '10');
-    // S2B: a secção «Agora» do dashboard foi substituída pelo landmark
-    // «Instrumentos» (h2 sr-only — getByRole apanha headings ocultos).
-    await expect(
-      page.getByRole('heading', { name: /^Instrumentos$|^Instruments$/i }),
-    ).toBeVisible();
-    // Spot v3 (SP-B/SP-C): «Previsão horária» passou a «Hora a hora» e a
-    // «Logística» vive em «Chegar e estar» (com «Localização» como h3).
-    await expect(
-      page.getByRole('heading', { name: /^Hora a hora$|^Hour by hour$/i }),
-    ).toBeVisible();
+    // v6 (#184) sem duplicados: o Porquê (vento, onda e maré da hora) e o
+    // «Estudar o spot» (tabela hora a hora) substituem «Instrumentos» e «Hora a
+    // hora»; a «Logística» vive em «Chegar e estar» (com «Localização»).
+    await expect(page.getByRole('heading', { name: /^Porquê|^Why/i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /^Estudar o spot$|^Study the spot$/i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /^Instrumentos$|^Instruments$/i })).toHaveCount(0);
+    await expect(page.getByRole('heading', { name: /^Hora a hora$|^Hour by hour$/i })).toHaveCount(0);
     const bestWindows = page.getByRole('heading', { name: /Melhores janelas|Best windows/i });
     if ((await bestWindows.count()) > 0) {
       await expect(bestWindows).toHaveCount(1);
@@ -136,7 +133,7 @@ test.describe('UI interactions audit', () => {
     await expect(
       page.getByRole('heading', { name: /^Chegar e estar$|^Getting there$/i }),
     ).toBeVisible();
-    await expect(page.getByRole('heading', { name: /Localização|Location/i })).toBeVisible();
+    await expect(page.locator('#chegar dt').filter({ hasText: /^(Localização|Location)$/ })).toBeVisible();
     expect(
       await page.getByRole('heading', { name: /Câmara ao vivo|Live camera/i }).count(),
     ).toBeLessThanOrEqual(1);

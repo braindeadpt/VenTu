@@ -20,7 +20,7 @@ import { lisbonHourKeyFromDate } from '../../../src/lib/openMeteoTime';
  *   - `interceptIhBuoys` — serves ih-buoys.json (the buoy-layer health file).
  *   - `interceptWarnings` — serves warnings.json (IPMA/MeteoAlarm per-spot map).
  *   - `interceptRadar` — serves radar.json (the IPMA radar frames carousel).
- *   - `freshObservedWave` / `withoutObservedWave` / `withoutObservedWind` —
+ *   - `freshObservedWave` / `withoutObservedWave` —
  *     common per-spot fixtures.
  *
  * NOTE: the site registers a service worker (public/sw.js) that serves
@@ -296,12 +296,6 @@ export async function interceptForecasts(
 /** Strip observedWave from a spot entry — no fresh buoy reading. */
 export function withoutObservedWave(entry: Record<string, unknown>): Record<string, unknown> {
   const { observedWave: _omit, ...rest } = entry;
-  return rest;
-}
-
-/** Strip observed wind so the score uses forecast wind (no station note). */
-export function withoutObservedWind(entry: Record<string, unknown>): Record<string, unknown> {
-  const { observed: _omit, ...rest } = entry;
   return rest;
 }
 

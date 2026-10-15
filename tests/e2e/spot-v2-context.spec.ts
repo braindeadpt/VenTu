@@ -1,290 +1,208 @@
-import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
 import { test, expect, type Page } from '@playwright/test';
-import { alignClockToForecast, interceptMapHours } from './helpers/conditions';
 
 /**
- * S2C — secções 6–7 da página de spot (docs/design/SPOT-PAGE.md):
- * «No local» · «Chegar e estar» · «Perto daqui» · «Como sabemos».
+ * Contexto do spot na página v6 (#184), depois da retirada dos duplicados.
  *
- * «Perto daqui» lê a hora escolhida do eixo partilhado — o spec move-a
- * pelo slider da régua (S3), o mesmo caminho do utilizador.
+ * Do antigo contexto (S2C/SP-C: «No local» · «Chegar e estar» · «Perto
+ * daqui» · «Como sabemos») a v6 mantém só o que não tinha, logo a seguir ao
+ * «Estudar o spot» e no estilo v6: «No local» (avisos e radar, câmara ao
+ * vivo, estação na praia, qualidade da água) e «Chegar e estar» (sobre o
+ * spot, região e nível, localização, dicas locais), «Perto daqui» (vizinhos
+ * com a nota da mesma modalidade e o diretório, de volta por decisão do Pedro
+ * de 2026-10-15) e os eventos. Só «Como sabemos» fica de fora.
  */
 
 const SPOT_SLUG = 'guincho';
 const LIVECAM_SLUG = 'moledo';
 
-test.describe('Spot context (S2C)', () => {
+async function abre(page: Page, slug = SPOT_SLUG, width = 1440, height = 900) {
+  await page.setViewportSize({ width, height });
+  await page.goto(`/pt/spots/${slug}/`);
+  await expect(page.getByRole('heading', { level: 1 }).first()).toBeVisible({ timeout: 20_000 });
+  await expect(page.getByTestId('spot-contexto')).toBeAttached();
+}
+
+type Caixa = { name: string; x: number; y: number; width: number; height: number };
+
+async function caixas(page: Page): Promise<Caixa[]> {
+  const out: Caixa[] = [];
+  for (const id of ['estudo', 'no-local', 'chegar', 'perto']) {
+    const b = await page.locator(`#${id}`).boundingBox();
+    expect(b, `#${id}`).toBeTruthy();
+    out.push({ name: id, ...b! });
+  }
+  return out;
+}
+
+function semSobreposicao(bs: Caixa[]) {
+  for (let i = 0; i < bs.length; i++) {
+    for (let j = i + 1; j < bs.length; j++) {
+      const a = bs[i];
+      const b = bs[j];
+      const sobrepoe =
+        a.x < b.x + b.width - 1 && b.x < a.x + a.width - 1 && a.y < b.y + b.height - 1 && b.y < a.y + a.height - 1;
+      expect(sobrepoe, `${a.name} sobrepõe ${b.name}`).toBe(false);
+    }
+  }
+}
+
+async function semOverflow(page: Page) {
+  const cabe = await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth);
+  expect(cabe).toBe(true);
+}
+
+test.describe('Contexto do spot (v6)', () => {
   test.use({ serviceWorkers: 'block' });
 
-  test('âncoras §6/§7 existem e «No local» está visível sem interacção', async ({
+  test('âncoras #no-local, #chegar e #perto existem uma vez, as retiradas não; «No local» visível sem interacção', async ({
     page,
   }) => {
-    await page.goto(`/pt/spots/${SPOT_SLUG}/`);
-    await expect(
-      page.getByRole('heading', { level: 1, name: /Guincho/i }),
-    ).toBeVisible({ timeout: 20_000 });
-
-    for (const id of ['no-local', 'chegar', 'perto', 'como-sabemos']) {
-      await expect(page.locator(`#${id}`)).toBeAttached();
+    await abre(page);
+    for (const id of ['no-local', 'chegar', 'perto']) {
+      await expect(page.locator(`[id="${id}"]`)).toHaveCount(1);
     }
-
-    const onSite = page.getByRole('group', { name: 'No local' });
-    await expect(onSite).toBeVisible();
+    for (const id of ['como-sabemos', 'instrumentos', 'previsao']) {
+      await expect(page.locator(`[id="${id}"]`)).toHaveCount(0);
+    }
+    const noLocal = page.getByRole('group', { name: 'No local' });
+    await expect(noLocal).toBeVisible();
     // Conteúdo sem interacção: o bloco de avisos resolve sozinho.
-    await expect(
-      onSite.getByText(/Sem avisos activos|Avisos/i).first(),
-    ).toBeVisible({ timeout: 15_000 });
+    await expect(noLocal.getByText(/Sem avisos activos|Avisos/i).first()).toBeVisible({ timeout: 15_000 });
   });
 
-  test('desktop 1440px: linha A «No local» + «Perto daqui», «Chegar» em largura total', async ({
+  test('logo a seguir ao «Estudar o spot» e antes das acções, no estilo v6', async ({ page }) => {
+    await abre(page);
+    const ordem = await page.evaluate(() => {
+      const v6 = document.querySelector('[data-testid="spot-v6"]')!;
+      const filhos = Array.from(v6.children);
+      const pos = (sel: string) => filhos.findIndex((el) => el.matches(sel));
+      return { estudo: pos('#estudo'), ctx: pos('[data-testid="spot-contexto"]'), acoes: pos('[data-testid="spot-acoes"]') };
+    });
+    expect(ordem.estudo).toBeGreaterThanOrEqual(0);
+    expect(ordem.ctx).toBe(ordem.estudo + 1);
+    expect(ordem.acoes).toBe(ordem.ctx + 1);
+    // Tipografia e cores da v6: títulos em Barlow Condensed, cartões no --fundo da v6.
+    const t = page.locator('#no-local-t');
+    expect(await t.evaluate((el) => getComputedStyle(el).fontFamily)).toMatch(/Barlow Condensed/);
+    expect(await page.locator('#no-local').evaluate((el) => getComputedStyle(el).backgroundColor)).toBe('rgb(7, 27, 44)');
+    // Nenhum cartão do estilo antigo (card-1 / card-2 / accordion CollapsibleSection) no contexto.
+    await expect(page.locator('[data-testid="spot-contexto"] details')).toHaveCount(0);
+    await expect(page.locator('[data-testid="spot-contexto"] :is(.card-1, .card-2)')).toHaveCount(0);
+  });
+
+  test('1440: «No local» e «Chegar e estar» lado a lado, por baixo do «Estudar o spot», «Perto daqui» a toda a largura, sem sobreposição', async ({
     page,
   }) => {
-    // Layout §6 v3 (SP-C): linha A = «No local» 8/12 | «Perto daqui» 4/12;
-    // linha B = «Chegar e estar» a toda a largura; linha C = «Como sabemos».
-    await page.setViewportSize({ width: 1440, height: 900 });
-    await page.goto(`/pt/spots/${SPOT_SLUG}/`);
-    await expect(
-      page.getByRole('heading', { level: 1, name: /Guincho/i }),
-    ).toBeVisible({ timeout: 20_000 });
-
-    const a = await page.locator('#no-local').boundingBox();
-    const b = await page.locator('#chegar').boundingBox();
-    const c = await page.locator('#perto').boundingBox();
-    const d = await page.locator('#como-sabemos').boundingBox();
-    expect(a && b && c && d).toBeTruthy();
-    // «Perto daqui» à direita de «No local», na mesma linha.
-    expect(c!.x).toBeGreaterThan(a!.x);
-    expect(Math.abs(c!.y - a!.y)).toBeLessThanOrEqual(2);
-    expect(a!.width).toBeGreaterThan(c!.width);
-    // «Chegar e estar» por baixo, mais largo que «No local» (12/12).
-    expect(b!.y).toBeGreaterThan(a!.y + a!.height - 1);
-    expect(b!.width).toBeGreaterThan(a!.width);
-    // «Como sabemos» por baixo de «Chegar», mesma largura.
-    expect(d!.y).toBeGreaterThan(b!.y + b!.height - 1);
-    expect(Math.abs(d!.width - b!.width)).toBeLessThanOrEqual(2);
-    // Sem overflow horizontal da página.
-    const fits = await page.evaluate(
-      () => document.documentElement.scrollWidth <= window.innerWidth,
-    );
-    expect(fits).toBe(true);
+    await abre(page);
+    const [estudo, a, b, perto] = await caixas(page);
+    expect(a.y).toBeGreaterThan(estudo.y + estudo.height - 1);
+    expect(b.x).toBeGreaterThan(a.x);
+    expect(Math.abs(b.y - a.y)).toBeLessThanOrEqual(2);
+    expect(perto.y).toBeGreaterThan(Math.max(a.y + a.height, b.y + b.height) - 1);
+    expect(perto.width).toBeGreaterThan(b.x + b.width - a.x - 2);
+    semSobreposicao([estudo, a, b, perto]);
+    await semOverflow(page);
   });
 
-  test('mobile 390px: «No local» aberto, restantes em accordion por teclado', async ({
+  test('390: blocos empilhados, sem sobreposição nem overflow', async ({ page }) => {
+    await abre(page, SPOT_SLUG, 390, 844);
+    const bs = await caixas(page);
+    for (let i = 1; i < bs.length; i++) {
+      expect(bs[i].y, `${bs[i].name} devia estar por baixo de ${bs[i - 1].name}`).toBeGreaterThan(bs[i - 1].y);
+    }
+    semSobreposicao(bs);
+    await semOverflow(page);
+    // Sem accordion: «Chegar e estar» lê-se sem abrir nada.
+    await expect(page.locator('#chegar dt').filter({ hasText: /^Estacionamento$/ })).toBeVisible();
+  });
+
+  test('«Chegar e estar» não repete a v6: sem mapa, sem «Como chegar», sem melhor maré nem perigos', async ({
     page,
   }) => {
-    await page.setViewportSize({ width: 390, height: 844 });
-    await page.goto(`/pt/spots/${SPOT_SLUG}/`);
-    await expect(
-      page.getByRole('heading', { level: 1, name: /Guincho/i }),
-    ).toBeVisible({ timeout: 20_000 });
-
-    const noLocal = page.locator('#no-local details');
-    const chegar = page.locator('#chegar details');
-    const perto = page.locator('#perto details');
-    const comoSabemos = page.locator('#como-sabemos details');
-
-    await expect(noLocal).toHaveAttribute('open', '');
-    await expect(chegar).not.toHaveAttribute('open', '');
-    await expect(perto).not.toHaveAttribute('open', '');
-    await expect(comoSabemos).not.toHaveAttribute('open', '');
-
-    // Teclado: Tab até ao <summary> de «Chegar e estar» e Enter abre-o.
-    await chegar.locator('summary').focus();
-    await page.keyboard.press('Enter');
-    await expect(chegar).toHaveAttribute('open', '');
-
-    // Conteúdo monta ao abrir (lazy): logística + cards de dicas/perigos.
-    await expect(
-      chegar.getByRole('heading', { name: 'Logística' }),
-    ).toBeVisible();
-    await expect(chegar.getByText('Perigos', { exact: true })).toBeVisible();
-    await expect(chegar.getByText('Estacionamento', { exact: true })).toBeVisible();
-
-    await perto.locator('summary').focus();
-    await page.keyboard.press('Enter');
-    await expect(perto).toHaveAttribute('open', '');
-    await expect(perto.getByTestId('nearby-spots')).toBeVisible();
-
-    // Sem overflow horizontal.
-    const fits = await page.evaluate(
-      () => document.documentElement.scrollWidth <= window.innerWidth,
-    );
-    expect(fits).toBe(true);
+    await abre(page);
+    const chegar = page.locator('#chegar');
+    await expect(chegar.getByText('Sobre o spot', { exact: true })).toBeVisible();
+    for (const dt of [/^Região$/, /^Nível$/, /^Localização$/, /^Dormir$/]) {
+      await expect(chegar.locator('dt').filter({ hasText: dt }), String(dt)).toHaveCount(1);
+    }
+    // «Como chegar» vive só nas acções; a praia 3D é o mapa; a melhor maré e os
+    // perigos vivem no «Estudar o spot».
+    await expect(page.getByRole('link', { name: /Como chegar/i })).toHaveCount(1);
+    await expect(chegar.locator('.leaflet-container, canvas')).toHaveCount(0);
+    for (const dt of [/^Melhor maré$/, /^Perigos$/, /^Maré ideal$/]) {
+      await expect(chegar.locator('dt').filter({ hasText: dt }), String(dt)).toHaveCount(0);
+    }
   });
 
-  test('livecam é link externo com rel/target correctos', async ({ page }) => {
-    await page.goto(`/pt/spots/${LIVECAM_SLUG}/`);
-    await expect(
-      page.getByRole('heading', { level: 1 }).first(),
-    ).toBeVisible({ timeout: 20_000 });
-
+  test('livecam é link externo com rel/target correctos e é o destino da acção «Câmara ao vivo»', async ({ page }) => {
+    await abre(page, LIVECAM_SLUG);
     const link = page.locator('#spot-livecam a[href^="http"]').first();
     await expect(link).toBeVisible();
     await expect(link).toHaveAttribute('target', '_blank');
     const rel = await link.getAttribute('rel');
     expect(rel).toContain('noopener');
     expect(rel).toContain('noreferrer');
-
-    // S2C-fix: em «No local» o cartão da livecam usa layout="stacked"
-    // (botão em largura total, como no mobile) mesmo em desktop.
-    await page.setViewportSize({ width: 1440, height: 900 });
-    const stacked = page.locator('#spot-livecam [data-layout="stacked"]');
-    await expect(stacked).toBeVisible();
-    const btn = stacked.locator('a[href^="http"]').first();
-    const row = btn.locator('..');
-    expect(await row.evaluate((el) => getComputedStyle(el).flexDirection)).toBe(
-      'column',
-    );
-    const [btnBox, rowBox] = await Promise.all([
-      btn.boundingBox(),
-      row.boundingBox(),
-    ]);
-    expect(btnBox && rowBox).toBeTruthy();
-    // Botão esticado à largura total da linha (tolerância sub-pixel).
-    expect(btnBox!.width).toBeGreaterThanOrEqual(rowBox!.width - 1);
+    // A acção da linha v6 aponta para a âncora da câmara, que existe uma vez.
+    await expect(page.getByTestId('spot-acoes').locator('a[href="#spot-livecam"]')).toHaveCount(1);
+    await expect(page.locator('[id="spot-livecam"]')).toHaveCount(1);
   });
 
-  test('avisos costeiros em «No local» têm tone="info" (sem alarme)', async ({
-    page,
-  }) => {
-    await page.goto(`/pt/spots/${SPOT_SLUG}/`);
-    await expect(
-      page.getByRole('heading', { level: 1, name: /Guincho/i }),
-    ).toBeVisible({ timeout: 20_000 });
-
+  test('avisos costeiros em «No local» têm tone="info" (sem alarme)', async ({ page }) => {
+    await abre(page);
     const block = page.locator('#no-local [data-testid="coastal-nav-warnings"]');
     await expect(block).toBeVisible({ timeout: 15_000 });
     await expect(block).toHaveAttribute('data-tone', 'info');
     await expect(block).not.toHaveClass(/score-poor/);
-
-    // O background computado não é a tonalidade de alerta (score-poor 6%):
-    // lê os canais da var e compara com o backgroundColor real.
-    const [bg, poor] = await Promise.all([
-      block.evaluate((el) => getComputedStyle(el).backgroundColor),
-      page.evaluate(() =>
-        getComputedStyle(document.documentElement)
-          .getPropertyValue('--score-poor')
-          .trim(),
-      ),
-    ]);
-    const [r, g, b] = poor.split(/\s+/);
-    expect(bg).not.toBe(`rgba(${r}, ${g}, ${b}, 0.06)`);
-    // Tom neutro: o canal vermelho não domina (alerta seria r≫g,b).
+    // Tom neutro: o canal vermelho do fundo não domina (alerta seria r≫g,b).
+    const bg = await block.evaluate((el) => getComputedStyle(el).backgroundColor);
     const m = bg.match(/rgba?\((\d+)[, ]+(\d+)[, ]+(\d+)/);
     expect(m).toBeTruthy();
     expect(Number(m![1])).toBeLessThan(Number(m![3]) + 12);
   });
 
-  test('«Perto daqui»: score muda com a hora escolhida (passo ±3 h)', async ({
-    page,
-  }) => {
-    // Ficheiro real com score distinto por passo (10 + i) — qualquer mudança
-    // de passo altera o valor lido, sem depender dos dados do dia.
-    const real = JSON.parse(
-      readFileSync(join(process.cwd(), 'public/data/map-hours.json'), 'utf-8'),
-    ) as {
-      times: string[];
-      spots: Record<string, Record<string, number[]>>;
-    };
-    const crafted = {
-      ...real,
-      spots: Object.fromEntries(
-        Object.entries(real.spots).map(([id, row]) => [
-          id,
-          Object.fromEntries(
-            Object.entries(row).map(([sport, series]) => [
-              sport,
-              series.map((_: number, i: number) => 10 + i),
-            ]),
-          ),
-        ]),
-      ),
-    };
-    await alignClockToForecast(page);
-    await interceptMapHours(page, crafted);
-
-    // Dois índices da timeline cujas horas caem em passos diferentes do
-    // ficheiro — derivados do forecast real (o mesmo que a página carrega
-    // em modo ventu_live). A régua só alcança a janela de 48 h a partir de
-    // «agora»: a escolha faz-se depois da página aterrar nesse índice.
-    const forecast = JSON.parse(
-      readFileSync(
-        join(process.cwd(), 'public/data/forecasts/guincho.json'),
-        'utf-8',
-      ),
-    ) as Array<{ time: string }>;
-    const stepFor = (iso: string) => {
-      const key = iso.slice(0, 13);
-      let best = 0;
-      for (let i = 0; i < real.times.length; i++) {
-        if (real.times[i].slice(0, 13) <= key) best = i;
-        else break;
-      }
-      return best;
-    };
-
-    await page.goto(`/pt/spots/${SPOT_SLUG}/`);
-    await expect(
-      page.getByRole('heading', { level: 1, name: /Guincho/i }),
-    ).toBeVisible({ timeout: 20_000 });
-
-    const list = page.getByTestId('nearby-spots');
-    await list.scrollIntoViewIfNeeded();
-    const firstScore = list.locator('[data-nearby-score]').first();
-    await expect(firstScore).not.toHaveText('—', { timeout: 15_000 });
-
-    // Índice inicial = «agora» = início da janela da régua (48 h).
-    const start = Number(
-      await page
-        .locator('[data-spot-timeline-index]')
-        .first()
-        .getAttribute('data-spot-timeline-index'),
-    );
-    const end = Math.min(start + 48, forecast.length);
-    let idxA = -1;
-    let idxB = -1;
-    for (let i = start; i < end; i++) {
-      if (idxA < 0) idxA = i;
-      else if (stepFor(forecast[i].time) > stepFor(forecast[idxA].time)) {
-        idxB = i;
-        break;
-      }
+  test('«Perto daqui»: nomes sem truncar, distância, ?sport= e a nota /10 na cor da banda v6', async ({ page }) => {
+    await abre(page);
+    const lista = page.getByTestId('nearby-spots');
+    await lista.scrollIntoViewIfNeeded();
+    const links = lista.locator('[data-nearby-spot]');
+    const n = await links.count();
+    expect(n).toBeGreaterThanOrEqual(2);
+    for (let i = 0; i < n; i++) {
+      const link = links.nth(i);
+      await expect(link).toHaveAttribute('href', /\?sport=/);
+      await expect(link).toContainText(/km|m\b/);
+      const nome = link.locator('[data-nearby-name]');
+      expect(await nome.evaluate((el) => el.scrollWidth - el.clientWidth), `nome truncado: ${await nome.textContent()}`).toBeLessThanOrEqual(1);
+      expect(await nome.evaluate((el) => getComputedStyle(el).textOverflow)).not.toBe('ellipsis');
     }
-    expect(idxA).toBeGreaterThanOrEqual(0);
-    expect(idxB).toBeGreaterThan(idxA);
+    // Nota /10 na cor da banda v6 (tokens de cores.md), com o escalão exposto.
+    const nota = lista.locator('[data-nearby-score][data-score-tier]').first();
+    await expect(nota).toBeVisible({ timeout: 15_000 });
+    await expect(nota).toHaveText(/^\d{1,2}$/);
+    expect(['epic', 'good', 'fair', 'poor', 'closed']).toContain(await nota.getAttribute('data-score-tier'));
+    const fundo = await nota.evaluate((el) => getComputedStyle(el).backgroundColor);
+    expect(['rgb(168, 70, 74)', 'rgb(68, 121, 238)', 'rgb(201, 158, 42)', 'rgb(64, 220, 208)', 'rgb(255, 240, 122)']).toContain(fundo);
+    expect(await nota.evaluate((el) => getComputedStyle(el).fontFamily)).toMatch(/Barlow Condensed/);
+  });
 
-    // O mesmo caminho do utilizador: clique na régua — o track mapeia a
-    // fracção horizontal → índice dentro da janela visível.
-    const setIndex = async (i: number) => {
-      const slider = page.getByRole('slider');
-      const max = Number(await slider.getAttribute('aria-valuemax'));
-      const localNow = Number(await slider.getAttribute('aria-valuenow'));
-      const globalNow = Number(
-        await page
-          .locator('[data-spot-timeline-index]')
-          .first()
-          .getAttribute('data-spot-timeline-index'),
-      );
-      const local = i - (globalNow - localNow);
-      const box = await slider.boundingBox();
-      if (!box || local < 0 || local > max) {
-        throw new Error(`índice ${i} fora da janela visível da régua`);
-      }
-      await slider.click({
-        position: { x: ((local + 0.5) / (max + 1)) * box.width, y: box.height / 2 },
-      });
-    };
+  test('«Perto daqui» segue a modalidade da página (kite → ?sport=kitesurf, surf → ?sport=surf)', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto(`/pt/spots/${SPOT_SLUG}/?d=surf`);
+    await expect(page.getByTestId('spot-contexto')).toBeAttached({ timeout: 20_000 });
+    await expect(page.locator('[data-testid="spot-v6"]')).toHaveAttribute('data-modalidade', 'surf');
+    await expect(page.getByTestId('nearby-spots').locator('[data-nearby-spot]').first()).toHaveAttribute('href', /\?sport=surf$/);
+    await page.getByRole('group', { name: 'Modalidade', exact: true }).getByRole('button', { name: /Kite/i }).click();
+    await expect(page.getByTestId('nearby-spots').locator('[data-nearby-spot]').first()).toHaveAttribute('href', /\?sport=kitesurf$/);
+  });
 
-    await setIndex(idxA);
-    await expect(firstScore).toHaveText(
-      String(10 + stepFor(forecast[idxA].time)),
-      { timeout: 10_000 },
-    );
-    await setIndex(idxB);
-    await expect(firstScore).toHaveText(
-      String(10 + stepFor(forecast[idxB].time)),
-      { timeout: 10_000 },
-    );
+  test('390: nomes de «Perto daqui» sem truncar, sem accordion', async ({ page }) => {
+    await abre(page, SPOT_SLUG, 390, 844);
+    await expect(page.locator('#perto details')).toHaveCount(0);
+    const nomes = page.locator('#perto [data-nearby-name]');
+    const n = await nomes.count();
+    expect(n).toBeGreaterThanOrEqual(2);
+    for (let i = 0; i < n; i++) {
+      expect(await nomes.nth(i).evaluate((el) => el.scrollWidth - el.clientWidth)).toBeLessThanOrEqual(1);
+    }
   });
 });

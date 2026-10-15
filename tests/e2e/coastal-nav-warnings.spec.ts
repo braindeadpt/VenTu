@@ -156,8 +156,30 @@ test.describe('Avisos à Navegação Costeiros (IH)', () => {
     await expect(esBlock.getByText('Ejercicio naval')).toBeVisible();
     await expect(esBlock.getByRole('link', { name: /detalhe/i })).toBeVisible();
     // O aviso IH de segurança fica na faixa do topo e não se mistura com o ES.
-    await expect(page.getByTestId('spot-safety-coastal').getByText('ANAV NR 18271/26')).toBeVisible();
+    const strip = page.getByTestId('spot-safety-coastal');
+    await expect(strip.getByText('ANAV NR 18271/26')).toBeVisible();
     await expect(esBlock.getByText('ANAV NR 18271/26')).toHaveCount(0);
+
+    // Página de spot v6: o bloco de «No local» usa a tipografia da escala v6 (Barlow,
+    // título 16 px, itens 15 px, fonte 14 px), como os avisos IPMA ao lado; a faixa de
+    // segurança do topo continua na variante do site.
+    const bloco = page.locator('#no-local [data-testid="coastal-nav-warnings"]');
+    await expect(bloco).toHaveAttribute('data-variant', 'v6');
+    const tipo = await bloco.evaluate((el) => {
+      const px = (s: string | null | undefined) => {
+        const e = s ? el.querySelector(s) : null;
+        return e ? { f: getComputedStyle(e).fontFamily, s: parseFloat(getComputedStyle(e).fontSize) } : null;
+      };
+      return { t: px('.av-t'), li: px('li'), fonte: px('.av-ih-fonte') };
+    });
+    for (const [k, v] of Object.entries(tipo)) {
+      expect(v, k).toBeTruthy();
+      expect(v!.f, k).toMatch(/^"?Barlow"?,/);
+    }
+    expect(tipo.t!.s).toBe(16);
+    expect(tipo.li!.s).toBe(15);
+    expect(tipo.fonte!.s).toBe(14);
+    await expect(strip).not.toHaveAttribute('data-variant', 'v6');
   });
 
   test('cross-border real no Minho: aviso ES a cobrir o Moledo do Minho com polígono no lado espanhol da foz', async ({
@@ -208,9 +230,12 @@ test.describe('Avisos à Navegação Costeiros (IH)', () => {
     // Nenhum aviso do IH na fixture — a secção não inventa um bloco IH vazio.
     await expect(block.getByText(/ANAV NR/)).toHaveCount(0);
 
-    // O mapa de logística é mínimo (sem overlays) — a área coberta vê-se no
-    // /mapa via deep link «Ver no mapa» do bloco.
-    await expect(page.locator('.leaflet-container')).toBeVisible({ timeout: 20_000 });
+    // Página de spot v6 (#184): o mapa do spot é a praia em 3D (sem overlays
+    // nem o antigo mini-mapa Leaflet da logística) — a área coberta vê-se no
+    // /mapa pelo deep link «Ver no mapa» do bloco.
+    await expect(page.getByTestId('praia-3d')).toBeVisible({ timeout: 20_000 });
+    await expect(page.locator('.leaflet-container')).toHaveCount(0);
+    await expect(block.getByRole('link', { name: /Ver no mapa/i })).toHaveAttribute('href', /\/mapa\//);
   });
 
   test('spot sem cobertura → bloco ausente e mapa sem polígonos', async ({ page }) => {
@@ -223,12 +248,11 @@ test.describe('Avisos à Navegação Costeiros (IH)', () => {
     await expect(page.getByTestId('coastal-nav-warnings')).toHaveCount(0);
     // Sem cobertura também não há sub-bloco ES.
     await expect(page.getByTestId('coastal-nav-warnings-es')).toHaveCount(0);
-    // O mapa existe mas sem overlay de polígonos (spot sem cobertura).
-    const map = page.locator('.leaflet-container');
-    await expect(map).toBeVisible({ timeout: 20_000 });
-    await expect(
-      page.locator('.leaflet-container[data-coastal-polygons="true"]'),
-    ).toHaveCount(0);
+    // O mapa do spot (praia 3D, v6) existe e nenhum mapa da página desenha
+    // polígonos de avisos (spot sem cobertura; não há mini-mapa Leaflet).
+    await expect(page.getByTestId('praia-3d')).toBeVisible({ timeout: 20_000 });
+    await expect(page.locator('[data-coastal-polygons="true"]')).toHaveCount(0);
+    await expect(page.locator('.leaflet-container')).toHaveCount(0);
     // A secção de avisos (IPMA/radar) continua a renderizar.
     await expect(page.getByRole('heading', { name: /Avisos e radar/i })).toBeVisible();
   });
