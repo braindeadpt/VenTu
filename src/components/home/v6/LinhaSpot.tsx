@@ -5,6 +5,9 @@ import { bandaVars } from '@/lib/v6Tokens';
 import type { Linha } from '@/lib/home/homeV6';
 import type { HomeV6Copy } from '@/lib/translations/homeV6';
 
+/** número e unidade nunca se separam na quebra de linha («8 nós», «12 s», «1,5 m») */
+const colaUnidade = (t: string) => t.replace(/(\d) (nós|kt|s|m)(?=[\s,.·<]|$)/g, '$1\u00a0$2');
+
 export default function LinhaSpot({ r, l, copy: c, seta }: { r: Linha; l: { l1: string; l2: string; pal: string | null; rk: string }; copy: HomeV6Copy; seta?: boolean }) {
   const sub = r.sp.concelho === r.sp.nome || r.sp.concelho === r.sp.curto ? c.zonaNome(r.sp.zona) : r.sp.concelho;
   return (
@@ -23,7 +26,7 @@ export default function LinhaSpot({ r, l, copy: c, seta }: { r: Linha; l: { l1: 
           {r.n != null ? <span className="sr">{c.notaSr(r.n)}</span> : null}
         </span>
         <span className="l2">
-          <Frase txt={l.l2} banda={r.b} />
+          <Frase txt={colaUnidade(l.l2)} banda={r.b} />
         </span>
       </span>
       {seta ? (

@@ -140,6 +140,18 @@ export default function CostaMapa3D({ M, E, copy: c, hrefSpot, forcarPlano, onCh
       y + hh <= fundo &&
       !postos.some((q) => x < q.x + q.w + 4 && x + w + 4 > q.x && y < q.y + q.h + 3 && y + hh + 3 > q.y) &&
       !pontos.some((q) => q.x > x - 5 && q.x < x + w + 5 && q.y > y - 5 && q.y < y + hh + 5);
+    // guias já desenhadas: um rótulo novo não cruza a guia de outro (lê-se mal o «X»)
+    const guias: Array<[number, number, number, number]> = [];
+    const lado = (ax: number, ay: number, bx: number, by: number, cx: number, cy: number) => (bx - ax) * (cy - ay) - (by - ay) * (cx - ax);
+    const cruzam = (g: [number, number, number, number], h: [number, number, number, number]) =>
+      lado(g[0], g[1], g[2], g[3], h[0], h[1]) * lado(g[0], g[1], g[2], g[3], h[2], h[3]) < 0 &&
+      lado(h[0], h[1], h[2], h[3], g[0], g[1]) * lado(h[0], h[1], h[2], h[3], g[2], g[3]) < 0;
+    const guiaDe = (x: number, y: number, w: number, hh: number, q: P2): [number, number, number, number] => [
+      x + w < q.x ? x + w : x > q.x ? x : x + w / 2,
+      y + hh / 2,
+      q.x,
+      q.y,
+    ];
     for (const o of items) {
       const b: BandaK = e.noite ? 'noite' : o.r ? o.r.b : 'noite';
       const a = document.createElement('a');
@@ -178,7 +190,9 @@ export default function CostaMapa3D({ M, E, copy: c, hrefSpot, forcarPlano, onCh
           C.push([x, y, Math.hypot(ex - o.p.x, ey - o.p.y) * (sx < 0 && sy >= 0 ? 0.8 : 1)]);
         }
       C.sort((u, v) => u[2] - v[2]);
-      let cand: [number, number] | undefined = C.find(([x, y]) => livre(x, y, w, hh)) as [number, number] | undefined;
+      const semCruzar = ([x, y]: [number, number, number]) => !guias.some((g) => cruzam(g, guiaDe(x, y, w, hh, o.p)));
+      let cand: [number, number] | undefined = (C.find((k) => livre(k[0], k[1], w, hh) && semCruzar(k)) ??
+        C.find(([x, y]) => livre(x, y, w, hh))) as [number, number] | undefined;
       if (!cand) {
         if (!o.top) {
           a.remove();
@@ -191,8 +205,8 @@ export default function CostaMapa3D({ M, E, copy: c, hrefSpot, forcarPlano, onCh
       a.style.left = x + 'px';
       a.style.top = y + 'px';
       a.style.visibility = '';
-      const ex = x + w < o.p.x ? x + w : x > o.p.x ? x : x + w / 2;
-      const ey = y + hh / 2;
+      const [ex, ey] = guiaDe(x, y, w, hh, o.p);
+      guias.push([ex, ey, o.p.x, o.p.y]);
       const ln = document.createElementNS(SVGNS, 'path');
       ln.setAttribute('d', `M${ex.toFixed(1)} ${ey.toFixed(1)} L${o.p.x.toFixed(1)} ${o.p.y.toFixed(1)}`);
       ln.setAttribute('fill', 'none');

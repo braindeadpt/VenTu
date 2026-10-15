@@ -33,6 +33,9 @@
 .site-header[data-v6=home] .site-logo-txt span{color:#FFC93C}
 .site-header[data-v6=home] nav a,.site-header[data-v6=home] nav button{font-weight:600}
 
+/* o contentor do cabeçalho alinha com a grelha da home (32 px de margem no desktop, como a maquete) */
+@media (min-width:1024px){.site-header[data-v6=home]>.max-w-7xl{max-width:none}}
+
 /* ---------- selector Kite · Surf: canto superior direito do hero, crédito da foto logo abaixo ---------- */
 .v6h .hero-modo{position:absolute;z-index:4;top:12px;right:12px}
 
@@ -177,7 +180,8 @@
 .v6h .cena .leg .chip b{font-weight:900}
 .v6h .cena .leg .txt{display:block;font:500 13px/1.35 var(--txt);color:var(--nevoa);margin-top:2px}
 .v6h .credito-mapa{position:absolute;z-index:4;left:8px;bottom:6px;right:180px;margin:0;font:500 10.5px/1.2 var(--txt);color:rgba(243,248,251,.75)}
-.v6h .credito-mapa a{color:inherit}
+.v6h .credito-mapa a{color:inherit;text-decoration:underline;text-underline-offset:2px}
+.v6h .rodape p a{text-decoration:underline;text-underline-offset:2px}
 .v6h .mapa-sec:not(.cheio) .cena .cab .sub{display:none}
 .v6h .mapa-sec.cheio .credito-mapa{right:8px}
 .v6h .maplibregl-map{font:inherit}
