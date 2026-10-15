@@ -1,103 +1,103 @@
 {
   "date": "2026-10-15",
-  "topSpot": "Coxos",
-  "topSpotSlug": "coxos",
+  "generatedAt": "2026-10-15T03:36:09.593Z",
+  "topSpot": "Nazaré",
+  "topSpotSlug": "nazare",
   "pt": {
-    "headline": "Ondas perfeitas e vento quase nulo em Coxos!",
-    "advice": "Coxos oferece 2,1 m de ondas com período de 12 s e vento de apenas 2 kt. Aviso à navegação costeira ANAV NR 1727/26 (Animais Marinhos - Avistamento) em vigor na zona, mas nada que impeça o surf. Vista um 3/2 mm e aproveite antes da lotação.",
-    "bestTime": "08:30",
+    "headline": "Hoje é dia de Nazaré! 🌊",
+    "advice": "Melhor janela: 6:00h. Ondas de 2.2m com 3 nós de vento.",
+    "bestTime": "6:00",
     "wetsuit": "3/2mm",
-    "crowdTip": "Chegue cedo; o pico ainda não está cheio.",
+    "crowdTip": "Chega cedo para evitar crowd!",
     "moonTideLine": "Lua crescente · Marés vivas · baixa-mar 01:00"
   },
   "en": {
-    "headline": "Perfect waves and almost no wind at Coxos!",
-    "advice": "Coxos provides 2.1 m waves with a 12 s period and only 2 kt of wind. Coastal navigation warning ANAV NR 1727/26 (Marine Animals – Sighting) is in effect, but it does not restrict surfing. Wear a 3/2 mm wetsuit and get there early before the crowd builds.",
-    "bestTime": "08:30",
+    "headline": "Today is Nazaré day! 🌊",
+    "advice": "Best window: 6:00. 2.2m waves with 3 knot wind.",
+    "bestTime": "6:00",
     "wetsuit": "3/2mm",
-    "crowdTip": "Arrive early; the line is still short.",
+    "crowdTip": "Get there early to beat the crowd!",
     "moonTideLine": "Waxing crescent · Spring tides · low tide 01:00"
   },
   "spots": [
     {
-      "name": "Supertubos",
-      "slug": "supertubos",
-      "score": 91,
-      "verdict": "maybe",
-      "ptReason": "Ondas boas, mas vento de 5 kt e dois avisos costeiros tornam o surf menos confortável.",
-      "enReason": "Good waves, but 5 kt wind and two coastal warnings make it less comfortable.",
-      "scoreForecast": 91,
-      "scoreSource": "previsão",
-      "scoreMeta": null
-    },
-    {
-      "name": "Guincho",
-      "slug": "guincho",
-      "score": 91,
-      "verdict": "maybe",
-      "ptReason": "Ondas consistentes e vento moderado (4 kt), porém há avisos de interação com animais marinhos.",
-      "enReason": "Consistent waves and moderate wind (4 kt), but marine‑animal interaction warnings apply.",
-      "scoreForecast": 91,
-      "scoreSource": "previsão",
-      "scoreMeta": null
-    },
-    {
       "name": "Nazaré",
       "slug": "nazare",
       "score": 92,
-      "verdict": "go",
-      "ptReason": "Ondas ligeiramente maiores (2,2 m) e vento leve; sem avisos costeiros, ótima escolha.",
-      "enReason": "Slightly larger waves (2.2 m) and light wind; no coastal warnings, a great pick.",
       "scoreForecast": 92,
       "scoreSource": "previsão",
-      "scoreMeta": null
+      "scoreMeta": null,
+      "verdict": "go",
+      "ptReason": "Condições excelentes",
+      "enReason": "Excellent conditions"
     },
     {
       "name": "Ribeira d'Ilhas",
       "slug": "ribeira-ilhas",
       "score": 92,
-      "verdict": "maybe",
-      "ptReason": "Vento forte (10 kt) pode atrapalhar a qualidade da onda, apesar do aviso de avistamento de animais.",
-      "enReason": "Strong wind (10 kt) may degrade wave quality, despite the marine‑animal sighting warning.",
       "scoreForecast": 92,
       "scoreSource": "previsão",
-      "scoreMeta": null
+      "scoreMeta": null,
+      "verdict": "go",
+      "ptReason": "Condições excelentes",
+      "enReason": "Excellent conditions"
     },
     {
       "name": "Coxos",
       "slug": "coxos",
       "score": 92,
-      "verdict": "go",
-      "ptReason": "Ondas de 2,1 m, vento quase nulo (2 kt) e apenas um aviso de avistamento de animais marinhos.",
-      "enReason": "2.1 m waves, almost no wind (2 kt) and only a marine‑animal sighting warning.",
       "scoreForecast": 92,
       "scoreSource": "previsão",
-      "scoreMeta": null
+      "scoreMeta": null,
+      "verdict": "go",
+      "ptReason": "Condições excelentes",
+      "enReason": "Excellent conditions"
+    },
+    {
+      "name": "Supertubos",
+      "slug": "supertubos",
+      "score": 91,
+      "scoreForecast": 91,
+      "scoreSource": "previsão",
+      "scoreMeta": null,
+      "verdict": "go",
+      "ptReason": "Condições excelentes",
+      "enReason": "Excellent conditions"
+    },
+    {
+      "name": "Guincho",
+      "slug": "guincho",
+      "score": 91,
+      "scoreForecast": 91,
+      "scoreSource": "previsão",
+      "scoreMeta": null,
+      "verdict": "go",
+      "ptReason": "Condições excelentes",
+      "enReason": "Excellent conditions"
     },
     {
       "name": "Arrifana",
       "slug": "arrifana",
       "score": 90,
-      "verdict": "maybe",
-      "ptReason": "Ondas menores (1,8 m) e vento leve; plano de salvamento marítimo em vigor exige atenção.",
-      "enReason": "Smaller waves (1.8 m) and light wind; maritime rescue plan in effect requires attention.",
       "scoreForecast": 90,
       "scoreSource": "previsão",
-      "scoreMeta": null
+      "scoreMeta": null,
+      "verdict": "go",
+      "ptReason": "Condições excelentes",
+      "enReason": "Excellent conditions"
     },
     {
       "name": "Carcavelos",
       "slug": "carcavelos",
       "score": 89,
-      "verdict": "maybe",
-      "ptReason": "Ondas de 1,7 m e vento leve, mas múltiplos avisos de segurança e interação com animais marinhos.",
-      "enReason": "1.7 m waves and light wind, but multiple safety and marine‑animal interaction warnings.",
       "scoreForecast": 89,
       "scoreSource": "previsão",
-      "scoreMeta": null
+      "scoreMeta": null,
+      "verdict": "go",
+      "ptReason": "Condições excelentes",
+      "enReason": "Excellent conditions"
     }
   ],
-  "generatedAt": "2026-10-15T03:06:15.731Z",
   "topScore": 92,
   "topScoreForecast": 92,
   "topScoreSource": "previsão",
