@@ -156,8 +156,30 @@ test.describe('Avisos à Navegação Costeiros (IH)', () => {
     await expect(esBlock.getByText('Ejercicio naval')).toBeVisible();
     await expect(esBlock.getByRole('link', { name: /detalhe/i })).toBeVisible();
     // O aviso IH de segurança fica na faixa do topo e não se mistura com o ES.
-    await expect(page.getByTestId('spot-safety-coastal').getByText('ANAV NR 18271/26')).toBeVisible();
+    const strip = page.getByTestId('spot-safety-coastal');
+    await expect(strip.getByText('ANAV NR 18271/26')).toBeVisible();
     await expect(esBlock.getByText('ANAV NR 18271/26')).toHaveCount(0);
+
+    // Página de spot v6: o bloco de «No local» usa a tipografia da escala v6 (Barlow,
+    // título 16 px, itens 15 px, fonte 14 px), como os avisos IPMA ao lado; a faixa de
+    // segurança do topo continua na variante do site.
+    const bloco = page.locator('#no-local [data-testid="coastal-nav-warnings"]');
+    await expect(bloco).toHaveAttribute('data-variant', 'v6');
+    const tipo = await bloco.evaluate((el) => {
+      const px = (s: string | null | undefined) => {
+        const e = s ? el.querySelector(s) : null;
+        return e ? { f: getComputedStyle(e).fontFamily, s: parseFloat(getComputedStyle(e).fontSize) } : null;
+      };
+      return { t: px('.av-t'), li: px('li'), fonte: px('.av-ih-fonte') };
+    });
+    for (const [k, v] of Object.entries(tipo)) {
+      expect(v, k).toBeTruthy();
+      expect(v!.f, k).toMatch(/^"?Barlow"?,/);
+    }
+    expect(tipo.t!.s).toBe(16);
+    expect(tipo.li!.s).toBe(15);
+    expect(tipo.fonte!.s).toBe(14);
+    await expect(strip).not.toHaveAttribute('data-variant', 'v6');
   });
 
   test('cross-border real no Minho: aviso ES a cobrir o Moledo do Minho com polígono no lado espanhol da foz', async ({

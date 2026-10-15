@@ -19,6 +19,29 @@ interface CoastalNavWarningsProps {
   /** Exclui os avisos de segurança real já mostrados na faixa §0
    *  (isSafetyNavWarning) — «No local» lista só o restante. */
   excludeSafety?: boolean;
+  /** 'site' (default — Tailwind do site, homepage e afins) ou 'v6' (página de
+   *  spot v6: markup `.av-ih*` com a tipografia da escala v6 — Barlow 16/15/14,
+   *  v6-atlantico.css). Os mesmos dados, testids, data-tone e ligações. */
+  variant?: 'site' | 'v6';
+}
+
+function ItensV6({ lista, prefixo, detalhe }: { lista: CoastalNavWarning[]; prefixo: string; detalhe: string }) {
+  return (
+    <ul className="av-ih-lista">
+      {lista.map((w) => (
+        <li key={`${prefixo}-${w.id}`}>
+          <b>{w.ref}</b>
+          {w.category ? <span> — {w.category}</span> : null}
+          {w.url ? (
+            <a href={w.url} target="_blank" rel="noopener noreferrer" className="av-ih-det">
+              {detalhe}
+              <ExternalLink aria-hidden />
+            </a>
+          ) : null}
+        </li>
+      ))}
+    </ul>
+  );
 }
 
 /** «Avisos à Navegação Costeiros (IH)» — camada de segurança marítima
@@ -29,6 +52,7 @@ export default function CoastalNavWarnings({
   locale,
   tone = 'alert',
   excludeSafety = false,
+  variant = 'site',
 }: CoastalNavWarningsProps) {
   const isPt = locale === 'pt';
   const isAlert = tone === 'alert';
@@ -60,6 +84,34 @@ export default function CoastalNavWarnings({
   // confunde nem os mistura nas fontes.
   const ih = warnings.filter((w) => w.source !== 'es');
   const es = warnings.filter((w) => w.source === 'es');
+
+  if (variant === 'v6') {
+    return (
+      <div className="av-ih" data-testid="coastal-nav-warnings" data-tone={tone} data-variant="v6">
+        <div className="av-ih-cab">
+          <p className="av-t">
+            <Anchor aria-hidden />
+            {t.coastalNavWarnings}
+          </p>
+          <a href={`/${locale}/mapa/?spot=${spotId}`} className="av-ih-mapa" data-testid="coastal-nav-warnings-map-link">
+            <Map aria-hidden />
+            {t.viewOnMapShort}
+          </a>
+        </div>
+        {ih.length > 0 && <ItensV6 lista={ih} prefixo="ih" detalhe={t.detailsWord} />}
+        {es.length > 0 && (
+          <div className="av-ih-es" data-testid="coastal-nav-warnings-es">
+            <p className="av-t">
+              <Anchor aria-hidden />
+              Avisos a los navegantes (ES, cross-border)
+            </p>
+            <ItensV6 lista={es} prefixo="es" detalhe={t.detailsWord} />
+          </div>
+        )}
+        <p className="av-ih-fonte">{t.navSources}</p>
+      </div>
+    );
+  }
 
   return (
     <div

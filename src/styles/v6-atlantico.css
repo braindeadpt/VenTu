@@ -13,7 +13,9 @@
   position:relative;
   background:var(--abismo);color:var(--espuma);font:500 17px/1.45 var(--txt);font-variant-numeric:lining-nums;
   overflow-x:clip;
-  padding-bottom:132px;
+  /* sem padding-bottom: o espaço para a régua fixa (< 1024 px) passou para o fim do
+     rodapé do site (regra abaixo) — a régua continua sem tapar nada e deixa de haver
+     ~130 px vazios entre as acções e o rodapé */
   /* o cabeçalho do site fica escondido nesta rota (Header.tsx): anula o pt-16 do <main> */
   margin-top:-4rem;
 }
@@ -254,13 +256,21 @@
 .v6 .ec-barras .agora span{color:var(--espuma)}
 .v6 .ec-ext{margin:0}
 .v6 .ec-ext .acao svg,.v6 .ctx-link svg{width:16px;height:16px;flex:none}
-/* ≥ 760 px: colunas (os cartões têm alturas muito diferentes; sem buracos) */
+/* ≥ 760 px: 2 colunas, ≥ 1280 px: 3. Os cartões têm alturas muito diferentes
+   (e mudam com o conteúdo: boia fresca/antiga, UV 0, cartões que não aparecem):
+   colunasEquilibradas.ts mede-os, distribui-os pela coluna que equilibra a grelha
+   e estica o último de cada coluna até ao fundo — nunca fica um buraco. Sem JS
+   (ou antes de medir) ficam as CSS columns. */
+.v6 .ec-grelha{--ec-cols:1;--ec-gap:12px}
 @media (min-width:760px){
-  .v6 .ec-grelha{display:block;columns:2;column-gap:12px}
-  .v6 .ec-grelha>.ec{break-inside:avoid;margin:0 0 12px}
+  .v6 .ec-grelha{--ec-cols:2}
+  .v6 .ec-grelha:not([data-mas]){display:block;columns:var(--ec-cols);column-gap:var(--ec-gap)}
+  .v6 .ec-grelha:not([data-mas])>.ec{break-inside:avoid;margin:0 0 var(--ec-gap)}
+  .v6 .ec-grelha[data-mas]{display:grid;grid-template-columns:repeat(var(--ec-mas-cols,var(--ec-cols)),minmax(0,1fr));grid-auto-rows:1px;gap:0 var(--ec-gap);align-items:stretch}
+  .v6 .ec-grelha[data-mas]>.ec{margin:0}
 }
 @media (min-width:1280px){
-  .v6 .ec-grelha{columns:3}
+  .v6 .ec-grelha{--ec-cols:3}
 }
 
 /* ---------- contexto do spot (avisos, câmara, estação, água, chegar e estar, perto daqui, eventos) ----------
@@ -306,9 +316,22 @@
 .v6 .av-aviso[data-nivel=red] .av-nivel{color:var(--b-nao-t)}
 .v6 .av-meta{margin:0;font:500 14px/1.45 var(--txt);color:var(--nevoa)}
 .v6 .av-vazio{margin:0;font:600 15px/1.4 var(--txt);color:var(--espuma)}
-.v6 .ctx [data-testid=coastal-nav-warnings],.v6 .ctx [data-testid=coastal-nav-warnings-es]{border-radius:10px;font-family:var(--txt);background:var(--mar);border-color:var(--linha);margin-top:0;padding:10px 12px}
-.v6 .ctx [data-testid^=coastal-nav-warnings] :is(p,li,span,a,h3,h4){font-family:var(--txt)}
-.v6 .ctx [data-testid^=coastal-nav-warnings] a{color:var(--gelo)}
+/* avisos costeiros IH (CoastalNavWarnings variant="v6"): a mesma escala dos avisos IPMA
+   (título 16/700, itens 15/1.45, fonte 14) — Barlow, cores v6; a faixa de segurança
+   do topo e a homepage continuam na variante do site */
+.v6 .av-ih{display:grid;gap:8px;padding:10px 12px;border-radius:10px;background:var(--mar);box-shadow:inset 0 0 0 1px var(--linha);font-family:var(--txt)}
+.v6 .av-ih[data-tone=alert]{box-shadow:inset 4px 0 0 var(--b-nao),inset 0 0 0 1px var(--linha)}
+.v6 .av-ih-cab{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:4px 12px}
+.v6 .av-ih .av-t svg{color:var(--nevoa)}
+.v6 .av-ih[data-tone=alert] .av-t svg{color:var(--b-nao)}
+.v6 .av-ih-mapa,.v6 .av-ih-det{display:inline-flex;align-items:center;gap:6px;color:var(--gelo);font:700 15px/1.3 var(--txt);text-decoration:underline;text-underline-offset:3px}
+.v6 .av-ih-mapa{min-height:44px}
+.v6 .av-ih-mapa svg,.v6 .av-ih-det svg{width:16px;height:16px;flex:none}
+.v6 .av-ih-det{margin-left:8px;min-height:24px}
+.v6 .av-ih-lista{list-style:none;margin:0;padding:0;display:grid;gap:6px;font:500 15px/1.45 var(--txt);color:var(--nevoa)}
+.v6 .av-ih-lista b{font-weight:700;color:var(--espuma)}
+.v6 .av-ih-es{display:grid;gap:6px;padding-top:8px;border-top:1px solid var(--linha)}
+.v6 .av-ih-fonte{margin:0;font:500 14px/1.45 var(--txt);color:var(--nevoa)}
 /* perto daqui */
 .v6 .pt-lista{list-style:none;margin:0;padding:0;display:grid}
 .v6 .pt-lista>li+li{border-top:1px solid rgba(30,67,97,.6)}
@@ -339,6 +362,13 @@
   .v6 .ctx-bloco{padding:20px 22px}
   .v6 .ctx > #perto{grid-template-columns:1fr 1fr;column-gap:28px}
   .v6 .ctx > #perto > .ctx-t{grid-column:1/-1}
+}
+
+/* < 1024 px a régua de 48 h é fixa no fundo do ecrã (~134 px com a safe area): o fim
+   da página é o rodapé do site, que ganha essa folga por baixo do conteúdo — o fundo
+   do rodapé continua debaixo da régua, sem buraco visível entre as acções e o rodapé. */
+@media (max-width:1023.98px){
+  body:has(.v6 .regua) [data-site-footer]{padding-bottom:calc(140px + env(safe-area-inset-bottom))}
 }
 
 /* ---------- desktop (≥ 1024 px, como a home) ---------- */

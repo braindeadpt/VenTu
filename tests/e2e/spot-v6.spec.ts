@@ -299,3 +299,80 @@ test.describe('#184 spot v6 — fotos', () => {
     await expect(cred).toContainText('Sines');
   });
 });
+
+/** Colunas da grelha do «O que se mede»: cartões por coluna (x), fundo de cada coluna e maior intervalo vertical. */
+async function colunasMedeSabe(page: Page) {
+  return page.evaluate(() => {
+    const g = document.querySelector('[data-testid="spot-mede-sabe-grelha"]') as HTMLElement;
+    const G = g.getBoundingClientRect();
+    const cols = new Map<number, { top: number; bottom: number }[]>();
+    for (const c of Array.from(g.children) as HTMLElement[]) {
+      const r = c.getBoundingClientRect();
+      if (!r.height) continue;
+      const x = Math.round(r.left);
+      cols.set(x, [...(cols.get(x) ?? []), { top: r.top - G.top, bottom: r.bottom - G.top }]);
+    }
+    return [...cols.values()].map((cs) => {
+      cs.sort((a, b) => a.top - b.top);
+      let maiorIntervalo = cs[0].top;
+      for (let i = 1; i < cs.length; i++) maiorIntervalo = Math.max(maiorIntervalo, cs[i].top - cs[i - 1].bottom);
+      return { n: cs.length, fundo: cs[cs.length - 1].bottom, maiorIntervalo };
+    });
+  });
+}
+
+test.describe('#184 spot v6 — «O que se mede» sem buracos', () => {
+  // Pedido do Pedro (2026-10-15): a 1440 ficavam ~170 px vazios debaixo de «Sol e ar».
+  // As colunas acabam todas à mesma altura e nenhum intervalo passa o gap da grelha,
+  // seja qual for o conteúdo (aqui também sem clima nem isóbatas = menos cartões).
+  for (const { w, cols } of [
+    { w: 1440, cols: 3 },
+    { w: 1024, cols: 2 },
+    { w: 800, cols: 2 },
+  ]) {
+    for (const menos of [false, true]) {
+      test(`${w} px, ${cols} colunas${menos ? ', sem clima nem isóbatas' : ''}: colunas à mesma altura`, async ({ page }) => {
+        if (menos) {
+          await page.route('**/data/climatology.json', (r) => r.fulfill({ status: 404, body: '' }));
+          await page.route('**/data/spot-isobaths.json', (r) => r.fulfill({ status: 404, body: '' }));
+        }
+        await page.setViewportSize({ width: w, height: 900 });
+        await abre(page, `${URL_G}?d=kite&estudo=1`);
+        const grelha = page.getByTestId('spot-mede-sabe-grelha');
+        await grelha.scrollIntoViewIfNeeded();
+        await expect(grelha).toHaveAttribute('data-mas', /^[23]$/, { timeout: 15_000 });
+        // dá tempo aos cartões assíncronos (boia, clima, fundo) e à redistribuição
+        await expect
+          .poll(async () => {
+            const cs = await colunasMedeSabe(page);
+            return cs.length >= 2 && Math.max(...cs.map((c) => c.fundo)) - Math.min(...cs.map((c) => c.fundo)) <= 2;
+          }, { timeout: 15_000 })
+          .toBe(true);
+        const cs = await colunasMedeSabe(page);
+        expect(cs.length).toBe(Math.min(cols, cs.reduce((s, c) => s + c.n, 0)));
+        for (const c of cs) expect(c.maiorIntervalo, JSON.stringify(cs)).toBeLessThanOrEqual(14);
+      });
+    }
+  }
+});
+
+test.describe('#184 spot v6 — 390: fim da página', () => {
+  test.use({ viewport: { width: 390, height: 844 } });
+
+  test('sem buraco entre as acções e o rodapé; a régua fixa não tapa o conteúdo do rodapé', async ({ page }) => {
+    await abre(page, `${URL_G}?d=kite`);
+    await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+    const m = await page.evaluate(() => {
+      const acoes = document.querySelector('[data-testid="spot-acoes"]')!.getBoundingClientRect();
+      const footer = document.querySelector('[data-site-footer]') as HTMLElement;
+      const fr = footer.getBoundingClientRect();
+      const regua = document.querySelector('[data-testid="spot-v6"] .regua')!.getBoundingClientRect();
+      // fundo do último conteúdo do rodapé (sem o padding)
+      const conteudo = Math.max(...Array.from(footer.querySelectorAll('a, p, span')).map((e) => e.getBoundingClientRect().bottom));
+      return { vazio: fr.top - acoes.bottom, conteudo, reguaTopo: regua.top, fimRodape: fr.bottom, alturaJanela: innerHeight };
+    });
+    expect(m.vazio, JSON.stringify(m)).toBeLessThanOrEqual(80);
+    expect(m.conteudo, JSON.stringify(m)).toBeLessThanOrEqual(m.reguaTopo + 1);
+    expect(Math.abs(m.fimRodape - m.alturaJanela), JSON.stringify(m)).toBeLessThanOrEqual(2);
+  });
+});

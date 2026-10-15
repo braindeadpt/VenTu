@@ -12,7 +12,7 @@
  * repetem na tabela de marés; vento, onda e altura de maré da hora vivem no
  * Porquê e na tabela hora a hora. Aqui só o que lá não está.
  */
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { ExternalLink } from 'lucide-react';
 import { getTranslation } from '@/lib/i18n';
 import { getMoonPhase } from '@/lib/moonPhase';
@@ -28,6 +28,7 @@ import { diaCurto, fmtNum, hmTxt, horaDe, horaTxt } from '@/lib/spotVeredicto';
 import { fmtCopy, type SpotPageV6Copy } from '@/lib/translations/spotPage/v6';
 import BoiaV6, { type BoiaV6Condicoes } from './BoiaV6';
 import { decimalV6 } from './boiaFmt';
+import { useColunasEquilibradas } from './colunasEquilibradas';
 
 const MS_KT = 1.94384;
 /** |anomalia| a partir da qual a maré meteorológica é assinalada (scripts/lib/tideAnomaly). */
@@ -346,16 +347,18 @@ export default function MedeSabeV6({ spot, locale, copy: c, t, ehAgora, mares, c
     setDataMs(agoraMs ?? Date.now());
   }, [agoraMs]);
   const mes = useMemo(() => new Date(dataMs).getMonth(), [dataMs]);
+  const grelha = useRef<HTMLDivElement>(null);
+  useColunasEquilibradas(grelha);
   const windguru = getWindguruUrl(spot.slug, locale === 'pt' ? spot.name : spot.nameEn, spot.lat, spot.lon);
   return (
     <section className="medesabe" aria-labelledby="medesabe-t" data-testid="spot-mede-sabe">
       <h3 className="ec-sec" id="medesabe-t">
         {c.medeSabe}
       </h3>
-      <div className="ec-grelha">
+      <div className="ec-grelha" ref={grelha} data-testid="spot-mede-sabe-grelha">
         <BoiaV6 spotId={spot.id} locale={locale} c={cond} agoraMs={agoraMs} agoraTag={c.agoraTag} />
-        {/* o que se lê agora (boia, sol e ar) antes do que se calcula (maré, fundo, clima):
-            em colunas (≥760 px) os dois cartões curtos ficam juntos e a grelha não deixa buracos */}
+        {/* o que se lê agora (boia, sol e ar) antes do que se calcula (maré, fundo, clima);
+            em colunas (≥760 px) a distribuição sai das alturas reais (colunasEquilibradas) */}
         <SolAr locale={locale} copy={c} t={t} ehAgora={ehAgora} uvPorHora={uvPorHora} cond={cond} />
         <MareLua locale={locale} copy={c} t={t} mares={mares} citada={citada} mareCurva={mareCurva} dataMs={dataMs} cond={cond} />
         <Fundo spotId={spot.id} locale={locale} copy={c} />

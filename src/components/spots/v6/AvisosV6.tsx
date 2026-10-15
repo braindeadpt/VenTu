@@ -180,7 +180,7 @@ export default function AvisosV6({ spotId, locale }: { spotId: string; locale: s
 
       {/* Avisos costeiros IH: informação (avistamentos, editais), sem aspecto de
           alarme; os perigos reais estão na faixa de segurança (excludeSafety). */}
-      <CoastalNavWarnings spotId={spotId} locale={locale} tone="info" excludeSafety />
+      <CoastalNavWarnings spotId={spotId} locale={locale} tone="info" excludeSafety variant="v6" />
     </div>
   );
 }
