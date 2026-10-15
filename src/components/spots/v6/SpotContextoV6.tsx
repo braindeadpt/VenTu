@@ -67,11 +67,11 @@ function Agua({ spot, locale, viva }: { spot: Spot; locale: string; viva?: Water
     <div className="ctx-item" data-ctx="agua">
       <h3 className="ctx-rot">{t.waterQuality}</h3>
       <p className="ec-chips">
-        {bandeira ? <span className="ec-chip bom">{viva?.blueFlag ? t.wqBlueFlag : isPt ? 'Bandeira Azul 2024' : 'Blue Flag 2024'}</span> : null}
+        {bandeira ? <span className="ec-chip bom">{viva?.blueFlag ? t.wqBlueFlag : t.wqBlueFlag2024}</span> : null}
         {classe ? <span className="ec-chip bom">{t.wqApaClass.replace('{cls}', classe)}</span> : null}
         {qTxt ? (
           <span className={`ec-chip ${q === 'má' || q === 'poor' ? 'nao' : q === 'razoavel' || q === 'fair' ? 'da' : 'bom'}`}>
-            {isPt ? 'Qualidade da água: ' : 'Water quality: '}
+            {t.wqQualityPrefix}
             {qTxt}
           </span>
         ) : null}
@@ -90,7 +90,7 @@ function Agua({ spot, locale, viva }: { spot: Spot; locale: string; viva?: Water
             {isPt ? a.namePt : a.nameEn}
           </span>
         ))}
-        {acessivel ? <span className="ec-chip">{isPt ? 'Praia acessível' : 'Accessible beach'}</span> : null}
+        {acessivel ? <span className="ec-chip">{t.wqAccessible}</span> : null}
       </p>
       {viva ? (
         <p className="ctx-nota" data-water-quality-meta="true">
@@ -225,8 +225,6 @@ export default function SpotContextoV6({ spot, locale, events, dicas, aguaViva, 
             <AvisosV6 spotId={spot.id} locale={locale} />
           </div>
 
-          <Agua spot={spot} locale={locale} viva={aguaViva} />
-
           {cam ? (
             <div className="ctx-item" id="spot-livecam" data-ctx="livecam">
               <h3 className="ctx-rot">{td.livecam}</h3>
@@ -342,6 +340,8 @@ export default function SpotContextoV6({ spot, locale, events, dicas, aguaViva, 
               </>
             ) : null}
           </dl>
+          {/* Bandeira Azul e classificação APA: são da praia, como as instalações */}
+          <Agua spot={spot} locale={locale} viva={aguaViva} />
         </div>
       </div>
 

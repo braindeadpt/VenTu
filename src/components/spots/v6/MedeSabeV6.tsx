@@ -105,7 +105,9 @@ function MareLua({ locale, copy: c, t, mares, citada, mareCurva, dataMs, cond }:
   const data = new Date(dataMs);
   const lua = getMoonPhase(data);
   const amp = mareCurva.length ? dailyTideAmplitudeMetres([...mareCurva], data) : null;
-  // Só as marés DEPOIS da hora escolhida e sem a que o Porquê já cita.
+  // Só as marés DEPOIS da hora escolhida e sem a que o Porquê já cita. Só o tipo
+  // e a hora ao minuto: a altura já está na coluna «Maré» da tabela hora a hora,
+  // logo acima (cada número uma vez).
   const tabela = mares.filter((m) => m.t > t && !(citada && m.t === citada.t)).slice(0, 6);
   const nf = (x: number) => fmtNum(x, locale);
   return (
@@ -134,7 +136,6 @@ function MareLua({ locale, copy: c, t, mares, citada, mareCurva, dataMs, cond }:
                     <td>
                       {diaCurto(c, m.t)}, {hmTxt(c, m.t, locale)}
                     </td>
-                    <td className="num">{Number.isFinite(m.h) ? `${nf(m.h)} m` : '–'}</td>
                   </tr>
                 ))}
               </tbody>
@@ -353,8 +354,10 @@ export default function MedeSabeV6({ spot, locale, copy: c, t, ehAgora, mares, c
       </h3>
       <div className="ec-grelha">
         <BoiaV6 spotId={spot.id} locale={locale} c={cond} agoraMs={agoraMs} agoraTag={c.agoraTag} />
-        <MareLua locale={locale} copy={c} t={t} mares={mares} citada={citada} mareCurva={mareCurva} dataMs={dataMs} cond={cond} />
+        {/* o que se lê agora (boia, sol e ar) antes do que se calcula (maré, fundo, clima):
+            em colunas (≥760 px) os dois cartões curtos ficam juntos e a grelha não deixa buracos */}
         <SolAr locale={locale} copy={c} t={t} ehAgora={ehAgora} uvPorHora={uvPorHora} cond={cond} />
+        <MareLua locale={locale} copy={c} t={t} mares={mares} citada={citada} mareCurva={mareCurva} dataMs={dataMs} cond={cond} />
         <Fundo spotId={spot.id} locale={locale} copy={c} />
         <Clima spotId={spot.id} locale={locale} copy={c} mes={mes} />
       </div>
