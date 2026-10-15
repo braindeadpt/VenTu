@@ -81,8 +81,11 @@ test.describe('Fundo perto da praia (isóbatas IH, «Estudar o spot» v6)', () =
     await expect(fundo.getByText(/O fundo desce depressa/)).toBeVisible();
     // O perfil desenhado diz o mesmo por extenso (leitor de ecrã).
     await expect(fundo.getByRole('img', { name: /Perfil do fundo: 8 m a 250 m · 16 m a 310 m · 30 m a 460 m/ })).toBeVisible();
-    // Atribuição honesta.
-    await expect(fundo.getByText(/Isóbatas IH \(CC-BY 4\.0\)/)).toBeVisible();
+    // Atribuição honesta, em palavras (sem «Isóbatas IH»): a fonte e a licença ficam; a sigla técnica vai para o tooltip.
+    const fonte = fundo.locator('.ec-fonte');
+    await expect(fonte).toHaveText('Distância da praia até cada profundidade · dados do Instituto Hidrográfico (CC BY 4.0)');
+    await expect(fonte).toHaveAttribute('title', /Instituto Hidrográfico, CC-BY 4\.0/);
+    await expect(fundo.getByText(/Isóbatas IH/)).toHaveCount(0);
     // Estilo v6, dentro do «Estudar o spot».
     await expect(page.locator('#estudo [data-testid="isobaths-strip"]')).toHaveCount(1);
     expect(await fundo.evaluate((el) => getComputedStyle(el).backgroundColor)).toBe('rgb(12, 42, 66)');

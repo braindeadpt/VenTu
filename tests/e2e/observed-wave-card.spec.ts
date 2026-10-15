@@ -633,10 +633,35 @@ test.describe('Leitura da boia no «Estudar o spot» v6 (boia X a Y km)', () => 
     await expect(medida).toHaveText(/^1,8 m$/);
     // Regra de ouro: a previsão do modelo NÃO se repete aqui (vive no Porquê).
     await expect(card.getByText(/Previsão modelo/i)).toHaveCount(0);
-    // Linha «Skill desta boia» com ME/MAE/RMSE/n junto da leitura.
+    // Selo de frescura: leitura fresca → «agora», no tom activo (--gelo).
+    const selo = card.locator('[data-boia-idade]');
+    await expect(selo).toHaveCount(1);
+    await expect(selo).toHaveAttribute('data-boia-idade', 'fresca');
+    await expect(selo).toHaveText('agora');
+    expect(await selo.evaluate((el) => getComputedStyle(el).color)).toBe('rgb(127, 231, 255)');
+    // O skill da previsão nesta boia numa frase de surfista (MAE 0,4 → 40 cm;
+    // ME +0,2 = o mar vem 20 cm acima), sem siglas nem parênteses no texto.
     const skill = card.locator('[data-wave-skill="true"]');
     await expect(skill).toBeVisible();
-    await expect(skill).toContainText(/Skill desta boia: ME \+0,2 m · MAE 0,4 m · RMSE 0,5 m.*\(n=47\)/);
+    await expect(skill).toHaveText(
+      'Comparada com esta boia, a previsão costuma falhar por uns 40 cm. O mar costuma vir 20 cm acima da previsão.',
+    );
+    expect(await skill.textContent()).not.toMatch(/ME|MAE|RMSE|n=|\(/);
+    // Os números técnicos ficam no tooltip (todos) e na linha «detalhes» fechada (só o que a frase não diz).
+    await expect(skill).toHaveAttribute('title', /^ME \+0,2 m · MAE 0,4 m · RMSE 0,5 m \(n=47\)/);
+    const det = card.locator('[data-boia-det="true"]');
+    await expect(det).toHaveCount(1);
+    await expect(det).not.toHaveAttribute('open', '');
+    await expect(det.getByText('erro típico (RMSE) 0,5 m')).toBeHidden();
+    await det.locator('summary').click();
+    await expect(det).toHaveAttribute('open', '');
+    await expect(det.getByText('erro típico (RMSE) 0,5 m')).toBeVisible();
+    await expect(det.getByText('47 comparações previsão × boia')).toBeVisible();
+    // Cada número uma vez: o viés e o erro médio já estão na frase, não se repetem nos detalhes.
+    await expect(det).not.toContainText(/viés|MAE/);
+    // Período, direcção, água e maior onda em palavras (sem «Hmax» nem graus).
+    await expect(card.getByText('de 11 em 11 s · de W · água 18,5 °C · maior onda 2,6 m')).toBeVisible();
+    await expect(card.getByText(/Hmax|°(?!C)/)).toHaveCount(0);
     // IH primária sem calibração cross-border → nenhuma pill de calibração.
     await expect(card.locator('[data-wave-calibrated]')).toHaveCount(0);
     // Estilo v6: Barlow e o cartão no --mar da v6, nada do estilo antigo.
@@ -650,8 +675,13 @@ test.describe('Leitura da boia no «Estudar o spot» v6 (boia X a Y km)', () => 
     const card = await boiaV6(page);
     await expect(card.getByText(/✓\s*IH/)).toBeVisible();
     await expect(card.getByText('WMO', { exact: true })).toBeVisible();
-    await expect(card.getByText(/boia Cabo Silleiro a 56 km/i)).toBeVisible();
-    await expect(card.getByText(/A usar IH — fonte primária fresca; WMO mais próxima/i)).toBeVisible();
+    // A reserva pelo nome; a distância vai uma só vez, junto da idade «(5h, a 56 km)».
+    await expect(card.getByText('boia Cabo Silleiro', { exact: true })).toBeVisible();
+    await expect(card.getByText(/Usamos o Instituto Hidrográfico, a fonte oficial\. A boia europeia está mais perto, mas fica de reserva\./)).toBeVisible();
+    // Regra de ouro dentro do cartão: cada distância aparece uma vez.
+    const texto = (await card.innerText()).replace(/\s+/g, ' ');
+    expect(texto.match(/56 km/g)?.length).toBe(1);
+    expect(texto.match(/60 km/g)?.length).toBe(1);
     // A WMO é MAIS VELHA aqui (5h vs IH 1h) — sem aviso de envelhecimento.
     await expect(card.locator('[data-ih-aging="true"]')).toHaveCount(0);
   });
@@ -718,8 +748,8 @@ test.describe('Leitura da boia no «Estudar o spot» v6 (boia X a Y km)', () => 
     const card = await boiaV6(page);
     const aviso = card.locator('[data-ih-aging="true"]');
     await expect(aviso).toBeVisible();
-    await expect(aviso).toContainText(/IH a envelhecer/i);
-    await expect(card.getByText(/A usar IH — fonte primária fresca; WMO mais próxima e mais fresca/i)).toBeVisible();
+    await expect(aviso).toContainText(/A leitura do Instituto Hidrográfico já tem umas horas/);
+    await expect(card.getByText(/A boia europeia está mais perto e é mais recente, mas fica de reserva\./)).toBeVisible();
   });
 
   const CROSS_BORDER = (calibrada: boolean) => ({
@@ -765,21 +795,19 @@ test.describe('Leitura da boia no «Estudar o spot» v6 (boia X a Y km)', () => 
     await interceptConditions(page, CROSS_BORDER(true));
     await page.goto('/pt/spots/guincho/');
     const card = await boiaV6(page);
-    // Pill de calibração: medido → recalibrado + viés ME/n.
+    // Nota de calibração em palavras: o que a boia mediu (2,3 m); o corrigido
+    // (1,4 m) só no valor grande — cada número uma vez.
     const cal = card.locator('[data-wave-calibrated="true"]');
     await expect(cal).toBeVisible();
-    await expect(cal).toContainText(/medido 2,3 m/);
-    await expect(cal).toContainText(/1,4 m/);
-    await expect(cal).toContainText(/viés -0,9 m \(n=4\)/);
+    await expect(cal).toHaveText('Boia espanhola acertada pelas portuguesas: mediu 2,3 m; a altura acima já vem corrigida.');
+    await expect(card.getByText(/Altura \(medida\)/).locator('xpath=following-sibling::p[1]')).toHaveText(/^1,4 m$/);
+    await expect(card.getByText(/1,4 m/)).toHaveCount(1);
     await expect(cal).toHaveAttribute('title', /Cabo Silleiro × Datawell ao largo de Faro · ME -0,9 m \(n=4\)/);
-    // Chip compacto da calibração, com a explicação completa no tooltip.
-    const chip = card.locator('[data-wave-calibrated="compact"]');
-    await expect(chip).toBeVisible();
-    await expect(chip).toContainText(/ref\. PT \(-0,9 m · n=4\)/);
-    await expect(chip).toHaveAttribute(
-      'title',
-      /Leitura espanhola recalibrada para a referência PT \(Cabo Silleiro × Datawell ao largo de Faro\) · ME -0,9 m \(n=4\)/,
-    );
+    // O chip compacto «ref. PT (ME · n)» saiu (repetia o viés): o ME e o n vão para os «detalhes».
+    await expect(card.locator('[data-wave-calibrated="compact"]')).toHaveCount(0);
+    const det = card.locator('[data-boia-det="true"]');
+    await det.locator('summary').click();
+    await expect(det.getByText('acerto ES→PT: viés (ME) -0,9 m em 4 comparações (Cabo Silleiro × Datawell ao largo de Faro)')).toBeVisible();
   });
 
   test('leitura WMO SEM calibration → nunca mostra o tag de calibração (honestidade do rótulo)', async ({ page }) => {
@@ -817,10 +845,16 @@ test.describe('Leitura da boia no «Estudar o spot» v6 (boia X a Y km)', () => 
     const card = await boiaV6(page);
     const es = card.locator('[data-wave-skill="es"]');
     await expect(es).toBeVisible();
-    await expect(es).toContainText(/boia espanhola \(Cabo Silleiro\)/);
-    await expect(es).toContainText(/ME -0,3 m · MAE 0,5 m · RMSE 0,6 m/);
-    await expect(es).toContainText(/\(n=41\)/);
-    await expect(es).toContainText(/WMO\/Copernicus \(sem IH_API_KEY\)/);
+    // Em palavras: de onde vem a medida, quanto falha a previsão (MAE 0,5 → 50 cm) e para que lado (ME -0,3).
+    await expect(es).toHaveText(
+      'Medido na boia espanhola de Cabo Silleiro. Comparada com esta boia, a previsão costuma falhar por uns 50 cm. O mar costuma vir 30 cm abaixo da previsão.',
+    );
+    await expect(es).toHaveAttribute('title', /^ME -0,3 m · MAE 0,5 m · RMSE 0,6 m · r 0,88 \(n=41\) — .*WMO\/Copernicus \(sem IH_API_KEY\)/);
+    const det = card.locator('[data-boia-det="true"]');
+    await det.locator('summary').click();
+    await expect(det).toContainText('erro típico (RMSE) 0,6 m');
+    await expect(det).toContainText('correlação (r) 0,88');
+    await expect(det).toContainText('41 comparações previsão × boia');
     await expect(card.locator('[data-wave-skill="true"]')).toHaveCount(0);
     // Cadeia de atribuição exacta da fonte (a mesma de /fontes): Copernicus.
     const fonte = card.locator('[data-data-source="copernicus"]');
@@ -885,7 +919,7 @@ test.describe('Leitura da boia no «Estudar o spot» v6 (boia X a Y km)', () => 
           pairCount: 47,
           pairCountByOrigin: { ih: 12, 'wmo-es': 10 },
           calibratedPairCount: 10,
-          byBuoy: { 19: { buoyName: 'CSA92/D', n: 47, me: 0.2, mae: 0.4, rmse: 0.5, corr: 0.91, meanLeadHours: 12 } },
+          byBuoy: { 19: { buoyName: 'CSA92/D', n: 47, me: 0.2, mae: 0.4, rmse: 0.5, corr: 0.91, meanLeadHours: 12, withinHalfM: 0.92 } },
         }),
       });
     });
@@ -904,11 +938,25 @@ test.describe('Leitura da boia no «Estudar o spot» v6 (boia X a Y km)', () => 
     await abreEstudo(page);
     const linha = page.locator('#estudo [data-buoy-skill-line="true"]');
     await expect(linha).toBeVisible({ timeout: 20_000 });
-    await expect(linha).toContainText(/Skill desta boia \(CSA92\/D.*\): ME \+0,2 m · RMSE 0,5 m · r 0,91 \(n=47\)/);
-    const origens = page.locator('#estudo [data-buoy-skill-origins="true"]');
+    // Uma frase de surfista (a do pedido), sem siglas nem parênteses aninhados.
+    await expect(linha).toHaveText(
+      'A previsão costuma bater certo nesta boia: em 92% das vezes ficou a menos de meio metro do que ela mediu. O mar costuma vir 20 cm acima da previsão.',
+    );
+    await expect(linha).toHaveAttribute('title', /^ME \+0,2 m · RMSE 0,5 m · r 0,91 \(n=47\)/);
+    // Sem leitura nenhuma no JSON: nem «agora» nem idade.
+    await expect(page.locator('#estudo [data-boia-idade]')).toHaveCount(0);
+    // Os números técnicos numa linha «detalhes» fechada, em letra pequena.
+    const det = page.locator('#estudo [data-buoy-skill-det="true"]');
+    await expect(det).not.toHaveAttribute('open', '');
+    const origens = det.locator('[data-buoy-skill-origins="true"]');
+    await expect(origens).toBeHidden();
+    await det.locator('summary').click();
+    await expect(det.locator('[data-buoy-skill-stats="true"]')).toHaveText(
+      'boia CSA92/D · erro típico (RMSE) 0,5 m · correlação (r) 0,91 · 47 comparações previsão × boia',
+    );
     await expect(origens).toBeVisible();
     await expect(origens).toContainText(/IH 12 · Copernicus-ES 10/);
-    await expect(origens).toContainText(/total 22/);
+    expect(parseFloat(await origens.evaluate((el) => getComputedStyle(el).fontSize))).toBeLessThanOrEqual(13);
     // Sem leitura fresca: sem o cartão da leitura.
     await expect(page.getByLabel(/Onda observada \(boia\)|Observed wave \(buoy\)/i)).toHaveCount(0);
   });
@@ -948,9 +996,33 @@ test.describe('Leitura da boia no «Estudar o spot» v6 (boia X a Y km)', () => 
     });
     await page.goto('/pt/spots/guincho/');
     await abreEstudo(page);
-    await expect(page.locator('#estudo [data-boia="sem-leitura"]')).toContainText(/Leitura da boia antiga/, { timeout: 15_000 });
+    const boia = page.locator('#estudo [data-boia="sem-leitura"]');
+    await expect(boia).toContainText(/Leitura antiga demais para contar/, { timeout: 15_000 });
     await expect(page.getByLabel(/Onda observada \(boia\)|Observed wave \(buoy\)/i)).toHaveCount(0);
     await expect(page.getByText(/Altura \(medida\)/)).toHaveCount(0);
+    // Sem «agora»: a idade honesta no tom névoa, não no activo.
+    const selo = boia.locator('[data-boia-idade]');
+    await expect(selo).toHaveAttribute('data-boia-idade', 'antiga');
+    await expect(selo).toHaveText('há 5 h');
+    await expect(boia.getByText(/^agora$/i)).toHaveCount(0);
+    expect(await selo.evaluate((el) => getComputedStyle(el).color)).toBe('rgb(169, 194, 212)');
+    await expect(selo).toHaveAttribute('title', /^Última leitura desta boia: \d{2}:\d{2} \(há 5 h\)$/);
+  });
+
+  test('leitura de ontem: «leitura de ontem 18h» (ou o dia), nunca «agora»', async ({ page }) => {
+    await interceptConditions(page, {
+      spots: {
+        [SPOT_KEY]: (entry) => ({
+          ...entry,
+          observedWave: freshObservedWave({ observedAt: new Date(Date.now() - 26 * 3_600_000).toISOString() }),
+        }),
+      },
+    });
+    await page.goto('/pt/spots/guincho/');
+    await abreEstudo(page);
+    const selo = page.locator('#estudo [data-boia="sem-leitura"] [data-boia-idade="antiga"]');
+    await expect(selo).toHaveText(/^leitura de (ontem|dom|seg|ter|qua|qui|sex|sáb) \d{1,2}h(\d{2})?$/, { timeout: 15_000 });
+    await expect(page.locator('#estudo [data-boia-idade="fresca"]')).toHaveCount(0);
   });
 
   test('avisa quando a leitura ES foi descartada por incoerência do par ES×PT', async ({ page }) => {
@@ -959,8 +1031,9 @@ test.describe('Leitura da boia no «Estudar o spot» v6 (boia X a Y km)', () => 
     const aviso = page.locator('#estudo [data-coherence-refused="true"]');
     await expect(aviso).toHaveCount(1);
     await expect(aviso).toBeVisible({ timeout: 15_000 });
-    await expect(aviso).toContainText('descartada hoje');
-    await expect(aviso).toContainText('ES×PT');
+    await expect(aviso).toContainText('Hoje pusemos de lado a boia espanhola');
+    await expect(aviso).not.toContainText(/incoherent|ES×PT/);
+    await expect(aviso).toHaveAttribute('title', /descartada hoje.*ES×PT/);
     await expect(page.getByLabel(/Onda observada \(boia\)|Observed wave \(buoy\)/i)).toHaveCount(0);
   });
 
@@ -970,7 +1043,9 @@ test.describe('Leitura da boia no «Estudar o spot» v6 (boia X a Y km)', () => 
     const aviso = card.locator('[data-coherence-warning="true"]');
     await expect(aviso).toHaveCount(1);
     await expect(aviso).toBeVisible();
-    await expect(aviso).toContainText('incoherent há 4 dias');
+    await expect(aviso).toContainText('há 4 dias que a boia espanhola e a portuguesa não batem certo');
+    await expect(aviso).not.toContainText('incoherent');
+    await expect(aviso).toHaveAttribute('title', /incoherent há 4 dias/);
     await expect(page.locator('[data-coherence-refused="true"]')).toHaveCount(0);
   });
 
@@ -979,9 +1054,31 @@ test.describe('Leitura da boia no «Estudar o spot» v6 (boia X a Y km)', () => 
     const card = await boiaV6(page);
     const nota = card.locator('[data-wave-bridge="true"]');
     await expect(nota).toBeVisible();
-    await expect(nota).toContainText('Ponte keyless');
+    await expect(nota).toContainText('A boia portuguesa desta zona ainda não está ligada');
     await expect(nota).toContainText('Cabo Silleiro (ES)');
+    await expect(nota).not.toContainText(/keyless|IH_API_KEY|Fugro/);
+    await expect(nota).toHaveAttribute('title', /Ponte keyless/);
     await expect(card.getByText(/boia Cabo Silleiro a 281 km/i).first()).toBeVisible();
+  });
+
+  test('«O que se mede» em linguagem simples: sem siglas de engenharia no texto visível (detalhes fechados)', async ({ page }) => {
+    await gotoSpot(page, 'with-observed-wave');
+    await boiaV6(page);
+    const sec = page.getByTestId('spot-mede-sabe');
+    await expect(sec.locator('[data-ec="boia"]')).toBeVisible();
+    // innerText não inclui o conteúdo de um <details> fechado nem os tooltips.
+    const visivel = await sec.innerText();
+    for (const jargao of [/\bAQI\b/, /Isóbatas IH/, /CC-BY/, /\bME [+-]/, /RMSE/, /\bMAE\b/, /\bn=\d/, /IH_API_KEY/, /keyless/i, /Hmax/, /incoherent/, /Skill/, /radar HF/, /MERRA/, /\(\S[^)]*\(/]) {
+      expect(visivel, `jargão visível: ${jargao}`).not.toMatch(jargao);
+    }
+    // Qualidade do ar em palavras (sem «agora»: o índice é previsão do build) e o UV com o nível da OMS.
+    const ar = sec.locator('[data-aqi]');
+    if (await ar.count()) {
+      await expect(ar.locator('.ec-rot')).toHaveText(/^Qualidade do ar$/i);
+      await expect(ar).toContainText(/índice europeu \d+/);
+    }
+    const uv = sec.locator('[data-uv-nivel]');
+    if (await uv.count()) await expect(uv).toHaveText(/^(baixo|moderado|alto|muito alto|extremo)$/);
   });
 
   test('EN: «Observed wave (buoy)» com o rótulo e o separador decimal ingleses', async ({ page }) => {

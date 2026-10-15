@@ -221,7 +221,7 @@ export default function BoiaV6({ spotId, locale, c, agoraMs }: BoiaV6Props) {
   } as unknown as Parameters<typeof razaoDaFonte>[1];
 
   // Linha «detalhes» do cartão: os números técnicos do skill e do acerto ES→PT.
-  const detalhes: string[] = [...(skillTxt?.det ?? [])];
+  const detalhes: string[] = skillTxt?.det.length ? [skillTxt.det.join(' · ')] : [];
   if (w.calibration && Number.isFinite(w.calibration.me)) {
     const cal = w.calibration;
     detalhes.push(

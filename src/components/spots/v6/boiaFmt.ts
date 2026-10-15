@@ -5,6 +5,7 @@
  */
 import type { ObservedWaveMeta } from '@/lib/observedWave';
 import type { getTranslation } from '@/lib/i18n';
+import { spotPageV6 } from '@/lib/translations/spotPage/v6';
 
 /** Idade em horas, compacta: 1 → "1h", 0.3 → "0.3h", 5.2 → "5.2h". */
 export function fmtAgeHours(h: number | null | undefined): string {
@@ -55,7 +56,19 @@ export function ihAEnvelhecer(meta: ObservedWaveMeta | null | undefined): boolea
 type Ms = ReturnType<typeof getTranslation>['spotMedeSabe'];
 
 const TZ = 'Europe/Lisbon';
-const LANG: Record<string, string> = { pt: 'pt-PT', en: 'en-GB', es: 'es-ES', de: 'de-DE', fr: 'fr-FR' };
+const SEMANA = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const LANG: Record<string, string> = { en: 'en-GB', es: 'es-ES', de: 'de-DE', fr: 'fr-FR' };
+
+/** Dia da semana e mês curtos: PT pelos da v6 («seg», «out»), as outras línguas pelo Intl. */
+function diaMesCurtos(t: number, locale: string, weekday: string, month: number): { dia: string; mes: string } {
+  if (locale === 'pt') return { dia: spotPageV6.pt.dias[SEMANA.indexOf(weekday)] ?? weekday, mes: spotPageV6.pt.meses[month - 1] ?? '' };
+  const lang = LANG[locale] ?? 'en-GB';
+  const limpa = (x: string) => x.replace('.', '');
+  return {
+    dia: limpa(new Intl.DateTimeFormat(lang, { timeZone: TZ, weekday: 'short' }).format(new Date(t))),
+    mes: limpa(new Intl.DateTimeFormat(lang, { timeZone: TZ, month: 'short' }).format(new Date(t))),
+  };
+}
 
 /** Dia civil em Lisboa (YYYY-MM-DD) de um instante. */
 function diaLisboa(ms: number): string {
@@ -105,12 +118,14 @@ export function idadeLeitura(
   const ontem = diaLisboa(nowMs - 86_400_000);
   if (diaLisboa(t) === diaLisboa(nowMs)) return { txt: ms.haH.replace('{h}', String(Math.round(idadeMin / 60))), fresca: false };
   if (diaLisboa(t) === ontem) return { txt: ms.ontem.replace('{hora}', hora), fresca: false };
-  const lang = LANG[locale] ?? 'en-GB';
+  const p = new Intl.DateTimeFormat('en-GB', { timeZone: TZ, weekday: 'short', day: 'numeric', month: 'numeric' })
+    .formatToParts(new Date(t))
+    .reduce<Record<string, string>>((a, x) => ({ ...a, [x.type]: x.value }), {});
+  const { dia, mes } = diaMesCurtos(t, locale, p.weekday ?? '', Number(p.month));
   if (idadeMin < 6 * 24 * 60) {
-    const dia = new Intl.DateTimeFormat(lang, { timeZone: TZ, weekday: 'short' }).format(new Date(t)).replace('.', '');
     return { txt: ms.diaHora.replace('{dia}', dia).replace('{hora}', hora), fresca: false };
   }
-  const data = new Intl.DateTimeFormat(lang, { timeZone: TZ, day: 'numeric', month: 'short' }).format(new Date(t)).replace('.', '');
+  const data = `${Number(p.day)} ${mes}`.trim();
   return { txt: ms.data.replace('{data}', data), fresca: false };
 }
 

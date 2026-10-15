@@ -40,7 +40,7 @@ export default function BoiaSkillV6({ spotId, locale }: { spotId: string; locale
 
   const b = r?.buoy;
   if (!b || !Number.isFinite(b.n)) return null;
-  const s = skillSimples({ me: b.me, dentro05: b.withinHalfM }, ms);
+  const s = skillSimples({ me: b.me, mae: b.mae, dentro05: b.withinHalfM }, ms);
   if (!s) return null;
   const d = (x: string) => decimalV6(x, locale);
   const sg = (x: number) => `${x >= 0 ? '+' : ''}${x.toFixed(1)}`;
