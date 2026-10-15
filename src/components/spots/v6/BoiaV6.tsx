@@ -165,7 +165,8 @@ export default function BoiaV6({ spotId, locale, c, agoraMs }: BoiaV6Props) {
         return {
           k: x.source,
           vence,
-          src,
+          // Visível em palavras («Rede portuguesa» / «Rede europeia»); a sigla IH/WMO fica no tooltip.
+          rede: ih ? ms.redeIh : ms.redeWmo,
           idadeTxt,
           // Sem a distância: a da vencedora está na linha de cima, a da reserva já vai na idade.
           rotulo: estacao ? ms.boiaDe.replace('{name}', estacao) : observedWaveLabel(x, locale),
@@ -284,7 +285,7 @@ export default function BoiaV6({ spotId, locale, c, agoraMs }: BoiaV6Props) {
               <div key={f.k} className={`boia-fonte${f.vence ? ' vence' : ''}`} title={f.title}>
                 <p className="ec-rot">
                   {f.vence ? '✓ ' : ''}
-                  {f.src}
+                  {f.rede}
                   {f.vence ? <span className="boia-usa"> {tv.inUse}</span> : null}
                 </p>
                 <p>{f.rotulo}</p>

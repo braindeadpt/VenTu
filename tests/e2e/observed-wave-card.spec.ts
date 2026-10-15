@@ -676,8 +676,9 @@ test.describe('Leitura da boia no «Estudar o spot» v6 (boia X a Y km)', () => 
   test('mostra IH vs WMO lado a lado com o vencedor e a razão', async ({ page }) => {
     await gotoSpot(page, 'with-observed-wave');
     const card = await boiaV6(page);
-    await expect(card.getByText(/✓\s*IH/)).toBeVisible();
-    await expect(card.getByText('WMO', { exact: true })).toBeVisible();
+    // As redes em palavras (sem as siglas IH/WMO no texto visível; ficam no tooltip).
+    await expect(card.getByText(/✓\s*Rede portuguesa/)).toBeVisible();
+    await expect(card.getByText('Rede europeia', { exact: true })).toBeVisible();
     // A reserva pelo nome; a distância vai uma só vez, junto da idade «(5h, a 56 km)».
     await expect(card.getByText('boia Cabo Silleiro', { exact: true })).toBeVisible();
     await expect(card.getByText(/Usamos o Instituto Hidrográfico, a fonte oficial\. A boia europeia está mais perto, mas fica de reserva\./)).toBeVisible();
@@ -694,10 +695,12 @@ test.describe('Leitura da boia no «Estudar o spot» v6 (boia X a Y km)', () => 
     const card = await boiaV6(page);
     const par = card.getByLabel(/Fontes de onda observada \(IH vs WMO\)|Observed wave sources \(IH vs WMO\)/i);
     await expect(par).toBeVisible();
-    await expect(par).toContainText('IH');
+    await expect(par).toContainText('Rede portuguesa');
     await expect(par).toContainText('✓');
     await expect(par).toContainText('(1h)');
-    await expect(par).toContainText('WMO');
+    await expect(par).toContainText('Rede europeia');
+    // Sem siglas no texto visível do par: IH/WMO só no title.
+    expect((await par.innerText()).match(/\b(IH|WMO)\b/)).toBeNull();
     await expect(par).toContainText('(5h, a 56 km)');
     await expect(par.locator('[title*="leitura"]')).toHaveCount(2);
     await expect(par.locator('[title*="CSA92/D"]')).toHaveAttribute('title', /IH ✓ \(1h\) · CSA92\/D · leitura \d{2}:\d{2}$/);
