@@ -116,8 +116,15 @@ test.describe('Mapa — alvos de toque ≥44px', () => {
       await openMapa(page);
       await openMapLayersMenu(page);
       const radar = page.getByRole('button', { name: /Radar/i }).filter({ visible: true }).first();
-      await expectMinTargetSize(radar, 'chip radar');
       const chart = page.locator('[data-map-nautical-chart-toggle]').filter({ visible: true }).first();
+      // o menu entra com uma animação: mede-se a caixa depois de assentar (duas leituras iguais)
+      for (const loc of [radar, chart]) {
+        let antes = -1;
+        await expect
+          .poll(async () => { const h = (await loc.boundingBox())?.height ?? 0; const ok = h > 0 && h === antes; antes = h; return ok; }, { timeout: 5_000, intervals: [150] })
+          .toBe(true);
+      }
+      await expectMinTargetSize(radar, 'chip radar');
       await expectMinTargetSize(chart, 'chip carta náutica');
     });
 

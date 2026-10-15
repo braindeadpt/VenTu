@@ -14,8 +14,12 @@ import { waitMapSettled } from './helpers/map-sheet';
  * mesma: o número visível no representante é o MÁXIMO dos membros e o badge
  * é a contagem escondida.
  *
- * Os clusters clássicos `.ventu-cluster-icon` continuam nos embeds (hero da
- * homepage) — o último teste mantém a prova original nessa superfície.
+ * Os clusters clássicos `.ventu-cluster-icon` continuam nos embeds — o último
+ * teste mantém a prova original nessa superfície. #183: a home v6 deixou de
+ * ter o hero Leaflet (o mapa da home é MapLibre, sem clusters); a prova passa
+ * para o mapa embebido de /pt/spots/ (o mesmo SpotMapInteractive fora do modo
+ * Explorar, aberto por omissão ≥1024 px, com o mesmo markercluster e o mesmo
+ * MapClusterIcon), com as mesmas asserções.
  */
 
 interface GroupProbe {
@@ -146,11 +150,11 @@ async function probeClusters(page: Page): Promise<ClusterProbe[]> {
   });
 }
 
-test.describe('Clusters clássicos — embeds fora do modo Explorar (hero)', () => {
+test.describe('Clusters clássicos — embeds fora do modo Explorar', () => {
   test.describe.configure({ timeout: 90_000 });
   test.use({ serviceWorkers: 'block', reducedMotion: 'reduce' });
 
-  test('hero da homepage: número visível = máximo dos filhos; etiqueta com score e contagem', async ({
+  test('mapa embebido de /pt/spots/: número visível = máximo dos filhos; etiqueta com score e contagem', async ({
     page,
   }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
@@ -158,9 +162,9 @@ test.describe('Clusters clássicos — embeds fora do modo Explorar (hero)', () 
     await page.addInitScript(() => {
       localStorage.setItem('ventu.mapdebug', '1');
     });
-    await page.goto('/pt/', { waitUntil: 'domcontentloaded', timeout: 60_000 });
+    await page.goto('/pt/spots/', { waitUntil: 'domcontentloaded', timeout: 60_000 });
     await waitHydrated(page);
-    await expect(page.locator('.ventu-cluster-icon').first()).toBeVisible({ timeout: 30_000 });
+    await expect(page.locator('#explore-map .ventu-cluster-icon').first()).toBeVisible({ timeout: 30_000 });
     const clusters = await probeClusters(page);
     expect(clusters.length).toBeGreaterThan(0);
     let scored = 0;

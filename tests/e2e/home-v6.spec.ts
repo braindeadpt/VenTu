@@ -137,7 +137,9 @@ test.describe('#183 home v6 — 390 × 844', () => {
 
   test('diálogo do mapa: «Abrir mapa» → foco no «Fechar», Esc fecha e o foco volta; aria-expanded; sem scroll', async ({ page }) => {
     await abreHome(page);
-    const abrir = page.getByRole('button', { name: 'Abrir mapa' });
+    // includeHidden: com o diálogo aberto o «Abrir mapa» fica display:none (é o «Fechar» que tem o foco),
+    // mas o aria-expanded dele tem de dizer «true» na mesma
+    const abrir = page.getByRole('button', { name: 'Abrir mapa', includeHidden: true });
     await abrir.scrollIntoViewIfNeeded();
     await expect(abrir).toHaveAttribute('aria-expanded', 'false');
     await abrir.click();
@@ -266,8 +268,15 @@ test.describe('#183 home v6 — HTML estático, bundle, WebGL e movimento', () =
     expect(html).toMatch(/data-testid="home-palavra"[^>]*>(Vai\.|Dá\.|Não vai\.|Noite\.)/);
     expect(html).toMatch(/data-testid="home-frase"[^>]*><span>[^<]{3,}/);
     expect(html).toContain('data-testid="home-lider"');
-    // a foto do hero é o único fetchpriority alto da página
-    expect(html.match(/fetchpriority="high"/gi) ?? []).toHaveLength(1);
+    // a foto do hero é o único fetchpriority alto da página: uma só <img> e, no máximo, o
+    // <link rel=preload> que o React emite para essa mesma <img> (mesmo ficheiro)
+    const altos = [...html.matchAll(/<(?:img|link)\b[^>]*fetchpriority="high"[^>]*>/gi)].map((m) => m[0]);
+    const imgsAltas = altos.filter((t) => /^<img/i.test(t));
+    expect(imgsAltas).toHaveLength(1);
+    expect(imgsAltas[0]).toContain('data-testid="home-hero-foto"');
+    const fotoHero = /\ssrc="([^"]+)"/.exec(imgsAltas[0])![1];
+    expect(altos.length).toBeLessThanOrEqual(2);
+    for (const t of altos) expect(t).toContain(fotoHero);
     const srcs = [...html.matchAll(/<script[^>]+src="([^"]+)"/g)].map((m) => m[1]);
     expect(srcs.length).toBeGreaterThan(0);
     for (const s of srcs) {

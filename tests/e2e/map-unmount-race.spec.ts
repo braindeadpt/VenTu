@@ -76,7 +76,8 @@ test.describe('Map unmount race (mobile)', () => {
     const trigger = page.locator('button[aria-controls="mobile-nav"]');
     await trigger.click();
     await page.locator('#mobile-nav select').selectOption('en');
-    await expect(page).toHaveURL(/\/en\/(mapa\/)?$/, { timeout: 10_000 });
+    // o /mapa mantém o estado na query (?sport=…&wind=…) ao trocar de língua
+    await expect(page).toHaveURL(/\/en\/(mapa\/)?(\?[^#]*)?$/, { timeout: 10_000 });
   }
 
   /** Search "Guincho" from the header palette and open the spot (SPA). */
@@ -109,7 +110,10 @@ test.describe('Map unmount race (mobile)', () => {
       // same burst so the unmount lands close to the zoom repaint window.
       const box = await map.boundingBox();
       if (!box) throw new Error('map container has no box');
-      await page.mouse.dblclick(box.x + box.width / 2, box.y + box.height / 2);
+      // No mapa da home o centro tem rótulos de spots (um clique abre o spot); o duplo clique cai no
+      // mar, a oeste da costa, onde não há rótulos — o zoom é o mesmo nos dois mapas.
+      const fx = nome.startsWith('home') ? 0.12 : 0.5;
+      await page.mouse.dblclick(box.x + box.width * fx, box.y + box.height / 2);
       await page.waitForTimeout(80);
 
       await searchAndOpenGuincho(page);

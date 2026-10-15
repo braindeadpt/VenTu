@@ -159,7 +159,8 @@ export default function HomeV6({ locale, costa: costaSSG, meta, fotos, agoraMs }
         <CostaMapa3D M={M} E={E} copy={c} hrefSpot={hrefSpot} forcarPlano={flags.plano} onCheio={setCheio} />
       </div>
       <ReguaBlocos E={E} copy={c} onEscolhe={escolhe} />
-      <footer className="rodape" data-testid="home-v6-rodape">
+      {/* div e não <footer>: o rodapé da página é o do site (contentinfo único, spec data-sources) */}
+      <div className="rodape" data-testid="home-v6-rodape">
         <nav aria-label={c.rodapeLinks}>
           <ul>
             <li>
@@ -179,7 +180,7 @@ export default function HomeV6({ locale, costa: costaSSG, meta, fotos, agoraMs }
           <a href={getAssetPath('/fotos/spots/CREDITOS.md')}>{c.creditos}</a>
           {c.fotosB}
         </p>
-      </footer>
+      </div>
     </div>
   );
 }

@@ -130,7 +130,8 @@
 .v6h .card:hover .foto img{transform:scale(1.05)}
 
 /* ---------- régua de blocos (fixa em baixo no telemóvel) ---------- */
-.v6h .regua{position:fixed;left:0;right:0;bottom:0;z-index:20;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:rgba(3,14,24,.9);
+/* fundo opaco (abismo) e não .9 como na maquete: quando o backdrop-filter não corre (computado «none»), o texto da página via-se através da régua */
+.v6h .regua{position:fixed;left:0;right:0;bottom:0;z-index:20;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:rgb(3,14,24);
   backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--linha)}
 .v6h .dias{display:flex;gap:10px}
 .v6h .dia{flex:var(--n) 1 0;min-width:0}
