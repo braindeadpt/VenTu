@@ -38,6 +38,7 @@ import { fmtNum } from '@/lib/spotVeredicto';
 import { spotV6Copy } from '@/lib/translations/spotPage/v6';
 import BoiaSkillV6 from './BoiaSkillV6';
 import BoiaAvisoCamadaV6 from './BoiaAvisoCamadaV6';
+import DetalhesV6 from './DetalhesV6';
 import { decimalV6, fmtAgeHours, fmtDistanceKm, idadeLeitura, ihAEnvelhecer, razaoDaFonte, skillSimples } from './boiaFmt';
 
 export interface BoiaV6Condicoes {
@@ -159,7 +160,7 @@ export default function BoiaV6({ spotId, locale, c, agoraMs }: BoiaV6Props) {
           ((agoraMs ?? Date.now()) - new Date(x.observedAt).getTime()) / 3_600_000;
         const km = vence ? null : fmtDistanceKm(x.distanceKm);
         const src = ih ? 'IH' : 'WMO';
-        const idadeTxt = `(${fmtAgeHours(idade)}${km ? tsu.kmAway.replace('{km}', km) : ''})`;
+        const idadeTxt = d(`(${fmtAgeHours(idade)}${km ? tsu.kmAway.replace('{km}', km) : ''})`);
         const estacao = x.stationName?.trim() || x.stationArea?.trim() || '';
         return {
           k: x.source,
@@ -308,12 +309,11 @@ export default function BoiaV6({ spotId, locale, c, agoraMs }: BoiaV6Props) {
       ) : null}
 
       {detalhes.length ? (
-        <details className="ec-det" data-boia-det="true">
-          <summary>{ms.detalhes}</summary>
+        <DetalhesV6 rotulo={ms.detalhes} data-boia-det="true">
           {detalhes.map((x) => (
             <p key={x}>{d(x)}</p>
           ))}
-        </details>
+        </DetalhesV6>
       ) : null}
 
       {avisos}

@@ -19,6 +19,7 @@ import {
   type ForecastSkillSpotResult,
 } from '@/lib/forecastSkill';
 import { decimalV6, skillSimples } from './boiaFmt';
+import DetalhesV6 from './DetalhesV6';
 
 export default function BoiaSkillV6({ spotId, locale }: { spotId: string; locale: string }) {
   const tr = getTranslation(locale);
@@ -69,8 +70,7 @@ export default function BoiaSkillV6({ spotId, locale }: { spotId: string; locale
       <p className="ec-frase" data-buoy-skill-line="true" title={title}>
         {s.frase}
       </p>
-      <details className="ec-det" data-buoy-skill-det="true">
-        <summary>{ms.detalhes}</summary>
+      <DetalhesV6 rotulo={ms.detalhes} data-buoy-skill-det="true">
         <p data-buoy-skill-stats="true">{d(det.join(' · '))}</p>
         {total > 0 ? (
           <p
@@ -80,7 +80,7 @@ export default function BoiaSkillV6({ spotId, locale }: { spotId: string; locale
             {ms.detRedes.replace('{counts}', redes.join(' · '))}
           </p>
         ) : null}
-      </details>
+      </DetalhesV6>
     </>
   );
 }

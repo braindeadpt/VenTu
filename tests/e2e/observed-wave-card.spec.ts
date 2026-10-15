@@ -651,10 +651,13 @@ test.describe('Leitura da boia no «Estudar o spot» v6 (boia X a Y km)', () => 
     await expect(skill).toHaveAttribute('title', /^ME \+0,2 m · MAE 0,4 m · RMSE 0,5 m \(n=47\)/);
     const det = card.locator('[data-boia-det="true"]');
     await expect(det).toHaveCount(1);
-    await expect(det).not.toHaveAttribute('open', '');
+    // Os «detalhes» não são um segundo <summary> dentro do <details id="estudo">.
+    await expect(page.locator('#estudo summary')).toHaveCount(1);
+    const botao = det.getByRole('button', { name: 'detalhes' });
+    await expect(botao).toHaveAttribute('aria-expanded', 'false');
     await expect(det.getByText('erro típico (RMSE) 0,5 m')).toBeHidden();
-    await det.locator('summary').click();
-    await expect(det).toHaveAttribute('open', '');
+    await botao.click();
+    await expect(botao).toHaveAttribute('aria-expanded', 'true');
     await expect(det.getByText('erro típico (RMSE) 0,5 m')).toBeVisible();
     await expect(det.getByText('47 comparações previsão × boia')).toBeVisible();
     // Cada número uma vez: o viés e o erro médio já estão na frase, não se repetem nos detalhes.
@@ -806,7 +809,7 @@ test.describe('Leitura da boia no «Estudar o spot» v6 (boia X a Y km)', () => 
     // O chip compacto «ref. PT (ME · n)» saiu (repetia o viés): o ME e o n vão para os «detalhes».
     await expect(card.locator('[data-wave-calibrated="compact"]')).toHaveCount(0);
     const det = card.locator('[data-boia-det="true"]');
-    await det.locator('summary').click();
+    await det.getByRole('button', { name: 'detalhes' }).click();
     await expect(det.getByText('acerto ES→PT: viés (ME) -0,9 m em 4 comparações (Cabo Silleiro × Datawell ao largo de Faro)')).toBeVisible();
   });
 
@@ -851,7 +854,7 @@ test.describe('Leitura da boia no «Estudar o spot» v6 (boia X a Y km)', () => 
     );
     await expect(es).toHaveAttribute('title', /^ME -0,3 m · MAE 0,5 m · RMSE 0,6 m · r 0,88 \(n=41\) — .*WMO\/Copernicus \(sem IH_API_KEY\)/);
     const det = card.locator('[data-boia-det="true"]');
-    await det.locator('summary').click();
+    await det.getByRole('button', { name: 'detalhes' }).click();
     await expect(det).toContainText('erro típico (RMSE) 0,6 m');
     await expect(det).toContainText('correlação (r) 0,88');
     await expect(det).toContainText('41 comparações previsão × boia');
@@ -947,10 +950,10 @@ test.describe('Leitura da boia no «Estudar o spot» v6 (boia X a Y km)', () => 
     await expect(page.locator('#estudo [data-boia-idade]')).toHaveCount(0);
     // Os números técnicos numa linha «detalhes» fechada, em letra pequena.
     const det = page.locator('#estudo [data-buoy-skill-det="true"]');
-    await expect(det).not.toHaveAttribute('open', '');
+    await expect(det.getByRole('button', { name: 'detalhes' })).toHaveAttribute('aria-expanded', 'false');
     const origens = det.locator('[data-buoy-skill-origins="true"]');
     await expect(origens).toBeHidden();
-    await det.locator('summary').click();
+    await det.getByRole('button', { name: 'detalhes' }).click();
     await expect(det.locator('[data-buoy-skill-stats="true"]')).toHaveText(
       'boia CSA92/D · erro típico (RMSE) 0,5 m · correlação (r) 0,91 · 47 comparações previsão × boia',
     );
