@@ -13,9 +13,12 @@
   position:relative;
   background:var(--abismo);color:var(--espuma);font:500 17px/1.45 var(--txt);font-variant-numeric:lining-nums;
   overflow-x:clip;
-  /* sem padding-bottom: o espaço para a régua fixa (< 1024 px) passou para o fim do
-     rodapé do site (regra abaixo) — a régua continua sem tapar nada e deixa de haver
-     ~130 px vazios entre as acções e o rodapé */
+  /* sem os 132 px de padding-bottom: o espaço para a régua fixa (< 1024 px) passou para
+     o fim do rodapé do site (regra abaixo) — a régua continua sem tapar nada e deixa de
+     haver ~130 px vazios entre as acções e o rodapé. Os 2,5 rem que eram o pb-10 do
+     invólucro (SpotDetailClient) ficam dentro da v6: o --abismo chega ao rodapé, sem
+     faixa de outra cor */
+  padding-bottom:2.5rem;
   /* o cabeçalho do site fica escondido nesta rota (Header.tsx): anula o pt-16 do <main> */
   margin-top:-4rem;
 }
@@ -373,7 +376,7 @@
 
 /* ---------- desktop (≥ 1024 px, como a home) ---------- */
 @media (min-width:1024px){
-  .v6{font-size:18px;padding-bottom:0}
+  .v6{font-size:18px}
   .v6 .hero{--fh:100%;min-height:0;height:min(76vh,700px)}
   .v6 .hero .foto{top:0!important;-webkit-mask-image:none;mask-image:none}
   .v6 .hero .foto.desce{-webkit-mask-image:none;mask-image:none}

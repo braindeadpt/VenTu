@@ -572,7 +572,7 @@ export default function SpotDetailClient({
       />
 
       <div
-        className="min-h-screen bg-bg-base pb-10"
+        className="min-h-screen bg-bg-base"
         data-community-tips={communityOverlay ? 'ready' : 'pending'}
       >
         {/* Página de spot v6 «Atlântico» (#184): veredicto /10, régua de 48 h,

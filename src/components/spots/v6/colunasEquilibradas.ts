@@ -88,16 +88,43 @@ export function distribuir(alturas: readonly number[], k: number, gap: number): 
   return { coluna, alturas: somar(coluna) };
 }
 
-/** Altura natural de um cartão: do topo ao fim do filho mais baixo + padding (independente de estar esticado). */
+const visiveis = (el: HTMLElement) => (Array.from(el.children) as HTMLElement[]).filter((f) => f.getClientRects().length > 0);
+const umaColuna = (el: HTMLElement) => getComputedStyle(el).gridTemplateColumns.trim().split(/\s+/).length <= 1;
+
+/**
+ * Altura natural de um cartão, independente de estar esticado: num cartão de uma
+ * coluna, a soma dos filhos e dos intervalos (o último filho pode estar encostado
+ * ao fundo); nos outros (Sol e ar, 2 colunas), do topo ao fim do filho mais baixo.
+ */
 function alturaNatural(el: HTMLElement): number {
-  const r = el.getBoundingClientRect();
   const cs = getComputedStyle(el);
-  let fundo = r.top + parseFloat(cs.paddingTop || '0');
-  for (const f of Array.from(el.children)) {
-    const b = (f as HTMLElement).getBoundingClientRect();
-    if (b.height > 0 || b.width > 0) fundo = Math.max(fundo, b.bottom + parseFloat(getComputedStyle(f).marginBottom || '0'));
+  const pad = parseFloat(cs.paddingTop || '0') + parseFloat(cs.paddingBottom || '0') + parseFloat(cs.borderTopWidth || '0') + parseFloat(cs.borderBottomWidth || '0');
+  const filhos = visiveis(el);
+  if (!filhos.length) return Math.ceil(pad);
+  if (umaColuna(el)) {
+    const gap = parseFloat(cs.rowGap || '0') || 0;
+    const soma = filhos.reduce((s, f) => {
+      const fs = getComputedStyle(f);
+      return s + f.getBoundingClientRect().height + parseFloat(fs.marginTop || '0') + parseFloat(fs.marginBottom || '0');
+    }, 0);
+    return Math.ceil(soma + gap * (filhos.length - 1) + pad);
   }
+  const r = el.getBoundingClientRect();
+  let fundo = r.top;
+  for (const f of filhos) fundo = Math.max(fundo, f.getBoundingClientRect().bottom + parseFloat(getComputedStyle(f).marginBottom || '0'));
   return Math.ceil(fundo - r.top + parseFloat(cs.paddingBottom || '0') + parseFloat(cs.borderBottomWidth || '0'));
+}
+
+/** Cartão esticado de uma coluna que acaba na fonte (`.ec-fonte`): a fonte desce até ao fundo do cartão. */
+function encostaFonte(el: HTMLElement, sim: boolean) {
+  for (const f of Array.from(el.children) as HTMLElement[]) f.style.alignSelf = '';
+  el.style.gridTemplateRows = '';
+  if (!sim || !umaColuna(el)) return;
+  const filhos = visiveis(el);
+  // só a linha da fonte desce; se o cartão acaba noutra coisa (ex.: maré observada), a folga fica no fim
+  if (filhos.length < 2 || !filhos[filhos.length - 1].classList.contains('ec-fonte')) return;
+  el.style.gridTemplateRows = `repeat(${filhos.length - 1}, auto) 1fr`;
+  filhos[filhos.length - 1].style.alignSelf = 'end';
 }
 
 export function useColunasEquilibradas(ref: RefObject<HTMLElement | null>): void {
@@ -112,6 +139,7 @@ export function useColunasEquilibradas(ref: RefObject<HTMLElement | null>): void
         c.style.gridColumn = '';
         c.style.gridRow = '';
         delete c.dataset.estica;
+        encostaFonte(c, false);
       }
       ultimo = '';
     };
@@ -144,8 +172,10 @@ export function useColunasEquilibradas(ref: RefObject<HTMLElement | null>): void
         // linhas de 1 px (grid-auto-rows:1px, sem row-gap): início e fim em px
         c.style.gridColumn = String(col + 1);
         c.style.gridRow = `${Math.round(inicio) + 1} / ${Math.round(fim) + 1}`;
-        if (ultimoDe[col] === i && fim - inicio > alturas[i] + 0.5) c.dataset.estica = '';
+        const estica = ultimoDe[col] === i && fim - inicio > alturas[i] + 0.5;
+        if (estica) c.dataset.estica = '';
         else delete c.dataset.estica;
+        encostaFonte(c, estica);
       });
     };
     const agenda = () => {

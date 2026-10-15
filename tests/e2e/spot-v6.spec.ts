@@ -339,17 +339,19 @@ test.describe('#184 spot v6 — «O que se mede» sem buracos', () => {
         await page.setViewportSize({ width: w, height: 900 });
         await abre(page, `${URL_G}?d=kite&estudo=1`);
         const grelha = page.getByTestId('spot-mede-sabe-grelha');
-        await grelha.scrollIntoViewIfNeeded();
+        // a grelha pode ser substituída na hidratação: o scroll vai pelo DOM do momento
+        await expect(grelha).toBeAttached({ timeout: 15_000 });
+        await page.evaluate(() => document.querySelector('[data-testid="spot-mede-sabe-grelha"]')?.scrollIntoView({ block: 'center' }));
         await expect(grelha).toHaveAttribute('data-mas', /^[23]$/, { timeout: 15_000 });
         // dá tempo aos cartões assíncronos (boia, clima, fundo) e à redistribuição
-        await expect
-          .poll(async () => {
-            const cs = await colunasMedeSabe(page);
-            return cs.length >= 2 && Math.max(...cs.map((c) => c.fundo)) - Math.min(...cs.map((c) => c.fundo)) <= 2;
-          }, { timeout: 15_000 })
-          .toBe(true);
+        // os cartões chegam em momentos diferentes (boia, clima, fundo): espera pelo estado estável
+        const ok = (cs: Awaited<ReturnType<typeof colunasMedeSabe>>) =>
+          cs.length === Math.min(cols, cs.reduce((s, c) => s + c.n, 0)) &&
+          Math.max(...cs.map((c) => c.fundo)) - Math.min(...cs.map((c) => c.fundo)) <= 2 &&
+          cs.every((c) => c.maiorIntervalo <= 14);
+        await expect.poll(async () => ok(await colunasMedeSabe(page)), { timeout: 20_000 }).toBe(true);
         const cs = await colunasMedeSabe(page);
-        expect(cs.length).toBe(Math.min(cols, cs.reduce((s, c) => s + c.n, 0)));
+        expect(cs.length, JSON.stringify(cs)).toBe(Math.min(cols, cs.reduce((s, c) => s + c.n, 0)));
         for (const c of cs) expect(c.maiorIntervalo, JSON.stringify(cs)).toBeLessThanOrEqual(14);
       });
     }
@@ -363,15 +365,31 @@ test.describe('#184 spot v6 — 390: fim da página', () => {
     await abre(page, `${URL_G}?d=kite`);
     await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
     const m = await page.evaluate(() => {
-      const acoes = document.querySelector('[data-testid="spot-acoes"]')!.getBoundingClientRect();
+      // fim do último conteúdo da v6: as acções ou, se houver, a nota «faltam dados» logo abaixo
+      const v6 = document.querySelector('[data-testid="spot-v6"]') as HTMLElement;
+      const ultimos = (Array.from(v6.children) as HTMLElement[]).filter((e) => !e.classList.contains('regua') && e.getBoundingClientRect().height > 0);
+      const acoes = ultimos[ultimos.length - 1].getBoundingClientRect();
       const footer = document.querySelector('[data-site-footer]') as HTMLElement;
       const fr = footer.getBoundingClientRect();
       const regua = document.querySelector('[data-testid="spot-v6"] .regua')!.getBoundingClientRect();
       // fundo do último conteúdo do rodapé (sem o padding)
-      const conteudo = Math.max(...Array.from(footer.querySelectorAll('a, p, span')).map((e) => e.getBoundingClientRect().bottom));
+      // (só o que se vê: fora os itens dos acordeões fechados, cortados por um antepassado com overflow)
+      const visivel = (e: Element) => {
+        const r = e.getBoundingClientRect();
+        if (!r.height || !r.width || !(e as HTMLElement).checkVisibility?.({ checkVisibilityCSS: true, checkOpacity: true })) return false;
+        for (let a = e.parentElement; a && a !== footer.parentElement; a = a.parentElement) {
+          const cs = getComputedStyle(a);
+          if (cs.overflow !== 'visible' || cs.overflowY !== 'visible') {
+            const ar = a.getBoundingClientRect();
+            if (r.top >= ar.bottom - 1 || r.bottom <= ar.top + 1) return false;
+          }
+        }
+        return true;
+      };
+      const conteudo = Math.max(...Array.from(footer.querySelectorAll('a, p, span, button')).filter(visivel).map((e) => e.getBoundingClientRect().bottom));
       return { vazio: fr.top - acoes.bottom, conteudo, reguaTopo: regua.top, fimRodape: fr.bottom, alturaJanela: innerHeight };
     });
-    expect(m.vazio, JSON.stringify(m)).toBeLessThanOrEqual(80);
+    expect(m.vazio, JSON.stringify(m)).toBeLessThanOrEqual(64);
     expect(m.conteudo, JSON.stringify(m)).toBeLessThanOrEqual(m.reguaTopo + 1);
     expect(Math.abs(m.fimRodape - m.alturaJanela), JSON.stringify(m)).toBeLessThanOrEqual(2);
   });
