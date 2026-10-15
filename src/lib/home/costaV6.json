@@ -1,0 +1,284 @@
+{
+ "_leia": "Costa da home v6 (#183): os 19 spots da maquete v6 «Atlântico» (docs/design/maquetes/v6-atlantico, dados de maquete-home-v1), de norte a sul, com os ids reais de src/lib/spots.ts (viana → cabedelo, lagoa-obidos → obidos-lagoon, caparica → costa-caparica, meia-praia → lagos; as variantes obidos-lagoon-sul/-foz não entram: são o mesmo plano de água). desportos = as modalidades em que o spot entra no ranking (só kite e surf; a Lagoa de Óbidos é água plana e só conta para o vento do mapa). art = artigo PT («o Guincho», «a Nazaré»). nome/curto = os da maquete.",
+ "zonas": {
+  "norte": {
+   "nome": "Norte",
+   "em": "no Norte",
+   "nomeEn": "North",
+   "emEn": "in the North"
+  },
+  "oeste": {
+   "nome": "Oeste",
+   "em": "no Oeste",
+   "nomeEn": "West",
+   "emEn": "in the West"
+  },
+  "lisboa": {
+   "nome": "Lisboa",
+   "em": "à volta de Lisboa",
+   "nomeEn": "Lisbon",
+   "emEn": "around Lisbon"
+  },
+  "vicentina": {
+   "nome": "Costa Vicentina",
+   "em": "na Costa Vicentina",
+   "nomeEn": "Costa Vicentina",
+   "emEn": "on the Costa Vicentina"
+  },
+  "sagres": {
+   "nome": "Sagres",
+   "em": "em Sagres",
+   "nomeEn": "Sagres",
+   "emEn": "in Sagres"
+  },
+  "algarve": {
+   "nome": "Algarve",
+   "em": "no Algarve",
+   "nomeEn": "Algarve",
+   "emEn": "in the Algarve"
+  }
+ },
+ "blocos": [
+  {
+   "id": "manha",
+   "nome": "manhã",
+   "de": 8,
+   "ate": 12,
+   "luz": 10
+  },
+  {
+   "id": "tarde",
+   "nome": "tarde",
+   "de": 13,
+   "ate": 16,
+   "luz": 15
+  },
+  {
+   "id": "fim",
+   "nome": "fim de tarde",
+   "de": 17,
+   "ate": 19,
+   "luz": 18
+  }
+ ],
+ "spots": [
+  {
+   "id": "moledo",
+   "maqueteId": "moledo",
+   "nome": "Moledo",
+   "concelho": "Caminha",
+   "zona": "norte",
+   "desportos": [
+    "kite",
+    "surf"
+   ],
+   "art": ""
+  },
+  {
+   "id": "cabedelo",
+   "maqueteId": "viana",
+   "nome": "Viana do Castelo",
+   "concelho": "Viana do Castelo",
+   "zona": "norte",
+   "desportos": [
+    "kite",
+    "surf"
+   ],
+   "art": "",
+   "curto": "Viana"
+  },
+  {
+   "id": "esposende",
+   "maqueteId": "esposende",
+   "nome": "Esposende",
+   "concelho": "Esposende",
+   "zona": "norte",
+   "desportos": [
+    "kite",
+    "surf"
+   ],
+   "art": ""
+  },
+  {
+   "id": "matosinhos",
+   "maqueteId": "matosinhos",
+   "nome": "Matosinhos",
+   "concelho": "Matosinhos",
+   "zona": "norte",
+   "desportos": [
+    "surf"
+   ],
+   "art": ""
+  },
+  {
+   "id": "espinho",
+   "maqueteId": "espinho",
+   "nome": "Espinho",
+   "concelho": "Espinho",
+   "zona": "norte",
+   "desportos": [
+    "surf"
+   ],
+   "art": ""
+  },
+  {
+   "id": "nazare",
+   "maqueteId": "nazare",
+   "nome": "Nazaré",
+   "concelho": "Nazaré",
+   "zona": "oeste",
+   "desportos": [
+    "surf"
+   ],
+   "art": "a"
+  },
+  {
+   "id": "obidos-lagoon",
+   "maqueteId": "lagoa-obidos",
+   "nome": "Lagoa de Óbidos",
+   "concelho": "Óbidos",
+   "zona": "oeste",
+   "desportos": [],
+   "art": "a"
+  },
+  {
+   "id": "baleal",
+   "maqueteId": "baleal",
+   "nome": "Baleal",
+   "concelho": "Peniche",
+   "zona": "oeste",
+   "desportos": [
+    "kite",
+    "surf"
+   ],
+   "art": "o"
+  },
+  {
+   "id": "supertubos",
+   "maqueteId": "supertubos",
+   "nome": "Supertubos",
+   "concelho": "Peniche",
+   "zona": "oeste",
+   "desportos": [
+    "surf"
+   ],
+   "art": ""
+  },
+  {
+   "id": "ribeira-ilhas",
+   "maqueteId": "ribeira-ilhas",
+   "nome": "Ribeira d'Ilhas",
+   "concelho": "Mafra",
+   "zona": "oeste",
+   "desportos": [
+    "surf"
+   ],
+   "art": "a"
+  },
+  {
+   "id": "guincho",
+   "maqueteId": "guincho",
+   "nome": "Guincho",
+   "concelho": "Cascais",
+   "zona": "lisboa",
+   "desportos": [
+    "kite",
+    "surf"
+   ],
+   "art": "o"
+  },
+  {
+   "id": "carcavelos",
+   "maqueteId": "carcavelos",
+   "nome": "Carcavelos",
+   "concelho": "Cascais",
+   "zona": "lisboa",
+   "desportos": [
+    "surf"
+   ],
+   "art": ""
+  },
+  {
+   "id": "costa-caparica",
+   "maqueteId": "caparica",
+   "nome": "Costa da Caparica",
+   "concelho": "Almada",
+   "zona": "lisboa",
+   "desportos": [
+    "kite",
+    "surf"
+   ],
+   "art": "a",
+   "curto": "Caparica"
+  },
+  {
+   "id": "fonte-telha",
+   "maqueteId": "fonte-telha",
+   "nome": "Fonte da Telha",
+   "concelho": "Almada",
+   "zona": "lisboa",
+   "desportos": [
+    "kite",
+    "surf"
+   ],
+   "art": "a"
+  },
+  {
+   "id": "lagoa-albufeira",
+   "maqueteId": "lagoa-albufeira",
+   "nome": "Lagoa de Albufeira",
+   "concelho": "Sesimbra",
+   "zona": "lisboa",
+   "desportos": [
+    "kite"
+   ],
+   "art": "a",
+   "curto": "Lagoa"
+  },
+  {
+   "id": "arrifana",
+   "maqueteId": "arrifana",
+   "nome": "Arrifana",
+   "concelho": "Aljezur",
+   "zona": "vicentina",
+   "desportos": [
+    "surf"
+   ],
+   "art": "a"
+  },
+  {
+   "id": "tonel",
+   "maqueteId": "tonel",
+   "nome": "Tonel",
+   "concelho": "Vila do Bispo",
+   "zona": "sagres",
+   "desportos": [
+    "surf"
+   ],
+   "art": "o"
+  },
+  {
+   "id": "martinhal",
+   "maqueteId": "martinhal",
+   "nome": "Martinhal",
+   "concelho": "Vila do Bispo",
+   "zona": "sagres",
+   "desportos": [
+    "kite",
+    "surf"
+   ],
+   "art": "o"
+  },
+  {
+   "id": "lagos",
+   "maqueteId": "meia-praia",
+   "nome": "Meia Praia",
+   "concelho": "Lagos",
+   "zona": "algarve",
+   "desportos": [
+    "kite"
+   ],
+   "art": "a"
+  }
+ ]
+}

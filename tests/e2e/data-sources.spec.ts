@@ -404,20 +404,32 @@ test.describe('Fontes de dados (data sources)', () => {
     await expect(canonical).toHaveAttribute('href', `${SITE_URL}/pt/fontes/`);
   });
 
-  test('hero embebido em /pt com pref satellite persistida mostra Esri (não só Carto)', async ({
+  test('mapa da costa da home v6 credita OpenStreetMap e o relevo', async ({ page }) => {
+    // #183: a home deixou de ter o Leaflet embebido; o mapa 3D da costa leva a sua atribuição.
+    await page.goto('/pt/', { waitUntil: 'domcontentloaded', timeout: 60_000 });
+    const cred = page.getByRole('region', { name: /Mapa interactivo/i }).locator('.credito-mapa');
+    await expect(cred).toContainText('OpenStreetMap', { timeout: 20_000 });
+    await expect(cred.getByRole('link', { name: 'OpenStreetMap' })).toHaveAttribute(
+      'href',
+      'https://www.openstreetmap.org/copyright',
+    );
+  });
+
+  test('mapa embebido (/pt/spots) com pref satellite persistida mostra Esri (não só Carto)', async ({
     page,
   }) => {
+    // #183: o hero Leaflet embebido da home saiu (home v6: mapa 3D da costa, com a sua
+    // atribuição — ver home-v6.spec). O mapa embebido do SpotMapInteractive que fica é o da
+    // lista de spots: o mesmo efeito de restauro tem de o virar para satélite.
     // Préferência de basemap satellite persistida (ventu.map.basemap) antes do
-    // load — o efeito de restauro do SpotMapInteractive vira o hero para
-    // satélite e o controlo de atribuição deve mostrar o crédito Esri/OSM,
+    // load — o controlo de atribuição deve mostrar o crédito Esri/OSM,
     // nunca apenas o Carto do 'map'.
     await page.addInitScript(() => {
       localStorage.setItem('ventu.map.basemap', 'satellite');
     });
-    await page.goto('/pt/', { waitUntil: 'networkidle', timeout: 60_000 });
-    const attribution = page.locator(
-      '[data-map-hero-teaser="true"] .leaflet-control-attribution',
-    );
+    await page.goto('/pt/spots/', { waitUntil: 'networkidle', timeout: 60_000 });
+    await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
+    const attribution = page.locator('.leaflet-control-attribution').first();
     // Open-Meteo (obrigatório em todas) + o crédito Esri do satélite.
     await expect(attribution).toContainText('Open-Meteo.com', {
       timeout: 20_000,

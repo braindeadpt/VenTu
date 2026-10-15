@@ -49,6 +49,15 @@ function loadForecastsJson(): Record<string, Array<Record<string, unknown>>> {
   return {}
 }
 
+/**
+ * Linhas horárias do forecast por série (`forecasts.json`), as mesmas que a
+ * página de spot lê. A home v6 (#183) corta-as para os 19 spots da costa
+ * (`src/lib/home/dadosHomeServidor.ts`) — nunca as serializa inteiras.
+ */
+export function loadForecastsBySpot(): Record<string, Array<Record<string, unknown>>> {
+  return loadForecastsJson()
+}
+
 function loadConditionsJson(): Record<string, RawConditions> {
   try {
     const filePath = join(process.cwd(), 'public', 'data', 'conditions.json')

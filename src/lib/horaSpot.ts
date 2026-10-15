@@ -105,6 +105,48 @@ function extremoAfinado(validas: readonly LinhaForecast[], j: number, t: string)
   return { t: tt, h: r1(y1 - 0.25 * (y0 - y2) * dx) };
 }
 
+const mareZH = (l: LinhaForecast | undefined) => {
+  const t = num(l?.tideHeight);
+  return t == null ? NaN : r1(t + NIVEL_MEDIO_ZH);
+};
+
+/**
+ * O objecto de UMA hora (regra de ouro): a linha `j` de `validas` (as linhas
+ * vizinhas só dão o sentido da maré). A página de spot (`construirHoras`) e a
+ * home (#183, `src/lib/home/dadosHome.ts`) usam esta mesma função, por isso o
+ * mesmo spot e hora dão o mesmo objecto — e a mesma nota — nas duas páginas.
+ */
+export function horaDeLinha(
+  validas: readonly LinhaForecast[],
+  j: number,
+  local: { lat: number; lon: number; praiaVirada: number },
+): HoraSpot {
+  const l = validas[j];
+  const t = l.time.slice(0, 16);
+  const tide = mareZH(l);
+  const prox = mareZH(validas[j + 1]);
+  const ant = mareZH(validas[j - 1]);
+  const tideUp = Number.isFinite(prox) ? prox > tide || (prox === tide && tide > ant) : tide > ant;
+  const s = posicaoSol(instanteLisboa(t), local.lat, local.lon);
+  return {
+    t,
+    w: Math.round((num(l.windSpeed) ?? 0) * KT),
+    g: Math.round((num(l.windGust) ?? num(l.windSpeed) ?? 0) * KT),
+    wd: n360(num(l.windDirection) ?? 0),
+    hs: r1(num(l.waveHeight) ?? 0),
+    tp: Math.round(num(l.wavePeriod) ?? 0),
+    sd: n360(num(l.waveDirection) ?? num(l.swellDirection) ?? local.praiaVirada),
+    tide,
+    tideUp: !!tideUp,
+    cloud: num(l.cloudCover) ?? null,
+    rain: num(l.precipitation) ?? null,
+    sunEl: s.el,
+    sunAz: s.az,
+    agua: num(l.waterTemp),
+    ar: num(l.airTemp),
+  };
+}
+
 export function construirHoras(
   linhas: readonly LinhaForecast[],
   local: { lat: number; lon: number; praiaVirada: number },
@@ -120,36 +162,7 @@ export function construirHoras(
   const expirada = semAgora && lisbonHourKeyFromDate(new Date(agoraMs)) > tempos[tempos.length - 1].slice(0, 13);
   const i0 = semAgora ? (expirada ? Math.max(0, validas.length - n) : 0) : coberta;
   const fatia = validas.slice(i0, i0 + n);
-  const mareZH = (l: LinhaForecast | undefined) => {
-    const t = num(l?.tideHeight);
-    return t == null ? NaN : r1(t + NIVEL_MEDIO_ZH);
-  };
-  const horas: HoraSpot[] = fatia.map((l, k) => {
-    const t = l.time.slice(0, 16);
-    const j = i0 + k;
-    const tide = mareZH(l);
-    const prox = mareZH(validas[j + 1]);
-    const ant = mareZH(validas[j - 1]);
-    const tideUp = Number.isFinite(prox) ? prox > tide || (prox === tide && tide > ant) : tide > ant;
-    const s = posicaoSol(instanteLisboa(t), local.lat, local.lon);
-    return {
-      t,
-      w: Math.round((num(l.windSpeed) ?? 0) * KT),
-      g: Math.round((num(l.windGust) ?? num(l.windSpeed) ?? 0) * KT),
-      wd: n360(num(l.windDirection) ?? 0),
-      hs: r1(num(l.waveHeight) ?? 0),
-      tp: Math.round(num(l.wavePeriod) ?? 0),
-      sd: n360(num(l.waveDirection) ?? num(l.swellDirection) ?? local.praiaVirada),
-      tide,
-      tideUp: !!tideUp,
-      cloud: num(l.cloudCover) ?? null,
-      rain: num(l.precipitation) ?? null,
-      sunEl: s.el,
-      sunAz: s.az,
-      agua: num(l.waterTemp),
-      ar: num(l.airTemp),
-    };
-  });
+  const horas: HoraSpot[] = fatia.map((_, k) => horaDeLinha(validas, i0 + k, local));
   const sol: DadosHoras['sol'] = {};
   for (const h of horas) {
     const dia = h.t.slice(0, 10);

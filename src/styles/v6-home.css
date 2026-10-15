@@ -1,0 +1,266 @@
+/* VenTu v6 «Atlântico» — home (#183). Contrato: docs/design/maquetes/v6-atlantico
+   (index.html, cores.md, critica.md). Tudo fica dentro de `.v6h`: a página de
+   spot (`.v6`, v6-atlantico.css) e o resto do site não mudam. Tokens: os de
+   cores.md (os mesmos da `.v6`), sem inventar outros. */
+.v6h{
+  --abismo:#030E18;--fundo:#071B2C;--mar:#0C2A42;--linha:#1E4361;--espuma:#F3F8FB;--nevoa:#A9C2D4;--sol:#FFC93C;--gelo:#7FE7FF;--ink:#04131F;
+  --b-nao:#A8464A;--b-nao-t:#FFFFFF;--b-fraco:#4479EE;--b-fraco-t:#04131F;--b-da:#C99E2A;--b-da-t:#04131F;
+  --b-bom:#40DCD0;--b-bom-t:#04131F;--b-mb:#FFF07A;--b-mb-t:#04131F;--b-noite:#56677B;--b-noite-t:#FFFFFF;
+  --disp:'Barlow Condensed','Arial Narrow',sans-serif;--txt:'Barlow',system-ui,sans-serif;
+  --band:#40DCD0;--band-t:#04131F;
+  --r:14px;--sombra:0 18px 40px -18px rgba(0,0,0,.65);
+  color-scheme:dark;position:relative;
+  background:var(--abismo);color:var(--espuma);font:500 17px/1.45 var(--txt);font-variant-numeric:lining-nums;
+  overflow-x:clip;
+}
+.v6h *,.v6h *::before,.v6h *::after{box-sizing:border-box}
+.v6h a{color:inherit}
+.v6h button{font:inherit;color:inherit}
+.v6h h1,.v6h h2,.v6h p{margin:0}
+.v6h .sr{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.v6h :focus-visible{outline:3px solid var(--sol);outline-offset:3px;border-radius:6px}
+
+/* ---------- cabeçalho do site na home: a mesma estrutura, com os tokens v6 (docs/pr-183/cabecalho.md) ----------
+   Sempre escuro (a home v6 é color-scheme dark), sem a tinta do pôr-do-sol; um só logótipo (o do cabeçalho). */
+.site-header[data-v6=home]{
+  --bg-base:3 14 24;--bg-elevated:7 27 44;--surface-1:243 248 251;--surface-2:243 248 251;--surface-3:12 42 66;
+  --divider:30 67 97;--divider-strong:30 67 97;--fg:243 248 251;--fg-muted:169 194 212;--fg-subtle:169 194 212;
+  --accent:127 231 255;--accent-hover:255 201 60;--accent-active:255 201 60;
+  color-scheme:dark;font-family:'Barlow',system-ui,sans-serif;
+  background:rgba(3,14,24,.92)!important;border-bottom:1px solid #1E4361!important;
+}
+.site-header[data-v6=home] .site-logo-txt{font:900 italic 27px/1 'Barlow Condensed','Arial Narrow',sans-serif;letter-spacing:-.02em;text-transform:uppercase;color:#F3F8FB}
+.site-header[data-v6=home] .site-logo-txt span{color:#FFC93C}
+.site-header[data-v6=home] nav a,.site-header[data-v6=home] nav button{font-weight:600}
+
+/* ---------- selector Kite · Surf: canto superior direito do hero, crédito da foto logo abaixo ---------- */
+.v6h .hero-modo{position:absolute;z-index:4;top:12px;right:12px}
+
+/* ---------- selector kite / surf (ModalidadeToggle) ---------- */
+.v6h .modo{display:inline-grid;grid-template-columns:1fr 1fr;padding:4px;border-radius:999px;background:rgba(3,14,24,.62);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:inset 0 0 0 1.5px rgba(243,248,251,.22);position:relative}
+.v6h .modo button{position:relative;z-index:1;border:0;background:none;min-height:44px;min-width:76px;padding:0 16px;border-radius:999px;cursor:pointer;
+  font:800 italic 21px/1 var(--disp);text-transform:uppercase;letter-spacing:.02em;display:flex;align-items:center;justify-content:center;gap:7px;color:var(--espuma)}
+.v6h .modo button svg{width:20px;height:20px;flex:none}
+.v6h .modo button[aria-pressed=true]{color:var(--ink)}
+.v6h .modo .pista{position:absolute;z-index:0;top:4px;bottom:4px;left:4px;width:calc(50% - 4px);border-radius:999px;background:var(--sol);transition:transform .35s cubic-bezier(.3,1.3,.5,1)}
+.v6h .modo[data-d=surf] .pista{transform:translateX(100%)}
+
+/* ---------- chips e nota ---------- */
+.v6h .chip{display:inline-flex;align-items:center;gap:.3em;padding:.08em .42em .1em;border-radius:6px;background:var(--c,var(--band));color:var(--t,var(--band-t));
+  font-weight:800;font-style:normal;white-space:nowrap}
+.v6h .nota{display:inline-flex;align-items:baseline;justify-content:center;background:var(--c);color:var(--t);border-radius:12px;font:900 var(--fs,44px)/1 var(--disp);
+  font-variant-numeric:tabular-nums;padding:.1em .16em .06em;min-width:1.25em}
+.v6h .nota svg{width:.7em;height:.7em;align-self:center}
+
+/* ---------- foto ---------- */
+.v6h .foto{position:absolute;inset:0;overflow:hidden;background:var(--mar)}
+.v6h .foto img{width:100%;height:100%;object-fit:cover;display:block;transform-origin:60% 40%}
+.v6h.vivo .foto.kb img{animation:v6hkb 26s ease-in-out infinite alternate}
+@keyframes v6hkb{from{transform:scale(1.02)}to{transform:scale(1.12) translate(-1.5%,1%)}}
+.v6h .credito-foto{position:absolute;z-index:3;right:8px;bottom:6px;font:500 10.5px/1.2 var(--txt);color:rgba(243,248,251,.86);text-shadow:0 1px 2px #000;max-width:70%;text-align:right;margin:0}
+.v6h .credito-foto a{text-decoration:none}
+/* a maquete não tira a margem dos <p>: o crédito fica 1em abaixo do «top» (é onde está nas capturas aprovadas) */
+.v6h .card .credito-foto{margin-top:1em}
+
+/* ---------- linha de espuma ---------- */
+.v6h .swell{position:absolute;left:0;right:0;bottom:-1px;height:26px;z-index:2;color:var(--abismo);pointer-events:none;overflow:hidden}
+.v6h .swell svg{position:absolute;bottom:0;left:0;width:200%;height:26px}
+.v6h.vivo .swell svg{animation:v6hswell 9s linear infinite}
+.v6h.vivo .swell svg.b{animation-duration:14s;opacity:.5}
+@keyframes v6hswell{to{transform:translateX(-50%)}}
+
+/* ---------- títulos de secção ---------- */
+.v6h .sec{font:900 italic clamp(26px,6.6vw,40px)/.95 var(--disp);text-transform:uppercase;letter-spacing:-.01em;margin:0 0 14px}
+.v6h .sec span{color:var(--nevoa);font-style:normal;font-weight:700;font-size:.62em;letter-spacing:.02em;margin-left:.2em}
+
+/* ---------- legenda ---------- */
+.v6h .leg{display:flex;flex-wrap:wrap;gap:6px 6px;align-items:center;font:700 13px/1 var(--txt)}
+.v6h .leg .chip{font-size:13px;padding:5px 8px;border-radius:7px}
+.v6h .leg .txt{flex-basis:100%;color:var(--nevoa);font-weight:500;font-size:14px;line-height:1.4;margin-top:6px}
+
+/* ---------- entrada (transições) ---------- */
+.v6h .entra{animation:v6hentra .45s cubic-bezier(.2,.8,.2,1) both}
+@keyframes v6hentra{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* ================= hero ================= */
+.v6h .hero{position:relative;min-height:min(696px,calc(92svh - 4rem));display:flex;flex-direction:column;justify-content:flex-end;isolation:isolate;overflow:hidden}
+.v6h .hero .foto{bottom:auto;height:var(--fh,62%);top:calc(var(--fh,62%) * var(--up,0) * -1);-webkit-mask-image:linear-gradient(180deg,#000 74%,transparent 100%);mask-image:linear-gradient(180deg,#000 74%,transparent 100%)}
+.v6h .hero .foto.desce{-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 16%,#000 74%,transparent 100%);mask-image:linear-gradient(180deg,transparent 0,#000 16%,#000 74%,transparent 100%)}
+.v6h .hero .veu{position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(3,14,24,.62) 0,rgba(3,14,24,0) 13%,rgba(3,14,24,0) 30%,rgba(3,14,24,.8) 42%,rgba(3,14,24,.94) 53%,var(--abismo) var(--fh,62%))}
+.v6h.e-noite .hero .foto img{filter:brightness(.45) saturate(.6) hue-rotate(10deg)}
+.v6h .hero-in{position:relative;z-index:3;padding:84px 16px 34px}
+.v6h .hero-cred{top:72px;bottom:auto;right:12px;background:rgba(3,14,24,.5);padding:3px 6px;border-radius:5px}
+.v6h .quando{display:inline-block;margin:0 0 8px;padding:6px 10px;border-radius:8px;background:rgba(3,14,24,.72);font:800 15px/1.2 var(--txt);letter-spacing:.12em;text-transform:uppercase;color:var(--espuma)}
+.v6h .quando b{color:var(--sol)}
+.v6h .gng{margin:0;font:900 italic clamp(96px,30vw,190px)/.8 var(--disp);letter-spacing:-.035em;text-transform:uppercase;color:var(--band);
+  text-shadow:0 6px 30px rgba(0,0,0,.45);padding:.06em 0 .04em}
+.v6h .gng small{display:block;font:800 italic 22px/1.1 var(--disp);letter-spacing:.02em;color:var(--espuma);margin-top:10px;text-shadow:none}
+.v6h .nac{margin:12px 0 18px;font:600 20px/1.32 var(--txt);max-width:34ch;text-wrap:pretty}
+.v6h .nac em{font-style:normal}
+.v6h .lider{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;text-decoration:none;padding:12px 14px 12px 12px;border-radius:var(--r);
+  background:rgba(7,27,44,.82);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:inset 0 0 0 1.5px rgba(243,248,251,.14),var(--sombra);min-height:88px}
+.v6h .lider .nota{--fs:58px}
+.v6h .rk{font:800 13px/1 var(--txt);letter-spacing:.14em;text-transform:uppercase;color:var(--nevoa);display:block;margin-bottom:3px}
+.v6h .nm{font:900 italic 30px/.92 var(--disp);text-transform:uppercase;letter-spacing:-.005em;display:block}
+.v6h .nm span{font:700 15px/1 var(--txt);font-style:normal;text-transform:none;color:var(--nevoa);letter-spacing:0;margin-left:6px}
+.v6h .l1{display:block;font:800 17px/1.25 var(--txt);margin-top:5px}
+.v6h .l2{display:block;font:500 15px/1.35 var(--txt);color:var(--nevoa);margin-top:2px}
+.v6h .l2 b{color:var(--espuma);font-weight:700}
+.v6h .seta{width:26px;height:26px;color:var(--sol)}
+
+/* ---------- nº 2 e nº 3 ---------- */
+.v6h .outros{padding:8px 16px 8px;display:grid;gap:12px}
+.v6h .card{position:relative;display:flex;flex-direction:column;justify-content:flex-end;min-height:200px;border-radius:var(--r);overflow:hidden;text-decoration:none;isolation:isolate;box-shadow:var(--sombra);container-type:inline-size}
+.v6h .card .veu{position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(3,14,24,0) 10%,rgba(3,14,24,.8) 44%,rgba(3,14,24,.95) 100%)}
+.v6h .card .in{position:static;display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:end;padding:14px 14px 22px;text-decoration:none}
+.v6h .card .in>*{position:relative;z-index:2}
+/* o cartão inteiro é a ligação (o crédito fica fora dela, por cima) */
+.v6h .card .in::before{content:'';position:absolute;inset:0;z-index:2;border-radius:inherit}
+.v6h .card .in:focus-visible{outline:none}
+.v6h .card:has(.in:focus-visible){outline:3px solid var(--sol);outline-offset:3px}
+.v6h .card .nota{--fs:48px}
+.v6h .card .in>span:nth-child(2){min-width:0}
+.v6h .card .nm{font-size:clamp(22px,8.6cqi,32px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:.08em}
+.v6h .card .credito-foto{top:8px;bottom:auto;right:10px;background:rgba(3,14,24,.6);padding:3px 6px;border-radius:5px}
+.v6h .card .foto img{transition:transform .6s cubic-bezier(.2,.8,.2,1)}
+.v6h .card:hover .foto img{transform:scale(1.05)}
+
+/* ---------- régua de blocos (fixa em baixo no telemóvel) ---------- */
+.v6h .regua{position:fixed;left:0;right:0;bottom:0;z-index:20;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:rgba(3,14,24,.9);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--linha)}
+.v6h .dias{display:flex;gap:10px}
+.v6h .dia{flex:var(--n) 1 0;min-width:0}
+.v6h .dia-n{display:block;font:800 12px/1 var(--txt);letter-spacing:.14em;text-transform:uppercase;color:var(--nevoa);margin:0 0 12px 2px;white-space:nowrap}
+.v6h .cels{display:flex;gap:5px}
+.v6h .bloco{flex:1 1 0;min-width:44px;border:0;padding:0;background:none;cursor:pointer;text-align:center}
+.v6h .bloco .bar{display:flex;align-items:center;justify-content:center;height:44px;border-radius:10px;background:var(--c);color:var(--t);
+  font:900 26px/1 var(--disp);font-variant-numeric:tabular-nums;position:relative;transition:transform .2s}
+.v6h .bloco .bl{display:block;font:700 13px/1.1 var(--txt);margin-top:5px;color:var(--nevoa);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.v6h .bloco .bl .lg{display:none}
+.v6h .bloco[aria-pressed=true] .bar{box-shadow:0 0 0 3px var(--abismo),0 0 0 6px var(--espuma)}
+.v6h .bloco[aria-pressed=true] .bl{color:var(--espuma);font-weight:800}
+.v6h .bloco .bar u{position:absolute;top:-7px;width:0;height:0;margin-left:-7px;border:7px solid transparent;border-top-color:var(--espuma);border-bottom:0;filter:drop-shadow(0 1px 0 var(--abismo))}
+
+/* ---------- mapa: faixa no telemóvel, ao lado do «VAI.» no desktop ---------- */
+.v6h .mapa-sec{padding:14px 16px 0}
+.v6h .cena{position:relative;margin:0;height:min(40svh,340px);min-height:250px;background:#071d31;overflow:hidden;border-radius:var(--r);box-shadow:var(--sombra)}
+.v6h .cena .mapa{position:absolute;inset:0;z-index:1}
+.v6h .cena .poster{position:absolute;inset:0;z-index:0;background:radial-gradient(120% 80% at 70% 40%,#0d3352,#030E18)}
+.v6h .cena .carta{position:absolute;inset:0;width:100%;height:100%;z-index:1;display:none}
+.v6h .cena.sem-webgl .carta{display:block}
+.v6h .cena.sem-webgl .mapa{display:none}
+.v6h canvas.vento{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2}
+.v6h .rotulos{position:absolute;inset:0;z-index:3;pointer-events:none}
+.v6h .rotulos.movendo{opacity:0;transition:opacity .15s}
+.v6h .guias{position:absolute;inset:0;width:100%;height:100%}
+.v6h .rot{position:absolute;display:flex;align-items:center;gap:0;pointer-events:auto;text-decoration:none;border-radius:999px;
+  background:rgba(3,14,24,.86);box-shadow:inset 0 0 0 1.5px rgba(243,248,251,.18);padding:2px 2px 2px 10px;font:800 14px/1 var(--txt);white-space:nowrap;min-height:30px}
+.v6h .rot .rn{margin-left:8px;min-width:28px;height:26px;border-radius:999px;background:var(--c);color:var(--t);display:flex;align-items:center;justify-content:center;font:900 19px/1 var(--disp);padding:0 6px}
+.v6h .rot.menor{font-size:12px;min-height:24px;padding-left:8px;opacity:.92}
+.v6h .rot.menor .rn{min-width:22px;height:20px;font-size:15px}
+.v6h .top-lbl{position:absolute;transform:translate(-50%,-50%);font:700 12px/1 var(--txt);letter-spacing:.14em;text-transform:uppercase;color:rgba(243,248,251,.55);white-space:nowrap}
+.v6h .cena .cab{position:absolute;z-index:4;left:0;top:0;right:0;padding:12px 14px 26px;pointer-events:none;background:linear-gradient(180deg,rgba(3,14,24,.8),rgba(3,14,24,0))}
+.v6h .cena .cab .sec{margin:0;font-size:26px}
+.v6h .cena .cab .sub{margin:2px 0 0;color:var(--nevoa);font:600 14px/1.3 var(--txt);max-width:24ch}
+.v6h .mapa-ferr{position:absolute;z-index:5;right:10px;top:10px;display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.v6h .vento-chip{display:flex;align-items:center;gap:8px;background:rgba(3,14,24,.82);border-radius:999px;padding:7px 12px;font:700 13px/1 var(--txt);box-shadow:inset 0 0 0 1.5px rgba(243,248,251,.16)}
+.v6h .vento-chip svg{width:28px;height:10px}
+.v6h .abrir,.v6h .fechar{display:inline-flex;align-items:center;gap:8px;min-height:44px;min-width:44px;padding:0 16px 0 13px;border:0;border-radius:999px;cursor:pointer;font:800 italic 19px/1 var(--disp);text-transform:uppercase;letter-spacing:.02em}
+.v6h .abrir svg,.v6h .fechar svg{width:20px;height:20px;flex:none}
+.v6h .abrir{position:absolute;z-index:5;right:10px;bottom:10px;background:var(--sol);color:var(--ink);box-shadow:0 8px 22px -8px rgba(0,0,0,.7)}
+.v6h .fechar{display:none;background:var(--espuma);color:var(--ink)}
+.v6h .estatica{position:absolute;z-index:4;left:12px;right:12px;bottom:62px;margin:0;padding:8px 12px;border-radius:10px;background:rgba(3,14,24,.86);font:600 14px/1.35 var(--txt);display:none;max-width:420px}
+.v6h .cena.sem-webgl .estatica{display:block}
+.v6h .cena .leg{display:none;position:absolute;z-index:4;left:10px;right:10px;bottom:28px;padding:10px 12px;border-radius:12px;background:rgba(3,14,24,.84);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.v6h .cena .leg .chip{font-size:13px;margin:0 4px 4px 0}
+.v6h .cena .leg .chip b{font-weight:900}
+.v6h .cena .leg .txt{display:block;font:500 13px/1.35 var(--txt);color:var(--nevoa);margin-top:2px}
+.v6h .credito-mapa{position:absolute;z-index:4;left:8px;bottom:6px;right:180px;margin:0;font:500 10.5px/1.2 var(--txt);color:rgba(243,248,251,.75)}
+.v6h .credito-mapa a{color:inherit}
+.v6h .mapa-sec:not(.cheio) .cena .cab .sub{display:none}
+.v6h .mapa-sec.cheio .credito-mapa{right:8px}
+.v6h .maplibregl-map{font:inherit}
+.v6h .maplibregl-canvas{outline:none}
+.v6h .maplibregl-ctrl-attrib,.v6h .maplibregl-ctrl-bottom-right,.v6h .maplibregl-ctrl-bottom-left{display:none}
+/* ecrã inteiro (telemóvel) */
+.v6h .mapa-sec.cheio{position:fixed;inset:0;z-index:1400;padding:0;background:var(--abismo)}
+.v6h .mapa-sec.cheio .cena{height:100%;min-height:0;border-radius:0;box-shadow:none}
+.v6h .mapa-sec.cheio .abrir{display:none}
+.v6h .mapa-sec.cheio .fechar{display:inline-flex}
+.v6h .mapa-sec.cheio .cab{padding-top:calc(14px + env(safe-area-inset-top))}
+.v6h .mapa-sec.cheio .mapa-ferr{top:calc(12px + env(safe-area-inset-top))}
+.v6h .mapa-sec.cheio .leg{display:block;bottom:138px}
+.v6h .mapa-sec.cheio .credito-mapa{bottom:116px}
+.v6h .mapa-sec.cheio .cab .vt{display:none}
+.v6h .mapa-sec.cheio .estatica{bottom:auto;top:96px}
+.v6h.mapa-aberto .regua{z-index:1410}
+@media (prefers-reduced-motion:no-preference){.v6h .mapa-sec.cheio{animation:v6habre .28s cubic-bezier(.2,.8,.2,1)}}
+@keyframes v6habre{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:none}}
+
+/* ---------- rodapé da v6 (as notas da maquete → links do site) ---------- */
+.v6h .rodape{padding:28px 16px 28px;color:var(--nevoa);font-size:14px;border-top:1px solid var(--linha);margin-top:24px}
+.v6h .rodape a{color:var(--espuma)}
+.v6h .rodape p{margin:0 0 8px;max-width:70ch}
+.v6h .rodape nav ul{list-style:none;margin:0 0 14px;padding:0;display:flex;flex-wrap:wrap;gap:8px 18px}
+.v6h .rodape nav a{display:inline-flex;align-items:center;min-height:44px;font:800 italic 19px/1 var(--disp);text-transform:uppercase;letter-spacing:.02em;text-decoration:none}
+.v6h .rodape nav a:hover{color:var(--sol)}
+
+/* a régua fixa (< 1024 px) não tapa o fim da página: a folga vai para o rodapé do site */
+@media (max-width:1023.98px){
+  body:has(.v6h .regua) [data-site-footer]{padding-bottom:calc(140px + env(safe-area-inset-bottom))}
+}
+
+/* ================= desktop (≥ 1024 px): «VAI.» + top 3 à esquerda, mapa 3D vivo à direita, régua por baixo ================= */
+@media (min-width:1024px){
+  .v6h{font-size:18px}
+  .v6h .hero{--fh:100%}
+  .v6h .hero .foto{top:0!important;-webkit-mask-image:none;mask-image:none}
+  .v6h .hero .foto.desce{-webkit-mask-image:none;mask-image:none}
+  .v6h .hero .foto.lado{left:var(--fl,0%);-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 22%);mask-image:linear-gradient(90deg,transparent 0,#000 22%)}
+  .v6h .hero .foto.lado img{object-position:var(--pd,50% 50%)!important}
+  .v6h .hero .veu{background:linear-gradient(90deg,rgba(3,14,24,.95) 0,rgba(3,14,24,.86) 46%,rgba(3,14,24,.42) 72%,rgba(3,14,24,.05) 100%),linear-gradient(180deg,rgba(3,14,24,.5) 0,rgba(3,14,24,0) 22%,rgba(3,14,24,0) 66%,rgba(3,14,24,.88) 100%)}
+  .v6h .topo{display:grid;grid-template-columns:minmax(0,1.04fr) minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto;grid-template-areas:"hero mapa" "outros mapa";
+    gap:16px;padding:16px 32px 0;height:calc(100vh - 4rem - 1px - 128px);min-height:620px;max-height:900px}
+  .v6h .hero{grid-area:hero;min-height:0;height:100%;border-radius:20px}
+  .v6h .hero-in{padding:28px 32px 30px}
+  .v6h .gng{font-size:clamp(104px,8.2vw,150px)}
+  .v6h .nac{font-size:22px;max-width:36ch;margin:10px 0 16px}
+  .v6h .lider{max-width:600px}
+  .v6h .outros{grid-area:outros;padding:0;grid-template-columns:1fr 1fr;gap:16px}
+  .v6h .card{min-height:206px;border-radius:20px}
+  .v6h .card .l2{display:none}
+  .v6h .hero-modo{top:16px;right:16px}
+  .v6h .hero-cred{top:76px;right:16px}
+  .v6h .regua{position:static;padding:14px 32px 0;background:none;backdrop-filter:none;-webkit-backdrop-filter:none;border:0}
+  .v6h .bloco .bar{height:56px;font-size:30px}
+  .v6h .bloco .bl .lg{display:inline}
+  .v6h .bloco .bl .ct{display:none}
+  .v6h .mapa-sec{grid-area:mapa;padding:0;min-height:0}
+  .v6h .cena{height:100%;min-height:0;border-radius:20px}
+  .v6h .cena .cab{padding:18px 20px 34px}
+  .v6h .cena .cab .sec{font-size:34px}
+  .v6h .cena .cab .sub{font-size:15px;max-width:none}
+  .v6h .mapa-ferr{right:14px;top:14px}
+  .v6h .abrir{display:none}
+  .v6h .mapa-sec:not(.cheio) .cena .cab .sub{display:block}
+  .v6h .credito-mapa{right:auto}
+  .v6h .cena .leg{display:block;left:14px;right:auto;max-width:calc(100% - 28px);bottom:28px;padding:8px 8px 4px}
+  .v6h .cena .leg .txt{display:none}
+  .v6h .estatica{bottom:auto;top:84px}
+  .v6h .rodape{padding:28px 32px 40px;margin-top:32px}
+}
+/* desktop baixo (portáteis 1024–1366 × 768–860): o «VAI.» e os cartões encolhem para o topo do hero não sair do cartão */
+@media (min-width:1024px) and (max-height:860px){
+  .v6h .topo{min-height:560px}
+  .v6h .hero-in{padding:18px 28px 20px}
+  .v6h .gng{font-size:clamp(76px,10.5vh,112px)}
+  .v6h .nac{font-size:19px;margin:6px 0 12px}
+  .v6h .card{min-height:164px}
+}
+
+/* ---------- prefers-reduced-motion: sem Ken Burns, sem ondulação, sem transições ---------- */
+@media (prefers-reduced-motion:reduce){
+  .v6h.vivo .foto.kb img,.v6h.vivo .swell svg,.v6h .entra{animation:none}
+  .v6h .modo .pista,.v6h .card .foto img,.v6h .bloco .bar{transition:none}
+}

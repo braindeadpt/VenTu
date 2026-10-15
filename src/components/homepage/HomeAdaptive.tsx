@@ -8,7 +8,7 @@ import type { GridSportFilter } from '@/lib/sportRatings';
 import { useHomeSport } from '@/hooks/useUrlGridSport';
 import { DEFAULT_REGION } from '@/lib/gridFilters';
 import { MACRO_REGIONS } from '@/lib/regions';
-import HomepageMapHero from '@/components/homepage/HomepageMapHero';
+import HeroTicker from '@/components/homepage/HeroTicker';
 import YourDaySection from '@/components/homepage/YourDaySection';
 import HomepageTopNow from '@/components/homepage/HomepageTopNow';
 import HomepageRankedSection from '@/components/homepage/HomepageRankedSection';
@@ -65,15 +65,19 @@ export default function HomeAdaptive({
         </>
       )}
 
-      <HomepageMapHero
-        locale={locale}
-        spotsData={spotsData}
-        maxTs={maxTs}
-        variant={isReturning ? 'compact' : 'featured'}
-        buoyLayer={buoyLayer}
-        coastalWarningsLayer={coastalWarningsLayer}
-        bakedAtMs={bakedAtMs}
-      />
+      {/* #183: o hero e o mapa da home são a v6 «Atlântico» (HomeV6, por cima). O ticker de
+          estado dos dados (frescura, boias, avisos costeiros) fica aqui, à cabeça das secções
+          que se mantêm até decisão do Pedro («Em aberto» da issue). */}
+      <div className="px-4 sm:px-6 lg:px-8 pt-6 pb-2" data-testid="home-ticker">
+        <div className="max-w-7xl mx-auto">
+          <HeroTicker
+            locale={locale}
+            updatedAtTs={maxTs}
+            buoyLayer={buoyLayer}
+            coastalWarningsLayer={coastalWarningsLayer}
+          />
+        </div>
+      </div>
 
       <WaveDivider />
 

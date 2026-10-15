@@ -1,0 +1,637 @@
+'use client';
+
+/**
+ * Mapa da costa da home v6 (#183): MapLibre 3D (lazy, WebGL2) com o mar junto
+ * a cada spot na cor da nota, vento em partículas (`ventoParticulas`, IDW dos
+ * spots na hora mostrada), rótulos 2D sem sobreposição (os três da lista
+ * primeiro), chip do vento, legenda e atribuição. Telemóvel: faixa depois do
+ * top 3 com «Abrir mapa» → diálogo em ecrã inteiro (foco no «Fechar», Esc,
+ * foco de volta, régua visível por baixo, câmara reenquadra o top 3).
+ * Desktop: ao lado do «VAI.», câmara para a costa toda, rótulos de todos.
+ * Sem WebGL2 (ou contexto perdido, ou `?webgl=0`): mapa plano estático em
+ * SVG com a mesma cor do mar, os mesmos rótulos e a grelha de setas.
+ * `prefers-reduced-motion`: setas paradas e câmara a saltar.
+ * Lógica da maquete aprovada (`index.html`: `rotulos`, `campoVento`,
+ * `camMobile`, `camDesk`, `mapaCheio`, `carta`).
+ */
+import { useCallback, useEffect, useRef, useState, type CSSProperties } from 'react';
+import { criarVento, idwVento, type MotorVento } from '@/lib/ventoParticulas';
+import { aplicarLuz, BOX_VENTO, CAM_DESK, CAM_MOB, COR, corTroco, luz, ZMOB, type GeoCosta } from '@/lib/home/costaCena';
+import { rumo, type Linha, type Modelo, type SpotHome } from '@/lib/home/homeV6';
+import type { EstadoHome } from '@/lib/home/estadoHome';
+import { BANDAS_ORDEM, type BandaK } from '@/lib/modalidades';
+import { bandaVars, V6_BANDAS } from '@/lib/v6Tokens';
+import { getAssetPath } from '@/lib/paths';
+import { lockBodyScroll } from '@/lib/scrollLock';
+import type { HomeV6Copy } from '@/lib/translations/homeV6';
+import type { HandleCostaGL } from './costaMapaGL';
+
+type Modo = 'poster' | '3d' | 'plano';
+type P2 = { x: number; y: number };
+interface Proj {
+  proj: (ll: [number, number]) => P2 | null;
+  unproj: (p: [number, number]) => [number, number] | null;
+}
+
+export function temWebGL2(): boolean {
+  try {
+    return !!document.createElement('canvas').getContext('webgl2');
+  } catch {
+    return false;
+  }
+}
+
+const clamp = (x: number, a: number, b: number) => Math.max(a, Math.min(b, x));
+const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+const SVGNS = 'http://www.w3.org/2000/svg';
+
+export interface CostaMapa3DProps {
+  M: Modelo;
+  E: EstadoHome;
+  copy: HomeV6Copy;
+  hrefSpot: (sp: SpotHome, i: number) => string;
+  forcarPlano: boolean;
+  /** avisa a página (a régua sobe por cima do diálogo) */
+  onCheio: (on: boolean) => void;
+}
+
+export default function CostaMapa3D({ M, E, copy: c, hrefSpot, forcarPlano, onCheio }: CostaMapa3DProps) {
+  const sec = useRef<HTMLElement>(null);
+  const fig = useRef<HTMLElement>(null);
+  const mapaEl = useRef<HTMLDivElement>(null);
+  const cartaEl = useRef<SVGSVGElement>(null);
+  const ventoEl = useRef<HTMLCanvasElement>(null);
+  const rotEl = useRef<HTMLDivElement>(null);
+  const guiasEl = useRef<SVGSVGElement>(null);
+  const abrirEl = useRef<HTMLButtonElement>(null);
+  const fecharEl = useRef<HTMLButtonElement>(null);
+  const gl = useRef<HandleCostaGL | null>(null);
+  const proj = useRef<Proj | null>(null);
+  const vento = useRef<MotorVento | null>(null);
+  const geo = useRef<GeoCosta | null>(null);
+  const reduz = useRef(false);
+  const desk = useRef(false);
+  const chaveCam = useRef('');
+  const [modo, setModo] = useState<Modo>('poster');
+  const modoRef = useRef<Modo>('poster');
+  const [cheio, setCheio] = useState(false);
+  const cheioRef = useRef(false);
+  const [pronto, setPronto] = useState(false);
+  const solta = useRef<(() => void) | null>(null);
+  // o estado mais recente para os callbacks imperativos (MapLibre, resize)
+  const st = useRef({ M, E, c, hrefSpot });
+  st.current = { M, E, c, hrefSpot };
+  const forcarRef = useRef(forcarPlano);
+  forcarRef.current = forcarPlano;
+
+  /* bandas do bloco por spot (noite: tudo noite), a do ranking único */
+  const cores = () => {
+    const { E: e } = st.current;
+    const cor: Record<string, BandaK> = {};
+    for (const r of e.R) cor[r.sp.id] = e.noite ? 'noite' : r.b;
+    return cor;
+  };
+  const pintura = () => {
+    const { M: m, E: e } = st.current;
+    const topIds = e.top.map((r) => r.sp.id);
+    return {
+      d: e.d,
+      L: luz(m.spots, e.horaMapa),
+      cor: cores(),
+      pontos: m.spotsDe(e.d).map((s) => ({ id: s.id, ll: [s.lon, s.lat] as [number, number], top: topIds.includes(s.id) })),
+    };
+  };
+
+  /* ---------- rótulos: pílulas com a nota, guias para o ponto (colocação 2D sem sobreposição) ---------- */
+  const rotulos = useCallback(() => {
+    const box = rotEl.current;
+    const svg = guiasEl.current;
+    const p = proj.current;
+    if (!box || !svg) return;
+    box.querySelectorAll('.rot,.top-lbl').forEach((e) => e.remove());
+    while (svg.firstChild) svg.removeChild(svg.firstChild);
+    if (!p) return;
+    const { M: m, E: e, c: cc, hrefSpot: href } = st.current;
+    const W = box.clientWidth;
+    const H = box.clientHeight;
+    const ids = e.top.map((r) => r.sp.id);
+    const dk = desk.current;
+    const ch = cheioRef.current;
+    const extra = dk ? m.spotsDe(e.d).filter((s) => !ids.includes(s.id)) : [];
+    const notaDe = (id: string) => e.R.find((r) => r.sp.id === id);
+    const topoLivre = dk ? 168 : ch ? 196 : 64;
+    const fundo = H - (dk ? 64 : ch ? 270 : 58);
+    type Item = { sp: SpotHome; r: Linha | undefined; top: boolean; p: P2 };
+    const items: Item[] = [
+      ...e.top.map((r) => ({ sp: r.sp, r, top: true })),
+      ...extra.map((sp) => ({ sp, r: notaDe(sp.id), top: false })),
+    ]
+      .map((o) => ({ ...o, p: p.proj([o.sp.lon, o.sp.lat]) as P2 }))
+      .filter((o) => o.p && o.p.x > 0 && o.p.x < W && o.p.y > 24 && o.p.y < H - 10);
+    const postos: Array<{ x: number; y: number; w: number; h: number }> = [];
+    const pontos = items.map((o) => o.p);
+    const livre = (x: number, y: number, w: number, hh: number) =>
+      x >= 4 &&
+      x + w <= W - 4 &&
+      y >= topoLivre &&
+      y + hh <= fundo &&
+      !postos.some((q) => x < q.x + q.w + 4 && x + w + 4 > q.x && y < q.y + q.h + 3 && y + hh + 3 > q.y) &&
+      !pontos.some((q) => q.x > x - 5 && q.x < x + w + 5 && q.y > y - 5 && q.y < y + hh + 5);
+    for (const o of items) {
+      const b: BandaK = e.noite ? 'noite' : o.r ? o.r.b : 'noite';
+      const a = document.createElement('a');
+      a.className = 'rot' + (o.top ? '' : ' menor');
+      a.href = href(o.sp, o.r ? o.r.i : e.agoraI);
+      a.style.setProperty('--c', V6_BANDAS[b].c);
+      a.style.setProperty('--t', V6_BANDAS[b].t);
+      a.style.left = '0';
+      a.style.top = '0';
+      a.style.visibility = 'hidden';
+      a.dataset.spot = o.sp.id;
+      a.dataset.banda = b;
+      if (o.top) a.dataset.top = String(ids.indexOf(o.sp.id) + 1);
+      const rt = document.createElement('span');
+      rt.className = 'rt';
+      rt.textContent = o.sp.curto || o.sp.nome;
+      const rn = document.createElement('span');
+      rn.className = 'rn';
+      rn.textContent = o.r && o.r.n != null ? String(o.r.n) : '–';
+      a.append(rt, rn);
+      a.setAttribute('aria-label', cc.rotAria(o.sp.nome, cc.banda[b], o.r?.n ?? null));
+      box.appendChild(a);
+      const w = a.offsetWidth;
+      const hh = a.offsetHeight;
+      const d = o.top ? 26 : 18;
+      const C: Array<[number, number, number]> = [];
+      for (let k = 0; k < 9; k++)
+        for (const [sx, sy] of [[-1, 1], [-1, 0], [1, 1], [1, 0], [-1, -1], [1, -1], [0, 1]] as const) {
+          const dx = sx < 0 ? -w - d - k * 4 : sx > 0 ? d + k * 4 : -w / 2;
+          const dy =
+            sy > 0 ? d * 0.3 + k * (hh * 0.55) : sy < 0 ? -hh - d * 0.3 - k * (hh * 0.55) : -hh / 2 + (k % 2 ? 1 : -1) * Math.ceil(k / 2) * (hh * 0.6);
+          const x = o.p.x + dx;
+          const y = o.p.y + dy;
+          const ex = Math.max(x, Math.min(o.p.x, x + w));
+          const ey = Math.max(y, Math.min(o.p.y, y + hh));
+          C.push([x, y, Math.hypot(ex - o.p.x, ey - o.p.y) * (sx < 0 && sy >= 0 ? 0.8 : 1)]);
+        }
+      C.sort((u, v) => u[2] - v[2]);
+      let cand: [number, number] | undefined = C.find(([x, y]) => livre(x, y, w, hh)) as [number, number] | undefined;
+      if (!cand) {
+        if (!o.top) {
+          a.remove();
+          continue;
+        }
+        cand = [clamp(o.p.x - w - d, 4, W - w - 4), clamp(o.p.y + d * 0.4, topoLivre, fundo - hh)];
+      }
+      const [x, y] = cand;
+      postos.push({ x, y, w, h: hh });
+      a.style.left = x + 'px';
+      a.style.top = y + 'px';
+      a.style.visibility = '';
+      const ex = x + w < o.p.x ? x + w : x > o.p.x ? x : x + w / 2;
+      const ey = y + hh / 2;
+      const ln = document.createElementNS(SVGNS, 'path');
+      ln.setAttribute('d', `M${ex.toFixed(1)} ${ey.toFixed(1)} L${o.p.x.toFixed(1)} ${o.p.y.toFixed(1)}`);
+      ln.setAttribute('fill', 'none');
+      ln.setAttribute('stroke', 'rgba(243,248,251,.75)');
+      ln.setAttribute('stroke-width', o.top ? '1.5' : '1');
+      svg.appendChild(ln);
+    }
+    const lbl = (txt: string, ll: [number, number]) => {
+      const q = p.proj(ll);
+      if (!q || q.x < 40 || q.x > W - 40 || q.y < 40 || q.y > H - 30) return;
+      if (postos.some((r) => q.x > r.x - 50 && q.x < r.x + r.w + 50 && q.y > r.y - 12 && q.y < r.y + r.h + 12)) return;
+      const el = document.createElement('div');
+      el.className = 'top-lbl';
+      el.textContent = txt;
+      el.style.left = q.x + 'px';
+      el.style.top = q.y + 'px';
+      el.setAttribute('aria-hidden', 'true');
+      box.appendChild(el);
+    };
+    for (const l of geo.current?.lugares ?? [])
+      if (l.n !== 'Coimbra' || dk) lbl(l.n, [l.p[0] + (l.n === 'Lisboa' ? 0.62 : 0.34), l.p[1] + (l.n === 'Lisboa' ? 0.1 : 0)]);
+    lbl(cc.lugares.espanha, dk ? [-6.3, 40.6] : [-6.9, 40.3]);
+    if (dk) lbl(cc.lugares.atlantico, [-10.9, 38.2]);
+  }, []);
+
+  /* ---------- vento em partículas: IDW dos spots na hora mostrada ---------- */
+  const campoVento = useCallback(() => {
+    const p = proj.current;
+    const cv = ventoEl.current;
+    const v = vento.current;
+    if (!p || !cv || !v) return;
+    const { M: m, E: e } = st.current;
+    const i = e.horaMapa;
+    const pts = m.spots.map((s) => [s.lon, s.lat, s.h[i].w, s.h[i].wd] as const);
+    const W = cv.clientWidth;
+    const H = cv.clientHeight;
+    const S = 24;
+    const nx = Math.ceil(W / S) + 1;
+    const ny = Math.ceil(H / S) + 1;
+    const g: Array<[number, number] | null> = new Array(nx * ny);
+    const kpx = desk.current ? 2.2 : 1.8; // px/s por nó (exagero visual; o número está nos rótulos)
+    for (let y = 0; y < ny; y++)
+      for (let x = 0; x < nx; x++) {
+        const ll = p.unproj([x * S, y * S]);
+        if (!ll || ll[0] < BOX_VENTO[0] || ll[0] > BOX_VENTO[2] || ll[1] < BOX_VENTO[1] || ll[1] > BOX_VENTO[3]) {
+          g[y * nx + x] = null;
+          continue;
+        }
+        const w = idwVento(pts, ll[0], ll[1]);
+        const p0 = p.proj(ll);
+        const pe = p.proj([ll[0] + 0.06, ll[1]]);
+        const pn = p.proj([ll[0], ll[1] + 0.06]);
+        if (!p0 || !pe || !pn) {
+          g[y * nx + x] = null;
+          continue;
+        }
+        const ex = [pe.x - p0.x, pe.y - p0.y];
+        const en = [pn.x - p0.x, pn.y - p0.y];
+        const le = Math.hypot(ex[0], ex[1]) || 1;
+        const ln = Math.hypot(en[0], en[1]) || 1;
+        const vx = (w.u * ex[0]) / le + (w.v * en[0]) / ln;
+        const vy = (w.u * ex[1]) / le + (w.v * en[1]) / ln;
+        const mm = Math.hypot(vx, vy) || 1;
+        const sp = w.w * kpx * clamp(ln / 9, 0.55, 1.25); // perto do horizonte, mais devagar (perspectiva)
+        g[y * nx + x] = [(vx / mm) * sp, (vy / mm) * sp];
+      }
+    v.campo((x, y) => {
+      const gx = x / S;
+      const gy = y / S;
+      const x0 = Math.floor(gx);
+      const y0 = Math.floor(gy);
+      if (x0 < 0 || y0 < 0 || x0 >= nx - 1 || y0 >= ny - 1) return null;
+      const a = g[y0 * nx + x0];
+      const b = g[y0 * nx + x0 + 1];
+      const cc = g[(y0 + 1) * nx + x0];
+      const d = g[(y0 + 1) * nx + x0 + 1];
+      if (!a || !b || !cc || !d) return null;
+      const fx = gx - x0;
+      const fy = gy - y0;
+      return [lerp(lerp(a[0], b[0], fx), lerp(cc[0], d[0], fx), fy), lerp(lerp(a[1], b[1], fx), lerp(cc[1], d[1], fx), fy)];
+    });
+    if (reduz.current || modoRef.current === 'plano') v.estatico();
+  }, []);
+
+  /* ---------- enquadramento: no telemóvel, o top 3; no desktop, a costa toda ---------- */
+  const enquadra = useCallback((logo: boolean) => {
+    const h = gl.current;
+    const f = fig.current;
+    if (!h || !f) return;
+    const { M: m, E: e } = st.current;
+    if (desk.current) {
+      const ch = 'desk|' + f.clientWidth + 'x' + f.clientHeight;
+      if (chaveCam.current === ch) return;
+      chaveCam.current = ch;
+      const pts = m.spots.map((s) => [s.lon, s.lat] as [number, number]);
+      h.salta(h.ajusta(pts, { z0: 6.3, tx: 0.48, ty: 0.58, v: 0.5, h: 0.66, pitch: CAM_DESK.pitch, bearing: CAM_DESK.bearing, zr: [5.3, 7.2] }));
+      return;
+    }
+    const chave = e.d + '|' + e.top.map((r) => r.sp.id).join(',') + '|' + f.clientHeight;
+    if (chave === chaveCam.current) return;
+    chaveCam.current = chave;
+    const pts = e.top.map((r) => [r.sp.lon, r.sp.lat] as [number, number]);
+    if (!pts.length) return;
+    const todosSul = e.top.every((r) => ['sagres', 'algarve'].includes(r.sp.zona) && r.sp.sp.praiaVirada < 200);
+    const ch = cheioRef.current;
+    const alvo = h.ajusta(pts, { z0: 6.4, tx: todosSul ? 0.5 : 0.62, ty: ch ? 0.48 : 0.5, v: ch ? 0.24 : 0.34, h: 0.42, pitch: CAM_MOB.pitch, bearing: CAM_MOB.bearing, zr: ZMOB });
+    if (logo || reduz.current) h.salta(alvo);
+    else h.anima(alvo);
+  }, []);
+
+  /* ---------- mapa plano (sem WebGL): a mesma informação, norte para cima ---------- */
+  const carta = useCallback(() => {
+    const svg = cartaEl.current;
+    const G = geo.current;
+    if (!svg || !G) return;
+    const { M: m, E: e } = st.current;
+    const W = svg.clientWidth || 390;
+    const H = svg.clientHeight || 560;
+    const dk = desk.current;
+    const box = dk ? [-12.4, 36.6, -5.6, 42.3] : [-10.4, 36.8, -6.6, 42.1];
+    const k = Math.cos((39.4 * Math.PI) / 180);
+    const s = Math.min(W / ((box[2] - box[0]) * k), H / (box[3] - box[1]));
+    const ox = (W - (box[2] - box[0]) * k * s) / 2 + (dk ? 0 : W * 0.08);
+    const oy = (H - (box[3] - box[1]) * s) / 2;
+    proj.current = {
+      proj: ([lon, lat]) => ({ x: ox + (lon - box[0]) * k * s, y: oy + (box[3] - lat) * s }),
+      unproj: ([x, y]) => [box[0] + (x - ox) / (k * s), box[3] - (y - oy) / s],
+    };
+    const pr = proj.current.proj;
+    const P = (cs: number[][]) =>
+      cs
+        .map(([x, y]) => {
+          const q = pr([x, y])!;
+          return q.x.toFixed(1) + ' ' + q.y.toFixed(1);
+        })
+        .join('L');
+    const path = (g: GeoJSON.Geometry) => {
+      const polys = g.type === 'Polygon' ? [g.coordinates] : g.type === 'MultiPolygon' ? g.coordinates : [];
+      const lines = g.type === 'LineString' ? [g.coordinates] : g.type === 'MultiLineString' ? g.coordinates : [];
+      return polys.map((pp) => pp.map((r) => 'M' + P(r) + 'Z').join('')).join('') + lines.map((l) => 'M' + P(l)).join('');
+    };
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    const L = luz(m.spots, e.horaMapa);
+    const cor = cores();
+    while (svg.firstChild) svg.removeChild(svg.firstChild);
+    const add = (tag: string, at: Record<string, string | number>) => {
+      const el = document.createElementNS(SVGNS, tag);
+      for (const [a, v] of Object.entries(at)) el.setAttribute(a, String(v));
+      svg.appendChild(el);
+    };
+    add('rect', { width: W, height: H, fill: aplicarLuz(COR.mar, L) });
+    for (const f of G.deep.features) add('path', { d: path(f.geometry), fill: COR.fundo, 'fill-opacity': 0.18, 'fill-rule': 'evenodd' });
+    for (const f of G.strips[e.d].features) {
+      const sid = (f.properties as { s: string; r: number }).s;
+      if (!cor[sid]) continue;
+      add('path', { d: path(f.geometry), fill: corTroco(cor[sid], (f.properties as { r: number }).r, L) });
+    }
+    add('path', { 'fill-rule': 'evenodd', d: path(G.land.features[0].geometry), fill: aplicarLuz(COR.terra, L), stroke: COR.costa, 'stroke-opacity': 0.55, 'stroke-width': 1 });
+    for (const f of G.border.features) add('path', { d: path(f.geometry), stroke: COR.fronteira, 'stroke-dasharray': '3 2', opacity: 0.35, fill: 'none' });
+    const topIds = e.top.map((r) => r.sp.id);
+    for (const sp of m.spotsDe(e.d)) {
+      const q = pr([sp.lon, sp.lat])!;
+      const t = topIds.includes(sp.id);
+      add('circle', { cx: q.x, cy: q.y, r: t ? 7.5 : 5, fill: '#030E18' });
+      add('circle', { cx: q.x, cy: q.y, r: t ? 5.5 : 3.4, fill: V6_BANDAS[cor[sp.id] ?? 'noite'].c });
+    }
+    rotulos();
+    campoVento();
+  }, [rotulos, campoVento]);
+
+  /* ---------- arranque: 3D ou plano quando o mapa se aproxima do viewport ---------- */
+  useEffect(() => {
+    const f = fig.current;
+    if (!f) return;
+    reduz.current = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    desk.current = window.matchMedia('(min-width: 1024px)').matches;
+    if (ventoEl.current)
+      vento.current = criarVento(ventoEl.current, {
+        n: desk.current ? 200 : 90,
+        vida: [4, 8],
+        cauda: 2.8,
+        vref: 46,
+        meandro: 0.42,
+        largura: desk.current ? 1.5 : 1.3,
+        alfa: 0.62,
+      });
+    let iniciado = false;
+    let vivo = true;
+    const usarPlano = () => {
+      gl.current?.destruir();
+      gl.current = null;
+      modoRef.current = 'plano';
+      setModo('plano');
+      requestAnimationFrame(() => {
+        vento.current?.tamanho();
+        carta();
+        setPronto(true);
+      });
+    };
+    const iniciar = async () => {
+      iniciado = true;
+      try {
+        const r = await fetch(getAssetPath('/geo/costa-home.json'));
+        geo.current = (await r.json()) as GeoCosta;
+      } catch {
+        return;
+      }
+      if (!vivo) return;
+      const forcar = forcarRef.current || new URLSearchParams(window.location.search).get('webgl') === '0';
+      if (forcar || !temWebGL2()) {
+        usarPlano();
+        return;
+      }
+      try {
+        const { criarCostaGL } = await import('./costaMapaGL');
+        if (!mapaEl.current || !vivo) return;
+        modoRef.current = '3d';
+        setModo('3d');
+        const h = criarCostaGL({
+          container: mapaEl.current,
+          geo: geo.current!,
+          cam: desk.current ? CAM_DESK : CAM_MOB,
+          pintura: pintura(),
+          onPronto: () => {
+            rotulos();
+            campoVento();
+            if (!reduz.current) vento.current?.iniciar();
+            campoVento();
+            setTimeout(() => setPronto(true), 400);
+          },
+          onMexe: (inicio) => {
+            if (inicio) {
+              rotEl.current?.classList.add('movendo');
+              vento.current?.limpar();
+            } else {
+              rotEl.current?.classList.remove('movendo');
+              rotulos();
+              campoVento();
+            }
+          },
+          onClique: (x, y) => {
+            const { M: m, E: e, hrefSpot: href } = st.current;
+            let best: SpotHome | null = null;
+            let bd = 30;
+            for (const sp of m.spotsDe(e.d)) {
+              const q = gl.current?.proj([sp.lon, sp.lat]);
+              if (!q) continue;
+              const dd = Math.hypot(q.x - x, q.y - y);
+              if (dd < bd) {
+                bd = dd;
+                best = sp;
+              }
+            }
+            if (best) {
+              const rr = e.R.find((o) => o.sp.id === best!.id);
+              window.location.href = href(best, rr ? rr.i : e.agoraI);
+            }
+          },
+          onPerdido: () => usarPlano(),
+        });
+        gl.current = h;
+        proj.current = h;
+        enquadra(true);
+      } catch {
+        usarPlano();
+      }
+    };
+    const io = new IntersectionObserver(
+      (es) => {
+        const vis = es.some((e) => e.isIntersecting);
+        vento.current?.pausar(!vis);
+        if (vis && !iniciado) void iniciar();
+      },
+      { rootMargin: '200px 0px', threshold: 0.01 },
+    );
+    io.observe(f);
+    const rs = () => {
+      const dk = window.matchMedia('(min-width: 1024px)').matches;
+      if (dk !== desk.current) chaveCam.current = '';
+      desk.current = dk;
+      if (modoRef.current === 'plano') {
+        vento.current?.tamanho();
+        carta();
+        return;
+      }
+      if (gl.current) enquadra(true);
+      rotulos();
+      vento.current?.tamanho();
+      vento.current?.limpar();
+      campoVento();
+    };
+    window.addEventListener('resize', rs);
+    const vis = () => vento.current?.pausar(document.hidden);
+    document.addEventListener('visibilitychange', vis);
+    return () => {
+      vivo = false;
+      io.disconnect();
+      window.removeEventListener('resize', rs);
+      document.removeEventListener('visibilitychange', vis);
+      vento.current?.parar();
+      gl.current?.destruir();
+      gl.current = null;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  /* ---------- mudar de modalidade / bloco: o mesmo ranking pinta o mar, os rótulos e o vento ---------- */
+  const chaveEstado = `${E.d}|${E.bId}|${E.horaMapa}|${E.top.map((r) => r.sp.id + r.n).join(',')}|${M.spots.length}`;
+  useEffect(() => {
+    if (modoRef.current === 'plano') {
+      carta();
+      return;
+    }
+    if (!gl.current) return;
+    gl.current.pinta(pintura());
+    rotulos();
+    campoVento();
+    enquadra(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chaveEstado]);
+
+  /* ---------- ecrã inteiro (telemóvel): «Abrir mapa» / «Fechar» / Esc ---------- */
+  const mapaCheio = useCallback(
+    (on: boolean) => {
+      if (cheioRef.current === on) return;
+      cheioRef.current = on;
+      setCheio(on);
+      onCheio(on);
+      if (on) solta.current = lockBodyScroll();
+      else {
+        solta.current?.();
+        solta.current = null;
+      }
+      requestAnimationFrame(() => {
+        if (gl.current) {
+          gl.current.redimensiona();
+          chaveCam.current = '';
+          enquadra(true);
+          vento.current?.tamanho();
+          vento.current?.limpar();
+          rotulos();
+          campoVento();
+        } else if (modoRef.current === 'plano') {
+          vento.current?.tamanho();
+          carta();
+        }
+        (on ? fecharEl.current : abrirEl.current)?.focus({ preventScroll: true });
+      });
+    },
+    [onCheio, enquadra, rotulos, campoVento, carta],
+  );
+  useEffect(() => {
+    const k = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && cheioRef.current) mapaCheio(false);
+    };
+    window.addEventListener('keydown', k);
+    return () => {
+      window.removeEventListener('keydown', k);
+      solta.current?.();
+      solta.current = null;
+    };
+  }, [mapaCheio]);
+
+  const t0 = E.top[0];
+  const hv = t0 ? t0.sp.h[E.horaMapa] : null;
+  return (
+    <section
+      ref={sec}
+      id="mapa-sec"
+      className={`mapa-sec${cheio ? ' cheio' : ''}`}
+      aria-label={c.mapaRegiao}
+      role={cheio ? 'dialog' : 'region'}
+      aria-modal={cheio ? true : undefined}
+      data-testid="home-mapa"
+    >
+      <figure
+        ref={fig}
+        className={`cena${modo === 'plano' ? ' sem-webgl' : ''}`}
+        aria-label={c.mapaFig}
+        data-modo={modo}
+        data-pronto={pronto ? '1' : '0'}
+      >
+        <div className="poster" aria-hidden="true" />
+        <svg ref={cartaEl} className="carta" aria-hidden="true" />
+        <div ref={mapaEl} className="mapa" aria-hidden="true" />
+        <canvas ref={ventoEl} className="vento" aria-hidden="true" data-testid="home-vento" data-estatico={reduz.current || modo === 'plano' ? '1' : '0'} />
+        <div ref={rotEl} className="rotulos" data-testid="home-rotulos">
+          <svg ref={guiasEl} className="guias" aria-hidden="true" />
+        </div>
+        <div className="cab">
+          <h2 className="sec" id="mapa-t">
+            {c.mapa} <span>{E.mapaQ}</span>
+          </h2>
+          <p className="sub">
+            {c.mapaSub[E.d]}
+            <span className="vt">{c.mapaSubVento}</span>
+          </p>
+        </div>
+        <div className="mapa-ferr">
+          <button ref={fecharEl} type="button" className="fechar" aria-label={c.fecharAria} onClick={() => mapaCheio(false)}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" aria-hidden="true">
+              <path d="M6 6l12 12M18 6L6 18" />
+            </svg>
+            {c.fechar}
+          </button>
+          {t0 && hv ? (
+            <span className="vento-chip" data-testid="home-vento-chip">
+              <svg viewBox="0 0 28 10" aria-hidden="true">
+                <path d="M1 3h18M1 7h24M19 1l4 2-4 2" stroke="currentColor" strokeWidth="1.6" fill="none" strokeLinecap="round" />
+              </svg>
+              {c.chipVento(t0.sp.curto || t0.sp.nome, rumo(hv.wd), hv.w)}
+            </span>
+          ) : null}
+        </div>
+        <p className="estatica">{c.estatica}</p>
+        <div className="leg" data-testid="legenda-bandas">
+          {(E.noite ? (['noite'] as BandaK[]) : (BANDAS_ORDEM as readonly BandaK[])).map((b) => (
+            <span key={b} className="chip" style={bandaVars(b) as CSSProperties}>
+              {c.banda[b]}
+              {c.legNum[b] ? <b> {c.legNum[b]}</b> : null}
+            </span>
+          ))}
+          <span className="txt">{c.legenda}</span>
+        </div>
+        <button
+          ref={abrirEl}
+          type="button"
+          className="abrir"
+          aria-expanded={cheio}
+          aria-controls="mapa-sec"
+          onClick={() => mapaCheio(true)}
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" />
+          </svg>
+          {c.abrirMapa}
+        </button>
+        <p className="credito-mapa">
+          © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> · {c.relevo}{' '}
+          <a href="https://registry.opendata.aws/terrain-tiles/">AWS Terrain Tiles</a> · MapLibre
+        </p>
+      </figure>
+    </section>
+  );
+}

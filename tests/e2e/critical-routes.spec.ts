@@ -162,16 +162,16 @@ test.describe('Critical routes', () => {
   });
 
   test('homepage sport filter syncs to URL', async ({ page }) => {
+    // #183: o filtro da home é o selector Kite · Surf do hero v6 (`?d=`, partilhado com o spot)
     await page.goto('/pt/');
     await waitHydrated(page);
-    const hero = page.getByRole('region', { name: /Mapa interactivo/i });
-    await hero.getByRole('button', { name: 'Kitesurf', exact: true }).click();
-    await expect(page).toHaveURL(/sport=kitesurf/);
+    const modo = page.getByTestId('home-modo').getByRole('group', { name: 'Modalidade', exact: true });
+    await modo.getByRole('button', { name: 'Surf', exact: true }).click();
+    await expect(page).toHaveURL(/[?&]d=surf/);
+    await modo.getByRole('button', { name: 'Kite', exact: true }).click();
+    await expect(page).toHaveURL(/[?&]d=kite/);
     await page.reload();
-    await expect(hero.getByRole('button', { name: 'Kitesurf', exact: true })).toHaveAttribute(
-      'aria-pressed',
-      'true',
-    );
+    await expect(modo.getByRole('button', { name: 'Kite', exact: true })).toHaveAttribute('aria-pressed', 'true');
   });
 
   test('mapa page loads fullscreen', async ({ page }) => {
