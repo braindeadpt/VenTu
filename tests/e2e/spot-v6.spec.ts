@@ -353,6 +353,24 @@ test.describe('#184 spot v6 — «O que se mede» sem buracos', () => {
         const cs = await colunasMedeSabe(page);
         expect(cs.length, JSON.stringify(cs)).toBe(Math.min(cols, cs.reduce((s, c) => s + c.n, 0)));
         for (const c of cs) expect(c.maiorIntervalo, JSON.stringify(cs)).toBeLessThanOrEqual(14);
+        // Dentro de cada cartão (também no esticado), nada fica afastado do anterior mais do que o
+        // intervalo do cartão: a linha da fonte vem logo a seguir ao conteúdo, a folga fica no fim.
+        const buracos = await page.evaluate(() => {
+          const g = document.querySelector('[data-testid="spot-mede-sabe-grelha"]') as HTMLElement;
+          const out: string[] = [];
+          for (const c of Array.from(g.children) as HTMLElement[]) {
+            const cs = getComputedStyle(c);
+            if (cs.gridTemplateColumns.trim().split(/\s+/).length > 1) continue;
+            const gap = parseFloat(cs.rowGap || '0') || 0;
+            const fs = (Array.from(c.children) as HTMLElement[]).filter((f) => f.getClientRects().length > 0);
+            for (let i = 1; i < fs.length; i++) {
+              const d = fs[i].getBoundingClientRect().top - fs[i - 1].getBoundingClientRect().bottom;
+              if (d > gap + 6) out.push(`${c.dataset.ec ?? c.className}: ${Math.round(d)}px antes de ${fs[i].className}`);
+            }
+          }
+          return out;
+        });
+        expect(buracos).toEqual([]);
       });
     }
   }

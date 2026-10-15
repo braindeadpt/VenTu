@@ -633,10 +633,38 @@ test.describe('Leitura da boia no «Estudar o spot» v6 (boia X a Y km)', () => 
     await expect(medida).toHaveText(/^1,8 m$/);
     // Regra de ouro: a previsão do modelo NÃO se repete aqui (vive no Porquê).
     await expect(card.getByText(/Previsão modelo/i)).toHaveCount(0);
-    // Linha «Skill desta boia» com ME/MAE/RMSE/n junto da leitura.
+    // Selo de frescura: leitura fresca → «agora», no tom activo (--gelo).
+    const selo = card.locator('[data-boia-idade]');
+    await expect(selo).toHaveCount(1);
+    await expect(selo).toHaveAttribute('data-boia-idade', 'fresca');
+    await expect(selo).toHaveText('agora');
+    expect(await selo.evaluate((el) => getComputedStyle(el).color)).toBe('rgb(127, 231, 255)');
+    // O skill da previsão nesta boia numa frase de surfista (MAE 0,4 → 40 cm;
+    // ME +0,2 = o mar vem 20 cm acima), sem siglas nem parênteses no texto.
     const skill = card.locator('[data-wave-skill="true"]');
     await expect(skill).toBeVisible();
-    await expect(skill).toContainText(/Skill desta boia: ME \+0,2 m · MAE 0,4 m · RMSE 0,5 m.*\(n=47\)/);
+    await expect(skill).toHaveText(
+      'Comparada com esta boia, a previsão costuma falhar por uns 40 cm. O mar costuma vir 20 cm acima da previsão.',
+    );
+    expect(await skill.textContent()).not.toMatch(/ME|MAE|RMSE|n=|\(/);
+    // Os números técnicos ficam no tooltip (todos) e na linha «detalhes» fechada (só o que a frase não diz).
+    await expect(skill).toHaveAttribute('title', /^ME \+0,2 m · MAE 0,4 m · RMSE 0,5 m \(n=47\)/);
+    const det = card.locator('[data-boia-det="true"]');
+    await expect(det).toHaveCount(1);
+    // Os «detalhes» não são um segundo <summary> dentro do <details id="estudo">.
+    await expect(page.locator('#estudo summary')).toHaveCount(1);
+    const botao = det.getByRole('button', { name: 'detalhes' });
+    await expect(botao).toHaveAttribute('aria-expanded', 'false');
+    await expect(det.getByText('erro típico (RMSE) 0,5 m')).toBeHidden();
+    await botao.click();
+    await expect(botao).toHaveAttribute('aria-expanded', 'true');
+    await expect(det.getByText('erro típico (RMSE) 0,5 m')).toBeVisible();
+    await expect(det.getByText('47 comparações previsão × boia')).toBeVisible();
+    // Cada número uma vez: o viés e o erro médio já estão na frase, não se repetem nos detalhes.
+    await expect(det).not.toContainText(/viés|MAE/);
+    // Período, direcção, água e maior onda em palavras (sem «Hmax» nem graus).
+    await expect(card.getByText('de 11 em 11 s · de W · água 18,5 °C · maior onda 2,6 m')).toBeVisible();
+    await expect(card.getByText(/Hmax|°(?!C)/)).toHaveCount(0);
     // IH primária sem calibração cross-border → nenhuma pill de calibração.
     await expect(card.locator('[data-wave-calibrated]')).toHaveCount(0);
     // Estilo v6: Barlow e o cartão no --mar da v6, nada do estilo antigo.
@@ -648,10 +676,16 @@ test.describe('Leitura da boia no «Estudar o spot» v6 (boia X a Y km)', () => 
   test('mostra IH vs WMO lado a lado com o vencedor e a razão', async ({ page }) => {
     await gotoSpot(page, 'with-observed-wave');
     const card = await boiaV6(page);
-    await expect(card.getByText(/✓\s*IH/)).toBeVisible();
-    await expect(card.getByText('WMO', { exact: true })).toBeVisible();
-    await expect(card.getByText(/boia Cabo Silleiro a 56 km/i)).toBeVisible();
-    await expect(card.getByText(/A usar IH — fonte primária fresca; WMO mais próxima/i)).toBeVisible();
+    // As redes em palavras (sem as siglas IH/WMO no texto visível; ficam no tooltip).
+    await expect(card.getByText(/✓\s*Rede portuguesa/)).toBeVisible();
+    await expect(card.getByText('Rede europeia', { exact: true })).toBeVisible();
+    // A reserva pelo nome; a distância vai uma só vez, junto da idade «(5h, a 56 km)».
+    await expect(card.getByText('boia Cabo Silleiro', { exact: true })).toBeVisible();
+    await expect(card.getByText(/Usamos o Instituto Hidrográfico, a fonte oficial\. A boia europeia está mais perto, mas fica de reserva\./)).toBeVisible();
+    // Regra de ouro dentro do cartão: cada distância aparece uma vez.
+    const texto = (await card.innerText()).replace(/\s+/g, ' ');
+    expect(texto.match(/56 km/g)?.length).toBe(1);
+    expect(texto.match(/60 km/g)?.length).toBe(1);
     // A WMO é MAIS VELHA aqui (5h vs IH 1h) — sem aviso de envelhecimento.
     await expect(card.locator('[data-ih-aging="true"]')).toHaveCount(0);
   });
@@ -661,10 +695,12 @@ test.describe('Leitura da boia no «Estudar o spot» v6 (boia X a Y km)', () => 
     const card = await boiaV6(page);
     const par = card.getByLabel(/Fontes de onda observada \(IH vs WMO\)|Observed wave sources \(IH vs WMO\)/i);
     await expect(par).toBeVisible();
-    await expect(par).toContainText('IH');
+    await expect(par).toContainText('Rede portuguesa');
     await expect(par).toContainText('✓');
     await expect(par).toContainText('(1h)');
-    await expect(par).toContainText('WMO');
+    await expect(par).toContainText('Rede europeia');
+    // Sem siglas no texto visível do par: IH/WMO só no title.
+    expect((await par.innerText()).match(/\b(IH|WMO)\b/)).toBeNull();
     await expect(par).toContainText('(5h, a 56 km)');
     await expect(par.locator('[title*="leitura"]')).toHaveCount(2);
     await expect(par.locator('[title*="CSA92/D"]')).toHaveAttribute('title', /IH ✓ \(1h\) · CSA92\/D · leitura \d{2}:\d{2}$/);
@@ -718,8 +754,8 @@ test.describe('Leitura da boia no «Estudar o spot» v6 (boia X a Y km)', () => 
     const card = await boiaV6(page);
     const aviso = card.locator('[data-ih-aging="true"]');
     await expect(aviso).toBeVisible();
-    await expect(aviso).toContainText(/IH a envelhecer/i);
-    await expect(card.getByText(/A usar IH — fonte primária fresca; WMO mais próxima e mais fresca/i)).toBeVisible();
+    await expect(aviso).toContainText(/A leitura do Instituto Hidrográfico já tem umas horas/);
+    await expect(card.getByText(/A boia europeia está mais perto e é mais recente, mas fica de reserva\./)).toBeVisible();
   });
 
   const CROSS_BORDER = (calibrada: boolean) => ({
@@ -765,21 +801,19 @@ test.describe('Leitura da boia no «Estudar o spot» v6 (boia X a Y km)', () => 
     await interceptConditions(page, CROSS_BORDER(true));
     await page.goto('/pt/spots/guincho/');
     const card = await boiaV6(page);
-    // Pill de calibração: medido → recalibrado + viés ME/n.
+    // Nota de calibração em palavras: o que a boia mediu (2,3 m); o corrigido
+    // (1,4 m) só no valor grande — cada número uma vez.
     const cal = card.locator('[data-wave-calibrated="true"]');
     await expect(cal).toBeVisible();
-    await expect(cal).toContainText(/medido 2,3 m/);
-    await expect(cal).toContainText(/1,4 m/);
-    await expect(cal).toContainText(/viés -0,9 m \(n=4\)/);
+    await expect(cal).toHaveText('Boia espanhola acertada pelas portuguesas: mediu 2,3 m; a altura acima já vem corrigida.');
+    await expect(card.getByText(/Altura \(medida\)/).locator('xpath=following-sibling::p[1]')).toHaveText(/^1,4 m$/);
+    await expect(card.getByText(/1,4 m/)).toHaveCount(1);
     await expect(cal).toHaveAttribute('title', /Cabo Silleiro × Datawell ao largo de Faro · ME -0,9 m \(n=4\)/);
-    // Chip compacto da calibração, com a explicação completa no tooltip.
-    const chip = card.locator('[data-wave-calibrated="compact"]');
-    await expect(chip).toBeVisible();
-    await expect(chip).toContainText(/ref\. PT \(-0,9 m · n=4\)/);
-    await expect(chip).toHaveAttribute(
-      'title',
-      /Leitura espanhola recalibrada para a referência PT \(Cabo Silleiro × Datawell ao largo de Faro\) · ME -0,9 m \(n=4\)/,
-    );
+    // O chip compacto «ref. PT (ME · n)» saiu (repetia o viés): o ME e o n vão para os «detalhes».
+    await expect(card.locator('[data-wave-calibrated="compact"]')).toHaveCount(0);
+    const det = card.locator('[data-boia-det="true"]');
+    await det.getByRole('button', { name: 'detalhes' }).click();
+    await expect(det.getByText('acerto ES→PT: viés (ME) -0,9 m em 4 comparações (Cabo Silleiro × Datawell ao largo de Faro)')).toBeVisible();
   });
 
   test('leitura WMO SEM calibration → nunca mostra o tag de calibração (honestidade do rótulo)', async ({ page }) => {
@@ -817,10 +851,16 @@ test.describe('Leitura da boia no «Estudar o spot» v6 (boia X a Y km)', () => 
     const card = await boiaV6(page);
     const es = card.locator('[data-wave-skill="es"]');
     await expect(es).toBeVisible();
-    await expect(es).toContainText(/boia espanhola \(Cabo Silleiro\)/);
-    await expect(es).toContainText(/ME -0,3 m · MAE 0,5 m · RMSE 0,6 m/);
-    await expect(es).toContainText(/\(n=41\)/);
-    await expect(es).toContainText(/WMO\/Copernicus \(sem IH_API_KEY\)/);
+    // Em palavras: de onde vem a medida, quanto falha a previsão (MAE 0,5 → 50 cm) e para que lado (ME -0,3).
+    await expect(es).toHaveText(
+      'Medido na boia espanhola de Cabo Silleiro. Comparada com esta boia, a previsão costuma falhar por uns 50 cm. O mar costuma vir 30 cm abaixo da previsão.',
+    );
+    await expect(es).toHaveAttribute('title', /^ME -0,3 m · MAE 0,5 m · RMSE 0,6 m · r 0,88 \(n=41\) — .*WMO\/Copernicus \(sem IH_API_KEY\)/);
+    const det = card.locator('[data-boia-det="true"]');
+    await det.getByRole('button', { name: 'detalhes' }).click();
+    await expect(det).toContainText('erro típico (RMSE) 0,6 m');
+    await expect(det).toContainText('correlação (r) 0,88');
+    await expect(det).toContainText('41 comparações previsão × boia');
     await expect(card.locator('[data-wave-skill="true"]')).toHaveCount(0);
     // Cadeia de atribuição exacta da fonte (a mesma de /fontes): Copernicus.
     const fonte = card.locator('[data-data-source="copernicus"]');
@@ -885,7 +925,7 @@ test.describe('Leitura da boia no «Estudar o spot» v6 (boia X a Y km)', () => 
           pairCount: 47,
           pairCountByOrigin: { ih: 12, 'wmo-es': 10 },
           calibratedPairCount: 10,
-          byBuoy: { 19: { buoyName: 'CSA92/D', n: 47, me: 0.2, mae: 0.4, rmse: 0.5, corr: 0.91, meanLeadHours: 12 } },
+          byBuoy: { 19: { buoyName: 'CSA92/D', n: 47, me: 0.2, mae: 0.4, rmse: 0.5, corr: 0.91, meanLeadHours: 12, withinHalfM: 0.92 } },
         }),
       });
     });
@@ -904,11 +944,27 @@ test.describe('Leitura da boia no «Estudar o spot» v6 (boia X a Y km)', () => 
     await abreEstudo(page);
     const linha = page.locator('#estudo [data-buoy-skill-line="true"]');
     await expect(linha).toBeVisible({ timeout: 20_000 });
-    await expect(linha).toContainText(/Skill desta boia \(CSA92\/D.*\): ME \+0,2 m · RMSE 0,5 m · r 0,91 \(n=47\)/);
-    const origens = page.locator('#estudo [data-buoy-skill-origins="true"]');
+    // Uma frase de surfista (a do pedido), sem siglas nem parênteses aninhados.
+    await expect(linha).toHaveText(
+      'A previsão costuma bater certo nesta boia: em 92% das vezes ficou a menos de meio metro do que ela mediu. O mar costuma vir 20 cm acima da previsão.',
+    );
+    await expect(linha).toHaveAttribute('title', /^ME \+0,2 m · RMSE 0,5 m · r 0,91 \(n=47\)/);
+    // Sem leitura nenhuma no JSON: nem «agora» nem idade.
+    await expect(page.locator('#estudo [data-boia-idade]')).toHaveCount(0);
+    // Os números técnicos numa linha «detalhes» fechada, em letra pequena.
+    const det = page.locator('#estudo [data-buoy-skill-det="true"]');
+    await expect(det.getByRole('button', { name: 'detalhes' })).toHaveAttribute('aria-expanded', 'false');
+    const origens = det.locator('[data-buoy-skill-origins="true"]');
+    await expect(origens).toBeHidden();
+    await det.getByRole('button', { name: 'detalhes' }).click();
+    await expect(det.locator('[data-buoy-skill-stats="true"]')).toHaveText(
+      'boia CSA92/D · erro típico (RMSE) 0,5 m · correlação (r) 0,91 · 47 comparações previsão × boia',
+    );
     await expect(origens).toBeVisible();
-    await expect(origens).toContainText(/IH 12 · Copernicus-ES 10/);
-    await expect(origens).toContainText(/total 22/);
+    await expect(origens).toContainText('Instituto Hidrográfico 12 · Copernicus (boia espanhola) 10');
+    // as redes em palavras: sem siglas soltas no texto visível
+    expect(await origens.innerText()).not.toMatch(/\b(IH|WMO)\b|Copernicus-(PT|ES)/);
+    expect(parseFloat(await origens.evaluate((el) => getComputedStyle(el).fontSize))).toBeLessThanOrEqual(13);
     // Sem leitura fresca: sem o cartão da leitura.
     await expect(page.getByLabel(/Onda observada \(boia\)|Observed wave \(buoy\)/i)).toHaveCount(0);
   });
@@ -948,9 +1004,33 @@ test.describe('Leitura da boia no «Estudar o spot» v6 (boia X a Y km)', () => 
     });
     await page.goto('/pt/spots/guincho/');
     await abreEstudo(page);
-    await expect(page.locator('#estudo [data-boia="sem-leitura"]')).toContainText(/Leitura da boia antiga/, { timeout: 15_000 });
+    const boia = page.locator('#estudo [data-boia="sem-leitura"]');
+    await expect(boia).toContainText(/Leitura antiga demais para contar/, { timeout: 15_000 });
     await expect(page.getByLabel(/Onda observada \(boia\)|Observed wave \(buoy\)/i)).toHaveCount(0);
     await expect(page.getByText(/Altura \(medida\)/)).toHaveCount(0);
+    // Sem «agora»: a idade honesta no tom névoa, não no activo.
+    const selo = boia.locator('[data-boia-idade]');
+    await expect(selo).toHaveAttribute('data-boia-idade', 'antiga');
+    await expect(selo).toHaveText('há 5 h');
+    await expect(boia.getByText(/^agora$/i)).toHaveCount(0);
+    expect(await selo.evaluate((el) => getComputedStyle(el).color)).toBe('rgb(169, 194, 212)');
+    await expect(selo).toHaveAttribute('title', /^Última leitura desta boia: \d{2}:\d{2} \(há 5 h\)$/);
+  });
+
+  test('leitura de ontem: «leitura de ontem 18h» (ou o dia), nunca «agora»', async ({ page }) => {
+    await interceptConditions(page, {
+      spots: {
+        [SPOT_KEY]: (entry) => ({
+          ...entry,
+          observedWave: freshObservedWave({ observedAt: new Date(Date.now() - 26 * 3_600_000).toISOString() }),
+        }),
+      },
+    });
+    await page.goto('/pt/spots/guincho/');
+    await abreEstudo(page);
+    const selo = page.locator('#estudo [data-boia="sem-leitura"] [data-boia-idade="antiga"]');
+    await expect(selo).toHaveText(/^leitura de (ontem|dom|seg|ter|qua|qui|sex|sáb) \d{1,2}h(\d{2})?$/, { timeout: 15_000 });
+    await expect(page.locator('#estudo [data-boia-idade="fresca"]')).toHaveCount(0);
   });
 
   test('avisa quando a leitura ES foi descartada por incoerência do par ES×PT', async ({ page }) => {
@@ -959,8 +1039,9 @@ test.describe('Leitura da boia no «Estudar o spot» v6 (boia X a Y km)', () => 
     const aviso = page.locator('#estudo [data-coherence-refused="true"]');
     await expect(aviso).toHaveCount(1);
     await expect(aviso).toBeVisible({ timeout: 15_000 });
-    await expect(aviso).toContainText('descartada hoje');
-    await expect(aviso).toContainText('ES×PT');
+    await expect(aviso).toContainText('Hoje pusemos de lado a boia espanhola');
+    await expect(aviso).not.toContainText(/incoherent|ES×PT/);
+    await expect(aviso).toHaveAttribute('title', /descartada hoje.*ES×PT/);
     await expect(page.getByLabel(/Onda observada \(boia\)|Observed wave \(buoy\)/i)).toHaveCount(0);
   });
 
@@ -970,7 +1051,9 @@ test.describe('Leitura da boia no «Estudar o spot» v6 (boia X a Y km)', () => 
     const aviso = card.locator('[data-coherence-warning="true"]');
     await expect(aviso).toHaveCount(1);
     await expect(aviso).toBeVisible();
-    await expect(aviso).toContainText('incoherent há 4 dias');
+    await expect(aviso).toContainText('há 4 dias que a boia espanhola e a portuguesa não batem certo');
+    await expect(aviso).not.toContainText('incoherent');
+    await expect(aviso).toHaveAttribute('title', /incoherent há 4 dias/);
     await expect(page.locator('[data-coherence-refused="true"]')).toHaveCount(0);
   });
 
@@ -979,9 +1062,31 @@ test.describe('Leitura da boia no «Estudar o spot» v6 (boia X a Y km)', () => 
     const card = await boiaV6(page);
     const nota = card.locator('[data-wave-bridge="true"]');
     await expect(nota).toBeVisible();
-    await expect(nota).toContainText('Ponte keyless');
+    await expect(nota).toContainText('A boia portuguesa desta zona ainda não está ligada');
     await expect(nota).toContainText('Cabo Silleiro (ES)');
+    await expect(nota).not.toContainText(/keyless|IH_API_KEY|Fugro/);
+    await expect(nota).toHaveAttribute('title', /Ponte keyless/);
     await expect(card.getByText(/boia Cabo Silleiro a 281 km/i).first()).toBeVisible();
+  });
+
+  test('«O que se mede» em linguagem simples: sem siglas de engenharia no texto visível (detalhes fechados)', async ({ page }) => {
+    await gotoSpot(page, 'with-observed-wave');
+    await boiaV6(page);
+    const sec = page.getByTestId('spot-mede-sabe');
+    await expect(sec.locator('[data-ec="boia"]')).toBeVisible();
+    // innerText não inclui o conteúdo de um <details> fechado nem os tooltips.
+    const visivel = await sec.innerText();
+    for (const jargao of [/\bAQI\b/, /Isóbatas IH/, /CC-BY/, /\bME [+-]/, /RMSE/, /\bMAE\b/, /\bn=\d/, /IH_API_KEY/, /keyless/i, /Hmax/, /incoherent/, /Skill/, /radar HF/, /MERRA/, /\(\S[^)]*\(/]) {
+      expect(visivel, `jargão visível: ${jargao}`).not.toMatch(jargao);
+    }
+    // Qualidade do ar em palavras (sem «agora»: o índice é previsão do build) e o UV com o nível da OMS.
+    const ar = sec.locator('[data-aqi]');
+    if (await ar.count()) {
+      await expect(ar.locator('.ec-rot')).toHaveText(/^Qualidade do ar$/i);
+      await expect(ar).toContainText(/índice europeu \d+/);
+    }
+    const uv = sec.locator('[data-uv-nivel]');
+    if (await uv.count()) await expect(uv).toHaveText(/^(baixo|moderado|alto|muito alto|extremo)$/);
   });
 
   test('EN: «Observed wave (buoy)» com o rótulo e o separador decimal ingleses', async ({ page }) => {
@@ -990,5 +1095,98 @@ test.describe('Leitura da boia no «Estudar o spot» v6 (boia X a Y km)', () => 
     const card = page.locator('#estudo').getByLabel(/Observed wave \(buoy\)/i);
     await expect(card).toBeVisible({ timeout: 15_000 });
     await expect(card.getByText(/Height \(measured\)/i).locator('xpath=following-sibling::p[1]')).toHaveText(/^1\.8 m$/);
+  });
+});
+
+/**
+ * iPhone 12 Pro (390 × 844, DPR 3): a página do spot abria descentrada. A régua de 48 h é
+ * `position: fixed` (escapa ao `overflow-x: clip` da `.v6`) e o seu cabeçalho não encolhia:
+ * com a fonte de recurso (antes de a Barlow Condensed chegar) «Agora · qui 15, 18h» / «Now · Thu
+ * 15, 18:00» empurrava a seta da direita 22–34 px para fora do ecrã, e o iOS Safari alargava a
+ * página. O Chromium não conta elementos fixos no scrollWidth, por isso além do scrollWidth
+ * mede-se cada elemento visível da página contra a largura do ecrã. As fontes ficam bloqueadas
+ * (o pior caso, o da primeira visita). Na cena 3D, o rótulo do spot fica no centro do enquadramento.
+ */
+test.describe('spot v6 a 390 (iPhone): abre centrada', () => {
+  test.use({
+    viewport: { width: 390, height: 844 },
+    deviceScaleFactor: 3,
+    isMobile: true,
+    hasTouch: true,
+    userAgent:
+      'Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Mobile/15E148 Safari/604.1',
+  });
+
+  for (const loc of ['pt', 'en'] as const) {
+    for (const leitura of ['fresca', 'antiga'] as const) {
+      test(`${loc}, leitura ${leitura}: sem nada fora do ecrã na horizontal (fonte de recurso)`, async ({ page }) => {
+        await page.route(/\.(woff2?|ttf|otf)(\?|$)/, (r) => r.abort());
+        await interceptConditions(page, {
+          spots: {
+            [SPOT_KEY]: (entry) => ({
+              ...entry,
+              observedWave: freshObservedWave(
+                leitura === 'antiga' ? { observedAt: new Date(Date.now() - 20 * 3_600_000).toISOString() } : {},
+              ),
+            }),
+          },
+        });
+        await page.goto(`/${loc}/spots/${SPOT_SLUG}/`);
+        await page.waitForSelector('html.is-hydrated', { timeout: 20_000 });
+        await expect(page.getByTestId('regua-48h')).toBeVisible();
+        const medir = () =>
+          page.evaluate(() => {
+            const de = document.documentElement;
+            const W = de.clientWidth;
+            const fora: string[] = [];
+            for (const el of document.querySelectorAll<HTMLElement>('[data-testid="spot-v6"] *')) {
+              const r = el.getBoundingClientRect();
+              if (r.width === 0 || r.height === 0) continue;
+              if (r.right <= W + 0.5 && r.left >= -0.5) continue;
+              // cortado por um antepassado (overflow-x ≠ visible) — mas um elemento fixo escapa
+              // aos antepassados acima dele (o caso da régua dentro da .v6)
+              let cortado = false;
+              for (let a: HTMLElement | null = el; a && a !== document.body; a = a.parentElement) {
+                if (a !== el && getComputedStyle(a).overflowX !== 'visible') { cortado = true; break; }
+                if (getComputedStyle(a).position === 'fixed') break;
+              }
+              if (!cortado) fora.push(`${el.tagName.toLowerCase()}.${el.className} [${Math.round(r.left)}, ${Math.round(r.right)}]`);
+            }
+            const seta = [...document.querySelectorAll('[data-testid="regua-48h"] .r-cab button')].pop()!.getBoundingClientRect();
+            return { sw: de.scrollWidth, cw: W, sx: window.scrollX, fora, setaDir: seta.right };
+          });
+        const m = await medir();
+        expect(m.cw).toBe(390);
+        expect(m.sw).toBe(m.cw);
+        expect(m.sx).toBe(0);
+        expect(m.fora).toEqual([]);
+        expect(m.setaDir).toBeLessThanOrEqual(m.cw);
+        // com o «Estudar o spot» aberto (a leitura da boia e o par IH × WMO)
+        await abreEstudo(page);
+        const m2 = await medir();
+        expect(m2.sw).toBe(m2.cw);
+        expect(m2.fora).toEqual([]);
+      });
+    }
+  }
+
+  test('cena 3D: o rótulo do spot fica no centro do enquadramento', async ({ page }) => {
+    await interceptConditions(page, { spots: { [SPOT_KEY]: (entry) => ({ ...entry, observedWave: freshObservedWave() }) } });
+    await page.goto(`/pt/spots/${SPOT_SLUG}/`);
+    await page.waitForSelector('html.is-hydrated', { timeout: 20_000 });
+    const fig = page.locator('[data-testid="praia-3d"] figure');
+    await fig.scrollIntoViewIfNeeded();
+    await expect(fig).not.toHaveAttribute('data-modo', 'poster', { timeout: 20_000 });
+    test.skip((await fig.getAttribute('data-modo')) !== '3d', 'sem WebGL2 neste browser: vista plana (centro editorial)');
+    const rot = fig.locator('.lbl-abs.grande');
+    await expect(rot).toBeVisible({ timeout: 30_000 });
+    const r = await page.evaluate(() => {
+      const f = document.querySelector('[data-testid="praia-3d"] figure') as HTMLElement;
+      const l = f.querySelector('.lbl-abs.grande') as HTMLElement;
+      // posição projectada do spot (o rótulo sobe 22 px acima dela)
+      return { x: parseFloat(l.style.left), y: parseFloat(l.style.top) + 22, W: f.clientWidth, H: f.clientHeight };
+    });
+    expect(Math.abs(r.x - r.W / 2)).toBeLessThanOrEqual(4);
+    expect(Math.abs(r.y - r.H / 2)).toBeLessThanOrEqual(4);
   });
 });

@@ -223,7 +223,7 @@ export default function PraiaCena3D({ nome, ll, idEstatico, praiaVirada, vizinho
       setModo('plano');
       requestAnimationFrame(() => {
         if (!planoEl.current) return;
-        const cam = camara(ll, praiaVirada, desk.current);
+        const cam = camara(ll, praiaVirada, desk.current, rotulos?.ll);
         plano.current = criarPlano(planoEl.current, ll, idEstatico, rotulos?.centroPlano ?? cam.center, praiaVirada, desk.current, estadoRef.current, () => setPronto(true), rotulos?.caixaFrentes);
         proj.current = plano.current;
         vento.current?.tamanho();
@@ -250,6 +250,7 @@ export default function PraiaCena3D({ nome, ll, idEstatico, praiaVirada, vizinho
           ll,
           idEstatico,
           praiaVirada,
+          foco: rotulos?.ll,
           desktop: desk.current,
           reduz: reduz.current,
           estado: estadoRef.current,

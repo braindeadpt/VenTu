@@ -1,10 +1,13 @@
 'use client';
 
 /**
- * Linha discreta «skill desta boia» (v6), quando não há leitura fresca: o
- * skill real acumulado do forecast na boia do spot (forecast-skill.json
- * byBuoy, best_match vs leitura, lead > 0) e a repartição dos pares por
- * plataforma (IH · Copernicus-PT · Copernicus-ES). Degrada em silêncio.
+ * «Quão bem a previsão bate nesta boia» (v6), quando não há leitura fresca:
+ * o skill real acumulado do forecast na boia do spot (forecast-skill.json
+ * byBuoy, best_match vs leitura, lead > 0) numa frase de surfista — a taxa de
+ * acerto a ±0,5 m e a tendência em cm (ME = observado − previsto). Os números
+ * técnicos (RMSE, r, n e a repartição dos pares por rede) ficam numa linha
+ * «detalhes» fechada, em letra pequena; o ME e a taxa ficam só na frase (cada
+ * número uma vez), com a definição técnica no tooltip. Degrada em silêncio.
  */
 import { useEffect, useState } from 'react';
 import { getAssetPath } from '@/lib/paths';
@@ -13,21 +16,15 @@ import {
   forecastSkillOriginLabel,
   forecastSkillOriginTag,
   loadForecastSkillForSpot,
-  type ForecastSkillBuoy,
   type ForecastSkillSpotResult,
 } from '@/lib/forecastSkill';
-import { decimalV6 } from './boiaFmt';
-
-function skillTxt(b: ForecastSkillBuoy): string | null {
-  if (!Number.isFinite(b.me) || !Number.isFinite(b.n)) return null;
-  const parts = [`ME ${b.me >= 0 ? '+' : ''}${b.me.toFixed(1)} m`];
-  if (typeof b.rmse === 'number') parts.push(`RMSE ${b.rmse.toFixed(1)} m`);
-  if (typeof b.corr === 'number') parts.push(`r ${b.corr.toFixed(2)}`);
-  return parts.join(' · ');
-}
+import { decimalV6, skillSimples } from './boiaFmt';
+import DetalhesV6 from './DetalhesV6';
 
 export default function BoiaSkillV6({ spotId, locale }: { spotId: string; locale: string }) {
-  const tv = getTranslation(locale).spotVerify;
+  const tr = getTranslation(locale);
+  const tv = tr.spotVerify;
+  const ms = tr.spotMedeSabe;
   const [r, setR] = useState<ForecastSkillSpotResult | null>(null);
 
   useEffect(() => {
@@ -43,34 +40,51 @@ export default function BoiaSkillV6({ spotId, locale }: { spotId: string; locale
   }, [spotId]);
 
   const b = r?.buoy;
-  if (!b) return null;
-  const label = skillTxt(b);
-  if (!label) return null;
-  const origem = forecastSkillOriginLabel(b.origin, locale);
-  const nome = b.origin === 'ih' || b.origin === 'wmo-pt' || b.origin === 'wmo-es' ? `${b.name} (${origem})` : b.name;
-  const pct = typeof b.withinHalfM === 'number' && Number.isFinite(b.withinHalfM) ? Math.round(b.withinHalfM * 100) : null;
+  if (!b || !Number.isFinite(b.n)) return null;
+  const s = skillSimples({ me: b.me, mae: b.mae, dentro05: b.withinHalfM }, ms);
+  if (!s) return null;
+  const d = (x: string) => decimalV6(x, locale);
+  const sg = (x: number) => `${x >= 0 ? '+' : ''}${x.toFixed(1)}`;
+  // Redes em palavras nos «detalhes» (sem «IH» / «Copernicus-PT» soltos); a etiqueta técnica fica no title.
+  const nomeRede = (o: string) => (o === 'ih' ? ms.origemIh : o === 'wmo-pt' ? ms.origemWmoPt : o === 'wmo-es' ? ms.origemWmoEs : '');
+  const origem = b.origin ? nomeRede(b.origin) || forecastSkillOriginLabel(b.origin, locale) : '';
+
+  // Tooltip: a definição técnica completa (ME incluído), para quem a quiser.
+  const tecnico = [`ME ${sg(b.me)} m`];
+  if (typeof b.rmse === 'number') tecnico.push(`RMSE ${b.rmse.toFixed(1)} m`);
+  if (typeof b.corr === 'number') tecnico.push(`r ${b.corr.toFixed(2)}`);
+  const title = d(`${tecnico.join(' · ')} (n=${b.n}) — ${tv.buoySkillTitle.replace('{name}', b.name).replace('{n}', String(b.n))}`);
+
+  // «detalhes»: o que a frase não diz.
+  const det = [origem ? ms.detBoia.replace('{name}', b.name).replace('{origem}', origem) : ms.boiaDe.replace('{name}', b.name)];
+  if (typeof b.rmse === 'number') det.push(ms.detRmse.replace('{v}', b.rmse.toFixed(1)));
+  if (typeof b.corr === 'number') det.push(ms.detR.replace('{v}', b.corr.toFixed(2)));
+  det.push(ms.detN.replace('{n}', String(b.n)));
+
   const n = r?.pairCountByOrigin ?? { ih: 0, 'wmo-pt': 0, 'wmo-es': 0 };
-  const partes = (['ih', 'wmo-pt', 'wmo-es'] as const)
+  const redes = (['ih', 'wmo-pt', 'wmo-es'] as const)
     .filter((o) => (n[o] ?? 0) > 0)
-    .map((o) => `${forecastSkillOriginTag(o)} ${n[o] ?? 0}`);
-  const total = (n.ih ?? 0) + (n['wmo-pt'] ?? 0) + (n['wmo-es'] ?? 0);
-  const d = (s: string) => decimalV6(s, locale);
+    // nome da rede e número numa só peça (espaços inseparáveis): nem o número abre linha
+    // sozinho nem «Copernicus (boia | portuguesa)» se parte a meio; as quebras ficam nos «·»
+    .map((o) => `${nomeRede(o).replace(/ /g, '\u00a0')}\u00a0${n[o] ?? 0}`);
+  const total = redes.length ? (n.ih ?? 0) + (n['wmo-pt'] ?? 0) + (n['wmo-es'] ?? 0) : 0;
 
   return (
     <>
-      <p className="ec-nota" data-buoy-skill-line="true" title={tv.buoySkillTitle.replace('{name}', nome).replace('{n}', String(b.n))}>
-        {d(tv.buoySkillBody.replace('{name}', nome).replace('{label}', label).replace('{n}', String(b.n)))}
-        {pct != null ? ` · ${tv.buoySkillHitRate.replace('{pct}', String(pct))}` : ''}
+      <p className="ec-frase" data-buoy-skill-line="true" title={title}>
+        {s.frase}
       </p>
-      {total > 0 ? (
-        <p
-          className="ec-nota"
-          data-buoy-skill-origins="true"
-          title={tv.buoySkillOriginsTitle.replace('{buoyOrigin}', forecastSkillOriginTag(b.origin)).replace('{total}', String(total))}
-        >
-          {tv.buoySkillOrigins.replace('{counts}', partes.join(' · ')).replace('{total}', String(total))}
-        </p>
-      ) : null}
+      <DetalhesV6 rotulo={ms.detalhes} data-buoy-skill-det="true">
+        <p data-buoy-skill-stats="true">{d(det.join(' · '))}</p>
+        {total > 0 ? (
+          <p
+            data-buoy-skill-origins="true"
+            title={tv.buoySkillOriginsTitle.replace('{buoyOrigin}', forecastSkillOriginTag(b.origin)).replace('{total}', String(total))}
+          >
+            {ms.detRedes.replace('{counts}', redes.join(' · '))}
+          </p>
+        ) : null}
+      </DetalhesV6>
     </>
   );
 }

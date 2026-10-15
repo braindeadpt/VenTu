@@ -69,7 +69,9 @@ test.describe('Marés (Porquê v6)', () => {
     await expect(lua.getByText('Maré e lua')).toBeVisible();
     await expect(lua).toContainText(FASES);
     await expect(lua).toContainText(/Marés (vivas|mortas)|Transição/);
-    await expect(lua.getByText(/Amplitude hoje: \d+,\d m/)).toBeVisible();
+    // Em palavras, sem «amplitude»: quanto a maré sobe e desce hoje.
+    await expect(lua.getByText(/^Hoje a maré sobe e desce \d+,\d m$/)).toBeVisible();
+    await expect(lua.getByText(/Amplitude/)).toHaveCount(0);
     // Tabela das marés seguintes: a do Porquê (a próxima) não se repete.
     const linhas = lua.locator('[data-ec="mares"] tr');
     expect(await linhas.count()).toBeGreaterThan(0);
@@ -98,7 +100,7 @@ test.describe('Marés (Porquê v6)', () => {
     await expect(lua).toBeVisible({ timeout: 20_000 });
     await expect(lua).toContainText(FASES);
     await expect(lua).toContainText(/Marés (vivas|mortas)|Transição/);
-    await expect(lua.getByText(/Amplitude hoje:/)).toHaveCount(0);
+    await expect(lua.getByText(/Hoje a maré sobe e desce|Amplitude/)).toHaveCount(0);
     await expect(lua.locator('[data-ec="mares"]')).toHaveCount(0);
   });
 });

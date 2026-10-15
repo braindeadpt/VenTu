@@ -115,16 +115,15 @@ function alturaNatural(el: HTMLElement): number {
   return Math.ceil(fundo - r.top + parseFloat(cs.paddingBottom || '0') + parseFloat(cs.borderBottomWidth || '0'));
 }
 
-/** Cartão esticado de uma coluna que acaba na fonte (`.ec-fonte`): a fonte desce até ao fundo do cartão. */
-function encostaFonte(el: HTMLElement, sim: boolean) {
+/**
+ * Cartão esticado: a fonte (`.ec-fonte`) fica logo a seguir ao conteúdo, como nos
+ * outros cartões, e a folga fica no fim do cartão (antes a fonte descia até ao
+ * fundo e deixava um buraco por cima dela na coluna esticada a 1440 — follow-up
+ * do #227). Limpa estilos inline que uma medição anterior possa ter deixado.
+ */
+function limpaFonte(el: HTMLElement) {
   for (const f of Array.from(el.children) as HTMLElement[]) f.style.alignSelf = '';
   el.style.gridTemplateRows = '';
-  if (!sim || !umaColuna(el)) return;
-  const filhos = visiveis(el);
-  // só a linha da fonte desce; se o cartão acaba noutra coisa (ex.: maré observada), a folga fica no fim
-  if (filhos.length < 2 || !filhos[filhos.length - 1].classList.contains('ec-fonte')) return;
-  el.style.gridTemplateRows = `repeat(${filhos.length - 1}, auto) 1fr`;
-  filhos[filhos.length - 1].style.alignSelf = 'end';
 }
 
 export function useColunasEquilibradas(ref: RefObject<HTMLElement | null>): void {
@@ -139,7 +138,7 @@ export function useColunasEquilibradas(ref: RefObject<HTMLElement | null>): void
         c.style.gridColumn = '';
         c.style.gridRow = '';
         delete c.dataset.estica;
-        encostaFonte(c, false);
+        limpaFonte(c);
       }
       ultimo = '';
     };
@@ -175,7 +174,7 @@ export function useColunasEquilibradas(ref: RefObject<HTMLElement | null>): void
         const estica = ultimoDe[col] === i && fim - inicio > alturas[i] + 0.5;
         if (estica) c.dataset.estica = '';
         else delete c.dataset.estica;
-        encostaFonte(c, estica);
+        limpaFonte(c);
       });
     };
     const agenda = () => {
