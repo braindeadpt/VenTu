@@ -45,7 +45,9 @@ export default function BoiaSkillV6({ spotId, locale }: { spotId: string; locale
   if (!s) return null;
   const d = (x: string) => decimalV6(x, locale);
   const sg = (x: number) => `${x >= 0 ? '+' : ''}${x.toFixed(1)}`;
-  const origem = b.origin ? forecastSkillOriginLabel(b.origin, locale) : '';
+  // Redes em palavras nos «detalhes» (sem «IH» / «Copernicus-PT» soltos); a etiqueta técnica fica no title.
+  const nomeRede = (o: string) => (o === 'ih' ? ms.origemIh : o === 'wmo-pt' ? ms.origemWmoPt : o === 'wmo-es' ? ms.origemWmoEs : '');
+  const origem = b.origin ? nomeRede(b.origin) || forecastSkillOriginLabel(b.origin, locale) : '';
 
   // Tooltip: a definição técnica completa (ME incluído), para quem a quiser.
   const tecnico = [`ME ${sg(b.me)} m`];
@@ -62,7 +64,7 @@ export default function BoiaSkillV6({ spotId, locale }: { spotId: string; locale
   const n = r?.pairCountByOrigin ?? { ih: 0, 'wmo-pt': 0, 'wmo-es': 0 };
   const redes = (['ih', 'wmo-pt', 'wmo-es'] as const)
     .filter((o) => (n[o] ?? 0) > 0)
-    .map((o) => `${forecastSkillOriginTag(o)} ${n[o] ?? 0}`);
+    .map((o) => `${nomeRede(o)} ${n[o] ?? 0}`);
   const total = redes.length ? (n.ih ?? 0) + (n['wmo-pt'] ?? 0) + (n['wmo-es'] ?? 0) : 0;
 
   return (

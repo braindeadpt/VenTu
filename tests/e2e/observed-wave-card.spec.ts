@@ -961,7 +961,9 @@ test.describe('Leitura da boia no «Estudar o spot» v6 (boia X a Y km)', () => 
       'boia CSA92/D · erro típico (RMSE) 0,5 m · correlação (r) 0,91 · 47 comparações previsão × boia',
     );
     await expect(origens).toBeVisible();
-    await expect(origens).toContainText(/IH 12 · Copernicus-ES 10/);
+    await expect(origens).toContainText('Instituto Hidrográfico 12 · Copernicus (boia espanhola) 10');
+    // as redes em palavras: sem siglas soltas no texto visível
+    expect(await origens.innerText()).not.toMatch(/\b(IH|WMO)\b|Copernicus-(PT|ES)/);
     expect(parseFloat(await origens.evaluate((el) => getComputedStyle(el).fontSize))).toBeLessThanOrEqual(13);
     // Sem leitura fresca: sem o cartão da leitura.
     await expect(page.getByLabel(/Onda observada \(boia\)|Observed wave \(buoy\)/i)).toHaveCount(0);
