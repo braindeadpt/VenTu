@@ -64,8 +64,9 @@ export default function BoiaSkillV6({ spotId, locale }: { spotId: string; locale
   const n = r?.pairCountByOrigin ?? { ih: 0, 'wmo-pt': 0, 'wmo-es': 0 };
   const redes = (['ih', 'wmo-pt', 'wmo-es'] as const)
     .filter((o) => (n[o] ?? 0) > 0)
-    // o número colado ao nome da rede (espaço inseparável): nunca abre linha sozinho
-    .map((o) => `${nomeRede(o)}\u00a0${n[o] ?? 0}`);
+    // nome da rede e número numa só peça (espaços inseparáveis): nem o número abre linha
+    // sozinho nem «Copernicus (boia | portuguesa)» se parte a meio; as quebras ficam nos «·»
+    .map((o) => `${nomeRede(o).replace(/ /g, '\u00a0')}\u00a0${n[o] ?? 0}`);
   const total = redes.length ? (n.ih ?? 0) + (n['wmo-pt'] ?? 0) + (n['wmo-es'] ?? 0) : 0;
 
   return (

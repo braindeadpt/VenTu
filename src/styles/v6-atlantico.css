@@ -103,10 +103,20 @@
 
 /* ---------- régua de 48 horas (fixa em baixo no telemóvel) ---------- */
 .v6 .regua{position:fixed;left:0;right:0;bottom:0;z-index:20;padding:8px 12px calc(10px + env(safe-area-inset-bottom));background:rgba(3,14,24,.92);
-  backdrop-filter:blur(14px);border-top:1px solid var(--linha)}
+  backdrop-filter:blur(14px);border-top:1px solid var(--linha);
+  /* fixa: escapa ao overflow-x:clip da .v6. Se o cabeçalho não couber (fonte de recurso antes da
+     Barlow Condensed, «Now · Thu 15, 18:00», chip de aviso), o iOS Safari alargava a página e ela
+     abria descentrada. O cabeçalho já encolhe (regras abaixo); isto é só a rede de segurança. */
+  overflow-x:clip}
 .v6 .r-cab{display:flex;align-items:center;gap:8px;margin-bottom:6px}
-.v6 .r-cab h2{margin:0;font:800 12px/1 var(--txt);letter-spacing:.14em;text-transform:uppercase;color:var(--nevoa);flex:1}
-.v6 .r-cab output{font:900 22px/1 var(--disp);color:var(--espuma);white-space:nowrap}
+.v6 .r-cab h2{margin:0;font:800 12px/1 var(--txt);letter-spacing:.14em;text-transform:uppercase;color:var(--nevoa);flex:1;
+  /* sem espaço para «48 HORAS» inteiro (fonte de recurso, chip de aviso): some de todo, nunca «4…».
+     O texto (item anónimo, sem quebra) passa para a 2.ª linha, que o height + overflow escondem;
+     o ::before vazio segura a 1.ª. Continua a nomear a régua (aria-labelledby). */
+  min-width:0;display:flex;flex-wrap:wrap;white-space:nowrap;height:12px;overflow:hidden}
+.v6 .r-cab h2::before{content:'';height:12px}
+/* encolhe antes de empurrar a seta da direita para fora do ecrã (as setas não encolhem) */
+.v6 .r-cab output{font:900 22px/1 var(--disp);color:var(--espuma);white-space:nowrap;min-width:0;overflow:hidden;text-overflow:ellipsis}
 /* setas: o desenho da maquete (44 × 40) com a área de toque a 44 × 44 (margem negativa, não mexe na altura da régua) */
 .v6 .r-cab button{width:44px;height:44px;margin:-2px 0;border-radius:12px;border:0;background:none;color:var(--espuma);display:grid;place-items:center;cursor:pointer;flex:none;position:relative}
 .v6 .r-cab button::before{content:'';position:absolute;inset:2px 0;border-radius:12px;background:var(--mar)}
@@ -405,7 +415,7 @@
   .v6 .ver .pal{font-size:72px}
   .v6 .ver .l1{font-size:24px;max-width:28ch}
   .v6 .l2{font-size:19px;max-width:60ch}
-  .v6 .regua{position:sticky;top:0;bottom:auto;padding:12px 40px 10px;border-top:0;border-bottom:1px solid var(--linha)}
+  .v6 .regua{position:sticky;top:0;bottom:auto;padding:12px 40px 10px;border-top:0;border-bottom:1px solid var(--linha);overflow-x:visible}
   .v6 .faixa-wrap{height:54px}
   .v6 .eixo .so-d{display:inline}
   .v6 .corpo-d{display:grid;grid-template-columns:minmax(380px,.82fr) 1.4fr;gap:24px;padding:28px 40px 0;align-items:stretch}
@@ -455,4 +465,4 @@ html:has(.v6){--ventu-spot-sticky-top:0px;--ventu-spot-tabs-h:0px}
 .v6 .r-tip{position:absolute;bottom:calc(100% + 8px);transform:translateX(-50%);z-index:3;pointer-events:none;white-space:nowrap;
   background:var(--fundo);color:var(--espuma);border:1px solid var(--linha);border-radius:8px;padding:5px 9px;font-size:15px;font-weight:700;letter-spacing:.02em}
 /* régua: chip do aviso activo (compacto, não empurra as setas) */
-.v6 .r-aviso{flex:none;display:inline-flex;max-width:38vw;overflow:hidden}
+.v6 .r-aviso{flex:0 1 auto;min-width:0;display:inline-flex;max-width:38vw;overflow:hidden}

@@ -1097,3 +1097,96 @@ test.describe('Leitura da boia no «Estudar o spot» v6 (boia X a Y km)', () => 
     await expect(card.getByText(/Height \(measured\)/i).locator('xpath=following-sibling::p[1]')).toHaveText(/^1\.8 m$/);
   });
 });
+
+/**
+ * iPhone 12 Pro (390 × 844, DPR 3): a página do spot abria descentrada. A régua de 48 h é
+ * `position: fixed` (escapa ao `overflow-x: clip` da `.v6`) e o seu cabeçalho não encolhia:
+ * com a fonte de recurso (antes de a Barlow Condensed chegar) «Agora · qui 15, 18h» / «Now · Thu
+ * 15, 18:00» empurrava a seta da direita 22–34 px para fora do ecrã, e o iOS Safari alargava a
+ * página. O Chromium não conta elementos fixos no scrollWidth, por isso além do scrollWidth
+ * mede-se cada elemento visível da página contra a largura do ecrã. As fontes ficam bloqueadas
+ * (o pior caso, o da primeira visita). Na cena 3D, o rótulo do spot fica no centro do enquadramento.
+ */
+test.describe('spot v6 a 390 (iPhone): abre centrada', () => {
+  test.use({
+    viewport: { width: 390, height: 844 },
+    deviceScaleFactor: 3,
+    isMobile: true,
+    hasTouch: true,
+    userAgent:
+      'Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Mobile/15E148 Safari/604.1',
+  });
+
+  for (const loc of ['pt', 'en'] as const) {
+    for (const leitura of ['fresca', 'antiga'] as const) {
+      test(`${loc}, leitura ${leitura}: sem nada fora do ecrã na horizontal (fonte de recurso)`, async ({ page }) => {
+        await page.route(/\.(woff2?|ttf|otf)(\?|$)/, (r) => r.abort());
+        await interceptConditions(page, {
+          spots: {
+            [SPOT_KEY]: (entry) => ({
+              ...entry,
+              observedWave: freshObservedWave(
+                leitura === 'antiga' ? { observedAt: new Date(Date.now() - 20 * 3_600_000).toISOString() } : {},
+              ),
+            }),
+          },
+        });
+        await page.goto(`/${loc}/spots/${SPOT_SLUG}/`);
+        await page.waitForSelector('html.is-hydrated', { timeout: 20_000 });
+        await expect(page.getByTestId('regua-48h')).toBeVisible();
+        const medir = () =>
+          page.evaluate(() => {
+            const de = document.documentElement;
+            const W = de.clientWidth;
+            const fora: string[] = [];
+            for (const el of document.querySelectorAll<HTMLElement>('[data-testid="spot-v6"] *')) {
+              const r = el.getBoundingClientRect();
+              if (r.width === 0 || r.height === 0) continue;
+              if (r.right <= W + 0.5 && r.left >= -0.5) continue;
+              // cortado por um antepassado (overflow-x ≠ visible) — mas um elemento fixo escapa
+              // aos antepassados acima dele (o caso da régua dentro da .v6)
+              let cortado = false;
+              for (let a: HTMLElement | null = el; a && a !== document.body; a = a.parentElement) {
+                if (a !== el && getComputedStyle(a).overflowX !== 'visible') { cortado = true; break; }
+                if (getComputedStyle(a).position === 'fixed') break;
+              }
+              if (!cortado) fora.push(`${el.tagName.toLowerCase()}.${el.className} [${Math.round(r.left)}, ${Math.round(r.right)}]`);
+            }
+            const seta = [...document.querySelectorAll('[data-testid="regua-48h"] .r-cab button')].pop()!.getBoundingClientRect();
+            return { sw: de.scrollWidth, cw: W, sx: window.scrollX, fora, setaDir: seta.right };
+          });
+        const m = await medir();
+        expect(m.cw).toBe(390);
+        expect(m.sw).toBe(m.cw);
+        expect(m.sx).toBe(0);
+        expect(m.fora).toEqual([]);
+        expect(m.setaDir).toBeLessThanOrEqual(m.cw);
+        // com o «Estudar o spot» aberto (a leitura da boia e o par IH × WMO)
+        await abreEstudo(page);
+        const m2 = await medir();
+        expect(m2.sw).toBe(m2.cw);
+        expect(m2.fora).toEqual([]);
+      });
+    }
+  }
+
+  test('cena 3D: o rótulo do spot fica no centro do enquadramento', async ({ page }) => {
+    await interceptConditions(page, { spots: { [SPOT_KEY]: (entry) => ({ ...entry, observedWave: freshObservedWave() }) } });
+    await page.goto(`/pt/spots/${SPOT_SLUG}/`);
+    await page.waitForSelector('html.is-hydrated', { timeout: 20_000 });
+    const fig = page.locator('[data-testid="praia-3d"] figure');
+    await fig.scrollIntoViewIfNeeded();
+    await expect(fig).not.toHaveAttribute('data-modo', 'poster', { timeout: 20_000 });
+    test.skip((await fig.getAttribute('data-modo')) !== '3d', 'sem WebGL2 neste browser: vista plana (centro editorial)');
+    const rot = fig.locator('.lbl-abs.grande');
+    await expect(rot).toBeVisible({ timeout: 30_000 });
+    const r = await page.evaluate(() => {
+      const f = document.querySelector('[data-testid="praia-3d"] figure') as HTMLElement;
+      const l = f.querySelector('.lbl-abs.grande') as HTMLElement;
+      // posição projectada do spot (o rótulo sobe 22 px acima dela)
+      return { x: parseFloat(l.style.left), y: parseFloat(l.style.top) + 22, W: f.clientWidth, H: f.clientHeight };
+    });
+    expect(Math.abs(r.x - r.W / 2)).toBeLessThanOrEqual(4);
+    expect(Math.abs(r.y - r.H / 2)).toBeLessThanOrEqual(4);
+  });
+});

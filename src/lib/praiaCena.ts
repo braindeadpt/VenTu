@@ -85,12 +85,15 @@ export interface Camara {
 }
 /**
  * Câmara vista do mar: olha para terra com um ângulo de 28° (como a maquete no
- * Guincho: praia a 280°, bearing 72°), centrada um pouco ao largo do spot.
+ * Guincho: praia a 280°, bearing 72°). No desktop fica centrada um pouco ao largo
+ * do spot. No telemóvel o spot (`foco`, o ponto do rótulo grande quando há
+ * rótulos editoriais) fica no centro do enquadramento: o desvio de 0,65 km ao
+ * largo, a 28° do eixo da câmara, punha-o ~20 px ao lado e acima do centro a 390 px.
  */
-export function camara(ll: [number, number], praiaVirada: number, desktop: boolean): Camara {
+export function camara(ll: [number, number], praiaVirada: number, desktop: boolean, foco?: [number, number]): Camara {
   const bearing = (((praiaVirada + 152) % 360) + 360) % 360;
   return {
-    center: desloca(ll, praiaVirada, desktop ? 0.75 : 0.65),
+    center: desktop ? desloca(ll, praiaVirada, 0.75) : (foco ?? ll),
     zoom: desktop ? 13.25 : 12.6,
     pitch: 60,
     bearing,

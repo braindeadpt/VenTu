@@ -64,6 +64,8 @@ export interface OpcoesMapa {
   /** id do spot com geografia estática (spots curados) */
   idEstatico?: string;
   praiaVirada: number;
+  /** ponto que fica no centro do enquadramento no telemóvel (rótulo editorial do spot); por omissão `ll` */
+  foco?: [number, number];
   desktop: boolean;
   reduz: boolean;
   estado: EstadoCena;
@@ -220,7 +222,7 @@ export function criarMapa(o: OpcoesMapa): HandleMapa {
     ],
   } as StyleSpecification;
 
-  const cam = (): Camara => camara(o.ll, o.praiaVirada, o.desktop);
+  const cam = (): Camara => camara(o.ll, o.praiaVirada, o.desktop, o.foco);
   const c0 = cam();
   const m: MLMap = new maplibregl.Map({
     container: o.container,
