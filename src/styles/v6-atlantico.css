@@ -199,9 +199,22 @@
 .v6 .ec{display:grid;gap:8px;align-content:start;min-width:0;padding:14px;border-radius:12px;background:var(--mar);box-shadow:inset 0 0 0 1px var(--linha)}
 .v6 .ec-t{display:flex;align-items:center;gap:8px;margin:0;font:800 italic 20px/1.05 var(--disp);text-transform:uppercase;letter-spacing:.01em}
 .v6 .ec-tag{font:800 11px/1 var(--txt);letter-spacing:.1em;text-transform:uppercase;font-style:normal;color:var(--nevoa);padding:4px 6px;border-radius:6px;box-shadow:inset 0 0 0 1px var(--linha)}
+.v6 .ec-tag.viva{color:var(--gelo);box-shadow:inset 0 0 0 1px rgba(127,231,255,.55)}
+.v6 .ec-tag.idade{font-weight:700;font-size:12px;letter-spacing:.02em;text-transform:none;color:var(--nevoa);box-shadow:inset 0 0 0 1px var(--linha)}
 .v6 .ec-rot{margin:0;font:800 12px/1.5 var(--txt);letter-spacing:.12em;text-transform:uppercase;color:var(--nevoa)}
 .v6 .ec-meta{margin:0;font:600 15px/1.35 var(--txt);color:var(--nevoa)}
 .v6 .ec-nota{margin:0;font:500 14px/1.45 var(--txt);color:var(--nevoa)}
+.v6 .ec-frase{margin:0;font:500 16px/1.45 var(--txt);color:var(--espuma);max-width:52ch}
+/* «detalhes» do skill (números técnicos): fechado por omissão, letra pequena; alvo de toque 44 px.
+   `.estudo .ec-det>summary` vence o `.estudo summary` do cabeçalho do «Estudar o spot». */
+.v6 .ec-det{margin:0;font:500 12.5px/1.45 var(--txt);color:var(--nevoa)}
+.v6 .estudo .ec-det>summary,.v6 .ec-det>summary{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0;margin:-8px 0;font:700 12.5px/1 var(--txt);letter-spacing:.04em;color:var(--nevoa);cursor:pointer;list-style:none}
+.v6 .ec-det>summary::-webkit-details-marker{display:none}
+.v6 .ec-det>summary::before{content:'';width:0;height:0;border-left:5px solid currentColor;border-top:4px solid transparent;border-bottom:4px solid transparent;transition:transform .2s}
+.v6 .ec-det[open]>summary::before{transform:rotate(90deg)}
+.v6 .ec-det>summary:focus-visible{outline:2px solid var(--gelo);outline-offset:2px;border-radius:4px}
+.v6 .ec-det p{margin:6px 0 0;font-variant-numeric:tabular-nums}
+.v6 .ec-palavra{font-size:30px;line-height:1}
 .v6 .ec-forte{margin:0;font:700 17px/1.25 var(--txt)}
 .v6 .ec-num{margin:0;font:600 15px/1.35 var(--txt);font-variant-numeric:tabular-nums lining-nums;color:var(--espuma)}
 .v6 .ec-num.alerta{color:var(--sol)}
@@ -413,7 +426,7 @@
 /* ---------- movimento reduzido: sem Ken Burns, sem espuma, sem transições ---------- */
 @media (prefers-reduced-motion:reduce){
   .v6.vivo .foto.kb img,.v6.vivo .swell svg{animation:none}
-  .v6 .modo .pista,.v6 .agulha,.v6 .foto img,.v6 .estudo summary svg{transition:none}
+  .v6 .modo .pista,.v6 .agulha,.v6 .foto img,.v6 .estudo summary svg,.v6 .ec-det>summary::before{transition:none}
 }
 
 /* ---------- acções do spot (como chegar, favorito, alerta, câmara, mais) ---------- */

@@ -3,7 +3,7 @@
 /**
  * «O que se mede e o que se sabe» — o fim do «Estudar o spot» v6 (#184,
  * decisão do Pedro de 2026-10-15): a boia agora (com as calibrações), maré e
- * lua, sol e ar (UV e AQI), o fundo perto da praia (isóbatas IH, num perfil
+ * lua, sol e ar (UV e qualidade do ar), o fundo perto da praia (isóbatas IH, num perfil
  * desenhado), o clima do spot (NASA POWER) e a ligação ao Windguru. Tudo em
  * markup e tokens v6 (`.ec*` em v6-atlantico.css), nada do estilo antigo.
  *
@@ -103,6 +103,7 @@ function MareLua({ locale, copy: c, t, mares, citada, mareCurva, dataMs, cond }:
   const tr = getTranslation(locale);
   const mt = tr.moonTide;
   const ti = tr.spotPageInstruments;
+  const ms = tr.spotMedeSabe;
   const data = new Date(dataMs);
   const lua = getMoonPhase(data);
   const amp = mareCurva.length ? dailyTideAmplitudeMetres([...mareCurva], data) : null;
@@ -124,7 +125,7 @@ function MareLua({ locale, copy: c, t, mares, citada, mareCurva, dataMs, cond }:
         </div>
       </div>
       <p className="ec-nota">{mt.meaning[lua.tideRegime]}</p>
-      {amp != null ? <p className="ec-num">{decimalV6(mt.amplitudeToday.replace('{value}', amp.toFixed(1)), locale)}</p> : null}
+      {amp != null ? <p className="ec-num" data-amplitude>{decimalV6(ms.amplitude.replace('{v}', amp.toFixed(1)), locale)}</p> : null}
       {mares.length ? (
         <>
           <p className="ec-rot">{c.maresSeguintes}</p>
@@ -148,13 +149,13 @@ function MareLua({ locale, copy: c, t, mares, citada, mareCurva, dataMs, cond }:
       ) : null}
       {cond.tideObservedHeight != null ? (
         <p className="ec-num" data-tide-observed>
-          {ti.tideObservedLine.replace('{obs}', nf(cond.tideObservedHeight)).replace('{station}', cond.tideStation ?? '')}
+          {ms.mareMedida.replace('{obs}', nf(cond.tideObservedHeight)).replace('{station}', cond.tideStation ?? '')}
         </p>
       ) : null}
       {cond.tideAnomalyM != null ? (
         <p className={`ec-num${Math.abs(cond.tideAnomalyM) >= SURGE_M ? ' alerta' : ''}`} data-tide-anomaly>
-          {ti.tideAnomalyLine.replace('{delta}', `${cond.tideAnomalyM >= 0 ? '+' : ''}${nf(cond.tideAnomalyM)}`)}
-          {Math.abs(cond.tideAnomalyM) >= SURGE_M ? ` · ${ti.tideAnomalySurge}` : ''}
+          {(cond.tideAnomalyM >= 0 ? ms.mareAcima : ms.mareAbaixo).replace('{v}', nf(Math.abs(cond.tideAnomalyM)))}
+          {Math.abs(cond.tideAnomalyM) >= SURGE_M ? ` · ${ms.mareVento}` : ''}
         </p>
       ) : null}
       {cond.currentMeasuredSpeed != null ? (
@@ -163,11 +164,11 @@ function MareLua({ locale, copy: c, t, mares, citada, mareCurva, dataMs, cond }:
           data-current-measured
           title={
             cond.currentMeasuredAt
-              ? `${ti.currentMeasuredTitle} ${cond.currentMeasuredAt.replace('T', ' ').replace(':00Z', ' UTC')}`
+              ? `${ms.correnteTitle} ${cond.currentMeasuredAt.replace('T', ' ').replace(':00Z', ' UTC')}`
               : ti.currentMeasuredTitle
           }
         >
-          {ti.currentMeasuredLine
+          {ms.corrente
             .replace('{spd}', nf(cond.currentMeasuredSpeed))
             .replace('{dir}', cond.currentMeasuredDir != null ? getCardinalLabel(cond.currentMeasuredDir) : '')}
         </p>
@@ -184,7 +185,9 @@ function SolAr({ locale, copy: c, t, ehAgora, uvPorHora, cond }: {
   uvPorHora: Readonly<Record<string, number>>;
   cond: MedeSabeCondicoes;
 }) {
-  const td = getTranslation(locale).spotDetail;
+  const tr = getTranslation(locale);
+  const td = tr.spotDetail;
+  const ms = tr.spotMedeSabe;
   const uv = uvPorHora[t] ?? (ehAgora ? cond.uvIndex : undefined);
   const dia = t.slice(0, 10);
   const doDia = Object.entries(uvPorHora)
@@ -203,28 +206,36 @@ function SolAr({ locale, copy: c, t, ehAgora, uvPorHora, cond }: {
     extreme: td.aqiLevelExtreme,
   };
   const nivelUv = uv == null ? '' : uv >= 8 ? 'alto' : uv >= 6 ? 'medio' : 'baixo';
+  // Escala da OMS em palavras: 0–2 baixo · 3–5 moderado · 6–7 alto · 8–10 muito alto · 11+ extremo.
+  const uvR = uv == null ? 0 : Math.round(uv);
+  const uvPalavra = uv == null ? '' : ms.uvNivel[uvR >= 11 ? 'extremo' : uvR >= 8 ? 'muitoAlto' : uvR >= 6 ? 'alto' : uvR >= 3 ? 'moderado' : 'baixo'];
   return (
     <div className="ec ec-solar" data-ec="sol-ar">
       <h3 className="ec-t">{c.solAr}</h3>
       {uv != null ? (
         <div className="ec-par" title={td.uvHint} data-uv>
           <p className="ec-rot">{fmtCopy(c.uvHora, { q })}</p>
-          <p className={`ec-grande num uv-${nivelUv}`}>{Math.round(uv)}</p>
+          <p className={`ec-grande num uv-${nivelUv}`}>
+            {uvR}
+            <small data-uv-nivel>{uvPalavra}</small>
+          </p>
           {uvMax != null ? <p className="ec-nota">{fmtCopy(c.uvMax, { v: Math.round(uvMax) })}</p> : null}
         </div>
       ) : null}
       {aqi != null ? (
-        <div className="ec-par" title={td.aqiHint} data-aqi>
-          <p className="ec-rot">{c.aqiAgora}</p>
-          <p className="ec-grande num">
-            {Math.round(aqi)}
-            <small>AQI</small>
-          </p>
-          <p className="ec-nota">{niveis[europeanAqiLevel(aqi)]}</p>
+        <div className="ec-par" title={ms.arTitle} data-aqi>
+          {/* sem «agora»: o índice vem do build (previsão CAMS), não de uma leitura com hora */}
+          <p className="ec-rot">{ms.ar}</p>
+          <p className="ec-grande ec-palavra">{maiuscula(niveis[europeanAqiLevel(aqi)])}</p>
+          <p className="ec-nota">{ms.arIndice.replace('{v}', String(Math.round(aqi)))}</p>
         </div>
       ) : null}
     </div>
   );
+}
+
+function maiuscula(x: string): string {
+  return x ? x.charAt(0).toLocaleUpperCase() + x.slice(1) : x;
 }
 
 function kmTxt(km: number, locale: string): string {
@@ -235,6 +246,7 @@ function kmTxt(km: number, locale: string): string {
 /** Perfil do fundo: a praia à esquerda, a linha do fundo a descer pelas isóbatas 8/16/30 m. */
 function Fundo({ spotId, locale, copy: c }: { spotId: string; locale: string; copy: SpotPageV6Copy }) {
   const tsu = getTranslation(locale).spotsUi;
+  const ms = getTranslation(locale).spotMedeSabe;
   const [dist, setDist] = useState<Record<number, number> | null>(null);
   useEffect(() => {
     let cancelado = false;
@@ -290,7 +302,7 @@ function Fundo({ spotId, locale, copy: c }: { spotId: string; locale: string; co
       </ul>
       <p className="ec-nota">{rapido ? c.fundoRapido : c.fundoLento}</p>
       <p className="ec-fonte" title={tsu.isobathTitle}>
-        {tsu.isobathSource}
+        {ms.fundoFonte}
       </p>
     </div>
   );
@@ -336,7 +348,9 @@ function Clima({ spotId, locale, copy: c, mes }: { spotId: string; locale: strin
           p: pp == null ? '–' : fmtNum(pp, locale),
         })}
       </p>
-      <p className="ec-fonte">{tc.climateSource}</p>
+      <p className="ec-fonte" title={tc.climateSource}>
+        {getTranslation(locale).spotMedeSabe.climaFonte}
+      </p>
     </div>
   );
 }
@@ -356,7 +370,7 @@ export default function MedeSabeV6({ spot, locale, copy: c, t, ehAgora, mares, c
         {c.medeSabe}
       </h3>
       <div className="ec-grelha" ref={grelha} data-testid="spot-mede-sabe-grelha">
-        <BoiaV6 spotId={spot.id} locale={locale} c={cond} agoraMs={agoraMs} agoraTag={c.agoraTag} />
+        <BoiaV6 spotId={spot.id} locale={locale} c={cond} agoraMs={agoraMs} />
         {/* o que se lê agora (boia, sol e ar) antes do que se calcula (maré, fundo, clima);
             em colunas (≥760 px) a distribuição sai das alturas reais (colunasEquilibradas) */}
         <SolAr locale={locale} copy={c} t={t} ehAgora={ehAgora} uvPorHora={uvPorHora} cond={cond} />

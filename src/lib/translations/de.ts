@@ -3,6 +3,7 @@ import { pipelineSchedule } from '@/lib/dataPipelineSchedule';
 import { spotPageVerdict } from '@/lib/translations/spotPage/verdict';
 import { spotPageInstruments } from '@/lib/translations/spotPage/instruments';
 import { spotPageContext } from '@/lib/translations/spotPage/context';
+import { spotMedeSabe } from '@/lib/translations/spotPage/medeSabe';
 import { mapUiChrome } from '@/lib/translations/mapUi/chrome';
 import { mapUiExplore } from '@/lib/translations/mapUi/explore';
 import { mapUiMarkers } from '@/lib/translations/mapUi/markers';
@@ -1740,6 +1741,7 @@ export const translationsDe = {
   spotPageVerdict: spotPageVerdict.de,
   spotPageInstruments: spotPageInstruments.de,
   spotPageContext: spotPageContext.de,
+  spotMedeSabe: spotMedeSabe.de,
   mapUiChrome: mapUiChrome.de,
   mapUiExplore: mapUiExplore.de,
   mapUiMarkers: mapUiMarkers.de,
