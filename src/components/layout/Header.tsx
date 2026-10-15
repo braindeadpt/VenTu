@@ -121,6 +121,9 @@ export default function Header({ locale }: HeaderProps) {
   // a área de mapa fica livre para o cromo. O menu hamburger e a drawer
   // mobile ficam disponíveis em todas as larguras (a maquete mostra-os).
   const isMapPage = pathUnder(pathname, locale, 'mapa');
+  // Página de spot v6 (#184): a barra de topo do spot («‹ Costa» + Kite/Surf)
+  // fica sobre a foto e substitui o cabeçalho do site nesta rota.
+  const isSpotV6 = new RegExp(`^/${locale}/spots/[^/]+/?$`).test(pathname);
 
   const isActive = (href: string) => pathname === href.split('?')[0];
 
@@ -254,6 +257,7 @@ export default function Header({ locale }: HeaderProps) {
         className="site-header fixed top-0 left-0 right-0 z-[1300] bg-bg-base/95 backdrop-blur-md border-b border-divider transition-[background,border-color] duration-slow"
         onKeyDown={handleKeyDown}
         data-header-compact={isMapPage ? 'true' : undefined}
+        hidden={isSpotV6 || undefined}
       >
         <div className="max-w-7xl mx-auto pl-[max(1.25rem,env(safe-area-inset-left))] pr-[max(1.25rem,env(safe-area-inset-right))] sm:px-6 lg:px-8">
           <div

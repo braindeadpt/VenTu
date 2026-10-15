@@ -38,6 +38,10 @@ export function rememberChosenSport(sport: GridSportFilter) {
   try {
     localStorage.setItem(LS_SPORT_CHOSEN_KEY, sport)
     localStorage.setItem(LS_SPORT_KEY, sport)
+    // Ponte com a página de spot v6 (#184): a mesma escolha na chave partilhada
+    // `ventu.modalidade` ({d, v}); só kite e surf existem lá.
+    const d = sport === 'surf' ? 'surf' : sport === 'kitesurf' ? 'kite' : null
+    if (d) localStorage.setItem('ventu.modalidade', JSON.stringify({ d, v: {} }))
   } catch {
     /* noop */
   }

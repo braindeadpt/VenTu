@@ -62,6 +62,12 @@ test.describe('Spot detail dashboard', () => {
   });
 
   test('hero meter is visible on photo header', async ({ page }) => {
-    await expect(page.getByRole('meter')).toBeVisible();
+    // Página v6 (#184): a nota vive no hero sobre a foto; de noite é a lua.
+    const hero = page.locator('#agora');
+    await expect(hero.getByTestId('spot-hero-foto').locator('img')).toBeVisible();
+    await expect(hero.locator('[data-testid="spot-veredicto"] .nota')).toBeVisible();
+    const role = await hero.locator('[data-testid="spot-veredicto"] .nota').getAttribute('role');
+    if (role === 'meter') await expect(hero.getByRole('meter')).toBeVisible();
+    else await expect(hero.getByRole('img', { name: /Noite|Night/ })).toBeVisible();
   });
 });

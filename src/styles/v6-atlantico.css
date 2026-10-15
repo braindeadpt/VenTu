@@ -1,0 +1,258 @@
+/* VenTu v6 «Atlântico» (#184; tokens e base partilhados com a home #183).
+   Contrato: docs/design/maquetes/v6-atlantico (cores.md, guincho.html).
+   Tudo fica dentro de `.v6`: o resto do site não muda.
+   Tokens: copiados de cores.md, sem inventar outros. */
+.v6{
+  --abismo:#030E18;--fundo:#071B2C;--mar:#0C2A42;--linha:#1E4361;--espuma:#F3F8FB;--nevoa:#A9C2D4;--sol:#FFC93C;--gelo:#7FE7FF;--ink:#04131F;
+  --b-nao:#A8464A;--b-nao-t:#FFFFFF;--b-fraco:#4479EE;--b-fraco-t:#04131F;--b-da:#C99E2A;--b-da-t:#04131F;
+  --b-bom:#40DCD0;--b-bom-t:#04131F;--b-mb:#FFF07A;--b-mb-t:#04131F;--b-noite:#56677B;--b-noite-t:#FFFFFF;
+  --disp:'Barlow Condensed','Arial Narrow',sans-serif;--txt:'Barlow',system-ui,sans-serif;
+  --band:#40DCD0;--band-t:#04131F;
+  --r:14px;
+  color-scheme:dark;
+  position:relative;
+  background:var(--abismo);color:var(--espuma);font:500 17px/1.45 var(--txt);font-variant-numeric:lining-nums;
+  overflow-x:clip;
+  padding-bottom:132px;
+  /* o cabeçalho do site fica escondido nesta rota (Header.tsx): anula o pt-16 do <main> */
+  margin-top:-4rem;
+}
+.v6 *,.v6 *::before,.v6 *::after{box-sizing:border-box}
+.v6 a{color:inherit}
+.v6 button{font:inherit;color:inherit}
+.v6 h1,.v6 h2,.v6 p{margin:0}
+.v6 .num{font-family:var(--disp);font-variant-numeric:tabular-nums lining-nums;letter-spacing:-.01em}
+.v6 .sr{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.v6 :focus-visible{outline:3px solid var(--sol);outline-offset:3px;border-radius:6px}
+
+/* ---------- barra de topo ---------- */
+.v6 .top{position:absolute;inset:0 0 auto 0;z-index:30;display:flex;align-items:center;gap:12px;padding:12px 16px;
+  background:linear-gradient(180deg,rgba(3,14,24,.78),rgba(3,14,24,0))}
+.v6 .voltar{display:inline-flex;align-items:center;gap:4px;min-height:44px;min-width:44px;padding:0 12px 0 6px;border-radius:999px;background:rgba(3,14,24,.55);
+  backdrop-filter:blur(8px);text-decoration:none;font:700 16px/1 var(--txt)}
+.v6 .top .esp{flex:1}
+
+/* ---------- selector kite / surf (ModalidadeToggle) ---------- */
+.v6 .modo{display:inline-grid;grid-template-columns:1fr 1fr;padding:4px;border-radius:999px;background:rgba(3,14,24,.62);
+  backdrop-filter:blur(10px);box-shadow:inset 0 0 0 1.5px rgba(243,248,251,.22);position:relative}
+.v6 .modo button{position:relative;z-index:1;border:0;background:none;min-height:44px;min-width:76px;padding:0 16px;border-radius:999px;cursor:pointer;
+  font:800 italic 21px/1 var(--disp);text-transform:uppercase;letter-spacing:.02em;display:flex;align-items:center;justify-content:center;gap:7px;color:var(--espuma)}
+.v6 .modo button svg{width:20px;height:20px;flex:none}
+.v6 .modo button[aria-pressed=true]{color:var(--ink)}
+.v6 .modo .pista{position:absolute;z-index:0;top:4px;bottom:4px;left:4px;width:calc(50% - 4px);border-radius:999px;background:var(--sol);transition:transform .35s cubic-bezier(.3,1.3,.5,1)}
+.v6 .modo[data-d=surf] .pista{transform:translateX(100%)}
+
+/* ---------- chips e nota ---------- */
+.v6 .chip{display:inline-flex;align-items:center;gap:.3em;padding:.08em .42em .1em;border-radius:6px;background:var(--c,var(--band));color:var(--t,var(--band-t));
+  font-weight:800;font-style:normal;white-space:nowrap}
+.v6 .nota{display:inline-flex;align-items:baseline;justify-content:center;background:var(--c);color:var(--t);border-radius:12px;font:900 var(--fs,44px)/1 var(--disp);
+  font-variant-numeric:tabular-nums;padding:.1em .16em .06em;min-width:1.25em}
+.v6 .nota small{font-size:.38em;font-weight:800;opacity:.85;margin-left:.06em}
+
+/* ---------- foto ---------- */
+.v6 .foto{position:absolute;inset:0;overflow:hidden;background:var(--mar)}
+.v6 .foto img{width:100%;height:100%;object-fit:cover;display:block;transform-origin:60% 40%}
+.v6.vivo .foto.kb img{animation:v6kb 26s ease-in-out infinite alternate}
+@keyframes v6kb{from{transform:scale(1.02)}to{transform:scale(1.12) translate(-1.5%,1%)}}
+.v6 .credito-foto{position:absolute;z-index:3;right:8px;bottom:6px;font:500 10.5px/1.2 var(--txt);color:rgba(243,248,251,.86);text-shadow:0 1px 2px #000;max-width:70%;text-align:right;margin:0}
+.v6 .credito-foto a{text-decoration:none}
+
+/* ---------- linha de espuma ---------- */
+.v6 .swell{position:absolute;left:0;right:0;bottom:-1px;height:26px;z-index:2;color:var(--abismo);pointer-events:none;overflow:hidden}
+.v6 .swell svg{position:absolute;bottom:0;left:0;width:200%;height:26px}
+.v6.vivo .swell svg{animation:v6swell 9s linear infinite}
+.v6.vivo .swell svg.b{animation-duration:14s;opacity:.5}
+@keyframes v6swell{to{transform:translateX(-50%)}}
+
+/* ---------- títulos de secção ---------- */
+.v6 .sec{font:900 italic clamp(26px,6.6vw,40px)/.95 var(--disp);text-transform:uppercase;letter-spacing:-.01em;margin:0 0 14px}
+.v6 .sec span{color:var(--nevoa);font-style:normal;font-weight:700;font-size:.62em;letter-spacing:.02em;margin-left:.2em}
+
+/* ---------- legenda ---------- */
+.v6 .leg{display:flex;flex-wrap:wrap;gap:6px 6px;align-items:center;font:700 13px/1 var(--txt)}
+.v6 .leg .chip{font-size:13px;padding:5px 8px;border-radius:7px}
+.v6 .leg .txt{flex-basis:100%;color:var(--nevoa);font-weight:500;font-size:14px;line-height:1.4;margin-top:6px}
+
+/* ---------- hero ---------- */
+.v6 .hero{position:relative;min-height:min(780px,calc(100svh - 128px));display:flex;flex-direction:column;justify-content:flex-end;isolation:isolate;overflow:hidden}
+.v6 .hero .foto{bottom:auto;height:var(--fh,64%);top:calc(var(--fh,64%) * var(--up,0) * -1);-webkit-mask-image:linear-gradient(180deg,#000 84%,transparent 100%);mask-image:linear-gradient(180deg,#000 84%,transparent 100%)}
+.v6 .hero .veu{position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(3,14,24,.62) 0,rgba(3,14,24,0) 13%,rgba(3,14,24,0) 38%,rgba(3,14,24,.72) 50%,rgba(3,14,24,.94) 58%,var(--abismo) var(--fh,64%))}
+.v6 .hero .foto.desce{-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 16%,#000 84%,transparent 100%);mask-image:linear-gradient(180deg,transparent 0,#000 16%,#000 84%,transparent 100%)}
+.v6 .hero .credito-foto{top:89px;bottom:auto;right:12px;background:rgba(3,14,24,.5);padding:3px 6px;border-radius:5px}
+.v6 .hero-in{position:relative;z-index:3;padding:96px 16px 30px}
+.v6.e-noite .hero .foto img{filter:brightness(.42) saturate(.6) hue-rotate(10deg)}
+.v6 .foto img{transition:filter .5s}
+.v6 .spot-n{margin:0;font:900 italic clamp(60px,17vw,150px)/.82 var(--disp);text-transform:uppercase;letter-spacing:-.03em;text-shadow:0 4px 24px rgba(0,0,0,.35);overflow-wrap:anywhere}
+.v6 .spot-n.longo{font-size:clamp(44px,12vw,120px)}
+.v6 .quando{display:inline-block;margin:10px 0 18px;padding:6px 10px;border-radius:8px;background:rgba(3,14,24,.72);font:800 15px/1.2 var(--txt);letter-spacing:.12em;text-transform:uppercase}
+.v6 .quando b{color:var(--sol)}
+.v6 .ver{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center}
+.v6 .ver .nota{--fs:clamp(96px,27vw,150px);border-radius:20px;padding:.08em .12em .02em;box-shadow:0 18px 50px -14px rgba(0,0,0,.6)}
+.v6 .ver .nota small{font-size:.3em}
+.v6 .ver .nota svg{width:.62em;height:.62em;margin:.12em .1em}
+.v6 .ver .pal{display:block;font:900 italic clamp(34px,9.6vw,58px)/.9 var(--disp);text-transform:uppercase;color:var(--band);letter-spacing:-.01em}
+.v6 .ver .l1{display:block;font:700 19px/1.3 var(--txt);margin-top:8px;text-wrap:pretty}
+.v6 .l2{margin:14px 0 0;font:500 17px/1.4 var(--txt);color:var(--nevoa);max-width:44ch}
+.v6 .l2 b{color:var(--espuma);font-weight:700}
+.v6 .falta{margin:10px 0 0;font:500 13px/1.35 var(--txt);color:var(--nevoa);max-width:52ch}
+
+/* ---------- régua de 48 horas (fixa em baixo no telemóvel) ---------- */
+.v6 .regua{position:fixed;left:0;right:0;bottom:0;z-index:20;padding:8px 12px calc(10px + env(safe-area-inset-bottom));background:rgba(3,14,24,.92);
+  backdrop-filter:blur(14px);border-top:1px solid var(--linha)}
+.v6 .r-cab{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.v6 .r-cab h2{margin:0;font:800 12px/1 var(--txt);letter-spacing:.14em;text-transform:uppercase;color:var(--nevoa);flex:1}
+.v6 .r-cab output{font:900 22px/1 var(--disp);color:var(--espuma);white-space:nowrap}
+/* setas: o desenho da maquete (44 × 40) com a área de toque a 44 × 44 (margem negativa, não mexe na altura da régua) */
+.v6 .r-cab button{width:44px;height:44px;margin:-2px 0;border-radius:12px;border:0;background:none;color:var(--espuma);display:grid;place-items:center;cursor:pointer;flex:none;position:relative}
+.v6 .r-cab button::before{content:'';position:absolute;inset:2px 0;border-radius:12px;background:var(--mar)}
+.v6 .r-cab button:disabled{opacity:.35;cursor:default}
+.v6 .r-cab button svg{width:22px;height:22px;position:relative}
+.v6 .faixa-wrap{position:relative;height:46px;touch-action:none;cursor:pointer;outline-offset:4px}
+.v6 .faixa{display:flex;height:100%;gap:1px;border-radius:10px;overflow:hidden}
+.v6 .faixa i{flex:1;background:var(--c)}
+.v6 .faixa i.noite{background:#24384C;transform:scaleY(.5);transform-origin:bottom}
+.v6 .faixa i.d0{margin-left:3px}
+.v6 .agulha{position:absolute;top:-6px;bottom:-6px;width:4px;margin-left:-2px;background:var(--espuma);border-radius:3px;box-shadow:0 0 0 2px var(--abismo);pointer-events:none;transition:left .15s}
+.v6 .eixo{position:relative;height:18px;margin-top:5px;font:700 12px/1 var(--txt);color:var(--nevoa)}
+.v6 .eixo span{position:absolute;transform:translateX(-50%);white-space:nowrap}
+.v6 .eixo span.dia{transform:none;color:var(--espuma);font-weight:800;letter-spacing:.08em}
+.v6 .eixo .so-d{display:none}
+
+/* ---------- porquê ---------- */
+.v6 .porque{padding:30px 16px 8px}
+.v6 .fatores{display:grid;gap:12px}
+.v6 .fator{display:grid;grid-template-columns:64px 1fr;gap:4px 14px;align-items:start;padding:16px;border-radius:var(--r);background:var(--fundo);box-shadow:inset 0 0 0 1px var(--linha)}
+.v6 .fator svg.g{grid-row:span 3;width:64px;height:64px;color:var(--espuma)}
+.v6 .fator .rot{display:flex;align-items:center;gap:8px;font:800 13px/1 var(--txt);letter-spacing:.14em;text-transform:uppercase;color:var(--nevoa)}
+.v6 .efeito{font:800 12px/1 var(--txt);letter-spacing:.04em;text-transform:none;padding:4px 7px;border-radius:6px;background:var(--mar);color:var(--espuma)}
+.v6 .efeito.pro{background:var(--b-bom);color:var(--b-bom-t)}
+.v6 .efeito.contra{background:var(--b-nao);color:var(--b-nao-t)}
+.v6 .val{font:900 54px/.9 var(--disp);letter-spacing:-.02em;margin-top:2px}
+.v6 .val small{font:700 17px/1 var(--txt);letter-spacing:0;color:var(--nevoa);margin-left:6px}
+.v6 .rel{font:500 16px/1.4 var(--txt);color:var(--nevoa)}
+.v6 .rel b{color:var(--espuma)}
+
+/* ---------- cena 3D ---------- */
+.v6 .cena-sec{padding:26px 0 0}
+.v6 .cena-sec .cab{padding:0 16px}
+.v6 .cena-sec .sub{margin:-6px 0 12px;color:var(--nevoa);font-size:16px}
+.v6 .cena{position:relative;margin:0;height:min(68svh,560px);min-height:420px;background:#071d31;overflow:hidden}
+.v6 .cena .mapa{position:absolute;inset:0;z-index:1}
+.v6 .cena .poster{position:absolute;inset:0;z-index:0;background:radial-gradient(120% 80% at 60% 40%,#0d3352,#030E18)}
+.v6 .cena .plano{position:absolute;inset:0;width:100%;height:100%;z-index:1;display:none}
+.v6 .cena.sem-webgl .plano{display:block}
+.v6 .cena.sem-webgl .mapa{display:none}
+.v6 canvas.vento{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2}
+.v6 .top-lbl{font:800 13px/1 var(--txt);letter-spacing:.06em;color:var(--espuma);text-shadow:0 1px 4px #000,0 0 10px rgba(0,0,0,.7);white-space:nowrap}
+.v6 .top-lbl.grande{font:900 italic 20px/1 var(--disp);letter-spacing:.02em;text-transform:uppercase;background:var(--band);color:var(--band-t);text-shadow:none;padding:5px 9px 4px;border-radius:8px}
+.v6 .top-lbl i{font-style:normal;color:var(--nevoa);font-weight:600}
+.v6 .lbl-abs{position:absolute;z-index:3;transform:translate(-50%,-50%);pointer-events:none}
+.v6 .cena-ferr{position:absolute;z-index:4;right:12px;top:12px;display:flex;gap:8px;align-items:center}
+.v6 .vento-chip{display:flex;align-items:center;gap:8px;background:rgba(3,14,24,.84);border-radius:999px;padding:8px 12px;font:700 14px/1 var(--txt);box-shadow:inset 0 0 0 1.5px rgba(243,248,251,.16)}
+.v6 .vento-chip svg{width:20px;height:20px}
+.v6 .recentrar{width:44px;height:44px;border-radius:999px;border:0;background:rgba(3,14,24,.84);color:var(--espuma);display:grid;place-items:center;cursor:pointer}
+.v6 .recentrar svg{width:20px;height:20px}
+.v6 .estatica{position:absolute;z-index:4;left:12px;right:12px;bottom:28px;margin:0;padding:8px 12px;border-radius:10px;background:rgba(3,14,24,.86);font:600 14px/1.35 var(--txt);display:none;max-width:420px}
+.v6 .cena.sem-webgl .estatica{display:block}
+.v6 .cena-sec .leg{padding:12px 16px 0}
+.v6 .credito-mapa{position:absolute;z-index:4;left:8px;bottom:6px;font:500 10.5px/1.2 var(--txt);color:rgba(243,248,251,.75);margin:0}
+.v6 .credito-mapa a{color:inherit;text-decoration:underline}
+/* MapLibre: só o essencial do maplibre-gl.css (sem controlos) */
+.v6 .maplibregl-map{overflow:hidden;position:relative;-webkit-tap-highlight-color:rgba(0,0,0,0)}
+.v6 .maplibregl-canvas{position:absolute;left:0;top:0}
+.v6 .maplibregl-canvas-container.maplibregl-interactive{cursor:grab}
+.v6 .maplibregl-ctrl-attrib,.v6 .maplibregl-ctrl-bottom-right,.v6 .maplibregl-ctrl-bottom-left{display:none}
+
+/* ---------- estudar ---------- */
+.v6 .estudo{margin:30px 16px 0;border-radius:var(--r);background:var(--fundo);box-shadow:inset 0 0 0 1px var(--linha)}
+.v6 .estudo summary{list-style:none;display:flex;align-items:center;gap:12px;padding:16px;cursor:pointer;min-height:64px}
+.v6 .estudo summary::-webkit-details-marker{display:none}
+.v6 .estudo summary h2{margin:0;font:900 italic 28px/1 var(--disp);text-transform:uppercase;flex:none}
+.v6 .estudo summary .mais{flex:1;color:var(--nevoa);font-size:15px;display:flex;align-items:center;justify-content:flex-end;gap:6px;text-align:right}
+.v6 .estudo summary svg{width:22px;height:22px;flex:none;transition:transform .25s}
+.v6 .estudo[open] summary svg{transform:rotate(180deg)}
+.v6 .estudo .corpo{padding:0 16px 18px}
+.v6 .tabela{overflow-x:auto;margin:0 -16px;padding:0 16px}
+.v6 .tabela table{border-collapse:collapse;width:100%;min-width:560px;font:500 15px/1.2 var(--txt);font-variant-numeric:tabular-nums}
+.v6 .tabela th{font:800 12px/1 var(--txt);letter-spacing:.1em;text-transform:uppercase;color:var(--nevoa);text-align:left;padding:8px 6px;border-bottom:1px solid var(--linha);position:sticky;top:0;background:var(--fundo)}
+.v6 .tabela td{padding:7px 6px;border-bottom:1px solid rgba(30,67,97,.5);white-space:nowrap}
+.v6 .tabela td.n span{display:inline-block;min-width:30px;text-align:center;padding:3px 6px;border-radius:6px;background:var(--c);color:var(--t);font:900 17px/1 var(--disp)}
+.v6 .tabela tr.sel td{background:rgba(255,201,60,.12)}
+.v6 .tabela tr.dia td{border-top:2px solid var(--linha)}
+.v6 dl.praia{display:grid;grid-template-columns:auto 1fr;gap:8px 14px;margin:18px 0 0;font-size:16px}
+.v6 dl.praia dt{font:800 12px/1.6 var(--txt);letter-spacing:.12em;text-transform:uppercase;color:var(--nevoa)}
+.v6 dl.praia dd{margin:0}
+.v6 .estimado{margin:12px 0 0;color:var(--nevoa);font-size:14px}
+.v6 .falta-dados{margin:14px 16px 0;color:var(--nevoa);font-size:13px;line-height:1.4}
+
+/* o resto da página de spot (instrumentos, previsão, contexto) continua por baixo */
+.v6-resto{background:var(--abismo,#030E18)}
+
+/* ---------- desktop (≥ 1024 px, como a home) ---------- */
+@media (min-width:1024px){
+  .v6{font-size:18px;padding-bottom:0}
+  .v6 .hero{--fh:100%;min-height:0;height:min(76vh,700px)}
+  .v6 .hero .foto{top:0!important;-webkit-mask-image:none;mask-image:none}
+  .v6 .hero .foto.desce{-webkit-mask-image:none;mask-image:none}
+  .v6 .hero .foto.lado{left:var(--fl,0%);-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 22%);mask-image:linear-gradient(90deg,transparent 0,#000 22%)}
+  .v6 .hero .foto.lado img{object-position:var(--pd,50% 50%)!important}
+  .v6 .hero .veu{background:linear-gradient(90deg,rgba(3,14,24,.95) 0,rgba(3,14,24,.88) 44%,rgba(3,14,24,.5) 66%,rgba(3,14,24,0) 86%),linear-gradient(180deg,rgba(3,14,24,.5) 0,rgba(3,14,24,0) 20%,rgba(3,14,24,0) 70%,rgba(3,14,24,.85) 100%)}
+  .v6 .top{padding:16px 32px}
+  .v6 .hero-in{padding:0 40px 40px;max-width:1240px}
+  .v6 .hero .credito-foto{top:95px}
+  .v6 .ver{grid-template-columns:auto auto;justify-content:start;gap:28px}
+  .v6 .ver .nota{--fs:170px}
+  .v6 .ver .pal{font-size:72px}
+  .v6 .ver .l1{font-size:24px;max-width:28ch}
+  .v6 .l2{font-size:19px;max-width:60ch}
+  .v6 .regua{position:sticky;top:0;bottom:auto;padding:12px 40px 10px;border-top:0;border-bottom:1px solid var(--linha)}
+  .v6 .faixa-wrap{height:54px}
+  .v6 .eixo .so-d{display:inline}
+  .v6 .corpo-d{display:grid;grid-template-columns:minmax(380px,.82fr) 1.4fr;gap:24px;padding:28px 40px 0;align-items:stretch}
+  .v6 .porque{padding:0;display:flex;flex-direction:column;min-height:0}
+  .v6 .fatores{flex:1;grid-auto-rows:1fr;gap:14px}
+  .v6 .fator{align-content:center;padding:20px 22px;grid-template-columns:76px 1fr;gap:6px 18px}
+  .v6 .fator svg.g{width:76px;height:76px}
+  .v6 .val{font-size:66px}
+  .v6 .val small{font-size:19px}
+  .v6 .rel{font-size:17px}
+  .v6 .cena-sec{padding:0}
+  .v6 .cena-sec .cab{padding:0}
+  .v6 .cena{height:clamp(440px,calc(100vh - 380px),580px);border-radius:20px}
+  .v6 .cena-sec .leg{padding:12px 0 0}
+  .v6 .estudo{margin:28px 40px 0}
+  .v6 .falta-dados{margin:14px 40px 0}
+}
+
+/* ---------- movimento reduzido: sem Ken Burns, sem espuma, sem transições ---------- */
+@media (prefers-reduced-motion:reduce){
+  .v6.vivo .foto.kb img,.v6.vivo .swell svg{animation:none}
+  .v6 .modo .pista,.v6 .agulha,.v6 .foto img,.v6 .estudo summary svg{transition:none}
+}
+
+/* ---------- acções do spot (como chegar, favorito, alerta, câmara, mais) ---------- */
+.v6 .acoes{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:24px 16px 0}
+.v6 .acao{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;min-width:44px;padding:0 14px;border-radius:999px;
+  background:var(--fundo);box-shadow:inset 0 0 0 1px var(--linha);font:700 15px/1 var(--txt);text-decoration:none;color:var(--espuma)}
+.v6 .acao svg{width:18px;height:18px}
+.v6 .acao.primaria{background:var(--sol);color:var(--ink);box-shadow:none}
+.v6 .acoes .acao-fav>button,.v6 .acoes .acao-alerta button,.v6 .acoes .acao-mais button{min-height:44px;min-width:44px;border-radius:999px}
+.v6 .acoes .acao-fav>button{width:44px;height:44px}
+@media (max-width:639px){
+  .v6 .acao .rot{display:none}
+  /* < 640 px: alerta e «Mais» só com ícone (o nome acessível fica), para a linha caber numa só fila */
+  .v6 .acoes .acao-alerta>div>button,.v6 .acoes .acao-mais button[aria-haspopup]{font-size:0;gap:0;padding:0;width:44px;height:44px;justify-content:center}
+}
+@media (min-width:1024px){.v6 .acoes{margin:24px 40px 0}}
+.v6 .seguranca{margin:0 16px}
+.v6 .seguranca:empty{display:none}
+@media (min-width:1024px){.v6 .seguranca{margin:16px 40px 0}}
+
+/* Sem o cabeçalho do site nem a antiga barra unificada nesta rota: as cotas
+   sticky do resto da página (cabeçalhos de dia, âncoras) passam a 0. */
+html:has(.v6){--ventu-spot-sticky-top:0px;--ventu-spot-tabs-h:0px}
+/* régua: dica ao pairar (só rato) */
+.v6 .r-tip{position:absolute;bottom:calc(100% + 8px);transform:translateX(-50%);z-index:3;pointer-events:none;white-space:nowrap;
+  background:var(--fundo);color:var(--espuma);border:1px solid var(--linha);border-radius:8px;padding:5px 9px;font-size:15px;font-weight:700;letter-spacing:.02em}
+/* régua: chip do aviso activo (compacto, não empurra as setas) */
+.v6 .r-aviso{flex:none;display:inline-flex;max-width:38vw;overflow:hidden}

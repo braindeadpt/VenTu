@@ -133,3 +133,9 @@ _ci-trace/
 /audit-*/
 .playwright-mcp/
 /nul
+
+# Worker do MapLibre GL copiado de node_modules no prebuild/predev (scripts/copy-maplibre-worker.mjs, #184)
+public/vendor/maplibre-gl-worker-*.mjs
+
+# Cache do gerador da geografia da praia (scripts/gen-praia-geo.mjs)
+.cache/

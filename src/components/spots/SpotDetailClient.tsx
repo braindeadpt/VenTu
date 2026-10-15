@@ -43,7 +43,10 @@ import ErrorState from '@/components/ui/ErrorState';
 import SpotTimelineProvider from '@/components/spots/timeline/SpotTimelineProvider';
 import { useSpotTimelineIndex } from '@/components/spots/timeline/useSpotTimeline';
 import { getScoreCssVar } from '@/lib/scoreThresholds';
-import SpotVerdictSection from '@/components/spots/page/SpotVerdictSection';
+import SpotV6, { type SpotV6Props } from '@/components/spots/v6/SpotV6';
+import SpotAcoesV6 from '@/components/spots/v6/SpotAcoesV6';
+import SpotSafetyStrip from '@/components/spots/verdict/SpotSafetyStrip';
+import type { LinhaForecast } from '@/lib/horaSpot';
 import SpotInstrumentsSection from '@/components/spots/page/SpotInstrumentsSection';
 import SpotForecastSection from '@/components/spots/page/SpotForecastSection';
 import SpotContextSection from '@/components/spots/page/SpotContextSection';
@@ -170,10 +173,13 @@ export default function SpotDetailClient({
   events = [],
   initialData,
   bakedAtMs,
+  v6,
 }: {
   spot: Spot;
   locale: string;
   events?: VentuEvent[];
+  /** Página de spot v6 (#184): o que o servidor prepara (fotos, vizinhos, textos da praia). */
+  v6: Pick<SpotV6Props, 'nome' | 'local' | 'fotos' | 'vizinhos' | 'atencao' | 'melhorMare'>;
   /** Baked at build (static export) — skips the client fetch, kills the hydration layout shift. */
   initialData?: SpotData;
   /**
@@ -738,27 +744,29 @@ export default function SpotDetailClient({
           nowMs={freshnessNowMs}
         >
           <SpotPageAccent fallbackScore={score.score}>
-          {/* §0–3 — Veredicto + barra fixa + «Quando ir» (dona: S2A). */}
-          <SpotVerdictSection
+          {/* §0–3 — Página de spot v6 «Atlântico» (#184): veredicto /10, régua
+              de 48 h, Porquê, praia em 3D e «Estudar o spot», todos do mesmo
+              objecto da hora (src/lib/horaSpot.ts). */}
+          <SpotV6
             spot={spot}
             locale={locale}
-            backLabel={t.spots.backToSpots}
-            directionsLabel={td.getDirections}
-            livecamLabel={getSpotLivecam(spot.slug) ? td.livecam : undefined}
-            selectedSport={selectedSport}
-            score={score}
-            conditions={conditions}
-            scoreWindSource={scoreWindSource}
-            scoreWindCorrection={scoreWindCorrection}
-            scoreWaveSource={scoreWaveSource}
-            scoreWaveCorrection={scoreWaveCorrection}
-            tabSports={tabSports}
-            allScores={allScores}
-            sportLabel={SPORT_LABELS[selectedSport][isPt ? 'pt' : 'en']}
-            onSelectSport={setSelectedSport}
-            sportTabsAria={tv.sportTabsAria}
-            whenToGoTitle={td.whenToGo}
-            freshnessNowMs={freshnessNowMs}
+            linhas={(spotData?.forecast ?? []) as unknown as LinhaForecast[]}
+            agoraMs={bakedAtMs ?? 0}
+            onModalidade={(m) => {
+              const alvo: SportType = m === 'kite' ? 'kitesurf' : 'surf';
+              if (allScores[alvo]) setSelectedSport(alvo);
+            }}
+            seguranca={<SpotSafetyStrip spotId={spot.id} locale={locale} />}
+            acoes={
+              <SpotAcoesV6
+                spot={spot}
+                locale={locale}
+                sport={selectedSport}
+                directionsLabel={td.getDirections}
+                livecamLabel={getSpotLivecam(spot.slug) ? td.livecam : undefined}
+              />
+            }
+            {...v6}
           />
 
           {/* Coluna única — ordem do contrato: Instrumentos → Previsão →
