@@ -738,7 +738,11 @@
         "distKm": 0,
         "dirDeg": 298,
         "intensity": "heavy",
-        "approach": null
+        "approach": {
+          "state": "approaching",
+          "deg": 95,
+          "kmh": 62
+        }
       },
       "warnLevel": null,
       "inStormCone": false
@@ -1090,12 +1094,12 @@
     },
     "praia-vitoria": {
       "radar": null,
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "santa-catarina-terceira": {
       "radar": null,
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "parede": {
@@ -1250,7 +1254,7 @@
     },
     "almoxarife": {
       "radar": null,
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "lagoa-albufeira": {
@@ -1394,7 +1398,11 @@
         "distKm": 10,
         "dirDeg": 317,
         "intensity": "moderate",
-        "approach": null
+        "approach": {
+          "state": "approaching",
+          "deg": 246,
+          "kmh": 75
+        }
       },
       "warnLevel": null,
       "inStormCone": false
@@ -2436,17 +2444,17 @@
     },
     "porto-martins": {
       "radar": null,
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "cachorro-pico": {
       "radar": null,
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "faja-cubres": {
       "radar": null,
-      "warnLevel": "yellow",
+      "warnLevel": null,
       "inStormCone": false
     },
     "fao-ofir-surf": {
