@@ -20,6 +20,7 @@
  * «detalhes» fechada (letra pequena) e no tooltip. Copy em
  * `spotMedeSabe` (5 línguas).
  */
+import { Fragment } from 'react';
 import { AlertTriangle } from 'lucide-react';
 import { getCardinalLabel } from '@/lib/wind';
 import { formatObservedClockTime } from '@/lib/observations';
@@ -250,7 +251,17 @@ export default function BoiaV6({ spotId, locale, c, agoraMs }: BoiaV6Props) {
           {ms.concorda[verif.agreement] ?? badge.label}
         </span>
       </div>
-      {extras.length ? <p className="ec-num">{d(extras.join(' · '))}</p> : null}
+      {extras.length ? (
+        <p className="ec-num">
+          {/* cada dado inteiro numa linha («maior onda 2,9 m» não parte a meio) */}
+          {extras.map((x, i) => (
+            <Fragment key={x}>
+              {i ? ' · ' : ''}
+              <span className="ec-nw">{d(x)}</span>
+            </Fragment>
+          ))}
+        </p>
+      ) : null}
 
       {w.bridge ? (
         <p className="ec-destaque" data-wave-bridge="true" title={tv.bridgeTitle}>
@@ -286,7 +297,9 @@ export default function BoiaV6({ spotId, locale, c, agoraMs }: BoiaV6Props) {
                 <p className="ec-rot">
                   {f.vence ? '✓ ' : ''}
                   {f.rede}
-                  {f.vence ? <span className="boia-usa"> {tv.inUse}</span> : null}
+                  {/* «a usar» numa linha própria: sem o «·» inicial, que ficava a abrir linha quando o rótulo quebrava */}
+                  {f.vence ? ' ' : null}
+                  {f.vence ? <span className="boia-usa">{tv.inUse.replace(/^\s*·\s*/, '')}</span> : null}
                 </p>
                 <p>{f.rotulo}</p>
                 <p className="ec-num">{f.idadeTxt}</p>
