@@ -42,13 +42,25 @@ export function metaCosta(): MetaCosta {
 }
 
 export type FotosCosta = Record<string, Record<Modalidade, FotoSpot | null>>;
+
+/**
+ * Só os campos que a home lê (imagem, enquadramento, crédito e o alt da língua da
+ * página): o resto da ficha da foto (ficheiro, licUrl, local, o alt da outra língua)
+ * ficava no HTML e nos dois payloads RSC sem uso.
+ */
+function fotoHome(f: FotoSpot | null, locale: string): FotoSpot | null {
+  if (!f) return null;
+  const { ficheiro: _a, card: _b, licUrl: _c, local: _d, altPt, altEn, ...resto } = f as FotoSpot & Record<string, unknown>;
+  return { ...resto, ...(locale === 'pt' ? { altPt } : { altEn }) } as unknown as FotoSpot;
+}
+
 /** Foto de cada spot da costa por modalidade (a mesma regra da página de spot). */
-export function fotosCosta(): FotosCosta {
+export function fotosCosta(locale = 'pt'): FotosCosta {
   const out: FotosCosta = {};
   for (const c of COSTA_V6.spots) {
     const s = TODOS.find((x) => x.id === c.id);
     if (!s) continue;
-    out[c.id] = { kite: fotoDoSpot(s, 'kite'), surf: fotoDoSpot(s, 'surf') };
+    out[c.id] = { kite: fotoHome(fotoDoSpot(s, 'kite'), locale), surf: fotoHome(fotoDoSpot(s, 'surf'), locale) };
   }
   return out;
 }

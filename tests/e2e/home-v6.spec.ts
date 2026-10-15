@@ -285,7 +285,6 @@ test.describe('#183 home v6 — HTML estático, bundle, WebGL e movimento', () =
       // @ts-expect-error — substituição de teste
       HTMLCanvasElement.prototype.getContext = function (tipo: string, ...a: unknown[]) {
         if (tipo === 'webgl2' || tipo === 'webgl' || tipo === 'experimental-webgl') return null;
-        // @ts-expect-error — repõe a original
         return og.call(this, tipo, ...a);
       };
     });

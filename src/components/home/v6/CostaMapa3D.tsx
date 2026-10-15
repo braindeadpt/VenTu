@@ -14,7 +14,7 @@
  * Lógica da maquete aprovada (`index.html`: `rotulos`, `campoVento`,
  * `camMobile`, `camDesk`, `mapaCheio`, `carta`).
  */
-import { useCallback, useEffect, useRef, useState, type CSSProperties } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from 'react';
 import { criarVento, idwVento, type MotorVento } from '@/lib/ventoParticulas';
 import { aplicarLuz, BOX_VENTO, CAM_DESK, CAM_MOB, COR, corTroco, luz, ZMOB, type GeoCosta } from '@/lib/home/costaCena';
 import { rumo, type Linha, type Modelo, type SpotHome } from '@/lib/home/homeV6';
@@ -80,9 +80,12 @@ export default function CostaMapa3D({ M, E, copy: c, hrefSpot, forcarPlano, onCh
   const solta = useRef<(() => void) | null>(null);
   // o estado mais recente para os callbacks imperativos (MapLibre, resize)
   const st = useRef({ M, E, c, hrefSpot });
-  st.current = { M, E, c, hrefSpot };
   const forcarRef = useRef(forcarPlano);
-  forcarRef.current = forcarPlano;
+  useLayoutEffect(() => {
+    st.current = { M, E, c, hrefSpot };
+    forcarRef.current = forcarPlano;
+  });
+  const [reduzido, setReduzido] = useState(false);
 
   /* bandas do bloco por spot (noite: tudo noite), a do ranking único */
   const cores = () => {
@@ -365,6 +368,7 @@ export default function CostaMapa3D({ M, E, copy: c, hrefSpot, forcarPlano, onCh
     const f = fig.current;
     if (!f) return;
     reduz.current = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    setReduzido(reduz.current);
     desk.current = window.matchMedia('(min-width: 1024px)').matches;
     if (ventoEl.current)
       vento.current = criarVento(ventoEl.current, {
@@ -575,7 +579,7 @@ export default function CostaMapa3D({ M, E, copy: c, hrefSpot, forcarPlano, onCh
         <div className="poster" aria-hidden="true" />
         <svg ref={cartaEl} className="carta" aria-hidden="true" />
         <div ref={mapaEl} className="mapa" aria-hidden="true" />
-        <canvas ref={ventoEl} className="vento" aria-hidden="true" data-testid="home-vento" data-estatico={reduz.current || modo === 'plano' ? '1' : '0'} />
+        <canvas ref={ventoEl} className="vento" aria-hidden="true" data-testid="home-vento" data-estatico={reduzido || modo === 'plano' ? '1' : '0'} />
         <div ref={rotEl} className="rotulos" data-testid="home-rotulos">
           <svg ref={guiasEl} className="guias" aria-hidden="true" />
         </div>

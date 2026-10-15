@@ -44,7 +44,7 @@ export default async function HomePage({
   const costa = costaCompacta(loadForecastsBySpot(), bakedAtMs);
 
   // Payload RSC: sem descrições/dicas/perigos (só a página do spot os usa).
-  const homeSpotsData = spotsData.map(toHomepageSpotLite);
+  const homeSpotsData = spotsData.map((r) => toHomepageSpotLite(r, locale));
 
   return (
     <div className="min-h-screen bg-bg-base">
@@ -55,7 +55,7 @@ export default async function HomePage({
           .replace('{schedule}', pipelineSchedule(locale))}
       </h1>
 
-      <HomeV6 locale={locale} costa={costa} meta={metaCosta()} fotos={fotosCosta()} agoraMs={bakedAtMs} />
+      <HomeV6 locale={locale} costa={costa} meta={metaCosta()} fotos={fotosCosta(locale)} agoraMs={bakedAtMs} />
 
       <HomeAdaptive
         locale={locale}
