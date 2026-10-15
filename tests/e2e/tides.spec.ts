@@ -1,150 +1,48 @@
 import { test, expect } from '@playwright/test';
-import { alignClockToForecast, interceptConditions, interceptForecasts } from './helpers/conditions';
+import { alignClockToForecast, interceptForecasts } from './helpers/conditions';
 
 /**
- * Marés — TideScheduleStrip.
+ * Marés — cartão «Maré» do Porquê (página de spot v6, #184).
  *
- * The tide phase label comes from conditions.json[spot].tideStatus (phase
- * override in buildTideSchedule); the next low/high times come from the
- * hourly tideHeight curve in forecasts.json (real build data has 168h with
- * tideHeight). We transform only the per-spot conditions entry via the shared
- * helper — deterministic phases without touching the forecast.
+ * O antigo TideScheduleStrip («Agora» → cartão Maré) saiu da página com a
+ * retirada dos duplicados: a maré da hora vive só no Porquê, lida do mesmo
+ * objecto da hora (src/lib/horaSpot.ts) que a régua e a tabela do «Estudar o
+ * spot». A fase (a encher / a vazar) e a próxima preia-mar/baixa-mar vêm da
+ * curva horária `tideHeight` do forecast.
  */
 
-test.describe('Marés (TideScheduleStrip)', () => {
+test.describe('Marés (Porquê v6)', () => {
   // O SW serve /data/* do cache e burla o page.route — ver helpers/conditions.ts.
   test.use({ serviceWorkers: 'block' });
   test.beforeEach(async ({ page }) => {
     await alignClockToForecast(page);
   });
 
-  /**
-   * S2B: o TideScheduleStrip/MoonTideCard vivem no painel de detalhe da secção
-   * Instrumentos (#instrumentos → cartão «Maré»). Abre-o antes das asserções.
-   */
-  async function openTideDetail(page: import('@playwright/test').Page) {
-    const detail = page.locator('#instrumentos-detalhe');
-    const button = page.locator("#instrumentos [data-instrument='tide'] button");
-    await expect(async () => {
-      const attr = (await detail.count()) ? await detail.getAttribute('data-detail') : null;
-      if (attr !== 'tide') {
-        await button.click({ timeout: 3_000 });
-      }
-      await expect(detail).toHaveAttribute('data-detail', 'tide', { timeout: 1_000 });
-    }).toPass({ timeout: 20_000 });
-  }
-
-  test('mostra a fase a subir com a maré baixa/alta seguintes (HH:MM)', async ({ page }) => {
-    await interceptConditions(page, {
-      spots: {
-        guincho: (entry) => ({ ...entry, tideStatus: 'rising' }),
-      },
-    });
-
+  test('mostra a fase (a encher / a vazar) e a próxima preia-mar ou baixa-mar (HH:MM)', async ({ page }) => {
     await page.goto('/pt/spots/guincho/');
-    await openTideDetail(page);
-    const strip = page.getByRole('status', { name: /Maré: Maré a subir/i });
-    await expect(strip).toBeVisible({ timeout: 20_000 });
-    // Próximas marés vêm da curva horária real (previsão).
-    await expect(strip).toContainText('Maré baixa');
-    await expect(strip).toContainText('Maré alta');
-    await expect(strip.getByText(/\d{2}:\d{2}/).first()).toBeVisible();
+    const mare = page.locator('#porque-t ~ .fatores [data-fator="mare"]');
+    await expect(mare).toBeVisible({ timeout: 20_000 });
+    // Fase lida da curva horária (previsão), com a altura em metros.
+    await expect(mare.locator('.val')).toContainText(/\d,\d\s*m · a (encher|vazar)/);
+    // Próximo extremo da curva: «preia-mar às HH:MM (x,x m)» ou «baixa-mar às …».
+    await expect(mare.locator('.rel')).toContainText(/(preia|baixa)-mar às \d{2}:\d{2} \(\d,\d m\)/);
+    // Uma só maré na página: o número da hora não se repete fora do Porquê
+    // (a tabela do «Estudar o spot» está fechada por omissão).
+    await expect(page.getByRole('status', { name: /Maré:/i })).toHaveCount(0);
   });
 
-  test('mostra «Maré alta agora» quando tideStatus é high', async ({ page }) => {
-    await interceptConditions(page, {
-      spots: {
-        guincho: (entry) => ({ ...entry, tideStatus: 'high' }),
-      },
-    });
-
-    await page.goto('/pt/spots/guincho/');
-    await openTideDetail(page);
-    await expect(page.getByRole('status', { name: /Maré: Maré alta agora/i })).toBeVisible({
-      timeout: 20_000,
-    });
-    await expect(page.getByRole('status', { name: /Maré: Maré alta agora/i })).toContainText('Maré baixa');
-  });
-
-  test('mostra «Maré a descer» quando tideStatus é falling', async ({ page }) => {
-    await interceptConditions(page, {
-      spots: {
-        guincho: (entry) => ({ ...entry, tideStatus: 'falling' }),
-      },
-    });
-
-    await page.goto('/pt/spots/guincho/');
-    await openTideDetail(page);
-    await expect(page.getByRole('status', { name: /Maré: Maré a descer/i })).toBeVisible({
-      timeout: 20_000,
-    });
-  });
-
-  test('sem tideHeight na curva → schedule ausente (strip some) e MoonTideCard sem amplitude', async ({
-    page,
-  }) => {
-    // buildTideSchedule devolve null quando a série tem <2 pontos com
-    // tideHeight — o card de marés (TideScheduleStrip) não renderiza, mas o
-    // MoonTideCard continua (fase lunar) sem a linha de amplitude.
+  test('sem tideHeight na curva → o cartão da maré diz «sem dados» (nunca inventa)', async ({ page }) => {
     await interceptForecasts(page, {
       spots: {
-        guincho: (series) =>
-          series.map(({ tideHeight: _omit, ...h }) => h),
+        guincho: (series) => series.map(({ tideHeight: _omit, ...h }) => h),
       },
     });
 
     await page.goto('/pt/spots/guincho/');
-    await openTideDetail(page);
-
-    // Sem schedule: nem o strip nem o título «Marés (previsão)» aparecem.
-    await expect(page.getByRole('status', { name: /Maré:/i })).toHaveCount(0, {
-      timeout: 20_000,
-    });
-    await expect(page.getByText('Marés (previsão)')).toHaveCount(0);
-
-    // MoonTideCard continua visível (fase lunar), mas sem amplitude.
-    // Scope to #main-content: under heavy CI load the Next.js streaming
-    // reveal ($RC/$RV) can lag past hydration, leaving a hidden duplicate of
-    // the streamed card outside <main> — the unscoped locator then resolves
-    // to 2 elements and trips strict mode. The user-visible card is the one
-    // in #main-content; the lingering copy is hidden and inert.
-    const moonCard = page
-      .locator('#main-content')
-      .getByText('Maré e lua')
-      .locator('..');
-    await expect(moonCard).toBeVisible();
-    // Fase lunar real do build (qualquer das 8 fases em pt).
-    await expect(moonCard).toContainText(
-      /Lua (nova|cheia|crescente|minguante)|Quarto (crescente|minguante)|Gibosa (crescente|minguante)/,
-    );
-    await expect(moonCard).toContainText(/Marés (vivas|mortas)|Transição/);
-    await expect(moonCard.getByText(/Amplitude hoje:/)).toHaveCount(0);
-  });
-
-  test('MoonTideCard com curva real → mostra fase lunar, regime e amplitude hoje', async ({
-    page,
-  }) => {
-    // Sem transform: o forecast real do build tem tideHeight → a amplitude
-    // do dia é calculada (≥2 pontos) e o card mostra fase + regime + range.
-    await page.goto('/pt/spots/guincho/');
-    await openTideDetail(page);
-
-    // Scope to #main-content: under heavy CI load the Next.js streaming
-    // reveal ($RC/$RV) can lag past hydration, leaving a hidden duplicate of
-    // the streamed card outside <main> — the unscoped locator then resolves
-    // to 2 elements and trips strict mode. The user-visible card is the one
-    // in #main-content; the lingering copy is hidden and inert.
-    const moonCard = page
-      .locator('#main-content')
-      .getByText('Maré e lua')
-      .locator('..');
-    await expect(moonCard).toBeVisible({ timeout: 20_000 });
-    // Fase lunar real do build (qualquer das 8 fases em pt).
-    await expect(moonCard).toContainText(
-      /Lua (nova|cheia|crescente|minguante)|Quarto (crescente|minguante)|Gibosa (crescente|minguante)/,
-    );
-    await expect(moonCard).toContainText(/Marés (vivas|mortas)|Transição/);
-    // Amplitude real do build (série 168h com tideHeight) — número sempre ≥ 0.
-    await expect(moonCard.getByText(/Amplitude hoje: \d+\.\d m/)).toBeVisible();
+    const mare = page.locator('#porque-t ~ .fatores [data-fator="mare"]');
+    await expect(mare).toBeVisible({ timeout: 20_000 });
+    await expect(mare.locator('.val')).toContainText('–');
+    await expect(mare.locator('.rel')).toHaveText('sem dados');
+    await expect(mare.getByText(/(preia|baixa)-mar às/)).toHaveCount(0);
   });
 });

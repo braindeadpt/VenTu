@@ -185,8 +185,47 @@
 .v6 .estimado{margin:12px 0 0;color:var(--nevoa);font-size:14px}
 .v6 .falta-dados{margin:14px 16px 0;color:var(--nevoa);font-size:13px;line-height:1.4}
 
-/* o resto da página de spot (instrumentos, previsão, contexto) continua por baixo */
-.v6-resto{background:var(--abismo,#030E18)}
+/* ---------- contexto do spot (avisos, câmara, estação, chegar e estar, eventos) ----------
+   Só o que a v6 não tinha (retirados os duplicados «Agora» e «Hora a hora»).
+   Os avisos e os eventos reaproveitam componentes do site: dentro de `.ctx` os
+   tokens do site passam a ser os da v6 (cores de cores.md, Barlow), para não
+   haver nada do estilo antigo. */
+.v6 .ctx{margin:30px 16px 0;display:grid;gap:16px;
+  --bg-base:3 14 24;--bg-elevated:7 27 44;--surface-1:243 248 251;--surface-2:243 248 251;--surface-3:243 248 251;
+  --divider:30 67 97;--divider-strong:30 67 97;--fg:243 248 251;--fg-muted:169 194 212;--fg-subtle:169 194 212;--fg-disabled:86 103 123;
+  --data-waves:127 231 255;--data-wind:127 231 255;--data-water:127 231 255;--accent:255 201 60;--accent-hover:255 201 60;--accent-active:255 201 60;
+  --score-poor:168 70 74;--score-fair:201 158 42;--score-good:64 220 208;--score-epic:255 240 122;--score-closed:86 103 123;
+  --font-geist-sans:'Barlow';--font-display:'Barlow Condensed'}
+.v6 .ctx-grelha{display:grid;gap:16px}
+.v6 .ctx-bloco{border-radius:var(--r);background:var(--fundo);box-shadow:inset 0 0 0 1px var(--linha);padding:16px;display:grid;gap:18px;align-content:start;min-width:0;scroll-margin-top:96px}
+.v6 .ctx-t{display:flex;align-items:center;gap:10px;margin:0;font:900 italic 28px/1 var(--disp);text-transform:uppercase}
+.v6 .ctx-t svg{width:22px;height:22px;flex:none;color:var(--nevoa)}
+.v6 .ctx-item{display:grid;gap:8px;min-width:0;scroll-margin-top:96px}
+.v6 .ctx-rot{margin:0;font:800 12px/1.6 var(--txt);letter-spacing:.12em;text-transform:uppercase;color:var(--nevoa)}
+.v6 .ctx-nome{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;margin:0;font:700 18px/1.25 var(--txt)}
+.v6 .ctx-nome svg{width:20px;height:20px;color:var(--gelo);flex:none}
+.v6 .ctx-nome small{flex-basis:100%;font:500 14px/1.3 var(--txt);color:var(--nevoa);padding-left:28px}
+.v6 .ctx-nota{margin:0;color:var(--nevoa);font-size:15px;line-height:1.45}
+.v6 .ctx-sobre{margin:0;font-size:16px;line-height:1.5;color:var(--espuma);max-width:70ch}
+.v6 .ctx-video{position:relative;aspect-ratio:16/9;border-radius:10px;overflow:hidden;background:var(--mar);box-shadow:inset 0 0 0 1px var(--linha)}
+.v6 .ctx-video iframe,.v6 .ctx-estacao iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.v6 .ctx-estacao{position:relative;height:min(72vh,520px);min-height:320px;border-radius:10px;overflow:hidden;background:var(--mar);box-shadow:inset 0 0 0 1px var(--linha)}
+.v6 .ctx-links{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px}
+.v6 .ctx-link{color:var(--gelo);font-weight:700;text-decoration:underline;text-underline-offset:3px;display:inline-flex;align-items:center;min-height:44px}
+.v6 dl.praia.ctx-dl{margin:0}
+.v6 dl.praia.ctx-dl dd .ctx-link{min-height:0}
+.v6 .ctx-dl .cap{text-transform:capitalize}
+.v6 .ctx-eventos ul{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+/* componentes do site reaproveitados (avisos IPMA/IH, radar, ciclones, eventos): tipografia v6 */
+.v6 .ctx [data-ctx=avisos] :is(p,li,span,a),.v6 .ctx-eventos :is(p,li,span,a,h3){font-family:var(--txt)}
+.v6 .ctx [data-ctx=avisos] a{color:var(--gelo)}
+.v6 .ctx .card-1,.v6 .ctx .rounded-card{border-radius:10px}
+.v6 .ctx .card-1{background:var(--mar);border-color:var(--linha);backdrop-filter:none}
+@media (min-width:1024px){
+  .v6 .ctx{margin:28px 40px 0}
+  .v6 .ctx-grelha{grid-template-columns:1.15fr 1fr;align-items:start}
+  .v6 .ctx-bloco{padding:20px 22px}
+}
 
 /* ---------- desktop (≥ 1024 px, como a home) ---------- */
 @media (min-width:1024px){

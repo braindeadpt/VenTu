@@ -2,14 +2,13 @@
 
 /**
  * Página de spot v6 «Atlântico» (#184): TopBar, SpotHero, Regua48h, Porquê,
- * PraiaCena3D e EstudarSpot. Contrato: docs/design/maquetes/v6-atlantico.
+ * PraiaCena3D, EstudarSpot e o contexto do spot. Contrato: docs/design/maquetes/v6-atlantico.
  *
  * Regra de ouro: um objecto por spot e hora (`construirHoras`), avaliado uma
  * vez por modalidade (`avaliaHoras`); veredicto, régua, Porquê, cor do mar,
  * chip do vento e tabela lêem TODOS o mesmo `horas[i]` / `NS[i]`.
  */
-import { useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
-import { SpotTimelineDataContext, SpotTimelineIndexContext } from '@/components/spots/timeline/SpotTimelineProvider';
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
 import WindSafetyNote from '@/components/ui/WindSafetyNote';
 import '@/styles/v6-fontes.css';
 import '@/styles/v6-atlantico.css';
@@ -42,18 +41,20 @@ export interface SpotV6Props {
   vizinhos: readonly Vizinho[];
   atencao: string | null;
   melhorMare: string | null;
-  /** Avisa o resto da página (instrumentos, previsão) da modalidade escolhida. */
+  /** Avisa a página (alerta das acções) da modalidade escolhida. */
   onModalidade?: (d: Modalidade) => void;
   /** Faixa de segurança (avisos IPMA / estado do mar / costeiros), só com aviso activo. */
   seguranca?: ReactNode;
   /** Acções do spot (como chegar, favorito, alerta, câmara, mais). */
   acoes?: ReactNode;
+  /** O que só o contexto do spot traz (avisos, câmara, estação, chegar e estar, eventos). */
+  contexto?: ReactNode;
 }
 
 /** Fontes do primeiro ecrã (nome, nota, palavra, frase). */
 const PRELOAD = ['BarlowCondensed-900i-latin.woff2', 'BarlowCondensed-900-latin.woff2', 'Barlow-700-latin.woff2'];
 
-export default function SpotV6({ spot, nome, local, locale, linhas, agoraMs, fotos, vizinhos, atencao, melhorMare, onModalidade, seguranca, acoes }: SpotV6Props) {
+export default function SpotV6({ spot, nome, local, locale, linhas, agoraMs, fotos, vizinhos, atencao, melhorMare, onModalidade, seguranca, acoes, contexto }: SpotV6Props) {
   const copy = spotV6Copy(locale);
   const ed = useMemo(() => editorialDe(spot), [spot]);
   const sp = useMemo(() => spotModalidadeDe(ed), [ed]);
@@ -97,35 +98,12 @@ export default function SpotV6({ spot, nome, local, locale, linhas, agoraMs, fot
     [sp, d, H, NS, dados.sol, copy, locale],
   );
   const iSel = Math.max(0, Math.min(H.length - 1, i));
-  // Eixo de tempo partilhado com o resto da página (instrumentos, previsão
-  // hora a hora): a régua v6 escreve nele e segue-o quando outra secção muda a hora.
-  const tlData = useContext(SpotTimelineDataContext);
-  const tlIdx = useContext(SpotTimelineIndexContext);
-  const tlHoras = tlData?.hours;
-  const tlSet = tlIdx?.setIndex;
-  const escolhe = useCallback(
-    (j: number) => {
-      const k = Math.max(0, Math.min(H.length - 1, j));
-      setI(k);
-      const t = H[k]?.t;
-      if (t && tlHoras && tlSet) {
-        const x = tlHoras.findIndex((hh) => hh.slice(0, 16) === t);
-        if (x >= 0) tlSet(x);
-      }
-    },
-    [H, tlHoras, tlSet],
-  );
+  const escolhe = useCallback((j: number) => setI(Math.max(0, Math.min(H.length - 1, j))), [H.length]);
   useEffect(() => {
     if (pendH == null || !H.length) return;
     escolhe(pendH);
     setPendH(null);
   }, [pendH, H.length, escolhe]);
-  const tlSel = tlIdx?.selectedHour?.slice(0, 16);
-  useEffect(() => {
-    if (!tlSel) return;
-    const j = H.findIndex((hh) => hh.t === tlSel);
-    if (j >= 0) setI((cur) => (cur === j ? cur : j));
-  }, [tlSel, H]);
   const muda = useCallback(
     (m: Modalidade) => {
       setD(m);
@@ -210,7 +188,9 @@ export default function SpotV6({ spot, nome, local, locale, linhas, agoraMs, fot
         locale={locale}
         abertoInicial={flags.estudo}
       />
-      {/* acções do spot (fora da maquete): depois do «Estudar o spot», para o Porquê e a praia 3D seguirem a maquete */}
+      {/* fora da maquete: o contexto do spot (o que a v6 não tinha) e as acções, depois do «Estudar o spot»,
+          para o Porquê e a praia 3D seguirem a maquete */}
+      {contexto}
       {acoes}
       <p className="falta-dados" data-testid="falta-dados">
         {dados.faltam.includes('rain') ? copy.faltaChuvaNuvens : null}

@@ -66,7 +66,7 @@ const UI_ANCHORS: Record<DataSourceId, { surface: string; anchor: RegExp }> = {
   osm: { surface: 'controlo de atribuição do mapa (modo mapa)', anchor: /OpenStreetMap|getMapRasterBasemap|rasterTileLayerOptions/ },
   ecowitt: { surface: 'atribuição das observações de vento', anchor: /Ecowitt/i },
   metar: { surface: 'atribuição das observações de vento', anchor: /METAR|aviationweather/i },
-  weatherlink: { surface: 'embebido de sensores da página do spot', anchor: /SpotWeatherlinkSection/ },
+  weatherlink: { surface: 'embebido de sensores da página do spot (estação na praia, contexto v6)', anchor: /data-ctx="estacao"/ },
   gemini: { surface: 'notícias geradas por IA (Gemini Flash) + About', anchor: /Gemini/i },
   unsplash: { surface: 'créditos de fotografia no rodapé + About', anchor: /unsplash|pexels/i },
 };
