@@ -16,6 +16,23 @@ const listaPt = (a: string[]) => (a.length < 2 ? a.join('') : a.slice(0, -1).joi
 const listaEn = (a: string[]) => (a.length < 2 ? a.join('') : a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1]);
 const fmt1 = (x: number, loc: string) => x.toLocaleString(loc, { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 
+/**
+ * Frase da noite: «Amanhã de manhã: <frase>». As frases sem `corpo` («Pouco vento
+ * na costa: kite não dá.») já trazem os seus dois pontos; o prefixo fica com os
+ * únicos «:» e os da 1.ª oração da frase passam a vírgula («Amanhã de manhã: pouco
+ * vento na costa, kite não dá.»). Uma 2.ª frase («… O melhor é o Guincho: dá …»)
+ * não se toca.
+ */
+const comBlocoVirgula = (bloco: string, frase: string) => {
+  const cap = bloco.replace(/^./, (x) => x.toUpperCase());
+  const low = frase.replace(/^./, (x) => x.toLowerCase());
+  const fimOracao = low.search(/\.(\s|$)/);
+  const ate = fimOracao < 0 ? low.length : fimOracao;
+  const dp = low.indexOf(': ');
+  const corpo = dp >= 0 && dp < ate ? low.slice(0, dp) + ', ' + low.slice(dp + 2) : low;
+  return `${cap}: ${corpo}`;
+};
+
 const ART_EM: Record<string, string> = { o: 'no ', a: 'na ', '': 'em ' };
 const ART_DE: Record<string, string> = { o: 'do ', a: 'da ', '': 'de ' };
 const ART_A: Record<string, string> = { o: 'ao ', a: 'à ', '': 'a ' };
@@ -102,6 +119,8 @@ const pt = {
   blocoCurto: { manha: 'manhã', tarde: 'tarde', fim: 'fim tarde' } as Record<'manha' | 'tarde' | 'fim', string>,
   nomeBloco: (dia: 0 | 1, k: 'manha' | 'tarde' | 'fim') =>
     (dia === 0 ? 'hoje ' : 'amanhã ') + ({ manha: 'de manhã', tarde: 'à tarde', fim: 'ao fim da tarde' } as const)[k],
+  /** «Amanhã de manhã: pouco vento na costa, kite não dá.» (um só «:»). */
+  comBloco: comBlocoVirgula,
   intervalo: (a: number, z: number) => `${a}h–${z}h`,
   nRank: (k: number, quando: string) => `nº ${k} ${quando}`,
   notaAria: (n: number | null, b: string) => (n == null ? 'Noite' : `Nota ${n} em 10, ${b}`),
@@ -216,6 +235,7 @@ const en: HomeV6Copy = {
   blocoCurto: { manha: 'morning', tarde: 'afternoon', fim: 'evening' },
   nomeBloco: (dia: 0 | 1, k: 'manha' | 'tarde' | 'fim') =>
     (dia === 0 ? 'this ' : 'tomorrow ') + ({ manha: 'morning', tarde: 'afternoon', fim: 'evening' } as const)[k],
+  comBloco: comBlocoVirgula,
   intervalo: (a: number, z: number) => `${a}:00–${z}:00`,
   nRank: (k: number, quando: string) => `no. ${k} ${quando}`,
   notaAria: (n: number | null, b: string) => (n == null ? 'Night' : `Score ${n} out of 10, ${b}`),

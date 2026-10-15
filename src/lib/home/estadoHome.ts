@@ -53,9 +53,6 @@ export interface EstadoHome {
   mapaQ: string;
 }
 
-const cap = (s: string) => s.replace(/^./, (c) => c.toUpperCase());
-const low = (s: string) => s.replace(/^./, (c) => c.toLowerCase());
-
 export function estadoHome(M: Modelo, d: Modalidade, agoraIn: number, bPedido: string | null): EstadoHome {
   const c = M.copy;
   const agoraI = Math.max(0, Math.min(M.NH - 1, agoraIn));
@@ -79,7 +76,7 @@ export function estadoHome(M: Modelo, d: Modalidade, agoraIn: number, bPedido: s
   const banda: BandaK = noite || !t0 ? 'noite' : t0.b;
   const fN = dados ? M.nacional(d, dados, agoraI) : { txt: c.noiteNaCosta, b: 'noite' as BandaK };
   let txt = fN.txt;
-  if (noite && dados) txt = `${cap(nomeBloco(dados))}: ${low(fN.corpo || txt)}`;
+  if (noite && dados) txt = c.comBloco(nomeBloco(dados), fN.corpo || txt);
 
   const dataDe = (i: number) => {
     const t = M.t(i);

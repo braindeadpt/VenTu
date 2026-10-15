@@ -135,6 +135,12 @@ describe('home v6: paridade com o nucleo.js da maquete (0 diferenças)', () => {
     expect(e.noite).toBe(true);
     expect(e.bloco).toBeNull();
     expect(e.palavra).toBe('noite');
+    // «Amanhã de manhã: <frase>» com um só «:» na 1.ª oração (kite e surf), pelo caminho real.
+    for (const d of ['kite', 'surf'] as const) {
+      const f = txt(estadoHome(T, d, i22, null).frase.txt);
+      expect(f.startsWith('Amanhã de manhã: '), f).toBe(true);
+      expect(f.split(/\.(?:\s|$)/)[0].match(/:/g), f).toHaveLength(1);
+    }
   });
 });
 
