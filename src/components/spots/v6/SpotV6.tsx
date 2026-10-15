@@ -20,7 +20,7 @@ import PraiaCena3D, { type Vizinho } from './PraiaCena3D';
 import EstudarSpot from './EstudarSpot';
 import AvisoRegua from './AvisoRegua';
 import { avaliaHoras, isModalidade, MODALIDADE_OMISSAO, type Modalidade } from '@/lib/modalidades';
-import { construirHoras, type LinhaForecast } from '@/lib/horaSpot';
+import { construirHoras, type LinhaForecast, type MareExtremo } from '@/lib/horaSpot';
 import { editorialDe, spotModalidadeDe } from '@/lib/spotEditorial';
 import { bandaR, construirFrase, diaCurto, horaDe, horaTxt, palavraEResto } from '@/lib/spotVeredicto';
 import { gravarPrefModalidade, modalidadeInicial, MODALIDADE_EVENT } from '@/lib/modalidadePref';
@@ -28,6 +28,18 @@ import { spotV6Copy } from '@/lib/translations/spotPage/v6';
 import { getAssetPath } from '@/lib/paths';
 import type { FotoSpot } from '@/lib/spotFotos';
 import type { Spot } from '@/types';
+
+/** O que a hora escolhida na régua dá aos blocos de fora da maquete (estudo e contexto). */
+export interface SpotV6Hora {
+  /** Hora escolhida (ISO local `YYYY-MM-DDTHH:MM`). */
+  t: string;
+  ehAgora: boolean;
+  d: Modalidade;
+  /** Extremos de maré da janela — os mesmos do Porquê. */
+  mares: readonly MareExtremo[];
+  /** O extremo que o Porquê cita para esta hora (não se repete noutro sítio). */
+  citada?: MareExtremo;
+}
 
 export interface SpotV6Props {
   spot: Spot;
@@ -47,14 +59,16 @@ export interface SpotV6Props {
   seguranca?: ReactNode;
   /** Acções do spot (como chegar, favorito, alerta, câmara, mais). */
   acoes?: ReactNode;
-  /** O que só o contexto do spot traz (avisos, câmara, estação, chegar e estar, eventos). */
-  contexto?: ReactNode;
+  /** O que só o contexto do spot traz (avisos, câmara, estação, água, chegar e estar, perto daqui, eventos). */
+  contexto?: ReactNode | ((h: SpotV6Hora) => ReactNode);
+  /** Fim do «Estudar o spot»: o que se mede e o que se sabe (boia, maré e lua, sol e ar, fundo, clima). */
+  estudo?: (h: SpotV6Hora) => ReactNode;
 }
 
 /** Fontes do primeiro ecrã (nome, nota, palavra, frase). */
 const PRELOAD = ['BarlowCondensed-900i-latin.woff2', 'BarlowCondensed-900-latin.woff2', 'Barlow-700-latin.woff2'];
 
-export default function SpotV6({ spot, nome, local, locale, linhas, agoraMs, fotos, vizinhos, atencao, melhorMare, onModalidade, seguranca, acoes, contexto }: SpotV6Props) {
+export default function SpotV6({ spot, nome, local, locale, linhas, agoraMs, fotos, vizinhos, atencao, melhorMare, onModalidade, seguranca, acoes, contexto, estudo }: SpotV6Props) {
   const copy = spotV6Copy(locale);
   const ed = useMemo(() => editorialDe(spot), [spot]);
   const sp = useMemo(() => spotModalidadeDe(ed), [ed]);
@@ -124,6 +138,13 @@ export default function SpotV6({ spot, nome, local, locale, linhas, agoraMs, fot
   const porqueQ = ehAgora ? copy.agora : `${diaCurto(copy, h.t)}, ${horaTxt(copy, horaDe(h.t))}`;
   const regua = H.map((x, j) => ({ t: x.t, n: NS[j].n, banda: bandaR(NS[j]) }));
   const temNoite = r.n == null;
+  const hv: SpotV6Hora = {
+    t: h.t,
+    ehAgora,
+    d,
+    mares: dados.mares,
+    citada: Number.isFinite(h.tide) ? dados.mares.find((m) => m.t > h.t) : undefined,
+  };
 
   return (
     <div
@@ -187,10 +208,11 @@ export default function SpotV6({ spot, nome, local, locale, linhas, agoraMs, fot
         copy={copy}
         locale={locale}
         abertoInicial={flags.estudo}
+        extra={estudo ? estudo(hv) : null}
       />
       {/* fora da maquete: o contexto do spot (o que a v6 não tinha) e as acções, depois do «Estudar o spot»,
           para o Porquê e a praia 3D seguirem a maquete */}
-      {contexto}
+      {typeof contexto === 'function' ? contexto(hv) : contexto}
       {acoes}
       <p className="falta-dados" data-testid="falta-dados">
         {dados.faltam.includes('rain') ? copy.faltaChuvaNuvens : null}

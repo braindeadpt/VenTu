@@ -3,8 +3,9 @@
 /**
  * O que a página de spot v6 não tinha e o antigo SpotContextSection trazia
  * (#184, retirada dos duplicados): avisos e radar, câmara ao vivo, estação na
- * praia, «Chegar e estar» (sobre o spot, região e nível, localização, dicas
- * locais) e eventos. Fica logo a seguir ao «Estudar o spot», no estilo v6.
+ * praia, qualidade da água, «Chegar e estar» (sobre o spot, região e nível,
+ * localização, dicas locais), «Perto daqui» (vizinhos e diretório) e eventos.
+ * Fica logo a seguir ao «Estudar o spot», em markup e estilo v6 nativos.
  *
  * Regra de ouro: nenhum número da hora aparece aqui (vento, onda e maré vivem
  * no Porquê e na tabela do «Estudar o spot»). Também não se repete o que a v6
@@ -23,10 +24,12 @@ import { getDifficultyLabel } from '@/lib/mapDifficulty';
 import { getNearAccommodationUrl } from '@/lib/accommodation';
 import { spotTagEn } from '@/lib/spotTagsEn';
 import { eventsForSpot } from '@/lib/events';
-import EventCard from '@/components/events/EventCard';
-import SpotStormAlert from '@/components/spots/context/SpotStormAlert';
-import SpotRadarEcho from '@/components/spots/context/SpotRadarEcho';
-import SpotOnSiteWarnings from '@/components/spots/context/SpotOnSiteWarnings';
+import { safeExternalUrl } from '@/lib/safeUrl';
+import { waterQualityInSeason, type WaterQualityLive } from '@/lib/waterQuality';
+import type { SportType } from '@/lib/sportRatings';
+import { spotV6Copy, type SpotPageV6Copy } from '@/lib/translations/spotPage/v6';
+import AvisosV6 from './AvisosV6';
+import PertoV6 from './PertoV6';
 
 export interface SpotContextoV6Props {
   spot: Spot;
@@ -34,6 +37,124 @@ export interface SpotContextoV6Props {
   events: readonly VentuEvent[];
   /** Dicas locais já fundidas (estáticas + overlay da comunidade). */
   dicas: SpotLocalTips | null;
+  /** Registo APA InfoÁgua vivo (conditions.waterQuality), só spots ≤3 km de uma água balnear. */
+  aguaViva?: WaterQualityLive;
+  /** Hora escolhida na régua (para as notas dos vizinhos) e modalidade da página. */
+  t?: string;
+  sport: SportType;
+}
+
+/** Qualidade da água balnear (APA InfoÁgua / Bandeira Azul / ficha do spot), em chips v6. */
+function Agua({ spot, locale, viva }: { spot: Spot; locale: string; viva?: WaterQualityLive }) {
+  const isPt = locale === 'pt';
+  const t = getTranslation(locale).spotPageContext;
+  const classes: Record<number, string> = { 1: t.wqClassExcellent, 2: t.wqClassGood, 3: t.wqClassSufficient, 4: t.wqClassPoor };
+  const ficha: Record<string, string> = {
+    excelente: 'Excelente', boa: 'Boa', razoavel: 'Razoável', 'má': 'Má',
+    excellent: 'Excellent', good: 'Good', fair: 'Fair', poor: 'Poor',
+  };
+  const classe = viva?.annualClass ? classes[viva.annualClass] : null;
+  const q = isPt ? spot.waterQuality : spot.waterQualityEn;
+  const qTxt = !classe && q ? ficha[q] : null;
+  const epoca = viva ? waterQualityInSeason(viva, Date.now()) : false;
+  const conselho = epoca && viva && (viva.advice === 1 || viva.advice === 2) ? viva.advice : null;
+  const bandeira = viva?.blueFlag || (!viva && spot.blueFlag);
+  const acessivel = spot.accessibleBeach || viva?.accessible;
+  if (!bandeira && !classe && !qTxt && conselho == null && !(epoca && viva?.advice === 0) && !viva?.alerts?.length && !acessivel && !viva) return null;
+  const km = new Intl.NumberFormat(isPt ? 'pt-PT' : 'en-GB', { maximumFractionDigits: 1 });
+  const dia = new Intl.DateTimeFormat(isPt ? 'pt-PT' : 'en-GB', { day: 'numeric', month: 'short' });
+  return (
+    <div className="ctx-item" data-ctx="agua">
+      <h3 className="ctx-rot">{t.waterQuality}</h3>
+      <p className="ec-chips">
+        {bandeira ? <span className="ec-chip bom">{viva?.blueFlag ? t.wqBlueFlag : isPt ? 'Bandeira Azul 2024' : 'Blue Flag 2024'}</span> : null}
+        {classe ? <span className="ec-chip bom">{t.wqApaClass.replace('{cls}', classe)}</span> : null}
+        {qTxt ? (
+          <span className={`ec-chip ${q === 'má' || q === 'poor' ? 'nao' : q === 'razoavel' || q === 'fair' ? 'da' : 'bom'}`}>
+            {isPt ? 'Qualidade da água: ' : 'Water quality: '}
+            {qTxt}
+          </span>
+        ) : null}
+        {conselho != null && viva ? (
+          <span className={`ec-chip ${conselho === 2 ? 'nao' : 'bom'}`} title={viva.motive ?? undefined} data-water-advice={conselho}>
+            {conselho === 2 ? t.wqAdviceBad : t.wqAdviceGood}
+          </span>
+        ) : null}
+        {epoca && viva?.advice === 0 ? (
+          <span className="ec-chip" data-water-advice="0">
+            {t.wqAdviceNone}
+          </span>
+        ) : null}
+        {viva?.alerts?.map((a, i) => (
+          <span key={i} className="ec-chip da" title={[isPt ? a.advicePt : a.adviceEn, a.date].filter(Boolean).join(' · ') || undefined} data-water-alert="true">
+            {isPt ? a.namePt : a.nameEn}
+          </span>
+        ))}
+        {acessivel ? <span className="ec-chip">{isPt ? 'Praia acessível' : 'Accessible beach'}</span> : null}
+      </p>
+      {viva ? (
+        <p className="ctx-nota" data-water-quality-meta="true">
+          {viva.distKm != null && viva.distKm > 0.5
+            ? t.wqBeachLine.replace('{name}', viva.beach).replace('{km}', km.format(viva.distKm))
+            : t.wqBeachNear.replace('{name}', viva.beach)}
+          {viva.lastSampleAt ? ` · ${t.wqLastSample.replace('{date}', dia.format(viva.lastSampleAt))}` : ''}
+          {` · ${t.wqSource}`}
+        </p>
+      ) : null}
+    </div>
+  );
+}
+
+function dataEvento(iso: string, locale: string) {
+  const [y, m, d] = iso.split('-').map(Number);
+  const dt = new Date(Date.UTC(y, m - 1, d, 12));
+  const f = (o: Intl.DateTimeFormatOptions) => new Intl.DateTimeFormat(locale === 'pt' ? 'pt-PT' : 'en-GB', { ...o, timeZone: 'UTC' }).format(dt);
+  return { dia: f({ day: '2-digit' }), mes: f({ month: 'short' }).replace('.', '') };
+}
+
+function Eventos({ lista, locale, c }: { lista: readonly VentuEvent[]; locale: string; c: SpotPageV6Copy }) {
+  const t = getTranslation(locale);
+  const isPt = locale === 'pt';
+  return (
+    <div className="ctx-bloco ctx-eventos" role="group" aria-labelledby="spot-upcoming-events">
+      <h2 className="ctx-t" id="spot-upcoming-events">
+        <CalendarDays aria-hidden="true" />
+        {t.news.eventsHeading}
+      </h2>
+      <ul>
+        {lista.map((e) => {
+          const ini = dataEvento(e.startDate, locale);
+          const fim = e.endDate && e.endDate !== e.startDate ? dataEvento(e.endDate, locale) : null;
+          const href = e.url ? safeExternalUrl(e.url) : null;
+          return (
+            <li key={e.id} className="ev" data-event={e.id}>
+              <p className="ev-data" aria-hidden="true">
+                <b className="num">{ini.dia}</b>
+                <span>{ini.mes}</span>
+              </p>
+              <div className="ev-corpo">
+                <p className="ev-meta">
+                  <span className="ec-chip">{e.sport}</span>
+                  <span>
+                    {fim ? `${ini.dia}–${fim.dia} ${fim.mes}` : `${ini.dia} ${ini.mes}`}
+                  </span>
+                  {e.free === true ? <span>{c.eventoGratis}</span> : null}
+                </p>
+                <h3 className="ev-t">{isPt ? e.title : e.titleEn}</h3>
+                <p className="ctx-nota">{e.location}</p>
+                {href ? (
+                  <a className="ctx-link" href={href} target="_blank" rel="noopener noreferrer">
+                    {t.news.eventRegister}
+                    <ExternalLink aria-hidden="true" />
+                  </a>
+                ) : null}
+              </div>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
 }
 
 function temTexto(v: string | undefined | null): v is string {
@@ -42,7 +163,8 @@ function temTexto(v: string | undefined | null): v is string {
   return t.length > 0 && t !== '—' && t !== '-';
 }
 
-export default function SpotContextoV6({ spot, locale, events, dicas }: SpotContextoV6Props) {
+export default function SpotContextoV6({ spot, locale, events, dicas, aguaViva, t: hora, sport }: SpotContextoV6Props) {
+  const c6 = spotV6Copy(locale);
   const isPt = locale === 'pt';
   const t = getTranslation(locale);
   const td = t.spotDetail;
@@ -100,10 +222,10 @@ export default function SpotContextoV6({ spot, locale, events, dicas }: SpotCont
             <h3 className="ctx-rot">{td.warningsRadar}</h3>
             {/* Ciclone (cone NHC sobre o spot), eco do radar IPMA medido e os avisos
                 IPMA/IH informativos: os perigos à navegação ficam na faixa de segurança. */}
-            <SpotStormAlert spotId={spot.id} locale={locale} />
-            <SpotRadarEcho spotId={spot.id} locale={locale} />
-            <SpotOnSiteWarnings spotId={spot.id} locale={locale} />
+            <AvisosV6 spotId={spot.id} locale={locale} />
           </div>
+
+          <Agua spot={spot} locale={locale} viva={aguaViva} />
 
           {cam ? (
             <div className="ctx-item" id="spot-livecam" data-ctx="livecam">
@@ -223,21 +345,9 @@ export default function SpotContextoV6({ spot, locale, events, dicas }: SpotCont
         </div>
       </div>
 
-      {proximos.length ? (
-        <div className="ctx-bloco ctx-eventos" role="group" aria-labelledby="spot-upcoming-events">
-          <h2 className="ctx-t" id="spot-upcoming-events">
-            <CalendarDays aria-hidden="true" />
-            {t.news.eventsHeading}
-          </h2>
-          <ul>
-            {proximos.map((e) => (
-              <li key={e.id}>
-                <EventCard event={e} locale={locale} compact />
-              </li>
-            ))}
-          </ul>
-        </div>
-      ) : null}
+      <PertoV6 spot={spot} locale={locale} copy={c6} t={hora} sport={sport} />
+
+      {proximos.length ? <Eventos lista={proximos} locale={locale} c={c6} /> : null}
     </section>
   );
 }

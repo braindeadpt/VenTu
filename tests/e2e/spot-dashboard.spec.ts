@@ -51,10 +51,12 @@ test.describe('Spot detail dashboard', () => {
     await expect(estudo).toHaveAttribute('open', '');
     const atencao = estudo.locator('dt').filter({ hasText: /^Watch out$/ }).locator('xpath=following-sibling::dd[1]');
     await expect(atencao).toBeVisible();
-    await expect(atencao).toContainText(/strong wind/i);
+    // Os três perigos do Guincho (vento forte, correntes, rochas), em inglês, na
+    // frase editorial da v6 («…rip currents; rocks…; with NE wind the gusts…»).
+    await expect(atencao).toContainText(/\bwind\b/i);
     await expect(atencao).toContainText(/currents/i);
     await expect(atencao).toContainText(/rocks/i);
-    await expect(page.locator('#chegar').getByText(/strong wind/i)).toHaveCount(0);
+    await expect(page.locator('#chegar').getByText(/currents|rocks/i)).toHaveCount(0);
 
     // The PT tokens never leak into the EN UI
     const main = page.locator('#main-content');

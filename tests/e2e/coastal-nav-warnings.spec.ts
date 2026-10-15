@@ -208,9 +208,12 @@ test.describe('Avisos à Navegação Costeiros (IH)', () => {
     // Nenhum aviso do IH na fixture — a secção não inventa um bloco IH vazio.
     await expect(block.getByText(/ANAV NR/)).toHaveCount(0);
 
-    // O mapa de logística é mínimo (sem overlays) — a área coberta vê-se no
-    // /mapa via deep link «Ver no mapa» do bloco.
-    await expect(page.locator('.leaflet-container')).toBeVisible({ timeout: 20_000 });
+    // Página de spot v6 (#184): o mapa do spot é a praia em 3D (sem overlays
+    // nem o antigo mini-mapa Leaflet da logística) — a área coberta vê-se no
+    // /mapa pelo deep link «Ver no mapa» do bloco.
+    await expect(page.getByTestId('praia-3d')).toBeVisible({ timeout: 20_000 });
+    await expect(page.locator('.leaflet-container')).toHaveCount(0);
+    await expect(block.getByRole('link', { name: /Ver no mapa/i })).toHaveAttribute('href', /\/mapa\//);
   });
 
   test('spot sem cobertura → bloco ausente e mapa sem polígonos', async ({ page }) => {
@@ -223,12 +226,11 @@ test.describe('Avisos à Navegação Costeiros (IH)', () => {
     await expect(page.getByTestId('coastal-nav-warnings')).toHaveCount(0);
     // Sem cobertura também não há sub-bloco ES.
     await expect(page.getByTestId('coastal-nav-warnings-es')).toHaveCount(0);
-    // O mapa existe mas sem overlay de polígonos (spot sem cobertura).
-    const map = page.locator('.leaflet-container');
-    await expect(map).toBeVisible({ timeout: 20_000 });
-    await expect(
-      page.locator('.leaflet-container[data-coastal-polygons="true"]'),
-    ).toHaveCount(0);
+    // O mapa do spot (praia 3D, v6) existe e nenhum mapa da página desenha
+    // polígonos de avisos (spot sem cobertura; não há mini-mapa Leaflet).
+    await expect(page.getByTestId('praia-3d')).toBeVisible({ timeout: 20_000 });
+    await expect(page.locator('[data-coastal-polygons="true"]')).toHaveCount(0);
+    await expect(page.locator('.leaflet-container')).toHaveCount(0);
     // A secção de avisos (IPMA/radar) continua a renderizar.
     await expect(page.getByRole('heading', { name: /Avisos e radar/i })).toBeVisible();
   });

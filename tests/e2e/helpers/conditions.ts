@@ -20,7 +20,8 @@ import { lisbonHourKeyFromDate } from '../../../src/lib/openMeteoTime';
  *   - `interceptIhBuoys` — serves ih-buoys.json (the buoy-layer health file).
  *   - `interceptWarnings` — serves warnings.json (IPMA/MeteoAlarm per-spot map).
  *   - `interceptRadar` — serves radar.json (the IPMA radar frames carousel).
- *   - `freshObservedWave` — common per-spot fixture (fresh IH buoy reading).
+ *   - `freshObservedWave` / `withoutObservedWave` —
+ *     common per-spot fixtures.
  *
  * NOTE: the site registers a service worker (public/sw.js) that serves
  * /data/* from cache and BYPASSES page.route — specs using these helpers must
@@ -134,6 +135,14 @@ export async function interceptIhBuoys(page: Page, file: Record<string, unknown>
  */
 export async function interceptWmoBuoys(page: Page, file: Record<string, unknown>): Promise<void> {
   await interceptData(page, 'wmo-buoys.json', file);
+}
+
+/**
+ * Intercept /data/spot-isobaths.json (the IH isobath depth strip file) and
+ * serve a crafted file.
+ */
+export async function interceptIsobaths(page: Page, file: Record<string, unknown>): Promise<void> {
+  await interceptData(page, 'spot-isobaths.json', file);
 }
 
 /**
@@ -282,6 +291,12 @@ export async function interceptForecasts(
       body: JSON.stringify(final),
     });
   });
+}
+
+/** Strip observedWave from a spot entry — no fresh buoy reading. */
+export function withoutObservedWave(entry: Record<string, unknown>): Record<string, unknown> {
+  const { observedWave: _omit, ...rest } = entry;
+  return rest;
 }
 
 /**

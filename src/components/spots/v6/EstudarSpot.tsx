@@ -3,7 +3,7 @@
  * mesmas horas e notas da régua) e a praia (orientação, janela de ondulação,
  * terral, regra da modalidade, maré, água, atenção, sol).
  */
-import type { CSSProperties } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 import { ChevronDown } from 'lucide-react';
 import {
   MOTOR,
@@ -31,6 +31,8 @@ export interface EstudarSpotProps {
   copy: SpotPageV6Copy;
   locale: string;
   abertoInicial?: boolean;
+  /** O que se mede e o que se sabe (boia, maré e lua, sol e ar, fundo, clima, Windguru). */
+  extra?: ReactNode;
 }
 
 function regraTxt(d: Modalidade, c: SpotPageV6Copy, locale: string): string {
@@ -54,7 +56,7 @@ function regraTxt(d: Modalidade, c: SpotPageV6Copy, locale: string): string {
   });
 }
 
-export default function EstudarSpot({ horas, NS, i, d, ed, sol, atencao, melhorMare, copy: c, locale, abertoInicial }: EstudarSpotProps) {
+export default function EstudarSpot({ horas, NS, i, d, ed, sol, atencao, melhorMare, copy: c, locale, abertoInicial, extra }: EstudarSpotProps) {
   const nf = (x: number) => (Number.isFinite(x) ? `${fmtNum(x, locale)} m` : '–');
   const agua = horas.find((h) => typeof h.agua === 'number')?.agua;
   return (
@@ -148,6 +150,7 @@ export default function EstudarSpot({ horas, NS, i, d, ed, sol, atencao, melhorM
           </dd>
         </dl>
         {ed.estimado ? <p className="estimado">{fmtCopy(c.regraDefaults, { graus: ed.praiaVirada })}</p> : null}
+        {extra}
       </div>
     </details>
   );

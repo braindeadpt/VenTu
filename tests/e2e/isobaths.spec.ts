@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { interceptIsobaths } from './helpers/conditions';
 import { openMapLayersMenu } from './helpers/map-setup';
 
 /**
@@ -38,9 +39,79 @@ async function interceptContours(page: import('@playwright/test').Page): Promise
   }
 }
 
-// A página de spot v6 (#184) já não tem o «Fundo perto da praia» (IsobathsStrip,
-// no antigo painel «Agora», retirado com os duplicados): as isóbatas vivem no
-// /mapa interactivo e no hero da homepage, cobertos pelos describes abaixo.
+/**
+ * «Fundo perto da praia» na página de spot v6 (#184) — isóbatas IH
+ * (depcnt_8_16_30): distância da praia ao contorno de 8/16/30 m, desenhada num
+ * perfil do fundo no fim do «Estudar o spot» (MedeSabeV6, decisão do Pedro de
+ * 2026-10-15). Lê spot-isobaths.json no cliente; não aparece quando o spot não
+ * tem contornos perto ou o ficheiro falta.
+ */
+test.describe('Fundo perto da praia (isóbatas IH, «Estudar o spot» v6)', () => {
+  test.use({ serviceWorkers: 'block' });
+
+  async function abreEstudo(page: import('@playwright/test').Page) {
+    const estudo = page.locator('#estudo');
+    await expect(async () => {
+      if ((await estudo.getAttribute('open')) === null) await estudo.locator('summary').click({ timeout: 3_000 });
+      await expect(estudo).toHaveAttribute('open', '', { timeout: 1_000 });
+    }).toPass({ timeout: 20_000 });
+  }
+
+  const NAZARE_ISOBATHS = {
+    spots: { nazare: { 8: 0.25, 16: 0.31, 30: 0.46 } },
+    fetchedAt: 'Sat 2026-08-15 9:00 AM WEST (UTC+01:00)',
+    sourceCollection: 'depcnt_8_16_30',
+    depths: [8, 16, 30],
+  };
+
+  test('mostra as distâncias às isóbatas 8/16/30 m num perfil do fundo', async ({ page }) => {
+    await interceptIsobaths(page, NAZARE_ISOBATHS);
+    await page.goto('/pt/spots/nazare/');
+    await expect(page.getByRole('heading', { level: 1, name: /Nazaré/i })).toBeVisible({ timeout: 20_000 });
+    await abreEstudo(page);
+
+    const fundo = page.getByTestId('isobaths-strip');
+    await expect(fundo).toHaveCount(1);
+    await expect(fundo).toBeVisible({ timeout: 20_000 });
+    await expect(fundo.getByText('Fundo perto da praia')).toBeVisible();
+    // Distâncias em metros (< 1 km) — a Nazaré afunda depressa.
+    await expect(fundo.getByText('250 m')).toBeVisible();
+    await expect(fundo.getByText('310 m')).toBeVisible();
+    await expect(fundo.getByText('460 m')).toBeVisible();
+    await expect(fundo.getByText(/O fundo desce depressa/)).toBeVisible();
+    // O perfil desenhado diz o mesmo por extenso (leitor de ecrã).
+    await expect(fundo.getByRole('img', { name: /Perfil do fundo: 8 m a 250 m · 16 m a 310 m · 30 m a 460 m/ })).toBeVisible();
+    // Atribuição honesta.
+    await expect(fundo.getByText(/Isóbatas IH \(CC-BY 4\.0\)/)).toBeVisible();
+    // Estilo v6, dentro do «Estudar o spot».
+    await expect(page.locator('#estudo [data-testid="isobaths-strip"]')).toHaveCount(1);
+    expect(await fundo.evaluate((el) => getComputedStyle(el).backgroundColor)).toBe('rgb(12, 42, 66)');
+  });
+
+  test('spot sem contornos próximos → o perfil não aparece', async ({ page }) => {
+    await interceptIsobaths(page, {
+      spots: { nazare: {} },
+      fetchedAt: 'Sat 2026-08-15 9:00 AM WEST (UTC+01:00)',
+      sourceCollection: 'depcnt_8_16_30',
+      depths: [8, 16, 30],
+    });
+    await page.goto('/pt/spots/nazare/');
+    await expect(page.getByRole('heading', { level: 1, name: /Nazaré/i })).toBeVisible({ timeout: 20_000 });
+    await abreEstudo(page);
+    await page.waitForTimeout(1_500);
+    await expect(page.getByTestId('isobaths-strip')).toHaveCount(0);
+  });
+
+  test('ficheiro ausente (404) → o perfil não aparece e a página não quebra', async ({ page }) => {
+    await page.route('**/data/spot-isobaths.json', async (route) => route.fulfill({ status: 404 }));
+    await page.goto('/pt/spots/nazare/');
+    await expect(page.getByRole('heading', { level: 1, name: /Nazaré/i })).toBeVisible({ timeout: 20_000 });
+    await abreEstudo(page);
+    await page.waitForTimeout(1_500);
+    await expect(page.getByTestId('isobaths-strip')).toHaveCount(0);
+    await expect(page.locator('#estudo [data-ec="mare-lua"]')).toBeVisible();
+  });
+});
 
 test.describe('Isóbatas — camada no mapa interactivo (/mapa)', () => {
   test.use({ serviceWorkers: 'block' });

@@ -6,9 +6,10 @@ import { test, expect, type Page } from '@playwright/test';
  * Do antigo contexto (S2C/SP-C: «No local» · «Chegar e estar» · «Perto
  * daqui» · «Como sabemos») a v6 mantém só o que não tinha, logo a seguir ao
  * «Estudar o spot» e no estilo v6: «No local» (avisos e radar, câmara ao
- * vivo, estação na praia) e «Chegar e estar» (sobre o spot, região e nível,
- * localização, dicas locais), mais os eventos. «Perto daqui» e «Como
- * sabemos» saíram (os vizinhos estão na praia 3D).
+ * vivo, estação na praia, qualidade da água) e «Chegar e estar» (sobre o
+ * spot, região e nível, localização, dicas locais), «Perto daqui» (vizinhos
+ * com a nota da mesma modalidade e o diretório, de volta por decisão do Pedro
+ * de 2026-10-15) e os eventos. Só «Como sabemos» fica de fora.
  */
 
 const SPOT_SLUG = 'guincho';
@@ -25,7 +26,7 @@ type Caixa = { name: string; x: number; y: number; width: number; height: number
 
 async function caixas(page: Page): Promise<Caixa[]> {
   const out: Caixa[] = [];
-  for (const id of ['estudo', 'no-local', 'chegar']) {
+  for (const id of ['estudo', 'no-local', 'chegar', 'perto']) {
     const b = await page.locator(`#${id}`).boundingBox();
     expect(b, `#${id}`).toBeTruthy();
     out.push({ name: id, ...b! });
@@ -53,14 +54,14 @@ async function semOverflow(page: Page) {
 test.describe('Contexto do spot (v6)', () => {
   test.use({ serviceWorkers: 'block' });
 
-  test('âncoras #no-local e #chegar existem uma vez, as retiradas não; «No local» visível sem interacção', async ({
+  test('âncoras #no-local, #chegar e #perto existem uma vez, as retiradas não; «No local» visível sem interacção', async ({
     page,
   }) => {
     await abre(page);
-    for (const id of ['no-local', 'chegar']) {
+    for (const id of ['no-local', 'chegar', 'perto']) {
       await expect(page.locator(`[id="${id}"]`)).toHaveCount(1);
     }
-    for (const id of ['perto', 'como-sabemos', 'instrumentos', 'previsao']) {
+    for (const id of ['como-sabemos', 'instrumentos', 'previsao']) {
       await expect(page.locator(`[id="${id}"]`)).toHaveCount(0);
     }
     const noLocal = page.getByRole('group', { name: 'No local' });
@@ -84,19 +85,22 @@ test.describe('Contexto do spot (v6)', () => {
     const t = page.locator('#no-local-t');
     expect(await t.evaluate((el) => getComputedStyle(el).fontFamily)).toMatch(/Barlow Condensed/);
     expect(await page.locator('#no-local').evaluate((el) => getComputedStyle(el).backgroundColor)).toBe('rgb(7, 27, 44)');
-    // Nenhum cartão do estilo antigo (card-1 / accordion CollapsibleSection) no contexto.
+    // Nenhum cartão do estilo antigo (card-1 / card-2 / accordion CollapsibleSection) no contexto.
     await expect(page.locator('[data-testid="spot-contexto"] details')).toHaveCount(0);
+    await expect(page.locator('[data-testid="spot-contexto"] :is(.card-1, .card-2)')).toHaveCount(0);
   });
 
-  test('1440: «No local» e «Chegar e estar» lado a lado, por baixo do «Estudar o spot», sem sobreposição', async ({
+  test('1440: «No local» e «Chegar e estar» lado a lado, por baixo do «Estudar o spot», «Perto daqui» a toda a largura, sem sobreposição', async ({
     page,
   }) => {
     await abre(page);
-    const [estudo, a, b] = await caixas(page);
+    const [estudo, a, b, perto] = await caixas(page);
     expect(a.y).toBeGreaterThan(estudo.y + estudo.height - 1);
     expect(b.x).toBeGreaterThan(a.x);
     expect(Math.abs(b.y - a.y)).toBeLessThanOrEqual(2);
-    semSobreposicao([estudo, a, b]);
+    expect(perto.y).toBeGreaterThan(Math.max(a.y + a.height, b.y + b.height) - 1);
+    expect(perto.width).toBeGreaterThan(b.x + b.width - a.x - 2);
+    semSobreposicao([estudo, a, b, perto]);
     await semOverflow(page);
   });
 
@@ -154,5 +158,51 @@ test.describe('Contexto do spot (v6)', () => {
     const m = bg.match(/rgba?\((\d+)[, ]+(\d+)[, ]+(\d+)/);
     expect(m).toBeTruthy();
     expect(Number(m![1])).toBeLessThan(Number(m![3]) + 12);
+  });
+
+  test('«Perto daqui»: nomes sem truncar, distância, ?sport= e a nota /10 na cor da banda v6', async ({ page }) => {
+    await abre(page);
+    const lista = page.getByTestId('nearby-spots');
+    await lista.scrollIntoViewIfNeeded();
+    const links = lista.locator('[data-nearby-spot]');
+    const n = await links.count();
+    expect(n).toBeGreaterThanOrEqual(2);
+    for (let i = 0; i < n; i++) {
+      const link = links.nth(i);
+      await expect(link).toHaveAttribute('href', /\?sport=/);
+      await expect(link).toContainText(/km|m\b/);
+      const nome = link.locator('[data-nearby-name]');
+      expect(await nome.evaluate((el) => el.scrollWidth - el.clientWidth), `nome truncado: ${await nome.textContent()}`).toBeLessThanOrEqual(1);
+      expect(await nome.evaluate((el) => getComputedStyle(el).textOverflow)).not.toBe('ellipsis');
+    }
+    // Nota /10 na cor da banda v6 (tokens de cores.md), com o escalão exposto.
+    const nota = lista.locator('[data-nearby-score][data-score-tier]').first();
+    await expect(nota).toBeVisible({ timeout: 15_000 });
+    await expect(nota).toHaveText(/^\d{1,2}$/);
+    expect(['epic', 'good', 'fair', 'poor', 'closed']).toContain(await nota.getAttribute('data-score-tier'));
+    const fundo = await nota.evaluate((el) => getComputedStyle(el).backgroundColor);
+    expect(['rgb(168, 70, 74)', 'rgb(68, 121, 238)', 'rgb(201, 158, 42)', 'rgb(64, 220, 208)', 'rgb(255, 240, 122)']).toContain(fundo);
+    expect(await nota.evaluate((el) => getComputedStyle(el).fontFamily)).toMatch(/Barlow Condensed/);
+  });
+
+  test('«Perto daqui» segue a modalidade da página (kite → ?sport=kitesurf, surf → ?sport=surf)', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto(`/pt/spots/${SPOT_SLUG}/?d=surf`);
+    await expect(page.getByTestId('spot-contexto')).toBeAttached({ timeout: 20_000 });
+    await expect(page.locator('[data-testid="spot-v6"]')).toHaveAttribute('data-modalidade', 'surf');
+    await expect(page.getByTestId('nearby-spots').locator('[data-nearby-spot]').first()).toHaveAttribute('href', /\?sport=surf$/);
+    await page.getByRole('group', { name: 'Modalidade', exact: true }).getByRole('button', { name: /Kite/i }).click();
+    await expect(page.getByTestId('nearby-spots').locator('[data-nearby-spot]').first()).toHaveAttribute('href', /\?sport=kitesurf$/);
+  });
+
+  test('390: nomes de «Perto daqui» sem truncar, sem accordion', async ({ page }) => {
+    await abre(page, SPOT_SLUG, 390, 844);
+    await expect(page.locator('#perto details')).toHaveCount(0);
+    const nomes = page.locator('#perto [data-nearby-name]');
+    const n = await nomes.count();
+    expect(n).toBeGreaterThanOrEqual(2);
+    for (let i = 0; i < n; i++) {
+      expect(await nomes.nth(i).evaluate((el) => el.scrollWidth - el.clientWidth)).toBeLessThanOrEqual(1);
+    }
   });
 });

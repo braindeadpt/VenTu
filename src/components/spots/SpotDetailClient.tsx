@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 
@@ -26,6 +26,8 @@ import SpotAcoesV6 from '@/components/spots/v6/SpotAcoesV6';
 import SpotSafetyStrip from '@/components/spots/verdict/SpotSafetyStrip';
 import type { LinhaForecast } from '@/lib/horaSpot';
 import SpotContextoV6 from '@/components/spots/v6/SpotContextoV6';
+import MedeSabeV6 from '@/components/spots/v6/MedeSabeV6';
+import { spotV6Copy } from '@/lib/translations/spotPage/v6';
 import type { ObservedConditions } from '@/lib/observations';
 import type { ObservedWave, ObservedWaveMeta } from '@/lib/observedWave';
 import type { VentuEvent } from '@/types/events';
@@ -192,6 +194,16 @@ export default function SpotDetailClient({
   const [loading, setLoading] = useState(forceLive ? true : !initialData);
   const [loadError, setLoadError] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
+
+  // As leituras medidas (boia) usam o relógio do BUILD até montar: o primeiro
+  // paint reproduz o bake e uma leitura a cruzar o gate de 3 h/6 h entre o
+  // bake e a hidratação não muda a árvore (React #418). Depois de montar,
+  // relógio real (padrão mounted+bakedAtMs).
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+  const freshnessNowMs = mounted ? undefined : bakedAtMs;
 
   // null até o overlay chegar (fetch pós-montagem) — o wrapper expõe-o em
   // data-community-tips para as specs esperarem pelo último commit tardio.
@@ -447,6 +459,19 @@ export default function SpotDetailClient({
     }
   }, [initialData]);
 
+  // UV por hora e curva da maré do forecast cru (o objecto da hora v6 não os traz).
+  const uvPorHora = useMemo(() => {
+    const m: Record<string, number> = {};
+    for (const h of spotData?.forecast ?? []) {
+      if (typeof h.uvIndex === 'number' && Number.isFinite(h.uvIndex)) m[h.time.slice(0, 16)] = h.uvIndex;
+    }
+    return m;
+  }, [spotData]);
+  const mareCurva = useMemo(
+    () => (spotData?.forecast ?? []).map((h) => ({ time: h.time, tideHeight: h.tideHeight })),
+    [spotData],
+  );
+
   if (loading) {
     return (
       <div className="min-h-screen bg-bg-base p-4 space-y-6">
@@ -563,7 +588,32 @@ export default function SpotDetailClient({
             if (allScores[alvo]) setSelectedSport(alvo);
           }}
           seguranca={<SpotSafetyStrip spotId={spot.id} locale={locale} />}
-          contexto={<SpotContextoV6 spot={spot} locale={locale} events={events} dicas={mergedLocalTips} />}
+          estudo={(h) => (
+            <MedeSabeV6
+              spot={spot}
+              locale={locale}
+              copy={spotV6Copy(locale)}
+              t={h.t}
+              ehAgora={h.ehAgora}
+              mares={h.mares}
+              citada={h.citada}
+              mareCurva={mareCurva}
+              uvPorHora={uvPorHora}
+              c={spotData.conditions}
+              agoraMs={freshnessNowMs}
+            />
+          )}
+          contexto={(h) => (
+            <SpotContextoV6
+              spot={spot}
+              locale={locale}
+              events={events}
+              dicas={mergedLocalTips}
+              aguaViva={spotData.conditions.waterQuality}
+              t={h.t}
+              sport={h.d === 'kite' ? 'kitesurf' : 'surf'}
+            />
+          )}
           acoes={
             <SpotAcoesV6
               spot={spot}

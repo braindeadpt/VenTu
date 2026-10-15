@@ -185,11 +185,89 @@
 .v6 .estimado{margin:12px 0 0;color:var(--nevoa);font-size:14px}
 .v6 .falta-dados{margin:14px 16px 0;color:var(--nevoa);font-size:13px;line-height:1.4}
 
-/* ---------- contexto do spot (avisos, câmara, estação, chegar e estar, eventos) ----------
-   Só o que a v6 não tinha (retirados os duplicados «Agora» e «Hora a hora»).
-   Os avisos e os eventos reaproveitam componentes do site: dentro de `.ctx` os
-   tokens do site passam a ser os da v6 (cores de cores.md, Barlow), para não
-   haver nada do estilo antigo. */
+/* ---------- «Estudar o spot»: o que se mede e o que se sabe ----------
+   Boia (com calibrações), maré e lua, sol e ar, fundo (isóbatas), clima e Windguru
+   (decisão do Pedro, 2026-10-15). Cartões no --mar dentro do --fundo do estudo. */
+.v6 .medesabe{margin:22px 0 0;padding-top:18px;border-top:1px solid var(--linha);display:grid;gap:14px}
+.v6 .ec-sec{margin:0;font:900 italic 24px/1 var(--disp);text-transform:uppercase}
+.v6 .ec-grelha{display:grid;gap:12px}
+.v6 .ec{display:grid;gap:8px;align-content:start;min-width:0;padding:14px;border-radius:12px;background:var(--mar);box-shadow:inset 0 0 0 1px var(--linha)}
+.v6 .ec-t{display:flex;align-items:center;gap:8px;margin:0;font:800 italic 20px/1.05 var(--disp);text-transform:uppercase;letter-spacing:.01em}
+.v6 .ec-tag{font:800 11px/1 var(--txt);letter-spacing:.1em;text-transform:uppercase;font-style:normal;color:var(--nevoa);padding:4px 6px;border-radius:6px;box-shadow:inset 0 0 0 1px var(--linha)}
+.v6 .ec-rot{margin:0;font:800 12px/1.5 var(--txt);letter-spacing:.12em;text-transform:uppercase;color:var(--nevoa)}
+.v6 .ec-meta{margin:0;font:600 15px/1.35 var(--txt);color:var(--nevoa)}
+.v6 .ec-nota{margin:0;font:500 14px/1.45 var(--txt);color:var(--nevoa)}
+.v6 .ec-forte{margin:0;font:700 17px/1.25 var(--txt)}
+.v6 .ec-num{margin:0;font:600 15px/1.35 var(--txt);font-variant-numeric:tabular-nums lining-nums;color:var(--espuma)}
+.v6 .ec-num.alerta{color:var(--sol)}
+.v6 .ec-grande{margin:0;font:900 44px/.95 var(--disp);letter-spacing:-.02em}
+.v6 .ec-grande small{font:700 15px/1 var(--txt);color:var(--nevoa);margin-left:6px;letter-spacing:0}
+.v6 .ec-chips{display:flex;flex-wrap:wrap;gap:6px;margin:0}
+.v6 .ec-chip{display:inline-flex;align-items:center;gap:5px;padding:5px 8px;border-radius:7px;background:var(--fundo);box-shadow:inset 0 0 0 1px var(--linha);font:700 13px/1.15 var(--txt);color:var(--espuma)}
+.v6 .ec-chip.bom,.v6 .ec-chip.ag-match{background:var(--b-bom);color:var(--b-bom-t);box-shadow:none}
+.v6 .ec-chip.da,.v6 .ec-chip.ag-near,.v6 .ec-chip.reg-transicao{background:var(--b-da);color:var(--b-da-t);box-shadow:none}
+.v6 .ec-chip.nao,.v6 .ec-chip.ag-off{background:var(--b-nao);color:var(--b-nao-t);box-shadow:none}
+.v6 .ec-chip.reg-vivas{background:var(--gelo);color:var(--ink);box-shadow:none}
+.v6 .ec-destaque{margin:0;padding:8px 10px;border-radius:9px;background:rgba(127,231,255,.1);box-shadow:inset 0 0 0 1px rgba(127,231,255,.32);font:500 14px/1.45 var(--txt);color:var(--espuma)}
+.v6 .ec-destaque strong{font-weight:800}
+.v6 .ec-alerta{display:flex;align-items:flex-start;gap:8px;margin:0;padding:8px 10px;border-radius:9px;background:rgba(255,201,60,.1);box-shadow:inset 0 0 0 1px rgba(255,201,60,.4);font:600 14px/1.4 var(--txt);color:var(--espuma)}
+.v6 .ec-alerta svg,.v6 .ec-camada>svg{width:18px;height:18px;flex:none;color:var(--sol);margin-top:1px}
+.v6 .ec-camada{position:relative;display:flex;gap:8px;align-items:flex-start;padding:10px 48px 10px 10px;border-radius:9px;background:rgba(255,201,60,.08);box-shadow:inset 0 0 0 1px rgba(255,201,60,.35);font:500 14px/1.45 var(--txt)}
+.v6 .ec-camada p{margin:0}
+.v6 .ec-camada button{position:absolute;top:0;right:0;width:44px;height:44px;border:0;background:none;display:grid;place-items:center;cursor:pointer;color:var(--nevoa)}
+.v6 .ec-camada button svg{width:16px;height:16px}
+.v6 .ec-fonte{margin:0;display:grid;gap:4px;font:500 12.5px/1.45 var(--txt);color:var(--nevoa)}
+.v6 .ec-fonte p{margin:0}
+.v6 .ec-fonte b{color:var(--espuma);font-weight:700}
+.v6 .ec-fonte a{color:var(--gelo)}
+.v6 .boia-med{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.v6 .boia-val{margin:0;font:900 48px/.95 var(--disp);letter-spacing:-.02em}
+.v6 .boia-fontes{display:grid;gap:8px}
+.v6 .boia-par{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.v6 .boia-fonte{padding:8px 10px;border-radius:9px;background:var(--fundo);box-shadow:inset 0 0 0 1px var(--linha);font:500 14px/1.35 var(--txt);color:var(--nevoa);min-width:0}
+.v6 .boia-fonte p{margin:0;overflow-wrap:anywhere}
+.v6 .boia-fonte.vence{box-shadow:inset 0 0 0 2px var(--b-bom);color:var(--espuma)}
+.v6 .boia-fonte.vence .ec-rot{color:var(--b-bom)}
+.v6 .boia-usa{font-weight:600;letter-spacing:.04em;text-transform:none;color:var(--nevoa)}
+.v6 .ec-lua-l{display:flex;align-items:center;gap:12px}
+.v6 .ec-lua{width:48px;height:48px;flex:none}
+.v6 .ec-tab{width:100%;border-collapse:collapse;font:500 15px/1.2 var(--txt);font-variant-numeric:tabular-nums}
+.v6 .ec-tab th{text-align:left;font:800 12px/1 var(--txt);letter-spacing:.1em;text-transform:uppercase;color:var(--nevoa);padding:7px 8px 7px 0;white-space:nowrap}
+.v6 .ec-tab td{padding:7px 8px;white-space:nowrap}
+.v6 .ec-tab tr+tr :is(th,td){border-top:1px solid rgba(30,67,97,.6)}
+.v6 .ec-tab td.num{text-align:right;font:800 18px/1 var(--disp)}
+.v6 .ec-par{display:grid;gap:4px}
+.v6 .ec-solar{grid-template-columns:1fr 1fr;column-gap:14px}
+.v6 .ec-solar .ec-t{grid-column:1/-1}
+.v6 .uv-alto{color:var(--sol)}
+.v6 .ec-perfil{width:100%;height:auto;display:block;border-radius:9px;overflow:hidden}
+.v6 .ec-perfil-p{font:800 12px var(--txt);fill:var(--espuma)}
+.v6 .ec-isob{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px 16px;font:600 15px/1.2 var(--txt)}
+.v6 .ec-isob li{display:flex;gap:6px;align-items:baseline}
+.v6 .ec-isob span{color:var(--nevoa)}
+.v6 .ec-isob b{font:800 19px/1 var(--disp)}
+.v6 .ec-barras{display:flex;align-items:flex-end;gap:4px;height:80px}
+.v6 .ec-barras>div{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:4px;height:100%}
+.v6 .ec-barras i{display:block;width:100%;border-radius:3px 3px 0 0;background:rgba(127,231,255,.35)}
+.v6 .ec-barras .agora i{background:var(--sol)}
+.v6 .ec-barras span{font:700 11px/1 var(--txt);color:var(--nevoa)}
+.v6 .ec-barras .agora span{color:var(--espuma)}
+.v6 .ec-ext{margin:0}
+.v6 .ec-ext .acao svg,.v6 .ctx-link svg{width:16px;height:16px;flex:none}
+/* ≥ 760 px: colunas (os cartões têm alturas muito diferentes; sem buracos) */
+@media (min-width:760px){
+  .v6 .ec-grelha{display:block;columns:2;column-gap:12px}
+  .v6 .ec-grelha>.ec{break-inside:avoid;margin:0 0 12px}
+}
+@media (min-width:1280px){
+  .v6 .ec-grelha{columns:3}
+}
+
+/* ---------- contexto do spot (avisos, câmara, estação, água, chegar e estar, perto daqui, eventos) ----------
+   Só o que a v6 não tinha (retirados os duplicados «Agora» e «Hora a hora»), em markup
+   v6 nativo. O único componente do site que fica são os avisos costeiros IH
+   (CoastalNavWarnings, partilhado com a faixa de segurança): dentro de `.ctx` os tokens
+   do site passam a ser os da v6 (cores de cores.md, Barlow). */
 .v6 .ctx{margin:30px 16px 0;display:grid;gap:16px;
   --bg-base:3 14 24;--bg-elevated:7 27 44;--surface-1:243 248 251;--surface-2:243 248 251;--surface-3:243 248 251;
   --divider:30 67 97;--divider-strong:30 67 97;--fg:243 248 251;--fg-muted:169 194 212;--fg-subtle:169 194 212;--fg-disabled:86 103 123;
@@ -211,20 +289,56 @@
 .v6 .ctx-video iframe,.v6 .ctx-estacao iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 .v6 .ctx-estacao{position:relative;height:min(72vh,520px);min-height:320px;border-radius:10px;overflow:hidden;background:var(--mar);box-shadow:inset 0 0 0 1px var(--linha)}
 .v6 .ctx-links{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px}
-.v6 .ctx-link{color:var(--gelo);font-weight:700;text-decoration:underline;text-underline-offset:3px;display:inline-flex;align-items:center;min-height:44px}
+.v6 .ctx-link{color:var(--gelo);font-weight:700;text-decoration:underline;text-underline-offset:3px;display:inline-flex;align-items:center;gap:6px;min-height:44px;justify-self:start}
 .v6 dl.praia.ctx-dl{margin:0}
 .v6 dl.praia.ctx-dl dd .ctx-link{min-height:0}
 .v6 .ctx-dl .cap{text-transform:capitalize}
+/* avisos e radar */
+.v6 .av{display:grid;gap:8px}
+.v6 .av-lista{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.v6 .av-aviso{display:grid;gap:4px;padding:10px 12px;border-radius:10px;background:var(--mar);box-shadow:inset 4px 0 0 var(--av,var(--b-da)),inset 0 0 0 1px var(--linha)}
+.v6 .av-aviso[data-nivel=yellow]{--av:var(--b-da)}
+.v6 .av-aviso[data-nivel=orange]{--av:var(--sol)}
+.v6 .av-aviso[data-nivel=red]{--av:var(--b-nao)}
+.v6 .av-t{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin:0;font:700 16px/1.3 var(--txt)}
+.v6 .av-t svg{width:18px;height:18px;flex:none;color:var(--av,var(--sol))}
+.v6 .av-nivel{font:800 11px/1 var(--txt);letter-spacing:.1em;text-transform:uppercase;padding:4px 6px;border-radius:6px;background:var(--av,var(--b-da));color:var(--ink)}
+.v6 .av-aviso[data-nivel=red] .av-nivel{color:var(--b-nao-t)}
+.v6 .av-meta{margin:0;font:500 14px/1.45 var(--txt);color:var(--nevoa)}
+.v6 .av-vazio{margin:0;font:600 15px/1.4 var(--txt);color:var(--espuma)}
+.v6 .ctx [data-testid=coastal-nav-warnings],.v6 .ctx [data-testid=coastal-nav-warnings-es]{border-radius:10px;font-family:var(--txt);background:var(--mar);border-color:var(--linha);margin-top:0;padding:10px 12px}
+.v6 .ctx [data-testid^=coastal-nav-warnings] :is(p,li,span,a,h3,h4){font-family:var(--txt)}
+.v6 .ctx [data-testid^=coastal-nav-warnings] a{color:var(--gelo)}
+/* perto daqui */
+.v6 .pt-lista{list-style:none;margin:0;padding:0;display:grid}
+.v6 .pt-lista>li+li{border-top:1px solid rgba(30,67,97,.6)}
+.v6 .pt-spot{display:flex;align-items:center;gap:12px;min-height:44px;padding:9px 0;text-decoration:none}
+.v6 .pt-nota{flex:none;display:grid;place-items:center;width:38px;height:38px;border-radius:10px;background:var(--c);color:var(--t);font:900 22px/1 var(--disp)}
+.v6 .pt-nota.vazio{background:none;box-shadow:inset 0 0 0 1px var(--linha);color:var(--nevoa)}
+.v6 .pt-nome{display:grid;gap:2px;min-width:0}
+.v6 .pt-nome b{font:700 17px/1.2 var(--txt);overflow-wrap:anywhere}
+.v6 .pt-spot:hover .pt-nome b{color:var(--gelo)}
+.v6 .pt-nome small,.v6 .pt-dir small{font:500 14px/1.3 var(--txt);color:var(--nevoa)}
+.v6 .pt-dir{display:grid;gap:2px;padding:10px 0}
+.v6 .pt-dir-n{font:700 17px/1.25 var(--txt);text-decoration:none;overflow-wrap:anywhere}
+.v6 a.pt-dir-n:hover{color:var(--gelo);text-decoration:underline}
+.v6 .pt-dir .ctx-link{min-height:32px}
+/* eventos */
 .v6 .ctx-eventos ul{list-style:none;margin:0;padding:0;display:grid;gap:12px}
-/* componentes do site reaproveitados (avisos IPMA/IH, radar, ciclones, eventos): tipografia v6 */
-.v6 .ctx [data-ctx=avisos] :is(p,li,span,a),.v6 .ctx-eventos :is(p,li,span,a,h3){font-family:var(--txt)}
-.v6 .ctx [data-ctx=avisos] a{color:var(--gelo)}
-.v6 .ctx .card-1,.v6 .ctx .rounded-card{border-radius:10px}
-.v6 .ctx .card-1{background:var(--mar);border-color:var(--linha);backdrop-filter:none}
+.v6 .ev{display:grid;grid-template-columns:60px 1fr;gap:14px;padding:12px;border-radius:12px;background:var(--mar);box-shadow:inset 0 0 0 1px var(--linha)}
+.v6 .ev-data{margin:0;display:grid;place-items:center;align-content:center;gap:2px;height:64px;border-radius:10px;background:var(--fundo);box-shadow:inset 0 0 0 1px var(--linha)}
+.v6 .ev-data b{font:900 28px/1 var(--disp)}
+.v6 .ev-data span{font:800 12px/1 var(--txt);letter-spacing:.1em;text-transform:uppercase;color:var(--nevoa)}
+.v6 .ev-corpo{display:grid;gap:4px;min-width:0}
+.v6 .ev-meta{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin:0;font:600 14px/1.3 var(--txt);color:var(--nevoa)}
+.v6 .ev-meta .ec-chip{text-transform:capitalize}
+.v6 .ev-t{margin:0;font:800 italic 22px/1.05 var(--disp);text-transform:uppercase}
 @media (min-width:1024px){
   .v6 .ctx{margin:28px 40px 0}
   .v6 .ctx-grelha{grid-template-columns:1.15fr 1fr;align-items:start}
   .v6 .ctx-bloco{padding:20px 22px}
+  .v6 .ctx > #perto{grid-template-columns:1fr 1fr;column-gap:28px}
+  .v6 .ctx > #perto > .ctx-t{grid-column:1/-1}
 }
 
 /* ---------- desktop (≥ 1024 px, como a home) ---------- */
