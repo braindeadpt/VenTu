@@ -1,6 +1,6 @@
 {
   "day": "20261016",
-  "fetchedAt": "2026-10-16T11:24:12.022Z",
+  "fetchedAt": "2026-10-16T11:42:03.431Z",
   "minPairs": 3,
   "minAccumulatedPairs": 10,
   "archive": {
@@ -2088,37 +2088,6 @@
       "suboptimal": []
     },
     "Tavira": {
-      "spotCount": 2,
-      "withObservedWave": 2,
-      "bySource": {
-        "ih-buoy": 2
-      },
-      "audited": 2,
-      "attachedIsClosest": 0,
-      "attachedNotClosest": 2,
-      "onlySource": 0,
-      "notClosest": [
-        {
-          "spot": "ilha-tavira",
-          "winner": "ih-buoy",
-          "reason": "ih-fresh",
-          "attachedKm": 147,
-          "altKm": 91
-        },
-        {
-          "spot": "cabanas-tavira",
-          "winner": "ih-buoy",
-          "reason": "ih-fresh",
-          "attachedKm": 147,
-          "altKm": 91
-        }
-      ],
-      "calibrated": 0,
-      "calibrationRefs": {},
-      "suboptimalRefs": 0,
-      "suboptimal": []
-    },
-    "Vila Real de Santo António": {
       "spotCount": 1,
       "withObservedWave": 1,
       "bySource": {
@@ -2130,11 +2099,11 @@
       "onlySource": 0,
       "notClosest": [
         {
-          "spot": "cacela-velha",
+          "spot": "ilha-tavira",
           "winner": "ih-buoy",
           "reason": "ih-fresh",
-          "attachedKm": 149,
-          "altKm": 90
+          "attachedKm": 147,
+          "altKm": 91
         }
       ],
       "calibrated": 0,
@@ -2181,14 +2150,14 @@
       "suboptimal": []
     },
     "Madeira": {
-      "spotCount": 9,
-      "withObservedWave": 9,
+      "spotCount": 11,
+      "withObservedWave": 11,
       "bySource": {
-        "ih-buoy": 9
+        "ih-buoy": 11
       },
-      "audited": 9,
+      "audited": 11,
       "attachedIsClosest": 0,
-      "attachedNotClosest": 9,
+      "attachedNotClosest": 11,
       "onlySource": 0,
       "notClosest": [
         {
@@ -2203,6 +2172,20 @@
           "winner": "ih-buoy",
           "reason": "ih-only",
           "attachedKm": 11,
+          "altKm": 0
+        },
+        {
+          "spot": "paul-mar",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 48,
+          "altKm": 0
+        },
+        {
+          "spot": "jardim-mar",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 46,
           "altKm": 0
         },
         {
@@ -2365,7 +2348,7 @@
       "suboptimal": []
     }
   },
-  "regionsAuditedAt": "2026-10-16T11:38:16.191Z",
+  "regionsAuditedAt": "2026-10-16T11:53:30.593Z",
   "pairs": [
     {
       "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",

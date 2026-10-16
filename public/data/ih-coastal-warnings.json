@@ -6013,38 +6013,6 @@
       ]
     },
     {
-      "id": 1009389,
-      "ref": "ANAV NR 258/25",
-      "category": "ASSINALAMENTO MARÍTIMO ANOMALIA",
-      "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=d8eee6f0-0505-4196-bf77-769aa8f88ceb",
-      "source": "ih",
-      "collection": "nav_warning_local",
-      "polygons": [
-        [
-          [
-            -9.093689,
-            38.441338
-          ],
-          [
-            -9.093689,
-            38.441468
-          ],
-          [
-            -9.093512,
-            38.441468
-          ],
-          [
-            -9.093512,
-            38.441338
-          ],
-          [
-            -9.093689,
-            38.441338
-          ]
-        ]
-      ]
-    },
-    {
       "id": 1009454,
       "ref": "ANAV NR 156/25",
       "category": "Equipamento submerso",
@@ -6866,6 +6834,38 @@
           [
             -27.989677,
             39.035453
+          ]
+        ]
+      ]
+    },
+    {
+      "id": 1010574,
+      "ref": "ANAV NR 37/26",
+      "category": "Assinalamento marítimo – Marina de Oeiras",
+      "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=97126c2d-0f0b-4f42-81cd-ecab26b6c4b4",
+      "source": "ih",
+      "collection": "nav_warning_local",
+      "polygons": [
+        [
+          [
+            -9.317478,
+            38.676423
+          ],
+          [
+            -9.316829,
+            38.676418
+          ],
+          [
+            -9.316851,
+            38.676004
+          ],
+          [
+            -9.317435,
+            38.676016
+          ],
+          [
+            -9.317478,
+            38.676423
           ]
         ]
       ]
@@ -8098,7 +8098,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-10-16T11:24:28.198Z",
+  "fetchedAt": "2026-10-16T11:42:21.793Z",
   "sourceCollection": "nav_warning_coastal+nav_warning_local+orca_anavnet_point",
   "sourceUrl": "https://ogcapi.hidrografico.pt/collections/nav_warning_coastal"
 }

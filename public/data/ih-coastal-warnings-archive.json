@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-10-16T11:24:28.225Z",
+  "fetchedAt": "2026-10-16T11:42:21.820Z",
   "windowDays": 90,
   "dayCount": 45,
   "days": [
@@ -46910,13 +46910,6 @@
           "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=b076cc5a-8adf-4114-8176-1997916042ac"
         },
         {
-          "id": 1009389,
-          "ref": "ANAV NR 258/25",
-          "category": "ASSINALAMENTO MARÍTIMO ANOMALIA",
-          "source": "ih",
-          "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=d8eee6f0-0505-4196-bf77-769aa8f88ceb"
-        },
-        {
           "id": 1009454,
           "ref": "ANAV NR 156/25",
           "category": "Equipamento submerso",
@@ -47090,6 +47083,13 @@
           "category": "BOIA N.º 4 (LL 811.9) - RETIRADA",
           "source": "ih",
           "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=a94ffd65-63e4-49f6-a0e7-02c225543d68"
+        },
+        {
+          "id": 1010574,
+          "ref": "ANAV NR 37/26",
+          "category": "Assinalamento marítimo – Marina de Oeiras",
+          "source": "ih",
+          "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=97126c2d-0f0b-4f42-81cd-ecab26b6c4b4"
         },
         {
           "id": 2017253,
@@ -51694,52 +51694,6 @@
       "nDays": 35
     },
     {
-      "ref": "ANAV NR 258/25",
-      "category": "ASSINALAMENTO MARÍTIMO ANOMALIA",
-      "source": "ih",
-      "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=d8eee6f0-0505-4196-bf77-769aa8f88ceb",
-      "firstSeen": "2026-09-11",
-      "lastSeen": "2026-10-16",
-      "daysInForce": [
-        "2026-09-11",
-        "2026-09-12",
-        "2026-09-13",
-        "2026-09-14",
-        "2026-09-15",
-        "2026-09-16",
-        "2026-09-18",
-        "2026-09-19",
-        "2026-09-20",
-        "2026-09-21",
-        "2026-09-22",
-        "2026-09-23",
-        "2026-09-24",
-        "2026-09-25",
-        "2026-09-26",
-        "2026-09-27",
-        "2026-09-28",
-        "2026-09-29",
-        "2026-09-30",
-        "2026-10-01",
-        "2026-10-02",
-        "2026-10-03",
-        "2026-10-04",
-        "2026-10-05",
-        "2026-10-06",
-        "2026-10-07",
-        "2026-10-08",
-        "2026-10-09",
-        "2026-10-10",
-        "2026-10-11",
-        "2026-10-12",
-        "2026-10-13",
-        "2026-10-14",
-        "2026-10-15",
-        "2026-10-16"
-      ],
-      "nDays": 35
-    },
-    {
       "ref": "ANAV NR 26/23",
       "category": "Aviso a Navegação",
       "source": "ih",
@@ -52244,6 +52198,18 @@
         "2026-10-16"
       ],
       "nDays": 35
+    },
+    {
+      "ref": "ANAV NR 37/26",
+      "category": "Assinalamento marítimo – Marina de Oeiras",
+      "source": "ih",
+      "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=97126c2d-0f0b-4f42-81cd-ecab26b6c4b4",
+      "firstSeen": "2026-10-16",
+      "lastSeen": "2026-10-16",
+      "daysInForce": [
+        "2026-10-16"
+      ],
+      "nDays": 1
     },
     {
       "ref": "ANAV NR 38/22",
@@ -54849,6 +54815,51 @@
         "2026-10-15"
       ],
       "nDays": 1
+    },
+    {
+      "ref": "ANAV NR 258/25",
+      "category": "ASSINALAMENTO MARÍTIMO ANOMALIA",
+      "source": "ih",
+      "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=d8eee6f0-0505-4196-bf77-769aa8f88ceb",
+      "firstSeen": "2026-09-11",
+      "lastSeen": "2026-10-15",
+      "daysInForce": [
+        "2026-09-11",
+        "2026-09-12",
+        "2026-09-13",
+        "2026-09-14",
+        "2026-09-15",
+        "2026-09-16",
+        "2026-09-18",
+        "2026-09-19",
+        "2026-09-20",
+        "2026-09-21",
+        "2026-09-22",
+        "2026-09-23",
+        "2026-09-24",
+        "2026-09-25",
+        "2026-09-26",
+        "2026-09-27",
+        "2026-09-28",
+        "2026-09-29",
+        "2026-09-30",
+        "2026-10-01",
+        "2026-10-02",
+        "2026-10-03",
+        "2026-10-04",
+        "2026-10-05",
+        "2026-10-06",
+        "2026-10-07",
+        "2026-10-08",
+        "2026-10-09",
+        "2026-10-10",
+        "2026-10-11",
+        "2026-10-12",
+        "2026-10-13",
+        "2026-10-14",
+        "2026-10-15"
+      ],
+      "nDays": 34
     },
     {
       "ref": "ANAV NR 2290/26",
