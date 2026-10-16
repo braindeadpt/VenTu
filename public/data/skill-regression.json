@@ -1,6 +1,6 @@
 {
   "source": "forecast-skill-regression",
-  "checkedAt": "2026-10-16T04:06:27.680Z",
+  "checkedAt": "2026-10-16T05:52:54.880Z",
   "windowDays": 60,
   "recentDays": 7,
   "baselineDays": 21,
@@ -24,7 +24,7 @@
         "snapshots": 8,
         "rmse": 0.635,
         "me": 0.48125000000000007,
-        "n": 618.625
+        "n": 618.875
       },
       "baseline": {
         "snapshots": 14,
@@ -43,7 +43,7 @@
         "snapshots": 8,
         "rmse": 0.28,
         "me": 0.13875,
-        "n": 673.75
+        "n": 674
       },
       "baseline": {
         "snapshots": 21,
@@ -81,7 +81,7 @@
         "snapshots": 8,
         "rmse": 0.49875,
         "me": -0.43624999999999997,
-        "n": 674.75
+        "n": 675
       },
       "baseline": {
         "snapshots": 15,
@@ -100,7 +100,7 @@
         "snapshots": 8,
         "rmse": 0.88125,
         "me": 0.69875,
-        "n": 670.75
+        "n": 671
       },
       "baseline": {
         "snapshots": 14,
@@ -119,7 +119,7 @@
         "snapshots": 8,
         "rmse": 0.72875,
         "me": 0.58375,
-        "n": 545.375
+        "n": 545.5
       },
       "baseline": {
         "snapshots": 21,
@@ -138,7 +138,7 @@
         "snapshots": 8,
         "rmse": 0.48,
         "me": 0.39375,
-        "n": 545.375
+        "n": 545.5
       },
       "baseline": {
         "snapshots": 21,
@@ -156,7 +156,7 @@
         "snapshots": 8,
         "rmse": 0.3725,
         "me": 0.13125,
-        "n": 539.75
+        "n": 539.875
       },
       "baseline": {
         "snapshots": 21,
@@ -176,8 +176,8 @@
       "name": "IH (Datawell)",
       "recent": {
         "days": 8,
-        "n": 2797.13,
-        "me": 0.21079456584886264
+        "n": 2798.13,
+        "me": 0.21080232298414114
       },
       "baseline": {
         "days": 21,
@@ -194,8 +194,8 @@
       "name": "WMO-ES (Copernicus)",
       "recent": {
         "days": 8,
-        "n": 1630.5,
-        "me": 0.370253756516406
+        "n": 1630.88,
+        "me": 0.3702529317084387
       },
       "baseline": {
         "days": 21,
