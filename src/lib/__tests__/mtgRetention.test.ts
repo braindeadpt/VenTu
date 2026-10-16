@@ -126,7 +126,7 @@ describe('push-data-update.sh — frames podados não voltam do origin', () => {
   it('esvazia radar/frames e sat-mtg/frames depois do checkout e antes do cp -a', () => {
     const loop = sh.match(/for frames_dir in ([^;]+); do/);
     expect(loop, 'loop das pastas de frames').not.toBeNull();
-    expect(loop![1].split(/\s+/)).toEqual(expect.arrayContaining(['radar/frames', 'sat-mtg/frames']));
+    expect(loop![1].split(/\s+/)).toEqual(expect.arrayContaining(['radar/frames', 'sat-mtg/frames', 'forecasts']));
     expect(sh.indexOf('for frames_dir in')).toBeLessThan(
       sh.indexOf('cp -a "$DATA_BACKUP/public-data/." public/data/'),
     );

@@ -41,6 +41,14 @@
  * Manual `workflow_dispatch` stays ungated (human decision): code = the chosen
  * commit, no overlay.
  *
+ * Deploy sem mudanças (scripts/lib/deploySource.js — decideDeploySkip): depois
+ * de decidir código/dados, calcula a impressão digital (árvore do código verde
+ * + árvore public/data dos dados + blob do deploy.yml) e compara com
+ * https://ventu.surf/deploy-source.json. Igual (e manifesto com < 6 h) ⇒
+ * output skip=true e o workflow salta o build e o deploy. workflow_dispatch
+ * nunca salta. `--write-manifest <ficheiro>` escreve o manifesto (o passo do
+ * build põe-no em out/deploy-source.json).
+ *
  * Usage (in CI):
  *   GH_TOKEN=... GITHUB_EVENT_NAME=workflow_run node scripts/resolve-deploy-source.js
  * Local dry check (no writes to GITHUB_OUTPUT/S):
@@ -50,6 +58,11 @@
 const { execFileSync } = require('child_process');
 const fs = require('fs');
 const {
+  DEPLOY_SOURCE_LIVE_URL_DEFAULT,
+  DEPLOY_SKIP_MAX_AGE_HOURS_DEFAULT,
+  computeDeployFingerprint,
+  decideDeploySkip,
+  formatDeploySourceManifest,
   GREEN_RUN_MAX_AGE_DAYS_DEFAULT,
   GREEN_RUN_RETRY_ATTEMPTS_DEFAULT,
   GREEN_RUN_RETRY_DELAY_MS_DEFAULT,
@@ -146,8 +159,55 @@ function greenCommitAgeHours(greenSha, nowMs) {
   return Math.max(0, (nowMs - t) / 3600000);
 }
 
-function finish(res, greenRun) {
-  const md = formatDeploySummary(res, { greenRun, dryRun: DRY_RUN });
+/** Impressão digital do que este deploy publicaria (null se o git falhar). */
+function fingerprintFor(res, mainSha) {
+  if (!res.codeSha || !res.dataSha) return null;
+  return computeDeployFingerprint({
+    codeTree: gitTry('rev-parse', `${res.codeSha}^{tree}`),
+    dataTree: gitTry('rev-parse', `${res.dataSha}:public/data`),
+    workflowBlob: gitTry('rev-parse', `${mainSha}:.github/workflows/deploy.yml`),
+  });
+}
+
+async function fetchLiveManifest() {
+  const url = process.env.VENTU_DEPLOY_SOURCE_URL || DEPLOY_SOURCE_LIVE_URL_DEFAULT;
+  try {
+    const r = await fetch(`${url}?t=${Date.now()}`, {
+      headers: { Accept: 'application/json', 'Cache-Control': 'no-cache' },
+      signal: AbortSignal.timeout(15000),
+    });
+    if (!r.ok) {
+      console.log(`ℹ️ manifesto do live: HTTP ${r.status}`);
+      return null;
+    }
+    return await r.json();
+  } catch (e) {
+    console.log(`ℹ️ manifesto do live indisponível: ${e.message || e}`);
+    return null;
+  }
+}
+
+async function skipDecision(res, mainSha, nowMs) {
+  const fingerprint = fingerprintFor(res, mainSha);
+  if (res.status !== 'ok' && res.status !== 'manual') return { fingerprint, skip: false, reason: '' };
+  const liveManifest = EVENT === 'workflow_run' ? await fetchLiveManifest() : null;
+  const maxAgeHours = Number(process.env.VENTU_DEPLOY_SKIP_MAX_AGE_HOURS) || DEPLOY_SKIP_MAX_AGE_HOURS_DEFAULT;
+  const d = decideDeploySkip({
+    mode: EVENT === 'workflow_run' ? 'workflow_run' : 'workflow_dispatch',
+    status: res.status,
+    fingerprint,
+    liveManifest,
+    nowMs,
+    maxAgeHours,
+  });
+  return { fingerprint, ...d };
+}
+
+function finish(res, greenRun, sk = { fingerprint: null, skip: false, reason: '' }) {
+  let md = formatDeploySummary(res, { greenRun, dryRun: DRY_RUN });
+  if (sk.reason) {
+    md += `\n\n- **impressão digital:** \`${sk.fingerprint ? sk.fingerprint.slice(0, 12) : '—'}\` · **salto:** ${sk.skip ? 'sim' : 'não'} — ${sk.reason}`;
+  }
   writeSummary(md);
 
   // needs_checkout: only the overlay path re-checks out; manual dispatch runs on
@@ -158,12 +218,18 @@ function finish(res, greenRun) {
     data_sha: res.dataSha || '',
     needs_checkout: res.status === 'ok' ? 'true' : 'false',
     warn: res.warn ? 'true' : 'false',
+    fingerprint: sk.fingerprint || '',
+    skip: sk.skip ? 'true' : 'false',
   });
 
   console.log(md);
 
   if (res.warn && res.warnReason) {
     console.log(`::warning::Deploy: ${res.warnReason}`);
+  }
+
+  if (sk.skip) {
+    console.log(`::notice::Deploy saltado — ${sk.reason}`);
   }
 
   if (res.status === 'fail') {
@@ -173,7 +239,25 @@ function finish(res, greenRun) {
   process.exit(0);
 }
 
-function main() {
+function writeManifest(file) {
+  const fingerprint = process.env.DEPLOY_FINGERPRINT;
+  const codeSha = process.env.CODE_SHA || gitTry('rev-parse', 'HEAD');
+  const dataSha = process.env.DATA_SHA || codeSha;
+  if (!fingerprint) {
+    console.log('::warning::DEPLOY_FINGERPRINT vazio — deploy-source.json não escrito (o próximo deploy publica sempre)');
+    return;
+  }
+  fs.mkdirSync(require('path').dirname(file), { recursive: true });
+  fs.writeFileSync(file, formatDeploySourceManifest({ fingerprint, codeSha, dataSha }));
+  console.log(`deploy-source.json → ${file} (${fingerprint.slice(0, 12)})`);
+}
+
+async function main() {
+  const wm = process.argv.indexOf('--write-manifest');
+  if (wm !== -1) {
+    writeManifest(process.argv[wm + 1] || 'out/deploy-source.json');
+    return;
+  }
   const nowMs = Date.now();
   const mainSha = gitTry('rev-parse', 'HEAD');
   if (!mainSha) {
@@ -188,7 +272,7 @@ function main() {
       lagWarnCommits,
       lagWarnHours,
     });
-    finish(res, null);
+    finish(res, null, await skipDecision(res, mainSha, nowMs));
     return;
   }
 
@@ -239,7 +323,10 @@ function main() {
     )} (${greenRun ? greenRun.created_at : '—'}) · main: ${short(mainSha)}`,
   );
 
-  finish(res, greenRun);
+  finish(res, greenRun, await skipDecision(res, mainSha, nowMs));
 }
 
-main();
+main().catch((e) => {
+  console.log(`::error::resolve-deploy-source falhou: ${e.message || e}`);
+  process.exit(1);
+});

@@ -13,6 +13,10 @@ const {
   pickGreenRunWithRetries,
   evaluateDeploySource,
   formatDeploySummary,
+  DEPLOY_SKIP_MAX_AGE_HOURS_DEFAULT,
+  computeDeployFingerprint,
+  decideDeploySkip,
+  formatDeploySourceManifest,
 } = require('../deploySource.js');
 
 const NOW = new Date('2026-09-25T12:00:00Z').getTime();
@@ -228,5 +232,90 @@ describe('deploySource — resumo', () => {
   it('marks dry_run so a non-publishing run is unambiguous', () => {
     const res = evaluateDeploySource({ mode: 'workflow_dispatch', mainSha: 'main123' });
     expect(formatDeploySummary(res, { dryRun: true })).toMatch(/dry_run/);
+  });
+});
+
+describe('deploySource — saltar deploy sem mudanças', () => {
+  const fp = computeDeployFingerprint({ codeTree: 't1', dataTree: 'd1', workflowBlob: 'w1' });
+
+  it('impressão digital estável e sensível a código, dados e workflow', () => {
+    expect(fp).toMatch(/^[0-9a-f]{64}$/);
+    expect(computeDeployFingerprint({ codeTree: 't1', dataTree: 'd1', workflowBlob: 'w1' })).toBe(fp);
+    expect(computeDeployFingerprint({ codeTree: 't2', dataTree: 'd1', workflowBlob: 'w1' })).not.toBe(fp);
+    expect(computeDeployFingerprint({ codeTree: 't1', dataTree: 'd2', workflowBlob: 'w1' })).not.toBe(fp);
+    expect(computeDeployFingerprint({ codeTree: 't1', dataTree: 'd1', workflowBlob: 'w2' })).not.toBe(fp);
+    expect(computeDeployFingerprint({ codeTree: null, dataTree: 'd1' })).toBeNull();
+    expect(computeDeployFingerprint({ codeTree: 't1', dataTree: '' })).toBeNull();
+  });
+
+  it('workflow_run com a mesma impressão digital do live (recente) → salta', () => {
+    const d = decideDeploySkip({
+      mode: 'workflow_run',
+      status: 'ok',
+      fingerprint: fp,
+      liveManifest: { fingerprint: fp, generatedAt: hoursAgo(1) },
+      nowMs: NOW,
+    });
+    expect(d.skip).toBe(true);
+  });
+
+  it('workflow_dispatch nunca salta, mesmo igual ao live', () => {
+    const d = decideDeploySkip({
+      mode: 'workflow_dispatch',
+      status: 'manual',
+      fingerprint: fp,
+      liveManifest: { fingerprint: fp, generatedAt: hoursAgo(1) },
+      nowMs: NOW,
+    });
+    expect(d.skip).toBe(false);
+  });
+
+  it('impressão digital diferente, manifesto ausente ou inválido → publica', () => {
+    const base = { mode: 'workflow_run', status: 'ok', fingerprint: fp, nowMs: NOW };
+    expect(decideDeploySkip({ ...base, liveManifest: { fingerprint: 'outra', generatedAt: hoursAgo(1) } }).skip).toBe(false);
+    expect(decideDeploySkip({ ...base, liveManifest: null }).skip).toBe(false);
+    expect(decideDeploySkip({ ...base, liveManifest: { fingerprint: fp } }).skip).toBe(false);
+    expect(decideDeploySkip({ ...base, fingerprint: null, liveManifest: { fingerprint: fp, generatedAt: hoursAgo(1) } }).skip).toBe(false);
+  });
+
+  it('manifesto do live igual mas com > 6 h → rebuild periódico', () => {
+    expect(DEPLOY_SKIP_MAX_AGE_HOURS_DEFAULT).toBe(6);
+    const d = decideDeploySkip({
+      mode: 'workflow_run',
+      status: 'ok',
+      fingerprint: fp,
+      liveManifest: { fingerprint: fp, generatedAt: hoursAgo(6.5) },
+      nowMs: NOW,
+    });
+    expect(d.skip).toBe(false);
+    expect(d.reason).toMatch(/rebuild periódico/);
+  });
+
+  it('estado fail nunca salta (o resolve falha com barulho)', () => {
+    const d = decideDeploySkip({ mode: 'workflow_run', status: 'fail', fingerprint: fp, liveManifest: { fingerprint: fp, generatedAt: hoursAgo(1) }, nowMs: NOW });
+    expect(d.skip).toBe(false);
+  });
+
+  it('manifesto escrito em out/ tem fingerprint, shas e generatedAt', () => {
+    const m = JSON.parse(formatDeploySourceManifest({ fingerprint: fp, codeSha: 'c', dataSha: 'd', generatedAt: hoursAgo(0) }));
+    expect(m).toEqual({ fingerprint: fp, codeSha: 'c', dataSha: 'd', generatedAt: hoursAgo(0) });
+  });
+});
+
+describe('deploy.yml — salto e Dawn Patrol', () => {
+  const { readFileSync } = require('fs');
+  const { join } = require('path');
+  const wf = readFileSync(join(__dirname, '..', '..', '..', '.github', 'workflows', 'deploy.yml'), 'utf8');
+
+  it('já não gera o Dawn Patrol no deploy (vem do dawn-patrol.yml pelo overlay)', () => {
+    expect(wf).not.toMatch(/name: Generate Dawn Patrol/);
+    expect(wf).not.toMatch(/node scripts\/dawn-patrol\.js/);
+  });
+
+  it('o build escreve out/deploy-source.json e o deploy respeita o skip', () => {
+    expect(wf).toMatch(/--write-manifest out\/deploy-source\.json/);
+    expect(wf).toMatch(/skip: \$\{\{ steps\.source\.outputs\.skip \}\}/);
+    expect(wf).toMatch(/needs\.build\.outputs\.skip != 'true'/);
+    expect(wf).toMatch(/- name: Build\n\s+if: steps\.source\.outputs\.skip != 'true'/);
   });
 });

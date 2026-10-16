@@ -36,6 +36,7 @@ on:
 permissions:
   issues: write
   contents: write # heartbeat fallback: repository_dispatch(ping) auto-resurrection
+  actions: read # live-sync: não fechar data-stale com um deploy preso (scripts/lib/liveSync.js)
 
 concurrency:
   group: data-cadence-alert
