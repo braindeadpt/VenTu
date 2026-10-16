@@ -5585,38 +5585,6 @@
       ]
     },
     {
-      "id": 1007767,
-      "ref": "ANAV NR 43/25",
-      "category": "ASSINALAMENTO MARÍTIMO - BOIA Nº 1M FORA DA POSIÇÃO",
-      "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=ce6140f2-9596-49bd-a244-7ee9fe28aadf",
-      "source": "ih",
-      "collection": "nav_warning_local",
-      "polygons": [
-        [
-          [
-            -8.734813,
-            40.643649
-          ],
-          [
-            -8.734813,
-            40.643987
-          ],
-          [
-            -8.734148,
-            40.643987
-          ],
-          [
-            -8.734148,
-            40.643649
-          ],
-          [
-            -8.734813,
-            40.643649
-          ]
-        ]
-      ]
-    },
-    {
       "id": 1007841,
       "ref": "ANAV NR 37/25",
       "category": "Objeto à deriva (boia de navegação)",
@@ -6513,38 +6481,6 @@
       ]
     },
     {
-      "id": 1010210,
-      "ref": "ANAV NR 24/26",
-      "category": "BOIA N.5 DO CANAL PRINCIPAL À DERIVA",
-      "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=003e0d21-4e21-4edb-8843-30e85d0e7b1b",
-      "source": "ih",
-      "collection": "nav_warning_local",
-      "polygons": [
-        [
-          [
-            -8.758431,
-            40.625158
-          ],
-          [
-            -8.758431,
-            40.655639
-          ],
-          [
-            -8.708662,
-            40.655639
-          ],
-          [
-            -8.708662,
-            40.625158
-          ],
-          [
-            -8.758431,
-            40.625158
-          ]
-        ]
-      ]
-    },
-    {
       "id": 1010255,
       "ref": "ANAV NR 4/26",
       "category": "Barra do Porto de Vila do Porto - Aberta",
@@ -7078,6 +7014,38 @@
           [
             -9.317478,
             38.676423
+          ]
+        ]
+      ]
+    },
+    {
+      "id": 1010582,
+      "ref": "ANAV NR 72/26",
+      "category": "ASSINALAMENTO MARÍTIMO - CANAL DE NAVEGAÇÃO  ALVOR - BOIA NR2",
+      "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=b9b87cf1-f524-4ae3-bd90-0990c91a0be3",
+      "source": "ih",
+      "collection": "nav_warning_local",
+      "polygons": [
+        [
+          [
+            -8.620407,
+            37.127034
+          ],
+          [
+            -8.620407,
+            37.130867
+          ],
+          [
+            -8.612512,
+            37.130867
+          ],
+          [
+            -8.612512,
+            37.127034
+          ],
+          [
+            -8.620407,
+            37.127034
           ]
         ]
       ]
@@ -8180,8 +8148,7 @@
       1000459
     ],
     "barra-aveiro": [
-      1000711,
-      1010210
+      1000711
     ],
     "vila-cha": [
       2018383,
@@ -8313,7 +8280,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-10-16T16:59:50.817Z",
+  "fetchedAt": "2026-10-16T19:36:45.678Z",
   "sourceCollection": "nav_warning_coastal+nav_warning_local+orca_anavnet_point",
   "sourceUrl": "https://ogcapi.hidrografico.pt/collections/nav_warning_coastal"
 }

@@ -1,15 +1,35 @@
 {
   "source": "ipma",
-  "fetchedAt": "2026-10-16T16:59:49.981Z",
+  "fetchedAt": "2026-10-16T19:36:44.268Z",
   "warnings": [
+    {
+      "areaCode": "EVR",
+      "areaLabel": "Évora",
+      "type": "Trovoada",
+      "level": "yellow",
+      "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, em especial na parte leste do distrito: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm;",
+      "startTime": "2026-10-17T12:00:00",
+      "endTime": "2026-10-17T21:00:00",
+      "relevant": true
+    },
     {
       "areaCode": "GDA",
       "areaLabel": "Guarda",
       "type": "Trovoada",
       "level": "yellow",
       "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm;",
-      "startTime": "2026-10-16T13:56:00",
-      "endTime": "2026-10-16T18:00:00",
+      "startTime": "2026-10-17T12:00:00",
+      "endTime": "2026-10-17T21:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "BJA",
+      "areaLabel": "Beja",
+      "type": "Trovoada",
+      "level": "yellow",
+      "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, em especial na parte leste do distrito: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm;",
+      "startTime": "2026-10-17T12:00:00",
+      "endTime": "2026-10-17T21:00:00",
       "relevant": true
     },
     {
@@ -18,10 +38,33 @@
       "type": "Trovoada",
       "level": "yellow",
       "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm;",
-      "startTime": "2026-10-16T13:56:00",
-      "endTime": "2026-10-16T18:00:00",
+      "startTime": "2026-10-17T12:00:00",
+      "endTime": "2026-10-17T21:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "PTG",
+      "areaLabel": "Portalegre",
+      "type": "Trovoada",
+      "level": "yellow",
+      "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm;",
+      "startTime": "2026-10-17T12:00:00",
+      "endTime": "2026-10-17T21:00:00",
       "relevant": true
     }
   ],
-  "spotWarnings": {}
+  "spotWarnings": {
+    "alqueva": [
+      {
+        "areaCode": "BJA",
+        "areaLabel": "Beja",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, em especial na parte leste do distrito: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm;",
+        "startTime": "2026-10-17T12:00:00",
+        "endTime": "2026-10-17T21:00:00",
+        "relevant": true
+      }
+    ]
+  }
 }
