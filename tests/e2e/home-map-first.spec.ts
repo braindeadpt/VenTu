@@ -56,3 +56,29 @@ test.describe('Home map-first (mobile)', () => {
     await expect(page.getByRole('dialog', { name: /Mapa interactivo/i })).toBeVisible();
   });
 });
+
+test.describe('Home map-first: arranque diferido do 3D (desktop)', () => {
+  test.use({ viewport: { width: 1440, height: 900 } });
+
+  // Lighthouse (run 38819063476): com o MapLibre + relevo a arrancar no load, o 1.º ecrã do
+  // desktop pagava 2,7 MB de tiles e ~9 s de main thread (TBT 7,9 s, LCP 4,3 s). O mapa fica
+  // em poster até o visitante mexer na página (ou até a página assentar), no mesmo sítio.
+  test('poster no carregamento; o 3D arranca quando o visitante mexe, sem mudar de caixa', async ({ page }) => {
+    const pesados: string[] = [];
+    page.on('request', (r) => {
+      if (/elevation-tiles-prod|\/geo\/costa-home\.json|maplibre-gl-worker/.test(r.url())) pesados.push(r.url());
+    });
+    await page.goto('/pt/', { waitUntil: 'load' });
+    await page.waitForSelector('html.is-hydrated', { timeout: 20_000 });
+    const fig = page.getByRole('region', { name: /Mapa interactivo/i }).locator('figure');
+    const antes = await fig.boundingBox();
+    await page.waitForTimeout(1000);
+    await expect(fig).toHaveAttribute('data-modo', 'poster');
+    expect(pesados).toEqual([]);
+    await page.mouse.move(720, 450);
+    await expect(fig).toHaveAttribute('data-modo', /^(3d|plano)$/, { timeout: 20_000 });
+    await expect(fig).toHaveAttribute('data-pronto', '1', { timeout: 30_000 });
+    expect(await fig.boundingBox()).toEqual(antes);
+    expect(pesados.length).toBeGreaterThan(0);
+  });
+});
