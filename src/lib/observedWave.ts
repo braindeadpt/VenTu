@@ -99,6 +99,23 @@ export const OBSERVED_WAVE_MAX_AGE_HOURS: Record<ObservedWave['source'], number>
   'wmo-buoy': 6,
 };
 
+/**
+ * Distância máxima boia → spot para a leitura entrar na nota (auditoria de
+ * dados 16/10, A5: a boia de Sines a 188 km substituía Hs/Tp na Nazaré).
+ * 40 km: no forecast de 16/10 (185 spots, 72 h), a diferença mediana de Hs
+ * entre dois pontos da costa é 6 % até 20 km e 15 % aos 20–40 km (o erro típico
+ * do modelo que a boia corrige); para lá dos 40 km a boia mede outro mar tanto
+ * quanto o modelo erra, por isso deixa de ser uma correcção. Espelha
+ * `OBSERVED_WAVE_MAX_KM` em `scripts/lib/observedWaveMerge.js` (teste de paridade).
+ */
+export const OBSERVED_WAVE_MAX_DISTANCE_KM = 40;
+
+/** A boia está perto o suficiente do spot para a leitura valer como a onda do spot. */
+export function isObservedWaveNear(wave: Pick<ObservedWave, 'distanceKm'>): boolean {
+  const d = Number(wave.distanceKm);
+  return Number.isFinite(d) && d <= OBSERVED_WAVE_MAX_DISTANCE_KM;
+}
+
 /** Source-aware freshness gate for a buoy reading (mirrors the data layer). */
 export function isObservedWaveFresh(
   wave: Pick<ObservedWave, 'observedAt' | 'source'>,

@@ -160,6 +160,10 @@ export function construirFrase(ctx: ContextoVeredicto) {
     const h = H[i];
     const r = NS[i];
     const b = bandaR(r);
+    if (r.semDados) {
+      // a fonte não traz o dado desta hora (auditoria 16/10, M2): nem nota nem «noite»
+      return { l1: `${c.semDadosPal}. ${P.logica === 'vento' ? c.semDadosVento : c.semDadosOnda}`, l2: [] };
+    }
     if (r.n == null) {
       const p = proxJanela(NS, i);
       if (!p) return { l1: c.noite, l2: [{ t: c.noiteSemJanela }] };
@@ -240,8 +244,8 @@ export function construirFrase(ctx: ContextoVeredicto) {
 export const parteTxt = (p: Parte[]) => p.map((x) => x.t).join('');
 
 /** A palavra da banda em grande e o resto da frase sem a repetir (como na maquete). */
-export function palavraEResto(c: SpotPageV6Copy, f: Frase, b: BandaK): { palavra: string; resto: string } {
-  const nome = c.bandas[b];
+export function palavraEResto(c: SpotPageV6Copy, f: Frase, b: BandaK, semDados = false): { palavra: string; resto: string } {
+  const nome = semDados ? c.semDadosPal : c.bandas[b];
   const resto = f.l1.startsWith(nome) ? f.l1.slice(nome.length).replace(/^[.:\s]+/, '') : f.l1;
   return { palavra: nome, resto: resto.replace(/^./, (x) => x.toUpperCase()) };
 }
