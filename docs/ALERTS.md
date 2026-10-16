@@ -22,6 +22,14 @@ Utilizador ← confirmação / alerta ← /pt/alerts/confirm|unsubscribe/?token=
   cone de tempestade tropical (NHC) — mesmo sem score ≥ limiar. Respeita a
   frequência escolhida; sem a coluna `warn` o evaluator fica intacto.
 - Gerir em `/favorites#alertas` ou `/conta`
+- **Hora avaliada (16/10):** a nota é a da **hora corrente** de
+  `public/data/forecasts/<id>.json` com as observações frescas da linha do
+  `conditions.json` por cima (boia, vento observado), no motor v6
+  (`computeAlertScore` em `scripts/lib/scoreSpotConditions.js`). Antes era a
+  fotografia do último run (até 2 h antes). Sem a hora na previsão, cai na
+  linha do `conditions.json`.
+- **Noite:** com o sol abaixo de −0,8° no spot não há avaliação de condições
+  (nem alerta de condições); os avisos oficiais (`warn`) seguem.
 
 ## E1 (legacy) — por spot, anónimo
 

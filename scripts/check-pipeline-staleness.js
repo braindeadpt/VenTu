@@ -21,6 +21,13 @@
  * (OPS_TELEGRAM_CHAT_ID + TELEGRAM_BOT_TOKEN, piggybacks on the issue
  * transitions so a long outage alerts once, not every run).
  *
+ * Live-sync (scripts/lib/liveSync.js): a main fresca não chega se o deploy
+ * parou — o mesmo incidente `data-stale` abre quando o `lastRunAt` da main
+ * não chegou a https://ventu.surf/data/pipeline-meta.json há > 60 min, ou
+ * quando um run do deploy.yml está em waiting/queued/pending há > 60 min
+ * (precisa de `actions: read`). Só fecha quando a main está fresca E o live
+ * a apanhou.
+ *
  * Exit code: 0 always — the monitor ran; the alert is delivered by issue
  * + Telegram, not by turning every run red during an outage (same
  * rationale as monitor-ih-tides.sh).
@@ -39,6 +46,7 @@ const {
   STALE_ALERT_HOURS_NIGHT,
 } = require('./lib/pipelineStaleness');
 const { sendTelegramMessage } = require('./lib/telegram');
+const { evaluateLiveSync, fetchLiveMeta, listPendingDeploys, liveSyncBody } = require('./lib/liveSync');
 
 const OUTAGE_LABEL = process.env.OUTAGE_LABEL || 'data-stale';
 const REPO = process.env.GITHUB_REPOSITORY || 'braindeadpt/VenTu';
@@ -64,6 +72,10 @@ function gh(...args) {
   } catch {
     return null;
   }
+}
+
+function ghApi(path, jq) {
+  return gh('api', path, '--jq', jq);
 }
 
 function ghAvailable() {
@@ -118,15 +130,63 @@ function recoveryBody() {
   return `✅ Pipeline de dados recuperou — \`pipeline-meta.json\` voltou a refrescar (${nowUtc()}). A fechar o incidente; confirmar o fim-a-fim com um run do \`update-data\`.`;
 }
 
+async function evaluateLive(mainMeta, nowMs, ghOk) {
+  if (process.env.LIVE_SYNC_DISABLED === '1') return null;
+  const live = await fetchLiveMeta({ nowMs });
+  const pendingDeploys = ghOk ? listPendingDeploys(ghApi, { repo: REPO }) : null;
+  const ls = evaluateLiveSync({ mainMeta, liveMeta: live.meta, liveOk: live.ok, pendingDeploys, nowMs });
+  if (ls.unknown) console.log(`ℹ️ live-sync: pipeline-meta do live inalcançável (${live.error || '?'}) — sem veredicto do live`);
+  if (pendingDeploys === null && ghOk) console.log('ℹ️ live-sync: runs do deploy indisponíveis (actions: read?)');
+  console.log(
+    ls.behind
+      ? `🔴 live-sync ATRASADO — ${ls.reasons.join(' · ')}`
+      : `✅ live-sync — main ${ls.mainLastRunAt || '—'} · live ${ls.liveLastRunAt || '—'}`,
+  );
+  return ls;
+}
+
 async function main() {
   const nowMs = Date.now();
-  const s = evaluatePipelineStaleness(readMeta(), nowMs);
+  const mainMeta = readMeta();
+  const s = evaluatePipelineStaleness(mainMeta, nowMs);
+  const ghOk = ghAvailable();
+  const ls = await evaluateLive(mainMeta, nowMs, ghOk);
+
+  if (!s.stale && ls && ls.behind) {
+    // Main fresca, produção parada: mesmo incidente, mesma label, sem
+    // keep-alive (o pipeline está vivo — reanimá-lo não resolve o deploy).
+    if (ghOk) {
+      ensureLabel();
+      const issue = openIssue();
+      if (issue) {
+        console.log(`ℹ️ Incidente #${issue} já aberto — sem spam (não fecha enquanto o live estiver atrasado)`);
+      } else {
+        const url = gh(
+          'issue', 'create', '--repo', REPO, '--label', OUTAGE_LABEL,
+          '--title', `Produção atrás da main — ventu.surf sem o último run de dados (${nowUtc()})`,
+          '--body', liveSyncBody(ls),
+        );
+        if (url) {
+          console.log(`🔔 ALERTA live-sync — aberto incidente: ${url}`);
+          const chat = process.env.OPS_TELEGRAM_CHAT_ID;
+          if (chat) {
+            await sendTelegramMessage(chat, `🚨 VenTu: ventu.surf atrás da main — ${ls.reasons.join(' · ')} — ${nowUtc()}. Issue aberto: ${url}`);
+          }
+        } else {
+          console.log('⚠️ falhou a criar a issue (permissões do GITHUB_TOKEN?)');
+        }
+      }
+    } else {
+      console.log('ℹ️ live atrasado — gh/GH_TOKEN indisponível (sem notificação por issue)');
+    }
+    process.exit(0);
+  }
 
   if (!s.stale) {
     console.log(
       `✅ pipeline-meta fresco — full ${fmt(s.fullAgeHours)} · obs ${fmt(s.obsAgeHours)} (limiar ${s.thresholdHours} h ${s.isDaytime ? 'dia' : 'noite'})`,
     );
-    if (ghAvailable()) {
+    if (ghOk) {
       const issue = openIssue();
       if (issue) {
         gh('issue', 'comment', issue, '--repo', REPO, '--body', recoveryBody());
@@ -148,7 +208,7 @@ async function main() {
   console.log(
     `🔴 pipeline-meta STALE — full ${fmt(s.fullAgeHours)} · obs ${fmt(s.obsAgeHours)} > ${s.thresholdHours} h (${s.isDaytime ? 'dia' : 'noite'}) — camada ${s.staleLayer}`,
   );
-  if (ghAvailable()) {
+  if (ghOk) {
     ensureLabel();
     const issue = openIssue();
     if (issue) {

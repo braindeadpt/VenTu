@@ -60,7 +60,12 @@ for attempt in $(seq 1 10); do
   # fetch-mtg-ir.py poda as antigas e o commit-and-push troca a pasta por
   # inteiro, mas o checkout de origin/main trazia-as de volta — 46 frames
   # (36.6 MB) a 7 out com o manifest a usar 4, CI parada no orçamento.
-  for frames_dir in radar/frames sat-mtg/frames; do
+  # E os ficheiros por spot das previsões (forecasts/<slug>.json): o
+  # artefacto traz a pasta inteira (checkout + regenerados); um spot removido
+  # ou renomeado que o pipeline apagou voltava do origin como órfão a cada
+  # commit do bot (validate-generated-data nomeia-os). Trocar a pasta por
+  # inteiro faz a remoção chegar à main.
+  for frames_dir in radar/frames sat-mtg/frames forecasts; do
     if [ -d "$DATA_BACKUP/public-data/$frames_dir" ]; then
       rm -rf "public/data/$frames_dir"
     fi

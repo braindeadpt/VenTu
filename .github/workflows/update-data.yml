@@ -80,6 +80,7 @@ jobs:
         env:
           VENTU_FORCE_MODE: ${{ (github.event_name == 'workflow_dispatch' && github.event.inputs.force_mode != 'auto' && github.event.inputs.force_mode) || (github.event_name == 'repository_dispatch' && github.event.client_payload.force_mode != 'auto' && github.event.client_payload.force_mode) || '' }}
           VENTU_KEEPALIVE: ${{ github.event_name == 'repository_dispatch' && '1' || '' }}
+          VENTU_SCHEDULED: ${{ github.event_name == 'schedule' && '1' || '' }}
         run: node scripts/should-run-data-update.js
 
       - name: Setup Node.js
@@ -199,11 +200,12 @@ jobs:
         if: steps.gate.outputs.mode != 'skip'
         run: node scripts/fetch-ipma-warnings.js
 
-      # Com METEOGATE_API_KEY ou METEOALARM_API_KEY, o job falha aqui se o
-      # warnings.json ficou source:'meteoalarm' (IPMA em baixo → fallback)
-      # mas SEM avisos activos — dupla falha que deixaria a camada de segurança
-      # vazia por cima dos spots. Sem token o passo é saltado (mirror do
-      # verify-ih-buoy-layer). Corre DEPOIS do fetch — nunca o substitui.
+      # Com METEOGATE_API_KEY ou METEOALARM_API_KEY, detecta o warnings.json
+      # source:'meteoalarm' SEM avisos activos (IPMA em baixo + fallback vazio)
+      # e repõe o warnings.json anterior (avisos expirados fora) marcado
+      # stale, com ::warning:: — já não falha o job: uma camada em baixo não
+      # pode travar a publicação das condições. Sem token o passo é saltado.
+      # Corre DEPOIS do fetch — nunca o substitui.
       - name: Verify MeteoAlarm warnings layer (fallback empty)
         if: steps.gate.outputs.mode != 'skip' && (env.METEOGATE_API_KEY != '' || env.METEOALARM_API_KEY != '')
         run: node scripts/verify-meteoalarm-warnings.js

@@ -20,8 +20,18 @@ The ping is a **safety net, never a second scheduler**:
 | State | Gate decision |
 |-------|---------------|
 | Open-Meteo overdue (`fullUpdatedAt` older than 2.5 h day / 4.5 h night) | `full` run |
+| This hour is a `full` slot and `fullUpdatedAt` is older than 90 min (the slot's cron never arrived) | `full` run |
+| This hour is an `observations` slot and the last obs publish (obs or full) is older than 90 min | `observations` run |
 | Obs merge overdue (`observationsUpdatedAt` older than 3 h day / 5 h night) | `observations` run |
 | Data fresh | `skip` — cheap no-op, no fetch, no double-run |
+
+(`resolveKeepaliveMode` in `scripts/lib/updateSchedule.js`, since 2026-10-16.)
+A slot that already ran leaves the data < 90 min old, so the ping skips. The
+`:17`/`:47` crons use `resolveScheduledMode`: the hour's slot runs **once** —
+if the other cron or a ping already served it in this Lisbon hour, the cron
+skips. Both gates read `pipeline-meta.json` from `origin/main` (fetched in the
+gate), not from the event's checkout, so a run queued behind another in the
+`update-ventu-data` concurrency group sees the meta that run just pushed.
 
 Because the gate skips when data is fresh, a ping can never double-run a
 healthy hour — the GitHub `schedule` crons (`:17`/`:47`) keep owning normal

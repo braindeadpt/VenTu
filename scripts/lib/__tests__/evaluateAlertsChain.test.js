@@ -309,3 +309,55 @@ describe('evaluateUserFavoritesAlerts — B4 warn (aviso oficial sem score)', ()
     expect(emailCaptured.html).toContain('⚠️ Aviso laranja — Vento — Lisboa: Rajadas a 90 km/h.');
   });
 });
+
+describe('evaluateUserFavoritesAlerts — noite e hora corrente da previsão', () => {
+  const WARNINGS = {
+    source: 'ipma',
+    fetchedAt: new Date().toISOString(),
+    warnings: [SEA],
+    spotWarnings: { guincho: [SEA] },
+  };
+  const NOITE = Date.parse('2026-10-16T23:30:00Z');
+
+  afterEach(() => {
+    PREFS[0].warn = false;
+    PREFS[0].min_score = 1;
+    PREFS[0].locale = 'pt';
+  });
+
+  it('de noite: sem alerta de condições, mas o aviso oficial (warn) sai', async () => {
+    installMockFetch();
+    PREFS[0].locale = 'pt';
+    PREFS[0].warn = true;
+    PREFS[0].min_score = 1; // de dia dispararia por score
+    const result = await evaluateUserFavoritesAlerts({ guincho: 'guincho' }, CONDITIONS, WARNINGS, {}, null, { nowMs: NOITE });
+    expect(result.nightSkipped).toBe(1);
+    expect(result.userWarnSent).toBe(1);
+    expect(emailCaptured.subject).toBe('VenTu — ⚠️ aviso oficial em 1 favorito(s)');
+  });
+
+  it('de noite sem warn: silêncio', async () => {
+    installMockFetch();
+    PREFS[0].locale = 'pt';
+    const result = await evaluateUserFavoritesAlerts({ guincho: 'guincho' }, CONDITIONS, WARNINGS, {}, null, { nowMs: NOITE });
+    expect(result.nightSkipped).toBe(1);
+    expect(result.userDigestSent).toBe(0);
+    expect(emailCaptured).toBeNull();
+  });
+
+  it('de dia usa a hora corrente da previsão (forecastFor)', async () => {
+    installMockFetch();
+    PREFS[0].locale = 'pt';
+    PREFS[0].min_score = 100; // nota 10/10 só com a hora da previsão perfeita — não dispara com flat
+    const nowMs = Date.parse('2026-10-17T14:00:00Z');
+    let pedido = null;
+    const forecastFor = (id) => {
+      pedido = id;
+      return [{ time: '2026-10-17T15:00', waveHeight: 0.1, wavePeriod: 3, windSpeed: 1, windGust: 1, windDirection: 0 }];
+    };
+    const result = await evaluateUserFavoritesAlerts({ guincho: 'guincho' }, CONDITIONS, WARNINGS, {}, null, { nowMs, forecastFor });
+    expect(pedido).toBe('guincho');
+    expect(result.nightSkipped).toBe(0);
+    expect(result.userDigestSent).toBe(0);
+  });
+});

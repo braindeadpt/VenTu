@@ -27,7 +27,7 @@ const COOLDOWN_MS = 3 * 60 * 60 * 1000;
 const DIGEST_HOUR_LISBON = 7;
 
 const { escapeHtml, safeLocale } = require('./lib/htmlEscape');
-const { computeScore, scoreToNota } = require('./lib/scoreSpotConditions');
+const { computeAlertScore, makeForecastReader, scoreToNota } = require('./lib/scoreSpotConditions');
 const { seaWarningForSpot, seaWarningLine, seaWarningEmailLine } = require('./lib/ipmaWarnings');
 const {
   coastalWarningsForSpot,
@@ -446,9 +446,24 @@ async function sendUserVerification(pref, favoriteCount) {
   await sendEmail(pref.email, subject, html, { unsubscribeUrl: unsub });
 }
 
-async function evaluateLegacySubscriptions(slugToId, conditions, warnings, coastal) {
+/**
+ * Nota de um alerta: hora corrente da previsão (quando `opts.forecastFor`) +
+ * observações frescas; `null` de noite (sem avaliação de condições — os avisos
+ * oficiais seguem pelo `warn`). Conta as noites em `stats.nightSkipped`.
+ */
+function scoreForAlert(spotId, sport, conditions, opts, stats) {
+  const r = computeAlertScore(spotId, sport, conditions, { nowMs: opts.nowMs, forecastFor: opts.forecastFor });
+  if (r && r.night) {
+    if (stats) stats.nightSkipped = (stats.nightSkipped || 0) + 1;
+    return null;
+  }
+  return r;
+}
+
+async function evaluateLegacySubscriptions(slugToId, conditions, warnings, coastal, opts = {}) {
   const subs = await fetchSubscriptions();
   let sent = 0;
+  const stats = { nightSkipped: 0 };
 
   // H2: verification mail is selected per address (see selectVerificationTargets)
   // so multiple pending rows for one address can never multiply into a flood.
@@ -473,7 +488,7 @@ async function evaluateLegacySubscriptions(slugToId, conditions, warnings, coast
     const spotId = slugToId[sub.spot_slug];
     if (!spotId) continue;
 
-    const scored = computeScore(spotId, sub.sport, conditions);
+    const scored = scoreForAlert(spotId, sub.sport, conditions, opts, stats);
     if (scored === null || scored.score < sub.min_score) continue;
     const score = scoreToNota(scored.score);
     const sourceNote = scoreSourceNote(scored.source, sub.locale !== 'en');
@@ -510,11 +525,13 @@ async function evaluateLegacySubscriptions(slugToId, conditions, warnings, coast
     legacyCount: subs.length,
     legacySent: sent,
     legacyVerificationSent: verificationSent,
+    legacyNightSkipped: stats.nightSkipped,
   };
 }
 
-async function evaluateUserFavoritesAlerts(idToSlug, conditions, warnings, coastal, storms) {
+async function evaluateUserFavoritesAlerts(idToSlug, conditions, warnings, coastal, storms, opts = {}) {
   const prefs = await fetchUserAlertPrefs();
+  const stats = { nightSkipped: 0 };
   let sent = 0;
   let warnSent = 0;
   let digestSkipped = 0;
@@ -548,7 +565,7 @@ async function evaluateUserFavoritesAlerts(idToSlug, conditions, warnings, coast
         pref.warn === true
           ? warningTriggersForSpot({ warnings, coastal, storms }, spotId)
           : [];
-      const scored = computeScore(spotId, pref.sport, conditions);
+      const scored = scoreForAlert(spotId, pref.sport, conditions, opts, stats);
       if (scored !== null && scored.score >= pref.min_score) {
         firing.push({
           slug,
@@ -707,6 +724,7 @@ async function evaluateUserFavoritesAlerts(idToSlug, conditions, warnings, coast
     userWarnSent: warnSent,
     digestSkipped,
     immediateSkipped,
+    nightSkipped: stats.nightSkipped,
   };
 }
 
@@ -758,13 +776,17 @@ async function main() {
   const warnings = loadWarnings();
   const coastal = loadCoastalWarnings();
   const storms = loadStorms();
-  const legacy = await evaluateLegacySubscriptions(slugToId, conditions, warnings, coastal);
+  // Hora corrente da previsão por spot (+ observações frescas do conditions);
+  // noite (sol < −0,8°) sem avaliação de condições — avisos oficiais seguem.
+  const scoreOpts = { nowMs: Date.now(), forecastFor: makeForecastReader(path.dirname(CONDITIONS_PATH)) };
+  const legacy = await evaluateLegacySubscriptions(slugToId, conditions, warnings, coastal, scoreOpts);
   const e1c = await evaluateUserFavoritesAlerts(
     idToSlug,
     conditions,
     warnings,
     coastal,
     storms,
+    scoreOpts,
   );
 
   console.log(`  Legacy subscriptions: ${legacy.legacyCount}`);
@@ -777,6 +799,10 @@ async function main() {
   }
   if (e1c.immediateSkipped > 0) {
     console.log(`  Immediate skipped (3h cooldown): ${e1c.immediateSkipped}`);
+  }
+  const night = (legacy.legacyNightSkipped || 0) + (e1c.nightSkipped || 0);
+  if (night > 0) {
+    console.log(`  Night (sun < −0.8°): ${night} score evaluation(s) skipped — official warnings unaffected`);
   }
   if (legacy.legacyVerificationSent > 0) {
     console.log(`  Verification emails sent (1 per address): ${legacy.legacyVerificationSent}`);
