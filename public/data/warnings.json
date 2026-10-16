@@ -1,6 +1,27 @@
 {
   "source": "ipma",
-  "fetchedAt": "2026-10-16T14:36:32.066Z",
-  "warnings": [],
+  "fetchedAt": "2026-10-16T16:39:58.349Z",
+  "warnings": [
+    {
+      "areaCode": "GDA",
+      "areaLabel": "Guarda",
+      "type": "Trovoada",
+      "level": "yellow",
+      "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm;",
+      "startTime": "2026-10-16T13:56:00",
+      "endTime": "2026-10-16T18:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "CBO",
+      "areaLabel": "Castelo Branco",
+      "type": "Trovoada",
+      "level": "yellow",
+      "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm;",
+      "startTime": "2026-10-16T13:56:00",
+      "endTime": "2026-10-16T18:00:00",
+      "relevant": true
+    }
+  ],
   "spotWarnings": {}
 }

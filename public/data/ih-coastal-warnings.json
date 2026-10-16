@@ -265,6 +265,186 @@
       ]
     },
     {
+      "id": 18831,
+      "ref": "ANAV NR 2327/26",
+      "category": "Requisitos de segurança maritima",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=e27fba9f-4b70-4128-b244-5ee5458158a9",
+      "source": "ih",
+      "collection": "nav_warning_coastal",
+      "polygons": [
+        [
+          [
+            -9.323083,
+            38.674253
+          ],
+          [
+            -9.303175,
+            38.685242
+          ],
+          [
+            -9.278462,
+            38.69864
+          ],
+          [
+            -9.236244,
+            38.697301
+          ],
+          [
+            -9.220112,
+            38.690601
+          ],
+          [
+            -9.13087,
+            38.70641
+          ],
+          [
+            -9.095516,
+            38.744176
+          ],
+          [
+            -9.089338,
+            38.797176
+          ],
+          [
+            -8.954789,
+            38.798246
+          ],
+          [
+            -8.955818,
+            38.75917
+          ],
+          [
+            -9.013482,
+            38.732661
+          ],
+          [
+            -9.046433,
+            38.715519
+          ],
+          [
+            -9.057417,
+            38.68283
+          ],
+          [
+            -9.073892,
+            38.670501
+          ],
+          [
+            -9.101694,
+            38.649858
+          ],
+          [
+            -9.141167,
+            38.664335
+          ],
+          [
+            -9.145972,
+            38.688458
+          ],
+          [
+            -9.183042,
+            38.679346
+          ],
+          [
+            -9.239676,
+            38.674789
+          ],
+          [
+            -9.263016,
+            38.662727
+          ],
+          [
+            -9.243109,
+            38.648517
+          ],
+          [
+            -9.217023,
+            38.613383
+          ],
+          [
+            -9.192996,
+            38.562932
+          ],
+          [
+            -9.185101,
+            38.544406
+          ],
+          [
+            -9.46484,
+            38.512176
+          ],
+          [
+            -9.519415,
+            38.570717
+          ],
+          [
+            -9.323083,
+            38.674253
+          ]
+        ]
+      ]
+    },
+    {
+      "id": 18833,
+      "ref": "ANAV NR 2328/26",
+      "category": "Requisitos de segurança maritima",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=f4bd71b9-c0e8-4131-8433-311d31aa009b",
+      "source": "ih",
+      "collection": "nav_warning_coastal",
+      "polygons": [
+        [
+          [
+            -25.663241,
+            37.737412
+          ],
+          [
+            -25.662554,
+            37.736919
+          ],
+          [
+            -25.660709,
+            37.738566
+          ],
+          [
+            -25.663241,
+            37.737412
+          ]
+        ]
+      ]
+    },
+    {
+      "id": 18835,
+      "ref": "ANAV NR 2329/26",
+      "category": "Requisitos de segurança maritima",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=2f0d7d32-d23f-4807-a494-02994e752847",
+      "source": "ih",
+      "collection": "nav_warning_coastal",
+      "polygons": [
+        [
+          [
+            -8.486915,
+            37.070464
+          ],
+          [
+            -8.486915,
+            37.110448
+          ],
+          [
+            -8.382236,
+            37.110448
+          ],
+          [
+            -8.382236,
+            37.070464
+          ],
+          [
+            -8.486915,
+            37.070464
+          ]
+        ]
+      ]
+    },
+    {
       "id": 1000182,
       "ref": "ANAV NR 121/21",
       "category": "SEGURANÇA DA NAVEGAÇÃO - AVISO À NAVEGAÇÃO LOCAL",
@@ -7666,6 +7846,7 @@
       2018749
     ],
     "fonte-telha": [
+      18831,
       1000782,
       2017839,
       2018289,
@@ -7674,6 +7855,7 @@
       2018769
     ],
     "ponta-dos-corvos": [
+      18831,
       2018289
     ],
     "trafaria": [
@@ -7681,6 +7863,7 @@
       2018749
     ],
     "cova-do-vapor": [
+      18831,
       1000782,
       2017877,
       2018749
@@ -8130,7 +8313,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-10-16T14:36:33.171Z",
+  "fetchedAt": "2026-10-16T16:39:59.523Z",
   "sourceCollection": "nav_warning_coastal+nav_warning_local+orca_anavnet_point",
   "sourceUrl": "https://ogcapi.hidrografico.pt/collections/nav_warning_coastal"
 }
