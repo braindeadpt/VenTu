@@ -13,6 +13,7 @@ const root = path.join(__dirname, '..');
 
 const { WIND_MODELS, findCurrentHourIndex } = require('./lib/forecastConfidence.js');
 const { blendWindAtIndex, readModelMap } = require('./lib/windBlend.js');
+const { spotTimeZone, utcRequestParams, localizeHourly } = require('./lib/openMeteoUtc.js');
 const { fetchMetarByIcao, buildMetarObservedForSpot } = require('./lib/metar.js');
 const {
   fetchIpmaObservations,
@@ -32,12 +33,14 @@ async function fetchJson(url) {
 }
 
 async function weatherBundle(lat, lon) {
+  // UTC + conversão hora a hora (auditoria M1)
+  const tz = spotTimeZone({ lat, lon });
   const base =
     `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}` +
     `&hourly=wind_speed_10m,wind_direction_10m,wind_gusts_10m` +
-    `&timezone=Europe/Lisbon&forecast_days=1&wind_speed_unit=ms`;
+    `&${new URLSearchParams(utcRequestParams({ tz, days: 1 }))}&wind_speed_unit=ms`;
   const multi = `${base}&models=${WIND_MODELS.join(',')}`;
-  const [best, models] = await Promise.all([fetchJson(base), fetchJson(multi)]);
+  const [best, models] = (await Promise.all([fetchJson(base), fetchJson(multi)])).map((j) => localizeHourly(j, tz));
   const i = findCurrentHourIndex(best.hourly.time);
   const wi = findCurrentHourIndex(models.hourly.time);
   const mean = best.hourly.wind_speed_10m[i] || 0;

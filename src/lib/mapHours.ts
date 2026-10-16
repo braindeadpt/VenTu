@@ -3,9 +3,11 @@ import { ALL_SPORTS, type GridSportFilter, type SportType } from '@/lib/sportRat
 import { getAllSportScores } from '@/lib/sportScore';
 import { rawToScoreInput } from '@/lib/scoreConditions';
 import {
+  findCoveredHourIndex,
   findCurrentHourIndex,
   hourKeyFromOpenMeteo,
   lisbonHourKeyFromDate,
+  seriesTimeMs,
 } from '@/lib/openMeteoTime';
 import { getAssetPath } from '@/lib/paths';
 import { getMacroRegion, MACRO_REGIONS } from '@/lib/regions';
@@ -106,13 +108,44 @@ function conditionsRow(
   return null;
 }
 
+const HOUR_MS = 3_600_000;
+const hourSlot = (t: string) => Math.floor(seriesTimeMs(t) / HOUR_MS);
+const slotIndex = new WeakMap<Array<Record<string, unknown>>, Map<number, Record<string, unknown>>>();
+
+/**
+ * Linha da série na MESMA hora real que `time` (por instante, auditoria M1/B3):
+ * as horas do mapa são de Lisboa e as séries dos Açores vêm na hora deles, e o
+ * 01:00 repetido de 25/10 são duas horas diferentes. Primeira linha em empate.
+ */
 function hourRowForTime(
   series: Array<Record<string, unknown>>,
   time: string,
 ): Record<string, unknown> | null {
-  const key = hourKeyFromOpenMeteo(time);
-  const hit = series.find((h) => hourKeyFromOpenMeteo(String(h.time ?? '')) === key);
-  return hit ?? null;
+  let idx = slotIndex.get(series);
+  if (!idx) {
+    idx = new Map();
+    for (const h of series) {
+      const k = hourSlot(String(h.time ?? ''));
+      if (Number.isFinite(k) && !idx.has(k)) idx.set(k, h);
+    }
+    slotIndex.set(series, idx);
+  }
+  return idx.get(hourSlot(time)) ?? null;
+}
+
+/** Série etiquetada na hora de parede de Lisboa (não Açores): é a que dá as horas do mapa. */
+function isLisbonSeries(series: Array<Record<string, unknown>>): boolean {
+  const t = String(series[0]?.time ?? '');
+  const ms = seriesTimeMs(t);
+  return Number.isFinite(ms) && lisbonHourKeyFromDate(new Date(ms)) === hourKeyFromOpenMeteo(t);
+}
+
+function sampleSeries(
+  spots: Spot[],
+  forecasts: Record<string, Array<Record<string, unknown>>>,
+): Array<Record<string, unknown>> | undefined {
+  const all = spots.map((s) => forecastSeries(s, forecasts)).filter((series) => series.length > 0);
+  return all.find(isLisbonSeries) ?? all[0];
 }
 
 function finiteTideHeight(row: Record<string, unknown> | null): number | null {
@@ -144,9 +177,7 @@ function buildMapTides(
   forecasts: Record<string, Array<Record<string, unknown>>>,
   now: Date,
 ): Record<string, MapTideCurve> | undefined {
-  const sample = spots
-    .map((s) => forecastSeries(s, forecasts))
-    .find((series) => series.length > 0);
+  const sample = sampleSeries(spots, forecasts);
   const hourlyTimes = pickMapTideHourTimes(
     (sample ?? []).map((h) => String(h.time ?? '')),
     now,
@@ -279,14 +310,11 @@ export function buildMapHoursFile(opts: {
   now?: Date;
 }): MapHoursFile {
   const now = opts.now ?? new Date();
-  const sample = opts.spots
-    .map((s) => forecastSeries(s, opts.forecasts))
-    .find((series) => series.length > 0);
+  const sample = sampleSeries(opts.spots, opts.forecasts);
   const times = pickMapHourTimes(
     (sample ?? []).map((h) => String(h.time ?? '')),
     now,
   );
-  const nowKey = lisbonHourKeyFromDate(now);
   const spots: MapHoursFile['spots'] = {};
   const hs: Record<string, number[]> = {};
   let hsFinite = 0;
@@ -314,7 +342,7 @@ export function buildMapHoursFile(opts: {
     const windDir: number[] = [];
 
     for (const time of times) {
-      const isNow = hourKeyFromOpenMeteo(time) === nowKey;
+      const isNow = findCoveredHourIndex([time], now) === 0;
       const raw = (isNow && live) || hourRowForTime(series, time) || live;
       if (!raw) {
         for (const sport of ALL_SPORTS) bySport[sport].push(0);
