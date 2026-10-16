@@ -24,6 +24,7 @@ at the repo root.
 | [ONBOARDING-MAP.md](ONBOARDING-MAP.md) | Map teaching surfaces (wind-ring legend contract) |
 | [SECURITY-HEADERS.md](SECURITY-HEADERS.md) | Real HTTP headers via Cloudflare (S7) |
 | [EXTERNAL-KEEPALIVE.md](EXTERNAL-KEEPALIVE.md) | Keep-alive for the Actions data pipeline |
+| [COAST-ORIENTATION.md](COAST-ORIENTATION.md) | `coastOrientation` dos spots a partir da costa OSM (#178): como correr, rever e a tabela antes → depois |
 | [GITHUB-SETUP.md](GITHUB-SETUP.md) | Branch protection, secrets, Actions setup |
 | [IH_API_KEY.md](IH_API_KEY.md) | IH buoy API key setup |
 | [METEOALARM_API_KEY.md](METEOALARM_API_KEY.md) | MeteoAlarm token setup |
