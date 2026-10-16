@@ -25,6 +25,11 @@ export type ScoreWindSource = 'observed' | 'session-gust' | 'forecast';
  * under-read), use a capped session proxy from Open-Meteo gust — not a fake bias.
  *
  * Applies only if mean < 12 kt, gust ≥ 12 kt, and gust/mean ≥ 2.
+ *
+ * ⚠ Já NÃO entra na nota (auditoria de dados 16/10, #218): transformava 7 kt
+ * de média com rajadas de 22 kt numa «sessão» de 16 kt e dava 10/10 ao kite
+ * (Vila Praia de Âncora 16/10 12–18h: 10 no mapa contra 0 no v6). A nota usa
+ * o vento MÉDIO, como o motor v6. Fica exportada só para diagnóstico.
  */
 export function applyGustSessionProxy(conditions: Conditions): {
   conditions: Conditions;
@@ -362,22 +367,15 @@ export function resolveScoreWindSource(
 ): ScoreWindSource {
   const observed = pickObservedField(raw);
   if (observed && isObservedFresh(observed.observedAt, undefined, nowMs)) return 'observed';
-  const base: Conditions = {
-    waveHeight: Number(raw.waveHeight) || 0,
-    wavePeriod: Number(raw.wavePeriod) || 0,
-    waveDirection: Number(raw.waveDirection) || 0,
-    windSpeed: Number(raw.windSpeed) || 0,
-    windDirection: Number(raw.windDirection) || 0,
-    windGust: Number(raw.windGust) || 0,
-    waterTemp: Number(raw.waterTemp) || 0,
-  };
-  const { applied } = applyGustSessionProxy(base);
-  return applied ? 'session-gust' : 'forecast';
+  // A nota já não usa o gust proxy (#218): o vento do score é o médio do modelo.
+  return 'forecast';
 }
 
 /**
  * Parse pipeline JSON row into score input.
- * Wind: observed (IPMA/Ecowitt/METAR) > gust session proxy > forecast.
+ * Wind: observed (IPMA/Ecowitt/METAR) > forecast MEAN wind (no gust session
+ * proxy since the 16/10 data audit: the proxy turned 7 kt mean / 22 kt gusts
+ * into 10/10 kite — #218). Gusts stay as gusts (the engine penalises them).
  * Waves: fresh buoy reading (measured hm0) recalibrates the forecast in real
  * time — the surf score then reflects what the waverider actually measured.
  */
@@ -395,8 +393,6 @@ export function rawToScoreInput(raw: Record<string, unknown>): Conditions {
   let out = base;
   if (observed && isObservedFresh(observed.observedAt)) {
     out = applyObservedWindForScore(out, observed);
-  } else {
-    out = applyGustSessionProxy(out).conditions;
   }
   return applyObservedWaveForScore(out, raw.observedWave as ObservedWave | undefined);
 }
