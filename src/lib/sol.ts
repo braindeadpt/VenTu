@@ -12,9 +12,16 @@
 const RAD = Math.PI / 180;
 const DEG = 180 / Math.PI;
 
+/**
+ * Um só `Intl.DateTimeFormat` por módulo: construí-lo é caro (~0,1 ms cada) e a home v6 chama
+ * `desvioLisboaMin` milhares de vezes ao montar a costa (19 spots × 72 h × 2 passagens + sol);
+ * criado em cada chamada eram ~0,8 s de main thread no carregamento (Lighthouse, run 38819063476).
+ */
+let fmtLisboa: Intl.DateTimeFormat | null = null;
+
 /** Desvio de Lisboa face a UTC (minutos) no instante `ms`. */
 export function desvioLisboaMin(ms: number): number {
-  const fmt = new Intl.DateTimeFormat('en-GB', {
+  fmtLisboa ??= new Intl.DateTimeFormat('en-GB', {
     timeZone: 'Europe/Lisbon',
     hourCycle: 'h23',
     year: 'numeric',
@@ -23,7 +30,7 @@ export function desvioLisboaMin(ms: number): number {
     hour: '2-digit',
     minute: '2-digit',
   });
-  const p = Object.fromEntries(fmt.formatToParts(new Date(ms)).map((x) => [x.type, x.value]));
+  const p = Object.fromEntries(fmtLisboa.formatToParts(new Date(ms)).map((x) => [x.type, x.value]));
   const wall = Date.UTC(+p.year, +p.month - 1, +p.day, +p.hour, +p.minute);
   return Math.round((wall - Math.floor(ms / 60000) * 60000) / 60000);
 }

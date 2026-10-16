@@ -41,6 +41,12 @@ export function temWebGL2(): boolean {
   }
 }
 
+/**
+ * Sem interacção, o mapa 3D arranca este tempo depois de a página assentar (`load` e um
+ * `requestIdleCallback`). Com interacção (rato, toque, tecla, roda, scroll) arranca logo.
+ */
+export const ARRANQUE_OCIOSO_MS = 6000;
+
 const clamp = (x: number, a: number, b: number) => Math.max(a, Math.min(b, x));
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 const SVGNS = 'http://www.w3.org/2000/svg';
@@ -475,11 +481,49 @@ export default function CostaMapa3D({ M, E, copy: c, hrefSpot, forcarPlano, onCh
         usarPlano();
       }
     };
+    // Arranque diferido (Lighthouse do run 38819063476: com o MapLibre + relevo a arrancar
+    // logo no 1.º ecrã do desktop, 2,7 MB de tiles e ~9 s de main thread → TBT 7,9 s, LCP
+    // 4,3 s). O mapa só arranca quando está perto do viewport E (o visitante mexe na página
+    // — rato, toque, tecla, roda, scroll — OU a página já assentou: `load` + ocioso +
+    // ARRANQUE_OCIOSO_MS). Até lá fica o poster da figura, no mesmo sítio e com as mesmas
+    // medidas (sem CLS); o resto da figura (título, legenda, chip, crédito) já está no HTML.
+    let perto = false;
+    let querido = false;
+    let espera = 0;
+    let ocioso = 0;
+    const talvez = () => {
+      if (perto && querido && !iniciado && vivo) void iniciar();
+    };
+    const INTENCAO = ['pointerdown', 'pointermove', 'keydown', 'wheel', 'touchstart', 'scroll'] as const;
+    const largaIntencao = () => {
+      for (const ev of INTENCAO) window.removeEventListener(ev, quer, true);
+    };
+    function quer() {
+      if (querido) return;
+      querido = true;
+      largaIntencao();
+      talvez();
+    }
+    for (const ev of INTENCAO) window.addEventListener(ev, quer, { capture: true, passive: true });
+    const ric: (cb: () => void) => number =
+      typeof window.requestIdleCallback === 'function'
+        ? (cb) => window.requestIdleCallback(cb, { timeout: 2000 })
+        : (cb) => window.setTimeout(cb, 1);
+    const depoisDoLoad = () => {
+      espera = window.setTimeout(() => {
+        ocioso = ric(quer);
+      }, ARRANQUE_OCIOSO_MS);
+    };
+    if (document.readyState === 'complete') depoisDoLoad();
+    else window.addEventListener('load', depoisDoLoad, { once: true });
     const io = new IntersectionObserver(
       (es) => {
         const vis = es.some((e) => e.isIntersecting);
         vento.current?.pausar(!vis);
-        if (vis && !iniciado) void iniciar();
+        if (vis) {
+          perto = true;
+          talvez();
+        }
       },
       { rootMargin: '200px 0px', threshold: 0.01 },
     );
@@ -505,6 +549,10 @@ export default function CostaMapa3D({ M, E, copy: c, hrefSpot, forcarPlano, onCh
     return () => {
       vivo = false;
       io.disconnect();
+      largaIntencao();
+      window.removeEventListener('load', depoisDoLoad);
+      window.clearTimeout(espera);
+      if (ocioso && typeof window.cancelIdleCallback === 'function') window.cancelIdleCallback(ocioso);
       window.removeEventListener('resize', rs);
       document.removeEventListener('visibilitychange', vis);
       vento.current?.parar();
