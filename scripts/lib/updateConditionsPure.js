@@ -70,6 +70,47 @@ function pickSwellTrain(height, period, direction) {
   return { height, period, direction: direction ?? 0 };
 }
 
+/**
+ * Média de uma série horária (só valores finitos). Auditoria de dados 16/10
+ * (A4): o `sea_level_height_msl` do Open-Meteo tem média a 7 dias de −0,35 a
+ * −0,41 m na costa continental (devia andar perto de 0 numa série de maré),
+ * por isso o site mostrava as marés ~0,45 m abaixo do real. Retira-se a média
+ * da série (168 h ≈ 13,5 ciclos M2) antes de somar o nível médio de cada porto
+ * (`src/lib/horaSpot.ts`). Com menos de `minN` valores (pouco mais de 2 ciclos
+ * M2), devolve `null` e a série não se desloca.
+ * @param {Array<unknown>} values
+ * @param {number} [minN]
+ * @returns {number | null}
+ */
+function seriesMean(values, minN = 25) {
+  if (!Array.isArray(values)) return null;
+  let s = 0;
+  let n = 0;
+  for (const v of values) {
+    if (v == null) continue;
+    const x = Number(v);
+    if (Number.isFinite(x)) {
+      s += x;
+      n += 1;
+    }
+  }
+  return n >= minN ? s / n : null;
+}
+
+/** Valor finito da série, ou `null` (nunca 0 inventado; auditoria 16/10, M2). */
+function finiteOrNull(v) {
+  if (v == null) return null;
+  const x = Number(v);
+  return Number.isFinite(x) ? x : null;
+}
+
+/** Altura de maré relativa ao nível médio da série (m, 3 casas), ou `null`. */
+function tideFromSeries(seaLevel, mean) {
+  const x = finiteOrNull(seaLevel);
+  if (x == null) return null;
+  return Math.round((x - (mean ?? 0)) * 1000) / 1000;
+}
+
 function getTideStatus(seaLevel, seaLevelNext) {
   const threshold = 0.5;
   if (seaLevel > threshold) return { status: 'high', label: 'Maré Alta' };
@@ -101,6 +142,9 @@ function uvIndexFields(hourly, timeIndex) {
 }
 
 module.exports = {
+  seriesMean,
+  finiteOrNull,
+  tideFromSeries,
   MIN_BIAS_N,
   MIN_BIAS_M,
   confidenceFromPrevious,

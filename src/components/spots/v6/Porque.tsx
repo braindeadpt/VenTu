@@ -125,8 +125,14 @@ export default function Porque({ h, r, d, sp, mares, quando, copy: c, locale }: 
         {ef(r.f.vento, 'vento')}
       </div>
       <div className="val num">
-        {h.w}
-        <small>{fmtCopy(c.nosRajadas, { g: h.g })}</small>
+        {h.semDados?.includes('vento') ? (
+          <small>{c.semDados}</small>
+        ) : (
+          <>
+            {h.w}
+            <small>{fmtCopy(c.nosRajadas, { g: h.g })}</small>
+          </>
+        )}
       </div>
       <div className="rel">
         {fmtCopy(c.deRumo, { r: '\u0000', graus: h.wd, rel: ventoRelTxt(c, sp, h.wd) })
@@ -143,8 +149,14 @@ export default function Porque({ h, r, d, sp, mares, quando, copy: c, locale }: 
         {ef(r.f.onda, 'onda')}
       </div>
       <div className="val num">
-        {nf(h.hs)}
-        <small>{fmtCopy(c.mPeriodo, { tp: h.tp })}</small>
+        {h.semDados?.includes('onda') ? (
+          <small>{c.semDados}</small>
+        ) : (
+          <>
+            {nf(h.hs)}
+            <small>{fmtCopy(c.mPeriodo, { tp: h.tp })}</small>
+          </>
+        )}
       </div>
       <div className="rel">
         {fmtCopy(c.deRumo, { r: '\u0000', graus: h.sd, rel: ondaRelTxt(c, sp, h.sd) })

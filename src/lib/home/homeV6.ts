@@ -253,6 +253,8 @@ export function criarModelo(spots: SpotHome[], copy: HomeV6Copy = homeV6Copy('pt
   function linha(r: Linha, d: Modalidade, bl: Bloco) {
     const { sp, i, n, b, jn } = r;
     const h = sp.h[i];
+    // hora sem o dado da fonte (auditoria 16/10, M2): «sem dados», não «noite»
+    if (n == null && avaliacoes(d)[sp.id]?.[i]?.semDados) return { l1: c.semDadosHora, l2: '', pal: null };
     if (n == null) return { l1: c.noite, l2: '', pal: null };
     let l1: string;
     let l2: string;

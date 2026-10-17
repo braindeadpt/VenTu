@@ -1,6 +1,7 @@
 /**
  * Nota /10 no fill da banda (#184; partilhado com a #183). Inteira 0–10;
- * nunca «/100». De noite mostra a lua no fill `noite`.
+ * nunca «/100». De noite mostra a lua no fill `noite`. Sem dados da fonte
+ * (`semDados`) mostra «–» — nunca 0 nem a lua (auditoria de dados 16/10, M2).
  * `role="meter"` com o valor e a banda por extenso para leitores de ecrã.
  */
 import type { CSSProperties } from 'react';
@@ -13,11 +14,19 @@ export interface NotaProps {
   ariaLabel: string;
   className?: string;
   style?: CSSProperties;
+  /** A fonte não traz o dado desta hora: «–» em vez da lua. */
+  semDados?: boolean;
 }
 
-export default function Nota({ n, ariaLabel, className, style }: NotaProps) {
+export default function Nota({ n, ariaLabel, className, style, semDados }: NotaProps) {
   const b = bandaDe(n);
   const vars = { ...bandaVars(b), ...style } as CSSProperties;
+  if (n == null && semDados)
+    return (
+      <span className={`nota sem-dados${className ? ' ' + className : ''}`} style={vars} role="img" aria-label={ariaLabel} data-banda={b} data-sem-dados="">
+        –
+      </span>
+    );
   if (n == null)
     return (
       <span className={`nota${className ? ' ' + className : ''}`} style={vars} role="img" aria-label={ariaLabel} data-banda={b}>

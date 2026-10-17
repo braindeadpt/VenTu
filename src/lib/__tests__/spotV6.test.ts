@@ -3,7 +3,7 @@
  * modalidade, tokens/contraste, fotos e textos.
  */
 import { describe, expect, it, beforeEach } from 'vitest';
-import { construirHoras, NIVEL_MEDIO_ZH, type LinhaForecast } from '@/lib/horaSpot';
+import { construirHoras, nivelMedioZH, type LinhaForecast } from '@/lib/horaSpot';
 import { avaliaHoras, bandaDe, MODALIDADES_VISIVEIS, tectoSeguranca, WIND_OFFSHORE_ROUND } from './spotV6.helpers';
 import { parsePrefModalidade, modalidadeDaUrl, LS_MODALIDADE, gravarPrefModalidade, lerPrefModalidade, modalidadeInicial } from '@/lib/modalidadePref';
 import { editorialDe, spotModalidadeDe, SPOTS_CURADOS } from '@/lib/spotEditorial';
@@ -43,6 +43,8 @@ describe('construirHoras: um objecto por hora a partir do forecast', () => {
   const ed = editorialDe(guincho);
   const agora = instanteLisboa('2026-10-14T14:20');
   const d = construirHoras(serie(96), { lat: guincho.lat, lon: guincho.lon, praiaVirada: ed.praiaVirada }, agora);
+  // Nível médio do porto IH de referência do Guincho (Cascais, 2,08 m; auditoria 16/10 A4).
+  const NM_GUINCHO = nivelMedioZH(guincho.lat, guincho.lon);
 
   it('começa na hora actual (Lisboa) e tem 48 horas', () => {
     expect(d.horas).toHaveLength(48);
@@ -82,7 +84,7 @@ describe('construirHoras: um objecto por hora a partir do forecast', () => {
   it('maré: MSL → zero hidrográfico e tideUp derivado da curva', () => {
     const k = 14; // hora 14 da série
     const msl = Math.sin((k / 12.4) * 2 * Math.PI) * 1.2;
-    expect(d.horas[0].tide).toBeCloseTo(Math.round((msl + NIVEL_MEDIO_ZH) * 10) / 10, 5);
+    expect(d.horas[0].tide).toBeCloseTo(Math.round((msl + NM_GUINCHO) * 10) / 10, 5);
     for (let j = 0; j < 47; j++) {
       const a = d.horas[j].tide;
       const b = d.horas[j + 1].tide;
@@ -92,12 +94,13 @@ describe('construirHoras: um objecto por hora a partir do forecast', () => {
     expect(d.mares.length).toBeGreaterThan(2);
   });
   it('maré: extremos afinados ao minuto (parábola pelos 3 pontos horários)', () => {
-    // seno de período 12,4 h: preia-mar em k = 3,1 + 12,4 = 15,5 h → 15h30, 3,2 m ZH
+    // seno de período 12,4 h: preia-mar em k = 3,1 + 12,4 = 15,5 h → 15h30, 1,2 + 2,08 ≈ 3,3 m ZH
     const pm = d.mares.find((m) => m.tipo === 'PM' && m.t.startsWith('2026-10-14T15'));
     expect(pm).toBeDefined();
     const min = +pm!.t.slice(11, 13) * 60 + +pm!.t.slice(14, 16);
     expect(Math.abs(min - (15 * 60 + 30))).toBeLessThanOrEqual(3);
-    expect(pm!.h).toBeCloseTo(1.2 + NIVEL_MEDIO_ZH, 1);
+    expect(NM_GUINCHO).toBe(2.08);
+    expect(pm!.h).toBeCloseTo(1.2 + NM_GUINCHO, 1);
     // baixa-mar em k = 9,3 + 12,4 = 21,7 h → 21h42, 0,8 m ZH
     const bm = d.mares.find((m) => m.tipo === 'BM' && m.t.startsWith('2026-10-14T21'));
     expect(bm).toBeDefined();
@@ -143,9 +146,11 @@ describe('notas /10 e bandas da #210', () => {
     expect([0, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(bandaDe)).toEqual(['nao', 'nao', 'fraco', 'fraco', 'da', 'da', 'bom', 'bom', 'mb', 'mb']);
     expect(bandaDe(null)).toBe('noite');
   });
-  it('tecto de segurança do vento: side-offshore 5, offshore como o resto do site', () => {
+  it('tecto de segurança do vento: side-offshore 5, offshore 2 (arredonda para baixo, auditoria 16/10 M7)', () => {
     expect(tectoSeguranca(5)).toBe(5);
-    expect(tectoSeguranca(2.5)).toBe(WIND_OFFSHORE_ROUND);
+    // Antes 3 (`scoreToNota(notaToScore(2.5))` = «3 · Fraco», acima do próprio tecto).
+    expect(WIND_OFFSHORE_ROUND).toBe(3);
+    expect(tectoSeguranca(2.5)).toBe(2);
     expect(tectoSeguranca(null)).toBeNull();
   });
   it('kite com vento side-offshore nunca passa de 5; offshore fica em Fraco ou menos', () => {

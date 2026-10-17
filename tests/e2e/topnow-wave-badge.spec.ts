@@ -228,7 +228,7 @@ test.describe('TopNow — badge do score de onda', () => {
     await interceptConditions(page, {
       all: allSpots((entry) => {
         const { waveBias, ...rest } = entry;
-        return { ...rest, observedWave: freshObservedWave(), observedWaveAlt: null };
+        return { ...rest, observedWave: freshObservedWave({ distanceKm: 30 }), observedWaveAlt: null };
       }),
     });
     await page.goto('/pt/', { waitUntil: 'networkidle', timeout: 60_000 });
@@ -261,7 +261,7 @@ test.describe('TopNow — badge do score de onda', () => {
           ...rest,
           waveHeight: 1.8,
           waveBias: { region: 'Cascais', me: 0.3, n: 120, deltaM: 0.3 },
-          observedWave: freshObservedWave(),
+          observedWave: freshObservedWave({ distanceKm: 30 }), // ≤ 40 km: só uma boia perto entra na nota (auditoria 16/10, A5)
           observedWaveAlt: null,
         };
       }),
@@ -335,7 +335,7 @@ test.describe('TopNow — badge do score de onda', () => {
           observedWave: freshObservedWave({
             stationName: 'Cabo Silleiro',
             stationArea: 'Galiza',
-            distanceKm: 57,
+            distanceKm: 27, // ≤ 40 km: só uma boia perto entra na nota (auditoria 16/10, A5)
             source: 'wmo-buoy',
             stationCode: '6200084',
             observedAt: new Date(Date.now() - 5.5 * 3_600_000).toISOString(),

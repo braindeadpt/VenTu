@@ -93,11 +93,30 @@ export default function EstudarSpot({ horas, NS, i, d, ed, sol, atencao, melhorM
                     <td className="n" style={bandaVars(b) as CSSProperties}>
                       <span>{r.n == null ? '–' : r.n}</span>
                     </td>
-                    <td>{h.w}</td>
-                    <td>{h.g}</td>
-                    <td>{rumo(h.wd)}</td>
-                    <td>{nf(h.hs)}</td>
-                    <td>{h.tp} s</td>
+                    {h.semDados?.includes('vento') ? (
+                      <>
+                        <td>–</td>
+                        <td>–</td>
+                        <td>–</td>
+                      </>
+                    ) : (
+                      <>
+                        <td>{h.w}</td>
+                        <td>{h.g}</td>
+                        <td>{rumo(h.wd)}</td>
+                      </>
+                    )}
+                    {h.semDados?.includes('onda') ? (
+                      <>
+                        <td>–</td>
+                        <td>–</td>
+                      </>
+                    ) : (
+                      <>
+                        <td>{nf(h.hs)}</td>
+                        <td>{h.tp} s</td>
+                      </>
+                    )}
                     <td>{nf(h.tide)}</td>
                   </tr>
                 );

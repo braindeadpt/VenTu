@@ -43,6 +43,8 @@ export interface HoraModalidade {
   sunEl: number;
   /** Azimute do sol (graus, a partir do norte). */
   sunAz: number;
+  /** A fonte não traz vento / onda nesta hora (`null` no forecast): a lógica que precisa deles não avalia. */
+  semDados?: ReadonlyArray<'vento' | 'onda'>;
 }
 
 export type Ponto = readonly [number, number];
