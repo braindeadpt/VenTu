@@ -201,38 +201,6 @@
       ]
     },
     {
-      "id": 18819,
-      "ref": "ANAV NR 2316/26",
-      "category": "Requisitos de segurança maritima",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=6753fbf2-a21f-4f51-89db-6e6414e42aa3",
-      "source": "ih",
-      "collection": "nav_warning_coastal",
-      "polygons": [
-        [
-          [
-            -8.796386,
-            41.539165
-          ],
-          [
-            -8.796386,
-            41.541606
-          ],
-          [
-            -8.793683,
-            41.541606
-          ],
-          [
-            -8.793683,
-            41.539165
-          ],
-          [
-            -8.796386,
-            41.539165
-          ]
-        ]
-      ]
-    },
-    {
       "id": 18829,
       "ref": "ANAV NR 2326/26",
       "category": "Exercicios navais ou exercicios de tiro",
@@ -413,33 +381,33 @@
       ]
     },
     {
-      "id": 18835,
-      "ref": "ANAV NR 2329/26",
+      "id": 18837,
+      "ref": "ANAV NR 2330/26",
       "category": "Requisitos de segurança maritima",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=2f0d7d32-d23f-4807-a494-02994e752847",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=29b496a0-6b82-4a3b-9e20-aa356924c625",
       "source": "ih",
       "collection": "nav_warning_coastal",
       "polygons": [
         [
           [
-            -8.486915,
-            37.070464
+            -8.864156,
+            41.651367
           ],
           [
-            -8.486915,
-            37.110448
+            -8.864156,
+            41.704447
           ],
           [
-            -8.382236,
-            37.110448
+            -8.813014,
+            41.704447
           ],
           [
-            -8.382236,
-            37.070464
+            -8.813014,
+            41.651367
           ],
           [
-            -8.486915,
-            37.070464
+            -8.864156,
+            41.651367
           ]
         ]
       ]
@@ -7556,10 +7524,12 @@
       1003281
     ],
     "amorosa": [
+      18837,
       1007416,
       2018401
     ],
     "cabedelo": [
+      18837,
       1000655,
       1000656,
       1005679,
@@ -7569,6 +7539,7 @@
       2018401
     ],
     "foil-cabedelo": [
+      18837,
       1000655,
       1000656,
       1005679,
@@ -7578,12 +7549,14 @@
       2018401
     ],
     "cabedelo-wakepark": [
+      18837,
       1000655,
       1005679,
       1007416,
       2018401
     ],
     "rodanho": [
+      18837,
       1007416,
       1009684,
       2018401
@@ -8280,7 +8253,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-10-16T23:03:12.805Z",
+  "fetchedAt": "2026-10-17T04:06:31.006Z",
   "sourceCollection": "nav_warning_coastal+nav_warning_local+orca_anavnet_point",
   "sourceUrl": "https://ogcapi.hidrografico.pt/collections/nav_warning_coastal"
 }
