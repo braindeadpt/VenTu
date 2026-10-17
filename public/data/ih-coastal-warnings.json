@@ -381,6 +381,38 @@
       ]
     },
     {
+      "id": 18839,
+      "ref": "ANAV NR 2333/26",
+      "category": "Exercicios navais ou exercicios de tiro",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=7f0d7747-9d0a-4afa-b0bc-b2d2498d2990",
+      "source": "ih",
+      "collection": "nav_warning_coastal",
+      "polygons": [
+        [
+          [
+            -28.496667,
+            38.076667
+          ],
+          [
+            -28.496667,
+            38.213333
+          ],
+          [
+            -28.665,
+            38.213333
+          ],
+          [
+            -28.665,
+            38.076667
+          ],
+          [
+            -28.496667,
+            38.076667
+          ]
+        ]
+      ]
+    },
+    {
       "id": 1000182,
       "ref": "ANAV NR 121/21",
       "category": "SEGURANÇA DA NAVEGAÇÃO - AVISO À NAVEGAÇÃO LOCAL",
@@ -8221,7 +8253,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-10-17T15:35:07.901Z",
+  "fetchedAt": "2026-10-17T17:33:50.499Z",
   "sourceCollection": "nav_warning_coastal+nav_warning_local+orca_anavnet_point",
   "sourceUrl": "https://ogcapi.hidrografico.pt/collections/nav_warning_coastal"
 }

@@ -1,11 +1,11 @@
 {
   "day": "20261017",
-  "fetchedAt": "2026-10-17T15:34:52.753Z",
+  "fetchedAt": "2026-10-17T17:33:36.888Z",
   "minPairs": 3,
   "minAccumulatedPairs": 10,
   "archive": {
     "windowDays": 30,
-    "pairHourCount": 659,
+    "pairHourCount": 661,
     "path": "buoy-coherence-archive.json"
   },
   "daily": {
@@ -491,68 +491,23 @@
       "suboptimalRefs": 0,
       "suboptimal": []
     },
-    "Torres Vedras": {
-      "spotCount": 2,
-      "withObservedWave": 2,
-      "bySource": {
-        "ih-buoy": 2
-      },
-      "audited": 2,
-      "attachedIsClosest": 0,
-      "attachedNotClosest": 2,
-      "onlySource": 0,
-      "notClosest": [
-        {
-          "spot": "foz-sizandro",
-          "winner": "ih-buoy",
-          "reason": "ih-fresh",
-          "attachedKm": 138,
-          "altKm": 53
-        },
-        {
-          "spot": "santa-cruz",
-          "winner": "ih-buoy",
-          "reason": "ih-fresh",
-          "attachedKm": 141,
-          "altKm": 49
-        }
-      ],
-      "calibrated": 0,
-      "calibrationRefs": {},
-      "suboptimalRefs": 0,
-      "suboptimal": []
-    },
     "Ericeira": {
-      "spotCount": 10,
-      "withObservedWave": 10,
+      "spotCount": 8,
+      "withObservedWave": 8,
       "bySource": {
-        "ih-buoy": 10
+        "ih-buoy": 8
       },
-      "audited": 10,
+      "audited": 8,
       "attachedIsClosest": 0,
-      "attachedNotClosest": 10,
+      "attachedNotClosest": 8,
       "onlySource": 0,
       "notClosest": [
-        {
-          "spot": "coxos",
-          "winner": "ih-buoy",
-          "reason": "ih-fresh",
-          "attachedKm": 127,
-          "altKm": 65
-        },
         {
           "spot": "ribeira-ilhas",
           "winner": "ih-buoy",
           "reason": "ih-fresh",
           "attachedKm": 126,
           "altKm": 66
-        },
-        {
-          "spot": "empa",
-          "winner": "ih-buoy",
-          "reason": "ih-fresh",
-          "attachedKm": 126,
-          "altKm": 67
         },
         {
           "spot": "sao-lourenco",
@@ -1386,6 +1341,30 @@
       "suboptimalRefs": 0,
       "suboptimal": []
     },
+    "Torres Vedras": {
+      "spotCount": 1,
+      "withObservedWave": 1,
+      "bySource": {
+        "ih-buoy": 1
+      },
+      "audited": 1,
+      "attachedIsClosest": 0,
+      "attachedNotClosest": 1,
+      "onlySource": 0,
+      "notClosest": [
+        {
+          "spot": "santa-cruz",
+          "winner": "ih-buoy",
+          "reason": "ih-fresh",
+          "attachedKm": 141,
+          "altKm": 49
+        }
+      ],
+      "calibrated": 0,
+      "calibrationRefs": {},
+      "suboptimalRefs": 0,
+      "suboptimal": []
+    },
     "Lourinhã": {
       "spotCount": 1,
       "withObservedWave": 1,
@@ -1491,7 +1470,7 @@
       "suboptimal": []
     }
   },
-  "regionsAuditedAt": "2026-10-17T15:38:26.489Z",
+  "regionsAuditedAt": "2026-10-17T17:42:28.582Z",
   "pairs": [
     {
       "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
@@ -1501,14 +1480,14 @@
       ],
       "distanceKm": 285.3,
       "ptSource": "wmo",
-      "n": 605,
-      "meanDeltaM": -0.3,
+      "n": 607,
+      "meanDeltaM": -0.2,
       "meanAbsDeltaM": 0.4,
       "maxAbsDeltaM": 2.8,
       "corr": 0.74,
       "verdict": "coherent",
       "firstHour": "2026-09-18T00",
-      "lastHour": "2026-10-17T13",
+      "lastHour": "2026-10-17T15",
       "hours": [
         {
           "6200084": 2.700000047683716,
@@ -1579,6 +1558,16 @@
           "6200084": 2.5799999237060547,
           "6200199": 2.5195300579071045,
           "hour": "2026-10-17T13"
+        },
+        {
+          "6200084": 2.4600000381469727,
+          "6200199": 2.460939884185791,
+          "hour": "2026-10-17T14"
+        },
+        {
+          "6200084": 2.3399999141693115,
+          "6200199": 2.9882800579071045,
+          "hour": "2026-10-17T15"
         }
       ]
     }
