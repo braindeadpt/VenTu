@@ -169,38 +169,6 @@
       ]
     },
     {
-      "id": 18817,
-      "ref": "ANAV NR 2312/26",
-      "category": "Requisitos de segurança maritima",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=138d2079-2468-4a10-8e83-a1fa79978197",
-      "source": "ih",
-      "collection": "nav_warning_coastal",
-      "polygons": [
-        [
-          [
-            -9.414121,
-            38.687118
-          ],
-          [
-            -9.414121,
-            38.700248
-          ],
-          [
-            -9.39387,
-            38.700248
-          ],
-          [
-            -9.39387,
-            38.687118
-          ],
-          [
-            -9.414121,
-            38.687118
-          ]
-        ]
-      ]
-    },
-    {
       "id": 18829,
       "ref": "ANAV NR 2326/26",
       "category": "Exercicios navais ou exercicios de tiro",
@@ -8253,7 +8221,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-10-17T11:12:53.413Z",
+  "fetchedAt": "2026-10-17T11:38:22.096Z",
   "sourceCollection": "nav_warning_coastal+nav_warning_local+orca_anavnet_point",
   "sourceUrl": "https://ogcapi.hidrografico.pt/collections/nav_warning_coastal"
 }
