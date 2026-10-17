@@ -1,105 +1,105 @@
 {
-  "date": "2026-10-16",
-  "generatedAt": "2026-10-16T03:36:31.328Z",
-  "topSpot": "Nazaré",
-  "topSpotSlug": "nazare",
+  "date": "2026-10-17",
+  "topSpot": "Supertubos",
+  "topSpotSlug": "supertubos",
   "pt": {
-    "headline": "Hoje é dia de Nazaré! 🌊",
-    "advice": "Melhor janela: 6:00h. Ondas de 2.3m com 4 nós de vento.",
-    "bestTime": "6:00",
+    "headline": "Ondas perfeitas em Supertubos – bora ao tubo!",
+    "advice": "2,1 m com período de 11 s e vento leve (5 kt) criam tubos excelentes. A água está a 16,5 °C, use fato 3/2 mm. Aviso à navegação costeira ANAV NR 12/24 e ANAV NR 2257/26 em vigor na zona – atenção ao contato com animais marinhos.",
+    "bestTime": "09:30",
     "wetsuit": "3/2mm",
-    "crowdTip": "Chega cedo para evitar crowd!",
-    "moonTideLine": "Lua crescente · Transição · baixa-mar 13:00"
+    "crowdTip": "Chegue antes das 09:00 para evitar a maior concentração de surfistas.",
+    "moonTideLine": "Quarto crescente · Transição · baixa-mar 14:00"
   },
   "en": {
-    "headline": "Today is Nazaré day! 🌊",
-    "advice": "Best window: 6:00. 2.3m waves with 4 knot wind.",
-    "bestTime": "6:00",
+    "headline": "Perfect barrels at Supertubos – catch the tube!",
+    "advice": "2.1 m at 11 s with light wind (5 kt) produces great barrels. Water is 16.5 °C, wear a 3/2 mm wetsuit. Coastal navigation warning ANAV NR 12/24 and ANAV NR 2257/26 in effect – be aware of marine‑animal interactions.",
+    "bestTime": "09:30",
     "wetsuit": "3/2mm",
-    "crowdTip": "Get there early to beat the crowd!",
-    "moonTideLine": "Waxing crescent · Transition · low tide 13:00"
+    "crowdTip": "Get there before 09:00 to beat the biggest crowd.",
+    "moonTideLine": "First quarter · Transition · low tide 14:00"
   },
   "spots": [
     {
+      "name": "Supertubos",
+      "slug": "supertubos",
+      "score": 92,
+      "verdict": "go",
+      "ptReason": "Ondas consistentes, vento leve e tubos de qualidade; avisos apenas de interação com fauna.",
+      "enReason": "Consistent waves, light wind and quality barrels; only marine‑animal interaction warnings.",
+      "scoreForecast": 92,
+      "scoreSource": "previsão",
+      "scoreMeta": null
+    },
+    {
+      "name": "Guincho",
+      "slug": "guincho",
+      "score": 91,
+      "verdict": "maybe",
+      "ptReason": "Mesmo tamanho de onda, mas vento mais forte (9 kt) pode tornar a surfada mais cansativa.",
+      "enReason": "Same wave size, but stronger wind (9 kt) may make surfing more tiring.",
+      "scoreForecast": 91,
+      "scoreSource": "previsão",
+      "scoreMeta": null
+    },
+    {
       "name": "Nazaré",
       "slug": "nazare",
-      "score": 93,
-      "scoreForecast": 93,
-      "scoreSource": "previsão",
-      "scoreMeta": null,
+      "score": 94,
       "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
+      "ptReason": "Vento muito leve (4 kt) e ondas ligeiramente maiores; ótima para long rides.",
+      "enReason": "Very light wind (4 kt) and slightly bigger waves; great for long rides.",
+      "scoreForecast": 94,
+      "scoreSource": "previsão",
+      "scoreMeta": null
+    },
+    {
+      "name": "Ribeira d'Ilhas",
+      "slug": "ribeira-ilhas",
+      "score": 94,
+      "verdict": "go",
+      "ptReason": "Boa combinação de onda e vento (7 kt); aviso de avistamento de fauna, mas sem risco imediato.",
+      "enReason": "Good wave‑wind combo (7 kt); marine‑animal sighting warning only.",
+      "scoreForecast": 94,
+      "scoreSource": "previsão",
+      "scoreMeta": null
     },
     {
       "name": "Coxos",
       "slug": "coxos",
       "score": 93,
+      "verdict": "go",
+      "ptReason": "Ondas consistentes e vento semelhante ao de Ribeira; ideal para sessões técnicas.",
+      "enReason": "Consistent waves and similar wind to Ribeira; ideal for technical sessions.",
       "scoreForecast": 93,
       "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
-    },
-    {
-      "name": "Supertubos",
-      "slug": "supertubos",
-      "score": 92,
-      "scoreForecast": 92,
-      "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
-    },
-    {
-      "name": "Guincho",
-      "slug": "guincho",
-      "score": 92,
-      "scoreForecast": 92,
-      "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
+      "scoreMeta": null
     },
     {
       "name": "Arrifana",
       "slug": "arrifana",
-      "score": 91,
-      "scoreForecast": 91,
-      "scoreSource": "previsão",
-      "scoreMeta": null,
+      "score": 92,
       "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
+      "ptReason": "Água mais quente (18,3 °C) e vento moderado; plano de salvamento marítimo em vigor, mas sem restrições de surf.",
+      "enReason": "Warmer water (18.3 °C) and moderate wind; maritime rescue plan active but no surf restrictions.",
+      "scoreForecast": 92,
+      "scoreSource": "previsão",
+      "scoreMeta": null
     },
     {
       "name": "Carcavelos",
       "slug": "carcavelos",
       "score": 89,
+      "verdict": "maybe",
+      "ptReason": "Ondas menores (1,7 m) e vento mais forte (8 kt); ainda surfável, mas menos impactante que os demais.",
+      "enReason": "Smaller waves (1.7 m) and stronger wind (8 kt); still surfable but less impactful.",
       "scoreForecast": 89,
       "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
-    },
-    {
-      "name": "Ribeira d'Ilhas",
-      "slug": "ribeira-ilhas",
-      "score": 86,
-      "scoreForecast": 86,
-      "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
+      "scoreMeta": null
     }
   ],
-  "topScore": 93,
-  "topScoreForecast": 93,
+  "generatedAt": "2026-10-17T03:06:16.891Z",
+  "topScore": 92,
+  "topScoreForecast": 92,
   "topScoreSource": "previsão",
   "topScoreMeta": null
 }
