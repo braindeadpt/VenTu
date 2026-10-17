@@ -1,7 +1,17 @@
 {
   "source": "ipma",
-  "fetchedAt": "2026-10-17T07:18:34.215Z",
+  "fetchedAt": "2026-10-17T10:06:31.516Z",
   "warnings": [
+    {
+      "areaCode": "BGC",
+      "areaLabel": "Bragança",
+      "type": "Trovoada",
+      "level": "yellow",
+      "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+      "startTime": "2026-10-17T08:33:00",
+      "endTime": "2026-10-17T21:00:00",
+      "relevant": true
+    },
     {
       "areaCode": "EVR",
       "areaLabel": "Évora",
@@ -19,6 +29,16 @@
       "level": "yellow",
       "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm;",
       "startTime": "2026-10-17T12:00:00",
+      "endTime": "2026-10-17T21:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "VRL",
+      "areaLabel": "Vila Real",
+      "type": "Trovoada",
+      "level": "yellow",
+      "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+      "startTime": "2026-10-17T08:33:00",
       "endTime": "2026-10-17T21:00:00",
       "relevant": true
     },
