@@ -169,38 +169,6 @@
       ]
     },
     {
-      "id": 18837,
-      "ref": "ANAV NR 2330/26",
-      "category": "Requisitos de segurança maritima",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=29b496a0-6b82-4a3b-9e20-aa356924c625",
-      "source": "ih",
-      "collection": "nav_warning_coastal",
-      "polygons": [
-        [
-          [
-            -8.864156,
-            41.651367
-          ],
-          [
-            -8.864156,
-            41.704447
-          ],
-          [
-            -8.813014,
-            41.704447
-          ],
-          [
-            -8.813014,
-            41.651367
-          ],
-          [
-            -8.864156,
-            41.651367
-          ]
-        ]
-      ]
-    },
-    {
       "id": 18839,
       "ref": "ANAV NR 2333/26",
       "category": "Exercicios navais ou exercicios de tiro",
@@ -7462,12 +7430,10 @@
       1003281
     ],
     "amorosa": [
-      18837,
       1007416,
       2018401
     ],
     "cabedelo": [
-      18837,
       1000655,
       1000656,
       1005679,
@@ -7477,7 +7443,6 @@
       2018401
     ],
     "foil-cabedelo": [
-      18837,
       1000655,
       1000656,
       1005679,
@@ -7487,14 +7452,12 @@
       2018401
     ],
     "cabedelo-wakepark": [
-      18837,
       1000655,
       1005679,
       1007416,
       2018401
     ],
     "rodanho": [
-      18837,
       1007416,
       1009684,
       2018401
@@ -8201,7 +8164,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-10-18T18:17:51.417Z",
+  "fetchedAt": "2026-10-18T22:06:38.590Z",
   "sourceCollection": "nav_warning_coastal+nav_warning_local+orca_anavnet_point",
   "sourceUrl": "https://ogcapi.hidrografico.pt/collections/nav_warning_coastal"
 }
