@@ -1,758 +1,586 @@
 {
-  "source": "meteoalarm",
-  "fetchedAt": "2026-10-18T04:06:37.033Z",
+  "source": "ipma",
+  "fetchedAt": "2026-10-18T06:38:10.438Z",
   "warnings": [
     {
-      "areaCode": "Portalegre",
-      "areaLabel": "Portalegre",
-      "type": "Trovoada",
-      "level": "yellow",
-      "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-      "startTime": "2026-10-18T06:00:00.000Z",
-      "endTime": "2026-10-18T18:00:00.000Z",
-      "relevant": true
-    },
-    {
-      "areaCode": "Beja",
-      "areaLabel": "Beja",
-      "type": "Trovoada",
-      "level": "yellow",
-      "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-      "startTime": "2026-10-18T06:00:00.000Z",
-      "endTime": "2026-10-18T18:00:00.000Z",
-      "relevant": true
-    },
-    {
-      "areaCode": "Évora",
+      "areaCode": "EVR",
       "areaLabel": "Évora",
       "type": "Trovoada",
       "level": "yellow",
       "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-      "startTime": "2026-10-18T06:00:00.000Z",
-      "endTime": "2026-10-18T18:00:00.000Z",
+      "startTime": "2026-10-18T06:03:00",
+      "endTime": "2026-10-18T18:00:00",
       "relevant": true
     },
     {
-      "areaCode": "Faro",
+      "areaCode": "FAR",
       "areaLabel": "Faro",
       "type": "Trovoada",
       "level": "yellow",
       "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-      "startTime": "2026-10-18T06:00:00.000Z",
-      "endTime": "2026-10-18T18:00:00.000Z",
+      "startTime": "2026-10-18T06:03:00",
+      "endTime": "2026-10-18T18:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "BJA",
+      "areaLabel": "Beja",
+      "type": "Trovoada",
+      "level": "yellow",
+      "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+      "startTime": "2026-10-18T06:03:00",
+      "endTime": "2026-10-18T18:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "PTG",
+      "areaLabel": "Portalegre",
+      "type": "Trovoada",
+      "level": "yellow",
+      "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+      "startTime": "2026-10-18T06:03:00",
+      "endTime": "2026-10-18T18:00:00",
       "relevant": true
     }
   ],
   "spotWarnings": {
-    "castelo-bode": [
-      {
-        "areaCode": "Portalegre",
-        "areaLabel": "Portalegre",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-18T06:00:00.000Z",
-        "endTime": "2026-10-18T18:00:00.000Z",
-        "relevant": true
-      }
-    ],
-    "carvalhal-comporta": [
-      {
-        "areaCode": "Beja",
-        "areaLabel": "Beja",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-18T06:00:00.000Z",
-        "endTime": "2026-10-18T18:00:00.000Z",
-        "relevant": true
-      }
-    ],
     "alqueva": [
       {
-        "areaCode": "Beja",
+        "areaCode": "BJA",
         "areaLabel": "Beja",
         "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-18T06:00:00.000Z",
-        "endTime": "2026-10-18T18:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Évora",
-        "areaLabel": "Évora",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-18T06:00:00.000Z",
-        "endTime": "2026-10-18T18:00:00.000Z",
-        "relevant": true
-      }
-    ],
-    "melides": [
-      {
-        "areaCode": "Beja",
-        "areaLabel": "Beja",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-18T06:00:00.000Z",
-        "endTime": "2026-10-18T18:00:00.000Z",
-        "relevant": true
-      }
-    ],
-    "sao-torpes": [
-      {
-        "areaCode": "Beja",
-        "areaLabel": "Beja",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-18T06:00:00.000Z",
-        "endTime": "2026-10-18T18:00:00.000Z",
-        "relevant": true
-      }
-    ],
-    "porto-covo": [
-      {
-        "areaCode": "Beja",
-        "areaLabel": "Beja",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-18T06:00:00.000Z",
-        "endTime": "2026-10-18T18:00:00.000Z",
-        "relevant": true
-      }
-    ],
-    "malhao": [
-      {
-        "areaCode": "Beja",
-        "areaLabel": "Beja",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-18T06:00:00.000Z",
-        "endTime": "2026-10-18T18:00:00.000Z",
-        "relevant": true
-      }
-    ],
-    "vila-nova-milfontes": [
-      {
-        "areaCode": "Beja",
-        "areaLabel": "Beja",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-18T06:00:00.000Z",
-        "endTime": "2026-10-18T18:00:00.000Z",
-        "relevant": true
-      }
-    ],
-    "alteirinhos": [
-      {
-        "areaCode": "Beja",
-        "areaLabel": "Beja",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-18T06:00:00.000Z",
-        "endTime": "2026-10-18T18:00:00.000Z",
+        "startTime": "2026-10-18T06:03:00",
+        "endTime": "2026-10-18T18:00:00",
         "relevant": true
       }
     ],
     "zambujeira": [
       {
-        "areaCode": "Beja",
-        "areaLabel": "Beja",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-18T06:00:00.000Z",
-        "endTime": "2026-10-18T18:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-18T06:00:00.000Z",
-        "endTime": "2026-10-18T18:00:00.000Z",
+        "startTime": "2026-10-18T06:03:00",
+        "endTime": "2026-10-18T18:00:00",
         "relevant": true
       }
     ],
     "carvalhal": [
       {
-        "areaCode": "Beja",
-        "areaLabel": "Beja",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-18T06:00:00.000Z",
-        "endTime": "2026-10-18T18:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-18T06:00:00.000Z",
-        "endTime": "2026-10-18T18:00:00.000Z",
+        "startTime": "2026-10-18T06:03:00",
+        "endTime": "2026-10-18T18:00:00",
         "relevant": true
       }
     ],
     "odeceixe": [
       {
-        "areaCode": "Beja",
-        "areaLabel": "Beja",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-18T06:00:00.000Z",
-        "endTime": "2026-10-18T18:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-18T06:00:00.000Z",
-        "endTime": "2026-10-18T18:00:00.000Z",
+        "startTime": "2026-10-18T06:03:00",
+        "endTime": "2026-10-18T18:00:00",
         "relevant": true
       }
     ],
     "amoreira": [
       {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-18T06:00:00.000Z",
-        "endTime": "2026-10-18T18:00:00.000Z",
+        "startTime": "2026-10-18T06:03:00",
+        "endTime": "2026-10-18T18:00:00",
         "relevant": true
       }
     ],
     "monte-clerigo": [
       {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-18T06:00:00.000Z",
-        "endTime": "2026-10-18T18:00:00.000Z",
+        "startTime": "2026-10-18T06:03:00",
+        "endTime": "2026-10-18T18:00:00",
         "relevant": true
       }
     ],
     "arrifana": [
       {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-18T06:00:00.000Z",
-        "endTime": "2026-10-18T18:00:00.000Z",
+        "startTime": "2026-10-18T06:03:00",
+        "endTime": "2026-10-18T18:00:00",
         "relevant": true
       }
     ],
     "vale-figueiras": [
       {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-18T06:00:00.000Z",
-        "endTime": "2026-10-18T18:00:00.000Z",
+        "startTime": "2026-10-18T06:03:00",
+        "endTime": "2026-10-18T18:00:00",
         "relevant": true
       }
     ],
     "bordeira": [
       {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-18T06:00:00.000Z",
-        "endTime": "2026-10-18T18:00:00.000Z",
+        "startTime": "2026-10-18T06:03:00",
+        "endTime": "2026-10-18T18:00:00",
         "relevant": true
       }
     ],
     "amado": [
       {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-18T06:00:00.000Z",
-        "endTime": "2026-10-18T18:00:00.000Z",
+        "startTime": "2026-10-18T06:03:00",
+        "endTime": "2026-10-18T18:00:00",
         "relevant": true
       }
     ],
     "barriga": [
       {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-18T06:00:00.000Z",
-        "endTime": "2026-10-18T18:00:00.000Z",
+        "startTime": "2026-10-18T06:03:00",
+        "endTime": "2026-10-18T18:00:00",
         "relevant": true
       }
     ],
     "castelejo": [
       {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-18T06:00:00.000Z",
-        "endTime": "2026-10-18T18:00:00.000Z",
+        "startTime": "2026-10-18T06:03:00",
+        "endTime": "2026-10-18T18:00:00",
         "relevant": true
       }
     ],
     "luz": [
       {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-18T06:00:00.000Z",
-        "endTime": "2026-10-18T18:00:00.000Z",
+        "startTime": "2026-10-18T06:03:00",
+        "endTime": "2026-10-18T18:00:00",
         "relevant": true
       }
     ],
     "burgau": [
       {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-18T06:00:00.000Z",
-        "endTime": "2026-10-18T18:00:00.000Z",
+        "startTime": "2026-10-18T06:03:00",
+        "endTime": "2026-10-18T18:00:00",
         "relevant": true
       }
     ],
     "salema": [
       {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-18T06:00:00.000Z",
-        "endTime": "2026-10-18T18:00:00.000Z",
+        "startTime": "2026-10-18T06:03:00",
+        "endTime": "2026-10-18T18:00:00",
         "relevant": true
       }
     ],
     "cordoama": [
       {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-18T06:00:00.000Z",
-        "endTime": "2026-10-18T18:00:00.000Z",
+        "startTime": "2026-10-18T06:03:00",
+        "endTime": "2026-10-18T18:00:00",
         "relevant": true
       }
     ],
     "ferragudo": [
       {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-18T06:00:00.000Z",
-        "endTime": "2026-10-18T18:00:00.000Z",
+        "startTime": "2026-10-18T06:03:00",
+        "endTime": "2026-10-18T18:00:00",
         "relevant": true
       }
     ],
     "vila-real-santo-antonio": [
       {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-18T06:00:00.000Z",
-        "endTime": "2026-10-18T18:00:00.000Z",
+        "startTime": "2026-10-18T06:03:00",
+        "endTime": "2026-10-18T18:00:00",
         "relevant": true
       }
     ],
     "monte-gordo": [
       {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-18T06:00:00.000Z",
-        "endTime": "2026-10-18T18:00:00.000Z",
+        "startTime": "2026-10-18T06:03:00",
+        "endTime": "2026-10-18T18:00:00",
         "relevant": true
       }
     ],
     "praia-verde": [
       {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-18T06:00:00.000Z",
-        "endTime": "2026-10-18T18:00:00.000Z",
+        "startTime": "2026-10-18T06:03:00",
+        "endTime": "2026-10-18T18:00:00",
         "relevant": true
       }
     ],
     "altura": [
       {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-18T06:00:00.000Z",
-        "endTime": "2026-10-18T18:00:00.000Z",
+        "startTime": "2026-10-18T06:03:00",
+        "endTime": "2026-10-18T18:00:00",
         "relevant": true
       }
     ],
     "praia-rocha": [
       {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-18T06:00:00.000Z",
-        "endTime": "2026-10-18T18:00:00.000Z",
+        "startTime": "2026-10-18T06:03:00",
+        "endTime": "2026-10-18T18:00:00",
         "relevant": true
       }
     ],
     "alvor": [
       {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-18T06:00:00.000Z",
-        "endTime": "2026-10-18T18:00:00.000Z",
+        "startTime": "2026-10-18T06:03:00",
+        "endTime": "2026-10-18T18:00:00",
         "relevant": true
       }
     ],
     "foil-alvor": [
       {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-18T06:00:00.000Z",
-        "endTime": "2026-10-18T18:00:00.000Z",
+        "startTime": "2026-10-18T06:03:00",
+        "endTime": "2026-10-18T18:00:00",
         "relevant": true
       }
     ],
     "lagos": [
       {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-18T06:00:00.000Z",
-        "endTime": "2026-10-18T18:00:00.000Z",
+        "startTime": "2026-10-18T06:03:00",
+        "endTime": "2026-10-18T18:00:00",
         "relevant": true
       }
     ],
     "lagos-wakepark": [
       {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-18T06:00:00.000Z",
-        "endTime": "2026-10-18T18:00:00.000Z",
+        "startTime": "2026-10-18T06:03:00",
+        "endTime": "2026-10-18T18:00:00",
         "relevant": true
       }
     ],
     "beliche": [
       {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-18T06:00:00.000Z",
-        "endTime": "2026-10-18T18:00:00.000Z",
+        "startTime": "2026-10-18T06:03:00",
+        "endTime": "2026-10-18T18:00:00",
         "relevant": true
       }
     ],
     "martinhal": [
       {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-18T06:00:00.000Z",
-        "endTime": "2026-10-18T18:00:00.000Z",
+        "startTime": "2026-10-18T06:03:00",
+        "endTime": "2026-10-18T18:00:00",
         "relevant": true
       }
     ],
     "barrinha-faro": [
       {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-18T06:00:00.000Z",
-        "endTime": "2026-10-18T18:00:00.000Z",
+        "startTime": "2026-10-18T06:03:00",
+        "endTime": "2026-10-18T18:00:00",
         "relevant": true
       }
     ],
     "fuseta": [
       {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-18T06:00:00.000Z",
-        "endTime": "2026-10-18T18:00:00.000Z",
+        "startTime": "2026-10-18T06:03:00",
+        "endTime": "2026-10-18T18:00:00",
         "relevant": true
       }
     ],
     "ilha-faro": [
       {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-18T06:00:00.000Z",
-        "endTime": "2026-10-18T18:00:00.000Z",
+        "startTime": "2026-10-18T06:03:00",
+        "endTime": "2026-10-18T18:00:00",
         "relevant": true
       }
     ],
     "faro-mar": [
       {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-18T06:00:00.000Z",
-        "endTime": "2026-10-18T18:00:00.000Z",
+        "startTime": "2026-10-18T06:03:00",
+        "endTime": "2026-10-18T18:00:00",
         "relevant": true
       }
     ],
     "culatra": [
       {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-18T06:00:00.000Z",
-        "endTime": "2026-10-18T18:00:00.000Z",
+        "startTime": "2026-10-18T06:03:00",
+        "endTime": "2026-10-18T18:00:00",
         "relevant": true
       }
     ],
     "armona": [
       {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-18T06:00:00.000Z",
-        "endTime": "2026-10-18T18:00:00.000Z",
+        "startTime": "2026-10-18T06:03:00",
+        "endTime": "2026-10-18T18:00:00",
         "relevant": true
       }
     ],
     "ilha-tavira": [
       {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-18T06:00:00.000Z",
-        "endTime": "2026-10-18T18:00:00.000Z",
+        "startTime": "2026-10-18T06:03:00",
+        "endTime": "2026-10-18T18:00:00",
         "relevant": true
       }
     ],
     "cabanas-tavira": [
       {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-18T06:00:00.000Z",
-        "endTime": "2026-10-18T18:00:00.000Z",
+        "startTime": "2026-10-18T06:03:00",
+        "endTime": "2026-10-18T18:00:00",
         "relevant": true
       }
     ],
     "cacela-velha": [
       {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-18T06:00:00.000Z",
-        "endTime": "2026-10-18T18:00:00.000Z",
+        "startTime": "2026-10-18T06:03:00",
+        "endTime": "2026-10-18T18:00:00",
         "relevant": true
       }
     ],
     "zavial": [
       {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-18T06:00:00.000Z",
-        "endTime": "2026-10-18T18:00:00.000Z",
+        "startTime": "2026-10-18T06:03:00",
+        "endTime": "2026-10-18T18:00:00",
         "relevant": true
       }
     ],
     "tonel": [
       {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-18T06:00:00.000Z",
-        "endTime": "2026-10-18T18:00:00.000Z",
-        "relevant": true
-      }
-    ],
-    "lagoa-santo-andre": [
-      {
-        "areaCode": "Beja",
-        "areaLabel": "Beja",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-18T06:00:00.000Z",
-        "endTime": "2026-10-18T18:00:00.000Z",
-        "relevant": true
-      }
-    ],
-    "lagoa-sancha": [
-      {
-        "areaCode": "Beja",
-        "areaLabel": "Beja",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-18T06:00:00.000Z",
-        "endTime": "2026-10-18T18:00:00.000Z",
-        "relevant": true
-      }
-    ],
-    "pessegueiro": [
-      {
-        "areaCode": "Beja",
-        "areaLabel": "Beja",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-18T06:00:00.000Z",
-        "endTime": "2026-10-18T18:00:00.000Z",
+        "startTime": "2026-10-18T06:03:00",
+        "endTime": "2026-10-18T18:00:00",
         "relevant": true
       }
     ],
     "garrão": [
       {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-18T06:00:00.000Z",
-        "endTime": "2026-10-18T18:00:00.000Z",
+        "startTime": "2026-10-18T06:03:00",
+        "endTime": "2026-10-18T18:00:00",
         "relevant": true
       }
     ],
     "falesia": [
       {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-18T06:00:00.000Z",
-        "endTime": "2026-10-18T18:00:00.000Z",
+        "startTime": "2026-10-18T06:03:00",
+        "endTime": "2026-10-18T18:00:00",
         "relevant": true
       }
     ],
     "tres-irmaos": [
       {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-18T06:00:00.000Z",
-        "endTime": "2026-10-18T18:00:00.000Z",
+        "startTime": "2026-10-18T06:03:00",
+        "endTime": "2026-10-18T18:00:00",
         "relevant": true
       }
     ],
     "canavial": [
       {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-18T06:00:00.000Z",
-        "endTime": "2026-10-18T18:00:00.000Z",
+        "startTime": "2026-10-18T06:03:00",
+        "endTime": "2026-10-18T18:00:00",
         "relevant": true
       }
     ],
     "armacao-pera": [
       {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-18T06:00:00.000Z",
-        "endTime": "2026-10-18T18:00:00.000Z",
+        "startTime": "2026-10-18T06:03:00",
+        "endTime": "2026-10-18T18:00:00",
         "relevant": true
       }
     ],
     "mareta": [
       {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Trovoada",
         "level": "yellow",
         "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-10-18T06:00:00.000Z",
-        "endTime": "2026-10-18T18:00:00.000Z",
+        "startTime": "2026-10-18T06:03:00",
+        "endTime": "2026-10-18T18:00:00",
         "relevant": true
       }
     ]
