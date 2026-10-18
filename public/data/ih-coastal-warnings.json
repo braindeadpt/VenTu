@@ -413,6 +413,92 @@
       ]
     },
     {
+      "id": 18841,
+      "ref": "ANAV NR 2334/26",
+      "category": "Requisitos de segurança maritima",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=da6117f0-eeb5-4cdd-a325-d638ca214d8f",
+      "source": "ih",
+      "collection": "nav_warning_coastal",
+      "polygons": [
+        [
+          [
+            -9.377667,
+            38.621833
+          ],
+          [
+            -9.334167,
+            38.6535
+          ],
+          [
+            -9.329,
+            38.649167
+          ],
+          [
+            -9.372667,
+            38.6175
+          ],
+          [
+            -9.377667,
+            38.621833
+          ]
+        ],
+        [
+          [
+            -9.301833,
+            38.674333
+          ],
+          [
+            -9.298,
+            38.677167
+          ],
+          [
+            -9.295667,
+            38.675167
+          ],
+          [
+            -9.2995,
+            38.672333
+          ],
+          [
+            -9.301833,
+            38.674333
+          ]
+        ]
+      ]
+    },
+    {
+      "id": 18843,
+      "ref": "ANAV NR 2335/26",
+      "category": "Requisitos de segurança maritima",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=84104efe-1378-47da-b4c7-deb4ce77103f",
+      "source": "ih",
+      "collection": "nav_warning_coastal",
+      "polygons": [
+        [
+          [
+            -8.216667,
+            37.155
+          ],
+          [
+            -7.403167,
+            37.155
+          ],
+          [
+            -8.216667,
+            36.833333
+          ],
+          [
+            -7.403167,
+            36.833333
+          ],
+          [
+            -8.216667,
+            37.155
+          ]
+        ]
+      ]
+    },
+    {
       "id": 1000182,
       "ref": "ANAV NR 121/21",
       "category": "SEGURANÇA DA NAVEGAÇÃO - AVISO À NAVEGAÇÃO LOCAL",
@@ -8034,6 +8120,7 @@
       2018205
     ],
     "fuseta": [
+      18843,
       2017775,
       2018203,
       2018205,
@@ -8056,6 +8143,7 @@
       2018205
     ],
     "armona": [
+      18843,
       1000809,
       1000815,
       1000816,
@@ -8065,14 +8153,17 @@
       2018205
     ],
     "ilha-tavira": [
+      18843,
       2017775,
       2018305
     ],
     "cabanas-tavira": [
+      18843,
       2017775,
       2018305
     ],
     "cacela-velha": [
+      18843,
       2017775,
       2018305
     ],
@@ -8253,7 +8344,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-10-17T23:31:18.403Z",
+  "fetchedAt": "2026-10-18T04:06:38.998Z",
   "sourceCollection": "nav_warning_coastal+nav_warning_local+orca_anavnet_point",
   "sourceUrl": "https://ogcapi.hidrografico.pt/collections/nav_warning_coastal"
 }
