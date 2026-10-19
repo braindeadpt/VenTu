@@ -287,38 +287,6 @@
       ]
     },
     {
-      "id": 18845,
-      "ref": "ANAV NR 2336/26",
-      "category": "Requisitos de segurança maritima",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=0eecf857-3dfb-44b0-84d2-04329a525283",
-      "source": "ih",
-      "collection": "nav_warning_coastal",
-      "polygons": [
-        [
-          [
-            -8.855473,
-            41.498807
-          ],
-          [
-            -8.855473,
-            41.565114
-          ],
-          [
-            -8.744264,
-            41.565114
-          ],
-          [
-            -8.744264,
-            41.498807
-          ],
-          [
-            -8.855473,
-            41.498807
-          ]
-        ]
-      ]
-    },
-    {
       "id": 1000182,
       "ref": "ANAV NR 121/21",
       "category": "SEGURANÇA DA NAVEGAÇÃO - AVISO À NAVEGAÇÃO LOCAL",
@@ -7463,27 +7431,23 @@
       2018401
     ],
     "ofir": [
-      18845,
       1009684,
       2018401,
       2018801
     ],
     "esposende": [
-      18845,
       1000657,
       1009684,
       2018401,
       2018801
     ],
     "esposende-praia": [
-      18845,
       1000657,
       1009684,
       2018401,
       2018801
     ],
     "fao": [
-      18845,
       2018401,
       2018801
     ],
@@ -7530,14 +7494,12 @@
       2018383
     ],
     "foil-fao-cavado": [
-      18845,
       1000657,
       1009684,
       2018401,
       2018801
     ],
     "foil-esposende-piscinas": [
-      18845,
       1000657,
       1009684,
       2018401,
@@ -8136,13 +8098,11 @@
       1009371
     ],
     "fao-ofir-surf": [
-      18845,
       1009684,
       2018401,
       2018801
     ],
     "ofir-praia": [
-      18845,
       1009684,
       2018401,
       2018801
@@ -8164,7 +8124,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-10-18T23:42:25.122Z",
+  "fetchedAt": "2026-10-19T04:36:20.518Z",
   "sourceCollection": "nav_warning_coastal+nav_warning_local+orca_anavnet_point",
   "sourceUrl": "https://ogcapi.hidrografico.pt/collections/nav_warning_coastal"
 }
