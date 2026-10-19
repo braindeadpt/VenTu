@@ -105,18 +105,18 @@
     "manifest:generate": "node scripts/generate-manifest.js"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.117.3",
+    "@supabase/supabase-js": "^2.118.0",
     "geist": "^1.7.2",
     "leaflet": "^1.9.4",
     "leaflet.markercluster": "^1.5.3",
     "lucide-react": "^0.577.0",
     "maplibre-gl": "^6.4.1",
-    "next": "^16.4.0",
+    "next": "^16.4.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
-    "@axe-core/playwright": "^4.13.0",
+    "@axe-core/playwright": "^4.14.0",
     "@playwright/test": "^1.64.0",
     "@types/leaflet": "^1.9.22",
     "@types/leaflet.markercluster": "^1.5.6",
@@ -125,17 +125,17 @@
     "@types/react-dom": "^18.0.0",
     "autoprefixer": "^10.6.1",
     "eslint": "^9.39.4",
-    "eslint-config-next": "^16.3.8",
+    "eslint-config-next": "^16.4.2",
     "h5wasm": "^0.10.3",
     "lighthouse": "^13.5.0",
-    "postcss": "^8.5.29",
-    "postcss-import": "^17.0.0",
+    "postcss": "^8.5.30",
+    "postcss-import": "^17.0.1",
     "serve": "^14.2.6",
     "sharp": "^0.35.3",
     "tailwindcss": "^3.4.17",
     "tsx": "^4.23.15",
     "typescript": "^5.4.0",
-    "vitest": "^4.1.11"
+    "vitest": "^4.1.12"
   },
   "overrides": {
     "compression": "^1.8.2",
