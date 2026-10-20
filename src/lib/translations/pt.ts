@@ -825,8 +825,8 @@ export const translationsPt = {
       'transição': 'Transição',
     },
     meaning: {
-      vivas: 'Amplitude maior — baixa-mar expõe mais fundo; correntes mais fortes.',
-      mortas: 'Amplitude menor — marés estáveis; menos exposição do fundo.',
+      vivas: 'A maré enche e vaza mais — baixa-mar expõe mais fundo; correntes mais fortes.',
+      mortas: 'A maré enche e vaza menos — marés estáveis; menos exposição do fundo.',
       'transição': 'Entre vivas e mortas — condições intermédias.',
     },
     amplitudeToday: 'Amplitude hoje: {value} m',
