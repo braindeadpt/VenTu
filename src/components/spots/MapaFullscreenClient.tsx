@@ -29,6 +29,7 @@ import { getSpotDetailHref } from '@/lib/mapSpotDetail';
 import { getTranslation } from '@/lib/i18n';
 import { useLiveGridSpotData } from '@/hooks/useLiveGridSpotData';
 import { parseDayParam, parseHourOfDayParam } from '@/lib/mapHours';
+import { parseSpotListings } from '@/lib/spotListingsJson';
 
 const SpotMapInteractive = dynamic(() => import('@/components/spots/SpotMapInteractive'), {
   ssr: false,
@@ -139,16 +140,19 @@ function readMapSearchParams(): {
 }
 
 interface MapaFullscreenClientProps {
-  spotsData: GridSpotData[];
+  /** Listagem dos spots serializada no servidor (ver serializeSpotListings). */
+  spotsJson: string;
   regions: string[];
   locale: string;
 }
 
 export default function MapaFullscreenClient({
-  spotsData,
+  spotsJson,
   regions,
   locale,
 }: MapaFullscreenClientProps) {
+  // Um JSON.parse nativo (TBT) — a mesma lista que antes chegava como props.
+  const spotsData = useMemo(() => parseSpotListings<GridSpotData>(spotsJson), [spotsJson]);
   const router = useRouter();
   const isPt = locale === 'pt';
   const t = getTranslation(locale as 'pt' | 'en');
