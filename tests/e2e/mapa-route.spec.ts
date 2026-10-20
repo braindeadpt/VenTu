@@ -155,6 +155,8 @@ async function abreMapa(page: import('@playwright/test').Page, query: string) {
 }
 
 test.describe('#273 home → /mapa: ?dia= e ?de=home', () => {
+  // o stub do map-hours tem de chegar à página: o SW serviria o ficheiro real (helpers/conditions.ts)
+  test.use({ serviceWorkers: 'block' });
   test.describe('desktop 1440', () => {
     test.use({ viewport: { width: 1440, height: 900 } });
 
