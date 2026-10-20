@@ -16,8 +16,10 @@ import type { Modalidade } from '@/lib/modalidades';
 /**
  * Gate do vento no telemóvel (decisão 3 da maquete v7): o /mapa mobile com `wind=1`
  * mediu dentro dos orçamentos actuais do Lighthouse (mediana de 5; números no PR #273)?
+ * Não: TBT 378 ms local contra 329 ms do /mapa sem parâmetros (≈ +50 ms; o CI fica
+ * ~100 ms abaixo do local → ~280 ms > 250 ms). O telemóvel não envia `wind`.
  */
-export const VENTO_MOVEL = true;
+export const VENTO_MOVEL = false;
 
 export const CAMARA_MAPA = { lat: 39.35, lon: -8.95, zDesk: 7, zMovel: 6.5 } as const;
 
