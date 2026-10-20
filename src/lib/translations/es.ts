@@ -20,6 +20,8 @@ export const translationsEs = {
     favorites: 'Favoritos',
     explorar: 'Explorar',
     mapa: 'Mapa',
+    mapaCosta: 'Mapa de la costa',
+    mapaCostaSub: 'viento en directo, 8 modalidades, 48 h',
     livecams: 'Cámaras en vivo',
     openMenu: 'Abrir menú',
     closeMenu: 'Cerrar menú',

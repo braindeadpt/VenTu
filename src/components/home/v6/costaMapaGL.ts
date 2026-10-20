@@ -119,7 +119,8 @@ export function criarCostaGL(o: {
   pintura: PinturaCosta;
   onPronto: () => void;
   onMexe: (inicio: boolean) => void;
-  onClique: (x: number, y: number) => void;
+  /** opcional: na home v7 o link da porta cobre o canvas (#273) */
+  onClique?: (x: number, y: number) => void;
   onPerdido: () => void;
 }): HandleCostaGL {
   registar();
@@ -218,10 +219,12 @@ export function criarCostaGL(o: {
     ok = true;
     if (pendente) pinta(pendente);
     pendente = null;
-    m.getCanvas().addEventListener('click', (e) => {
-      const r = m.getCanvas().getBoundingClientRect();
-      o.onClique(e.clientX - r.left, e.clientY - r.top);
-    });
+    const clique = o.onClique;
+    if (clique)
+      m.getCanvas().addEventListener('click', (e) => {
+        const r = m.getCanvas().getBoundingClientRect();
+        clique(e.clientX - r.left, e.clientY - r.top);
+      });
     m.once('idle', () => o.onPronto());
   });
   m.getCanvas().addEventListener('webglcontextlost', () => o.onPerdido());

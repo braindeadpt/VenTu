@@ -28,7 +28,7 @@ import { unlockPageInteraction } from '@/lib/mapFullscreen';
 import { getSpotDetailHref } from '@/lib/mapSpotDetail';
 import { getTranslation } from '@/lib/i18n';
 import { useLiveGridSpotData } from '@/hooks/useLiveGridSpotData';
-import { parseHourOfDayParam } from '@/lib/mapHours';
+import { parseDayParam, parseHourOfDayParam } from '@/lib/mapHours';
 
 const SpotMapInteractive = dynamic(() => import('@/components/spots/SpotMapInteractive'), {
   ssr: false,
@@ -50,6 +50,7 @@ function readMapSearchParams(): {
   nauticalChart: boolean;
   hours: boolean;
   hourOfDay: number | null;
+  day: number | null;
   buoys: boolean;
   hs: boolean;
   sst: boolean;
@@ -63,6 +64,7 @@ function readMapSearchParams(): {
   coastalWarnings: boolean;
   basemapSat: boolean;
   spot: string | undefined;
+  openSpotDetail: boolean;
   center: [number, number] | undefined;
   zoom: number | undefined;
 } {
@@ -71,6 +73,7 @@ function readMapSearchParams(): {
     nauticalChart: false,
     hours: false,
     hourOfDay: null,
+    day: null,
     buoys: false,
     hs: false,
     sst: false,
@@ -84,12 +87,16 @@ function readMapSearchParams(): {
     coastalWarnings: false,
     basemapSat: false,
     spot: undefined,
+    openSpotDetail: false,
     center: undefined,
     zoom: undefined,
   };
   if (typeof window === 'undefined') return empty;
   const params = new URLSearchParams(window.location.search);
   const hourOfDay = parseHourOfDayParam(params.get('t'));
+  // #273 (home → /mapa): `?dia=0|1` só conta com `?t=`; `?de=home` só com `?spot=`.
+  const day = hourOfDay != null ? parseDayParam(params.get('dia')) : null;
+  const spot = params.get('spot') || undefined;
   const lat = Number.parseFloat(params.get('lat') ?? '');
   const lon = Number.parseFloat(params.get('lon') ?? '');
   const z = Number.parseFloat(params.get('z') ?? '');
@@ -104,6 +111,7 @@ function readMapSearchParams(): {
       params.get('seamarks') === '1',
     hours: params.get('hours') === '1' || hourOfDay != null,
     hourOfDay,
+    day,
     buoys: params.get('buoys') === '1',
     // O Hs IDW saiu do menu: um ?hs=1 antigo abre a «Ondulação» (abaixo).
     hs: false,
@@ -120,7 +128,8 @@ function readMapSearchParams(): {
     warnAreas: params.get('warnAreas') === '1',
     coastalWarnings: params.get('coastalWarnings') === '1',
     basemapSat: params.get('basemap') === 'sat',
-    spot: params.get('spot') || undefined,
+    spot,
+    openSpotDetail: params.get('de') === 'home' && !!spot,
     center:
       Number.isFinite(lat) && Number.isFinite(lon)
         ? ([lat, lon] as [number, number])
@@ -164,6 +173,7 @@ export default function MapaFullscreenClient({
   const [initialNauticalChart, setInitialNauticalChart] = useState(false);
   const [initialHours, setInitialHours] = useState(false);
   const [initialHourOfDay, setInitialHourOfDay] = useState<number | null>(null);
+  const [initialDay, setInitialDay] = useState<number | null>(null);
   const [initialBuoys, setInitialBuoys] = useState(false);
   const [initialHs, setInitialHs] = useState(false);
   const [initialSst, setInitialSst] = useState(false);
@@ -177,6 +187,7 @@ export default function MapaFullscreenClient({
   const [initialCoastalWarnings, setInitialCoastalWarnings] = useState(false);
   const [initialBasemap, setInitialBasemap] = useState<'map' | 'satellite' | undefined>();
   const [focusSpotId, setFocusSpotId] = useState<string | undefined>();
+  const [openSpotDetail, setOpenSpotDetail] = useState(false);
   const [initialCenter, setInitialCenter] = useState<[number, number] | undefined>();
   const [initialZoom, setInitialZoom] = useState<number | undefined>();
 
@@ -203,6 +214,7 @@ export default function MapaFullscreenClient({
     setInitialNauticalChart(s.nauticalChart);
     setInitialHours(s.hours);
     setInitialHourOfDay(s.hourOfDay);
+    setInitialDay(s.day);
     setInitialBuoys(s.buoys);
     setInitialHs(s.hs);
     setInitialSst(s.sst);
@@ -216,6 +228,7 @@ export default function MapaFullscreenClient({
     setInitialCoastalWarnings(s.coastalWarnings);
     setInitialBasemap(s.basemapSat ? 'satellite' : undefined);
     setFocusSpotId(s.spot);
+    setOpenSpotDetail(s.openSpotDetail);
     setInitialCenter(s.center);
     setInitialZoom(s.zoom);
     setParamsReady(true);
@@ -333,6 +346,7 @@ export default function MapaFullscreenClient({
         initialNauticalChartEnabled={initialNauticalChart}
         initialHoursEnabled={initialHours}
         initialHourOfDay={initialHourOfDay}
+        initialDay={initialDay}
         initialBuoysEnabled={initialBuoys}
         initialHsEnabled={initialHs}
         initialSstEnabled={initialSst}
@@ -346,6 +360,7 @@ export default function MapaFullscreenClient({
         initialCoastalWarningsEnabled={initialCoastalWarnings}
         initialBasemap={initialBasemap}
         focusSpotId={focusSpotId}
+        openSpotDetail={openSpotDetail}
         initialCenter={initialCenter}
         initialZoom={initialZoom}
         fullscreenBelowHeader
