@@ -3019,7 +3019,6 @@
     "tideObservedHeight": 2.47,
     "tideObservedAt": "2026-09-22T15:24:00Z",
     "tideStation": "B. do Douro - Cantareira",
-    "tideAnomalyM": 0.038,
     "confidence": "baixa",
     "confidenceDetail": {
       "waveSpread": 1.34,
@@ -3188,7 +3187,6 @@
     "tideObservedHeight": 2.47,
     "tideObservedAt": "2026-09-22T15:24:00Z",
     "tideStation": "B. do Douro - Cantareira",
-    "tideAnomalyM": 0.038,
     "confidence": "baixa",
     "confidenceDetail": {
       "waveSpread": 1.38,
@@ -3354,7 +3352,6 @@
     "tideObservedHeight": 2.47,
     "tideObservedAt": "2026-09-22T15:24:00Z",
     "tideStation": "B. do Douro - Cantareira",
-    "tideAnomalyM": -1.252,
     "confidence": "baixa",
     "confidenceDetail": {
       "waveSpread": 0.32,
@@ -3523,7 +3520,6 @@
     "tideObservedHeight": 2.47,
     "tideObservedAt": "2026-09-22T15:24:00Z",
     "tideStation": "B. do Douro - Cantareira",
-    "tideAnomalyM": 0.038,
     "confidence": "baixa",
     "confidenceDetail": {
       "waveSpread": 0.22,
@@ -3692,7 +3688,6 @@
     "tideObservedHeight": 2.47,
     "tideObservedAt": "2026-09-22T15:24:00Z",
     "tideStation": "B. do Douro - Cantareira",
-    "tideAnomalyM": 0.038,
     "confidence": "baixa",
     "confidenceDetail": {
       "waveSpread": 0.22,
@@ -3861,7 +3856,6 @@
     "tideObservedHeight": 2.632,
     "tideObservedAt": "2026-10-07T22:24:00Z",
     "tideStation": "B. do Douro - Cantareira",
-    "tideAnomalyM": 0.038,
     "confidence": "baixa",
     "confidenceDetail": {
       "waveSpread": 0.24,
@@ -4030,7 +4024,6 @@
     "tideObservedHeight": 2.47,
     "tideObservedAt": "2026-09-22T15:24:00Z",
     "tideStation": "B. do Douro - Cantareira",
-    "tideAnomalyM": 0.038,
     "confidence": "baixa",
     "confidenceDetail": {
       "waveSpread": 0.14,
@@ -4199,7 +4192,6 @@
     "tideObservedHeight": 2.47,
     "tideObservedAt": "2026-09-22T15:24:00Z",
     "tideStation": "B. do Douro - Cantareira",
-    "tideAnomalyM": 0.038,
     "confidence": "baixa",
     "confidenceDetail": {
       "waveSpread": 0.1,
@@ -4368,7 +4360,6 @@
     "tideObservedHeight": 2.47,
     "tideObservedAt": "2026-09-22T15:24:00Z",
     "tideStation": "B. do Douro - Cantareira",
-    "tideAnomalyM": 0.038,
     "confidence": "baixa",
     "confidenceDetail": {
       "waveSpread": 0.1,
@@ -4537,7 +4528,6 @@
     "tideObservedHeight": 2.47,
     "tideObservedAt": "2026-09-22T15:24:00Z",
     "tideStation": "B. do Douro - Cantareira",
-    "tideAnomalyM": 0.028,
     "confidence": "baixa",
     "confidenceDetail": {
       "waveSpread": 0.28,
@@ -4706,7 +4696,6 @@
     "tideObservedHeight": 2.47,
     "tideObservedAt": "2026-09-22T15:24:00Z",
     "tideStation": "B. do Douro - Cantareira",
-    "tideAnomalyM": 0.028,
     "confidence": "baixa",
     "confidenceDetail": {
       "waveSpread": 0.32,
@@ -4875,7 +4864,6 @@
     "tideObservedHeight": 1.783,
     "tideObservedAt": "2026-10-15T22:04:00Z",
     "tideStation": "B. do Douro - Cantareira",
-    "tideAnomalyM": 0.013,
     "confidence": "média",
     "confidenceDetail": {
       "waveSpread": 0,
@@ -4885,7 +4873,57 @@
       "combinedSpreadPct": 0,
       "degraded": true
     },
-    "dailyConfidence": [],
+    "dailyConfidence": [
+      {
+        "date": "2026-10-20",
+        "confidence": "baixa",
+        "waveSpread": 0.71,
+        "windSpread": 0.99,
+        "degraded": false
+      },
+      {
+        "date": "2026-10-21",
+        "confidence": "baixa",
+        "waveSpread": 0.39,
+        "windSpread": 3.41,
+        "degraded": false
+      },
+      {
+        "date": "2026-10-22",
+        "confidence": "média",
+        "waveSpread": 0.47,
+        "windSpread": 0.82,
+        "degraded": false
+      },
+      {
+        "date": "2026-10-23",
+        "confidence": "baixa",
+        "waveSpread": 1.02,
+        "windSpread": 3,
+        "degraded": false
+      },
+      {
+        "date": "2026-10-24",
+        "confidence": "baixa",
+        "waveSpread": 0.8,
+        "windSpread": 3.23,
+        "degraded": false
+      },
+      {
+        "date": "2026-10-25",
+        "confidence": "baixa",
+        "waveSpread": 1.06,
+        "windSpread": 1.07,
+        "degraded": false
+      },
+      {
+        "date": "2026-10-26",
+        "confidence": "média",
+        "waveSpread": 0.73,
+        "windSpread": 0.54,
+        "degraded": false
+      }
+    ],
     "updatedAt": "2026-10-15T22:07:45.179Z",
     "airQualityIndex": 30,
     "airQualityAt": "2026-10-15T23:00",
@@ -4994,7 +5032,6 @@
     "tideObservedHeight": 2.47,
     "tideObservedAt": "2026-09-22T15:24:00Z",
     "tideStation": "B. do Douro - Cantareira",
-    "tideAnomalyM": 0.028,
     "confidence": "baixa",
     "confidenceDetail": {
       "waveSpread": 0.32,
@@ -5163,7 +5200,6 @@
     "tideObservedHeight": 2.47,
     "tideObservedAt": "2026-09-22T15:24:00Z",
     "tideStation": "B. do Douro - Cantareira",
-    "tideAnomalyM": 0.028,
     "confidence": "baixa",
     "confidenceDetail": {
       "waveSpread": 0.32,
@@ -5332,7 +5368,6 @@
     "tideObservedHeight": 2.47,
     "tideObservedAt": "2026-09-22T15:24:00Z",
     "tideStation": "B. do Douro - Cantareira",
-    "tideAnomalyM": 0.028,
     "confidence": "baixa",
     "confidenceDetail": {
       "waveSpread": 0.32,
@@ -5501,7 +5536,6 @@
     "tideObservedHeight": 2.47,
     "tideObservedAt": "2026-09-22T15:24:00Z",
     "tideStation": "B. do Douro - Cantareira",
-    "tideAnomalyM": 0.028,
     "confidence": "baixa",
     "confidenceDetail": {
       "waveSpread": 0.38,
@@ -8135,7 +8169,6 @@
       "windDirDeg": 0,
       "windCardinal": "N",
       "windCardinalEn": "N",
-      "tempC": 19.8,
       "stationName": "Cabo Carvoeiro",
       "distanceKm": 17.7,
       "observedAt": "2026-09-09T21:00:00.000Z",
@@ -8310,7 +8343,6 @@
       "windDirDeg": 0,
       "windCardinal": "N",
       "windCardinalEn": "N",
-      "tempC": 19.8,
       "stationName": "Cabo Carvoeiro",
       "distanceKm": 17.7,
       "observedAt": "2026-09-09T21:00:00.000Z",
@@ -8467,7 +8499,6 @@
       "windDirDeg": 0,
       "windCardinal": "N",
       "windCardinalEn": "N",
-      "tempC": 19.8,
       "stationName": "Cabo Carvoeiro",
       "distanceKm": 16.3,
       "observedAt": "2026-09-09T21:00:00.000Z",
@@ -8642,7 +8673,6 @@
       "windDirDeg": 0,
       "windCardinal": "N",
       "windCardinalEn": "N",
-      "tempC": 19.8,
       "stationName": "Cabo Carvoeiro",
       "distanceKm": 16.1,
       "observedAt": "2026-09-09T21:00:00.000Z",
@@ -8812,6 +8842,16 @@
       "accessible": false,
       "distKm": 1.7
     },
+    "observed": {
+      "windSpeedKt": 6,
+      "windDirDeg": 0,
+      "windCardinal": "N",
+      "windCardinalEn": "N",
+      "stationName": "Cabo Carvoeiro",
+      "distanceKm": 10.7,
+      "observedAt": "2026-10-20T13:00:00.000Z",
+      "source": "ipma"
+    },
     "observedWave": {
       "waveHeight": 2.2119100093841553,
       "wavePeriod": 14.41409969329834,
@@ -8852,6 +8892,14 @@
       "wmoAgeHours": 2.3,
       "ihDistanceKm": 165.8,
       "wmoDistanceKm": 20.3
+    },
+    "windBias": {
+      "station": "Cabo Carvoeiro",
+      "source": "ipma",
+      "me": 2.9,
+      "mae": 3.5,
+      "rmse": 4.4,
+      "n": 1920
     },
     "observedWaveNotClosest": {
       "winner": "wmo-buoy",
@@ -8973,7 +9021,6 @@
       "windDirDeg": 0,
       "windCardinal": "N",
       "windCardinalEn": "N",
-      "tempC": 15.5,
       "stationName": "Cabo Carvoeiro",
       "distanceKm": 7.9,
       "observedAt": "2026-09-09T21:00:00.000Z",
@@ -9148,7 +9195,6 @@
       "windDirDeg": 0,
       "windCardinal": "N",
       "windCardinalEn": "N",
-      "tempC": 15.5,
       "stationName": "Cabo Carvoeiro",
       "distanceKm": 6,
       "observedAt": "2026-09-09T21:00:00.000Z",
@@ -9323,7 +9369,6 @@
       "windDirDeg": 0,
       "windCardinal": "N",
       "windCardinalEn": "N",
-      "tempC": 15.5,
       "stationName": "Cabo Carvoeiro",
       "distanceKm": 5.5,
       "observedAt": "2026-09-09T21:00:00.000Z",
@@ -12955,6 +13000,9 @@
     "uvIndexMax": 5.9,
     "currentSpeed": 0.1,
     "currentDir": 270,
+    "secondarySwellHeight": 0.34,
+    "secondarySwellPeriod": 6.9,
+    "secondarySwellDirection": 317,
     "tideObservedHeight": 3.907,
     "tideObservedAt": "2026-09-11T14:25:00Z",
     "tideStation": "Lisboa - Alcântara",
@@ -14502,6 +14550,17 @@
     "updatedAt": "2026-09-09T23:14:55.039Z",
     "airQualityIndex": 31,
     "airQualityAt": "2026-09-29T16:00",
+    "observed": {
+      "windSpeedKt": 10,
+      "windDirDeg": 315,
+      "windCardinal": "NW",
+      "windCardinalEn": "NW",
+      "tempC": 21.4,
+      "stationName": "Alcácer do Sal, Barrosinha",
+      "distanceKm": 27.7,
+      "observedAt": "2026-10-20T13:00:00.000Z",
+      "source": "ipma"
+    },
     "observedWave": {
       "waveHeight": 2.2119100093841553,
       "wavePeriod": 14.41409969329834,
@@ -14542,6 +14601,14 @@
       "wmoAgeHours": 2.3,
       "ihDistanceKm": 40.3,
       "wmoDistanceKm": 149.2
+    },
+    "windBias": {
+      "station": "Alcácer do Sal, Barrosinha",
+      "source": "ipma",
+      "me": -0.4,
+      "mae": 2,
+      "rmse": 2.6,
+      "n": 182
     }
   },
   "alqueva": {
@@ -15568,6 +15635,9 @@
     "uvIndexMax": 6,
     "currentSpeed": 0.22,
     "currentDir": 243,
+    "secondarySwellHeight": 0.56,
+    "secondarySwellPeriod": 5.55,
+    "secondarySwellDirection": 313,
     "tideObservedHeight": 3.984,
     "tideObservedAt": "2026-09-11T14:25:00Z",
     "tideStation": "Sines - Terminal XXI",
@@ -16044,6 +16114,9 @@
     "uvIndexMax": 6.1,
     "currentSpeed": 0.25,
     "currentDir": 217,
+    "secondarySwellHeight": 0.56,
+    "secondarySwellPeriod": 5.55,
+    "secondarySwellDirection": 313,
     "tideObservedHeight": 3.984,
     "tideObservedAt": "2026-09-11T14:25:00Z",
     "tideStation": "Sines - Terminal XXI",
@@ -16369,6 +16442,9 @@
     "uvIndexMax": 6.1,
     "currentSpeed": 0.27,
     "currentDir": 202,
+    "secondarySwellHeight": 0.54,
+    "secondarySwellPeriod": 5.8,
+    "secondarySwellDirection": 330,
     "tideObservedHeight": 3.984,
     "tideObservedAt": "2026-09-11T14:25:00Z",
     "tideStation": "Sines - Terminal XXI",
@@ -16530,6 +16606,9 @@
     "uvIndexMax": 6.1,
     "currentSpeed": 0.27,
     "currentDir": 202,
+    "secondarySwellHeight": 0.72,
+    "secondarySwellPeriod": 5.1,
+    "secondarySwellDirection": 316,
     "tideObservedHeight": 3.984,
     "tideObservedAt": "2026-09-11T14:25:00Z",
     "tideStation": "Sines - Terminal XXI",
@@ -16855,6 +16934,9 @@
     "uvIndexMax": 6.1,
     "currentSpeed": 0.36,
     "currentDir": 196,
+    "secondarySwellHeight": 0.72,
+    "secondarySwellPeriod": 5.1,
+    "secondarySwellDirection": 318,
     "tideObservedHeight": 3.984,
     "tideObservedAt": "2026-09-11T14:25:00Z",
     "tideStation": "Sines - Terminal XXI",
@@ -17022,6 +17104,9 @@
     "uvIndexMax": 6.1,
     "currentSpeed": 0.36,
     "currentDir": 196,
+    "secondarySwellHeight": 0.72,
+    "secondarySwellPeriod": 5.1,
+    "secondarySwellDirection": 318,
     "tideObservedHeight": 3.984,
     "tideObservedAt": "2026-09-11T14:25:00Z",
     "tideStation": "Sines - Terminal XXI",
@@ -17189,6 +17274,9 @@
     "uvIndexMax": 6.1,
     "currentSpeed": 0.38,
     "currentDir": 203,
+    "secondarySwellHeight": 0.72,
+    "secondarySwellPeriod": 5.1,
+    "secondarySwellDirection": 318,
     "tideObservedHeight": 3.984,
     "tideObservedAt": "2026-09-11T14:25:00Z",
     "tideStation": "Sines - Terminal XXI",
@@ -18129,6 +18217,7 @@
       "windDirDeg": 90,
       "windCardinal": "E",
       "windCardinalEn": "E",
+      "tempC": 21.6,
       "stationName": "Aljezur",
       "distanceKm": 15.7,
       "observedAt": "2026-09-09T21:00:00.000Z",
@@ -18298,6 +18387,7 @@
       "windDirDeg": 90,
       "windCardinal": "E",
       "windCardinalEn": "E",
+      "tempC": 21.6,
       "stationName": "Aljezur",
       "distanceKm": 19,
       "observedAt": "2026-09-09T21:00:00.000Z",
@@ -18462,6 +18552,17 @@
       "accessible": false,
       "distKm": 1.3
     },
+    "observed": {
+      "windSpeedKt": 5,
+      "windDirDeg": 0,
+      "windCardinal": "N",
+      "windCardinalEn": "N",
+      "tempC": 21.6,
+      "stationName": "Aljezur",
+      "distanceKm": 26.7,
+      "observedAt": "2026-10-20T13:00:00.000Z",
+      "source": "ipma"
+    },
     "observedWave": {
       "waveHeight": 1.49,
       "wavePeriod": 5.3,
@@ -18503,6 +18604,14 @@
       "wmoAgeHours": 2.3,
       "ihDistanceKm": 91.3,
       "wmoDistanceKm": 188.1
+    },
+    "windBias": {
+      "station": "Aljezur",
+      "source": "ipma",
+      "me": -3.4,
+      "mae": 3.5,
+      "rmse": 4.5,
+      "n": 1360
     }
   },
   "castelejo": {
@@ -18613,6 +18722,17 @@
       "accessible": false,
       "distKm": 1.7
     },
+    "observed": {
+      "windSpeedKt": 5,
+      "windDirDeg": 0,
+      "windCardinal": "N",
+      "windCardinalEn": "N",
+      "tempC": 21.6,
+      "stationName": "Aljezur",
+      "distanceKm": 28.9,
+      "observedAt": "2026-10-20T13:00:00.000Z",
+      "source": "ipma"
+    },
     "observedWave": {
       "waveHeight": 1.49,
       "wavePeriod": 5.3,
@@ -18654,6 +18774,14 @@
       "wmoAgeHours": 2.3,
       "ihDistanceKm": 92.5,
       "wmoDistanceKm": 190.2
+    },
+    "windBias": {
+      "station": "Aljezur",
+      "source": "ipma",
+      "me": -3.4,
+      "mae": 3.5,
+      "rmse": 4.5,
+      "n": 1360
     }
   },
   "luz": {
@@ -19316,9 +19444,6 @@
     "uvIndexMax": 6.1,
     "currentSpeed": 0.11,
     "currentDir": 117,
-    "secondarySwellHeight": 0.2,
-    "secondarySwellPeriod": 6.85,
-    "secondarySwellDirection": 277,
     "tideObservedHeight": 3.934,
     "tideObservedAt": "2026-09-11T14:25:00Z",
     "tideStation": "Barra de Faro-Olhão",
@@ -20178,9 +20303,6 @@
     "uvIndexMax": 6.1,
     "currentSpeed": 0.11,
     "currentDir": 117,
-    "secondarySwellHeight": 0.2,
-    "secondarySwellPeriod": 6.85,
-    "secondarySwellDirection": 277,
     "tideObservedHeight": 3.934,
     "tideObservedAt": "2026-09-11T14:25:00Z",
     "tideStation": "Barra de Faro-Olhão",
@@ -21484,9 +21606,6 @@
     "uvIndexMax": 6,
     "currentSpeed": 0.27,
     "currentDir": 68,
-    "secondarySwellHeight": 0.1,
-    "secondarySwellPeriod": 14.2,
-    "secondarySwellDirection": 285,
     "tideObservedHeight": 3.934,
     "tideObservedAt": "2026-09-11T14:25:00Z",
     "tideStation": "Barra de Faro-Olhão",
@@ -22170,9 +22289,6 @@
     "uvIndexMax": 6,
     "currentSpeed": 0.11,
     "currentDir": 63,
-    "secondarySwellHeight": 0.12,
-    "secondarySwellPeriod": 14.35,
-    "secondarySwellDirection": 285,
     "tideObservedHeight": 3.934,
     "tideObservedAt": "2026-09-11T14:25:00Z",
     "tideStation": "Barra de Faro-Olhão",
@@ -25196,7 +25312,6 @@
       "windDirDeg": 0,
       "windCardinal": "N",
       "windCardinalEn": "N",
-      "tempC": 15.5,
       "stationName": "Cabo Carvoeiro",
       "distanceKm": 7.5,
       "observedAt": "2026-09-09T21:00:00.000Z",
@@ -25371,7 +25486,6 @@
       "windDirDeg": 0,
       "windCardinal": "N",
       "windCardinalEn": "N",
-      "tempC": 15.5,
       "stationName": "Cabo Carvoeiro",
       "distanceKm": 14.9,
       "observedAt": "2026-09-09T21:00:00.000Z",
@@ -26642,6 +26756,9 @@
     "uvIndexMax": 6.1,
     "currentSpeed": 0.25,
     "currentDir": 217,
+    "secondarySwellHeight": 0.56,
+    "secondarySwellPeriod": 5.55,
+    "secondarySwellDirection": 313,
     "tideObservedHeight": 3.984,
     "tideObservedAt": "2026-09-11T14:25:00Z",
     "tideStation": "Sines - Terminal XXI",
@@ -30439,7 +30556,6 @@
       "windDirDeg": 0,
       "windCardinal": "N",
       "windCardinalEn": "N",
-      "tempC": 19.8,
       "stationName": "Cabo Carvoeiro",
       "distanceKm": 16.3,
       "observedAt": "2026-09-09T21:00:00.000Z",
@@ -30606,7 +30722,6 @@
       "windDirDeg": 0,
       "windCardinal": "N",
       "windCardinalEn": "N",
-      "tempC": 19.8,
       "stationName": "Cabo Carvoeiro",
       "distanceKm": 16.3,
       "observedAt": "2026-09-09T21:00:00.000Z",
