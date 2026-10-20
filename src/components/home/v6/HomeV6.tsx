@@ -4,8 +4,10 @@
  * Home v6 «Atlântico» (#183), por baixo do cabeçalho do site (com os tokens v6, ver
  * docs/pr-183/cabecalho.md): hero do nº 1 (selector Kite · Surf, «VAI.» + frase nacional +
  * cartão do nº 1), nº 2 e nº 3, mapa 3D da costa
- * (ao lado do hero no desktop; faixa + ecrã inteiro no telemóvel) e a régua de
+ * (ao lado do hero no desktop; faixa no telemóvel) e a régua de
  * blocos de hoje e amanhã. Contrato: docs/design/maquetes/v6-atlantico.
+ * v7 «Porta do mapa» (#273): o cartão do mapa é a porta do /mapa, com o contexto
+ * da home no URL (`hrefMapa`: modalidade, bloco/hora, câmara, spot, `de=home`).
  *
  * Um só motor e uma só lista: as horas são o objecto da página de spot
  * (`horaDeLinha`), as notas o `avaliaHoras` do spot, e palavra, frase, top 3,
@@ -28,6 +30,7 @@ import { gravarPrefModalidade, modalidadeInicial, MODALIDADE_EVENT } from '@/lib
 import { SPORT_CHANGE_EVENT } from '@/lib/homepageSport';
 import { homeV6Copy } from '@/lib/translations/homeV6';
 import { getAssetPath } from '@/lib/paths';
+import { hrefMapa as montarHrefMapa } from '@/lib/home/hrefMapa';
 import type { FotoSpot } from '@/lib/spotFotos';
 import type { LinhaForecast } from '@/lib/horaSpot';
 
@@ -38,19 +41,22 @@ export interface HomeV6Props {
   fotos: Record<string, Record<Modalidade, FotoSpot | null>>;
   /** Relógio do build (SSG); depois de montar passa ao relógio real. */
   agoraMs: number;
+  /** Spots de cada modalidade no /mapa (filtro do próprio /mapa sobre o índice de spots). */
+  nSpots: Record<Modalidade, number>;
 }
 
 /** Fontes do primeiro ecrã (palavra, nomes, frase). */
 const PRELOAD = ['BarlowCondensed-900i-latin.woff2', 'Barlow-600-latin.woff2', 'Barlow-700-latin.woff2'];
 
-export default function HomeV6({ locale, costa: costaSSG, meta, fotos, agoraMs }: HomeV6Props) {
+export default function HomeV6({ locale, costa: costaSSG, meta, fotos, agoraMs, nSpots }: HomeV6Props) {
   const c = homeV6Copy(locale);
   const [d, setD] = useState<Modalidade>(MODALIDADE_OMISSAO);
   const [b, setB] = useState<string | null>(null);
   const [agora, setAgora] = useState(agoraMs);
   const [compacta, setCompacta] = useState(costaSSG);
   const [flags, setFlags] = useState({ plano: false, vivo: false });
-  const [cheio, setCheio] = useState(false);
+  // largura do desktop (câmara z=7 e vento sempre ligado no link do /mapa); o HTML estático leva o desktop
+  const [desk, setDesk] = useState(true);
 
   // depois de montar: relógio real, ?d= / ventu.modalidade, ?b=, ?webgl=0
   useEffect(() => {
@@ -62,6 +68,10 @@ export default function HomeV6({ locale, costa: costaSSG, meta, fotos, agoraMs }
     const bq = p.get('b');
     if (bq) setB(bq);
     setFlags({ plano: p.get('webgl') === '0', vivo: true });
+    const mq = window.matchMedia('(min-width: 1024px)');
+    setDesk(mq.matches);
+    const largura = (e: MediaQueryListEvent) => setDesk(e.matches);
+    mq.addEventListener('change', largura);
     const ouve = (e: Event) => {
       const v = (e as CustomEvent).detail;
       if (isModalidade(v)) setD(v);
@@ -91,6 +101,7 @@ export default function HomeV6({ locale, costa: costaSSG, meta, fotos, agoraMs }
     return () => {
       vivo = false;
       window.removeEventListener(MODALIDADE_EVENT, ouve);
+      mq.removeEventListener('change', largura);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -105,6 +116,14 @@ export default function HomeV6({ locale, costa: costaSSG, meta, fotos, agoraMs }
       return `/${locale}/spots/${meta[sp.id]?.slug ?? sp.id}/?d=${d}${j > 0 ? `&h=${j}` : ''}`;
     },
     [locale, meta, d, E],
+  );
+  // #273: o URL do /mapa acompanha a modalidade (`muda`) e o bloco (`escolhe`): sai de E
+  const hrefMapa = useCallback(
+    (spotId?: string) =>
+      E
+        ? montarHrefMapa({ locale, d, tMapa: M.t(E.horaMapa), tAgora: M.t(E.agoraI), desk, spot: spotId })
+        : `/${locale}/mapa/`,
+    [locale, d, M, E, desk],
   );
   const muda = useCallback((m: Modalidade) => {
     setD(m);
@@ -130,7 +149,7 @@ export default function HomeV6({ locale, costa: costaSSG, meta, fotos, agoraMs }
 
   return (
     <div
-      className={`v6h${flags.vivo ? ' vivo' : ''}${E.noite ? ' e-noite' : ''}${cheio ? ' mapa-aberto' : ''}`}
+      className={`v6h${flags.vivo ? ' vivo' : ''}${E.noite ? ' e-noite' : ''}`}
       data-testid="home-v6"
       data-modalidade={d}
       data-bloco={E.bId ?? ''}
@@ -156,7 +175,7 @@ export default function HomeV6({ locale, costa: costaSSG, meta, fotos, agoraMs }
             />
           ))}
         </section>
-        <CostaMapa3D M={M} E={E} copy={c} hrefSpot={hrefSpot} forcarPlano={flags.plano} onCheio={setCheio} />
+        <CostaMapa3D M={M} E={E} copy={c} hrefMapa={hrefMapa} nSpots={nSpots[d]} forcarPlano={flags.plano} />
       </div>
       <ReguaBlocos E={E} copy={c} onEscolhe={escolhe} />
       {/* div e não <footer>: o rodapé da página é o do site (contentinfo único, spec data-sources) */}
@@ -165,9 +184,6 @@ export default function HomeV6({ locale, costa: costaSSG, meta, fotos, agoraMs }
           <ul>
             <li>
               <a href={`/${locale}/spots/`}>{c.todosSpots}</a>
-            </li>
-            <li>
-              <a href={`/${locale}/mapa/`}>{c.mapaCosta}</a>
             </li>
             <li>
               <a href={`/${locale}/about/`}>{c.comoLemos}</a>

@@ -11,7 +11,8 @@
  *  3. Desktop (/pt/spots/) — rótulo do botão fullscreen vem do i18n
  *     ("Explorar mapa" / "Explore map"), nunca texto hard-coded.
  *  4. Mobile — chips radar/carta náutica ≥44×44 (no /mapa: o hero Leaflet da home saiu no
- *     #183) e os controlos do mapa da home v6 (Kite · Surf, «Abrir mapa») ≥44×44.
+ *     #183) e os controlos do mapa da home v6 (Kite · Surf, a porta do /mapa e o ícone
+ *     «Mapa da costa» do cabeçalho, #273) ≥44×44.
  *
  * (Os alvos do HUD «Modo explorar» — rádios, pills, densidade V3′ — vivem em
  * tests/e2e/map-hud.spec.ts.)
@@ -128,16 +129,18 @@ test.describe('Mapa — alvos de toque ≥44px', () => {
       await expectMinTargetSize(chart, 'chip carta náutica');
     });
 
-    test('home v6: Kite · Surf e «Abrir mapa» ≥44×44', async ({ page }) => {
+    test('home v6: Kite · Surf, a porta do mapa e o ícone «Mapa da costa» ≥44×44', async ({ page }) => {
       await page.goto('/pt/', { waitUntil: 'domcontentloaded', timeout: 60_000 });
       await waitHydrated(page);
       const modo = page.getByTestId('home-modo').getByRole('group', { name: 'Modalidade', exact: true });
       await expectMinTargetSize(modo.getByRole('button', { name: 'Kite', exact: true }), 'Kite');
       await expectMinTargetSize(modo.getByRole('button', { name: 'Surf', exact: true }), 'Surf');
       const hero = page.getByRole('region', { name: /Mapa interactivo/i });
-      const abrir = hero.getByRole('button', { name: 'Abrir mapa' });
-      await abrir.scrollIntoViewIfNeeded();
-      await expectMinTargetSize(abrir, '«Abrir mapa»');
+      await expectMinTargetSize(page.getByRole('banner').getByRole('link', { name: 'Mapa da costa', exact: true }), 'ícone «Mapa da costa»');
+      const porta = hero.getByRole('link', { name: 'Explorar o mapa da costa' });
+      await porta.scrollIntoViewIfNeeded();
+      await expectMinTargetSize(porta, 'porta do mapa');
+      await expectMinTargetSize(hero.locator('.cta-seta'), 'seta do CTA');
     });
   });
 

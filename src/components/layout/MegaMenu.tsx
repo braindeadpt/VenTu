@@ -27,7 +27,7 @@ interface MegaMenuProps {
 }
 
 const EXPLORE_ITEMS = [
-  { href: 'mapa', icon: Map, labelKey: 'mapa' as const, descKey: 'descMapa' as const },
+  { href: 'mapa', icon: Map, labelKey: 'mapaCosta' as const, descKey: 'descMapa' as const },
   { href: 'spots', icon: List, labelKey: 'spots' as const, descKey: 'descSpots' as const },
   { href: 'explorar', icon: Compass, labelKey: 'explorar' as const, descKey: 'descExplorar' as const },
   { href: 'livecams', icon: Video, labelKey: 'livecams' as const, descKey: 'descLivecams' as const },

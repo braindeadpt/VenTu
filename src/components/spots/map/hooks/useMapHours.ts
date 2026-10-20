@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   fetchMapHours,
+  indexForDayHour,
   indexForHourOfDay,
   type MapHoursFile,
 } from '@/lib/mapHours';
@@ -21,6 +22,8 @@ interface UseMapHoursOptions {
   initialEnabled: boolean;
   /** Deep link `?t=18` — Lisbon hour of day, nearest 3 h step. */
   initialHourOfDay: number | null;
+  /** Deep link `?dia=1` (vindo da home, #273): com `?t=`, a frame de hoje+dia a essa hora. */
+  initialDay?: number | null;
 }
 
 /**
@@ -33,6 +36,7 @@ export function useMapHours({
   isFullscreen,
   initialEnabled,
   initialHourOfDay,
+  initialDay = null,
 }: UseMapHoursOptions) {
   const [file, setFile] = useState<MapHoursFile | null | undefined>(undefined);
   const [enabled, setEnabled] = useState<boolean>(() => {
@@ -77,7 +81,10 @@ export function useMapHours({
     restoredRef.current = true;
     const max = Math.max(0, file.times.length - 1);
     if (initialHourOfDay != null) {
-      const idx = indexForHourOfDay(file.times, initialHourOfDay);
+      const idx =
+        initialDay != null
+          ? indexForDayHour(file.times, initialDay, initialHourOfDay)
+          : indexForHourOfDay(file.times, initialHourOfDay);
       frameRef.current = idx;
       setFrame(idx);
       return;
@@ -85,7 +92,7 @@ export function useMapHours({
     const saved = Math.max(0, Math.min(max, readMapHoursPref().frame));
     frameRef.current = saved;
     setFrame(saved);
-  }, [file, initialHourOfDay]);
+  }, [file, initialHourOfDay, initialDay]);
 
   const toggleHours = useCallback(() => {
     setEnabled((prev) => {

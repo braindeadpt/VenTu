@@ -4,15 +4,20 @@
  * Mapa da costa da home v6 (#183): MapLibre 3D (lazy, WebGL2) com o mar junto
  * a cada spot na cor da nota, vento em partículas (`ventoParticulas`, IDW dos
  * spots na hora mostrada), rótulos 2D sem sobreposição (os três da lista
- * primeiro), chip do vento, legenda e atribuição. Telemóvel: faixa depois do
- * top 3 com «Abrir mapa» → diálogo em ecrã inteiro (foco no «Fechar», Esc,
- * foco de volta, régua visível por baixo, câmara reenquadra o top 3).
- * Desktop: ao lado do «VAI.», câmara para a costa toda, rótulos de todos.
+ * primeiro), chip do vento, legenda e atribuição.
+ * v7 «Porta do mapa» (#273): o cartão é a porta do /mapa. Um *stretched link*
+ * (`.porta-a`) cobre a figura e leva ao /mapa com o contexto da home
+ * (`hrefMapa`); por cima dele ficam só os rótulos (cada um abre o /mapa com esse
+ * spot aberto), o crédito do mapa e a faixa «Explorar o mapa da costa →».
+ * Sem diálogo de ecrã inteiro. Até o 3D arrancar, o poster é uma imagem neutra
+ * da costa (só costa e mar, sem notas nem rótulos).
+ * Telemóvel: faixa depois do top 3, câmara no top 3. Desktop: ao lado do
+ * «VAI.», câmara para a costa toda, rótulos de todos.
  * Sem WebGL2 (ou contexto perdido, ou `?webgl=0`): mapa plano estático em
  * SVG com a mesma cor do mar, os mesmos rótulos e a grelha de setas.
  * `prefers-reduced-motion`: setas paradas e câmara a saltar.
  * Lógica da maquete aprovada (`index.html`: `rotulos`, `campoVento`,
- * `camMobile`, `camDesk`, `mapaCheio`, `carta`).
+ * `camMobile`, `camDesk`, `carta`); porta: docs/design/maquetes/v7-porta-mapa.
  */
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from 'react';
 import { criarVento, idwVento, type MotorVento } from '@/lib/ventoParticulas';
@@ -22,7 +27,6 @@ import type { EstadoHome } from '@/lib/home/estadoHome';
 import { BANDAS_ORDEM, type BandaK } from '@/lib/modalidades';
 import { bandaVars, V6_BANDAS } from '@/lib/v6Tokens';
 import { getAssetPath } from '@/lib/paths';
-import { lockBodyScroll } from '@/lib/scrollLock';
 import type { HomeV6Copy } from '@/lib/translations/homeV6';
 import type { HandleCostaGL } from './costaMapaGL';
 
@@ -50,18 +54,21 @@ export const ARRANQUE_OCIOSO_MS = 6000;
 const clamp = (x: number, a: number, b: number) => Math.max(a, Math.min(b, x));
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 const SVGNS = 'http://www.w3.org/2000/svg';
+/** medidas dos posters neutros (public/images/home/costa-poster-*.webp) */
+const POSTER = { 390: [716, 760], 1440: [668, 692] } as const;
 
 export interface CostaMapa3DProps {
   M: Modelo;
   E: EstadoHome;
   copy: HomeV6Copy;
-  hrefSpot: (sp: SpotHome, i: number) => string;
+  /** URL do /mapa com o contexto da home; com `spotId`, abre esse spot (`…&spot=<id>&de=home`) */
+  hrefMapa: (spotId?: string) => string;
+  /** spots da modalidade no /mapa (contagem real do índice de spots), para a linha do CTA */
+  nSpots: number;
   forcarPlano: boolean;
-  /** avisa a página (a régua sobe por cima do diálogo) */
-  onCheio: (on: boolean) => void;
 }
 
-export default function CostaMapa3D({ M, E, copy: c, hrefSpot, forcarPlano, onCheio }: CostaMapa3DProps) {
+export default function CostaMapa3D({ M, E, copy: c, hrefMapa, nSpots, forcarPlano }: CostaMapa3DProps) {
   const sec = useRef<HTMLElement>(null);
   const fig = useRef<HTMLElement>(null);
   const mapaEl = useRef<HTMLDivElement>(null);
@@ -69,8 +76,6 @@ export default function CostaMapa3D({ M, E, copy: c, hrefSpot, forcarPlano, onCh
   const ventoEl = useRef<HTMLCanvasElement>(null);
   const rotEl = useRef<HTMLDivElement>(null);
   const guiasEl = useRef<SVGSVGElement>(null);
-  const abrirEl = useRef<HTMLButtonElement>(null);
-  const fecharEl = useRef<HTMLButtonElement>(null);
   const gl = useRef<HandleCostaGL | null>(null);
   const proj = useRef<Proj | null>(null);
   const vento = useRef<MotorVento | null>(null);
@@ -80,15 +85,12 @@ export default function CostaMapa3D({ M, E, copy: c, hrefSpot, forcarPlano, onCh
   const chaveCam = useRef('');
   const [modo, setModo] = useState<Modo>('poster');
   const modoRef = useRef<Modo>('poster');
-  const [cheio, setCheio] = useState(false);
-  const cheioRef = useRef(false);
   const [pronto, setPronto] = useState(false);
-  const solta = useRef<(() => void) | null>(null);
   // o estado mais recente para os callbacks imperativos (MapLibre, resize)
-  const st = useRef({ M, E, c, hrefSpot });
+  const st = useRef({ M, E, c, hrefMapa });
   const forcarRef = useRef(forcarPlano);
   useLayoutEffect(() => {
-    st.current = { M, E, c, hrefSpot };
+    st.current = { M, E, c, hrefMapa };
     forcarRef.current = forcarPlano;
   });
   const [reduzido, setReduzido] = useState(false);
@@ -120,16 +122,16 @@ export default function CostaMapa3D({ M, E, copy: c, hrefSpot, forcarPlano, onCh
     box.querySelectorAll('.rot,.top-lbl').forEach((e) => e.remove());
     while (svg.firstChild) svg.removeChild(svg.firstChild);
     if (!p) return;
-    const { M: m, E: e, c: cc, hrefSpot: href } = st.current;
+    const { M: m, E: e, c: cc, hrefMapa: href } = st.current;
     const W = box.clientWidth;
     const H = box.clientHeight;
     const ids = e.top.map((r) => r.sp.id);
     const dk = desk.current;
-    const ch = cheioRef.current;
     const extra = dk ? m.spotsDe(e.d).filter((s) => !ids.includes(s.id)) : [];
     const notaDe = (id: string) => e.R.find((r) => r.sp.id === id);
-    const topoLivre = dk ? 168 : ch ? 196 : 64;
-    const fundo = H - (dk ? 64 : ch ? 270 : 58);
+    // livre entre o cabeçalho do cartão (título + chip do vento) e a faixa do CTA (+ legenda no desktop)
+    const topoLivre = dk ? 150 : 100;
+    const fundo = H - (dk ? 164 : 122);
     type Item = { sp: SpotHome; r: Linha | undefined; top: boolean; p: P2 };
     const items: Item[] = [
       ...e.top.map((r) => ({ sp: r.sp, r, top: true })),
@@ -148,6 +150,7 @@ export default function CostaMapa3D({ M, E, copy: c, hrefSpot, forcarPlano, onCh
       !pontos.some((q) => q.x > x - 5 && q.x < x + w + 5 && q.y > y - 5 && q.y < y + hh + 5);
     // guias já desenhadas: um rótulo novo não cruza a guia de outro (lê-se mal o «X»)
     const guias: Array<[number, number, number, number]> = [];
+    const feitos: Array<{ a: HTMLAnchorElement; ln: SVGPathElement; x: number; y: number; w: number; h: number; p: P2 }> = [];
     const lado = (ax: number, ay: number, bx: number, by: number, cx: number, cy: number) => (bx - ax) * (cy - ay) - (by - ay) * (cx - ax);
     const cruzam = (g: [number, number, number, number], h: [number, number, number, number]) =>
       lado(g[0], g[1], g[2], g[3], h[0], h[1]) * lado(g[0], g[1], g[2], g[3], h[2], h[3]) < 0 &&
@@ -162,7 +165,7 @@ export default function CostaMapa3D({ M, E, copy: c, hrefSpot, forcarPlano, onCh
       const b: BandaK = e.noite ? 'noite' : o.r ? o.r.b : 'noite';
       const a = document.createElement('a');
       a.className = 'rot' + (o.top ? '' : ' menor');
-      a.href = href(o.sp, o.r ? o.r.i : e.agoraI);
+      a.href = href(o.sp.id);
       a.style.setProperty('--c', V6_BANDAS[b].c);
       a.style.setProperty('--t', V6_BANDAS[b].t);
       a.style.left = '0';
@@ -219,10 +222,41 @@ export default function CostaMapa3D({ M, E, copy: c, hrefSpot, forcarPlano, onCh
       ln.setAttribute('stroke', 'rgba(243,248,251,.75)');
       ln.setAttribute('stroke-width', o.top ? '1.5' : '1');
       svg.appendChild(ln);
+      feitos.push({ a, ln, x, y, w, h: hh, p: o.p });
     }
+    // Último recurso do «semCruzar»: duas guias que se cruzaram (vizinhos muito juntos, p. ex.
+    // Caparica e Lagoa no telemóvel) trocam de lado, cada rótulo encostado ao lado do outro.
+    for (let i = 0; i < feitos.length; i++)
+      for (let j = i + 1; j < feitos.length; j++) {
+        const A = feitos[i];
+        const B = feitos[j];
+        const gA = guiaDe(A.x, A.y, A.w, A.h, A.p);
+        const gB = guiaDe(B.x, B.y, B.w, B.h, B.p);
+        if (!cruzam(gA, gB)) continue;
+        const naPos = (de: typeof A, para: typeof A) => ({ x: para.x + para.w / 2 > para.p.x ? para.x : para.x + para.w - de.w, y: para.y });
+        const nA = naPos(A, B);
+        const nB = naPos(B, A);
+        const resto = feitos.filter((q) => q !== A && q !== B);
+        const cabe = (n: { x: number; y: number }, q: typeof A) =>
+          n.x >= 4 && n.x + q.w <= W - 4 && n.y >= topoLivre && n.y + q.h <= fundo &&
+          !resto.some((r) => n.x < r.x + r.w + 4 && n.x + q.w + 4 > r.x && n.y < r.y + r.h + 3 && n.y + q.h + 3 > r.y) &&
+          !pontos.some((t) => t.x > n.x - 5 && t.x < n.x + q.w + 5 && t.y > n.y - 5 && t.y < n.y + q.h + 5);
+        const sobre = nA.x < nB.x + B.w + 4 && nA.x + A.w + 4 > nB.x && nA.y < nB.y + B.h + 3 && nA.y + A.h + 3 > nB.y;
+        const gA2 = guiaDe(nA.x, nA.y, A.w, A.h, A.p);
+        const gB2 = guiaDe(nB.x, nB.y, B.w, B.h, B.p);
+        if (!cabe(nA, A) || !cabe(nB, B) || sobre || cruzam(gA2, gB2)) continue;
+        for (const [q, n, g] of [[A, nA, gA2], [B, nB, gB2]] as const) {
+          q.x = n.x;
+          q.y = n.y;
+          q.a.style.left = n.x + 'px';
+          q.a.style.top = n.y + 'px';
+          q.ln.setAttribute('d', `M${g[0].toFixed(1)} ${g[1].toFixed(1)} L${q.p.x.toFixed(1)} ${q.p.y.toFixed(1)}`);
+        }
+      }
+    postos.splice(0, postos.length, ...feitos.map(({ x, y, w, h }) => ({ x, y, w, h })));
     const lbl = (txt: string, ll: [number, number]) => {
       const q = p.proj(ll);
-      if (!q || q.x < 40 || q.x > W - 40 || q.y < 40 || q.y > H - 30) return;
+      if (!q || q.x < 40 || q.x > W - 40 || q.y < topoLivre || q.y > fundo) return;
       if (postos.some((r) => q.x > r.x - 50 && q.x < r.x + r.w + 50 && q.y > r.y - 12 && q.y < r.y + r.h + 12)) return;
       const el = document.createElement('div');
       el.className = 'top-lbl';
@@ -317,8 +351,8 @@ export default function CostaMapa3D({ M, E, copy: c, hrefSpot, forcarPlano, onCh
     const pts = e.top.map((r) => [r.sp.lon, r.sp.lat] as [number, number]);
     if (!pts.length) return;
     const todosSul = e.top.every((r) => ['sagres', 'algarve'].includes(r.sp.zona) && r.sp.sp.praiaVirada < 200);
-    const ch = cheioRef.current;
-    const alvo = h.ajusta(pts, { z0: 6.4, tx: todosSul ? 0.5 : 0.62, ty: ch ? 0.48 : 0.5, v: ch ? 0.24 : 0.34, h: 0.42, pitch: CAM_MOB.pitch, bearing: CAM_MOB.bearing, zr: ZMOB });
+    // o top 3 fica entre o cabeçalho do cartão e a faixa do CTA
+    const alvo = h.ajusta(pts, { z0: 6.4, tx: todosSul ? 0.5 : 0.62, ty: 0.47, v: 0.3, h: 0.42, pitch: CAM_MOB.pitch, bearing: CAM_MOB.bearing, zr: ZMOB });
     if (logo || reduz.current) h.salta(alvo);
     else h.anima(alvo);
   }, []);
@@ -454,24 +488,7 @@ export default function CostaMapa3D({ M, E, copy: c, hrefSpot, forcarPlano, onCh
               campoVento();
             }
           },
-          onClique: (x, y) => {
-            const { M: m, E: e, hrefSpot: href } = st.current;
-            let best: SpotHome | null = null;
-            let bd = 30;
-            for (const sp of m.spotsDe(e.d)) {
-              const q = gl.current?.proj([sp.lon, sp.lat]);
-              if (!q) continue;
-              const dd = Math.hypot(q.x - x, q.y - y);
-              if (dd < bd) {
-                bd = dd;
-                best = sp;
-              }
-            }
-            if (best) {
-              const rr = e.R.find((o) => o.sp.id === best!.id);
-              window.location.href = href(best, rr ? rr.i : e.agoraI);
-            }
-          },
+          // o link da porta cobre o canvas: sem navegação por proximidade (#273)
           onPerdido: () => usarPlano(),
         });
         gl.current = h;
@@ -577,90 +594,38 @@ export default function CostaMapa3D({ M, E, copy: c, hrefSpot, forcarPlano, onCh
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chaveEstado]);
 
-  /* ---------- ecrã inteiro (telemóvel): «Abrir mapa» / «Fechar» / Esc ---------- */
-  const mapaCheio = useCallback(
-    (on: boolean) => {
-      if (cheioRef.current === on) return;
-      cheioRef.current = on;
-      setCheio(on);
-      onCheio(on);
-      if (on) solta.current = lockBodyScroll();
-      else {
-        solta.current?.();
-        solta.current = null;
-      }
-      requestAnimationFrame(() => {
-        if (gl.current) {
-          gl.current.redimensiona();
-          chaveCam.current = '';
-          enquadra(true);
-          vento.current?.tamanho();
-          vento.current?.limpar();
-          rotulos();
-          campoVento();
-        } else if (modoRef.current === 'plano') {
-          vento.current?.tamanho();
-          carta();
-        }
-        (on ? fecharEl.current : abrirEl.current)?.focus({ preventScroll: true });
-      });
-    },
-    [onCheio, enquadra, rotulos, campoVento, carta],
-  );
-  useEffect(() => {
-    const k = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && cheioRef.current) mapaCheio(false);
-    };
-    window.addEventListener('keydown', k);
-    return () => {
-      window.removeEventListener('keydown', k);
-      solta.current?.();
-      solta.current = null;
-    };
-  }, [mapaCheio]);
-
   const t0 = E.top[0];
   const hv = t0 ? t0.sp.h[E.horaMapa] : null;
+  const poster = (w: 390 | 1440) => getAssetPath(`/images/home/costa-poster-${w}.webp`);
   return (
-    <section
-      ref={sec}
-      id="mapa-sec"
-      className={`mapa-sec${cheio ? ' cheio' : ''}`}
-      aria-label={c.mapaRegiao}
-      role={cheio ? 'dialog' : 'region'}
-      aria-modal={cheio ? true : undefined}
-      data-testid="home-mapa"
-    >
+    <section ref={sec} id="mapa-sec" className="mapa-sec" aria-label={c.mapaRegiao} data-testid="home-mapa">
       <figure
         ref={fig}
-        className={`cena${modo === 'plano' ? ' sem-webgl' : ''}`}
+        className={`cena porta${modo === 'plano' ? ' sem-webgl' : ''}`}
         aria-label={c.mapaFig}
         data-modo={modo}
         data-pronto={pronto ? '1' : '0'}
       >
-        <div className="poster" aria-hidden="true" />
+        {/* poster neutro (só costa e mar, sem notas nem rótulos): o 1.º paint do cartão até o 3D arrancar */}
+        <picture className="poster">
+          <source media="(min-width: 1024px)" srcSet={poster(1440)} width={POSTER[1440][0]} height={POSTER[1440][1]} />
+          <img
+            src={poster(390)}
+            alt=""
+            width={POSTER[390][0]}
+            height={POSTER[390][1]}
+            decoding="async"
+            fetchPriority="low"
+            data-testid="home-mapa-poster"
+          />
+        </picture>
         <svg ref={cartaEl} className="carta" aria-hidden="true" />
         <div ref={mapaEl} className="mapa" aria-hidden="true" />
         <canvas ref={ventoEl} className="vento" aria-hidden="true" data-testid="home-vento" data-estatico={reduzido || modo === 'plano' ? '1' : '0'} />
-        <div ref={rotEl} className="rotulos" data-testid="home-rotulos">
-          <svg ref={guiasEl} className="guias" aria-hidden="true" />
-        </div>
         <div className="cab">
           <h2 className="sec" id="mapa-t">
             {c.mapa} <span>{E.mapaQ}</span>
           </h2>
-          <p className="sub">
-            {c.mapaSub[E.d]}
-            <span className="vt">{c.mapaSubVento}</span>
-          </p>
-        </div>
-        <div className="mapa-ferr">
-          <button ref={fecharEl} type="button" className="fechar" aria-label={c.fecharAria} onClick={() => mapaCheio(false)}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" aria-hidden="true">
-              <path d="M6 6l12 12M18 6L6 18" />
-            </svg>
-            {c.fechar}
-          </button>
           {t0 && hv ? (
             <span className="vento-chip" data-testid="home-vento-chip">
               <svg viewBox="0 0 28 10" aria-hidden="true">
@@ -669,6 +634,10 @@ export default function CostaMapa3D({ M, E, copy: c, hrefSpot, forcarPlano, onCh
               {c.chipVento(t0.sp.curto || t0.sp.nome, rumo(hv.wd), hv.w)}
             </span>
           ) : null}
+          <p className="sub">
+            {c.mapaSub[E.d]}
+            <span className="vt">{c.mapaSubVento}</span>
+          </p>
         </div>
         <p className="estatica">{c.estatica}</p>
         <div className="leg" data-testid="legenda-bandas">
@@ -680,19 +649,26 @@ export default function CostaMapa3D({ M, E, copy: c, hrefSpot, forcarPlano, onCh
           ))}
           <span className="txt">{c.legenda}</span>
         </div>
-        <button
-          ref={abrirEl}
-          type="button"
-          className="abrir"
-          aria-expanded={cheio}
-          aria-controls="mapa-sec"
-          onClick={() => mapaCheio(true)}
-        >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-            <path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" />
-          </svg>
-          {c.abrirMapa}
-        </button>
+        <div className="cta" aria-hidden="true">
+          <span className="cta-tx">
+            <span className="cta-t">{c.explorarMapa}</span>
+            <span className="cta-s" id="porta-s">
+              {c.ctaLinha(nSpots, E.d)}
+            </span>
+          </span>
+          <span className="cta-seta">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M5 12h14M13 6l6 6-6 6" />
+            </svg>
+          </span>
+        </div>
+        {/* stretched link: o cartão inteiro leva ao /mapa; por cima dele só os rótulos e o crédito */}
+        <a className="porta-a" href={hrefMapa()} aria-describedby="porta-s" data-testid="home-porta-mapa">
+          <span className="sr">{c.explorarMapa}</span>
+        </a>
+        <div ref={rotEl} className="rotulos" data-testid="home-rotulos">
+          <svg ref={guiasEl} className="guias" aria-hidden="true" />
+        </div>
         <p className="credito-mapa">
           © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> · {c.relevo}{' '}
           <a href="https://registry.opendata.aws/terrain-tiles/">AWS Terrain Tiles</a> · MapLibre

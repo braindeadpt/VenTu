@@ -81,6 +81,8 @@ interface SpotMapInteractiveProps {
   initialNauticalChartEnabled?: boolean;
   initialHoursEnabled?: boolean;
   initialHourOfDay?: number | null;
+  /** Deep link `?dia=` (#273, vindo da home): com `?t=`, a frame de hoje+dia. */
+  initialDay?: number | null;
   initialBuoysEnabled?: boolean;
   initialHsEnabled?: boolean;
   initialSstEnabled?: boolean;
@@ -96,6 +98,8 @@ interface SpotMapInteractiveProps {
   initialCoastalWarningsEnabled?: boolean;
   initialBasemap?: BasemapMode;
   focusSpotId?: string;
+  /** `?spot=…&de=home` (#273): o deep link abre o detalhe do spot (pré-visualização / sheet). */
+  openSpotDetail?: boolean;
   initialCenter?: [number, number] | undefined;
   initialZoom?: number;
   fullscreenBelowHeader?: boolean;
@@ -118,6 +122,7 @@ export default function SpotMapInteractive({
   initialNauticalChartEnabled = false,
   initialHoursEnabled = false,
   initialHourOfDay = null,
+  initialDay = null,
   initialBuoysEnabled = false,
   initialHsEnabled = false,
   initialSstEnabled = false,
@@ -131,6 +136,7 @@ export default function SpotMapInteractive({
   initialCoastalWarningsEnabled = false,
   initialBasemap,
   focusSpotId,
+  openSpotDetail = false,
   initialCenter,
   initialZoom,
   fullscreenBelowHeader = false,
@@ -236,6 +242,7 @@ export default function SpotMapInteractive({
     initialNauticalChartEnabled,
     initialHoursEnabled,
     initialHourOfDay,
+    initialDay,
     initialBuoysEnabled,
     initialGoesIrEnabled,
     initialStormsEnabled,
@@ -569,8 +576,9 @@ export default function SpotMapInteractive({
   const { focusMapSpot } = markers;
 
   // Deep link ?spot= — a lista (sheet aberto no mobile / painel no desktop)
-  // ganha a linha focada e o mapa enquadra o spot. Sem popup/sheet de
-  // detalhe: o utilizador fica no contexto da lista.
+  // ganha a linha focada e o mapa enquadra o spot. Com `&de=home` (#273,
+  // rótulo do mapa da home) pede-se o detalhe do spot (pré-visualização no
+  // desktop, sheet no telemóvel); sem `de`, a chamada é a de sempre.
   const deepLinkFocusRef = useRef(false);
   useEffect(() => {
     if (!focusSpotId || deepLinkFocusRef.current || !isReady || !isFullscreen || !mapHud) return;
@@ -579,8 +587,8 @@ export default function SpotMapInteractive({
     if (!d || !map) return;
     deepLinkFocusRef.current = true;
     if (isMobile) setExploreSheetState('open');
-    focusMapSpot(focusSpotId, false);
-  }, [focusSpotId, isReady, isFullscreen, mapHud, isMobile, visibleSpots, mapInstanceRef, focusMapSpot, setExploreSheetState]);
+    focusMapSpot(focusSpotId, openSpotDetail);
+  }, [focusSpotId, openSpotDetail, isReady, isFullscreen, mapHud, isMobile, visibleSpots, mapInstanceRef, focusMapSpot, setExploreSheetState]);
 
   // ── Invalidate size on fullscreen/resize ──
   useEffect(() => {

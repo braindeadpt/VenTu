@@ -13,7 +13,7 @@ export const translationsPt = {
   nav: {
     home: 'Início', spots: 'Spots', news: 'Notícias', about: 'Sobre',
     sazonalidade: 'Sazonalidade', comparar: 'Comparar', favorites: 'Favoritos',
-    explorar: 'Explorar', mapa: 'Mapa', livecams: 'Livecams',
+    explorar: 'Explorar', mapa: 'Mapa', mapaCosta: 'Mapa da costa', mapaCostaSub: 'vento ao vivo, 8 modalidades, 48 h', livecams: 'Livecams',
     openMenu: 'Abrir menu', closeMenu: 'Fechar menu',
     modalidades: 'Modalidades', metricas: 'Métricas',
     conditions: 'Condições', plan: 'Planear', directory: 'Directório',

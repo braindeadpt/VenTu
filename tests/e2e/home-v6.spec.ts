@@ -1,5 +1,6 @@
 import { test, expect, type Page } from '@playwright/test';
 import { abreHome, caixa, fixtureMaquete, NOITE_MAQUETE } from './helpers/homeV6';
+import { VENTO_MOVEL } from '../../src/lib/home/hrefMapa';
 
 /**
  * #183 — home v6 «Atlântico» (contrato: docs/design/maquetes/v6-atlantico).
@@ -9,7 +10,9 @@ import { abreHome, caixa, fixtureMaquete, NOITE_MAQUETE } from './helpers/homeV6
  *  - palavra e frase no HTML estático (LCP), MapLibre fora do bundle inicial;
  *  - lista única: nº 1 = melhor da régua = 1.º rótulo do mapa = foto do hero; top 3 = 3 rótulos;
  *  - régua de blocos (aria-pressed, teclado) muda palavra, frase, top 3 e fotos;
- *  - diálogo do mapa: foco no «Fechar», Esc fecha, foco volta ao «Abrir mapa», aria-expanded;
+ *  - porta do mapa (#273, v7): o cartão é um link com nome para o /mapa com o contexto da home
+ *    (modalidade, hora/bloco, câmara, `de=home`), foco visível, ≥ 44 × 44, sem diálogo; rótulos
+ *    abrem o /mapa com o spot; o chip do vento não tapa o título; rodapé sem «Mapa da costa»;
  *  - WebGL2 obrigatório (fallback plano estático com setas), prefers-reduced-motion;
  *  - toques ≥ 44 × 44; créditos com ligação; ventu.modalidade {d, v} nos dois sentidos; PT e EN;
  *  - nunca «/100» nem números > 10 junto a rótulos de nota.
@@ -65,7 +68,7 @@ test.describe('#183 home v6 — 390 × 844', () => {
     });
   }
 
-  test('toques ≥ 44 × 44: Kite/Surf (≥ 44 × 76), os blocos, «Abrir mapa»/«Fechar», cartões', async ({ page }) => {
+  test('toques ≥ 44 × 44: Kite/Surf (≥ 44 × 76), os blocos, a porta do mapa e o ícone do cabeçalho, cartões', async ({ page }) => {
     await abreHome(page);
     const medir = async (loc: import('@playwright/test').Locator, nome: string, minW = 44) => {
       const b = await loc.boundingBox();
@@ -80,12 +83,11 @@ test.describe('#183 home v6 — 390 × 844', () => {
     const n = await blocos.count();
     expect(n).toBeGreaterThanOrEqual(1);
     for (let k = 0; k < n; k++) await medir(blocos.nth(k).locator('.bar'), `bloco ${k}`);
-    const abrir = page.getByRole('button', { name: 'Abrir mapa' });
-    await abrir.scrollIntoViewIfNeeded();
-    await medir(abrir, 'Abrir mapa');
-    await abrir.click();
-    await medir(page.getByRole('button', { name: 'Fechar o mapa' }), 'Fechar');
-    await page.keyboard.press('Escape');
+    await medir(page.getByRole('banner').getByRole('link', { name: 'Mapa da costa', exact: true }), 'ícone «Mapa da costa» no cabeçalho');
+    const porta = page.getByTestId('home-mapa').getByRole('link', { name: 'Explorar o mapa da costa' });
+    await porta.scrollIntoViewIfNeeded();
+    await medir(porta, 'porta do mapa');
+    await medir(page.getByTestId('home-mapa').locator('.cta-seta'), 'seta do CTA');
     for (const c of await page.getByTestId('home-cartao').all()) await medir(c.locator('a.in'), 'cartão');
   });
 
@@ -106,6 +108,9 @@ test.describe('#183 home v6 — 390 × 844', () => {
     const l = await leituraLista(page);
     expect(l.lider).toBe(l.regua);
     expect(l.foto).toBe(l.lider);
+    // #273: o link do mapa acompanha a modalidade e o bloco (amanhã à tarde → t + dia=1)
+    const href = await page.getByTestId('home-porta-mapa').getAttribute('href');
+    expect(href).toMatch(new RegExp(`^/pt/mapa/\\?sport=surf${VENTO_MOVEL ? '&wind=1' : ''}&t=1[3-7]&dia=1&lat=39\\.35&lon=-8\\.95&z=6\\.5&de=home$`));
     // teclado: ← → percorrem os blocos e escolhem
     await regua.locator('button[data-b="1-tarde"]').focus();
     await page.keyboard.press('ArrowLeft');
@@ -135,36 +140,60 @@ test.describe('#183 home v6 — 390 × 844', () => {
     }
   });
 
-  test('diálogo do mapa: «Abrir mapa» → foco no «Fechar», Esc fecha e o foco volta; aria-expanded; sem scroll', async ({ page }) => {
-    await abreHome(page);
-    // includeHidden: com o diálogo aberto o «Abrir mapa» fica display:none (é o «Fechar» que tem o foco),
-    // mas o aria-expanded dele tem de dizer «true» na mesma
-    const abrir = page.getByRole('button', { name: 'Abrir mapa', includeHidden: true });
-    await abrir.scrollIntoViewIfNeeded();
-    await expect(abrir).toHaveAttribute('aria-expanded', 'false');
-    await abrir.click();
-    const dlg = page.getByRole('dialog', { name: /Mapa interactivo/i });
-    await expect(dlg).toBeVisible();
-    await expect(dlg).toHaveAttribute('aria-modal', 'true');
-    await expect(page.getByRole('button', { name: 'Fechar o mapa' })).toBeFocused();
-    await expect(abrir).toHaveAttribute('aria-expanded', 'true');
-    expect(await page.evaluate(() => getComputedStyle(document.body).overflow)).toBe('hidden');
-    const r = await caixa(page, '#mapa-sec');
-    expect(r!.w).toBeGreaterThanOrEqual(390 - 1);
-    expect(r!.h).toBeGreaterThanOrEqual(844 - 1);
-    // a régua fica visível por baixo, por cima do mapa
-    await expect(page.getByTestId('home-regua')).toBeInViewport();
-    await expect(dlg.getByTestId('legenda-bandas')).toBeVisible();
-    await page.keyboard.press('Escape');
+  test('porta do mapa: o cartão é um link com nome para o /mapa com o contexto; sem diálogo nem «Abrir mapa»', async ({ page }) => {
+    await fixtureMaquete(page);
+    await abreHome(page, '/pt/', { maquete: true });
+    const mapa = page.getByTestId('home-mapa');
+    const porta = mapa.getByRole('link', { name: 'Explorar o mapa da costa' });
+    await porta.scrollIntoViewIfNeeded();
+    // contrato do URL (telemóvel: z=6.5; vento conforme o gate do Lighthouse)
+    await expect(porta).toHaveAttribute(
+      'href',
+      `/pt/mapa/?sport=kitesurf${VENTO_MOVEL ? '&wind=1' : ''}&t=14&lat=39.35&lon=-8.95&z=6.5&de=home`,
+    );
+    await expect(porta).toHaveAccessibleDescription(/^\d+ spots de kite · vento ao vivo · 48 h$/);
+    // a faixa é a entrada única: o link cobre a figura inteira; sem botão «Abrir mapa» nem diálogo
+    const fig = await caixa(page, '[data-testid="home-mapa"] figure');
+    const a = await caixa(page, '[data-testid="home-porta-mapa"]');
+    expect(a).toEqual(fig);
+    await expect(page.getByRole('button', { name: /Abrir mapa|Fechar o mapa/ })).toHaveCount(0);
     await expect(page.getByRole('dialog')).toHaveCount(0);
-    await expect(abrir).toBeFocused();
-    await expect(abrir).toHaveAttribute('aria-expanded', 'false');
-    expect(await page.evaluate(() => getComputedStyle(document.body).overflow)).not.toBe('hidden');
-    // «Fechar» também fecha
-    await abrir.click();
-    await page.getByRole('button', { name: 'Fechar o mapa' }).click();
-    await expect(page.getByRole('dialog')).toHaveCount(0);
-    await expect(abrir).toBeFocused();
+    await expect(mapa).not.toHaveAttribute('aria-modal', /.*/);
+    // um clique no meio da faixa (fora de rótulos e do crédito) cai no link
+    const alvo = await page.evaluate(() => {
+      const f = document.querySelector('[data-testid="home-mapa"] figure')!.getBoundingClientRect();
+      const el = document.elementFromPoint(f.x + f.width / 2, f.bottom - 50);
+      return el?.closest('a')?.dataset.testid ?? el?.className ?? null;
+    });
+    expect(alvo).toBe('home-porta-mapa');
+    // foco visível pelo teclado (anel amarelo dentro do cartão) e Enter navega para o /mapa
+    await porta.focus();
+    await page.keyboard.press('Shift+Tab');
+    await page.keyboard.press('Tab');
+    await expect(porta).toBeFocused();
+    const anel = await porta.evaluate((el) => {
+      const cs = getComputedStyle(el);
+      return { estilo: cs.outlineStyle, largura: parseFloat(cs.outlineWidth), cor: cs.outlineColor };
+    });
+    expect(anel.estilo).toBe('solid');
+    expect(anel.largura).toBeGreaterThanOrEqual(3);
+    expect(anel.cor).toBe('rgb(255, 201, 60)');
+    await Promise.all([page.waitForURL(/\/pt\/mapa\/\?sport=kitesurf.*&de=home$/), page.keyboard.press('Enter')]);
+  });
+
+  test('chip do vento na 2.ª linha (não tapa o título); rodapé sem «Mapa da costa»', async ({ page }) => {
+    await fixtureMaquete(page);
+    await abreHome(page, '/pt/', { maquete: true });
+    await page.getByTestId('home-mapa').scrollIntoViewIfNeeded();
+    const t = await caixa(page, '#mapa-t');
+    const chip = await caixa(page, '[data-testid="home-vento-chip"]');
+    expect(chip, 'chip do vento').not.toBeNull();
+    expect(chip!.y, 'o chip fica debaixo do título').toBeGreaterThanOrEqual(t!.b);
+    expect(chip!.r).toBeLessThanOrEqual(390);
+    const rodape = page.getByTestId('home-v6-rodape');
+    await expect(rodape.getByRole('link', { name: 'Todos os spots' })).toBeVisible();
+    await expect(rodape.getByRole('link', { name: 'Como lemos a nota' })).toBeVisible();
+    await expect(rodape.getByRole('link', { name: /Mapa da costa/ })).toHaveCount(0);
   });
 
   test('a foto do hero e dos cartões tem crédito visível com ligações; substitutas dizem o sítio real', async ({ page }) => {
@@ -237,8 +266,15 @@ test.describe('#183 home v6 — 1440 × 900', () => {
     for (const c of await page.getByTestId('home-cartao').all()) expect((await c.boundingBox())!.y + (await c.boundingBox())!.height).toBeLessThanOrEqual(900);
     expect(regua!.b).toBeLessThanOrEqual(900);
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(1440);
-    // desktop: o mapa não tem «Abrir mapa» (está vivo ao lado)
-    await expect(page.getByRole('button', { name: 'Abrir mapa' })).toBeHidden();
+    // desktop: o cartão do mapa é a porta do /mapa (z=7, vento ligado); sem «Abrir mapa» nem diálogo
+    const porta = page.getByTestId('home-mapa').getByRole('link', { name: 'Explorar o mapa da costa' });
+    await expect(porta).toBeVisible();
+    await expect(porta).toHaveAttribute('href', /^\/pt\/mapa\/\?sport=(kitesurf|surf)&wind=1&t=\d{1,2}(&dia=1)?&lat=39\.35&lon=-8\.95&z=7&de=home$/);
+    await expect(page.getByRole('button', { name: /Abrir mapa|Fechar o mapa/ })).toHaveCount(0);
+    // «Mapa da costa» é o 1.º item da navegação do cabeçalho
+    const nav = page.getByRole('banner').getByRole('navigation').first();
+    await expect(nav.locator('a, button').first()).toHaveText('Mapa da costa');
+    await expect(nav.locator('a, button').first()).toHaveAttribute('href', '/pt/mapa/');
   });
 
   test('o mapa mostra rótulos de todos os spots da modalidade, sem sobreposição', async ({ page }) => {
@@ -252,6 +288,11 @@ test.describe('#183 home v6 — 1440 × 900', () => {
       }),
     );
     expect(rs.length).toBeGreaterThanOrEqual(8);
+    // #273: cada rótulo abre o /mapa com esse spot aberto (…&spot=<id>&de=home), não a página do spot
+    const hrefs = await page.evaluate(() =>
+      Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-testid="home-rotulos"] .rot')).map((e) => [e.dataset.spot, e.getAttribute('href')]),
+    );
+    for (const [id, h] of hrefs) expect(h).toMatch(new RegExp(`^/pt/mapa/\\?sport=kitesurf&wind=1&t=14&lat=39\\.35&lon=-8\\.95&z=7&spot=${id}&de=home$`));
     for (let i = 0; i < rs.length; i++)
       for (let j = i + 1; j < rs.length; j++) {
         const a = rs[i];
@@ -341,13 +382,13 @@ test.describe('#183 home v6 — HTML estático, bundle, WebGL e movimento', () =
     }
   });
 
-  test('EN: the same page in English («Go.», «Open map», «Today»)', async ({ page }) => {
+  test('EN: the same page in English («Go.», «Explore the coast map», «Today»)', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await fixtureMaquete(page);
     await abreHome(page, '/en/', { maquete: true });
     await expect(page.getByTestId('home-palavra')).toHaveText(/^Go\./);
     await expect(page.getByTestId('home-frase')).toContainText('kite good to very good from Guincho to Lagoa, until 19:00.');
-    await expect(page.getByRole('button', { name: 'Open map' })).toBeAttached();
+    await expect(page.getByTestId('home-mapa').getByRole('link', { name: 'Explore the coast map' })).toHaveAttribute('href', /^\/en\/mapa\/\?sport=kitesurf/);
     await expect(page.getByTestId('home-regua')).toContainText(/Today · 14h|Today · 14:00/);
   });
 });
