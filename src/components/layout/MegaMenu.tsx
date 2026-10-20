@@ -122,7 +122,7 @@ export default function MegaMenu({ locale, isOpen, isActive = false, onOpen, onC
         ref={triggerRef}
         type="button"
         onClick={handleToggle}
-        className={`inline-flex items-center gap-1 shrink-0 whitespace-nowrap px-1.5 2xl:px-3 py-1.5 rounded-input text-sm font-medium transition-all duration-[200ms] ease-out-expo motion-reduce:transition-none ${
+        className={`inline-flex items-center gap-1 shrink-0 whitespace-nowrap px-1.5 xl:px-3 py-1.5 rounded-input text-sm font-medium transition-all duration-[200ms] ease-out-expo motion-reduce:transition-none ${
           isActive
             ? 'bg-accent/15 text-accent ring-1 ring-accent/25'
             : 'text-fg-subtle hover:text-fg hover:bg-surface-1/[0.04]'

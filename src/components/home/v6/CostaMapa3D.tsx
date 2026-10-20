@@ -256,7 +256,8 @@ export default function CostaMapa3D({ M, E, copy: c, hrefMapa, nSpots, forcarPla
     postos.splice(0, postos.length, ...feitos.map(({ x, y, w, h }) => ({ x, y, w, h })));
     const lbl = (txt: string, ll: [number, number]) => {
       const q = p.proj(ll);
-      if (!q || q.x < 40 || q.x > W - 40 || q.y < topoLivre || q.y > fundo) return;
+      // nomes decorativos (aria-hidden): no desktop podem descer até ao topo da faixa do CTA (o «ATLÂNTICO» da maquete fica entre a legenda e o CTA)
+      if (!q || q.x < 40 || q.x > W - 40 || q.y < topoLivre || q.y > (dk ? H - 112 : fundo)) return;
       if (postos.some((r) => q.x > r.x - 50 && q.x < r.x + r.w + 50 && q.y > r.y - 12 && q.y < r.y + r.h + 12)) return;
       const el = document.createElement('div');
       el.className = 'top-lbl';
