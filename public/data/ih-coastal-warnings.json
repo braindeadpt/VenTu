@@ -169,38 +169,6 @@
       ]
     },
     {
-      "id": 18839,
-      "ref": "ANAV NR 2333/26",
-      "category": "Exercicios navais ou exercicios de tiro",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=7f0d7747-9d0a-4afa-b0bc-b2d2498d2990",
-      "source": "ih",
-      "collection": "nav_warning_coastal",
-      "polygons": [
-        [
-          [
-            -28.496667,
-            38.076667
-          ],
-          [
-            -28.496667,
-            38.213333
-          ],
-          [
-            -28.665,
-            38.213333
-          ],
-          [
-            -28.665,
-            38.076667
-          ],
-          [
-            -28.496667,
-            38.076667
-          ]
-        ]
-      ]
-    },
-    {
       "id": 18841,
       "ref": "ANAV NR 2334/26",
       "category": "Requisitos de segurança maritima",
@@ -346,6 +314,102 @@
           [
             -8.799076,
             41.517532
+          ]
+        ]
+      ]
+    },
+    {
+      "id": 18863,
+      "ref": "ANAV NR 2365/26",
+      "category": "Requisitos de segurança maritima",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=8933b37b-2b45-4b56-947e-3327e536d968",
+      "source": "ih",
+      "collection": "nav_warning_coastal",
+      "polygons": [
+        [
+          [
+            -17.460938,
+            32.231389
+          ],
+          [
+            -17.460938,
+            33.063924
+          ],
+          [
+            -16.494141,
+            33.063924
+          ],
+          [
+            -16.494141,
+            32.231389
+          ],
+          [
+            -17.460938,
+            32.231389
+          ]
+        ]
+      ]
+    },
+    {
+      "id": 18865,
+      "ref": "ANAV NR 2366/26",
+      "category": "Requisitos de segurança maritima",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=3d7d9ab2-675f-4597-a292-c34a9d88ef7b",
+      "source": "ih",
+      "collection": "nav_warning_coastal",
+      "polygons": [
+        [
+          [
+            -8.869847,
+            41.813503
+          ],
+          [
+            -8.869847,
+            41.814015
+          ],
+          [
+            -8.869107,
+            41.814015
+          ],
+          [
+            -8.869107,
+            41.813503
+          ],
+          [
+            -8.869847,
+            41.813503
+          ]
+        ]
+      ]
+    },
+    {
+      "id": 18867,
+      "ref": "ANAV NR 2367/26",
+      "category": "Requisitos de segurança maritima",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=0ca27dad-a570-43f0-aef0-bcda46b11dfb",
+      "source": "ih",
+      "collection": "nav_warning_coastal",
+      "polygons": [
+        [
+          [
+            -8.871602,
+            41.857684
+          ],
+          [
+            -8.871602,
+            41.858787
+          ],
+          [
+            -8.869393,
+            41.858787
+          ],
+          [
+            -8.869393,
+            41.857684
+          ],
+          [
+            -8.871602,
+            41.857684
           ]
         ]
       ]
@@ -8038,24 +8102,31 @@
       1010344
     ],
     "sao-vicente-madeira": [
+      18863,
       1000459
     ],
     "porto-da-cruz": [
+      18863,
       1000459
     ],
     "paul-mar": [
+      18863,
       1000459
     ],
     "jardim-mar": [
+      18863,
       1000459
     ],
     "ponta-sao-lourenco": [
+      18863,
       1000459
     ],
     "ribeira-brava": [
+      18863,
       1000459
     ],
     "funchal": [
+      18863,
       1000459
     ],
     "barra-aveiro": [
@@ -8130,15 +8201,19 @@
       2018247
     ],
     "machico": [
+      18863,
       1000459
     ],
     "seixal-madeira": [
+      18863,
       1000459
     ],
     "ponta-pargo": [
+      18863,
       1000459
     ],
     "madalena-mar": [
+      18863,
       1000459
     ],
     "calhetas": [
@@ -8193,7 +8268,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-10-21T16:36:43.017Z",
+  "fetchedAt": "2026-10-21T18:39:07.965Z",
   "sourceCollection": "nav_warning_coastal+nav_warning_local+orca_anavnet_point",
   "sourceUrl": "https://ogcapi.hidrografico.pt/collections/nav_warning_coastal"
 }
