@@ -156,6 +156,8 @@ const pt = {
   creditos: 'CREDITOS',
   fonte: 'Previsão Open-Meteo, lida de um só objecto por spot e hora; as notas são as mesmas da página de cada spot.',
   semDados: 'Sem previsão para hoje e amanhã nesta costa.',
+  /** Hora sem vento/onda na fonte (null): sem nota, mas não é noite. */
+  semDadosHora: 'Sem dados',
   titulo: (p: string, frase: string) => `VenTu · ${p} ${frase}`,
 };
 
@@ -269,6 +271,7 @@ const en: HomeV6Copy = {
   creditos: 'CREDITS',
   fonte: 'Open-Meteo forecast, read from a single object per spot and hour; the scores are the same as on each spot page.',
   semDados: 'No forecast for today and tomorrow on this coast.',
+  semDadosHora: 'No data',
   titulo: (p: string, frase: string) => `VenTu · ${p} ${frase}`,
 };
 

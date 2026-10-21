@@ -68,7 +68,7 @@ describe('scoreConditions', () => {
     waterTemp: 18,
     stationName: 'CSA92/D',
     stationArea: 'Leixões',
-    distanceKm: 60,
+    distanceKm: 30,
     observedAt: new Date().toISOString(),
     source: 'ih-buoy',
   });
@@ -92,6 +92,48 @@ describe('scoreConditions', () => {
     expect(withObs.waveHeight).toBe(1.8);
     expect(withObs.wavePeriod).toBe(12);
     expect(withObs.waveDirection).toBe(280);
+  });
+
+  it('boia a mais de 40 km não substitui a onda do modelo (auditoria 16/10, A5)', () => {
+    const base = {
+      waveHeight: 0.6,
+      wavePeriod: 8,
+      waveDirection: 270,
+      windSpeed: ktToMs(8),
+      windDirection: 270,
+      windGust: ktToMs(10),
+      waterTemp: 18,
+    };
+    // Sines (CSA83/1D) → Nazaré, 188 km: fresca mas longe.
+    const longe = { ...freshWave(2.8, 12, 300), stationName: 'CSA83/1D', distanceKm: 188.1 };
+    expect(applyObservedWaveForScore(base, longe)).toEqual(base);
+    expect(resolveScoreWaveSource({ observedWave: longe })).not.toBe('observed');
+    expect(resolveScoreWaveCorrection({ observedWave: longe })).toBeNull();
+    // Mesmo limite: 40 km entra, 40,1 km não.
+    expect(applyObservedWaveForScore(base, { ...longe, distanceKm: 40 }).waveHeight).toBe(2.8);
+    expect(applyObservedWaveForScore(base, { ...longe, distanceKm: 40.1 }).waveHeight).toBe(0.6);
+  });
+
+  it('a ponte Cabo Silleiro → Nazaré (~280 km) fica fora da nota', () => {
+    const base = {
+      waveHeight: 0.6,
+      wavePeriod: 8,
+      waveDirection: 270,
+      windSpeed: ktToMs(8),
+      windDirection: 270,
+      windGust: ktToMs(10),
+      waterTemp: 18,
+    };
+    const ponte: ObservedWave = {
+      ...freshWave(2.1, 9, 320),
+      stationName: 'Cabo Silleiro',
+      source: 'wmo-buoy',
+      distanceKm: 281.4,
+      bridge: true,
+      stationCode: '6200084',
+    };
+    expect(applyObservedWaveForScore(base, ponte)).toEqual(base);
+    expect(resolveScoreWaveSource({ observedWave: ponte })).toBe('forecast');
   });
 
   it('keeps forecast fields when the buoy has no period/direction', () => {
@@ -262,7 +304,7 @@ describe('scoreConditions', () => {
         source: 'wmo-buoy' as const,
         stationName: 'Cabo Silleiro',
         stationArea: 'Galiza',
-        distanceKm: 96.8,
+        distanceKm: 36.8,
         calibration: {
           me: -0.9,
           n: 4,
@@ -579,7 +621,7 @@ describe('viés regional como fallback (wave-bias.json)', () => {
       observedWave: {
         waveHeight: 2.2,
         stationName: 'CSA92/D',
-        distanceKm: 60,
+        distanceKm: 30,
         observedAt: new Date().toISOString(),
         source: 'ih-buoy',
       } as ObservedWave,
@@ -591,7 +633,7 @@ describe('viés regional como fallback (wave-bias.json)', () => {
       observedWave: {
         waveHeight: 2.2,
         stationName: 'CSA92/D',
-        distanceKm: 60,
+        distanceKm: 30,
         observedAt: new Date(Date.now() - 5 * 3_600_000).toISOString(),
         source: 'ih-buoy',
       } as ObservedWave,

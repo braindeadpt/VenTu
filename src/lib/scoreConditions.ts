@@ -3,7 +3,7 @@ import type { Conditions } from '@/lib/sportScore';
 import type { ObservedConditions } from '@/lib/observations';
 import { isObservedFresh } from '@/lib/observations';
 import type { ObservedWave } from '@/lib/observedWave';
-import { isObservedWaveFresh } from '@/lib/observedWave';
+import { isObservedWaveFresh, isObservedWaveNear } from '@/lib/observedWave';
 import { pickObservedField } from '@/lib/marineConditions';
 
 const MS_PER_KT = 1 / 1.94384;
@@ -68,7 +68,8 @@ export function applyObservedWaveForScore(
   conditions: Conditions,
   observedWave?: ObservedWave | null,
 ): Conditions {
-  if (!observedWave || !isObservedWaveFresh(observedWave)) {
+  // Só uma boia fresca E perto (≤ 40 km, auditoria 16/10 A5) substitui a onda do modelo.
+  if (!observedWave || !isObservedWaveFresh(observedWave) || !isObservedWaveNear(observedWave)) {
     return conditions;
   }
   return {
@@ -97,7 +98,7 @@ export function resolveScoreWaveSource(
   nowMs?: number,
 ): ScoreWaveSource {
   const observedWave = raw.observedWave as ObservedWave | undefined;
-  if (observedWave && isObservedWaveFresh(observedWave, nowMs)) return 'observed';
+  if (observedWave && isObservedWaveFresh(observedWave, nowMs) && isObservedWaveNear(observedWave)) return 'observed';
   const waveBias = raw.waveBias;
   if (waveBias && typeof waveBias === 'object') return 'bias-corrected';
   return 'forecast';
@@ -160,7 +161,7 @@ export function resolveScoreWaveCorrection(
   nowMs?: number,
 ): ScoreWaveCorrection | null {
   const observedWave = raw.observedWave as ObservedWave | undefined;
-  if (observedWave && isObservedWaveFresh(observedWave, nowMs)) {
+  if (observedWave && isObservedWaveFresh(observedWave, nowMs) && isObservedWaveNear(observedWave)) {
     const skill = observedWave.skill;
     const me = skill && Number.isFinite(skill.me) ? skill.me : undefined;
     const n = skill && Number.isFinite(skill.n) ? skill.n : undefined;
@@ -270,7 +271,7 @@ export function applyRegionalBiasFallback(
 ): { waveHeight: number; waveBias: { region: string; me: number; n: number; deltaM: number; fallback: true } } | null {
   // A correcção em tempo real ganha — nunca aplicar o viés com leitura fresca.
   const observedWave = spotCond.observedWave as ObservedWave | undefined;
-  if (observedWave && isObservedWaveFresh(observedWave)) return null;
+  if (observedWave && isObservedWaveFresh(observedWave) && isObservedWaveNear(observedWave)) return null;
   // Já corrigida pela pipeline (meta na row) — nunca corrigir duas vezes.
   if (spotCond.waveBias && typeof spotCond.waveBias === 'object') return null;
   const bias = resolveRegionBias(region, waveBiasFile);

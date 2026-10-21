@@ -254,7 +254,9 @@ function applyWindSafety(
   dir: WindSportDirectionSafety,
 ): SportScore {
   if (!dir.safety) return result
-  const score = dir.scoreCap !== null ? Math.min(result.score, notaToScore(dir.scoreCap)) : result.score
+  // Tecto arredondado PARA BAIXO na escala da nota: 2,5 → 20 (2 · Não dá).
+  // Com 25 a nota mostrada era round(2,5) = 3 · Fraco, acima do tecto (auditoria 16/10, M7).
+  const score = dir.scoreCap !== null ? Math.min(result.score, notaToScore(Math.floor(dir.scoreCap + 1e-9))) : result.score
   const pt = getTranslation('pt').windSafety
   const en = getTranslation('en').windSafety
   const key = dir.safety === 'offshore' ? 'offshore' : 'sideOffshore'

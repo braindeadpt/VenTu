@@ -97,7 +97,9 @@ describe('home v6: paridade com o nucleo.js da maquete (0 diferenças)', () => {
           if (x.n !== x.nMotor) difs.push(`${s.id} ${i}: ${x.nMotor} → ${x.n}`);
         });
       }
-      expect(difs).toEqual(d === 'kite' ? ['carcavelos 40: 8 → 5', 'martinhal 40: 6 → 5'] : []);
+      // martinhal 42: offshore, tecto 2,5. Desde a auditoria de dados 16/10 (M7) arredonda para
+      // baixo (2 · Não dá); antes `Math.round(2.5) = 3` igualava o motor e a hora não aparecia aqui.
+      expect(difs).toEqual(d === 'kite' ? ['carcavelos 40: 8 → 5', 'martinhal 40: 6 → 5', 'martinhal 42: 3 → 2'] : []);
     });
 
     it(`${d}: ranking completo, frase nacional e linhas do top 3 de cada bloco`, () => {
