@@ -2,7 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { createRequire } from 'module';
 
 const require = createRequire(import.meta.url);
-const { selectObservedWave } = require('../observedWaveMerge.js');
+const { selectObservedWave, OBSERVED_WAVE_MAX_KM } = require('../observedWaveMerge.js');
+import { OBSERVED_WAVE_MAX_DISTANCE_KM } from '../../../src/lib/observedWave';
 
 const NOW = Date.UTC(2026, 7, 14, 18, 0, 0); // 2026-08-14T18:00Z
 
@@ -10,7 +11,7 @@ const ihWave = {
   waveHeight: 1.8,
   wavePeriod: 11,
   stationName: 'CSA92/D',
-  distanceKm: 60,
+  distanceKm: 30,
   observedAt: '2026-08-14T17:00:00Z', // 1h
   source: 'ih-buoy',
 };
@@ -18,7 +19,7 @@ const wmoWave = {
   waveHeight: 1.6,
   wavePeriod: 10,
   stationName: 'Cabo Silleiro',
-  distanceKm: 56,
+  distanceKm: 26,
   observedAt: '2026-08-14T16:00:00Z', // 2h
   source: 'wmo-buoy',
 };
@@ -34,8 +35,8 @@ describe('selectObservedWave', () => {
       reason: 'ih-fresh',
       ihAgeHours: 1,
       wmoAgeHours: 2,
-      ihDistanceKm: 60,
-      wmoDistanceKm: 56,
+      ihDistanceKm: 30,
+      wmoDistanceKm: 26,
     });
   });
 
@@ -71,5 +72,35 @@ describe('selectObservedWave', () => {
       { nowMs: NOW },
     );
     expect(meta.ihAgeHours).toBe(0.9); // 55 min
+  });
+
+  it('paridade do limite de distância com src/lib/observedWave.ts', () => {
+    expect(OBSERVED_WAVE_MAX_KM).toBe(40);
+    expect(OBSERVED_WAVE_MAX_KM).toBe(OBSERVED_WAVE_MAX_DISTANCE_KM);
+  });
+
+  it('boia a mais de 40 km não é a onda do spot: nem vencedora nem alternativa (A5)', () => {
+    const sines = { ...ihWave, stationName: 'CSA83/1D', distanceKm: 188.1 };
+    // IH longe + WMO perto → ganha a WMO, sem alternativa.
+    const r = selectObservedWave(sines, wmoWave, { nowMs: NOW });
+    expect(r.wave.stationName).toBe('Cabo Silleiro');
+    expect(r.alt).toBeNull();
+    expect(r.meta.reason).toBe('wmo-only');
+    expect(r.meta.ihDistanceKm).toBeNull();
+    // Só IH longe → nada.
+    expect(selectObservedWave(sines, null, { nowMs: NOW })).toEqual({ wave: null, alt: null, meta: null });
+    // Limite inclusivo.
+    expect(selectObservedWave({ ...ihWave, distanceKm: 40 }, null, { nowMs: NOW }).wave).not.toBeNull();
+    expect(selectObservedWave({ ...ihWave, distanceKm: 40.1 }, null, { nowMs: NOW }).wave).toBeNull();
+  });
+
+  it('a ponte declarada (Cabo Silleiro → Nazaré, bridge: true) fica no cartão apesar da distância', () => {
+    const ponte = { ...wmoWave, distanceKm: 281.4, bridge: true, stationCode: '6200084' };
+    const { wave, alt, meta } = selectObservedWave(null, ponte, { nowMs: NOW });
+    expect(wave).toMatchObject({ stationName: 'Cabo Silleiro', bridge: true, distanceKm: 281.4 });
+    expect(alt).toBeNull();
+    expect(meta).toMatchObject({ winner: 'wmo', reason: 'wmo-only', wmoDistanceKm: 281.4 });
+    // Sem `bridge`, a mesma leitura longe sai.
+    expect(selectObservedWave(null, { ...wmoWave, distanceKm: 281.4 }, { nowMs: NOW }).wave).toBeNull();
   });
 });

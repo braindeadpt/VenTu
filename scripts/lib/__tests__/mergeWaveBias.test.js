@@ -113,7 +113,7 @@ function setupFiles({ fresh = true } = {}) {
           latest: { date: observedAt, hm0: 2.4, tp: 11, thtp: 280 },
         },
       },
-      spotMapping: { guincho: { idEst: 19, distanceKm: 60 } },
+      spotMapping: { guincho: { idEst: 19, distanceKm: 30 } },
     }),
   );
 
@@ -132,7 +132,7 @@ function writeCoherenceFile(p, pairs) {
  * wmo-buoys.json com uma boia ES (Cabo Silleiro, 6200084) mapeada para o
  * spot guincho — a rota cross-border (Copernicus WMO, sem key).
  */
-function setupWmoEs(spotId = 'guincho') {
+function setupWmoEs(spotId = 'guincho', distanceKm = 40) {
   const wmoBuoysPath = tmpFile('wmo-buoys.json');
   const now = new Date().toISOString();
   fs.writeFileSync(
@@ -148,7 +148,7 @@ function setupWmoEs(spotId = 'guincho') {
             latest: { date: now, hs: 2.8, tp: 12, dir: 300 },
           },
         },
-        spotMapping: { [spotId]: { code: '6200084', distanceKm: 40 } },
+        spotMapping: { [spotId]: { code: '6200084', distanceKm } },
       },
       null,
       2,
@@ -237,7 +237,7 @@ describe('merge-observations preserva o waveBias da row', () => {
       source: 'ih-buoy',
       waveHeight: 2.4,
       stationName: 'CSA92/D',
-      distanceKm: 60,
+      distanceKm: 30,
     });
     expect(out.observedWaveMeta).toMatchObject({ winner: 'ih', reason: 'ih-only' });
 
@@ -379,7 +379,7 @@ describe('merge-observations preserva o waveBias da row', () => {
 
   it('anexa a boia ES ao observedWaveAlt quando o par ES×PT está coherent', async () => {
     const { conditionsPath, mapPath, ihBuoysPath } = setupFiles({ fresh: true });
-    const wmoBuoysPath = setupWmoEs('guincho');
+    const wmoBuoysPath = setupWmoEs('guincho', 20); // alt mais perto que a IH (30 km), ambas ≤ 40 km
     const coherencePath = tmpFile('coherence.json');
     writeCoherenceFile(coherencePath, [
       { codes: ['6200084'], verdict: 'coherent' },
@@ -402,8 +402,8 @@ describe('merge-observations preserva o waveBias da row', () => {
     expect(out.observedWaveCoherenceRefused).toBeUndefined();
 
     // Fluxo completo da auditoria por região (passo `obs:update`): o merge
-    // escreve o bloco `regions` no buoy-coherence.json. Aqui a IH (60 km) vence
-    // mas a alt WMO (40 km) é mais próxima → a região fica marcada com a
+    // escreve o bloco `regions` no buoy-coherence.json. Aqui a IH (30 km) vence
+    // mas a alt WMO (20 km) é mais próxima → a região fica marcada com a
     // anomalia attachedNotClosest e o detalhe em notClosest.
     const report = JSON.parse(fs.readFileSync(coherencePath, 'utf-8'));
     expect(report.regionsAuditedAt).toBeTruthy();
@@ -415,8 +415,8 @@ describe('merge-observations preserva o waveBias da row', () => {
     expect(anomaly).toMatchObject({
       spot: 'guincho',
       winner: 'ih-buoy',
-      attachedKm: 60,
-      altKm: 40,
+      attachedKm: 30,
+      altKm: 20,
     });    expect(anomaly.attachedKm).toBeGreaterThan(anomaly.altKm);
   });
 

@@ -98,23 +98,30 @@ const { fetchMarineData, fetchWeatherData, fetchMarineWaveModels, fetchWindModel
 function getCurrentConditions(marineData, weatherData, ihTideObs, tideBaseline) {
   const marineTimeIndex = findCurrentHourIndex(marineData.hourly.time);
   const weatherTimeIndex = Math.min(findCurrentHourIndex(weatherData.hourly.time), weatherData.hourly.wind_speed_10m.length - 1);
-  const seaLevel = marineData.hourly.sea_level_height_msl?.[marineTimeIndex] || 0;
-  const seaLevelNext = marineData.hourly.sea_level_height_msl?.[marineTimeIndex + 1];
-  const tide = require('./lib/updateConditionsPure').getTideStatus(seaLevel, seaLevelNext);
-  const waveHeight = marineData.hourly.wave_height[marineTimeIndex] || 0;
-  const wavePeriod = marineData.hourly.wave_period[marineTimeIndex] || 0;
+  // `seaLevel` cru (vs MSL do modelo) só para a anomalia IH (o baseline por
+  // fase foi semeado com a série crua). A altura mostrada e o estado da maré
+  // usam a série sem a média (auditoria 16/10, A4); em falta → null (M2).
+  const pure = require('./lib/updateConditionsPure');
+  const seaRaw = marineData.hourly.sea_level_height_msl?.[marineTimeIndex];
+  const seaLevel = Number(seaRaw) || 0;
+  const tideMean = pure.seriesMean(marineData.hourly.sea_level_height_msl);
+  const tideNow = pure.tideFromSeries(seaRaw, tideMean);
+  const tideNext = pure.tideFromSeries(marineData.hourly.sea_level_height_msl?.[marineTimeIndex + 1], tideMean);
+  const tide = tideNow == null ? { status: null, label: null } : pure.getTideStatus(tideNow, tideNext ?? undefined);
+  const waveHeight = pure.finiteOrNull(marineData.hourly.wave_height?.[marineTimeIndex]);
+  const wavePeriod = pure.finiteOrNull(marineData.hourly.wave_period?.[marineTimeIndex]);
   const primary = require('./lib/updateConditionsPure').pickSwellTrain(marineData.hourly.swell_wave_height?.[marineTimeIndex], marineData.hourly.swell_wave_period?.[marineTimeIndex], marineData.hourly.swell_wave_direction?.[marineTimeIndex]);
   const secondary = require('./lib/updateConditionsPure').pickSwellTrain(marineData.hourly.secondary_swell_wave_height?.[marineTimeIndex], marineData.hourly.secondary_swell_wave_period?.[marineTimeIndex], marineData.hourly.secondary_swell_wave_direction?.[marineTimeIndex]);
   const result = {
-    waveHeight, wavePeriod, waveDirection: marineData.hourly.wave_direction[marineTimeIndex] || 0,
+    waveHeight, wavePeriod, waveDirection: pure.finiteOrNull(marineData.hourly.wave_direction?.[marineTimeIndex]),
     swellHeight: primary?.height ?? 0, swellPeriod: primary?.period ?? 0, swellDirection: primary?.direction ?? 0,
-    windWaveHeight: marineData.hourly.wind_wave_height?.[marineTimeIndex] ?? 0,
-    wavePowerKw: require('./lib/updateConditionsPure').wavePowerFromMarine({ swellHeight: primary?.height ?? 0, swellPeriod: primary?.period ?? 0, waveHeight, wavePeriod }),
-    windSpeed: weatherData.hourly.wind_speed_10m[weatherTimeIndex] || 0,
-    windDirection: weatherData.hourly.wind_direction_10m[weatherTimeIndex] || 0,
-    windGust: weatherData.hourly.wind_gusts_10m[weatherTimeIndex] || 0,
-    waterTemp: marineData.hourly.sea_surface_temperature[marineTimeIndex] || 0,
-    tideHeight: seaLevel, tideStatus: tide.status, tideLabel: tide.label,
+    windWaveHeight: pure.finiteOrNull(marineData.hourly.wind_wave_height?.[marineTimeIndex]),
+    wavePowerKw: waveHeight == null && primary?.height == null ? null : pure.wavePowerFromMarine({ swellHeight: primary?.height ?? 0, swellPeriod: primary?.period ?? 0, waveHeight: waveHeight ?? 0, wavePeriod: wavePeriod ?? 0 }),
+    windSpeed: pure.finiteOrNull(weatherData.hourly.wind_speed_10m?.[weatherTimeIndex]),
+    windDirection: pure.finiteOrNull(weatherData.hourly.wind_direction_10m?.[weatherTimeIndex]),
+    windGust: pure.finiteOrNull(weatherData.hourly.wind_gusts_10m?.[weatherTimeIndex]),
+    waterTemp: pure.finiteOrNull(marineData.hourly.sea_surface_temperature?.[marineTimeIndex]),
+    tideHeight: tideNow, tideStatus: tide.status, tideLabel: tide.label,
     ...require('./lib/updateConditionsPure').uvIndexFields(weatherData.hourly, weatherTimeIndex),
     ...require('./lib/updateConditionsMerge').readOceanCurrent(marineData.hourly, marineTimeIndex),
   };

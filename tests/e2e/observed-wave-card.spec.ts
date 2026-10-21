@@ -527,6 +527,7 @@ test.describe('Leitura da boia no conditions.json: página de spot v6 e comparad
             source: 'wmo-buoy',
             stationName: 'Cabo Silleiro',
             stationArea: 'Galiza',
+            distanceKm: 26, // ≤ 40 km: só uma boia perto entra na nota (auditoria 16/10, A5)
           }),
         }),
         carcavelos: (entry) => {

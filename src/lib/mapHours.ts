@@ -161,7 +161,7 @@ function sampleSeries(
 }
 
 function finiteTideHeight(row: Record<string, unknown> | null): number | null {
-  if (!row) return null;
+  if (!row || row.tideHeight == null) return null; // null = sem dados (Number(null) seria 0)
   const n = Number(row.tideHeight);
   return Number.isFinite(n) ? n : null;
 }

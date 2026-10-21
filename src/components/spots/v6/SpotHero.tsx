@@ -23,14 +23,17 @@ export interface SpotHeroProps {
   locale: string;
   copy: SpotPageV6Copy;
   faltaTxt?: string | null;
+  /** Hora sem o dado da fonte (vento/onda): «–» e «Sem dados», não a lua. */
+  semDados?: boolean;
 }
 
-export default function SpotHero({ nome, quando, n, banda, palavra, resto, apoio, foto, locale, copy, faltaTxt }: SpotHeroProps) {
+export default function SpotHero({ nome, quando, n, banda, palavra, resto, apoio, foto, locale, copy, faltaTxt, semDados }: SpotHeroProps) {
   const fotoStyle = foto
     ? ({ '--up': foto.up ?? 0, '--fl': `${foto.fl ?? 0}%`, '--pd': foto.posd || foto.pos || '50% 50%' } as CSSProperties)
     : undefined;
   const cls = ['foto', 'kb', foto && (foto.up ?? 0) < 0 ? 'desce' : '', foto && (foto.fl ?? 0) > 0 ? 'lado' : ''].filter(Boolean).join(' ');
-  const ariaNota = n == null ? copy.noiteAria : copy.notaAria.replace('{n}', String(n)).replace('{banda}', palavra);
+  const ariaNota =
+    n == null ? (semDados ? copy.semDadosAria : copy.noiteAria) : copy.notaAria.replace('{n}', String(n)).replace('{banda}', palavra);
   return (
     <section className="hero" aria-labelledby="spot-n" id="agora">
       <div className={cls} style={fotoStyle} data-testid="spot-hero-foto">
@@ -59,7 +62,7 @@ export default function SpotHero({ nome, quando, n, banda, palavra, resto, apoio
           {quando.agora ? ` · ${copy.agora}` : ''}
         </p>
         <div className="ver" aria-live="polite" aria-atomic="true" data-testid="spot-veredicto" data-banda={banda}>
-          <Nota n={n} ariaLabel={ariaNota} />
+          <Nota n={n} ariaLabel={ariaNota} semDados={semDados} />
           <p style={{ margin: 0 }}>
             <span className="pal">{palavra}</span>
             <span className="l1">{resto}</span>

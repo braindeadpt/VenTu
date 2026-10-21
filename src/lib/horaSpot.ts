@@ -8,12 +8,16 @@
  * - vento e rajadas: m/s (Open-Meteo, `wind_speed_unit=ms`) → nós inteiros;
  * - onda: `waveHeight` (m, 1 casa), `wavePeriod` (s, inteiro),
  *   `waveDirection` (ou `swellDirection`);
- * - maré: `tideHeight` vem relativo ao nível médio (MSL); o motor usa alturas
+ * - maré: `tideHeight` vem relativo ao nível médio da própria série (o
+ *   pipeline retira a média do `sea_level_height_msl`, deslocada −0,35 a
+ *   −0,41 m no continente: auditoria de dados 16/10, A4); o motor usa alturas
  *   acima do zero hidrográfico (como as tabelas de marés e a maquete), por isso
- *   soma-se `NIVEL_MEDIO_ZH` (2,0 m: nível médio acima do ZH na costa
- *   continental, Cascais 2,08 / Leixões 2,00 / Lagos 2,04). `tideUp` deriva da
- *   curva (a hora seguinte é mais alta). Sem maré: `NaN` (o motor não penaliza
- *   e a UI diz «sem dados»);
+ *   soma-se o nível médio do porto IH de referência (`nivelMedioZH`: Tabela de
+ *   Marés IH 2026 — 2,00 m na costa continental, Cascais 2,08, Lisboa 2,20,
+ *   Funchal 1,40, Açores 1,00). `tideUp` deriva da curva (a hora seguinte é
+ *   mais alta). Sem maré: `NaN` (o motor não penaliza e a UI diz «sem dados»);
+ * - em falta na fonte (`null`, auditoria 16/10, M2): a hora leva `semDados`
+ *   ('vento' / 'onda') e o motor não a avalia (a UI diz «sem dados», não 0);
  * - sol: `sunEl`/`sunAz` calculados em cliente (`src/lib/sol.ts`, NOAA);
  * - chuva e nuvens: os forecasts não as têm → `null`. O motor degrada sem
  *   penalização (`degrau(chuva, null) = 0`) e a UI diz-o (`faltam`).
@@ -23,7 +27,70 @@ import { findCoveredHourIndex, seriesTimeMs } from '@/lib/openMeteoTime';
 import { findTideExtrema } from '@/lib/tideSchedule';
 import { instanteLisboa, nascerPor, posicaoSol } from '@/lib/sol';
 
+/** Nível médio acima do ZH na costa continental (Tabela de Marés IH 2026, Viana a VRSA). */
 export const NIVEL_MEDIO_ZH = 2.0;
+
+/**
+ * Portos de referência da Tabela de Marés do IH (2026, vol. I): posição do
+ * marégrafo e «Nível médio» (m acima do ZH). Sesimbra, Vila do Porto e Flores
+ * sem coordenadas no volume: posição do porto.
+ */
+export const PORTOS_MARE: ReadonlyArray<{ nome: string; lat: number; lon: number; nm: number }> = [
+  { nome: 'Viana do Castelo', lat: 41.685, lon: -8.8397, nm: 2.0 },
+  { nome: 'Leixões', lat: 41.1867, lon: -8.7045, nm: 2.0 },
+  { nome: 'Aveiro', lat: 40.6442, lon: -8.7487, nm: 2.0 },
+  { nome: 'Figueira da Foz', lat: 40.1483, lon: -8.8562, nm: 2.0 },
+  { nome: 'Peniche', lat: 39.3498, lon: -9.3747, nm: 2.0 },
+  { nome: 'Cascais', lat: 38.6932, lon: -9.4153, nm: 2.08 },
+  { nome: 'Lisboa', lat: 38.7, lon: -9.1583, nm: 2.2 },
+  { nome: 'Sesimbra', lat: 38.441, lon: -9.104, nm: 2.0 },
+  { nome: 'Setúbal (Tróia)', lat: 38.4945, lon: -8.9008, nm: 2.0 },
+  { nome: 'Sines', lat: 37.9482, lon: -8.8878, nm: 2.0 },
+  { nome: 'Lagos', lat: 37.0988, lon: -8.6683, nm: 2.0 },
+  { nome: 'Faro-Olhão', lat: 36.9782, lon: -7.8662, nm: 2.0 },
+  { nome: 'Vila Real de Santo António', lat: 37.1933, lon: -7.4133, nm: 2.0 },
+  { nome: 'Funchal', lat: 32.644, lon: -16.913, nm: 1.4 },
+  { nome: 'Vila do Porto', lat: 36.944, lon: -25.146, nm: 1.0 },
+  { nome: 'Ponta Delgada', lat: 37.736, lon: -25.6712, nm: 1.0 },
+  { nome: 'Angra do Heroísmo', lat: 38.65, lon: -27.2223, nm: 1.0 },
+  { nome: 'Horta', lat: 38.5332, lon: -28.6207, nm: 1.0 },
+  { nome: 'Lajes das Flores', lat: 39.377, lon: -31.172, nm: 1.0 },
+];
+
+/** Interior do estuário do Tejo (a montante da Trafaria/Belém): o porto de Lisboa (2,20 m). */
+const noEstuarioTejo = (lat: number, lon: number) => lat > 38.6 && lat < 38.95 && lon >= -9.235 && lon < -8.85;
+
+/**
+ * Porto de marés de referência de um spot: Lisboa só dentro do estuário do
+ * Tejo; fora dele o porto mais próximo do mesmo arquipélago/costa (Lisboa
+ * excluído, para a Caparica ou Carcavelos não herdarem o nível do estuário).
+ */
+export function portoMareDe(lat: number, lon: number): { nome: string; nm: number } {
+  if (noEstuarioTejo(lat, lon)) return PORTOS_MARE[6];
+  const ilhaA = lon < -20;
+  const ilhaM = !ilhaA && lat < 34;
+  let best = PORTOS_MARE[0];
+  let bd = Infinity;
+  for (const p of PORTOS_MARE) {
+    if (p.nome === 'Lisboa') continue;
+    const pa = p.lon < -20;
+    const pm = !pa && p.lat < 34;
+    if (pa !== ilhaA || pm !== ilhaM) continue;
+    const dy = p.lat - lat;
+    const dx = (p.lon - lon) * Math.cos((lat * Math.PI) / 180);
+    const d = dx * dx + dy * dy;
+    if (d < bd) {
+      bd = d;
+      best = p;
+    }
+  }
+  return best;
+}
+
+/** Nível médio (m acima do ZH) do porto de referência do spot. */
+export function nivelMedioZH(lat: number, lon: number): number {
+  return portoMareDe(lat, lon).nm;
+}
 export const HORAS_REGUA = 48;
 const KT = 1.94384;
 
@@ -46,6 +113,8 @@ export interface LinhaForecast {
 }
 
 export interface HoraSpot extends HoraModalidade {
+  /** A fonte não traz vento / onda nesta hora (`null`): sem nota nessa lógica, a UI diz «sem dados». */
+  semDados?: Array<'vento' | 'onda'>;
   /** Temperatura da água (°C), quando existe. */
   agua?: number;
   /** Temperatura do ar (°C), quando existe. */
@@ -63,7 +132,7 @@ export interface DadosHoras {
   sol: Record<string, { nascer: string; por: string }>;
   mares: MareExtremo[];
   /** Campos que a fonte não traz (a nota não os conta). */
-  faltam: Array<'rain' | 'cloud' | 'tide'>;
+  faltam: Array<'rain' | 'cloud' | 'tide' | 'onda' | 'agua'>;
   /**
    * «Agora» está fora da cobertura da previsão (expirada ou ainda por começar):
    * a régua mostra as últimas (ou primeiras) `n` horas da série, datadas, e
@@ -82,10 +151,10 @@ const n360 = (x: number) => ((Math.round(x) % 360) + 360) % 360;
  * pelos três pontos (j-1, j, j+1) dá o instante do vértice (±30 min) e a sua
  * altura, como as tabelas de marés («preia-mar às 16h50»).
  */
-function extremoAfinado(validas: readonly LinhaForecast[], j: number, t: string): { t: string; h: number } {
+function extremoAfinado(validas: readonly LinhaForecast[], j: number, t: string, nm: number): { t: string; h: number } {
   const zh = (l: LinhaForecast | undefined) => {
     const v = num(l?.tideHeight);
-    return v == null ? NaN : v + NIVEL_MEDIO_ZH;
+    return v == null ? NaN : v + nm;
   };
   const y1 = zh(validas[j]);
   const base = { t: t.slice(0, 16), h: Number.isFinite(y1) ? r1(y1) : NaN };
@@ -105,9 +174,9 @@ function extremoAfinado(validas: readonly LinhaForecast[], j: number, t: string)
   return { t: tt, h: r1(y1 - 0.25 * (y0 - y2) * dx) };
 }
 
-const mareZH = (l: LinhaForecast | undefined) => {
+const mareZH = (l: LinhaForecast | undefined, nm: number) => {
   const t = num(l?.tideHeight);
-  return t == null ? NaN : r1(t + NIVEL_MEDIO_ZH);
+  return t == null ? NaN : r1(t + nm);
 };
 
 /**
@@ -123,13 +192,18 @@ export function horaDeLinha(
 ): HoraSpot {
   const l = validas[j];
   const t = l.time.slice(0, 16);
-  const tide = mareZH(l);
-  const prox = mareZH(validas[j + 1]);
-  const ant = mareZH(validas[j - 1]);
+  const nm = nivelMedioZH(local.lat, local.lon);
+  const tide = mareZH(l, nm);
+  const prox = mareZH(validas[j + 1], nm);
+  const ant = mareZH(validas[j - 1], nm);
   const tideUp = Number.isFinite(prox) ? prox > tide || (prox === tide && tide > ant) : tide > ant;
   // instante pela etiqueta COMPLETA (com desvio): o 01:00 repetido e os Açores (M1/B3)
   const s = posicaoSol(instanteLisboa(l.time), local.lat, local.lon);
+  const semDados: Array<'vento' | 'onda'> = [];
+  if (num(l.windSpeed) == null) semDados.push('vento');
+  if (num(l.waveHeight) == null) semDados.push('onda');
   return {
+    ...(semDados.length ? { semDados } : {}),
     t,
     w: Math.round((num(l.windSpeed) ?? 0) * KT),
     g: Math.round((num(l.windGust) ?? num(l.windSpeed) ?? 0) * KT),
@@ -172,17 +246,20 @@ export function construirHoras(
       if (np) sol[dia] = np;
     }
   }
+  const nm = nivelMedioZH(local.lat, local.lon);
   const mares: MareExtremo[] = findTideExtrema(
     validas.slice(Math.max(0, i0 - 8), i0 + n + 14).map((l) => ({ time: l.time, tideHeight: num(l.tideHeight) })),
   )
     .filter((e) => typeof e.time === 'string')
     .map((e) => {
       const j = validas.findIndex((x) => x.time === e.time);
-      return { ...extremoAfinado(validas, j, e.time as string), tipo: e.type === 'high' ? 'PM' : 'BM' } as MareExtremo;
+      return { ...extremoAfinado(validas, j, e.time as string, nm), tipo: e.type === 'high' ? 'PM' : 'BM' } as MareExtremo;
     });
   const faltam: DadosHoras['faltam'] = [];
   if (horas.every((h) => h.rain == null)) faltam.push('rain');
   if (horas.every((h) => h.cloud == null)) faltam.push('cloud');
   if (horas.every((h) => !Number.isFinite(h.tide))) faltam.push('tide');
+  if (horas.every((h) => h.semDados?.includes('onda'))) faltam.push('onda');
+  if (horas.every((h) => h.agua == null)) faltam.push('agua');
   return { horas, sol, mares, faltam, semAgora };
 }
