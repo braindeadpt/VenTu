@@ -20,6 +20,8 @@ export const translationsFr = {
     favorites: 'Favoris',
     explorar: 'Explorer',
     mapa: 'Carte',
+    mapaCosta: 'Carte de la côte',
+    mapaCostaSub: 'vent en direct, 8 sports, 48 h',
     livecams: 'Livecams',
     openMenu: 'Ouvrir le menu',
     closeMenu: 'Fermer le menu',

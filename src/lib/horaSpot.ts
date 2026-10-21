@@ -23,7 +23,7 @@
  *   penalização (`degrau(chuva, null) = 0`) e a UI diz-o (`faltam`).
  */
 import type { HoraModalidade } from '@/lib/modalidades';
-import { findCoveredHourIndex, lisbonHourKeyFromDate } from '@/lib/openMeteoTime';
+import { findCoveredHourIndex, seriesTimeMs } from '@/lib/openMeteoTime';
 import { findTideExtrema } from '@/lib/tideSchedule';
 import { instanteLisboa, nascerPor, posicaoSol } from '@/lib/sol';
 
@@ -197,7 +197,8 @@ export function horaDeLinha(
   const prox = mareZH(validas[j + 1], nm);
   const ant = mareZH(validas[j - 1], nm);
   const tideUp = Number.isFinite(prox) ? prox > tide || (prox === tide && tide > ant) : tide > ant;
-  const s = posicaoSol(instanteLisboa(t), local.lat, local.lon);
+  // instante pela etiqueta COMPLETA (com desvio): o 01:00 repetido e os Açores (M1/B3)
+  const s = posicaoSol(instanteLisboa(l.time), local.lat, local.lon);
   const semDados: Array<'vento' | 'onda'> = [];
   if (num(l.windSpeed) == null) semDados.push('vento');
   if (num(l.waveHeight) == null) semDados.push('onda');
@@ -233,7 +234,7 @@ export function construirHoras(
   const coberta = findCoveredHourIndex(tempos, new Date(agoraMs));
   const semAgora = coberta < 0;
   // Fora da cobertura: previsão expirada → últimas n horas; ainda por começar → primeiras n.
-  const expirada = semAgora && lisbonHourKeyFromDate(new Date(agoraMs)) > tempos[tempos.length - 1].slice(0, 13);
+  const expirada = semAgora && agoraMs > seriesTimeMs(tempos[tempos.length - 1]);
   const i0 = semAgora ? (expirada ? Math.max(0, validas.length - n) : 0) : coberta;
   const fatia = validas.slice(i0, i0 + n);
   const horas: HoraSpot[] = fatia.map((_, k) => horaDeLinha(validas, i0 + k, local));

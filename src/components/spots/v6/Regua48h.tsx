@@ -104,7 +104,8 @@ export default function Regua48h({ horas, i, onEscolhe, copy, semAgora = false, 
         <div className="faixa" ref={faixa}>
           {horas.map((x, j) => (
             <i
-              key={x.t}
+              // posição na régua: `x.t` repete-se no 01:00 da mudança de hora de outubro (M1)
+              key={j}
               className={`${x.banda === 'noite' ? 'noite' : ''}${horaDe(x.t) === 0 && j ? ' d0' : ''}`}
               style={{ '--c': V6_BANDAS[x.banda].c } as CSSProperties}
               data-banda={x.banda}
@@ -130,13 +131,13 @@ export default function Regua48h({ horas, i, onEscolhe, copy, semAgora = false, 
           const k = horaDe(x.t);
           if (k === 0)
             return (
-              <span key={x.t} className="dia" style={{ left: `${((j / N) * 100).toFixed(2)}%` }}>
+              <span key={`${x.t}#${j}`} className="dia" style={{ left: `${((j / N) * 100).toFixed(2)}%` }}>
                 {copy.dias[diaSemana(x.t)].toUpperCase()} {+x.t.slice(8, 10)}
               </span>
             );
           if ((k === 12 || k === 18 || k === 6) && j > 1)
             return (
-              <span key={x.t} className={k === 6 ? 'so-d' : undefined} style={{ left: `${(((j + 0.5) / N) * 100).toFixed(2)}%` }}>
+              <span key={`${x.t}#${j}`} className={k === 6 ? 'so-d' : undefined} style={{ left: `${(((j + 0.5) / N) * 100).toFixed(2)}%` }}>
                 {horaTxt(copy, k)}
               </span>
             );

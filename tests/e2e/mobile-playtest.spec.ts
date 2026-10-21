@@ -47,6 +47,17 @@ test.describe('mobile playtest (390×844, touch)', () => {
     const drawer = page.locator('#mobile-nav');
     await expect(drawer).toBeVisible();
 
+    // #273: «Mapa da costa» em destaque no topo da gaveta (antes das secções), link para o /mapa.
+    const mapaCard = drawer.getByTestId('gaveta-mapa-costa');
+    await expect(mapaCard).toBeVisible();
+    await expect(mapaCard).toHaveAttribute('href', '/pt/mapa/');
+    await expect(mapaCard).toContainText('Mapa da costa');
+    await expect(mapaCard).toContainText('vento ao vivo, 8 modalidades, 48 h');
+    const cardBox = await mapaCard.boundingBox();
+    expect(cardBox!.height).toBeGreaterThanOrEqual(44);
+    const condBox = await drawer.getByRole('button', { name: /Condições/ }).first().boundingBox();
+    expect(cardBox!.y + cardBox!.height).toBeLessThanOrEqual(condBox!.y);
+
     // Conditions section is expanded by default on mobile.
     const conditionsBtn = drawer.getByRole('button', { name: /Condições/ }).first();
     await expect(conditionsBtn).toHaveAttribute('aria-expanded', 'true');
