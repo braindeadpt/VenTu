@@ -240,9 +240,9 @@
     "azurara": {
       "radar": {
         "state": "over",
-        "distKm": 23,
+        "distKm": null,
         "dirDeg": 41,
-        "intensity": "moderate",
+        "intensity": null,
         "approach": {
           "state": "approaching",
           "deg": 310,
@@ -2140,14 +2140,10 @@
     "vila-cha": {
       "radar": {
         "state": "over",
-        "distKm": 19,
+        "distKm": null,
         "dirDeg": 59,
-        "intensity": "moderate",
-        "approach": {
-          "state": "approaching",
-          "deg": 309,
-          "kmh": 82
-        }
+        "intensity": null,
+        "approach": null
       },
       "warnLevel": null,
       "inStormCone": false
@@ -2490,14 +2486,10 @@
     "mindelo": {
       "radar": {
         "state": "over",
-        "distKm": 20,
+        "distKm": null,
         "dirDeg": 41,
-        "intensity": "moderate",
-        "approach": {
-          "state": "approaching",
-          "deg": 308,
-          "kmh": 80
-        }
+        "intensity": null,
+        "approach": null
       },
       "warnLevel": null,
       "inStormCone": false
@@ -2508,11 +2500,7 @@
         "distKm": 12,
         "dirDeg": 47,
         "intensity": "light",
-        "approach": {
-          "state": "approaching",
-          "deg": 282,
-          "kmh": 46
-        }
+        "approach": null
       },
       "warnLevel": null,
       "inStormCone": false

@@ -47,6 +47,7 @@ export default defineConfig({
       'scripts/lib/__tests__/forecastSkill.test.js',
       'scripts/lib/__tests__/updateConditions.test.js',
       'scripts/lib/__tests__/updateConditionsFetch.test.js',
+      'scripts/lib/__tests__/openMeteoUtc.test.js',
       'scripts/lib/__tests__/updateConditionsMerge.test.js',
       'scripts/lib/__tests__/updateConditionsUv.test.js',
       'scripts/lib/__tests__/updateConditionsHealth.test.js',

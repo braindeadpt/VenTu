@@ -1,5 +1,5 @@
 import { MarineData } from '@/types';
-import { findCurrentHourIndex } from '@/lib/openMeteoTime';
+import { findCurrentHourIndex, lisbonIsoWithOffset } from '@/lib/openMeteoTime';
 
 const MARINE_API = 'https://marine-api.open-meteo.com/v1/marine';
 const WEATHER_API = 'https://api.open-meteo.com/v1/forecast';
@@ -214,6 +214,8 @@ export async function fetchMarineData(lat: number, lon: number): Promise<FetchRe
       'wave_height,wave_direction,wave_period,sea_surface_temperature,sea_level_height_msl',
     daily: 'wave_height_max,sea_surface_temperature_max',
     timezone: 'Europe/Lisbon',
+    // instantes UTC reais (auditoria M1): convertidos abaixo hora a hora para Lisboa
+    timeformat: 'unixtime',
     forecast_days: '7',
   });
 
@@ -223,6 +225,7 @@ export async function fetchMarineData(lat: number, lon: number): Promise<FetchRe
     hourly: 'wind_speed_10m,wind_direction_10m,wind_gusts_10m',
     daily: 'wind_speed_10m_max',
     timezone: 'Europe/Lisbon',
+    timeformat: 'unixtime',
     forecast_days: '7',
     wind_speed_unit: 'ms',
   });
@@ -267,7 +270,7 @@ export async function fetchMarineData(lat: number, lon: number): Promise<FetchRe
 
     const result = {
       hourly: {
-        time: marine.hourly.time,
+        time: hourlyTimesLisboa(marine.hourly.time),
         wave_height: marine.hourly.wave_height || [],
         wave_direction: marine.hourly.wave_direction || [],
         wave_period: marine.hourly.wave_period || [],
@@ -278,7 +281,7 @@ export async function fetchMarineData(lat: number, lon: number): Promise<FetchRe
         sea_level_height: marine.hourly.sea_level_height_msl || [],
       },
       daily: {
-        time: marine.daily?.time || [],
+        time: dailyDatesLisboa(marine.daily?.time, marine.utc_offset_seconds),
         wave_height_max: marine.daily?.wave_height_max || [],
         wind_speed_max: weather.daily?.wind_speed_10m_max || [],
         water_temperature_max: marine.daily?.sea_surface_temperature_max || [],
@@ -293,6 +296,24 @@ export async function fetchMarineData(lat: number, lon: number): Promise<FetchRe
     cache.set(cacheKey, { data: mock, timestamp: Date.now() });
     return { data: mock, source: 'mock' as const };
   }
+}
+
+/**
+ * `timeformat=unixtime`: o Open-Meteo aplica um só `utc_offset_seconds` à
+ * resposta inteira (mudança de hora de 25/10 mal etiquetada); os instantes
+ * são reais, por isso cada hora é convertida com o desvio de Lisboa dessa hora.
+ */
+function hourlyTimesLisboa(times: unknown[]): string[] {
+  return times.map((t) => (typeof t === 'number' ? lisbonIsoWithOffset(t * 1000) : String(t)));
+}
+
+/** Datas diárias em unixtime: o Open-Meteo pede que se volte a somar o `utc_offset_seconds`. */
+function dailyDatesLisboa(times: unknown, offsetS: unknown): string[] {
+  if (!Array.isArray(times)) return [];
+  const off = typeof offsetS === 'number' ? offsetS : 0;
+  return times.map((t) =>
+    typeof t === 'number' ? new Date((t + off) * 1000).toISOString().slice(0, 10) : String(t),
+  );
 }
 
 export function getCurrentConditions(result: FetchResult): CurrentConditions {

@@ -10,6 +10,7 @@
 const fs = require('fs');
 const path = require('path');
 const { atomicWriteJson } = require('./lib/atomicWriteJson.js');
+const { utcRequestParams, localizeHourly } = require('./lib/openMeteoUtc');
 const { callLLM } = require('./llm-fallback');
 const { attachMoonTideLines } = require('./lib/attachMoonTide');
 const { morningScore, resolveMorningRecalibration } = require('./lib/dawnPatrolScore');
@@ -95,7 +96,7 @@ const TOP_SPOTS = [
   { name: 'Carcavelos', slug: 'carcavelos', lat: 38.679, lon: -9.335, region: 'Lisboa', type: 'surf' },
 ];
 
-/** YYYY-MM-DD in Europe/Lisbon (matches Open-Meteo timezone=Europe/Lisbon). */
+/** YYYY-MM-DD in Europe/Lisbon (as etiquetas da série vêm na hora de parede de Lisboa). */
 function lisbonDateStr(date = new Date()) {
   return new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Lisbon' }).format(date);
 }
@@ -146,15 +147,18 @@ async function fetchWithRetry(url, retries = 2) {
 async function fetchSpotData(lat, lon) {
   // Marine API: waves + sea surface temperature
   // NOTE: water_temperature is NOT valid on marine-api. Use sea_surface_temperature.
-  const marineUrl = `https://marine-api.open-meteo.com/v1/marine?latitude=${lat}&longitude=${lon}&hourly=wave_height,wave_direction,wave_period,sea_surface_temperature,sea_level_height_msl&timezone=Europe/Lisbon&forecast_days=2`;
+  // UTC + conversão hora a hora para Lisboa (auditoria M1): as etiquetas
+  // ficam `YYYY-MM-DDTHH:MM±hh:mm`, o prefixo `${dia}T${hh}` continua a servir.
+  const utc = new URLSearchParams(utcRequestParams({ days: 2 }));
+  const marineUrl = `https://marine-api.open-meteo.com/v1/marine?latitude=${lat}&longitude=${lon}&hourly=wave_height,wave_direction,wave_period,sea_surface_temperature,sea_level_height_msl&${utc}`;
 
   // Forecast API: wind (10m) — marine API does not have wind variables
-  const forecastUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=wind_speed_10m,wind_direction_10m,wind_gusts_10m&timezone=Europe/Lisbon&forecast_days=2&wind_speed_unit=ms`;
+  const forecastUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=wind_speed_10m,wind_direction_10m,wind_gusts_10m&${utc}&wind_speed_unit=ms`;
 
-  const [marine, forecast] = await Promise.all([
+  const [marine, forecast] = (await Promise.all([
     fetchWithRetry(marineUrl),
     fetchWithRetry(forecastUrl),
-  ]);
+  ])).map((j) => localizeHourly(j));
 
   if (!marine?.hourly || !forecast?.hourly) {
     console.log(`     Missing data: marine=${!!marine?.hourly}, forecast=${!!forecast?.hourly}`);

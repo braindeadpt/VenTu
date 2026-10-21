@@ -14,6 +14,7 @@
 const path = require('path');
 const { atomicWriteJson } = require('./lib/atomicWriteJson.js');
 const { findCurrentHourIndex } = require('./lib/forecastConfidence.js');
+const { spotTimeZone, utcRequestParams, localizeHourly } = require('./lib/openMeteoUtc.js');
 const { spots } = require('./update-conditions.js');
 
 const AQ_API = 'https://air-quality-api.open-meteo.com/v1/air-quality';
@@ -47,11 +48,13 @@ async function main() {
   let failed = 0;
 
   for (const spot of spots) {
+    // UTC + conversão hora a hora para o fuso do spot (auditoria M1/B3)
+    const tz = spotTimeZone(spot);
     const url =
       `${AQ_API}?latitude=${spot.lat}&longitude=${spot.lon}` +
-      `&hourly=european_aqi&timezone=Europe%2FLisbon&forecast_days=2`;
+      `&hourly=european_aqi&${new URLSearchParams(utcRequestParams({ tz, days: 2 }))}`;
     try {
-      const json = await fetchJson(url);
+      const json = localizeHourly(await fetchJson(url), tz);
       const times = json?.hourly?.time;
       const series = json?.hourly?.european_aqi;
       if (!Array.isArray(times) || !Array.isArray(series)) throw new Error('empty hourly block');
