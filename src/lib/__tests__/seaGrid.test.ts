@@ -9,6 +9,7 @@ import {
   dilateSwell,
   lisbonLocalToEpochMs,
   parseSeaGrid,
+  parseSeaGridAsync,
   sampleSeaGrid,
   seaGridBoxAt,
   seaGridExtent,
@@ -348,5 +349,14 @@ describe('v3 — grelha de modelo preenchida (GFS + WW3)', () => {
     expect(s.swellFrom).toBeCloseTo(300, 0);
     // esbatido de 4° (v3) — a caixa de teste é toda «borda»
     expect(s.edge).toBeLessThan(1);
+  });
+});
+
+describe('parseSeaGridAsync (TBT /mapa)', () => {
+  it('em fatias dá exactamente a mesma grelha que o síncrono (v1 e v3)', async () => {
+    // budget 0 → cede em cada ponto de corte (pior caso)
+    expect(await parseSeaGridAsync(synthetic(), 0)).toEqual(parseSeaGrid(synthetic()));
+    expect(await parseSeaGridAsync(syntheticV1(), 0)).toEqual(parseSeaGrid(syntheticV1()));
+    expect(await parseSeaGridAsync(null, 0)).toBeNull();
   });
 });

@@ -137,3 +137,21 @@ describe('máscara de terra do domínio inteiro (land-mask.json)', () => {
     mod.installLandMask(null);
   });
 });
+
+describe('rasterizeGadmRings (TBT /mapa)', () => {
+  it('o scanline por aresta dá o mesmo bitmap que o varrimento completo', async () => {
+    const { rasterizeGadmRings } = await import('../landMask');
+    const { LAND_RINGS } = await import('../landRings');
+    const fast = rasterizeGadmRings(LAND_RINGS);
+    const full = rasterizeGadmRings(LAND_RINGS, false);
+    expect(fast.length).toBe(full.length);
+    let land = 0;
+    let diff = 0;
+    for (let i = 0; i < full.length; i++) {
+      if (full[i] === 1) land++;
+      if (fast[i] !== full[i]) diff++;
+    }
+    expect(land).toBeGreaterThan(100_000);
+    expect(diff).toBe(0);
+  });
+});

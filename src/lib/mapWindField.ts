@@ -1,3 +1,4 @@
+import { drainSteps, runSliced } from './sliced';
 import { windAtHour, type MapHoursFile } from '@/lib/mapHours';
 import { pointOnLand } from '@/lib/landMask';
 import {
@@ -229,6 +230,26 @@ export function buildWindFieldGrids(
   samples: CurrentSample[],
   opts: { mobile?: boolean } = {},
 ): WindFieldGrid[] {
+  return drainSteps(windFieldGridsSteps(samples, opts));
+}
+
+/**
+ * IDW entre spots (fallback sem sea-grid) em fatias — mesmo gerador que o
+ * síncrono, ver `buildWindFieldGridsFromSeaAsync`.
+ */
+export function buildWindFieldGridsAsync(
+  samples: CurrentSample[],
+  opts: { mobile?: boolean } = {},
+  isCancelled: () => boolean = () => false,
+  budgetMs = 8,
+): Promise<WindFieldGrid[] | null> {
+  return runSliced(windFieldGridsSteps(samples, opts), isCancelled, budgetMs);
+}
+
+function* windFieldGridsSteps(
+  samples: CurrentSample[],
+  opts: { mobile?: boolean } = {},
+): Generator<void, WindFieldGrid[], void> {
   if (!samples.length) return [];
   const step = opts.mobile ? MAP_HS_STEP_DEG_MOBILE : MAP_HS_STEP_DEG;
   const out: WindFieldGrid[] = [];
@@ -293,6 +314,7 @@ export function buildWindFieldGrids(
           nlon: at.nearest.lon,
         };
       }
+      yield;
     }
 
     out.push({ id: box.id, south: gbox.south, west: gbox.west, north: gbox.north, east: gbox.east, cols, rows, grid });
@@ -360,15 +382,15 @@ export function windCellKt(cell: FlowCell): number {
  * da costa é a máscara de ecrã do recorte vectorial (landClip.ts), no hook.
  * v1: uma grelha por caixa, esbatida nos últimos ~0,6° (como antes).
  */
-export function buildWindFieldGridsFromSea(
+function* windFieldGridsFromSeaSteps(
   sea: Pick<SeaGrid, 'boxes' | 'step'> & { legacy?: boolean; version?: number; fade?: number },
   frame: SeaGridFrame,
   opts: { mobile?: boolean } = {},
-): WindFieldGrid[] {
+): Generator<void, WindFieldGrid[], void> {
   const out: WindFieldGrid[] = [];
   const minStep = opts.mobile ? 0.1 : 0.05;
   const s: SeaSample = { u: 0, v: 0, kt: 0, windFrom: 0, hs: NaN, per: NaN, swellFrom: 0, pe: 0, pn: 0, w: 0, edge: 1 };
-  const build = (
+  function* build(
     id: string,
     west: number,
     south: number,
@@ -377,7 +399,7 @@ export function buildWindFieldGridsFromSea(
     gstep: number,
     falloffAt: (lat: number, lon: number, hit: SeaSample) => number,
     skip?: (lat: number, lon: number) => boolean,
-  ) => {
+  ): Generator<void, void, void> {
     const cols = Math.max(2, Math.ceil((east - west) / gstep));
     const rows = Math.max(2, Math.ceil((north - south) / gstep));
     const grid: Array<WindCell | null> = new Array(cols * rows).fill(null);
@@ -394,12 +416,14 @@ export function buildWindFieldGridsFromSea(
         if (spd < MAP_WIND_MIN_MS) continue;
         grid[y * cols + x] = { u: hit.u, v: hit.v, spd, kt: spd * MS_TO_KT, falloff, nlat: lat, nlon: lon };
       }
+      // Ponto de corte entre linhas (o driver decide se cede a main thread).
+      yield;
     }
     // v3: a grelha vem preenchida sobre terra e a costa é cortada por vector
     // no ecrã (o hook mata partículas em terra pela máscara de ecrã) — o
     // `pointOnLand` raster (~500 m, só no domínio antigo) deixava a escada.
     out.push({ id, south, west, north, east, cols, rows, grid, landClip: sea.version !== 3 });
-  };
+  }
 
   if (sea.legacy) {
     for (const b of sea.boxes) {
@@ -408,7 +432,7 @@ export function buildWindFieldGridsFromSea(
       const south = b.south;
       const east = b.west + (b.nx - 1) * st;
       const north = b.south + (b.ny - 1) * st;
-      build(
+      yield* build(
         b.id,
         west,
         south,
@@ -431,11 +455,11 @@ export function buildWindFieldGridsFromSea(
     return { b, w: b.west, s: b.south, e: b.west + (b.nx - 1) * st, n: b.south + (b.ny - 1) * st };
   });
   for (const h of hulls) {
-    build(h.b.id, h.w, h.s, h.e, h.n, Math.max(minStep, (h.e - h.w) / 200), (_lat, _lon, hit) => hit.edge);
+    yield* build(h.b.id, h.w, h.s, h.e, h.n, Math.max(minStep, (h.e - h.w) / 200), (_lat, _lon, hit) => hit.edge);
   }
   const insideFine = (lat: number, lon: number) =>
     hulls.some((h) => lon >= h.w && lon <= h.e && lat >= h.s && lat <= h.n);
-  build(
+  yield* build(
     'domain',
     ext.west,
     ext.south,
@@ -449,6 +473,32 @@ export function buildWindFieldGridsFromSea(
     sea.version === 3 ? undefined : insideFine,
   );
   return out;
+}
+
+/** Versão síncrona (testes, fallback) — o mesmo gerador drenado de uma vez. */
+export function buildWindFieldGridsFromSea(
+  sea: Pick<SeaGrid, 'boxes' | 'step'> & { legacy?: boolean; version?: number; fade?: number },
+  frame: SeaGridFrame,
+  opts: { mobile?: boolean } = {},
+): WindFieldGrid[] {
+  return drainSteps(windFieldGridsFromSeaSteps(sea, frame, opts));
+}
+
+/**
+ * TBT /mapa: a grelha de vento custava ~100–250 ms num só task (useMemo no
+ * render, no arranque e a cada refresh). Aqui o MESMO gerador corre em
+ * fatias (`runSliced`), cedendo a main thread entre fatias — resultado
+ * idêntico ao síncrono (teste de paridade), sem long tasks. Resolve `null`
+ * se `isCancelled()` ficar true a meio (pedido substituído).
+ */
+export function buildWindFieldGridsFromSeaAsync(
+  sea: Pick<SeaGrid, 'boxes' | 'step'> & { legacy?: boolean; version?: number; fade?: number },
+  frame: SeaGridFrame,
+  opts: { mobile?: boolean } = {},
+  isCancelled: () => boolean = () => false,
+  budgetMs = 8,
+): Promise<WindFieldGrid[] | null> {
+  return runSliced(windFieldGridsFromSeaSteps(sea, frame, opts), isCancelled, budgetMs);
 }
 
 /** Web-mercator meters per pixel at `lat`/`zoom`. */

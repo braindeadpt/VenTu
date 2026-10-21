@@ -3,6 +3,9 @@ import {
   WIND_COLOR_BINS,
   advectWindParticle,
   buildWindFieldGridsFromSea,
+  buildWindFieldGridsFromSeaAsync,
+  buildWindFieldGrids,
+  buildWindFieldGridsAsync,
   metersPerPixel,
   windBinRgb,
   windCellAnywhere,
@@ -104,5 +107,41 @@ describe('vento a partir da grelha de modelo', () => {
     const mid = windKtBin(20);
     const kt = ((mid + 0.5) / WIND_COLOR_BINS) * 40;
     expect(windBinRgb(mid)).toBe(rampColor(WIND_KT_STOPS, kt).join(' '));
+  });
+});
+
+describe('buildWindFieldGridsFromSeaAsync (TBT /mapa)', () => {
+  it('em fatias dá exactamente as mesmas grelhas que o síncrono', async () => {
+    // budget 0 → cede depois de CADA linha (o pior caso de fatiamento)
+    const fr = frameN(49 + 121, 6, 2);
+    const sync = buildWindFieldGridsFromSea(SEA_V2, fr);
+    const sliced = await buildWindFieldGridsFromSeaAsync(SEA_V2, fr, {}, () => false, 0);
+    expect(sliced).toEqual(sync);
+    const legacy = await buildWindFieldGridsFromSeaAsync(SEA, frame(5, 1), { mobile: true }, () => false, 0);
+    expect(legacy).toEqual(buildWindFieldGridsFromSea(SEA, frame(5, 1), { mobile: true }));
+  });
+
+  it('cancelado a meio resolve null (pedido substituído)', async () => {
+    let n = 0;
+    const r = await buildWindFieldGridsFromSeaAsync(SEA_V2, frameN(49 + 121, 6, 0), {}, () => ++n > 2, 0);
+    expect(r).toBeNull();
+  });
+});
+
+describe('buildWindFieldGridsAsync — IDW dos spots (TBT /mapa)', () => {
+  it('em fatias dá exactamente as mesmas grelhas que o síncrono', async () => {
+    const samples = [
+      { lat: 38.7, lon: -9.5, spd: 8, dir: 0 },
+      { lat: 39.3, lon: -9.4, spd: 6, dir: 45 },
+      { lat: 37.1, lon: -8.7, spd: 10, dir: 300 },
+      { lat: 41.1, lon: -8.7, spd: 5, dir: 200 },
+    ];
+    const sync = buildWindFieldGrids(samples);
+    expect(sync.length).toBeGreaterThan(0);
+    expect(await buildWindFieldGridsAsync(samples, {}, () => false, 0)).toEqual(sync);
+    expect(await buildWindFieldGridsAsync(samples, { mobile: true }, () => false, 0)).toEqual(
+      buildWindFieldGrids(samples, { mobile: true }),
+    );
+    expect(await buildWindFieldGridsAsync([], {}, () => false, 0)).toEqual([]);
   });
 });

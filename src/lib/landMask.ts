@@ -31,33 +31,79 @@ const STEP = 0.006; // ~600 m — blocos visíveis ficam abaixo da leitura a zoo
 
 const COLS = Math.ceil((LON_E - LON_W) / STEP);
 const ROWS = Math.ceil((LAT_N - LAT_S) / STEP);
-const LAND = new Uint8Array(COLS * ROWS);
 
-for (const ring of LAND_RINGS) {
-  for (let row = 0; row < ROWS; row++) {
-    const y = LAT_S + (row + 0.5) * STEP;
-    const xs: number[] = [];
-    for (let i = 0, n = ring.length - 1; i < n; i++) {
-      const [x1, y1] = ring[i];
-      const [x2, y2] = ring[i + 1];
-      if (y1 <= y !== y2 <= y) {
-        xs.push(x1 + ((y - y1) / (y2 - y1)) * (x2 - x1));
-      }
-    }
-    if (xs.length < 2) continue;
+/**
+ * Scanline do raster GADM. O caminho real (`byEdge`) percorre cada aresta
+ * uma vez e só visita as linhas que ela cruza; o varrimento antigo
+ * (`byEdge: false`, mantido só para o teste de paridade) testava as 1834
+ * linhas contra os ~4k vértices dos 48 anéis — ~7,4 M iterações, ~100 ms de
+ * long task na avaliação do chunk do /mapa (TBT, Lighthouse). A condição de
+ * cruzamento e a interpolação são as mesmas expressões, e os cruzamentos de
+ * cada linha são ordenados antes do preenchimento, por isso o bitmap é bit a
+ * bit igual.
+ * @internal exportada para o teste de paridade.
+ */
+export function rasterizeGadmRings(rings: number[][][], byEdge = true): Uint8Array {
+  const land = new Uint8Array(COLS * ROWS);
+  const fillRow = (row: number, xs: number[]) => {
+    if (xs.length < 2) return;
     xs.sort((a, b) => a - b);
     for (let k = 0; k + 1 < xs.length; k += 2) {
       // Centro da célula dentro do polígono — simétrico (~±1 km de erro de
       // borda, absorvido pelo blur do tile).
       const c0 = Math.max(0, Math.ceil((xs[k] - LON_W) / STEP - 0.5));
       const c1 = Math.min(COLS - 1, Math.floor((xs[k + 1] - LON_W) / STEP - 0.5));
-      LAND.fill(1, row * COLS + c0, row * COLS + c1 + 1);
+      land.fill(1, row * COLS + c0, row * COLS + c1 + 1);
     }
+  };
+  for (const ring of rings) {
+    if (!byEdge) {
+      for (let row = 0; row < ROWS; row++) {
+        const y = LAT_S + (row + 0.5) * STEP;
+        const xs: number[] = [];
+        for (let i = 0, n = ring.length - 1; i < n; i++) {
+          const [x1, y1] = ring[i];
+          const [x2, y2] = ring[i + 1];
+          if (y1 <= y !== y2 <= y) {
+            xs.push(x1 + ((y - y1) / (y2 - y1)) * (x2 - x1));
+          }
+        }
+        fillRow(row, xs);
+      }
+      continue;
+    }
+    const byRow = new Map<number, number[]>();
+    for (let i = 0, n = ring.length - 1; i < n; i++) {
+      const [x1, y1] = ring[i];
+      const [x2, y2] = ring[i + 1];
+      const lo = Math.min(y1, y2);
+      const hi = Math.max(y1, y2);
+      // y(row) = LAT_S + (row + 0.5)·STEP; ±1 linha de folga — a condição
+      // exacta abaixo decide (as linhas a mais são no-ops).
+      const r0 = Math.max(0, Math.floor((lo - LAT_S) / STEP - 0.5) - 1);
+      const r1 = Math.min(ROWS - 1, Math.ceil((hi - LAT_S) / STEP - 0.5) + 1);
+      for (let row = r0; row <= r1; row++) {
+        const y = LAT_S + (row + 0.5) * STEP;
+        if (y1 <= y !== y2 <= y) {
+          let xs = byRow.get(row);
+          if (!xs) byRow.set(row, (xs = []));
+          xs.push(x1 + ((y - y1) / (y2 - y1)) * (x2 - x1));
+        }
+      }
+    }
+    byRow.forEach((xs, row) => fillRow(row, xs));
   }
+  return land;
 }
+
+// Preguiçoso: o raster só é construído na 1.ª consulta (um campo ligado),
+// não na avaliação do módulo — o chunk do mapa deixa de pagar o scanline
+// no arranque.
+let LAND: Uint8Array | null = null;
 
 function gadmOnLand(lat: number, lon: number): boolean {
   if (lat < LAT_S || lat >= LAT_N || lon < LON_W || lon >= LON_E) return false;
+  if (!LAND) LAND = rasterizeGadmRings(LAND_RINGS);
   const col = Math.floor((lon - LON_W) / STEP);
   const row = Math.floor((lat - LAT_S) / STEP);
   return LAND[row * COLS + col] === 1;
