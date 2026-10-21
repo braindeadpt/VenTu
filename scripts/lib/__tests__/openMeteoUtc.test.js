@@ -142,3 +142,46 @@ describe('openMeteoUtc — compatibilidade', () => {
     expect(localizeHourly(respostaUtc(p.start_hour, p.end_hour), LISBON_TZ).hourly.time).toHaveLength(168);
   });
 });
+
+describe('openMeteoUtc — mudança de hora de 28/03/2027 (primavera, dia de 23 h)', () => {
+  // etiqueta montada por partes: dia + 'T' + hora + desvio
+  const L = (dia, hm, off) => dia + 'T' + hm + off;
+  // pedido feito a 27/03/2027 às 10:00 WET (10:00 UTC), 3 dias locais: 27, 28 e 29/03
+  const nowMs = Date.UTC(2027, 2, 27, 10);
+
+  it('Lisboa: janela 27/03 00:00 WET → 29/03 23:00 WEST = 71 horas reais, sem buracos', () => {
+    const p = utcRequestParams({ tz: LISBON_TZ, nowMs, days: 3 });
+    expect(p.start_hour).toBe(L('2027-03-27', '00:00', ''));
+    expect(p.end_hour).toBe(L('2027-03-29', '22:00', ''));
+    const t = localizeHourly(respostaUtc(p.start_hour, p.end_hour), LISBON_TZ).hourly.time;
+    expect(t).toHaveLength(71);
+    for (let i = 1; i < t.length; i++) expect(seriesTimeMs(t[i]) - seriesTimeMs(t[i - 1])).toBe(H);
+    expect(new Set(t.map(seriesTimeMs)).size).toBe(71);
+    // o 01:00 de 28/03 não existe: 00:00 WET → 02:00 WEST
+    const d28 = t.filter((x) => x.startsWith('2027-03-28T0')).slice(0, 3);
+    expect(d28).toEqual([L('2027-03-28', '00:00', '+00:00'), L('2027-03-28', '02:00', '+01:00'), L('2027-03-28', '03:00', '+01:00')]);
+    const porDia = {};
+    for (const x of t) porDia[x.slice(0, 10)] = (porDia[x.slice(0, 10)] ?? 0) + 1;
+    expect(porDia).toEqual({ '2027-03-27': 24, '2027-03-28': 23, '2027-03-29': 24 });
+    // «agora» às 02:30 WEST (01:30 UTC) cai na hora 02:00+01:00
+    expect(t[findCurrentHourIndex(t, new Date(Date.UTC(2027, 2, 28, 1, 30)))]).toBe(L('2027-03-28', '02:00', '+01:00'));
+  });
+
+  it('Açores: o 00:00 de 28/03 não existe (AZOT −01 → AZOST +00) e o dia tem 23 h', () => {
+    const p = utcRequestParams({ tz: AZORES_TZ, nowMs, days: 3 });
+    expect(p.start_hour).toBe(L('2027-03-27', '01:00', ''));
+    expect(p.end_hour).toBe(L('2027-03-29', '23:00', ''));
+    const t = localizeHourly(respostaUtc(p.start_hour, p.end_hour), AZORES_TZ).hourly.time;
+    expect(t).toHaveLength(71);
+    expect(t.filter((x) => x.startsWith('2027-03-28T00'))).toEqual([]);
+    expect(t.filter((x) => x.startsWith('2027-03-27T23') || x.startsWith('2027-03-28T01'))).toEqual([
+      L('2027-03-27', '23:00', '-01:00'),
+      L('2027-03-28', '01:00', '+00:00'),
+    ]);
+    for (let i = 1; i < t.length; i++) expect(seriesTimeMs(t[i]) - seriesTimeMs(t[i - 1])).toBe(H);
+  });
+
+  it('etiqueta antiga sem desvio dentro do buraco (01:00 de 28/03) não rebenta: cai nas 02:00 WEST', () => {
+    expect(seriesTimeMs(L('2027-03-28', '01:00', ''))).toBe(Date.UTC(2027, 2, 28, 1));
+  });
+});

@@ -153,3 +153,33 @@ describe('map-hours (mapa): Açores e Lisboa na mesma hora real', () => {
     expect(hsAtHour(file, gu.id, 1)).toBe(2.6); // 25/10 01:00Z = k 26
   });
 });
+
+describe('mudança de hora de 28/03/2027 (primavera, dia de 23 h)', () => {
+  // 27/03 00:00 WET (00:00Z) → 29/03 23:00 WEST (22:00Z): 71 horas reais
+  const p0 = Date.UTC(2027, 2, 27, 0);
+  const inst = Array.from({ length: 71 }, (_, k) => p0 + k * H);
+  const serie = inst.map((ms, k) => linha(lisbonIsoWithOffset(ms), { waveHeight: k / 10 }));
+  const local = { lat: 38.733, lon: -9.473, praiaVirada: 280 };
+
+  it('a régua salta do 00:00 para as 02:00 sem hora em falta nem repetida', () => {
+    const d = construirHoras(serie, local, Date.UTC(2027, 2, 28, 0, 30), 4);
+    expect(d.semAgora).toBe(false);
+    expect(d.horas.map((h) => h.t.slice(11))).toEqual(['00:00', '02:00', '03:00', '04:00']);
+    // linhas consecutivas da série = horas reais consecutivas (k = 24, 25, 26, 27)
+    expect(d.horas.map((h) => h.hs)).toEqual([2.4, 2.5, 2.6, 2.7]);
+  });
+
+  it('«agora» às 02:30 WEST (01:30Z) cai na linha 02:00+01:00', () => {
+    const i = findCoveredHourIndex(serie.map((l) => l.time), new Date(Date.UTC(2027, 2, 28, 1, 30)));
+    expect(serie[i].time.slice(11)).toBe('02:00+01:00');
+    expect(wallHourOf(serie[i].time)).toBe(2);
+  });
+
+  it('o mapa avança 3 h reais à volta da mudança: 23:00 WET → 03:00 WEST → 06:00 WEST', () => {
+    const gu = spot('guincho', 38.733, -9.473, 'Cascais');
+    const forecasts = { [gu.id]: serie as unknown as Record<string, unknown>[] };
+    const file = buildMapHoursFile({ now: new Date(Date.UTC(2027, 2, 27, 23, 10)), spots: [gu], conditions: {}, forecasts });
+    expect(file.times.slice(0, 3).map(mapHoursClock)).toEqual(['23h', '03h', '06h']);
+    expect(file.times.slice(0, 3).map(seriesTimeMs)).toEqual([Date.UTC(2027, 2, 27, 23), Date.UTC(2027, 2, 28, 2), Date.UTC(2027, 2, 28, 5)]);
+  });
+});
