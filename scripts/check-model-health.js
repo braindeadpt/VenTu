@@ -26,6 +26,7 @@ const {
   buildHealthReport,
   notifyDeadModels,
 } = require('./lib/modelHealth');
+const { spotTimeZone, utcRequestParams } = require('./lib/openMeteoUtc');
 
 const MARINE_API = 'https://marine-api.open-meteo.com/v1/marine';
 const WEATHER_API = 'https://api.open-meteo.com/v1/forecast';
@@ -53,16 +54,14 @@ async function fetchMultimodel(spot) {
     longitude: spot.lon.toString(),
     hourly: HEALTH_FAMILIES.wave.baseKey,
     models: HEALTH_FAMILIES.wave.models.join(','),
-    timezone: 'Europe/Lisbon',
-    forecast_days: '7',
+    ...utcRequestParams({ tz: spotTimeZone(spot), days: 7 }),
   });
   const windParams = new URLSearchParams({
     latitude: spot.lat.toString(),
     longitude: spot.lon.toString(),
     hourly: `${HEALTH_FAMILIES.wind.baseKey},wind_direction_10m,wind_gusts_10m`,
     models: HEALTH_FAMILIES.wind.models.join(','),
-    timezone: 'Europe/Lisbon',
-    forecast_days: '7',
+    ...utcRequestParams({ tz: spotTimeZone(spot), days: 7 }),
     wind_speed_unit: 'ms',
   });
 

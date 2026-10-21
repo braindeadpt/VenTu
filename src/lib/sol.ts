@@ -5,8 +5,9 @@
  *
  * Os forecasts do pipeline não trazem `sunEl`/`sunAz`; calculam-se aqui a
  * partir da hora e das coordenadas do spot. As horas do pipeline são
- * wall-time de Lisboa (`timezone=Europe/Lisbon` em todos os pedidos), por isso
- * `instanteLisboa()` converte a hora de parede no instante UTC.
+ * hora de parede do spot com desvio (pedidos em UTC, auditoria M1); etiquetas
+ * antigas sem desvio são hora de parede de Lisboa e `instanteLisboa()` converte
+ * as duas no instante UTC.
  */
 
 const RAD = Math.PI / 180;
@@ -35,8 +36,13 @@ export function desvioLisboaMin(ms: number): number {
   return Math.round((wall - Math.floor(ms / 60000) * 60000) / 60000);
 }
 
-/** `YYYY-MM-DDTHH:mm` (hora de parede em Lisboa) → instante (ms UTC). */
+/**
+ * `YYYY-MM-DDTHH:mm` (hora de parede em Lisboa) → instante (ms UTC).
+ * Etiquetas com desvio (`…T01:00+00:00`, Açores `…-01:00`, auditoria M1) dão
+ * o instante exacto — é assim que o 01:00 repetido e os Açores têm o sol certo.
+ */
 export function instanteLisboa(t: string): number {
+  if (/(?:[zZ]|[+-]\d{2}:?\d{2})$/.test(t)) return Date.parse(t);
   const y = +t.slice(0, 4);
   const mo = +t.slice(5, 7);
   const d = +t.slice(8, 10);
