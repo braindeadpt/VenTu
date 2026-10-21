@@ -1,6 +1,6 @@
 {
   "day": "20261021",
-  "fetchedAt": "2026-10-21T05:06:39.329Z",
+  "fetchedAt": "2026-10-21T05:30:36.747Z",
   "minPairs": 3,
   "minAccumulatedPairs": 10,
   "archive": {
@@ -127,13 +127,13 @@
       "suboptimal": []
     },
     "Porto": {
-      "spotCount": 11,
-      "withObservedWave": 11,
+      "spotCount": 12,
+      "withObservedWave": 12,
       "bySource": {
-        "ih-buoy": 11
+        "ih-buoy": 12
       },
-      "audited": 11,
-      "attachedIsClosest": 11,
+      "audited": 12,
+      "attachedIsClosest": 12,
       "attachedNotClosest": 0,
       "onlySource": 0,
       "notClosest": [],
@@ -175,13 +175,13 @@
       "suboptimal": []
     },
     "Espinho": {
-      "spotCount": 1,
-      "withObservedWave": 1,
+      "spotCount": 3,
+      "withObservedWave": 3,
       "bySource": {
-        "ih-buoy": 1
+        "ih-buoy": 3
       },
-      "audited": 1,
-      "attachedIsClosest": 1,
+      "audited": 3,
+      "attachedIsClosest": 3,
       "attachedNotClosest": 0,
       "onlySource": 0,
       "notClosest": [],
@@ -191,13 +191,13 @@
       "suboptimal": []
     },
     "Ovar": {
-      "spotCount": 5,
-      "withObservedWave": 5,
+      "spotCount": 6,
+      "withObservedWave": 6,
       "bySource": {
-        "ih-buoy": 5
+        "ih-buoy": 6
       },
-      "audited": 5,
-      "attachedIsClosest": 5,
+      "audited": 6,
+      "attachedIsClosest": 6,
       "attachedNotClosest": 0,
       "onlySource": 0,
       "notClosest": [],
@@ -222,7 +222,7 @@
       "suboptimalRefs": 0,
       "suboptimal": []
     },
-    "Figueira da Foz": {
+    "Cantanhede": {
       "spotCount": 1,
       "withObservedWave": 1,
       "bySource": {
@@ -234,11 +234,49 @@
       "onlySource": 0,
       "notClosest": [
         {
+          "spot": "tocha",
+          "winner": "ih-buoy",
+          "reason": "ih-fresh",
+          "attachedKm": 110,
+          "altKm": 91
+        }
+      ],
+      "calibrated": 0,
+      "calibrationRefs": {},
+      "suboptimalRefs": 0,
+      "suboptimal": []
+    },
+    "Figueira da Foz": {
+      "spotCount": 3,
+      "withObservedWave": 3,
+      "bySource": {
+        "ih-buoy": 3
+      },
+      "audited": 3,
+      "attachedIsClosest": 0,
+      "attachedNotClosest": 3,
+      "onlySource": 0,
+      "notClosest": [
+        {
           "spot": "quiaios",
           "winner": "ih-buoy",
           "reason": "ih-fresh",
           "attachedKm": 122,
           "altKm": 78
+        },
+        {
+          "spot": "figueira-foz",
+          "winner": "ih-buoy",
+          "reason": "ih-fresh",
+          "attachedKm": 130,
+          "altKm": 72
+        },
+        {
+          "spot": "leirosa",
+          "winner": "ih-buoy",
+          "reason": "ih-fresh",
+          "attachedKm": 140,
+          "altKm": 62
         }
       ],
       "calibrated": 0,
@@ -295,16 +333,30 @@
       "suboptimal": []
     },
     "Oeste": {
-      "spotCount": 2,
-      "withObservedWave": 2,
+      "spotCount": 4,
+      "withObservedWave": 4,
       "bySource": {
-        "ih-buoy": 2
+        "ih-buoy": 4
       },
-      "audited": 2,
+      "audited": 4,
       "attachedIsClosest": 0,
-      "attachedNotClosest": 2,
+      "attachedNotClosest": 4,
       "onlySource": 0,
       "notClosest": [
+        {
+          "spot": "nazare",
+          "winner": "ih-buoy",
+          "reason": "ih-fresh",
+          "attachedKm": 188,
+          "altKm": 12
+        },
+        {
+          "spot": "foz-arelho",
+          "winner": "ih-buoy",
+          "reason": "ih-fresh",
+          "attachedKm": 169,
+          "altKm": 15
+        },
         {
           "spot": "foil-foz-arelho",
           "winner": "ih-buoy",
@@ -1439,7 +1491,7 @@
       "suboptimal": []
     }
   },
-  "regionsAuditedAt": "2026-10-21T05:24:48.233Z",
+  "regionsAuditedAt": "2026-10-21T05:40:07.760Z",
   "pairs": [
     {
       "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",

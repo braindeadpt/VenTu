@@ -1,55 +1,55 @@
 {
   "source": "open-meteo-model-health",
-  "checkedAt": "2026-10-21T05:24:42.941Z",
-  "sampledSpots": 172,
+  "checkedAt": "2026-10-21T05:40:02.955Z",
+  "sampledSpots": 181,
   "wave": {
     "ewam": {
-      "ok": 11200,
-      "total": 24360,
+      "ok": 11920,
+      "total": 25872,
       "absentCount": 27,
       "status": "ok"
     },
     "ecmwf_wam": {
-      "ok": 28224,
-      "total": 28896,
+      "ok": 29736,
+      "total": 30408,
       "absentCount": 0,
       "status": "ok"
     },
     "ncep_gfswave025": {
-      "ok": 22176,
-      "total": 28896,
+      "ok": 23520,
+      "total": 30408,
       "absentCount": 0,
       "status": "ok"
     },
     "gwam": {
-      "ok": 28560,
-      "total": 28896,
+      "ok": 30072,
+      "total": 30408,
       "absentCount": 0,
       "status": "ok"
     }
   },
   "wind": {
     "icon_eu": {
-      "ok": 19520,
-      "total": 26880,
-      "absentCount": 12,
+      "ok": 20130,
+      "total": 27720,
+      "absentCount": 16,
       "status": "ok"
     },
     "ecmwf_ifs025": {
-      "ok": 28896,
-      "total": 28896,
+      "ok": 30408,
+      "total": 30408,
       "absentCount": 0,
       "status": "ok"
     },
     "gfs_seamless": {
-      "ok": 28896,
-      "total": 28896,
+      "ok": 30408,
+      "total": 30408,
       "absentCount": 0,
       "status": "ok"
     },
     "meteofrance_arpege_europe": {
-      "ok": 17888,
-      "total": 28896,
+      "ok": 18824,
+      "total": 30408,
       "absentCount": 0,
       "status": "ok"
     }
