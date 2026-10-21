@@ -86,7 +86,7 @@ export default function EstudarSpot({ horas, NS, i, d, ed, sol, atencao, melhorM
                 const r = NS[j];
                 const b = bandaR(r);
                 return (
-                  <tr key={h.t} className={`${j === i ? 'sel' : ''}${horaDe(h.t) === 0 ? ' dia' : ''}`} data-hora={j}>
+                  <tr key={`${h.t}#${j}`} className={`${j === i ? 'sel' : ''}${horaDe(h.t) === 0 ? ' dia' : ''}`} data-hora={j}>
                     <td>
                       {diaCurto(c, h.t)}, {horaTxt(c, horaDe(h.t))}
                     </td>

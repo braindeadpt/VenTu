@@ -8,6 +8,7 @@ import { scoreAtHour } from '@/lib/mapHours';
 import { formatHourLabel, formatHourLong, formatWeekday } from '@/lib/verdict/formatHourLabel';
 import { pickRailAxisLabelsPx, railAxisCandidates } from '@/lib/verdict/railAxisLabels';
 import { getScoreCssVar } from '@/lib/scoreThresholds';
+import { wallHourOf } from '@/lib/openMeteoTime';
 import type { getTranslation } from '@/lib/i18n';
 import { useMapUiData } from './MapUiContext';
 import { includeSpotInViewportBounds } from '../mapViewportBounds';
@@ -131,10 +132,11 @@ export default function MapTimeChrome({
     return () => { map?.off('moveend', update); };
   }, [computeBest, mapInstanceRef]);
 
-  /* Noite = 20h–07h locais (horas do ficheiro já estão em Europe/Lisbon). */
+  /* Noite = 20h–07h locais (horas do ficheiro já estão em Europe/Lisbon): a hora
+   * de parede é a etiqueta (`…T21:00+01:00`), não `getHours()` do dispositivo. */
   const night = useMemo(
     () => times.map((iso) => {
-      const h = new Date(iso).getHours();
+      const h = wallHourOf(iso);
       return h < 7 || h >= 20;
     }),
     [times],
