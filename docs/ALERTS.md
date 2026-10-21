@@ -118,6 +118,10 @@ Sem `TELEGRAM_BOT_TOKEN` o evaluate ignora Telegram (dry-run no log).
 4. Actions → **Evaluate Alerts** → Run workflow (ou esperar cron).
 5. Email **Confirma alertas nos teus favoritos** → link → `/pt/alerts/confirm/?token=…`
 6. Quando score ≥ limiar → digest com spots a bombar.
+   A nota é a do **motor v6** (a mesma da home e da página de spot,
+   `src/lib/notaV6Condicoes.ts` via `scripts/lib/scoreSpotConditions.js`):
+   vento médio (sem *gust proxy*), tecto de segurança do vento e **sem nota de
+   noite** (o alerta não dispara). Auditoria de dados 16/10, #218.
 7. **Desactivar** em favoritos ou link cancelar no email.
 
 ## Fluxo do utilizador (UI)

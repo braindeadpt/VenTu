@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { spots } from '@/lib/spots';
 import { getSportScore, SCORE_TIER_THRESHOLDS } from '@/lib/sportScore';
 import {
+  applyGustSessionProxy,
   applyObservedWaveForScore,
   applyObservedWindForScore,
   applyRegionalBiasFallback,
@@ -489,7 +490,21 @@ describe('scoreConditions', () => {
     ).toBeNull();
   });
 
-  it('gust session proxy lifts Caparica-style mean≪gust without inventing wind', () => {
+  it('gust session proxy (função de diagnóstico) continua a calcular a «sessão» de Caparica', () => {
+    const r = applyGustSessionProxy({
+      waveHeight: 0.5,
+      wavePeriod: 8,
+      waveDirection: 270,
+      windSpeed: ktToMs(8),
+      windDirection: 315,
+      windGust: ktToMs(20),
+      waterTemp: 18,
+    });
+    expect(r.applied).toBe(true);
+    expect(r.sessionKt).toBeGreaterThan(8);
+  });
+
+  it('rawToScoreInput NÃO usa o gust proxy: a nota do kite usa o vento médio (auditoria 16/10, #218)', () => {
     const nova = spotBySlug('nova-vaga');
     const raw = {
       waveHeight: 0.5,
@@ -500,19 +515,56 @@ describe('scoreConditions', () => {
       windGust: ktToMs(20),
       waterTemp: 18,
     };
-    const forecastOnly = getSportScore(nova, 'kitesurf', {
-      waveHeight: 0.5,
-      wavePeriod: 8,
-      waveDirection: 270,
-      windSpeed: ktToMs(8),
-      windDirection: 315,
-      windGust: ktToMs(20),
-      waterTemp: 18,
-    }).score;
-    const withProxy = getSportScore(nova, 'kitesurf', rawToScoreInput(raw)).score;
-    expect(withProxy).toBeGreaterThan(forecastOnly);
-    expect(withProxy).toBeGreaterThanOrEqual(SCORE_TIER_THRESHOLDS.fair);
-    expect(resolveScoreWindSource(raw)).toBe('session-gust');
+    const input = rawToScoreInput(raw);
+    expect(input.windSpeed).toBeCloseTo(ktToMs(8), 6);
+    expect(input.windGust).toBeCloseTo(ktToMs(20), 6);
+    const forecastOnly = getSportScore(nova, 'kitesurf', { ...raw }).score;
+    expect(getSportScore(nova, 'kitesurf', input).score).toBe(forecastOnly);
+    expect(resolveScoreWindSource(raw)).toBe('forecast');
+  });
+});
+
+/**
+ * Casos reais da auditoria de dados de 16/10 (forecast live, m/s). Antes,
+ * com o gust proxy, o mapa/listas davam 10/10 a todos.
+ */
+describe('kite com rajadas 3:1 não é «Bom» (auditoria 16/10, #218)', () => {
+  it('Vila Praia de Âncora 16/10 12h, 7/22 kt de NNW: não é Bom (antes 100 → 10/10)', () => {
+    const vpa = spotBySlug('vila-praia-ancora');
+    const raw = {
+      waveHeight: 1.8, wavePeriod: 10.85, waveDirection: 299,
+      windSpeed: 3.57, windDirection: 342, windGust: 11.4, waterTemp: 15.5,
+    };
+    const score = getSportScore(vpa, 'kitesurf', rawToScoreInput(raw)).score;
+    expect(score).toBeLessThan(SCORE_TIER_THRESHOLDS.good);
+    expect(score).toBeLessThan(SCORE_TIER_THRESHOLDS.fair);
+  });
+
+  it('Vila Praia de Âncora 16/10 17h, 8/30 kt: não é Bom', () => {
+    const vpa = spotBySlug('vila-praia-ancora');
+    const raw = {
+      waveHeight: 1.8, wavePeriod: 10, waveDirection: 299,
+      windSpeed: ktToMs(8), windDirection: 340, windGust: ktToMs(30), waterTemp: 15.5,
+    };
+    expect(getSportScore(vpa, 'kitesurf', rawToScoreInput(raw)).score).toBeLessThan(SCORE_TIER_THRESHOLDS.good);
+  });
+
+  it('Carcavelos 16/10 18h com nortada (11,7/25 kt de 349°): não é Bom (antes 100 → 10/10)', () => {
+    const carc = spotBySlug('carcavelos');
+    const raw = {
+      waveHeight: 1.74, wavePeriod: 10.7, waveDirection: 306,
+      windSpeed: 6, windDirection: 349, windGust: 13, waterTemp: 18.1,
+    };
+    expect(getSportScore(carc, 'kitesurf', rawToScoreInput(raw)).score).toBeLessThan(SCORE_TIER_THRESHOLDS.good);
+  });
+
+  it('Guincho 17/10 18h, 11/22 kt: não é Bom (antes 100 → 10/10)', () => {
+    const g = spotBySlug('guincho');
+    const raw = {
+      waveHeight: 2.1, wavePeriod: 9.5, waveDirection: 321,
+      windSpeed: 5.64, windDirection: 335, windGust: 11.5, waterTemp: 17.6,
+    };
+    expect(getSportScore(g, 'kitesurf', rawToScoreInput(raw)).score).toBeLessThan(SCORE_TIER_THRESHOLDS.good);
   });
 });
 
