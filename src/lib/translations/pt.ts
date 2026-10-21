@@ -13,7 +13,7 @@ export const translationsPt = {
   nav: {
     home: 'Início', spots: 'Spots', news: 'Notícias', about: 'Sobre',
     sazonalidade: 'Sazonalidade', comparar: 'Comparar', favorites: 'Favoritos',
-    explorar: 'Explorar', mapa: 'Mapa', livecams: 'Livecams',
+    explorar: 'Explorar', mapa: 'Mapa', mapaCosta: 'Mapa da costa', mapaCostaSub: 'vento ao vivo, 8 modalidades, 48 h', livecams: 'Livecams',
     openMenu: 'Abrir menu', closeMenu: 'Fechar menu',
     modalidades: 'Modalidades', metricas: 'Métricas',
     conditions: 'Condições', plan: 'Planear', directory: 'Directório',
@@ -825,8 +825,8 @@ export const translationsPt = {
       'transição': 'Transição',
     },
     meaning: {
-      vivas: 'Amplitude maior — baixa-mar expõe mais fundo; correntes mais fortes.',
-      mortas: 'Amplitude menor — marés estáveis; menos exposição do fundo.',
+      vivas: 'A maré enche e vaza mais — baixa-mar expõe mais fundo; correntes mais fortes.',
+      mortas: 'A maré enche e vaza menos — marés estáveis; menos exposição do fundo.',
       'transição': 'Entre vivas e mortas — condições intermédias.',
     },
     amplitudeToday: 'Amplitude hoje: {value} m',

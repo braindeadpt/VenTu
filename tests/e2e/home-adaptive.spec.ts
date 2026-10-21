@@ -15,7 +15,9 @@ test.describe('Home adaptive layout', () => {
     await expect(page.getByTestId('home-hero')).toBeVisible({ timeout: 20_000 });
     await expect(page.getByTestId('home-lider')).toBeVisible();
     await expect(page.getByRole('region', { name: /Mapa interactivo/i })).toBeVisible();
-    await expect(page.getByRole('link', { name: /Mapa da costa/i })).toBeVisible();
+    // #273: o cartão do mapa é a porta do /mapa (e «Mapa da costa» passou ao cabeçalho)
+    await expect(page.getByTestId('home-mapa').getByRole('link', { name: 'Explorar o mapa da costa' })).toBeVisible();
+    await expect(page.getByRole('banner').getByRole('link', { name: 'Mapa da costa', exact: true })).toBeVisible();
     await expect(page.getByRole('heading', { name: /A bombar agora/i })).toBeVisible();
     await expect(page.getByRole('heading', { name: /Os teus spots, agora/i })).toHaveCount(0);
   });

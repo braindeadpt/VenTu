@@ -2,9 +2,9 @@ import { test, expect } from '@playwright/test';
 
 /**
  * Home map-first (#183, home v6): o mapa da costa vive ao lado do «VAI.» no desktop e numa
- * faixa depois do top 3 no telemóvel (com «Abrir mapa» para o ecrã inteiro). MapLibre 3D lazy
- * com fallback plano; o selector é só Kite · Surf; o mapa completo continua em /mapa
- * («Mapa da costa»).
+ * faixa depois do top 3 no telemóvel. MapLibre 3D lazy com fallback plano; o selector é só
+ * Kite · Surf. #273 (v7 «Porta do mapa»): o cartão inteiro é a porta do /mapa («Explorar o
+ * mapa da costa →», com o contexto da home no URL); sem diálogo de ecrã inteiro.
  */
 test.describe('Home map-first', () => {
   test.beforeEach(async ({ page }) => {
@@ -32,16 +32,18 @@ test.describe('Home map-first', () => {
   });
 
   test('explorar mapa CTA links to /mapa', async ({ page }) => {
-    const link = page.getByTestId('home-v6-rodape').getByRole('link', { name: /Mapa da costa/i });
+    // #273: a ligação é o próprio cartão do mapa (já não o rodapé da home)
+    const link = page.getByTestId('home-mapa').getByRole('link', { name: 'Explorar o mapa da costa' });
     await expect(link).toBeVisible({ timeout: 15_000 });
-    await expect(link).toHaveAttribute('href', /\/pt\/mapa\//);
+    await expect(link).toHaveAttribute('href', /^\/pt\/mapa\/\?sport=(kitesurf|surf)&.*&de=home$/);
+    await expect(page.getByTestId('home-v6-rodape').getByRole('link', { name: /Mapa da costa/i })).toHaveCount(0);
   });
 });
 
 test.describe('Home map-first (mobile)', () => {
   test.use({ viewport: { width: 390, height: 844 } });
 
-  test('featured hero map strip is not covered and opens full screen', async ({ page }) => {
+  test('featured hero map strip is not covered and leads to /mapa', async ({ page }) => {
     await page.goto('/pt/');
     const hero = page.getByRole('region', { name: /Mapa interactivo/i });
     const fig = hero.locator('figure');
@@ -50,10 +52,17 @@ test.describe('Home map-first (mobile)', () => {
     const box = await fig.boundingBox();
     expect(box?.width ?? 0).toBeGreaterThan(300);
     expect(box?.height ?? 0).toBeGreaterThanOrEqual(250);
-    // faixa: min(40svh, 340px), mín. 250
-    expect(box?.height ?? 0).toBeLessThanOrEqual(341);
-    await hero.getByRole('button', { name: 'Abrir mapa' }).click();
-    await expect(page.getByRole('dialog', { name: /Mapa interactivo/i })).toBeVisible();
+    // faixa: min(46svh, 380px), mín. 250 (maquete v7)
+    expect(box?.height ?? 0).toBeLessThanOrEqual(381);
+    // a faixa é uma entrada única: tocar nela leva ao /mapa com o contexto (sem diálogo)
+    await expect(hero.getByRole('button', { name: 'Abrir mapa' })).toHaveCount(0);
+    const porta = hero.getByRole('link', { name: 'Explorar o mapa da costa' });
+    await expect(porta).toHaveAttribute('href', /^\/pt\/mapa\/\?sport=(kitesurf|surf)&.*&z=6\.5&de=home$/);
+    await Promise.all([
+      page.waitForURL(/\/pt\/mapa\/\?sport=/, { timeout: 30_000 }),
+      page.mouse.click(box!.x + box!.width / 2, box!.y + box!.height - 60),
+    ]);
+    await expect(page.getByRole('dialog', { name: /Mapa interactivo da costa/i })).toHaveCount(0);
   });
 });
 

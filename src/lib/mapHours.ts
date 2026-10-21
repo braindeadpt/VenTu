@@ -30,6 +30,18 @@ export function parseHourOfDayParam(raw: string | null | undefined): number | nu
   return n;
 }
 
+/**
+ * Deep link `?dia=1` (#273, vindo da home): dia relativo a hoje em Lisboa,
+ * só 0 ou 1 (a régua da home cobre hoje e amanhã). Qualquer outro valor é
+ * ignorado e o `?t=` fica com o comportamento de sempre.
+ */
+export function parseDayParam(raw: string | null | undefined): number | null {
+  if (raw == null || raw === '') return null;
+  if (!/^\d+$/.test(raw)) return null;
+  const n = Number.parseInt(raw, 10);
+  return n === 0 || n === 1 ? n : null;
+}
+
 export interface MapTideCurve {
   spotId: string;
   times: string[];
@@ -214,6 +226,37 @@ export function indexForHourOfDay(times: string[], hourOfDay: number): number {
     const h = Number(hourKeyFromOpenMeteo(times[i]).slice(-2));
     if (!Number.isFinite(h)) continue;
     const diff = Math.min(Math.abs(h - target), 24 - Math.abs(h - target));
+    if (diff < bestDiff) {
+      bestDiff = diff;
+      best = i;
+    }
+  }
+  return best;
+}
+
+/** Horas desde a época de uma chave de parede «YYYY-MM-DDTHH» (sem fuso). */
+function wallKeyHours(key: string): number {
+  const [date, hour] = key.split('T');
+  const [y, m, d] = date.split('-').map(Number);
+  return Date.UTC(y, m - 1, d, Number(hour)) / 3_600_000;
+}
+
+/**
+ * Frame mais próxima de `<hoje em Lisboa + dia>T<hora>` (#273: `?t=10&dia=1`
+ * = amanhã às 10h). `times` são horas de parede de Lisboa em passos de 3 h.
+ * Sem `dia`, quem chama usa `indexForHourOfDay` (inalterado).
+ */
+export function indexForDayHour(times: string[], day: number, hourOfDay: number, now = new Date()): number {
+  if (!times.length) return 0;
+  const today = lisbonHourKeyFromDate(now).slice(0, 10);
+  const h = ((Math.trunc(hourOfDay) % 24) + 24) % 24;
+  const target = wallKeyHours(`${today}T00`) + Math.trunc(day) * 24 + h;
+  let best = 0;
+  let bestDiff = Infinity;
+  for (let i = 0; i < times.length; i++) {
+    const v = wallKeyHours(hourKeyFromOpenMeteo(times[i]));
+    if (!Number.isFinite(v)) continue;
+    const diff = Math.abs(v - target);
     if (diff < bestDiff) {
       bestDiff = diff;
       best = i;

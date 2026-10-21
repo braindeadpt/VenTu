@@ -156,10 +156,10 @@ export function getTideRegimeLabels(locale: 'pt' | 'en'): Record<TideRegime, str
 export function getTideRegimeMeaning(regime: TideRegime, locale: 'pt' | 'en'): string {
   if (locale === 'pt') {
     if (regime === 'vivas') {
-      return 'Amplitude maior — baixa-mar expõe mais fundo; correntes mais fortes.';
+      return 'A maré enche e vaza mais — baixa-mar expõe mais fundo; correntes mais fortes.';
     }
     if (regime === 'mortas') {
-      return 'Amplitude menor — marés estáveis; menos exposição do fundo.';
+      return 'A maré enche e vaza menos — marés estáveis; menos exposição do fundo.';
     }
     return 'Entre vivas e mortas — condições intermédias.';
   }

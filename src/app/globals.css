@@ -284,6 +284,39 @@ html:has([data-embed-widget]) body {
   }
 
   /* ──────────────────────────────────────────────────────────────────
+   *  <select> nativo — popup legível nos dois temas
+   *  Sem color-scheme, o browser abre a lista de opções em esquema claro
+   *  (fundo branco) enquanto as <option> herdam a tinta clara do tema
+   *  escuro → opções ilegíveis (seletor de língua do cabeçalho, desktop).
+   *  Só toca no popup: o select fechado mantém as classes que já tem.
+   *  - color-scheme no próprio select (não no :root) para não mudar
+   *    scrollbars nem outros controlos do site;
+   *  - superfícies v6 (.v6, .v6h, cabeçalho data-v6) são sempre escuras,
+   *    mesmo com .theme-ocean (v6-*.css já declaram color-scheme: dark);
+   *  - option/optgroup com fundo e tinta explícitos dos tokens do tema
+   *    (Windows/Linux pintam-nos; o macOS segue o color-scheme).
+   * ────────────────────────────────────────────────────────────────── */
+  select {
+    color-scheme: dark;
+  }
+  .theme-ocean select {
+    color-scheme: light;
+  }
+  .theme-ocean :is(.v6, .v6h, .site-header[data-v6]) select {
+    color-scheme: dark;
+  }
+  select option,
+  select optgroup {
+    background-color: rgb(var(--bg-elevated));
+    color: rgb(var(--fg));
+  }
+  :is(.v6, .v6h) select option,
+  :is(.v6, .v6h) select optgroup {
+    background-color: var(--fundo);
+    color: var(--espuma);
+  }
+
+  /* ──────────────────────────────────────────────────────────────────
    *  Reduced motion
    * ────────────────────────────────────────────────────────────────── */
   @media (prefers-reduced-motion: reduce) {

@@ -148,14 +148,16 @@
 
 /* ---------- mapa: faixa no telemóvel, ao lado do «VAI.» no desktop ---------- */
 .v6h .mapa-sec{padding:14px 16px 0}
-.v6h .cena{position:relative;margin:0;height:min(40svh,340px);min-height:250px;background:#071d31;overflow:hidden;border-radius:var(--r);box-shadow:var(--sombra)}
+.v6h .cena{position:relative;margin:0;height:min(46svh,380px);min-height:250px;background:#071d31;overflow:hidden;border-radius:var(--r);box-shadow:var(--sombra)}
 .v6h .cena .mapa{position:absolute;inset:0;z-index:1}
+/* poster neutro (#273): imagem estática da costa e do mar, sem notas nem rótulos, até o 3D arrancar */
 .v6h .cena .poster{position:absolute;inset:0;z-index:0;background:radial-gradient(120% 80% at 70% 40%,#0d3352,#030E18)}
+.v6h .cena .poster img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 40%;display:block}
 .v6h .cena .carta{position:absolute;inset:0;width:100%;height:100%;z-index:1;display:none}
 .v6h .cena.sem-webgl .carta{display:block}
 .v6h .cena.sem-webgl .mapa{display:none}
 .v6h canvas.vento{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2}
-.v6h .rotulos{position:absolute;inset:0;z-index:3;pointer-events:none}
+.v6h .rotulos{position:absolute;inset:0;z-index:7;pointer-events:none}
 .v6h .rotulos.movendo{opacity:0;transition:opacity .15s}
 .v6h .guias{position:absolute;inset:0;width:100%;height:100%}
 .v6h .rot{position:absolute;display:flex;align-items:center;gap:0;pointer-events:auto;text-decoration:none;border-radius:999px;
@@ -164,44 +166,46 @@
 .v6h .rot.menor{font-size:12px;min-height:24px;padding-left:8px;opacity:.92}
 .v6h .rot.menor .rn{min-width:22px;height:20px;font-size:15px}
 .v6h .top-lbl{position:absolute;transform:translate(-50%,-50%);font:700 12px/1 var(--txt);letter-spacing:.14em;text-transform:uppercase;color:rgba(243,248,251,.55);white-space:nowrap}
-.v6h .cena .cab{position:absolute;z-index:4;left:0;top:0;right:0;padding:12px 14px 26px;pointer-events:none;background:linear-gradient(180deg,rgba(3,14,24,.8),rgba(3,14,24,0))}
-.v6h .cena .cab .sec{margin:0;font-size:26px}
+.v6h .cena .cab{position:absolute;z-index:4;left:0;top:0;right:0;padding:12px 14px 30px;pointer-events:none;background:linear-gradient(180deg,rgba(3,14,24,.8),rgba(3,14,24,0));
+  display:flex;flex-direction:column;align-items:flex-start;gap:8px}
+.v6h .cena .cab .sec{margin:0;font-size:26px;white-space:nowrap}
 .v6h .cena .cab .sub{margin:2px 0 0;color:var(--nevoa);font:600 14px/1.3 var(--txt);max-width:24ch}
-.v6h .mapa-ferr{position:absolute;z-index:5;right:10px;top:10px;display:flex;flex-direction:column;align-items:flex-end;gap:8px}
-.v6h .vento-chip{display:flex;align-items:center;gap:8px;background:rgba(3,14,24,.82);border-radius:999px;padding:7px 12px;font:700 13px/1 var(--txt);box-shadow:inset 0 0 0 1.5px rgba(243,248,251,.16)}
-.v6h .vento-chip svg{width:28px;height:10px}
-.v6h .abrir,.v6h .fechar{display:inline-flex;align-items:center;gap:8px;min-height:44px;min-width:44px;padding:0 16px 0 13px;border:0;border-radius:999px;cursor:pointer;font:800 italic 19px/1 var(--disp);text-transform:uppercase;letter-spacing:.02em}
-.v6h .abrir svg,.v6h .fechar svg{width:20px;height:20px;flex:none}
-.v6h .abrir{position:absolute;z-index:5;right:10px;bottom:10px;background:var(--sol);color:var(--ink);box-shadow:0 8px 22px -8px rgba(0,0,0,.7)}
-.v6h .fechar{display:none;background:var(--espuma);color:var(--ink)}
-.v6h .estatica{position:absolute;z-index:4;left:12px;right:12px;bottom:62px;margin:0;padding:8px 12px;border-radius:10px;background:rgba(3,14,24,.86);font:600 14px/1.35 var(--txt);display:none;max-width:420px}
+/* chip do vento: 2.ª linha do cabeçalho do cartão, debaixo de «MAPA · AGORA» (já não tapa o título) */
+.v6h .vento-chip{display:flex;align-items:center;gap:8px;background:rgba(3,14,24,.82);border-radius:999px;padding:7px 12px;font:700 13px/1 var(--txt);box-shadow:inset 0 0 0 1.5px rgba(243,248,251,.16);max-width:100%;white-space:nowrap}
+.v6h .vento-chip svg{width:28px;height:10px;flex:none}
+.v6h .estatica{position:absolute;z-index:4;left:12px;right:12px;top:96px;margin:0;padding:8px 12px;border-radius:10px;background:rgba(3,14,24,.86);font:600 14px/1.35 var(--txt);display:none;max-width:420px}
 .v6h .cena.sem-webgl .estatica{display:block}
 .v6h .cena .leg{display:none;position:absolute;z-index:4;left:10px;right:10px;bottom:28px;padding:10px 12px;border-radius:12px;background:rgba(3,14,24,.84);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
 .v6h .cena .leg .chip{font-size:13px;margin:0 4px 4px 0}
 .v6h .cena .leg .chip b{font-weight:900}
 .v6h .cena .leg .txt{display:block;font:500 13px/1.35 var(--txt);color:var(--nevoa);margin-top:2px}
-.v6h .credito-mapa{position:absolute;z-index:4;left:8px;bottom:6px;right:180px;margin:0;font:500 10.5px/1.2 var(--txt);color:rgba(243,248,251,.75)}
+.v6h .credito-mapa{position:absolute;z-index:7;left:16px;bottom:8px;right:auto;margin:0;font:500 10.5px/1.2 var(--txt);color:rgba(243,248,251,.75)}
 .v6h .credito-mapa a{color:inherit;text-decoration:underline;text-underline-offset:2px}
 .v6h .rodape p a{text-decoration:underline;text-underline-offset:2px}
-.v6h .mapa-sec:not(.cheio) .cena .cab .sub{display:none}
-.v6h .mapa-sec.cheio .credito-mapa{right:8px}
+.v6h .cena .cab .sub{display:none}
 .v6h .maplibregl-map{font:inherit}
 .v6h .maplibregl-canvas{outline:none}
 .v6h .maplibregl-ctrl-attrib,.v6h .maplibregl-ctrl-bottom-right,.v6h .maplibregl-ctrl-bottom-left{display:none}
-/* ecrã inteiro (telemóvel) */
-.v6h .mapa-sec.cheio{position:fixed;inset:0;z-index:1400;padding:0;background:var(--abismo)}
-.v6h .mapa-sec.cheio .cena{height:100%;min-height:0;border-radius:0;box-shadow:none}
-.v6h .mapa-sec.cheio .abrir{display:none}
-.v6h .mapa-sec.cheio .fechar{display:inline-flex}
-.v6h .mapa-sec.cheio .cab{padding-top:calc(14px + env(safe-area-inset-top))}
-.v6h .mapa-sec.cheio .mapa-ferr{top:calc(12px + env(safe-area-inset-top))}
-.v6h .mapa-sec.cheio .leg{display:block;bottom:138px}
-.v6h .mapa-sec.cheio .credito-mapa{bottom:116px}
-.v6h .mapa-sec.cheio .cab .vt{display:none}
-.v6h .mapa-sec.cheio .estatica{bottom:auto;top:96px}
-.v6h.mapa-aberto .regua{z-index:1410}
-@media (prefers-reduced-motion:no-preference){.v6h .mapa-sec.cheio{animation:v6habre .28s cubic-bezier(.2,.8,.2,1)}}
-@keyframes v6habre{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:none}}
+/* ---------- porta do /mapa (#273, maquete v7): o cartão inteiro é um link; por cima só os rótulos e o crédito ---------- */
+.v6h .porta{isolation:isolate;transition:box-shadow .2s}
+.v6h .porta-a{position:absolute;inset:0;z-index:6;border-radius:inherit}
+.v6h .porta-a:focus-visible{outline:3px solid var(--sol);outline-offset:-3px;border-radius:inherit}
+.v6h .cta{position:absolute;z-index:5;left:0;right:0;bottom:0;display:flex;align-items:center;gap:12px;padding:30px 12px 30px 16px;pointer-events:none;
+  background:linear-gradient(180deg,rgba(3,14,24,0) 0,rgba(3,14,24,.86) 34%,rgba(3,14,24,.95) 100%)}
+.v6h .cta-tx{flex:1;min-width:0}
+.v6h .cta-t{display:block;font:900 italic 25px/.95 var(--disp);text-transform:uppercase;letter-spacing:-.005em;color:var(--espuma)}
+.v6h .cta-s{display:block;margin-top:5px;font:600 13.5px/1.25 var(--txt);color:var(--nevoa)}
+.v6h .cta-seta{flex:none;width:52px;height:52px;border-radius:50%;background:var(--sol);color:var(--ink);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 22px -8px rgba(0,0,0,.7)}
+.v6h .cta-seta svg{width:26px;height:26px}
+.v6h .porta:hover,.v6h .porta:has(.porta-a:focus-visible){box-shadow:0 0 0 2px rgba(255,201,60,.75),var(--sombra)}
+.v6h .porta:has(.porta-a:active){box-shadow:0 0 0 3px var(--sol),var(--sombra)}
+@media (prefers-reduced-motion:no-preference){
+  .v6h .porta .poster img,.v6h .porta .mapa,.v6h .porta .carta,.v6h .porta canvas.vento,.v6h .porta .rotulos{transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+  .v6h .porta .cta-seta{transition:transform .25s cubic-bezier(.3,1.3,.5,1)}
+  .v6h .porta:hover .poster img,.v6h .porta:hover .mapa,.v6h .porta:hover .carta,.v6h .porta:hover canvas.vento,.v6h .porta:hover .rotulos{transform:scale(1.035)}
+  .v6h .porta:hover .cta-seta,.v6h .porta:has(.porta-a:focus-visible) .cta-seta{transform:translateX(4px) scale(1.06)}
+  .v6h .porta:has(.porta-a:active) .cta-seta{transform:scale(.92)}
+}
 
 /* ---------- rodapé da v6 (as notas da maquete → links do site) ---------- */
 .v6h .rodape{padding:28px 16px 28px;color:var(--nevoa);font-size:14px;border-top:1px solid var(--linha);margin-top:24px}
@@ -243,16 +247,18 @@
   .v6h .bloco .bl .ct{display:none}
   .v6h .mapa-sec{grid-area:mapa;padding:0;min-height:0}
   .v6h .cena{height:100%;min-height:0;border-radius:20px}
-  .v6h .cena .cab{padding:18px 20px 34px}
-  .v6h .cena .cab .sec{font-size:34px}
-  .v6h .cena .cab .sub{font-size:15px;max-width:none}
-  .v6h .mapa-ferr{right:14px;top:14px}
-  .v6h .abrir{display:none}
-  .v6h .mapa-sec:not(.cheio) .cena .cab .sub{display:block}
-  .v6h .credito-mapa{right:auto}
-  .v6h .cena .leg{display:block;left:14px;right:auto;max-width:calc(100% - 28px);bottom:28px;padding:8px 8px 4px}
+  .v6h .cena .cab{padding:18px 20px 34px;flex-direction:row;flex-wrap:wrap;align-items:flex-start;column-gap:16px}
+  .v6h .cena .cab .sec{font-size:34px;flex:1}
+  .v6h .cena .cab .vento-chip{order:2}
+  .v6h .cena .cab .sub{display:block;font-size:15px;max-width:none;flex-basis:100%;order:3;margin-top:-4px}
+  .v6h .cena .leg{display:block;left:14px;right:auto;max-width:calc(100% - 28px);bottom:118px;padding:8px 8px 4px}
   .v6h .cena .leg .txt{display:none}
-  .v6h .estatica{bottom:auto;top:84px}
+  .v6h .estatica{top:96px}
+  .v6h .cta{padding:40px 18px 34px 22px}
+  .v6h .cta-t{font-size:36px}
+  .v6h .cta-s{font-size:15px}
+  .v6h .cta-seta{width:60px;height:60px}
+  .v6h .credito-mapa{bottom:9px;left:22px}
   .v6h .rodape{padding:28px 32px 40px;margin-top:32px}
 }
 /* desktop baixo (portáteis 1024–1366 × 768–860): o «VAI.» e os cartões encolhem para o topo do hero não sair do cartão */
