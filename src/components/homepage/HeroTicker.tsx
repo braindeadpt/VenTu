@@ -137,10 +137,12 @@ export default function HeroTicker({
           {updated ? (
             <time
               dateTime={new Date(updatedAtTs!).toISOString()}
-              className="inline-flex items-baseline gap-1"
+              className="whitespace-nowrap"
             >
-              <span className="text-fg-muted font-medium">{updated.prefix}</span>
-              <span className="font-mono tabular-nums text-fg">{updated.datePart}</span>
+              {/* Espaços reais (não só gap): o rótulo tem de ler-se bem copiado,
+                  por leitores de ecrã e quando o flex colapsa («Actualizado3/1012:00»). */}
+              <span className="text-fg-muted font-medium">{updated.prefix}</span>{' '}
+              <span className="font-mono tabular-nums text-fg">{updated.datePart},</span>{' '}
               <span className="font-mono tabular-nums text-fg">{updated.timePart}</span>
             </time>
           ) : (
