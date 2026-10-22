@@ -513,6 +513,7 @@ export default function HomepageMapHero({
               statusLine={liveLine}
               buoyLayer={buoyLayer}
               coastalWarningsLayer={coastalWarningsLayer}
+              nowMs={clockMs}
             />
 
           </div>
