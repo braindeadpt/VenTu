@@ -1,6 +1,6 @@
 {
   "day": "20261022",
-  "fetchedAt": "2026-10-22T03:36:10.812Z",
+  "fetchedAt": "2026-10-22T05:25:16.872Z",
   "minPairs": 3,
   "minAccumulatedPairs": 10,
   "archive": {
@@ -14,10 +14,10 @@
     "trend": {
       "6200084|6200199": {
         "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
-        "coherent": 31,
+        "coherent": 32,
         "review": 2,
         "incoherent": 1,
-        "insufficient": 16,
+        "insufficient": 15,
         "days": 50,
         "incoherentRatio": 0.029
       },
@@ -85,7 +85,7 @@
       "suboptimal": []
     },
     "Viana do Castelo": {
-      "spotCount": 8,
+      "spotCount": 7,
       "withObservedWave": 0,
       "bySource": {},
       "audited": 0,
@@ -325,7 +325,7 @@
       "suboptimal": []
     },
     "Ovar": {
-      "spotCount": 6,
+      "spotCount": 5,
       "withObservedWave": 0,
       "bySource": {},
       "audited": 0,
@@ -339,7 +339,7 @@
       "suboptimal": []
     },
     "Aveiro": {
-      "spotCount": 7,
+      "spotCount": 5,
       "withObservedWave": 0,
       "bySource": {},
       "audited": 0,
@@ -367,21 +367,7 @@
       "suboptimal": []
     },
     "Figueira da Foz": {
-      "spotCount": 3,
-      "withObservedWave": 0,
-      "bySource": {},
-      "audited": 0,
-      "attachedIsClosest": 0,
-      "attachedNotClosest": 0,
-      "onlySource": 0,
-      "notClosest": [],
-      "calibrated": 0,
-      "calibrationRefs": {},
-      "suboptimalRefs": 0,
-      "suboptimal": []
-    },
-    "Marinha Grande": {
-      "spotCount": 1,
+      "spotCount": 2,
       "withObservedWave": 0,
       "bySource": {},
       "audited": 0,
@@ -1220,7 +1206,7 @@
       "suboptimal": []
     }
   },
-  "regionsAuditedAt": "2026-10-22T03:39:47.841Z",
+  "regionsAuditedAt": "2026-10-22T05:40:26.046Z",
   "pairs": [
     {
       "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
@@ -1236,8 +1222,8 @@
       "maxAbsDeltaM": 2.8,
       "corr": 0.73,
       "verdict": "coherent",
-      "firstHour": "2026-09-22T04",
-      "lastHour": "2026-10-22T01",
+      "firstHour": "2026-09-22T06",
+      "lastHour": "2026-10-22T03",
       "hours": [
         {
           "6200084": 3.2799999713897705,
@@ -1248,6 +1234,16 @@
           "6200084": 3.2799999713897705,
           "6200199": 3.3691399097442627,
           "hour": "2026-10-22T01"
+        },
+        {
+          "6200084": 3.049999952316284,
+          "6200199": 3.5742199420928955,
+          "hour": "2026-10-22T02"
+        },
+        {
+          "6200084": 3.4000000953674316,
+          "6200199": 3.28125,
+          "hour": "2026-10-22T03"
         }
       ]
     }
