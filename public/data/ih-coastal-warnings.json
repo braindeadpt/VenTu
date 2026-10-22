@@ -255,38 +255,6 @@
       ]
     },
     {
-      "id": 18855,
-      "ref": "ANAV NR 2354/26",
-      "category": "Requisitos de segurança maritima",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=e79c5e78-32ba-44fe-b60c-84db7ef94236",
-      "source": "ih",
-      "collection": "nav_warning_coastal",
-      "polygons": [
-        [
-          [
-            -8.172719,
-            37.061342
-          ],
-          [
-            -8.172719,
-            37.089007
-          ],
-          [
-            -8.137022,
-            37.089007
-          ],
-          [
-            -8.137022,
-            37.061342
-          ],
-          [
-            -8.172719,
-            37.061342
-          ]
-        ]
-      ]
-    },
-    {
       "id": 18861,
       "ref": "ANAV NR 2364/26",
       "category": "Requisitos de segurança maritima",
@@ -8202,7 +8170,6 @@
       2018205
     ],
     "falesia": [
-      18855,
       2018203,
       2018205
     ],
@@ -8298,7 +8265,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-10-22T00:16:05.216Z",
+  "fetchedAt": "2026-10-22T03:36:35.084Z",
   "sourceCollection": "nav_warning_coastal+nav_warning_local+orca_anavnet_point",
   "sourceUrl": "https://ogcapi.hidrografico.pt/collections/nav_warning_coastal"
 }
