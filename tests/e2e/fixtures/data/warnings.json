@@ -1,6 +1,968 @@
 {
   "source": "ipma",
   "fetchedAt": "2026-09-09T23:13:18.790Z",
-  "warnings": [],
-  "spotWarnings": {}
+  "warnings": [
+    {
+      "areaCode": "Coimbra",
+      "areaLabel": "Coimbra",
+      "type": "Agitação Marítima",
+      "level": "yellow",
+      "text": "Ondas de noroeste com 4 a 5 metros.",
+      "startTime": "2026-10-23T09:00:00.000Z",
+      "endTime": "2026-10-23T21:00:00.000Z",
+      "relevant": true
+    },
+    {
+      "areaCode": "Braga",
+      "areaLabel": "Braga",
+      "type": "Agitação Marítima",
+      "level": "yellow",
+      "text": "Ondas de noroeste com 4 a 5 metros.",
+      "startTime": "2026-10-23T09:00:00.000Z",
+      "endTime": "2026-10-23T21:00:00.000Z",
+      "relevant": true
+    },
+    {
+      "areaCode": "Leiria",
+      "areaLabel": "Leiria",
+      "type": "Agitação Marítima",
+      "level": "yellow",
+      "text": "Ondas de noroeste com 4 a 5 metros.",
+      "startTime": "2026-10-23T09:00:00.000Z",
+      "endTime": "2026-10-23T21:00:00.000Z",
+      "relevant": true
+    },
+    {
+      "areaCode": "Aveiro",
+      "areaLabel": "Aveiro",
+      "type": "Agitação Marítima",
+      "level": "yellow",
+      "text": "Ondas de noroeste com 4 a 5 metros.",
+      "startTime": "2026-10-23T09:00:00.000Z",
+      "endTime": "2026-10-23T21:00:00.000Z",
+      "relevant": true
+    },
+    {
+      "areaCode": "Viana do Castelo",
+      "areaLabel": "Viana do Castelo",
+      "type": "Agitação Marítima",
+      "level": "yellow",
+      "text": "Ondas de noroeste com 4 a 5 metros.",
+      "startTime": "2026-10-23T09:00:00.000Z",
+      "endTime": "2026-10-23T21:00:00.000Z",
+      "relevant": true
+    },
+    {
+      "areaCode": "Porto",
+      "areaLabel": "Porto",
+      "type": "Agitação Marítima",
+      "level": "yellow",
+      "text": "Ondas de noroeste com 4 a 5 metros.",
+      "startTime": "2026-10-23T09:00:00.000Z",
+      "endTime": "2026-10-23T21:00:00.000Z",
+      "relevant": true
+    }
+  ],
+  "spotWarnings": {
+    "moledo": [
+      {
+        "areaCode": "Viana do Castelo",
+        "areaLabel": "Viana do Castelo",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "vila-praia-ancora": [
+      {
+        "areaCode": "Viana do Castelo",
+        "areaLabel": "Viana do Castelo",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "afife": [
+      {
+        "areaCode": "Viana do Castelo",
+        "areaLabel": "Viana do Castelo",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "castelo-neiva": [
+      {
+        "areaCode": "Viana do Castelo",
+        "areaLabel": "Viana do Castelo",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "amorosa": [
+      {
+        "areaCode": "Viana do Castelo",
+        "areaLabel": "Viana do Castelo",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "cabedelo": [
+      {
+        "areaCode": "Viana do Castelo",
+        "areaLabel": "Viana do Castelo",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "foil-cabedelo": [
+      {
+        "areaCode": "Viana do Castelo",
+        "areaLabel": "Viana do Castelo",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "cabedelo-wakepark": [
+      {
+        "areaCode": "Viana do Castelo",
+        "areaLabel": "Viana do Castelo",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "rodanho": [
+      {
+        "areaCode": "Viana do Castelo",
+        "areaLabel": "Viana do Castelo",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "ofir": [
+      {
+        "areaCode": "Braga",
+        "areaLabel": "Braga",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "esposende": [
+      {
+        "areaCode": "Braga",
+        "areaLabel": "Braga",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "esposende-praia": [
+      {
+        "areaCode": "Braga",
+        "areaLabel": "Braga",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "fao": [
+      {
+        "areaCode": "Braga",
+        "areaLabel": "Braga",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "apulia": [
+      {
+        "areaCode": "Braga",
+        "areaLabel": "Braga",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "povoa-varzim": [
+      {
+        "areaCode": "Braga",
+        "areaLabel": "Braga",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      },
+      {
+        "areaCode": "Porto",
+        "areaLabel": "Porto",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "azurara": [
+      {
+        "areaCode": "Braga",
+        "areaLabel": "Braga",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      },
+      {
+        "areaCode": "Porto",
+        "areaLabel": "Porto",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "leca-palmeira": [
+      {
+        "areaCode": "Porto",
+        "areaLabel": "Porto",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "matosinhos": [
+      {
+        "areaCode": "Porto",
+        "areaLabel": "Porto",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "cabedelo-douro": [
+      {
+        "areaCode": "Porto",
+        "areaLabel": "Porto",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "marina-afurada-foil": [
+      {
+        "areaCode": "Porto",
+        "areaLabel": "Porto",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "foil-fao-cavado": [
+      {
+        "areaCode": "Braga",
+        "areaLabel": "Braga",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "foil-esposende-piscinas": [
+      {
+        "areaCode": "Braga",
+        "areaLabel": "Braga",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "praia-da-lomba": [
+      {
+        "areaCode": "Aveiro",
+        "areaLabel": "Aveiro",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      },
+      {
+        "areaCode": "Porto",
+        "areaLabel": "Porto",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "salgueiros": [
+      {
+        "areaCode": "Porto",
+        "areaLabel": "Porto",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "sereia-costa-verde": [
+      {
+        "areaCode": "Porto",
+        "areaLabel": "Porto",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "canide-sul": [
+      {
+        "areaCode": "Porto",
+        "areaLabel": "Porto",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "aguda": [
+      {
+        "areaCode": "Aveiro",
+        "areaLabel": "Aveiro",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      },
+      {
+        "areaCode": "Porto",
+        "areaLabel": "Porto",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "espinho": [
+      {
+        "areaCode": "Aveiro",
+        "areaLabel": "Aveiro",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      },
+      {
+        "areaCode": "Porto",
+        "areaLabel": "Porto",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "praia-37": [
+      {
+        "areaCode": "Aveiro",
+        "areaLabel": "Aveiro",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "bairro-piscatorio": [
+      {
+        "areaCode": "Aveiro",
+        "areaLabel": "Aveiro",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "paramos": [
+      {
+        "areaCode": "Aveiro",
+        "areaLabel": "Aveiro",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "barrinha-esmoriz": [
+      {
+        "areaCode": "Aveiro",
+        "areaLabel": "Aveiro",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "esmoriz": [
+      {
+        "areaCode": "Aveiro",
+        "areaLabel": "Aveiro",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "cortegaca": [
+      {
+        "areaCode": "Aveiro",
+        "areaLabel": "Aveiro",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "cortegaca-sul": [
+      {
+        "areaCode": "Aveiro",
+        "areaLabel": "Aveiro",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "maceda": [
+      {
+        "areaCode": "Aveiro",
+        "areaLabel": "Aveiro",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "murtosa": [
+      {
+        "areaCode": "Aveiro",
+        "areaLabel": "Aveiro",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "ria-torreira": [
+      {
+        "areaCode": "Aveiro",
+        "areaLabel": "Aveiro",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "praia-torreira": [
+      {
+        "areaCode": "Aveiro",
+        "areaLabel": "Aveiro",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "muranzel": [
+      {
+        "areaCode": "Aveiro",
+        "areaLabel": "Aveiro",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "furadouro": [
+      {
+        "areaCode": "Aveiro",
+        "areaLabel": "Aveiro",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "sao-jacinto": [
+      {
+        "areaCode": "Aveiro",
+        "areaLabel": "Aveiro",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "costa-nova": [
+      {
+        "areaCode": "Aveiro",
+        "areaLabel": "Aveiro",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "tocha": [
+      {
+        "areaCode": "Coimbra",
+        "areaLabel": "Coimbra",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "quiaios": [
+      {
+        "areaCode": "Coimbra",
+        "areaLabel": "Coimbra",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "figueira-foz": [
+      {
+        "areaCode": "Coimbra",
+        "areaLabel": "Coimbra",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "leirosa": [
+      {
+        "areaCode": "Coimbra",
+        "areaLabel": "Coimbra",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      },
+      {
+        "areaCode": "Leiria",
+        "areaLabel": "Leiria",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "praia-da-vieira": [
+      {
+        "areaCode": "Leiria",
+        "areaLabel": "Leiria",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "castelo-bode": [
+      {
+        "areaCode": "Leiria",
+        "areaLabel": "Leiria",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "nazare": [
+      {
+        "areaCode": "Leiria",
+        "areaLabel": "Leiria",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "foz-arelho": [
+      {
+        "areaCode": "Leiria",
+        "areaLabel": "Leiria",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "foil-foz-arelho": [
+      {
+        "areaCode": "Leiria",
+        "areaLabel": "Leiria",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "obidos-lagoon": [
+      {
+        "areaCode": "Leiria",
+        "areaLabel": "Leiria",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "obidos-lagoon-sul": [
+      {
+        "areaCode": "Leiria",
+        "areaLabel": "Leiria",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "obidos-lagoon-foz": [
+      {
+        "areaCode": "Leiria",
+        "areaLabel": "Leiria",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "foz-arelho-beach": [
+      {
+        "areaCode": "Leiria",
+        "areaLabel": "Leiria",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "praia-del-rey": [
+      {
+        "areaCode": "Leiria",
+        "areaLabel": "Leiria",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "almagreira": [
+      {
+        "areaCode": "Leiria",
+        "areaLabel": "Leiria",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "baleal": [
+      {
+        "areaCode": "Leiria",
+        "areaLabel": "Leiria",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "supertubos": [
+      {
+        "areaCode": "Leiria",
+        "areaLabel": "Leiria",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "ilha-do-ermal": [
+      {
+        "areaCode": "Braga",
+        "areaLabel": "Braga",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "barra-aveiro": [
+      {
+        "areaCode": "Aveiro",
+        "areaLabel": "Aveiro",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "vila-cha": [
+      {
+        "areaCode": "Porto",
+        "areaLabel": "Porto",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "consolacao": [
+      {
+        "areaCode": "Leiria",
+        "areaLabel": "Leiria",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "areia-branca": [
+      {
+        "areaCode": "Leiria",
+        "areaLabel": "Leiria",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "sao-martinho-porto": [
+      {
+        "areaCode": "Leiria",
+        "areaLabel": "Leiria",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "fao-ofir-surf": [
+      {
+        "areaCode": "Braga",
+        "areaLabel": "Braga",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "ofir-praia": [
+      {
+        "areaCode": "Braga",
+        "areaLabel": "Braga",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "mindelo": [
+      {
+        "areaCode": "Porto",
+        "areaLabel": "Porto",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ],
+    "aterro": [
+      {
+        "areaCode": "Porto",
+        "areaLabel": "Porto",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 5 metros.",
+        "startTime": "2026-10-23T09:00:00.000Z",
+        "endTime": "2026-10-23T21:00:00.000Z",
+        "relevant": true
+      }
+    ]
+  }
 }

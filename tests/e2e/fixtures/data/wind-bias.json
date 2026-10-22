@@ -13,15 +13,6 @@
       "rmse": 2.2,
       "lastUpdated": "2026-09-03T19:38:31.000Z"
     },
-    "metar|LPLA": {
-      "station": "Lajes (METAR)",
-      "source": "metar",
-      "n": 11,
-      "me": 1.3,
-      "mae": 2.5,
-      "rmse": 3,
-      "lastUpdated": "2026-09-07T11:00:00.000Z"
-    },
     "metar|LPMA": {
       "station": "Madeira (METAR)",
       "source": "metar",
@@ -40,14 +31,14 @@
       "rmse": 1.6,
       "lastUpdated": "2026-09-03T19:30:00.000Z"
     },
-    "ipma|Viana Do Castelo - Fonte Louçã (CIM)": {
-      "station": "Viana Do Castelo - Fonte Louçã (CIM)",
-      "source": "ipma",
-      "n": 125,
-      "me": 5.1,
-      "mae": 5.5,
-      "rmse": 7.3,
-      "lastUpdated": "2026-09-08T05:00:00.000Z"
+    "metar|LPLA": {
+      "station": "Lajes (METAR)",
+      "source": "metar",
+      "n": 11,
+      "me": 1.3,
+      "mae": 2.5,
+      "rmse": 3,
+      "lastUpdated": "2026-09-07T11:00:00.000Z"
     },
     "ipma|Viana Castelo, Chafé": {
       "station": "Viana Castelo, Chafé",
@@ -121,14 +112,14 @@
       "rmse": 2.4,
       "lastUpdated": "2026-09-08T06:00:00.000Z"
     },
-    "ipma|São Pedro de Moel": {
-      "station": "São Pedro de Moel",
+    "ipma|Leiria (Aeródromo)": {
+      "station": "Leiria (Aeródromo)",
       "source": "ipma",
-      "n": 34,
-      "me": 2.7,
-      "mae": 3.1,
-      "rmse": 3.6,
-      "lastUpdated": "2026-09-08T06:00:00.000Z"
+      "n": 11,
+      "me": 0.6,
+      "mae": 2.1,
+      "rmse": 2.5,
+      "lastUpdated": "2026-09-15T08:00:00.000Z"
     },
     "ipma|Tomar, Valdonas": {
       "station": "Tomar, Valdonas",
@@ -202,15 +193,6 @@
       "rmse": 2,
       "lastUpdated": "2026-09-08T06:00:00.000Z"
     },
-    "ipma|Terceira / Serra do Cume (DROTRH)": {
-      "station": "Terceira / Serra do Cume (DROTRH)",
-      "source": "ipma",
-      "n": 46,
-      "me": 2.9,
-      "mae": 3.5,
-      "rmse": 4.3,
-      "lastUpdated": "2026-09-08T05:00:00.000Z"
-    },
     "ipma|Angra do Heroísmo": {
       "station": "Angra do Heroísmo",
       "source": "ipma",
@@ -229,14 +211,14 @@
       "rmse": 6,
       "lastUpdated": "2026-09-08T06:00:00.000Z"
     },
-    "ipma|Almada, P.Rainha": {
-      "station": "Almada, P.Rainha",
+    "ipma|Lisboa, Tapada da Ajuda": {
+      "station": "Lisboa, Tapada da Ajuda",
       "source": "ipma",
-      "n": 242,
-      "me": -0.4,
-      "mae": 1.9,
-      "rmse": 2.4,
-      "lastUpdated": "2026-09-07T20:00:00.000Z"
+      "n": 55,
+      "me": -0.8,
+      "mae": 1.2,
+      "rmse": 1.6,
+      "lastUpdated": "2026-09-08T06:00:00.000Z"
     },
     "ipma|Horta (Obs. Principe Alberto)": {
       "station": "Horta (Obs. Principe Alberto)",
@@ -319,14 +301,14 @@
       "rmse": 10.4,
       "lastUpdated": "2026-09-08T06:00:00.000Z"
     },
-    "ipma|P. Delgada (Aeródromo)": {
-      "station": "P. Delgada (Aeródromo)",
+    "ipma|P. Delgada (Obs. A. Chaves)": {
+      "station": "P. Delgada (Obs. A. Chaves)",
       "source": "ipma",
-      "n": 24,
-      "me": 0.3,
-      "mae": 2.1,
+      "n": 46,
+      "me": -1.2,
+      "mae": 2.4,
       "rmse": 2.8,
-      "lastUpdated": "2026-09-07T22:00:00.000Z"
+      "lastUpdated": "2026-09-08T06:00:00.000Z"
     },
     "ipma|Zambujeira": {
       "station": "Zambujeira",
@@ -409,14 +391,14 @@
       "rmse": 3,
       "lastUpdated": "2026-09-08T06:00:00.000Z"
     },
-    "ipma|Santa Maria / Praia Formosa (DROTRH)": {
-      "station": "Santa Maria / Praia Formosa (DROTRH)",
+    "ipma|Santa Maria (Aeródromo)": {
+      "station": "Santa Maria (Aeródromo)",
       "source": "ipma",
-      "n": 38,
-      "me": -4.8,
-      "mae": 5.5,
-      "rmse": 6.1,
-      "lastUpdated": "2026-09-08T05:00:00.000Z"
+      "n": 27,
+      "me": -3.1,
+      "mae": 3.9,
+      "rmse": 4.3,
+      "lastUpdated": "2026-09-07T09:00:00.000Z"
     },
     "ipma|Madeira, S. Jorge, Santana": {
       "station": "Madeira, S. Jorge, Santana",
@@ -508,33 +490,6 @@
       "rmse": 2.4,
       "lastUpdated": "2026-09-08T06:00:00.000Z"
     },
-    "ipma|Pico / Cabeço do Teicho (DROTRH)": {
-      "station": "Pico / Cabeço do Teicho (DROTRH)",
-      "source": "ipma",
-      "n": 20,
-      "me": 1.1,
-      "mae": 1.6,
-      "rmse": 2,
-      "lastUpdated": "2026-09-08T05:00:00.000Z"
-    },
-    "ipma|São Jorge / Pico do Areeiro (DROTRH)": {
-      "station": "São Jorge / Pico do Areeiro (DROTRH)",
-      "source": "ipma",
-      "n": 20,
-      "me": 3.7,
-      "mae": 5.4,
-      "rmse": 6.6,
-      "lastUpdated": "2026-09-08T05:00:00.000Z"
-    },
-    "ipma|Santa Maria (Aeródromo)": {
-      "station": "Santa Maria (Aeródromo)",
-      "source": "ipma",
-      "n": 27,
-      "me": -3.1,
-      "mae": 3.9,
-      "rmse": 4.3,
-      "lastUpdated": "2026-09-07T09:00:00.000Z"
-    },
     "ipma|Pico (Aeródromo)": {
       "station": "Pico (Aeródromo)",
       "source": "ipma",
@@ -553,32 +508,77 @@
       "rmse": 3,
       "lastUpdated": "2026-09-07T09:00:00.000Z"
     },
-    "ipma|Leiria (Aeródromo)": {
-      "station": "Leiria (Aeródromo)",
+    "ipma|Viana Do Castelo - Fonte Louçã (CIM)": {
+      "station": "Viana Do Castelo - Fonte Louçã (CIM)",
       "source": "ipma",
-      "n": 11,
-      "me": 0.6,
-      "mae": 2.1,
-      "rmse": 2.5,
-      "lastUpdated": "2026-09-15T08:00:00.000Z"
+      "n": 125,
+      "me": 5.1,
+      "mae": 5.5,
+      "rmse": 7.3,
+      "lastUpdated": "2026-09-08T05:00:00.000Z"
     },
-    "ipma|Lisboa, Tapada da Ajuda": {
-      "station": "Lisboa, Tapada da Ajuda",
+    "ipma|São Pedro de Moel": {
+      "station": "São Pedro de Moel",
       "source": "ipma",
-      "n": 55,
-      "me": -0.8,
-      "mae": 1.2,
-      "rmse": 1.6,
+      "n": 34,
+      "me": 2.7,
+      "mae": 3.1,
+      "rmse": 3.6,
       "lastUpdated": "2026-09-08T06:00:00.000Z"
     },
-    "ipma|P. Delgada (Obs. A. Chaves)": {
-      "station": "P. Delgada (Obs. A. Chaves)",
+    "ipma|Terceira / Serra do Cume (DROTRH)": {
+      "station": "Terceira / Serra do Cume (DROTRH)",
       "source": "ipma",
       "n": 46,
-      "me": -1.2,
-      "mae": 2.4,
+      "me": 2.9,
+      "mae": 3.5,
+      "rmse": 4.3,
+      "lastUpdated": "2026-09-08T05:00:00.000Z"
+    },
+    "ipma|Almada, P.Rainha": {
+      "station": "Almada, P.Rainha",
+      "source": "ipma",
+      "n": 242,
+      "me": -0.4,
+      "mae": 1.9,
+      "rmse": 2.4,
+      "lastUpdated": "2026-09-07T20:00:00.000Z"
+    },
+    "ipma|P. Delgada (Aeródromo)": {
+      "station": "P. Delgada (Aeródromo)",
+      "source": "ipma",
+      "n": 24,
+      "me": 0.3,
+      "mae": 2.1,
       "rmse": 2.8,
-      "lastUpdated": "2026-09-08T06:00:00.000Z"
+      "lastUpdated": "2026-09-07T22:00:00.000Z"
+    },
+    "ipma|Pico / Cabeço do Teicho (DROTRH)": {
+      "station": "Pico / Cabeço do Teicho (DROTRH)",
+      "source": "ipma",
+      "n": 20,
+      "me": 1.1,
+      "mae": 1.6,
+      "rmse": 2,
+      "lastUpdated": "2026-09-08T05:00:00.000Z"
+    },
+    "ipma|São Jorge / Pico do Areeiro (DROTRH)": {
+      "station": "São Jorge / Pico do Areeiro (DROTRH)",
+      "source": "ipma",
+      "n": 20,
+      "me": 3.7,
+      "mae": 5.4,
+      "rmse": 6.6,
+      "lastUpdated": "2026-09-08T05:00:00.000Z"
+    },
+    "ipma|Santa Maria / Praia Formosa (DROTRH)": {
+      "station": "Santa Maria / Praia Formosa (DROTRH)",
+      "source": "ipma",
+      "n": 38,
+      "me": -4.8,
+      "mae": 5.5,
+      "rmse": 6.1,
+      "lastUpdated": "2026-09-08T05:00:00.000Z"
     },
     "ipma|Odemira - Vila Nova de Milfontes": {
       "station": "Odemira - Vila Nova de Milfontes",
@@ -651,6 +651,15 @@
       "mae": 6.4,
       "rmse": 7.9,
       "lastUpdated": "2026-09-27T08:30:00.000Z"
+    },
+    "metar|LPPI": {
+      "station": "Pico (METAR)",
+      "source": "metar",
+      "n": 11,
+      "me": 3.7,
+      "mae": 3.9,
+      "rmse": 4.6,
+      "lastUpdated": "2026-10-22T03:30:00.000Z"
     },
     "ipma|Lisboa (Geofísico)": {
       "station": "Lisboa (Geofísico)",
