@@ -351,6 +351,38 @@
       ]
     },
     {
+      "id": 18871,
+      "ref": "ANAV NR 2369/26",
+      "category": "Requisitos de segurança maritima",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=aa1a83e3-819f-4e1e-a882-1d7057bea603",
+      "source": "ih",
+      "collection": "nav_warning_coastal",
+      "polygons": [
+        [
+          [
+            -8.87708,
+            41.854603
+          ],
+          [
+            -8.87708,
+            41.863041
+          ],
+          [
+            -8.864381,
+            41.863041
+          ],
+          [
+            -8.864381,
+            41.854603
+          ],
+          [
+            -8.87708,
+            41.854603
+          ]
+        ]
+      ]
+    },
+    {
       "id": 1000182,
       "ref": "ANAV NR 121/21",
       "category": "SEGURANÇA DA NAVEGAÇÃO - AVISO À NAVEGAÇÃO LOCAL",
@@ -6291,38 +6323,6 @@
       ]
     },
     {
-      "id": 1010295,
-      "ref": "ANAV NR 25/26",
-      "category": "Entrada do Porto de Lisboa – Assinalamento Marítimo",
-      "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=d2adbf87-95a4-4dbf-a0d9-06064869fbe9",
-      "source": "ih",
-      "collection": "nav_warning_local",
-      "polygons": [
-        [
-          [
-            -9.388647,
-            38.622185
-          ],
-          [
-            -9.387252,
-            38.622202
-          ],
-          [
-            -9.387241,
-            38.621196
-          ],
-          [
-            -9.388572,
-            38.621196
-          ],
-          [
-            -9.388647,
-            38.622185
-          ]
-        ]
-      ]
-    },
-    {
       "id": 1010297,
       "ref": "ANAV NR 4/26",
       "category": "ASSOREAMENTO DA ENTRADA DA BARRA TAVIRA",
@@ -8233,7 +8233,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-10-22T07:35:28.350Z",
+  "fetchedAt": "2026-10-22T09:36:35.384Z",
   "sourceCollection": "nav_warning_coastal+nav_warning_local+orca_anavnet_point",
   "sourceUrl": "https://ogcapi.hidrografico.pt/collections/nav_warning_coastal"
 }

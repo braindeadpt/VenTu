@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-10-22T07:35:28.382Z",
+  "fetchedAt": "2026-10-22T09:36:35.415Z",
   "windowDays": 90,
   "dayCount": 51,
   "days": [
@@ -54206,6 +54206,13 @@
           "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=ee0dafb5-cc05-42a1-8c33-26643f272bc5"
         },
         {
+          "id": 18871,
+          "ref": "ANAV NR 2369/26",
+          "category": "Requisitos de segurança maritima",
+          "source": "ih",
+          "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=aa1a83e3-819f-4e1e-a882-1d7057bea603"
+        },
+        {
           "id": 1000182,
           "ref": "ANAV NR 121/21",
           "category": "SEGURANÇA DA NAVEGAÇÃO - AVISO À NAVEGAÇÃO LOCAL",
@@ -55135,13 +55142,6 @@
           "category": "Barra do Porto de Vila do Porto - Aberta",
           "source": "ih",
           "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=62c22108-74be-4863-b0fd-5465f400efdf"
-        },
-        {
-          "id": 1010295,
-          "ref": "ANAV NR 25/26",
-          "category": "Entrada do Porto de Lisboa – Assinalamento Marítimo",
-          "source": "ih",
-          "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=d2adbf87-95a4-4dbf-a0d9-06064869fbe9"
         },
         {
           "id": 1010297,
@@ -60123,6 +60123,18 @@
       "category": "Requisitos de segurança maritima",
       "source": "ih",
       "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=ee0dafb5-cc05-42a1-8c33-26643f272bc5",
+      "firstSeen": "2026-10-22",
+      "lastSeen": "2026-10-22",
+      "daysInForce": [
+        "2026-10-22"
+      ],
+      "nDays": 1
+    },
+    {
+      "ref": "ANAV NR 2369/26",
+      "category": "Requisitos de segurança maritima",
+      "source": "ih",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=aa1a83e3-819f-4e1e-a882-1d7057bea603",
       "firstSeen": "2026-10-22",
       "lastSeen": "2026-10-22",
       "daysInForce": [
