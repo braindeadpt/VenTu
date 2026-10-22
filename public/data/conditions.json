@@ -103,6 +103,24 @@
       "guarded": true,
       "accessible": true,
       "distKm": 0.3
+    },
+    "observed": {
+      "windSpeedKt": 4,
+      "windDirDeg": 180,
+      "windCardinal": "S",
+      "windCardinalEn": "S",
+      "stationName": "Viana Do Castelo - Fonte Louçã (CIM)",
+      "distanceKm": 12,
+      "observedAt": "2026-10-22T08:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Viana Do Castelo - Fonte Louçã (CIM)",
+      "source": "ipma",
+      "me": 4.9,
+      "mae": 5.3,
+      "rmse": 6.4,
+      "n": 447
     }
   },
   "vila-praia-ancora": {
@@ -209,6 +227,24 @@
       "guarded": true,
       "accessible": true,
       "distKm": 1.3
+    },
+    "observed": {
+      "windSpeedKt": 4,
+      "windDirDeg": 180,
+      "windCardinal": "S",
+      "windCardinalEn": "S",
+      "stationName": "Viana Do Castelo - Fonte Louçã (CIM)",
+      "distanceKm": 8.4,
+      "observedAt": "2026-10-22T08:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Viana Do Castelo - Fonte Louçã (CIM)",
+      "source": "ipma",
+      "me": 4.9,
+      "mae": 5.3,
+      "rmse": 6.4,
+      "n": 447
     }
   },
   "afife": {
@@ -265,6 +301,24 @@
       "guarded": true,
       "accessible": false,
       "distKm": 0.3
+    },
+    "observed": {
+      "windSpeedKt": 4,
+      "windDirDeg": 180,
+      "windCardinal": "S",
+      "windCardinalEn": "S",
+      "stationName": "Viana Do Castelo - Fonte Louçã (CIM)",
+      "distanceKm": 5.8,
+      "observedAt": "2026-10-22T08:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Viana Do Castelo - Fonte Louçã (CIM)",
+      "source": "ipma",
+      "me": 4.9,
+      "mae": 5.3,
+      "rmse": 6.4,
+      "n": 447
     }
   },
   "castelo-neiva": {
@@ -353,7 +407,25 @@
     ],
     "updatedAt": "2026-10-22T09:38:26.202Z",
     "airQualityIndex": 21,
-    "airQualityAt": "2026-10-22T10:00+01:00"
+    "airQualityAt": "2026-10-22T10:00+01:00",
+    "observed": {
+      "windSpeedKt": 4,
+      "windDirDeg": 180,
+      "windCardinal": "S",
+      "windCardinalEn": "S",
+      "stationName": "Viana Do Castelo - Fonte Louçã (CIM)",
+      "distanceKm": 0.6,
+      "observedAt": "2026-10-22T08:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Viana Do Castelo - Fonte Louçã (CIM)",
+      "source": "ipma",
+      "me": 4.9,
+      "mae": 5.3,
+      "rmse": 6.4,
+      "n": 447
+    }
   },
   "amorosa": {
     "waveHeight": 1.82,
@@ -459,6 +531,24 @@
       "guarded": true,
       "accessible": false,
       "distKm": 0.4
+    },
+    "observed": {
+      "windSpeedKt": 4,
+      "windDirDeg": 180,
+      "windCardinal": "S",
+      "windCardinalEn": "S",
+      "stationName": "Viana Do Castelo - Fonte Louçã (CIM)",
+      "distanceKm": 5.8,
+      "observedAt": "2026-10-22T08:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Viana Do Castelo - Fonte Louçã (CIM)",
+      "source": "ipma",
+      "me": 4.9,
+      "mae": 5.3,
+      "rmse": 6.4,
+      "n": 447
     }
   },
   "cabedelo": {
@@ -565,6 +655,25 @@
       "guarded": true,
       "accessible": false,
       "distKm": 0.2
+    },
+    "observed": {
+      "windSpeedKt": 4,
+      "windDirDeg": 90,
+      "windCardinal": "E",
+      "windCardinalEn": "E",
+      "tempC": 11.1,
+      "stationName": "Viana Castelo, Chafé",
+      "distanceKm": 4.1,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Viana Castelo, Chafé",
+      "source": "ipma",
+      "me": -0.1,
+      "mae": 1.7,
+      "rmse": 2.6,
+      "n": 2296
     }
   },
   "foil-cabedelo": {
@@ -671,6 +780,25 @@
       "guarded": true,
       "accessible": false,
       "distKm": 0.2
+    },
+    "observed": {
+      "windSpeedKt": 4,
+      "windDirDeg": 90,
+      "windCardinal": "E",
+      "windCardinalEn": "E",
+      "tempC": 11.1,
+      "stationName": "Viana Castelo, Chafé",
+      "distanceKm": 4.1,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Viana Castelo, Chafé",
+      "source": "ipma",
+      "me": -0.1,
+      "mae": 1.7,
+      "rmse": 2.6,
+      "n": 2296
     }
   },
   "cabedelo-wakepark": {
@@ -777,6 +905,25 @@
       "guarded": false,
       "accessible": true,
       "distKm": 1
+    },
+    "observed": {
+      "windSpeedKt": 4,
+      "windDirDeg": 90,
+      "windCardinal": "E",
+      "windCardinalEn": "E",
+      "tempC": 11.1,
+      "stationName": "Viana Castelo, Chafé",
+      "distanceKm": 5.4,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Viana Castelo, Chafé",
+      "source": "ipma",
+      "me": -0.1,
+      "mae": 1.7,
+      "rmse": 2.6,
+      "n": 2296
     }
   },
   "rodanho": {
@@ -883,6 +1030,25 @@
       "guarded": false,
       "accessible": false,
       "distKm": 0.1
+    },
+    "observed": {
+      "windSpeedKt": 4,
+      "windDirDeg": 90,
+      "windCardinal": "E",
+      "windCardinalEn": "E",
+      "tempC": 11.1,
+      "stationName": "Viana Castelo, Chafé",
+      "distanceKm": 2.6,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Viana Castelo, Chafé",
+      "source": "ipma",
+      "me": -0.1,
+      "mae": 1.7,
+      "rmse": 2.6,
+      "n": 2296
     }
   },
   "ofir": {
@@ -989,6 +1155,60 @@
       "guarded": true,
       "accessible": false,
       "distKm": 0.4
+    },
+    "observed": {
+      "windSpeedKt": 6,
+      "windDirDeg": 135,
+      "windCardinal": "SE",
+      "windCardinalEn": "SE",
+      "stationName": "Esposende (CIM)",
+      "distanceKm": 2.5,
+      "observedAt": "2026-10-22T08:00:00.000Z",
+      "source": "ipma"
+    },
+    "observedWave": {
+      "waveHeight": 2.56,
+      "wavePeriod": 11.8,
+      "waveDirection": 316,
+      "maxWaveHeight": 4.47,
+      "waterTemp": 15.8,
+      "stationName": "CSA92/D",
+      "stationArea": "Continente - Leixões",
+      "distanceKm": 30.5,
+      "observedAt": "2026-10-22T08:56:42.000Z",
+      "source": "ih-buoy",
+      "skill": {
+        "me": 0.52,
+        "n": 669,
+        "origin": "ih",
+        "mae": 0.53,
+        "rmse": 0.69,
+        "corr": 0.83,
+        "meanLeadHours": 45.3,
+        "buoyName": "CSA92/D"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "ih",
+      "reason": "ih-only",
+      "ihAgeHours": 1.7,
+      "wmoAgeHours": null,
+      "ihDistanceKm": 30.5,
+      "wmoDistanceKm": null
+    },
+    "windBias": {
+      "station": "Esposende (CIM)",
+      "source": "ipma",
+      "me": 2.1,
+      "mae": 2.7,
+      "rmse": 3.8,
+      "n": 927
+    },
+    "observedWaveNotClosest": {
+      "winner": "ih-buoy",
+      "reason": "ih-only",
+      "attachedKm": 31,
+      "altKm": 0
     }
   },
   "esposende": {
@@ -1095,6 +1315,60 @@
       "guarded": true,
       "accessible": false,
       "distKm": 1.6
+    },
+    "observed": {
+      "windSpeedKt": 6,
+      "windDirDeg": 135,
+      "windCardinal": "SE",
+      "windCardinalEn": "SE",
+      "stationName": "Esposende (CIM)",
+      "distanceKm": 1,
+      "observedAt": "2026-10-22T08:00:00.000Z",
+      "source": "ipma"
+    },
+    "observedWave": {
+      "waveHeight": 2.56,
+      "wavePeriod": 11.8,
+      "waveDirection": 316,
+      "maxWaveHeight": 4.47,
+      "waterTemp": 15.8,
+      "stationName": "CSA92/D",
+      "stationArea": "Continente - Leixões",
+      "distanceKm": 28.9,
+      "observedAt": "2026-10-22T08:56:42.000Z",
+      "source": "ih-buoy",
+      "skill": {
+        "me": 0.52,
+        "n": 669,
+        "origin": "ih",
+        "mae": 0.53,
+        "rmse": 0.69,
+        "corr": 0.83,
+        "meanLeadHours": 45.3,
+        "buoyName": "CSA92/D"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "ih",
+      "reason": "ih-only",
+      "ihAgeHours": 1.7,
+      "wmoAgeHours": null,
+      "ihDistanceKm": 28.9,
+      "wmoDistanceKm": null
+    },
+    "windBias": {
+      "station": "Esposende (CIM)",
+      "source": "ipma",
+      "me": 2.1,
+      "mae": 2.7,
+      "rmse": 3.8,
+      "n": 927
+    },
+    "observedWaveNotClosest": {
+      "winner": "ih-buoy",
+      "reason": "ih-only",
+      "attachedKm": 29,
+      "altKm": 0
     }
   },
   "esposende-praia": {
@@ -1201,6 +1475,60 @@
       "guarded": true,
       "accessible": false,
       "distKm": 1
+    },
+    "observed": {
+      "windSpeedKt": 6,
+      "windDirDeg": 135,
+      "windCardinal": "SE",
+      "windCardinalEn": "SE",
+      "stationName": "Esposende (CIM)",
+      "distanceKm": 1.4,
+      "observedAt": "2026-10-22T08:00:00.000Z",
+      "source": "ipma"
+    },
+    "observedWave": {
+      "waveHeight": 2.56,
+      "wavePeriod": 11.8,
+      "waveDirection": 316,
+      "maxWaveHeight": 4.47,
+      "waterTemp": 15.8,
+      "stationName": "CSA92/D",
+      "stationArea": "Continente - Leixões",
+      "distanceKm": 29.4,
+      "observedAt": "2026-10-22T08:56:42.000Z",
+      "source": "ih-buoy",
+      "skill": {
+        "me": 0.52,
+        "n": 669,
+        "origin": "ih",
+        "mae": 0.53,
+        "rmse": 0.69,
+        "corr": 0.83,
+        "meanLeadHours": 45.3,
+        "buoyName": "CSA92/D"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "ih",
+      "reason": "ih-only",
+      "ihAgeHours": 1.7,
+      "wmoAgeHours": null,
+      "ihDistanceKm": 29.4,
+      "wmoDistanceKm": null
+    },
+    "windBias": {
+      "station": "Esposende (CIM)",
+      "source": "ipma",
+      "me": 2.1,
+      "mae": 2.7,
+      "rmse": 3.8,
+      "n": 927
+    },
+    "observedWaveNotClosest": {
+      "winner": "ih-buoy",
+      "reason": "ih-only",
+      "attachedKm": 29,
+      "altKm": 0
     }
   },
   "fao": {
@@ -1307,6 +1635,60 @@
       "guarded": true,
       "accessible": false,
       "distKm": 1.7
+    },
+    "observed": {
+      "windSpeedKt": 6,
+      "windDirDeg": 135,
+      "windCardinal": "SE",
+      "windCardinalEn": "SE",
+      "stationName": "Esposende (CIM)",
+      "distanceKm": 2,
+      "observedAt": "2026-10-22T08:00:00.000Z",
+      "source": "ipma"
+    },
+    "observedWave": {
+      "waveHeight": 2.56,
+      "wavePeriod": 11.8,
+      "waveDirection": 316,
+      "maxWaveHeight": 4.47,
+      "waterTemp": 15.8,
+      "stationName": "CSA92/D",
+      "stationArea": "Continente - Leixões",
+      "distanceKm": 28,
+      "observedAt": "2026-10-22T08:56:42.000Z",
+      "source": "ih-buoy",
+      "skill": {
+        "me": 0.52,
+        "n": 669,
+        "origin": "ih",
+        "mae": 0.53,
+        "rmse": 0.69,
+        "corr": 0.83,
+        "meanLeadHours": 45.3,
+        "buoyName": "CSA92/D"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "ih",
+      "reason": "ih-only",
+      "ihAgeHours": 1.7,
+      "wmoAgeHours": null,
+      "ihDistanceKm": 28,
+      "wmoDistanceKm": null
+    },
+    "windBias": {
+      "station": "Esposende (CIM)",
+      "source": "ipma",
+      "me": 2.1,
+      "mae": 2.7,
+      "rmse": 3.8,
+      "n": 927
+    },
+    "observedWaveNotClosest": {
+      "winner": "ih-buoy",
+      "reason": "ih-only",
+      "attachedKm": 28,
+      "altKm": 0
     }
   },
   "apulia": {
@@ -1415,25 +1797,58 @@
       "distKm": 1.5
     },
     "observed": {
-      "windSpeedKt": 8,
-      "windDirDeg": 120,
-      "windDirMissing": false,
+      "windSpeedKt": 6,
+      "windDirDeg": 135,
       "windCardinal": "SE",
       "windCardinalEn": "SE",
-      "tempC": 14,
-      "stationName": "Porto (METAR)",
-      "distanceKm": 28,
-      "observedAt": "2026-10-22T09:30:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPPR"
+      "stationName": "Esposende (CIM)",
+      "distanceKm": 5.4,
+      "observedAt": "2026-10-22T08:00:00.000Z",
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Porto (METAR)",
-      "source": "metar",
-      "me": 1,
-      "mae": 1.8,
-      "rmse": 2.4,
-      "n": 476
+      "station": "Esposende (CIM)",
+      "source": "ipma",
+      "me": 2.1,
+      "mae": 2.7,
+      "rmse": 3.8,
+      "n": 927
+    },
+    "observedWave": {
+      "waveHeight": 2.56,
+      "wavePeriod": 11.8,
+      "waveDirection": 316,
+      "maxWaveHeight": 4.47,
+      "waterTemp": 15.8,
+      "stationName": "CSA92/D",
+      "stationArea": "Continente - Leixões",
+      "distanceKm": 26.1,
+      "observedAt": "2026-10-22T08:56:42.000Z",
+      "source": "ih-buoy",
+      "skill": {
+        "me": 0.52,
+        "n": 669,
+        "origin": "ih",
+        "mae": 0.53,
+        "rmse": 0.69,
+        "corr": 0.83,
+        "meanLeadHours": 45.3,
+        "buoyName": "CSA92/D"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "ih",
+      "reason": "ih-only",
+      "ihAgeHours": 1.7,
+      "wmoAgeHours": null,
+      "ihDistanceKm": 26.1,
+      "wmoDistanceKm": null
+    },
+    "observedWaveNotClosest": {
+      "winner": "ih-buoy",
+      "reason": "ih-only",
+      "attachedKm": 26,
+      "altKm": 0
     }
   },
   "povoa-varzim": {
@@ -1542,25 +1957,58 @@
       "distKm": 0.8
     },
     "observed": {
-      "windSpeedKt": 8,
-      "windDirDeg": 120,
-      "windDirMissing": false,
+      "windSpeedKt": 6,
+      "windDirDeg": 135,
       "windCardinal": "SE",
       "windCardinalEn": "SE",
-      "tempC": 14,
-      "stationName": "Porto (METAR)",
-      "distanceKm": 17,
-      "observedAt": "2026-10-22T09:30:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPPR"
+      "stationName": "Esposende (CIM)",
+      "distanceKm": 16.7,
+      "observedAt": "2026-10-22T08:00:00.000Z",
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Porto (METAR)",
-      "source": "metar",
-      "me": 1,
-      "mae": 1.8,
-      "rmse": 2.4,
-      "n": 476
+      "station": "Esposende (CIM)",
+      "source": "ipma",
+      "me": 2.1,
+      "mae": 2.7,
+      "rmse": 3.8,
+      "n": 927
+    },
+    "observedWave": {
+      "waveHeight": 2.56,
+      "wavePeriod": 11.8,
+      "waveDirection": 316,
+      "maxWaveHeight": 4.47,
+      "waterTemp": 15.8,
+      "stationName": "CSA92/D",
+      "stationArea": "Continente - Leixões",
+      "distanceKm": 19.8,
+      "observedAt": "2026-10-22T08:56:42.000Z",
+      "source": "ih-buoy",
+      "skill": {
+        "me": 0.52,
+        "n": 669,
+        "origin": "ih",
+        "mae": 0.53,
+        "rmse": 0.69,
+        "corr": 0.83,
+        "meanLeadHours": 45.3,
+        "buoyName": "CSA92/D"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "ih",
+      "reason": "ih-only",
+      "ihAgeHours": 1.7,
+      "wmoAgeHours": null,
+      "ihDistanceKm": 19.8,
+      "wmoDistanceKm": null
+    },
+    "observedWaveNotClosest": {
+      "winner": "ih-buoy",
+      "reason": "ih-only",
+      "attachedKm": 20,
+      "altKm": 0
     }
   },
   "azurara": {
@@ -1669,25 +2117,59 @@
       "distKm": 0.9
     },
     "observed": {
-      "windSpeedKt": 8,
-      "windDirDeg": 120,
-      "windDirMissing": false,
-      "windCardinal": "SE",
-      "windCardinalEn": "SE",
-      "tempC": 14,
-      "stationName": "Porto (METAR)",
-      "distanceKm": 12.5,
-      "observedAt": "2026-10-22T09:30:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPPR"
+      "windSpeedKt": 3,
+      "windDirDeg": 180,
+      "windCardinal": "S",
+      "windCardinalEn": "S",
+      "tempC": 13.7,
+      "stationName": "Porto, Pedras Rubras (Aeródromo)",
+      "distanceKm": 12.7,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Porto (METAR)",
-      "source": "metar",
-      "me": 1,
-      "mae": 1.8,
-      "rmse": 2.4,
-      "n": 476
+      "station": "Porto, Pedras Rubras (Aeródromo)",
+      "source": "ipma",
+      "me": 1.5,
+      "mae": 2.1,
+      "rmse": 2.8,
+      "n": 250
+    },
+    "observedWave": {
+      "waveHeight": 2.56,
+      "wavePeriod": 11.8,
+      "waveDirection": 316,
+      "maxWaveHeight": 4.47,
+      "waterTemp": 15.8,
+      "stationName": "CSA92/D",
+      "stationArea": "Continente - Leixões",
+      "distanceKm": 20.2,
+      "observedAt": "2026-10-22T08:56:42.000Z",
+      "source": "ih-buoy",
+      "skill": {
+        "me": 0.52,
+        "n": 669,
+        "origin": "ih",
+        "mae": 0.53,
+        "rmse": 0.69,
+        "corr": 0.83,
+        "meanLeadHours": 45.3,
+        "buoyName": "CSA92/D"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "ih",
+      "reason": "ih-only",
+      "ihAgeHours": 1.7,
+      "wmoAgeHours": null,
+      "ihDistanceKm": 20.2,
+      "wmoDistanceKm": null
+    },
+    "observedWaveNotClosest": {
+      "winner": "ih-buoy",
+      "reason": "ih-only",
+      "attachedKm": 20,
+      "altKm": 0
     }
   },
   "leca-palmeira": {
@@ -1797,22 +2279,58 @@
     },
     "observed": {
       "windSpeedKt": 2,
-      "windDirDeg": 96,
-      "windCardinal": "E",
-      "windCardinalEn": "E",
-      "tempC": 14.7,
+      "windDirDeg": 210,
+      "windCardinal": "SW",
+      "windCardinalEn": "SW",
+      "tempC": 15,
       "stationName": "TAP Teste 3",
       "distanceKm": 4.1,
-      "observedAt": "2026-10-22T09:42:13.000Z",
+      "observedAt": "2026-10-22T10:40:47.000Z",
       "source": "ecowitt"
     },
     "windBias": {
       "station": "TAP Teste 3",
       "source": "ecowitt",
-      "me": -1.4,
+      "me": -1.5,
       "mae": 2.1,
       "rmse": 2.8,
       "n": 2766
+    },
+    "observedWave": {
+      "waveHeight": 2.56,
+      "wavePeriod": 11.8,
+      "waveDirection": 316,
+      "maxWaveHeight": 4.47,
+      "waterTemp": 15.8,
+      "stationName": "CSA92/D",
+      "stationArea": "Continente - Leixões",
+      "distanceKm": 27.1,
+      "observedAt": "2026-10-22T08:56:42.000Z",
+      "source": "ih-buoy",
+      "skill": {
+        "me": 0.52,
+        "n": 669,
+        "origin": "ih",
+        "mae": 0.53,
+        "rmse": 0.69,
+        "corr": 0.83,
+        "meanLeadHours": 45.3,
+        "buoyName": "CSA92/D"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "ih",
+      "reason": "ih-only",
+      "ihAgeHours": 1.7,
+      "wmoAgeHours": null,
+      "ihDistanceKm": 27.1,
+      "wmoDistanceKm": null
+    },
+    "observedWaveNotClosest": {
+      "winner": "ih-buoy",
+      "reason": "ih-only",
+      "attachedKm": 27,
+      "altKm": 0
     }
   },
   "matosinhos": {
@@ -1922,22 +2440,58 @@
     },
     "observed": {
       "windSpeedKt": 2,
-      "windDirDeg": 96,
-      "windCardinal": "E",
-      "windCardinalEn": "E",
-      "tempC": 14.7,
+      "windDirDeg": 210,
+      "windCardinal": "SW",
+      "windCardinalEn": "SW",
+      "tempC": 15,
       "stationName": "TAP Teste 3",
       "distanceKm": 2.4,
-      "observedAt": "2026-10-22T09:42:13.000Z",
+      "observedAt": "2026-10-22T10:40:47.000Z",
       "source": "ecowitt"
     },
     "windBias": {
       "station": "TAP Teste 3",
       "source": "ecowitt",
-      "me": -1.4,
+      "me": -1.5,
       "mae": 2.1,
       "rmse": 2.8,
       "n": 2766
+    },
+    "observedWave": {
+      "waveHeight": 2.56,
+      "wavePeriod": 11.8,
+      "waveDirection": 316,
+      "maxWaveHeight": 4.47,
+      "waterTemp": 15.8,
+      "stationName": "CSA92/D",
+      "stationArea": "Continente - Leixões",
+      "distanceKm": 28.8,
+      "observedAt": "2026-10-22T08:56:42.000Z",
+      "source": "ih-buoy",
+      "skill": {
+        "me": 0.52,
+        "n": 669,
+        "origin": "ih",
+        "mae": 0.53,
+        "rmse": 0.69,
+        "corr": 0.83,
+        "meanLeadHours": 45.3,
+        "buoyName": "CSA92/D"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "ih",
+      "reason": "ih-only",
+      "ihAgeHours": 1.7,
+      "wmoAgeHours": null,
+      "ihDistanceKm": 28.8,
+      "wmoDistanceKm": null
+    },
+    "observedWaveNotClosest": {
+      "winner": "ih-buoy",
+      "reason": "ih-only",
+      "attachedKm": 29,
+      "altKm": 0
     }
   },
   "cabedelo-douro": {
@@ -2047,22 +2601,58 @@
     },
     "observed": {
       "windSpeedKt": 2,
-      "windDirDeg": 96,
-      "windCardinal": "E",
-      "windCardinalEn": "E",
-      "tempC": 14.7,
+      "windDirDeg": 210,
+      "windCardinal": "SW",
+      "windCardinalEn": "SW",
+      "tempC": 15,
       "stationName": "TAP Teste 3",
       "distanceKm": 2.3,
-      "observedAt": "2026-10-22T09:42:13.000Z",
+      "observedAt": "2026-10-22T10:40:47.000Z",
       "source": "ecowitt"
     },
     "windBias": {
       "station": "TAP Teste 3",
       "source": "ecowitt",
-      "me": -1.4,
+      "me": -1.5,
       "mae": 2.1,
       "rmse": 2.8,
       "n": 2766
+    },
+    "observedWave": {
+      "waveHeight": 2.56,
+      "wavePeriod": 11.8,
+      "waveDirection": 316,
+      "maxWaveHeight": 4.47,
+      "waterTemp": 15.8,
+      "stationName": "CSA92/D",
+      "stationArea": "Continente - Leixões",
+      "distanceKm": 32.8,
+      "observedAt": "2026-10-22T08:56:42.000Z",
+      "source": "ih-buoy",
+      "skill": {
+        "me": 0.52,
+        "n": 669,
+        "origin": "ih",
+        "mae": 0.53,
+        "rmse": 0.69,
+        "corr": 0.83,
+        "meanLeadHours": 45.3,
+        "buoyName": "CSA92/D"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "ih",
+      "reason": "ih-only",
+      "ihAgeHours": 1.7,
+      "wmoAgeHours": null,
+      "ihDistanceKm": 32.8,
+      "wmoDistanceKm": null
+    },
+    "observedWaveNotClosest": {
+      "winner": "ih-buoy",
+      "reason": "ih-only",
+      "attachedKm": 33,
+      "altKm": 0
     }
   },
   "marina-afurada-foil": {
@@ -2172,22 +2762,58 @@
     },
     "observed": {
       "windSpeedKt": 2,
-      "windDirDeg": 96,
-      "windCardinal": "E",
-      "windCardinalEn": "E",
-      "tempC": 14.7,
+      "windDirDeg": 210,
+      "windCardinal": "SW",
+      "windCardinalEn": "SW",
+      "tempC": 15,
       "stationName": "TAP Teste 3",
       "distanceKm": 3,
-      "observedAt": "2026-10-22T09:42:13.000Z",
+      "observedAt": "2026-10-22T10:40:47.000Z",
       "source": "ecowitt"
     },
     "windBias": {
       "station": "TAP Teste 3",
       "source": "ecowitt",
-      "me": -1.4,
+      "me": -1.5,
       "mae": 2.1,
       "rmse": 2.8,
       "n": 2766
+    },
+    "observedWave": {
+      "waveHeight": 2.56,
+      "wavePeriod": 11.8,
+      "waveDirection": 316,
+      "maxWaveHeight": 4.47,
+      "waterTemp": 15.8,
+      "stationName": "CSA92/D",
+      "stationArea": "Continente - Leixões",
+      "distanceKm": 33.7,
+      "observedAt": "2026-10-22T08:56:42.000Z",
+      "source": "ih-buoy",
+      "skill": {
+        "me": 0.52,
+        "n": 669,
+        "origin": "ih",
+        "mae": 0.53,
+        "rmse": 0.69,
+        "corr": 0.83,
+        "meanLeadHours": 45.3,
+        "buoyName": "CSA92/D"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "ih",
+      "reason": "ih-only",
+      "ihAgeHours": 1.7,
+      "wmoAgeHours": null,
+      "ihDistanceKm": 33.7,
+      "wmoDistanceKm": null
+    },
+    "observedWaveNotClosest": {
+      "winner": "ih-buoy",
+      "reason": "ih-only",
+      "attachedKm": 34,
+      "altKm": 0
     }
   },
   "praia-da-lomba": {
@@ -2296,23 +2922,23 @@
       "distKm": 0.1
     },
     "observed": {
-      "windSpeedKt": 2,
-      "windDirDeg": 96,
-      "windCardinal": "E",
-      "windCardinalEn": "E",
-      "tempC": 14.7,
-      "stationName": "TAP Teste 3",
-      "distanceKm": 24.5,
-      "observedAt": "2026-10-22T09:42:13.000Z",
-      "source": "ecowitt"
+      "windSpeedKt": 3,
+      "windDirDeg": 135,
+      "windCardinal": "SE",
+      "windCardinalEn": "SE",
+      "tempC": 9.8,
+      "stationName": "Luzim",
+      "distanceKm": 16.1,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
     },
     "windBias": {
-      "station": "TAP Teste 3",
-      "source": "ecowitt",
-      "me": -1.4,
-      "mae": 2.1,
-      "rmse": 2.8,
-      "n": 2766
+      "station": "Luzim",
+      "source": "ipma",
+      "me": -0.4,
+      "mae": 1.6,
+      "rmse": 2.2,
+      "n": 259
     }
   },
   "salgueiros": {
@@ -2422,22 +3048,58 @@
     },
     "observed": {
       "windSpeedKt": 2,
-      "windDirDeg": 96,
-      "windCardinal": "E",
-      "windCardinalEn": "E",
-      "tempC": 14.7,
+      "windDirDeg": 210,
+      "windCardinal": "SW",
+      "windCardinalEn": "SW",
+      "tempC": 15,
       "stationName": "TAP Teste 3",
       "distanceKm": 4.4,
-      "observedAt": "2026-10-22T09:42:13.000Z",
+      "observedAt": "2026-10-22T10:40:47.000Z",
       "source": "ecowitt"
     },
     "windBias": {
       "station": "TAP Teste 3",
       "source": "ecowitt",
-      "me": -1.4,
+      "me": -1.5,
       "mae": 2.1,
       "rmse": 2.8,
       "n": 2766
+    },
+    "observedWave": {
+      "waveHeight": 2.56,
+      "wavePeriod": 11.8,
+      "waveDirection": 316,
+      "maxWaveHeight": 4.47,
+      "waterTemp": 15.8,
+      "stationName": "CSA92/D",
+      "stationArea": "Continente - Leixões",
+      "distanceKm": 34.3,
+      "observedAt": "2026-10-22T08:56:42.000Z",
+      "source": "ih-buoy",
+      "skill": {
+        "me": 0.52,
+        "n": 669,
+        "origin": "ih",
+        "mae": 0.53,
+        "rmse": 0.69,
+        "corr": 0.83,
+        "meanLeadHours": 45.3,
+        "buoyName": "CSA92/D"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "ih",
+      "reason": "ih-only",
+      "ihAgeHours": 1.7,
+      "wmoAgeHours": null,
+      "ihDistanceKm": 34.3,
+      "wmoDistanceKm": null
+    },
+    "observedWaveNotClosest": {
+      "winner": "ih-buoy",
+      "reason": "ih-only",
+      "attachedKm": 34,
+      "altKm": 0
     }
   },
   "sereia-costa-verde": {
@@ -2547,22 +3209,58 @@
     },
     "observed": {
       "windSpeedKt": 2,
-      "windDirDeg": 96,
-      "windCardinal": "E",
-      "windCardinalEn": "E",
-      "tempC": 14.7,
+      "windDirDeg": 210,
+      "windCardinal": "SW",
+      "windCardinalEn": "SW",
+      "tempC": 15,
       "stationName": "TAP Teste 3",
       "distanceKm": 4.7,
-      "observedAt": "2026-10-22T09:42:13.000Z",
+      "observedAt": "2026-10-22T10:40:47.000Z",
       "source": "ecowitt"
     },
     "windBias": {
       "station": "TAP Teste 3",
       "source": "ecowitt",
-      "me": -1.4,
+      "me": -1.5,
       "mae": 2.1,
       "rmse": 2.8,
       "n": 2766
+    },
+    "observedWave": {
+      "waveHeight": 2.56,
+      "wavePeriod": 11.8,
+      "waveDirection": 316,
+      "maxWaveHeight": 4.47,
+      "waterTemp": 15.8,
+      "stationName": "CSA92/D",
+      "stationArea": "Continente - Leixões",
+      "distanceKm": 34.6,
+      "observedAt": "2026-10-22T08:56:42.000Z",
+      "source": "ih-buoy",
+      "skill": {
+        "me": 0.52,
+        "n": 669,
+        "origin": "ih",
+        "mae": 0.53,
+        "rmse": 0.69,
+        "corr": 0.83,
+        "meanLeadHours": 45.3,
+        "buoyName": "CSA92/D"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "ih",
+      "reason": "ih-only",
+      "ihAgeHours": 1.7,
+      "wmoAgeHours": null,
+      "ihDistanceKm": 34.6,
+      "wmoDistanceKm": null
+    },
+    "observedWaveNotClosest": {
+      "winner": "ih-buoy",
+      "reason": "ih-only",
+      "attachedKm": 35,
+      "altKm": 0
     }
   },
   "canide-sul": {
@@ -2672,22 +3370,58 @@
     },
     "observed": {
       "windSpeedKt": 2,
-      "windDirDeg": 96,
-      "windCardinal": "E",
-      "windCardinalEn": "E",
-      "tempC": 14.7,
+      "windDirDeg": 210,
+      "windCardinal": "SW",
+      "windCardinalEn": "SW",
+      "tempC": 15,
       "stationName": "TAP Teste 3",
       "distanceKm": 5.2,
-      "observedAt": "2026-10-22T09:42:13.000Z",
+      "observedAt": "2026-10-22T10:40:47.000Z",
       "source": "ecowitt"
     },
     "windBias": {
       "station": "TAP Teste 3",
       "source": "ecowitt",
-      "me": -1.4,
+      "me": -1.5,
       "mae": 2.1,
       "rmse": 2.8,
       "n": 2766
+    },
+    "observedWave": {
+      "waveHeight": 2.56,
+      "wavePeriod": 11.8,
+      "waveDirection": 316,
+      "maxWaveHeight": 4.47,
+      "waterTemp": 15.8,
+      "stationName": "CSA92/D",
+      "stationArea": "Continente - Leixões",
+      "distanceKm": 35,
+      "observedAt": "2026-10-22T08:56:42.000Z",
+      "source": "ih-buoy",
+      "skill": {
+        "me": 0.52,
+        "n": 669,
+        "origin": "ih",
+        "mae": 0.53,
+        "rmse": 0.69,
+        "corr": 0.83,
+        "meanLeadHours": 45.3,
+        "buoyName": "CSA92/D"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "ih",
+      "reason": "ih-only",
+      "ihAgeHours": 1.7,
+      "wmoAgeHours": null,
+      "ihDistanceKm": 35,
+      "wmoDistanceKm": null
+    },
+    "observedWaveNotClosest": {
+      "winner": "ih-buoy",
+      "reason": "ih-only",
+      "attachedKm": 35,
+      "altKm": 0
     }
   },
   "aguda": {
@@ -2797,19 +3531,19 @@
     },
     "observed": {
       "windSpeedKt": 2,
-      "windDirDeg": 96,
-      "windCardinal": "E",
-      "windCardinalEn": "E",
-      "tempC": 14.7,
+      "windDirDeg": 210,
+      "windCardinal": "SW",
+      "windCardinalEn": "SW",
+      "tempC": 15,
       "stationName": "TAP Teste 3",
       "distanceKm": 11.9,
-      "observedAt": "2026-10-22T09:42:13.000Z",
+      "observedAt": "2026-10-22T10:40:47.000Z",
       "source": "ecowitt"
     },
     "windBias": {
       "station": "TAP Teste 3",
       "source": "ecowitt",
-      "me": -1.4,
+      "me": -1.5,
       "mae": 2.1,
       "rmse": 2.8,
       "n": 2766
@@ -2921,23 +3655,23 @@
       "distKm": 0.6
     },
     "observed": {
-      "windSpeedKt": 2,
-      "windDirDeg": 96,
-      "windCardinal": "E",
-      "windCardinalEn": "E",
-      "tempC": 14.7,
-      "stationName": "TAP Teste 3",
-      "distanceKm": 17,
-      "observedAt": "2026-10-22T09:42:13.000Z",
-      "source": "ecowitt"
+      "windSpeedKt": 5,
+      "windDirDeg": 180,
+      "windCardinal": "S",
+      "windCardinalEn": "S",
+      "tempC": 11.5,
+      "stationName": "Espinho/Aeródromo",
+      "distanceKm": 3.7,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
     },
     "windBias": {
-      "station": "TAP Teste 3",
-      "source": "ecowitt",
-      "me": -1.4,
+      "station": "Espinho/Aeródromo",
+      "source": "ipma",
+      "me": 1.7,
       "mae": 2.1,
       "rmse": 2.8,
-      "n": 2766
+      "n": 2518
     }
   },
   "praia-37": {
@@ -3046,23 +3780,23 @@
       "distKm": 0.2
     },
     "observed": {
-      "windSpeedKt": 2,
-      "windDirDeg": 96,
-      "windCardinal": "E",
-      "windCardinalEn": "E",
-      "tempC": 14.7,
-      "stationName": "TAP Teste 3",
-      "distanceKm": 17.4,
-      "observedAt": "2026-10-22T09:42:13.000Z",
-      "source": "ecowitt"
+      "windSpeedKt": 5,
+      "windDirDeg": 180,
+      "windCardinal": "S",
+      "windCardinalEn": "S",
+      "tempC": 11.5,
+      "stationName": "Espinho/Aeródromo",
+      "distanceKm": 3.3,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
     },
     "windBias": {
-      "station": "TAP Teste 3",
-      "source": "ecowitt",
-      "me": -1.4,
+      "station": "Espinho/Aeródromo",
+      "source": "ipma",
+      "me": 1.7,
       "mae": 2.1,
       "rmse": 2.8,
-      "n": 2766
+      "n": 2518
     }
   },
   "bairro-piscatorio": {
@@ -3171,25 +3905,23 @@
       "distKm": 0.4
     },
     "observed": {
-      "windSpeedKt": 4,
-      "windDirDeg": 160,
-      "windDirMissing": false,
+      "windSpeedKt": 5,
+      "windDirDeg": 180,
       "windCardinal": "S",
       "windCardinalEn": "S",
-      "tempC": 10,
-      "stationName": "Ovar (METAR)",
-      "distanceKm": 9.1,
+      "tempC": 11.5,
+      "stationName": "Espinho/Aeródromo",
+      "distanceKm": 2.7,
       "observedAt": "2026-10-22T09:00:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPOV"
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Ovar (METAR)",
-      "source": "metar",
-      "me": 2.7,
-      "mae": 3.2,
-      "rmse": 4,
-      "n": 145
+      "station": "Espinho/Aeródromo",
+      "source": "ipma",
+      "me": 1.7,
+      "mae": 2.1,
+      "rmse": 2.8,
+      "n": 2518
     }
   },
   "paramos": {
@@ -3298,25 +4030,23 @@
       "distKm": 0.2
     },
     "observed": {
-      "windSpeedKt": 4,
-      "windDirDeg": 160,
-      "windDirMissing": false,
+      "windSpeedKt": 5,
+      "windDirDeg": 180,
       "windCardinal": "S",
       "windCardinalEn": "S",
-      "tempC": 10,
-      "stationName": "Ovar (METAR)",
-      "distanceKm": 6.6,
+      "tempC": 11.5,
+      "stationName": "Espinho/Aeródromo",
+      "distanceKm": 0.6,
       "observedAt": "2026-10-22T09:00:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPOV"
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Ovar (METAR)",
-      "source": "metar",
-      "me": 2.7,
-      "mae": 3.2,
-      "rmse": 4,
-      "n": 145
+      "station": "Espinho/Aeródromo",
+      "source": "ipma",
+      "me": 1.7,
+      "mae": 2.1,
+      "rmse": 2.8,
+      "n": 2518
     }
   },
   "barrinha-esmoriz": {
@@ -3425,25 +4155,23 @@
       "distKm": 1.4
     },
     "observed": {
-      "windSpeedKt": 4,
-      "windDirDeg": 160,
-      "windDirMissing": false,
+      "windSpeedKt": 5,
+      "windDirDeg": 180,
       "windCardinal": "S",
       "windCardinalEn": "S",
-      "tempC": 10,
-      "stationName": "Ovar (METAR)",
-      "distanceKm": 5.6,
+      "tempC": 11.5,
+      "stationName": "Espinho/Aeródromo",
+      "distanceKm": 0.9,
       "observedAt": "2026-10-22T09:00:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPOV"
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Ovar (METAR)",
-      "source": "metar",
-      "me": 2.7,
-      "mae": 3.2,
-      "rmse": 4,
-      "n": 145
+      "station": "Espinho/Aeródromo",
+      "source": "ipma",
+      "me": 1.7,
+      "mae": 2.1,
+      "rmse": 2.8,
+      "n": 2518
     }
   },
   "esmoriz": {
@@ -3552,25 +4280,23 @@
       "distKm": 0.3
     },
     "observed": {
-      "windSpeedKt": 4,
-      "windDirDeg": 160,
-      "windDirMissing": false,
+      "windSpeedKt": 5,
+      "windDirDeg": 180,
       "windCardinal": "S",
       "windCardinalEn": "S",
-      "tempC": 10,
-      "stationName": "Ovar (METAR)",
-      "distanceKm": 5,
+      "tempC": 11.5,
+      "stationName": "Espinho/Aeródromo",
+      "distanceKm": 1.7,
       "observedAt": "2026-10-22T09:00:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPOV"
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Ovar (METAR)",
-      "source": "metar",
-      "me": 2.7,
-      "mae": 3.2,
-      "rmse": 4,
-      "n": 145
+      "station": "Espinho/Aeródromo",
+      "source": "ipma",
+      "me": 1.7,
+      "mae": 2.1,
+      "rmse": 2.8,
+      "n": 2518
     }
   },
   "cortegaca": {
@@ -3679,25 +4405,23 @@
       "distKm": 0.6
     },
     "observed": {
-      "windSpeedKt": 4,
-      "windDirDeg": 160,
-      "windDirMissing": false,
+      "windSpeedKt": 5,
+      "windDirDeg": 180,
       "windCardinal": "S",
       "windCardinalEn": "S",
-      "tempC": 10,
-      "stationName": "Ovar (METAR)",
+      "tempC": 11.5,
+      "stationName": "Espinho/Aeródromo",
       "distanceKm": 3.4,
       "observedAt": "2026-10-22T09:00:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPOV"
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Ovar (METAR)",
-      "source": "metar",
-      "me": 2.7,
-      "mae": 3.2,
-      "rmse": 4,
-      "n": 145
+      "station": "Espinho/Aeródromo",
+      "source": "ipma",
+      "me": 1.7,
+      "mae": 2.1,
+      "rmse": 2.8,
+      "n": 2518
     }
   },
   "cortegaca-sul": {
@@ -3806,25 +4530,23 @@
       "distKm": 0.4
     },
     "observed": {
-      "windSpeedKt": 4,
-      "windDirDeg": 160,
-      "windDirMissing": false,
+      "windSpeedKt": 5,
+      "windDirDeg": 180,
       "windCardinal": "S",
       "windCardinalEn": "S",
-      "tempC": 10,
-      "stationName": "Ovar (METAR)",
-      "distanceKm": 2.3,
+      "tempC": 11.5,
+      "stationName": "Espinho/Aeródromo",
+      "distanceKm": 4.6,
       "observedAt": "2026-10-22T09:00:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPOV"
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Ovar (METAR)",
-      "source": "metar",
-      "me": 2.7,
-      "mae": 3.2,
-      "rmse": 4,
-      "n": 145
+      "station": "Espinho/Aeródromo",
+      "source": "ipma",
+      "me": 1.7,
+      "mae": 2.1,
+      "rmse": 2.8,
+      "n": 2518
     }
   },
   "maceda": {
@@ -3883,25 +4605,23 @@
       "distKm": 0.2
     },
     "observed": {
-      "windSpeedKt": 4,
-      "windDirDeg": 160,
-      "windDirMissing": false,
+      "windSpeedKt": 5,
+      "windDirDeg": 180,
       "windCardinal": "S",
       "windCardinalEn": "S",
-      "tempC": 10,
-      "stationName": "Ovar (METAR)",
-      "distanceKm": 1.4,
+      "tempC": 11.5,
+      "stationName": "Espinho/Aeródromo",
+      "distanceKm": 6,
       "observedAt": "2026-10-22T09:00:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPOV"
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Ovar (METAR)",
-      "source": "metar",
-      "me": 2.7,
-      "mae": 3.2,
-      "rmse": 4,
-      "n": 145
+      "station": "Espinho/Aeródromo",
+      "source": "ipma",
+      "me": 1.7,
+      "mae": 2.1,
+      "rmse": 2.8,
+      "n": 2518
     }
   },
   "murtosa": {
@@ -4011,24 +4731,22 @@
     },
     "observed": {
       "windSpeedKt": 4,
-      "windDirDeg": 160,
-      "windDirMissing": false,
-      "windCardinal": "S",
-      "windCardinalEn": "S",
-      "tempC": 10,
-      "stationName": "Ovar (METAR)",
-      "distanceKm": 20.7,
+      "windDirDeg": 135,
+      "windCardinal": "SE",
+      "windCardinalEn": "SE",
+      "tempC": 12,
+      "stationName": "Aveiro (Universidade)",
+      "distanceKm": 10.6,
       "observedAt": "2026-10-22T09:00:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPOV"
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Ovar (METAR)",
-      "source": "metar",
-      "me": 2.7,
-      "mae": 3.2,
-      "rmse": 4,
-      "n": 145
+      "station": "Aveiro (Universidade)",
+      "source": "ipma",
+      "me": 0.4,
+      "mae": 1.8,
+      "rmse": 2.4,
+      "n": 1774
     }
   },
   "ria-torreira": {
@@ -4088,24 +4806,22 @@
     },
     "observed": {
       "windSpeedKt": 4,
-      "windDirDeg": 160,
-      "windDirMissing": false,
-      "windCardinal": "S",
-      "windCardinalEn": "S",
-      "tempC": 10,
-      "stationName": "Ovar (METAR)",
-      "distanceKm": 19.3,
+      "windDirDeg": 135,
+      "windCardinal": "SE",
+      "windCardinalEn": "SE",
+      "tempC": 12,
+      "stationName": "Aveiro (Universidade)",
+      "distanceKm": 12.2,
       "observedAt": "2026-10-22T09:00:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPOV"
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Ovar (METAR)",
-      "source": "metar",
-      "me": 2.7,
-      "mae": 3.2,
-      "rmse": 4,
-      "n": 145
+      "station": "Aveiro (Universidade)",
+      "source": "ipma",
+      "me": 0.4,
+      "mae": 1.8,
+      "rmse": 2.4,
+      "n": 1774
     }
   },
   "praia-torreira": {
@@ -4215,24 +4931,22 @@
     },
     "observed": {
       "windSpeedKt": 4,
-      "windDirDeg": 160,
-      "windDirMissing": false,
-      "windCardinal": "S",
-      "windCardinalEn": "S",
-      "tempC": 10,
-      "stationName": "Ovar (METAR)",
-      "distanceKm": 18.2,
+      "windDirDeg": 135,
+      "windCardinal": "SE",
+      "windCardinalEn": "SE",
+      "tempC": 12,
+      "stationName": "Aveiro (Universidade)",
+      "distanceKm": 14.7,
       "observedAt": "2026-10-22T09:00:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPOV"
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Ovar (METAR)",
-      "source": "metar",
-      "me": 2.7,
-      "mae": 3.2,
-      "rmse": 4,
-      "n": 145
+      "station": "Aveiro (Universidade)",
+      "source": "ipma",
+      "me": 0.4,
+      "mae": 1.8,
+      "rmse": 2.4,
+      "n": 1774
     }
   },
   "muranzel": {
@@ -4324,24 +5038,22 @@
     "airQualityAt": "2026-10-22T10:00+01:00",
     "observed": {
       "windSpeedKt": 4,
-      "windDirDeg": 160,
-      "windDirMissing": false,
-      "windCardinal": "S",
-      "windCardinalEn": "S",
-      "tempC": 10,
-      "stationName": "Ovar (METAR)",
-      "distanceKm": 22.9,
+      "windDirDeg": 135,
+      "windCardinal": "SE",
+      "windCardinalEn": "SE",
+      "tempC": 12,
+      "stationName": "Aveiro (Universidade)",
+      "distanceKm": 11.1,
       "observedAt": "2026-10-22T09:00:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPOV"
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Ovar (METAR)",
-      "source": "metar",
-      "me": 2.7,
-      "mae": 3.2,
-      "rmse": 4,
-      "n": 145
+      "station": "Aveiro (Universidade)",
+      "source": "ipma",
+      "me": 0.4,
+      "mae": 1.8,
+      "rmse": 2.4,
+      "n": 1774
     }
   },
   "furadouro": {
@@ -4459,25 +5171,23 @@
       ]
     },
     "observed": {
-      "windSpeedKt": 4,
-      "windDirDeg": 160,
-      "windDirMissing": false,
+      "windSpeedKt": 5,
+      "windDirDeg": 180,
       "windCardinal": "S",
       "windCardinalEn": "S",
-      "tempC": 10,
-      "stationName": "Ovar (METAR)",
-      "distanceKm": 4.4,
+      "tempC": 11.5,
+      "stationName": "Espinho/Aeródromo",
+      "distanceKm": 10.7,
       "observedAt": "2026-10-22T09:00:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPOV"
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Ovar (METAR)",
-      "source": "metar",
-      "me": 2.7,
-      "mae": 3.2,
-      "rmse": 4,
-      "n": 145
+      "station": "Espinho/Aeródromo",
+      "source": "ipma",
+      "me": 1.7,
+      "mae": 2.1,
+      "rmse": 2.8,
+      "n": 2518
     }
   },
   "sao-jacinto": {
@@ -4537,24 +5247,22 @@
     },
     "observed": {
       "windSpeedKt": 4,
-      "windDirDeg": 160,
-      "windDirMissing": false,
-      "windCardinal": "S",
-      "windCardinalEn": "S",
-      "tempC": 10,
-      "stationName": "Ovar (METAR)",
-      "distanceKm": 28.8,
+      "windDirDeg": 135,
+      "windCardinal": "SE",
+      "windCardinalEn": "SE",
+      "tempC": 12,
+      "stationName": "Aveiro (Universidade)",
+      "distanceKm": 8.3,
       "observedAt": "2026-10-22T09:00:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPOV"
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Ovar (METAR)",
-      "source": "metar",
-      "me": 2.7,
-      "mae": 3.2,
-      "rmse": 4,
-      "n": 145
+      "station": "Aveiro (Universidade)",
+      "source": "ipma",
+      "me": 0.4,
+      "mae": 1.8,
+      "rmse": 2.4,
+      "n": 1774
     }
   },
   "costa-nova": {
@@ -4661,6 +5369,25 @@
       "guarded": true,
       "accessible": false,
       "distKm": 0.6
+    },
+    "observed": {
+      "windSpeedKt": 4,
+      "windDirDeg": 135,
+      "windCardinal": "SE",
+      "windCardinalEn": "SE",
+      "tempC": 12,
+      "stationName": "Aveiro (Universidade)",
+      "distanceKm": 7.6,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Aveiro (Universidade)",
+      "source": "ipma",
+      "me": 0.4,
+      "mae": 1.8,
+      "rmse": 2.4,
+      "n": 1774
     }
   },
   "tocha": {
@@ -4767,6 +5494,25 @@
       "guarded": true,
       "accessible": true,
       "distKm": 0.3
+    },
+    "observed": {
+      "windSpeedKt": 1,
+      "windDirDeg": 135,
+      "windCardinal": "SE",
+      "windCardinalEn": "SE",
+      "tempC": 14,
+      "stationName": "Dunas de Mira",
+      "distanceKm": 14.5,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Dunas de Mira",
+      "source": "ipma",
+      "me": -1.4,
+      "mae": 2.1,
+      "rmse": 2.8,
+      "n": 237
     }
   },
   "quiaios": {
@@ -4873,6 +5619,25 @@
       "guarded": true,
       "accessible": true,
       "distKm": 0.4
+    },
+    "observed": {
+      "windSpeedKt": 2,
+      "windDirDeg": 225,
+      "windCardinal": "SW",
+      "windCardinalEn": "SW",
+      "tempC": 14.1,
+      "stationName": "Figueira da Foz, Vila Verde",
+      "distanceKm": 11.4,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Figueira da Foz, Vila Verde",
+      "source": "ipma",
+      "me": -0.5,
+      "mae": 1.7,
+      "rmse": 2.3,
+      "n": 670
     }
   },
   "figueira-foz": {
@@ -4979,6 +5744,25 @@
       "guarded": true,
       "accessible": true,
       "distKm": 0.1
+    },
+    "observed": {
+      "windSpeedKt": 2,
+      "windDirDeg": 225,
+      "windCardinal": "SW",
+      "windCardinalEn": "SW",
+      "tempC": 14.1,
+      "stationName": "Figueira da Foz, Vila Verde",
+      "distanceKm": 5.6,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Figueira da Foz, Vila Verde",
+      "source": "ipma",
+      "me": -0.5,
+      "mae": 1.7,
+      "rmse": 2.3,
+      "n": 670
     }
   },
   "leirosa": {
@@ -5035,6 +5819,25 @@
       "guarded": true,
       "accessible": true,
       "distKm": 0.2
+    },
+    "observed": {
+      "windSpeedKt": 2,
+      "windDirDeg": 225,
+      "windCardinal": "SW",
+      "windCardinalEn": "SW",
+      "tempC": 14.1,
+      "stationName": "Figueira da Foz, Vila Verde",
+      "distanceKm": 11.7,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Figueira da Foz, Vila Verde",
+      "source": "ipma",
+      "me": -0.5,
+      "mae": 1.7,
+      "rmse": 2.3,
+      "n": 670
     }
   },
   "praia-da-vieira": {
@@ -5091,6 +5894,25 @@
       "guarded": true,
       "accessible": true,
       "distKm": 0.5
+    },
+    "observed": {
+      "windSpeedKt": 3,
+      "windDirDeg": 270,
+      "windCardinal": "W",
+      "windCardinalEn": "W",
+      "tempC": 15.1,
+      "stationName": "São Pedro de Moel",
+      "distanceKm": 13.1,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "São Pedro de Moel",
+      "source": "ipma",
+      "me": 1.8,
+      "mae": 2.5,
+      "rmse": 3.1,
+      "n": 304
     }
   },
   "castelo-bode": {
@@ -5179,7 +6001,26 @@
     ],
     "updatedAt": "2026-10-22T09:40:22.455Z",
     "airQualityIndex": 22,
-    "airQualityAt": "2026-10-22T10:00+01:00"
+    "airQualityAt": "2026-10-22T10:00+01:00",
+    "observed": {
+      "windSpeedKt": 2,
+      "windDirDeg": 0,
+      "windCardinal": "N",
+      "windCardinalEn": "N",
+      "tempC": 14.5,
+      "stationName": "Tomar, Valdonas",
+      "distanceKm": 5.7,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Tomar, Valdonas",
+      "source": "ipma",
+      "me": -0.5,
+      "mae": 1.5,
+      "rmse": 1.9,
+      "n": 253
+    }
   },
   "nazare": {
     "waveHeight": 2.66,
@@ -5287,14 +6128,14 @@
       "distKm": 0.5
     },
     "observedWave": {
-      "waveHeight": 2.973629951477051,
-      "wavePeriod": 12.949199676513672,
-      "maxWaveHeight": 4.145510196685791,
-      "waterTemp": 16.013179779052734,
+      "waveHeight": 3.046880006790161,
+      "wavePeriod": 12.656299591064453,
+      "maxWaveHeight": 4.306640148162842,
+      "waterTemp": 15.991209983825684,
       "stationName": "Nazaré Costeira (WMO)",
       "stationArea": "Nazaré",
       "distanceKm": 11.9,
-      "observedAt": "2026-10-22T07:00:00.000Z",
+      "observedAt": "2026-10-22T08:00:00.000Z",
       "source": "wmo-buoy",
       "skill": {
         "me": 0.15,
@@ -5320,6 +6161,25 @@
       "reason": "wmo-only",
       "attachedKm": 12,
       "altKm": 0
+    },
+    "observed": {
+      "windSpeedKt": 0,
+      "windDirDeg": 0,
+      "windCardinal": "Calmo",
+      "windCardinalEn": "Calm",
+      "tempC": 8.2,
+      "stationName": "Alcobaça",
+      "distanceKm": 14.4,
+      "observedAt": "2026-10-22T08:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Alcobaça",
+      "source": "ipma",
+      "me": -2.7,
+      "mae": 3,
+      "rmse": 3.7,
+      "n": 390
     }
   },
   "foz-arelho": {
@@ -5428,14 +6288,14 @@
       "distKm": 1.2
     },
     "observedWave": {
-      "waveHeight": 2.973629951477051,
-      "wavePeriod": 12.949199676513672,
-      "maxWaveHeight": 4.145510196685791,
-      "waterTemp": 16.013179779052734,
+      "waveHeight": 3.046880006790161,
+      "wavePeriod": 12.656299591064453,
+      "maxWaveHeight": 4.306640148162842,
+      "waterTemp": 15.991209983825684,
       "stationName": "Nazaré Costeira (WMO)",
       "stationArea": "Nazaré",
       "distanceKm": 14.8,
-      "observedAt": "2026-10-22T07:00:00.000Z",
+      "observedAt": "2026-10-22T08:00:00.000Z",
       "source": "wmo-buoy",
       "skill": {
         "me": 0.15,
@@ -5461,6 +6321,24 @@
       "reason": "wmo-only",
       "attachedKm": 15,
       "altKm": 0
+    },
+    "observed": {
+      "windSpeedKt": 1,
+      "windDirDeg": 180,
+      "windCardinal": "S",
+      "windCardinalEn": "S",
+      "stationName": "Cabo Carvoeiro",
+      "distanceKm": 17.7,
+      "observedAt": "2026-10-22T08:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Cabo Carvoeiro",
+      "source": "ipma",
+      "me": 2.8,
+      "mae": 3.5,
+      "rmse": 4.4,
+      "n": 1950
     }
   },
   "foil-foz-arelho": {
@@ -5569,14 +6447,14 @@
       "distKm": 1.2
     },
     "observedWave": {
-      "waveHeight": 2.973629951477051,
-      "wavePeriod": 12.949199676513672,
-      "maxWaveHeight": 4.145510196685791,
-      "waterTemp": 16.013179779052734,
+      "waveHeight": 3.046880006790161,
+      "wavePeriod": 12.656299591064453,
+      "maxWaveHeight": 4.306640148162842,
+      "waterTemp": 15.991209983825684,
       "stationName": "Nazaré Costeira (WMO)",
       "stationArea": "Nazaré",
       "distanceKm": 14.8,
-      "observedAt": "2026-10-22T07:00:00.000Z",
+      "observedAt": "2026-10-22T08:00:00.000Z",
       "source": "wmo-buoy",
       "skill": {
         "me": 0.15,
@@ -5602,6 +6480,24 @@
       "reason": "wmo-only",
       "attachedKm": 15,
       "altKm": 0
+    },
+    "observed": {
+      "windSpeedKt": 1,
+      "windDirDeg": 180,
+      "windCardinal": "S",
+      "windCardinalEn": "S",
+      "stationName": "Cabo Carvoeiro",
+      "distanceKm": 17.7,
+      "observedAt": "2026-10-22T08:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Cabo Carvoeiro",
+      "source": "ipma",
+      "me": 2.8,
+      "mae": 3.5,
+      "rmse": 4.4,
+      "n": 1950
     }
   },
   "obidos-lagoon": {
@@ -5692,14 +6588,14 @@
     "airQualityIndex": 22,
     "airQualityAt": "2026-10-22T10:00+01:00",
     "observedWave": {
-      "waveHeight": 2.973629951477051,
-      "wavePeriod": 12.949199676513672,
-      "maxWaveHeight": 4.145510196685791,
-      "waterTemp": 16.013179779052734,
+      "waveHeight": 3.046880006790161,
+      "wavePeriod": 12.656299591064453,
+      "maxWaveHeight": 4.306640148162842,
+      "waterTemp": 15.991209983825684,
       "stationName": "Nazaré Costeira (WMO)",
       "stationArea": "Nazaré",
       "distanceKm": 17.8,
-      "observedAt": "2026-10-22T07:00:00.000Z",
+      "observedAt": "2026-10-22T08:00:00.000Z",
       "source": "wmo-buoy",
       "skill": {
         "me": 0.15,
@@ -5725,6 +6621,24 @@
       "reason": "wmo-only",
       "attachedKm": 18,
       "altKm": 0
+    },
+    "observed": {
+      "windSpeedKt": 1,
+      "windDirDeg": 180,
+      "windCardinal": "S",
+      "windCardinalEn": "S",
+      "stationName": "Cabo Carvoeiro",
+      "distanceKm": 16.3,
+      "observedAt": "2026-10-22T08:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Cabo Carvoeiro",
+      "source": "ipma",
+      "me": 2.8,
+      "mae": 3.5,
+      "rmse": 4.4,
+      "n": 1950
     }
   },
   "foz-arelho-beach": {
@@ -5833,14 +6747,14 @@
       "distKm": 0.5
     },
     "observedWave": {
-      "waveHeight": 2.973629951477051,
-      "wavePeriod": 12.949199676513672,
-      "maxWaveHeight": 4.145510196685791,
-      "waterTemp": 16.013179779052734,
+      "waveHeight": 3.046880006790161,
+      "wavePeriod": 12.656299591064453,
+      "maxWaveHeight": 4.306640148162842,
+      "waterTemp": 15.991209983825684,
       "stationName": "Nazaré Costeira (WMO)",
       "stationArea": "Nazaré",
       "distanceKm": 14.5,
-      "observedAt": "2026-10-22T07:00:00.000Z",
+      "observedAt": "2026-10-22T08:00:00.000Z",
       "source": "wmo-buoy",
       "skill": {
         "me": 0.15,
@@ -5866,6 +6780,24 @@
       "reason": "wmo-only",
       "attachedKm": 15,
       "altKm": 0
+    },
+    "observed": {
+      "windSpeedKt": 1,
+      "windDirDeg": 180,
+      "windCardinal": "S",
+      "windCardinalEn": "S",
+      "stationName": "Cabo Carvoeiro",
+      "distanceKm": 16.1,
+      "observedAt": "2026-10-22T08:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Cabo Carvoeiro",
+      "source": "ipma",
+      "me": 2.8,
+      "mae": 3.5,
+      "rmse": 4.4,
+      "n": 1950
     }
   },
   "praia-del-rey": {
@@ -5974,14 +6906,14 @@
       "distKm": 1.7
     },
     "observedWave": {
-      "waveHeight": 2.973629951477051,
-      "wavePeriod": 12.949199676513672,
-      "maxWaveHeight": 4.145510196685791,
-      "waterTemp": 16.013179779052734,
+      "waveHeight": 3.046880006790161,
+      "wavePeriod": 12.656299591064453,
+      "maxWaveHeight": 4.306640148162842,
+      "waterTemp": 15.991209983825684,
       "stationName": "Nazaré Costeira (WMO)",
       "stationArea": "Nazaré",
       "distanceKm": 20.3,
-      "observedAt": "2026-10-22T07:00:00.000Z",
+      "observedAt": "2026-10-22T08:00:00.000Z",
       "source": "wmo-buoy",
       "skill": {
         "me": 0.15,
@@ -6007,6 +6939,24 @@
       "reason": "wmo-only",
       "attachedKm": 20,
       "altKm": 0
+    },
+    "observed": {
+      "windSpeedKt": 1,
+      "windDirDeg": 180,
+      "windCardinal": "S",
+      "windCardinalEn": "S",
+      "stationName": "Cabo Carvoeiro",
+      "distanceKm": 10.7,
+      "observedAt": "2026-10-22T08:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Cabo Carvoeiro",
+      "source": "ipma",
+      "me": 2.8,
+      "mae": 3.5,
+      "rmse": 4.4,
+      "n": 1950
     }
   },
   "almagreira": {
@@ -6115,14 +7065,14 @@
       "distKm": 2
     },
     "observedWave": {
-      "waveHeight": 2.973629951477051,
-      "wavePeriod": 12.949199676513672,
-      "maxWaveHeight": 4.145510196685791,
-      "waterTemp": 16.013179779052734,
+      "waveHeight": 3.046880006790161,
+      "wavePeriod": 12.656299591064453,
+      "maxWaveHeight": 4.306640148162842,
+      "waterTemp": 15.991209983825684,
       "stationName": "Nazaré Costeira (WMO)",
       "stationArea": "Nazaré",
       "distanceKm": 22.1,
-      "observedAt": "2026-10-22T07:00:00.000Z",
+      "observedAt": "2026-10-22T08:00:00.000Z",
       "source": "wmo-buoy",
       "skill": {
         "me": 0.15,
@@ -6148,6 +7098,24 @@
       "reason": "wmo-only",
       "attachedKm": 22,
       "altKm": 0
+    },
+    "observed": {
+      "windSpeedKt": 1,
+      "windDirDeg": 180,
+      "windCardinal": "S",
+      "windCardinalEn": "S",
+      "stationName": "Cabo Carvoeiro",
+      "distanceKm": 7.9,
+      "observedAt": "2026-10-22T08:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Cabo Carvoeiro",
+      "source": "ipma",
+      "me": 2.8,
+      "mae": 3.5,
+      "rmse": 4.4,
+      "n": 1950
     }
   },
   "baleal": {
@@ -6256,14 +7224,14 @@
       "distKm": 0.1
     },
     "observedWave": {
-      "waveHeight": 2.973629951477051,
-      "wavePeriod": 12.949199676513672,
-      "maxWaveHeight": 4.145510196685791,
-      "waterTemp": 16.013179779052734,
+      "waveHeight": 3.046880006790161,
+      "wavePeriod": 12.656299591064453,
+      "maxWaveHeight": 4.306640148162842,
+      "waterTemp": 15.991209983825684,
       "stationName": "Nazaré Costeira (WMO)",
       "stationArea": "Nazaré",
       "distanceKm": 23.6,
-      "observedAt": "2026-10-22T07:00:00.000Z",
+      "observedAt": "2026-10-22T08:00:00.000Z",
       "source": "wmo-buoy",
       "skill": {
         "me": 0.15,
@@ -6289,6 +7257,24 @@
       "reason": "wmo-only",
       "attachedKm": 24,
       "altKm": 0
+    },
+    "observed": {
+      "windSpeedKt": 1,
+      "windDirDeg": 180,
+      "windCardinal": "S",
+      "windCardinalEn": "S",
+      "stationName": "Cabo Carvoeiro",
+      "distanceKm": 6,
+      "observedAt": "2026-10-22T08:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Cabo Carvoeiro",
+      "source": "ipma",
+      "me": 2.8,
+      "mae": 3.5,
+      "rmse": 4.4,
+      "n": 1950
     }
   },
   "supertubos": {
@@ -6397,14 +7383,14 @@
       "distKm": 0.2
     },
     "observedWave": {
-      "waveHeight": 2.973629951477051,
-      "wavePeriod": 12.949199676513672,
-      "maxWaveHeight": 4.145510196685791,
-      "waterTemp": 16.013179779052734,
+      "waveHeight": 3.046880006790161,
+      "wavePeriod": 12.656299591064453,
+      "maxWaveHeight": 4.306640148162842,
+      "waterTemp": 15.991209983825684,
       "stationName": "Nazaré Costeira (WMO)",
       "stationArea": "Nazaré",
       "distanceKm": 27.4,
-      "observedAt": "2026-10-22T07:00:00.000Z",
+      "observedAt": "2026-10-22T08:00:00.000Z",
       "source": "wmo-buoy",
       "skill": {
         "me": 0.15,
@@ -6430,6 +7416,24 @@
       "reason": "wmo-only",
       "attachedKm": 27,
       "altKm": 0
+    },
+    "observed": {
+      "windSpeedKt": 1,
+      "windDirDeg": 180,
+      "windCardinal": "S",
+      "windCardinalEn": "S",
+      "stationName": "Cabo Carvoeiro",
+      "distanceKm": 5.5,
+      "observedAt": "2026-10-22T08:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Cabo Carvoeiro",
+      "source": "ipma",
+      "me": 2.8,
+      "mae": 3.5,
+      "rmse": 4.4,
+      "n": 1950
     }
   },
   "foz-sizandro": {
@@ -6536,6 +7540,25 @@
       "guarded": true,
       "accessible": true,
       "distKm": 0
+    },
+    "observed": {
+      "windSpeedKt": 4,
+      "windDirDeg": 0,
+      "windCardinal": "N",
+      "windCardinalEn": "N",
+      "tempC": 14.6,
+      "stationName": "Santa Cruz (Aeródromo)",
+      "distanceKm": 3.1,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Santa Cruz (Aeródromo)",
+      "source": "ipma",
+      "me": -0.1,
+      "mae": 1.8,
+      "rmse": 2.2,
+      "n": 3101
     }
   },
   "coxos": {
@@ -6642,6 +7665,25 @@
       "guarded": true,
       "accessible": false,
       "distKm": 0.6
+    },
+    "observed": {
+      "windSpeedKt": 4,
+      "windDirDeg": 0,
+      "windCardinal": "N",
+      "windCardinalEn": "N",
+      "tempC": 14.6,
+      "stationName": "Santa Cruz (Aeródromo)",
+      "distanceKm": 14.7,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Santa Cruz (Aeródromo)",
+      "source": "ipma",
+      "me": -0.1,
+      "mae": 1.8,
+      "rmse": 2.2,
+      "n": 3101
     }
   },
   "ribeira-ilhas": {
@@ -6750,25 +7792,23 @@
       "distKm": 0.1
     },
     "observed": {
-      "windSpeedKt": 12,
-      "windDirDeg": 360,
-      "windDirMissing": false,
+      "windSpeedKt": 4,
+      "windDirDeg": 0,
       "windCardinal": "N",
       "windCardinalEn": "N",
-      "tempC": 17,
-      "stationName": "Cascais (METAR)",
-      "distanceKm": 29.8,
-      "observedAt": "2026-10-22T09:30:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPCS"
+      "tempC": 14.6,
+      "stationName": "Santa Cruz (Aeródromo)",
+      "distanceKm": 15.7,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Cascais (METAR)",
-      "source": "metar",
-      "me": 3.1,
-      "mae": 3.5,
-      "rmse": 4.8,
-      "n": 176
+      "station": "Santa Cruz (Aeródromo)",
+      "source": "ipma",
+      "me": -0.1,
+      "mae": 1.8,
+      "rmse": 2.2,
+      "n": 3101
     }
   },
   "empa": {
@@ -6877,25 +7917,23 @@
       "distKm": 0.5
     },
     "observed": {
-      "windSpeedKt": 12,
-      "windDirDeg": 360,
-      "windDirMissing": false,
+      "windSpeedKt": 4,
+      "windDirDeg": 0,
       "windCardinal": "N",
       "windCardinalEn": "N",
-      "tempC": 17,
-      "stationName": "Cascais (METAR)",
-      "distanceKm": 29.5,
-      "observedAt": "2026-10-22T09:30:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPCS"
+      "tempC": 14.6,
+      "stationName": "Santa Cruz (Aeródromo)",
+      "distanceKm": 16.2,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Cascais (METAR)",
-      "source": "metar",
-      "me": 3.1,
-      "mae": 3.5,
-      "rmse": 4.8,
-      "n": 176
+      "station": "Santa Cruz (Aeródromo)",
+      "source": "ipma",
+      "me": -0.1,
+      "mae": 1.8,
+      "rmse": 2.2,
+      "n": 3101
     }
   },
   "sao-lourenco": {
@@ -7004,25 +8042,23 @@
       "distKm": 0.8
     },
     "observed": {
-      "windSpeedKt": 12,
-      "windDirDeg": 360,
-      "windDirMissing": false,
+      "windSpeedKt": 4,
+      "windDirDeg": 0,
       "windCardinal": "N",
       "windCardinalEn": "N",
-      "tempC": 17,
-      "stationName": "Cascais (METAR)",
-      "distanceKm": 28.9,
-      "observedAt": "2026-10-22T09:30:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPCS"
+      "tempC": 14.6,
+      "stationName": "Santa Cruz (Aeródromo)",
+      "distanceKm": 16.6,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Cascais (METAR)",
-      "source": "metar",
-      "me": 3.1,
-      "mae": 3.5,
-      "rmse": 4.8,
-      "n": 176
+      "station": "Santa Cruz (Aeródromo)",
+      "source": "ipma",
+      "me": -0.1,
+      "mae": 1.8,
+      "rmse": 2.2,
+      "n": 3101
     }
   },
   "pedra-branca": {
@@ -7131,25 +8167,23 @@
       "distKm": 1
     },
     "observed": {
-      "windSpeedKt": 12,
-      "windDirDeg": 360,
-      "windDirMissing": false,
+      "windSpeedKt": 4,
+      "windDirDeg": 0,
       "windCardinal": "N",
       "windCardinalEn": "N",
-      "tempC": 17,
-      "stationName": "Cascais (METAR)",
-      "distanceKm": 28.3,
-      "observedAt": "2026-10-22T09:30:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPCS"
+      "tempC": 14.6,
+      "stationName": "Santa Cruz (Aeródromo)",
+      "distanceKm": 17.1,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Cascais (METAR)",
-      "source": "metar",
-      "me": 3.1,
-      "mae": 3.5,
-      "rmse": 4.8,
-      "n": 176
+      "station": "Santa Cruz (Aeródromo)",
+      "source": "ipma",
+      "me": -0.1,
+      "mae": 1.8,
+      "rmse": 2.2,
+      "n": 3101
     }
   },
   "sao-sebastiao": {
@@ -7258,25 +8292,23 @@
       "distKm": 0.3
     },
     "observed": {
-      "windSpeedKt": 12,
-      "windDirDeg": 360,
-      "windDirMissing": false,
+      "windSpeedKt": 4,
+      "windDirDeg": 0,
       "windCardinal": "N",
       "windCardinalEn": "N",
-      "tempC": 17,
-      "stationName": "Cascais (METAR)",
-      "distanceKm": 27.8,
-      "observedAt": "2026-10-22T09:30:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPCS"
+      "tempC": 14.6,
+      "stationName": "Santa Cruz (Aeródromo)",
+      "distanceKm": 17.7,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Cascais (METAR)",
-      "source": "metar",
-      "me": 3.1,
-      "mae": 3.5,
-      "rmse": 4.8,
-      "n": 176
+      "station": "Santa Cruz (Aeródromo)",
+      "source": "ipma",
+      "me": -0.1,
+      "mae": 1.8,
+      "rmse": 2.2,
+      "n": 3101
     }
   },
   "foz-lizandro": {
@@ -7385,25 +8417,23 @@
       "distKm": 0.1
     },
     "observed": {
-      "windSpeedKt": 12,
-      "windDirDeg": 360,
-      "windDirMissing": false,
-      "windCardinal": "N",
-      "windCardinalEn": "N",
-      "tempC": 17,
-      "stationName": "Cascais (METAR)",
-      "distanceKm": 24.6,
-      "observedAt": "2026-10-22T09:30:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPCS"
+      "windSpeedKt": 5,
+      "windDirDeg": 315,
+      "windCardinal": "NW",
+      "windCardinalEn": "NW",
+      "tempC": 11.6,
+      "stationName": "Sintra/Tapada do Mouco",
+      "distanceKm": 17.8,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Cascais (METAR)",
-      "source": "metar",
-      "me": 3.1,
-      "mae": 3.5,
-      "rmse": 4.8,
-      "n": 176
+      "station": "Sintra/Tapada do Mouco",
+      "source": "ipma",
+      "me": -0.2,
+      "mae": 2.5,
+      "rmse": 3.3,
+      "n": 493
     }
   },
   "praia-grande-sintra": {
@@ -7512,25 +8542,23 @@
       "distKm": 0.6
     },
     "observed": {
-      "windSpeedKt": 12,
-      "windDirDeg": 360,
-      "windDirMissing": false,
+      "windSpeedKt": 10,
+      "windDirDeg": 0,
       "windCardinal": "N",
       "windCardinalEn": "N",
-      "tempC": 17,
-      "stationName": "Cascais (METAR)",
-      "distanceKm": 14.5,
-      "observedAt": "2026-10-22T09:30:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPCS"
+      "tempC": 14.2,
+      "stationName": "Cabo da Roca",
+      "distanceKm": 4.9,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Cascais (METAR)",
-      "source": "metar",
-      "me": 3.1,
-      "mae": 3.5,
-      "rmse": 4.8,
-      "n": 176
+      "station": "Cabo da Roca",
+      "source": "ipma",
+      "me": 5.7,
+      "mae": 6.1,
+      "rmse": 7.4,
+      "n": 596
     }
   },
   "adraga": {
@@ -7639,25 +8667,23 @@
       "distKm": 1.6
     },
     "observed": {
-      "windSpeedKt": 12,
-      "windDirDeg": 360,
-      "windDirMissing": false,
+      "windSpeedKt": 10,
+      "windDirDeg": 0,
       "windCardinal": "N",
       "windCardinalEn": "N",
-      "tempC": 17,
-      "stationName": "Cascais (METAR)",
-      "distanceKm": 13.8,
-      "observedAt": "2026-10-22T09:30:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPCS"
+      "tempC": 14.2,
+      "stationName": "Cabo da Roca",
+      "distanceKm": 1.1,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Cascais (METAR)",
-      "source": "metar",
-      "me": 3.1,
-      "mae": 3.5,
-      "rmse": 4.8,
-      "n": 176
+      "station": "Cabo da Roca",
+      "source": "ipma",
+      "me": 5.7,
+      "mae": 6.1,
+      "rmse": 7.4,
+      "n": 596
     }
   },
   "guincho": {
@@ -7766,25 +8792,23 @@
       "distKm": 0.3
     },
     "observed": {
-      "windSpeedKt": 12,
-      "windDirDeg": 360,
-      "windDirMissing": false,
+      "windSpeedKt": 8,
+      "windDirDeg": 0,
       "windCardinal": "N",
       "windCardinalEn": "N",
-      "tempC": 17,
-      "stationName": "Cascais (METAR)",
-      "distanceKm": 10.2,
-      "observedAt": "2026-10-22T09:30:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPCS"
+      "tempC": 15.6,
+      "stationName": "Cabo Raso",
+      "distanceKm": 2.8,
+      "observedAt": "2026-10-22T08:00:00.000Z",
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Cascais (METAR)",
-      "source": "metar",
-      "me": 3.1,
-      "mae": 3.5,
-      "rmse": 4.8,
-      "n": 176
+      "station": "Cabo Raso",
+      "source": "ipma",
+      "me": 2.2,
+      "mae": 3.3,
+      "rmse": 4.1,
+      "n": 180
     }
   },
   "seixal-bay": {
@@ -7875,25 +8899,23 @@
     "airQualityIndex": 24,
     "airQualityAt": "2026-10-22T10:00+01:00",
     "observed": {
-      "windSpeedKt": 5,
-      "windDirDeg": 340,
-      "windDirMissing": false,
+      "windSpeedKt": 2,
+      "windDirDeg": 0,
       "windCardinal": "N",
       "windCardinalEn": "N",
-      "tempC": 15,
-      "stationName": "Montijo (METAR)",
-      "distanceKm": 6.9,
-      "observedAt": "2026-10-22T09:00:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPMT"
+      "tempC": 14.4,
+      "stationName": "Barreiro, Lavradio",
+      "distanceKm": 10,
+      "observedAt": "2026-10-22T08:00:00.000Z",
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Montijo (METAR)",
-      "source": "metar",
-      "me": 1.7,
-      "mae": 2.5,
-      "rmse": 3,
-      "n": 113
+      "station": "Barreiro, Lavradio",
+      "source": "ipma",
+      "me": -0.2,
+      "mae": 1.6,
+      "rmse": 2.2,
+      "n": 740
     }
   },
   "praia-vitoria": {
@@ -8005,25 +9027,23 @@
       "distKm": 0.6
     },
     "observed": {
-      "windSpeedKt": 2,
-      "windDirDeg": 0,
-      "windDirMissing": true,
-      "windCardinal": "—",
-      "windCardinalEn": "—",
-      "tempC": 20,
-      "stationName": "Lajes (METAR)",
-      "distanceKm": 4.2,
-      "observedAt": "2026-10-22T09:00:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPLA"
+      "windSpeedKt": 7,
+      "windDirDeg": 270,
+      "windCardinal": "W",
+      "windCardinalEn": "W",
+      "tempC": 15.9,
+      "stationName": "Terceira / Serra do Cume (DROTRH)",
+      "distanceKm": 4.6,
+      "observedAt": "2026-10-22T08:00:00.000Z",
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Lajes (METAR)",
-      "source": "metar",
-      "me": 1.1,
-      "mae": 2.8,
-      "rmse": 3.9,
-      "n": 219
+      "station": "Terceira / Serra do Cume (DROTRH)",
+      "source": "ipma",
+      "me": 1.5,
+      "mae": 2.5,
+      "rmse": 3.3,
+      "n": 164
     }
   },
   "santa-catarina-terceira": {
@@ -8117,25 +9137,23 @@
     "airQualityIndex": 28,
     "airQualityAt": "2026-10-22T09:00+00:00",
     "observed": {
-      "windSpeedKt": 2,
-      "windDirDeg": 0,
-      "windDirMissing": true,
-      "windCardinal": "—",
-      "windCardinalEn": "—",
-      "tempC": 20,
-      "stationName": "Lajes (METAR)",
-      "distanceKm": 14.1,
+      "windSpeedKt": 3,
+      "windDirDeg": 270,
+      "windCardinal": "W",
+      "windCardinalEn": "W",
+      "tempC": 20.2,
+      "stationName": "Angra do Heroísmo",
+      "distanceKm": 1.9,
       "observedAt": "2026-10-22T09:00:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPLA"
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Lajes (METAR)",
-      "source": "metar",
-      "me": 1.1,
-      "mae": 2.8,
-      "rmse": 3.9,
-      "n": 219
+      "station": "Angra do Heroísmo",
+      "source": "ipma",
+      "me": 0.6,
+      "mae": 2.2,
+      "rmse": 2.8,
+      "n": 446
     }
   },
   "parede": {
@@ -8244,25 +9262,23 @@
       "distKm": 0.7
     },
     "observed": {
-      "windSpeedKt": 12,
-      "windDirDeg": 360,
-      "windDirMissing": false,
+      "windSpeedKt": 10,
+      "windDirDeg": 0,
       "windCardinal": "N",
       "windCardinalEn": "N",
-      "tempC": 17,
-      "stationName": "Cascais (METAR)",
-      "distanceKm": 5,
-      "observedAt": "2026-10-22T09:30:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPCS"
+      "tempC": 13.8,
+      "stationName": "Oeiras / Vila Fria (CMO)",
+      "distanceKm": 6.9,
+      "observedAt": "2026-10-22T08:00:00.000Z",
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Cascais (METAR)",
-      "source": "metar",
-      "me": 3.1,
-      "mae": 3.5,
-      "rmse": 4.8,
-      "n": 176
+      "station": "Oeiras / Vila Fria (CMO)",
+      "source": "ipma",
+      "me": 4.5,
+      "mae": 4.8,
+      "rmse": 5.9,
+      "n": 450
     }
   },
   "carcavelos": {
@@ -8371,25 +9387,23 @@
       "distKm": 0.2
     },
     "observed": {
-      "windSpeedKt": 12,
-      "windDirDeg": 360,
-      "windDirMissing": false,
+      "windSpeedKt": 10,
+      "windDirDeg": 0,
       "windCardinal": "N",
       "windCardinalEn": "N",
-      "tempC": 17,
-      "stationName": "Cascais (METAR)",
-      "distanceKm": 5.4,
-      "observedAt": "2026-10-22T09:30:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPCS"
+      "tempC": 13.8,
+      "stationName": "Oeiras / Vila Fria (CMO)",
+      "distanceKm": 6.1,
+      "observedAt": "2026-10-22T08:00:00.000Z",
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Cascais (METAR)",
-      "source": "metar",
-      "me": 3.1,
-      "mae": 3.5,
-      "rmse": 4.8,
-      "n": 176
+      "station": "Oeiras / Vila Fria (CMO)",
+      "source": "ipma",
+      "me": 4.5,
+      "mae": 4.8,
+      "rmse": 5.9,
+      "n": 450
     }
   },
   "nova-vaga": {
@@ -8498,25 +9512,23 @@
       "distKm": 1.3
     },
     "observed": {
-      "windSpeedKt": 12,
-      "windDirDeg": 360,
-      "windDirMissing": false,
-      "windCardinal": "N",
-      "windCardinalEn": "N",
-      "tempC": 17,
-      "stationName": "Cascais (METAR)",
-      "distanceKm": 12.3,
-      "observedAt": "2026-10-22T09:30:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPCS"
+      "windSpeedKt": 4,
+      "windDirDeg": 0,
+      "windCardinal": "Calmo",
+      "windCardinalEn": "Calm",
+      "tempC": 17.7,
+      "stationName": "Almada, P.Rainha",
+      "distanceKm": 5.3,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Cascais (METAR)",
-      "source": "metar",
-      "me": 3.1,
-      "mae": 3.5,
-      "rmse": 4.8,
-      "n": 176
+      "station": "Almada, P.Rainha",
+      "source": "ipma",
+      "me": -1.4,
+      "mae": 2.2,
+      "rmse": 2.7,
+      "n": 1498
     }
   },
   "sao-joao-caparica": {
@@ -8625,25 +9637,23 @@
       "distKm": 0.3
     },
     "observed": {
-      "windSpeedKt": 12,
-      "windDirDeg": 360,
-      "windDirMissing": false,
-      "windCardinal": "N",
-      "windCardinalEn": "N",
-      "tempC": 17,
-      "stationName": "Cascais (METAR)",
-      "distanceKm": 11.6,
-      "observedAt": "2026-10-22T09:30:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPCS"
+      "windSpeedKt": 4,
+      "windDirDeg": 0,
+      "windCardinal": "Calmo",
+      "windCardinalEn": "Calm",
+      "tempC": 17.7,
+      "stationName": "Almada, P.Rainha",
+      "distanceKm": 5.7,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Cascais (METAR)",
-      "source": "metar",
-      "me": 3.1,
-      "mae": 3.5,
-      "rmse": 4.8,
-      "n": 176
+      "station": "Almada, P.Rainha",
+      "source": "ipma",
+      "me": -1.4,
+      "mae": 2.2,
+      "rmse": 2.7,
+      "n": 1498
     }
   },
   "costa-caparica": {
@@ -8752,25 +9762,23 @@
       "distKm": 0.5
     },
     "observed": {
-      "windSpeedKt": 12,
-      "windDirDeg": 360,
-      "windDirMissing": false,
-      "windCardinal": "N",
-      "windCardinalEn": "N",
-      "tempC": 17,
-      "stationName": "Cascais (METAR)",
-      "distanceKm": 13.6,
-      "observedAt": "2026-10-22T09:30:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPCS"
+      "windSpeedKt": 4,
+      "windDirDeg": 0,
+      "windCardinal": "Calmo",
+      "windCardinalEn": "Calm",
+      "tempC": 17.7,
+      "stationName": "Almada, P.Rainha",
+      "distanceKm": 3.7,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Cascais (METAR)",
-      "source": "metar",
-      "me": 3.1,
-      "mae": 3.5,
-      "rmse": 4.8,
-      "n": 176
+      "station": "Almada, P.Rainha",
+      "source": "ipma",
+      "me": -1.4,
+      "mae": 2.2,
+      "rmse": 2.7,
+      "n": 1498
     }
   },
   "fonte-telha": {
@@ -8879,25 +9887,23 @@
       "distKm": 1.6
     },
     "observed": {
-      "windSpeedKt": 12,
-      "windDirDeg": 360,
-      "windDirMissing": false,
-      "windCardinal": "N",
-      "windCardinalEn": "N",
-      "tempC": 17,
-      "stationName": "Cascais (METAR)",
-      "distanceKm": 20.4,
-      "observedAt": "2026-10-22T09:30:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPCS"
+      "windSpeedKt": 4,
+      "windDirDeg": 0,
+      "windCardinal": "Calmo",
+      "windCardinalEn": "Calm",
+      "tempC": 17.7,
+      "stationName": "Almada, P.Rainha",
+      "distanceKm": 4.1,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Cascais (METAR)",
-      "source": "metar",
-      "me": 3.1,
-      "mae": 3.5,
-      "rmse": 4.8,
-      "n": 176
+      "station": "Almada, P.Rainha",
+      "source": "ipma",
+      "me": -1.4,
+      "mae": 2.2,
+      "rmse": 2.7,
+      "n": 1498
     }
   },
   "ponta-dos-corvos": {
@@ -8988,25 +9994,23 @@
     "airQualityIndex": 42,
     "airQualityAt": "2026-10-22T10:00+01:00",
     "observed": {
-      "windSpeedKt": 5,
-      "windDirDeg": 340,
-      "windDirMissing": false,
+      "windSpeedKt": 2,
+      "windDirDeg": 0,
       "windCardinal": "N",
       "windCardinalEn": "N",
-      "tempC": 15,
-      "stationName": "Montijo (METAR)",
-      "distanceKm": 8.3,
-      "observedAt": "2026-10-22T09:00:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPMT"
+      "tempC": 14.4,
+      "stationName": "Barreiro, Lavradio",
+      "distanceKm": 5.5,
+      "observedAt": "2026-10-22T08:00:00.000Z",
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Montijo (METAR)",
-      "source": "metar",
-      "me": 1.7,
-      "mae": 2.5,
-      "rmse": 3,
-      "n": 113
+      "station": "Barreiro, Lavradio",
+      "source": "ipma",
+      "me": -0.2,
+      "mae": 1.6,
+      "rmse": 2.2,
+      "n": 740
     }
   },
   "trafaria": {
@@ -9118,25 +10122,23 @@
       "distKm": 1.7
     },
     "observed": {
-      "windSpeedKt": 12,
-      "windDirDeg": 360,
-      "windDirMissing": false,
-      "windCardinal": "N",
-      "windCardinalEn": "N",
-      "tempC": 17,
-      "stationName": "Cascais (METAR)",
-      "distanceKm": 11.4,
-      "observedAt": "2026-10-22T09:30:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPCS"
+      "windSpeedKt": 4,
+      "windDirDeg": 0,
+      "windCardinal": "Calmo",
+      "windCardinalEn": "Calm",
+      "tempC": 17.7,
+      "stationName": "Almada, P.Rainha",
+      "distanceKm": 6.5,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Cascais (METAR)",
-      "source": "metar",
-      "me": 3.1,
-      "mae": 3.5,
-      "rmse": 4.8,
-      "n": 176
+      "station": "Almada, P.Rainha",
+      "source": "ipma",
+      "me": -1.4,
+      "mae": 2.2,
+      "rmse": 2.7,
+      "n": 1498
     }
   },
   "cova-do-vapor": {
@@ -9245,25 +10247,23 @@
       "distKm": 0.7
     },
     "observed": {
-      "windSpeedKt": 12,
-      "windDirDeg": 360,
-      "windDirMissing": false,
-      "windCardinal": "N",
-      "windCardinalEn": "N",
-      "tempC": 17,
-      "stationName": "Cascais (METAR)",
-      "distanceKm": 10.1,
-      "observedAt": "2026-10-22T09:30:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPCS"
+      "windSpeedKt": 4,
+      "windDirDeg": 0,
+      "windCardinal": "Calmo",
+      "windCardinalEn": "Calm",
+      "tempC": 17.7,
+      "stationName": "Almada, P.Rainha",
+      "distanceKm": 7.1,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Cascais (METAR)",
-      "source": "metar",
-      "me": 3.1,
-      "mae": 3.5,
-      "rmse": 4.8,
-      "n": 176
+      "station": "Almada, P.Rainha",
+      "source": "ipma",
+      "me": -1.4,
+      "mae": 2.2,
+      "rmse": 2.7,
+      "n": 1498
     }
   },
   "praia-da-rainha": {
@@ -9372,25 +10372,23 @@
       "distKm": 0.4
     },
     "observed": {
-      "windSpeedKt": 12,
-      "windDirDeg": 360,
-      "windDirMissing": false,
-      "windCardinal": "N",
-      "windCardinalEn": "N",
-      "tempC": 17,
-      "stationName": "Cascais (METAR)",
-      "distanceKm": 14.6,
-      "observedAt": "2026-10-22T09:30:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPCS"
+      "windSpeedKt": 4,
+      "windDirDeg": 0,
+      "windCardinal": "Calmo",
+      "windCardinalEn": "Calm",
+      "tempC": 17.7,
+      "stationName": "Almada, P.Rainha",
+      "distanceKm": 2.7,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Cascais (METAR)",
-      "source": "metar",
-      "me": 3.1,
-      "mae": 3.5,
-      "rmse": 4.8,
-      "n": 176
+      "station": "Almada, P.Rainha",
+      "source": "ipma",
+      "me": -1.4,
+      "mae": 2.2,
+      "rmse": 2.7,
+      "n": 1498
     }
   },
   "almoxarife": {
@@ -9502,17 +10500,23 @@
       "distKm": 1
     },
     "observed": {
-      "windSpeedKt": 9,
-      "windDirDeg": 260,
-      "windDirMissing": false,
-      "windCardinal": "W",
-      "windCardinalEn": "W",
-      "tempC": 22,
-      "stationName": "Horta (METAR)",
-      "distanceKm": 7.4,
-      "observedAt": "2026-10-22T09:30:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPHR"
+      "windSpeedKt": 11,
+      "windDirDeg": 225,
+      "windCardinal": "SW",
+      "windCardinalEn": "SW",
+      "tempC": 21.4,
+      "stationName": "Horta (Obs. Principe Alberto)",
+      "distanceKm": 0.9,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Horta (Obs. Principe Alberto)",
+      "source": "ipma",
+      "me": -0.6,
+      "mae": 3.4,
+      "rmse": 4.5,
+      "n": 253
     }
   },
   "lagoa-albufeira": {
@@ -9603,25 +10607,23 @@
     "airQualityIndex": 35,
     "airQualityAt": "2026-10-22T10:00+01:00",
     "observed": {
-      "windSpeedKt": 5,
-      "windDirDeg": 340,
-      "windDirMissing": false,
-      "windCardinal": "N",
-      "windCardinalEn": "N",
-      "tempC": 15,
-      "stationName": "Montijo (METAR)",
-      "distanceKm": 24.3,
+      "windSpeedKt": 4,
+      "windDirDeg": 0,
+      "windCardinal": "Calmo",
+      "windCardinalEn": "Calm",
+      "tempC": 17.7,
+      "stationName": "Almada, P.Rainha",
+      "distanceKm": 14.4,
       "observedAt": "2026-10-22T09:00:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPMT"
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Montijo (METAR)",
-      "source": "metar",
-      "me": 1.7,
-      "mae": 2.5,
-      "rmse": 3,
-      "n": 113
+      "station": "Almada, P.Rainha",
+      "source": "ipma",
+      "me": -1.4,
+      "mae": 2.2,
+      "rmse": 2.7,
+      "n": 1498
     }
   },
   "foil-lagoa-albufeira": {
@@ -9712,25 +10714,23 @@
     "airQualityIndex": 35,
     "airQualityAt": "2026-10-22T10:00+01:00",
     "observed": {
-      "windSpeedKt": 5,
-      "windDirDeg": 340,
-      "windDirMissing": false,
-      "windCardinal": "N",
-      "windCardinalEn": "N",
-      "tempC": 15,
-      "stationName": "Montijo (METAR)",
-      "distanceKm": 24.3,
+      "windSpeedKt": 4,
+      "windDirDeg": 0,
+      "windCardinal": "Calmo",
+      "windCardinalEn": "Calm",
+      "tempC": 17.7,
+      "stationName": "Almada, P.Rainha",
+      "distanceKm": 14.4,
       "observedAt": "2026-10-22T09:00:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPMT"
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Montijo (METAR)",
-      "source": "metar",
-      "me": 1.7,
-      "mae": 2.5,
-      "rmse": 3,
-      "n": 113
+      "station": "Almada, P.Rainha",
+      "source": "ipma",
+      "me": -1.4,
+      "mae": 2.2,
+      "rmse": 2.7,
+      "n": 1498
     }
   },
   "praia-lagoa-albufeira": {
@@ -9839,25 +10839,23 @@
       "distKm": 0.1
     },
     "observed": {
-      "windSpeedKt": 5,
-      "windDirDeg": 340,
-      "windDirMissing": false,
-      "windCardinal": "N",
-      "windCardinalEn": "N",
-      "tempC": 15,
-      "stationName": "Montijo (METAR)",
-      "distanceKm": 25.4,
+      "windSpeedKt": 4,
+      "windDirDeg": 0,
+      "windCardinal": "Calmo",
+      "windCardinalEn": "Calm",
+      "tempC": 17.7,
+      "stationName": "Almada, P.Rainha",
+      "distanceKm": 12.5,
       "observedAt": "2026-10-22T09:00:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPMT"
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Montijo (METAR)",
-      "source": "metar",
-      "me": 1.7,
-      "mae": 2.5,
-      "rmse": 3,
-      "n": 113
+      "station": "Almada, P.Rainha",
+      "source": "ipma",
+      "me": -1.4,
+      "mae": 2.2,
+      "rmse": 2.7,
+      "n": 1498
     }
   },
   "troia": {
@@ -9969,25 +10967,23 @@
       "distKm": 1.5
     },
     "observed": {
-      "windSpeedKt": 5,
-      "windDirDeg": 340,
-      "windDirMissing": false,
+      "windSpeedKt": 3,
+      "windDirDeg": 0,
       "windCardinal": "N",
       "windCardinalEn": "N",
-      "tempC": 15,
-      "stationName": "Montijo (METAR)",
-      "distanceKm": 26.3,
+      "tempC": 16.7,
+      "stationName": "Setúbal",
+      "distanceKm": 5.8,
       "observedAt": "2026-10-22T09:00:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPMT"
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Montijo (METAR)",
-      "source": "metar",
-      "me": 1.7,
-      "mae": 2.5,
-      "rmse": 3,
-      "n": 113
+      "station": "Setúbal",
+      "source": "ipma",
+      "me": -0.6,
+      "mae": 1.5,
+      "rmse": 2,
+      "n": 576
     }
   },
   "comporta": {
@@ -10097,6 +11093,25 @@
       "guarded": true,
       "accessible": true,
       "distKm": 1.7
+    },
+    "observed": {
+      "windSpeedKt": 3,
+      "windDirDeg": 0,
+      "windCardinal": "N",
+      "windCardinalEn": "N",
+      "tempC": 16.7,
+      "stationName": "Setúbal",
+      "distanceKm": 20.9,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Setúbal",
+      "source": "ipma",
+      "me": -0.6,
+      "mae": 1.5,
+      "rmse": 2,
+      "n": 576
     }
   },
   "carvalhal-comporta": {
@@ -10185,7 +11200,26 @@
     ],
     "updatedAt": "2026-10-22T09:40:34.426Z",
     "airQualityIndex": 20,
-    "airQualityAt": "2026-10-22T10:00+01:00"
+    "airQualityAt": "2026-10-22T10:00+01:00",
+    "observed": {
+      "windSpeedKt": 1,
+      "windDirDeg": 90,
+      "windCardinal": "E",
+      "windCardinalEn": "E",
+      "tempC": 7.1,
+      "stationName": "Alcácer do Sal, Barrosinha",
+      "distanceKm": 27.7,
+      "observedAt": "2026-10-22T08:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Alcácer do Sal, Barrosinha",
+      "source": "ipma",
+      "me": -0.3,
+      "mae": 2,
+      "rmse": 2.6,
+      "n": 182
+    }
   },
   "alqueva": {
     "waveHeight": null,
@@ -10287,6 +11321,25 @@
       "guarded": true,
       "accessible": true,
       "distKm": 1.2
+    },
+    "observed": {
+      "windSpeedKt": 1,
+      "windDirDeg": 45,
+      "windCardinal": "NE",
+      "windCardinalEn": "NE",
+      "tempC": 16,
+      "stationName": "Amareleja",
+      "distanceKm": 23.9,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Amareleja",
+      "source": "ipma",
+      "me": 0.1,
+      "mae": 1.6,
+      "rmse": 2.2,
+      "n": 260
     }
   },
   "ilha-do-ermal": {
@@ -10393,6 +11446,25 @@
       "guarded": false,
       "accessible": false,
       "distKm": 2.1
+    },
+    "observed": {
+      "windSpeedKt": 2,
+      "windDirDeg": 180,
+      "windCardinal": "S",
+      "windCardinalEn": "S",
+      "tempC": 9.4,
+      "stationName": "Cabeceiras de Basto",
+      "distanceKm": 15.2,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Cabeceiras de Basto",
+      "source": "ipma",
+      "me": -1.4,
+      "mae": 2,
+      "rmse": 2.6,
+      "n": 239
     }
   },
   "melides": {
@@ -10501,15 +11573,15 @@
       "distKm": 0.1
     },
     "observedWave": {
-      "waveHeight": 2.61,
-      "wavePeriod": 12.5,
-      "waveDirection": 311,
-      "maxWaveHeight": 3.5,
-      "waterTemp": 17.4,
+      "waveHeight": 2.07,
+      "wavePeriod": 11.1,
+      "waveDirection": 314,
+      "maxWaveHeight": 3.82,
+      "waterTemp": 17.3,
       "stationName": "CSA83/1D",
       "stationArea": "Continente - Sines",
       "distanceKm": 26,
-      "observedAt": "2026-10-22T07:56:44.000Z",
+      "observedAt": "2026-10-22T08:56:44.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.18,
@@ -10525,7 +11597,7 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.8,
+      "ihAgeHours": 1.7,
       "wmoAgeHours": null,
       "ihDistanceKm": 26,
       "wmoDistanceKm": null
@@ -10535,6 +11607,25 @@
       "reason": "ih-only",
       "attachedKm": 26,
       "altKm": 0
+    },
+    "observed": {
+      "windSpeedKt": 6,
+      "windDirDeg": 0,
+      "windCardinal": "N",
+      "windCardinalEn": "N",
+      "tempC": 15.2,
+      "stationName": "Sines",
+      "distanceKm": 19.8,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Sines",
+      "source": "ipma",
+      "me": 2.6,
+      "mae": 3.2,
+      "rmse": 3.9,
+      "n": 1658
     }
   },
   "sines": {
@@ -10643,15 +11734,15 @@
       "distKm": 0.4
     },
     "observedWave": {
-      "waveHeight": 2.61,
-      "wavePeriod": 12.5,
-      "waveDirection": 311,
-      "maxWaveHeight": 3.5,
-      "waterTemp": 17.4,
+      "waveHeight": 2.07,
+      "wavePeriod": 11.1,
+      "waveDirection": 314,
+      "maxWaveHeight": 3.82,
+      "waterTemp": 17.3,
       "stationName": "CSA83/1D",
       "stationArea": "Continente - Sines",
       "distanceKm": 6.4,
-      "observedAt": "2026-10-22T07:56:44.000Z",
+      "observedAt": "2026-10-22T08:56:44.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.18,
@@ -10667,7 +11758,7 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.8,
+      "ihAgeHours": 1.7,
       "wmoAgeHours": null,
       "ihDistanceKm": 6.4,
       "wmoDistanceKm": null
@@ -10677,6 +11768,25 @@
       "reason": "ih-only",
       "attachedKm": 6,
       "altKm": 0
+    },
+    "observed": {
+      "windSpeedKt": 6,
+      "windDirDeg": 0,
+      "windCardinal": "N",
+      "windCardinalEn": "N",
+      "tempC": 15.2,
+      "stationName": "Sines",
+      "distanceKm": 2.7,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Sines",
+      "source": "ipma",
+      "me": 2.6,
+      "mae": 3.2,
+      "rmse": 3.9,
+      "n": 1658
     }
   },
   "sao-torpes": {
@@ -10785,15 +11895,15 @@
       "distKm": 0.5
     },
     "observedWave": {
-      "waveHeight": 2.61,
-      "wavePeriod": 12.5,
-      "waveDirection": 311,
-      "maxWaveHeight": 3.5,
-      "waterTemp": 17.4,
+      "waveHeight": 2.07,
+      "wavePeriod": 11.1,
+      "waveDirection": 314,
+      "maxWaveHeight": 3.82,
+      "waterTemp": 17.3,
       "stationName": "CSA83/1D",
       "stationArea": "Continente - Sines",
       "distanceKm": 10.8,
-      "observedAt": "2026-10-22T07:56:44.000Z",
+      "observedAt": "2026-10-22T08:56:44.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.18,
@@ -10809,7 +11919,7 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.8,
+      "ihAgeHours": 1.7,
       "wmoAgeHours": null,
       "ihDistanceKm": 10.8,
       "wmoDistanceKm": null
@@ -10819,6 +11929,25 @@
       "reason": "ih-only",
       "attachedKm": 11,
       "altKm": 0
+    },
+    "observed": {
+      "windSpeedKt": 6,
+      "windDirDeg": 0,
+      "windCardinal": "N",
+      "windCardinalEn": "N",
+      "tempC": 15.2,
+      "stationName": "Sines",
+      "distanceKm": 4.6,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Sines",
+      "source": "ipma",
+      "me": 2.6,
+      "mae": 3.2,
+      "rmse": 3.9,
+      "n": 1658
     }
   },
   "mosteiros": {
@@ -10930,25 +12059,23 @@
       "distKm": 0.1
     },
     "observed": {
-      "windSpeedKt": 11,
-      "windDirDeg": 280,
-      "windDirMissing": false,
+      "windSpeedKt": 4,
+      "windDirDeg": 270,
       "windCardinal": "W",
       "windCardinalEn": "W",
-      "tempC": 21,
-      "stationName": "Ponta Delgada (METAR)",
-      "distanceKm": 19.9,
-      "observedAt": "2026-10-22T09:30:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPPD"
+      "tempC": 18.6,
+      "stationName": "São Miguel / Sete Cidades (DROTRH)",
+      "distanceKm": 5.1,
+      "observedAt": "2026-10-22T08:00:00.000Z",
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Ponta Delgada (METAR)",
-      "source": "metar",
-      "me": 1.8,
-      "mae": 2.6,
-      "rmse": 3.5,
-      "n": 73
+      "station": "São Miguel / Sete Cidades (DROTRH)",
+      "source": "ipma",
+      "me": -2.7,
+      "mae": 3.3,
+      "rmse": 4.3,
+      "n": 162
     }
   },
   "porto-covo": {
@@ -11057,15 +12184,15 @@
       "distKm": 0.7
     },
     "observedWave": {
-      "waveHeight": 2.61,
-      "wavePeriod": 12.5,
-      "waveDirection": 311,
-      "maxWaveHeight": 3.5,
-      "waterTemp": 17.4,
+      "waveHeight": 2.07,
+      "wavePeriod": 11.1,
+      "waveDirection": 314,
+      "maxWaveHeight": 3.82,
+      "waterTemp": 17.3,
       "stationName": "CSA83/1D",
       "stationArea": "Continente - Sines",
       "distanceKm": 14.4,
-      "observedAt": "2026-10-22T07:56:44.000Z",
+      "observedAt": "2026-10-22T08:56:44.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.18,
@@ -11081,7 +12208,7 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.8,
+      "ihAgeHours": 1.7,
       "wmoAgeHours": null,
       "ihDistanceKm": 14.4,
       "wmoDistanceKm": null
@@ -11091,6 +12218,25 @@
       "reason": "ih-only",
       "attachedKm": 14,
       "altKm": 0
+    },
+    "observed": {
+      "windSpeedKt": 6,
+      "windDirDeg": 0,
+      "windCardinal": "N",
+      "windCardinalEn": "N",
+      "tempC": 15.2,
+      "stationName": "Sines",
+      "distanceKm": 12.2,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Sines",
+      "source": "ipma",
+      "me": 2.6,
+      "mae": 3.2,
+      "rmse": 3.9,
+      "n": 1658
     }
   },
   "monte-verde": {
@@ -11202,25 +12348,23 @@
       "distKm": 1.6
     },
     "observed": {
-      "windSpeedKt": 11,
-      "windDirDeg": 280,
-      "windDirMissing": false,
+      "windSpeedKt": 3,
+      "windDirDeg": 270,
       "windCardinal": "W",
       "windCardinalEn": "W",
-      "tempC": 21,
-      "stationName": "Ponta Delgada (METAR)",
-      "distanceKm": 10.6,
-      "observedAt": "2026-10-22T09:30:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPPD"
+      "tempC": 18.9,
+      "stationName": "São Miguel / Santana (DROTRH)",
+      "distanceKm": 8.4,
+      "observedAt": "2026-10-22T08:00:00.000Z",
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Ponta Delgada (METAR)",
-      "source": "metar",
-      "me": 1.8,
-      "mae": 2.6,
-      "rmse": 3.5,
-      "n": 73
+      "station": "São Miguel / Santana (DROTRH)",
+      "source": "ipma",
+      "me": -1.4,
+      "mae": 2.7,
+      "rmse": 3.7,
+      "n": 483
     }
   },
   "santa-barbara": {
@@ -11314,25 +12458,23 @@
     "airQualityIndex": 28,
     "airQualityAt": "2026-10-22T09:00+00:00",
     "observed": {
-      "windSpeedKt": 11,
-      "windDirDeg": 280,
-      "windDirMissing": false,
-      "windCardinal": "W",
-      "windCardinalEn": "W",
-      "tempC": 21,
-      "stationName": "Ponta Delgada (METAR)",
-      "distanceKm": 8.9,
-      "observedAt": "2026-10-22T09:30:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPPD"
+      "windSpeedKt": 9,
+      "windDirDeg": 315,
+      "windCardinal": "NW",
+      "windCardinalEn": "NW",
+      "tempC": 14.8,
+      "stationName": "São Miguel - Pico Santos De Cima",
+      "distanceKm": 4.7,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Ponta Delgada (METAR)",
-      "source": "metar",
-      "me": 1.8,
-      "mae": 2.6,
-      "rmse": 3.5,
-      "n": 73
+      "station": "São Miguel - Pico Santos De Cima",
+      "source": "ipma",
+      "me": 9.1,
+      "mae": 9.3,
+      "rmse": 11.2,
+      "n": 481
     }
   },
   "malhao": {
@@ -11441,15 +12583,15 @@
       "distKm": 2.7
     },
     "observedWave": {
-      "waveHeight": 2.61,
-      "wavePeriod": 12.5,
-      "waveDirection": 311,
-      "maxWaveHeight": 3.5,
-      "waterTemp": 17.4,
+      "waveHeight": 2.07,
+      "wavePeriod": 11.1,
+      "waveDirection": 314,
+      "maxWaveHeight": 3.82,
+      "waterTemp": 17.3,
       "stationName": "CSA83/1D",
       "stationArea": "Continente - Sines",
       "distanceKm": 21.1,
-      "observedAt": "2026-10-22T07:56:44.000Z",
+      "observedAt": "2026-10-22T08:56:44.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.18,
@@ -11465,7 +12607,7 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.8,
+      "ihAgeHours": 1.7,
       "wmoAgeHours": null,
       "ihDistanceKm": 21.1,
       "wmoDistanceKm": null
@@ -11475,6 +12617,25 @@
       "reason": "ih-only",
       "attachedKm": 21,
       "altKm": 0
+    },
+    "observed": {
+      "windSpeedKt": 7,
+      "windDirDeg": 0,
+      "windCardinal": "N",
+      "windCardinalEn": "N",
+      "tempC": 16.2,
+      "stationName": "Odemira - Vila Nova de Milfontes",
+      "distanceKm": 5.6,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Odemira - Vila Nova de Milfontes",
+      "source": "ipma",
+      "me": -0.1,
+      "mae": 1.9,
+      "rmse": 2.3,
+      "n": 275
     }
   },
   "milicias": {
@@ -11586,25 +12747,23 @@
       "distKm": 2.4
     },
     "observed": {
-      "windSpeedKt": 11,
-      "windDirDeg": 280,
-      "windDirMissing": false,
+      "windSpeedKt": 10,
+      "windDirDeg": 270,
       "windCardinal": "W",
       "windCardinalEn": "W",
-      "tempC": 21,
-      "stationName": "Ponta Delgada (METAR)",
-      "distanceKm": 4.1,
-      "observedAt": "2026-10-22T09:30:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPPD"
+      "tempC": 21.2,
+      "stationName": "P. Delgada (Aeródromo)",
+      "distanceKm": 3.7,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Ponta Delgada (METAR)",
-      "source": "metar",
-      "me": 1.8,
-      "mae": 2.6,
-      "rmse": 3.5,
-      "n": 73
+      "station": "P. Delgada (Aeródromo)",
+      "source": "ipma",
+      "me": 3.5,
+      "mae": 3.9,
+      "rmse": 5.4,
+      "n": 435
     }
   },
   "vila-nova-milfontes": {
@@ -11713,15 +12872,15 @@
       "distKm": 0.4
     },
     "observedWave": {
-      "waveHeight": 2.61,
-      "wavePeriod": 12.5,
-      "waveDirection": 311,
-      "maxWaveHeight": 3.5,
-      "waterTemp": 17.4,
+      "waveHeight": 2.07,
+      "wavePeriod": 11.1,
+      "waveDirection": 314,
+      "maxWaveHeight": 3.82,
+      "waterTemp": 17.3,
       "stationName": "CSA83/1D",
       "stationArea": "Continente - Sines",
       "distanceKm": 25.5,
-      "observedAt": "2026-10-22T07:56:44.000Z",
+      "observedAt": "2026-10-22T08:56:44.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.18,
@@ -11737,7 +12896,7 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.8,
+      "ihAgeHours": 1.7,
       "wmoAgeHours": null,
       "ihDistanceKm": 25.5,
       "wmoDistanceKm": null
@@ -11747,6 +12906,25 @@
       "reason": "ih-only",
       "attachedKm": 26,
       "altKm": 0
+    },
+    "observed": {
+      "windSpeedKt": 7,
+      "windDirDeg": 0,
+      "windCardinal": "N",
+      "windCardinalEn": "N",
+      "tempC": 16.2,
+      "stationName": "Odemira - Vila Nova de Milfontes",
+      "distanceKm": 0.9,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Odemira - Vila Nova de Milfontes",
+      "source": "ipma",
+      "me": -0.1,
+      "mae": 1.9,
+      "rmse": 2.3,
+      "n": 275
     }
   },
   "alteirinhos": {
@@ -11855,15 +13033,15 @@
       "distKm": 2
     },
     "observedWave": {
-      "waveHeight": 2.61,
-      "wavePeriod": 12.5,
-      "waveDirection": 311,
-      "maxWaveHeight": 3.5,
-      "waterTemp": 17.4,
+      "waveHeight": 2.07,
+      "wavePeriod": 11.1,
+      "waveDirection": 314,
+      "maxWaveHeight": 3.82,
+      "waterTemp": 17.3,
       "stationName": "CSA83/1D",
       "stationArea": "Continente - Sines",
       "distanceKm": 32.9,
-      "observedAt": "2026-10-22T07:56:44.000Z",
+      "observedAt": "2026-10-22T08:56:44.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.18,
@@ -11879,7 +13057,7 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.8,
+      "ihAgeHours": 1.7,
       "wmoAgeHours": null,
       "ihDistanceKm": 32.9,
       "wmoDistanceKm": null
@@ -11889,6 +13067,25 @@
       "reason": "ih-only",
       "attachedKm": 33,
       "altKm": 0
+    },
+    "observed": {
+      "windSpeedKt": 3,
+      "windDirDeg": 45,
+      "windCardinal": "NE",
+      "windCardinalEn": "NE",
+      "tempC": 14.6,
+      "stationName": "Zambujeira",
+      "distanceKm": 8.2,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Zambujeira",
+      "source": "ipma",
+      "me": -1.5,
+      "mae": 2.1,
+      "rmse": 2.8,
+      "n": 575
     }
   },
   "agua-alto": {
@@ -12000,25 +13197,23 @@
       "distKm": 0.2
     },
     "observed": {
-      "windSpeedKt": 11,
-      "windDirDeg": 280,
-      "windDirMissing": false,
+      "windSpeedKt": 3,
+      "windDirDeg": 270,
       "windCardinal": "W",
       "windCardinalEn": "W",
-      "tempC": 21,
-      "stationName": "Ponta Delgada (METAR)",
-      "distanceKm": 20.1,
-      "observedAt": "2026-10-22T09:30:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPPD"
+      "tempC": 18.9,
+      "stationName": "São Miguel / Santana (DROTRH)",
+      "distanceKm": 12.8,
+      "observedAt": "2026-10-22T08:00:00.000Z",
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Ponta Delgada (METAR)",
-      "source": "metar",
-      "me": 1.8,
-      "mae": 2.6,
-      "rmse": 3.5,
-      "n": 73
+      "station": "São Miguel / Santana (DROTRH)",
+      "source": "ipma",
+      "me": -1.4,
+      "mae": 2.7,
+      "rmse": 3.7,
+      "n": 483
     }
   },
   "zambujeira": {
@@ -12125,6 +13320,25 @@
       "guarded": true,
       "accessible": true,
       "distKm": 0.1
+    },
+    "observed": {
+      "windSpeedKt": 3,
+      "windDirDeg": 45,
+      "windCardinal": "NE",
+      "windCardinalEn": "NE",
+      "tempC": 14.9,
+      "stationName": "Odemira, S.Teotónio",
+      "distanceKm": 5.8,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Odemira, S.Teotónio",
+      "source": "ipma",
+      "me": -0.3,
+      "mae": 1.7,
+      "rmse": 2.2,
+      "n": 602
     }
   },
   "carvalhal": {
@@ -12231,6 +13445,25 @@
       "guarded": true,
       "accessible": true,
       "distKm": 0.1
+    },
+    "observed": {
+      "windSpeedKt": 3,
+      "windDirDeg": 45,
+      "windCardinal": "NE",
+      "windCardinalEn": "NE",
+      "tempC": 14.9,
+      "stationName": "Odemira, S.Teotónio",
+      "distanceKm": 7.6,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Odemira, S.Teotónio",
+      "source": "ipma",
+      "me": -0.3,
+      "mae": 1.7,
+      "rmse": 2.2,
+      "n": 602
     }
   },
   "odeceixe": {
@@ -12337,6 +13570,25 @@
       "guarded": true,
       "accessible": false,
       "distKm": 0.2
+    },
+    "observed": {
+      "windSpeedKt": 4,
+      "windDirDeg": 315,
+      "windCardinal": "NW",
+      "windCardinalEn": "NW",
+      "tempC": 16.8,
+      "stationName": "Aljezur - Rogil",
+      "distanceKm": 7.6,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Aljezur - Rogil",
+      "source": "ipma",
+      "me": -1.8,
+      "mae": 2.7,
+      "rmse": 3.4,
+      "n": 227
     }
   },
   "amoreira": {
@@ -12443,6 +13695,25 @@
       "guarded": true,
       "accessible": false,
       "distKm": 0.2
+    },
+    "observed": {
+      "windSpeedKt": 4,
+      "windDirDeg": 315,
+      "windCardinal": "NW",
+      "windCardinalEn": "NW",
+      "tempC": 16.8,
+      "stationName": "Aljezur - Rogil",
+      "distanceKm": 5.1,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Aljezur - Rogil",
+      "source": "ipma",
+      "me": -1.8,
+      "mae": 2.7,
+      "rmse": 3.4,
+      "n": 227
     }
   },
   "monte-clerigo": {
@@ -12549,6 +13820,25 @@
       "guarded": true,
       "accessible": true,
       "distKm": 0.6
+    },
+    "observed": {
+      "windSpeedKt": 1,
+      "windDirDeg": 180,
+      "windCardinal": "S",
+      "windCardinalEn": "S",
+      "tempC": 8.1,
+      "stationName": "Aljezur",
+      "distanceKm": 5.9,
+      "observedAt": "2026-10-22T08:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Aljezur",
+      "source": "ipma",
+      "me": -3.5,
+      "mae": 3.7,
+      "rmse": 4.6,
+      "n": 1366
     }
   },
   "arrifana": {
@@ -12655,6 +13945,25 @@
       "guarded": true,
       "accessible": false,
       "distKm": 0.3
+    },
+    "observed": {
+      "windSpeedKt": 1,
+      "windDirDeg": 180,
+      "windCardinal": "S",
+      "windCardinalEn": "S",
+      "tempC": 8.1,
+      "stationName": "Aljezur",
+      "distanceKm": 6.4,
+      "observedAt": "2026-10-22T08:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Aljezur",
+      "source": "ipma",
+      "me": -3.5,
+      "mae": 3.7,
+      "rmse": 4.6,
+      "n": 1366
     }
   },
   "vale-figueiras": {
@@ -12761,6 +14070,25 @@
       "guarded": false,
       "accessible": false,
       "distKm": 1.8
+    },
+    "observed": {
+      "windSpeedKt": 1,
+      "windDirDeg": 180,
+      "windCardinal": "S",
+      "windCardinalEn": "S",
+      "tempC": 8.1,
+      "stationName": "Aljezur",
+      "distanceKm": 8.6,
+      "observedAt": "2026-10-22T08:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Aljezur",
+      "source": "ipma",
+      "me": -3.5,
+      "mae": 3.7,
+      "rmse": 4.6,
+      "n": 1366
     }
   },
   "bordeira": {
@@ -12867,6 +14195,25 @@
       "guarded": true,
       "accessible": false,
       "distKm": 0.6
+    },
+    "observed": {
+      "windSpeedKt": 1,
+      "windDirDeg": 180,
+      "windCardinal": "S",
+      "windCardinalEn": "S",
+      "tempC": 8.1,
+      "stationName": "Aljezur",
+      "distanceKm": 15.7,
+      "observedAt": "2026-10-22T08:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Aljezur",
+      "source": "ipma",
+      "me": -3.5,
+      "mae": 3.7,
+      "rmse": 4.6,
+      "n": 1366
     }
   },
   "amado": {
@@ -12973,6 +14320,25 @@
       "guarded": true,
       "accessible": false,
       "distKm": 0
+    },
+    "observed": {
+      "windSpeedKt": 1,
+      "windDirDeg": 180,
+      "windCardinal": "S",
+      "windCardinalEn": "S",
+      "tempC": 8.1,
+      "stationName": "Aljezur",
+      "distanceKm": 19,
+      "observedAt": "2026-10-22T08:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Aljezur",
+      "source": "ipma",
+      "me": -3.5,
+      "mae": 3.7,
+      "rmse": 4.6,
+      "n": 1366
     }
   },
   "barriga": {
@@ -13079,6 +14445,25 @@
       "guarded": true,
       "accessible": false,
       "distKm": 1.3
+    },
+    "observed": {
+      "windSpeedKt": 1,
+      "windDirDeg": 180,
+      "windCardinal": "S",
+      "windCardinalEn": "S",
+      "tempC": 8.1,
+      "stationName": "Aljezur",
+      "distanceKm": 26.7,
+      "observedAt": "2026-10-22T08:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Aljezur",
+      "source": "ipma",
+      "me": -3.5,
+      "mae": 3.7,
+      "rmse": 4.6,
+      "n": 1366
     }
   },
   "castelejo": {
@@ -13185,6 +14570,25 @@
       "guarded": true,
       "accessible": false,
       "distKm": 1.7
+    },
+    "observed": {
+      "windSpeedKt": 1,
+      "windDirDeg": 180,
+      "windCardinal": "S",
+      "windCardinalEn": "S",
+      "tempC": 8.1,
+      "stationName": "Aljezur",
+      "distanceKm": 28.9,
+      "observedAt": "2026-10-22T08:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Aljezur",
+      "source": "ipma",
+      "me": -3.5,
+      "mae": 3.7,
+      "rmse": 4.6,
+      "n": 1366
     }
   },
   "luz": {
@@ -13294,6 +14698,24 @@
       "guarded": true,
       "accessible": true,
       "distKm": 0.4
+    },
+    "observed": {
+      "windSpeedKt": 2,
+      "windDirDeg": 225,
+      "windCardinal": "SW",
+      "windCardinalEn": "SW",
+      "stationName": "Portimão (Aeródromo)",
+      "distanceKm": 15,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Portimão (Aeródromo)",
+      "source": "ipma",
+      "me": -0.7,
+      "mae": 2.2,
+      "rmse": 3,
+      "n": 2439
     }
   },
   "burgau": {
@@ -13403,6 +14825,24 @@
       "guarded": true,
       "accessible": false,
       "distKm": 0.5
+    },
+    "observed": {
+      "windSpeedKt": 2,
+      "windDirDeg": 225,
+      "windCardinal": "SW",
+      "windCardinalEn": "SW",
+      "stationName": "Portimão (Aeródromo)",
+      "distanceKm": 19.7,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Portimão (Aeródromo)",
+      "source": "ipma",
+      "me": -0.7,
+      "mae": 2.2,
+      "rmse": 3,
+      "n": 2439
     }
   },
   "salema": {
@@ -13512,6 +14952,24 @@
       "guarded": true,
       "accessible": true,
       "distKm": 0.1
+    },
+    "observed": {
+      "windSpeedKt": 2,
+      "windDirDeg": 225,
+      "windCardinal": "SW",
+      "windCardinalEn": "SW",
+      "stationName": "Portimão (Aeródromo)",
+      "distanceKm": 23.5,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Portimão (Aeródromo)",
+      "source": "ipma",
+      "me": -0.7,
+      "mae": 2.2,
+      "rmse": 3,
+      "n": 2439
     }
   },
   "cordoama": {
@@ -13709,6 +15167,25 @@
       "guarded": true,
       "accessible": false,
       "distKm": 0.3
+    },
+    "observed": {
+      "windSpeedKt": 2,
+      "windDirDeg": 135,
+      "windCardinal": "SE",
+      "windCardinalEn": "SE",
+      "tempC": 17.9,
+      "stationName": "Portimão (Praia da Rocha)",
+      "distanceKm": 0.9,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Portimão (Praia da Rocha)",
+      "source": "ipma",
+      "me": 1.7,
+      "mae": 2.3,
+      "rmse": 2.9,
+      "n": 886
     }
   },
   "vila-real-santo-antonio": {
@@ -13811,6 +15288,25 @@
       "guarded": true,
       "accessible": true,
       "distKm": 3
+    },
+    "observed": {
+      "windSpeedKt": 5,
+      "windDirDeg": 0,
+      "windCardinal": "N",
+      "windCardinalEn": "N",
+      "tempC": 14.9,
+      "stationName": "Castro Marim (RN Sapal)",
+      "distanceKm": 3.4,
+      "observedAt": "2026-10-22T08:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Castro Marim (RN Sapal)",
+      "source": "ipma",
+      "me": 1.4,
+      "mae": 2.4,
+      "rmse": 2.9,
+      "n": 722
     }
   },
   "monte-gordo": {
@@ -13913,6 +15409,25 @@
       "guarded": true,
       "accessible": true,
       "distKm": 0.7
+    },
+    "observed": {
+      "windSpeedKt": 5,
+      "windDirDeg": 0,
+      "windCardinal": "N",
+      "windCardinalEn": "N",
+      "tempC": 14.9,
+      "stationName": "Castro Marim (RN Sapal)",
+      "distanceKm": 3.7,
+      "observedAt": "2026-10-22T08:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Castro Marim (RN Sapal)",
+      "source": "ipma",
+      "me": 1.4,
+      "mae": 2.4,
+      "rmse": 2.9,
+      "n": 722
     }
   },
   "praia-verde": {
@@ -14015,6 +15530,25 @@
       "guarded": true,
       "accessible": true,
       "distKm": 1.6
+    },
+    "observed": {
+      "windSpeedKt": 5,
+      "windDirDeg": 0,
+      "windCardinal": "N",
+      "windCardinalEn": "N",
+      "tempC": 14.9,
+      "stationName": "Castro Marim (RN Sapal)",
+      "distanceKm": 5.8,
+      "observedAt": "2026-10-22T08:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Castro Marim (RN Sapal)",
+      "source": "ipma",
+      "me": 1.4,
+      "mae": 2.4,
+      "rmse": 2.9,
+      "n": 722
     }
   },
   "altura": {
@@ -14117,6 +15651,25 @@
       "guarded": true,
       "accessible": true,
       "distKm": 0.1
+    },
+    "observed": {
+      "windSpeedKt": 5,
+      "windDirDeg": 0,
+      "windCardinal": "N",
+      "windCardinalEn": "N",
+      "tempC": 14.9,
+      "stationName": "Castro Marim (RN Sapal)",
+      "distanceKm": 6.7,
+      "observedAt": "2026-10-22T08:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Castro Marim (RN Sapal)",
+      "source": "ipma",
+      "me": 1.4,
+      "mae": 2.4,
+      "rmse": 2.9,
+      "n": 722
     }
   },
   "praia-rocha": {
@@ -14226,6 +15779,25 @@
       "guarded": true,
       "accessible": true,
       "distKm": 0.4
+    },
+    "observed": {
+      "windSpeedKt": 2,
+      "windDirDeg": 135,
+      "windCardinal": "SE",
+      "windCardinalEn": "SE",
+      "tempC": 17.9,
+      "stationName": "Portimão (Praia da Rocha)",
+      "distanceKm": 0.3,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Portimão (Praia da Rocha)",
+      "source": "ipma",
+      "me": 1.7,
+      "mae": 2.3,
+      "rmse": 2.9,
+      "n": 886
     }
   },
   "alvor": {
@@ -14335,6 +15907,24 @@
       "guarded": true,
       "accessible": true,
       "distKm": 1.7
+    },
+    "observed": {
+      "windSpeedKt": 2,
+      "windDirDeg": 225,
+      "windCardinal": "SW",
+      "windCardinalEn": "SW",
+      "stationName": "Portimão (Aeródromo)",
+      "distanceKm": 3.9,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Portimão (Aeródromo)",
+      "source": "ipma",
+      "me": -0.7,
+      "mae": 2.2,
+      "rmse": 3,
+      "n": 2439
     }
   },
   "foil-alvor": {
@@ -14444,6 +16034,24 @@
       "guarded": true,
       "accessible": true,
       "distKm": 1.7
+    },
+    "observed": {
+      "windSpeedKt": 2,
+      "windDirDeg": 225,
+      "windCardinal": "SW",
+      "windCardinalEn": "SW",
+      "stationName": "Portimão (Aeródromo)",
+      "distanceKm": 3.9,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Portimão (Aeródromo)",
+      "source": "ipma",
+      "me": -0.7,
+      "mae": 2.2,
+      "rmse": 3,
+      "n": 2439
     }
   },
   "lagos": {
@@ -14553,6 +16161,24 @@
       "guarded": true,
       "accessible": true,
       "distKm": 0.8
+    },
+    "observed": {
+      "windSpeedKt": 2,
+      "windDirDeg": 225,
+      "windCardinal": "SW",
+      "windCardinalEn": "SW",
+      "stationName": "Portimão (Aeródromo)",
+      "distanceKm": 7.4,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Portimão (Aeródromo)",
+      "source": "ipma",
+      "me": -0.7,
+      "mae": 2.2,
+      "rmse": 3,
+      "n": 2439
     }
   },
   "lagos-wakepark": {
@@ -14662,6 +16288,24 @@
       "guarded": true,
       "accessible": true,
       "distKm": 0.3
+    },
+    "observed": {
+      "windSpeedKt": 2,
+      "windDirDeg": 225,
+      "windCardinal": "SW",
+      "windCardinalEn": "SW",
+      "stationName": "Portimão (Aeródromo)",
+      "distanceKm": 9.6,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Portimão (Aeródromo)",
+      "source": "ipma",
+      "me": -0.7,
+      "mae": 2.2,
+      "rmse": 3,
+      "n": 2439
     }
   },
   "beliche": {
@@ -14964,25 +16608,23 @@
     "airQualityIndex": 39,
     "airQualityAt": "2026-10-22T10:00+01:00",
     "observed": {
-      "windSpeedKt": 4,
-      "windDirDeg": 150,
-      "windDirMissing": false,
-      "windCardinal": "SE",
-      "windCardinalEn": "SE",
-      "tempC": 20,
-      "stationName": "Faro (METAR)",
-      "distanceKm": 2.9,
-      "observedAt": "2026-10-22T09:30:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPFR"
+      "windSpeedKt": 5,
+      "windDirDeg": 180,
+      "windCardinal": "S",
+      "windCardinalEn": "S",
+      "tempC": 19.8,
+      "stationName": "Faro (Aeródromo)",
+      "distanceKm": 3.5,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Faro (METAR)",
-      "source": "metar",
-      "me": 1.5,
-      "mae": 2.2,
-      "rmse": 3.3,
-      "n": 173
+      "station": "Faro (Aeródromo)",
+      "source": "ipma",
+      "me": 1.6,
+      "mae": 2.1,
+      "rmse": 2.7,
+      "n": 926
     }
   },
   "fuseta": {
@@ -15094,25 +16736,23 @@
       "distKm": 0.8
     },
     "observed": {
-      "windSpeedKt": 4,
-      "windDirDeg": 150,
-      "windDirMissing": false,
-      "windCardinal": "SE",
-      "windCardinalEn": "SE",
-      "tempC": 20,
-      "stationName": "Faro (METAR)",
-      "distanceKm": 20.9,
-      "observedAt": "2026-10-22T09:30:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPFR"
+      "windSpeedKt": 2,
+      "windDirDeg": 180,
+      "windCardinal": "S",
+      "windCardinalEn": "S",
+      "tempC": 20.7,
+      "stationName": "Olhão, EPPO",
+      "distanceKm": 7.8,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Faro (METAR)",
-      "source": "metar",
-      "me": 1.5,
-      "mae": 2.2,
-      "rmse": 3.3,
-      "n": 173
+      "station": "Olhão, EPPO",
+      "source": "ipma",
+      "me": -0.4,
+      "mae": 1.5,
+      "rmse": 2,
+      "n": 807
     }
   },
   "ilha-faro": {
@@ -15203,25 +16843,23 @@
     "airQualityIndex": 18,
     "airQualityAt": "2026-10-22T10:00+01:00",
     "observed": {
-      "windSpeedKt": 4,
-      "windDirDeg": 150,
-      "windDirMissing": false,
-      "windCardinal": "SE",
-      "windCardinalEn": "SE",
-      "tempC": 20,
-      "stationName": "Faro (METAR)",
-      "distanceKm": 4,
-      "observedAt": "2026-10-22T09:30:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPFR"
+      "windSpeedKt": 5,
+      "windDirDeg": 180,
+      "windCardinal": "S",
+      "windCardinalEn": "S",
+      "tempC": 19.8,
+      "stationName": "Faro (Aeródromo)",
+      "distanceKm": 4.1,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Faro (METAR)",
-      "source": "metar",
-      "me": 1.5,
-      "mae": 2.2,
-      "rmse": 3.3,
-      "n": 173
+      "station": "Faro (Aeródromo)",
+      "source": "ipma",
+      "me": 1.6,
+      "mae": 2.1,
+      "rmse": 2.7,
+      "n": 926
     }
   },
   "faro-mar": {
@@ -15330,25 +16968,23 @@
       "distKm": 0.1
     },
     "observed": {
-      "windSpeedKt": 4,
-      "windDirDeg": 150,
-      "windDirMissing": false,
-      "windCardinal": "SE",
-      "windCardinalEn": "SE",
-      "tempC": 20,
-      "stationName": "Faro (METAR)",
-      "distanceKm": 2.8,
-      "observedAt": "2026-10-22T09:30:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPFR"
+      "windSpeedKt": 5,
+      "windDirDeg": 180,
+      "windCardinal": "S",
+      "windCardinalEn": "S",
+      "tempC": 19.8,
+      "stationName": "Faro (Aeródromo)",
+      "distanceKm": 2.4,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Faro (METAR)",
-      "source": "metar",
-      "me": 1.5,
-      "mae": 2.2,
-      "rmse": 3.3,
-      "n": 173
+      "station": "Faro (Aeródromo)",
+      "source": "ipma",
+      "me": 1.6,
+      "mae": 2.1,
+      "rmse": 2.7,
+      "n": 926
     }
   },
   "culatra": {
@@ -15460,25 +17096,23 @@
       "distKm": 0.6
     },
     "observed": {
-      "windSpeedKt": 4,
-      "windDirDeg": 150,
-      "windDirMissing": false,
-      "windCardinal": "SE",
-      "windCardinalEn": "SE",
-      "tempC": 20,
-      "stationName": "Faro (METAR)",
-      "distanceKm": 12,
-      "observedAt": "2026-10-22T09:30:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPFR"
+      "windSpeedKt": 2,
+      "windDirDeg": 180,
+      "windCardinal": "S",
+      "windCardinalEn": "S",
+      "tempC": 20.7,
+      "stationName": "Olhão, EPPO",
+      "distanceKm": 5,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Faro (METAR)",
-      "source": "metar",
-      "me": 1.5,
-      "mae": 2.2,
-      "rmse": 3.3,
-      "n": 173
+      "station": "Olhão, EPPO",
+      "source": "ipma",
+      "me": -0.4,
+      "mae": 1.5,
+      "rmse": 2,
+      "n": 807
     }
   },
   "armona": {
@@ -15590,25 +17224,23 @@
       "distKm": 0.2
     },
     "observed": {
-      "windSpeedKt": 4,
-      "windDirDeg": 150,
-      "windDirMissing": false,
-      "windCardinal": "SE",
-      "windCardinalEn": "SE",
-      "tempC": 20,
-      "stationName": "Faro (METAR)",
-      "distanceKm": 15.2,
-      "observedAt": "2026-10-22T09:30:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPFR"
+      "windSpeedKt": 2,
+      "windDirDeg": 180,
+      "windCardinal": "S",
+      "windCardinalEn": "S",
+      "tempC": 20.7,
+      "stationName": "Olhão, EPPO",
+      "distanceKm": 3.2,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Faro (METAR)",
-      "source": "metar",
-      "me": 1.5,
-      "mae": 2.2,
-      "rmse": 3.3,
-      "n": 173
+      "station": "Olhão, EPPO",
+      "source": "ipma",
+      "me": -0.4,
+      "mae": 1.5,
+      "rmse": 2,
+      "n": 807
     }
   },
   "ilha-tavira": {
@@ -15711,6 +17343,25 @@
       "guarded": true,
       "accessible": false,
       "distKm": 0
+    },
+    "observed": {
+      "windSpeedKt": 3,
+      "windDirDeg": 135,
+      "windCardinal": "SE",
+      "windCardinalEn": "SE",
+      "tempC": 19.6,
+      "stationName": "Tavira",
+      "distanceKm": 1.3,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Tavira",
+      "source": "ipma",
+      "me": 0.2,
+      "mae": 1.8,
+      "rmse": 2.3,
+      "n": 1100
     }
   },
   "cabanas-tavira": {
@@ -15813,6 +17464,25 @@
       "guarded": true,
       "accessible": false,
       "distKm": 0.2
+    },
+    "observed": {
+      "windSpeedKt": 3,
+      "windDirDeg": 135,
+      "windCardinal": "SE",
+      "windCardinalEn": "SE",
+      "tempC": 19.6,
+      "stationName": "Tavira",
+      "distanceKm": 2.8,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Tavira",
+      "source": "ipma",
+      "me": 0.2,
+      "mae": 1.8,
+      "rmse": 2.3,
+      "n": 1100
     }
   },
   "cacela-velha": {
@@ -15915,6 +17585,25 @@
       "guarded": true,
       "accessible": false,
       "distKm": 0.9
+    },
+    "observed": {
+      "windSpeedKt": 3,
+      "windDirDeg": 135,
+      "windCardinal": "SE",
+      "windCardinalEn": "SE",
+      "tempC": 19.6,
+      "stationName": "Tavira",
+      "distanceKm": 7.7,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Tavira",
+      "source": "ipma",
+      "me": 0.2,
+      "mae": 1.8,
+      "rmse": 2.3,
+      "n": 1100
     }
   },
   "zavial": {
@@ -16021,6 +17710,24 @@
       "guarded": true,
       "accessible": false,
       "distKm": 0.3
+    },
+    "observed": {
+      "windSpeedKt": 2,
+      "windDirDeg": 225,
+      "windCardinal": "SW",
+      "windCardinalEn": "SW",
+      "stationName": "Portimão (Aeródromo)",
+      "distanceKm": 27.9,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Portimão (Aeródromo)",
+      "source": "ipma",
+      "me": -0.7,
+      "mae": 2.2,
+      "rmse": 3,
+      "n": 2439
     }
   },
   "tonel": {
@@ -16220,25 +17927,23 @@
     "airQualityIndex": 27,
     "airQualityAt": "2026-10-22T09:00+00:00",
     "observed": {
-      "windSpeedKt": 5,
-      "windDirDeg": 290,
-      "windDirMissing": false,
-      "windCardinal": "W",
-      "windCardinalEn": "W",
-      "tempC": 21,
-      "stationName": "Santa Maria (METAR)",
-      "distanceKm": 6.3,
-      "observedAt": "2026-10-22T09:30:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPAZ"
+      "windSpeedKt": 6,
+      "windDirDeg": 315,
+      "windCardinal": "NW",
+      "windCardinalEn": "NW",
+      "tempC": 20.7,
+      "stationName": "Santa Maria (Aeródromo)",
+      "distanceKm": 6,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Santa Maria (METAR)",
-      "source": "metar",
-      "me": -1.1,
-      "mae": 3.6,
-      "rmse": 4.8,
-      "n": 34
+      "station": "Santa Maria (Aeródromo)",
+      "source": "ipma",
+      "me": 0.3,
+      "mae": 2.5,
+      "rmse": 3.4,
+      "n": 448
     }
   },
   "ponta-delgada": {
@@ -16350,25 +18055,23 @@
       "distKm": 0.7
     },
     "observed": {
-      "windSpeedKt": 11,
-      "windDirDeg": 280,
-      "windDirMissing": false,
+      "windSpeedKt": 10,
+      "windDirDeg": 270,
       "windCardinal": "W",
       "windCardinalEn": "W",
-      "tempC": 21,
-      "stationName": "Ponta Delgada (METAR)",
-      "distanceKm": 2.6,
-      "observedAt": "2026-10-22T09:30:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPPD"
+      "tempC": 21.2,
+      "stationName": "P. Delgada (Aeródromo)",
+      "distanceKm": 2.3,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Ponta Delgada (METAR)",
-      "source": "metar",
-      "me": 1.8,
-      "mae": 2.6,
-      "rmse": 3.5,
-      "n": 73
+      "station": "P. Delgada (Aeródromo)",
+      "source": "ipma",
+      "me": 3.5,
+      "mae": 3.9,
+      "rmse": 5.4,
+      "n": 435
     }
   },
   "sao-vicente-madeira": {
@@ -16481,27 +18184,25 @@
     },
     "observed": {
       "windSpeedKt": 5,
-      "windDirDeg": 340,
-      "windDirMissing": false,
-      "windCardinal": "N",
-      "windCardinalEn": "N",
-      "tempC": 21,
-      "stationName": "Madeira (METAR)",
-      "distanceKm": 26.7,
-      "observedAt": "2026-10-22T09:30:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPMA"
+      "windDirDeg": 135,
+      "windCardinal": "SE",
+      "windCardinalEn": "SE",
+      "tempC": 18.4,
+      "stationName": "Madeira, S. Jorge, Santana",
+      "distanceKm": 12.5,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 0.75,
-      "wavePeriod": 5.3,
-      "waveDirection": 122,
-      "maxWaveHeight": 1.19,
+      "waveHeight": 0.73,
+      "wavePeriod": 5.6,
+      "waveDirection": 115,
+      "maxWaveHeight": 1.22,
       "waterTemp": 22.6,
       "stationName": "CSA94",
       "stationArea": "Arquipélago da Madeira - Caniçal",
       "distanceKm": 30,
-      "observedAt": "2026-10-22T07:59:57.000Z",
+      "observedAt": "2026-10-22T08:59:57.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": -0.43,
@@ -16523,12 +18224,12 @@
       "wmoDistanceKm": null
     },
     "windBias": {
-      "station": "Madeira (METAR)",
-      "source": "metar",
-      "me": 5.3,
-      "mae": 5.4,
-      "rmse": 6.4,
-      "n": 583
+      "station": "Madeira, S. Jorge, Santana",
+      "source": "ipma",
+      "me": 0.6,
+      "mae": 2.4,
+      "rmse": 3.4,
+      "n": 179
     },
     "observedWaveNotClosest": {
       "winner": "ih-buoy",
@@ -16646,28 +18347,26 @@
       "distKm": 1
     },
     "observed": {
-      "windSpeedKt": 5,
-      "windDirDeg": 340,
-      "windDirMissing": false,
+      "windSpeedKt": 8,
+      "windDirDeg": 0,
       "windCardinal": "N",
       "windCardinalEn": "N",
-      "tempC": 21,
-      "stationName": "Madeira (METAR)",
-      "distanceKm": 9.5,
-      "observedAt": "2026-10-22T09:30:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPMA"
+      "tempC": 20.9,
+      "stationName": "Santa Catarina (Aeródromo)",
+      "distanceKm": 9.4,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 0.75,
-      "wavePeriod": 5.3,
-      "waveDirection": 122,
-      "maxWaveHeight": 1.19,
+      "waveHeight": 0.73,
+      "wavePeriod": 5.6,
+      "waveDirection": 115,
+      "maxWaveHeight": 1.22,
       "waterTemp": 22.6,
       "stationName": "CSA94",
       "stationArea": "Arquipélago da Madeira - Caniçal",
       "distanceKm": 11.1,
-      "observedAt": "2026-10-22T07:59:57.000Z",
+      "observedAt": "2026-10-22T08:59:57.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": -0.43,
@@ -16689,12 +18388,12 @@
       "wmoDistanceKm": null
     },
     "windBias": {
-      "station": "Madeira (METAR)",
-      "source": "metar",
-      "me": 5.3,
-      "mae": 5.4,
-      "rmse": 6.4,
-      "n": 583
+      "station": "Santa Catarina (Aeródromo)",
+      "source": "ipma",
+      "me": 4.5,
+      "mae": 4.9,
+      "rmse": 6.3,
+      "n": 634
     },
     "observedWaveNotClosest": {
       "winner": "ih-buoy",
@@ -16810,6 +18509,25 @@
       "guarded": false,
       "accessible": false,
       "distKm": 0.3
+    },
+    "observed": {
+      "windSpeedKt": 0,
+      "windDirDeg": 0,
+      "windCardinal": "Calmo",
+      "windCardinalEn": "Calm",
+      "tempC": 18.4,
+      "stationName": "Madeira, Calheta",
+      "distanceKm": 5.9,
+      "observedAt": "2026-10-22T08:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Madeira, Calheta",
+      "source": "ipma",
+      "me": -2.5,
+      "mae": 3.7,
+      "rmse": 4.4,
+      "n": 302
     }
   },
   "jardim-mar": {
@@ -16919,6 +18637,25 @@
       "guarded": false,
       "accessible": false,
       "distKm": 0.8
+    },
+    "observed": {
+      "windSpeedKt": 0,
+      "windDirDeg": 0,
+      "windCardinal": "Calmo",
+      "windCardinalEn": "Calm",
+      "tempC": 18.4,
+      "stationName": "Madeira, Calheta",
+      "distanceKm": 8.3,
+      "observedAt": "2026-10-22T08:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Madeira, Calheta",
+      "source": "ipma",
+      "me": -2.5,
+      "mae": 3.7,
+      "rmse": 4.4,
+      "n": 302
     }
   },
   "ponta-sao-lourenco": {
@@ -17031,27 +18768,25 @@
     },
     "observed": {
       "windSpeedKt": 5,
-      "windDirDeg": 340,
-      "windDirMissing": false,
+      "windDirDeg": 0,
       "windCardinal": "N",
       "windCardinalEn": "N",
-      "tempC": 21,
-      "stationName": "Madeira (METAR)",
-      "distanceKm": 8.2,
-      "observedAt": "2026-10-22T09:30:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPMA"
+      "tempC": 20.6,
+      "stationName": "Madeira, S. Lourenço",
+      "distanceKm": 0.2,
+      "observedAt": "2026-10-22T08:00:00.000Z",
+      "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 0.75,
-      "wavePeriod": 5.3,
-      "waveDirection": 122,
-      "maxWaveHeight": 1.19,
+      "waveHeight": 0.73,
+      "wavePeriod": 5.6,
+      "waveDirection": 115,
+      "maxWaveHeight": 1.22,
       "waterTemp": 22.6,
       "stationName": "CSA94",
       "stationArea": "Arquipélago da Madeira - Caniçal",
       "distanceKm": 2.5,
-      "observedAt": "2026-10-22T07:59:57.000Z",
+      "observedAt": "2026-10-22T08:59:57.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": -0.43,
@@ -17073,12 +18808,12 @@
       "wmoDistanceKm": null
     },
     "windBias": {
-      "station": "Madeira (METAR)",
-      "source": "metar",
-      "me": 5.3,
-      "mae": 5.4,
-      "rmse": 6.4,
-      "n": 583
+      "station": "Madeira, S. Lourenço",
+      "source": "ipma",
+      "me": 1.1,
+      "mae": 3.2,
+      "rmse": 4.4,
+      "n": 158
     },
     "observedWaveNotClosest": {
       "winner": "ih-buoy",
@@ -17196,28 +18931,26 @@
       "distKm": 0.6
     },
     "observed": {
-      "windSpeedKt": 5,
-      "windDirDeg": 340,
-      "windDirMissing": false,
-      "windCardinal": "N",
-      "windCardinalEn": "N",
-      "tempC": 21,
-      "stationName": "Madeira (METAR)",
-      "distanceKm": 27.2,
-      "observedAt": "2026-10-22T09:30:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPMA"
+      "windSpeedKt": 1,
+      "windDirDeg": 225,
+      "windCardinal": "SW",
+      "windCardinalEn": "SW",
+      "tempC": 22.2,
+      "stationName": "Ponta do Sol/Lugar de Baixo",
+      "distanceKm": 3.9,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 0.75,
-      "wavePeriod": 5.3,
-      "waveDirection": 122,
-      "maxWaveHeight": 1.19,
+      "waveHeight": 0.73,
+      "wavePeriod": 5.6,
+      "waveDirection": 115,
+      "maxWaveHeight": 1.22,
       "waterTemp": 22.6,
       "stationName": "CSA94",
       "stationArea": "Arquipélago da Madeira - Caniçal",
       "distanceKm": 32.3,
-      "observedAt": "2026-10-22T07:59:57.000Z",
+      "observedAt": "2026-10-22T08:59:57.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": -0.43,
@@ -17239,12 +18972,12 @@
       "wmoDistanceKm": null
     },
     "windBias": {
-      "station": "Madeira (METAR)",
-      "source": "metar",
-      "me": 5.3,
-      "mae": 5.4,
-      "rmse": 6.4,
-      "n": 583
+      "station": "Ponta do Sol/Lugar de Baixo",
+      "source": "ipma",
+      "me": -0.6,
+      "mae": 2,
+      "rmse": 2.6,
+      "n": 362
     },
     "observedWaveNotClosest": {
       "winner": "ih-buoy",
@@ -17363,27 +19096,25 @@
     },
     "observed": {
       "windSpeedKt": 5,
-      "windDirDeg": 340,
-      "windDirMissing": false,
-      "windCardinal": "N",
-      "windCardinalEn": "N",
-      "tempC": 21,
-      "stationName": "Madeira (METAR)",
-      "distanceKm": 14.4,
-      "observedAt": "2026-10-22T09:30:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPMA"
+      "windDirDeg": 90,
+      "windCardinal": "E",
+      "windCardinalEn": "E",
+      "tempC": 22.1,
+      "stationName": "Funchal",
+      "distanceKm": 2.7,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 0.75,
-      "wavePeriod": 5.3,
-      "waveDirection": 122,
-      "maxWaveHeight": 1.19,
+      "waveHeight": 0.73,
+      "wavePeriod": 5.6,
+      "waveDirection": 115,
+      "maxWaveHeight": 1.22,
       "waterTemp": 22.6,
       "stationName": "CSA94",
       "stationArea": "Arquipélago da Madeira - Caniçal",
       "distanceKm": 20,
-      "observedAt": "2026-10-22T07:59:57.000Z",
+      "observedAt": "2026-10-22T08:59:57.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": -0.43,
@@ -17405,12 +19136,12 @@
       "wmoDistanceKm": null
     },
     "windBias": {
-      "station": "Madeira (METAR)",
-      "source": "metar",
-      "me": 5.3,
-      "mae": 5.4,
-      "rmse": 6.4,
-      "n": 583
+      "station": "Funchal",
+      "source": "ipma",
+      "me": -1.2,
+      "mae": 1.8,
+      "rmse": 2.4,
+      "n": 260
     },
     "observedWaveNotClosest": {
       "winner": "ih-buoy",
@@ -17523,6 +19254,25 @@
       "guarded": true,
       "accessible": false,
       "distKm": 0.3
+    },
+    "observed": {
+      "windSpeedKt": 4,
+      "windDirDeg": 135,
+      "windCardinal": "SE",
+      "windCardinalEn": "SE",
+      "tempC": 12,
+      "stationName": "Aveiro (Universidade)",
+      "distanceKm": 7.5,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Aveiro (Universidade)",
+      "source": "ipma",
+      "me": 0.4,
+      "mae": 1.8,
+      "rmse": 2.4,
+      "n": 1774
     }
   },
   "vila-cha": {
@@ -17632,22 +19382,58 @@
     },
     "observed": {
       "windSpeedKt": 2,
-      "windDirDeg": 96,
-      "windCardinal": "E",
-      "windCardinalEn": "E",
-      "tempC": 14.7,
+      "windDirDeg": 210,
+      "windCardinal": "SW",
+      "windCardinalEn": "SW",
+      "tempC": 15,
       "stationName": "TAP Teste 3",
       "distanceKm": 15.6,
-      "observedAt": "2026-10-22T09:42:13.000Z",
+      "observedAt": "2026-10-22T10:40:47.000Z",
       "source": "ecowitt"
     },
     "windBias": {
       "station": "TAP Teste 3",
       "source": "ecowitt",
-      "me": -1.4,
+      "me": -1.5,
       "mae": 2.1,
       "rmse": 2.8,
       "n": 2766
+    },
+    "observedWave": {
+      "waveHeight": 2.56,
+      "wavePeriod": 11.8,
+      "waveDirection": 316,
+      "maxWaveHeight": 4.47,
+      "waterTemp": 15.8,
+      "stationName": "CSA92/D",
+      "stationArea": "Continente - Leixões",
+      "distanceKm": 20.5,
+      "observedAt": "2026-10-22T08:56:42.000Z",
+      "source": "ih-buoy",
+      "skill": {
+        "me": 0.52,
+        "n": 669,
+        "origin": "ih",
+        "mae": 0.53,
+        "rmse": 0.69,
+        "corr": 0.83,
+        "meanLeadHours": 45.3,
+        "buoyName": "CSA92/D"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "ih",
+      "reason": "ih-only",
+      "ihAgeHours": 1.7,
+      "wmoAgeHours": null,
+      "ihDistanceKm": 20.5,
+      "wmoDistanceKm": null
+    },
+    "observedWaveNotClosest": {
+      "winner": "ih-buoy",
+      "reason": "ih-only",
+      "attachedKm": 21,
+      "altKm": 0
     }
   },
   "santa-cruz": {
@@ -17754,6 +19540,25 @@
       "guarded": true,
       "accessible": true,
       "distKm": 0.1
+    },
+    "observed": {
+      "windSpeedKt": 4,
+      "windDirDeg": 0,
+      "windCardinal": "N",
+      "windCardinalEn": "N",
+      "tempC": 14.6,
+      "stationName": "Santa Cruz (Aeródromo)",
+      "distanceKm": 1.5,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Santa Cruz (Aeródromo)",
+      "source": "ipma",
+      "me": -0.1,
+      "mae": 1.8,
+      "rmse": 2.2,
+      "n": 3101
     }
   },
   "consolacao": {
@@ -17862,14 +19667,14 @@
       "distKm": 1
     },
     "observedWave": {
-      "waveHeight": 2.973629951477051,
-      "wavePeriod": 12.949199676513672,
-      "maxWaveHeight": 4.145510196685791,
-      "waterTemp": 16.013179779052734,
+      "waveHeight": 3.046880006790161,
+      "wavePeriod": 12.656299591064453,
+      "maxWaveHeight": 4.306640148162842,
+      "waterTemp": 15.991209983825684,
       "stationName": "Nazaré Costeira (WMO)",
       "stationArea": "Nazaré",
       "distanceKm": 29.9,
-      "observedAt": "2026-10-22T07:00:00.000Z",
+      "observedAt": "2026-10-22T08:00:00.000Z",
       "source": "wmo-buoy",
       "skill": {
         "me": 0.15,
@@ -17895,6 +19700,24 @@
       "reason": "wmo-only",
       "attachedKm": 30,
       "altKm": 0
+    },
+    "observed": {
+      "windSpeedKt": 1,
+      "windDirDeg": 180,
+      "windCardinal": "S",
+      "windCardinalEn": "S",
+      "stationName": "Cabo Carvoeiro",
+      "distanceKm": 7.5,
+      "observedAt": "2026-10-22T08:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Cabo Carvoeiro",
+      "source": "ipma",
+      "me": 2.8,
+      "mae": 3.5,
+      "rmse": 4.4,
+      "n": 1950
     }
   },
   "areia-branca": {
@@ -18003,14 +19826,14 @@
       "distKm": 0.3
     },
     "observedWave": {
-      "waveHeight": 2.973629951477051,
-      "wavePeriod": 12.949199676513672,
-      "maxWaveHeight": 4.145510196685791,
-      "waterTemp": 16.013179779052734,
+      "waveHeight": 3.046880006790161,
+      "wavePeriod": 12.656299591064453,
+      "maxWaveHeight": 4.306640148162842,
+      "waterTemp": 15.991209983825684,
       "stationName": "Nazaré Costeira (WMO)",
       "stationArea": "Nazaré",
       "distanceKm": 35.3,
-      "observedAt": "2026-10-22T07:00:00.000Z",
+      "observedAt": "2026-10-22T08:00:00.000Z",
       "source": "wmo-buoy",
       "skill": {
         "me": 0.15,
@@ -18036,6 +19859,24 @@
       "reason": "wmo-only",
       "attachedKm": 35,
       "altKm": 0
+    },
+    "observed": {
+      "windSpeedKt": 1,
+      "windDirDeg": 180,
+      "windCardinal": "S",
+      "windCardinalEn": "S",
+      "stationName": "Cabo Carvoeiro",
+      "distanceKm": 14.9,
+      "observedAt": "2026-10-22T08:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Cabo Carvoeiro",
+      "source": "ipma",
+      "me": 2.8,
+      "mae": 3.5,
+      "rmse": 4.4,
+      "n": 1950
     }
   },
   "sao-martinho-porto": {
@@ -18144,14 +19985,14 @@
       "distKm": 0.5
     },
     "observedWave": {
-      "waveHeight": 2.973629951477051,
-      "wavePeriod": 12.949199676513672,
-      "maxWaveHeight": 4.145510196685791,
-      "waterTemp": 16.013179779052734,
+      "waveHeight": 3.046880006790161,
+      "wavePeriod": 12.656299591064453,
+      "maxWaveHeight": 4.306640148162842,
+      "waterTemp": 15.991209983825684,
       "stationName": "Nazaré Costeira (WMO)",
       "stationArea": "Nazaré",
       "distanceKm": 8.3,
-      "observedAt": "2026-10-22T07:00:00.000Z",
+      "observedAt": "2026-10-22T08:00:00.000Z",
       "source": "wmo-buoy",
       "skill": {
         "me": 0.15,
@@ -18177,6 +20018,25 @@
       "reason": "wmo-only",
       "attachedKm": 8,
       "altKm": 0
+    },
+    "observed": {
+      "windSpeedKt": 0,
+      "windDirDeg": 0,
+      "windCardinal": "Calmo",
+      "windCardinalEn": "Calm",
+      "tempC": 8.2,
+      "stationName": "Alcobaça",
+      "distanceKm": 14.4,
+      "observedAt": "2026-10-22T08:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Alcobaça",
+      "source": "ipma",
+      "me": -2.7,
+      "mae": 3,
+      "rmse": 3.7,
+      "n": 390
     }
   },
   "cave-ericeira": {
@@ -18285,25 +20145,23 @@
       "distKm": 0.2
     },
     "observed": {
-      "windSpeedKt": 12,
-      "windDirDeg": 360,
-      "windDirMissing": false,
+      "windSpeedKt": 4,
+      "windDirDeg": 0,
       "windCardinal": "N",
       "windCardinalEn": "N",
-      "tempC": 17,
-      "stationName": "Cascais (METAR)",
-      "distanceKm": 27.6,
-      "observedAt": "2026-10-22T09:30:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPCS"
+      "tempC": 14.6,
+      "stationName": "Santa Cruz (Aeródromo)",
+      "distanceKm": 17.9,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Cascais (METAR)",
-      "source": "metar",
-      "me": 3.1,
-      "mae": 3.5,
-      "rmse": 4.8,
-      "n": 176
+      "station": "Santa Cruz (Aeródromo)",
+      "source": "ipma",
+      "me": -0.1,
+      "mae": 1.8,
+      "rmse": 2.2,
+      "n": 3101
     }
   },
   "pescadores-ericeira": {
@@ -18412,25 +20270,23 @@
       "distKm": 0.1
     },
     "observed": {
-      "windSpeedKt": 12,
-      "windDirDeg": 360,
-      "windDirMissing": false,
+      "windSpeedKt": 4,
+      "windDirDeg": 0,
       "windCardinal": "N",
       "windCardinalEn": "N",
-      "tempC": 17,
-      "stationName": "Cascais (METAR)",
-      "distanceKm": 27,
-      "observedAt": "2026-10-22T09:30:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPCS"
+      "tempC": 14.6,
+      "stationName": "Santa Cruz (Aeródromo)",
+      "distanceKm": 18.4,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Cascais (METAR)",
-      "source": "metar",
-      "me": 3.1,
-      "mae": 3.5,
-      "rmse": 4.8,
-      "n": 176
+      "station": "Santa Cruz (Aeródromo)",
+      "source": "ipma",
+      "me": -0.1,
+      "mae": 1.8,
+      "rmse": 2.2,
+      "n": 3101
     }
   },
   "crazy-left": {
@@ -18539,25 +20395,23 @@
       "distKm": 0.3
     },
     "observed": {
-      "windSpeedKt": 12,
-      "windDirDeg": 360,
-      "windDirMissing": false,
+      "windSpeedKt": 4,
+      "windDirDeg": 0,
       "windCardinal": "N",
       "windCardinalEn": "N",
-      "tempC": 17,
-      "stationName": "Cascais (METAR)",
-      "distanceKm": 26.5,
-      "observedAt": "2026-10-22T09:30:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPCS"
+      "tempC": 14.6,
+      "stationName": "Santa Cruz (Aeródromo)",
+      "distanceKm": 19,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Cascais (METAR)",
-      "source": "metar",
-      "me": 3.1,
-      "mae": 3.5,
-      "rmse": 4.8,
-      "n": 176
+      "station": "Santa Cruz (Aeródromo)",
+      "source": "ipma",
+      "me": -0.1,
+      "mae": 1.8,
+      "rmse": 2.2,
+      "n": 3101
     }
   },
   "meco": {
@@ -18666,25 +20520,23 @@
       "distKm": 1.2
     },
     "observed": {
-      "windSpeedKt": 5,
-      "windDirDeg": 340,
-      "windDirMissing": false,
-      "windCardinal": "N",
-      "windCardinalEn": "N",
-      "tempC": 15,
-      "stationName": "Montijo (METAR)",
-      "distanceKm": 28.9,
+      "windSpeedKt": 4,
+      "windDirDeg": 0,
+      "windCardinal": "Calmo",
+      "windCardinalEn": "Calm",
+      "tempC": 17.7,
+      "stationName": "Almada, P.Rainha",
+      "distanceKm": 16.2,
       "observedAt": "2026-10-22T09:00:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPMT"
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Montijo (METAR)",
-      "source": "metar",
-      "me": 1.7,
-      "mae": 2.5,
-      "rmse": 3,
-      "n": 113
+      "station": "Almada, P.Rainha",
+      "source": "ipma",
+      "me": -1.4,
+      "mae": 2.2,
+      "rmse": 2.7,
+      "n": 1498
     }
   },
   "lagoa-santo-andre": {
@@ -18793,15 +20645,15 @@
       "distKm": 1.9
     },
     "observedWave": {
-      "waveHeight": 2.61,
-      "wavePeriod": 12.5,
-      "waveDirection": 311,
-      "maxWaveHeight": 3.5,
-      "waterTemp": 17.4,
+      "waveHeight": 2.07,
+      "wavePeriod": 11.1,
+      "waveDirection": 314,
+      "maxWaveHeight": 3.82,
+      "waterTemp": 17.3,
       "stationName": "CSA83/1D",
       "stationArea": "Continente - Sines",
       "distanceKm": 22.3,
-      "observedAt": "2026-10-22T07:56:44.000Z",
+      "observedAt": "2026-10-22T08:56:44.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.18,
@@ -18817,7 +20669,7 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.8,
+      "ihAgeHours": 1.7,
       "wmoAgeHours": null,
       "ihDistanceKm": 22.3,
       "wmoDistanceKm": null
@@ -18827,6 +20679,25 @@
       "reason": "ih-only",
       "attachedKm": 22,
       "altKm": 0
+    },
+    "observed": {
+      "windSpeedKt": 6,
+      "windDirDeg": 0,
+      "windCardinal": "N",
+      "windCardinalEn": "N",
+      "tempC": 15.2,
+      "stationName": "Sines",
+      "distanceKm": 15.6,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Sines",
+      "source": "ipma",
+      "me": 2.6,
+      "mae": 3.2,
+      "rmse": 3.9,
+      "n": 1658
     }
   },
   "lagoa-sancha": {
@@ -18917,15 +20788,15 @@
     "airQualityIndex": 19,
     "airQualityAt": "2026-10-22T10:00+01:00",
     "observedWave": {
-      "waveHeight": 2.61,
-      "wavePeriod": 12.5,
-      "waveDirection": 311,
-      "maxWaveHeight": 3.5,
-      "waterTemp": 17.4,
+      "waveHeight": 2.07,
+      "wavePeriod": 11.1,
+      "waveDirection": 314,
+      "maxWaveHeight": 3.82,
+      "waterTemp": 17.3,
       "stationName": "CSA83/1D",
       "stationArea": "Continente - Sines",
       "distanceKm": 16.3,
-      "observedAt": "2026-10-22T07:56:44.000Z",
+      "observedAt": "2026-10-22T08:56:44.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.18,
@@ -18941,7 +20812,7 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.8,
+      "ihAgeHours": 1.7,
       "wmoAgeHours": null,
       "ihDistanceKm": 16.3,
       "wmoDistanceKm": null
@@ -18951,6 +20822,25 @@
       "reason": "ih-only",
       "attachedKm": 16,
       "altKm": 0
+    },
+    "observed": {
+      "windSpeedKt": 6,
+      "windDirDeg": 0,
+      "windCardinal": "N",
+      "windCardinalEn": "N",
+      "tempC": 15.2,
+      "stationName": "Sines",
+      "distanceKm": 8.6,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Sines",
+      "source": "ipma",
+      "me": 2.6,
+      "mae": 3.2,
+      "rmse": 3.9,
+      "n": 1658
     }
   },
   "pessegueiro": {
@@ -19059,15 +20949,15 @@
       "distKm": 0.3
     },
     "observedWave": {
-      "waveHeight": 2.61,
-      "wavePeriod": 12.5,
-      "waveDirection": 311,
-      "maxWaveHeight": 3.5,
-      "waterTemp": 17.4,
+      "waveHeight": 2.07,
+      "wavePeriod": 11.1,
+      "waveDirection": 314,
+      "maxWaveHeight": 3.82,
+      "waterTemp": 17.3,
       "stationName": "CSA83/1D",
       "stationArea": "Continente - Sines",
       "distanceKm": 15.4,
-      "observedAt": "2026-10-22T07:56:44.000Z",
+      "observedAt": "2026-10-22T08:56:44.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.18,
@@ -19083,7 +20973,7 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.8,
+      "ihAgeHours": 1.7,
       "wmoAgeHours": null,
       "ihDistanceKm": 15.4,
       "wmoDistanceKm": null
@@ -19093,6 +20983,25 @@
       "reason": "ih-only",
       "attachedKm": 15,
       "altKm": 0
+    },
+    "observed": {
+      "windSpeedKt": 7,
+      "windDirDeg": 0,
+      "windCardinal": "N",
+      "windCardinalEn": "N",
+      "tempC": 16.2,
+      "stationName": "Odemira - Vila Nova de Milfontes",
+      "distanceKm": 11.6,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Odemira - Vila Nova de Milfontes",
+      "source": "ipma",
+      "me": -0.1,
+      "mae": 1.9,
+      "rmse": 2.3,
+      "n": 275
     }
   },
   "garrão": {
@@ -19183,25 +21092,23 @@
     "airQualityIndex": 18,
     "airQualityAt": "2026-10-22T10:00+01:00",
     "observed": {
-      "windSpeedKt": 4,
-      "windDirDeg": 150,
-      "windDirMissing": false,
-      "windCardinal": "SE",
-      "windCardinalEn": "SE",
-      "tempC": 20,
-      "stationName": "Faro (METAR)",
-      "distanceKm": 4.9,
-      "observedAt": "2026-10-22T09:30:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPFR"
+      "windSpeedKt": 5,
+      "windDirDeg": 180,
+      "windCardinal": "S",
+      "windCardinalEn": "S",
+      "tempC": 19.8,
+      "stationName": "Faro (Aeródromo)",
+      "distanceKm": 5.3,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Faro (METAR)",
-      "source": "metar",
-      "me": 1.5,
-      "mae": 2.2,
-      "rmse": 3.3,
-      "n": 173
+      "station": "Faro (Aeródromo)",
+      "source": "ipma",
+      "me": 1.6,
+      "mae": 2.1,
+      "rmse": 2.7,
+      "n": 926
     }
   },
   "falesia": {
@@ -19314,24 +21221,21 @@
     },
     "observed": {
       "windSpeedKt": 4,
-      "windDirDeg": 150,
-      "windDirMissing": false,
-      "windCardinal": "SE",
-      "windCardinalEn": "SE",
-      "tempC": 20,
-      "stationName": "Faro (METAR)",
-      "distanceKm": 17.9,
-      "observedAt": "2026-10-22T09:30:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPFR"
+      "windDirDeg": 225,
+      "windCardinal": "SW",
+      "windCardinalEn": "SW",
+      "stationName": "Loulé (CML)",
+      "distanceKm": 9.9,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Faro (METAR)",
-      "source": "metar",
-      "me": 1.5,
-      "mae": 2.2,
-      "rmse": 3.3,
-      "n": 173
+      "station": "Loulé (CML)",
+      "source": "ipma",
+      "me": -1,
+      "mae": 1.9,
+      "rmse": 2.4,
+      "n": 253
     }
   },
   "tres-irmaos": {
@@ -19441,6 +21345,24 @@
       "guarded": true,
       "accessible": true,
       "distKm": 0.3
+    },
+    "observed": {
+      "windSpeedKt": 2,
+      "windDirDeg": 225,
+      "windCardinal": "SW",
+      "windCardinalEn": "SW",
+      "stationName": "Portimão (Aeródromo)",
+      "distanceKm": 3.5,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Portimão (Aeródromo)",
+      "source": "ipma",
+      "me": -0.7,
+      "mae": 2.2,
+      "rmse": 3,
+      "n": 2439
     }
   },
   "canavial": {
@@ -19550,6 +21472,25 @@
       "guarded": true,
       "accessible": false,
       "distKm": 2.2
+    },
+    "observed": {
+      "windSpeedKt": 2,
+      "windDirDeg": 135,
+      "windCardinal": "SE",
+      "windCardinalEn": "SE",
+      "tempC": 17.9,
+      "stationName": "Portimão (Praia da Rocha)",
+      "distanceKm": 11.9,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Portimão (Praia da Rocha)",
+      "source": "ipma",
+      "me": 1.7,
+      "mae": 2.3,
+      "rmse": 2.9,
+      "n": 886
     }
   },
   "armacao-pera": {
@@ -19659,6 +21600,25 @@
       "guarded": true,
       "accessible": true,
       "distKm": 0.2
+    },
+    "observed": {
+      "windSpeedKt": 2,
+      "windDirDeg": 135,
+      "windCardinal": "SE",
+      "windCardinalEn": "SE",
+      "tempC": 17.9,
+      "stationName": "Portimão (Praia da Rocha)",
+      "distanceKm": 15.6,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Portimão (Praia da Rocha)",
+      "source": "ipma",
+      "me": 1.7,
+      "mae": 2.3,
+      "rmse": 2.9,
+      "n": 886
     }
   },
   "mareta": {
@@ -19876,28 +21836,26 @@
       "distKm": 0.5
     },
     "observed": {
-      "windSpeedKt": 5,
-      "windDirDeg": 340,
-      "windDirMissing": false,
+      "windSpeedKt": 8,
+      "windDirDeg": 0,
       "windCardinal": "N",
       "windCardinalEn": "N",
-      "tempC": 21,
-      "stationName": "Madeira (METAR)",
-      "distanceKm": 2.5,
-      "observedAt": "2026-10-22T09:30:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPMA"
+      "tempC": 20.9,
+      "stationName": "Santa Catarina (Aeródromo)",
+      "distanceKm": 2.7,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 0.75,
-      "wavePeriod": 5.3,
-      "waveDirection": 122,
-      "maxWaveHeight": 1.19,
+      "waveHeight": 0.73,
+      "wavePeriod": 5.6,
+      "waveDirection": 115,
+      "maxWaveHeight": 1.22,
       "waterTemp": 22.6,
       "stationName": "CSA94",
       "stationArea": "Arquipélago da Madeira - Caniçal",
       "distanceKm": 4.1,
-      "observedAt": "2026-10-22T07:59:57.000Z",
+      "observedAt": "2026-10-22T08:59:57.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": -0.43,
@@ -19919,12 +21877,12 @@
       "wmoDistanceKm": null
     },
     "windBias": {
-      "station": "Madeira (METAR)",
-      "source": "metar",
-      "me": 5.3,
-      "mae": 5.4,
-      "rmse": 6.4,
-      "n": 583
+      "station": "Santa Catarina (Aeródromo)",
+      "source": "ipma",
+      "me": 4.5,
+      "mae": 4.9,
+      "rmse": 6.3,
+      "n": 634
     },
     "observedWaveNotClosest": {
       "winner": "ih-buoy",
@@ -20042,28 +22000,28 @@
       "distKm": 1.1
     },
     "observed": {
-      "windSpeedKt": 5,
-      "windDirDeg": 340,
+      "windSpeedKt": 7,
+      "windDirDeg": 20,
       "windDirMissing": false,
       "windCardinal": "N",
       "windCardinalEn": "N",
-      "tempC": 21,
+      "tempC": 22,
       "stationName": "Madeira (METAR)",
       "distanceKm": 33.7,
-      "observedAt": "2026-10-22T09:30:00.000Z",
+      "observedAt": "2026-10-22T10:30:00.000Z",
       "source": "metar",
       "metarIcao": "LPMA"
     },
     "observedWave": {
-      "waveHeight": 0.75,
-      "wavePeriod": 5.3,
-      "waveDirection": 122,
-      "maxWaveHeight": 1.19,
+      "waveHeight": 0.73,
+      "wavePeriod": 5.6,
+      "waveDirection": 115,
+      "maxWaveHeight": 1.22,
       "waterTemp": 22.6,
       "stationName": "CSA94",
       "stationArea": "Arquipélago da Madeira - Caniçal",
       "distanceKm": 37.1,
-      "observedAt": "2026-10-22T07:59:57.000Z",
+      "observedAt": "2026-10-22T08:59:57.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": -0.43,
@@ -20188,7 +22146,26 @@
     ],
     "updatedAt": "2026-10-22T09:40:59.569Z",
     "airQualityIndex": 33,
-    "airQualityAt": "2026-10-22T10:00+01:00"
+    "airQualityAt": "2026-10-22T10:00+01:00",
+    "observed": {
+      "windSpeedKt": 0,
+      "windDirDeg": 0,
+      "windCardinal": "Calmo",
+      "windCardinalEn": "Calm",
+      "tempC": 18.4,
+      "stationName": "Madeira, Calheta",
+      "distanceKm": 0.5,
+      "observedAt": "2026-10-22T08:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Madeira, Calheta",
+      "source": "ipma",
+      "me": -2.5,
+      "mae": 3.7,
+      "rmse": 4.4,
+      "n": 302
+    }
   },
   "madalena-mar": {
     "waveHeight": 1.5,
@@ -20299,28 +22276,26 @@
       "distKm": 0.7
     },
     "observed": {
-      "windSpeedKt": 5,
-      "windDirDeg": 340,
-      "windDirMissing": false,
-      "windCardinal": "N",
-      "windCardinalEn": "N",
-      "tempC": 21,
-      "stationName": "Madeira (METAR)",
-      "distanceKm": 33.6,
-      "observedAt": "2026-10-22T09:30:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPMA"
+      "windSpeedKt": 1,
+      "windDirDeg": 225,
+      "windCardinal": "SW",
+      "windCardinalEn": "SW",
+      "tempC": 22.2,
+      "stationName": "Ponta do Sol/Lugar de Baixo",
+      "distanceKm": 3.9,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 0.75,
-      "wavePeriod": 5.3,
-      "waveDirection": 122,
-      "maxWaveHeight": 1.19,
+      "waveHeight": 0.73,
+      "wavePeriod": 5.6,
+      "waveDirection": 115,
+      "maxWaveHeight": 1.22,
       "waterTemp": 22.6,
       "stationName": "CSA94",
       "stationArea": "Arquipélago da Madeira - Caniçal",
       "distanceKm": 38.3,
-      "observedAt": "2026-10-22T07:59:57.000Z",
+      "observedAt": "2026-10-22T08:59:57.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": -0.43,
@@ -20342,12 +22317,12 @@
       "wmoDistanceKm": null
     },
     "windBias": {
-      "station": "Madeira (METAR)",
-      "source": "metar",
-      "me": 5.3,
-      "mae": 5.4,
-      "rmse": 6.4,
-      "n": 583
+      "station": "Ponta do Sol/Lugar de Baixo",
+      "source": "ipma",
+      "me": -0.6,
+      "mae": 2,
+      "rmse": 2.6,
+      "n": 362
     },
     "observedWaveNotClosest": {
       "winner": "ih-buoy",
@@ -20465,25 +22440,23 @@
       "distKm": 0.8
     },
     "observed": {
-      "windSpeedKt": 11,
-      "windDirDeg": 280,
-      "windDirMissing": false,
+      "windSpeedKt": 3,
+      "windDirDeg": 270,
       "windCardinal": "W",
       "windCardinalEn": "W",
-      "tempC": 21,
-      "stationName": "Ponta Delgada (METAR)",
-      "distanceKm": 12.4,
-      "observedAt": "2026-10-22T09:30:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPPD"
+      "tempC": 18.9,
+      "stationName": "São Miguel / Santana (DROTRH)",
+      "distanceKm": 3.7,
+      "observedAt": "2026-10-22T08:00:00.000Z",
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Ponta Delgada (METAR)",
-      "source": "metar",
-      "me": 1.8,
-      "mae": 2.6,
-      "rmse": 3.5,
-      "n": 73
+      "station": "São Miguel / Santana (DROTRH)",
+      "source": "ipma",
+      "me": -1.4,
+      "mae": 2.7,
+      "rmse": 3.7,
+      "n": 483
     }
   },
   "ribeira-quente": {
@@ -20595,25 +22568,23 @@
       "distKm": 0.2
     },
     "observed": {
-      "windSpeedKt": 11,
-      "windDirDeg": 280,
-      "windDirMissing": false,
-      "windCardinal": "W",
-      "windCardinalEn": "W",
-      "tempC": 21,
-      "stationName": "Ponta Delgada (METAR)",
-      "distanceKm": 34.3,
-      "observedAt": "2026-10-22T09:30:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPPD"
+      "windSpeedKt": 1,
+      "windDirDeg": 90,
+      "windCardinal": "E",
+      "windCardinalEn": "E",
+      "tempC": 15.1,
+      "stationName": "São Miguel / Lagoa das Furnas (DROTRH)",
+      "distanceKm": 4.2,
+      "observedAt": "2026-10-22T08:00:00.000Z",
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Ponta Delgada (METAR)",
-      "source": "metar",
-      "me": 1.8,
-      "mae": 2.6,
-      "rmse": 3.5,
-      "n": 73
+      "station": "São Miguel / Lagoa das Furnas (DROTRH)",
+      "source": "ipma",
+      "me": -2.2,
+      "mae": 3.2,
+      "rmse": 4,
+      "n": 161
     }
   },
   "formosa-santa-maria": {
@@ -20725,25 +22696,23 @@
       "distKm": 1.2
     },
     "observed": {
-      "windSpeedKt": 5,
-      "windDirDeg": 290,
-      "windDirMissing": false,
-      "windCardinal": "W",
-      "windCardinalEn": "W",
-      "tempC": 21,
-      "stationName": "Santa Maria (METAR)",
-      "distanceKm": 9.5,
-      "observedAt": "2026-10-22T09:30:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPAZ"
+      "windSpeedKt": 6,
+      "windDirDeg": 315,
+      "windCardinal": "NW",
+      "windCardinalEn": "NW",
+      "tempC": 20.7,
+      "stationName": "Santa Maria (Aeródromo)",
+      "distanceKm": 9.3,
+      "observedAt": "2026-10-22T09:00:00.000Z",
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Santa Maria (METAR)",
-      "source": "metar",
-      "me": -1.1,
-      "mae": 3.6,
-      "rmse": 4.8,
-      "n": 34
+      "station": "Santa Maria (Aeródromo)",
+      "source": "ipma",
+      "me": 0.3,
+      "mae": 2.5,
+      "rmse": 3.4,
+      "n": 448
     }
   },
   "porto-martins": {
@@ -20855,25 +22824,23 @@
       "distKm": 0.5
     },
     "observed": {
-      "windSpeedKt": 2,
-      "windDirDeg": 0,
-      "windDirMissing": true,
-      "windCardinal": "—",
-      "windCardinalEn": "—",
-      "tempC": 20,
-      "stationName": "Lajes (METAR)",
-      "distanceKm": 10,
-      "observedAt": "2026-10-22T09:00:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPLA"
+      "windSpeedKt": 7,
+      "windDirDeg": 270,
+      "windCardinal": "W",
+      "windCardinalEn": "W",
+      "tempC": 15.9,
+      "stationName": "Terceira / Serra do Cume (DROTRH)",
+      "distanceKm": 4.8,
+      "observedAt": "2026-10-22T08:00:00.000Z",
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Lajes (METAR)",
-      "source": "metar",
-      "me": 1.1,
-      "mae": 2.8,
-      "rmse": 3.9,
-      "n": 219
+      "station": "Terceira / Serra do Cume (DROTRH)",
+      "source": "ipma",
+      "me": 1.5,
+      "mae": 2.5,
+      "rmse": 3.3,
+      "n": 164
     }
   },
   "cachorro-pico": {
@@ -20985,25 +22952,23 @@
       "distKm": 0.6
     },
     "observed": {
-      "windSpeedKt": 13,
-      "windDirDeg": 230,
-      "windDirMissing": false,
-      "windCardinal": "SW",
-      "windCardinalEn": "SW",
-      "tempC": 21,
-      "stationName": "Pico (METAR)",
-      "distanceKm": 12.5,
-      "observedAt": "2026-10-22T09:30:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPPI"
+      "windSpeedKt": 5,
+      "windDirDeg": 270,
+      "windCardinal": "W",
+      "windCardinalEn": "W",
+      "tempC": 15.6,
+      "stationName": "Pico / Cabeço do Teicho (DROTRH)",
+      "distanceKm": 6.7,
+      "observedAt": "2026-10-22T08:00:00.000Z",
+      "source": "ipma"
     },
     "windBias": {
-      "station": "Pico (METAR)",
-      "source": "metar",
-      "me": 4.3,
-      "mae": 4.4,
-      "rmse": 5.3,
-      "n": 12
+      "station": "Pico / Cabeço do Teicho (DROTRH)",
+      "source": "ipma",
+      "me": 0.4,
+      "mae": 2.9,
+      "rmse": 3.7,
+      "n": 108
     }
   },
   "faja-cubres": {
@@ -21098,16 +23063,22 @@
     "airQualityAt": "2026-10-22T09:00+00:00",
     "observed": {
       "windSpeedKt": 9,
-      "windDirDeg": 260,
-      "windDirMissing": false,
-      "windCardinal": "W",
-      "windCardinalEn": "W",
-      "tempC": 20,
-      "stationName": "São Jorge (METAR)",
-      "distanceKm": 18.5,
-      "observedAt": "2026-10-22T09:30:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPSJ"
+      "windDirDeg": 225,
+      "windCardinal": "SW",
+      "windCardinalEn": "SW",
+      "tempC": 14.9,
+      "stationName": "São Jorge / Pico do Areeiro (DROTRH)",
+      "distanceKm": 8.1,
+      "observedAt": "2026-10-22T08:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "São Jorge / Pico do Areeiro (DROTRH)",
+      "source": "ipma",
+      "me": 0.7,
+      "mae": 4.5,
+      "rmse": 5.9,
+      "n": 110
     }
   },
   "fao-ofir-surf": {
@@ -21214,6 +23185,60 @@
       "guarded": true,
       "accessible": false,
       "distKm": 0.7
+    },
+    "observed": {
+      "windSpeedKt": 6,
+      "windDirDeg": 135,
+      "windCardinal": "SE",
+      "windCardinalEn": "SE",
+      "stationName": "Esposende (CIM)",
+      "distanceKm": 0.9,
+      "observedAt": "2026-10-22T08:00:00.000Z",
+      "source": "ipma"
+    },
+    "observedWave": {
+      "waveHeight": 2.56,
+      "wavePeriod": 11.8,
+      "waveDirection": 316,
+      "maxWaveHeight": 4.47,
+      "waterTemp": 15.8,
+      "stationName": "CSA92/D",
+      "stationArea": "Continente - Leixões",
+      "distanceKm": 28.1,
+      "observedAt": "2026-10-22T08:56:42.000Z",
+      "source": "ih-buoy",
+      "skill": {
+        "me": 0.52,
+        "n": 669,
+        "origin": "ih",
+        "mae": 0.53,
+        "rmse": 0.69,
+        "corr": 0.83,
+        "meanLeadHours": 45.3,
+        "buoyName": "CSA92/D"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "ih",
+      "reason": "ih-only",
+      "ihAgeHours": 1.7,
+      "wmoAgeHours": null,
+      "ihDistanceKm": 28.1,
+      "wmoDistanceKm": null
+    },
+    "windBias": {
+      "station": "Esposende (CIM)",
+      "source": "ipma",
+      "me": 2.1,
+      "mae": 2.7,
+      "rmse": 3.8,
+      "n": 927
+    },
+    "observedWaveNotClosest": {
+      "winner": "ih-buoy",
+      "reason": "ih-only",
+      "attachedKm": 28,
+      "altKm": 0
     }
   },
   "ofir-praia": {
@@ -21320,6 +23345,60 @@
       "guarded": true,
       "accessible": false,
       "distKm": 0
+    },
+    "observed": {
+      "windSpeedKt": 6,
+      "windDirDeg": 135,
+      "windCardinal": "SE",
+      "windCardinalEn": "SE",
+      "stationName": "Esposende (CIM)",
+      "distanceKm": 1.2,
+      "observedAt": "2026-10-22T08:00:00.000Z",
+      "source": "ipma"
+    },
+    "observedWave": {
+      "waveHeight": 2.56,
+      "wavePeriod": 11.8,
+      "waveDirection": 316,
+      "maxWaveHeight": 4.47,
+      "waterTemp": 15.8,
+      "stationName": "CSA92/D",
+      "stationArea": "Continente - Leixões",
+      "distanceKm": 27.7,
+      "observedAt": "2026-10-22T08:56:42.000Z",
+      "source": "ih-buoy",
+      "skill": {
+        "me": 0.52,
+        "n": 669,
+        "origin": "ih",
+        "mae": 0.53,
+        "rmse": 0.69,
+        "corr": 0.83,
+        "meanLeadHours": 45.3,
+        "buoyName": "CSA92/D"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "ih",
+      "reason": "ih-only",
+      "ihAgeHours": 1.7,
+      "wmoAgeHours": null,
+      "ihDistanceKm": 27.7,
+      "wmoDistanceKm": null
+    },
+    "windBias": {
+      "station": "Esposende (CIM)",
+      "source": "ipma",
+      "me": 2.1,
+      "mae": 2.7,
+      "rmse": 3.8,
+      "n": 927
+    },
+    "observedWaveNotClosest": {
+      "winner": "ih-buoy",
+      "reason": "ih-only",
+      "attachedKm": 28,
+      "altKm": 0
     }
   },
   "mindelo": {
@@ -21428,15 +23507,15 @@
       "distKm": 0.1
     },
     "observed": {
-      "windSpeedKt": 8,
-      "windDirDeg": 120,
+      "windSpeedKt": 3,
+      "windDirDeg": 180,
       "windDirMissing": false,
-      "windCardinal": "SE",
-      "windCardinalEn": "SE",
-      "tempC": 14,
+      "windCardinal": "S",
+      "windCardinalEn": "S",
+      "tempC": 17,
       "stationName": "Porto (METAR)",
       "distanceKm": 9.5,
-      "observedAt": "2026-10-22T09:30:00.000Z",
+      "observedAt": "2026-10-22T10:30:00.000Z",
       "source": "metar",
       "metarIcao": "LPPR"
     },
@@ -21447,6 +23526,42 @@
       "mae": 1.8,
       "rmse": 2.4,
       "n": 476
+    },
+    "observedWave": {
+      "waveHeight": 2.56,
+      "wavePeriod": 11.8,
+      "waveDirection": 316,
+      "maxWaveHeight": 4.47,
+      "waterTemp": 15.8,
+      "stationName": "CSA92/D",
+      "stationArea": "Continente - Leixões",
+      "distanceKm": 20.3,
+      "observedAt": "2026-10-22T08:56:42.000Z",
+      "source": "ih-buoy",
+      "skill": {
+        "me": 0.52,
+        "n": 669,
+        "origin": "ih",
+        "mae": 0.53,
+        "rmse": 0.69,
+        "corr": 0.83,
+        "meanLeadHours": 45.3,
+        "buoyName": "CSA92/D"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "ih",
+      "reason": "ih-only",
+      "ihAgeHours": 1.7,
+      "wmoAgeHours": null,
+      "ihDistanceKm": 20.3,
+      "wmoDistanceKm": null
+    },
+    "observedWaveNotClosest": {
+      "winner": "ih-buoy",
+      "reason": "ih-only",
+      "attachedKm": 20,
+      "altKm": 0
     }
   },
   "aterro": {
@@ -21556,22 +23671,58 @@
     },
     "observed": {
       "windSpeedKt": 2,
-      "windDirDeg": 96,
-      "windCardinal": "E",
-      "windCardinalEn": "E",
-      "tempC": 14.7,
+      "windDirDeg": 210,
+      "windCardinal": "SW",
+      "windCardinalEn": "SW",
+      "tempC": 15,
       "stationName": "TAP Teste 3",
       "distanceKm": 6.3,
-      "observedAt": "2026-10-22T09:42:13.000Z",
+      "observedAt": "2026-10-22T10:40:47.000Z",
       "source": "ecowitt"
     },
     "windBias": {
       "station": "TAP Teste 3",
       "source": "ecowitt",
-      "me": -1.4,
+      "me": -1.5,
       "mae": 2.1,
       "rmse": 2.8,
       "n": 2766
+    },
+    "observedWave": {
+      "waveHeight": 2.56,
+      "wavePeriod": 11.8,
+      "waveDirection": 316,
+      "maxWaveHeight": 4.47,
+      "waterTemp": 15.8,
+      "stationName": "CSA92/D",
+      "stationArea": "Continente - Leixões",
+      "distanceKm": 25.3,
+      "observedAt": "2026-10-22T08:56:42.000Z",
+      "source": "ih-buoy",
+      "skill": {
+        "me": 0.52,
+        "n": 669,
+        "origin": "ih",
+        "mae": 0.53,
+        "rmse": 0.69,
+        "corr": 0.83,
+        "meanLeadHours": 45.3,
+        "buoyName": "CSA92/D"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "ih",
+      "reason": "ih-only",
+      "ihAgeHours": 1.7,
+      "wmoAgeHours": null,
+      "ihDistanceKm": 25.3,
+      "wmoDistanceKm": null
+    },
+    "observedWaveNotClosest": {
+      "winner": "ih-buoy",
+      "reason": "ih-only",
+      "attachedKm": 25,
+      "altKm": 0
     }
   },
   "foil-fao-cavado": {
@@ -21678,6 +23829,52 @@
       "guarded": true,
       "accessible": false,
       "distKm": 0.8
+    },
+    "observed": {
+      "windSpeedKt": 6,
+      "windDirDeg": 135,
+      "windCardinal": "SE",
+      "windCardinalEn": "SE",
+      "stationName": "Esposende (CIM)",
+      "distanceKm": 1,
+      "observedAt": "2026-10-22T08:00:00.000Z",
+      "source": "ipma"
+    },
+    "observedWave": {
+      "waveHeight": 2.56,
+      "wavePeriod": 11.8,
+      "waveDirection": 316,
+      "maxWaveHeight": 4.47,
+      "waterTemp": 15.8,
+      "stationName": "CSA92/D",
+      "stationArea": "Continente - Leixões",
+      "distanceKm": 28.9,
+      "observedAt": "2026-10-22T08:56:42.000Z",
+      "source": "ih-buoy",
+      "skill": {
+        "me": 0.52,
+        "n": 669,
+        "origin": "ih",
+        "mae": 0.53,
+        "rmse": 0.69,
+        "corr": 0.83,
+        "meanLeadHours": 45.3,
+        "buoyName": "CSA92/D"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "ih",
+      "reason": "ih-only",
+      "ihAgeHours": 1.7,
+      "wmoAgeHours": null,
+      "ihDistanceKm": 28.9,
+      "wmoDistanceKm": null
+    },
+    "observedWaveNotClosest": {
+      "winner": "ih-buoy",
+      "reason": "ih-only",
+      "attachedKm": 29,
+      "altKm": 0
     }
   },
   "foil-esposende-piscinas": {
@@ -21784,6 +23981,52 @@
       "guarded": true,
       "accessible": false,
       "distKm": 1.3
+    },
+    "observed": {
+      "windSpeedKt": 6,
+      "windDirDeg": 135,
+      "windCardinal": "SE",
+      "windCardinalEn": "SE",
+      "stationName": "Esposende (CIM)",
+      "distanceKm": 1,
+      "observedAt": "2026-10-22T08:00:00.000Z",
+      "source": "ipma"
+    },
+    "observedWave": {
+      "waveHeight": 2.56,
+      "wavePeriod": 11.8,
+      "waveDirection": 316,
+      "maxWaveHeight": 4.47,
+      "waterTemp": 15.8,
+      "stationName": "CSA92/D",
+      "stationArea": "Continente - Leixões",
+      "distanceKm": 28.9,
+      "observedAt": "2026-10-22T08:56:42.000Z",
+      "source": "ih-buoy",
+      "skill": {
+        "me": 0.52,
+        "n": 669,
+        "origin": "ih",
+        "mae": 0.53,
+        "rmse": 0.69,
+        "corr": 0.83,
+        "meanLeadHours": 45.3,
+        "buoyName": "CSA92/D"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "ih",
+      "reason": "ih-only",
+      "ihAgeHours": 1.7,
+      "wmoAgeHours": null,
+      "ihDistanceKm": 28.9,
+      "wmoDistanceKm": null
+    },
+    "observedWaveNotClosest": {
+      "winner": "ih-buoy",
+      "reason": "ih-only",
+      "attachedKm": 29,
+      "altKm": 0
     }
   },
   "obidos-lagoon-sul": {
@@ -21892,14 +24135,14 @@
       "distKm": 0.3
     },
     "observedWave": {
-      "waveHeight": 2.973629951477051,
-      "wavePeriod": 12.949199676513672,
-      "maxWaveHeight": 4.145510196685791,
-      "waterTemp": 16.013179779052734,
+      "waveHeight": 3.046880006790161,
+      "wavePeriod": 12.656299591064453,
+      "maxWaveHeight": 4.306640148162842,
+      "waterTemp": 15.991209983825684,
       "stationName": "Nazaré Costeira (WMO)",
       "stationArea": "Nazaré",
       "distanceKm": 17.8,
-      "observedAt": "2026-10-22T07:00:00.000Z",
+      "observedAt": "2026-10-22T08:00:00.000Z",
       "source": "wmo-buoy",
       "skill": {
         "me": 0.15,
@@ -21925,6 +24168,16 @@
       "reason": "wmo-only",
       "attachedKm": 18,
       "altKm": 0
+    },
+    "observed": {
+      "windSpeedKt": 1,
+      "windDirDeg": 180,
+      "windCardinal": "S",
+      "windCardinalEn": "S",
+      "stationName": "Cabo Carvoeiro",
+      "distanceKm": 16.3,
+      "observedAt": "2026-10-22T08:00:00.000Z",
+      "source": "ipma"
     }
   },
   "obidos-lagoon-foz": {
@@ -22033,14 +24286,14 @@
       "distKm": 0.1
     },
     "observedWave": {
-      "waveHeight": 2.973629951477051,
-      "wavePeriod": 12.949199676513672,
-      "maxWaveHeight": 4.145510196685791,
-      "waterTemp": 16.013179779052734,
+      "waveHeight": 3.046880006790161,
+      "wavePeriod": 12.656299591064453,
+      "maxWaveHeight": 4.306640148162842,
+      "waterTemp": 15.991209983825684,
       "stationName": "Nazaré Costeira (WMO)",
       "stationArea": "Nazaré",
       "distanceKm": 17.8,
-      "observedAt": "2026-10-22T07:00:00.000Z",
+      "observedAt": "2026-10-22T08:00:00.000Z",
       "source": "wmo-buoy",
       "skill": {
         "me": 0.15,
@@ -22066,6 +24319,16 @@
       "reason": "wmo-only",
       "attachedKm": 18,
       "altKm": 0
+    },
+    "observed": {
+      "windSpeedKt": 1,
+      "windDirDeg": 180,
+      "windCardinal": "S",
+      "windCardinalEn": "S",
+      "stationName": "Cabo Carvoeiro",
+      "distanceKm": 16.3,
+      "observedAt": "2026-10-22T08:00:00.000Z",
+      "source": "ipma"
     }
   }
 }
