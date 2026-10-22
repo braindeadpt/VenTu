@@ -145,8 +145,8 @@ export const spots: Spot[] = [
     },
   {
       id: 'fao', slug: 'fao', name: 'Fão', nameEn: 'Fao',
-      region: 'Esposende', regionEn: 'Esposende', lat: 41.510, lon: -8.770,
-      coastOrientation: 275,
+      region: 'Esposende', regionEn: 'Esposende', lat: 41.5233, lon: -8.7900,
+      coastOrientation: 235,
       type: 'surf', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'W, NW',
       description: 'Spot junto a Ofir com beach break consistente. Praia menos explorada, ideal para escapar da multidão. Fundo de areia variável.',
       descriptionEn: 'Spot next to Ofir with consistent beach break. Less explored beach, ideal to escape crowds. Variable sand bottom.',
@@ -877,7 +877,7 @@ export const spots: Spot[] = [
     },
   {
       id: 'santa-catarina-terceira', slug: 'santa-catarina-terceira', name: 'Santa Catarina', nameEn: 'Santa Catarina',
-      region: 'Terceira', regionEn: 'Terceira', lat: 38.683, lon: -27.218,
+      region: 'Terceira', regionEn: 'Terceira', lat: 38.7100, lon: -27.0503,
       coastOrientation: 270,
       type: 'surf', difficulty: 'intermediate', bestWind: 'E, NE', bestSwell: 'W, NW',
       description: 'Reef break exposto e consistente. O mais popular da Terceira. Ondas longas e tubulares sobre fundo de rocha.',
@@ -1394,8 +1394,8 @@ export const spots: Spot[] = [
     },
   {
       id: 'vale-figueiras', slug: 'vale-figueiras', name: 'Vale Figueiras', nameEn: 'Vale Figueiras',
-      region: 'Aljezur', regionEn: 'Aljezur', lat: 37.250, lon: -8.850,
-      coastOrientation: 285,
+      region: 'Aljezur', regionEn: 'Aljezur', lat: 37.2420, lon: -8.8722,
+      coastOrientation: 290,
       type: 'surf', difficulty: 'intermediate', bestWind: 'E, NE', bestSwell: 'W, NW',
       description: 'Praia selvagem no Parque Natural do Sudoeste Alentejano. Ondas para todos os níveis dependendo das condições. Acesso por estrada de terra. Isolamento total.',
       descriptionEn: 'Wild beach in the Southwest Alentejo Natural Park. Waves for all levels depending on conditions. Dirt road access. Total isolation.',
@@ -1628,7 +1628,7 @@ export const spots: Spot[] = [
     },
   {
       id: 'barrinha-faro', slug: 'barrinha-faro', name: 'Barrinha de Faro', nameEn: 'Barrinha de Faro',
-      region: 'Algarve', regionEn: 'Algarve', lat: 37.016, lon: -7.933,
+      region: 'Algarve', regionEn: 'Algarve', lat: 36.9868, lon: -7.9644,
       coastOrientation: 180,
       type: 'kitesurf', difficulty: 'beginner', bestWind: 'E, SE', bestSwell: 'Ria Formosa',
       description: 'Lagoa da Ria Formosa com água plana e vento de leste. Spot perfeito para iniciantes e freestyle. Barra de acesso com barco típico.',
@@ -2127,8 +2127,8 @@ export const spots: Spot[] = [
     },
   {
       id: 'formosa-santa-maria', slug: 'formosa-santa-maria', name: 'Formosa (Santa Maria)', nameEn: 'Formosa (Santa Maria)',
-      region: 'Santa Maria', regionEn: 'Santa Maria', lat: 36.990, lon: -25.067,
-      coastOrientation: 180,
+      region: 'Santa Maria', regionEn: 'Santa Maria', lat: 36.9509, lon: -25.0973,
+      coastOrientation: 205,
       type: 'surf', difficulty: 'intermediate', bestWind: 'N, NE', bestSwell: 'S, SW',
       description: 'A melhor onda de Santa Maria. Direita longa sobre fundo de rocha. Água cristalina e cenário tropical. Praia de areia dourada.',
       descriptionEn: 'The best wave in Santa Maria. Long right-hander over rock bottom. Crystal clear water and tropical scenery. Golden sand beach.',
@@ -2149,8 +2149,8 @@ export const spots: Spot[] = [
     },
   {
       id: 'cachorro-pico', slug: 'cachorro-pico', name: 'Cachorro (Pico)', nameEn: 'Cachorro (Pico)',
-      region: 'Pico', regionEn: 'Pico', lat: 38.533, lon: -28.300,
-      coastOrientation: 270,
+      region: 'Pico', regionEn: 'Pico', lat: 38.5561, lon: -28.4471,
+      coastOrientation: 320,
       type: 'surf', difficulty: 'advanced', bestWind: 'E, SE', bestSwell: 'W, NW',
       description: 'Point break esquerdo na costa norte do Pico. Ondas tubulares sobre fundo vulcânico. Cenário dramático com a montanha do Pico ao fundo.',
       compatibleSports: ['surf', 'bodyboard'],

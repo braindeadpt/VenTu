@@ -1,6 +1,8 @@
 /**
  * Coordenadas dos spots (22/10): 31 spots estavam longe da praia (1,1 a 25 km)
- * e foram corrigidos para a praia OSM `natural=beach` (Nominatim). Guarda:
+ * e foram corrigidos para a praia OSM `natural=beach` (Nominatim); numa 2.ª passagem
+ * mais 6, com coordenadas confirmadas pelo Pedro (`fao` e `barrinha-faro` são pins
+ * dele no Google Maps). Guarda:
  *  - cada spot corrigido a ≤ 500 m da coordenada esperada;
  *  - `src/lib/spots.ts` e `data/coast-orientation-review.json` com as mesmas coordenadas;
  *  - os spots corrigidos a ≤ 1 km da linha de costa OSM (distância do ficheiro de revisão).
@@ -13,7 +15,7 @@ import review from '../../../data/coast-orientation-review.json';
 type Linha = { id: string; lat: number; lon: number; distCostaM: number | null };
 const porId = new Map((review as unknown as { spots: Linha[] }).spots.map((l) => [l.id, l]));
 
-/** [id, lat, lon] — praia OSM `natural=beach` (Nominatim), 22/10. */
+/** [id, lat, lon] — praia OSM `natural=beach` (Nominatim), 22/10; os últimos 6 confirmados pelo Pedro. */
 const CORRIGIDOS: Array<[string, number, number]> = [
   ['canavial', 37.0839, -8.6790],
   ['seixal-bay', 38.6377, -9.1121],
@@ -46,6 +48,13 @@ const CORRIGIDOS: Array<[string, number, number]> = [
   ['vila-praia-ancora', 41.8133, -8.8651],
   ['furadouro', 40.8853, -8.6725],
   ['seixal-madeira', 32.8219, -17.1031],
+  // 2.ª passagem (22/10): coordenadas confirmadas pelo Pedro.
+  ['santa-catarina-terceira', 38.7100, -27.0503],
+  ['cachorro-pico', 38.5561, -28.4471],
+  ['formosa-santa-maria', 36.9509, -25.0973],
+  ['vale-figueiras', 37.2420, -8.8722],
+  ['fao', 41.5233, -8.7900],
+  ['barrinha-faro', 36.9868, -7.9644],
 ];
 
 /** Distância em metros (haversine). */
@@ -56,8 +65,8 @@ function distM(lat1: number, lon1: number, lat2: number, lon2: number): number {
 }
 
 describe('coordenadas dos spots', () => {
-  it('a lista de corrigidos tem 31 spots, todos em spots.ts', () => {
-    expect(CORRIGIDOS.length).toBe(31);
+  it('a lista de corrigidos tem 37 spots, todos em spots.ts', () => {
+    expect(CORRIGIDOS.length).toBe(37);
     for (const [id] of CORRIGIDOS) expect(spots.some((s) => s.id === id), id).toBe(true);
   });
 
