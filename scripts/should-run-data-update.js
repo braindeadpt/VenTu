@@ -10,8 +10,9 @@ const {
   describeSchedule,
   isMultiModelEnabled,
   resolveUpdateMode,
+  resolveScheduledMode,
   needsFullCatchUp,
-  needsObsCatchUp,
+  resolveKeepaliveMode,
 } = require('./lib/updateSchedule');
 const { readPipelineMeta } = require('./lib/pipelineMeta');
 const { printAuditSummary } = require('./lib/dataPipelineAudit');
@@ -23,27 +24,46 @@ if (process.argv.includes('--print-audit')) {
 
 const force = process.env.VENTU_FORCE_MODE?.trim();
 const keepalive = process.env.VENTU_KEEPALIVE === '1';
-const meta = readPipelineMeta();
+/**
+ * Keep-alive e schedule: o checkout (fetch-depth 1) é o commit do evento. Se o ping ficou
+ * em fila atrás de um run (concurrency update-ventu-data), esse run já
+ * empurrou um pipeline-meta.json mais novo para a main — lê-lo de lá evita
+ * correr outra vez o mesmo slot. Falha (sem rede/git) → meta local.
+ */
+function readFreshestMeta() {
+  const local = readPipelineMeta();
+  if (!keepalive && process.env.VENTU_SCHEDULED !== '1') return local;
+  try {
+    const { execFileSync } = require('child_process');
+    execFileSync('git', ['fetch', '--quiet', '--depth=1', 'origin', 'main'], { stdio: 'ignore', timeout: 60000 });
+    const raw = execFileSync('git', ['show', 'FETCH_HEAD:public/data/pipeline-meta.json'], { encoding: 'utf-8' });
+    const remote = JSON.parse(raw);
+    const newer = (a, b) => (Date.parse(a || '') || 0) >= (Date.parse(b || '') || 0);
+    return newer(remote?.lastRunAt, local?.lastRunAt) ? remote : local;
+  } catch {
+    return local;
+  }
+}
+const meta = readFreshestMeta();
 const scheduled = getUpdateMode();
 let mode;
 if (force === 'full' || force === 'observations') {
   mode = force;
 } else if (keepalive) {
   // External keep-alive ping (cron-job.org / serverless -> repository_dispatch):
-  // a safety net, NEVER a second scheduler. The GitHub schedule (or a manual
-  // dispatch) owns normal cadence; this branch only resurrects the pipeline
-  // when it is actually overdue (missed schedule delivery / failed job). When
-  // the data is fresh the ping skips, so it can never double-run a healthy
-  // cadence — the ping is what makes cadence independent of GitHub's schedule
-  // reliability, at the cost of one cheap no-op runner per ping.
-  if (needsFullCatchUp(new Date(), meta?.fullUpdatedAt)) {
-    mode = 'full';
-  } else if (needsObsCatchUp(new Date(), meta?.observationsUpdatedAt)) {
-    mode = 'observations';
-  } else {
-    mode = 'skip';
-  }
+  // a safety net, NEVER a second scheduler. Runs this hour's slot (full/obs)
+  // only when the last run of that kind is > 90 min old (the GitHub cron for
+  // the slot never arrived); a slot that already ran leaves the data < 90 min
+  // and the ping skips — never a double run. Overdue catch-up as before.
+  const k = resolveKeepaliveMode(new Date(), meta);
+  mode = k.mode;
+  console.log(`Keep-alive: ${k.reason}`);
+} else if (process.env.VENTU_SCHEDULED === '1') {
+  // Schedule (:17 e :47): o slot corre uma vez por hora — se o outro cron ou o
+  // ping já o serviu nesta hora de Lisboa, salta.
+  mode = resolveScheduledMode(new Date(), meta);
 } else {
+  // workflow_dispatch auto: comportamento de sempre (nunca deduplica).
   mode = resolveUpdateMode(new Date(), meta?.fullUpdatedAt);
 }
 const multimodel = mode === 'full' && isMultiModelEnabled();
@@ -66,8 +86,8 @@ if (out) {
 
 if (mode === 'skip') {
   console.log(keepalive
-    ? 'Keep-alive ping — pipeline fresh (full \u2264 2.5h / obs \u2264 3h daytime), skipping.'
-    : 'Skipping — not on schedule this hour.');
+    ? 'Keep-alive ping — slot já corrido (dados \u2264 90 min) e sem catch-up, skipping.'
+    : 'Skipping — not on schedule this hour (or this hour\'s slot already ran).');
 }
 
 process.exit(0);

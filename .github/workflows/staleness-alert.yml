@@ -31,6 +31,7 @@ on:
 permissions:
   issues: write
   contents: write # heartbeat fallback: repository_dispatch(ping) auto-resurrection
+  actions: read # live-sync: runs do deploy.yml em waiting/queued/pending (scripts/lib/liveSync.js)
 
 concurrency:
   group: staleness-alert

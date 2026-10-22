@@ -54,6 +54,9 @@
 const { execFileSync } = require('child_process');
 const { evaluateDataCadence } = require('./lib/dataCadence');
 const { sendTelegramMessage } = require('./lib/telegram');
+const { evaluateLiveSync, fetchLiveMeta, listPendingDeploys } = require('./lib/liveSync');
+const { existsSync, readFileSync } = require('fs');
+const { join } = require('path');
 
 const OUTAGE_LABEL = process.env.OUTAGE_LABEL || 'data-stale';
 const REPO = process.env.GITHUB_REPOSITORY || 'braindeadpt/VenTu';
@@ -77,6 +80,30 @@ function gh(...args) {
   } catch {
     return null;
   }
+}
+
+function readMainMeta() {
+  const p = join(__dirname, '..', 'public', 'data', 'pipeline-meta.json');
+  if (!existsSync(p)) return null;
+  try {
+    return JSON.parse(readFileSync(p, 'utf-8'));
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * A cadência mede commits na main; o incidente data-stale é partilhado com o
+ * staleness-alert, que também o abre quando a PRODUÇÃO está atrás da main
+ * (scripts/lib/liveSync.js). Fechar só porque há commits frescos voltaria a
+ * esconder um deploy preso — por isso a recuperação pergunta ao live-sync.
+ */
+async function liveIsBehind(ghOk) {
+  if (process.env.LIVE_SYNC_DISABLED === '1') return null;
+  const nowMs = Date.now();
+  const live = await fetchLiveMeta({ nowMs });
+  const pendingDeploys = ghOk ? listPendingDeploys((path, jq) => gh('api', path, '--jq', jq), { repo: REPO }) : null;
+  return evaluateLiveSync({ mainMeta: readMainMeta(), liveMeta: live.meta, liveOk: live.ok, pendingDeploys, nowMs });
 }
 
 function ghAvailable() {
@@ -254,7 +281,10 @@ async function handleCadence(ghOk) {
     );
     if (ghOk) {
       const issue = openIssue();
-      if (issue) {
+      const ls = issue ? await liveIsBehind(ghOk) : null;
+      if (issue && ls && ls.behind) {
+        console.log(`ℹ️ commits frescos, mas o live está atrasado (${ls.reasons.join(' · ')}) — incidente #${issue} fica aberto`);
+      } else if (issue) {
         gh('issue', 'comment', issue, '--repo', REPO, '--body', recoveryBody());
         gh('issue', 'close', issue, '--repo', REPO);
         console.log(`🔔 RECOVERY — incidente #${issue} comentado e fechado`);

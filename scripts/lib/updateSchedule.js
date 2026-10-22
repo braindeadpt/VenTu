@@ -23,6 +23,13 @@ const STALE_FULL_HOURS_NIGHT = 4.5;
 const OBS_STALE_HOURS_DAY = 3;
 const OBS_STALE_HOURS_NIGHT = 5;
 
+/** Keep-alive: o ping externo corre o slot da hora (full/obs) quando o último
+ *  run desse tipo tem mais de 90 min. Um slot que já correu (cron :17/:47 ou
+ *  ping anterior) deixa os dados com < 90 min → o ping salta (sem corrida
+ *  dupla); um slot cujo cron do GitHub não chegou é apanhado na mesma hora,
+ *  em vez de esperar pelo limiar de catch-up (2,5 h / 3 h). */
+const KEEPALIVE_SLOT_STALE_MIN = 90;
+
 /** @typedef {'full' | 'observations' | 'skip'} UpdateMode */
 
 /**
@@ -161,6 +168,76 @@ function resolveUpdateMode(now = new Date(), lastFullUpdatedAt) {
   return scheduled;
 }
 
+function ageMinutes(now, iso) {
+  if (!iso) return null;
+  const ts = new Date(iso).getTime();
+  if (Number.isNaN(ts)) return null;
+  return (now.getTime() - ts) / 60000;
+}
+
+/**
+ * O run deste tipo já aconteceu dentro da hora de Lisboa corrente (o slot já
+ * foi servido — pelo cron :17, pelo :47 ou por um ping).
+ * @param {Date} now
+ * @param {string | null | undefined} iso
+ */
+function slotAlreadyRan(now, iso) {
+  const age = ageMinutes(now, iso);
+  if (age == null || age < 0 || age >= 60) return false;
+  return getLisbonParts(new Date(iso)).hour === getLisbonParts(now).hour;
+}
+
+/** Último publish de observações: obs-only ou full (o full também funde obs). */
+function latestObsIso(meta) {
+  const c = [meta?.observationsUpdatedAt, meta?.fullUpdatedAt].filter((x) => x && !Number.isNaN(Date.parse(x)));
+  if (!c.length) return null;
+  return c.reduce((a, b) => (Date.parse(a) >= Date.parse(b) ? a : b));
+}
+
+/**
+ * Gate do schedule (cron :17/:47) sem corrida dupla: o slot da hora corre uma
+ * vez — se já correu nesta hora de Lisboa (outro cron ou o ping), salta.
+ * O catch-up (full em atraso) mantém-se.
+ * @param {Date} [now]
+ * @param {{ fullUpdatedAt?: string; observationsUpdatedAt?: string } | null | undefined} [meta]
+ * @returns {UpdateMode}
+ */
+function resolveScheduledMode(now = new Date(), meta) {
+  const mode = resolveUpdateMode(now, meta?.fullUpdatedAt);
+  if (mode === 'full' && slotAlreadyRan(now, meta?.fullUpdatedAt)) return 'skip';
+  if (mode === 'observations' && slotAlreadyRan(now, latestObsIso(meta))) return 'skip';
+  return mode;
+}
+
+/**
+ * Modo para o ping externo de keep-alive (repository_dispatch).
+ * 1. catch-up full/obs (limiares de sempre);
+ * 2. slot da hora: full se o último full tem > 90 min; observations se o
+ *    último publish de observações (obs ou full — o full também funde obs) tem
+ *    > 90 min (> 90 min implica que o slot desta hora ainda não correu);
+ * 3. senão skip. Timestamps em falta/inválidos nunca disparam o slot (um meta
+ *    ilegível não é razão para correr às cegas — o catch-up também não dispara).
+ * @param {Date} [now]
+ * @param {{ fullUpdatedAt?: string; observationsUpdatedAt?: string } | null | undefined} [meta]
+ * @returns {{ mode: UpdateMode; reason: string }}
+ */
+function resolveKeepaliveMode(now = new Date(), meta) {
+  const full = meta?.fullUpdatedAt;
+  const obs = meta?.observationsUpdatedAt;
+  if (needsFullCatchUp(now, full)) return { mode: 'full', reason: 'catch-up-full' };
+  const scheduled = getUpdateMode(now);
+  const fullAge = ageMinutes(now, full);
+  if (scheduled === 'full' && fullAge != null && fullAge > KEEPALIVE_SLOT_STALE_MIN) {
+    return { mode: 'full', reason: 'slot-full' };
+  }
+  const obsAge = ageMinutes(now, latestObsIso(meta));
+  if (scheduled === 'observations' && obsAge != null && obsAge > KEEPALIVE_SLOT_STALE_MIN) {
+    return { mode: 'observations', reason: 'slot-observations' };
+  }
+  if (needsObsCatchUp(now, obs)) return { mode: 'observations', reason: 'catch-up-observations' };
+  return { mode: 'skip', reason: 'fresh' };
+}
+
 function nextFullRunHint(now = new Date()) {
   for (let i = 0; i < 48; i++) {
     const d = new Date(now.getTime() + i * 60 * 60 * 1000);
@@ -186,6 +263,10 @@ module.exports = {
   needsFullCatchUp,
   needsObsCatchUp,
   resolveUpdateMode,
+  resolveKeepaliveMode,
+  resolveScheduledMode,
+  slotAlreadyRan,
+  KEEPALIVE_SLOT_STALE_MIN,
   isMultiModelEnabled,
   describeSchedule,
   nextFullRunHint,

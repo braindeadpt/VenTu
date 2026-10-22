@@ -21,6 +21,12 @@ name: Deploy to GitHub Pages
 #
 # Os paths-ignore dos workflows de dados não se tocam. O caminho
 # workflow_dispatch continua a ser decisão humana explícita, sem portão.
+#
+# Deploy sem mudanças: cada run concluído do update-data (incluindo os que o
+# gate deu skip) disparava um build completo. O resolve calcula a impressão
+# digital (código verde + public/data + este workflow) e, se é a mesma que
+# https://ventu.surf/deploy-source.json publica (com < 6 h), salta o build e o
+# deploy. workflow_dispatch nunca salta.
 
 on:
   workflow_dispatch:
@@ -59,6 +65,8 @@ jobs:
       (github.event.workflow_run.conclusion == 'success' &&
        github.event.workflow_run.event != 'pull_request')
     runs-on: ubuntu-latest
+    outputs:
+      skip: ${{ steps.source.outputs.skip }}
     # Build + export de ~2340 rotas: ~15–20 min normal; 45 min é o mesmo
     # backstop do ci.yml quality (default GitHub = 6h). Inclui o smoke
     # critical-routes sobre o build.
@@ -90,7 +98,7 @@ jobs:
       # hidratação no cliente a corrigir. Nunca `checkout -f -B main` — a 22/09
       # isso moveu o ref main partilhado por todas as worktrees.
       - name: Checkout green code + overlay fresh data
-        if: steps.source.outputs.needs_checkout == 'true'
+        if: steps.source.outputs.needs_checkout == 'true' && steps.source.outputs.skip != 'true'
         env:
           CODE_SHA: ${{ steps.source.outputs.code_sha }}
           DATA_SHA: ${{ steps.source.outputs.data_sha }}
@@ -109,33 +117,39 @@ jobs:
       # combinação que só existe aqui — dados novos + código mais antigo — e é
       # dependency-free, por isso vem antes do npm ci.
       - name: Validate public/data
+        if: steps.source.outputs.skip != 'true'
         run: node scripts/validate-data-files.js
 
       - name: Setup Node.js
+        if: steps.source.outputs.skip != 'true'
         uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
         with:
           node-version: '22'
           cache: 'npm'
 
       - name: Install Dependencies
+        if: steps.source.outputs.skip != 'true'
         run: |
           npm cache clean --force
           npm ci
 
       - name: Unit tests
+        if: steps.source.outputs.skip != 'true'
         run: npm test
 
       - name: Generate sitemap
+        if: steps.source.outputs.skip != 'true'
         run: npm run sitemap:generate
 
-      - name: Generate Dawn Patrol
-        env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          GROQ_API_KEY: ${{ secrets.GROQ }}
-          CEREBRAS_API_KEY: ${{ secrets.CEREBRAS }}
-        run: node scripts/dawn-patrol.js
+      # Sem «Generate Dawn Patrol» aqui: o dawn-patrol.json é gerado e
+      # commitado pelo workflow próprio (dawn-patrol.yml, janela do amanhecer
+      # e gate should-run-dawn-patrol.js) e chega pelo overlay de public/data.
+      # Gerá-lo em cada deploy chamava os LLM ~50×/dia, publicava um texto que
+      # não estava na main (o próximo deploy podia trocá-lo) e, sobre código
+      # verde mais antigo, corria um dawn-patrol.js diferente do da main.
 
       - name: Cache Next.js build cache (.next/cache)
+        if: steps.source.outputs.skip != 'true'
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
           path: .next/cache
@@ -147,6 +161,7 @@ jobs:
             ${{ runner.os }}-nextjs-
 
       - name: Build
+        if: steps.source.outputs.skip != 'true'
         env:
           NODE_OPTIONS: '--max-old-space-size=4096'
           NEXT_PUBLIC_BASE_PATH: ''
@@ -178,22 +193,37 @@ jobs:
           done
 
       - name: Validate _headers security directives
+        if: steps.source.outputs.skip != 'true'
         run: node scripts/check-headers-file.js
+
+      # Impressão digital do que vai ser publicado (código verde + public/data
+      # + deploy.yml): o próximo deploy compara-a com a do live e salta se é a
+      # mesma (scripts/lib/deploySource.js — decideDeploySkip).
+      - name: Write deploy-source.json
+        if: steps.source.outputs.skip != 'true'
+        env:
+          DEPLOY_FINGERPRINT: ${{ steps.source.outputs.fingerprint }}
+          CODE_SHA: ${{ steps.source.outputs.code_sha }}
+          DATA_SHA: ${{ steps.source.outputs.data_sha }}
+        run: node scripts/resolve-deploy-source.js --write-manifest out/deploy-source.json
 
       # Smoke sobre a combinação que passa a existir e que o CI nunca testa:
       # dados frescos + código mais antigo. Costuma ser segura (código antigo
       # ignora campos novos) e parte quando a pipeline renomeia/remove uma
       # chave que o código antigo lê — exactamente o que este smoke apanha.
       - name: Cache Playwright Chromium
+        if: steps.source.outputs.skip != 'true'
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
           path: ~/.cache/ms-playwright
           key: ${{ runner.os }}-playwright-${{ hashFiles('**/package-lock.json') }}
 
       - name: Install Playwright Chromium
+        if: steps.source.outputs.skip != 'true'
         run: npx playwright install --with-deps chromium
 
       - name: E2E — critical routes (smoke do deploy)
+        if: steps.source.outputs.skip != 'true'
         run: npx playwright test critical-routes
         env:
           CI: 'true'
@@ -207,11 +237,13 @@ jobs:
           retention-days: 1
 
       - name: Setup Pages
+        if: steps.source.outputs.skip != 'true'
         uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
         with:
           static_site_generator: next
 
       - name: Upload artifact
+        if: steps.source.outputs.skip != 'true'
         uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
           path: ./out
@@ -225,7 +257,10 @@ jobs:
     # dry_run (workflow_dispatch) corre todo o build e a resolução mas não
     # publica — é com ele que se valida a primeira vez sem tocar em produção.
     # Em workflow_run, inputs.dry_run é null ⇒ a condição é verdadeira.
-    if: github.event_name != 'workflow_dispatch' || inputs.dry_run != true
+    # Sem mudanças face ao live (needs.build.outputs.skip) ⇒ nada a publicar.
+    if: >-
+      needs.build.outputs.skip != 'true' &&
+      (github.event_name != 'workflow_dispatch' || inputs.dry_run != true)
     # 5 tentativas × (deploy + 45s de espera) ≈ pior caso ~15 min.
     timeout-minutes: 20
     steps:

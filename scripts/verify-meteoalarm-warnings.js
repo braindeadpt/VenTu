@@ -1,7 +1,7 @@
 /**
- * Verify the MeteoAlarm warnings layer after fetch-ipma-warnings.js — fails
- * the job (WITH a token) when warnings.json ends up `source: 'meteoalarm'`
- * but carries NO warnings. Mirrors verify-ih-buoy-layer.js.
+ * Verify the MeteoAlarm warnings layer after fetch-ipma-warnings.js — detects
+ * (WITH a token) when warnings.json ends up `source: 'meteoalarm'` but carries
+ * NO warnings.
  *
  * Rationale: `fetch-ipma-warnings.js` fala para o MeteoAlarm (EUMETNET) quando
  * a API do IPMA está em baixo; se o fallback também devolviver zero avisos, o
@@ -15,11 +15,20 @@
  *   `source === 'meteoalarm'` AND `warnings.length === 0` → fail. Qualquer
  *   outro caso (source 'ipma', ou meteoalarm com avisos) → OK.
  *
- * Exit 0 = OK · exit 1 = ::error:: com diagnóstico (o job falha no passo).
+ * Em falha (dupla falha IPMA + MeteoAlarm vazio, ou ficheiro ilegível): repõe o
+ * warnings.json ANTERIOR (o do commit do checkout — `git show HEAD:…`, ou
+ * IPMA_WARNINGS_PREVIOUS_PATH), sem os avisos já expirados, marcado
+ * `stale: true` (+ staleSince/staleReason), emite ::warning:: e sai 0.
+ * Antes falhava o job (exit 1): um pipeline inteiro (condições, marés, boias)
+ * ficava por publicar por causa de UMA camada — e os avisos vazios que o gate
+ * queria evitar continuavam no live, agora sem dados frescos à volta.
+ *
+ * Exit 0 sempre; o alarme é o ::warning:: (anotação no run) e o `stale`.
  */
 
 const fs = require('fs');
 const path = require('path');
+const { execFileSync } = require('child_process');
 
 const OUTPUT_PATH =
   process.env.IPMA_WARNINGS_OUTPUT_PATH ||
@@ -49,19 +58,75 @@ function verifyMeteoAlarmLayer(data) {
   return { ok: problems.length === 0, problems, source, warningCount: count };
 }
 
+const notExpired = (nowMs) => (w) => {
+  const end = w && w.endTime ? Date.parse(w.endTime) : NaN;
+  return !Number.isFinite(end) || end > nowMs;
+};
+
+/**
+ * Pure: payload a repor a partir do warnings.json anterior — avisos expirados
+ * fora, marcado stale. Null quando não há anterior utilizável.
+ * @param {object | null | undefined} prev
+ * @param {{ now?: Date; reason: string }} opts
+ */
+function restorePreviousWarnings(prev, opts) {
+  if (!prev || typeof prev !== 'object' || !Array.isArray(prev.warnings)) return null;
+  const now = opts.now || new Date();
+  const keep = notExpired(now.getTime());
+  const spotWarnings = {};
+  for (const [id, list] of Object.entries(prev.spotWarnings || {})) {
+    const l = Array.isArray(list) ? list.filter(keep) : [];
+    if (l.length) spotWarnings[id] = l;
+  }
+  return {
+    ...prev,
+    warnings: prev.warnings.filter(keep),
+    spotWarnings,
+    stale: true,
+    staleSince: prev.stale && prev.staleSince ? prev.staleSince : now.toISOString(),
+    staleReason: opts.reason,
+  };
+}
+
+function readPrevious() {
+  const override = process.env.IPMA_WARNINGS_PREVIOUS_PATH;
+  try {
+    if (override) return JSON.parse(fs.readFileSync(override, 'utf8'));
+    const root = path.join(__dirname, '..');
+    const rel = path.relative(root, OUTPUT_PATH).split(path.sep).join('/');
+    return JSON.parse(execFileSync('git', ['show', `HEAD:${rel}`], { cwd: root, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }));
+  } catch {
+    return null;
+  }
+}
+
+function degrade(reason) {
+  console.log(`::warning::Avisos: ${reason}`);
+  const restored = restorePreviousWarnings(readPrevious(), { reason });
+  if (!restored) {
+    console.log('::warning::Avisos: sem warnings.json anterior utilizável — fica o actual (o pipeline continua).');
+    return;
+  }
+  fs.writeFileSync(OUTPUT_PATH, `${JSON.stringify(restored, null, 2)}\n`);
+  console.log(
+    `↩️ warnings.json anterior reposto (source: ${restored.source ?? '?'}, ${restored.warnings.length} aviso(s) ainda válidos) — stale desde ${restored.staleSince}.`,
+  );
+}
+
 function main() {
   let data;
   try {
     data = JSON.parse(fs.readFileSync(OUTPUT_PATH, 'utf8'));
   } catch (err) {
-    console.error(`::error::warnings.json ilegível: ${err.message}`);
-    process.exit(1);
+    degrade(`warnings.json ilegível (${err.message})`);
+    return;
   }
 
   const { ok, problems, source, warningCount } = verifyMeteoAlarmLayer(data);
   if (!ok) {
-    for (const p of problems) console.error(`::error::${p}`);
-    process.exit(1);
+    for (const p of problems) console.log(`::warning::${p}`);
+    degrade('IPMA em baixo e fallback MeteoAlarm vazio');
+    return;
   }
 
   if (source === METEOALARM_SOURCE) {
@@ -78,4 +143,4 @@ if (require.main === module) {
   main();
 }
 
-module.exports = { verifyMeteoAlarmLayer, METEOALARM_SOURCE, main };
+module.exports = { verifyMeteoAlarmLayer, restorePreviousWarnings, METEOALARM_SOURCE, main };

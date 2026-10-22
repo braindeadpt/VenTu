@@ -8,6 +8,10 @@ const {
   needsFullCatchUp,
   needsObsCatchUp,
   resolveUpdateMode,
+  resolveKeepaliveMode,
+  resolveScheduledMode,
+  slotAlreadyRan,
+  KEEPALIVE_SLOT_STALE_MIN,
   STALE_FULL_HOURS_DAY,
 } = require('../updateSchedule.js');
 
@@ -126,5 +130,93 @@ describe('needsObsCatchUp (external keep-alive resurrection path)', () => {
   it('treats missing timestamps as no-op (never resurrects blindly)', () => {
     expect(needsObsCatchUp(new Date('2026-07-04T10:30:00Z'), null)).toBe(false);
     expect(needsObsCatchUp(new Date('2026-07-04T10:30:00Z'), 'not-a-date')).toBe(false);
+  });
+});
+
+describe('resolveKeepaliveMode (ping externo corre o slot da hora)', () => {
+  // Julho: Lisboa = UTC+1. 07:05Z = 08:05 Lisboa (slot full); 08:20Z = 09:20 (slot obs).
+  it('limiar do slot é 90 min', () => {
+    expect(KEEPALIVE_SLOT_STALE_MIN).toBe(90);
+  });
+
+  it('slot full: o cron das 08h não chegou e o último full tem 108 min → full', () => {
+    const r = resolveKeepaliveMode(new Date('2026-07-04T07:05:00Z'), { fullUpdatedAt: '2026-07-04T05:17:00Z' });
+    expect(r).toEqual({ mode: 'full', reason: 'slot-full' });
+    // o catch-up de sempre (2,5 h) ainda NÃO dispararia — é o slot que apanha
+    expect(needsFullCatchUp(new Date('2026-07-04T07:05:00Z'), '2026-07-04T05:17:00Z')).toBe(false);
+  });
+
+  it('slot full já servido (cron :17 desta hora) → skip, sem corrida dupla', () => {
+    const r = resolveKeepaliveMode(new Date('2026-07-04T07:40:00Z'), { fullUpdatedAt: '2026-07-04T07:17:00Z' });
+    expect(r.mode).toBe('skip');
+  });
+
+  it('slot full com dados de 78 min (slot anterior atrasado) → skip, o cron desta hora ainda vem', () => {
+    const r = resolveKeepaliveMode(new Date('2026-07-04T07:05:00Z'), { fullUpdatedAt: '2026-07-04T05:47:00Z' });
+    expect(r.mode).toBe('skip');
+  });
+
+  it('slot obs: último publish de observações > 90 min → observations', () => {
+    const r = resolveKeepaliveMode(new Date('2026-07-04T08:20:00Z'), {
+      fullUpdatedAt: '2026-07-04T06:17:00Z',
+      observationsUpdatedAt: '2026-07-04T05:50:00Z',
+    });
+    // full de 06:17Z tem 123 min (< 2,5 h, sem catch-up) e as obs 150 min
+    expect(r).toEqual({ mode: 'observations', reason: 'slot-observations' });
+  });
+
+  it('slot obs: um full recente conta como publish de observações → skip', () => {
+    const r = resolveKeepaliveMode(new Date('2026-07-04T08:20:00Z'), {
+      fullUpdatedAt: '2026-07-04T07:17:00Z',
+      observationsUpdatedAt: '2026-07-04T05:30:00Z',
+    });
+    expect(r.mode).toBe('skip');
+  });
+
+  it('hora sem slot (03h Lisboa) e dados frescos → skip; catch-up nocturno mantém-se', () => {
+    expect(resolveKeepaliveMode(new Date('2026-07-04T02:00:00Z'), { fullUpdatedAt: '2026-07-03T23:17:00Z' }).mode).toBe('skip');
+    expect(resolveKeepaliveMode(new Date('2026-07-04T02:00:00Z'), { fullUpdatedAt: '2026-07-03T19:13:00Z' })).toEqual({
+      mode: 'full',
+      reason: 'catch-up-full',
+    });
+  });
+
+  it('meta em falta ou ilegível nunca dispara às cegas', () => {
+    expect(resolveKeepaliveMode(new Date('2026-07-04T07:05:00Z'), null).mode).toBe('skip');
+    expect(resolveKeepaliveMode(new Date('2026-07-04T07:05:00Z'), { fullUpdatedAt: 'x' }).mode).toBe('skip');
+  });
+});
+
+describe('resolveScheduledMode (cron :17/:47 — um run por slot)', () => {
+  it('o :47 salta quando o :17 já serviu o slot full', () => {
+    const meta = { fullUpdatedAt: '2026-07-04T07:17:00Z' };
+    expect(resolveScheduledMode(new Date('2026-07-04T07:47:00Z'), meta)).toBe('skip');
+  });
+
+  it('o :17 corre quando o último full é da hora anterior', () => {
+    const meta = { fullUpdatedAt: '2026-07-04T06:47:00Z' };
+    expect(resolveScheduledMode(new Date('2026-07-04T07:17:00Z'), meta)).toBe('full');
+  });
+
+  it('o cron salta o slot que um ping já serviu nesta hora', () => {
+    const meta = { fullUpdatedAt: '2026-07-04T07:05:00Z' };
+    expect(resolveScheduledMode(new Date('2026-07-04T07:17:00Z'), meta)).toBe('skip');
+  });
+
+  it('slot obs servido por um full desta hora (catch-up) → skip', () => {
+    const meta = { fullUpdatedAt: '2026-07-04T08:05:00Z', observationsUpdatedAt: '2026-07-04T06:20:00Z' };
+    expect(resolveScheduledMode(new Date('2026-07-04T08:17:00Z'), meta)).toBe('skip');
+  });
+
+  it('catch-up full continua a escalar uma hora de obs em atraso', () => {
+    const meta = { fullUpdatedAt: '2026-07-04T07:42:00Z', observationsUpdatedAt: '2026-07-04T09:47:00Z' };
+    // 10:30Z = 11:30 Lisboa (obs), full com 2,8 h
+    expect(resolveScheduledMode(new Date('2026-07-04T10:30:00Z'), meta)).toBe('full');
+  });
+
+  it('slotAlreadyRan exige a mesma hora de Lisboa e < 60 min', () => {
+    expect(slotAlreadyRan(new Date('2026-07-04T07:47:00Z'), '2026-07-04T07:17:00Z')).toBe(true);
+    expect(slotAlreadyRan(new Date('2026-07-04T07:17:00Z'), '2026-07-04T06:47:00Z')).toBe(false);
+    expect(slotAlreadyRan(new Date('2026-07-04T07:17:00Z'), null)).toBe(false);
   });
 });

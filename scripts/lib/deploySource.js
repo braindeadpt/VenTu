@@ -277,7 +277,99 @@ function formatDeploySummary(res, ctx = {}) {
   return lines.join('\n');
 }
 
+// ── Saltar deploys sem mudanças ──────────────────────────────────────────
+//
+// O deploy corre em cada workflow_run concluído com sucesso (CI, Update VenTu
+// Data, Dawn Patrol). Um run do update-data cujo gate deu `skip` (2× por hora
+// fora dos slots, mais os pings do keep-alive) termina «success» sem commit —
+// e o deploy reconstruía e republicava ~2340 rotas iguais (15–20 min de
+// runner cada, e a concurrency `pages` a enfileirar o deploy útil seguinte).
+//
+// Impressão digital do que se publica: árvore git do código verde + árvore
+// de public/data dos dados + blob do deploy.yml que corre (o workflow da main
+// também molda o artefacto). O build escreve-a em out/deploy-source.json; o
+// próximo deploy compara com https://ventu.surf/deploy-source.json e, se é a
+// mesma, salta. workflow_dispatch nunca salta (decisão humana). Um manifesto
+// do live mais velho do que DEPLOY_SKIP_MAX_AGE_HOURS_DEFAULT nunca faz saltar:
+// o export estático coze algum estado dependente da hora (rótulos de «agora»
+// no HTML antes da hidratação), por isso pelo menos um rebuild a cada 6 h.
+
+const DEPLOY_SOURCE_MANIFEST = 'deploy-source.json';
+const DEPLOY_SOURCE_LIVE_URL_DEFAULT = 'https://ventu.surf/deploy-source.json';
+const DEPLOY_SKIP_MAX_AGE_HOURS_DEFAULT = 6;
+
+/**
+ * @param {{ codeTree: string; dataTree: string; workflowBlob?: string | null }} parts
+ *   shas git (árvore do commit de código, árvore public/data do commit de
+ *   dados, blob do deploy.yml)
+ * @returns {string | null} sha256 hex, ou null se faltar uma parte obrigatória
+ */
+function computeDeployFingerprint(parts) {
+  const { codeTree, dataTree, workflowBlob = null } = parts || {};
+  if (!codeTree || !dataTree) return null;
+  const crypto = require('crypto');
+  return crypto
+    .createHash('sha256')
+    .update(`v1\ncode-tree:${codeTree}\ndata-tree:${dataTree}\nworkflow:${workflowBlob || '-'}\n`)
+    .digest('hex');
+}
+
+/**
+ * @param {{
+ *   mode: 'workflow_run' | 'workflow_dispatch';
+ *   status: 'ok' | 'fail' | 'manual';
+ *   fingerprint: string | null;
+ *   liveManifest?: { fingerprint?: string; generatedAt?: string } | null;
+ *   nowMs?: number;
+ *   maxAgeHours?: number;
+ * }} input
+ * @returns {{ skip: boolean; reason: string }}
+ */
+function decideDeploySkip(input) {
+  const { mode, status, fingerprint, liveManifest = null } = input;
+  const nowMs = input.nowMs ?? Date.now();
+  const maxAgeHours = input.maxAgeHours ?? DEPLOY_SKIP_MAX_AGE_HOURS_DEFAULT;
+  if (mode === 'workflow_dispatch') return { skip: false, reason: 'workflow_dispatch — nunca salta' };
+  if (status !== 'ok') return { skip: false, reason: `estado ${status} — sem salto` };
+  if (!fingerprint) return { skip: false, reason: 'impressão digital indisponível — publica' };
+  if (!liveManifest || typeof liveManifest.fingerprint !== 'string') {
+    return { skip: false, reason: 'manifesto do live indisponível — publica' };
+  }
+  if (liveManifest.fingerprint !== fingerprint) {
+    return { skip: false, reason: 'código ou dados mudaram face ao live — publica' };
+  }
+  const genMs = new Date(liveManifest.generatedAt).getTime();
+  if (!Number.isFinite(genMs)) return { skip: false, reason: 'manifesto do live sem generatedAt válido — publica' };
+  const ageH = (nowMs - genMs) / 3600000;
+  if (ageH > maxAgeHours) {
+    return { skip: false, reason: `live igual mas com ${ageH.toFixed(1)} h (> ${maxAgeHours} h) — rebuild periódico` };
+  }
+  return { skip: true, reason: `live já publica esta impressão digital (há ${ageH.toFixed(1)} h) — nada a publicar` };
+}
+
+/**
+ * @param {{ fingerprint: string; codeSha: string; dataSha: string; generatedAt?: string }} m
+ */
+function formatDeploySourceManifest(m) {
+  return `${JSON.stringify(
+    {
+      fingerprint: m.fingerprint,
+      codeSha: m.codeSha,
+      dataSha: m.dataSha,
+      generatedAt: m.generatedAt || new Date().toISOString(),
+    },
+    null,
+    2,
+  )}\n`;
+}
+
 module.exports = {
+  DEPLOY_SOURCE_MANIFEST,
+  DEPLOY_SOURCE_LIVE_URL_DEFAULT,
+  DEPLOY_SKIP_MAX_AGE_HOURS_DEFAULT,
+  computeDeployFingerprint,
+  decideDeploySkip,
+  formatDeploySourceManifest,
   OVERLAY_PATHS,
   GREEN_RUN_MAX_AGE_DAYS_DEFAULT,
   GREEN_RUN_RETRY_ATTEMPTS_DEFAULT,
