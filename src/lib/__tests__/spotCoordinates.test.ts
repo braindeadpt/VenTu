@@ -2,7 +2,8 @@
  * Coordenadas dos spots (22/10): 31 spots estavam longe da praia (1,1 a 25 km)
  * e foram corrigidos para a praia OSM `natural=beach` (Nominatim); numa 2.ª passagem
  * mais 6, com coordenadas confirmadas pelo Pedro (`fao` e `barrinha-faro` são pins
- * dele no Google Maps). Guarda:
+ * dele no Google Maps). Em Fão ficam 2 spots: `fao` (praia, surf + kite; absorveu o
+ * duplicado `fao-ofir-surf`) e `esposende` (rio Cávado, só kite). Guarda:
  *  - cada spot corrigido a ≤ 500 m da coordenada esperada;
  *  - `src/lib/spots.ts` e `data/coast-orientation-review.json` com as mesmas coordenadas;
  *  - os spots corrigidos a ≤ 1 km da linha de costa OSM (distância do ficheiro de revisão).
@@ -55,6 +56,8 @@ const CORRIGIDOS: Array<[string, number, number]> = [
   ['vale-figueiras', 37.2420, -8.8722],
   ['fao', 41.5233, -8.7900],
   ['barrinha-faro', 36.9868, -7.9644],
+  // Fão = 2 spots (22/10): pin «Kitesurf Spot» do Pedro, kite no rio Cávado.
+  ['esposende', 41.5336, -8.7892],
 ];
 
 /** Distância em metros (haversine). */
@@ -65,8 +68,8 @@ function distM(lat1: number, lon1: number, lat2: number, lon2: number): number {
 }
 
 describe('coordenadas dos spots', () => {
-  it('a lista de corrigidos tem 37 spots, todos em spots.ts', () => {
-    expect(CORRIGIDOS.length).toBe(37);
+  it('a lista de corrigidos tem 38 spots, todos em spots.ts', () => {
+    expect(CORRIGIDOS.length).toBe(38);
     for (const [id] of CORRIGIDOS) expect(spots.some((s) => s.id === id), id).toBe(true);
   });
 
@@ -88,6 +91,28 @@ describe('coordenadas dos spots', () => {
       const d = porId.get(id)?.distCostaM;
       expect(d, id).not.toBeNull();
       expect(d!, id).toBeLessThanOrEqual(1000);
+    }
+  });
+  it('Fão tem só 2 spots: fao (praia, surf + kite) e esposende (rio, só kite)', () => {
+    expect(spots.some((s) => s.id === 'fao-ofir-surf' || s.slug === 'fao-ofir-surf')).toBe(false);
+    expect(porId.has('fao-ofir-surf')).toBe(false);
+    const fao = spots.find((s) => s.id === 'fao')!;
+    expect(fao.slug).toBe('fao');
+    expect([...(fao.compatibleSports ?? [])].sort()).toEqual(['kitesurf', 'surf']);
+    expect(fao.type).toBe('multisport');
+    expect(distM(fao.lat, fao.lon, 41.5232614, -8.7900361)).toBeLessThanOrEqual(50);
+    const esp = spots.find((s) => s.id === 'esposende')!;
+    expect(esp.compatibleSports).toEqual(['kitesurf']);
+    expect(distM(esp.lat, esp.lon, 41.5336193, -8.7891908)).toBeLessThanOrEqual(50);
+    expect(esp.description).toMatch(/Cávado/);
+    expect(esp.descriptionEn).toMatch(/Cavado/);
+  });
+
+  it('fao e esposende com a orientação do ficheiro de revisão', () => {
+    for (const id of ['fao', 'esposende']) {
+      const s = spots.find((x) => x.id === id)!;
+      const l = (review as unknown as { spots: Array<{ id: string; final: number }> }).spots.find((x) => x.id === id)!;
+      expect(s.coastOrientation, id).toBe(l.final);
     }
   });
 });

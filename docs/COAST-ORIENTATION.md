@@ -105,12 +105,20 @@ Pedro (as de `fao` e `barrinha-faro` são pins dele no Google Maps), e a
 orientação desses 6 foi recalculada da mesma forma. `carvalhal`
 (Aljezur/Brejão) foi verificado e já estava certo; não mudou.
 
+Em Fão ficam só 2 spots (decisão do Pedro, 22/10): `fao` é a praia de Fão/Ofir,
+surf e kite no mar (pin «Praia Surf Fão Ofir», 41.5233,-8.7900), e absorve o
+antigo `fao-ofir-surf`, que era um duplicado no mesmo ponto e foi removido;
+`esposende` passa para o spot de kite no rio Cávado (pin «Kitesurf Spot»,
+41.5336,-8.7892), só kitesurf. A orientação dos dois foi recalculada com a cache
+nova de `esposende` (`overpass.openstreetmap.fr`): `fao` fica 235° (OSM) e
+`esposende` fica 275° (curado v6; calculado 280°).
+
 ## Resultado (OSM de 2026-07-15T15:22:01Z)
 
-- 185 spots, dos quais **122 mudam** de valor face ao antes da #178.
-- Origem: OSM 108, OSM 1 km 2, curado 21, mantido 54.
-- 107 spots ficam marcados para revisão.
-- Spots a 270°: 144 → 47. Os que ficam têm 270° calculado, curado, ou mantido com motivo.
+- 184 spots, dos quais **121 mudam** de valor face ao antes da #178.
+- Origem: OSM 107, OSM 1 km 2, curado 21, mantido 54.
+- 106 spots ficam marcados para revisão.
+- Spots a 270°: 143 → 47. Os que ficam têm 270° calculado, curado, ou mantido com motivo.
 
 | spot | antes | calculado | depois | Δ | origem | revisão |
 |---|---:|---:|---:|---:|---|---|
@@ -126,7 +134,7 @@ orientação desses 6 foi recalculada da mesma forma. `carvalhal`
 | `ofir` | 270 | 260 | **260** | 10 | OSM |  |
 | `esposende` | 270 | 280 | **275** | 5 | curado v6 | ⚠ água interior/abrigada: foz do Cávado (rio/mar) |
 | `esposende-praia` | 270 | 265 | **265** | 5 | OSM |  |
-| `fao` | 270 | 235 | **235** | 35 | OSM | ⚠ a 912 m de esposende (curado 275°) com 40° de diferença |
+| `fao` | 270 | 235 | **235** | 35 | OSM | ⚠ a 1141 m de esposende (curado 275°) com 40° de diferença |
 | `apulia` | 270 | 240 | **240** | 30 | OSM |  |
 | `povoa-varzim` | 270 | 245 | **270** | 0 | **mantido** | ⚠ geometria ambígua (dobra 46°, 500 m vs 1 km 24°: ponta, enseada ou foz); outra costa a 314 m (margem oposta, ilhéu ou molhe) |
 | `azurara` | 270 | 225 | **225** | 45 | OSM |  |
@@ -295,7 +303,6 @@ orientação desses 6 foi recalculada da mesma forma. `carvalhal`
 | `porto-martins` | 270 | 175 | **270** | 0 | **mantido** | ⚠ geometria ambígua (dobra 51°, 500 m vs 1 km 24°: ponta, enseada ou foz) |
 | `cachorro-pico` | 270 | 320 | **320** | 50 | OSM | ⚠ 500 m e 1 km divergem 18° (1 km: 338°); delta 50° > 45° face ao valor antigo |
 | `faja-cubres` | 270 | 45 | **45** | 135 | OSM | ⚠ delta 135° > 45° face ao valor antigo |
-| `fao-ofir-surf` | 270 | 235 | **235** | 35 | OSM | ⚠ a 912 m de esposende (curado 275°) com 40° de diferença |
 | `ofir-praia` | 270 | 270 | **270** | 0 | OSM |  |
 | `mindelo` | 270 | 245 | **245** | 25 | OSM | ⚠ 500 m e 1 km divergem 16° (1 km: 259°) |
 | `aterro` | 270 | 280 | **280** | 10 | OSM |  |

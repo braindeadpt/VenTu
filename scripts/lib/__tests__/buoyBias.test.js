@@ -14,10 +14,10 @@ const {
 } = require('../buoyBias.js');
 
 describe('parseSpotsWithRegions', () => {
-  it('extrai id/lat/lon/region de todos os spots (185, sem duplicados)', () => {
+  it('extrai id/lat/lon/region de todos os spots (184, sem duplicados)', () => {
     const spots = parseSpotsWithRegions();
     expect(spots.length).toBeGreaterThanOrEqual(180);
-    expect(spots.length).toBe(185);
+    expect(spots.length).toBe(184);
     const ids = new Set(spots.map((s) => s.id));
     expect(ids.size).toBe(spots.length);
     for (const s of spots) {

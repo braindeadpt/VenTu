@@ -113,12 +113,12 @@ export const spots: Spot[] = [
     },
   {
       id: 'esposende', slug: 'esposende', name: 'Esposende', nameEn: 'Esposende',
-      region: 'Esposende', regionEn: 'Esposende', lat: 41.531527, lon: -8.789240,
+      region: 'Esposende', regionEn: 'Esposende', lat: 41.5336, lon: -8.7892,
       coastOrientation: 275,
       type: 'kitesurf', difficulty: 'intermediate', bestWind: 'NW, N', bestSwell: 'SW',
-      description: 'Ponto de lançamento e encontro da malta no estuário do Cávado — referência nacional de kite e foil. Lagoa plana na foz (escolas com barco para a margem da reserva), Nortada NW no verão. Duas escolas na vila; ondas no oceano a poucos minutos.',
-      descriptionEn: 'Main kite launch and meet-up on the Cavado estuary — a top Portuguese kite and foil hub. Flat lagoon at the river mouth (school boat shuttles to the reserve bank), NW Nortada in summer. Two schools in town; ocean waves minutes away.',
-      compatibleSports: ['kitesurf', 'foil', 'windsurf'],
+      description: 'Spot de kite no rio — estuário do Cávado em Esposende, ponto de lançamento e encontro da malta. Água plana na foz (escolas com barco para a margem da reserva), Nortada NW no verão. Só kitesurf; duas escolas na vila.',
+      descriptionEn: 'River kite spot — Cavado estuary at Esposende, the main launch and meet-up. Flat water at the river mouth (school boat shuttles to the reserve bank), NW Nortada in summer. Kitesurf only; two schools in town.',
+      compatibleSports: ['kitesurf'],
       facilities: ['Estacionamento', 'Escolas kite', 'Aluguer', 'WC'],
       hazards: ['Correntes na foz', 'Rochas na lagoa']
     },
@@ -144,13 +144,13 @@ export const spots: Spot[] = [
       }
     },
   {
-      id: 'fao', slug: 'fao', name: 'Fão', nameEn: 'Fao',
+      id: 'fao', slug: 'fao', name: 'Praia de Fão/Ofir (Surf & Kite)', nameEn: 'Fao/Ofir Beach (Surf & Kite)',
       region: 'Esposende', regionEn: 'Esposende', lat: 41.5233, lon: -8.7900,
       coastOrientation: 235,
-      type: 'surf', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'W, NW',
-      description: 'Spot junto a Ofir com beach break consistente. Praia menos explorada, ideal para escapar da multidão. Fundo de areia variável.',
-      descriptionEn: 'Spot next to Ofir with consistent beach break. Less explored beach, ideal to escape crowds. Variable sand bottom.',
-      compatibleSports: ['surf', 'bodyboard', 'sup'],
+      type: 'multisport', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'W, NW',
+      description: 'Praia de Fão/Ofir, a sul da foz do Cávado — beach break consistente com vários picos para surf e kitesurf no mar. Ondas potentes no inverno; Nortada NW no verão para kite. Menos crowd que as praias centrais.',
+      descriptionEn: 'Fao/Ofir beach, just south of the Cavado river mouth — consistent beach break with several peaks for surf and kitesurf in the sea. Powerful waves in winter; NW Nortada in summer for kite. Less crowded than central beaches.',
+      compatibleSports: ['surf', 'kitesurf'],
       facilities: ['Estacionamento', 'Restaurante', 'WC'],
       hazards: ['Ressaca forte', 'Correntes']
     },
@@ -2168,17 +2168,6 @@ export const spots: Spot[] = [
       compatibleSports: ['surf', 'bodyboard'],
       facilities: ['Estacionamento', 'Restaurante', 'WC'],
       hazards: ['Acesso por estrada íngreme', 'Rochas']
-    },
-  {
-      id: 'fao-ofir-surf', slug: 'fao-ofir-surf', name: 'Fão/Ofir (Surf)', nameEn: 'Fao/Ofir (Surf)',
-      region: 'Esposende', regionEn: 'Esposende', lat: 41.5233, lon: -8.7900,
-      coastOrientation: 235,
-      type: 'surf', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'W, NW',
-      description: 'Beach break consistente entre Fão e Ofir. Ondas potentes com múltiplos picos. Ponto de encontro de surfistas locais. Menos crowd que as praias centrais.',
-      descriptionEn: 'Consistent beach break between Fao and Ofir. Powerful waves with multiple peaks. Local surfer meeting point. Less crowded than central beaches.',
-      compatibleSports: ['surf', 'kitesurf'],
-      facilities: ['Estacionamento', 'WC'],
-      hazards: ['Correntes', 'Ressaca forte']
     },
   {
       id: 'ofir-praia', slug: 'ofir-praia', name: 'Praia de Ofir (Surf & Kite)', nameEn: 'Ofir Beach (Surf & Kite)',

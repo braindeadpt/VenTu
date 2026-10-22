@@ -12,14 +12,14 @@
   },
   "osmBase": "2026-07-15T15:22:01Z",
   "resumo": {
-    "spots": 185,
-    "osm": 108,
+    "spots": 184,
+    "osm": 107,
     "osm1km": 2,
     "curado": 21,
     "mantido": 54,
-    "mudam": 122,
-    "revisao": 107,
-    "em270Antes": 144,
+    "mudam": 121,
+    "revisao": 106,
+    "em270Antes": 143,
     "em270Depois": 47
   },
   "spots": [
@@ -286,21 +286,21 @@
     {
       "id": "esposende",
       "nome": "Esposende",
-      "lat": 41.531527,
-      "lon": -8.78924,
+      "lat": 41.5336,
+      "lon": -8.7892,
       "atual": 270,
       "calculado": 280,
-      "calculadoBruto": 281,
-      "segmentoProximo": 293,
-      "retidao": 0.987,
-      "dobra": 10,
+      "calculadoBruto": 277.6,
+      "segmentoProximo": 278,
+      "retidao": 0.99,
+      "dobra": 4,
       "escala1km": 277,
       "retidao1km": 0.99,
-      "distCostaM": 161,
+      "distCostaM": 134,
       "curado": 275,
       "referencia": null,
       "difReferencia": null,
-      "difCurado": 6,
+      "difCurado": 3,
       "final": 275,
       "origem": "curado",
       "delta": 5,
@@ -337,7 +337,7 @@
     },
     {
       "id": "fao",
-      "nome": "Fão",
+      "nome": "Praia de Fão/Ofir (Surf & Kite)",
       "lat": 41.5233,
       "lon": -8.79,
       "atual": 270,
@@ -359,7 +359,7 @@
       "deltaCalculado": 35,
       "revisao": true,
       "motivos": [
-        "a 912 m de esposende (curado 275°) com 40° de diferença"
+        "a 1141 m de esposende (curado 275°) com 40° de diferença"
       ]
     },
     {
@@ -4823,33 +4823,6 @@
       "revisao": true,
       "motivos": [
         "delta 135° > 45° face ao valor antigo"
-      ]
-    },
-    {
-      "id": "fao-ofir-surf",
-      "nome": "Fão/Ofir (Surf)",
-      "lat": 41.5233,
-      "lon": -8.79,
-      "atual": 270,
-      "calculado": 235,
-      "calculadoBruto": 236.2,
-      "segmentoProximo": 240,
-      "retidao": 0.986,
-      "dobra": 13,
-      "escala1km": 239,
-      "retidao1km": 0.757,
-      "distCostaM": 18,
-      "curado": null,
-      "referencia": null,
-      "difReferencia": null,
-      "difCurado": null,
-      "final": 235,
-      "origem": "osm",
-      "delta": 35,
-      "deltaCalculado": 35,
-      "revisao": true,
-      "motivos": [
-        "a 912 m de esposende (curado 275°) com 40° de diferença"
       ]
     },
     {
