@@ -1,3 +1,4 @@
+import { drainSteps, runSliced } from './sliced';
 import { getAssetPath } from '@/lib/paths';
 
 /**
@@ -305,6 +306,11 @@ export const SEA_GRID_SWELL_FADE_DEG = 1.5;
  * direcção de propagação é renormalizada.
  */
 export function fillFromSea(grid: Pick<SeaGrid, 'boxes' | 'n' | 'nt' | 'u' | 'v' | 'hs' | 'per' | 'pe' | 'pn'>): Float32Array {
+  return drainSteps(fillFromSeaSteps(grid));
+}
+
+/** Gerador de `fillFromSea` — corte a cada passo de tempo (TBT, ver sliced.ts). */
+function* fillFromSeaSteps(grid: Pick<SeaGrid, 'boxes' | 'n' | 'nt' | 'u' | 'v' | 'hs' | 'per' | 'pe' | 'pn'>): Generator<void, Float32Array, void> {
   const cov = new Float32Array(grid.n);
   for (const b of grid.boxes) {
     const total = b.nx * b.ny;
@@ -338,6 +344,7 @@ export function fillFromSea(grid: Pick<SeaGrid, 'boxes' | 'n' | 'nt' | 'u' | 'v'
           grid.pn[o] /= L;
         }
       }
+      yield;
     }
   }
   return cov;
@@ -351,6 +358,19 @@ const MAX_BOX_NODES = 200_000;
  * caixa mais grossa.
  */
 export function parseSeaGrid(raw: unknown): SeaGrid | null {
+  return drainSteps(parseSeaGridSteps(raw));
+}
+
+/**
+ * TBT /mapa: descodificar + preencher o sea-grid (~830 KB) era um task de
+ * ~60–80 ms no arranque. `fetchSeaGrid` corre este MESMO gerador em fatias
+ * (`runSliced`); `parseSeaGrid` drena-o de uma vez — resultado idêntico.
+ */
+export function parseSeaGridAsync(raw: unknown, budgetMs = 8): Promise<SeaGrid | null> {
+  return runSliced(parseSeaGridSteps(raw), () => false, budgetMs);
+}
+
+function* parseSeaGridSteps(raw: unknown): Generator<void, SeaGrid | null, void> {
   if (!raw || typeof raw !== 'object') return null;
   const r = raw as Partial<SeaGridRaw>;
   if ((r.v !== 1 && r.v !== 2 && r.v !== 3) || !isNum(r.n) || !isNum(r.nt) || !isNum(r.t0) || !isNum(r.step) || r.step <= 0) return null;
@@ -399,6 +419,7 @@ export function parseSeaGrid(raw: unknown): SeaGrid | null {
     const a = decodeB64(s);
     if (a.length !== packedN * nt) return null;
     dec[k] = a;
+    yield;
   }
   const sc = r.scale;
   const n = full;
@@ -432,13 +453,15 @@ export function parseSeaGrid(raw: unknown): SeaGrid | null {
       pe[o] = -Math.sin(from);
       pn[o] = -Math.cos(from);
     }
+    yield;
   }
   let cov: Float32Array | undefined;
   if (v3) {
-    cov = fillFromSea({ boxes, n, nt, u, v, hs, per, pe, pn });
+    cov = yield* fillFromSeaSteps({ boxes, n, nt, u, v, hs, per, pe, pn });
   } else {
     for (let t = 0; t < nt; t++) {
       for (const b of boxes) dilateSwell(b, t * n, hs, per, pe, pn, 1);
+      yield;
     }
   }
   return {
@@ -832,7 +855,7 @@ export async function fetchSeaGrid(now: number = Date.now()): Promise<SeaGrid | 
     try {
       const res = await fetch(getAssetPath(SEA_GRID_PATH));
       if (!res.ok) return null;
-      const grid = parseSeaGrid(await res.json());
+      const grid = await parseSeaGridAsync(await res.json());
       if (!grid) return null;
       const age = now - Date.parse(grid.generatedAt);
       if (Number.isFinite(age) && age > SEA_GRID_MAX_AGE_MS) return null;

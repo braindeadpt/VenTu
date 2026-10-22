@@ -1,3 +1,5 @@
+import { wallHourOf } from '@/lib/openMeteoTime';
+
 export interface HourlyCondition {
   time: string;
   waveHeight: number;
@@ -133,7 +135,9 @@ export function computeMagicWindows(
     if (waveVariance < 0.3 && windVariance < 5) {
       heuristic +=3;
     }
-    const hourOfDay = new Date(h.time).getHours();
+    // hora de parede do spot = etiqueta (com desvio desde a auditoria M1); `getHours()`
+    // dependia do fuso da máquina (runner UTC ≠ browser em Lisboa)
+    const hourOfDay = wallHourOf(h.time);
     if ((spotType === 'surf' || spotType === 'big-wave') && hourOfDay >= 6 && hourOfDay <= 10) {
       heuristic +=4;
     }

@@ -13,7 +13,7 @@ export const translationsEn = {
   nav: {
     home: 'Home', spots: 'Spots', news: 'News', about: 'About',
     sazonalidade: 'Seasonality', comparar: 'Compare', favorites: 'Favorites',
-    explorar: 'Explore', mapa: 'Map', livecams: 'Live cams',
+    explorar: 'Explore', mapa: 'Map', mapaCosta: 'Coast map', mapaCostaSub: 'live wind, 8 sports, 48 h', livecams: 'Live cams',
     openMenu: 'Open menu', closeMenu: 'Close menu',
     modalidades: 'Modalities', metricas: 'Metrics',
     conditions: 'Conditions', plan: 'Plan', directory: 'Directory',

@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState, useCallback, useEffect, useRef, type KeyboardEvent, type ChangeEvent } from 'react';
-import { Menu, X, Wind, Globe, Search, ChevronDown } from 'lucide-react';
+import { Menu, X, Wind, Globe, Search, ChevronDown, Map as MapIcon, ArrowRight } from 'lucide-react';
 import { lockBodyScroll } from '@/lib/scrollLock';
 import ThemeToggle from './ThemeToggle';
 import MegaMenu from './MegaMenu';
@@ -129,6 +129,9 @@ export default function Header({ locale }: HeaderProps) {
   const isHomeV6 = new RegExp(`^/${locale}/?$`).test(pathname);
 
   const isActive = (href: string) => pathname === href.split('?')[0];
+  // #273 (v7 «Porta do mapa»): «Mapa da costa» é entrada de 1.º nível em todas as páginas
+  // (1.º item da nav desktop, ícone ao lado da lupa abaixo de lg, cartão no topo da gaveta).
+  const mapaHref = `/${locale}/mapa/`;
 
   const handleLocaleChange = useCallback(
     (e: ChangeEvent<HTMLSelectElement>) => {
@@ -152,7 +155,7 @@ export default function Header({ locale }: HeaderProps) {
       <select
         value={loc}
         onChange={handleLocaleChange}
-        className="appearance-none bg-transparent border-0 text-xs font-semibold text-fg-subtle hover:text-fg cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-sm pr-1 min-h-[36px]"
+        className="appearance-none bg-transparent border-0 text-[13px] font-medium text-fg-subtle hover:text-fg cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-sm pr-1 min-h-[36px]"
         aria-label={navLabel.chooseLanguage}
       >
         {locales.map((l) => (
@@ -209,7 +212,7 @@ export default function Header({ locale }: HeaderProps) {
   const closeMobile = () => setMobileMenuOpen(false);
 
   const linkClass = (active: boolean) =>
-    `shrink-0 px-1.5 2xl:px-3 py-1.5 rounded-input text-sm font-medium whitespace-nowrap transition-all duration-[200ms] ease-out-expo motion-reduce:transition-none ${
+    `shrink-0 px-1.5 xl:px-3 py-1.5 rounded-input text-sm font-medium whitespace-nowrap transition-all duration-[200ms] ease-out-expo motion-reduce:transition-none ${
       active
         ? 'bg-accent/15 text-accent ring-1 ring-accent/25'
         : 'text-fg-subtle hover:text-fg hover:bg-surface-1/[0.04]'
@@ -222,7 +225,7 @@ export default function Header({ locale }: HeaderProps) {
     'flex w-full items-center justify-between px-4 py-3 rounded-input text-sm font-semibold text-fg hover:bg-surface-1/[0.04] transition-all duration-[200ms] ease-out-expo motion-reduce:transition-none min-h-[44px]';
 
   const conditionsLinks = [
-    { href: `/${locale}/mapa/`, label: navLabel.mapa },
+    { href: `/${locale}/mapa/`, label: navLabel.mapaCosta },
     { href: `/${locale}/spots/`, label: navLabel.spots },
     { href: `/${locale}/explorar/`, label: navLabel.explorar },
     { href: `/${locale}/livecams/`, label: navLabel.livecams },
@@ -279,9 +282,11 @@ export default function Header({ locale }: HeaderProps) {
                   Ven<span className="text-accent">Tu</span>
                 </span>
               </Link>
+              {/* #273: abaixo de sm o ícone «Mapa da costa» (aria-current) já diz onde se está;
+                  com ícone + lupa + tema + menu o texto não cabia a 390 («Mapa…») */}
               {isMapPage && (
-                <span className="text-sm font-medium text-fg-muted truncate">
-                  {navLabel.mapa}
+                <span className="hidden sm:inline text-sm font-medium text-fg-muted truncate">
+                  {navLabel.mapaCosta}
                 </span>
               )}
             </div>
@@ -290,6 +295,16 @@ export default function Header({ locale }: HeaderProps) {
               className={`${isMapPage ? 'hidden' : 'hidden lg:flex'} items-center justify-start gap-0 min-w-0 overflow-visible`}
               aria-label={navLabel.home}
             >
+              <Link
+                href={mapaHref}
+                className="site-nav-mapa relative shrink-0 inline-flex items-center gap-1.5 mr-2 xl:mr-3 px-3 py-2 rounded-input text-sm font-semibold whitespace-nowrap text-fg ring-1 ring-inset ring-accent/60 bg-accent/[0.08] hover:bg-accent/15 transition-colors duration-[200ms] motion-reduce:transition-none"
+                aria-current={isMapPage ? 'page' : undefined}
+                data-testid="nav-mapa-costa"
+              >
+                <MapIcon className="w-4 h-4 shrink-0 text-accent" aria-hidden />
+                {navLabel.mapaCosta}
+                <span className="w-1.5 h-1.5 rounded-full bg-accent shrink-0" aria-hidden />
+              </Link>
               <MegaMenu
                 locale={locale}
                 isOpen={openMega === 'conditions'}
@@ -344,9 +359,19 @@ export default function Header({ locale }: HeaderProps) {
             <div
               className={`flex items-center gap-0.5 ${isMapPage ? '' : 'lg:hidden'} shrink-0 col-start-3 justify-end`}
             >
+              <Link
+                href={mapaHref}
+                className="relative inline-flex items-center justify-center w-11 h-11 rounded-lg text-fg hover:bg-surface-2/[0.08] transition-colors shrink-0"
+                aria-label={navLabel.mapaCosta}
+                aria-current={isMapPage ? 'page' : undefined}
+                data-testid="nav-mapa-costa-icone"
+              >
+                <MapIcon className="w-5 h-5" aria-hidden />
+                <span className="absolute right-2 top-2 w-2 h-2 rounded-full bg-accent ring-2 ring-bg-base" aria-hidden />
+              </Link>
               <button
                 onClick={openSearch}
-                className="inline-flex items-center justify-center w-11 h-11 rounded-lg text-fg-muted hover:text-fg hover:bg-surface-2/[0.08] transition-colors shrink-0"
+                className="inline-flex items-center justify-center w-11 h-11 rounded-lg text-fg hover:bg-surface-2/[0.08] transition-colors shrink-0"
                 aria-label={navLabel.search}
               >
                 <Search className="w-5 h-5" />
@@ -354,7 +379,7 @@ export default function Header({ locale }: HeaderProps) {
               {isMapPage && <ThemeToggle locale={locale} />}
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="inline-flex items-center justify-center w-11 h-11 rounded-lg text-fg-muted hover:text-fg hover:bg-surface-2/[0.08] transition-colors shrink-0"
+                className="inline-flex items-center justify-center w-11 h-11 rounded-lg text-fg hover:bg-surface-2/[0.08] transition-colors shrink-0"
                 aria-label={mobileMenuOpen ? navLabel.closeMenu : navLabel.openMenu}
                 aria-expanded={mobileMenuOpen}
                 aria-controls="mobile-nav"
@@ -384,6 +409,20 @@ export default function Header({ locale }: HeaderProps) {
               invisíveis ficavam na tab order (WCAG 2.4.3/4.1.2). */}
           {mobileMenuOpen && (
           <div className="px-4 py-3 space-y-1">
+            <Link
+              href={mapaHref}
+              onClick={closeMobile}
+              className="flex items-center gap-3 min-h-[50px] px-3 py-2 mb-2 rounded-xl text-fg bg-accent/10 ring-1 ring-inset ring-accent/30 hover:bg-accent/15 transition-colors duration-[200ms] motion-reduce:transition-none"
+              aria-current={isMapPage ? 'page' : undefined}
+              data-testid="gaveta-mapa-costa"
+            >
+              <MapIcon className="w-[22px] h-[22px] shrink-0 text-accent" aria-hidden />
+              <span className="min-w-0 flex-1">
+                <span className="block text-[17px] font-semibold leading-tight">{navLabel.mapaCosta}</span>
+                <span className="block text-[13.5px] leading-tight text-fg-muted mt-px">{navLabel.mapaCostaSub}</span>
+              </span>
+              <ArrowRight className="w-5 h-5 shrink-0 text-accent" aria-hidden />
+            </Link>
             <div className="flex items-center justify-between gap-2 px-1 pb-2 border-b border-divider mb-2">
               {localeSelect}
               <ThemeToggle locale={locale} />

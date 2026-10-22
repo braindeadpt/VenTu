@@ -50,7 +50,7 @@ describe('computeScore (scoreSpotConditions) — recalibração do score', () =>
       waveDirection: 300,
       stationName: 'CSA92/D',
       stationArea: 'Leixões',
-      distanceKm: 60,
+      distanceKm: 30,
       observedAt: FRESH,
       source: 'ih-buoy',
     };
@@ -96,7 +96,7 @@ describe('computeScore (scoreSpotConditions) — recalibração do score', () =>
         waveHeight: 2.8,
         observedAt: STALE,
         stationName: 'CSA92/D',
-        distanceKm: 60,
+        distanceKm: 30,
         source: 'ih-buoy',
       },
       waveBias: { me: 0.4, n: 40, region: 'Cascais' },

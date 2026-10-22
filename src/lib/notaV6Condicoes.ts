@@ -49,7 +49,8 @@ export interface NotaV6 {
 }
 
 /**
- * Avalia a linha `raw` como a hora `t` (Lisboa; por omissão, a hora actual).
+ * Avalia a linha `raw` como a hora `t` (etiqueta da série, com ou sem desvio;
+ * sem desvio = Lisboa; por omissão, a hora actual).
  * `null` se o desporto não tem v6.
  */
 export function notaV6DeCondicoes(
@@ -60,11 +61,13 @@ export function notaV6DeCondicoes(
 ): NotaV6 | null {
   const k = chaveV6(sport);
   if (!k) return null;
-  const t = (opc.t ?? `${lisbonHourKeyFromDate(new Date(opc.nowMs ?? Date.now()))}:00`).slice(0, 16);
+  // etiqueta completa (com desvio, #240) para o sol; `t` devolvido fica com 16 caracteres
+  const tCompleta = opc.t ?? `${lisbonHourKeyFromDate(new Date(opc.nowMs ?? Date.now()))}:00`;
+  const t = tCompleta.slice(0, 16);
   const c = rawToScoreInput(raw);
   const tide = typeof raw.tideHeight === 'number' && Number.isFinite(raw.tideHeight) ? raw.tideHeight : undefined;
   const linha: LinhaForecast = {
-    time: t,
+    time: tCompleta,
     windSpeed: c.windSpeed,
     windGust: c.windGust,
     windDirection: c.windDirection,

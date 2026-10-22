@@ -18,7 +18,7 @@ const bestWindow = { waveHeight: 1.46, wavePeriod: 8, windSpeed: 5, score: 60 };
 const freshReading = (overrides = {}) => ({
   waveHeight: 1.8,
   stationName: 'CSA92/D',
-  distanceKm: 60,
+  distanceKm: 30,
   observedAt: new Date(NOW - 1 * 3_600_000).toISOString(),
   source: 'ih-buoy',
   ...overrides,
@@ -40,8 +40,20 @@ describe('dawnPatrolScore.resolveMorningRecalibration', () => {
     expect(recal).toEqual({
       height: 1.8,
       source: 'boia',
-      meta: { stationName: 'CSA92/D', distanceKm: 60 },
+      meta: { stationName: 'CSA92/D', distanceKm: 30 },
     });
+  });
+
+  it('boia a mais de 40 km não é a onda do spot — cai para o viés regional (A5)', () => {
+    const waveBias = { region: 'Cascais', me: 0.3, n: 120, deltaM: 0.3 };
+    for (const longe of [
+      freshReading({ stationName: 'CSA83/1D', distanceKm: 102 }),
+      // ponte Cabo Silleiro → Nazaré: fica no cartão, nunca na nota
+      freshReading({ stationName: 'Cabo Silleiro', source: 'wmo-buoy', distanceKm: 281.4, bridge: true }),
+    ]) {
+      const recal = resolveMorningRecalibration(spot, bestWindow, { guincho: { observedWave: longe, waveBias } }, NOW);
+      expect(recal?.source).toBe('viés regional');
+    }
   });
 
   it('leitura velha (>3h IH) não é usada — cai para o viés regional', () => {

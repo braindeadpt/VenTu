@@ -8,8 +8,8 @@ import {
   MAP_WIND_PANE,
   MAP_WIND_PANE_Z,
   advectWindParticle,
-  buildWindFieldGrids,
-  buildWindFieldGridsFromSea,
+  buildWindFieldGridsAsync,
+  buildWindFieldGridsFromSeaAsync,
   collectWindSamples,
   drawWindParticlesByKt,
   spawnWindParticle,
@@ -17,6 +17,7 @@ import {
   windCellKt,
   windKtBin,
   windParticleTarget,
+  type WindFieldGrid,
   type WindParticle,
 } from '@/lib/mapWindField';
 import type { FieldSpot } from '@/lib/mapHsField';
@@ -72,6 +73,9 @@ const WIND_IDLE_PAUSE_MS = 8_000;
 /** Canvas a DPR 1: ~4× menos píxeis por frame. As trails são linhas
  *  ambientais finas — a diferença é imperceptível até a 1440/DPR 2. */
 const WIND_CANVAS_DPR = 1;
+
+const NO_GRIDS: WindFieldGrid[] = [];
+const NO_SAMPLES: ReturnType<typeof collectWindSamples> = [];
 
 /**
  * Campo de vento costeiro — partículas advectadas numa grelha IDW dos spots,
@@ -132,14 +136,37 @@ export function useMapWindField({
   const windOn = wantsField && (fromSea || !!file?.wind);
   const frame = hoursLive ? hoursFrame : 0;
   const samples = useMemo(
-    () => (windOn && !fromSea && file ? collectWindSamples(file, spots, frame) : []),
+    () => (windOn && !fromSea && file ? collectWindSamples(file, spots, frame) : NO_SAMPLES),
     [windOn, fromSea, file, spots, frame],
   );
-  const grids = useMemo(() => {
-    if (!windOn) return [];
-    if (fromSea && seaGrid && seaFrame) return buildWindFieldGridsFromSea(seaGrid, seaFrame, { mobile: isMobile });
-    return buildWindFieldGrids(samples, { mobile: isMobile });
+  // TBT /mapa: as grelhas (sea-grid ou IDW dos spots) deixaram de ser um
+  // useMemo no render — ~70–180 ms num só task, repetido a cada nova
+  // identidade de `samples` (a lista vazia do caminho sea era recriada com o
+  // map-hours e com o refresh dos spots). Constroem-se fora do render, em
+  // fatias que cedem a main thread, com os MESMOS geradores (resultado
+  // idêntico, testado); um pedido novo cancela o anterior. Enquanto a
+  // próxima grelha não chega fica a última (o canvas e as partículas não
+  // piscam); ao desligar o vento limpa-se.
+  const [builtGrids, setBuiltGrids] = useState<WindFieldGrid[] | null>(null);
+  useEffect(() => {
+    if (!windOn) {
+      setBuiltGrids(null);
+      return;
+    }
+    let cancelled = false;
+    const isCancelled = () => cancelled;
+    const job =
+      fromSea && seaGrid && seaFrame
+        ? buildWindFieldGridsFromSeaAsync(seaGrid, seaFrame, { mobile: isMobile }, isCancelled)
+        : buildWindFieldGridsAsync(samples, { mobile: isMobile }, isCancelled);
+    void job.then((g) => {
+      if (!cancelled && g) setBuiltGrids(g);
+    });
+    return () => {
+      cancelled = true;
+    };
   }, [windOn, fromSea, seaGrid, seaFrame, samples, isMobile]);
+  const grids = windOn ? (builtGrids ?? NO_GRIDS) : NO_GRIDS;
   // Intervalo em nós para a legenda («Agora: 4–22 kn na grelha»).
   const windRange = useMemo(() => {
     if (!windOn) return null;

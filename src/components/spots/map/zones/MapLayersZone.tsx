@@ -57,6 +57,8 @@ interface UseMapLayersBaseParams {
   initialNauticalChartEnabled: boolean;
   initialHoursEnabled: boolean;
   initialHourOfDay: number | null;
+  /** Deep link `?dia=` (#273): com `?t=`, escolhe a frame de hoje+dia. */
+  initialDay?: number | null;
   initialBuoysEnabled: boolean;
   initialGoesIrEnabled: boolean;
   initialStormsEnabled: boolean;
@@ -81,6 +83,7 @@ export function useMapLayersBase({
   initialNauticalChartEnabled,
   initialHoursEnabled,
   initialHourOfDay,
+  initialDay = null,
   initialBuoysEnabled,
   initialGoesIrEnabled,
   initialStormsEnabled,
@@ -112,6 +115,7 @@ export function useMapLayersBase({
     isFullscreen,
     initialEnabled: initialHoursEnabled,
     initialHourOfDay,
+    initialDay,
   });
 
   const { buoysEnabled, toggleBuoys } = useMapBuoyDots({

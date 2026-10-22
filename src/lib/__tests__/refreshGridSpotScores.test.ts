@@ -142,7 +142,7 @@ describe('refreshGridSpotScores', () => {
           wavePeriod: 11,
           waveDirection: 280,
           stationName: 'CSA92/D',
-          distanceKm: 60,
+          distanceKm: 30, // ≤ 40 km (A5)
           observedAt: new Date().toISOString(),
           source: 'ih-buoy',
         },
@@ -179,7 +179,7 @@ describe('refreshGridSpotScores', () => {
           wavePeriod: 11,
           waveDirection: 280,
           stationName: 'CSA92/D',
-          distanceKm: 60,
+          distanceKm: 30, // ≤ 40 km (A5)
           observedAt: new Date().toISOString(),
           source: 'ih-buoy' as const,
         },
@@ -250,7 +250,7 @@ describe('refreshGridSpotScores', () => {
           wavePeriod: 11,
           waveDirection: 280,
           stationName: 'CSA92/D',
-          distanceKm: 60,
+          distanceKm: 30, // ≤ 40 km (A5)
           observedAt: new Date().toISOString(),
           source: 'ih-buoy' as const,
         },

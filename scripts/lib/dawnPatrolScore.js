@@ -28,6 +28,15 @@ const MAX_AGE_HOURS = { 'ih-buoy': 3, 'wmo-buoy': 6 };
 
 const round1 = (n) => Math.round(n * 10) / 10;
 
+/**
+ * Distância máxima boia → spot para a leitura valer como a onda do spot
+ * (auditoria de dados 16/10, A5). Espelha `OBSERVED_WAVE_MAX_DISTANCE_KM` em
+ * src/lib/observedWave.ts e `OBSERVED_WAVE_MAX_KM` em observedWaveMerge.js.
+ * A ponte Cabo Silleiro → Nazaré (~280 km) fica de fora: só vai ao cartão.
+ */
+const MAX_WAVE_KM = 40;
+const isNearWave = (w) => Number.isFinite(Number(w?.distanceKm)) && Number(w.distanceKm) <= MAX_WAVE_KM;
+
 function isoAgeHours(iso, nowMs) {
   if (!iso) return null;
   const t = new Date(iso).getTime();
@@ -93,7 +102,7 @@ function resolveMorningRecalibration(spot, bestWindow, conditionsJson, nowMs = D
 
   // 1) Leitura fresca — a verdade matinal; ganha sempre (mesma regra da UI).
   const observedWave = row.observedWave;
-  if (isFreshWave(observedWave, nowMs)) {
+  if (isFreshWave(observedWave, nowMs) && isNearWave(observedWave)) {
     const h = Number(observedWave.waveHeight);
     if (Number.isFinite(h) && h >= 0) {
       const meta = {};

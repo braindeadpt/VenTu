@@ -46,9 +46,26 @@ describe('alertRowAt', () => {
     expect(row).not.toHaveProperty('time');
   });
 
-  it('aceita etiquetas com desvio (fix/dados-dst-utc): os 13 primeiros caracteres mandam', () => {
-    const horas = [{ ...HORAS[1], time: '2026-10-17T15:00+01:00' }];
-    expect(alertRowAt(SNAPSHOT_CALMO, horas, NOW_15H).t).toBe('2026-10-17T15:00');
+  it('aceita etiquetas com desvio (#240): compara por instante e devolve a etiqueta completa', () => {
+    const lbl = '2026-10-17T15:00' + '+01:00';
+    const horas = [{ ...HORAS[1], time: lbl }];
+    expect(alertRowAt(SNAPSHOT_CALMO, horas, NOW_15H).t).toBe(lbl);
+  });
+
+  it('Açores (-01:00): a hora certa é a do instante, não a dos 13 primeiros caracteres', () => {
+    // 15:00 em Lisboa (14:00Z) = 13:00 nos Açores
+    const certa = { ...HORAS[1], time: '2026-10-17T13:00' + '-01:00' };
+    const errada = { ...HORAS[0], time: '2026-10-17T15:00' + '-01:00' };
+    const r = alertRowAt(SNAPSHOT_CALMO, [errada, certa], NOW_15H);
+    expect(r.t).toBe(certa.time);
+    expect(r.row.windSpeed).toBeCloseTo(20 / KN);
+  });
+
+  it('25/10: o 01:00 repetido escolhe a hora pelo instante (WEST e depois WET)', () => {
+    const a = { ...HORAS[0], time: '2026-10-25T01:00' + '+01:00' };
+    const b = { ...HORAS[1], time: '2026-10-25T01:00' + '+00:00' };
+    expect(alertRowAt(SNAPSHOT_CALMO, [a, b], Date.UTC(2026, 9, 25, 0, 30)).t).toBe(a.time);
+    expect(alertRowAt(SNAPSHOT_CALMO, [a, b], Date.UTC(2026, 9, 25, 1, 30)).t).toBe(b.time);
   });
 
   it('sem a hora corrente na previsão → a linha do conditions, tal como estava', () => {

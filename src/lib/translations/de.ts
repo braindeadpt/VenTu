@@ -20,6 +20,8 @@ export const translationsDe = {
     favorites: 'Favoriten',
     explorar: 'Entdecken',
     mapa: 'Karte',
+    mapaCosta: 'Küstenkarte',
+    mapaCostaSub: 'Live-Wind, 8 Sportarten, 48 h',
     livecams: 'Livecams',
     openMenu: 'Menü öffnen',
     closeMenu: 'Menü schließen',

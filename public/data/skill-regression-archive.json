@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-10-16T11:24:20.393Z",
+  "fetchedAt": "2026-10-22T00:15:57.255Z",
   "snapshots": [
     {
       "day": "2026-09-01",
@@ -3085,7 +3085,7 @@
       "buoyId": "4",
       "origin": "ih",
       "name": "CSA92/D",
-      "n": 636,
+      "n": 642,
       "me": 0.49,
       "rmse": 0.66
     },
@@ -3094,7 +3094,7 @@
       "buoyId": "19",
       "origin": "ih",
       "name": "CSA83/1D",
-      "n": 671,
+      "n": 677,
       "me": 0.17,
       "rmse": 0.28
     },
@@ -3103,16 +3103,16 @@
       "buoyId": "20",
       "origin": "ih",
       "name": "CSA82/D",
-      "n": 79,
+      "n": 77,
       "me": 0.19,
-      "rmse": 0.25
+      "rmse": 0.26
     },
     {
       "day": "2026-10-16",
       "buoyId": "33",
       "origin": "ih",
       "name": "CSA94",
-      "n": 672,
+      "n": 678,
       "me": -0.41,
       "rmse": 0.46
     },
@@ -3121,7 +3121,7 @@
       "buoyId": "86",
       "origin": "ih",
       "name": "BOND5",
-      "n": 664,
+      "n": 670,
       "me": 0.7,
       "rmse": 0.89
     },
@@ -3130,16 +3130,16 @@
       "buoyId": "6200084",
       "origin": "wmo-es",
       "name": "Cabo Silleiro",
-      "n": 575,
+      "n": 581,
       "me": 0.58,
-      "rmse": 0.72
+      "rmse": 0.73
     },
     {
       "day": "2026-10-16",
       "buoyId": "6200085",
       "origin": "wmo-es",
       "name": "Golfo de Cádiz",
-      "n": 574,
+      "n": 581,
       "me": 0.41,
       "rmse": 0.49
     },
@@ -3147,8 +3147,407 @@
       "day": "2026-10-16",
       "buoyId": "6200199",
       "name": "Nazaré Costeira (WMO)",
-      "n": 572,
+      "n": 578,
       "me": 0.12,
+      "rmse": 0.36
+    },
+    {
+      "day": "2026-10-17",
+      "buoyId": "4",
+      "origin": "ih",
+      "name": "CSA92/D",
+      "n": 669,
+      "me": 0.49,
+      "rmse": 0.66
+    },
+    {
+      "day": "2026-10-17",
+      "buoyId": "19",
+      "origin": "ih",
+      "name": "CSA83/1D",
+      "n": 701,
+      "me": 0.17,
+      "rmse": 0.28
+    },
+    {
+      "day": "2026-10-17",
+      "buoyId": "20",
+      "origin": "ih",
+      "name": "CSA82/D",
+      "n": 77,
+      "me": 0.19,
+      "rmse": 0.26
+    },
+    {
+      "day": "2026-10-17",
+      "buoyId": "33",
+      "origin": "ih",
+      "name": "CSA94",
+      "n": 702,
+      "me": -0.41,
+      "rmse": 0.46
+    },
+    {
+      "day": "2026-10-17",
+      "buoyId": "86",
+      "origin": "ih",
+      "name": "BOND5",
+      "n": 694,
+      "me": 0.69,
+      "rmse": 0.87
+    },
+    {
+      "day": "2026-10-17",
+      "buoyId": "6200084",
+      "origin": "wmo-es",
+      "name": "Cabo Silleiro",
+      "n": 603,
+      "me": 0.6,
+      "rmse": 0.73
+    },
+    {
+      "day": "2026-10-17",
+      "buoyId": "6200085",
+      "origin": "wmo-es",
+      "name": "Golfo de Cádiz",
+      "n": 603,
+      "me": 0.41,
+      "rmse": 0.48
+    },
+    {
+      "day": "2026-10-17",
+      "buoyId": "6200199",
+      "name": "Nazaré Costeira (WMO)",
+      "n": 600,
+      "me": 0.13,
+      "rmse": 0.36
+    },
+    {
+      "day": "2026-10-18",
+      "buoyId": "4",
+      "origin": "ih",
+      "name": "CSA92/D",
+      "n": 671,
+      "me": 0.49,
+      "rmse": 0.65
+    },
+    {
+      "day": "2026-10-18",
+      "buoyId": "19",
+      "origin": "ih",
+      "name": "CSA83/1D",
+      "n": 672,
+      "me": 0.18,
+      "rmse": 0.29
+    },
+    {
+      "day": "2026-10-18",
+      "buoyId": "20",
+      "origin": "ih",
+      "name": "CSA82/D",
+      "n": 21,
+      "me": 0.17,
+      "rmse": 0.26
+    },
+    {
+      "day": "2026-10-18",
+      "buoyId": "33",
+      "origin": "ih",
+      "name": "CSA94",
+      "n": 674,
+      "me": -0.4,
+      "rmse": 0.45
+    },
+    {
+      "day": "2026-10-18",
+      "buoyId": "86",
+      "origin": "ih",
+      "name": "BOND5",
+      "n": 664,
+      "me": 0.71,
+      "rmse": 0.9
+    },
+    {
+      "day": "2026-10-18",
+      "buoyId": "6200084",
+      "origin": "wmo-es",
+      "name": "Cabo Silleiro",
+      "n": 581,
+      "me": 0.6,
+      "rmse": 0.75
+    },
+    {
+      "day": "2026-10-18",
+      "buoyId": "6200085",
+      "origin": "wmo-es",
+      "name": "Golfo de Cádiz",
+      "n": 581,
+      "me": 0.39,
+      "rmse": 0.47
+    },
+    {
+      "day": "2026-10-18",
+      "buoyId": "6200199",
+      "name": "Nazaré Costeira (WMO)",
+      "n": 581,
+      "me": 0.14,
+      "rmse": 0.37
+    },
+    {
+      "day": "2026-10-19",
+      "buoyId": "4",
+      "origin": "ih",
+      "name": "CSA92/D",
+      "n": 669,
+      "me": 0.49,
+      "rmse": 0.65
+    },
+    {
+      "day": "2026-10-19",
+      "buoyId": "19",
+      "origin": "ih",
+      "name": "CSA83/1D",
+      "n": 670,
+      "me": 0.18,
+      "rmse": 0.29
+    },
+    {
+      "day": "2026-10-19",
+      "buoyId": "20",
+      "origin": "ih",
+      "name": "CSA82/D",
+      "n": 11,
+      "me": 0.21,
+      "rmse": 0.32
+    },
+    {
+      "day": "2026-10-19",
+      "buoyId": "33",
+      "origin": "ih",
+      "name": "CSA94",
+      "n": 672,
+      "me": -0.42,
+      "rmse": 0.48
+    },
+    {
+      "day": "2026-10-19",
+      "buoyId": "86",
+      "origin": "ih",
+      "name": "BOND5",
+      "n": 662,
+      "me": 0.75,
+      "rmse": 0.92
+    },
+    {
+      "day": "2026-10-19",
+      "buoyId": "6200084",
+      "origin": "wmo-es",
+      "name": "Cabo Silleiro",
+      "n": 582,
+      "me": 0.61,
+      "rmse": 0.76
+    },
+    {
+      "day": "2026-10-19",
+      "buoyId": "6200085",
+      "origin": "wmo-es",
+      "name": "Golfo de Cádiz",
+      "n": 582,
+      "me": 0.39,
+      "rmse": 0.47
+    },
+    {
+      "day": "2026-10-19",
+      "buoyId": "6200199",
+      "name": "Nazaré Costeira (WMO)",
+      "n": 582,
+      "me": 0.14,
+      "rmse": 0.37
+    },
+    {
+      "day": "2026-10-20",
+      "buoyId": "4",
+      "origin": "ih",
+      "name": "CSA92/D",
+      "n": 666,
+      "me": 0.5,
+      "rmse": 0.66
+    },
+    {
+      "day": "2026-10-20",
+      "buoyId": "19",
+      "origin": "ih",
+      "name": "CSA83/1D",
+      "n": 669,
+      "me": 0.19,
+      "rmse": 0.29
+    },
+    {
+      "day": "2026-10-20",
+      "buoyId": "33",
+      "origin": "ih",
+      "name": "CSA94",
+      "n": 671,
+      "me": -0.43,
+      "rmse": 0.49
+    },
+    {
+      "day": "2026-10-20",
+      "buoyId": "86",
+      "origin": "ih",
+      "name": "BOND5",
+      "n": 662,
+      "me": 0.77,
+      "rmse": 0.95
+    },
+    {
+      "day": "2026-10-20",
+      "buoyId": "6200084",
+      "origin": "wmo-es",
+      "name": "Cabo Silleiro",
+      "n": 584,
+      "me": 0.63,
+      "rmse": 0.77
+    },
+    {
+      "day": "2026-10-20",
+      "buoyId": "6200085",
+      "origin": "wmo-es",
+      "name": "Golfo de Cádiz",
+      "n": 584,
+      "me": 0.4,
+      "rmse": 0.48
+    },
+    {
+      "day": "2026-10-20",
+      "buoyId": "6200199",
+      "name": "Nazaré Costeira (WMO)",
+      "n": 585,
+      "me": 0.15,
+      "rmse": 0.37
+    },
+    {
+      "day": "2026-10-21",
+      "buoyId": "4",
+      "origin": "ih",
+      "name": "CSA92/D",
+      "n": 670,
+      "me": 0.51,
+      "rmse": 0.68
+    },
+    {
+      "day": "2026-10-21",
+      "buoyId": "19",
+      "origin": "ih",
+      "name": "CSA83/1D",
+      "n": 671,
+      "me": 0.19,
+      "rmse": 0.29
+    },
+    {
+      "day": "2026-10-21",
+      "buoyId": "33",
+      "origin": "ih",
+      "name": "CSA94",
+      "n": 673,
+      "me": -0.43,
+      "rmse": 0.49
+    },
+    {
+      "day": "2026-10-21",
+      "buoyId": "86",
+      "origin": "ih",
+      "name": "BOND5",
+      "n": 665,
+      "me": 0.8,
+      "rmse": 0.98
+    },
+    {
+      "day": "2026-10-21",
+      "buoyId": "6200084",
+      "origin": "wmo-es",
+      "name": "Cabo Silleiro",
+      "n": 585,
+      "me": 0.64,
+      "rmse": 0.78
+    },
+    {
+      "day": "2026-10-21",
+      "buoyId": "6200085",
+      "origin": "wmo-es",
+      "name": "Golfo de Cádiz",
+      "n": 585,
+      "me": 0.4,
+      "rmse": 0.48
+    },
+    {
+      "day": "2026-10-21",
+      "buoyId": "6200199",
+      "name": "Nazaré Costeira (WMO)",
+      "n": 586,
+      "me": 0.15,
+      "rmse": 0.37
+    },
+    {
+      "day": "2026-10-22",
+      "buoyId": "4",
+      "origin": "ih",
+      "name": "CSA92/D",
+      "n": 670,
+      "me": 0.52,
+      "rmse": 0.68
+    },
+    {
+      "day": "2026-10-22",
+      "buoyId": "19",
+      "origin": "ih",
+      "name": "CSA83/1D",
+      "n": 671,
+      "me": 0.18,
+      "rmse": 0.28
+    },
+    {
+      "day": "2026-10-22",
+      "buoyId": "33",
+      "origin": "ih",
+      "name": "CSA94",
+      "n": 673,
+      "me": -0.43,
+      "rmse": 0.49
+    },
+    {
+      "day": "2026-10-22",
+      "buoyId": "86",
+      "origin": "ih",
+      "name": "BOND5",
+      "n": 665,
+      "me": 0.8,
+      "rmse": 0.98
+    },
+    {
+      "day": "2026-10-22",
+      "buoyId": "6200084",
+      "origin": "wmo-es",
+      "name": "Cabo Silleiro",
+      "n": 580,
+      "me": 0.64,
+      "rmse": 0.79
+    },
+    {
+      "day": "2026-10-22",
+      "buoyId": "6200085",
+      "origin": "wmo-es",
+      "name": "Golfo de Cádiz",
+      "n": 580,
+      "me": 0.4,
+      "rmse": 0.48
+    },
+    {
+      "day": "2026-10-22",
+      "buoyId": "6200199",
+      "name": "Nazaré Costeira (WMO)",
+      "n": 582,
+      "me": 0.14,
       "rmse": 0.36
     }
   ]

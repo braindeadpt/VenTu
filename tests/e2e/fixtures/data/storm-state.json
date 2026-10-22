@@ -240,7 +240,7 @@
     "azurara": {
       "radar": {
         "state": "over",
-        "distKm": 23,
+        "distKm": 9,
         "dirDeg": 41,
         "intensity": "moderate",
         "approach": {
@@ -918,11 +918,7 @@
         "distKm": 0,
         "dirDeg": 159,
         "intensity": "heavy",
-        "approach": {
-          "state": "receding",
-          "deg": 130,
-          "kmh": 13
-        }
+        "approach": null
       },
       "warnLevel": null,
       "inStormCone": false
@@ -1083,11 +1079,7 @@
         "distKm": 0,
         "dirDeg": 299,
         "intensity": "moderate",
-        "approach": {
-          "state": "receding",
-          "deg": 174,
-          "kmh": 89
-        }
+        "approach": null
       },
       "warnLevel": null,
       "inStormCone": false
@@ -2140,13 +2132,13 @@
     "vila-cha": {
       "radar": {
         "state": "over",
-        "distKm": 19,
+        "distKm": 10,
         "dirDeg": 59,
         "intensity": "moderate",
         "approach": {
-          "state": "approaching",
-          "deg": 309,
-          "kmh": 82
+          "state": "receding",
+          "deg": 352,
+          "kmh": 42
         }
       },
       "warnLevel": null,
@@ -2188,11 +2180,7 @@
         "distKm": 1,
         "dirDeg": 153,
         "intensity": "moderate",
-        "approach": {
-          "state": "receding",
-          "deg": 180,
-          "kmh": 27
-        }
+        "approach": null
       },
       "warnLevel": null,
       "inStormCone": false
@@ -2490,13 +2478,13 @@
     "mindelo": {
       "radar": {
         "state": "over",
-        "distKm": 20,
+        "distKm": 9,
         "dirDeg": 41,
         "intensity": "moderate",
         "approach": {
-          "state": "approaching",
-          "deg": 308,
-          "kmh": 80
+          "state": "receding",
+          "deg": 347,
+          "kmh": 69
         }
       },
       "warnLevel": null,
@@ -2510,8 +2498,8 @@
         "intensity": "light",
         "approach": {
           "state": "approaching",
-          "deg": 282,
-          "kmh": 46
+          "deg": 5,
+          "kmh": 19
         }
       },
       "warnLevel": null,

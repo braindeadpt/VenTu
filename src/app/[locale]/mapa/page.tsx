@@ -1,6 +1,7 @@
 import { getTranslation, validateLocale } from '@/lib/i18n';
 import { locales } from '@/lib/i18n';
 import { loadSpotListings } from '@/lib/load-spot-data';
+import { serializeSpotListings } from '@/lib/spotListingsJson';
 import { MACRO_REGIONS } from '@/lib/regions';
 import { buildPageMetadata, SPOT_COUNT } from '@/lib/seo';
 import MapaFullscreenClient from '@/components/spots/MapaFullscreenClient';
@@ -41,13 +42,18 @@ export default async function MapaPage({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-  const spotsData = loadSpotListings();
+  // TBT /mapa: os ~185 spots seguem como UMA string JSON e não como árvore
+  // de objectos. O RSC passava ~700 KB de modelo que o cliente percorria
+  // valor a valor (no arranque e outra vez no prefetch do próprio /mapa pelo
+  // cabeçalho); uma string grande vai como bloco de texto e o cliente faz um
+  // só JSON.parse nativo. Os dados são os mesmos (teste de ida e volta).
+  const spotsJson = serializeSpotListings(loadSpotListings());
 
   return (
     <>
       <MapTilePreconnect />
       <MapaFullscreenClient
-        spotsData={spotsData}
+        spotsJson={spotsJson}
         regions={[...MACRO_REGIONS]}
         locale={locale}
       />

@@ -7,8 +7,12 @@
  * - Escala e bandas: só as da #210 (`src/lib/nota.ts`). Nenhum limiar aqui.
  * - Segurança do vento (#192/#210) por cima do motor, só nas modalidades de
  *   vento: side-offshore limita a nota a 5,0 e offshore a 2,5 (/10), com a
- *   mesma classificação (`windSportDirectionSafety`) e o mesmo arredondamento
- *   que o resto do site (`scoreToNota(notaToScore(cap))`).
+ *   mesma classificação (`windSportDirectionSafety`). O tecto arredonda PARA
+ *   BAIXO (2,5 → 2 · Não dá): arredondar ao meio mostrava o tecto offshore
+ *   como «3 · Fraco», acima do próprio tecto (auditoria de dados 16/10, M7).
+ * - Sem dados (auditoria 16/10, M2): uma hora sem vento (lógica de vento) ou
+ *   sem onda (lógica de onda) na fonte não tem nota: `n = null` com
+ *   `semDados: true` (a UI diz «sem dados», não «noite» nem 0).
  */
 import defJson from './modalidades-def.json';
 import {
@@ -19,7 +23,7 @@ import {
   type ModalidadesDef,
   type SpotModalidade,
 } from './avalia';
-import { notaTier, notaToScore, scoreToNota, NOTA_BAND_MIN } from '@/lib/nota';
+import { notaTier, NOTA_BAND_MIN } from '@/lib/nota';
 import { windSportDirectionSafety, type WindSafetyLevel } from '@/lib/sportScore';
 import type { Spot } from '@/types';
 
@@ -79,15 +83,21 @@ export const BANDA_MIN: Record<Exclude<BandaK, 'noite'>, number> = {
 };
 
 export interface AvaliacaoHora extends Avaliacao {
+  /** A fonte não traz o que esta modalidade precisa nesta hora: `n = null`, mas não é noite. */
+  semDados?: true;
   /** Nota do motor antes do tecto de segurança (paridade com a maquete). */
   nMotor: number | null;
   /** Componente offshore do vento (só modalidades de vento). */
   seguranca: WindSafetyLevel | null;
 }
 
-/** Tecto da nota inteira para um nível de segurança (mesmo arredondamento do site). */
+/**
+ * Tecto da nota inteira para um nível de segurança: arredonda para baixo, para
+ * a nota mostrada nunca passar o tecto (offshore 2,5 → 2 · Não dá; side-offshore
+ * 5,0 → 5 · Dá). Auditoria de dados 16/10 (M7): `Math.round(2.5) = 3 · Fraco`.
+ */
 export function tectoSeguranca(cap: number | null): number | null {
-  return cap == null ? null : scoreToNota(notaToScore(cap));
+  return cap == null ? null : Math.max(0, Math.min(10, Math.floor(cap + 1e-9)));
 }
 
 /** Avalia as horas de um spot numa modalidade (motor + tecto de segurança do vento). */
@@ -99,7 +109,10 @@ export function avaliaHoras(
   const L = MOTOR.para(sp);
   const def = defDe(d);
   const coast = { coastOrientation: sp.praiaVirada } as Spot;
+  const precisa = def.logica === 'vento' ? 'vento' : def.logica === 'onda' ? 'onda' : null;
   return horas.map((h) => {
+    if (precisa && h.semDados?.includes(precisa))
+      return { n: null, f: { vento: 0, onda: 0, mare: 0 }, nMotor: null, seguranca: null, semDados: true as const };
     const r = L.avalia(d, h);
     if (def.logica !== 'vento' || r.n == null) return { ...r, nMotor: r.n, seguranca: null };
     const s = windSportDirectionSafety(coast, h.wd);

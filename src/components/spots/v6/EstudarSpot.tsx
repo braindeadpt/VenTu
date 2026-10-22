@@ -86,18 +86,37 @@ export default function EstudarSpot({ horas, NS, i, d, ed, sol, atencao, melhorM
                 const r = NS[j];
                 const b = bandaR(r);
                 return (
-                  <tr key={h.t} className={`${j === i ? 'sel' : ''}${horaDe(h.t) === 0 ? ' dia' : ''}`} data-hora={j}>
+                  <tr key={`${h.t}#${j}`} className={`${j === i ? 'sel' : ''}${horaDe(h.t) === 0 ? ' dia' : ''}`} data-hora={j}>
                     <td>
                       {diaCurto(c, h.t)}, {horaTxt(c, horaDe(h.t))}
                     </td>
                     <td className="n" style={bandaVars(b) as CSSProperties}>
                       <span>{r.n == null ? '–' : r.n}</span>
                     </td>
-                    <td>{h.w}</td>
-                    <td>{h.g}</td>
-                    <td>{rumo(h.wd)}</td>
-                    <td>{nf(h.hs)}</td>
-                    <td>{h.tp} s</td>
+                    {h.semDados?.includes('vento') ? (
+                      <>
+                        <td>–</td>
+                        <td>–</td>
+                        <td>–</td>
+                      </>
+                    ) : (
+                      <>
+                        <td>{h.w}</td>
+                        <td>{h.g}</td>
+                        <td>{rumo(h.wd)}</td>
+                      </>
+                    )}
+                    {h.semDados?.includes('onda') ? (
+                      <>
+                        <td>–</td>
+                        <td>–</td>
+                      </>
+                    ) : (
+                      <>
+                        <td>{nf(h.hs)}</td>
+                        <td>{h.tp} s</td>
+                      </>
+                    )}
                     <td>{nf(h.tide)}</td>
                   </tr>
                 );

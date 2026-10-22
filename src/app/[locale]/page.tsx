@@ -8,6 +8,8 @@ import HomeAdaptive from '@/components/homepage/HomeAdaptive';
 import HomeV6 from '@/components/home/v6/HomeV6';
 import { costaCompacta, fotosCosta, metaCosta } from '@/lib/home/dadosHomeServidor';
 import { loadForecastsBySpot } from '@/lib/load-spot-data';
+import { filterGridSpots } from '@/lib/gridSpotFilters';
+import { DEFAULT_REGION } from '@/lib/gridFilters';
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -43,6 +45,12 @@ export default async function HomePage({
   // hoje e amanhã com o relógio real.
   const costa = costaCompacta(loadForecastsBySpot(), bakedAtMs);
 
+  // #273: a linha do CTA do mapa diz quantos spots de kite/surf o /mapa mostra (o mesmo filtro dele)
+  const nSpots = {
+    kite: filterGridSpots(spotsData, 'kitesurf', DEFAULT_REGION).length,
+    surf: filterGridSpots(spotsData, 'surf', DEFAULT_REGION).length,
+  };
+
   // Payload RSC: sem descrições/dicas/perigos (só a página do spot os usa).
   const homeSpotsData = spotsData.map((r) => toHomepageSpotLite(r, locale));
 
@@ -55,7 +63,7 @@ export default async function HomePage({
           .replace('{schedule}', pipelineSchedule(locale))}
       </h1>
 
-      <HomeV6 locale={locale} costa={costa} meta={metaCosta()} fotos={fotosCosta(locale)} agoraMs={bakedAtMs} />
+      <HomeV6 locale={locale} costa={costa} meta={metaCosta()} fotos={fotosCosta(locale)} agoraMs={bakedAtMs} nSpots={nSpots} />
 
       <HomeAdaptive
         locale={locale}

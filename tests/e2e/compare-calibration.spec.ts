@@ -31,7 +31,7 @@ const CONDITIONS = {
       waveDirection: 280,
       stationName: 'Cabo Silleiro',
       stationArea: 'Galiza',
-      distanceKm: 96.8,
+      distanceKm: 36.8, // ≤ 40 km: só uma boia perto entra na nota (auditoria 16/10, A5)
       observedAt: NOW,
       source: 'wmo-buoy',
       calibration: {

@@ -132,12 +132,12 @@ export default function SpotV6({ spot, nome, local, locale, linhas, agoraMs, fot
   const r = NS[iSel];
   const b = bandaR(r);
   const f = frase(iSel);
-  const { palavra, resto } = palavraEResto(copy, f, b);
+  const { palavra, resto } = palavraEResto(copy, f, b, !!r.semDados);
   const quandoDia = `${copy.dias[new Date(Date.UTC(+h.t.slice(0, 4), +h.t.slice(5, 7) - 1, +h.t.slice(8, 10))).getUTCDay()]} ${+h.t.slice(8, 10)} ${copy.meses[+h.t.slice(5, 7) - 1]}`;
   const ehAgora = iSel === 0 && !dados.semAgora;
   const porqueQ = ehAgora ? copy.agora : `${diaCurto(copy, h.t)}, ${horaTxt(copy, horaDe(h.t))}`;
-  const regua = H.map((x, j) => ({ t: x.t, n: NS[j].n, banda: bandaR(NS[j]) }));
-  const temNoite = r.n == null;
+  const regua = H.map((x, j) => ({ t: x.t, n: NS[j].n, banda: bandaR(NS[j]), ...(NS[j].semDados ? { semDados: true } : {}) }));
+  const temNoite = r.n == null && !r.semDados;
   const hv: SpotV6Hora = {
     t: h.t,
     ehAgora,
@@ -171,6 +171,7 @@ export default function SpotV6({ spot, nome, local, locale, linhas, agoraMs, fot
         locale={locale}
         copy={copy}
         faltaTxt={dados.semAgora ? copy.semPrevisao : null}
+        semDados={!!r.semDados}
       />
       {r.seguranca ? (
         <div className="seguranca">
@@ -215,7 +216,13 @@ export default function SpotV6({ spot, nome, local, locale, linhas, agoraMs, fot
       {typeof contexto === 'function' ? contexto(hv) : contexto}
       {acoes}
       <p className="falta-dados" data-testid="falta-dados">
-        {dados.faltam.includes('rain') ? copy.faltaChuvaNuvens : null}
+        {[
+          dados.faltam.includes('onda') && d === 'surf' ? copy.faltaOnda : null,
+          dados.faltam.includes('agua') ? copy.faltaAgua : null,
+          dados.faltam.includes('rain') ? copy.faltaChuvaNuvens : null,
+        ]
+          .filter(Boolean)
+          .join(' ') || null}
       </p>
     </div>
   );

@@ -90,15 +90,17 @@ const NIGHT_SUN_ELEVATION_DEG = -0.8;
 /** Campos que não passam da hora da previsão para a linha avaliada. */
 const FORECAST_SKIP_KEYS = new Set(['time', 'ens']);
 
-/** Chave de hora de Lisboa (AAAA-MM-DDTHH) de um instante. */
-function lisbonHourKey(ms) {
-  const { lisbonHourKeyFromDate } = require('./openMeteoTime');
-  return lisbonHourKeyFromDate(new Date(ms));
+/** Hora real (instante ÷ 1 h) de uma etiqueta da série: com desvio (#240) ou sem (hora de Lisboa). */
+function seriesHour(t) {
+  const { seriesTimeMs } = require('./openMeteoTime');
+  const ms = seriesTimeMs(t);
+  return Number.isFinite(ms) ? Math.floor(ms / 3_600_000) : NaN;
 }
 
 /**
- * Pure: linha a avaliar — a hora da previsão que coincide com a hora de
- * Lisboa de `nowMs` sobre a linha do conditions.json (as chaves de
+ * Pure: linha a avaliar — a hora da previsão que contém o instante `nowMs`
+ * (comparada por instante, não por texto: o 01:00 repetido de 25/10 e as
+ * etiquetas dos Açores `-01:00` do #240) sobre a linha do conditions.json (as chaves de
  * observação desta ficam). Sem previsão para a hora → a própria linha.
  * @param {Record<string, unknown> | null | undefined} condRow
  * @param {Array<Record<string, unknown>> | null | undefined} hours
@@ -106,9 +108,9 @@ function lisbonHourKey(ms) {
  * @returns {{ row: Record<string, unknown> | null; t: string | undefined; fromForecast: boolean }}
  */
 function alertRowAt(condRow, hours, nowMs) {
-  const key = lisbonHourKey(nowMs);
+  const alvo = Math.floor(nowMs / 3_600_000);
   const h = Array.isArray(hours)
-    ? hours.find((x) => x && typeof x.time === 'string' && x.time.slice(0, 13) === key)
+    ? hours.find((x) => x && typeof x.time === 'string' && seriesHour(x.time) === alvo)
     : null;
   if (!h) return { row: condRow && typeof condRow === 'object' ? condRow : null, t: undefined, fromForecast: false };
   const row = { ...(condRow && typeof condRow === 'object' ? condRow : {}) };
@@ -117,7 +119,8 @@ function alertRowAt(condRow, hours, nowMs) {
     if (v === null || v === undefined) continue;
     row[k] = v;
   }
-  return { row, t: h.time.slice(0, 16), fromForecast: true };
+  // etiqueta completa: o motor v6 calcula o sol pelo instante (Açores, 01:00 repetido)
+  return { row, t: h.time, fromForecast: true };
 }
 
 /** Elevação do sol no spot em `nowMs` (graus) — null se o spot não existe. */

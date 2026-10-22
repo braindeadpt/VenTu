@@ -10,7 +10,7 @@
  *   - TELEGRAM: a linha compacta (seaWarningLine) no tgText por spot.
  */
 
-import { describe, it, expect, vi, afterEach } from 'vitest';
+import { describe, it, expect, vi, afterEach, beforeEach } from 'vitest';
 import { createRequire } from 'module';
 
 const require = createRequire(import.meta.url);
@@ -92,9 +92,22 @@ function installMockFetch() {
   vi.stubEnv('TELEGRAM_BOT_TOKEN', '123:test');
 }
 
+// O motor v6 não dá nota de noite (computeScore → null) e avalia a hora
+// actual em Lisboa: sem relógio fixo estes testes falham quando o CI corre
+// de noite (main b6989c0e, 21/10 20:13). Fixamos só o Date num meio-dia de
+// Verão — fetch/timers continuam reais.
+const MEIO_DIA_LISBOA = new Date('2026-07-15T11:00:00Z');
+
+beforeEach(() => {
+  vi.useFakeTimers({ toFake: ['Date'] });
+  vi.setSystemTime(MEIO_DIA_LISBOA);
+});
+
 afterEach(() => {
+  vi.useRealTimers();
   vi.unstubAllEnvs();
   vi.unstubAllGlobals();
+  PREFS[0].locale = 'pt'; // um teste EN que falhe não contamina os seguintes
 });
 
 describe('evaluateUserFavoritesAlerts — cadeia hermética com Agitação Marítima', () => {
@@ -164,7 +177,7 @@ describe('evaluateUserFavoritesAlerts — cadeia hermética com Agitação Marí
 describe('evaluateUserFavoritesAlerts — B4 warn (aviso oficial sem score)', () => {
   const WARNINGS = {
     source: 'ipma',
-    fetchedAt: new Date().toISOString(),
+    fetchedAt: MEIO_DIA_LISBOA.toISOString(),
     warnings: [SEA],
     spotWarnings: { guincho: [SEA] },
   };

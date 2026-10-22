@@ -131,17 +131,28 @@ if (conditions !== undefined) {
     'must be an object keyed by spot slug');
   const slugs = Object.keys(conditions);
   check('conditions.nonEmpty', slugs.length > 0, 'no spots');
+  // waveHeight numérico, ou `null` explícito quando a fonte não o tem (lagos,
+  // estuários: auditoria de dados 16/10, M2 — antes virava 0). Ausente ou de
+  // outro tipo continua a falhar, e mais de 10 % de spots sem onda também
+  // (isso já é falha de fetch, não «sem dados» pontual).
   const bad = slugs.filter((s) => {
     const v = conditions[s];
-    return typeof v !== 'object' || v === null || typeof v.waveHeight !== 'number';
+    return typeof v !== 'object' || v === null || !(typeof v.waveHeight === 'number' || v.waveHeight === null);
   });
-  check('conditions.entries', bad.length === 0, `${bad.length} spot(s) without a numeric waveHeight: ${fmtNames(bad)}`);
+  check('conditions.entries', bad.length === 0, `${bad.length} spot(s) without a numeric (or null) waveHeight: ${fmtNames(bad)}`);
+  const semOnda = slugs.filter((s) => conditions[s] && conditions[s].waveHeight === null);
+  check('conditions.waveCoverage', semOnda.length <= Math.floor(slugs.length * 0.1),
+    `${semOnda.length} of ${slugs.length} spot(s) with waveHeight null (> 10 %): ${fmtNames(semOnda)}`);
 }
 
 // ── 3. forecasts.json + forecasts/<slug>.json — hourly arrays ──
 const forecasts = read('forecasts.json');
 check('forecasts', forecasts !== undefined, 'file missing');
 const FORECAST_MIN_HOURS = 24;
+/** Número, ou `null` explícito («sem dados» da fonte; auditoria 16/10, M2). */
+const numOrNull = (x) => typeof x === 'number' || x === null;
+/** Série sem um único vento numérico = fetch partido, não «sem dados». */
+const semVento = (arr) => Array.isArray(arr) && arr.length > 0 && arr.every((h) => !h || typeof h.windSpeed !== 'number');
 let forecastFiles = [];
 if (fs.existsSync(path.join(DATA, 'forecasts'))) {
   forecastFiles = fs.readdirSync(path.join(DATA, 'forecasts'))
@@ -165,9 +176,9 @@ if (forecasts !== undefined) {
     check(`forecasts.${k}.shape`, Array.isArray(arr) && arr.length >= FORECAST_MIN_HOURS,
       `expected array of ≥${FORECAST_MIN_HOURS} hours`);
     if (Array.isArray(arr)) {
-      const bad = arr.map((h, i) => ({ h, i })).filter(({ h }) => !h || !isIso(h.time) || typeof h.waveHeight !== 'number' || typeof h.windSpeed !== 'number');
-      check(`forecasts.${k}.entries`, bad.length === 0,
-        `${bad.length} hour(s) missing time/waveHeight/windSpeed at index ${fmtNames(bad.map(({ i }) => i))}`);
+      const bad = arr.map((h, i) => ({ h, i })).filter(({ h }) => !h || !isIso(h.time) || !numOrNull(h.waveHeight) || !numOrNull(h.windSpeed));
+      check(`forecasts.${k}.entries`, bad.length === 0 && !semVento(arr),
+        `${bad.length} hour(s) missing time/waveHeight/windSpeed at index ${fmtNames(bad.map(({ i }) => i))}${semVento(arr) ? ' (no numeric windSpeed in the whole series)' : ''}`);
       const badBands = badEns(arr);
       check(`forecasts.${k}.ensemble`, badBands.length === 0,
         `${badBands.length} hour(s) with an invalid P10/P50/P90 band: ${fmtEns(badBands)}`);
@@ -200,9 +211,9 @@ if (forecasts !== undefined) {
     check(`forecasts/${f}.shape`, Array.isArray(arr) && arr.length >= FORECAST_MIN_HOURS,
       `expected array of ≥${FORECAST_MIN_HOURS} hours`);
     if (Array.isArray(arr)) {
-      const bad = arr.map((h, i) => ({ h, i })).filter(({ h }) => !h || !isIso(h.time) || typeof h.waveHeight !== 'number' || typeof h.windSpeed !== 'number');
-      check(`forecasts/${f}.entries`, bad.length === 0,
-        `${bad.length} hour(s) missing time/waveHeight/windSpeed at index ${fmtNames(bad.map(({ i }) => i))}`);
+      const bad = arr.map((h, i) => ({ h, i })).filter(({ h }) => !h || !isIso(h.time) || !numOrNull(h.waveHeight) || !numOrNull(h.windSpeed));
+      check(`forecasts/${f}.entries`, bad.length === 0 && !semVento(arr),
+        `${bad.length} hour(s) missing time/waveHeight/windSpeed at index ${fmtNames(bad.map(({ i }) => i))}${semVento(arr) ? ' (no numeric windSpeed in the whole series)' : ''}`);
       const badBands = badEns(arr);
       check(`forecasts/${f}.ensemble`, badBands.length === 0,
         `${badBands.length} hour(s) with an invalid P10/P50/P90 band: ${fmtEns(badBands)}`);
