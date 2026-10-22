@@ -46,7 +46,13 @@ const MAX_S = opt('max-s', 100);
 const FETCH = args.includes('--fetch');
 const APPLY = args.includes('--apply');
 
-const OVERPASS = ['https://z.overpass-api.de/api/interpreter', 'https://overpass.kumi.systems/api/interpreter', 'https://overpass-api.de/api/interpreter'];
+const OVERPASS = [
+  'https://z.overpass-api.de/api/interpreter',
+  'https://overpass.kumi.systems/api/interpreter',
+  'https://overpass-api.de/api/interpreter',
+  // 22/10: os três acima falharam (502/timeout); o espelho francês respondeu e deu o mesmo resultado nos spots de controlo
+  'https://overpass.openstreetmap.fr/api/interpreter',
+];
 const UA = 'VenTu-coast-orientation/1.0 (+https://ventu.surf; github.com/braindeadpt/VenTu #178)';
 
 /** Água interior ou abrigada: a «normal da costa» não diz de onde vem o vento de mar. Revisão manual. */
