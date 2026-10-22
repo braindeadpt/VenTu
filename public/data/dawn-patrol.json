@@ -1,103 +1,109 @@
 {
   "date": "2026-10-22",
-  "generatedAt": "2026-10-22T03:09:26.312Z",
-  "topSpot": "Supertubos",
-  "topSpotSlug": "supertubos",
+  "topSpot": "Guincho",
+  "topSpotSlug": "guincho",
   "pt": {
-    "headline": "Hoje é dia de Supertubos! 🌊",
-    "advice": "Melhor janela: 9:00h. Ondas de 2.5m com 1 nós de vento. ⚓ Avisos à Navegação Costeiros (IH): ANAV NR 12/24 — Edital n.º 712 de 2024 · ANAV NR 2257/26 — Animais Marinhos - Interação",
-    "bestTime": "9:00",
+    "headline": "Guincho em alta: ondas perfeitas e vento leve",
+    "advice": "Hoje o Guincho oferece ondas de 2.5 m com período de 11 s e vento de apenas 4 kt, ideal para manobras rápidas. Atenção ao aviso de interação com animais marinhos (ANAV NR 1445/26 e 1727/26), mas nada impede a sessão. Chegue cedo para evitar a crowd.",
+    "bestTime": "09:30",
     "wetsuit": "3/2mm",
-    "crowdTip": "Chega cedo para evitar crowd!",
+    "crowdTip": "Chegue antes das 10h para pegar as melhores seções antes da maioria.",
     "moonTideLine": "Gibosa crescente · Marés mortas · baixa-mar 06:00"
   },
   "en": {
-    "headline": "Today is Supertubos day! 🌊",
-    "advice": "Best window: 9:00. 2.5m waves with 1 knot wind. ⚓ Coastal navigation warnings (IH): ANAV NR 12/24 — Edital n.º 712 de 2024 · ANAV NR 2257/26 — Animais Marinhos - Interação",
-    "bestTime": "9:00",
+    "headline": "Guincho shines: perfect waves and light wind",
+    "advice": "Guincho is serving 2.5 m waves with an 11 s period and only 4 kt of wind, perfect for quick maneuvers. Note the marine‑animal interaction warnings (ANAV NR 1445/26 and 1727/26), but they don’t stop you from surfing. Arrive early to beat the crowd.",
+    "bestTime": "09:30",
     "wetsuit": "3/2mm",
-    "crowdTip": "Get there early to beat the crowd!",
+    "crowdTip": "Get there before 10 am to catch the best sections before most surfers arrive.",
     "moonTideLine": "Waxing gibbous · Neap tides · low tide 06:00"
   },
   "spots": [
     {
       "name": "Supertubos",
       "slug": "supertubos",
-      "score": 95,
+      "score": 85,
+      "verdict": "maybe",
+      "ptReason": "Boa onda, mas há aviso de mar perigoso (amarelo) e avisos costeiros; surfe com cautela.",
+      "enReason": "Decent waves, but there is a yellow maritime agitation warning and coastal alerts; surf with caution.",
       "scoreForecast": 95,
-      "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
+      "scoreSource": "boia",
+      "scoreMeta": {
+        "stationName": "Nazaré Costeira (WMO)",
+        "distanceKm": 27.4
+      }
     },
     {
       "name": "Guincho",
       "slug": "guincho",
       "score": 95,
+      "verdict": "go",
+      "ptReason": "Ondas consistentes, vento leve e nota máxima; avisos de animais marinhos, mas sem restrição de surf.",
+      "enReason": "Consistent waves, light wind and top rating; marine‑animal alerts only, no surf restriction.",
       "scoreForecast": 95,
       "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
-    },
-    {
-      "name": "Arrifana",
-      "slug": "arrifana",
-      "score": 94,
-      "scoreForecast": 94,
-      "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
-    },
-    {
-      "name": "Carcavelos",
-      "slug": "carcavelos",
-      "score": 91,
-      "scoreForecast": 91,
-      "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
+      "scoreMeta": null
     },
     {
       "name": "Nazaré",
       "slug": "nazare",
       "score": 85,
+      "verdict": "skip",
+      "ptReason": "Mar perigoso (amarelo) torna a prática arriscada apesar da boa onda.",
+      "enReason": "Yellow maritime agitation warning makes surfing risky despite good waves.",
       "scoreForecast": 85,
-      "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
+      "scoreSource": "boia",
+      "scoreMeta": {
+        "stationName": "Nazaré Costeira (WMO)",
+        "distanceKm": 11.9
+      }
     },
     {
       "name": "Ribeira d'Ilhas",
       "slug": "ribeira-ilhas",
       "score": 85,
+      "verdict": "maybe",
+      "ptReason": "Ondas boas, porém vento de 7 kt e aviso de avistamento de animais marinhos podem atrapalhar.",
+      "enReason": "Good waves but 7 kt wind and marine‑animal sighting warning may affect session.",
       "scoreForecast": 85,
       "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
+      "scoreMeta": null
     },
     {
       "name": "Coxos",
       "slug": "coxos",
       "score": 85,
+      "verdict": "go",
+      "ptReason": "Ondas fortes, vento fraco e apenas aviso de avistamento de animais marinhos.",
+      "enReason": "Strong waves, light wind and only a marine‑animal sighting warning.",
       "scoreForecast": 85,
       "scoreSource": "previsão",
-      "scoreMeta": null,
+      "scoreMeta": null
+    },
+    {
+      "name": "Arrifana",
+      "slug": "arrifana",
+      "score": 94,
       "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
+      "ptReason": "Boa combinação de onda e vento; aviso de plano de salvamento marítimo, mas sem restrição de surf.",
+      "enReason": "Good wave‑wind combo; maritime rescue plan alert only, no surf restriction.",
+      "scoreForecast": 94,
+      "scoreSource": "previsão",
+      "scoreMeta": null
+    },
+    {
+      "name": "Carcavelos",
+      "slug": "carcavelos",
+      "score": 91,
+      "verdict": "maybe",
+      "ptReason": "Ondas menores e múltiplos avisos de interação com animais marinhos; ainda surfável, mas com atenção.",
+      "enReason": "Slightly smaller waves and several marine‑animal interaction alerts; still surfable with care.",
+      "scoreForecast": 91,
+      "scoreSource": "previsão",
+      "scoreMeta": null
     }
   ],
+  "generatedAt": "2026-10-22T03:53:53.678Z",
   "topScore": 95,
   "topScoreForecast": 95,
   "topScoreSource": "previsão",
