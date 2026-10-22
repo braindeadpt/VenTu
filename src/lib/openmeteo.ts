@@ -384,7 +384,7 @@ export function getSportRating(spotType: string, waveHeight: number, windSpeed: 
   let recommendationEn = 'Fair conditions';
 
   // Wind direction analysis using coastOrientation
-  const coast = coastOrientation || 270; // Default: West coast
+  const coast = coastOrientation ?? 270; // Default: West coast (0 = virada a norte, não «sem valor»: #178)
   const angleDiff = windDirection !== undefined ? Math.abs(windDirection - coast) : 0;
   const normalizedDiff = angleDiff > 180 ? 360 - angleDiff : angleDiff;
   const isOffshore = windDirection !== undefined && normalizedDiff > 90;

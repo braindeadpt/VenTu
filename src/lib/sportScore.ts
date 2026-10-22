@@ -141,7 +141,7 @@ const SUP_CONFIG = {
 export type WindCategory = 'onshore' | 'side-onshore' | 'side-offshore' | 'offshore'
 
 export function classifyWind(spot: Spot, windDir: number): WindCategory {
-  const angleDiff = Math.abs(windDir - (spot.coastOrientation || 270))
+  const angleDiff = Math.abs(windDir - (spot.coastOrientation ?? 270))
   const normalizedDiff = angleDiff > 180 ? 360 - angleDiff : angleDiff
 
   // normalizedDiff: 0 = directly onshore, 180 = directly offshore, 90 = cross-shore
@@ -202,7 +202,7 @@ const WIND_SPORT_DIRECTION_BANDS: ReadonlyArray<{
 ]
 
 function angleFromOnshore(spot: Spot, windDir: number): number {
-  const angleDiff = Math.abs(windDir - (spot.coastOrientation || 270)) % 360
+  const angleDiff = Math.abs(windDir - (spot.coastOrientation ?? 270)) % 360
   return angleDiff > 180 ? 360 - angleDiff : angleDiff
 }
 
@@ -293,7 +293,7 @@ function scoreSurf(spot: Spot, c: Conditions): SportScore {
     factorsEn.push(`${c.wavePeriod.toFixed(0)}s period`)
   }
 
-  const angleDiff = Math.abs(c.windDirection - (spot.coastOrientation || 270))
+  const angleDiff = Math.abs(c.windDirection - (spot.coastOrientation ?? 270))
   const normalizedDiff = angleDiff > 180 ? 360 - angleDiff : angleDiff
   const isOffshore = normalizedDiff > 90
   const windScore = isOffshore

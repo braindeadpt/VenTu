@@ -132,7 +132,7 @@ function scoreSurf(spot, c) {
   const periodScore = Math.min((c.wavePeriod - 5) * 3, 20);
   score += Math.max(0, periodScore);
   if (c.wavePeriod > 8) factors.push(`${c.wavePeriod.toFixed(0)}s período`);
-  const angleDiff = Math.abs(c.windDirection - (spot.coastOrientation || 270));
+  const angleDiff = Math.abs(c.windDirection - (spot.coastOrientation ?? 270));
   const normalizedDiff = angleDiff > 180 ? 360 - angleDiff : angleDiff;
   const isOffshore = normalizedDiff > 90;
   const windScore = isOffshore ? Math.max(0, 25 - windKt * 0.5) : Math.max(0, 15 - windKt * 0.3);
