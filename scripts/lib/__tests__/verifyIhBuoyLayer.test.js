@@ -175,4 +175,66 @@ describe('verifyIhBuoyLayer', () => {
     expect(DATAWELL_FAMILY).toBe('datawell');
     expect(DATAWELL_COASTAL_BUOYS.map((b) => b.key)).toEqual(['4', '19', '20', '33']);
   });
-});
+});
+// ── Regra 4: outage IH a montante (incidente 2026-10-23, HTTP 500) ──────────
+describe('verifyIhBuoyLayer — outage a montante (waveFetchStatus upstream-outage)', () => {
+  const { isUpstreamOutage } = require('../../verify-ih-buoy-layer.js');
+  const NOW = Date.UTC(2026, 9, 23, 17, 0);
+  const iso = (h) => new Date(NOW - h * 3_600_000).toISOString();
+  const outageFile = (over = {}) => ({
+    apiKeyConfigured: true,
+    hasWaveData: true,
+    waveFetchStatus: 'upstream-outage',
+    stations: {
+      4: { idEst: 4, name: 'CSA92/D', family: DATAWELL_FAMILY, status: 'active', latest: { date: iso(4.5), hm0: 4.51 } },
+    },
+    upstreamOutage: {
+      scope: 'wave',
+      since: iso(0.5),
+      keptReadings: 1,
+      newestKeptReadingAt: iso(4.5),
+      failures: [4, 19, 20, 33, 86].map((idEst) => ({ idEst, status: 500, error: `HTTP 500 for buoy ${idEst}`, transient: true })),
+    },
+    ...over,
+  });
+
+  it('não falha: ok=true, outage=true, um aviso com HTTP 500 e a idade da leitura mantida', () => {
+    const r = verifyIhBuoyLayer(outageFile(), NOW);
+    expect(r.ok).toBe(true);
+    expect(r.outage).toBe(true);
+    expect(r.problems).toEqual([]);
+    expect(r.warnings).toHaveLength(1);
+    expect(r.warnings[0]).toContain('HTTP 500');
+    expect(r.warnings[0]).toContain('NÃO frescas');
+    expect(r.warnings[0]).toContain('~4.5 h');
+  });
+
+  it('leituras mantidas NUNCA contam como Datawell frescas', () => {
+    const r = verifyIhBuoyLayer(outageFile(), NOW);
+    expect(r.freshDatawell).toEqual([]);
+    expect(r.datawell.every((d) => d.ok === false && d.reason === 'upstream-outage')).toBe(true);
+  });
+
+  it('outage sem leituras (hasWaveData=false) continua a não falhar', () => {
+    const r = verifyIhBuoyLayer(
+      outageFile({ hasWaveData: false, stations: {}, upstreamOutage: { ...outageFile().upstreamOutage, keptReadings: 0, newestKeptReadingAt: null } }),
+      NOW,
+    );
+    expect(r.ok).toBe(true);
+    expect(r.warnings[0]).toContain('sem leituras anteriores');
+  });
+
+  it('a flag exige os dois marcadores — sem o bloco upstreamOutage volta às regras normais (falha)', () => {
+    expect(isUpstreamOutage({ waveFetchStatus: 'upstream-outage' })).toBe(false);
+    expect(isUpstreamOutage({ upstreamOutage: {} })).toBe(false);
+    const r = verifyIhBuoyLayer({ apiKeyConfigured: true, hasWaveData: false, waveFetchStatus: 'upstream-outage', stations: {} }, NOW);
+    expect(r.ok).toBe(false);
+  });
+
+  it("2xx sem séries ('empty') continua a FALHAR", () => {
+    const r = verifyIhBuoyLayer({ apiKeyConfigured: true, hasWaveData: false, waveFetchStatus: 'empty', stations: {} }, NOW);
+    expect(r.ok).toBe(false);
+    expect(r.outage).toBe(false);
+    expect(r.problems[0]).toContain('hasWaveData=false');
+  });
+});

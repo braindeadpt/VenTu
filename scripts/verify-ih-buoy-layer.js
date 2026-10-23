@@ -28,6 +28,16 @@
  *      any individual Datawell station that is missing, has a wrong family or
  *      lacks a fresh reading.
  *
+ *   4. UPSTREAM OUTAGE (incidente 2026-10-23, HTTP 500 em todas as Datawell):
+ *      quando fetch-ih-buoys.js classificou o run como 'upstream-outage'
+ *      (TODOS os pedidos falharam com 5xx/408/429/timeout/rede — ver
+ *      classifyWaveFetch em lib/ihBuoys.js) o passo NÃO falha: emite
+ *      ::warning:: com a idade das leituras mantidas e deixa o pipeline
+ *      seguir. Um outage do IH não é acionável do nosso lado e não pode
+ *      travar o commit/deploy dos dados. Continua a FALHAR: 401/403 (falha
+ *      antes, no fetch), zero boias listadas (idem) e key configurada com
+ *      todas as respostas 2xx sem série ('empty' → regra 1).
+ *
  * Exit 0 = OK · exit 1 = ::error:: com diagnóstico (o job falha no passo).
  */
 
@@ -60,6 +70,25 @@ const DATAWELL_COASTAL_BUOYS = [
 ];
 
 /**
+ * O fetch marcou este run como outage a montante (todos os pedidos com erro
+ * transitório)? Exige os DOIS marcadores — o estado e o bloco de diagnóstico.
+ * @param {object | null | undefined} data
+ */
+function isUpstreamOutage(data) {
+  return (
+    data?.waveFetchStatus === 'upstream-outage' &&
+    data?.upstreamOutage != null &&
+    typeof data.upstreamOutage === 'object'
+  );
+}
+
+function hoursSince(iso, nowMs) {
+  if (typeof iso !== 'string') return null;
+  const t = new Date(iso).getTime();
+  return Number.isFinite(t) ? (nowMs - t) / 3_600_000 : null;
+}
+
+/**
  * Pure: verifica a camada de boias IH num payload de ih-buoys.json.
  * @param {object | null | undefined} data
  * @returns {{ ok: boolean, problems: string[], warnings: string[],
@@ -67,9 +96,45 @@ const DATAWELL_COASTAL_BUOYS = [
  *              ok: boolean, reason?: string, station?: object }>,
  *            freshDatawell: Array<{ key: string, name: string }> }}
  */
-function verifyIhBuoyLayer(data) {
+function verifyIhBuoyLayer(data, nowMs = Date.now()) {
   const problems = [];
   const warnings = [];
+
+  // Regra 4 — outage a montante classificado pelo fetch: aviso, nunca falha.
+  if (isUpstreamOutage(data)) {
+    const o = data.upstreamOutage;
+    const codes = [
+      ...new Set((o.failures ?? []).map((f) => (f.status != null ? `HTTP ${f.status}` : String(f.error ?? '?')))),
+    ].join(', ');
+    const sinceH = hoursSince(o.since, nowMs);
+    const newestH = hoursSince(o.newestKeptReadingAt, nowMs);
+    warnings.push(
+      `IH em baixo a montante (${o.scope === 'stations' ? 'listagem OGC' : 'getDatawellData'}: ` +
+        `${codes || 'erro transitório'}) desde ${o.since ?? '?'}` +
+        `${sinceH != null ? ` (~${sinceH.toFixed(1)} h)` : ''} — ` +
+        (Number(o.keptReadings) > 0
+          ? `${o.keptReadings} leituras anteriores mantidas, a mais recente de ${o.newestKeptReadingAt}` +
+            `${newestH != null ? ` (~${newestH.toFixed(1)} h)` : ''}: NÃO frescas (o observedWave só anexa ≤ 3 h).`
+          : 'sem leituras anteriores ≤ 24 h (hasWaveData=false).') +
+        ' O job continua; fallback WMO/Copernicus.',
+    );
+    const datawell = DATAWELL_COASTAL_BUOYS.map(({ key, name }) => ({
+      key,
+      name,
+      ok: false,
+      reason: 'upstream-outage',
+      station: data?.stations?.[key] ?? null,
+    }));
+    return {
+      ok: true,
+      outage: true,
+      problems,
+      warnings,
+      fugro2: data?.stations?.[FUGRO_2_KEY] ?? null,
+      datawell,
+      freshDatawell: [],
+    };
+  }
 
   if (data?.hasWaveData !== true) {
     problems.push(
@@ -154,6 +219,7 @@ function verifyIhBuoyLayer(data) {
 
   return {
     ok: problems.length === 0,
+    outage: false,
     problems,
     warnings,
     fugro2: data?.stations?.[FUGRO_2_KEY] ?? null,
@@ -174,13 +240,20 @@ function main() {
     process.exit(1);
   }
 
-  const { ok, problems, warnings, fugro2, freshDatawell } = verifyIhBuoyLayer(data);
+  const { ok, outage, problems, warnings, fugro2, freshDatawell } = verifyIhBuoyLayer(data);
   if (!ok) {
     for (const p of problems) console.error(`::error::${p}`);
+    if (data?.waveFetchStatus) {
+      console.error(`   waveFetchStatus: ${data.waveFetchStatus}`);
+    }
     process.exit(1);
   }
 
   for (const w of warnings) console.warn(`::warning::${w}`);
+  if (outage) {
+    console.log('⚠️ IH buoy layer em outage a montante — verificação em modo aviso (exit 0).');
+    return;
+  }
 
   const freshLine =
     freshDatawell.length > 0
@@ -201,6 +274,7 @@ if (require.main === module) {
 
 module.exports = {
   verifyIhBuoyLayer,
+  isUpstreamOutage,
   FUGRO_2_KEY,
   FUGRO_2_FAMILY,
   DATAWELL_FAMILY,

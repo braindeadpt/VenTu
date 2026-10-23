@@ -39,6 +39,8 @@ export interface IhBuoysFile {
   fetchedAt?: string;
   apiKeyConfigured?: boolean;
   hasWaveData?: boolean;
+  /** Classificação do último fetch de séries (fetch-ih-buoys.js). */
+  waveFetchStatus?: string;
 }
 
 export interface WmoBuoysFile {
@@ -80,10 +82,14 @@ export function deriveBuoyLayerStatus(
 
   // Snapshots exist — are any of them fresh? Use the newest reading across
   // active stations (inactive buoys with old lastSea must not trigger).
+  // Outage IH a montante (waveFetchStatus 'upstream-outage'): só contam as
+  // leituras mantidas (latest.date, hora real) — o lastSea do catálogo OGC
+  // continua fresco durante o outage e faria passar a camada por 'ok'.
+  const outage = file.waveFetchStatus === 'upstream-outage';
   let newest = Infinity;
   for (const st of Object.values(file.stations)) {
     if (st.status === 'inactive' || st.status === 'inativa') continue;
-    const age = isoAgeHours(st.latest?.date ?? st.lastSea, nowMs);
+    const age = isoAgeHours(st.latest?.date ?? (outage ? undefined : st.lastSea), nowMs);
     if (age !== null && age >= 0 && age < newest) newest = age;
   }
   if (!Number.isFinite(newest)) return 'down';
