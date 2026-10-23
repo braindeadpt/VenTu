@@ -12,15 +12,16 @@
   },
   "osmBase": "2026-07-15T15:22:01Z",
   "resumo": {
-    "spots": 176,
-    "osm": 102,
+    "spots": 178,
+    "osm": 104,
     "osm1km": 2,
     "curado": 21,
-    "mantido": 51,
-    "mudam": 117,
-    "revisao": 102,
-    "em270Antes": 136,
-    "em270Depois": 43
+    "mantido": 50,
+    "manual": 1,
+    "mudam": 120,
+    "revisao": 103,
+    "em270Antes": 138,
+    "em270Depois": 42
   },
   "spots": [
     {
@@ -359,6 +360,31 @@
       "origem": "osm",
       "delta": 45,
       "deltaCalculado": 45,
+      "revisao": false,
+      "motivos": []
+    },
+    {
+      "id": "arvore",
+      "nome": "Praia de Árvore",
+      "lat": 41.3296,
+      "lon": -8.7391,
+      "atual": 270,
+      "calculado": 265,
+      "calculadoBruto": 262.9,
+      "segmentoProximo": 256,
+      "retidao": 0.991,
+      "dobra": 4,
+      "escala1km": 265,
+      "retidao1km": 0.987,
+      "distCostaM": 27,
+      "curado": null,
+      "referencia": null,
+      "difReferencia": null,
+      "difCurado": null,
+      "final": 265,
+      "origem": "osm",
+      "delta": 5,
+      "deltaCalculado": 5,
       "revisao": false,
       "motivos": []
     },
@@ -2408,6 +2434,33 @@
       ]
     },
     {
+      "id": "vale-figueiros-sines",
+      "nome": "Vale Figueiros",
+      "lat": 37.8958,
+      "lon": -8.7975,
+      "atual": 270,
+      "calculado": 250,
+      "calculadoBruto": 252.3,
+      "segmentoProximo": 228,
+      "retidao": 0.908,
+      "dobra": 13,
+      "escala1km": 263,
+      "retidao1km": 0.918,
+      "distCostaM": 23,
+      "curado": null,
+      "referencia": null,
+      "difReferencia": null,
+      "difCurado": null,
+      "final": 250,
+      "origem": "osm",
+      "delta": 20,
+      "deltaCalculado": 20,
+      "revisao": true,
+      "motivos": [
+        "outra costa a 218 m (margem oposta, ilhéu ou molhe)"
+      ]
+    },
+    {
       "id": "mosteiros",
       "nome": "Mosteiros",
       "lat": 37.89,
@@ -3315,13 +3368,14 @@
       "referencia": null,
       "difReferencia": null,
       "difCurado": null,
-      "final": 270,
-      "origem": "mantido",
-      "delta": 0,
+      "final": 230,
+      "origem": "manual",
+      "delta": 40,
       "deltaCalculado": 40,
       "revisao": true,
       "motivos": [
-        "geometria ambígua (dobra 53°, 500 m vs 1 km 13°: ponta, enseada ou foz)"
+        "geometria ambígua (dobra 53°, 500 m vs 1 km 13°: ponta, enseada ou foz)",
+        "água interior/abrigada: enseada do Beliche (Sagres): 230° fixado à mão"
       ]
     },
     {

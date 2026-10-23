@@ -155,6 +155,17 @@ export const spots: Spot[] = [
       hazards: ['Correntes', 'Ressaca forte']
     },
   {
+      id: 'arvore', slug: 'arvore', name: 'Praia de Árvore', nameEn: 'Arvore Beach',
+      region: 'Vila do Conde', regionEn: 'Vila do Conde', lat: 41.3296, lon: -8.7391,
+      coastOrientation: 265,
+      type: 'multisport', difficulty: 'intermediate', bestWind: 'S, SW', bestSwell: 'W, NW',
+      description: 'Praia de Árvore, em Vila do Conde, entre Mindelo e Azurara. Beach break para surf e foil; kitesurf sobretudo no inverno, com vento sul.',
+      descriptionEn: 'Arvore beach, in Vila do Conde, between Mindelo and Azurara. Beach break for surf and foil; kitesurf mainly in winter, with a south wind.',
+      compatibleSports: ['surf', 'foil', 'kitesurf'],
+      facilities: ['Estacionamento'],
+      hazards: ['Correntes']
+    },
+  {
       id: 'leca-palmeira', slug: 'leca-palmeira', name: 'Leça da Palmeira', nameEn: 'Leca da Palmeira',
       region: 'Porto', regionEn: 'Porto', lat: 41.189, lon: -8.706,
       coastOrientation: 275,
@@ -1147,6 +1158,17 @@ export const spots: Spot[] = [
       hazards: ['Estruturas industriais no fundo']
     },
   {
+      id: 'vale-figueiros-sines', slug: 'vale-figueiros-sines', name: 'Vale Figueiros', nameEn: 'Vale Figueiros',
+      region: 'Alentejo', regionEn: 'Alentejo', lat: 37.8958, lon: -8.7975,
+      coastOrientation: 250,
+      type: 'surf', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'W, NW',
+      description: 'Praia de Vale Figueiros, a sul de Sines, entre São Torpes e Porto Covo. Beach break para surf e bodyboard.',
+      descriptionEn: 'Vale Figueiros beach, south of Sines, between Sao Torpes and Porto Covo. Beach break for surf and bodyboard.',
+      compatibleSports: ['surf', 'bodyboard'],
+      facilities: ['Estacionamento'],
+      hazards: ['Correntes']
+    },
+  {
       id: 'mosteiros', slug: 'mosteiros', name: 'Mosteiros', nameEn: 'Mosteiros',
       region: 'São Miguel', regionEn: 'Sao Miguel', lat: 37.890, lon: -25.823,
       coastOrientation: 270,
@@ -1527,7 +1549,7 @@ export const spots: Spot[] = [
   {
       id: 'beliche', slug: 'beliche', name: 'Praia do Beliche', nameEn: 'Beliche Beach',
       region: 'Sagres', regionEn: 'Sagres', lat: 37.0256, lon: -8.9641,
-      coastOrientation: 270,
+      coastOrientation: 230,
       type: 'surf', difficulty: 'advanced', bestWind: 'E, SE', bestSwell: 'W, NW',
       description: 'Praia virada a oeste com ondas potentes. Acesso por escadaria na falésia. Beach break épico em dias grandes.',
       descriptionEn: 'West-facing beach with powerful waves. Access by staircase on the cliff. Epic beach break on big days.',

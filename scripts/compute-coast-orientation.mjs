@@ -21,6 +21,7 @@
  *  - `curado`: os spots da maquete v6 (`src/lib/spotEditorial.json`) ficam com o
  *    `praiaVirada` revisto à mão, para o motor antigo e o v6 dizerem o mesmo;
  *  - `osm`: o valor calculado (arredondado a 5°), quando a geometria é limpa;
+ *  - `manual`: valor fixado à mão (`VALOR_MANUAL`, spots da lista de revisão manual);
  *  - `mantido`: estuários, lagoas, rios e albufeiras (lista explícita abaixo),
  *    spots sem costa a < raio ou com geometria ambígua: NÃO se adivinha; o valor
  *    actual fica e o spot vai para revisão manual, com o calculado ao lado.
@@ -97,6 +98,16 @@ export const REVISAO_MANUAL = {
   'sao-martinho-porto': 'baía fechada (concha de São Martinho)',
   'vila-nova-milfontes': 'foz do rio Mira',
   'cova-do-vapor': 'foz do Tejo (ponta da Cova do Vapor)',
+  // enseada com geometria ambígua: valor fixado à mão (VALOR_MANUAL)
+  beliche: 'enseada do Beliche (Sagres): 230° fixado à mão',
+};
+
+/**
+ * Valor final fixado à mão para spots da lista acima (aprovado pelo Pedro).
+ * O recálculo mantém-no (`origem: manual`) em vez de voltar ao valor antigo.
+ */
+export const VALOR_MANUAL = {
+  beliche: 230, // 23/10: pin novo numa enseada (calculado 230°, geometria ambígua); aprovado pelo Pedro
 };
 
 /**
@@ -269,6 +280,9 @@ function rever(spots) {
     if (cur) {
       final = n360(cur.praiaVirada);
       origem = 'curado';
+    } else if (manual && VALOR_MANUAL[s.id] !== undefined) {
+      final = n360(VALOR_MANUAL[s.id]);
+      origem = 'manual';
     } else if (!bloqueia) {
       final = plano1km ? calc.escala1kmArredondado : calc.arredondado;
       origem = plano1km ? 'osm-1km' : 'osm';
@@ -358,6 +372,7 @@ const resumo = {
   osm1km: linhas.filter((l) => l.origem === 'osm-1km').length,
   curado: linhas.filter((l) => l.origem === 'curado').length,
   mantido: linhas.filter((l) => l.origem === 'mantido').length,
+  manual: linhas.filter((l) => l.origem === 'manual').length,
   mudam: linhas.filter((l) => l.final !== l.atual).length,
   revisao: linhas.filter((l) => l.revisao).length,
   em270Antes: linhas.filter((l) => l.atual === 270).length,

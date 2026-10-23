@@ -22,9 +22,9 @@ afterEach(() => {
 });
 
 describe('parseSpotsFromFile (update-conditions)', () => {
-  it('extrai id/lat/lon/region de todos os spots (176, sem duplicados)', () => {
+  it('extrai id/lat/lon/region de todos os spots (178, sem duplicados)', () => {
     expect(spots.length).toBeGreaterThanOrEqual(MIN_SPOTS);
-    expect(spots.length).toBe(176);
+    expect(spots.length).toBe(178);
     const ids = new Set(spots.map((s) => s.id));
     expect(ids.size).toBe(spots.length);
     for (const s of spots) {
@@ -50,7 +50,7 @@ describe('parseSpotsFromFile (update-conditions)', () => {
       true,
     );
     const primary = spots.filter((s) => !s.conditionsSource);
-    expect(primary.length).toBe(174);
+    expect(primary.length).toBe(176);
     expect(primary.some((s) => s.conditionsSource)).toBe(false);
   });
 });

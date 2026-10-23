@@ -66,6 +66,7 @@ Implementação pura e testada em `scripts/lib/coastOrientation.mjs`:
 | curado v6 | os 21 spots de `spotEditorial.json` (os 19 da maquete, mais as variantes da Lagoa de Óbidos) | o `praiaVirada` revisto à mão: o motor antigo e o v6 passam a dizer o mesmo |
 | OSM | geometria limpa | o calculado (500 m) |
 | OSM 1 km | 500 m ambíguo, mas a corda de 1 km é limpa (corda/arco ≥ 0,85) | o calculado a 1 km |
+| **manual** | spot da lista `REVISAO_MANUAL` com valor fixado à mão em `VALOR_MANUAL` (hoje só `beliche`, 230°, aprovado pelo Pedro a 23/10) | o valor fixado: o recálculo mantém-no |
 | **mantido** | rio, albufeira, lagoa, ria, estuário (lista explícita `REVISAO_MANUAL`: Tejo, Seixal, Sado, Óbidos, Albufeira, Santo André, Sancha, Aveiro, Alvor, Ria Formosa, Cávado, Lima, Douro, Mira, S. Martinho); sem costa OSM a < 2 km; geometria ambígua; spot a > 1 km da costa, numa costa que não é recta | **não se adivinha**: fica o valor antigo, e o spot vai para revisão manual com o calculado ao lado |
 
 Revisão (⚠) também quando:
@@ -80,6 +81,7 @@ Revisão (⚠) também quando:
 1. Em `data/coast-orientation-review.json`, filtrar `revisao: true`.
 2. Para corrigir um spot, há duas formas:
    - curá-lo em `src/lib/spotEditorial.json` (passa a `origem: curado`);
+   - ou fixar o valor à mão: pô-lo em `REVISAO_MANUAL` e em `VALOR_MANUAL` (passa a `origem: manual`);
    - ou corrigir as coordenadas em `spots.ts`, se o ponto não está na praia.
 3. Correr outra vez os passos 2 e 3.
 
@@ -124,12 +126,22 @@ ficam só `fao` (praia, surf e kite), `esposende` (rio, só kite) e
 devolve o valor de antes da #178 (no `beliche`, 155° → 270°; calculado 230°):
 candidatos a revisão manual.
 
+Numa quarta passagem (23/10) entraram 2 spots novos, com coordenadas do Pedro:
+`arvore` (Praia de Árvore, Vila do Conde, 41.3296,-8.7391; surf, foil e kite,
+spot diferente de `azurara`, que não mudou) e `vale-figueiros-sines` (Praia de
+Vale Figueiros, a sul de Sines, 37.8958,-8.7975; surf e bodyboard; o slug leva
+`-sines` para não se confundir com `vale-figueiras`, em Aljezur). A orientação
+dos dois foi calculada com cache nova (`overpass.openstreetmap.fr`): `arvore`
+265° e `vale-figueiros-sines` 250° (OSM). O `beliche` passa a **manual**: 230°
+(o calculado no pin novo), aprovado pelo Pedro; está em `REVISAO_MANUAL` e em
+`VALOR_MANUAL`, e o recálculo mantém-no.
+
 ## Resultado (OSM de 2026-07-15T15:22:01Z)
 
-- 176 spots, dos quais **117 mudam** de valor face ao antes da #178.
-- Origem: OSM 102, OSM 1 km 2, curado 21, mantido 51.
-- 102 spots ficam marcados para revisão.
-- Spots a 270°: 136 → 43. Os que ficam têm 270° calculado, curado, ou mantido com motivo.
+- 178 spots, dos quais **120 mudam** de valor face ao antes da #178.
+- Origem: OSM 104, OSM 1 km 2, curado 21, manual 1, mantido 50.
+- 103 spots ficam marcados para revisão.
+- Spots a 270°: 138 → 42. Os que ficam têm 270° calculado, curado, ou mantido com motivo.
 
 | spot | antes | calculado | depois | Δ | origem | revisão |
 |---|---:|---:|---:|---:|---|---|
@@ -146,6 +158,7 @@ candidatos a revisão manual.
 | `fao` | 270 | 235 | **235** | 35 | OSM | ⚠ a 1141 m de esposende (curado 275°) com 40° de diferença |
 | `apulia` | 270 | 240 | **240** | 30 | OSM |  |
 | `azurara` | 270 | 225 | **225** | 45 | OSM |  |
+| `arvore` | 270 | 265 | **265** | 5 | OSM |  |
 | `leca-palmeira` | 270 | 275 | **275** | 5 | OSM |  |
 | `matosinhos` | 270 | 220 | **255** | 15 | curado v6 | ⚠ calculado a 34° do curado v6 (255°) |
 | `cabedelo-douro` | 270 | 260 | **260** | 10 | OSM |  |
@@ -223,6 +236,7 @@ candidatos a revisão manual.
 | `ilha-do-ermal` | 270 |  | **270** | 0 | **mantido** | ⚠ sem linha de costa OSM a < 2000 m; água interior/abrigada: albufeira (interior) |
 | `melides` | 270 | 285 | **285** | 15 | OSM |  |
 | `sao-torpes` | 270 | 250 | **250** | 20 | OSM | ⚠ outra costa a 494 m (margem oposta, ilhéu ou molhe) |
+| `vale-figueiros-sines` | 270 | 250 | **250** | 20 | OSM | ⚠ outra costa a 218 m (margem oposta, ilhéu ou molhe) |
 | `mosteiros` | 270 | 5 | **270** | 0 | **mantido** | ⚠ geometria ambígua (dobra 64°, 500 m vs 1 km 49°: ponta, enseada ou foz); outra costa a 494 m (margem oposta, ilhéu ou molhe) |
 | `porto-covo` | 270 | 270 | **270** | 0 | **mantido** | ⚠ geometria ambígua (dobra 62°, 500 m vs 1 km 5°: ponta, enseada ou foz) |
 | `monte-verde` | 0 | 340 | **340** | 20 | OSM |  |
@@ -257,7 +271,7 @@ candidatos a revisão manual.
 | `foil-alvor` | 270 | 285 | **270** | 0 | **mantido** | ⚠ outra costa a 266 m (margem oposta, ilhéu ou molhe); água interior/abrigada: Ria de Alvor |
 | `lagos` | 180 | 150 | **160** | 20 | curado v6 |  |
 | `lagos-wakepark` | 270 | 75 | **270** | 0 | **mantido** | ⚠ geometria ambígua (dobra 71°, 500 m vs 1 km 30°: ponta, enseada ou foz); água interior/abrigada: lago de wake park (interior) |
-| `beliche` | 270 | 230 | **270** | 0 | **mantido** | ⚠ geometria ambígua (dobra 53°, 500 m vs 1 km 13°: ponta, enseada ou foz) |
+| `beliche` | 270 | 230 | **230** | 40 | **manual** | ⚠ geometria ambígua (dobra 53°, 500 m vs 1 km 13°: ponta, enseada ou foz); água interior/abrigada: enseada do Beliche (Sagres): 230° fixado à mão |
 | `martinhal` | 270 | 130 | **150** | 120 | curado v6 | ⚠ calculado a 22° do curado v6 (150°) |
 | `barrinha-faro` | 180 | 210 | **180** | 0 | **mantido** | ⚠ água interior/abrigada: Ria Formosa |
 | `fuseta` | 180 | 325 | **180** | 0 | **mantido** | ⚠ outra costa a 146 m (margem oposta, ilhéu ou molhe); água interior/abrigada: Ria Formosa |

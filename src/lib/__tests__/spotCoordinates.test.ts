@@ -5,7 +5,8 @@
  * dele no Google Maps). Em Fão ficam 2 spots: `fao` (praia, surf + kite; absorveu o
  * duplicado `fao-ofir-surf`) e `esposende` (rio Cávado, só kite). Na 3.ª passagem (23/10)
  * mais pins do Pedro, `esposende-praia` sem kite, `rodanho` só kite, e 8 spots removidos
- * (Fão/Ofir duplicados, Póvoa, Castelo do Neiva, Garrão, Sines). Guarda:
+ * (Fão/Ofir duplicados, Póvoa, Castelo do Neiva, Garrão, Sines). Na 4.ª passagem (23/10)
+ * 2 spots novos (`arvore`, `vale-figueiros-sines`) e `beliche` fixado à mão em 230°. Guarda:
  *  - cada spot corrigido a ≤ 500 m da coordenada esperada;
  *  - `src/lib/spots.ts` e `data/coast-orientation-review.json` com as mesmas coordenadas;
  *  - os spots corrigidos a ≤ 1 km da linha de costa OSM (distância do ficheiro de revisão).
@@ -184,5 +185,54 @@ describe('coordenadas dos spots', () => {
     const ep = spots.find((s) => s.id === 'esposende-praia')!;
     expect([...(ep.compatibleSports ?? [])].sort()).toEqual(['bodyboard', 'foil', 'surf']);
     expect(spots.find((s) => s.id === 'rodanho')!.compatibleSports).toEqual(['kitesurf']);
+  });
+
+  /** 4.ª passagem (23/10): spots novos, [id, lat, lon] do Pedro. */
+  const NOVOS_4: Array<[string, number, number]> = [
+    ['arvore', 41.3296, -8.7391],
+    ['vale-figueiros-sines', 37.8958, -8.7975],
+  ];
+
+  it.each(NOVOS_4)('%s existe, fica a ≤ 20 m do pin e a ≤ 1 km da costa OSM', (id, lat, lon) => {
+    const s = spots.find((x) => x.id === id)!;
+    expect(s, id).toBeDefined();
+    expect(s.slug).toBe(id);
+    expect(distM(s.lat, s.lon, lat, lon)).toBeLessThanOrEqual(20);
+    const l = porId.get(id) as unknown as { final: number; origem: string; distCostaM: number | null };
+    expect(l, id).toBeDefined();
+    expect(s.coastOrientation, id).toBe(l.final);
+    expect(l.origem, id).toBe('osm');
+    expect(l.distCostaM!, id).toBeLessThanOrEqual(1000);
+  });
+
+  it('arvore: surf, foil e kite (multisport), em Vila do Conde; azurara não mudou', () => {
+    const a = spots.find((s) => s.id === 'arvore')!;
+    expect(a.type).toBe('multisport');
+    expect([...(a.compatibleSports ?? [])].sort()).toEqual(['foil', 'kitesurf', 'surf']);
+    expect(a.region).toBe('Vila do Conde');
+    expect(a.bestWind).toBe('S, SW');
+    expect(a.coastOrientation).toBe(265);
+    const z = spots.find((s) => s.id === 'azurara')!;
+    expect([z.lat, z.lon, z.coastOrientation]).toEqual([41.338, -8.743, 225]);
+    expect(z.compatibleSports).toEqual(['surf', 'sup', 'bodyboard', 'kitesurf']);
+    expect(distM(a.lat, a.lon, z.lat, z.lon)).toBeGreaterThan(500);
+  });
+
+  it('vale-figueiros-sines: surf e bodyboard como São Torpes/Porto Covo; não se confunde com vale-figueiras', () => {
+    const v = spots.find((s) => s.id === 'vale-figueiros-sines')!;
+    expect(v.compatibleSports).toEqual(spots.find((s) => s.id === 'sao-torpes')!.compatibleSports);
+    expect(v.coastOrientation).toBe(250);
+    expect(spots.some((s) => s.id === 'vale-figueiros' || s.slug === 'vale-figueiros')).toBe(false);
+    const vf = spots.find((s) => s.id === 'vale-figueiras')!;
+    expect(vf.region).not.toBe(v.region);
+    expect(distM(v.lat, v.lon, vf.lat, vf.lon)).toBeGreaterThan(50000);
+  });
+
+  it('beliche fica 230° fixado à mão (origem manual no ficheiro de revisão)', () => {
+    const b = spots.find((s) => s.id === 'beliche')!;
+    expect(b.coastOrientation).toBe(230);
+    const l = porId.get('beliche') as unknown as { final: number; origem: string };
+    expect(l.final).toBe(230);
+    expect(l.origem).toBe('manual');
   });
 });
