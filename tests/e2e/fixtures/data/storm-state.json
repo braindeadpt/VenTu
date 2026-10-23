@@ -50,23 +50,8 @@
         "intensity": "moderate",
         "approach": {
           "state": "approaching",
-          "deg": null,
-          "kmh": null
-        }
-      },
-      "warnLevel": "yellow",
-      "inStormCone": false
-    },
-    "castelo-neiva": {
-      "radar": {
-        "state": "over",
-        "distKm": 8,
-        "dirDeg": 40,
-        "intensity": "moderate",
-        "approach": {
-          "state": "approaching",
-          "deg": 321,
-          "kmh": 135
+          "deg": 129,
+          "kmh": 21
         }
       },
       "warnLevel": "yellow",
@@ -147,21 +132,6 @@
       "warnLevel": "yellow",
       "inStormCone": false
     },
-    "ofir": {
-      "radar": {
-        "state": "over",
-        "distKm": 23,
-        "dirDeg": 44,
-        "intensity": "moderate",
-        "approach": {
-          "state": "approaching",
-          "deg": 320,
-          "kmh": 127
-        }
-      },
-      "warnLevel": "yellow",
-      "inStormCone": false
-    },
     "esposende": {
       "radar": {
         "state": "over",
@@ -222,21 +192,6 @@
       "warnLevel": "yellow",
       "inStormCone": false
     },
-    "povoa-varzim": {
-      "radar": {
-        "state": "over",
-        "distKm": 27,
-        "dirDeg": 43,
-        "intensity": "moderate",
-        "approach": {
-          "state": "approaching",
-          "deg": 312,
-          "kmh": 94
-        }
-      },
-      "warnLevel": "yellow",
-      "inStormCone": false
-    },
     "azurara": {
       "radar": {
         "state": "over",
@@ -247,6 +202,21 @@
           "state": "approaching",
           "deg": 310,
           "kmh": 86
+        }
+      },
+      "warnLevel": "yellow",
+      "inStormCone": false
+    },
+    "arvore": {
+      "radar": {
+        "state": "near",
+        "distKm": 34,
+        "dirDeg": 13,
+        "intensity": "light",
+        "approach": {
+          "state": "receding",
+          "deg": 347,
+          "kmh": 80
         }
       },
       "warnLevel": "yellow",
@@ -307,36 +277,6 @@
           "state": "approaching",
           "deg": 263,
           "kmh": 41
-        }
-      },
-      "warnLevel": "yellow",
-      "inStormCone": false
-    },
-    "foil-fao-cavado": {
-      "radar": {
-        "state": "over",
-        "distKm": 25,
-        "dirDeg": 43,
-        "intensity": "moderate",
-        "approach": {
-          "state": "approaching",
-          "deg": 319,
-          "kmh": 123
-        }
-      },
-      "warnLevel": "yellow",
-      "inStormCone": false
-    },
-    "foil-esposende-piscinas": {
-      "radar": {
-        "state": "over",
-        "distKm": 25,
-        "dirDeg": 42,
-        "intensity": "moderate",
-        "approach": {
-          "state": "approaching",
-          "deg": 319,
-          "kmh": 124
         }
       },
       "warnLevel": "yellow",
@@ -1392,21 +1332,6 @@
       "warnLevel": null,
       "inStormCone": false
     },
-    "sines": {
-      "radar": {
-        "state": "near",
-        "distKm": 10,
-        "dirDeg": 317,
-        "intensity": "moderate",
-        "approach": {
-          "state": "approaching",
-          "deg": 246,
-          "kmh": 75
-        }
-      },
-      "warnLevel": null,
-      "inStormCone": false
-    },
     "sao-torpes": {
       "radar": {
         "state": "near",
@@ -1417,6 +1342,21 @@
           "state": "receding",
           "deg": 141,
           "kmh": 16
+        }
+      },
+      "warnLevel": null,
+      "inStormCone": false
+    },
+    "vale-figueiros-sines": {
+      "radar": {
+        "state": "over",
+        "distKm": 8,
+        "dirDeg": 84,
+        "intensity": "moderate",
+        "approach": {
+          "state": "receding",
+          "deg": 80,
+          "kmh": 51
         }
       },
       "warnLevel": null,
@@ -2317,21 +2257,6 @@
       "warnLevel": null,
       "inStormCone": false
     },
-    "garrão": {
-      "radar": {
-        "state": "over",
-        "distKm": 6,
-        "dirDeg": 295,
-        "intensity": "moderate",
-        "approach": {
-          "state": "receding",
-          "deg": 186,
-          "kmh": 35
-        }
-      },
-      "warnLevel": null,
-      "inStormCone": false
-    },
     "falesia": {
       "radar": {
         "state": "near",
@@ -2455,36 +2380,6 @@
     "faja-cubres": {
       "radar": null,
       "warnLevel": null,
-      "inStormCone": false
-    },
-    "fao-ofir-surf": {
-      "radar": {
-        "state": "over",
-        "distKm": 26,
-        "dirDeg": 43,
-        "intensity": "moderate",
-        "approach": {
-          "state": "approaching",
-          "deg": 319,
-          "kmh": 123
-        }
-      },
-      "warnLevel": "yellow",
-      "inStormCone": false
-    },
-    "ofir-praia": {
-      "radar": {
-        "state": "over",
-        "distKm": 26,
-        "dirDeg": 43,
-        "intensity": "moderate",
-        "approach": {
-          "state": "approaching",
-          "deg": 319,
-          "kmh": 121
-        }
-      },
-      "warnLevel": "yellow",
       "inStormCone": false
     },
     "mindelo": {

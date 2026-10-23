@@ -56,7 +56,15 @@
       "lon": -7.89779,
       "lastPos": "2026-09-08T04:55:21+00:00",
       "lastSea": "2026-09-08T04:25:21+00:00",
-      "family": "datawell"
+      "family": "datawell",
+      "latest": {
+        "date": "2026-10-23T10:26:22.000Z",
+        "hm0": 0.52,
+        "tp": 10.5,
+        "thtp": 263,
+        "hmax": 0.79,
+        "temp": 20.9
+      }
     },
     "23": {
       "idEst": 23,
@@ -146,6 +154,7 @@
       "nrt": "near-real-time data not available",
       "lat": 38.588333333333296,
       "lon": -28.541111111111096,
+      "lastPos": "2021-10-27T08:36:15+00:00",
       "lastSea": "2022-07-28T17:29:16+00:00",
       "family": "datawell"
     },
@@ -205,12 +214,6 @@
       "area": "Leixões",
       "distanceKm": 52.3
     },
-    "castelo-neiva": {
-      "idEst": 4,
-      "stationTitle": "CSA92/D",
-      "area": "Leixões",
-      "distanceKm": 50.2
-    },
     "amorosa": {
       "idEst": 4,
       "stationTitle": "CSA92/D",
@@ -241,12 +244,6 @@
       "area": "Leixões",
       "distanceKm": 41.2
     },
-    "ofir": {
-      "idEst": 4,
-      "stationTitle": "CSA92/D",
-      "area": "Leixões",
-      "distanceKm": 30.5
-    },
     "esposende": {
       "idEst": 4,
       "stationTitle": "CSA92/D",
@@ -271,17 +268,17 @@
       "area": "Leixões",
       "distanceKm": 26.1
     },
-    "povoa-varzim": {
-      "idEst": 4,
-      "stationTitle": "CSA92/D",
-      "area": "Leixões",
-      "distanceKm": 19.8
-    },
     "azurara": {
       "idEst": 4,
       "stationTitle": "CSA92/D",
       "area": "Leixões",
       "distanceKm": 20.2
+    },
+    "arvore": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Continente - Leixões",
+      "distanceKm": 20.4
     },
     "leca-palmeira": {
       "idEst": 4,
@@ -306,18 +303,6 @@
       "stationTitle": "CSA92/D",
       "area": "Leixões",
       "distanceKm": 33.7
-    },
-    "foil-fao-cavado": {
-      "idEst": 4,
-      "stationTitle": "CSA92/D",
-      "area": "Leixões",
-      "distanceKm": 28.4
-    },
-    "foil-esposende-piscinas": {
-      "idEst": 4,
-      "stationTitle": "CSA92/D",
-      "area": "Leixões",
-      "distanceKm": 28.9
     },
     "praia-da-lomba": {
       "idEst": 4,
@@ -754,17 +739,17 @@
       "area": "Sines",
       "distanceKm": 26
     },
-    "sines": {
-      "idEst": 19,
-      "stationTitle": "CSA83/1D",
-      "area": "Sines",
-      "distanceKm": 6.4
-    },
     "sao-torpes": {
       "idEst": 19,
       "stationTitle": "CSA83/1D",
       "area": "Sines",
       "distanceKm": 10.8
+    },
+    "vale-figueiros-sines": {
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Continente - Sines",
+      "distanceKm": 11.8
     },
     "mosteiros": {
       "idEst": 86,
@@ -1187,12 +1172,6 @@
       "area": "Sines",
       "distanceKm": 15.4
     },
-    "garrão": {
-      "idEst": 20,
-      "stationTitle": "CSA82/D",
-      "area": "Faro",
-      "distanceKm": 9.1
-    },
     "falesia": {
       "idEst": 20,
       "stationTitle": "CSA82/D",
@@ -1285,18 +1264,6 @@
       "area": "Arquipélago Açores - Ilha Graciosa",
       "distanceKm": 49.7,
       "island": true
-    },
-    "fao-ofir-surf": {
-      "idEst": 4,
-      "stationTitle": "CSA92/D",
-      "area": "Leixões",
-      "distanceKm": 28.1
-    },
-    "ofir-praia": {
-      "idEst": 4,
-      "stationTitle": "CSA92/D",
-      "area": "Leixões",
-      "distanceKm": 27.7
     },
     "mindelo": {
       "idEst": 4,
