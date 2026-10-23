@@ -14,10 +14,10 @@ const {
 } = require('../buoyBias.js');
 
 describe('parseSpotsWithRegions', () => {
-  it('extrai id/lat/lon/region de todos os spots (185, sem duplicados)', () => {
+  it('extrai id/lat/lon/region de todos os spots (178, sem duplicados)', () => {
     const spots = parseSpotsWithRegions();
-    expect(spots.length).toBeGreaterThanOrEqual(180);
-    expect(spots.length).toBe(185);
+    expect(spots.length).toBeGreaterThanOrEqual(170);
+    expect(spots.length).toBe(178);
     const ids = new Set(spots.map((s) => s.id));
     expect(ids.size).toBe(spots.length);
     for (const s of spots) {
@@ -40,13 +40,11 @@ describe('parseSpotsWithRegions', () => {
   it('não inclui aliases nem spots sem região (todos têm region hoje)', () => {
     const spots = parseSpotsWithRegions();
     const aliasIds = spots.filter((s) =>
-      ['foil-fao-cavado', 'foil-esposende-piscinas', 'obidos-lagoon-sul', 'obidos-lagoon-foz'].includes(
-        s.id,
-      ),
+      ['obidos-lagoon-sul', 'obidos-lagoon-foz'].includes(s.id),
     );
     // Os aliases também têm region em spots.ts — mas o parser exige region,
     // por isso qualquer spot sem region seria omitido (hoje: nenhum).
-    expect(aliasIds.length).toBe(4);
+    expect(aliasIds.length).toBe(2);
   });
 });
 

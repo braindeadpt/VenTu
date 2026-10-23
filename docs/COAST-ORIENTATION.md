@@ -66,6 +66,7 @@ Implementação pura e testada em `scripts/lib/coastOrientation.mjs`:
 | curado v6 | os 21 spots de `spotEditorial.json` (os 19 da maquete, mais as variantes da Lagoa de Óbidos) | o `praiaVirada` revisto à mão: o motor antigo e o v6 passam a dizer o mesmo |
 | OSM | geometria limpa | o calculado (500 m) |
 | OSM 1 km | 500 m ambíguo, mas a corda de 1 km é limpa (corda/arco ≥ 0,85) | o calculado a 1 km |
+| **manual** | spot da lista `REVISAO_MANUAL` com valor fixado à mão em `VALOR_MANUAL` (hoje só `beliche`, 230°, aprovado pelo Pedro a 23/10) | o valor fixado: o recálculo mantém-no |
 | **mantido** | rio, albufeira, lagoa, ria, estuário (lista explícita `REVISAO_MANUAL`: Tejo, Seixal, Sado, Óbidos, Albufeira, Santo André, Sancha, Aveiro, Alvor, Ria Formosa, Cávado, Lima, Douro, Mira, S. Martinho); sem costa OSM a < 2 km; geometria ambígua; spot a > 1 km da costa, numa costa que não é recta | **não se adivinha**: fica o valor antigo, e o spot vai para revisão manual com o calculado ao lado |
 
 Revisão (⚠) também quando:
@@ -80,6 +81,7 @@ Revisão (⚠) também quando:
 1. Em `data/coast-orientation-review.json`, filtrar `revisao: true`.
 2. Para corrigir um spot, há duas formas:
    - curá-lo em `src/lib/spotEditorial.json` (passa a `origem: curado`);
+   - ou fixar o valor à mão: pô-lo em `REVISAO_MANUAL` e em `VALOR_MANUAL` (passa a `origem: manual`);
    - ou corrigir as coordenadas em `spots.ts`, se o ponto não está na praia.
 3. Correr outra vez os passos 2 e 3.
 
@@ -96,41 +98,71 @@ recalculada com este script (cache nova de `overpass.openstreetmap.fr`, OSM de
 12/07; nos spots de controlo o espelho dá o mesmo resultado que a cache de
 16/10). Os outros 154 spots não mudam. O teste
 `src/lib/__tests__/spotCoordinates.test.ts` guarda as coordenadas corrigidas e a
-coerência com o ficheiro de revisão. Ficaram por resolver:
-`santa-catarina-terceira`, `cachorro-pico`, `formosa-santa-maria`,
-`vale-figueiras`, `fao`, `barrinha-faro`, `carvalhal`.
+coerência com o ficheiro de revisão.
+
+Numa segunda passagem (22/10) foram corrigidos os 6 que faltavam
+(`santa-catarina-terceira`, `cachorro-pico`, `formosa-santa-maria`,
+`vale-figueiras`, `fao`, `barrinha-faro`), com coordenadas confirmadas pelo
+Pedro (as de `fao` e `barrinha-faro` são pins dele no Google Maps), e a
+orientação desses 6 foi recalculada da mesma forma. `carvalhal`
+(Aljezur/Brejão) foi verificado e já estava certo; não mudou.
+
+Em Fão ficam só 2 spots (decisão do Pedro, 22/10): `fao` é a praia de Fão/Ofir,
+surf e kite no mar (pin «Praia Surf Fão Ofir», 41.5233,-8.7900), e absorve o
+antigo `fao-ofir-surf`, que era um duplicado no mesmo ponto e foi removido;
+`esposende` passa para o spot de kite no rio Cávado (pin «Kitesurf Spot»,
+41.5336,-8.7892), só kitesurf. A orientação dos dois foi recalculada com a cache
+nova de `esposende` (`overpass.openstreetmap.fr`): `fao` fica 235° (OSM) e
+`esposende` fica 275° (curado v6; calculado 280°).
+
+Numa terceira passagem (23/10) o Pedro mandou pins do Google Maps para 20
+spots do Norte, da Costa Vicentina/Alentejo, do Algarve e de Lisboa/Sintra; as
+coordenadas são o pin arredondado a 4 casas e a orientação foi recalculada com
+cache nova (`overpass.openstreetmap.fr`, um spot de cada vez). Em Fão/Esposende
+ficam só `fao` (praia, surf e kite), `esposende` (rio, só kite) e
+`esposende-praia` (praia oceânica, surf/foil/bodyboard). Foram removidos
+`ofir`, `ofir-praia`, `foil-fao-cavado`, `foil-esposende-piscinas`, `povoa-varzim`, `castelo-neiva`, `garrão`, `sines`. `beliche`, `porto-covo` e
+`vila-praia-ancora` ficam **mantidos** (geometria ambígua no pin novo), o que
+devolve o valor de antes da #178 (no `beliche`, 155° → 270°; calculado 230°):
+candidatos a revisão manual.
+
+Numa quarta passagem (23/10) entraram 2 spots novos, com coordenadas do Pedro:
+`arvore` (Praia de Árvore, Vila do Conde, 41.3296,-8.7391; surf, foil e kite,
+spot diferente de `azurara`, que não mudou) e `vale-figueiros-sines` (Praia de
+Vale Figueiros, a sul de Sines, 37.8958,-8.7975; surf e bodyboard; o slug leva
+`-sines` para não se confundir com `vale-figueiras`, em Aljezur). A orientação
+dos dois foi calculada com cache nova (`overpass.openstreetmap.fr`): `arvore`
+265° e `vale-figueiros-sines` 250° (OSM). O `beliche` passa a **manual**: 230°
+(o calculado no pin novo), aprovado pelo Pedro; está em `REVISAO_MANUAL` e em
+`VALOR_MANUAL`, e o recálculo mantém-no.
 
 ## Resultado (OSM de 2026-07-15T15:22:01Z)
 
-- 185 spots, dos quais **120 mudam** de valor face ao antes da #178.
-- Origem: OSM 106, OSM 1 km 2, curado 21, mantido 56.
-- 109 spots ficam marcados para revisão.
-- Spots a 270°: 144 → 48. Os que ficam têm 270° calculado, curado, ou mantido com motivo.
+- 178 spots, dos quais **120 mudam** de valor face ao antes da #178.
+- Origem: OSM 104, OSM 1 km 2, curado 21, manual 1, mantido 50.
+- 103 spots ficam marcados para revisão.
+- Spots a 270°: 138 → 42. Os que ficam têm 270° calculado, curado, ou mantido com motivo.
 
 | spot | antes | calculado | depois | Δ | origem | revisão |
 |---|---:|---:|---:|---:|---|---|
 | `moledo` | 270 | 280 | **270** | 0 | curado v6 |  |
-| `vila-praia-ancora` | 270 | 240 | **270** | 0 | **mantido** | ⚠ geometria ambígua (dobra 56°, 500 m vs 1 km 7°: ponta, enseada ou foz) |
+| `vila-praia-ancora` | 270 | 240 | **270** | 0 | **mantido** | ⚠ geometria ambígua (dobra 57°, 500 m vs 1 km 6°: ponta, enseada ou foz) |
 | `afife` | 270 | 280 | **280** | 10 | OSM |  |
-| `castelo-neiva` | 270 | 275 | **275** | 5 | OSM |  |
 | `amorosa` | 270 | 255 | **255** | 15 | OSM |  |
 | `cabedelo` | 270 | 210 | **265** | 5 | curado v6 | ⚠ calculado a 55° do curado v6 (265°) |
 | `foil-cabedelo` | 270 | 210 | **270** | 0 | **mantido** | ⚠ água interior/abrigada: rio Lima (barra) |
 | `cabedelo-wakepark` | 270 | 215 | **270** | 0 | **mantido** | ⚠ spot a 1033 m da costa; água interior/abrigada: rio Lima (wake park); longe da costa e costa não recta: não aplicado |
 | `rodanho` | 270 | 265 | **265** | 5 | OSM |  |
-| `ofir` | 270 | 260 | **260** | 10 | OSM |  |
 | `esposende` | 270 | 280 | **275** | 5 | curado v6 | ⚠ água interior/abrigada: foz do Cávado (rio/mar) |
-| `esposende-praia` | 270 | 265 | **265** | 5 | OSM |  |
-| `fao` | 270 | 275 | **275** | 5 | OSM | ⚠ spot a 1355 m da costa |
+| `esposende-praia` | 270 | 275 | **275** | 5 | OSM |  |
+| `fao` | 270 | 235 | **235** | 35 | OSM | ⚠ a 1141 m de esposende (curado 275°) com 40° de diferença |
 | `apulia` | 270 | 240 | **240** | 30 | OSM |  |
-| `povoa-varzim` | 270 | 245 | **270** | 0 | **mantido** | ⚠ geometria ambígua (dobra 46°, 500 m vs 1 km 24°: ponta, enseada ou foz); outra costa a 314 m (margem oposta, ilhéu ou molhe) |
 | `azurara` | 270 | 225 | **225** | 45 | OSM |  |
+| `arvore` | 270 | 265 | **265** | 5 | OSM |  |
 | `leca-palmeira` | 270 | 275 | **275** | 5 | OSM |  |
 | `matosinhos` | 270 | 220 | **255** | 15 | curado v6 | ⚠ calculado a 34° do curado v6 (255°) |
 | `cabedelo-douro` | 270 | 260 | **260** | 10 | OSM |  |
 | `marina-afurada-foil` | 270 | 255 | **270** | 0 | **mantido** | ⚠ spot a 1318 m da costa; água interior/abrigada: rio Douro (marina); longe da costa e costa não recta: não aplicado |
-| `foil-fao-cavado` | 270 | 235 | **270** | 0 | **mantido** | ⚠ água interior/abrigada: rio Cávado |
-| `foil-esposende-piscinas` | 270 | 275 | **270** | 0 | **mantido** | ⚠ água interior/abrigada: rio Cávado |
 | `praia-da-lomba` | 270 |  | **270** | 0 | **mantido** | ⚠ sem linha de costa OSM a < 2000 m; água interior/abrigada: rio Douro (interior) |
 | `salgueiros` | 270 | 240 | **240** | 30 | OSM |  |
 | `sereia-costa-verde` | 270 | 270 | **270** | 0 | OSM |  |
@@ -177,13 +209,13 @@ coerência com o ficheiro de revisão. Ficaram por resolver:
 | `pedra-branca` | 270 | 270 | **270** | 0 | OSM |  |
 | `sao-sebastiao` | 270 | 265 | **265** | 5 | OSM |  |
 | `foz-lizandro` | 270 | 305 | **295** | 25 | OSM 1 km | ⚠ geometria ambígua (dobra 59°, 500 m vs 1 km 10°: ponta, enseada ou foz); aplicada a corda de 1 km (295°, corda/arco 0.858) |
-| `praia-grande-sintra` | 270 | 285 | **285** | 15 | OSM |  |
+| `praia-grande-sintra` | 270 | 295 | **295** | 25 | OSM |  |
 | `adraga` | 270 | 295 | **295** | 25 | OSM |  |
 | `guincho` | 270 | 290 | **280** | 10 | curado v6 | ⚠ outra costa a 384 m (margem oposta, ilhéu ou molhe) |
 | `seixal-bay` | 0 | 40 | **0** | 0 | **mantido** | ⚠ geometria ambígua (dobra 99°, 500 m vs 1 km 0°: ponta, enseada ou foz); água interior/abrigada: estuário do Tejo (Baía do Seixal) |
 | `praia-vitoria` | 270 | 100 | **270** | 0 | **mantido** | ⚠ geometria ambígua (dobra 56°, 500 m vs 1 km 14°: ponta, enseada ou foz) |
-| `santa-catarina-terceira` | 270 |  | **270** | 0 | **mantido** | ⚠ sem linha de costa OSM a < 2000 m |
-| `parede` | 270 | 230 | **230** | 40 | OSM | ⚠ a 1308 m de carcavelos (curado 195°) com 35° de diferença |
+| `santa-catarina-terceira` | 270 | 105 | **270** | 0 | **mantido** | ⚠ geometria ambígua (dobra 53°, 500 m vs 1 km 10°: ponta, enseada ou foz); outra costa a 231 m (margem oposta, ilhéu ou molhe) |
+| `parede` | 270 | 195 | **195** | 75 | OSM | ⚠ delta 75° > 45° face ao valor antigo |
 | `carcavelos` | 270 | 205 | **195** | 75 | curado v6 |  |
 | `nova-vaga` | 270 | 255 | **255** | 15 | OSM |  |
 | `sao-joao-caparica` | 270 | 225 | **225** | 45 | OSM |  |
@@ -203,28 +235,28 @@ coerência com o ficheiro de revisão. Ficaram por resolver:
 | `alqueva` | 270 |  | **270** | 0 | **mantido** | ⚠ sem linha de costa OSM a < 2000 m; água interior/abrigada: albufeira (interior) |
 | `ilha-do-ermal` | 270 |  | **270** | 0 | **mantido** | ⚠ sem linha de costa OSM a < 2000 m; água interior/abrigada: albufeira (interior) |
 | `melides` | 270 | 285 | **285** | 15 | OSM |  |
-| `sines` | 270 | 175 | **175** | 95 | OSM | ⚠ delta 95° > 45° face ao valor antigo |
-| `sao-torpes` | 270 | 250 | **250** | 20 | OSM |  |
+| `sao-torpes` | 270 | 250 | **250** | 20 | OSM | ⚠ outra costa a 494 m (margem oposta, ilhéu ou molhe) |
+| `vale-figueiros-sines` | 270 | 250 | **250** | 20 | OSM | ⚠ outra costa a 218 m (margem oposta, ilhéu ou molhe) |
 | `mosteiros` | 270 | 5 | **270** | 0 | **mantido** | ⚠ geometria ambígua (dobra 64°, 500 m vs 1 km 49°: ponta, enseada ou foz); outra costa a 494 m (margem oposta, ilhéu ou molhe) |
-| `porto-covo` | 270 | 265 | **270** | 0 | **mantido** | ⚠ geometria ambígua (dobra 162°, 500 m vs 1 km 2°: ponta, enseada ou foz); outra costa a 474 m (margem oposta, ilhéu ou molhe) |
+| `porto-covo` | 270 | 270 | **270** | 0 | **mantido** | ⚠ geometria ambígua (dobra 62°, 500 m vs 1 km 5°: ponta, enseada ou foz) |
 | `monte-verde` | 0 | 340 | **340** | 20 | OSM |  |
 | `santa-barbara` | 0 | 335 | **335** | 25 | OSM |  |
-| `malhao` | 270 | 280 | **280** | 10 | OSM | ⚠ outra costa a 220 m (margem oposta, ilhéu ou molhe) |
+| `malhao` | 270 | 275 | **275** | 5 | OSM | ⚠ outra costa a 425 m (margem oposta, ilhéu ou molhe) |
 | `milicias` | 180 | 190 | **190** | 10 | OSM |  |
 | `vila-nova-milfontes` | 270 | 175 | **270** | 0 | **mantido** | ⚠ outra costa a 286 m (margem oposta, ilhéu ou molhe); água interior/abrigada: foz do rio Mira |
-| `alteirinhos` | 270 | 295 | **295** | 25 | OSM | ⚠ 500 m e 1 km divergem 23° (1 km: 271°) |
+| `alteirinhos` | 270 | 290 | **290** | 20 | OSM | ⚠ 500 m e 1 km divergem 19° (1 km: 272°) |
 | `agua-alto` | 180 | 225 | **225** | 45 | OSM | ⚠ outra costa a 454 m (margem oposta, ilhéu ou molhe) |
 | `zambujeira` | 270 | 280 | **280** | 10 | OSM |  |
 | `carvalhal` | 270 | 310 | **270** | 0 | **mantido** | ⚠ geometria ambígua (dobra 119°, 500 m vs 1 km 7°: ponta, enseada ou foz) |
 | `odeceixe` | 270 | 290 | **290** | 20 | OSM | ⚠ outra costa a 184 m (margem oposta, ilhéu ou molhe); 500 m e 1 km divergem 24° (1 km: 268°) |
 | `amoreira` | 270 | 280 | **280** | 10 | OSM |  |
-| `monte-clerigo` | 270 | 300 | **300** | 30 | OSM |  |
+| `monte-clerigo` | 270 | 315 | **315** | 45 | OSM |  |
 | `arrifana` | 270 | 255 | **265** | 5 | curado v6 |  |
-| `vale-figueiras` | 270 | 285 | **285** | 15 | OSM | ⚠ spot a 1469 m da costa |
+| `vale-figueiras` | 270 | 290 | **290** | 20 | OSM |  |
 | `bordeira` | 270 | 310 | **310** | 40 | OSM |  |
 | `amado` | 270 | 275 | **275** | 5 | OSM |  |
 | `barriga` | 270 | 295 | **295** | 25 | OSM |  |
-| `castelejo` | 270 | 300 | **300** | 30 | OSM |  |
+| `castelejo` | 270 | 305 | **305** | 35 | OSM |  |
 | `luz` | 270 | 160 | **160** | 110 | OSM | ⚠ delta 110° > 45° face ao valor antigo |
 | `burgau` | 180 | 170 | **170** | 10 | OSM | ⚠ 500 m e 1 km divergem 17° (1 km: 152°) |
 | `salema` | 180 | 160 | **160** | 20 | OSM |  |
@@ -239,9 +271,9 @@ coerência com o ficheiro de revisão. Ficaram por resolver:
 | `foil-alvor` | 270 | 285 | **270** | 0 | **mantido** | ⚠ outra costa a 266 m (margem oposta, ilhéu ou molhe); água interior/abrigada: Ria de Alvor |
 | `lagos` | 180 | 150 | **160** | 20 | curado v6 |  |
 | `lagos-wakepark` | 270 | 75 | **270** | 0 | **mantido** | ⚠ geometria ambígua (dobra 71°, 500 m vs 1 km 30°: ponta, enseada ou foz); água interior/abrigada: lago de wake park (interior) |
-| `beliche` | 270 | 155 | **155** | 115 | OSM | ⚠ 500 m e 1 km divergem 21° (1 km: 178°); delta 115° > 45° face ao valor antigo |
+| `beliche` | 270 | 230 | **230** | 40 | **manual** | ⚠ geometria ambígua (dobra 53°, 500 m vs 1 km 13°: ponta, enseada ou foz); água interior/abrigada: enseada do Beliche (Sagres): 230° fixado à mão |
 | `martinhal` | 270 | 130 | **150** | 120 | curado v6 | ⚠ calculado a 22° do curado v6 (150°) |
-| `barrinha-faro` | 180 | 250 | **180** | 0 | **mantido** | ⚠ geometria ambígua (dobra 93°, 500 m vs 1 km 1°: ponta, enseada ou foz); água interior/abrigada: Ria Formosa |
+| `barrinha-faro` | 180 | 210 | **180** | 0 | **mantido** | ⚠ água interior/abrigada: Ria Formosa |
 | `fuseta` | 180 | 325 | **180** | 0 | **mantido** | ⚠ outra costa a 146 m (margem oposta, ilhéu ou molhe); água interior/abrigada: Ria Formosa |
 | `ilha-faro` | 180 | 40 | **40** | 140 | OSM | ⚠ outra costa a 107 m (margem oposta, ilhéu ou molhe); delta 140° > 45° face ao valor antigo |
 | `faro-mar` | 180 | 215 | **215** | 35 | OSM | ⚠ outra costa a 136 m (margem oposta, ilhéu ou molhe) |
@@ -262,7 +294,7 @@ coerência com o ficheiro de revisão. Ficaram por resolver:
 | `ribeira-brava` | 90 | 245 | **90** | 0 | **mantido** | ⚠ geometria ambígua (dobra 119°, 500 m vs 1 km 15°: ponta, enseada ou foz); outra costa a 490 m (margem oposta, ilhéu ou molhe) |
 | `funchal` | 90 | 220 | **220** | 130 | OSM | ⚠ delta 130° > 45° face ao valor antigo |
 | `barra-aveiro` | 270 | 270 | **270** | 0 | OSM |  |
-| `vila-cha` | 270 | 240 | **240** | 30 | OSM |  |
+| `vila-cha` | 270 | 255 | **255** | 15 | OSM |  |
 | `santa-cruz` | 270 | 305 | **305** | 35 | OSM |  |
 | `consolacao` | 270 | 260 | **260** | 10 | OSM |  |
 | `areia-branca` | 270 | 285 | **285** | 15 | OSM |  |
@@ -273,8 +305,7 @@ coerência com o ficheiro de revisão. Ficaram por resolver:
 | `meco` | 270 | 285 | **285** | 15 | OSM |  |
 | `lagoa-santo-andre` | 270 | 285 | **270** | 0 | **mantido** | ⚠ spot a 1357 m da costa; água interior/abrigada: Lagoa de Santo André |
 | `lagoa-sancha` | 270 |  | **270** | 0 | **mantido** | ⚠ sem linha de costa OSM a < 2000 m; água interior/abrigada: Lagoa da Sancha |
-| `pessegueiro` | 270 | 150 | **270** | 0 | **mantido** | ⚠ geometria ambígua (dobra 114°, 500 m vs 1 km —°: ponta, enseada ou foz); outra costa a 369 m (margem oposta, ilhéu ou molhe) |
-| `garrão` | 180 | 215 | **215** | 35 | OSM |  |
+| `pessegueiro` | 270 | 260 | **260** | 10 | OSM |  |
 | `falesia` | 180 | 200 | **200** | 20 | OSM |  |
 | `tres-irmaos` | 180 | 200 | **200** | 20 | OSM |  |
 | `canavial` | 180 | 190 | **190** | 10 | OSM |  |
@@ -286,11 +317,9 @@ coerência com o ficheiro de revisão. Ficaram por resolver:
 | `madalena-mar` | 180 | 215 | **210** | 30 | OSM 1 km | ⚠ geometria ambígua (dobra 48°, 500 m vs 1 km 4°: ponta, enseada ou foz); aplicada a corda de 1 km (210°, corda/arco 0.878) |
 | `calhetas` | 270 | 20 | **20** | 110 | OSM | ⚠ delta 110° > 45° face ao valor antigo |
 | `ribeira-quente` | 180 | 175 | **180** | 0 | **mantido** | ⚠ geometria ambígua (dobra 121°, 500 m vs 1 km 11°: ponta, enseada ou foz) |
-| `formosa-santa-maria` | 180 | 85 | **180** | 0 | **mantido** | ⚠ spot a 1016 m da costa; longe da costa e costa não recta: não aplicado |
+| `formosa-santa-maria` | 180 | 205 | **205** | 25 | OSM |  |
 | `porto-martins` | 270 | 175 | **270** | 0 | **mantido** | ⚠ geometria ambígua (dobra 51°, 500 m vs 1 km 24°: ponta, enseada ou foz) |
-| `cachorro-pico` | 270 | 50 | **270** | 0 | **mantido** | ⚠ geometria ambígua (dobra 59°, 500 m vs 1 km 19°: ponta, enseada ou foz); outra costa a 303 m (margem oposta, ilhéu ou molhe); spot a 1303 m da costa; longe da costa e costa não recta: não aplicado |
+| `cachorro-pico` | 270 | 320 | **320** | 50 | OSM | ⚠ 500 m e 1 km divergem 18° (1 km: 338°); delta 50° > 45° face ao valor antigo |
 | `faja-cubres` | 270 | 45 | **45** | 135 | OSM | ⚠ delta 135° > 45° face ao valor antigo |
-| `fao-ofir-surf` | 270 | 235 | **235** | 35 | OSM | ⚠ a 912 m de esposende (curado 275°) com 40° de diferença |
-| `ofir-praia` | 270 | 270 | **270** | 0 | OSM |  |
 | `mindelo` | 270 | 245 | **245** | 25 | OSM | ⚠ 500 m e 1 km divergem 16° (1 km: 259°) |
 | `aterro` | 270 | 280 | **280** | 10 | OSM |  |
