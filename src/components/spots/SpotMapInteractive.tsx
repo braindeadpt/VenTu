@@ -26,6 +26,7 @@ import { exploreViewBoundsFromSpots } from './mapMarkers';
 
 // ─── Orquestrador + compartimentos (docs/design/MAP-ZONES.md) ───
 import { useMapCore } from './map/hooks/useMapCore';
+import { useMapOceanMask } from './map/hooks/useMapOceanMask';
 import { MapUiProvider, type MapUiActions, type MapUiData } from './map/MapUiContext';
 import {
   useMapLayersBase,
@@ -191,6 +192,9 @@ export default function SpotMapInteractive({
     handleBasemapChange, clusterGroupRef, markersGroupRef,
     radarOverlayRef, isobathsLayerRef, coastalLayerRef, buoyLayerRef, markersCacheRef,
   } = core;
+
+  // ── Máscara vectorial do oceano (só satélite; chunk + dados em idle) ──
+  useMapOceanMask({ mapInstanceRef, LRef, isReady, basemapMode, credit: t.map.waterCredit });
 
   // ── Ready signal (loading-poster swap) ──
   const onReadyRef = useRef(onReady);

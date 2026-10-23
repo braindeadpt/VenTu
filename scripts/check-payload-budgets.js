@@ -141,6 +141,19 @@ const DATA_FILE_BUDGETS_MB = {
 // a finer simplification or a wider bbox must revisit the geometry, not this.
 const GEO_FILE_BUDGETS_MB = {
   'costa-home.json': 0.26,
+  // ocean-mask (#302): máscara do oceano do /mapa satélite (OSM ODbL,
+  // scripts/bake-ocean-mask.mjs) — pedida só no basemap «Satélite», só a
+  // região da vista. ~1.2x o tamanho actual de cada ficheiro (norte 401 KB,
+  // algarve 212 KB, lisboa 176 KB, coarse 142 KB, aveiro 85 KB, alentejo
+  // 67 KB, centro 59 KB): uma simplificação mais fina revê a geometria.
+  'ocean-mask/index.json': 0.01,
+  'ocean-mask/coarse.json': 0.18,
+  'ocean-mask/norte.json': 0.5,
+  'ocean-mask/aveiro.json': 0.11,
+  'ocean-mask/centro.json': 0.08,
+  'ocean-mask/lisboa.json': 0.22,
+  'ocean-mask/alentejo.json': 0.09,
+  'ocean-mask/algarve.json': 0.27,
 };
 
 const budgetBytes = BUDGET_MB * 1024 * 1024;

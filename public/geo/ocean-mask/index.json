@@ -1,0 +1,82 @@
+{
+ "v": 1,
+ "source": {
+  "data": "OpenStreetMap (© OpenStreetMap contributors, ODbL 1.0) — camada water do esquema OpenMapTiles",
+  "tiles": "https://tiles.openfreemap.org/planet/20261018_080001_pt/{z}/{x}/{y}.pbf",
+  "script": "scripts/bake-ocean-mask.mjs"
+ },
+ "frame": [
+  -12.5,
+  35.5,
+  -5,
+  44
+ ],
+ "coarse": {
+  "file": "coarse.json",
+  "z": 11
+ },
+ "regionMinZoom": 11,
+ "regionZ": 16,
+ "regions": [
+  {
+   "id": "norte",
+   "file": "norte.json",
+   "bbox": [
+    -12.5,
+    41.35,
+    -5,
+    44
+   ]
+  },
+  {
+   "id": "aveiro",
+   "file": "aveiro.json",
+   "bbox": [
+    -12.5,
+    40.25,
+    -5,
+    41.35
+   ]
+  },
+  {
+   "id": "centro",
+   "file": "centro.json",
+   "bbox": [
+    -12.5,
+    39.05,
+    -5,
+    40.25
+   ]
+  },
+  {
+   "id": "lisboa",
+   "file": "lisboa.json",
+   "bbox": [
+    -12.5,
+    38.2,
+    -5,
+    39.05
+   ]
+  },
+  {
+   "id": "alentejo",
+   "file": "alentejo.json",
+   "bbox": [
+    -12.5,
+    37.25,
+    -5,
+    38.2
+   ]
+  },
+  {
+   "id": "algarve",
+   "file": "algarve.json",
+   "bbox": [
+    -12.5,
+    35.5,
+    -5,
+    37.25
+   ]
+  }
+ ]
+}
