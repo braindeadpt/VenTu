@@ -1,11 +1,11 @@
 {
   "day": "20261023",
-  "fetchedAt": "2026-10-23T18:36:17.143Z",
+  "fetchedAt": "2026-10-23T23:06:17.838Z",
   "minPairs": 3,
   "minAccumulatedPairs": 10,
   "archive": {
     "windowDays": 30,
-    "pairHourCount": 653,
+    "pairHourCount": 651,
     "path": "buoy-coherence-archive.json"
   },
   "daily": {
@@ -254,89 +254,59 @@
     },
     "Oeste": {
       "spotCount": 4,
-      "withObservedWave": 4,
+      "withObservedWave": 2,
       "bySource": {
-        "wmo-buoy": 4
+        "wmo-buoy": 2
       },
-      "audited": 4,
+      "audited": 2,
       "attachedIsClosest": 0,
-      "attachedNotClosest": 4,
+      "attachedNotClosest": 2,
       "onlySource": 0,
       "notClosest": [
         {
           "spot": "nazare",
           "winner": "wmo-buoy",
           "reason": "wmo-only",
-          "attachedKm": 12,
-          "altKm": 0
-        },
-        {
-          "spot": "foz-arelho",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 15,
-          "altKm": 0
-        },
-        {
-          "spot": "foil-foz-arelho",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 15,
+          "attachedKm": 281,
           "altKm": 0
         },
         {
           "spot": "sao-martinho-porto",
           "winner": "wmo-buoy",
           "reason": "wmo-only",
-          "attachedKm": 8,
+          "attachedKm": 291,
           "altKm": 0
         }
       ],
-      "calibrated": 0,
-      "calibrationRefs": {},
+      "calibrated": 2,
+      "calibrationRefs": {
+        "6200084→6200199": {
+          "esCode": "6200084",
+          "esName": "Cabo Silleiro",
+          "ptRefCode": "6200199",
+          "ptRefName": "Nazaré Costeira (WMO)",
+          "ptRefArea": "Nazaré",
+          "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
+          "me": -0.3,
+          "n": 609,
+          "spots": [
+            "nazare",
+            "sao-martinho-porto"
+          ]
+        }
+      },
       "suboptimalRefs": 0,
       "suboptimal": []
     },
     "Óbidos": {
       "spotCount": 4,
-      "withObservedWave": 4,
-      "bySource": {
-        "wmo-buoy": 4
-      },
-      "audited": 4,
+      "withObservedWave": 0,
+      "bySource": {},
+      "audited": 0,
       "attachedIsClosest": 0,
-      "attachedNotClosest": 4,
+      "attachedNotClosest": 0,
       "onlySource": 0,
-      "notClosest": [
-        {
-          "spot": "obidos-lagoon",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 18,
-          "altKm": 0
-        },
-        {
-          "spot": "praia-del-rey",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 20,
-          "altKm": 0
-        },
-        {
-          "spot": "obidos-lagoon-sul",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 18,
-          "altKm": 0
-        },
-        {
-          "spot": "obidos-lagoon-foz",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 18,
-          "altKm": 0
-        }
-      ],
+      "notClosest": [],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -344,6 +314,20 @@
     },
     "Caldas da Rainha": {
       "spotCount": 1,
+      "withObservedWave": 0,
+      "bySource": {},
+      "audited": 0,
+      "attachedIsClosest": 0,
+      "attachedNotClosest": 0,
+      "onlySource": 0,
+      "notClosest": [],
+      "calibrated": 0,
+      "calibrationRefs": {},
+      "suboptimalRefs": 0,
+      "suboptimal": []
+    },
+    "Peniche": {
+      "spotCount": 4,
       "withObservedWave": 1,
       "bySource": {
         "wmo-buoy": 1
@@ -354,60 +338,29 @@
       "onlySource": 0,
       "notClosest": [
         {
-          "spot": "foz-arelho-beach",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 15,
-          "altKm": 0
-        }
-      ],
-      "calibrated": 0,
-      "calibrationRefs": {},
-      "suboptimalRefs": 0,
-      "suboptimal": []
-    },
-    "Peniche": {
-      "spotCount": 4,
-      "withObservedWave": 4,
-      "bySource": {
-        "wmo-buoy": 4
-      },
-      "audited": 4,
-      "attachedIsClosest": 0,
-      "attachedNotClosest": 4,
-      "onlySource": 0,
-      "notClosest": [
-        {
-          "spot": "almagreira",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 22,
-          "altKm": 0
-        },
-        {
           "spot": "baleal",
           "winner": "wmo-buoy",
           "reason": "wmo-only",
-          "attachedKm": 24,
-          "altKm": 0
-        },
-        {
-          "spot": "supertubos",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 27,
-          "altKm": 0
-        },
-        {
-          "spot": "consolacao",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 28,
+          "attachedKm": 306,
           "altKm": 0
         }
       ],
-      "calibrated": 0,
-      "calibrationRefs": {},
+      "calibrated": 1,
+      "calibrationRefs": {
+        "6200084→6200199": {
+          "esCode": "6200084",
+          "esName": "Cabo Silleiro",
+          "ptRefCode": "6200199",
+          "ptRefName": "Nazaré Costeira (WMO)",
+          "ptRefArea": "Nazaré",
+          "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
+          "me": -0.3,
+          "n": 609,
+          "spots": [
+            "baleal"
+          ]
+        }
+      },
       "suboptimalRefs": 0,
       "suboptimal": []
     },
@@ -833,23 +786,13 @@
     },
     "Lourinhã": {
       "spotCount": 1,
-      "withObservedWave": 1,
-      "bySource": {
-        "wmo-buoy": 1
-      },
-      "audited": 1,
+      "withObservedWave": 0,
+      "bySource": {},
+      "audited": 0,
       "attachedIsClosest": 0,
-      "attachedNotClosest": 1,
+      "attachedNotClosest": 0,
       "onlySource": 0,
-      "notClosest": [
-        {
-          "spot": "areia-branca",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 35,
-          "altKm": 0
-        }
-      ],
+      "notClosest": [],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -912,7 +855,7 @@
       "suboptimal": []
     }
   },
-  "regionsAuditedAt": "2026-10-23T18:41:06.972Z",
+  "regionsAuditedAt": "2026-10-23T23:08:33.907Z",
   "pairs": [
     {
       "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
@@ -922,13 +865,13 @@
       ],
       "distanceKm": 285.3,
       "ptSource": "wmo",
-      "n": 611,
+      "n": 609,
       "meanDeltaM": -0.3,
       "meanAbsDeltaM": 0.5,
       "maxAbsDeltaM": 2.8,
       "corr": 0.75,
       "verdict": "coherent",
-      "firstHour": "2026-09-23T19",
+      "firstHour": "2026-09-24T00",
       "lastHour": "2026-10-23T14",
       "hours": [
         {
