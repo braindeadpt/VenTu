@@ -68,29 +68,6 @@
       }
     ]
   },
-  "castelo-neiva": {
-    "spotId": "castelo-neiva",
-    "idEstacao": 6211217,
-    "stationName": "Viana Do Castelo - Fonte Louçã (CIM)",
-    "distanceKm": 0.6,
-    "alternates": [
-      {
-        "idEstacao": 1240610,
-        "stationName": "Viana do Castelo",
-        "distanceKm": 6.2
-      },
-      {
-        "idEstacao": 1200551,
-        "stationName": "Viana Castelo, Chafé",
-        "distanceKm": 11.3
-      },
-      {
-        "idEstacao": 6211215,
-        "stationName": "Caminha - Agra De Baixo (CIM)",
-        "distanceKm": 13.9
-      }
-    ]
-  },
   "amorosa": {
     "spotId": "amorosa",
     "idEstacao": 1240610,
@@ -206,29 +183,6 @@
       }
     ]
   },
-  "ofir": {
-    "spotId": "ofir",
-    "idEstacao": 6212126,
-    "stationName": "Esposende (CIM)",
-    "distanceKm": 2.5,
-    "alternates": [
-      {
-        "idEstacao": 1200551,
-        "stationName": "Viana Castelo, Chafé",
-        "distanceKm": 11.3
-      },
-      {
-        "idEstacao": 6212125,
-        "stationName": "Barcelos (CIM)",
-        "distanceKm": 13.6
-      },
-      {
-        "idEstacao": 1240610,
-        "stationName": "Viana do Castelo",
-        "distanceKm": 16.7
-      }
-    ]
-  },
   "esposende": {
     "spotId": "esposende",
     "idEstacao": 6212126,
@@ -321,29 +275,6 @@
       }
     ]
   },
-  "povoa-varzim": {
-    "spotId": "povoa-varzim",
-    "idEstacao": 6212126,
-    "stationName": "Esposende (CIM)",
-    "distanceKm": 16.7,
-    "alternates": [
-      {
-        "idEstacao": 1200545,
-        "stationName": "Porto, Pedras Rubras (Aeródromo)",
-        "distanceKm": 17.3
-      },
-      {
-        "idEstacao": 6212410,
-        "stationName": "Vila Nova Famalicão (CIM)",
-        "distanceKm": 19.9
-      },
-      {
-        "idEstacao": 6212125,
-        "stationName": "Barcelos (CIM)",
-        "distanceKm": 20.2
-      }
-    ]
-  },
   "azurara": {
     "spotId": "azurara",
     "idEstacao": 1200545,
@@ -364,6 +295,29 @@
         "idEstacao": 6212126,
         "stationName": "Esposende (CIM)",
         "distanceKm": 21.2
+      }
+    ]
+  },
+  "arvore": {
+    "spotId": "arvore",
+    "idEstacao": 1200545,
+    "stationName": "Porto, Pedras Rubras (Aeródromo)",
+    "distanceKm": 11.7,
+    "alternates": [
+      {
+        "idEstacao": 1210649,
+        "stationName": "S. Gens",
+        "distanceKm": 18
+      },
+      {
+        "idEstacao": 6212410,
+        "stationName": "Vila Nova Famalicão (CIM)",
+        "distanceKm": 19.3
+      },
+      {
+        "idEstacao": 1240903,
+        "stationName": "Porto, Massarelos",
+        "distanceKm": 21.8
       }
     ]
   },
@@ -456,52 +410,6 @@
         "idEstacao": 1200545,
         "stationName": "Porto, Pedras Rubras (Aeródromo)",
         "distanceKm": 10.5
-      }
-    ]
-  },
-  "foil-fao-cavado": {
-    "spotId": "foil-fao-cavado",
-    "idEstacao": 6212126,
-    "stationName": "Esposende (CIM)",
-    "distanceKm": 0.7,
-    "alternates": [
-      {
-        "idEstacao": 6212125,
-        "stationName": "Barcelos (CIM)",
-        "distanceKm": 13.4
-      },
-      {
-        "idEstacao": 1200551,
-        "stationName": "Viana Castelo, Chafé",
-        "distanceKm": 13.9
-      },
-      {
-        "idEstacao": 1240610,
-        "stationName": "Viana do Castelo",
-        "distanceKm": 19.3
-      }
-    ]
-  },
-  "foil-esposende-piscinas": {
-    "spotId": "foil-esposende-piscinas",
-    "idEstacao": 6212126,
-    "stationName": "Esposende (CIM)",
-    "distanceKm": 0.3,
-    "alternates": [
-      {
-        "idEstacao": 6212125,
-        "stationName": "Barcelos (CIM)",
-        "distanceKm": 12.9
-      },
-      {
-        "idEstacao": 1200551,
-        "stationName": "Viana Castelo, Chafé",
-        "distanceKm": 13.5
-      },
-      {
-        "idEstacao": 1240610,
-        "stationName": "Viana do Castelo",
-        "distanceKm": 18.9
       }
     ]
   },
@@ -2161,29 +2069,6 @@
       }
     ]
   },
-  "sines": {
-    "spotId": "sines",
-    "idEstacao": 1200541,
-    "stationName": "Sines",
-    "distanceKm": 2.7,
-    "alternates": [
-      {
-        "idEstacao": 1210783,
-        "stationName": "Alvalade",
-        "distanceKm": 41.6
-      },
-      {
-        "idEstacao": 1210788,
-        "stationName": "Zambujeira",
-        "distanceKm": 42.9
-      },
-      {
-        "idEstacao": 1210577,
-        "stationName": "Odemira, S.Teotónio",
-        "distanceKm": 47
-      }
-    ]
-  },
   "sao-torpes": {
     "spotId": "sao-torpes",
     "idEstacao": 1200541,
@@ -2204,6 +2089,29 @@
         "idEstacao": 1210577,
         "stationName": "Odemira, S.Teotónio",
         "distanceKm": 42.2
+      }
+    ]
+  },
+  "vale-figueiros-sines": {
+    "spotId": "vale-figueiros-sines",
+    "idEstacao": 1200541,
+    "stationName": "Sines",
+    "distanceKm": 7.4,
+    "alternates": [
+      {
+        "idEstacao": 1210782,
+        "stationName": "Odemira - Vila Nova de Milfontes",
+        "distanceKm": 18.8
+      },
+      {
+        "idEstacao": 1210788,
+        "stationName": "Zambujeira",
+        "distanceKm": 35.2
+      },
+      {
+        "idEstacao": 1210783,
+        "stationName": "Alvalade",
+        "distanceKm": 35.8
       }
     ]
   },
@@ -3794,29 +3702,6 @@
       }
     ]
   },
-  "garrao": {
-    "spotId": "garrão",
-    "idEstacao": 1200554,
-    "stationName": "Faro (Aeródromo)",
-    "distanceKm": 5.3,
-    "alternates": [
-      {
-        "idEstacao": 1210881,
-        "stationName": "Olhão, EPPO",
-        "distanceKm": 14.2
-      },
-      {
-        "idEstacao": 6210872,
-        "stationName": "Loulé (CML)",
-        "distanceKm": 20.1
-      },
-      {
-        "idEstacao": 1210874,
-        "stationName": "Albufeira",
-        "distanceKm": 30.1
-      }
-    ]
-  },
   "falesia": {
     "spotId": "falesia",
     "idEstacao": 6210872,
@@ -4159,52 +4044,6 @@
         "idEstacao": 11217625,
         "stationName": "Pico / Cabeço do Teicho (DROTRH)",
         "distanceKm": 37.2
-      }
-    ]
-  },
-  "fao-ofir-surf": {
-    "spotId": "fao-ofir-surf",
-    "idEstacao": 6212126,
-    "stationName": "Esposende (CIM)",
-    "distanceKm": 0.9,
-    "alternates": [
-      {
-        "idEstacao": 6212125,
-        "stationName": "Barcelos (CIM)",
-        "distanceKm": 13.6
-      },
-      {
-        "idEstacao": 1200551,
-        "stationName": "Viana Castelo, Chafé",
-        "distanceKm": 14
-      },
-      {
-        "idEstacao": 1240610,
-        "stationName": "Viana do Castelo",
-        "distanceKm": 19.4
-      }
-    ]
-  },
-  "ofir-praia": {
-    "spotId": "ofir-praia",
-    "idEstacao": 6212126,
-    "stationName": "Esposende (CIM)",
-    "distanceKm": 1.2,
-    "alternates": [
-      {
-        "idEstacao": 6212125,
-        "stationName": "Barcelos (CIM)",
-        "distanceKm": 13.4
-      },
-      {
-        "idEstacao": 1200551,
-        "stationName": "Viana Castelo, Chafé",
-        "distanceKm": 14.7
-      },
-      {
-        "idEstacao": 1240610,
-        "stationName": "Viana do Castelo",
-        "distanceKm": 20.1
       }
     ]
   },
