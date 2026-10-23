@@ -687,8 +687,8 @@ export const spots: Spot[] = [
     },
   {
       id: 'coxos', slug: 'coxos', name: 'Coxos', nameEn: 'Coxos',
-      region: 'Ericeira', regionEn: 'Ericeira', lat: 38.999, lon: -9.426,
-      coastOrientation: 270,
+      region: 'Ericeira', regionEn: 'Ericeira', lat: 39.00085, lon: -9.42562,
+      coastOrientation: 230,
       type: 'surf', difficulty: 'advanced', bestWind: 'N, NE', bestSwell: 'NW, W',
       description: 'Reef break poderoso e tubar. Uma das melhores ondas de Portugal — direita longa, íngreme, ocas. Apenas para experts.',
       descriptionEn: 'Powerful reef break barrel. One of the best waves in Portugal — long, steep, hollow right. Experts only.',
@@ -709,8 +709,8 @@ export const spots: Spot[] = [
     },
   {
       id: 'empa', slug: 'empa', name: 'Praia da Empa (Ericeira)', nameEn: 'Praia da Empa (Ericeira)',
-      region: 'Ericeira', regionEn: 'Ericeira', lat: 38.985, lon: -9.425,
-      coastOrientation: 310,
+      region: 'Ericeira', regionEn: 'Ericeira', lat: 38.97969, lon: -9.42231,
+      coastOrientation: 270,
       type: 'surf', difficulty: 'advanced', bestWind: 'E, SE', bestSwell: 'W, NW',
       description: 'Pequena praia com duas jóias: Pedra Branca e Reef. Ondas velozes e potentes que atraem bodyboarders e surfistas avançados ao longo do ano.',
       descriptionEn: 'Small beach with two gems: Pedra Branca and Reef. Fast and powerful waves that attract bodyboarders and advanced surfers year-round.',
@@ -730,8 +730,19 @@ export const spots: Spot[] = [
       compatibleSports: ['surf', 'bodyboard']
     },
   {
+      id: 'calada', slug: 'calada', name: 'Praia da Calada', nameEn: 'Calada Beach',
+      region: 'Ericeira', regionEn: 'Ericeira', lat: 39.03284, lon: -9.41843,
+      coastOrientation: 285,
+      type: 'surf', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'W, NW',
+      description: 'Praia da Calada, a norte de São Lourenço e da Ericeira. Beach break para surf e bodyboard.',
+      descriptionEn: 'Calada beach, north of Sao Lourenco and Ericeira. Beach break for surf and bodyboard.',
+      compatibleSports: ['surf', 'bodyboard'],
+      facilities: ['Estacionamento'],
+      hazards: ['Correntes']
+    },
+  {
       id: 'pedra-branca', slug: 'pedra-branca', name: 'Pedra Branca (Ericeira)', nameEn: 'Pedra Branca (Ericeira)',
-      region: 'Ericeira', regionEn: 'Ericeira', lat: 38.975, lon: -9.415,
+      region: 'Ericeira', regionEn: 'Ericeira', lat: 38.98016, lon: -9.42276,
       coastOrientation: 270,
       type: 'surf', difficulty: 'advanced', bestWind: 'E, SE', bestSwell: 'W, NW',
       description: 'Reef break poderoso considerado irmão gémeo do Coxos. Ondas velozes, tubulares e frequentes. Um dos picos mais técnicos da Ericeira. Apenas para surfistas experientes.',
@@ -742,8 +753,8 @@ export const spots: Spot[] = [
     },
   {
       id: 'sao-sebastiao', slug: 'sao-sebastiao', name: 'São Sebastião (Ericeira)', nameEn: 'Sao Sebastiao (Ericeira)',
-      region: 'Ericeira', regionEn: 'Ericeira', lat: 38.970, lon: -9.420,
-      coastOrientation: 265,
+      region: 'Ericeira', regionEn: 'Ericeira', lat: 38.97267, lon: -9.42040,
+      coastOrientation: 280,
       type: 'surf', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'W, NW',
       description: 'Praia de surf mais acessível da Ericeira. Ondas desafiadoras mas gerenciáveis. Múltiplos picos ao longo da praia. Excelente para surfistas em evolução.',
       descriptionEn: 'Most accessible surf beach in Ericeira. Challenging but manageable waves. Multiple peaks along the beach. Excellent for evolving surfers.',
@@ -753,15 +764,48 @@ export const spots: Spot[] = [
       blueFlag: true
     },
   {
+      id: 'praia-norte-ericeira', slug: 'praia-norte-ericeira', name: 'Praia do Norte (Ericeira)', nameEn: 'Praia do Norte (Ericeira)',
+      region: 'Ericeira', regionEn: 'Ericeira', lat: 38.96717, lon: -9.42005,
+      coastOrientation: 275,
+      type: 'surf', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'W, NW',
+      description: 'Praia do Norte, no centro da Ericeira, a norte da Praia dos Pescadores. Fundo de areia e rocha, com ondas para surf e bodyboard.',
+      descriptionEn: 'Praia do Norte, in the centre of Ericeira, north of Praia dos Pescadores. Sand and rock bottom, with waves for surf and bodyboard.',
+      compatibleSports: ['surf', 'bodyboard'],
+      facilities: ['Estacionamento'],
+      hazards: ['Rochas', 'Correntes']
+    },
+  {
+      id: 'praia-sul-ericeira', slug: 'praia-sul-ericeira', name: 'Praia do Sul (Ericeira)', nameEn: 'Praia do Sul (Ericeira)',
+      region: 'Ericeira', regionEn: 'Ericeira', lat: 38.95763, lon: -9.41602,
+      coastOrientation: 275,
+      type: 'surf', difficulty: 'beginner', bestWind: 'E, NE', bestSwell: 'W, NW',
+      description: 'Praia do Sul, junto ao centro da Ericeira, a sul do porto. Praia abrigada, boa para iniciantes e muito usada pelas escolas de surf. Surf, bodyboard e SUP.',
+      descriptionEn: 'Praia do Sul, next to the centre of Ericeira, south of the harbour. Sheltered beach, good for beginners and widely used by surf schools. Surf, bodyboard and SUP.',
+      compatibleSports: ['surf', 'bodyboard', 'sup'],
+      facilities: ['Estacionamento', 'Escola surf'],
+      hazards: ['Correntes']
+    },
+  {
       id: 'foz-lizandro', slug: 'foz-lizandro', name: 'Foz do Lizandro', nameEn: 'Foz do Lizandro',
-      region: 'Ericeira', regionEn: 'Ericeira', lat: 38.941, lon: -9.415,
+      region: 'Ericeira', regionEn: 'Ericeira', lat: 38.94200, lon: -9.41363,
       coastOrientation: 295,
-      type: 'multisport', difficulty: 'beginner', bestWind: 'N, NE', bestSwell: 'S, SW',
+      type: 'multisport', difficulty: 'beginner', bestWind: 'N, NW', bestSwell: 'S, SW',
       description: 'Praia de areia em forma de L no estuário do rio Lizandro. Ondas para todos os níveis. Reef breaks Lage dos Tubos e Limipicos no norte. Kitesurf proibido no verão.',
       descriptionEn: 'L-shaped sand beach at the Lizandro river estuary. Waves for all levels. Lage dos Tubos and Limipicos reef breaks in the north. Kitesurf forbidden in summer.',
       compatibleSports: ['surf', 'bodyboard', 'sup', 'kitesurf'],
       facilities: ['Estacionamento', 'Restaurantes', 'Escola surf', 'WC'],
       hazards: ['Correntes na maré vazante', 'Rochas no reef', 'Kitesurf proibido no verão']
+    },
+  {
+      id: 'sao-juliao', slug: 'sao-juliao', name: 'Praia de São Julião', nameEn: 'Sao Juliao Beach',
+      region: 'Ericeira', regionEn: 'Ericeira', lat: 38.93197, lon: -9.41972,
+      coastOrientation: 280,
+      type: 'surf', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'W, NW',
+      description: 'Praia de São Julião, a sul da Foz do Lizandro, entre a Ericeira e Sintra. Beach break para surf e bodyboard.',
+      descriptionEn: 'Sao Juliao beach, south of Foz do Lizandro, between Ericeira and Sintra. Beach break for surf and bodyboard.',
+      compatibleSports: ['surf', 'bodyboard'],
+      facilities: ['Estacionamento'],
+      hazards: ['Correntes']
     },
   {
       id: 'praia-grande-sintra', slug: 'praia-grande-sintra', name: 'Praia Grande (Sintra)', nameEn: 'Praia Grande (Sintra)',
@@ -1014,7 +1058,7 @@ export const spots: Spot[] = [
     },
   {
       id: 'lagoa-albufeira', slug: 'lagoa-albufeira', name: 'Lagoa de Albufeira', nameEn: 'Albufeira Lagoon',
-      region: 'Sesimbra', regionEn: 'Sesimbra', lat: 38.501, lon: -9.140,
+      region: 'Sesimbra', regionEn: 'Sesimbra', lat: 38.50878, lon: -9.17599,
       coastOrientation: 260,
       type: 'kitesurf', difficulty: 'beginner', bestWind: 'NW, N', bestSwell: 'SW',
       description: 'Lagoa separada do oceano por um banco de areia. Água plana até à cintura — paraíso para iniciantes. Nortada consistente.',
@@ -1859,8 +1903,8 @@ export const spots: Spot[] = [
     },
   {
       id: 'cave-ericeira', slug: 'cave-ericeira', name: 'Cave (Ericeira)', nameEn: 'Cave (Ericeira)',
-      region: 'Ericeira', regionEn: 'Ericeira', lat: 38.968, lon: -9.422,
-      coastOrientation: 265,
+      region: 'Ericeira', regionEn: 'Ericeira', lat: 38.99446, lon: -9.42489,
+      coastOrientation: 250,
       type: 'surf', difficulty: 'advanced', bestWind: 'E, SE', bestSwell: 'NW, W',
       description: 'Reef break pesado com ondas tubulares. Uma das ondas mais técnicas da Ericeira. Apenas para surfistas experientes.',
       descriptionEn: 'Heavy reef break with barreling waves. One of the most technical waves in Ericeira. For experienced surfers only.',
@@ -1870,7 +1914,7 @@ export const spots: Spot[] = [
     },
   {
       id: 'pescadores-ericeira', slug: 'pescadores-ericeira', name: 'Pescadores (Ericeira)', nameEn: 'Pescadores (Ericeira)',
-      region: 'Ericeira', regionEn: 'Ericeira', lat: 38.963, lon: -9.419,
+      region: 'Ericeira', regionEn: 'Ericeira', lat: 38.96432, lon: -9.41902,
       coastOrientation: 270,
       type: 'surf', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'NW, W',
       description: 'Point break junto ao porto de pesca da Ericeira. Direita longa e consistente com fundo de rocha. Spot clássico da vila.',
@@ -1881,7 +1925,7 @@ export const spots: Spot[] = [
     },
   {
       id: 'crazy-left', slug: 'crazy-left', name: 'Crazy Left (Ericeira)', nameEn: 'Crazy Left (Ericeira)',
-      region: 'Ericeira', regionEn: 'Ericeira', lat: 38.958, lon: -9.418,
+      region: 'Ericeira', regionEn: 'Ericeira', lat: 38.99666, lon: -9.42606,
       coastOrientation: 270,
       type: 'surf', difficulty: 'advanced', bestWind: 'E, SE', bestSwell: 'NW, W',
       description: 'Esquerda tubular e rápida sobre reef. Uma das poucas esquerdas de qualidade da Ericeira. Técnica e perigosa. Experts apenas.',

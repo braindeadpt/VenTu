@@ -136,12 +136,38 @@ dos dois foi calculada com cache nova (`overpass.openstreetmap.fr`): `arvore`
 (o calculado no pin novo), aprovado pelo Pedro; está em `REVISAO_MANUAL` e em
 `VALOR_MANUAL`, e o recálculo mantém-no.
 
+Numa quinta passagem (23/10) foram corrigidos os spots da Ericeira (fontes: OSM
+e pins do Pedro no Google Maps). `crazy-left` estava em cima da Praia do Sul e
+passa para a onda a sul de Coxos (38.99666,-9.42606); `cave-ericeira` passa para
+38.99446,-9.42489; `pedra-branca` (pin do Pedro), `empa`, `sao-sebastiao`,
+`coxos`, `foz-lizandro` e `pescadores-ericeira` foram acertados (147 m a 883 m;
+os dois primeiros moveram-se 4,4 km e 3,0 km). `foz-lizandro` fica com `bestWind` 'N, NW'
+(kite com a Nortada). `ribeira-ilhas` e `sao-lourenco` estavam certos. Entraram
+4 spots novos: `praia-norte-ericeira` (Praia do Norte), `praia-sul-ericeira`
+(Praia do Sul), `sao-juliao` (Praia de São Julião, pin do Pedro; não confundir
+com o Forte de São Julião, em Carcavelos) e `calada` (Praia da Calada). A
+orientação dos 12 foi recalculada com cache nova (`overpass.openstreetmap.fr`,
+um spot de cada vez): `crazy-left` 270° (mantido), `cave-ericeira`
+250°, `pedra-branca` 270° (mantido), `empa` 270°,
+`sao-sebastiao` 280°, `coxos` 230°, `foz-lizandro` 295°,
+`pescadores-ericeira` 270° (mantido), `praia-norte-ericeira`
+275°, `praia-sul-ericeira` 275°, `sao-juliao` 280° e
+`calada` 285° (OSM 1 km).
+
+Na mesma passagem, `lagoa-albufeira` (a lagoa, Sesimbra) estava ~3,2 km a
+leste do sítio certo; passa para o pin do Pedro «Praia da Lagoa de Albufeira
+(Lagoa)» (38.501,-9.140 → 38.50878,-9.17599). Os
+desportos não mudam. É água interior (`REVISAO_MANUAL`) e curado v6, por isso a
+orientação fica 260° (curado; o calculado, 270°, é o da costa
+oceânica a 621 m, não o da lagoa). `foil-lagoa-albufeira` continua nas
+coordenadas antigas (não pedido).
+
 ## Resultado (OSM de 2026-07-15T15:22:01Z)
 
-- 178 spots, dos quais **120 mudam** de valor face ao antes da #178.
-- Origem: OSM 104, OSM 1 km 2, curado 21, manual 1, mantido 50.
-- 103 spots ficam marcados para revisão.
-- Spots a 270°: 138 → 42. Os que ficam têm 270° calculado, curado, ou mantido com motivo.
+- 182 spots, dos quais **124 mudam** de valor face ao antes da #178.
+- Origem: OSM 108, OSM 1 km 2, curado 21, manual 1, mantido 50.
+- 105 spots ficam marcados para revisão.
+- Spots a 270°: 142 → 42. Os que ficam têm 270° calculado, curado, ou mantido com motivo.
 
 | spot | antes | calculado | depois | Δ | origem | revisão |
 |---|---:|---:|---:|---:|---|---|
@@ -202,13 +228,17 @@ dos dois foi calculada com cache nova (`overpass.openstreetmap.fr`): `arvore`
 | `baleal` | 270 | 240 | **350** | 80 | curado v6 | ⚠ geometria ambígua (dobra 54°, 500 m vs 1 km 18°: ponta, enseada ou foz); outra costa a 149 m (margem oposta, ilhéu ou molhe); calculado a 110° do curado v6 (350°) |
 | `supertubos` | 270 | 245 | **235** | 35 | curado v6 | ⚠ calculado a 25° da referência 220° |
 | `foz-sizandro` | 270 | 300 | **300** | 30 | OSM |  |
-| `coxos` | 270 | 250 | **270** | 0 | **mantido** | ⚠ geometria ambígua (dobra 55°, 500 m vs 1 km 4°: ponta, enseada ou foz) |
+| `coxos` | 270 | 230 | **230** | 40 | OSM | ⚠ 500 m e 1 km divergem 25° (1 km: 257°); a 1532 m de ribeira-ilhas (curado 280°) com 50° de diferença |
 | `ribeira-ilhas` | 270 | 250 | **280** | 10 | curado v6 | ⚠ calculado a 32° da referência 280°; calculado a 32° do curado v6 (280°) |
-| `empa` | 270 | 310 | **310** | 40 | OSM | ⚠ 500 m e 1 km divergem 19° (1 km: 290°); a 616 m de ribeira-ilhas (curado 280°) com 30° de diferença |
+| `empa` | 270 | 270 | **270** | 0 | OSM |  |
 | `sao-lourenco` | 270 | 285 | **285** | 15 | OSM |  |
-| `pedra-branca` | 270 | 270 | **270** | 0 | OSM |  |
-| `sao-sebastiao` | 270 | 265 | **265** | 5 | OSM |  |
-| `foz-lizandro` | 270 | 305 | **295** | 25 | OSM 1 km | ⚠ geometria ambígua (dobra 59°, 500 m vs 1 km 10°: ponta, enseada ou foz); aplicada a corda de 1 km (295°, corda/arco 0.858) |
+| `calada` | 270 | 280 | **285** | 15 | OSM 1 km | ⚠ geometria ambígua (dobra 46°, 500 m vs 1 km 3°: ponta, enseada ou foz); aplicada a corda de 1 km (285°, corda/arco 0.875) |
+| `pedra-branca` | 270 | 275 | **270** | 0 | **mantido** | ⚠ geometria ambígua (dobra 47°, 500 m vs 1 km 10°: ponta, enseada ou foz) |
+| `sao-sebastiao` | 270 | 280 | **280** | 10 | OSM |  |
+| `praia-norte-ericeira` | 270 | 275 | **275** | 5 | OSM | ⚠ outra costa a 487 m (margem oposta, ilhéu ou molhe) |
+| `praia-sul-ericeira` | 270 | 275 | **275** | 5 | OSM | ⚠ 500 m e 1 km divergem 20° (1 km: 253°) |
+| `foz-lizandro` | 270 | 295 | **295** | 25 | OSM |  |
+| `sao-juliao` | 270 | 280 | **280** | 10 | OSM |  |
 | `praia-grande-sintra` | 270 | 295 | **295** | 25 | OSM |  |
 | `adraga` | 270 | 295 | **295** | 25 | OSM |  |
 | `guincho` | 270 | 290 | **280** | 10 | curado v6 | ⚠ outra costa a 384 m (margem oposta, ilhéu ou molhe) |
@@ -226,7 +256,7 @@ dos dois foi calculada com cache nova (`overpass.openstreetmap.fr`): `arvore`
 | `cova-do-vapor` | 270 | 315 | **270** | 0 | **mantido** | ⚠ geometria ambígua (dobra 175°, 500 m vs 1 km 28°: ponta, enseada ou foz); água interior/abrigada: foz do Tejo (ponta da Cova do Vapor) |
 | `praia-da-rainha` | 270 | 240 | **240** | 30 | OSM |  |
 | `almoxarife` | 270 | 70 | **70** | 160 | OSM | ⚠ delta 160° > 45° face ao valor antigo |
-| `lagoa-albufeira` | 270 |  | **260** | 10 | curado v6 | ⚠ sem linha de costa OSM a < 2000 m; água interior/abrigada: Lagoa de Albufeira |
+| `lagoa-albufeira` | 270 | 270 | **260** | 10 | curado v6 | ⚠ água interior/abrigada: Lagoa de Albufeira |
 | `foil-lagoa-albufeira` | 270 |  | **270** | 0 | **mantido** | ⚠ sem linha de costa OSM a < 2000 m; água interior/abrigada: Lagoa de Albufeira |
 | `praia-lagoa-albufeira` | 270 | 270 | **270** | 0 | OSM |  |
 | `troia` | 200 | 25 | **200** | 0 | **mantido** | ⚠ outra costa a 247 m (margem oposta, ilhéu ou molhe); água interior/abrigada: estuário do Sado (Tróia) |
@@ -299,9 +329,9 @@ dos dois foi calculada com cache nova (`overpass.openstreetmap.fr`): `arvore`
 | `consolacao` | 270 | 260 | **260** | 10 | OSM |  |
 | `areia-branca` | 270 | 285 | **285** | 15 | OSM |  |
 | `sao-martinho-porto` | 180 | 215 | **180** | 0 | **mantido** | ⚠ geometria ambígua (dobra 73°, 500 m vs 1 km 0°: ponta, enseada ou foz); outra costa a 488 m (margem oposta, ilhéu ou molhe); água interior/abrigada: baía fechada (concha de São Martinho) |
-| `cave-ericeira` | 270 | 265 | **265** | 5 | OSM | ⚠ 500 m e 1 km divergem 20° (1 km: 284°) |
-| `pescadores-ericeira` | 270 | 290 | **270** | 0 | **mantido** | ⚠ geometria ambígua (dobra 39°, 500 m vs 1 km 31°: ponta, enseada ou foz); outra costa a 477 m (margem oposta, ilhéu ou molhe) |
-| `crazy-left` | 270 | 200 | **270** | 0 | **mantido** | ⚠ geometria ambígua (dobra 5°, 500 m vs 1 km 29°: ponta, enseada ou foz) |
+| `cave-ericeira` | 270 | 250 | **250** | 20 | OSM | ⚠ a 877 m de ribeira-ilhas (curado 280°) com 30° de diferença |
+| `pescadores-ericeira` | 270 | 235 | **270** | 0 | **mantido** | ⚠ geometria ambígua (dobra 56°, 500 m vs 1 km 6°: ponta, enseada ou foz) |
+| `crazy-left` | 270 | 275 | **270** | 0 | **mantido** | ⚠ geometria ambígua (dobra 50°, 500 m vs 1 km 14°: ponta, enseada ou foz) |
 | `meco` | 270 | 285 | **285** | 15 | OSM |  |
 | `lagoa-santo-andre` | 270 | 285 | **270** | 0 | **mantido** | ⚠ spot a 1357 m da costa; água interior/abrigada: Lagoa de Santo André |
 | `lagoa-sancha` | 270 |  | **270** | 0 | **mantido** | ⚠ sem linha de costa OSM a < 2000 m; água interior/abrigada: Lagoa da Sancha |
