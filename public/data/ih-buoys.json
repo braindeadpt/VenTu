@@ -11,15 +11,15 @@
       "lat": 41.3155555555556,
       "lon": -8.9825,
       "lastPos": "2026-10-22T13:26:42+00:00",
-      "lastSea": "2026-10-22T13:26:42+00:00",
+      "lastSea": "2026-10-23T10:26:41+00:00",
       "family": "datawell",
       "latest": {
-        "date": "2026-10-22T13:26:42.000Z",
-        "hm0": 3.42,
-        "tp": 13.3,
-        "thtp": 315,
-        "hmax": 5.7,
-        "temp": 16.1
+        "date": "2026-10-23T10:26:41.000Z",
+        "hm0": 4.97,
+        "tp": 14.3,
+        "thtp": 314,
+        "hmax": 6.81,
+        "temp": 15.9
       }
     },
     "19": {
@@ -32,16 +32,16 @@
       "nrt": "near-real-time data available",
       "lat": 37.921111111111095,
       "lon": -8.92861111111111,
-      "lastPos": "2026-10-22T13:56:44+00:00",
-      "lastSea": "2026-10-22T13:56:44+00:00",
+      "lastPos": "2026-10-23T07:26:44+00:00",
+      "lastSea": "2026-10-23T07:26:44+00:00",
       "family": "datawell",
       "latest": {
-        "date": "2026-10-22T13:56:44.000Z",
-        "hm0": 1.87,
-        "tp": 12.5,
-        "thtp": 304,
-        "hmax": 3.35,
-        "temp": 19.1
+        "date": "2026-10-23T07:26:44.000Z",
+        "hm0": 1.72,
+        "tp": 13.3,
+        "thtp": 312,
+        "hmax": 2.68,
+        "temp": 18.1
       }
     },
     "20": {
@@ -50,13 +50,21 @@
       "area": "Continente - Faro",
       "wmoId": 6201079,
       "depth": 90,
-      "status": "inactive",
-      "nrt": "near-real-time data not available",
-      "lat": 36.904495,
-      "lon": -7.89779,
-      "lastPos": "2026-09-21T17:25:24+00:00",
-      "lastSea": "2026-09-21T01:25:24+00:00",
-      "family": "datawell"
+      "status": "active",
+      "nrt": "near-real-time data available",
+      "lat": 36.9047222222222,
+      "lon": -7.94833333333333,
+      "lastPos": "2026-10-23T10:26:23+00:00",
+      "lastSea": "2026-10-23T10:26:22+00:00",
+      "family": "datawell",
+      "latest": {
+        "date": "2026-10-23T10:26:22.000Z",
+        "hm0": 0.52,
+        "tp": 10.5,
+        "thtp": 263,
+        "hmax": 0.79,
+        "temp": 20.9
+      }
     },
     "23": {
       "idEst": 23,
@@ -82,16 +90,16 @@
       "nrt": "near-real-time data available",
       "lat": 32.727777777777796,
       "lon": -16.723888888888897,
-      "lastPos": "2026-10-22T13:59:57+00:00",
-      "lastSea": "2026-10-22T13:59:57+00:00",
+      "lastPos": "2026-10-23T10:29:57+00:00",
+      "lastSea": "2026-10-23T10:29:57+00:00",
       "family": "datawell",
       "latest": {
-        "date": "2026-10-22T13:59:57.000Z",
-        "hm0": 0.79,
-        "tp": 5.3,
-        "thtp": 124,
-        "hmax": 1.58,
-        "temp": 22.7
+        "date": "2026-10-23T10:29:57.000Z",
+        "hm0": 0.92,
+        "tp": 6.7,
+        "thtp": 114,
+        "hmax": 1.38,
+        "temp": 22.4
       }
     },
     "66": {
@@ -146,6 +154,7 @@
       "nrt": "near-real-time data not available",
       "lat": 38.588333333333296,
       "lon": -28.541111111111096,
+      "lastPos": "2021-10-27T08:36:15+00:00",
       "lastSea": "2022-07-28T17:29:16+00:00",
       "family": "datawell"
     },
@@ -159,16 +168,16 @@
       "nrt": "near-real-time data available",
       "lat": 39.08,
       "lon": -27.9633333333333,
-      "lastPos": "2026-10-22T14:19:05+00:00",
-      "lastSea": "2026-10-22T14:19:05+00:00",
+      "lastPos": "2026-10-23T10:49:07+00:00",
+      "lastSea": "2026-10-23T10:49:07+00:00",
       "family": "datawell",
       "latest": {
-        "date": "2026-10-22T14:19:05.000Z",
-        "hm0": 1.56,
-        "tp": 12.5,
-        "thtp": 103,
-        "hmax": 2.33,
-        "temp": 21
+        "date": "2026-10-23T10:49:07.000Z",
+        "hm0": 1.6,
+        "tp": 10.5,
+        "thtp": 108,
+        "hmax": 2.38,
+        "temp": 20.9
       }
     },
     "88": {
@@ -197,7 +206,7 @@
       "idEst": 4,
       "stationTitle": "CSA92/D",
       "area": "Continente - Leixões",
-      "distanceKm": 56.8
+      "distanceKm": 56.2
     },
     "afife": {
       "idEst": 4,
@@ -205,17 +214,11 @@
       "area": "Continente - Leixões",
       "distanceKm": 52.3
     },
-    "castelo-neiva": {
-      "idEst": 4,
-      "stationTitle": "CSA92/D",
-      "area": "Continente - Leixões",
-      "distanceKm": 50.2
-    },
     "amorosa": {
       "idEst": 4,
       "stationTitle": "CSA92/D",
       "area": "Continente - Leixões",
-      "distanceKm": 44.1
+      "distanceKm": 39
     },
     "cabedelo": {
       "idEst": 4,
@@ -239,49 +242,43 @@
       "idEst": 4,
       "stationTitle": "CSA92/D",
       "area": "Continente - Leixões",
-      "distanceKm": 41.2
-    },
-    "ofir": {
-      "idEst": 4,
-      "stationTitle": "CSA92/D",
-      "area": "Continente - Leixões",
-      "distanceKm": 30.5
+      "distanceKm": 41.3
     },
     "esposende": {
       "idEst": 4,
       "stationTitle": "CSA92/D",
       "area": "Continente - Leixões",
-      "distanceKm": 28.9
+      "distanceKm": 29.1
     },
     "esposende-praia": {
       "idEst": 4,
       "stationTitle": "CSA92/D",
       "area": "Continente - Leixões",
-      "distanceKm": 29.4
+      "distanceKm": 29.9
     },
     "fao": {
       "idEst": 4,
       "stationTitle": "CSA92/D",
       "area": "Continente - Leixões",
-      "distanceKm": 28
+      "distanceKm": 28.1
     },
     "apulia": {
       "idEst": 4,
       "stationTitle": "CSA92/D",
       "area": "Continente - Leixões",
-      "distanceKm": 26.1
-    },
-    "povoa-varzim": {
-      "idEst": 4,
-      "stationTitle": "CSA92/D",
-      "area": "Continente - Leixões",
-      "distanceKm": 19.8
+      "distanceKm": 25.2
     },
     "azurara": {
       "idEst": 4,
       "stationTitle": "CSA92/D",
       "area": "Continente - Leixões",
       "distanceKm": 20.2
+    },
+    "arvore": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Continente - Leixões",
+      "distanceKm": 20.4
     },
     "leca-palmeira": {
       "idEst": 4,
@@ -306,18 +303,6 @@
       "stationTitle": "CSA92/D",
       "area": "Continente - Leixões",
       "distanceKm": 33.7
-    },
-    "foil-fao-cavado": {
-      "idEst": 4,
-      "stationTitle": "CSA92/D",
-      "area": "Continente - Leixões",
-      "distanceKm": 28.4
-    },
-    "foil-esposende-piscinas": {
-      "idEst": 4,
-      "stationTitle": "CSA92/D",
-      "area": "Continente - Leixões",
-      "distanceKm": 28.9
     },
     "praia-da-lomba": {
       "idEst": 4,
@@ -419,7 +404,7 @@
       "idEst": 4,
       "stationTitle": "CSA92/D",
       "area": "Continente - Leixões",
-      "distanceKm": 65.6
+      "distanceKm": 67.9
     },
     "muranzel": {
       "idEst": 4,
@@ -431,7 +416,7 @@
       "idEst": 4,
       "stationTitle": "CSA92/D",
       "area": "Continente - Leixões",
-      "distanceKm": 55.7
+      "distanceKm": 54.4
     },
     "sao-jacinto": {
       "idEst": 4,
@@ -575,7 +560,7 @@
       "idEst": 19,
       "stationTitle": "CSA83/1D",
       "area": "Continente - Sines",
-      "distanceKm": 125.3
+      "distanceKm": 128.6
     },
     "pedra-branca": {
       "idEst": 19,
@@ -599,13 +584,13 @@
       "idEst": 19,
       "stationTitle": "CSA83/1D",
       "area": "Continente - Sines",
-      "distanceKm": 110.5
+      "distanceKm": 110.2
     },
     "adraga": {
       "idEst": 19,
       "stationTitle": "CSA83/1D",
       "area": "Continente - Sines",
-      "distanceKm": 108.3
+      "distanceKm": 109.5
     },
     "guincho": {
       "idEst": 19,
@@ -617,7 +602,7 @@
       "idEst": 19,
       "stationTitle": "CSA83/1D",
       "area": "Continente - Sines",
-      "distanceKm": 91.8
+      "distanceKm": 81.3
     },
     "praia-vitoria": {
       "idEst": 86,
@@ -630,14 +615,14 @@
       "idEst": 86,
       "stationTitle": "BOND5",
       "area": "Arquipélago dos Açores - Ilha da Graciosa",
-      "distanceKm": 78.2,
+      "distanceKm": 89.1,
       "island": true
     },
     "parede": {
       "idEst": 19,
       "stationTitle": "CSA83/1D",
       "area": "Continente - Sines",
-      "distanceKm": 92
+      "distanceKm": 92.8
     },
     "carcavelos": {
       "idEst": 19,
@@ -649,7 +634,7 @@
       "idEst": 19,
       "stationTitle": "CSA83/1D",
       "area": "Continente - Sines",
-      "distanceKm": 86.5
+      "distanceKm": 79.2
     },
     "sao-joao-caparica": {
       "idEst": 19,
@@ -691,13 +676,13 @@
       "idEst": 19,
       "stationTitle": "CSA83/1D",
       "area": "Continente - Sines",
-      "distanceKm": 83.8
+      "distanceKm": 81.3
     },
     "almoxarife": {
       "idEst": 86,
       "stationTitle": "BOND5",
       "area": "Arquipélago dos Açores - Ilha da Graciosa",
-      "distanceKm": 84.1,
+      "distanceKm": 80.9,
       "island": true
     },
     "lagoa-albufeira": {
@@ -754,17 +739,17 @@
       "area": "Continente - Sines",
       "distanceKm": 26
     },
-    "sines": {
-      "idEst": 19,
-      "stationTitle": "CSA83/1D",
-      "area": "Continente - Sines",
-      "distanceKm": 6.4
-    },
     "sao-torpes": {
       "idEst": 19,
       "stationTitle": "CSA83/1D",
       "area": "Continente - Sines",
       "distanceKm": 10.8
+    },
+    "vale-figueiros-sines": {
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Continente - Sines",
+      "distanceKm": 11.8
     },
     "mosteiros": {
       "idEst": 86,
@@ -777,33 +762,33 @@
       "idEst": 19,
       "stationTitle": "CSA83/1D",
       "area": "Continente - Sines",
-      "distanceKm": 14.4
+      "distanceKm": 13.8
     },
     "monte-verde": {
       "idEst": 86,
       "stationTitle": "BOND5",
       "area": "Arquipélago dos Açores - Ilha da Graciosa",
-      "distanceKm": 244.6,
+      "distanceKm": 254.1,
       "island": true
     },
     "santa-barbara": {
       "idEst": 86,
       "stationTitle": "BOND5",
       "area": "Arquipélago dos Açores - Ilha da Graciosa",
-      "distanceKm": 241.9,
+      "distanceKm": 252.9,
       "island": true
     },
     "malhao": {
       "idEst": 19,
       "stationTitle": "CSA83/1D",
       "area": "Continente - Sines",
-      "distanceKm": 21.1
+      "distanceKm": 18.7
     },
     "milicias": {
       "idEst": 86,
       "stationTitle": "BOND5",
       "area": "Arquipélago dos Açores - Ilha da Graciosa",
-      "distanceKm": 248.6,
+      "distanceKm": 251.6,
       "island": true
     },
     "vila-nova-milfontes": {
@@ -816,7 +801,7 @@
       "idEst": 19,
       "stationTitle": "CSA83/1D",
       "area": "Continente - Sines",
-      "distanceKm": 32.9
+      "distanceKm": 46.4
     },
     "agua-alto": {
       "idEst": 86,
@@ -853,7 +838,7 @@
       "idEst": 19,
       "stationTitle": "CSA83/1D",
       "area": "Continente - Sines",
-      "distanceKm": 64.9
+      "distanceKm": 64.8
     },
     "arrifana": {
       "idEst": 19,
@@ -865,7 +850,7 @@
       "idEst": 19,
       "stationTitle": "CSA83/1D",
       "area": "Continente - Sines",
-      "distanceKm": 74.9
+      "distanceKm": 75.1
     },
     "bordeira": {
       "idEst": 19,
@@ -883,175 +868,175 @@
       "idEst": 19,
       "stationTitle": "CSA83/1D",
       "area": "Continente - Sines",
-      "distanceKm": 91.3
+      "distanceKm": 89.2
     },
     "castelejo": {
-      "idEst": 19,
-      "stationTitle": "CSA83/1D",
-      "area": "Continente - Sines",
-      "distanceKm": 92.5
+      "idEst": 20,
+      "stationTitle": "CSA82/D",
+      "area": "Continente - Faro",
+      "distanceKm": 91.2
     },
     "luz": {
-      "idEst": 19,
-      "stationTitle": "CSA83/1D",
-      "area": "Continente - Sines",
-      "distanceKm": 94.4
+      "idEst": 20,
+      "stationTitle": "CSA82/D",
+      "area": "Continente - Faro",
+      "distanceKm": 72.4
     },
     "burgau": {
-      "idEst": 19,
-      "stationTitle": "CSA83/1D",
-      "area": "Continente - Sines",
-      "distanceKm": 95.5
+      "idEst": 20,
+      "stationTitle": "CSA82/D",
+      "area": "Continente - Faro",
+      "distanceKm": 76.1
     },
     "salema": {
-      "idEst": 19,
-      "stationTitle": "CSA83/1D",
-      "area": "Continente - Sines",
-      "distanceKm": 95.6
+      "idEst": 20,
+      "stationTitle": "CSA82/D",
+      "area": "Continente - Faro",
+      "distanceKm": 79.8
     },
     "cordoama": {
       "idEst": 19,
       "stationTitle": "CSA83/1D",
       "area": "Continente - Sines",
-      "distanceKm": 96.9
+      "distanceKm": 90.3
     },
     "ferragudo": {
-      "idEst": 19,
-      "stationTitle": "CSA83/1D",
-      "area": "Continente - Sines",
-      "distanceKm": 96.1
+      "idEst": 20,
+      "stationTitle": "CSA82/D",
+      "area": "Continente - Faro",
+      "distanceKm": 56.1
     },
     "vila-real-santo-antonio": {
-      "idEst": 19,
-      "stationTitle": "CSA83/1D",
-      "area": "Continente - Sines",
-      "distanceKm": 155.4
+      "idEst": 20,
+      "stationTitle": "CSA82/D",
+      "area": "Continente - Faro",
+      "distanceKm": 57.4
     },
     "monte-gordo": {
-      "idEst": 19,
-      "stationTitle": "CSA83/1D",
-      "area": "Continente - Sines",
-      "distanceKm": 154
+      "idEst": 20,
+      "stationTitle": "CSA82/D",
+      "area": "Continente - Faro",
+      "distanceKm": 54
     },
     "praia-verde": {
-      "idEst": 19,
-      "stationTitle": "CSA83/1D",
-      "area": "Continente - Sines",
-      "distanceKm": 150.3
+      "idEst": 20,
+      "stationTitle": "CSA82/D",
+      "area": "Continente - Faro",
+      "distanceKm": 51.3
     },
     "altura": {
-      "idEst": 19,
-      "stationTitle": "CSA83/1D",
-      "area": "Continente - Sines",
-      "distanceKm": 151.3
+      "idEst": 20,
+      "stationTitle": "CSA82/D",
+      "area": "Continente - Faro",
+      "distanceKm": 49.7
     },
     "praia-rocha": {
-      "idEst": 19,
-      "stationTitle": "CSA83/1D",
-      "area": "Continente - Sines",
-      "distanceKm": 96
+      "idEst": 20,
+      "stationTitle": "CSA82/D",
+      "area": "Continente - Faro",
+      "distanceKm": 57
     },
     "alvor": {
-      "idEst": 19,
-      "stationTitle": "CSA83/1D",
-      "area": "Continente - Sines",
-      "distanceKm": 92.5
+      "idEst": 20,
+      "stationTitle": "CSA82/D",
+      "area": "Continente - Faro",
+      "distanceKm": 64.1
     },
     "foil-alvor": {
-      "idEst": 19,
-      "stationTitle": "CSA83/1D",
-      "area": "Continente - Sines",
-      "distanceKm": 92.5
+      "idEst": 20,
+      "stationTitle": "CSA82/D",
+      "area": "Continente - Faro",
+      "distanceKm": 64.1
     },
     "lagos": {
-      "idEst": 19,
-      "stationTitle": "CSA83/1D",
-      "area": "Continente - Sines",
-      "distanceKm": 92.9
+      "idEst": 20,
+      "stationTitle": "CSA82/D",
+      "area": "Continente - Faro",
+      "distanceKm": 66.8
     },
     "lagos-wakepark": {
-      "idEst": 19,
-      "stationTitle": "CSA83/1D",
-      "area": "Continente - Sines",
-      "distanceKm": 94.1
+      "idEst": 20,
+      "stationTitle": "CSA82/D",
+      "area": "Continente - Faro",
+      "distanceKm": 67.7
     },
     "beliche": {
-      "idEst": 19,
-      "stationTitle": "CSA83/1D",
-      "area": "Continente - Sines",
-      "distanceKm": 99.2
+      "idEst": 20,
+      "stationTitle": "CSA82/D",
+      "area": "Continente - Faro",
+      "distanceKm": 91.2
     },
     "martinhal": {
-      "idEst": 19,
-      "stationTitle": "CSA83/1D",
-      "area": "Continente - Sines",
-      "distanceKm": 100.3
+      "idEst": 20,
+      "stationTitle": "CSA82/D",
+      "area": "Continente - Faro",
+      "distanceKm": 87.8
     },
     "barrinha-faro": {
-      "idEst": 19,
-      "stationTitle": "CSA83/1D",
-      "area": "Continente - Sines",
-      "distanceKm": 133.6
+      "idEst": 20,
+      "stationTitle": "CSA82/D",
+      "area": "Continente - Faro",
+      "distanceKm": 9.2
     },
     "fuseta": {
-      "idEst": 19,
-      "stationTitle": "CSA83/1D",
-      "area": "Continente - Sines",
-      "distanceKm": 143.2
+      "idEst": 20,
+      "stationTitle": "CSA82/D",
+      "area": "Continente - Faro",
+      "distanceKm": 24.8
     },
     "ilha-faro": {
-      "idEst": 19,
-      "stationTitle": "CSA83/1D",
-      "area": "Continente - Sines",
-      "distanceKm": 134
+      "idEst": 20,
+      "stationTitle": "CSA82/D",
+      "area": "Continente - Faro",
+      "distanceKm": 11.4
     },
     "faro-mar": {
-      "idEst": 19,
-      "stationTitle": "CSA83/1D",
-      "area": "Continente - Sines",
-      "distanceKm": 130.6
+      "idEst": 20,
+      "stationTitle": "CSA82/D",
+      "area": "Continente - Faro",
+      "distanceKm": 12.3
     },
     "culatra": {
-      "idEst": 19,
-      "stationTitle": "CSA83/1D",
-      "area": "Continente - Sines",
-      "distanceKm": 141.7
+      "idEst": 20,
+      "stationTitle": "CSA82/D",
+      "area": "Continente - Faro",
+      "distanceKm": 13.8
     },
     "armona": {
-      "idEst": 19,
-      "stationTitle": "CSA83/1D",
-      "area": "Continente - Sines",
-      "distanceKm": 142.1
+      "idEst": 20,
+      "stationTitle": "CSA82/D",
+      "area": "Continente - Faro",
+      "distanceKm": 18.2
     },
     "ilha-tavira": {
-      "idEst": 19,
-      "stationTitle": "CSA83/1D",
-      "area": "Continente - Sines",
-      "distanceKm": 146.5
+      "idEst": 20,
+      "stationTitle": "CSA82/D",
+      "area": "Continente - Faro",
+      "distanceKm": 37
     },
     "cabanas-tavira": {
-      "idEst": 19,
-      "stationTitle": "CSA83/1D",
-      "area": "Continente - Sines",
-      "distanceKm": 146.9
+      "idEst": 20,
+      "stationTitle": "CSA82/D",
+      "area": "Continente - Faro",
+      "distanceKm": 40.6
     },
     "cacela-velha": {
-      "idEst": 19,
-      "stationTitle": "CSA83/1D",
-      "area": "Continente - Sines",
-      "distanceKm": 149.1
+      "idEst": 20,
+      "stationTitle": "CSA82/D",
+      "area": "Continente - Faro",
+      "distanceKm": 45.4
     },
     "zavial": {
-      "idEst": 19,
-      "stationTitle": "CSA83/1D",
-      "area": "Continente - Sines",
-      "distanceKm": 97.6
+      "idEst": 20,
+      "stationTitle": "CSA82/D",
+      "area": "Continente - Faro",
+      "distanceKm": 83.2
     },
     "tonel": {
-      "idEst": 19,
-      "stationTitle": "CSA83/1D",
-      "area": "Continente - Sines",
-      "distanceKm": 101.8
+      "idEst": 20,
+      "stationTitle": "CSA82/D",
+      "area": "Continente - Faro",
+      "distanceKm": 89.5
     },
     "ponta-delgada": {
       "idEst": 86,
@@ -1064,7 +1049,7 @@
       "idEst": 33,
       "stationTitle": "CSA94",
       "area": "Arquipélago da Madeira - Caniçal",
-      "distanceKm": 30,
+      "distanceKm": 31.5,
       "island": true
     },
     "porto-da-cruz": {
@@ -1106,7 +1091,7 @@
       "idEst": 33,
       "stationTitle": "CSA94",
       "area": "Arquipélago da Madeira - Caniçal",
-      "distanceKm": 20,
+      "distanceKm": 23.4,
       "island": true
     },
     "barra-aveiro": {
@@ -1119,7 +1104,7 @@
       "idEst": 4,
       "stationTitle": "CSA92/D",
       "area": "Continente - Leixões",
-      "distanceKm": 20.5
+      "distanceKm": 21
     },
     "santa-cruz": {
       "idEst": 19,
@@ -1131,7 +1116,7 @@
       "idEst": 19,
       "stationTitle": "CSA83/1D",
       "area": "Continente - Sines",
-      "distanceKm": 160.1
+      "distanceKm": 161.9
     },
     "areia-branca": {
       "idEst": 19,
@@ -1185,43 +1170,37 @@
       "idEst": 19,
       "stationTitle": "CSA83/1D",
       "area": "Continente - Sines",
-      "distanceKm": 15.4
-    },
-    "garrão": {
-      "idEst": 19,
-      "stationTitle": "CSA83/1D",
-      "area": "Continente - Sines",
-      "distanceKm": 136
+      "distanceKm": 15.7
     },
     "falesia": {
-      "idEst": 19,
-      "stationTitle": "CSA83/1D",
-      "area": "Continente - Sines",
-      "distanceKm": 116.3
+      "idEst": 20,
+      "stationTitle": "CSA82/D",
+      "area": "Continente - Faro",
+      "distanceKm": 25.2
     },
     "tres-irmaos": {
-      "idEst": 19,
-      "stationTitle": "CSA83/1D",
-      "area": "Continente - Sines",
-      "distanceKm": 93.4
+      "idEst": 20,
+      "stationTitle": "CSA82/D",
+      "area": "Continente - Faro",
+      "distanceKm": 61.1
     },
     "canavial": {
-      "idEst": 19,
-      "stationTitle": "CSA83/1D",
-      "area": "Continente - Sines",
-      "distanceKm": 101.2
+      "idEst": 20,
+      "stationTitle": "CSA82/D",
+      "area": "Continente - Faro",
+      "distanceKm": 67.9
     },
     "armacao-pera": {
-      "idEst": 19,
-      "stationTitle": "CSA83/1D",
-      "area": "Continente - Sines",
-      "distanceKm": 104.4
+      "idEst": 20,
+      "stationTitle": "CSA82/D",
+      "area": "Continente - Faro",
+      "distanceKm": 42.1
     },
     "mareta": {
-      "idEst": 19,
-      "stationTitle": "CSA83/1D",
-      "area": "Continente - Sines",
-      "distanceKm": 101.8
+      "idEst": 20,
+      "stationTitle": "CSA82/D",
+      "area": "Continente - Faro",
+      "distanceKm": 88.8
     },
     "machico": {
       "idEst": 33,
@@ -1234,7 +1213,7 @@
       "idEst": 33,
       "stationTitle": "CSA94",
       "area": "Arquipélago da Madeira - Caniçal",
-      "distanceKm": 37.1,
+      "distanceKm": 37,
       "island": true
     },
     "ponta-pargo": {
@@ -1276,7 +1255,7 @@
       "idEst": 86,
       "stationTitle": "BOND5",
       "area": "Arquipélago dos Açores - Ilha da Graciosa",
-      "distanceKm": 67.5,
+      "distanceKm": 71.8,
       "island": true
     },
     "faja-cubres": {
@@ -1285,18 +1264,6 @@
       "area": "Arquipélago dos Açores - Ilha da Graciosa",
       "distanceKm": 49.7,
       "island": true
-    },
-    "fao-ofir-surf": {
-      "idEst": 4,
-      "stationTitle": "CSA92/D",
-      "area": "Continente - Leixões",
-      "distanceKm": 28.1
-    },
-    "ofir-praia": {
-      "idEst": 4,
-      "stationTitle": "CSA92/D",
-      "area": "Continente - Leixões",
-      "distanceKm": 27.7
     },
     "mindelo": {
       "idEst": 4,
@@ -1311,7 +1278,7 @@
       "distanceKm": 25.3
     }
   },
-  "fetchedAt": "2026-10-22T15:35:52.886Z",
+  "fetchedAt": "2026-10-23T12:05:38.549Z",
   "sourceCollections": [
     "buoys_datawell"
   ],

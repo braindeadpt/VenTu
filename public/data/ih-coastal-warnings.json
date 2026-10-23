@@ -223,166 +223,6 @@
       ]
     },
     {
-      "id": 18843,
-      "ref": "ANAV NR 2335/26",
-      "category": "Requisitos de segurança maritima",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=84104efe-1378-47da-b4c7-deb4ce77103f",
-      "source": "ih",
-      "collection": "nav_warning_coastal",
-      "polygons": [
-        [
-          [
-            -8.216667,
-            37.155
-          ],
-          [
-            -7.403167,
-            37.155
-          ],
-          [
-            -8.216667,
-            36.833333
-          ],
-          [
-            -7.403167,
-            36.833333
-          ],
-          [
-            -8.216667,
-            37.155
-          ]
-        ]
-      ]
-    },
-    {
-      "id": 18861,
-      "ref": "ANAV NR 2364/26",
-      "category": "Requisitos de segurança maritima",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=095d9358-a922-4ca7-84d2-04c14a5a67fb",
-      "source": "ih",
-      "collection": "nav_warning_coastal",
-      "polygons": [
-        [
-          [
-            -8.799076,
-            41.517532
-          ],
-          [
-            -8.799076,
-            41.545289
-          ],
-          [
-            -8.782597,
-            41.545289
-          ],
-          [
-            -8.782597,
-            41.517532
-          ],
-          [
-            -8.799076,
-            41.517532
-          ]
-        ]
-      ]
-    },
-    {
-      "id": 18863,
-      "ref": "ANAV NR 2365/26",
-      "category": "Requisitos de segurança maritima",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=8933b37b-2b45-4b56-947e-3327e536d968",
-      "source": "ih",
-      "collection": "nav_warning_coastal",
-      "polygons": [
-        [
-          [
-            -17.460938,
-            32.231389
-          ],
-          [
-            -17.460938,
-            33.063924
-          ],
-          [
-            -16.494141,
-            33.063924
-          ],
-          [
-            -16.494141,
-            32.231389
-          ],
-          [
-            -17.460938,
-            32.231389
-          ]
-        ]
-      ]
-    },
-    {
-      "id": 18869,
-      "ref": "ANAV NR 2368/26",
-      "category": "Requisitos de segurança maritima",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=ee0dafb5-cc05-42a1-8c33-26643f272bc5",
-      "source": "ih",
-      "collection": "nav_warning_coastal",
-      "polygons": [
-        [
-          [
-            -8.870116,
-            41.813153
-          ],
-          [
-            -8.870116,
-            41.813913
-          ],
-          [
-            -8.868765,
-            41.813913
-          ],
-          [
-            -8.868765,
-            41.813153
-          ],
-          [
-            -8.870116,
-            41.813153
-          ]
-        ]
-      ]
-    },
-    {
-      "id": 18871,
-      "ref": "ANAV NR 2369/26",
-      "category": "Requisitos de segurança maritima",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=aa1a83e3-819f-4e1e-a882-1d7057bea603",
-      "source": "ih",
-      "collection": "nav_warning_coastal",
-      "polygons": [
-        [
-          [
-            -8.87708,
-            41.854603
-          ],
-          [
-            -8.87708,
-            41.863041
-          ],
-          [
-            -8.864381,
-            41.863041
-          ],
-          [
-            -8.864381,
-            41.854603
-          ],
-          [
-            -8.87708,
-            41.854603
-          ]
-        ]
-      ]
-    },
-    {
       "id": 1000182,
       "ref": "ANAV NR 121/21",
       "category": "SEGURANÇA DA NAVEGAÇÃO - AVISO À NAVEGAÇÃO LOCAL",
@@ -6989,21 +6829,6 @@
       ]
     },
     {
-      "id": 2017253,
-      "ref": "ANAV NR 0956/26",
-      "category": "Animais Marinhos - Avistamento",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=b8972cf2-c31d-4237-b981-c3e8d84d917b",
-      "source": "ih",
-      "collection": "orca_anavnet_point",
-      "center": [
-        -8.867667,
-        38.4245
-      ],
-      "radiusKm": 25,
-      "eventAt": "2026-04-26T00:00:00.000Z",
-      "polygons": []
-    },
-    {
       "id": 2017775,
       "ref": "ANAV NR 1361/26",
       "category": "Animais Marinhos - Avistamento",
@@ -7494,7 +7319,7 @@
       1003281
     ],
     "amorosa": [
-      1007416,
+      1009684,
       2018401
     ],
     "cabedelo": [
@@ -7526,39 +7351,33 @@
       1009684,
       2018401
     ],
-    "ofir": [
-      1009684,
-      2018401,
-      2018801
-    ],
     "esposende": [
-      18861,
       1000657,
       1009684,
       2018401,
       2018801
     ],
     "esposende-praia": [
-      18861,
-      1000657,
       1009684,
       2018401,
       2018801
     ],
     "fao": [
+      1009684,
       2018401,
       2018801
     ],
     "apulia": [
-      2018401,
-      2018801
-    ],
-    "povoa-varzim": [
-      2018383,
+      1009684,
       2018401,
       2018801
     ],
     "azurara": [
+      2018383,
+      2018401,
+      2018801
+    ],
+    "arvore": [
       2018383,
       2018401,
       2018801
@@ -7590,19 +7409,6 @@
       1000202,
       1000709,
       2018383
-    ],
-    "foil-fao-cavado": [
-      18861,
-      1000657,
-      1009684,
-      2018401,
-      2018801
-    ],
-    "foil-esposende-piscinas": [
-      1000657,
-      1009684,
-      2018401,
-      2018801
     ],
     "praia-da-lomba": [
       1000708
@@ -7701,7 +7507,6 @@
       2018213
     ],
     "sao-lourenco": [
-      1007841,
       2018213
     ],
     "pedra-branca": [
@@ -7726,6 +7531,11 @@
       2017877,
       2018213
     ],
+    "seixal-bay": [
+      1000782,
+      2018289,
+      2018749
+    ],
     "praia-vitoria": [
       18683
     ],
@@ -7734,8 +7544,7 @@
     ],
     "parede": [
       1000782,
-      2017877,
-      2018749
+      2017877
     ],
     "carcavelos": [
       1000782,
@@ -7744,6 +7553,8 @@
     ],
     "nova-vaga": [
       1000782,
+      2017839,
+      2018289,
       2018749
     ],
     "sao-joao-caparica": [
@@ -7776,12 +7587,12 @@
     ],
     "praia-da-rainha": [
       1000782,
+      2017839,
       2018749
     ],
     "almoxarife": [
       18683,
       1000441,
-      1002358,
       1009371
     ],
     "lagoa-albufeira": [
@@ -7814,18 +7625,15 @@
     "troia": [
       1000786,
       1001983,
-      2017253,
       2017839,
       2017849,
       2018289
     ],
     "comporta": [
-      2017253,
       2017849,
       2018289
     ],
     "carvalhal-comporta": [
-      2017253,
       2017849
     ],
     "mosteiros": [
@@ -7931,6 +7739,7 @@
       2018305
     ],
     "praia-verde": [
+      1000820,
       2017775,
       2018305
     ],
@@ -7991,13 +7800,10 @@
       2018247
     ],
     "barrinha-faro": [
-      1000816,
-      2017775,
       2018203,
       2018205
     ],
     "fuseta": [
-      18843,
       2017775,
       2018203,
       2018205,
@@ -8020,7 +7826,6 @@
       2018205
     ],
     "armona": [
-      18843,
       1000809,
       1000815,
       1000816,
@@ -8030,17 +7835,14 @@
       2018205
     ],
     "ilha-tavira": [
-      18843,
       2017775,
       2018305
     ],
     "cabanas-tavira": [
-      18843,
       2017775,
       2018305
     ],
     "cacela-velha": [
-      18843,
       2017775,
       2018305
     ],
@@ -8068,31 +7870,24 @@
       1010344
     ],
     "sao-vicente-madeira": [
-      18863,
       1000459
     ],
     "porto-da-cruz": [
-      18863,
       1000459
     ],
     "paul-mar": [
-      18863,
       1000459
     ],
     "jardim-mar": [
-      18863,
       1000459
     ],
     "ponta-sao-lourenco": [
-      18863,
       1000459
     ],
     "ribeira-brava": [
-      18863,
       1000459
     ],
     "funchal": [
-      18863,
       1000459
     ],
     "barra-aveiro": [
@@ -8132,26 +7927,24 @@
       2018749,
       2018769
     ],
-    "garrão": [
-      1000816,
-      2018203,
-      2018205
-    ],
     "falesia": [
       2018203,
       2018205
     ],
     "tres-irmaos": [
       1000796,
-      1000798,
+      1001008,
       1001633,
-      1007940,
       2017793,
       2018247
     ],
     "canavial": [
-      1001008,
-      2017793
+      1000796,
+      1000798,
+      1001633,
+      2017793,
+      2017803,
+      2018247
     ],
     "armacao-pera": [
       1001008,
@@ -8166,19 +7959,15 @@
       2018247
     ],
     "machico": [
-      18863,
       1000459
     ],
     "seixal-madeira": [
-      18863,
       1000459
     ],
     "ponta-pargo": [
-      18863,
       1000459
     ],
     "madalena-mar": [
-      18863,
       1000459
     ],
     "calhetas": [
@@ -8205,17 +7994,6 @@
       1000441,
       1009371
     ],
-    "fao-ofir-surf": [
-      18861,
-      1009684,
-      2018401,
-      2018801
-    ],
-    "ofir-praia": [
-      1009684,
-      2018401,
-      2018801
-    ],
     "mindelo": [
       2018383,
       2018401,
@@ -8233,7 +8011,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-10-22T15:36:24.599Z",
+  "fetchedAt": "2026-10-23T12:06:16.410Z",
   "sourceCollection": "nav_warning_coastal+nav_warning_local+orca_anavnet_point",
   "sourceUrl": "https://ogcapi.hidrografico.pt/collections/nav_warning_coastal"
 }
