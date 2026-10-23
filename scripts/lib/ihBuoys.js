@@ -57,6 +57,174 @@ class IhAuthError extends Error {
 function isIhAuthError(err) {
   return err instanceof IhAuthError || (err != null && err.name === 'IhAuthError');
 }
+
+/**
+ * Typed error for a non-auth HTTP failure on the IH wave API (4xx/5xx other
+ * than 401/403). Carries `status` so the pipeline can tell an upstream outage
+ * (5xx, 408, 429) from a request/contract problem (other 4xx). The message
+ * keeps the historical «HTTP <status> for buoy <id>» wording (logs/greps).
+ */
+class IhHttpError extends Error {
+  /**
+   * @param {number} status HTTP status
+   * @param {number | string} stationId idEst (or collection) that failed
+   * @param {string} [message] override (station listing keeps «HTTP <status>»)
+   */
+  constructor(status, stationId, message) {
+    super(message ?? `HTTP ${status} for buoy ${stationId}`);
+    this.name = 'IhHttpError';
+    this.status = status;
+    this.stationId = stationId;
+  }
+}
+
+/** Códigos de erro de rede (Node/undici) que contam como avaria transitória. */
+const TRANSIENT_NET_CODE_RE =
+  /^(ECONNRESET|ECONNREFUSED|ECONNABORTED|ETIMEDOUT|ENOTFOUND|EAI_AGAIN|EHOSTUNREACH|ENETUNREACH|EPIPE|UND_ERR_[A-Z_]+)$/;
+
+/**
+ * Is this a TRANSIENT upstream failure of the IH API — HTTP 5xx, 408/429,
+ * timeout (AbortSignal.timeout → TimeoutError/AbortError) or a network-level
+ * error (fetch failed, DNS, connection reset)? Auth rejection (401/403) and
+ * other 4xx are NOT transient: they are actionable on our side.
+ * @param {unknown} err
+ * @returns {boolean}
+ */
+function isTransientIhError(err) {
+  if (err == null || typeof err !== 'object') return false;
+  if (isIhAuthError(err)) return false;
+  const e = /** @type {any} */ (err);
+  if (typeof e.status === 'number') {
+    return e.status >= 500 || e.status === 408 || e.status === 429;
+  }
+  if (e.name === 'TimeoutError' || e.name === 'AbortError') return true;
+  const code = String(e.code ?? e.cause?.code ?? '');
+  if (TRANSIENT_NET_CODE_RE.test(code)) return true;
+  if (e.cause && (e.cause.name === 'TimeoutError' || e.cause.name === 'AbortError')) return true;
+  // undici: `TypeError: fetch failed` (causa de rede no .cause, nem sempre com code).
+  if (e.name === 'TypeError' && /fetch failed|network|socket/i.test(String(e.message ?? ''))) return true;
+  return false;
+}
+
+/**
+ * Pure classification of one pipeline run of per-buoy wave fetches.
+ *
+ * `outcomes` is one entry per ACTIVE buoy: `{ idEst, result }` where `result`
+ * is the Promise.allSettled outcome of fetchBuoyWave (fulfilled with a snapshot
+ * or null = 2xx without series; rejected with the error).
+ *
+ * status:
+ *   - 'no-key'          — no IH_API_KEY: nothing was fetched (stations only).
+ *   - 'auth'            — ≥1 request rejected with 401/403 → FAIL (renew key).
+ *   - 'no-active'       — key set but zero active buoys listed → FAIL.
+ *   - 'ok'              — every active buoy returned a snapshot.
+ *   - 'partial'         — ≥1 snapshot, others failed/empty → OK (as before).
+ *   - 'upstream-outage' — zero snapshots and EVERY request failed with a
+ *                         transient error (5xx/408/429/timeout/network) →
+ *                         WARN, keep previous readings, job continues.
+ *   - 'empty'           — zero snapshots and every request came back 2xx
+ *                         without series → FAIL (the regression the gate in
+ *                         verify-ih-buoy-layer.js was built for).
+ *   - 'error'           — zero snapshots, any other mix (non-transient 4xx,
+ *                         invalid JSON, 2xx-empty mixed with 5xx) → FAIL.
+ *
+ * `fail` says whether the job must fail on this outcome (verify step);
+ * 'auth' is failed early by fetch-ih-buoys.js itself.
+ *
+ * @param {Array<{ idEst: number | string, result: PromiseSettledResult<object | null> }>} outcomes
+ * @param {{ apiKeyConfigured?: boolean }} [opts]
+ * @returns {{ status: 'no-key'|'auth'|'no-active'|'ok'|'partial'|'upstream-outage'|'empty'|'error',
+ *            fail: boolean, active: number, ok: number, empty: number, transient: number, other: number,
+ *            failures: Array<{ idEst: number | string, error: string, status?: number, transient: boolean }> }}
+ */
+function classifyWaveFetch(outcomes, opts = {}) {
+  const apiKeyConfigured = opts.apiKeyConfigured !== false;
+  const list = Array.isArray(outcomes) ? outcomes : [];
+  const failures = [];
+  let ok = 0;
+  let empty = 0;
+  let transient = 0;
+  let other = 0;
+  let auth = false;
+  for (const { idEst, result } of list) {
+    if (result?.status === 'fulfilled') {
+      if (result.value) ok += 1;
+      else empty += 1;
+      continue;
+    }
+    const reason = result?.reason;
+    if (isIhAuthError(reason)) auth = true;
+    const isTransient = isTransientIhError(reason);
+    if (isTransient) transient += 1;
+    else other += 1;
+    const status = typeof reason?.status === 'number' ? reason.status : undefined;
+    failures.push({
+      idEst,
+      error: String(reason?.message ?? reason ?? 'unknown error').slice(0, 200),
+      ...(status !== undefined ? { status } : {}),
+      transient: isTransient,
+    });
+  }
+  const active = list.length;
+  const base = { active, ok, empty, transient, other, failures };
+  if (!apiKeyConfigured) return { status: 'no-key', fail: false, ...base };
+  if (auth) return { status: 'auth', fail: true, ...base };
+  if (active === 0) return { status: 'no-active', fail: true, ...base };
+  if (ok === active) return { status: 'ok', fail: false, ...base };
+  if (ok > 0) return { status: 'partial', fail: false, ...base };
+  if (transient === active) return { status: 'upstream-outage', fail: false, ...base };
+  if (empty === active) return { status: 'empty', fail: true, ...base };
+  return { status: 'error', fail: true, ...base };
+}
+
+/**
+ * Max age (h) of a reading carried forward from the previous ih-buoys.json
+ * during an IH outage. Same as the request window: a normal run never holds a
+ * `latest` older than WAVE_WINDOW_HOURS, so an outage never shows older ones.
+ */
+const CARRY_FORWARD_MAX_AGE_HOURS = 24;
+
+/**
+ * Pure: carry the previous `latest` wave snapshots onto a (fresh or previous)
+ * station catalogue during an IH upstream outage — KEEPING each reading's real
+ * observation time (`latest.date`). The freshness gates downstream
+ * (observedWaveForSpot 3 h, map dots, layer health) then treat them as what
+ * they are: old readings, never fresh ones. Readings older than
+ * CARRY_FORWARD_MAX_AGE_HOURS, in the future or invalid are dropped.
+ *
+ * @param {Record<string, object>} stations catalogue to write (copied, not mutated)
+ * @param {object | null | undefined} prev previous ih-buoys.json
+ * @param {{ nowMs?: number, maxAgeHours?: number }} [opts]
+ * @returns {{ stations: Record<string, object>, kept: number, newestKeptReadingAt: string | null }}
+ */
+function carryForwardWaveReadings(stations, prev, opts = {}) {
+  const { nowMs = Date.now(), maxAgeHours = CARRY_FORWARD_MAX_AGE_HOURS } = opts;
+  const out = {};
+  let kept = 0;
+  let newestTs = -Infinity;
+  for (const [id, st] of Object.entries(stations ?? {})) {
+    const copy = { ...st };
+    delete copy.latest;
+    const prevLatest = prev?.stations?.[id]?.latest;
+    if (
+      prevLatest &&
+      typeof prevLatest === 'object' &&
+      isPlausibleHm0(prevLatest.hm0) &&
+      isFreshObservation(prevLatest.date, nowMs, maxAgeHours)
+    ) {
+      copy.latest = { ...prevLatest };
+      kept += 1;
+      const t = new Date(prevLatest.date).getTime();
+      if (t > newestTs) newestTs = t;
+    }
+    out[id] = copy;
+  }
+  return {
+    stations: out,
+    kept,
+    newestKeptReadingAt: Number.isFinite(newestTs) ? new Date(newestTs).toISOString() : null,
+  };
+}
 /** Buoy readings older than this are not attached (matches wind obs 3h). */
 const MAX_OBS_AGE_HOURS = 3;
 /** Time window (h) requested from getDatawellData — latest rows only. */
@@ -158,7 +326,7 @@ async function fetchBuoyStations(
         headers: { Accept: 'application/geo+json, application/json' },
         signal: AbortSignal.timeout(30_000),
       });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      if (!res.ok) throw new IhHttpError(res.status, col, `HTTP ${res.status}`);
       const data = await res.json();
       const features = data?.features;
       if (!Array.isArray(features)) throw new Error('no features array');
@@ -168,12 +336,25 @@ async function fetchBuoyStations(
       }
       sourceCollections.push(col);
     } catch (err) {
-      errors.push(`${col}: ${err.message}`);
+      errors.push({ col, err });
     }
   }
 
   if (Object.keys(stations).length === 0) {
-    throw new Error(`All IH buoy collections failed — ${errors.join('; ')}`);
+    const detail = errors.map(({ col, err }) => `${col}: ${err.message}`).join('; ');
+    const e = new Error(
+      errors.length
+        ? `All IH buoy collections failed — ${detail}`
+        : 'IH buoy collections returned zero stations',
+    );
+    // upstreamOutage: TODAS as colecções falharam com erro transitório
+    // (5xx/timeout/rede) — o fetch mantém o ficheiro anterior. Qualquer outro
+    // caso (2xx com zero estações, 404, payload sem features) é «zero boias
+    // listadas»: acionável, o pipeline falha.
+    e.code = errors.length > 0 && errors.every(({ err }) => isTransientIhError(err))
+      ? 'IH_UPSTREAM_OUTAGE'
+      : 'IH_NO_BUOYS';
+    throw e;
   }
 
   return { stations, sourceCollections };
@@ -302,7 +483,7 @@ async function fetchBuoyWave(
   if (res.status === 401 || res.status === 403) {
     throw new IhAuthError(res.status, stationId);
   }
-  if (!res.ok) throw new Error(`HTTP ${res.status} for buoy ${stationId}`);
+  if (!res.ok) throw new IhHttpError(res.status, stationId);
   const json = await res.json();
   return pickLatestWave(json);
 }
@@ -334,7 +515,7 @@ async function fetchBuoyWaveSeries(
   if (res.status === 401 || res.status === 403) {
     throw new IhAuthError(res.status, stationId);
   }
-  if (!res.ok) throw new Error(`HTTP ${res.status} for buoy ${stationId}`);
+  if (!res.ok) throw new IhHttpError(res.status, stationId);
   const json = await res.json();
   return extractWaveRows(json)
     .map((row) => parseWaveRow(row))
@@ -443,6 +624,11 @@ module.exports = {
   DEFAULT_WAVE_API,
   IhAuthError,
   isIhAuthError,
+  IhHttpError,
+  isTransientIhError,
+  classifyWaveFetch,
+  carryForwardWaveReadings,
+  CARRY_FORWARD_MAX_AGE_HOURS,
   buildWaveRequestUrl,
   DEFAULT_COLLECTIONS,
   MAX_BUOY_MAP_KM,

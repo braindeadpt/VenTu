@@ -573,3 +573,343 @@ describe('fetch-ih-buoys.js (caminho real do pipeline)', () => {
     expect(log.mock.calls.some((c) => String(c[0]).includes('dry-run'))).toBe(true);
   });
 });
+
+// ── Outage IH a montante (incidente 2026-10-23: HTTP 500 em todas as Datawell) ──
+describe('classifyWaveFetch — outage vs regressão vs auth', () => {
+  const {
+    classifyWaveFetch,
+    isTransientIhError,
+    IhHttpError,
+    IhAuthError: AuthErr,
+    carryForwardWaveReadings,
+  } = require('../ihBuoys.js');
+  const ok = (v = { date: 'x', hm0: 1 }) => ({ status: 'fulfilled', value: v });
+  const empty = () => ({ status: 'fulfilled', value: null });
+  const fail = (reason) => ({ status: 'rejected', reason });
+  const ids = [4, 19, 20, 33, 86];
+  const all = (fn) => ids.map((idEst) => ({ idEst, result: fn(idEst) }));
+
+  it('5xx em TODAS as boias → upstream-outage, não falha (avisa e mantém)', () => {
+    const c = classifyWaveFetch(all((id) => fail(new IhHttpError(500, id))));
+    expect(c.status).toBe('upstream-outage');
+    expect(c.fail).toBe(false);
+    expect(c.transient).toBe(5);
+    expect(c.failures.map((f) => f.status)).toEqual([500, 500, 500, 500, 500]);
+    expect(c.failures[0].error).toBe('HTTP 500 for buoy 4');
+  });
+
+  it('timeouts / erros de rede / 502–504 / 429 contam como outage transitório', () => {
+    const timeout = Object.assign(new Error('The operation was aborted due to timeout'), { name: 'TimeoutError' });
+    const net = Object.assign(new TypeError('fetch failed'), { cause: { code: 'ECONNRESET' } });
+    const dns = Object.assign(new Error('getaddrinfo'), { code: 'ENOTFOUND' });
+    const reasons = [timeout, net, dns, new IhHttpError(503, 20), new IhHttpError(429, 33)];
+    const c = classifyWaveFetch(ids.map((idEst, i) => ({ idEst, result: fail(reasons[i]) })));
+    expect(c.status).toBe('upstream-outage');
+    expect(c.fail).toBe(false);
+  });
+
+  it('401/403 → auth, falha (mesmo misturado com 5xx)', () => {
+    expect(classifyWaveFetch(all((id) => fail(new AuthErr(401, id)))).status).toBe('auth');
+    const mixed = classifyWaveFetch(all((id) => fail(id === 19 ? new AuthErr(403, id) : new IhHttpError(500, id))));
+    expect(mixed.status).toBe('auth');
+    expect(mixed.fail).toBe(true);
+    expect(isTransientIhError(new AuthErr(401, 4))).toBe(false);
+  });
+
+  it('key configurada + todas 2xx sem série → empty, falha (a regressão do gate)', () => {
+    const c = classifyWaveFetch(all(() => empty()));
+    expect(c.status).toBe('empty');
+    expect(c.fail).toBe(true);
+  });
+
+  it('sucesso parcial → partial, não falha', () => {
+    const c = classifyWaveFetch(all((id) => (id === 4 ? ok() : fail(new IhHttpError(500, id)))));
+    expect(c.status).toBe('partial');
+    expect(c.fail).toBe(false);
+    expect(classifyWaveFetch(all(() => ok())).status).toBe('ok');
+  });
+
+  it('sem dados com mistura 2xx-vazio + 5xx ou 4xx não-auth → error, falha (não é outage puro)', () => {
+    const mix = classifyWaveFetch(all((id) => (id === 4 ? empty() : fail(new IhHttpError(500, id)))));
+    expect(mix.status).toBe('error');
+    expect(mix.fail).toBe(true);
+    const c404 = classifyWaveFetch(all((id) => fail(new IhHttpError(404, id))));
+    expect(c404.status).toBe('error');
+    expect(isTransientIhError(new IhHttpError(400, 4))).toBe(false);
+    expect(isTransientIhError(new SyntaxError('Unexpected token <'))).toBe(false);
+  });
+
+  it('zero boias activas com key → no-active, falha; sem key → no-key', () => {
+    expect(classifyWaveFetch([]).status).toBe('no-active');
+    expect(classifyWaveFetch([]).fail).toBe(true);
+    expect(classifyWaveFetch([], { apiKeyConfigured: false })).toMatchObject({ status: 'no-key', fail: false });
+  });
+
+  it('carryForwardWaveReadings mantém a hora REAL da leitura e larga > 24 h / inválidas', () => {
+    const now = Date.UTC(2026, 9, 23, 17, 0);
+    const iso = (h) => new Date(now - h * 3_600_000).toISOString();
+    const prev = {
+      stations: {
+        4: { latest: { date: iso(4), hm0: 4.5 } },
+        19: { latest: { date: iso(30), hm0: 1.7 } },
+        20: { latest: { date: iso(2), hm0: 99.99 } },
+      },
+    };
+    const fresh = { 4: { idEst: 4, lastSea: iso(0) }, 19: { idEst: 19 }, 20: { idEst: 20 }, 33: { idEst: 33 } };
+    const out = carryForwardWaveReadings(fresh, prev, { nowMs: now });
+    expect(out.kept).toBe(1);
+    expect(out.stations['4'].latest).toEqual({ date: iso(4), hm0: 4.5 });
+    expect(out.stations['4'].lastSea).toBe(iso(0));
+    expect(out.stations['19'].latest).toBeUndefined();
+    expect(out.stations['20'].latest).toBeUndefined();
+    expect(out.newestKeptReadingAt).toBe(iso(4));
+    // Não muta o catálogo de entrada.
+    expect(fresh['4'].latest).toBeUndefined();
+  });
+});
+
+describe('fetch-ih-buoys.js — outage IH a montante (HTTP 500)', () => {
+  const MODULE_PATH = '../../fetch-ih-buoys.js';
+  const { deriveBuoyLayerStatus } = require('../buoyLayerHealth.js');
+  const { observedWaveForSpot: observedWave } = require('../ihBuoys.js');
+  const { verifyIhBuoyLayer } = require('../../verify-ih-buoy-layer.js');
+  let tmpDir;
+
+  function loadModule(overrides = {}) {
+    tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'ih-buoys-outage-'));
+    process.env.IH_API_URL = 'http://mock-ih.local';
+    process.env.IH_BUOY_WAVE_API_URL = 'http://mock-ih.local/wave';
+    process.env.IH_BUOY_OUTPUT_PATH = path.join(tmpDir, 'ih-buoys.json');
+    delete process.env.IH_API_KEY;
+    delete process.env.OPS_TELEGRAM_CHAT_ID;
+    delete process.env.TELEGRAM_BOT_TOKEN;
+    for (const [k, v] of Object.entries(overrides)) process.env[k] = v;
+    const resolved = require.resolve(MODULE_PATH);
+    delete require.cache[resolved];
+    return require(resolved);
+  }
+
+  const json = (body, status = 200) =>
+    new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } });
+
+  const nowIso = (hBack) => new Date(Date.now() - hBack * 3_600_000).toISOString();
+
+  const stationsDoc = () => ({
+    type: 'FeatureCollection',
+    features: [
+      { type: 'Feature', properties: { id_est: 4, name: 'CSA92/D', area: 'Leixões', status: 'active', last_sea: nowIso(0.2) }, geometry: { type: 'Point', coordinates: [-8.9825, 41.3156] } },
+      { type: 'Feature', properties: { id_est: 19, name: 'CSA83/1D', area: 'Sines', status: 'active', last_sea: nowIso(0.2) }, geometry: { type: 'Point', coordinates: [-8.9286, 37.9211] } },
+      { type: 'Feature', properties: { id_est: 20, name: 'CSA82/D', area: 'Faro', status: 'active', last_sea: nowIso(0.2) }, geometry: { type: 'Point', coordinates: [-7.9, 36.9] } },
+    ],
+  });
+
+  function writePrev(obj) {
+    fs.writeFileSync(process.env.IH_BUOY_OUTPUT_PATH, JSON.stringify(obj));
+  }
+
+  const prevGood = () => ({
+    stations: {
+      4: { idEst: 4, name: 'CSA92/D', family: 'datawell', status: 'active', latest: { date: nowIso(4), hm0: 4.51, tp: 13.3 } },
+      19: { idEst: 19, name: 'CSA83/1D', family: 'datawell', status: 'active', latest: { date: nowIso(8), hm0: 1.72 } },
+    },
+    spotMapping: {},
+    fetchedAt: nowIso(3.5),
+    apiKeyConfigured: true,
+    hasWaveData: true,
+  });
+
+  function stubIh(waveResponse) {
+    vi.stubGlobal('fetch', vi.fn(async (url) => {
+      if (String(url).includes('/collections/buoys_datawell/items')) return json(stationsDoc());
+      if (String(url).includes('/collections/')) return json({ type: 'FeatureCollection', features: [] });
+      if (String(url).includes('/getDatawellData')) return waveResponse(url);
+      return json({}, 404);
+    }));
+  }
+
+  afterEach(() => {
+    if (tmpDir) fs.rmSync(tmpDir, { recursive: true, force: true });
+    delete process.env.IH_API_KEY;
+    delete process.env.OPS_TELEGRAM_CHAT_ID;
+    process.exitCode = undefined;
+    vi.restoreAllMocks();
+  });
+
+  it('5xx em todas → mantém as leituras anteriores com a hora real, flag upstream-outage, ::warning::, exit 0', async () => {
+    const mod = loadModule({ IH_API_KEY: 'k' });
+    writePrev(prevGood());
+    stubIh(() => json({ error: 'boom' }, 500));
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    vi.spyOn(console, 'log').mockImplementation(() => {});
+
+    await mod.run();
+
+    expect(process.exitCode).toBeFalsy();
+    const out = JSON.parse(fs.readFileSync(process.env.IH_BUOY_OUTPUT_PATH, 'utf8'));
+    expect(out.waveFetchStatus).toBe('upstream-outage');
+    expect(out.upstreamOutage.scope).toBe('wave');
+    expect(out.upstreamOutage.failures.map((f) => f.status)).toEqual([500, 500, 500]);
+    expect(out.upstreamOutage.keptReadings).toBe(2);
+    // lastWaveOkAt = fetchedAt do último run com séries (o anterior, há 3,5 h).
+    expect(Math.abs(Date.parse(out.upstreamOutage.lastWaveOkAt) - (Date.now() - 3.5 * 3_600_000))).toBeLessThan(60_000);
+    // Catálogo fresco (3 estações) + leituras antigas com a hora REAL.
+    expect(Object.keys(out.stations)).toEqual(['4', '19', '20']);
+    expect(out.stations['4'].latest.hm0).toBe(4.51);
+    expect(Date.now() - Date.parse(out.stations['4'].latest.date)).toBeGreaterThan(3.9 * 3_600_000);
+    expect(out.stations['20'].latest).toBeUndefined();
+    expect(out.hasWaveData).toBe(true);
+    expect(warn.mock.calls.some((c) => String(c[0]).startsWith('::warning::IH em baixo a montante'))).toBe(true);
+
+    // Frescura a jusante: nada passa por fresco.
+    expect(deriveBuoyLayerStatus(out)).toBe('stale');
+    expect(observedWave({ idEst: 4, distanceKm: 10 }, out.stations['4'])).toBeNull();
+    const v = verifyIhBuoyLayer(out);
+    expect(v.ok).toBe(true);
+    expect(v.outage).toBe(true);
+    expect(v.freshDatawell).toEqual([]);
+  });
+
+  it('5xx sem ficheiro anterior → hasWaveData=false + flag de outage, exit 0', async () => {
+    const mod = loadModule({ IH_API_KEY: 'k' });
+    stubIh(() => json({}, 502));
+    vi.spyOn(console, 'warn').mockImplementation(() => {});
+    vi.spyOn(console, 'log').mockImplementation(() => {});
+    await mod.run();
+    expect(process.exitCode).toBeFalsy();
+    const out = JSON.parse(fs.readFileSync(process.env.IH_BUOY_OUTPUT_PATH, 'utf8'));
+    expect(out).toMatchObject({ hasWaveData: false, waveFetchStatus: 'upstream-outage' });
+    expect(out.upstreamOutage.keptReadings).toBe(0);
+    expect(deriveBuoyLayerStatus(out)).toBe('down');
+    expect(verifyIhBuoyLayer(out).ok).toBe(true);
+  });
+
+  it('2xx sem séries em todas → waveFetchStatus empty, SEM flag de outage → verify falha', async () => {
+    const mod = loadModule({ IH_API_KEY: 'k' });
+    writePrev(prevGood());
+    stubIh(() => json([]));
+    vi.spyOn(console, 'error').mockImplementation(() => {});
+    vi.spyOn(console, 'log').mockImplementation(() => {});
+    await mod.run();
+    const out = JSON.parse(fs.readFileSync(process.env.IH_BUOY_OUTPUT_PATH, 'utf8'));
+    expect(out.waveFetchStatus).toBe('empty');
+    expect(out.hasWaveData).toBe(false);
+    expect(out.upstreamOutage).toBeUndefined();
+    // Nada de leituras antigas carregadas no caso da regressão.
+    expect(out.stations['4'].latest).toBeUndefined();
+    const v = verifyIhBuoyLayer(out);
+    expect(v.ok).toBe(false);
+    expect(v.problems[0]).toContain('hasWaveData=false');
+  });
+
+  it('401 continua a falhar cedo (exit 1), nunca vira outage', async () => {
+    const mod = loadModule({ IH_API_KEY: 'k' });
+    writePrev(prevGood());
+    stubIh(() => json({}, 401));
+    vi.spyOn(console, 'error').mockImplementation(() => {});
+    vi.spyOn(console, 'log').mockImplementation(() => {});
+    await mod.run();
+    expect(process.exitCode).toBe(1);
+    const out = JSON.parse(fs.readFileSync(process.env.IH_BUOY_OUTPUT_PATH, 'utf8'));
+    expect(out.apiKeyStatus).toBe('unauthorized');
+    expect(out.waveFetchStatus).toBe('auth');
+    expect(out.upstreamOutage).toBeUndefined();
+  });
+
+  it('parcial (1 boia ok, resto 500) → partial, sem flag, verify OK', async () => {
+    const mod = loadModule({ IH_API_KEY: 'k' });
+    stubIh((url) =>
+      String(url).includes('stationId=4')
+        ? json([{ date: nowIso(0.5), hm0: 2.1, tp: 11 }])
+        : json({}, 500),
+    );
+    vi.spyOn(console, 'warn').mockImplementation(() => {});
+    vi.spyOn(console, 'log').mockImplementation(() => {});
+    await mod.run();
+    expect(process.exitCode).toBeFalsy();
+    const out = JSON.parse(fs.readFileSync(process.env.IH_BUOY_OUTPUT_PATH, 'utf8'));
+    expect(out.waveFetchStatus).toBe('partial');
+    expect(out.upstreamOutage).toBeUndefined();
+    expect(out.stations['4'].latest.hm0).toBe(2.1);
+    expect(verifyIhBuoyLayer(out).ok).toBe(true);
+  });
+
+  it('zero boias listadas (2xx sem features) → ::error:: + exit 1, ficheiro anterior intacto', async () => {
+    const mod = loadModule({ IH_API_KEY: 'k' });
+    writePrev(prevGood());
+    vi.stubGlobal('fetch', vi.fn(async () => json({ type: 'FeatureCollection', features: [] })));
+    const err = vi.spyOn(console, 'error').mockImplementation(() => {});
+    vi.spyOn(console, 'log').mockImplementation(() => {});
+    await mod.run();
+    expect(process.exitCode).toBe(1);
+    expect(err.mock.calls.some((c) => String(c[0]).includes('::error::IH buoy listing: zero boias'))).toBe(true);
+    const out = JSON.parse(fs.readFileSync(process.env.IH_BUOY_OUTPUT_PATH, 'utf8'));
+    expect(out.waveFetchStatus).toBeUndefined();
+  });
+
+  it('listagem OGC em 5xx com key → reescreve o anterior com flag scope=stations, exit 0', async () => {
+    const mod = loadModule({ IH_API_KEY: 'k' });
+    writePrev(prevGood());
+    vi.stubGlobal('fetch', vi.fn(async () => json({}, 503)));
+    vi.spyOn(console, 'error').mockImplementation(() => {});
+    vi.spyOn(console, 'warn').mockImplementation(() => {});
+    await mod.run();
+    expect(process.exitCode).toBeFalsy();
+    const out = JSON.parse(fs.readFileSync(process.env.IH_BUOY_OUTPUT_PATH, 'utf8'));
+    expect(out.waveFetchStatus).toBe('upstream-outage');
+    expect(out.upstreamOutage.scope).toBe('stations');
+    // Catálogo não refrescado → mantém o fetchedAt anterior (há 3,5 h).
+    expect(Math.abs(Date.parse(out.fetchedAt) - (Date.now() - 3.5 * 3_600_000))).toBeLessThan(60_000);
+    expect(out.stations['4'].latest.hm0).toBe(4.51);
+    expect(verifyIhBuoyLayer(out).ok).toBe(true);
+  });
+
+  it('since sobrevive entre runs; Telegram UMA vez ao atingir 3 h e uma vez na recuperação', async () => {
+    const mod = loadModule({ IH_API_KEY: 'k' });
+    const send = vi.fn(async () => true);
+    const prevOutage = {
+      ...prevGood(),
+      waveFetchStatus: 'upstream-outage',
+      upstreamOutage: { scope: 'wave', since: nowIso(1), failures: [{ idEst: 4, status: 500, error: 'HTTP 500 for buoy 4', transient: true }], keptReadings: 2 },
+    };
+    // 1 h de outage → abaixo do limiar, sem alerta; since mantém-se.
+    const p1 = mod.buildOutagePayload({ prev: prevOutage, stations: prevGood().stations, failures: prevOutage.upstreamOutage.failures, scope: 'wave' });
+    expect(p1.upstreamOutage.since).toBe(prevOutage.upstreamOutage.since);
+    expect(await mod.maybeNotifyIhOutage(p1, prevOutage, { send, chatId: 'c' })).toEqual({ notified: false, reason: 'below-threshold' });
+    // 3,5 h → alerta único.
+    const p2 = { ...p1, upstreamOutage: { ...p1.upstreamOutage, since: nowIso(3.5) } };
+    expect(await mod.maybeNotifyIhOutage(p2, prevOutage, { send, chatId: 'c' })).toEqual({ notified: true });
+    expect(send).toHaveBeenCalledTimes(1);
+    expect(send.mock.calls[0][1]).toContain('API de boias IH em baixo');
+    expect(send.mock.calls[0][1]).toContain('HTTP 500');
+    expect(p2.upstreamOutage.alertedAt).toBeTruthy();
+    // Run seguinte: alertedAt transportado → não repete.
+    const p3 = mod.buildOutagePayload({ prev: p2, stations: prevGood().stations, failures: [], scope: 'wave' });
+    expect(p3.upstreamOutage.alertedAt).toBe(p2.upstreamOutage.alertedAt);
+    expect(await mod.maybeNotifyIhOutage(p3, p2, { send, chatId: 'c' })).toEqual({ notified: false, reason: 'already-reported' });
+    // Recuperação depois de alerta → 1 mensagem; sem alerta prévio → nada.
+    const recovered = { hasWaveData: true, waveFetchStatus: 'ok' };
+    expect(await mod.maybeNotifyIhRecovery(recovered, p3, { send, chatId: 'c' })).toEqual({ notified: true });
+    expect(send.mock.calls[1][1]).toContain('recuperou');
+    expect(await mod.maybeNotifyIhRecovery(recovered, p1, { send, chatId: 'c' })).toEqual({ notified: false, reason: 'no-alerted-outage' });
+    expect(send).toHaveBeenCalledTimes(2);
+  });
+
+  it('a duração conta desde a última leitura IH boa (lastWaveOkAt) quando é mais antiga que since', async () => {
+    const mod = loadModule({ IH_API_KEY: 'k' });
+    const send = vi.fn(async () => true);
+    const p = mod.buildOutagePayload({ prev: prevGood(), stations: prevGood().stations, failures: [], scope: 'wave' });
+    // Primeiro run em outage (since = agora), mas a última série boa foi há 3,5 h.
+    expect(Date.now() - Date.parse(p.upstreamOutage.since)).toBeLessThan(60_000);
+    expect(await mod.maybeNotifyIhOutage(p, prevGood(), { send, chatId: 'c' })).toEqual({ notified: true });
+  });
+
+  it('Telegram em baixo nunca rebenta o run (alertedAt fica por gravar → tenta de novo)', async () => {
+    const mod = loadModule({ IH_API_KEY: 'k' });
+    vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const p = mod.buildOutagePayload({ prev: null, stations: {}, failures: [], scope: 'wave' });
+    p.upstreamOutage.since = nowIso(5);
+    const send = vi.fn(async () => { throw new Error('telegram 502'); });
+    expect(await mod.maybeNotifyIhOutage(p, null, { send, chatId: 'c' })).toEqual({ notified: false, reason: 'not-sent' });
+    expect(p.upstreamOutage.alertedAt).toBeUndefined();
+  });
+});

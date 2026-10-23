@@ -215,3 +215,25 @@ describe('loadBuoyLayerHealth', () => {
     expect(BUOY_READING_MAX_AGE_HOURS).toBe(3);
   });
 });
+
+describe('deriveBuoyLayerStatus — outage IH a montante (cliente)', () => {
+  const freshIso = new Date(NOW - 30 * 60 * 1000).toISOString();
+  const oldIso = new Date(NOW - 5 * 3_600_000).toISOString();
+
+  it('upstream-outage: leitura mantida antiga + lastSea fresco → stale (o lastSea não conta)', () => {
+    const f = file({
+      waveFetchStatus: 'upstream-outage',
+      stations: {
+        a: { status: 'active', lastSea: freshIso, latest: { date: oldIso } },
+        b: { status: 'active', lastSea: freshIso },
+      },
+    });
+    expect(deriveBuoyLayerStatus(f, NOW)).toBe('stale');
+    expect(deriveBuoyLayerStatus({ ...f, waveFetchStatus: 'ok' }, NOW)).toBe('ok');
+  });
+
+  it('upstream-outage sem leituras mantidas → down', () => {
+    const f = file({ waveFetchStatus: 'upstream-outage', stations: { b: { status: 'active', lastSea: freshIso } } });
+    expect(deriveBuoyLayerStatus(f, NOW)).toBe('down');
+  });
+});

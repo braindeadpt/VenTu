@@ -98,10 +98,14 @@ function deriveBuoyLayerStatus(file, nowMs = Date.now()) {
 
   // Snapshots exist — are any of them fresh? Use the newest reading across
   // active stations (inactive buoys with old lastSea must not trigger).
+  // Outage IH a montante (waveFetchStatus 'upstream-outage'): só contam as
+  // leituras mantidas (latest.date, hora real) — o lastSea do catálogo OGC
+  // continua fresco durante o outage e faria passar a camada por 'ok'.
+  const outage = file.waveFetchStatus === 'upstream-outage';
   let newest = Infinity;
   for (const st of Object.values(file.stations)) {
     if (st.status === 'inactive' || st.status === 'inativa') continue;
-    const age = isoAgeHours(st.latest?.date ?? st.lastSea, nowMs);
+    const age = isoAgeHours(st.latest?.date ?? (outage ? undefined : st.lastSea), nowMs);
     if (age !== null && age >= 0 && age < newest) newest = age;
   }
   if (!Number.isFinite(newest)) return 'down';
@@ -168,7 +172,9 @@ function loadBuoyLayerStatus(rootDir = path.join(__dirname, '..', '..'), nowMs =
     let newestTs = -Infinity;
     for (const st of Object.values(file.stations ?? {})) {
       if (st.status === 'inactive' || st.status === 'inativa') continue;
-      const t = new Date(st.latest?.date ?? st.lastSea).getTime();
+      const t = new Date(
+        st.latest?.date ?? (file.waveFetchStatus === 'upstream-outage' ? undefined : st.lastSea),
+      ).getTime();
       if (Number.isFinite(t) && t > newestTs) newestTs = t;
     }
     if (Number.isFinite(newestTs) && newestTs > -Infinity) {
@@ -197,6 +203,10 @@ function loadBuoyLayerStatus(rootDir = path.join(__dirname, '..', '..'), nowMs =
     apiKeyConfigured: file.apiKeyConfigured === true,
     hasWaveData: file.hasWaveData === true,
     ...(newestReadingAt ? { newestReadingAt } : {}),
+    ...(typeof file.waveFetchStatus === 'string' ? { waveFetchStatus: file.waveFetchStatus } : {}),
+    ...(file.waveFetchStatus === 'upstream-outage' && file.upstreamOutage?.since
+      ? { upstreamOutageSince: file.upstreamOutage.since }
+      : {}),
     ...(fugro ? { fugro } : {}),
     wmo,
   };

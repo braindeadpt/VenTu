@@ -127,7 +127,11 @@ jobs:
       # UMA das Datawell costeiras (Leixões 4 / Sines 19 / Faro 20 / Caniçal 33)
       # com leitura fresca. A Fugro 2 (Nazaré) é aviso — getDatawellData não
       # a serve (2026-09-02). Sem key o passo é saltado. Key rejeitada (401)
-      # já falha no passo acima por desenho.
+      # já falha no passo acima por desenho. Outage IH a montante (TODAS as
+      # boias com 5xx/timeout/rede — incidente 23/10, HTTP 500) NÃO falha:
+      # o fetch mantém as leituras anteriores com a hora real e marca
+      # waveFetchStatus:'upstream-outage'; este passo só emite ::warning::.
+      # 2xx sem séries continua a falhar (a regressão que o gate apanha).
       - name: Verify IH buoy layer (hasWaveData + ≥1 Datawell fresca)
         if: steps.gate.outputs.mode != 'skip' && env.IH_API_KEY != ''
         run: node scripts/verify-ih-buoy-layer.js

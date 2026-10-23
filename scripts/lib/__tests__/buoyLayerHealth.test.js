@@ -232,3 +232,33 @@ describe('loadBuoyLayerStatus — leitura do ficheiro', () => {
     expect(out).toBeNull();
   });
 });
+
+describe('deriveBuoyLayerStatus — outage IH a montante (lastSea não conta)', () => {
+  const active = (over) => ({ status: 'active', family: 'datawell', ...over });
+
+  it('leituras mantidas antigas + lastSea fresco do catálogo → stale (nunca ok)', () => {
+    const f = {
+      apiKeyConfigured: true,
+      hasWaveData: true,
+      waveFetchStatus: 'upstream-outage',
+      upstreamOutage: { since: FRESH },
+      stations: {
+        4: active({ latest: { date: STALE, hm0: 2 }, lastSea: FRESH }),
+        19: active({ lastSea: FRESH }), // sem leitura mantida
+      },
+    };
+    expect(deriveBuoyLayerStatus(f, NOW)).toBe('stale');
+    // Sem a flag, o comportamento anterior mantém-se (lastSea como fallback).
+    expect(deriveBuoyLayerStatus({ ...f, waveFetchStatus: 'partial' }, NOW)).toBe('ok');
+  });
+
+  it('outage sem nenhuma leitura mantida → down', () => {
+    const f = {
+      apiKeyConfigured: true,
+      hasWaveData: true,
+      waveFetchStatus: 'upstream-outage',
+      stations: { 19: active({ lastSea: FRESH }) },
+    };
+    expect(deriveBuoyLayerStatus(f, NOW)).toBe('down');
+  });
+});
