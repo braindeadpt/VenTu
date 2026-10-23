@@ -186,6 +186,8 @@ export const translationsEs = {
     noData: 'Sin datos',
     loading: 'Cargando mapa...',
     weatherCredit: 'Datos meteorológicos por',
+    // Crédito da máscara do oceano (satélite): {osm} = ligação OSM; sem «OpenStreetMap contributors» literal — esse já sai uma vez no crédito Esri.
+    waterCredit: 'Agua: © colaboradores de {osm}',
     mapUnavailable: 'No se pudo cargar el mapa',
     fullscreen: 'Pantalla completa',
     exitFullscreen: 'Salir de pantalla completa',

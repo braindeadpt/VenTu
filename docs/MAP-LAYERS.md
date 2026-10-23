@@ -10,6 +10,7 @@ rewriting the map core.
 |---|---|---|---|
 | — | `tilePane` | basemap (CARTO light/dark **no-labels**, Esri satellite) | Leaflet default — labels moved to `ventu-labels` so data overlays never cover toponymy |
 | 201 | `ventu-hillshade` | **Esri World_Hillshade** | terrain relief under the basemap; `mix-blend-mode: multiply` **on the pane** (blends against the tile pane below — inside the pane it composes against nothing); opacity per theme in `globals.css` |
+| 205 | `ventu-ocean-mask` | **máscara vectorial do oceano** (só basemap «Satélite») | canvas próprio (L.Renderer), `pointer-events: none`; mar + rias a `#0C2A42`, pena 330 m na costa, «fundo» `#071B2C` e linhas de carta — tapa a «escada» dos tiles Esri no mar; dados `public/geo/ocean-mask/` (OSM ODbL); ver secção abaixo |
 | 206 | `ventu-goes-ir` | **GOES-East ABI Band 13 Clean IR** (NASA GIBS WMTS) | animated carousel — 12 frames × 10 min ending ~45 min back; stretched above `maxNativeZoom: 6`; keyless; `gibs.earthdata.nasa.gov` in CSP img-src; counts toward the heavy-raster cap |
 | 210 | `ventu-bathymetry` | **EMODnet bathymetry WMS** (`emodnet:mean_multicolour` + `emodnet:contours`) | part of «Carta náutica» — depth shading + 50–5000 m contours (island coverage — IH isobaths are mainland-only); host in CSP img-src (meta + terraform) |
 | 340 | — | isobaths (canvas image) | part of «Carta náutica» — static, below fields |
@@ -152,6 +153,32 @@ Each field = `src/lib/map*Field.ts` (pure: samples → IDW grid → draw) +
   step (Lisbon local) to a fractional index; «Agora» uses the wall clock.
   Older than 30 h or not covering the hour → swell hides, wind falls back to
   IDW.
+
+## Ocean mask over Esri satellite (`src/lib/oceanMask.ts`, `public/geo/ocean-mask/`)
+
+- Only with the «Satélite» basemap. Esri World Imagery shows a staircase of
+  mismatched blocks at sea; a canvas in its own pane (205 — above the tiles,
+  below every data overlay and the markers) paints the OSM water solid:
+  sea **and** rias/lagoons (Ria de Aveiro, Ria Formosa, Óbidos…; Tejo and
+  Sado count as open sea) at `#0C2A42`, opacity 1 (decision 23/10, #302).
+- Feather: the coastline is erased with a blurred stroke
+  (`destination-out`, shadow-blur trick) — clear at the shore → solid at
+  330 m (z ≥ 13); narrower in pixels below z13 (5.5 px at z12 → 2.5 px at
+  z9) so Esri blocks never show inside the feather. Rias: 60 m (≥ 1.5 px).
+- Depth: `#071B2C` from 1.8–3.2 km off the open-sea coast, drawn the same
+  way on a ¼-resolution canvas and upscaled (continuous, no rings), with a
+  ±1-level dither. Chart lines `#1E4361` at 1.2 km (solid) and 3.5 km
+  (dashed), z ≥ 10 — precomputed and smoothed in the bake.
+- Data baked offline by `scripts/bake-ocean-mask.mjs` (OSM `water` layer via
+  OpenFreeMap vector tiles, clipper-lib; committed, static, not pipeline
+  data — outside `public/data`): `coarse.json` (z < 11) + 6 latitude regions
+  (z ≥ 11), 22–141 KB gzip each; a view loads only what it touches.
+- Perf: the layer module is a dynamic chunk imported in idle after the map is
+  ready, and only in satellite mode — the default «Mapa» basemap loads
+  nothing new. Redraw only on `moveend` (cached `Path2D`s, ~1–7 ms).
+- Credit: localized «Água: © contribuidores do OpenStreetMap (ODbL)» next to
+  the Esri credit (which already carries the single «OpenStreetMap
+  contributors» string the attribution spec allows).
 
 ## Vector land clip (`src/lib/landClip.ts`, `public/geo/land-clip/`)
 
