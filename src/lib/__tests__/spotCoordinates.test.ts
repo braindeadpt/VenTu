@@ -6,7 +6,8 @@
  * duplicado `fao-ofir-surf`) e `esposende` (rio Cávado, só kite). Na 3.ª passagem (23/10)
  * mais pins do Pedro, `esposende-praia` sem kite, `rodanho` só kite, e 8 spots removidos
  * (Fão/Ofir duplicados, Póvoa, Castelo do Neiva, Garrão, Sines). Na 4.ª passagem (23/10)
- * 2 spots novos (`arvore`, `vale-figueiros-sines`) e `beliche` fixado à mão em 230°. Guarda:
+ * 2 spots novos (`arvore`, `vale-figueiros-sines`) e `beliche` fixado à mão em 230°. Na 5.ª
+ * passagem (23/10) a Ericeira (8 spots movidos e 4 novos) e a lagoa-albufeira. Guarda:
  *  - cada spot corrigido a ≤ 500 m da coordenada esperada;
  *  - `src/lib/spots.ts` e `data/coast-orientation-review.json` com as mesmas coordenadas;
  *  - os spots corrigidos a ≤ 1 km da linha de costa OSM (distância do ficheiro de revisão).
@@ -238,5 +239,69 @@ describe('coordenadas dos spots', () => {
     const l = porId.get('beliche') as unknown as { final: number; origem: string };
     expect(l.final).toBe(230);
     expect(l.origem).toBe('manual');
+  });
+
+  /** 5.ª passagem (23/10): Ericeira, [id, lat, lon] (OSM e pins do Pedro). */
+  const ERICEIRA_5: Array<[string, number, number]> = [
+    ['crazy-left', 38.99666, -9.42606],
+    ['cave-ericeira', 38.99446, -9.42489],
+    ['pedra-branca', 38.98016, -9.42276],
+    ['empa', 38.97969, -9.42231],
+    ['sao-sebastiao', 38.97267, -9.4204],
+    ['coxos', 39.00085, -9.42562],
+    ['foz-lizandro', 38.942, -9.41363],
+    ['pescadores-ericeira', 38.96432, -9.41902],
+    // Lagoa de Albufeira (Sesimbra): pin do Pedro «Praia da Lagoa de Albufeira (Lagoa)»
+    ['lagoa-albufeira', 38.50878, -9.17599],
+  ];
+  const NOVOS_5: Array<[string, number, number]> = [
+    ['praia-norte-ericeira', 38.96717, -9.42005],
+    ['praia-sul-ericeira', 38.95763, -9.41602],
+    ['sao-juliao', 38.93197, -9.41972],
+    ['calada', 39.03284, -9.41843],
+  ];
+
+  it.each(ERICEIRA_5)('Ericeira: %s fica a ≤ 20 m do pin, com a orientação do ficheiro de revisão', (id, lat, lon) => {
+    const s = spots.find((x) => x.id === id)!;
+    expect(s, id).toBeDefined();
+    expect(distM(s.lat, s.lon, lat, lon)).toBeLessThanOrEqual(20);
+    const l = porId.get(id) as unknown as { final: number };
+    expect(s.coastOrientation, id).toBe(l.final);
+  });
+
+  it.each(NOVOS_5)('Ericeira: %s existe, fica a ≤ 20 m do pin e a ≤ 1 km da costa OSM', (id, lat, lon) => {
+    const s = spots.find((x) => x.id === id)!;
+    expect(s, id).toBeDefined();
+    expect(s.slug).toBe(id);
+    expect(s.region).toBe('Ericeira');
+    expect(distM(s.lat, s.lon, lat, lon)).toBeLessThanOrEqual(20);
+    const l = porId.get(id) as unknown as { final: number; distCostaM: number | null };
+    expect(l, id).toBeDefined();
+    expect(s.coastOrientation, id).toBe(l.final);
+    expect(l.distCostaM, id).not.toBeNull();
+    expect(l.distCostaM!, id).toBeLessThanOrEqual(1000);
+  });
+
+  it('Ericeira: crazy-left já não está em cima da Praia do Sul; foz-lizandro tem kite com a Nortada', () => {
+    const cl = spots.find((s) => s.id === 'crazy-left')!;
+    const sul = spots.find((s) => s.id === 'praia-sul-ericeira')!;
+    expect(distM(cl.lat, cl.lon, sul.lat, sul.lon)).toBeGreaterThan(4000);
+    const fl = spots.find((s) => s.id === 'foz-lizandro')!;
+    expect(fl.compatibleSports).toContain('kitesurf');
+    expect(fl.bestWind).toBe('N, NW');
+    // São Julião da Ericeira não é o Forte de São Julião (Carcavelos)
+    const c = spots.find((s) => s.id === 'carcavelos')!;
+    const sj = spots.find((s) => s.id === 'sao-juliao')!;
+    expect(distM(sj.lat, sj.lon, c.lat, c.lon)).toBeGreaterThan(20000);
+  });
+
+  it('lagoa-albufeira: na lagoa (pin do Pedro), mesmos desportos, orientação curada de água interior', () => {
+    const s = spots.find((x) => x.id === 'lagoa-albufeira')!;
+    expect(s.region).toBe('Sesimbra');
+    expect(s.compatibleSports).toEqual(['kitesurf']);
+    expect(distM(s.lat, s.lon, 38.501, -9.14)).toBeGreaterThan(2500);
+    const l = porId.get('lagoa-albufeira') as unknown as { final: number; origem: string };
+    expect(l.origem).toBe('curado');
+    expect(s.coastOrientation).toBe(l.final);
   });
 });
