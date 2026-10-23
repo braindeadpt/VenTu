@@ -8,12 +8,12 @@
       "lat": 43.63999938964844,
       "lon": -3.0399999618530273,
       "latest": {
-        "date": "2026-10-23T11:00:00.000Z",
-        "hs": 7.849999904632568,
-        "tp": 15.630000114440918,
-        "dir": 299,
-        "hmax": 11.5,
-        "sst": 18.479999542236328
+        "date": "2026-10-23T16:00:00.000Z",
+        "hs": 7.150000095367432,
+        "tp": 16.40999984741211,
+        "dir": 302,
+        "hmax": 12.8100004196167,
+        "sst": 18.389999389648438
       }
     },
     "6200025": {
@@ -24,11 +24,11 @@
       "lat": 43.75,
       "lon": -6.179999828338623,
       "latest": {
-        "date": "2026-10-23T11:00:00.000Z",
-        "hs": 7.269999980926514,
-        "tp": 15.430000305175781,
-        "dir": 309,
-        "sst": 17.389999389648438
+        "date": "2026-10-23T16:00:00.000Z",
+        "hs": 6.909999847412109,
+        "tp": 14.260000228881836,
+        "dir": 315,
+        "sst": 17.459999084472656
       }
     },
     "6200083": {
@@ -39,12 +39,12 @@
       "lat": 43.5,
       "lon": -9.210000038146973,
       "latest": {
-        "date": "2026-10-23T11:00:00.000Z",
-        "hs": 5.739999771118164,
-        "tp": 13.670000076293945,
-        "dir": 321,
-        "hmax": 9.15999984741211,
-        "sst": 16.34000015258789
+        "date": "2026-10-23T16:00:00.000Z",
+        "hs": 5.980000019073486,
+        "tp": 13.479999542236328,
+        "dir": 327,
+        "hmax": 9.279999732971191,
+        "sst": 16.579999923706055
       }
     },
     "6200084": {
@@ -55,10 +55,10 @@
       "lat": 42.119998931884766,
       "lon": -9.430000305175781,
       "latest": {
-        "date": "2026-10-23T11:00:00.000Z",
-        "hs": 4.920000076293945,
-        "tp": 14.260000228881836,
-        "dir": 324,
+        "date": "2026-10-23T16:00:00.000Z",
+        "hs": 4.800000190734863,
+        "tp": 13.279999732971191,
+        "dir": 329,
         "sst": 18.489999771118164
       }
     },
@@ -70,12 +70,12 @@
       "lat": 36.4900016784668,
       "lon": -6.960000038146973,
       "latest": {
-        "date": "2026-10-23T11:00:00.000Z",
-        "hs": 0.699999988079071,
-        "tp": 4.300000190734863,
-        "dir": 310,
-        "hmax": 0.9100000262260437,
-        "sst": 21.530000686645508
+        "date": "2026-10-23T16:00:00.000Z",
+        "hs": 0.5899999737739563,
+        "tp": 9.770000457763672,
+        "dir": 288,
+        "hmax": 0.8100000023841858,
+        "sst": 21.709999084472656
       }
     },
     "6200199": {
@@ -86,11 +86,11 @@
       "lat": 39.560001373291016,
       "lon": -9.210000038146973,
       "latest": {
-        "date": "2026-10-23T11:00:00.000Z",
-        "hs": 3.7646501064300537,
-        "tp": 13.300800323486328,
-        "hmax": 5.024409770965576,
-        "sst": 16.569820404052734
+        "date": "2026-10-23T14:00:00.000Z",
+        "hs": 4.233399868011475,
+        "tp": 13.47659969329834,
+        "hmax": 5.683589935302734,
+        "sst": 16.599119186401367
       }
     }
   },
@@ -441,7 +441,7 @@
       "code": "6200199",
       "stationTitle": "Nazaré Costeira (WMO)",
       "area": "Nazaré",
-      "distanceKm": 65.1
+      "distanceKm": 64.9
     },
     "ribeira-ilhas": {
       "code": "6200199",
@@ -453,7 +453,7 @@
       "code": "6200199",
       "stationTitle": "Nazaré Costeira (WMO)",
       "area": "Nazaré",
-      "distanceKm": 66.6
+      "distanceKm": 67.1
     },
     "sao-lourenco": {
       "code": "6200199",
@@ -461,23 +461,47 @@
       "area": "Nazaré",
       "distanceKm": 63.6
     },
+    "calada": {
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 61.3
+    },
     "pedra-branca": {
       "code": "6200199",
       "stationTitle": "Nazaré Costeira (WMO)",
       "area": "Nazaré",
-      "distanceKm": 67.4
+      "distanceKm": 67
     },
     "sao-sebastiao": {
       "code": "6200199",
       "stationTitle": "Nazaré Costeira (WMO)",
       "area": "Nazaré",
-      "distanceKm": 68.1
+      "distanceKm": 67.8
+    },
+    "praia-norte-ericeira": {
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 68.4
+    },
+    "praia-sul-ericeira": {
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 69.3
     },
     "foz-lizandro": {
       "code": "6200199",
       "stationTitle": "Nazaré Costeira (WMO)",
       "area": "Nazaré",
-      "distanceKm": 71.1
+      "distanceKm": 70.9
+    },
+    "sao-juliao": {
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 72.1
     },
     "praia-grande-sintra": {
       "code": "6200199",
@@ -567,7 +591,7 @@
       "code": "6200199",
       "stationTitle": "Nazaré Costeira (WMO)",
       "area": "Nazaré",
-      "distanceKm": 117.9
+      "distanceKm": 116.9
     },
     "foil-lagoa-albufeira": {
       "code": "6200199",
@@ -921,19 +945,19 @@
       "code": "6200199",
       "stationTitle": "Nazaré Costeira (WMO)",
       "area": "Nazaré",
-      "distanceKm": 68.3
+      "distanceKm": 65.5
     },
     "pescadores-ericeira": {
       "code": "6200199",
       "stationTitle": "Nazaré Costeira (WMO)",
       "area": "Nazaré",
-      "distanceKm": 68.8
+      "distanceKm": 68.6
     },
     "crazy-left": {
       "code": "6200199",
       "stationTitle": "Nazaré Costeira (WMO)",
       "area": "Nazaré",
-      "distanceKm": 69.3
+      "distanceKm": 65.3
     },
     "meco": {
       "code": "6200199",
@@ -1003,7 +1027,7 @@
     }
   },
   "day": "20261023",
-  "fetchedAt": "2026-10-23T13:26:27.115Z",
+  "fetchedAt": "2026-10-23T18:36:09.454Z",
   "hasWaveData": true,
   "note": "Fallback independente para o observedWave do IH (via WMO/GTS → Copernicus, sem key)."
 }

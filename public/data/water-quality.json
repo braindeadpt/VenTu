@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-23T13:27:37.974Z",
+  "generatedAt": "2026-10-23T18:37:22.162Z",
   "source": "infoagua.apambiente.pt",
   "beaches": 761,
   "activeAlerts": 5,
@@ -1001,7 +1001,7 @@
       "blueFlag": false,
       "guarded": true,
       "accessible": false,
-      "distKm": 0.6
+      "distKm": 0.4
     },
     "ribeira-ilhas": {
       "beachId": 351,
@@ -1037,7 +1037,7 @@
       "blueFlag": true,
       "guarded": true,
       "accessible": true,
-      "distKm": 0.5
+      "distKm": 0.9
     },
     "sao-lourenco": {
       "beachId": 288,
@@ -1057,9 +1057,9 @@
       "accessible": true,
       "distKm": 0.1
     },
-    "pedra-branca": {
-      "beachId": 485,
-      "beach": "ALGODIO OU DO NORTE",
+    "calada": {
+      "beachId": 288,
+      "beach": "S. LOURENÇO",
       "advice": 1,
       "adviceTitlePt": "Adequada",
       "adviceTitleEn": "Adequate",
@@ -1070,10 +1070,28 @@
       "annualClassDesc": "Excelente",
       "seasonStart": 1781308800000,
       "seasonEnd": 1789257600000,
-      "blueFlag": false,
+      "blueFlag": true,
       "guarded": true,
       "accessible": true,
-      "distKm": 1
+      "distKm": 2.3
+    },
+    "pedra-branca": {
+      "beachId": 351,
+      "beach": "RIBEIRA DE ILHAS",
+      "advice": 1,
+      "adviceTitlePt": "Adequada",
+      "adviceTitleEn": "Adequate",
+      "adviceAt": 1788134400000,
+      "motive": null,
+      "lastSampleAt": 1788134400000,
+      "annualClass": 1,
+      "annualClassDesc": "Excelente",
+      "seasonStart": 1781308800000,
+      "seasonEnd": 1789257600000,
+      "blueFlag": true,
+      "guarded": true,
+      "accessible": true,
+      "distKm": 0.9
     },
     "sao-sebastiao": {
       "beachId": 485,
@@ -1091,7 +1109,43 @@
       "blueFlag": false,
       "guarded": true,
       "accessible": true,
-      "distKm": 0.3
+      "distKm": 0.6
+    },
+    "praia-norte-ericeira": {
+      "beachId": 485,
+      "beach": "ALGODIO OU DO NORTE",
+      "advice": 1,
+      "adviceTitlePt": "Adequada",
+      "adviceTitleEn": "Adequate",
+      "adviceAt": 1788134400000,
+      "motive": null,
+      "lastSampleAt": 1788134400000,
+      "annualClass": 1,
+      "annualClassDesc": "Excelente",
+      "seasonStart": 1781308800000,
+      "seasonEnd": 1789257600000,
+      "blueFlag": false,
+      "guarded": true,
+      "accessible": true,
+      "distKm": 0
+    },
+    "praia-sul-ericeira": {
+      "beachId": 511,
+      "beach": "BALEIA OU DO SUL",
+      "advice": 1,
+      "adviceTitlePt": "Adequada",
+      "adviceTitleEn": "Adequate",
+      "adviceAt": 1788134400000,
+      "motive": null,
+      "lastSampleAt": 1788134400000,
+      "annualClass": 1,
+      "annualClassDesc": "Excelente",
+      "seasonStart": 1781308800000,
+      "seasonEnd": 1789257600000,
+      "blueFlag": true,
+      "guarded": true,
+      "accessible": false,
+      "distKm": 0.2
     },
     "foz-lizandro": {
       "beachId": 469,
@@ -1109,7 +1163,25 @@
       "blueFlag": false,
       "guarded": true,
       "accessible": false,
-      "distKm": 0.1
+      "distKm": 0.2
+    },
+    "sao-juliao": {
+      "beachId": 66,
+      "beach": "S. JULIÃO",
+      "advice": 1,
+      "adviceTitlePt": "Adequada",
+      "adviceTitleEn": "Adequate",
+      "adviceAt": 1788307200000,
+      "motive": null,
+      "lastSampleAt": 1788307200000,
+      "annualClass": 1,
+      "annualClassDesc": "Excelente",
+      "seasonStart": 1780099200000,
+      "seasonEnd": 1789257600000,
+      "blueFlag": true,
+      "guarded": true,
+      "accessible": true,
+      "distKm": 0
     },
     "praia-grande-sintra": {
       "beachId": 503,
@@ -1380,6 +1452,24 @@
       "guarded": true,
       "accessible": false,
       "distKm": 0.2
+    },
+    "lagoa-albufeira": {
+      "beachId": 108,
+      "beach": "LAGOA DE ALBUFEIRA",
+      "advice": 1,
+      "adviceTitlePt": "Adequada",
+      "adviceTitleEn": "Adequate",
+      "adviceAt": 1787616000000,
+      "motive": null,
+      "lastSampleAt": 1787616000000,
+      "annualClass": 2,
+      "annualClassDesc": "Boa",
+      "seasonStart": 1780531200000,
+      "seasonEnd": 1789257600000,
+      "blueFlag": false,
+      "guarded": true,
+      "accessible": false,
+      "distKm": 0.1
     },
     "praia-lagoa-albufeira": {
       "beachId": 27,
@@ -2624,8 +2714,8 @@
       "distKm": 0.5
     },
     "cave-ericeira": {
-      "beachId": 485,
-      "beach": "ALGODIO OU DO NORTE",
+      "beachId": 351,
+      "beach": "RIBEIRA DE ILHAS",
       "advice": 1,
       "adviceTitlePt": "Adequada",
       "adviceTitleEn": "Adequate",
@@ -2636,10 +2726,10 @@
       "annualClassDesc": "Excelente",
       "seasonStart": 1781308800000,
       "seasonEnd": 1789257600000,
-      "blueFlag": false,
+      "blueFlag": true,
       "guarded": true,
       "accessible": true,
-      "distKm": 0.2
+      "distKm": 0.9
     },
     "pescadores-ericeira": {
       "beachId": 149,
@@ -2657,11 +2747,11 @@
       "blueFlag": false,
       "guarded": true,
       "accessible": false,
-      "distKm": 0.1
+      "distKm": 0
     },
     "crazy-left": {
-      "beachId": 511,
-      "beach": "BALEIA OU DO SUL",
+      "beachId": 235,
+      "beach": "COXOS",
       "advice": 1,
       "adviceTitlePt": "Adequada",
       "adviceTitleEn": "Adequate",
@@ -2672,10 +2762,10 @@
       "annualClassDesc": "Excelente",
       "seasonStart": 1781308800000,
       "seasonEnd": 1789257600000,
-      "blueFlag": true,
+      "blueFlag": false,
       "guarded": true,
       "accessible": false,
-      "distKm": 0.3
+      "distKm": 0.9
     },
     "meco": {
       "beachId": 143,

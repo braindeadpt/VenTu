@@ -11,7 +11,7 @@
       "lat": 41.3155555555556,
       "lon": -8.9825,
       "lastPos": "2026-10-22T13:26:42+00:00",
-      "lastSea": "2026-10-23T11:56:42+00:00",
+      "lastSea": "2026-10-23T12:26:41+00:00",
       "family": "datawell",
       "latest": {
         "date": "2026-10-23T11:56:42.000Z",
@@ -55,7 +55,7 @@
       "lat": 36.9047222222222,
       "lon": -7.94833333333333,
       "lastPos": "2026-10-23T10:26:23+00:00",
-      "lastSea": "2026-10-23T11:56:23+00:00",
+      "lastSea": "2026-10-23T12:26:22+00:00",
       "family": "datawell",
       "latest": {
         "date": "2026-10-23T11:56:23.000Z",
@@ -90,8 +90,8 @@
       "nrt": "near-real-time data available",
       "lat": 32.727777777777796,
       "lon": -16.723888888888897,
-      "lastPos": "2026-10-23T11:59:57+00:00",
-      "lastSea": "2026-10-23T11:59:57+00:00",
+      "lastPos": "2026-10-23T12:29:56+00:00",
+      "lastSea": "2026-10-23T12:29:56+00:00",
       "family": "datawell",
       "latest": {
         "date": "2026-10-23T11:59:57.000Z",
@@ -168,8 +168,8 @@
       "nrt": "near-real-time data available",
       "lat": 39.08,
       "lon": -27.9633333333333,
-      "lastPos": "2026-10-23T12:19:06+00:00",
-      "lastSea": "2026-10-23T12:19:06+00:00",
+      "lastPos": "2026-10-23T12:49:07+00:00",
+      "lastSea": "2026-10-23T12:49:07+00:00",
       "family": "datawell",
       "latest": {
         "date": "2026-10-23T12:19:06.000Z",
@@ -542,7 +542,7 @@
       "idEst": 19,
       "stationTitle": "CSA83/1D",
       "area": "Continente - Sines",
-      "distanceKm": 127.4
+      "distanceKm": 127.6
     },
     "ribeira-ilhas": {
       "idEst": 19,
@@ -554,7 +554,7 @@
       "idEst": 19,
       "stationTitle": "CSA83/1D",
       "area": "Continente - Sines",
-      "distanceKm": 125.9
+      "distanceKm": 125.3
     },
     "sao-lourenco": {
       "idEst": 19,
@@ -562,23 +562,47 @@
       "area": "Continente - Sines",
       "distanceKm": 128.6
     },
+    "calada": {
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Continente - Sines",
+      "distanceKm": 130.8
+    },
     "pedra-branca": {
       "idEst": 19,
       "stationTitle": "CSA83/1D",
       "area": "Continente - Sines",
-      "distanceKm": 124.6
+      "distanceKm": 125.4
     },
     "sao-sebastiao": {
       "idEst": 19,
       "stationTitle": "CSA83/1D",
       "area": "Continente - Sines",
-      "distanceKm": 124.2
+      "distanceKm": 124.5
+    },
+    "praia-norte-ericeira": {
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Continente - Sines",
+      "distanceKm": 123.9
+    },
+    "praia-sul-ericeira": {
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Continente - Sines",
+      "distanceKm": 122.8
     },
     "foz-lizandro": {
       "idEst": 19,
       "stationTitle": "CSA83/1D",
       "area": "Continente - Sines",
       "distanceKm": 121.1
+    },
+    "sao-juliao": {
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Continente - Sines",
+      "distanceKm": 120.3
     },
     "praia-grande-sintra": {
       "idEst": 19,
@@ -689,7 +713,7 @@
       "idEst": 19,
       "stationTitle": "CSA83/1D",
       "area": "Continente - Sines",
-      "distanceKm": 67.1
+      "distanceKm": 68.8
     },
     "foil-lagoa-albufeira": {
       "idEst": 19,
@@ -1134,19 +1158,19 @@
       "idEst": 19,
       "stationTitle": "CSA83/1D",
       "area": "Continente - Sines",
-      "distanceKm": 124.1
+      "distanceKm": 126.9
     },
     "pescadores-ericeira": {
       "idEst": 19,
       "stationTitle": "CSA83/1D",
       "area": "Continente - Sines",
-      "distanceKm": 123.5
+      "distanceKm": 123.6
     },
     "crazy-left": {
       "idEst": 19,
       "stationTitle": "CSA83/1D",
       "area": "Continente - Sines",
-      "distanceKm": 122.9
+      "distanceKm": 127.2
     },
     "meco": {
       "idEst": 19,
@@ -1278,10 +1302,51 @@
       "distanceKm": 25.3
     }
   },
-  "fetchedAt": "2026-10-23T13:26:17.771Z",
+  "fetchedAt": "2026-10-23T18:35:59.878Z",
   "sourceCollections": [
     "buoys_datawell"
   ],
   "apiKeyConfigured": true,
-  "hasWaveData": true
+  "hasWaveData": true,
+  "waveFetchStatus": "upstream-outage",
+  "upstreamOutage": {
+    "scope": "wave",
+    "since": "2026-10-23T18:35:59.878Z",
+    "lastAttemptAt": "2026-10-23T18:35:59.878Z",
+    "lastWaveOkAt": "2026-10-23T13:26:17.771Z",
+    "keptReadings": 5,
+    "newestKeptReadingAt": "2026-10-23T12:19:06.000Z",
+    "failures": [
+      {
+        "idEst": 4,
+        "error": "HTTP 500 for buoy 4",
+        "status": 500,
+        "transient": true
+      },
+      {
+        "idEst": 19,
+        "error": "HTTP 500 for buoy 19",
+        "status": 500,
+        "transient": true
+      },
+      {
+        "idEst": 20,
+        "error": "HTTP 500 for buoy 20",
+        "status": 500,
+        "transient": true
+      },
+      {
+        "idEst": 33,
+        "error": "HTTP 500 for buoy 33",
+        "status": 500,
+        "transient": true
+      },
+      {
+        "idEst": 86,
+        "error": "HTTP 500 for buoy 86",
+        "status": 500,
+        "transient": true
+      }
+    ]
+  }
 }

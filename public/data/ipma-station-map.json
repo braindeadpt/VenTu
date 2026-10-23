@@ -1314,22 +1314,22 @@
     "spotId": "coxos",
     "idEstacao": 1210746,
     "stationName": "Santa Cruz (Aeródromo)",
-    "distanceKm": 14.7,
+    "distanceKm": 14.5,
     "alternates": [
       {
         "idEstacao": 1210747,
         "stationName": "Sintra, Colares",
-        "distanceKm": 20.9
+        "distanceKm": 21.1
       },
       {
         "idEstacao": 1210739,
         "stationName": "Torres Vedras, Dois Portos",
-        "distanceKm": 21.9
+        "distanceKm": 21.8
       },
       {
         "idEstacao": 1210752,
         "stationName": "Sintra/Tapada do Mouco",
-        "distanceKm": 24.3
+        "distanceKm": 24.5
       }
     ]
   },
@@ -1360,22 +1360,22 @@
     "spotId": "empa",
     "idEstacao": 1210746,
     "stationName": "Santa Cruz (Aeródromo)",
-    "distanceKm": 16.2,
+    "distanceKm": 16.7,
     "alternates": [
       {
         "idEstacao": 1210747,
         "stationName": "Sintra, Colares",
-        "distanceKm": 19.4
+        "distanceKm": 18.9
+      },
+      {
+        "idEstacao": 1210752,
+        "stationName": "Sintra/Tapada do Mouco",
+        "distanceKm": 22.1
       },
       {
         "idEstacao": 1210739,
         "stationName": "Torres Vedras, Dois Portos",
         "distanceKm": 22.2
-      },
-      {
-        "idEstacao": 1210752,
-        "stationName": "Sintra/Tapada do Mouco",
-        "distanceKm": 22.7
       }
     ]
   },
@@ -1402,26 +1402,49 @@
       }
     ]
   },
-  "pedra-branca": {
-    "spotId": "pedra-branca",
+  "calada": {
+    "spotId": "calada",
     "idEstacao": 1210746,
     "stationName": "Santa Cruz (Aeródromo)",
-    "distanceKm": 17.1,
+    "distanceKm": 10.9,
     "alternates": [
+      {
+        "idEstacao": 1210739,
+        "stationName": "Torres Vedras, Dois Portos",
+        "distanceKm": 20.7
+      },
       {
         "idEstacao": 1210747,
         "stationName": "Sintra, Colares",
-        "distanceKm": 18.5
+        "distanceKm": 24.8
       },
       {
         "idEstacao": 1210752,
         "stationName": "Sintra/Tapada do Mouco",
-        "distanceKm": 21.5
+        "distanceKm": 28
+      }
+    ]
+  },
+  "pedra-branca": {
+    "spotId": "pedra-branca",
+    "idEstacao": 1210746,
+    "stationName": "Santa Cruz (Aeródromo)",
+    "distanceKm": 16.6,
+    "alternates": [
+      {
+        "idEstacao": 1210747,
+        "stationName": "Sintra, Colares",
+        "distanceKm": 18.9
+      },
+      {
+        "idEstacao": 1210752,
+        "stationName": "Sintra/Tapada do Mouco",
+        "distanceKm": 22.2
       },
       {
         "idEstacao": 1210739,
         "stationName": "Torres Vedras, Dois Portos",
-        "distanceKm": 21.8
+        "distanceKm": 22.2
       }
     ]
   },
@@ -1429,22 +1452,68 @@
     "spotId": "sao-sebastiao",
     "idEstacao": 1210746,
     "stationName": "Santa Cruz (Aeródromo)",
-    "distanceKm": 17.7,
+    "distanceKm": 17.4,
     "alternates": [
       {
         "idEstacao": 1210747,
         "stationName": "Sintra, Colares",
-        "distanceKm": 17.8
+        "distanceKm": 18.1
       },
       {
         "idEstacao": 1210752,
         "stationName": "Sintra/Tapada do Mouco",
-        "distanceKm": 21
+        "distanceKm": 21.3
       },
       {
         "idEstacao": 1210750,
         "stationName": "Cabo da Roca",
-        "distanceKm": 22
+        "distanceKm": 22.3
+      }
+    ]
+  },
+  "praia-norte-ericeira": {
+    "spotId": "praia-norte-ericeira",
+    "idEstacao": 1210747,
+    "stationName": "Sintra, Colares",
+    "distanceKm": 17.5,
+    "alternates": [
+      {
+        "idEstacao": 1210746,
+        "stationName": "Santa Cruz (Aeródromo)",
+        "distanceKm": 18
+      },
+      {
+        "idEstacao": 1210752,
+        "stationName": "Sintra/Tapada do Mouco",
+        "distanceKm": 20.7
+      },
+      {
+        "idEstacao": 1210750,
+        "stationName": "Cabo da Roca",
+        "distanceKm": 21.7
+      }
+    ]
+  },
+  "praia-sul-ericeira": {
+    "spotId": "praia-sul-ericeira",
+    "idEstacao": 1210747,
+    "stationName": "Sintra, Colares",
+    "distanceKm": 16.6,
+    "alternates": [
+      {
+        "idEstacao": 1210746,
+        "stationName": "Santa Cruz (Aeródromo)",
+        "distanceKm": 19
+      },
+      {
+        "idEstacao": 1210752,
+        "stationName": "Sintra/Tapada do Mouco",
+        "distanceKm": 19.6
+      },
+      {
+        "idEstacao": 1210750,
+        "stationName": "Cabo da Roca",
+        "distanceKm": 20.8
       }
     ]
   },
@@ -1452,22 +1521,45 @@
     "spotId": "foz-lizandro",
     "idEstacao": 1210747,
     "stationName": "Sintra, Colares",
-    "distanceKm": 14.8,
+    "distanceKm": 14.9,
     "alternates": [
       {
         "idEstacao": 1210752,
         "stationName": "Sintra/Tapada do Mouco",
-        "distanceKm": 17.8
+        "distanceKm": 17.9
       },
       {
         "idEstacao": 1210750,
         "stationName": "Cabo da Roca",
-        "distanceKm": 19.1
+        "distanceKm": 19.2
       },
       {
         "idEstacao": 1210746,
         "stationName": "Santa Cruz (Aeródromo)",
-        "distanceKm": 20.8
+        "distanceKm": 20.7
+      }
+    ]
+  },
+  "sao-juliao": {
+    "spotId": "sao-juliao",
+    "idEstacao": 1210747,
+    "stationName": "Sintra, Colares",
+    "distanceKm": 13.7,
+    "alternates": [
+      {
+        "idEstacao": 1210752,
+        "stationName": "Sintra/Tapada do Mouco",
+        "distanceKm": 16.8
+      },
+      {
+        "idEstacao": 1210750,
+        "stationName": "Cabo da Roca",
+        "distanceKm": 18
+      },
+      {
+        "idEstacao": 1210746,
+        "stationName": "Santa Cruz (Aeródromo)",
+        "distanceKm": 21.9
       }
     ]
   },
@@ -1866,22 +1958,22 @@
     "spotId": "lagoa-albufeira",
     "idEstacao": 1210773,
     "stationName": "Almada, P.Rainha",
-    "distanceKm": 14.4,
+    "distanceKm": 12.5,
     "alternates": [
       {
         "idEstacao": 1210766,
         "stationName": "Barreiro, Lavradio",
-        "distanceKm": 20.9
+        "distanceKm": 21.5
       },
       {
-        "idEstacao": 1240929,
-        "stationName": "Setúbal, Areias",
+        "idEstacao": 1210762,
+        "stationName": "Lisboa, Tapada da Ajuda",
         "distanceKm": 22.3
       },
       {
-        "idEstacao": 1210770,
-        "stationName": "Setúbal",
-        "distanceKm": 22.3
+        "idEstacao": 1200535,
+        "stationName": "Lisboa (Geofísico)",
+        "distanceKm": 23.5
       }
     ]
   },
@@ -3543,24 +3635,24 @@
   },
   "cave-ericeira": {
     "spotId": "cave-ericeira",
-    "idEstacao": 1210747,
-    "stationName": "Sintra, Colares",
-    "distanceKm": 17.6,
+    "idEstacao": 1210746,
+    "stationName": "Santa Cruz (Aeródromo)",
+    "distanceKm": 15.1,
     "alternates": [
       {
-        "idEstacao": 1210746,
-        "stationName": "Santa Cruz (Aeródromo)",
-        "distanceKm": 17.9
+        "idEstacao": 1210747,
+        "stationName": "Sintra, Colares",
+        "distanceKm": 20.4
+      },
+      {
+        "idEstacao": 1210739,
+        "stationName": "Torres Vedras, Dois Portos",
+        "distanceKm": 21.9
       },
       {
         "idEstacao": 1210752,
         "stationName": "Sintra/Tapada do Mouco",
-        "distanceKm": 20.8
-      },
-      {
-        "idEstacao": 1210750,
-        "stationName": "Cabo da Roca",
-        "distanceKm": 21.7
+        "distanceKm": 23.8
       }
     ]
   },
@@ -3568,45 +3660,45 @@
     "spotId": "pescadores-ericeira",
     "idEstacao": 1210747,
     "stationName": "Sintra, Colares",
-    "distanceKm": 17.1,
+    "distanceKm": 17.2,
     "alternates": [
       {
         "idEstacao": 1210746,
         "stationName": "Santa Cruz (Aeródromo)",
-        "distanceKm": 18.4
+        "distanceKm": 18.3
       },
       {
         "idEstacao": 1210752,
         "stationName": "Sintra/Tapada do Mouco",
-        "distanceKm": 20.2
+        "distanceKm": 20.4
       },
       {
         "idEstacao": 1210750,
         "stationName": "Cabo da Roca",
-        "distanceKm": 21.3
+        "distanceKm": 21.4
       }
     ]
   },
   "crazy-left": {
     "spotId": "crazy-left",
-    "idEstacao": 1210747,
-    "stationName": "Sintra, Colares",
-    "distanceKm": 16.6,
+    "idEstacao": 1210746,
+    "stationName": "Santa Cruz (Aeródromo)",
+    "distanceKm": 14.9,
     "alternates": [
       {
-        "idEstacao": 1210746,
-        "stationName": "Santa Cruz (Aeródromo)",
-        "distanceKm": 19
+        "idEstacao": 1210747,
+        "stationName": "Sintra, Colares",
+        "distanceKm": 20.7
+      },
+      {
+        "idEstacao": 1210739,
+        "stationName": "Torres Vedras, Dois Portos",
+        "distanceKm": 22
       },
       {
         "idEstacao": 1210752,
         "stationName": "Sintra/Tapada do Mouco",
-        "distanceKm": 19.7
-      },
-      {
-        "idEstacao": 1210750,
-        "stationName": "Cabo da Roca",
-        "distanceKm": 20.8
+        "distanceKm": 24
       }
     ]
   },
