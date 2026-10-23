@@ -104,7 +104,7 @@ export const spots: Spot[] = [
       id: 'esposende-praia', slug: 'esposende-praia', name: 'Esposende Praia (Oceano)', nameEn: 'Esposende Ocean Beach',
       region: 'Esposende', regionEn: 'Esposende', lat: 41.5432, lon: -8.7927,
       coastOrientation: 275,
-      type: 'surf', difficulty: 'intermediate', bestWind: 'NW, N', bestSwell: 'W, NW',
+      type: 'surf', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'W, NW',
       description: 'Praia oceânica de Esposende, a norte da foz do Cávado — beach break para surf e bodyboard, e foil nos dias de mar mais arrumado. Praia ampla; o kite fica no rio (spot esposende).',
       descriptionEn: 'Esposende ocean beach, just north of the Cavado river mouth — beach break for surf and bodyboard, and foil on cleaner days. Wide beach; kite is on the river (esposende spot).',
       compatibleSports: ['surf', 'foil', 'bodyboard'],

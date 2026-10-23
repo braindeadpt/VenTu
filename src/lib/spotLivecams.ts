@@ -51,10 +51,10 @@ export const SPOT_LIVECAMS: Record<string, SpotLivecam> = {
     labelEn: 'Esposende (beach)',
   },
   fao: {
-    url: 'https://beachcam.meo.pt/livecams/esposende-foz-do-cavado/',
-    provider: MEO,
-    labelPt: 'Foz do Cávado — Esposende (ref.)',
-    labelEn: 'Cavado river mouth — Esposende (ref.)',
+    url: 'https://www.surftotal.com/camaras-report/minho/ofir',
+    provider: SURFTOTAL,
+    labelPt: 'Ofir (Fão)',
+    labelEn: 'Ofir (Fao)',
   },
   apulia: {
     url: 'https://beachcam.meo.pt/livecams/apulia/',

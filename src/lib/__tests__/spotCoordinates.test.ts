@@ -14,6 +14,7 @@
  */
 import { describe, expect, it } from 'vitest';
 import { spots } from '@/lib/spots';
+import { SPOT_LIVECAMS } from '@/lib/spotLivecams';
 import review from '../../../data/coast-orientation-review.json';
 
 type Linha = { id: string; lat: number; lon: number; distCostaM: number | null };
@@ -184,6 +185,9 @@ describe('coordenadas dos spots', () => {
     expect(spots.find((s) => s.id === 'fao')!.bestWind).toBe('NW, N');
     const ep = spots.find((s) => s.id === 'esposende-praia')!;
     expect([...(ep.compatibleSports ?? [])].sort()).toEqual(['bodyboard', 'foil', 'surf']);
+    // surf numa praia virada a 275°: vento bom é o terral (E/SE), não a Nortada do kite
+    expect(ep.bestWind).toBe('E, SE');
+    expect(SPOT_LIVECAMS.fao.url).toContain('surftotal.com/camaras-report/minho/ofir');
     expect(spots.find((s) => s.id === 'rodanho')!.compatibleSports).toEqual(['kitesurf']);
   });
 
