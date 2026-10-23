@@ -1,6 +1,6 @@
 {
   "source": "forecast-skill-regression",
-  "checkedAt": "2026-10-23T01:01:55.620Z",
+  "checkedAt": "2026-10-23T05:28:42.037Z",
   "windowDays": 60,
   "recentDays": 7,
   "baselineDays": 21,
@@ -22,8 +22,8 @@
       "origin": "ih",
       "recent": {
         "snapshots": 8,
-        "rmse": 0.67125,
-        "me": 0.5075,
+        "rmse": 0.6725,
+        "me": 0.50875,
         "n": 664.875
       },
       "baseline": {
@@ -33,7 +33,7 @@
         "n": 601.2857142857143
       },
       "rmseDelta": 0.14,
-      "meAbsDelta": 0.1,
+      "meAbsDelta": 0.11,
       "verdict": "ok"
     },
     "19": {
@@ -98,8 +98,8 @@
       "origin": "ih",
       "recent": {
         "snapshots": 8,
-        "rmse": 0.935,
-        "me": 0.7550000000000001,
+        "rmse": 0.9325,
+        "me": 0.7525000000000001,
         "n": 667.125
       },
       "baseline": {
@@ -108,7 +108,7 @@
         "me": 0.6257142857142856,
         "n": 663.1428571428571
       },
-      "rmseDelta": 0.12,
+      "rmseDelta": 0.11,
       "meAbsDelta": 0.13,
       "verdict": "ok"
     },
@@ -117,9 +117,9 @@
       "origin": "wmo-es",
       "recent": {
         "snapshots": 8,
-        "rmse": 0.7675000000000001,
-        "me": 0.625,
-        "n": 584.5
+        "rmse": 0.76875,
+        "me": 0.62625,
+        "n": 584.375
       },
       "baseline": {
         "snapshots": 21,
@@ -138,7 +138,7 @@
         "snapshots": 8,
         "rmse": 0.47874999999999995,
         "me": 0.39999999999999997,
-        "n": 584.5
+        "n": 584.375
       },
       "baseline": {
         "snapshots": 21,
@@ -155,8 +155,8 @@
       "recent": {
         "snapshots": 8,
         "rmse": 0.36750000000000005,
-        "me": 0.14125000000000001,
-        "n": 584
+        "me": 0.14250000000000002,
+        "n": 583.875
       },
       "baseline": {
         "snapshots": 21,
@@ -177,7 +177,7 @@
       "recent": {
         "days": 8,
         "n": 2705.5,
-        "me": 0.2523179634078729
+        "me": 0.2520148771021992
       },
       "baseline": {
         "days": 21,
@@ -194,15 +194,15 @@
       "name": "WMO-ES (Copernicus)",
       "recent": {
         "days": 8,
-        "n": 1753,
-        "me": 0.3887877923559612
+        "n": 1752.63,
+        "me": 0.38960987090792387
       },
       "baseline": {
         "days": 21,
         "n": 1547.86,
         "me": 0.3342378095677587
       },
-      "meAbsDelta": 0.05,
+      "meAbsDelta": 0.06,
       "nDeltaFraction": null,
       "verdict": "ok",
       "reasons": []

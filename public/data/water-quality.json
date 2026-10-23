@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-23T01:03:08.779Z",
+  "generatedAt": "2026-10-23T05:29:52.725Z",
   "source": "infoagua.apambiente.pt",
   "beaches": 761,
   "activeAlerts": 5,
@@ -57,24 +57,6 @@
       "guarded": true,
       "accessible": false,
       "distKm": 0.3
-    },
-    "castelo-neiva": {
-      "beachId": 119,
-      "beach": "CASTELO DE NEIVA",
-      "advice": 1,
-      "adviceTitlePt": "Adequada",
-      "adviceTitleEn": "Adequate",
-      "adviceAt": 1787529600000,
-      "motive": null,
-      "lastSampleAt": 1787529600000,
-      "annualClass": 1,
-      "annualClassDesc": "Excelente",
-      "seasonStart": 1781308800000,
-      "seasonEnd": 1789257600000,
-      "blueFlag": true,
-      "guarded": true,
-      "accessible": false,
-      "distKm": 0.6
     },
     "amorosa": {
       "beachId": 457,
@@ -166,27 +148,9 @@
       "accessible": false,
       "distKm": 0.1
     },
-    "ofir": {
-      "beachId": 216,
-      "beach": "FÃO-OFIR",
-      "advice": 1,
-      "adviceTitlePt": "Adequada",
-      "adviceTitleEn": "Adequate",
-      "adviceAt": 1787529600000,
-      "motive": null,
-      "lastSampleAt": 1787529600000,
-      "annualClass": 1,
-      "annualClassDesc": "Excelente",
-      "seasonStart": 1781308800000,
-      "seasonEnd": 1789257600000,
-      "blueFlag": true,
-      "guarded": true,
-      "accessible": false,
-      "distKm": 0.1
-    },
     "esposende": {
-      "beachId": 216,
-      "beach": "FÃO-OFIR",
+      "beachId": 515,
+      "beach": "SUAVE MAR",
       "advice": 1,
       "adviceTitlePt": "Adequada",
       "adviceTitleEn": "Adequate",
@@ -197,10 +161,10 @@
       "annualClassDesc": "Excelente",
       "seasonStart": 1781308800000,
       "seasonEnd": 1789257600000,
-      "blueFlag": true,
+      "blueFlag": false,
       "guarded": true,
       "accessible": false,
-      "distKm": 1.6
+      "distKm": 1.4
     },
     "esposende-praia": {
       "beachId": 515,
@@ -218,7 +182,7 @@
       "blueFlag": false,
       "guarded": true,
       "accessible": false,
-      "distKm": 1
+      "distKm": 0.3
     },
     "fao": {
       "beachId": 216,
@@ -236,7 +200,7 @@
       "blueFlag": true,
       "guarded": true,
       "accessible": false,
-      "distKm": 1.7
+      "distKm": 0.7
     },
     "apulia": {
       "beachId": 542,
@@ -254,25 +218,7 @@
       "blueFlag": true,
       "guarded": true,
       "accessible": false,
-      "distKm": 0.1
-    },
-    "povoa-varzim": {
-      "beachId": 492,
-      "beach": "ZONA URBANA SUL II",
-      "advice": 1,
-      "adviceTitlePt": "Adequada",
-      "adviceTitleEn": "Adequate",
-      "adviceAt": 1788393600000,
-      "motive": null,
-      "lastSampleAt": 1788134400000,
-      "annualClass": 1,
-      "annualClassDesc": "Excelente",
-      "seasonStart": 1781308800000,
-      "seasonEnd": 1789257600000,
-      "blueFlag": true,
-      "guarded": true,
-      "accessible": true,
-      "distKm": 0.8
+      "distKm": 0.2
     },
     "azurara": {
       "beachId": 489,
@@ -291,6 +237,24 @@
       "guarded": true,
       "accessible": false,
       "distKm": 0.9
+    },
+    "arvore": {
+      "beachId": 489,
+      "beach": "ÁRVORE",
+      "advice": 1,
+      "adviceTitlePt": "Adequada",
+      "adviceTitleEn": "Adequate",
+      "adviceAt": 1788134400000,
+      "motive": null,
+      "lastSampleAt": 1788134400000,
+      "annualClass": 2,
+      "annualClassDesc": "Boa",
+      "seasonStart": 1781308800000,
+      "seasonEnd": 1789257600000,
+      "blueFlag": false,
+      "guarded": true,
+      "accessible": false,
+      "distKm": 0.1
     },
     "leca-palmeira": {
       "beachId": 751,
@@ -363,42 +327,6 @@
       "guarded": true,
       "accessible": false,
       "distKm": 2
-    },
-    "foil-fao-cavado": {
-      "beachId": 216,
-      "beach": "FÃO-OFIR",
-      "advice": 1,
-      "adviceTitlePt": "Adequada",
-      "adviceTitleEn": "Adequate",
-      "adviceAt": 1787529600000,
-      "motive": null,
-      "lastSampleAt": 1787529600000,
-      "annualClass": 1,
-      "annualClassDesc": "Excelente",
-      "seasonStart": 1781308800000,
-      "seasonEnd": 1789257600000,
-      "blueFlag": true,
-      "guarded": true,
-      "accessible": false,
-      "distKm": 0.8
-    },
-    "foil-esposende-piscinas": {
-      "beachId": 216,
-      "beach": "FÃO-OFIR",
-      "advice": 1,
-      "adviceTitlePt": "Adequada",
-      "adviceTitleEn": "Adequate",
-      "adviceAt": 1787529600000,
-      "motive": null,
-      "lastSampleAt": 1787529600000,
-      "annualClass": 1,
-      "annualClassDesc": "Excelente",
-      "seasonStart": 1781308800000,
-      "seasonEnd": 1789257600000,
-      "blueFlag": true,
-      "guarded": true,
-      "accessible": false,
-      "distKm": 1.3
     },
     "praia-da-lomba": {
       "beachId": 138,
@@ -1184,8 +1112,8 @@
       "distKm": 0.1
     },
     "praia-grande-sintra": {
-      "beachId": 348,
-      "beach": "MAÇÃS",
+      "beachId": 503,
+      "beach": "GRANDE",
       "advice": 1,
       "adviceTitlePt": "Adequada",
       "adviceTitleEn": "Adequate",
@@ -1199,7 +1127,7 @@
       "blueFlag": true,
       "guarded": true,
       "accessible": true,
-      "distKm": 0.6
+      "distKm": 0.1
     },
     "adraga": {
       "beachId": 383,
@@ -1255,6 +1183,24 @@
       "accessible": true,
       "distKm": 0.6
     },
+    "santa-catarina-terceira": {
+      "beachId": 610,
+      "beach": "PRAIA DA RIVIERA",
+      "advice": 1,
+      "adviceTitlePt": "Adequada",
+      "adviceTitleEn": "Adequate",
+      "adviceAt": 1788739200000,
+      "motive": null,
+      "lastSampleAt": 1788739200000,
+      "annualClass": 1,
+      "annualClassDesc": "Excelente",
+      "seasonStart": 1781481600000,
+      "seasonEnd": 1789430400000,
+      "blueFlag": true,
+      "guarded": true,
+      "accessible": true,
+      "distKm": 1.1
+    },
     "parede": {
       "beachId": 279,
       "beach": "PAREDE",
@@ -1271,7 +1217,7 @@
       "blueFlag": true,
       "guarded": true,
       "accessible": false,
-      "distKm": 0.7
+      "distKm": 0
     },
     "carcavelos": {
       "beachId": 549,
@@ -1543,24 +1489,6 @@
       "accessible": true,
       "distKm": 0.1
     },
-    "sines": {
-      "beachId": 388,
-      "beach": "VASCO DA GAMA",
-      "advice": 1,
-      "adviceTitlePt": "Adequada",
-      "adviceTitleEn": "Adequate",
-      "adviceAt": 1788739200000,
-      "motive": null,
-      "lastSampleAt": 1788739200000,
-      "annualClass": 2,
-      "annualClassDesc": "Boa",
-      "seasonStart": 1781308800000,
-      "seasonEnd": 1789776000000,
-      "blueFlag": false,
-      "guarded": true,
-      "accessible": true,
-      "distKm": 0.4
-    },
     "sao-torpes": {
       "beachId": 507,
       "beach": "SÃO TORPES",
@@ -1578,6 +1506,24 @@
       "guarded": true,
       "accessible": false,
       "distKm": 0.5
+    },
+    "vale-figueiros-sines": {
+      "beachId": 140,
+      "beach": "VIEIRINHA-VALE DE FIGUEIROS",
+      "advice": 1,
+      "adviceTitlePt": "Adequada",
+      "adviceTitleEn": "Adequate",
+      "adviceAt": 1789516800000,
+      "motive": null,
+      "lastSampleAt": 1789516800000,
+      "annualClass": 1,
+      "annualClassDesc": "Excelente",
+      "seasonStart": 1781308800000,
+      "seasonEnd": 1789776000000,
+      "blueFlag": true,
+      "guarded": true,
+      "accessible": false,
+      "distKm": 0.2
     },
     "mosteiros": {
       "beachId": 600,
@@ -1613,7 +1559,7 @@
       "blueFlag": true,
       "guarded": true,
       "accessible": false,
-      "distKm": 0.7
+      "distKm": 0.1
     },
     "monte-verde": {
       "beachId": 616,
@@ -1667,7 +1613,7 @@
       "blueFlag": true,
       "guarded": true,
       "accessible": false,
-      "distKm": 0.6
+      "distKm": 0.1
     },
     "milicias": {
       "beachId": 595,
@@ -1829,7 +1775,7 @@
       "blueFlag": true,
       "guarded": true,
       "accessible": true,
-      "distKm": 0.6
+      "distKm": 0.1
     },
     "arrifana": {
       "beachId": 504,
@@ -1865,7 +1811,7 @@
       "blueFlag": false,
       "guarded": false,
       "accessible": false,
-      "distKm": 1.8
+      "distKm": 0.1
     },
     "bordeira": {
       "beachId": 213,
@@ -1919,7 +1865,7 @@
       "blueFlag": true,
       "guarded": true,
       "accessible": false,
-      "distKm": 1.2
+      "distKm": 1.3
     },
     "castelejo": {
       "beachId": 158,
@@ -1937,7 +1883,7 @@
       "blueFlag": true,
       "guarded": true,
       "accessible": false,
-      "distKm": 0
+      "distKm": 0.1
     },
     "luz": {
       "beachId": 42,
@@ -2009,7 +1955,7 @@
       "blueFlag": true,
       "guarded": true,
       "accessible": false,
-      "distKm": 0.1
+      "distKm": 0
     },
     "ferragudo": {
       "beachId": 211,
@@ -2207,7 +2153,7 @@
       "blueFlag": false,
       "guarded": true,
       "accessible": false,
-      "distKm": 0.7
+      "distKm": 0
     },
     "martinhal": {
       "beachId": 260,
@@ -2603,7 +2549,7 @@
       "blueFlag": true,
       "guarded": true,
       "accessible": false,
-      "distKm": 0.5
+      "distKm": 0
     },
     "santa-cruz": {
       "beachId": 316,
@@ -2785,9 +2731,9 @@
       "accessible": false,
       "distKm": 0.3
     },
-    "garrão": {
-      "beachId": 142,
-      "beach": "GARRÃO-NASCENTE",
+    "falesia": {
+      "beachId": 191,
+      "beach": "ROCHA BAIXINHA",
       "advice": 1,
       "adviceTitlePt": "Adequada",
       "adviceTitleEn": "Adequate",
@@ -2796,30 +2742,12 @@
       "lastSampleAt": 1787529600000,
       "annualClass": 1,
       "annualClassDesc": "Excelente",
-      "seasonStart": 1780272000000,
-      "seasonEnd": 1790726400000,
-      "blueFlag": true,
-      "guarded": true,
-      "accessible": false,
-      "distKm": 0.2
-    },
-    "falesia": {
-      "beachId": 55,
-      "beach": "ROCHA BAIXINHA-POENTE",
-      "advice": 1,
-      "adviceTitlePt": "Adequada",
-      "adviceTitleEn": "Adequate",
-      "adviceAt": 1788912000000,
-      "motive": null,
-      "lastSampleAt": 1791763200000,
-      "annualClass": 1,
-      "annualClassDesc": "Excelente",
       "seasonStart": 1778803200000,
       "seasonEnd": 1792022400000,
       "blueFlag": true,
       "guarded": true,
-      "accessible": false,
-      "distKm": 1
+      "accessible": true,
+      "distKm": 0.1
     },
     "tres-irmaos": {
       "beachId": 476,
@@ -2983,24 +2911,6 @@
       "accessible": true,
       "distKm": 0.2
     },
-    "formosa-santa-maria": {
-      "beachId": 629,
-      "beach": "SÃO LOURENÇO",
-      "advice": 1,
-      "adviceTitlePt": "Adequada",
-      "adviceTitleEn": "Adequate",
-      "adviceAt": 1787529600000,
-      "motive": null,
-      "lastSampleAt": 1787529600000,
-      "annualClass": 1,
-      "annualClassDesc": "Excelente",
-      "seasonStart": 1781481600000,
-      "seasonEnd": 1789344000000,
-      "blueFlag": true,
-      "guarded": true,
-      "accessible": false,
-      "distKm": 1.2
-    },
     "porto-martins": {
       "beachId": 607,
       "beach": "PORTO MARTINS",
@@ -3018,60 +2928,6 @@
       "guarded": true,
       "accessible": true,
       "distKm": 0.5
-    },
-    "cachorro-pico": {
-      "beachId": 623,
-      "beach": "POÇAS DE SÃO ROQUE",
-      "advice": 1,
-      "adviceTitlePt": "Adequada",
-      "adviceTitleEn": "Adequate",
-      "adviceAt": 1787529600000,
-      "motive": null,
-      "lastSampleAt": 1787529600000,
-      "annualClass": 1,
-      "annualClassDesc": "Excelente",
-      "seasonStart": 1781481600000,
-      "seasonEnd": 1789430400000,
-      "blueFlag": false,
-      "guarded": false,
-      "accessible": false,
-      "distKm": 0.6
-    },
-    "fao-ofir-surf": {
-      "beachId": 216,
-      "beach": "FÃO-OFIR",
-      "advice": 1,
-      "adviceTitlePt": "Adequada",
-      "adviceTitleEn": "Adequate",
-      "adviceAt": 1787529600000,
-      "motive": null,
-      "lastSampleAt": 1787529600000,
-      "annualClass": 1,
-      "annualClassDesc": "Excelente",
-      "seasonStart": 1781308800000,
-      "seasonEnd": 1789257600000,
-      "blueFlag": true,
-      "guarded": true,
-      "accessible": false,
-      "distKm": 0.7
-    },
-    "ofir-praia": {
-      "beachId": 216,
-      "beach": "FÃO-OFIR",
-      "advice": 1,
-      "adviceTitlePt": "Adequada",
-      "adviceTitleEn": "Adequate",
-      "adviceAt": 1787529600000,
-      "motive": null,
-      "lastSampleAt": 1787529600000,
-      "annualClass": 1,
-      "annualClassDesc": "Excelente",
-      "seasonStart": 1781308800000,
-      "seasonEnd": 1789257600000,
-      "blueFlag": true,
-      "guarded": true,
-      "accessible": false,
-      "distKm": 0
     },
     "mindelo": {
       "beachId": 423,
