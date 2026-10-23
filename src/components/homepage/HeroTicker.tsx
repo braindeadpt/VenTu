@@ -25,6 +25,14 @@ interface HeroTickerProps {
   buoyLayer?: BuoyLayerMeta | null;
   /** Coastal warnings (IH) layer — fetch/em vigor/cobertura. */
   coastalWarningsLayer?: CoastalWarningsLayerMeta | null;
+  /**
+   * Relógio do render (React #418): o ticker é SSG, por isso a idade dos dados
+   * e o «· ~N h» das boias têm de sair do MESMO instante no HTML baked e no
+   * primeiro render do cliente. O pai passa o relógio do build (`bakedAtMs`)
+   * até montar e o relógio real depois. Sem ele cai em Date.now() (só para
+   * superfícies sem SSG).
+   */
+  nowMs?: number;
 }
 
 const SEP = <span aria-hidden className="text-fg-subtle/40">·</span>;
@@ -69,10 +77,11 @@ export default function HeroTicker({
   statusLine,
   buoyLayer,
   coastalWarningsLayer,
+  nowMs,
 }: HeroTickerProps) {
   const isPt = locale === 'pt';
   const t = getTranslation(locale);
-  const ageHours = updatedAtTs != null ? getAgeHours(updatedAtTs) : null;
+  const ageHours = updatedAtTs != null ? getAgeHours(updatedAtTs, nowMs) : null;
   const layerCopy = {
     waves: {
       label: t.homepage.layerWaves,
@@ -89,7 +98,9 @@ export default function HeroTicker({
   const buoyStatus = buoyLayer && buoyLayer.status !== 'ok' ? buoyLayer.status : null;
   // Streak down/stale (só down/stale com streak > 0 — no-key nunca conta):
   // «há quantas horas a onda observada está degradada», do pipeline-meta.
-  const buoyDowntime = deriveBuoyLayerDowntime(buoyLayer);
+  // Com o relógio do render (nowMs): com Date.now() aqui o HTML do build dizia «~4 h» e o
+  // cliente, minutos depois, «~5 h» → React #418 (CI 39844750152, map-unmount-race).
+  const buoyDowntime = deriveBuoyLayerDowntime(buoyLayer, nowMs);
   const coastalStatus =
     coastalWarningsLayer && coastalWarningsLayer.status !== 'ok'
       ? coastalWarningsLayer.status

@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useAuth } from '@/contexts/AuthProvider';
 import { useHasFavorites } from '@/hooks/useHasFavorites';
 import { isConditionDriven, type HomepageSpotData } from '@/lib/homepageSport';
@@ -44,6 +44,11 @@ export default function HomeAdaptive({
   const { favorites } = useAuth();
   const isReturning = hasFavorites === true;
   const regions = useMemo(() => [...MACRO_REGIONS], []);
+  // Relógio do ticker: o do build no primeiro render (paridade com o HTML SSG — React #418)
+  // e o real depois de montar (o mesmo padrão do HomepageRankedSection).
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  const tickerNowMs = mounted ? Date.now() : bakedAtMs;
   const { sport: activeSport, explicit: sportChosen } = useHomeSport(regions, 'surf');
   // «A bombar agora» só fica preso a um desporto quando o utilizador o
   // escolheu; por defeito (ou com «Todos») mostra o que está mesmo a dar.
@@ -75,6 +80,7 @@ export default function HomeAdaptive({
             updatedAtTs={maxTs}
             buoyLayer={buoyLayer}
             coastalWarningsLayer={coastalWarningsLayer}
+            nowMs={tickerNowMs}
           />
         </div>
       </div>
