@@ -60,8 +60,6 @@ export const REVISAO_MANUAL = {
   // rios
   'foil-cabedelo': 'rio Lima (barra)',
   'cabedelo-wakepark': 'rio Lima (wake park)',
-  'foil-fao-cavado': 'rio Cávado',
-  'foil-esposende-piscinas': 'rio Cávado',
   esposende: 'foz do Cávado (rio/mar)',
   'marina-afurada-foil': 'rio Douro (marina)',
   'praia-da-lomba': 'rio Douro (interior)',

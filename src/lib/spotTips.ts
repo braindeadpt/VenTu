@@ -34,17 +34,6 @@ export const localTips: SpotLocalTips[] = [
     localRuleEn: 'Respect beginners — this is the learning spot of Porto.',
   },
   {
-    spotSlug: 'ofir',
-    bestTide: 'Maré média-baixa — o beach break fecha com maré alta',
-    bestTideEn: 'Mid-low tide — the beach break closes out at high tide',
-    parking: 'Parque de estacionamento na entrada da praia. Gratuito fora de época balnear.',
-    parkingEn: 'Parking lot at the beach entrance. Free outside bathing season.',
-    food: 'Restaurante Ofir — arroz de marisco brutal após sessão.',
-    foodEn: 'Restaurante Ofir — epic seafood rice after session.',
-    localRule: 'Pico principal junto à foz do rio — não drop in nos locals que surfam lá há 20 anos.',
-    localRuleEn: 'Main peak near the river mouth — don\'t drop in on locals who have surfed there for 20 years.',
-  },
-  {
     spotSlug: 'nazare',
     bestTide: 'Maré alta — as ondas grandes precisam de fundo suficiente',
     bestTideEn: 'High tide — big waves need enough depth',
@@ -168,8 +157,8 @@ export const localTips: SpotLocalTips[] = [
     foodEn: 'Restaurants on Esposende waterfront.',
     accommodation: 'Esposende e Ofir — base para kite norte (Ofir, Viana).',
     accommodationEn: 'Esposende and Ofir — base for northern kite (Ofir, Viana).',
-    localRule: 'Crowd de kite concentrada na lagoa — praia oceano (esposende-praia) em dias de swell.',
-    localRuleEn: 'Kite crowd concentrates on the lagoon — ocean beach (esposende-praia) on swell days.',
+    localRule: 'Kite só no rio; a praia oceânica (esposende-praia) é para surf, bodyboard e foil.',
+    localRuleEn: 'Kite on the river only; the ocean beach (esposende-praia) is for surf, bodyboard and foil.',
   },
   {
     spotSlug: 'sagres-tonel',
@@ -243,8 +232,6 @@ export const getSecretTips = (slug: string): SpotSecretTips | undefined =>
 // Blue flag beaches mapping (static data from official sources)
 export const blueFlagBeaches: Record<string, { year: number; waterQuality: 'excelente' | 'boa' | 'razoavel' | 'má' }> = {
   matosinhos: { year: 2025, waterQuality: 'excelente' },
-  ofir: { year: 2025, waterQuality: 'excelente' },
-  'povoa-varzim': { year: 2025, waterQuality: 'excelente' },
   esposende: { year: 2025, waterQuality: 'boa' },
   carcavelos: { year: 2025, waterQuality: 'excelente' },
   'costa-caparica': { year: 2025, waterQuality: 'excelente' },
@@ -284,7 +271,6 @@ export const blueFlagBeaches: Record<string, { year: number; waterQuality: 'exce
   'cova-do-vapor': { year: 2025, waterQuality: 'boa' },
   'praia-da-rainha': { year: 2025, waterQuality: 'excelente' },
   'praia-da-vieira': { year: 2025, waterQuality: 'excelente' },
-  'sines': { year: 2025, waterQuality: 'boa' },
   'esposende-praia': { year: 2025, waterQuality: 'excelente' },
   'obidos-lagoon-sul': { year: 2025, waterQuality: 'excelente' },
   'obidos-lagoon-foz': { year: 2025, waterQuality: 'excelente' },

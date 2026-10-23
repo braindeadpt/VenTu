@@ -38,12 +38,6 @@ export const SPOT_LIVECAMS: Record<string, SpotLivecam> = {
     labelPt: 'Afife — Praia da Arda',
     labelEn: 'Afife — Arda Beach',
   },
-  ofir: {
-    url: 'https://www.surftotal.com/camaras-report/minho/ofir',
-    provider: SURFTOTAL,
-    labelPt: 'Ofir',
-    labelEn: 'Ofir',
-  },
   esposende: {
     url: 'https://beachcam.meo.pt/livecams/esposende/',
     provider: MEO,
@@ -62,29 +56,11 @@ export const SPOT_LIVECAMS: Record<string, SpotLivecam> = {
     labelPt: 'Foz do Cávado — Esposende (ref.)',
     labelEn: 'Cavado river mouth — Esposende (ref.)',
   },
-  'foil-fao-cavado': {
-    url: 'https://beachcam.meo.pt/livecams/esposende-foz-do-cavado/',
-    provider: MEO,
-    labelPt: 'Foz do Cávado — Esposende',
-    labelEn: 'Cavado river mouth — Esposende',
-  },
-  'foil-esposende-piscinas': {
-    url: 'https://beachcam.meo.pt/livecams/esposende-foz-do-cavado/',
-    provider: MEO,
-    labelPt: 'Foz do Cávado — Esposende',
-    labelEn: 'Cavado river mouth — Esposende',
-  },
   apulia: {
     url: 'https://beachcam.meo.pt/livecams/apulia/',
     provider: MEO,
     labelPt: 'Apúlia',
     labelEn: 'Apulia',
-  },
-  'povoa-varzim': {
-    url: 'https://www.surftotal.com/camaras-report/grande-porto-douro-litoral/povoa-de-varzim',
-    provider: SURFTOTAL,
-    labelPt: 'Póvoa do Varzim',
-    labelEn: 'Povoa do Varzim',
   },
   azurara: {
     url: 'https://www.surftotal.com/camaras-report/grande-porto-douro-litoral/azurara',
@@ -627,12 +603,6 @@ export const SPOT_LIVECAMS: Record<string, SpotLivecam> = {
     provider: MEO,
     labelPt: 'Praia da Falésia — Albufeira',
     labelEn: 'Falesia Beach — Albufeira',
-  },
-  garrao: {
-    url: 'https://beachcam.meo.pt/livecams/vilamoura/',
-    provider: MEO,
-    labelPt: 'Vilamoura (ref.)',
-    labelEn: 'Vilamoura (ref.)',
   },
   'faro-mar': {
     url: 'https://beachcam.meo.pt/livecams/faro/',

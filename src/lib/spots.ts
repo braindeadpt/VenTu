@@ -14,7 +14,7 @@ export const spots: Spot[] = [
     },
   {
       id: 'vila-praia-ancora', slug: 'vila-praia-ancora', name: 'Vila Praia de Âncora', nameEn: 'Vila Praia de Ancora',
-      region: 'Viana do Castelo', regionEn: 'Viana do Castelo', lat: 41.8133, lon: -8.8651,
+      region: 'Viana do Castelo', regionEn: 'Viana do Castelo', lat: 41.8133, lon: -8.8652,
       coastOrientation: 270,
       type: 'surf', difficulty: 'beginner', bestWind: 'E, NE', bestSwell: 'W, NW',
       description: 'A melhor praia para aprender surf no distrito de Viana. Ondas suaves, praia extensa e paisagem natural deslumbrante. Perfeita para famílias.',
@@ -33,17 +33,6 @@ export const spots: Spot[] = [
       compatibleSports: ['surf', 'kitesurf', 'sup', 'bodyboard'],
       facilities: ['Estacionamento', 'Escola surf', 'Restaurante', 'WC'],
       hazards: ['Vento forte', 'Correntes', 'Exposto ao vento']
-    },
-  {
-      id: 'castelo-neiva', slug: 'castelo-neiva', name: 'Castelo do Neiva', nameEn: 'Castelo do Neiva',
-      region: 'Viana do Castelo', regionEn: 'Viana do Castelo', lat: 41.6299, lon: -8.8213,
-      coastOrientation: 275,
-      type: 'surf', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'W, NW',
-      description: 'Praia com bandeira azul e ambiente tranquilo. Beach break consistente com múltiplos picos. Clube náutico na zona.',
-      descriptionEn: 'Blue flag beach with tranquil atmosphere. Consistent beach break with multiple peaks. Nautical club in the area.',
-      compatibleSports: ['surf', 'bodyboard', 'sup'],
-      facilities: ['Estacionamento', 'Restaurante', 'Clube Nautico', 'WC'],
-      hazards: ['Rochas submersas', 'Correntes']
     },
   {
       id: 'amorosa', slug: 'amorosa', name: 'Praia da Amorosa', nameEn: 'Amorosa Beach',
@@ -91,25 +80,14 @@ export const spots: Spot[] = [
     },
   {
       id: 'rodanho', slug: 'rodanho', name: 'Praia do Rodanho', nameEn: 'Rodanho Beach',
-      region: 'Viana do Castelo', regionEn: 'Viana do Castelo', lat: 41.667, lon: -8.825,
+      region: 'Viana do Castelo', regionEn: 'Viana do Castelo', lat: 41.6673, lon: -8.8247,
       coastOrientation: 265,
-      type: 'multisport', difficulty: 'intermediate', bestWind: 'NW, N', bestSwell: 'SW, W',
-      description: 'Praia entre Cabedelo e Amorosa, ideal para kitesurf e windsurf. Vento térmico NW consistente. Menos crowd que o Cabedelo. Área de água plana segura.',
-      descriptionEn: 'Beach between Cabedelo and Amorosa, ideal for kitesurf and windsurf. Consistent NW thermal wind. Less crowded than Cabedelo. Safe flat water area.',
-      compatibleSports: ['kitesurf', 'windsurf'],
+      type: 'kitesurf', difficulty: 'intermediate', bestWind: 'NW, N', bestSwell: 'SW, W',
+      description: 'Praia entre Cabedelo e Amorosa, spot de kitesurf. Vento térmico NW consistente. Menos crowd que o Cabedelo. Área de água plana segura.',
+      descriptionEn: 'Beach between Cabedelo and Amorosa, a kitesurf spot. Consistent NW thermal wind. Less crowded than Cabedelo. Safe flat water area.',
+      compatibleSports: ['kitesurf'],
       facilities: ['Estacionamento'],
       hazards: ['Correntes', 'Pedras na maré baixa']
-    },
-  {
-      id: 'ofir', slug: 'ofir', name: 'Ofir', nameEn: 'Ofir',
-      region: 'Esposende', regionEn: 'Esposende', lat: 41.5185, lon: -8.7878,
-      coastOrientation: 260,
-      type: 'surf', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'W, NW',
-      description: 'Beach break potente com ondas de qualidade. Pouco crowd comparado com outras praias do norte. Fundo de areia variável.',
-      descriptionEn: 'Powerful beach break with quality waves. Less crowded than other northern beaches. Variable sand bottom.',
-      compatibleSports: ['surf', 'bodyboard', 'sup'],
-      facilities: ['Estacionamento', 'Restaurante', 'WC'],
-      hazards: ['Correntes', 'Ressaca forte']
     },
   {
       id: 'esposende', slug: 'esposende', name: 'Esposende', nameEn: 'Esposende',
@@ -124,30 +102,30 @@ export const spots: Spot[] = [
     },
   {
       id: 'esposende-praia', slug: 'esposende-praia', name: 'Esposende Praia (Oceano)', nameEn: 'Esposende Ocean Beach',
-      region: 'Esposende', regionEn: 'Esposende', lat: 41.537, lon: -8.789,
-      coastOrientation: 265,
-      type: 'kitesurf', difficulty: 'intermediate', bestWind: 'NW, N', bestSwell: 'W, NW',
-      description: 'Lado oceano de Esposende — kite e surf com Nortada quando a lagoa do Cávado está cheia de crowd. Complementa o spot da lagoa (esposende). Praia ampla; escolas de kite na vila.',
-      descriptionEn: 'Ocean side of Esposende — kite and surf with Nortada when the Cavado lagoon is crowded. Complements the lagoon spot (esposende). Wide beach; kite schools in town.',
-      compatibleSports: ['kitesurf', 'surf', 'bodyboard', 'windsurf'],
-      facilities: ['Estacionamento', 'Escolas kite', 'Restaurantes', 'WC'],
+      region: 'Esposende', regionEn: 'Esposende', lat: 41.5432, lon: -8.7927,
+      coastOrientation: 275,
+      type: 'surf', difficulty: 'intermediate', bestWind: 'NW, N', bestSwell: 'W, NW',
+      description: 'Praia oceânica de Esposende, a norte da foz do Cávado — beach break para surf e bodyboard, e foil nos dias de mar mais arrumado. Praia ampla; o kite fica no rio (spot esposende).',
+      descriptionEn: 'Esposende ocean beach, just north of the Cavado river mouth — beach break for surf and bodyboard, and foil on cleaner days. Wide beach; kite is on the river (esposende spot).',
+      compatibleSports: ['surf', 'foil', 'bodyboard'],
+      facilities: ['Estacionamento', 'Restaurantes', 'WC'],
       hazards: ['Correntes', 'Multidão de verão'],
       localTips: {
-        bestTide: 'Maré média — mais espaço entre banhistas e kite',
-        bestTideEn: 'Mid tide — more space between swimmers and kite',
-        parking: 'Parque junto à praia oceânica; lagoa a 5 min a pé.',
-        parkingEn: 'Lot by the ocean beach; lagoon 5 min walk.',
-        accommodation: 'Esposende e Ofir — hotéis e apartamentos para kitetrip norte.',
-        accommodationEn: 'Esposende and Ofir — hotels and apartments for northern kitetrips.',
-        localRule: 'Se a lagoa estiver flat e vazia, preferir esposende; oceano para ondas e vento mais limpo.',
-        localRuleEn: 'If the lagoon is flat and empty, prefer esposende; ocean for waves and cleaner wind.',
+        bestTide: 'Maré média — o beach break fecha menos',
+        bestTideEn: 'Mid tide — the beach break closes out less',
+        parking: 'Parque junto à praia oceânica; o rio fica a 5 min a pé.',
+        parkingEn: 'Lot by the ocean beach; the river is a 5 min walk.',
+        accommodation: 'Esposende — hotéis e apartamentos na vila.',
+        accommodationEn: 'Esposende — hotels and apartments in town.',
+        localRule: 'Praia para ondas (surf, bodyboard, foil); para kite, o spot é o rio (esposende).',
+        localRuleEn: 'Wave beach (surf, bodyboard, foil); for kite, use the river spot (esposende).',
       }
     },
   {
       id: 'fao', slug: 'fao', name: 'Praia de Fão/Ofir (Surf & Kite)', nameEn: 'Fao/Ofir Beach (Surf & Kite)',
       region: 'Esposende', regionEn: 'Esposende', lat: 41.5233, lon: -8.7900,
       coastOrientation: 235,
-      type: 'multisport', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'W, NW',
+      type: 'multisport', difficulty: 'intermediate', bestWind: 'NW, N', bestSwell: 'W, NW',
       description: 'Praia de Fão/Ofir, a sul da foz do Cávado — beach break consistente com vários picos para surf e kitesurf no mar. Ondas potentes no inverno; Nortada NW no verão para kite. Menos crowd que as praias centrais.',
       descriptionEn: 'Fao/Ofir beach, just south of the Cavado river mouth — consistent beach break with several peaks for surf and kitesurf in the sea. Powerful waves in winter; NW Nortada in summer for kite. Less crowded than central beaches.',
       compatibleSports: ['surf', 'kitesurf'],
@@ -156,7 +134,7 @@ export const spots: Spot[] = [
     },
   {
       id: 'apulia', slug: 'apulia', name: 'Apúlia', nameEn: 'Apulia',
-      region: 'Esposende', regionEn: 'Esposende', lat: 41.4828, lon: -8.7779,
+      region: 'Esposende', regionEn: 'Esposende', lat: 41.4825, lon: -8.7778,
       coastOrientation: 240,
       type: 'surf', difficulty: 'beginner', bestWind: 'E, SE', bestSwell: 'W, NW',
       description: 'Praia famosa do Norte com moinhos de vento como cenário. Ondas suaves perfeitas para iniciantes e longboard. Ambiente único.',
@@ -164,17 +142,6 @@ export const spots: Spot[] = [
       compatibleSports: ['surf', 'bodyboard', 'sup'],
       facilities: ['Estacionamento', 'Restaurante', 'WC', 'Moinhos de vento'],
       hazards: ['Correntes', 'Multidao no verao']
-    },
-  {
-      id: 'povoa-varzim', slug: 'povoa-varzim', name: 'Póvoa do Varzim', nameEn: 'Povoa do Varzim',
-      region: 'Porto', regionEn: 'Porto', lat: 41.377, lon: -8.760,
-      coastOrientation: 270,
-      type: 'surf', difficulty: 'beginner', bestWind: 'E, NE', bestSwell: 'W, NW',
-      description: 'Praia longa com ondas suaves perfeitas para iniciantes. Escolas de surf com boa reputação. Ambiente familiar.',
-      descriptionEn: 'Long beach with gentle waves perfect for beginners. Reputable surf schools. Family-friendly atmosphere.',
-      compatibleSports: ['surf', 'bodyboard', 'sup'],
-      facilities: ['Estacionamento', 'Escolas surf', 'Restaurantes', 'WC'],
-      hazards: ['Correntes moderadas']
     },
   {
       id: 'azurara', slug: 'azurara', name: 'Azurara', nameEn: 'Azurara',
@@ -230,30 +197,6 @@ export const spots: Spot[] = [
       compatibleSports: ['foil'],
       facilities: ['Marina', 'Estacionamento', 'Restaurantes', 'WC'],
       hazards: ['Tráfego de barcos', 'Correntes no Douro', 'Zona portuária']
-    },
-  {
-      id: 'foil-fao-cavado', slug: 'foil-fao-cavado', name: 'Fão — Foil (Cávado)', nameEn: 'Fao — Foil (Cavado)',
-      conditionsSource: 'esposende',
-      region: 'Esposende', regionEn: 'Esposende', lat: 41.5245702, lon: -8.7874109,
-      coastOrientation: 270,
-      type: 'foil', difficulty: 'beginner', bestWind: 'NW, N', bestSwell: 'Estuário',
-      description: 'Água plana no estuário do Cávado, zona de Fão — ideal para wing foil e kite foil. Vento térmico NW consistente no verão. Lançamento junto ao rio; modalidade exclusiva de foil.',
-      descriptionEn: 'Flat water on the Cavado estuary at Fao — ideal for wing foil and kite foil. Consistent NW thermal wind in summer. River launch; foil-only spot.',
-      compatibleSports: ['foil'],
-      facilities: ['Estacionamento', 'Escolas na zona', 'WC'],
-      hazards: ['Correntes na foz', 'Tráfego de barcos', 'Bancos de areia com maré']
-    },
-  {
-      id: 'foil-esposende-piscinas', slug: 'foil-esposende-piscinas', name: 'Esposende Piscinas — Foil (Cávado)', nameEn: 'Esposende Pools — Foil (Cavado)',
-      conditionsSource: 'esposende',
-      region: 'Esposende', regionEn: 'Esposende', lat: 41.5283812, lon: -8.7825726,
-      coastOrientation: 270,
-      type: 'foil', difficulty: 'beginner', bestWind: 'NW, N', bestSwell: 'Estuário',
-      description: 'Lançamento junto às piscinas municipais de Esposende, no estuário do Cávado — água plana para wing foil e kite foil. Mesmas condições meteorológicas que o spot Esposende. Apenas foil.',
-      descriptionEn: 'Launch near Esposende municipal pools on the Cavado estuary — flat water for wing and kite foil. Same weather forecast as Esposende spot. Foil only.',
-      compatibleSports: ['foil'],
-      facilities: ['Piscinas municipais', 'Estacionamento', 'Restaurantes'],
-      hazards: ['Correntes na foz', 'Tráfego de barcos', 'Maré']
     },
   {
       id: 'praia-da-lomba', slug: 'praia-da-lomba', name: 'Praia da Lomba / Melres — Wake & Foil', nameEn: 'Lomba / Melres — Wake & Foil',
@@ -811,8 +754,8 @@ export const spots: Spot[] = [
     },
   {
       id: 'praia-grande-sintra', slug: 'praia-grande-sintra', name: 'Praia Grande (Sintra)', nameEn: 'Praia Grande (Sintra)',
-      region: 'Sintra', regionEn: 'Sintra', lat: 38.820, lon: -9.470,
-      coastOrientation: 285,
+      region: 'Sintra', regionEn: 'Sintra', lat: 38.8132, lon: -9.4782,
+      coastOrientation: 295,
       type: 'surf', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'W, NW',
       description: 'Extensa praia entre falésias, famosa pelo bodyboard e surf. Palco do Mundial de Bodyboard. Ondas potentes com múltiplos picos. Uma das praias mais bonitas da linha de Sintra.',
       descriptionEn: 'Extensive beach between cliffs, famous for bodyboarding and surfing. Host of the World Bodyboard Championship. Powerful waves with multiple peaks. One of the most beautiful beaches on the Sintra coast.',
@@ -823,7 +766,7 @@ export const spots: Spot[] = [
     },
   {
       id: 'adraga', slug: 'adraga', name: 'Praia da Adraga', nameEn: 'Adraga Beach',
-      region: 'Sintra', regionEn: 'Sintra', lat: 38.8037, lon: -9.4848,
+      region: 'Sintra', regionEn: 'Sintra', lat: 38.8043, lon: -9.4848,
       coastOrientation: 295,
       type: 'surf', difficulty: 'advanced', bestWind: 'E, SE', bestSwell: 'W, NW',
       description: 'Praia selvagem entre falésias dramáticas. Ondas potentes e tubulares. Spot avançado com cenário de cortar a respiração. Uma das praias mais fotografadas de Portugal.',
@@ -888,8 +831,8 @@ export const spots: Spot[] = [
     },
   {
       id: 'parede', slug: 'parede', name: 'Parede', nameEn: 'Parede',
-      region: 'Cascais', regionEn: 'Cascais', lat: 38.680, lon: -9.350,
-      coastOrientation: 230,
+      region: 'Cascais', regionEn: 'Cascais', lat: 38.6858, lon: -9.3538,
+      coastOrientation: 195,
       type: 'surf', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'W, NW',
       description: 'Praia rochosa entre Carcavelos e São Pedro. Ondas rápidas e tubulares em dias de swell. Palco de competições de bodyboard.',
       descriptionEn: 'Rocky beach between Carcavelos and Sao Pedro. Fast and tubular waves on swell days. Host of bodyboarding competitions.',
@@ -1193,31 +1136,8 @@ export const spots: Spot[] = [
       hazards: ['Correntes', 'Vento forte']
     },
   {
-      id: 'sines', slug: 'sines', name: 'Sines', nameEn: 'Sines',
-      region: 'Sines', regionEn: 'Sines', lat: 37.955, lon: -8.869,
-      coastOrientation: 175,
-      type: 'kitesurf', difficulty: 'advanced', bestWind: 'NW, N', bestSwell: 'W, SW',
-      description: 'Praia urbana junto ao porto de Sines. Kite com Nortada e ondulação em swell — lançamento com atenção a rochas. Spot distinto de São Torpes (7 km). Menos crowd de kite; infraestrutura urbana para alojamento e reparações.',
-      descriptionEn: 'Urban beach by Sines port. Kite with Nortada and swell waves — launch carefully around rocks. Distinct from Sao Torpes (7 km). Low kite crowd; town infrastructure for lodging and repairs.',
-      compatibleSports: ['kitesurf', 'surf', 'bodyboard'],
-      facilities: ['Estacionamento', 'Restaurantes', 'Alojamento', 'WC'],
-      hazards: ['Rochas no lançamento', 'Correntes', 'Vento gusty junto ao porto'],
-      localTips: {
-        bestTide: 'Maré alta — mais água sobre as rochas',
-        bestTideEn: 'High tide — more water over the rocks',
-        parking: 'Estacionamento na praia de Vasco da Gama e zona portuária.',
-        parkingEn: 'Parking at Vasco da Gama beach and port area.',
-        accommodation: 'Sines centro — hotéis e guesthouses a 5 min da praia.',
-        accommodationEn: 'Sines town centre — hotels and guesthouses 5 min from the beach.',
-        food: 'Restaurantes no centro histórico e na marginal.',
-        foodEn: 'Restaurants in the historic centre and waterfront.',
-        localRule: 'Inspeciona o lançamento em cada maré — fundo muda com as obras do porto.',
-        localRuleEn: 'Inspect the launch each tide — bottom changes with port works.',
-      }
-    },
-  {
       id: 'sao-torpes', slug: 'sao-torpes', name: 'São Torpes', nameEn: 'Sao Torpes',
-      region: 'Alentejo', regionEn: 'Alentejo', lat: 37.922, lon: -8.806,
+      region: 'Alentejo', regionEn: 'Alentejo', lat: 37.9228, lon: -8.8053,
       coastOrientation: 250,
       type: 'surf', difficulty: 'beginner', bestWind: 'E, SE', bestSwell: 'W, NW',
       description: 'Spot único — antiga central térmica aquece a água! Surf de inverno com wetsuit mais fino. Beach break longo e acessível.',
@@ -1239,7 +1159,7 @@ export const spots: Spot[] = [
     },
   {
       id: 'porto-covo', slug: 'porto-covo', name: 'Porto Covo', nameEn: 'Porto Covo',
-      region: 'Alentejo', regionEn: 'Alentejo', lat: 37.852, lon: -8.790,
+      region: 'Alentejo', regionEn: 'Alentejo', lat: 37.8572, lon: -8.7936,
       coastOrientation: 270,
       type: 'surf', difficulty: 'beginner', bestWind: 'E, SE', bestSwell: 'W, NW',
       description: 'Vila piscatória típica com praias cristalinas. Praia Grande com ondas perfeitas para longboarders. Várias enseadas secretas.',
@@ -1272,8 +1192,8 @@ export const spots: Spot[] = [
     },
   {
       id: 'malhao', slug: 'malhao', name: 'Malhão', nameEn: 'Malhao',
-      region: 'Alentejo', regionEn: 'Alentejo', lat: 37.7802, lon: -8.8021,
-      coastOrientation: 280,
+      region: 'Alentejo', regionEn: 'Alentejo', lat: 37.7864, lon: -8.8016,
+      coastOrientation: 275,
       type: 'surf', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'W, NW',
       description: 'Beach break versátil de 2km com múltiplos picos. Varia de slab overhead a ondas de joelho. Escolas de surf locais.',
       descriptionEn: 'Versatile 2km beach break with multiple peaks. Varies from overhead slab to knee-high waves. Local surf schools.',
@@ -1305,8 +1225,8 @@ export const spots: Spot[] = [
     },
   {
       id: 'alteirinhos', slug: 'alteirinhos', name: 'Alteirinhos', nameEn: 'Alteirinhos',
-      region: 'Zambujeira do Mar', regionEn: 'Zambujeira do Mar', lat: 37.5185, lon: -8.7886,
-      coastOrientation: 295,
+      region: 'Zambujeira do Mar', regionEn: 'Zambujeira do Mar', lat: 37.5187, lon: -8.7882,
+      coastOrientation: 290,
       type: 'surf', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'W, NW',
       description: 'Praia selvagem ao sul da Zambujeira do Mar. Acesso por escadaria na falésia. Areia fina, falésias altas e mar transparente. Perfeita para quem quer fugir das multidões.',
       descriptionEn: 'Wild beach south of Zambujeira do Mar. Access by staircase in the cliff. Fine sand, high cliffs and transparent sea. Perfect for those who want to escape the crowds.',
@@ -1372,8 +1292,8 @@ export const spots: Spot[] = [
     },
   {
       id: 'monte-clerigo', slug: 'monte-clerigo', name: 'Monte Clérigo', nameEn: 'Monte Clerigo',
-      region: 'Aljezur', regionEn: 'Aljezur', lat: 37.340, lon: -8.860,
-      coastOrientation: 300,
+      region: 'Aljezur', regionEn: 'Aljezur', lat: 37.3413, lon: -8.8531,
+      coastOrientation: 315,
       type: 'surf', difficulty: 'intermediate', bestWind: 'E, NE', bestSwell: 'W, NW',
       description: 'Praia de vila piscatória com ambiente boémio. Picos shiftantes que quando alinham oferecem ondas divertidas. Ótima para famílias e surfistas em evolução.',
       descriptionEn: 'Fishing village beach with bohemian atmosphere. Shifty peaks that when aligned offer fun waves. Great for families and evolving surfers.',
@@ -1394,7 +1314,7 @@ export const spots: Spot[] = [
     },
   {
       id: 'vale-figueiras', slug: 'vale-figueiras', name: 'Vale Figueiras', nameEn: 'Vale Figueiras',
-      region: 'Aljezur', regionEn: 'Aljezur', lat: 37.2420, lon: -8.8722,
+      region: 'Aljezur', regionEn: 'Aljezur', lat: 37.2473, lon: -8.8688,
       coastOrientation: 290,
       type: 'surf', difficulty: 'intermediate', bestWind: 'E, NE', bestSwell: 'W, NW',
       description: 'Praia selvagem no Parque Natural do Sudoeste Alentejano. Ondas para todos os níveis dependendo das condições. Acesso por estrada de terra. Isolamento total.',
@@ -1428,7 +1348,7 @@ export const spots: Spot[] = [
     },
   {
       id: 'barriga', slug: 'barriga', name: 'Barriga', nameEn: 'Barriga',
-      region: 'Vila do Bispo', regionEn: 'Vila do Bispo', lat: 37.1189, lon: -8.9305,
+      region: 'Vila do Bispo', regionEn: 'Vila do Bispo', lat: 37.1190, lon: -8.9304,
       coastOrientation: 295,
       type: 'surf', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'W, NW',
       description: 'Praia isolada a norte da Cordoama. Ondas de qualidade quando os bancos alinham. Pouco crowd e ambiente natural preservado. Acesso a pé na maré baixa.',
@@ -1439,8 +1359,8 @@ export const spots: Spot[] = [
     },
   {
       id: 'castelejo', slug: 'castelejo', name: 'Castelejo', nameEn: 'Castelejo',
-      region: 'Vila do Bispo', regionEn: 'Vila do Bispo', lat: 37.1001, lon: -8.9455,
-      coastOrientation: 300,
+      region: 'Vila do Bispo', regionEn: 'Vila do Bispo', lat: 37.0998, lon: -8.9463,
+      coastOrientation: 305,
       type: 'surf', difficulty: 'advanced', bestWind: 'E, SE', bestSwell: 'W, NW',
       description: 'Praia selvagem com ondas potentes e tubulares. Spot avançado com fundo de areia e rochas. Cenário dramático com falésias negras.',
       descriptionEn: 'Wild beach with powerful and tubular waves. Advanced spot with sand and rock bottom. Dramatic scenery with black cliffs.',
@@ -1485,7 +1405,7 @@ export const spots: Spot[] = [
     },
   {
       id: 'cordoama', slug: 'cordoama', name: 'Cordoama', nameEn: 'Cordoama',
-      region: 'Vila do Bispo', regionEn: 'Vila do Bispo', lat: 37.1092, lon: -8.9372,
+      region: 'Vila do Bispo', regionEn: 'Vila do Bispo', lat: 37.1091, lon: -8.9380,
       coastOrientation: 305,
       type: 'surf', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'W, NW',
       description: 'Spot flanqueado por falésias imponentes. Um dos mais consistentes da região, palco do circuito mundial WQS. Bancos de areia bem colocados. Menos massificado que o Amado.',
@@ -1606,8 +1526,8 @@ export const spots: Spot[] = [
     },
   {
       id: 'beliche', slug: 'beliche', name: 'Praia do Beliche', nameEn: 'Beliche Beach',
-      region: 'Sagres', regionEn: 'Sagres', lat: 37.030, lon: -8.970,
-      coastOrientation: 155,
+      region: 'Sagres', regionEn: 'Sagres', lat: 37.0256, lon: -8.9641,
+      coastOrientation: 270,
       type: 'surf', difficulty: 'advanced', bestWind: 'E, SE', bestSwell: 'W, NW',
       description: 'Praia virada a oeste com ondas potentes. Acesso por escadaria na falésia. Beach break épico em dias grandes.',
       descriptionEn: 'West-facing beach with powerful waves. Access by staircase on the cliff. Epic beach break on big days.',
@@ -1859,8 +1779,8 @@ export const spots: Spot[] = [
     },
   {
       id: 'vila-cha', slug: 'vila-cha', name: 'Vila Chã', nameEn: 'Vila Cha',
-      region: 'Porto', regionEn: 'Porto', lat: 41.291, lon: -8.739,
-      coastOrientation: 240,
+      region: 'Porto', regionEn: 'Porto', lat: 41.2902, lon: -8.7332,
+      coastOrientation: 255,
       type: 'surf', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'W, NW',
       description: 'Praia selvagem a norte do Porto. Beach break consistente com menos crowd que Matosinhos. Ideal para quem quer fugir da multidão.',
       descriptionEn: 'Wild beach north of Porto. Consistent beach break with less crowd than Matosinhos. Ideal for escaping the crowds.',
@@ -1983,8 +1903,8 @@ export const spots: Spot[] = [
     },
   {
       id: 'pessegueiro', slug: 'pessegueiro', name: 'Ilha do Pessegueiro', nameEn: 'Pessegueiro Island',
-      region: 'Alentejo', regionEn: 'Alentejo', lat: 37.831, lon: -8.796,
-      coastOrientation: 270,
+      region: 'Alentejo', regionEn: 'Alentejo', lat: 37.8299, lon: -8.7920,
+      coastOrientation: 260,
       type: 'surf', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'W, NW',
       description: 'Praia com ilhota e forte histórico. Beach break consistente com ondas de qualidade. Um dos spots mais bonitos do Alentejo.',
       descriptionEn: 'Beach with islet and historic fort. Consistent beach break with quality waves. One of the most beautiful spots in Alentejo.',
@@ -1993,19 +1913,8 @@ export const spots: Spot[] = [
       hazards: ['Rochas junto ao forte', 'Correntes']
     },
   {
-      id: 'garrão', slug: 'garrao', name: 'Praia do Garrão', nameEn: 'Garrao Beach',
-      region: 'Faro', regionEn: 'Faro', lat: 37.0412, lon: -8.0528,
-      coastOrientation: 215,
-      type: 'surf', difficulty: 'beginner', bestWind: 'N, NW', bestSwell: 'S, SW',
-      description: 'Praia extensa da Ria Formosa com ondas suaves. Ideal para iniciantes e longboard. Água quente e cristalina.',
-      descriptionEn: 'Long Ria Formosa beach with gentle waves. Ideal for beginners and longboard. Warm crystal clear water.',
-      compatibleSports: ['surf', 'sup', 'kitesurf'],
-      facilities: ['Estacionamento', 'Restaurantes', 'WC'],
-      hazards: ['Bancos de areia', 'Correntes na barra']
-    },
-  {
       id: 'falesia', slug: 'falesia', name: 'Praia da Falésia', nameEn: 'Falesia Beach',
-      region: 'Albufeira', regionEn: 'Albufeira', lat: 37.075, lon: -8.153,
+      region: 'Albufeira', regionEn: 'Albufeira', lat: 37.0760, lon: -8.1342,
       coastOrientation: 200,
       type: 'surf', difficulty: 'beginner', bestWind: 'N, NW', bestSwell: 'S, SW',
       description: 'Praia icónica com falésias vermelhas de 40m. Beach break com múltiplos picos. Água quente e ondas suaves. Uma das praias mais fotografadas do Algarve.',
@@ -2168,17 +2077,6 @@ export const spots: Spot[] = [
       compatibleSports: ['surf', 'bodyboard'],
       facilities: ['Estacionamento', 'Restaurante', 'WC'],
       hazards: ['Acesso por estrada íngreme', 'Rochas']
-    },
-  {
-      id: 'ofir-praia', slug: 'ofir-praia', name: 'Praia de Ofir (Surf & Kite)', nameEn: 'Ofir Beach (Surf & Kite)',
-      region: 'Esposende', regionEn: 'Esposende', lat: 41.5172, lon: -8.7876,
-      coastOrientation: 270,
-      type: 'multisport', difficulty: 'intermediate', bestWind: 'NW, N', bestSwell: 'W, NW',
-      description: 'Praia extensa de Ofir com condições para surf e kitesurf. Vento térmico de NW no verão para kite. Ondas consistentes no inverno para surf.',
-      descriptionEn: 'Long Ofir beach with conditions for surf and kitesurf. NW thermal wind in summer for kite. Consistent waves in winter for surf.',
-      compatibleSports: ['surf', 'kitesurf', 'foil'],
-      facilities: ['Estacionamento', 'Restaurantes', 'WC'],
-      hazards: ['Correntes', 'Vento forte no verão']
     },
   {
       id: 'mindelo', slug: 'mindelo', name: 'Praia de Mindelo', nameEn: 'Mindelo Beach',
