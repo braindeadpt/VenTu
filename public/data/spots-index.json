@@ -935,18 +935,17 @@
       "nameEn": "Foz do Arelho",
       "region": "Oeste",
       "regionEn": "West Coast",
-      "lat": 39.427,
-      "lon": -9.21,
-      "coastOrientation": 270,
+      "lat": 39.4272,
+      "lon": -9.22,
+      "coastOrientation": 300,
       "type": "kitesurf",
       "difficulty": "beginner",
       "compatibleSports": [
         "kitesurf",
-        "foil",
         "sup"
       ],
-      "description": "Lagoa de Óbidos perfeita para iniciantes. Água plana, vento side-onshore. Escolas e aluguer.",
-      "descriptionEn": "Obidos Lagoon perfect for beginners. Flat water, side-onshore wind. Schools and rental.",
+      "description": "Margem norte da Lagoa de Óbidos, em frente à Praia das Rolotes, junto à foz. Água plana e rasa para aprender kitesurf e SUP, com vento side-onshore amplificado pelo efeito venturi. Mais perto da foz há corrente para o mar e vento irregular: fica do lado de dentro. Escolas e aluguer. A praia oceânica é outro spot (Praia da Foz do Arelho).",
+      "descriptionEn": "North shore of Obidos Lagoon, opposite Praia das Rolotes, by the mouth. Flat shallow water for learning kitesurf and SUP, with side-onshore wind amplified by the venturi effect. Closer to the mouth there is current toward the sea and gusty wind: stay on the inside. Schools and rental. The ocean beach is a separate spot (Foz do Arelho Beach).",
       "facilities": [
         "Estacionamento",
         "Escolas kite",
@@ -956,7 +955,11 @@
       ],
       "hazards": [
         "Tráfego de iniciantes",
-        "Maré baixa"
+        "Maré baixa",
+        "Corrente na foz",
+        "Vento irregular junto à foz",
+        "Rochas na praia oceânica adjacente",
+        "Kite restrito na época balnear"
       ],
       "blueFlag": false,
       "accessibleBeach": false,
@@ -1163,18 +1166,19 @@
       "nameEn": "Foz do Arelho - Foil",
       "region": "Oeste",
       "regionEn": "West Coast",
-      "lat": 39.427,
-      "lon": -9.21,
-      "coastOrientation": 270,
+      "lat": 39.41,
+      "lon": -9.204,
+      "coastOrientation": 300,
       "type": "foil",
       "difficulty": "beginner",
       "compatibleSports": [
         "foil",
         "kitesurf",
+        "windsurf",
         "sup"
       ],
-      "description": "Lagoa de Óbidos perfeita para wing foil e kite foil. Água plana, vento side-onshore. Escolas com equipamento de foil.",
-      "descriptionEn": "Obidos Lagoon perfect for wing foil and kite foil. Flat water, side-onshore wind. Schools with foil equipment.",
+      "description": "Zona interior da Lagoa de Óbidos, junto à Escola de Vela, com fundo suficiente para wing foil e kite foil. Água plana, vento side-onshore, aberta todo o ano. Escolas com equipamento de foil.",
+      "descriptionEn": "Inner Obidos Lagoon, by the sailing school, with enough depth for wing foil and kite foil. Flat water, side-onshore wind, open all year. Schools with foil equipment.",
       "facilities": [
         "Estacionamento",
         "Escolas foil",
@@ -3014,21 +3018,19 @@
       "nameEn": "Sao Martinho do Porto",
       "region": "Oeste",
       "regionEn": "West Coast",
-      "lat": 39.514,
-      "lon": -9.134,
-      "coastOrientation": 180,
-      "type": "kitesurf",
+      "lat": 39.507,
+      "lon": -9.1395,
+      "coastOrientation": 315,
+      "type": "windsurf",
       "difficulty": "beginner",
       "compatibleSports": [
-        "kitesurf",
         "windsurf",
         "sup"
       ],
-      "description": "Baía em forma de concha com águas calmas e vento térmico. Perfeita para aprender kitesurf e windsurf. Água plana protegida.",
-      "descriptionEn": "Shell-shaped bay with calm waters and thermal wind. Perfect for learning kitesurf and windsurf. Sheltered flat water.",
+      "description": "Baía em forma de concha com águas calmas e vento térmico. Água plana protegida, boa para aprender windsurf e para SUP.",
+      "descriptionEn": "Shell-shaped bay with calm waters and thermal wind. Sheltered flat water, good for learning windsurf and for SUP.",
       "facilities": [
         "Estacionamento",
-        "Escolas kite",
         "Restaurantes",
         "WC"
       ],
@@ -4865,9 +4867,9 @@
       "nameEn": "Baleal",
       "region": "Peniche",
       "regionEn": "Peniche",
-      "lat": 39.372,
-      "lon": -9.338,
-      "coastOrientation": 350,
+      "lat": 39.36971,
+      "lon": -9.34057,
+      "coastOrientation": 300,
       "type": "surf",
       "difficulty": "beginner",
       "compatibleSports": [
@@ -4875,8 +4877,8 @@
         "bodyboard",
         "sup"
       ],
-      "description": "Cantinho da Baía — ondas suaves protegidas da ilha. Perfeito para iniciantes e intermediários. Vários picos ao longo da baía.",
-      "descriptionEn": "Cantinho da Baía — soft waves protected by the island. Perfect for beginners and intermediates. Multiple peaks along the bay.",
+      "description": "Cantinho da Baía — o canto oeste da baía do Baleal, junto ao tômbolo da ilha. Abrigado da Nortada, com ondas mais pequenas e organizadas que no resto de Peniche: bom para iniciantes e intermédios, e funciona quando a ondulação grande fecha as outras praias.",
+      "descriptionEn": "Cantinho da Baía — the western corner of Baleal bay, by the island's tombolo. Sheltered from the north wind, with smaller and cleaner waves than the rest of Peniche: good for beginners and intermediates, and it works when big swell closes out the other beaches.",
       "facilities": [
         "Estacionamento",
         "Escolas surf",
@@ -5097,16 +5099,14 @@
       "nameEn": "Supertubos",
       "region": "Peniche",
       "regionEn": "Peniche",
-      "lat": 39.344,
-      "lon": -9.363,
+      "lat": 39.34565,
+      "lon": -9.36472,
       "coastOrientation": 235,
       "type": "surf",
       "difficulty": "advanced",
       "compatibleSports": [
         "surf",
-        "bodyboard",
-        "sup",
-        "kitesurf"
+        "bodyboard"
       ],
       "description": "Onda tubular perfeita, palco do WSL Championship Tour. Tubos rápidos e potentes sobre areia.",
       "descriptionEn": "Perfect barreling wave, WSL Championship Tour venue. Fast and powerful tubes over sand.",
@@ -6272,8 +6272,8 @@
       "nameEn": "Consolacao Beach",
       "region": "Peniche",
       "regionEn": "Peniche",
-      "lat": 39.3378,
-      "lon": -9.3602,
+      "lat": 39.32358,
+      "lon": -9.36133,
       "coastOrientation": 260,
       "type": "surf",
       "difficulty": "intermediate",
@@ -6281,8 +6281,8 @@
         "surf",
         "bodyboard"
       ],
-      "description": "Praia entre Peniche e a Lagoa de Óbidos. Beach break potente com múltiplos picos. Menos crowd que Supertubos. Ideal para surfistas intermediários.",
-      "descriptionEn": "Beach between Peniche and Obidos Lagoon. Powerful beach break with multiple peaks. Less crowded than Supertubos. Ideal for intermediate surfers.",
+      "description": "Praia da Consolação, a sul de Peniche, junto ao forte. A sul do forte, direita de pedra que aguenta ondulação grande; a norte, beach break potente com vários picos. Menos crowd que Supertubos. Ideal para surfistas intermédios.",
+      "descriptionEn": "Consolacao beach, south of Peniche, by the fort. South of the fort, a right-hand reef that holds big swell; to the north, a powerful beach break with several peaks. Less crowded than Supertubos. Ideal for intermediate surfers.",
       "facilities": [
         "Estacionamento",
         "Restaurante",
@@ -6504,9 +6504,9 @@
       "nameEn": "Areia Branca",
       "region": "Lourinhã",
       "regionEn": "Lourinha",
-      "lat": 39.258,
-      "lon": -9.335,
-      "coastOrientation": 285,
+      "lat": 39.2665,
+      "lon": -9.3372,
+      "coastOrientation": 275,
       "type": "surf",
       "difficulty": "intermediate",
       "compatibleSports": [
@@ -14667,8 +14667,8 @@
       "nameEn": "Obidos Lagoon",
       "region": "Óbidos",
       "regionEn": "Obidos",
-      "lat": 39.4,
-      "lon": -9.22,
+      "lat": 39.4022,
+      "lon": -9.2165,
       "coastOrientation": 300,
       "type": "kitesurf",
       "difficulty": "beginner",
@@ -14897,19 +14897,18 @@
       "nameEn": "Obidos Lagoon — South",
       "region": "Óbidos",
       "regionEn": "Obidos",
-      "lat": 39.427,
-      "lon": -9.232,
+      "lat": 39.4255,
+      "lon": -9.23,
       "coastOrientation": 300,
       "type": "kitesurf",
       "difficulty": "beginner",
       "compatibleSports": [
         "kitesurf",
-        "foil",
         "windsurf",
         "sup"
       ],
-      "description": "Zona sul da lagoa, junto à Foz do Arelho — água plana e rasa para kite e foil. Crowd das escolas concentrada aqui no verão; maré média-alta dá mais profundidade. Pin separado para kitetrip (vs. centro da lagoa e foz).",
-      "descriptionEn": "South lagoon zone by Foz do Arelho — flat shallow water for kite and foil. School crowd concentrates here in summer; mid-high tide adds depth. Separate pin for kitetrips (vs. lagoon centre and mouth).",
+      "description": "Estuário da Lagoa de Óbidos do lado da Praia do Bom Sucesso — a largada mais segura da zona da foz, com água plana e rasa para kite, windsurf e SUP. Crowd das escolas concentrada aqui no verão; maré média-alta dá mais profundidade. Pin separado do centro da lagoa e da margem norte (Foz do Arelho).",
+      "descriptionEn": "Obidos Lagoon estuary on the Bom Sucesso beach side — the safest launch in the mouth area, with flat shallow water for kite, windsurf and SUP. School crowd concentrates here in summer; mid-high tide adds depth. Separate pin from the lagoon centre and the north shore (Foz do Arelho).",
       "facilities": [
         "Estacionamento",
         "Escolas kite",
@@ -14920,234 +14919,8 @@
       "hazards": [
         "Multidão de iniciantes",
         "Conchas no fundo",
-        "Maré baixa"
-      ],
-      "blueFlag": false,
-      "accessibleBeach": false,
-      "conditions": {
-        "waveHeight": 1.88,
-        "wavePeriod": 11.15,
-        "waveDirection": 320,
-        "windSpeed": 0.5144456333854638,
-        "windDirection": 45,
-        "windGust": 3.3,
-        "waterTemp": 15.4,
-        "swellHeight": 1.88,
-        "swellPeriod": 9.35,
-        "swellDirection": 320,
-        "windWaveHeight": 0,
-        "wavePowerKw": 16.52332,
-        "observed": {
-          "windSpeedKt": 1,
-          "windDirDeg": 45,
-          "windDirMissing": false,
-          "windCardinal": "NE",
-          "windCardinalEn": "NE",
-          "tempC": 12,
-          "stationName": "Rio Maior",
-          "distanceKm": 25.3,
-          "observedAt": "2026-10-24T21:00:00.000Z",
-          "source": "ipma"
-        },
-        "updatedAt": "2026-10-24T23:09:41.680Z",
-        "confidence": "média",
-        "confidenceDetail": {
-          "waveSpread": 0.6,
-          "windSpread": 1.5,
-          "waveSpreadPct": 0.237,
-          "windSpreadPct": 0.359,
-          "combinedSpreadPct": 0.298,
-          "degraded": true
-        },
-        "dailyConfidence": [
-          {
-            "date": "2026-10-24",
-            "confidence": "média",
-            "waveSpread": 0.71,
-            "windSpread": 1.21,
-            "degraded": false
-          },
-          {
-            "date": "2026-10-25",
-            "confidence": "baixa",
-            "waveSpread": 0.51,
-            "windSpread": 1.16,
-            "degraded": false
-          },
-          {
-            "date": "2026-10-26",
-            "confidence": "média",
-            "waveSpread": 0.56,
-            "windSpread": 0.6,
-            "degraded": false
-          },
-          {
-            "date": "2026-10-27",
-            "confidence": "média",
-            "waveSpread": 0.95,
-            "windSpread": 0.45,
-            "degraded": false
-          },
-          {
-            "date": "2026-10-28",
-            "confidence": "alta",
-            "waveSpread": 0.03,
-            "windSpread": 0.79,
-            "degraded": false
-          },
-          {
-            "date": "2026-10-29",
-            "confidence": "média",
-            "waveSpread": 0.45,
-            "windSpread": 0.7,
-            "degraded": false
-          },
-          {
-            "date": "2026-10-30",
-            "confidence": "baixa",
-            "waveSpread": 0.22,
-            "windSpread": 1.55,
-            "degraded": false
-          }
-        ]
-      },
-      "allScores": {
-        "surf": {
-          "score": 79,
-          "rating": "Bom",
-          "ratingEn": "Good",
-          "factors": [
-            "1.9m ondas",
-            "11s período",
-            "Vento offshore"
-          ],
-          "factorsEn": [
-            "1.9m waves",
-            "11s period",
-            "Offshore wind"
-          ],
-          "primaryFactor": "1.9m @ 11s"
-        },
-        "kitesurf": {
-          "score": 2,
-          "rating": "Não dá",
-          "ratingEn": "No go",
-          "factors": [
-            "Vento insuficiente"
-          ],
-          "factorsEn": [
-            "Not enough wind"
-          ],
-          "warning": "Componente offshore: só avançados com barco de apoio",
-          "warningEn": "Offshore component: advanced riders with boat support only",
-          "primaryFactor": "1kt",
-          "directionSafety": "side-offshore"
-        },
-        "windsurf": {
-          "score": 2,
-          "rating": "Não dá",
-          "ratingEn": "No go",
-          "factors": [
-            "Vento insuficiente"
-          ],
-          "factorsEn": [
-            "Not enough wind"
-          ],
-          "warning": "Componente offshore: só avançados com barco de apoio",
-          "warningEn": "Offshore component: advanced riders with boat support only",
-          "primaryFactor": "1kt",
-          "directionSafety": "side-offshore"
-        },
-        "wakeboard": {
-          "score": 0,
-          "rating": "N/A",
-          "ratingEn": "N/A",
-          "factors": [
-            "Sem infraestrutura wake"
-          ],
-          "factorsEn": [
-            "No wake infrastructure"
-          ],
-          "warning": "Este spot não tem infraestrutura para wakeboard",
-          "warningEn": "This spot has no wakeboard infrastructure",
-          "primaryFactor": "N/A"
-        },
-        "bodyboard": {
-          "score": 85,
-          "rating": "Muito bom",
-          "ratingEn": "Very good",
-          "factors": [
-            "1.9m ondas",
-            "11s período"
-          ],
-          "factorsEn": [
-            "1.9m waves",
-            "11s period"
-          ],
-          "primaryFactor": "1.9m"
-        },
-        "sup": {
-          "score": 44,
-          "rating": "Fraco",
-          "ratingEn": "Poor",
-          "factors": [
-            "Vento fraco",
-            "15°C água"
-          ],
-          "factorsEn": [
-            "Light wind",
-            "15°C water"
-          ],
-          "primaryFactor": "1.9m"
-        },
-        "foil": {
-          "score": 13,
-          "rating": "Não dá",
-          "ratingEn": "No go",
-          "factors": [
-            "side-offshore"
-          ],
-          "factorsEn": [
-            "side-offshore"
-          ],
-          "primaryFactor": "1kt",
-          "warning": "Componente offshore: só avançados com barco de apoio",
-          "warningEn": "Offshore component: advanced riders with boat support only",
-          "directionSafety": "side-offshore"
-        }
-      },
-      "bestScore": 85,
-      "bestWindowToday": null,
-      "bestWindowsBySport": {}
-    },
-    {
-      "id": "obidos-lagoon-foz",
-      "slug": "obidos-lagoon-foz",
-      "name": "Lagoa de Óbidos — Foz",
-      "nameEn": "Obidos Lagoon — Mouth",
-      "region": "Óbidos",
-      "regionEn": "Obidos",
-      "lat": 39.429,
-      "lon": -9.225,
-      "coastOrientation": 300,
-      "type": "kitesurf",
-      "difficulty": "intermediate",
-      "compatibleSports": [
-        "kitesurf",
-        "foil",
-        "windsurf"
-      ],
-      "description": "Foz da lagoa com vento venturi amplificado — freeride com mais espaço que o sul em dias bons. Corrente possível para a praia oceânica; intermediários e avançados. Menos escolas que a zona sul.",
-      "descriptionEn": "Lagoon mouth with amplified venturi wind — freeride with more space than the south on good days. Possible current toward the ocean beach; intermediates and advanced. Fewer schools than the south zone.",
-      "facilities": [
-        "Estacionamento",
-        "Escolas kite",
-        "WC"
-      ],
-      "hazards": [
-        "Corrente na foz",
-        "Rochas na praia oceânica adjacente",
-        "Vento irregular junto à foz"
+        "Maré baixa",
+        "Kite restrito na época balnear"
       ],
       "blueFlag": false,
       "accessibleBeach": false,
@@ -15354,9 +15127,9 @@
       "nameEn": "Almagreira Beach",
       "region": "Peniche",
       "regionEn": "Peniche",
-      "lat": 39.379,
-      "lon": -9.315,
-      "coastOrientation": 340,
+      "lat": 39.37962,
+      "lon": -9.31371,
+      "coastOrientation": 330,
       "type": "surf",
       "difficulty": "intermediate",
       "compatibleSports": [
@@ -19077,8 +18850,8 @@
       "nameEn": "Praia D'El Rey",
       "region": "Óbidos",
       "regionEn": "Obidos",
-      "lat": 39.386,
-      "lon": -9.283,
+      "lat": 39.39281,
+      "lon": -9.2897,
       "coastOrientation": 325,
       "type": "surf",
       "difficulty": "intermediate",
@@ -41833,6 +41606,150 @@
         }
       },
       "bestScore": 64,
+      "bestWindowToday": null,
+      "bestWindowsBySport": {}
+    },
+    {
+      "id": "lagide",
+      "slug": "lagide",
+      "name": "Lagide",
+      "nameEn": "Lagide",
+      "region": "Peniche",
+      "regionEn": "Peniche",
+      "lat": 39.37484,
+      "lon": -9.33601,
+      "coastOrientation": 345,
+      "type": "surf",
+      "difficulty": "advanced",
+      "compatibleSports": [
+        "surf",
+        "bodyboard"
+      ],
+      "description": "Reef de esquerdas no lado norte do Baleal, a leste da ilha. Onda rápida e cavada sobre pedra, para intermédios e avançados; enche de gente quando funciona. Melhor de maré média a cheia.",
+      "descriptionEn": "Left-hand reef on the north side of Baleal, east of the island. Fast, hollow wave over rock, for intermediates and advanced surfers; it gets crowded when it works. Best from mid to high tide.",
+      "facilities": [
+        "Estacionamento",
+        "Restaurantes"
+      ],
+      "hazards": [
+        "Reef raso",
+        "Rochas no reef",
+        "Multidão na época alta"
+      ],
+      "blueFlag": false,
+      "accessibleBeach": false,
+      "conditions": null,
+      "allScores": null,
+      "bestScore": 0,
+      "bestWindowToday": null,
+      "bestWindowsBySport": {}
+    },
+    {
+      "id": "baleal-sul",
+      "slug": "baleal-sul",
+      "name": "Baleal Sul (Praia da Baía)",
+      "nameEn": "Baleal South (Bay Beach)",
+      "region": "Peniche",
+      "regionEn": "Peniche",
+      "lat": 39.3625,
+      "lon": -9.354,
+      "coastOrientation": 345,
+      "type": "multisport",
+      "difficulty": "beginner",
+      "compatibleSports": [
+        "surf",
+        "bodyboard",
+        "kitesurf",
+        "sup"
+      ],
+      "description": "Areal longo da baía do Baleal, entre Peniche de Cima e o Baleal. Beach break para todos os níveis, com escolas de surf ao longo da praia; com Nortada é a principal zona de kitesurf da baía. Na época balnear, kite só fora das zonas de banhos.",
+      "descriptionEn": "Long sandy beach in Baleal bay, between Peniche de Cima and Baleal. Beach break for all levels, with surf schools along the beach; with the north wind it is the bay's main kitesurf area. During the bathing season, kite only outside the swimming zones.",
+      "facilities": [
+        "Estacionamento",
+        "Escolas surf",
+        "Escolas kite",
+        "Restaurantes",
+        "WC"
+      ],
+      "hazards": [
+        "Multidão na época alta",
+        "Kite restrito na época balnear"
+      ],
+      "blueFlag": false,
+      "accessibleBeach": false,
+      "conditions": null,
+      "allScores": null,
+      "bestScore": 0,
+      "bestWindowToday": null,
+      "bestWindowsBySport": {}
+    },
+    {
+      "id": "gamboa",
+      "slug": "gamboa",
+      "name": "Praia da Gamboa (Peniche de Cima)",
+      "nameEn": "Gamboa Beach (Peniche de Cima)",
+      "region": "Peniche",
+      "regionEn": "Peniche",
+      "lat": 39.363,
+      "lon": -9.3685,
+      "coastOrientation": 30,
+      "type": "multisport",
+      "difficulty": "intermediate",
+      "compatibleSports": [
+        "kitesurf",
+        "surf",
+        "bodyboard"
+      ],
+      "description": "Praia da Gamboa, em Peniche de Cima, no lado norte da península, virada a NNE para a baía do Baleal. Com Nortada é a praia de referência para kitesurf em Peniche, com água mais calma que a costa oeste. Com ondulação grande de NW também dá surf e bodyboard. Na época balnear, kite só fora das zonas de banhos.",
+      "descriptionEn": "Gamboa beach, in Peniche de Cima, on the north side of the peninsula, facing NNE onto Baleal bay. With the north wind it is the go-to kitesurf beach in Peniche, with calmer water than the west coast. With a big NW swell it also works for surf and bodyboard. During the bathing season, kite only outside the swimming zones.",
+      "facilities": [
+        "Estacionamento",
+        "Restaurantes"
+      ],
+      "hazards": [
+        "Kite restrito na época balnear",
+        "Rochas nas pontas"
+      ],
+      "blueFlag": false,
+      "accessibleBeach": false,
+      "conditions": null,
+      "allScores": null,
+      "bestScore": 0,
+      "bestWindowToday": null,
+      "bestWindowsBySport": {}
+    },
+    {
+      "id": "molhe-leste",
+      "slug": "molhe-leste",
+      "name": "Molhe Leste",
+      "nameEn": "Molhe Leste (East Jetty)",
+      "region": "Peniche",
+      "regionEn": "Peniche",
+      "lat": 39.34973,
+      "lon": -9.36798,
+      "coastOrientation": 250,
+      "type": "surf",
+      "difficulty": "advanced",
+      "compatibleSports": [
+        "surf",
+        "bodyboard"
+      ],
+      "description": "Direita junto ao molhe leste do porto de Peniche, no extremo norte de Supertubos. Abrigada da Nortada; só funciona com ondulação grande, quando o resto da costa está demasiado forte. Onda potente junto às pedras do molhe.",
+      "descriptionEn": "Right-hander by the east jetty of Peniche harbour, at the north end of Supertubos. Sheltered from the north wind; it only works with a big swell, when the rest of the coast is too heavy. Powerful wave close to the jetty rocks.",
+      "facilities": [
+        "Estacionamento",
+        "Restaurantes"
+      ],
+      "hazards": [
+        "Rochas junto ao molhe",
+        "Ondas potentes",
+        "Correntes"
+      ],
+      "blueFlag": false,
+      "accessibleBeach": false,
+      "conditions": null,
+      "allScores": null,
+      "bestScore": 0,
       "bestWindowToday": null,
       "bestWindowsBySport": {}
     }

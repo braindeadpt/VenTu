@@ -22,9 +22,9 @@ afterEach(() => {
 });
 
 describe('parseSpotsFromFile (update-conditions)', () => {
-  it('extrai id/lat/lon/region de todos os spots (182, sem duplicados)', () => {
+  it('extrai id/lat/lon/region de todos os spots (185, sem duplicados)', () => {
     expect(spots.length).toBeGreaterThanOrEqual(MIN_SPOTS);
-    expect(spots.length).toBe(182);
+    expect(spots.length).toBe(185);
     const ids = new Set(spots.map((s) => s.id));
     expect(ids.size).toBe(spots.length);
     for (const s of spots) {
@@ -43,14 +43,14 @@ describe('parseSpotsFromFile (update-conditions)', () => {
   it('identifica os 2 aliases (conditionsSource) e marca os primários sem essa flag', () => {
     const aliases = spots.filter((s) => s.conditionsSource);
     expect(aliases.map((a) => a.id).sort()).toEqual([
-      'obidos-lagoon-foz',
+      'foz-arelho',
       'obidos-lagoon-sul',
     ]);
     expect(aliases.every((a) => a.conditionsSource === 'esposende' || a.conditionsSource === 'obidos-lagoon')).toBe(
       true,
     );
     const primary = spots.filter((s) => !s.conditionsSource);
-    expect(primary.length).toBe(180);
+    expect(primary.length).toBe(183);
     expect(primary.some((s) => s.conditionsSource)).toBe(false);
   });
 });
@@ -113,14 +113,14 @@ describe('applyAliasSpots (update-conditions)', () => {
     const copied = applyAliasSpots(
       [
         { id: 'obidos-lagoon-sul', conditionsSource: 'obidos-lagoon' },
-        { id: 'obidos-lagoon-foz', conditionsSource: 'obidos-lagoon' },
+        { id: 'foz-arelho', conditionsSource: 'obidos-lagoon' },
       ],
       conditions,
       forecasts,
     );
-    expect(copied).toEqual(['obidos-lagoon-sul', 'obidos-lagoon-foz']);
+    expect(copied).toEqual(['obidos-lagoon-sul', 'foz-arelho']);
     expect(conditions['obidos-lagoon-sul'].waveHeight).toBe(2.1);
-    expect(conditions['obidos-lagoon-foz'].waveHeight).toBe(2.1);
+    expect(conditions['foz-arelho'].waveHeight).toBe(2.1);
   });
 
   it('salta aliases cuja fonte não existe (sem crash)', () => {
