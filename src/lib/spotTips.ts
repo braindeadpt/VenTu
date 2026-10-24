@@ -273,7 +273,6 @@ export const blueFlagBeaches: Record<string, { year: number; waterQuality: 'exce
   'praia-da-vieira': { year: 2025, waterQuality: 'excelente' },
   'esposende-praia': { year: 2025, waterQuality: 'excelente' },
   'obidos-lagoon-sul': { year: 2025, waterQuality: 'excelente' },
-  'obidos-lagoon-foz': { year: 2025, waterQuality: 'excelente' },
   'portimao': { year: 2025, waterQuality: 'excelente' },
   'albufeira': { year: 2025, waterQuality: 'excelente' },
   'vilamoura': { year: 2025, waterQuality: 'excelente' },

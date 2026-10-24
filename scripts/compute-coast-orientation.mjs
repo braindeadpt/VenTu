@@ -77,7 +77,6 @@ export const REVISAO_MANUAL = {
   'foil-foz-arelho': 'Lagoa de Óbidos',
   'obidos-lagoon': 'Lagoa de Óbidos',
   'obidos-lagoon-sul': 'Lagoa de Óbidos',
-  'obidos-lagoon-foz': 'Lagoa de Óbidos',
   'lagoa-albufeira': 'Lagoa de Albufeira',
   'foil-lagoa-albufeira': 'Lagoa de Albufeira',
   'lagoa-santo-andre': 'Lagoa de Santo André',
@@ -95,12 +94,16 @@ export const REVISAO_MANUAL = {
   'cabanas-tavira': 'Ria Formosa',
   'cacela-velha': 'Ria Formosa',
   // baía fechada
-  'sao-martinho-porto': 'baía fechada (concha de São Martinho)',
+  'sao-martinho-porto': 'baía fechada (concha de São Martinho): 315° fixado à mão',
   'vila-nova-milfontes': 'foz do rio Mira',
   'cova-do-vapor': 'foz do Tejo (ponta da Cova do Vapor)',
   // enseada com geometria ambígua: valor fixado à mão (VALOR_MANUAL)
   beliche: 'enseada do Beliche (Sagres): 230° fixado à mão',
   coxos: 'baía dos Coxos (Ericeira): 280° fixado à mão (a costa local dá 230°, a 1 km 257°)',
+  lagide: 'reef do Lagide (Baleal): 345° fixado à mão (332° no pico, 353° na praia)',
+  'baleal-sul': 'baía do Baleal: 345° fixado à mão (areal da baía 344–346°)',
+  'molhe-leste': 'molhe leste do porto de Peniche: 250° fixado à mão (a costa local segue o molhe)',
+  consolacao: 'Consolação (ponta do forte): 260° fixado à mão (geometria ambígua no pin)',
 };
 
 /**
@@ -110,6 +113,12 @@ export const REVISAO_MANUAL = {
 export const VALOR_MANUAL = {
   beliche: 230, // 23/10: pin novo numa enseada (calculado 230°, geometria ambígua); aprovado pelo Pedro
   coxos: 280, // 24/10: a baía abre a W-NW e trabalha com ondulação N/NW; o calculado (230°) segue a falésia local; aprovado pelo Pedro
+  'sao-martinho-porto': 315, // 24/10: a baía abre a NW e o areal principal (margem E/SE) está virado a NW; os 180° antigos não tinham base; aprovado pelo Pedro
+  'foil-foz-arelho': 300, // 24/10: spot interior da Lagoa de Óbidos (Escola de Vela), alinhado com os pins curados da lagoa; aprovado pelo Pedro
+  lagide: 345, // 24/10: reef entre o pico (332°) e a Praia do Lagido (353°); aprovado pelo Pedro
+  'baleal-sul': 345, // 24/10: areal da baía do Baleal (344–346°; o pin dá 340°); aprovado pelo Pedro
+  'molhe-leste': 250, // 24/10: a onda abre para WSW; o calculado (215°) segue a face do molhe; aprovado pelo Pedro
+  consolacao: 260, // 24/10: pin a sul do forte, numa ponta (geometria ambígua → voltaria aos 270° antigos); 261° na costa; aprovado pelo Pedro
 };
 
 /**

@@ -216,7 +216,7 @@ describe('ventu.modalidade no formato {d, v}', () => {
 describe('campos editoriais e fotos', () => {
   it('os curados usam os ids reais de spots.ts (lagoa-obidos → obidos-lagoon, com variantes)', () => {
     for (const id of SPOTS_CURADOS) expect(spots.some((s) => s.id === id), id).toBe(true);
-    expect(SPOTS_CURADOS).toEqual(expect.arrayContaining(['obidos-lagoon', 'obidos-lagoon-sul', 'obidos-lagoon-foz', 'guincho', 'costa-caparica', 'lagos', 'cabedelo']));
+    expect(SPOTS_CURADOS).toEqual(expect.arrayContaining(['obidos-lagoon', 'obidos-lagoon-sul', 'foz-arelho', 'guincho', 'costa-caparica', 'lagos', 'cabedelo']));
     expect(editorialDe(getSpotBySlug('guincho')!).praiaVirada).toBe(280);
     expect(editorialDe(getSpotBySlug('obidos-lagoon')!).aguaPlana).toBe(true);
   });

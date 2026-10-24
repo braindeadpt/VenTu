@@ -8,7 +8,8 @@
  * (Fão/Ofir duplicados, Póvoa, Castelo do Neiva, Garrão, Sines). Na 4.ª passagem (23/10)
  * 2 spots novos (`arvore`, `vale-figueiros-sines`) e `beliche` fixado à mão em 230°. Na 5.ª
  * passagem (23/10) a Ericeira (8 spots movidos e 4 novos) e a lagoa-albufeira. Na 6.ª (24/10)
- * `coxos` fixado à mão em 280°, o texto do kite na Foz do Lizandro e o foil da lagoa movido. Guarda:
+ * `coxos` fixado à mão em 280°, o texto do kite na Foz do Lizandro e o foil da lagoa movido. Na 7.ª (24/10)
+ * o troço Peniche – Foz do Arelho: 11 pins, 4 spots novos e `obidos-lagoon-foz` fundido em `foz-arelho`. Guarda:
  *  - cada spot corrigido a ≤ 500 m da coordenada esperada;
  *  - `src/lib/spots.ts` e `data/coast-orientation-review.json` com as mesmas coordenadas;
  *  - os spots corrigidos a ≤ 1 km da linha de costa OSM (distância do ficheiro de revisão).
@@ -17,6 +18,9 @@
 import { describe, expect, it } from 'vitest';
 import { spots } from '@/lib/spots';
 import { SPOT_LIVECAMS } from '@/lib/spotLivecams';
+import { blueFlagBeaches } from '@/lib/spotTips';
+import editorialJson from '../spotEditorial.json';
+import fotosJson from '../spotFotos.json';
 import review from '../../../data/coast-orientation-review.json';
 
 type Linha = { id: string; lat: number; lon: number; distCostaM: number | null };
@@ -43,7 +47,8 @@ const CORRIGIDOS: Array<[string, number, number]> = [
   ['malhao', 37.7864, -8.8016],
   ['barriga', 37.1190, -8.9304],
   ['praia-verde', 37.1739, -7.4793],
-  ['consolacao', 39.3378, -9.3602],
+  // 7.ª passagem (24/10): o pin de 22/10 era o centróide do polígono gigante da praia (1,6 km a norte)
+  ['consolacao', 39.32358, -9.36133],
   ['tres-irmaos', 37.1197, -8.5813],
   ['castelejo', 37.0998, -8.9463],
   ['sao-vicente-madeira', 32.8101, -17.0466],
@@ -169,7 +174,7 @@ describe('coordenadas dos spots', () => {
     }
   });
 
-  const REMOVIDOS = ['ofir', 'ofir-praia', 'foil-fao-cavado', 'foil-esposende-piscinas', 'povoa-varzim', 'castelo-neiva', 'garrão', 'garrao', 'sines', 'fao-ofir-surf'];
+  const REMOVIDOS = ['ofir', 'ofir-praia', 'foil-fao-cavado', 'foil-esposende-piscinas', 'povoa-varzim', 'castelo-neiva', 'garrão', 'garrao', 'sines', 'fao-ofir-surf', 'obidos-lagoon-foz'];
 
   it.each(REMOVIDOS)('%s foi removido (spots.ts e ficheiro de revisão)', (id) => {
     expect(spots.some((s) => s.id === id || s.slug === id)).toBe(false);
@@ -330,5 +335,110 @@ describe('coordenadas dos spots', () => {
     expect(distM(f.lat, f.lon, 38.501, -9.14)).toBeGreaterThan(2500);
     const r = porId.get('foil-lagoa-albufeira')!;
     expect(distM(r.lat, r.lon, f.lat, f.lon)).toBeLessThanOrEqual(1);
+  });
+
+  /** 7.ª passagem (24/10): troço Peniche – Foz do Arelho, [id, lat, lon, orientação aprovada]. */
+  const PENICHE_7: Array<[string, number, number, number]> = [
+    ['consolacao', 39.32358, -9.36133, 260],
+    ['praia-del-rey', 39.39281, -9.2897, 325],
+    ['areia-branca', 39.2665, -9.3372, 275],
+    ['sao-martinho-porto', 39.507, -9.1395, 315],
+    ['foil-foz-arelho', 39.41, -9.204, 300],
+    ['foz-arelho', 39.4272, -9.22, 300],
+    ['obidos-lagoon', 39.4022, -9.2165, 300],
+    ['obidos-lagoon-sul', 39.4255, -9.23, 300],
+    ['baleal', 39.36971, -9.34057, 300],
+    ['supertubos', 39.34565, -9.36472, 235],
+    ['almagreira', 39.37962, -9.31371, 330],
+  ];
+  const NOVOS_7: Array<[string, number, number, number]> = [
+    ['lagide', 39.37484, -9.33601, 345],
+    ['molhe-leste', 39.34973, -9.36798, 250],
+    ['gamboa', 39.363, -9.3685, 30],
+    ['baleal-sul', 39.3625, -9.354, 345],
+  ];
+
+  it.each(PENICHE_7)('Peniche: %s fica a ≤ 20 m do pin, com a orientação do ficheiro de revisão', (id, lat, lon, ori) => {
+    const s = spots.find((x) => x.id === id)!;
+    expect(s, id).toBeDefined();
+    expect(distM(s.lat, s.lon, lat, lon)).toBeLessThanOrEqual(20);
+    const l = porId.get(id) as unknown as { final: number };
+    expect(s.coastOrientation, id).toBe(l.final);
+    expect(s.coastOrientation, id).toBe(ori);
+  });
+
+  it.each(NOVOS_7)('Peniche: %s existe, fica a ≤ 20 m do pin e a ≤ 1 km da costa OSM', (id, lat, lon, ori) => {
+    const s = spots.find((x) => x.id === id)!;
+    expect(s, id).toBeDefined();
+    expect(s.slug).toBe(id);
+    expect(s.region).toBe('Peniche');
+    expect(distM(s.lat, s.lon, lat, lon)).toBeLessThanOrEqual(20);
+    const l = porId.get(id) as unknown as { final: number; distCostaM: number | null };
+    expect(l, id).toBeDefined();
+    expect(s.coastOrientation, id).toBe(l.final);
+    expect(s.coastOrientation, id).toBe(ori);
+    expect(l.distCostaM, id).not.toBeNull();
+    expect(l.distCostaM!, id).toBeLessThanOrEqual(1000);
+  });
+
+  it('Peniche: orientações fixadas à mão ficam manuais; baleal fica 300° curado (Cantinho)', () => {
+    for (const id of ['consolacao', 'sao-martinho-porto', 'foil-foz-arelho', 'lagide', 'baleal-sul', 'molhe-leste']) {
+      expect((porId.get(id) as unknown as { origem: string }).origem, id).toBe('manual');
+    }
+    const ed = (editorialJson as unknown as { spots: Record<string, { praiaVirada: number }> }).spots;
+    expect(ed.baleal.praiaVirada).toBe(300);
+    expect((porId.get('baleal') as unknown as { origem: string }).origem).toBe('curado');
+  });
+
+  it('Peniche: baleal é o Cantinho da Baía e baleal-sul é a baía (kite)', () => {
+    const b = spots.find((s) => s.id === 'baleal')!;
+    expect(b.description).toMatch(/Cantinho da Baía/);
+    expect(b.descriptionEn).toMatch(/Cantinho da Baía/);
+    expect(b.descriptionEn).not.toMatch(/Obidos|Óbidos/);
+    const bs = spots.find((s) => s.id === 'baleal-sul')!;
+    expect(bs.compatibleSports).toEqual(['surf', 'bodyboard', 'kitesurf', 'sup']);
+    expect(distM(b.lat, b.lon, bs.lat, bs.lon)).toBeGreaterThan(1000);
+    expect(spots.find((s) => s.id === 'gamboa')!.compatibleSports).toContain('kitesurf');
+  });
+
+  it('Peniche: desportos e textos corrigidos', () => {
+    expect(spots.find((s) => s.id === 'supertubos')!.compatibleSports).toEqual(['surf', 'bodyboard']);
+    const smp = spots.find((s) => s.id === 'sao-martinho-porto')!;
+    expect(smp.compatibleSports).toEqual(['windsurf', 'sup']);
+    expect([smp.description, smp.descriptionEn, ...smp.facilities].join(' ')).not.toMatch(/kite/i);
+    const sul = spots.find((s) => s.id === 'obidos-lagoon-sul')!;
+    expect(sul.compatibleSports).not.toContain('foil');
+    expect(sul.description).toMatch(/Bom Sucesso/);
+    expect(sul.description).not.toMatch(/junto à Foz do Arelho/);
+    const c = spots.find((s) => s.id === 'consolacao')!;
+    expect(c.description).toMatch(/a sul de Peniche/);
+    expect(c.description).not.toMatch(/Lagoa de Óbidos/);
+    expect(spots.find((s) => s.id === 'foil-foz-arelho')!.compatibleSports).toContain('foil');
+    expect(spots.find((s) => s.id === 'foz-arelho')!.compatibleSports).toEqual(['kitesurf', 'sup']);
+  });
+
+  it('Foz do Arelho num só spot: foz-arelho absorveu obidos-lagoon-foz', () => {
+    const f = spots.find((s) => s.id === 'foz-arelho')!;
+    expect(f.conditionsSource).toBe('obidos-lagoon');
+    expect(f.hazards).toEqual(expect.arrayContaining(['Corrente na foz', 'Vento irregular junto à foz']));
+    expect(SPOT_LIVECAMS['foz-arelho']).toBeDefined();
+    const ed = (editorialJson as unknown as { spots: Record<string, unknown> }).spots;
+    const fotos = (fotosJson as unknown as { spots: Record<string, unknown> }).spots;
+    expect(ed['foz-arelho']).toBeDefined();
+    expect(fotos['foz-arelho']).toBeDefined();
+    for (const m of [ed, fotos, blueFlagBeaches as Record<string, unknown>, SPOT_LIVECAMS as Record<string, unknown>]) {
+      expect(Object.keys(m)).not.toContain('obidos-lagoon-foz');
+    }
+    const foil = spots.find((s) => s.id === 'foil-foz-arelho')!;
+    expect(distM(f.lat, f.lon, foil.lat, foil.lon)).toBeGreaterThan(1000);
+  });
+
+  it('lagoa de Óbidos: regra de kite da época balnear na foz e no estuário', () => {
+    for (const id of ['foz-arelho', 'obidos-lagoon-sul']) {
+      const s = spots.find((x) => x.id === id)!;
+      expect(s.localTips?.localRule, id).toBe('Na época balnear (15/6–15/9), kitesurf proibido na zona da foz e no topo da lagoa; o interior da lagoa fica aberto todo o ano.');
+      expect(s.localTips?.localRuleEn, id).toMatch(/15 Jun–15 Sep/);
+      expect(s.hazards, id).toContain('Kite restrito na época balnear');
+    }
   });
 });

@@ -1149,29 +1149,6 @@
       }
     ]
   },
-  "obidos-lagoon-foz": {
-    "spotId": "obidos-lagoon-foz",
-    "idEstacao": 1200531,
-    "stationName": "Cabo Carvoeiro",
-    "distanceKm": 16.6,
-    "alternates": [
-      {
-        "idEstacao": 1210726,
-        "stationName": "Alcobaça",
-        "distanceKm": 24.2
-      },
-      {
-        "idEstacao": 1210729,
-        "stationName": "Rio Maior",
-        "distanceKm": 26.6
-      },
-      {
-        "idEstacao": 1210746,
-        "stationName": "Santa Cruz (Aeródromo)",
-        "distanceKm": 36.2
-      }
-    ]
-  },
   "foz-arelho-beach": {
     "spotId": "foz-arelho-beach",
     "idEstacao": 1200531,
@@ -1241,6 +1218,29 @@
       }
     ]
   },
+  "lagide": {
+    "spotId": "lagide",
+    "idEstacao": 1200531,
+    "stationName": "Cabo Carvoeiro",
+    "distanceKm": 6.2,
+    "alternates": [
+      {
+        "idEstacao": 1210746,
+        "stationName": "Santa Cruz (Aeródromo)",
+        "distanceKm": 27.9
+      },
+      {
+        "idEstacao": 1210729,
+        "stationName": "Rio Maior",
+        "distanceKm": 34.7
+      },
+      {
+        "idEstacao": 1210726,
+        "stationName": "Alcobaça",
+        "distanceKm": 35.4
+      }
+    ]
+  },
   "baleal": {
     "spotId": "baleal",
     "idEstacao": 1200531,
@@ -1264,6 +1264,52 @@
       }
     ]
   },
+  "baleal-sul": {
+    "spotId": "baleal-sul",
+    "idEstacao": 1200531,
+    "stationName": "Cabo Carvoeiro",
+    "distanceKm": 5,
+    "alternates": [
+      {
+        "idEstacao": 1210746,
+        "stationName": "Santa Cruz (Aeródromo)",
+        "distanceKm": 26.4
+      },
+      {
+        "idEstacao": 1210729,
+        "stationName": "Rio Maior",
+        "distanceKm": 36.2
+      },
+      {
+        "idEstacao": 1210726,
+        "stationName": "Alcobaça",
+        "distanceKm": 37.4
+      }
+    ]
+  },
+  "gamboa": {
+    "spotId": "gamboa",
+    "idEstacao": 1200531,
+    "stationName": "Cabo Carvoeiro",
+    "distanceKm": 3.8,
+    "alternates": [
+      {
+        "idEstacao": 1210746,
+        "stationName": "Santa Cruz (Aeródromo)",
+        "distanceKm": 26.4
+      },
+      {
+        "idEstacao": 1210729,
+        "stationName": "Rio Maior",
+        "distanceKm": 37.4
+      },
+      {
+        "idEstacao": 1210726,
+        "stationName": "Alcobaça",
+        "distanceKm": 38.5
+      }
+    ]
+  },
   "supertubos": {
     "spotId": "supertubos",
     "idEstacao": 1200531,
@@ -1284,6 +1330,29 @@
         "idEstacao": 1210729,
         "stationName": "Rio Maior",
         "distanceKm": 37
+      }
+    ]
+  },
+  "molhe-leste": {
+    "spotId": "molhe-leste",
+    "idEstacao": 1200531,
+    "stationName": "Cabo Carvoeiro",
+    "distanceKm": 4.8,
+    "alternates": [
+      {
+        "idEstacao": 1210746,
+        "stationName": "Santa Cruz (Aeródromo)",
+        "distanceKm": 24.9
+      },
+      {
+        "idEstacao": 1210729,
+        "stationName": "Rio Maior",
+        "distanceKm": 37.4
+      },
+      {
+        "idEstacao": 1210739,
+        "stationName": "Torres Vedras, Dois Portos",
+        "distanceKm": 37.7
       }
     ]
   },

@@ -63,10 +63,10 @@ Implementação pura e testada em `scripts/lib/coastOrientation.mjs`:
 
 | origem | quando | valor |
 |---|---|---|
-| curado v6 | os 21 spots de `spotEditorial.json` (os 19 da maquete, mais as variantes da Lagoa de Óbidos) | o `praiaVirada` revisto à mão: o motor antigo e o v6 passam a dizer o mesmo |
+| curado v6 | os 21 spots de `spotEditorial.json` (os 19 da maquete, mais as variantes da Lagoa de Óbidos: `obidos-lagoon-sul` e `foz-arelho`) | o `praiaVirada` revisto à mão: o motor antigo e o v6 passam a dizer o mesmo |
 | OSM | geometria limpa | o calculado (500 m) |
 | OSM 1 km | 500 m ambíguo, mas a corda de 1 km é limpa (corda/arco ≥ 0,85) | o calculado a 1 km |
-| **manual** | spot da lista `REVISAO_MANUAL` com valor fixado à mão em `VALOR_MANUAL` (hoje só `beliche`, 230°, aprovado pelo Pedro a 23/10) | o valor fixado: o recálculo mantém-no |
+| **manual** | spot da lista `REVISAO_MANUAL` com valor fixado à mão em `VALOR_MANUAL` (`beliche` 230° e `coxos` 280°; na passagem de Peniche, 24/10: `consolacao` 260°, `lagide` 345°, `baleal-sul` 345°, `molhe-leste` 250°, `sao-martinho-porto` 315° e `foil-foz-arelho` 300°; todos aprovados pelo Pedro) | o valor fixado: o recálculo mantém-no |
 | **mantido** | rio, albufeira, lagoa, ria, estuário (lista explícita `REVISAO_MANUAL`: Tejo, Seixal, Sado, Óbidos, Albufeira, Santo André, Sancha, Aveiro, Alvor, Ria Formosa, Cávado, Lima, Douro, Mira, S. Martinho); sem costa OSM a < 2 km; geometria ambígua; spot a > 1 km da costa, numa costa que não é recta | **não se adivinha**: fica o valor antigo, e o spot vai para revisão manual com o calculado ao lado |
 
 Revisão (⚠) também quando:
@@ -162,12 +162,32 @@ orientação fica 260° (curado; o calculado, 270°, é o da costa
 oceânica a 621 m, não o da lagoa). `foil-lagoa-albufeira` continua nas
 coordenadas antigas (não pedido).
 
+Numa passagem seguinte (24/10) foi revisto o troço Peniche – Foz do Arelho
+(OSM via `overpass.openstreetmap.fr`, Nominatim, guias de surf e escolas de
+kite). 11 pins mudam: `consolacao` (estava no centróide do polígono gigante da
+praia, 1,6 km a norte; passa para a direita a sul do forte), `praia-del-rey`
+(estava no golfe), `areia-branca`, `sao-martinho-porto` (estava na vila; passa
+para a água da baía), `foil-foz-arelho` (passa para o spot interior da lagoa,
+junto à Escola de Vela, onde há fundo para foil), `foz-arelho` (margem norte da
+lagoa, Praia das Rolotes), `obidos-lagoon`, `obidos-lagoon-sul` (estuário do
+lado do Bom Sucesso), `baleal` (passa a ser o Cantinho da Baía), `supertubos` e
+`almagreira`. Entram 4 spots: `lagide`, `molhe-leste`, `gamboa` (Peniche de
+Cima) e `baleal-sul` (a baía do Baleal). `obidos-lagoon-foz` foi fundido em
+`foz-arelho`, que herda o editorial (curado 300°), a foto e o
+`conditionsSource` da lagoa. Orientações: `baleal` 300° (curado; os 350° antigos punham a
+Nortada on-shore no Cantinho), `sao-martinho-porto` 315° (manual; a baía abre a
+NW), `foz-arelho` 300° (curado) e `foil-foz-arelho` 300° (manual), `areia-branca`
+275°, `almagreira` 330° e `praia-del-rey` 325° (OSM nos pins novos), `consolacao`
+260° (manual: no pin novo a geometria é ambígua e voltaria aos 270° antigos),
+`lagide` 345°, `baleal-sul` 345° e `molhe-leste` 250° (manual, valores aprovados pelo
+Pedro) e `gamboa` 30° (OSM).
+
 ## Resultado (OSM de 2026-07-15T15:22:01Z)
 
-- 182 spots, dos quais **124 mudam** de valor face ao antes da #178.
-- Origem: OSM 108, OSM 1 km 2, curado 21, manual 1, mantido 50.
-- 105 spots ficam marcados para revisão.
-- Spots a 270°: 142 → 42. Os que ficam têm 270° calculado, curado, ou mantido com motivo.
+- 185 spots, dos quais **126 mudam** de valor face ao antes da #178.
+- Origem: OSM 107, OSM 1 km 2, curado 21, manual 8, mantido 47.
+- 109 spots ficam marcados para revisão.
+- Spots a 270°: 141 → 40. Os que ficam têm 270° calculado, curado, ou mantido com motivo.
 
 | spot | antes | calculado | depois | Δ | origem | revisão |
 |---|---:|---:|---:|---:|---|---|
@@ -217,18 +237,21 @@ coordenadas antigas (não pedido).
 | `praia-da-vieira` | 270 | 290 | **290** | 20 | OSM |  |
 | `castelo-bode` | 270 |  | **270** | 0 | **mantido** | ⚠ sem linha de costa OSM a < 2000 m; água interior/abrigada: albufeira (interior) |
 | `nazare` | 270 | 265 | **280** | 10 | curado v6 | ⚠ outra costa a 386 m (margem oposta, ilhéu ou molhe); calculado a 24° da referência 290° |
-| `foz-arelho` | 270 | 310 | **270** | 0 | **mantido** | ⚠ spot a 1790 m da costa; água interior/abrigada: Lagoa de Óbidos; a 1892 m de obidos-lagoon-sul (curado 300°) com 30° de diferença; a 1309 m de obidos-lagoon-foz (curado 300°) com 30° de diferença |
-| `foil-foz-arelho` | 270 | 310 | **270** | 0 | **mantido** | ⚠ spot a 1790 m da costa; água interior/abrigada: Lagoa de Óbidos; a 1892 m de obidos-lagoon-sul (curado 300°) com 30° de diferença; a 1309 m de obidos-lagoon-foz (curado 300°) com 30° de diferença |
+| `foz-arelho` | 270 | 310 | **300** | 30 | curado v6 | ⚠ spot a 1121 m da costa; água interior/abrigada: Lagoa de Óbidos |
+| `foil-foz-arelho` | 270 |  | **300** | 30 | **manual** | ⚠ sem linha de costa OSM a < 2000 m; água interior/abrigada: Lagoa de Óbidos |
 | `obidos-lagoon` | 270 |  | **300** | 30 | curado v6 | ⚠ sem linha de costa OSM a < 2000 m; água interior/abrigada: Lagoa de Óbidos |
-| `obidos-lagoon-sul` | 270 | 315 | **300** | 30 | curado v6 | ⚠ água interior/abrigada: Lagoa de Óbidos |
-| `obidos-lagoon-foz` | 270 | 315 | **300** | 30 | curado v6 | ⚠ água interior/abrigada: Lagoa de Óbidos |
+| `obidos-lagoon-sul` | 270 | 310 | **300** | 30 | curado v6 | ⚠ água interior/abrigada: Lagoa de Óbidos |
 | `foz-arelho-beach` | 270 | 320 | **320** | 50 | OSM | ⚠ delta 50° > 45° face ao valor antigo |
 | `praia-del-rey` | 270 | 325 | **325** | 55 | OSM | ⚠ delta 55° > 45° face ao valor antigo |
-| `almagreira` | 270 | 340 | **340** | 70 | OSM | ⚠ delta 70° > 45° face ao valor antigo |
-| `baleal` | 270 | 240 | **350** | 80 | curado v6 | ⚠ geometria ambígua (dobra 54°, 500 m vs 1 km 18°: ponta, enseada ou foz); outra costa a 149 m (margem oposta, ilhéu ou molhe); calculado a 110° do curado v6 (350°) |
-| `supertubos` | 270 | 245 | **235** | 35 | curado v6 | ⚠ calculado a 25° da referência 220° |
+| `almagreira` | 270 | 330 | **330** | 60 | OSM | ⚠ delta 60° > 45° face ao valor antigo |
+| `lagide` | 345 | 5 | **345** | 0 | **manual** | ⚠ outra costa a 319 m (margem oposta, ilhéu ou molhe); água interior/abrigada: reef do Lagide (Baleal): 345° fixado à mão (332° no pico, 353° na praia); a 690 m de baleal (curado 300°) com 45° de diferença |
+| `baleal` | 270 | 290 | **300** | 30 | curado v6 | ⚠ outra costa a 368 m (margem oposta, ilhéu ou molhe) |
+| `baleal-sul` | 345 | 340 | **345** | 0 | **manual** | ⚠ água interior/abrigada: baía do Baleal: 345° fixado à mão (areal da baía 344–346°); a 1404 m de baleal (curado 300°) com 45° de diferença |
+| `gamboa` | 30 | 30 | **30** | 0 | OSM | ⚠ a 1946 m de supertubos (curado 235°) com 155° de diferença |
+| `supertubos` | 270 | 245 | **235** | 35 | curado v6 | ⚠ calculado a 26° da referência 220° |
+| `molhe-leste` | 250 | 215 | **250** | 0 | **manual** | ⚠ outra costa a 393 m (margem oposta, ilhéu ou molhe); água interior/abrigada: molhe leste do porto de Peniche: 250° fixado à mão (a costa local segue o molhe) |
 | `foz-sizandro` | 270 | 300 | **300** | 30 | OSM |  |
-| `coxos` | 270 | 230 | **230** | 40 | OSM | ⚠ 500 m e 1 km divergem 25° (1 km: 257°); a 1532 m de ribeira-ilhas (curado 280°) com 50° de diferença |
+| `coxos` | 270 | 230 | **280** | 10 | **manual** | ⚠ 500 m e 1 km divergem 25° (1 km: 257°); água interior/abrigada: baía dos Coxos (Ericeira): 280° fixado à mão (a costa local dá 230°, a 1 km 257°) |
 | `ribeira-ilhas` | 270 | 250 | **280** | 10 | curado v6 | ⚠ calculado a 32° da referência 280°; calculado a 32° do curado v6 (280°) |
 | `empa` | 270 | 270 | **270** | 0 | OSM |  |
 | `sao-lourenco` | 270 | 285 | **285** | 15 | OSM |  |
@@ -257,7 +280,7 @@ coordenadas antigas (não pedido).
 | `praia-da-rainha` | 270 | 240 | **240** | 30 | OSM |  |
 | `almoxarife` | 270 | 70 | **70** | 160 | OSM | ⚠ delta 160° > 45° face ao valor antigo |
 | `lagoa-albufeira` | 270 | 270 | **260** | 10 | curado v6 | ⚠ água interior/abrigada: Lagoa de Albufeira |
-| `foil-lagoa-albufeira` | 270 |  | **270** | 0 | **mantido** | ⚠ sem linha de costa OSM a < 2000 m; água interior/abrigada: Lagoa de Albufeira |
+| `foil-lagoa-albufeira` | 270 | 270 | **270** | 0 | **mantido** | ⚠ água interior/abrigada: Lagoa de Albufeira |
 | `praia-lagoa-albufeira` | 270 | 270 | **270** | 0 | OSM |  |
 | `troia` | 200 | 25 | **200** | 0 | **mantido** | ⚠ outra costa a 247 m (margem oposta, ilhéu ou molhe); água interior/abrigada: estuário do Sado (Tróia) |
 | `comporta` | 270 | 300 | **270** | 0 | **mantido** | ⚠ geometria ambígua (dobra 131°, 500 m vs 1 km 10°: ponta, enseada ou foz) |
@@ -326,9 +349,9 @@ coordenadas antigas (não pedido).
 | `barra-aveiro` | 270 | 270 | **270** | 0 | OSM |  |
 | `vila-cha` | 270 | 255 | **255** | 15 | OSM |  |
 | `santa-cruz` | 270 | 305 | **305** | 35 | OSM |  |
-| `consolacao` | 270 | 260 | **260** | 10 | OSM |  |
-| `areia-branca` | 270 | 285 | **285** | 15 | OSM |  |
-| `sao-martinho-porto` | 180 | 215 | **180** | 0 | **mantido** | ⚠ geometria ambígua (dobra 73°, 500 m vs 1 km 0°: ponta, enseada ou foz); outra costa a 488 m (margem oposta, ilhéu ou molhe); água interior/abrigada: baía fechada (concha de São Martinho) |
+| `consolacao` | 270 | 215 | **260** | 10 | **manual** | ⚠ geometria ambígua (dobra 48°, 500 m vs 1 km 38°: ponta, enseada ou foz); água interior/abrigada: Consolação (ponta do forte): 260° fixado à mão (geometria ambígua no pin) |
+| `areia-branca` | 270 | 275 | **275** | 5 | OSM |  |
+| `sao-martinho-porto` | 180 | 300 | **315** | 135 | **manual** | ⚠ água interior/abrigada: baía fechada (concha de São Martinho): 315° fixado à mão |
 | `cave-ericeira` | 270 | 250 | **250** | 20 | OSM | ⚠ a 877 m de ribeira-ilhas (curado 280°) com 30° de diferença |
 | `pescadores-ericeira` | 270 | 235 | **270** | 0 | **mantido** | ⚠ geometria ambígua (dobra 56°, 500 m vs 1 km 6°: ponta, enseada ou foz) |
 | `crazy-left` | 270 | 275 | **270** | 0 | **mantido** | ⚠ geometria ambígua (dobra 50°, 500 m vs 1 km 14°: ponta, enseada ou foz) |
