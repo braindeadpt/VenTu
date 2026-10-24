@@ -1,47 +1,25 @@
 {
-  "date": "2026-10-23",
-  "generatedAt": "2026-10-23T05:51:25.628Z",
-  "topSpot": "Guincho",
-  "topSpotSlug": "guincho",
+  "date": "2026-10-24",
+  "generatedAt": "2026-10-24T03:21:11.358Z",
+  "topSpot": "Arrifana",
+  "topSpotSlug": "arrifana",
   "pt": {
-    "headline": "Hoje é dia de Guincho! 🌊",
-    "advice": "Melhor janela: 10:00h. Ondas de 2.5m com 10 nós de vento. ⚓ Avisos à Navegação Costeiros (IH): ANAV NR 1445/26 — Animais Marinhos - Interação · ANAV NR 1727/26 — Animais Marinhos - Avistamento",
-    "bestTime": "10:00",
+    "headline": "Hoje é dia de Arrifana! 🌊",
+    "advice": "Melhor janela: 8:00h. Ondas de 2.5m com 3 nós de vento. ⚓ Avisos à Navegação Costeiros (IH): ANAV NR 2/22 — Plano de Salvamento Marítimo Lagos",
+    "bestTime": "8:00",
     "wetsuit": "3/2mm",
     "crowdTip": "Chega cedo para evitar crowd!",
     "moonTideLine": "Gibosa crescente · Transição · baixa-mar 07:00"
   },
   "en": {
-    "headline": "Today is Guincho day! 🌊",
-    "advice": "Best window: 10:00. 2.5m waves with 10 knot wind. ⚓ Coastal navigation warnings (IH): ANAV NR 1445/26 — Animais Marinhos - Interação · ANAV NR 1727/26 — Animais Marinhos - Avistamento",
-    "bestTime": "10:00",
+    "headline": "Today is Arrifana day! 🌊",
+    "advice": "Best window: 8:00. 2.5m waves with 3 knot wind. ⚓ Coastal navigation warnings (IH): ANAV NR 2/22 — Plano de Salvamento Marítimo Lagos",
+    "bestTime": "8:00",
     "wetsuit": "3/2mm",
     "crowdTip": "Get there early to beat the crowd!",
     "moonTideLine": "Waxing gibbous · Transition · low tide 07:00"
   },
   "spots": [
-    {
-      "name": "Guincho",
-      "slug": "guincho",
-      "score": 95,
-      "scoreForecast": 95,
-      "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
-    },
-    {
-      "name": "Coxos",
-      "slug": "coxos",
-      "score": 95,
-      "scoreForecast": 95,
-      "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
-    },
     {
       "name": "Arrifana",
       "slug": "arrifana",
@@ -54,24 +32,10 @@
       "enReason": "Excellent conditions"
     },
     {
-      "name": "Nazaré",
-      "slug": "nazare",
-      "score": 94,
-      "scoreForecast": 85,
-      "scoreSource": "boia",
-      "scoreMeta": {
-        "stationName": "Nazaré Costeira (WMO)",
-        "distanceKm": 11.9
-      },
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
-    },
-    {
       "name": "Carcavelos",
       "slug": "carcavelos",
-      "score": 92,
-      "scoreForecast": 92,
+      "score": 93,
+      "scoreForecast": 93,
       "scoreSource": "previsão",
       "scoreMeta": null,
       "verdict": "go",
@@ -81,13 +45,32 @@
     {
       "name": "Supertubos",
       "slug": "supertubos",
-      "score": 87,
-      "scoreForecast": 88,
-      "scoreSource": "boia",
-      "scoreMeta": {
-        "stationName": "Nazaré Costeira (WMO)",
-        "distanceKm": 27.4
-      },
+      "score": 85,
+      "scoreForecast": 85,
+      "scoreSource": "previsão",
+      "scoreMeta": null,
+      "verdict": "go",
+      "ptReason": "Condições excelentes",
+      "enReason": "Excellent conditions"
+    },
+    {
+      "name": "Guincho",
+      "slug": "guincho",
+      "score": 85,
+      "scoreForecast": 85,
+      "scoreSource": "previsão",
+      "scoreMeta": null,
+      "verdict": "go",
+      "ptReason": "Condições excelentes",
+      "enReason": "Excellent conditions"
+    },
+    {
+      "name": "Nazaré",
+      "slug": "nazare",
+      "score": 85,
+      "scoreForecast": 85,
+      "scoreSource": "previsão",
+      "scoreMeta": null,
       "verdict": "go",
       "ptReason": "Condições excelentes",
       "enReason": "Excellent conditions"
@@ -95,8 +78,19 @@
     {
       "name": "Ribeira d'Ilhas",
       "slug": "ribeira-ilhas",
-      "score": 78,
-      "scoreForecast": 78,
+      "score": 85,
+      "scoreForecast": 85,
+      "scoreSource": "previsão",
+      "scoreMeta": null,
+      "verdict": "go",
+      "ptReason": "Condições excelentes",
+      "enReason": "Excellent conditions"
+    },
+    {
+      "name": "Coxos",
+      "slug": "coxos",
+      "score": 85,
+      "scoreForecast": 85,
       "scoreSource": "previsão",
       "scoreMeta": null,
       "verdict": "go",
