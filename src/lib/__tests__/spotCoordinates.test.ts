@@ -7,7 +7,8 @@
  * mais pins do Pedro, `esposende-praia` sem kite, `rodanho` só kite, e 8 spots removidos
  * (Fão/Ofir duplicados, Póvoa, Castelo do Neiva, Garrão, Sines). Na 4.ª passagem (23/10)
  * 2 spots novos (`arvore`, `vale-figueiros-sines`) e `beliche` fixado à mão em 230°. Na 5.ª
- * passagem (23/10) a Ericeira (8 spots movidos e 4 novos) e a lagoa-albufeira. Guarda:
+ * passagem (23/10) a Ericeira (8 spots movidos e 4 novos) e a lagoa-albufeira. Na 6.ª (24/10)
+ * `coxos` fixado à mão em 280°, o texto do kite na Foz do Lizandro e o foil da lagoa movido. Guarda:
  *  - cada spot corrigido a ≤ 500 m da coordenada esperada;
  *  - `src/lib/spots.ts` e `data/coast-orientation-review.json` com as mesmas coordenadas;
  *  - os spots corrigidos a ≤ 1 km da linha de costa OSM (distância do ficheiro de revisão).
@@ -303,5 +304,31 @@ describe('coordenadas dos spots', () => {
     const l = porId.get('lagoa-albufeira') as unknown as { final: number; origem: string };
     expect(l.origem).toBe('curado');
     expect(s.coastOrientation).toBe(l.final);
+  });
+
+  /** 6.ª passagem (24/10), decisões do Pedro. */
+  it('coxos: 280° fixado à mão (VALOR_MANUAL), não os 230° da falésia local', () => {
+    const s = spots.find((x) => x.id === 'coxos')!;
+    const l = porId.get('coxos') as unknown as { final: number; origem: string };
+    expect(s.coastOrientation).toBe(280);
+    expect(l.final).toBe(280);
+    expect(l.origem).toBe('manual');
+  });
+
+  it('foz-lizandro: kite com regra da época balnear, sem «proibido no verão»', () => {
+    const s = spots.find((x) => x.id === 'foz-lizandro')!;
+    const txt = [s.description, s.descriptionEn, ...(s.hazards ?? [])].join(' ');
+    expect(txt).not.toMatch(/proibido no verão|forbidden in summer/i);
+    expect(s.description).toContain('época balnear');
+    expect(s.compatibleSports).toContain('kitesurf');
+  });
+
+  it('foil-lagoa-albufeira: no mesmo pin da lagoa-albufeira (dentro da lagoa)', () => {
+    const f = spots.find((x) => x.id === 'foil-lagoa-albufeira')!;
+    const l = spots.find((x) => x.id === 'lagoa-albufeira')!;
+    expect(distM(f.lat, f.lon, l.lat, l.lon)).toBeLessThanOrEqual(20);
+    expect(distM(f.lat, f.lon, 38.501, -9.14)).toBeGreaterThan(2500);
+    const r = porId.get('foil-lagoa-albufeira')!;
+    expect(distM(r.lat, r.lon, f.lat, f.lon)).toBeLessThanOrEqual(1);
   });
 });

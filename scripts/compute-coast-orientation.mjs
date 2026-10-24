@@ -100,6 +100,7 @@ export const REVISAO_MANUAL = {
   'cova-do-vapor': 'foz do Tejo (ponta da Cova do Vapor)',
   // enseada com geometria ambígua: valor fixado à mão (VALOR_MANUAL)
   beliche: 'enseada do Beliche (Sagres): 230° fixado à mão',
+  coxos: 'baía dos Coxos (Ericeira): 280° fixado à mão (a costa local dá 230°, a 1 km 257°)',
 };
 
 /**
@@ -108,6 +109,7 @@ export const REVISAO_MANUAL = {
  */
 export const VALOR_MANUAL = {
   beliche: 230, // 23/10: pin novo numa enseada (calculado 230°, geometria ambígua); aprovado pelo Pedro
+  coxos: 280, // 24/10: a baía abre a W-NW e trabalha com ondulação N/NW; o calculado (230°) segue a falésia local; aprovado pelo Pedro
 };
 
 /**

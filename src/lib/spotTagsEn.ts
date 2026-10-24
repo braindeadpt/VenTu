@@ -118,7 +118,7 @@ export const SPOT_TAG_EN: Record<string, string> = {
   Isolamento: 'Isolation',
   'Kite restrito na época balnear': 'Kite restricted in bathing season',
   'Kitesurf proibido 1 Jun–30 Sep': 'Kitesurf banned Jun 1–Sep 30',
-  'Kitesurf proibido no verão': 'Kitesurf banned in summer',
+  'Época balnear: kitesurf só fora da zona de banhos': 'Bathing season: kitesurf only outside the swimming zone',
   Locals: 'Locals',
   'Locals agressivos': 'Aggressive locals',
   'Mar agitado': 'Rough sea',

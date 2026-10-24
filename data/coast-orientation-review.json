@@ -13,11 +13,11 @@
   "osmBase": "2026-07-15T15:22:01Z",
   "resumo": {
     "spots": 182,
-    "osm": 108,
+    "osm": 107,
     "osm1km": 2,
     "curado": 21,
     "mantido": 50,
-    "manual": 1,
+    "manual": 2,
     "mudam": 124,
     "revisao": 105,
     "em270Antes": 142,
@@ -1541,14 +1541,15 @@
       "referencia": null,
       "difReferencia": null,
       "difCurado": null,
-      "final": 230,
-      "origem": "osm",
-      "delta": 40,
+      "final": 280,
+      "origem": "manual",
+      "delta": 10,
       "deltaCalculado": 40,
       "revisao": true,
       "motivos": [
         "500 m e 1 km divergem 25° (1 km: 257°)",
-        "a 1532 m de ribeira-ilhas (curado 280°) com 50° de diferença"
+        "a 1532 m de ribeira-ilhas (curado 280°) com 50° de diferença",
+        "água interior/abrigada: baía dos Coxos (Ericeira): 280° fixado à mão (a costa local dá 230°, a 1 km 257°)"
       ]
     },
     {
@@ -2298,8 +2299,8 @@
     {
       "id": "foil-lagoa-albufeira",
       "nome": "Lagoa de Albufeira - Foil",
-      "lat": 38.501,
-      "lon": -9.14,
+      "lat": 38.50878,
+      "lon": -9.17599,
       "atual": 270,
       "calculado": null,
       "calculadoBruto": null,

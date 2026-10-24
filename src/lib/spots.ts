@@ -688,7 +688,7 @@ export const spots: Spot[] = [
   {
       id: 'coxos', slug: 'coxos', name: 'Coxos', nameEn: 'Coxos',
       region: 'Ericeira', regionEn: 'Ericeira', lat: 39.00085, lon: -9.42562,
-      coastOrientation: 230,
+      coastOrientation: 280,
       type: 'surf', difficulty: 'advanced', bestWind: 'N, NE', bestSwell: 'NW, W',
       description: 'Reef break poderoso e tubar. Uma das melhores ondas de Portugal — direita longa, íngreme, ocas. Apenas para experts.',
       descriptionEn: 'Powerful reef break barrel. One of the best waves in Portugal — long, steep, hollow right. Experts only.',
@@ -790,11 +790,11 @@ export const spots: Spot[] = [
       region: 'Ericeira', regionEn: 'Ericeira', lat: 38.94200, lon: -9.41363,
       coastOrientation: 295,
       type: 'multisport', difficulty: 'beginner', bestWind: 'N, NW', bestSwell: 'S, SW',
-      description: 'Praia de areia em forma de L no estuário do rio Lizandro. Ondas para todos os níveis. Reef breaks Lage dos Tubos e Limipicos no norte. Kitesurf proibido no verão.',
-      descriptionEn: 'L-shaped sand beach at the Lizandro river estuary. Waves for all levels. Lage dos Tubos and Limipicos reef breaks in the north. Kitesurf forbidden in summer.',
+      description: 'Praia de areia em forma de L no estuário do rio Lizandro. Ondas para todos os níveis. Reef breaks Lage dos Tubos e Limipicos no norte. Na época balnear, kitesurf só fora da zona de banhos.',
+      descriptionEn: 'L-shaped sand beach at the Lizandro river estuary. Waves for all levels. Lage dos Tubos and Limipicos reef breaks in the north. During bathing season, kitesurf only outside the swimming zone.',
       compatibleSports: ['surf', 'bodyboard', 'sup', 'kitesurf'],
       facilities: ['Estacionamento', 'Restaurantes', 'Escola surf', 'WC'],
-      hazards: ['Correntes na maré vazante', 'Rochas no reef', 'Kitesurf proibido no verão']
+      hazards: ['Correntes na maré vazante', 'Rochas no reef', 'Época balnear: kitesurf só fora da zona de banhos']
     },
   {
       id: 'sao-juliao', slug: 'sao-juliao', name: 'Praia de São Julião', nameEn: 'Sao Juliao Beach',
@@ -1069,7 +1069,7 @@ export const spots: Spot[] = [
     },
   {
       id: 'foil-lagoa-albufeira', slug: 'foil-lagoa-albufeira', name: 'Lagoa de Albufeira - Foil', nameEn: 'Albufeira Lagoon - Foil',
-      region: 'Sesimbra', regionEn: 'Sesimbra', lat: 38.501, lon: -9.140,
+      region: 'Sesimbra', regionEn: 'Sesimbra', lat: 38.50878, lon: -9.17599,
       coastOrientation: 270,
       type: 'foil', difficulty: 'beginner', bestWind: 'NW, N', bestSwell: 'Lagoa',
       description: 'Paraíso do foil! Água plana até à cintura, vento térmico consistente. Perfeito para aprender wing foil e kite foil. Sem ondas, sem stress.',

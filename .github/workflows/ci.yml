@@ -300,11 +300,38 @@ jobs:
           echo "baselines=$count" >> "$GITHUB_OUTPUT"
           echo "Linux visual baselines: $count"
 
+      # O HTML estático é pré-renderizado de public/data (os dados do dia) e o
+      # spec só fixa os fetches client-side: cada commit do pipeline de dados
+      # mudava píxeis sem mudar código. O gate corre sobre um build dedicado com
+      # a fixture em public/data (scripts/overlay-visual-fixture.mjs) — baked e
+      # client vêm do mesmo snapshot. O export live fica em out-live e volta a
+      # out a seguir, para o Lighthouse medir o build real.
+      - name: Rebuild export with the visual fixture (pixel gate only)
+        if: steps.visual_baselines.outputs.baselines != '0'
+        env:
+          NODE_OPTIONS: '--max-old-space-size=4096'
+          NEXT_PUBLIC_BASE_PATH: ''
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          NEXT_PUBLIC_OBS_WORKER_URL: ${{ vars.NEXT_PUBLIC_OBS_WORKER_URL || 'https://ventu-observations.busntech-net.workers.dev' }}
+          NEXT_PUBLIC_CARTO_API_KEY: ${{ secrets.NEXT_PUBLIC_CARTO_API_KEY }}
+        run: |
+          mv out out-live
+          node scripts/overlay-visual-fixture.mjs
+          npm run build
+
       - name: E2E — visual regression (pixel gate)
         if: steps.visual_baselines.outputs.baselines != '0'
         run: npm run test:visual
         env:
           CI: true
+
+      - name: Restore the live export after the pixel gate
+        if: always() && steps.visual_baselines.outputs.baselines != '0'
+        run: |
+          if [ -d out-live ]; then rm -rf out && mv out-live out; fi
+          git checkout -- public
+          git clean -fdq -- public
 
       - name: Upload E2E artifacts (test-results)
         if: failure()
