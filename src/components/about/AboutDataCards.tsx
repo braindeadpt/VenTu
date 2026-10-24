@@ -121,6 +121,13 @@ export default function AboutDataCards({
   const [archive, setArchive] = useState<CoastalWarningsArchiveData | null>(
     forceLive ? null : bakedArchive,
   );
+  // Relógio do render: null no build e na hidratação, Date.now() depois de montar.
+  // Com Date.now() directo no render, o HTML baked dizia «~30 h» e o cliente
+  // «~32 h» → React #418 no /about (24/10, outage IH). Igual ao HeroTicker.
+  const [clockMs, setClockMs] = useState<number | null>(null);
+  useEffect(() => {
+    setClockMs(Date.now());
+  }, []);
 
   useEffect(() => {
     if (!forceLive) return;
@@ -197,7 +204,7 @@ export default function AboutDataCards({
 
   return (
     <>
-      {keyInfo ? <IhKeyCard t={t} isPt={isPt} info={keyInfo} /> : null}
+      {keyInfo ? <IhKeyCard t={t} isPt={isPt} info={keyInfo} clockMs={clockMs} /> : null}
       {tide ? <TideCard t={t} isPt={isPt} tide={tide} /> : null}
       {radar ? <RadarCard t={t} isPt={isPt} radar={radar} /> : null}
       {skill?.hasData ? <SkillCard t={t} isPt={isPt} locale={locale} skill={skill} /> : null}      {archive?.hasData ? <ArchiveCard t={t} isPt={isPt} locale={locale} archive={archive} /> : null}
@@ -209,10 +216,13 @@ function IhKeyCard({
   t,
   isPt,
   info,
+  clockMs,
 }: {
   t: ReturnType<typeof getTranslation>['about']
   isPt: boolean
   info: IhKeyStatusInfo
+  /** null no build e na hidratação (ver AboutDataCards). */
+  clockMs: number | null
 }) {
         const conf = {
           active: {
@@ -275,7 +285,14 @@ function IhKeyCard({
               // onda observada está degradada» — só quando efectivamente degradada
               // com streak > 0 (no-key nunca conta). O tooltip mostra runs+horas.
               (() => {
-                const dt = deriveBuoyLayerDowntime(info.layer ?? null)
+                // Até montar, a referência é o carimbo do último run do pipeline
+                // (streakUpdatedAt), igual no build e na hidratação.
+                const layer = info.layer ?? null
+                const bakedRef = Date.parse(layer?.streakUpdatedAt ?? layer?.lastOkAt ?? '')
+                const dt = deriveBuoyLayerDowntime(
+                  layer,
+                  clockMs ?? (Number.isFinite(bakedRef) ? bakedRef : 0),
+                )
                 if (!dt) return null
                 const unit = dt.runs === 1 ? t.ihRunOne : t.ihRunMany
                 const full =
