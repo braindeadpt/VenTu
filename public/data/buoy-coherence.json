@@ -278,23 +278,8 @@
           "altKm": 0
         }
       ],
-      "calibrated": 2,
-      "calibrationRefs": {
-        "6200084→6200199": {
-          "esCode": "6200084",
-          "esName": "Cabo Silleiro",
-          "ptRefCode": "6200199",
-          "ptRefName": "Nazaré Costeira (WMO)",
-          "ptRefArea": "Nazaré",
-          "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
-          "me": -0.3,
-          "n": 609,
-          "spots": [
-            "nazare",
-            "sao-martinho-porto"
-          ]
-        }
-      },
+      "calibrated": 0,
+      "calibrationRefs": {},
       "suboptimalRefs": 0,
       "suboptimal": []
     },
@@ -345,22 +330,8 @@
           "altKm": 0
         }
       ],
-      "calibrated": 1,
-      "calibrationRefs": {
-        "6200084→6200199": {
-          "esCode": "6200084",
-          "esName": "Cabo Silleiro",
-          "ptRefCode": "6200199",
-          "ptRefName": "Nazaré Costeira (WMO)",
-          "ptRefArea": "Nazaré",
-          "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
-          "me": -0.3,
-          "n": 609,
-          "spots": [
-            "baleal"
-          ]
-        }
-      },
+      "calibrated": 0,
+      "calibrationRefs": {},
       "suboptimalRefs": 0,
       "suboptimal": []
     },
@@ -855,7 +826,7 @@
       "suboptimal": []
     }
   },
-  "regionsAuditedAt": "2026-10-23T23:08:33.907Z",
+  "regionsAuditedAt": "2026-10-24T03:08:25.071Z",
   "pairs": [
     {
       "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
