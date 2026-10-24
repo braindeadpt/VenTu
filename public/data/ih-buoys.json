@@ -138,15 +138,7 @@
       "lon": -27.9633333333333,
       "lastPos": "2026-10-23T12:49:07+00:00",
       "lastSea": "2026-10-23T12:49:07+00:00",
-      "family": "datawell",
-      "latest": {
-        "date": "2026-10-23T12:19:06.000Z",
-        "hm0": 1.68,
-        "tp": 10.5,
-        "thtp": 108,
-        "hmax": 2.39,
-        "temp": 21.1
-      }
+      "family": "datawell"
     },
     "88": {
       "idEst": 88,
@@ -1270,20 +1262,20 @@
       "distanceKm": 25.3
     }
   },
-  "fetchedAt": "2026-10-24T12:14:39.463Z",
+  "fetchedAt": "2026-10-24T13:05:52.809Z",
   "sourceCollections": [
     "buoys_datawell"
   ],
   "apiKeyConfigured": true,
-  "hasWaveData": true,
+  "hasWaveData": false,
   "waveFetchStatus": "upstream-outage",
   "upstreamOutage": {
     "scope": "wave",
     "since": "2026-10-23T18:35:59.878Z",
-    "lastAttemptAt": "2026-10-24T12:14:39.463Z",
+    "lastAttemptAt": "2026-10-24T13:05:52.809Z",
     "lastWaveOkAt": "2026-10-23T13:26:17.771Z",
-    "keptReadings": 1,
-    "newestKeptReadingAt": "2026-10-23T12:19:06.000Z",
+    "keptReadings": 0,
+    "newestKeptReadingAt": null,
     "failures": [
       {
         "idEst": 4,
