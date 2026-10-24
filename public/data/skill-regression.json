@@ -1,6 +1,6 @@
 {
   "source": "forecast-skill-regression",
-  "checkedAt": "2026-10-24T05:06:16.250Z",
+  "checkedAt": "2026-10-24T07:06:39.758Z",
   "windowDays": 60,
   "recentDays": 7,
   "baselineDays": 21,
@@ -119,7 +119,7 @@
         "snapshots": 8,
         "rmse": 0.78875,
         "me": 0.6487499999999999,
-        "n": 584.875
+        "n": 585.125
       },
       "baseline": {
         "snapshots": 21,
@@ -138,7 +138,7 @@
         "snapshots": 8,
         "rmse": 0.48,
         "me": 0.40125,
-        "n": 584.875
+        "n": 585.125
       },
       "baseline": {
         "snapshots": 21,
@@ -194,8 +194,8 @@
       "name": "WMO-ES (Copernicus)",
       "recent": {
         "days": 8,
-        "n": 1752.88,
-        "me": 0.400145475290594
+        "n": 1753.38,
+        "me": 0.4001939117416411
       },
       "baseline": {
         "days": 21,
