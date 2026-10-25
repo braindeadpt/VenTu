@@ -9,7 +9,9 @@
  * 2 spots novos (`arvore`, `vale-figueiros-sines`) e `beliche` fixado à mão em 230°. Na 5.ª
  * passagem (23/10) a Ericeira (8 spots movidos e 4 novos) e a lagoa-albufeira. Na 6.ª (24/10)
  * `coxos` fixado à mão em 280°, o texto do kite na Foz do Lizandro e o foil da lagoa movido. Na 7.ª (24/10)
- * o troço Peniche – Foz do Arelho: 11 pins, 4 spots novos e `obidos-lagoon-foz` fundido em `foz-arelho`. Guarda:
+ * o troço Peniche – Foz do Arelho: 11 pins, 4 spots novos e `obidos-lagoon-foz` fundido em `foz-arelho`. Na 8.ª
+ * (25/10) Nazaré – Figueira e Santa Cruz – Guincho: 7 pins, `figueira-foz` passa a ser o Cabedelo e 4 spots
+ * novos. Guarda:
  *  - cada spot corrigido a ≤ 500 m da coordenada esperada;
  *  - `src/lib/spots.ts` e `data/coast-orientation-review.json` com as mesmas coordenadas;
  *  - os spots corrigidos a ≤ 1 km da linha de costa OSM (distância do ficheiro de revisão).
@@ -18,7 +20,7 @@
 import { describe, expect, it } from 'vitest';
 import { spots } from '@/lib/spots';
 import { SPOT_LIVECAMS } from '@/lib/spotLivecams';
-import { blueFlagBeaches } from '@/lib/spotTips';
+import { blueFlagBeaches, getLocalTips } from '@/lib/spotTips';
 import editorialJson from '../spotEditorial.json';
 import fotosJson from '../spotFotos.json';
 import review from '../../../data/coast-orientation-review.json';
@@ -440,5 +442,114 @@ describe('coordenadas dos spots', () => {
       expect(s.localTips?.localRuleEn, id).toMatch(/15 Jun–15 Sep/);
       expect(s.hazards, id).toContain('Kite restrito na época balnear');
     }
+  });
+
+  /** 8.ª passagem (25/10): Nazaré – Figueira e Santa Cruz – Guincho, [id, lat, lon, orientação aprovada]. */
+  const CENTRO_8: Array<[string, number, number, number]> = [
+    ['figueira-foz', 40.139, -8.8645, 270],
+    ['praia-da-vieira', 39.8772, -8.9738, 290],
+    ['quiaios', 40.2208, -8.8942, 290],
+    ['leirosa', 40.0578, -8.8925, 285],
+    ['foz-sizandro', 39.10233, -9.40381, 300],
+    ['guincho', 38.73243, -9.47537, 280],
+    ['santa-cruz', 39.13857, -9.38203, 305],
+  ];
+  const NOVOS_8: Array<[string, string, number, number, number]> = [
+    ['buarcos', 'Figueira da Foz', 40.1625, -8.881, 230],
+    ['cova-gala-sul', 'Figueira da Foz', 40.118, -8.8675, 285],
+    ['sao-pedro-moel', 'Marinha Grande', 39.754, -9.0355, 290],
+    ['porto-novo', 'Torres Vedras', 39.1779, -9.3578, 275],
+  ];
+
+  it.each(CENTRO_8)('centro (8.ª): %s fica a ≤ 20 m do pin, com a orientação do ficheiro de revisão', (id, lat, lon, ori) => {
+    const s = spots.find((x) => x.id === id)!;
+    expect(s, id).toBeDefined();
+    expect(distM(s.lat, s.lon, lat, lon)).toBeLessThanOrEqual(20);
+    const l = porId.get(id) as unknown as { final: number; distCostaM: number | null };
+    expect(s.coastOrientation, id).toBe(l.final);
+    expect(s.coastOrientation, id).toBe(ori);
+    expect(l.distCostaM!, id).toBeLessThanOrEqual(1000);
+  });
+
+  it.each(NOVOS_8)('centro (8.ª): %s existe, fica a ≤ 20 m do pin e a ≤ 1 km da costa OSM', (id, region, lat, lon, ori) => {
+    const s = spots.find((x) => x.id === id)!;
+    expect(s, id).toBeDefined();
+    expect(s.slug).toBe(id);
+    expect(s.region).toBe(region);
+    expect(distM(s.lat, s.lon, lat, lon)).toBeLessThanOrEqual(20);
+    const l = porId.get(id) as unknown as { final: number; distCostaM: number | null };
+    expect(l, id).toBeDefined();
+    expect(s.coastOrientation, id).toBe(l.final);
+    expect(s.coastOrientation, id).toBe(ori);
+    expect(l.distCostaM, id).not.toBeNull();
+    expect(l.distCostaM!, id).toBeLessThanOrEqual(1000);
+  });
+
+  it('Figueira: figueira-foz é o Cabedelo (270° mantido, com motivo) e Buarcos é outro spot', () => {
+    const f = spots.find((s) => s.id === 'figueira-foz')!;
+    expect(f.slug).toBe('figueira-foz');
+    expect(f.name).toBe('Figueira da Foz (Cabedelo)');
+    expect(f.nameEn).toMatch(/Cabedelo/);
+    expect(`${f.name} ${f.nameEn}`).not.toMatch(/Buarcos/);
+    expect((porId.get('figueira-foz') as unknown as { origem: string }).origem).toBe('mantido');
+    expect(SPOT_LIVECAMS['figueira-foz'].url).toContain('praia-do-cabedelo');
+    const b = spots.find((s) => s.id === 'buarcos')!;
+    expect(b.compatibleSports).toEqual(['surf', 'bodyboard']);
+    expect(distM(f.lat, f.lon, b.lat, b.lon)).toBeGreaterThan(2000);
+    expect(spots.find((s) => s.id === 'cova-gala-sul')!.compatibleSports).toContain('kitesurf');
+  });
+
+  it('textos corrigidos: Vieira, Leirosa, Santa Cruz e Foz do Sizandro', () => {
+    const v = spots.find((s) => s.id === 'praia-da-vieira')!;
+    const tv = [v.description, v.descriptionEn, v.localTips?.accommodation, v.localTips?.accommodationEn].join(' ');
+    expect(tv).not.toMatch(/Beira Nova/);
+    expect(tv).not.toMatch(/entre Leiria|between Leiria/);
+    expect(v.compatibleSports).toContain('kitesurf');
+    const l = spots.find((s) => s.id === 'leirosa')!;
+    expect(l.hazards).not.toContain('Sem infraestruturas');
+    expect(l.facilities).toEqual(expect.arrayContaining(['Restaurantes', 'Salva-vidas (época balnear)']));
+    const sc = spots.find((s) => s.id === 'santa-cruz')!;
+    expect(sc.name).toBe('Santa Cruz (Praia da Física)');
+    expect(`${sc.name} ${sc.nameEn}`).not.toMatch(/Praia Azul/);
+    expect(sc.hazards).not.toContain('Rochas junto ao molhe');
+    expect(sc.description).toMatch(/internacionais/);
+    expect(sc.descriptionEn).toMatch(/international/);
+    const fz = spots.find((s) => s.id === 'foz-sizandro')!;
+    expect(fz.description).not.toMatch(/mais calma a sul/);
+    expect(fz.descriptionEn).not.toMatch(/Calmer southern/);
+    expect(fz.hazards).toContain('Zona interdita: destroços de navio');
+    expect(fz.localTips?.localRule).toMatch(/Edital 5\/2024/);
+    // o pin fica fora da zona interdita (raio 100 m em torno de 39°06'16"N 9°24'01"W)
+    expect(distM(fz.lat, fz.lon, 39.10444, -9.40028)).toBeGreaterThan(300);
+  });
+
+  it('Guincho: regra da Capitania de Cascais (Edital 5/2021) nas dicas', () => {
+    const d = getLocalTips('guincho')!;
+    expect(d.localRule).toMatch(/1 h antes do pôr do sol/);
+    expect(d.localRule).toMatch(/300 m/);
+    expect(d.localRule).toMatch(/corredores/);
+    expect(d.localRuleEn).toMatch(/1 h before sunset/);
+    expect(d.localRuleEn).toMatch(/300 m/);
+  });
+
+  it('dicas e mapas: Nazaré sem Odeceixe, Supertubos ~45 min, chaves Bandeira Azul = slugs, livecam da lagoa', () => {
+    expect(JSON.stringify(getLocalTips('nazare'))).not.toMatch(/Odeceixe/);
+    expect(getLocalTips('supertubos')!.food).not.toMatch(/10 min/);
+    const bf = Object.keys(blueFlagBeaches);
+    expect(bf).toEqual(expect.arrayContaining(['figueira-foz', 'quiaios']));
+    for (const k of ['nazaré', 'figueira', 'quaios']) expect(bf).not.toContain(k);
+    expect(SPOT_LIVECAMS['obidos-lagoon']?.url ?? '').not.toMatch(/figueira-da-foz/);
+  });
+
+  it('Baleal (Cantinho, 300°): janelas do editorial coerentes com a praia', () => {
+    const ed = (editorialJson as unknown as {
+      spots: Record<string, { praiaVirada: number; kite: { bom: number[] }; surf: { janela: number[]; terral: number[] } }>;
+    }).spots;
+    const b = ed.baleal;
+    expect(b.praiaVirada).toBe(300);
+    expect(b.surf.janela).toEqual([270, 330]);
+    expect(b.surf.terral).toEqual([80, 160]);
+    expect(b.kite.bom).toEqual([320, 40]);
+    expect(spots.find((s) => s.id === 'baleal')!.bestWind).toBe('E, NE');
   });
 });

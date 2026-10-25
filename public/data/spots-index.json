@@ -5332,8 +5332,8 @@
       "nameEn": "Foz do Sizandro",
       "region": "Torres Vedras",
       "regionEn": "Torres Vedras",
-      "lat": 39.104,
-      "lon": -9.401,
+      "lat": 39.10233,
+      "lon": -9.40381,
       "coastOrientation": 300,
       "type": "multisport",
       "difficulty": "intermediate",
@@ -5343,15 +5343,16 @@
         "sup",
         "kitesurf"
       ],
-      "description": "Foz do rio Sizandro entre Peniche e Ericeira. Surf, bodyboard e SUP consistentes. Kitesurf com vento sul no inverno e norte no verão. Zona mais calma a sul ideal para iniciantes.",
-      "descriptionEn": "Sizandro river mouth between Peniche and Ericeira. Consistent surf, bodyboard and SUP. Kitesurf with south wind in winter and north wind in summer. Calmer southern section ideal for beginners.",
+      "description": "Foz do rio Sizandro, entre Peniche e a Ericeira, no extremo sul do areal que sobe até à Praia Azul. Surf, bodyboard e SUP consistentes. Kitesurf com vento sul no inverno e norte no verão. Atenção à zona interdita (destroços de um navio) entre a foz e a Praia Azul.",
+      "descriptionEn": "Sizandro river mouth between Peniche and Ericeira, at the south end of the sand that runs up to Praia Azul. Consistent surf, bodyboard and SUP. Kitesurf with south wind in winter and north wind in summer. Mind the no-go zone (a shipwreck) between the river mouth and Praia Azul.",
       "facilities": [
         "Estacionamento",
         "Restaurante",
         "WC"
       ],
       "hazards": [
-        "Correntes na foz"
+        "Correntes na foz",
+        "Zona interdita: destroços de navio"
       ],
       "blueFlag": true,
       "accessibleBeach": false,
@@ -6032,12 +6033,12 @@
     {
       "id": "santa-cruz",
       "slug": "santa-cruz",
-      "name": "Santa Cruz (Praia Azul)",
-      "nameEn": "Santa Cruz (Praia Azul)",
+      "name": "Santa Cruz (Praia da Física)",
+      "nameEn": "Santa Cruz (Praia da Fisica)",
       "region": "Torres Vedras",
       "regionEn": "Torres Vedras",
-      "lat": 39.139,
-      "lon": -9.38,
+      "lat": 39.13857,
+      "lon": -9.38203,
       "coastOrientation": 305,
       "type": "surf",
       "difficulty": "intermediate",
@@ -6046,8 +6047,8 @@
         "kitesurf",
         "bodyboard"
       ],
-      "description": "Praia icónica com ondas consistentes e palco de campeonatos nacionais. Areia dourada e falésias. Kitesurf com vento térmico no verão.",
-      "descriptionEn": "Iconic beach with consistent waves, host of national championships. Golden sand and cliffs. Kitesurf with thermal wind in summer.",
+      "description": "Praia icónica de Santa Cruz, com o pico principal na Praia da Física: ondas consistentes, palco de campeonatos nacionais e também de provas internacionais (etapas do WSL Qualifying Series). Areia dourada e falésias. Com a Nortada de verão também se faz kitesurf, mas nenhuma escola dá aulas de kite nas praias da vila.",
+      "descriptionEn": "Iconic Santa Cruz beach, with the main peak at Praia da Fisica: consistent waves, host of national championships and also international events (WSL Qualifying Series stops). Golden sand and cliffs. Kitesurfing happens with the summer Nortada, but no school teaches kite at the town beaches.",
       "facilities": [
         "Estacionamento",
         "Escola surf",
@@ -6058,7 +6059,7 @@
       "hazards": [
         "Correntes fortes",
         "Multidão no verão",
-        "Rochas junto ao molhe"
+        "Sem escola de kite na praia"
       ],
       "blueFlag": true,
       "accessibleBeach": false,
@@ -12326,8 +12327,8 @@
       "nameEn": "Quiaios",
       "region": "Figueira da Foz",
       "regionEn": "Figueira da Foz",
-      "lat": 40.22,
-      "lon": -8.89,
+      "lat": 40.2208,
+      "lon": -8.8942,
       "coastOrientation": 290,
       "type": "surf",
       "difficulty": "beginner",
@@ -12562,8 +12563,8 @@
       "nameEn": "Vieira Beach",
       "region": "Marinha Grande",
       "regionEn": "Marinha Grande",
-      "lat": 39.872,
-      "lon": -8.97,
+      "lat": 39.8772,
+      "lon": -8.9738,
       "coastOrientation": 290,
       "type": "kitesurf",
       "difficulty": "intermediate",
@@ -12572,8 +12573,8 @@
         "surf",
         "bodyboard"
       ],
-      "description": "Praia longa entre Leiria e Figueira da Foz com Nortada de verão. Kitesurf em freeride com ondulação moderada; surf e bodyboard em swell. Vila da Vieira da Beira Nova com alojamento e restauração a poucos minutos — útil em kitetrip pela costa centro.",
-      "descriptionEn": "Long beach between Leiria and Figueira da Foz with summer Nortada. Kitesurf freeride with moderate swell; surf and bodyboard on swell days. Vieira da Beira Nova village with accommodation and food minutes away — handy on a central coast kitetrip.",
+      "description": "Praia longa entre a Nazaré e a Figueira da Foz com Nortada de verão. Kitesurf em freeride com ondulação moderada; surf e bodyboard em swell. A Praia da Vieira (Vieira de Leiria) tem alojamento e restauração a poucos minutos — útil em kitetrip pela costa centro.",
+      "descriptionEn": "Long beach between Nazaré and Figueira da Foz with summer Nortada. Kitesurf freeride with moderate swell; surf and bodyboard on swell days. Praia da Vieira (Vieira de Leiria) has accommodation and food minutes away — handy on a central coast kitetrip.",
       "facilities": [
         "Estacionamento",
         "Restaurantes",
@@ -15361,8 +15362,8 @@
       "nameEn": "Guincho",
       "region": "Cascais",
       "regionEn": "Cascais",
-      "lat": 38.732,
-      "lon": -9.472,
+      "lat": 38.73243,
+      "lon": -9.47537,
       "coastOrientation": 280,
       "type": "multisport",
       "difficulty": "intermediate",
@@ -18608,12 +18609,12 @@
     {
       "id": "figueira-foz",
       "slug": "figueira-foz",
-      "name": "Figueira da Foz (Buarcos)",
-      "nameEn": "Figueira da Foz (Buarcos)",
+      "name": "Figueira da Foz (Cabedelo)",
+      "nameEn": "Figueira da Foz (Cabedelo)",
       "region": "Figueira da Foz",
       "regionEn": "Figueira da Foz",
-      "lat": 40.15,
-      "lon": -8.87,
+      "lat": 40.139,
+      "lon": -8.8645,
       "coastOrientation": 270,
       "type": "surf",
       "difficulty": "intermediate",
@@ -18621,8 +18622,8 @@
         "surf",
         "bodyboard"
       ],
-      "description": "Uma das praias mais emblemáticas do centro de Portugal. Ondas potentes e consistentes, palco de campeonatos nacionais. O molhe divide a praia em dois picos distintos.",
-      "descriptionEn": "One of the most emblematic beaches in central Portugal. Powerful and consistent waves, host of national championships. The jetty divides the beach into two distinct peaks.",
+      "description": "Praia do Cabedelo, a sul do molhe da barra do Mondego, na Figueira da Foz — uma das praias de surf mais emblemáticas do centro de Portugal. Beach break potente e consistente, palco de campeonatos nacionais de surf e bodyboard. O molhe abriga do vento de N/NW e segura os bancos junto a ele. Buarcos, do outro lado da barra, é outro spot.",
+      "descriptionEn": "Cabedelo beach, south of the Mondego harbour-mouth jetty, in Figueira da Foz — one of the most emblematic surf beaches in central Portugal. Powerful, consistent beach break, host of national surf and bodyboard championships. The jetty shelters it from N/NW wind and holds the sandbanks next to it. Buarcos, across the river mouth, is a separate spot.",
       "facilities": [
         "Estacionamento",
         "Escola surf",
@@ -25313,9 +25314,9 @@
       "nameEn": "Leirosa",
       "region": "Figueira da Foz",
       "regionEn": "Figueira da Foz",
-      "lat": 40.057,
-      "lon": -8.89,
-      "coastOrientation": 300,
+      "lat": 40.0578,
+      "lon": -8.8925,
+      "coastOrientation": 285,
       "type": "surf",
       "difficulty": "intermediate",
       "compatibleSports": [
@@ -25323,14 +25324,15 @@
         "bodyboard",
         "sup"
       ],
-      "description": "Praia rústica e pouco frequentada entre a Figueira da Foz e Nazaré. Beach break potente com ondas tubulares em dias bons. Para surfistas que gostam de isolamento.",
-      "descriptionEn": "Rustic and little-frequented beach between Figueira da Foz and Nazaré. Powerful beach break with tubular waves on good days. For surfers who enjoy isolation.",
+      "description": "Praia de areal extenso a sul da Figueira da Foz, junto à aldeia piscatória da Leirosa. Beach break potente, com ondas tubulares em dias bons; o esporão ajuda a segurar os bancos. Praia vigiada na época balnear, com pontão, passadiço e restaurantes, e menos gente que as praias da cidade.",
+      "descriptionEn": "Long sandy beach south of Figueira da Foz, by the fishing village of Leirosa. Powerful beach break with tubular waves on good days; the groyne helps hold the sandbanks. Lifeguarded in the bathing season, with a jetty, boardwalk and restaurants, and fewer people than the town beaches.",
       "facilities": [
-        "Estacionamento"
+        "Estacionamento",
+        "Restaurantes",
+        "Salva-vidas (época balnear)"
       ],
       "hazards": [
-        "Correntes fortes",
-        "Sem infraestruturas"
+        "Correntes fortes"
       ],
       "blueFlag": false,
       "accessibleBeach": false,
@@ -41744,6 +41746,151 @@
         "Rochas junto ao molhe",
         "Ondas potentes",
         "Correntes"
+      ],
+      "blueFlag": false,
+      "accessibleBeach": false,
+      "conditions": null,
+      "allScores": null,
+      "bestScore": 0,
+      "bestWindowToday": null,
+      "bestWindowsBySport": {}
+    },
+    {
+      "id": "buarcos",
+      "slug": "buarcos",
+      "name": "Buarcos",
+      "nameEn": "Buarcos",
+      "region": "Figueira da Foz",
+      "regionEn": "Figueira da Foz",
+      "lat": 40.1625,
+      "lon": -8.881,
+      "coastOrientation": 230,
+      "type": "surf",
+      "difficulty": "intermediate",
+      "compatibleSports": [
+        "surf",
+        "bodyboard"
+      ],
+      "description": "Direita de point break em Buarcos, na ponta norte da Figueira da Foz, abrigada pelo Cabo Mondego — uma das direitas mais longas da Europa, em várias secções. Precisa de ondulação grande de NW para entrar e fica limpa com vento de leste. Fundo de areia e pedra; para intermédios e avançados.",
+      "descriptionEn": "Right-hand point break at Buarcos, at the north end of Figueira da Foz, sheltered by Cape Mondego — one of the longest rights in Europe, in several sections. It needs a big NW swell to wrap in and cleans up with easterly wind. Sand and rock bottom; for intermediates and advanced surfers.",
+      "facilities": [
+        "Estacionamento",
+        "Restaurantes",
+        "Alojamento",
+        "WC"
+      ],
+      "hazards": [
+        "Rochas no fundo",
+        "Correntes com swell"
+      ],
+      "blueFlag": false,
+      "accessibleBeach": false,
+      "conditions": null,
+      "allScores": null,
+      "bestScore": 0,
+      "bestWindowToday": null,
+      "bestWindowsBySport": {}
+    },
+    {
+      "id": "cova-gala-sul",
+      "slug": "cova-gala-sul",
+      "name": "Cova-Gala Sul",
+      "nameEn": "Cova-Gala South",
+      "region": "Figueira da Foz",
+      "regionEn": "Figueira da Foz",
+      "lat": 40.118,
+      "lon": -8.8675,
+      "coastOrientation": 285,
+      "type": "kitesurf",
+      "difficulty": "intermediate",
+      "compatibleSports": [
+        "kitesurf",
+        "surf",
+        "bodyboard"
+      ],
+      "description": "Praia a sul dos esporões da Cova-Gala, na margem sul do Mondego: a zona de kitesurf da Figueira da Foz, onde a escola de kite local dá aulas. Areal largo e Nortada de verão side-onshore. Também dá surf e bodyboard nos bancos entre esporões. Na época balnear, kite só fora das zonas de banhos.",
+      "descriptionEn": "Beach south of the Cova-Gala groynes, on the south bank of the Mondego: the kitesurf area of Figueira da Foz, where the local kite school teaches. Wide sand and side-onshore summer Nortada. Also works for surf and bodyboard on the banks between groynes. During the bathing season, kite only outside the swimming zones.",
+      "facilities": [
+        "Estacionamento",
+        "Escola kite",
+        "Restaurantes"
+      ],
+      "hazards": [
+        "Esporões",
+        "Correntes",
+        "Kite restrito na época balnear"
+      ],
+      "blueFlag": false,
+      "accessibleBeach": false,
+      "conditions": null,
+      "allScores": null,
+      "bestScore": 0,
+      "bestWindowToday": null,
+      "bestWindowsBySport": {}
+    },
+    {
+      "id": "sao-pedro-moel",
+      "slug": "sao-pedro-moel",
+      "name": "São Pedro de Moel",
+      "nameEn": "Sao Pedro de Moel",
+      "region": "Marinha Grande",
+      "regionEn": "Marinha Grande",
+      "lat": 39.754,
+      "lon": -9.0355,
+      "coastOrientation": 290,
+      "type": "surf",
+      "difficulty": "intermediate",
+      "compatibleSports": [
+        "surf",
+        "bodyboard"
+      ],
+      "description": "Beach break de areia e pedra junto à vila de São Pedro de Moel, no Pinhal de Leiria — a onda mais conhecida entre a Figueira da Foz e a Nazaré. Funciona com ondulação de W/NW e fica melhor com vento de leste. Lajes de pedra nas pontas da praia. Para intermédios.",
+      "descriptionEn": "Sand-and-rock beach break by the village of Sao Pedro de Moel, in the Leiria pine forest — the best-known wave between Figueira da Foz and Nazaré. It works with W/NW swell and is best with easterly wind. Rock ledges at both ends of the beach. For intermediates.",
+      "facilities": [
+        "Estacionamento",
+        "Restaurantes",
+        "Alojamento",
+        "WC"
+      ],
+      "hazards": [
+        "Rochas nas pontas",
+        "Correntes"
+      ],
+      "blueFlag": false,
+      "accessibleBeach": false,
+      "conditions": null,
+      "allScores": null,
+      "bestScore": 0,
+      "bestWindowToday": null,
+      "bestWindowsBySport": {}
+    },
+    {
+      "id": "porto-novo",
+      "slug": "porto-novo",
+      "name": "Porto Novo",
+      "nameEn": "Porto Novo",
+      "region": "Torres Vedras",
+      "regionEn": "Torres Vedras",
+      "lat": 39.1779,
+      "lon": -9.3578,
+      "coastOrientation": 275,
+      "type": "surf",
+      "difficulty": "intermediate",
+      "compatibleSports": [
+        "surf",
+        "bodyboard"
+      ],
+      "description": "Praia em concha na foz do rio Alcabrichel, no limite norte do concelho de Torres Vedras, entre a Areia Branca e Santa Cruz. Beach break de areia e pedra que funciona com ondulação de W/NW e vento de leste.",
+      "descriptionEn": "Cove beach at the mouth of the Alcabrichel river, at the north edge of Torres Vedras municipality, between Areia Branca and Santa Cruz. Sand-and-rock beach break that works with W/NW swell and easterly wind.",
+      "facilities": [
+        "Estacionamento",
+        "Restaurantes",
+        "Alojamento",
+        "WC"
+      ],
+      "hazards": [
+        "Rochas nas pontas",
+        "Correntes na foz"
       ],
       "blueFlag": false,
       "accessibleBeach": false,

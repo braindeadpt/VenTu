@@ -706,12 +706,6 @@ export const SPOT_LIVECAMS: Record<string, SpotLivecam> = {
     labelPt: 'Seixal (Madeira)',
     labelEn: 'Seixal (Madeira)',
   },
-  'obidos-lagoon': {
-    url: 'https://www.surftotal.com/camaras-report/figueira-da-foz/praia-do-cabedelo-hd',
-    provider: SURFTOTAL,
-    labelPt: 'Lagoa de Óbidos (Cabedelo ref.)',
-    labelEn: 'Obidos Lagoon (Cabedelo ref.)',
-  },
   lagos: {
     url: 'https://beachcam.meo.pt/livecams/meia-praia/',
     provider: MEO,

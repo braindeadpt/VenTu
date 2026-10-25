@@ -66,7 +66,7 @@ Implementação pura e testada em `scripts/lib/coastOrientation.mjs`:
 | curado v6 | os 21 spots de `spotEditorial.json` (os 19 da maquete, mais as variantes da Lagoa de Óbidos: `obidos-lagoon-sul` e `foz-arelho`) | o `praiaVirada` revisto à mão: o motor antigo e o v6 passam a dizer o mesmo |
 | OSM | geometria limpa | o calculado (500 m) |
 | OSM 1 km | 500 m ambíguo, mas a corda de 1 km é limpa (corda/arco ≥ 0,85) | o calculado a 1 km |
-| **manual** | spot da lista `REVISAO_MANUAL` com valor fixado à mão em `VALOR_MANUAL` (`beliche` 230° e `coxos` 280°; na passagem de Peniche, 24/10: `consolacao` 260°, `lagide` 345°, `baleal-sul` 345°, `molhe-leste` 250°, `sao-martinho-porto` 315° e `foil-foz-arelho` 300°; todos aprovados pelo Pedro) | o valor fixado: o recálculo mantém-no |
+| **manual** | spot da lista `REVISAO_MANUAL` com valor fixado à mão em `VALOR_MANUAL` (`beliche` 230° e `coxos` 280°; na passagem de Peniche, 24/10: `consolacao` 260°, `lagide` 345°, `baleal-sul` 345°, `molhe-leste` 250°, `sao-martinho-porto` 315° e `foil-foz-arelho` 300°; na passagem Nazaré – Figueira e Santa Cruz – Guincho, 25/10: `leirosa` 285°, `foz-sizandro` 300°, `sao-pedro-moel` 290° e `porto-novo` 275°; todos aprovados pelo Pedro) | o valor fixado: o recálculo mantém-no |
 | **mantido** | rio, albufeira, lagoa, ria, estuário (lista explícita `REVISAO_MANUAL`: Tejo, Seixal, Sado, Óbidos, Albufeira, Santo André, Sancha, Aveiro, Alvor, Ria Formosa, Cávado, Lima, Douro, Mira, S. Martinho); sem costa OSM a < 2 km; geometria ambígua; spot a > 1 km da costa, numa costa que não é recta | **não se adivinha**: fica o valor antigo, e o spot vai para revisão manual com o calculado ao lado |
 
 Revisão (⚠) também quando:
@@ -182,11 +182,26 @@ NW), `foz-arelho` 300° (curado) e `foil-foz-arelho` 300° (manual), `areia-bran
 `lagide` 345°, `baleal-sul` 345° e `molhe-leste` 250° (manual, valores aprovados pelo
 Pedro) e `gamboa` 30° (OSM).
 
+Na 8.ª passagem (25/10) foram revistos os troços Nazaré – Figueira da Foz e
+Santa Cruz – Guincho (mesmo método). 7 pins mudam: `figueira-foz` (estava em
+terra, no centro da cidade; passa a ser o **Cabedelo**, a sul do molhe do
+Mondego — o id/slug mantém-se), `praia-da-vieira` (água no extremo norte do
+areal, zona do kite), `quiaios` e `leirosa` (estavam em terra), `foz-sizandro`
+(estava dentro da zona interdita do Edital 5/2024; passa para a foz),
+`guincho` (estava na duna; passa para a água em frente à rocha do meio) e
+`santa-cruz` (Praia da Física). Entram 4 spots: `buarcos` (point break de
+direitas), `cova-gala-sul` (zona de kite da Figueira), `sao-pedro-moel` e
+`porto-novo`. Orientações: `figueira-foz` 270° (mantido com motivo na lista de revisão manual:
+a 400 m a geometria segue o molhe), `leirosa` 285°, `foz-sizandro` 300°, `sao-pedro-moel` 290° e `porto-novo` 275°
+(manual, valores aprovados pelo Pedro; o recálculo nos pins novos dava 295°,
+310°, 295° e uma geometria ambígua), `guincho` 280° (curado), `praia-da-vieira`
+290°, `quiaios` 290°, `santa-cruz` 305°, `buarcos` 230° e `cova-gala-sul` 285° (OSM).
+
 ## Resultado (OSM de 2026-07-15T15:22:01Z)
 
-- 185 spots, dos quais **126 mudam** de valor face ao antes da #178.
-- Origem: OSM 107, OSM 1 km 2, curado 21, manual 8, mantido 47.
-- 109 spots ficam marcados para revisão.
+- 189 spots, dos quais **126 mudam** de valor face ao antes da #178.
+- Origem: OSM 106, OSM 1 km 2, curado 21, manual 12, mantido 48.
+- 113 spots ficam marcados para revisão.
 - Spots a 270°: 141 → 40. Os que ficam têm 270° calculado, curado, ou mantido com motivo.
 
 | spot | antes | calculado | depois | Δ | origem | revisão |
@@ -232,9 +247,12 @@ Pedro) e `gamboa` 30° (OSM).
 | `costa-nova` | 270 | 290 | **290** | 20 | OSM |  |
 | `tocha` | 270 | 280 | **280** | 10 | OSM |  |
 | `quiaios` | 270 | 290 | **290** | 20 | OSM |  |
-| `figueira-foz` | 270 | 270 | **270** | 0 | OSM |  |
-| `leirosa` | 270 | 300 | **300** | 30 | OSM | ⚠ 500 m e 1 km divergem 18° (1 km: 284°) |
+| `buarcos` | 230 | 230 | **230** | 0 | OSM |  |
+| `figueira-foz` | 270 | 255 | **270** | 0 | **mantido** | ⚠ água interior/abrigada: Cabedelo (Figueira da Foz): 270° fixado à mão (areal N–S; a 400 m a geometria segue o molhe sul do Mondego) |
+| `cova-gala-sul` | 285 | 285 | **285** | 0 | OSM |  |
+| `leirosa` | 270 | 295 | **285** | 15 | **manual** | ⚠ água interior/abrigada: Leirosa (esporão): 285° fixado à mão (283° a 400 m, 288° a 1 km) |
 | `praia-da-vieira` | 270 | 290 | **290** | 20 | OSM |  |
+| `sao-pedro-moel` | 290 | 295 | **290** | 0 | **manual** | ⚠ água interior/abrigada: São Pedro de Moel: 290° fixado à mão (areal 285–295° entre as lajes das pontas) |
 | `castelo-bode` | 270 |  | **270** | 0 | **mantido** | ⚠ sem linha de costa OSM a < 2000 m; água interior/abrigada: albufeira (interior) |
 | `nazare` | 270 | 265 | **280** | 10 | curado v6 | ⚠ outra costa a 386 m (margem oposta, ilhéu ou molhe); calculado a 24° da referência 290° |
 | `foz-arelho` | 270 | 310 | **300** | 30 | curado v6 | ⚠ spot a 1121 m da costa; água interior/abrigada: Lagoa de Óbidos |
@@ -250,7 +268,7 @@ Pedro) e `gamboa` 30° (OSM).
 | `gamboa` | 30 | 30 | **30** | 0 | OSM | ⚠ a 1946 m de supertubos (curado 235°) com 155° de diferença |
 | `supertubos` | 270 | 245 | **235** | 35 | curado v6 | ⚠ calculado a 26° da referência 220° |
 | `molhe-leste` | 250 | 215 | **250** | 0 | **manual** | ⚠ outra costa a 393 m (margem oposta, ilhéu ou molhe); água interior/abrigada: molhe leste do porto de Peniche: 250° fixado à mão (a costa local segue o molhe) |
-| `foz-sizandro` | 270 | 300 | **300** | 30 | OSM |  |
+| `foz-sizandro` | 270 | 310 | **300** | 30 | **manual** | ⚠ água interior/abrigada: foz do Sizandro: 300° fixado à mão (a geometria junto à foz oscila 299–310°) |
 | `coxos` | 270 | 230 | **280** | 10 | **manual** | ⚠ 500 m e 1 km divergem 25° (1 km: 257°); água interior/abrigada: baía dos Coxos (Ericeira): 280° fixado à mão (a costa local dá 230°, a 1 km 257°) |
 | `ribeira-ilhas` | 270 | 250 | **280** | 10 | curado v6 | ⚠ calculado a 32° da referência 280°; calculado a 32° do curado v6 (280°) |
 | `empa` | 270 | 270 | **270** | 0 | OSM |  |
@@ -264,7 +282,7 @@ Pedro) e `gamboa` 30° (OSM).
 | `sao-juliao` | 270 | 280 | **280** | 10 | OSM |  |
 | `praia-grande-sintra` | 270 | 295 | **295** | 25 | OSM |  |
 | `adraga` | 270 | 295 | **295** | 25 | OSM |  |
-| `guincho` | 270 | 290 | **280** | 10 | curado v6 | ⚠ outra costa a 384 m (margem oposta, ilhéu ou molhe) |
+| `guincho` | 270 | 290 | **280** | 10 | curado v6 | ⚠ outra costa a 319 m (margem oposta, ilhéu ou molhe) |
 | `seixal-bay` | 0 | 40 | **0** | 0 | **mantido** | ⚠ geometria ambígua (dobra 99°, 500 m vs 1 km 0°: ponta, enseada ou foz); água interior/abrigada: estuário do Tejo (Baía do Seixal) |
 | `praia-vitoria` | 270 | 100 | **270** | 0 | **mantido** | ⚠ geometria ambígua (dobra 56°, 500 m vs 1 km 14°: ponta, enseada ou foz) |
 | `santa-catarina-terceira` | 270 | 105 | **270** | 0 | **mantido** | ⚠ geometria ambígua (dobra 53°, 500 m vs 1 km 10°: ponta, enseada ou foz); outra costa a 231 m (margem oposta, ilhéu ou molhe) |
@@ -348,6 +366,7 @@ Pedro) e `gamboa` 30° (OSM).
 | `funchal` | 90 | 220 | **220** | 130 | OSM | ⚠ delta 130° > 45° face ao valor antigo |
 | `barra-aveiro` | 270 | 270 | **270** | 0 | OSM |  |
 | `vila-cha` | 270 | 255 | **255** | 15 | OSM |  |
+| `porto-novo` | 275 | 310 | **275** | 0 | **manual** | ⚠ geometria ambígua (dobra 60°, 500 m vs 1 km 40°: ponta, enseada ou foz); água interior/abrigada: Porto Novo (concha na foz do Alcabrichel): 275° fixado à mão (geometria ambígua no pin) |
 | `santa-cruz` | 270 | 305 | **305** | 35 | OSM |  |
 | `consolacao` | 270 | 215 | **260** | 10 | **manual** | ⚠ geometria ambígua (dobra 48°, 500 m vs 1 km 38°: ponta, enseada ou foz); água interior/abrigada: Consolação (ponta do forte): 260° fixado à mão (geometria ambígua no pin) |
 | `areia-branca` | 270 | 275 | **275** | 5 | OSM |  |
