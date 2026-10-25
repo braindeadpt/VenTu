@@ -511,12 +511,22 @@
     "quiaios": {
       "codp": 866,
       "stationTitle": "Figueira da Foz - C. Comercial",
-      "distanceKm": 8.7
+      "distanceKm": 8.9
     },
-    "figueira-foz": {
+    "buarcos": {
       "codp": 866,
       "stationTitle": "Figueira da Foz - C. Comercial",
-      "distanceKm": 1.5
+      "distanceKm": 2.9
+    },
+    "figueira-foz": {
+      "codp": 896,
+      "stationTitle": "Figueira da Foz - C",
+      "distanceKm": 1.3
+    },
+    "cova-gala-sul": {
+      "codp": 896,
+      "stationTitle": "Figueira da Foz - C",
+      "distanceKm": 3.4
     },
     "leirosa": {
       "codp": 896,
@@ -526,7 +536,12 @@
     "praia-da-vieira": {
       "codp": 896,
       "stationTitle": "Figueira da Foz - C",
-      "distanceKm": 32.2
+      "distanceKm": 31.7
+    },
+    "sao-pedro-moel": {
+      "codp": 856,
+      "stationTitle": "Nazaré - B",
+      "distanceKm": 19
     },
     "castelo-bode": {
       "codp": 856,
@@ -541,27 +556,22 @@
     "foz-arelho": {
       "codp": 162,
       "stationTitle": "Peniche - C",
-      "distanceKm": 15.8
+      "distanceKm": 15.1
     },
     "foil-foz-arelho": {
       "codp": 162,
       "stationTitle": "Peniche - C",
-      "distanceKm": 15.8
+      "distanceKm": 15.4
     },
     "obidos-lagoon": {
       "codp": 162,
       "stationTitle": "Peniche - C",
-      "distanceKm": 13.7
+      "distanceKm": 14.1
     },
     "obidos-lagoon-sul": {
       "codp": 162,
       "stationTitle": "Peniche - C",
-      "distanceKm": 14.2
-    },
-    "obidos-lagoon-foz": {
-      "codp": 162,
-      "stationTitle": "Peniche - C",
-      "distanceKm": 14.8
+      "distanceKm": 14.3
     },
     "foz-arelho-beach": {
       "codp": 162,
@@ -571,27 +581,47 @@
     "praia-del-rey": {
       "codp": 162,
       "stationTitle": "Peniche - C",
-      "distanceKm": 8.1
+      "distanceKm": 8
     },
     "almagreira": {
       "codp": 162,
       "stationTitle": "Peniche - C",
-      "distanceKm": 5.3
+      "distanceKm": 5.4
+    },
+    "lagide": {
+      "codp": 162,
+      "stationTitle": "Peniche - C",
+      "distanceKm": 3.6
     },
     "baleal": {
       "codp": 162,
       "stationTitle": "Peniche - C",
-      "distanceKm": 3.3
+      "distanceKm": 2.9
     },
-    "supertubos": {
+    "baleal-sul": {
+      "codp": 162,
+      "stationTitle": "Peniche - C",
+      "distanceKm": 1.5
+    },
+    "gamboa": {
       "codp": 162,
       "stationTitle": "Peniche - C",
       "distanceKm": 1.1
     },
+    "supertubos": {
+      "codp": 162,
+      "stationTitle": "Peniche - C",
+      "distanceKm": 0.9
+    },
+    "molhe-leste": {
+      "codp": 162,
+      "stationTitle": "Peniche - C",
+      "distanceKm": 0.4
+    },
     "foz-sizandro": {
       "codp": 162,
       "stationTitle": "Peniche - C",
-      "distanceKm": 27.9
+      "distanceKm": 28.1
     },
     "coxos": {
       "codp": 162,
@@ -661,7 +691,7 @@
     "guincho": {
       "codp": 152,
       "stationTitle": "Lisboa - Alcântara",
-      "distanceKm": 27
+      "distanceKm": 27.3
     },
     "seixal-bay": {
       "codp": 157,
@@ -1078,6 +1108,11 @@
       "stationTitle": "Leixões",
       "distanceKm": 11.9
     },
+    "porto-novo": {
+      "codp": 162,
+      "stationTitle": "Peniche - C",
+      "distanceKm": 19.6
+    },
     "santa-cruz": {
       "codp": 162,
       "stationTitle": "Peniche - C",
@@ -1086,17 +1121,17 @@
     "consolacao": {
       "codp": 162,
       "stationTitle": "Peniche - C",
-      "distanceKm": 1.9
+      "distanceKm": 3.4
     },
     "areia-branca": {
       "codp": 162,
       "stationTitle": "Peniche - C",
-      "distanceKm": 11
+      "distanceKm": 10
     },
     "sao-martinho-porto": {
       "codp": 856,
       "stationTitle": "Nazaré - B",
-      "distanceKm": 9.5
+      "distanceKm": 10.4
     },
     "cave-ericeira": {
       "codp": 152,
@@ -1219,6 +1254,6 @@
       "distanceKm": 2.7
     }
   },
-  "fetchedAt": "2026-10-24T23:05:56.927Z",
+  "fetchedAt": "2026-10-25T04:05:52.476Z",
   "sourceCollection": "tide_obs_nrt"
 }
