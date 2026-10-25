@@ -104,6 +104,11 @@ export const REVISAO_MANUAL = {
   'baleal-sul': 'baía do Baleal: 345° fixado à mão (areal da baía 344–346°)',
   'molhe-leste': 'molhe leste do porto de Peniche: 250° fixado à mão (a costa local segue o molhe)',
   consolacao: 'Consolação (ponta do forte): 260° fixado à mão (geometria ambígua no pin)',
+  'figueira-foz': 'Cabedelo (Figueira da Foz): 270° fixado à mão (areal N–S; a 400 m a geometria segue o molhe sul do Mondego)',
+  leirosa: 'Leirosa (esporão): 285° fixado à mão (283° a 400 m, 288° a 1 km)',
+  'foz-sizandro': 'foz do Sizandro: 300° fixado à mão (a geometria junto à foz oscila 299–310°)',
+  'sao-pedro-moel': 'São Pedro de Moel: 290° fixado à mão (areal 285–295° entre as lajes das pontas)',
+  'porto-novo': 'Porto Novo (concha na foz do Alcabrichel): 275° fixado à mão (geometria ambígua no pin)',
 };
 
 /**
@@ -119,6 +124,10 @@ export const VALOR_MANUAL = {
   'baleal-sul': 345, // 24/10: areal da baía do Baleal (344–346°; o pin dá 340°); aprovado pelo Pedro
   'molhe-leste': 250, // 24/10: a onda abre para WSW; o calculado (215°) segue a face do molhe; aprovado pelo Pedro
   consolacao: 260, // 24/10: pin a sul do forte, numa ponta (geometria ambígua → voltaria aos 270° antigos); 261° na costa; aprovado pelo Pedro
+  leirosa: 285, // 25/10: pin junto ao esporão; 283° a 400 m e 288° a 1 km (o recálculo dá 295°); aprovado pelo Pedro
+  'foz-sizandro': 300, // 25/10: pin na foz (fora da zona interdita); costa 300° (o recálculo dá 310°, 1 km 299°); aprovado pelo Pedro
+  'sao-pedro-moel': 290, // 25/10: spot novo; costa 285–289° na proposta (o recálculo dá 295°, 1 km 287°); aprovado pelo Pedro
+  'porto-novo': 275, // 25/10: spot novo numa concha (267° local, 286° a 1 km); aprovado pelo Pedro
 };
 
 /**

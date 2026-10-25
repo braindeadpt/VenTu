@@ -82,7 +82,7 @@ describe('coastOrientation em src/lib/spots.ts', () => {
     }
   });
 
-  it('o ficheiro de revisão cobre os 185 spots e está aplicado (final = spots.ts)', () => {
+  it('o ficheiro de revisão cobre os 189 spots e está aplicado (final = spots.ts)', () => {
     expect(linhas.length).toBe(spots.length);
     for (const s of spots) expect(porId.get(s.id)?.final, s.id).toBe(s.coastOrientation);
   });
