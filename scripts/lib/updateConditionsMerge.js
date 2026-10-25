@@ -40,6 +40,33 @@ function buildConditionsRow(marineData, weatherData, current, biasRow, confidenc
  *   (retira-se a média de `sea_level_height_msl`, deslocada −0,35 a −0,41 m
  *   no continente); `horaSpot.ts` soma o nível médio do porto IH.
  */
+/**
+ * Chuva e nuvens da hora (#218, §1 da issue): a mesma fonte e a mesma hora do
+ * vento (Open-Meteo forecast, `precipitation` mm/h e `cloud_cover` %).
+ * Formato compacto, porque vai em `forecasts.json` E em `forecasts/<id>.json`
+ * (as duas cópias contam para o orçamento de `public/data`):
+ * - `cloudCover` (% inteiro) sempre que a série o traz: é também a marca de que
+ *   a hora tem dados de tempo;
+ * - `precipitation` (mm/h, 1 casa) só quando chove (> 0 depois de arredondar).
+ *   Sem o campo e com `cloudCover` = 0 mm/h; sem os dois = «sem dados»
+ *   (`horaSpot.ts:horaDeLinha`). Medido a 25/10/2026: +0,50 MB por cópia
+ *   (nomes completos e zeros explícitos custavam +1,08 MB por cópia).
+ * `null` da série nunca vira 0 (como o `uvIndex`).
+ */
+function rainCloudFields(wh, i) {
+  const out = {};
+  const cc = wh.cloud_cover?.[i];
+  if (cc != null && Number.isFinite(Number(cc))) out.cloudCover = Math.max(0, Math.min(100, Math.round(Number(cc))));
+  const pr = wh.precipitation?.[i];
+  if (pr != null && Number.isFinite(Number(pr))) {
+    const mm = Math.round(Math.max(0, Number(pr)) * 10) / 10;
+    if (mm > 0) out.precipitation = mm;
+    // série com chuva mas sem nuvens: o 0 tem de ficar explícito (não há marca)
+    else if (out.cloudCover == null) out.precipitation = 0;
+  }
+  return out;
+}
+
 function mergeForecast(marineData, weatherData) {
   const result = [];
   const mh = marineData.hourly;
@@ -74,6 +101,7 @@ function mergeForecast(marineData, weatherData) {
         Number.isFinite(Number(wh.uv_index[i]))
         ? { uvIndex: Math.round(Number(wh.uv_index[i]) * 10) / 10 }
         : {}),
+      ...rainCloudFields(wh, i),
       tideHeight: tideFromSeries(mh.sea_level_height_msl?.[i], tideMean),
       ...readOceanCurrent(mh, i),
     });
@@ -81,4 +109,4 @@ function mergeForecast(marineData, weatherData) {
   return result;
 }
 
-module.exports = { buildConditionsRow, mergeForecast, readOceanCurrent };
+module.exports = { buildConditionsRow, mergeForecast, rainCloudFields, readOceanCurrent };
