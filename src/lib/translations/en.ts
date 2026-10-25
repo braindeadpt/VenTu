@@ -1660,6 +1660,7 @@ export const translationsEn = {
   windSafety: {
     sideOffshore: 'Offshore component: advanced riders with boat support only',
     offshore: 'Offshore wind: risk of drifting out to sea',
+    soProfissionais: 'Pros only: very strong wind, risk of being lofted or dragged. Small kite, someone ashore and a safe exit',
   },
   spotPageVerdict: spotPageVerdict.en,
   spotPageInstruments: spotPageInstruments.en,

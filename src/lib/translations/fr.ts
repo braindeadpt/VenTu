@@ -1741,6 +1741,7 @@ export const translationsFr = {
   windSafety: {
     sideOffshore: 'Composante offshore : réservé aux confirmés avec bateau de sécurité',
     offshore: 'Vent offshore : risque de dérive vers le large',
+    soProfissionais: 'Réservé aux pros : vent très fort, risque d’être soulevé ou traîné. Petite aile, quelqu’un à terre et sortie sûre',
   },
   spotPageVerdict: spotPageVerdict.fr,
   spotPageInstruments: spotPageInstruments.fr,

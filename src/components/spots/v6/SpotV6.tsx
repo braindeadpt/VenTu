@@ -132,7 +132,7 @@ export default function SpotV6({ spot, nome, local, locale, linhas, agoraMs, fot
   const r = NS[iSel];
   const b = bandaR(r);
   const f = frase(iSel);
-  const { palavra, resto } = palavraEResto(copy, f, b, !!r.semDados);
+  const { palavra, resto } = palavraEResto(copy, f, b, !!r.semDados, !!r.soProfissionais);
   const quandoDia = `${copy.dias[new Date(Date.UTC(+h.t.slice(0, 4), +h.t.slice(5, 7) - 1, +h.t.slice(8, 10))).getUTCDay()]} ${+h.t.slice(8, 10)} ${copy.meses[+h.t.slice(5, 7) - 1]}`;
   const ehAgora = iSel === 0 && !dados.semAgora;
   const porqueQ = ehAgora ? copy.agora : `${diaCurto(copy, h.t)}, ${horaTxt(copy, horaDe(h.t))}`;
@@ -173,6 +173,11 @@ export default function SpotV6({ spot, nome, local, locale, linhas, agoraMs, fot
         faltaTxt={dados.semAgora ? copy.semPrevisao : null}
         semDados={!!r.semDados}
       />
+      {r.soProfissionais ? (
+        <div className="seguranca" data-testid="spot-so-profissionais">
+          <WindSafetyNote level="so-profissionais" locale={locale} className="mt-3" />
+        </div>
+      ) : null}
       {r.seguranca ? (
         <div className="seguranca">
           <WindSafetyNote level={r.seguranca} locale={locale} className="mt-3" />
