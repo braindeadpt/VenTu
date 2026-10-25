@@ -627,6 +627,21 @@
       "warnLevel": null,
       "inStormCone": false
     },
+    "buarcos": {
+      "radar": {
+        "state": "clean",
+        "distKm": 55,
+        "dirDeg": 35,
+        "intensity": "heavy",
+        "approach": {
+          "state": "receding",
+          "deg": 36,
+          "kmh": 17
+        }
+      },
+      "warnLevel": null,
+      "inStormCone": false
+    },
     "figueira-foz": {
       "radar": {
         "state": "over",
@@ -637,6 +652,21 @@
           "state": "approaching",
           "deg": 112,
           "kmh": 71
+        }
+      },
+      "warnLevel": null,
+      "inStormCone": false
+    },
+    "cova-gala-sul": {
+      "radar": {
+        "state": "clean",
+        "distKm": 51,
+        "dirDeg": 49,
+        "intensity": "heavy",
+        "approach": {
+          "state": "receding",
+          "deg": 22,
+          "kmh": 20
         }
       },
       "warnLevel": null,
@@ -667,6 +697,21 @@
           "state": "approaching",
           "deg": 108,
           "kmh": 27
+        }
+      },
+      "warnLevel": null,
+      "inStormCone": false
+    },
+    "sao-pedro-moel": {
+      "radar": {
+        "state": "near",
+        "distKm": 39,
+        "dirDeg": 81,
+        "intensity": "heavy",
+        "approach": {
+          "state": "receding",
+          "deg": 37,
+          "kmh": 28
         }
       },
       "warnLevel": null,
@@ -762,21 +807,6 @@
       "warnLevel": null,
       "inStormCone": false
     },
-    "obidos-lagoon-foz": {
-      "radar": {
-        "state": "near",
-        "distKm": 19,
-        "dirDeg": 144,
-        "intensity": "moderate",
-        "approach": {
-          "state": "receding",
-          "deg": 87,
-          "kmh": 11
-        }
-      },
-      "warnLevel": null,
-      "inStormCone": false
-    },
     "foz-arelho-beach": {
       "radar": {
         "state": "near",
@@ -822,6 +852,21 @@
       "warnLevel": null,
       "inStormCone": false
     },
+    "lagide": {
+      "radar": {
+        "state": "near",
+        "distKm": 35,
+        "dirDeg": 78,
+        "intensity": "heavy",
+        "approach": {
+          "state": "receding",
+          "deg": 42,
+          "kmh": 23
+        }
+      },
+      "warnLevel": null,
+      "inStormCone": false
+    },
     "baleal": {
       "radar": {
         "state": "near",
@@ -837,6 +882,36 @@
       "warnLevel": null,
       "inStormCone": false
     },
+    "baleal-sul": {
+      "radar": {
+        "state": "near",
+        "distKm": 35,
+        "dirDeg": 77,
+        "intensity": "heavy",
+        "approach": {
+          "state": "receding",
+          "deg": 41,
+          "kmh": 22
+        }
+      },
+      "warnLevel": null,
+      "inStormCone": false
+    },
+    "gamboa": {
+      "radar": {
+        "state": "near",
+        "distKm": 37,
+        "dirDeg": 77,
+        "intensity": "heavy",
+        "approach": {
+          "state": "receding",
+          "deg": 41,
+          "kmh": 22
+        }
+      },
+      "warnLevel": null,
+      "inStormCone": false
+    },
     "supertubos": {
       "radar": {
         "state": "over",
@@ -847,6 +922,21 @@
           "state": "receding",
           "deg": 167,
           "kmh": 14
+        }
+      },
+      "warnLevel": null,
+      "inStormCone": false
+    },
+    "molhe-leste": {
+      "radar": {
+        "state": "near",
+        "distKm": 36,
+        "dirDeg": 77,
+        "intensity": "heavy",
+        "approach": {
+          "state": "receding",
+          "deg": 39,
+          "kmh": 23
         }
       },
       "warnLevel": null,
@@ -1110,8 +1200,8 @@
         "intensity": "heavy",
         "approach": {
           "state": "receding",
-          "deg": 168,
-          "kmh": 56
+          "deg": null,
+          "kmh": null
         }
       },
       "warnLevel": null,
@@ -1125,8 +1215,8 @@
         "intensity": "heavy",
         "approach": {
           "state": "receding",
-          "deg": 168,
-          "kmh": 55
+          "deg": null,
+          "kmh": null
         }
       },
       "warnLevel": null,
@@ -1140,8 +1230,8 @@
         "intensity": "heavy",
         "approach": {
           "state": "receding",
-          "deg": 160,
-          "kmh": 55
+          "deg": null,
+          "kmh": null
         }
       },
       "warnLevel": null,
@@ -1185,8 +1275,8 @@
         "intensity": "heavy",
         "approach": {
           "state": "receding",
-          "deg": 152,
-          "kmh": 59
+          "deg": null,
+          "kmh": null
         }
       },
       "warnLevel": null,
@@ -1618,11 +1708,7 @@
         "distKm": 14,
         "dirDeg": 321,
         "intensity": "heavy",
-        "approach": {
-          "state": "receding",
-          "deg": 40,
-          "kmh": 10
-        }
+        "approach": null
       },
       "warnLevel": null,
       "inStormCone": false
@@ -1633,11 +1719,7 @@
         "distKm": 12,
         "dirDeg": 321,
         "intensity": "heavy",
-        "approach": {
-          "state": "receding",
-          "deg": 39,
-          "kmh": 10
-        }
+        "approach": null
       },
       "warnLevel": null,
       "inStormCone": false
@@ -1648,11 +1730,7 @@
         "distKm": 10,
         "dirDeg": 319,
         "intensity": "heavy",
-        "approach": {
-          "state": "receding",
-          "deg": 36,
-          "kmh": 9
-        }
+        "approach": null
       },
       "warnLevel": null,
       "inStormCone": false
@@ -1663,11 +1741,7 @@
         "distKm": 12,
         "dirDeg": 317,
         "intensity": "heavy",
-        "approach": {
-          "state": "receding",
-          "deg": 35,
-          "kmh": 9
-        }
+        "approach": null
       },
       "warnLevel": null,
       "inStormCone": false
@@ -1678,11 +1752,7 @@
         "distKm": 0,
         "dirDeg": 316,
         "intensity": "heavy",
-        "approach": {
-          "state": "receding",
-          "deg": 45,
-          "kmh": 13
-        }
+        "approach": null
       },
       "warnLevel": null,
       "inStormCone": false
@@ -1723,11 +1793,7 @@
         "distKm": 8,
         "dirDeg": 314,
         "intensity": "heavy",
-        "approach": {
-          "state": "receding",
-          "deg": 36,
-          "kmh": 9
-        }
+        "approach": null
       },
       "warnLevel": null,
       "inStormCone": false
@@ -1738,11 +1804,7 @@
         "distKm": 2,
         "dirDeg": 308,
         "intensity": "moderate",
-        "approach": {
-          "state": "receding",
-          "deg": 54,
-          "kmh": 13
-        }
+        "approach": null
       },
       "warnLevel": null,
       "inStormCone": false
@@ -1813,11 +1875,7 @@
         "distKm": 3,
         "dirDeg": 308,
         "intensity": "moderate",
-        "approach": {
-          "state": "receding",
-          "deg": 52,
-          "kmh": 12
-        }
+        "approach": null
       },
       "warnLevel": null,
       "inStormCone": false
@@ -1828,11 +1886,7 @@
         "distKm": 3,
         "dirDeg": 313,
         "intensity": "moderate",
-        "approach": {
-          "state": "receding",
-          "deg": 50,
-          "kmh": 13
-        }
+        "approach": null
       },
       "warnLevel": null,
       "inStormCone": false
@@ -1843,11 +1897,7 @@
         "distKm": 3,
         "dirDeg": 313,
         "intensity": "moderate",
-        "approach": {
-          "state": "receding",
-          "deg": 50,
-          "kmh": 13
-        }
+        "approach": null
       },
       "warnLevel": null,
       "inStormCone": false
@@ -1858,11 +1908,7 @@
         "distKm": 1,
         "dirDeg": 314,
         "intensity": "moderate",
-        "approach": {
-          "state": "receding",
-          "deg": 46,
-          "kmh": 13
-        }
+        "approach": null
       },
       "warnLevel": null,
       "inStormCone": false
@@ -1873,11 +1919,7 @@
         "distKm": 2,
         "dirDeg": 314,
         "intensity": "moderate",
-        "approach": {
-          "state": "receding",
-          "deg": 44,
-          "kmh": 13
-        }
+        "approach": null
       },
       "warnLevel": null,
       "inStormCone": false
@@ -1948,11 +1990,7 @@
         "distKm": 7,
         "dirDeg": 295,
         "intensity": "moderate",
-        "approach": {
-          "state": "receding",
-          "deg": 188,
-          "kmh": 35
-        }
+        "approach": null
       },
       "warnLevel": null,
       "inStormCone": false
@@ -2152,6 +2190,21 @@
       "warnLevel": null,
       "inStormCone": false
     },
+    "porto-novo": {
+      "radar": {
+        "state": "near",
+        "distKm": 27,
+        "dirDeg": 67,
+        "intensity": "moderate",
+        "approach": {
+          "state": "receding",
+          "deg": 14,
+          "kmh": 39
+        }
+      },
+      "warnLevel": null,
+      "inStormCone": false
+    },
     "santa-cruz": {
       "radar": {
         "state": "over",
@@ -2338,11 +2391,7 @@
         "distKm": 3,
         "dirDeg": 312,
         "intensity": "moderate",
-        "approach": {
-          "state": "receding",
-          "deg": 50,
-          "kmh": 13
-        }
+        "approach": null
       },
       "warnLevel": null,
       "inStormCone": false
@@ -2353,11 +2402,7 @@
         "distKm": 4,
         "dirDeg": 304,
         "intensity": "moderate",
-        "approach": {
-          "state": "receding",
-          "deg": 163,
-          "kmh": 53
-        }
+        "approach": null
       },
       "warnLevel": null,
       "inStormCone": false
@@ -2368,11 +2413,7 @@
         "distKm": 5,
         "dirDeg": 302,
         "intensity": "moderate",
-        "approach": {
-          "state": "receding",
-          "deg": 165,
-          "kmh": 51
-        }
+        "approach": null
       },
       "warnLevel": null,
       "inStormCone": false

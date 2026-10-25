@@ -19,6 +19,9 @@
     "uvIndexMax": 3.6,
     "currentSpeed": 0.21,
     "currentDir": 225,
+    "secondarySwellHeight": 0.14,
+    "secondarySwellPeriod": 8.65,
+    "secondarySwellDirection": 207,
     "confidence": "baixa",
     "confidenceDetail": {
       "waveSpread": 0.64,
@@ -99,6 +102,24 @@
       "guarded": true,
       "accessible": true,
       "distKm": 0.3
+    },
+    "observed": {
+      "windSpeedKt": 5,
+      "windDirDeg": 135,
+      "windCardinal": "SE",
+      "windCardinalEn": "SE",
+      "stationName": "Viana Do Castelo - Fonte Louçã (CIM)",
+      "distanceKm": 12,
+      "observedAt": "2026-10-25T12:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Viana Do Castelo - Fonte Louçã (CIM)",
+      "source": "ipma",
+      "me": 4.9,
+      "mae": 5.2,
+      "rmse": 6.3,
+      "n": 444
     }
   },
   "vila-praia-ancora": {
@@ -201,6 +222,24 @@
       "guarded": true,
       "accessible": true,
       "distKm": 1.3
+    },
+    "observed": {
+      "windSpeedKt": 5,
+      "windDirDeg": 135,
+      "windCardinal": "SE",
+      "windCardinalEn": "SE",
+      "stationName": "Viana Do Castelo - Fonte Louçã (CIM)",
+      "distanceKm": 8.6,
+      "observedAt": "2026-10-25T12:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Viana Do Castelo - Fonte Louçã (CIM)",
+      "source": "ipma",
+      "me": 4.9,
+      "mae": 5.2,
+      "rmse": 6.3,
+      "n": 444
     }
   },
   "afife": {
@@ -309,7 +348,6 @@
       "windDirDeg": 90,
       "windCardinal": "E",
       "windCardinalEn": "E",
-      "tempC": 12.2,
       "stationName": "Viana Castelo, Chafé",
       "distanceKm": 15.4,
       "observedAt": "2026-10-24T21:00:00.000Z",
@@ -353,57 +391,7 @@
       "combinedSpreadPct": 0.417,
       "degraded": true
     },
-    "dailyConfidence": [
-      {
-        "date": "2026-09-09",
-        "confidence": "baixa",
-        "waveSpread": 0.68,
-        "windSpread": 0.74,
-        "degraded": false
-      },
-      {
-        "date": "2026-09-10",
-        "confidence": "baixa",
-        "waveSpread": 0.67,
-        "windSpread": 1.31,
-        "degraded": false
-      },
-      {
-        "date": "2026-09-11",
-        "confidence": "média",
-        "waveSpread": 0.46,
-        "windSpread": 0.37,
-        "degraded": false
-      },
-      {
-        "date": "2026-09-12",
-        "confidence": "baixa",
-        "waveSpread": 0.41,
-        "windSpread": 0.92,
-        "degraded": false
-      },
-      {
-        "date": "2026-09-13",
-        "confidence": "baixa",
-        "waveSpread": 0.45,
-        "windSpread": 1.05,
-        "degraded": false
-      },
-      {
-        "date": "2026-09-14",
-        "confidence": "baixa",
-        "waveSpread": 0.42,
-        "windSpread": 1.79,
-        "degraded": false
-      },
-      {
-        "date": "2026-09-15",
-        "confidence": "baixa",
-        "waveSpread": 0.62,
-        "windSpread": 0.68,
-        "degraded": false
-      }
-    ],
+    "dailyConfidence": [],
     "updatedAt": "2026-09-09T23:14:25.267Z",
     "airQualityIndex": 29,
     "airQualityAt": "2026-09-29T16:00",
@@ -1035,7 +1023,6 @@
       "windDirDeg": 90,
       "windCardinal": "E",
       "windCardinalEn": "E",
-      "tempC": 12.2,
       "stationName": "Viana Castelo, Chafé",
       "distanceKm": 12.9,
       "observedAt": "2026-10-24T21:00:00.000Z",
@@ -1079,57 +1066,7 @@
       "combinedSpreadPct": 0.872,
       "degraded": true
     },
-    "dailyConfidence": [
-      {
-        "date": "2026-09-09",
-        "confidence": "baixa",
-        "waveSpread": 0.95,
-        "windSpread": 2.59,
-        "degraded": false
-      },
-      {
-        "date": "2026-09-10",
-        "confidence": "baixa",
-        "waveSpread": 0.81,
-        "windSpread": 1.73,
-        "degraded": false
-      },
-      {
-        "date": "2026-09-11",
-        "confidence": "baixa",
-        "waveSpread": 0.66,
-        "windSpread": 1.99,
-        "degraded": false
-      },
-      {
-        "date": "2026-09-12",
-        "confidence": "baixa",
-        "waveSpread": 0.51,
-        "windSpread": 0.96,
-        "degraded": false
-      },
-      {
-        "date": "2026-09-13",
-        "confidence": "baixa",
-        "waveSpread": 0.29,
-        "windSpread": 1.39,
-        "degraded": false
-      },
-      {
-        "date": "2026-09-14",
-        "confidence": "baixa",
-        "waveSpread": 0.3,
-        "windSpread": 2.04,
-        "degraded": false
-      },
-      {
-        "date": "2026-09-15",
-        "confidence": "média",
-        "waveSpread": 0.65,
-        "windSpread": 0.11,
-        "degraded": false
-      }
-    ],
+    "dailyConfidence": [],
     "updatedAt": "2026-09-09T23:14:28.231Z",
     "airQualityIndex": 31,
     "airQualityAt": "2026-09-29T16:00",
@@ -1156,7 +1093,6 @@
       "windDirDeg": 90,
       "windCardinal": "E",
       "windCardinalEn": "E",
-      "tempC": 12.2,
       "stationName": "Viana Castelo, Chafé",
       "distanceKm": 11.8,
       "observedAt": "2026-10-24T21:00:00.000Z",
@@ -1277,7 +1213,6 @@
       "windDirDeg": 90,
       "windCardinal": "E",
       "windCardinalEn": "E",
-      "tempC": 12.2,
       "stationName": "Viana Castelo, Chafé",
       "distanceKm": 14,
       "observedAt": "2026-10-24T21:00:00.000Z",
@@ -1398,7 +1333,6 @@
       "windDirDeg": 90,
       "windCardinal": "E",
       "windCardinalEn": "E",
-      "tempC": 9,
       "stationName": "Barcelos (CIM)",
       "distanceKm": 12.4,
       "observedAt": "2026-09-09T21:00:00.000Z",
@@ -4919,6 +4853,127 @@
       "n": 667
     }
   },
+  "buarcos": {
+    "waveHeight": 1.8,
+    "wavePeriod": 10.9,
+    "waveDirection": 318,
+    "swellHeight": 1.8,
+    "swellPeriod": 9.1,
+    "swellDirection": 318,
+    "windWaveHeight": 0,
+    "wavePowerKw": 14.742,
+    "windSpeed": 2.92,
+    "windDirection": 308,
+    "windGust": 7,
+    "waterTemp": 15.7,
+    "tideHeight": 1.323,
+    "tideStatus": "high",
+    "tideLabel": "Maré Alta",
+    "uvIndex": 4,
+    "uvIndexMax": 4.3,
+    "currentSpeed": 0.05,
+    "currentDir": 90,
+    "confidence": "baixa",
+    "confidenceDetail": {
+      "waveSpread": 1.08,
+      "windSpread": 1.16,
+      "waveSpreadPct": 0.607,
+      "windSpreadPct": 0.694,
+      "combinedSpreadPct": 0.65,
+      "degraded": true
+    },
+    "dailyConfidence": [
+      {
+        "date": "2026-10-25",
+        "confidence": "baixa",
+        "waveSpread": 0.94,
+        "windSpread": 0.4,
+        "degraded": false
+      },
+      {
+        "date": "2026-10-26",
+        "confidence": "baixa",
+        "waveSpread": 1.05,
+        "windSpread": 0.64,
+        "degraded": false
+      },
+      {
+        "date": "2026-10-27",
+        "confidence": "baixa",
+        "waveSpread": 1.01,
+        "windSpread": 1.61,
+        "degraded": false
+      },
+      {
+        "date": "2026-10-28",
+        "confidence": "baixa",
+        "waveSpread": 1.27,
+        "windSpread": 0.8,
+        "degraded": false
+      },
+      {
+        "date": "2026-10-29",
+        "confidence": "média",
+        "waveSpread": 0.39,
+        "windSpread": 0.22,
+        "degraded": false
+      },
+      {
+        "date": "2026-10-30",
+        "confidence": "alta",
+        "waveSpread": 0.22,
+        "windSpread": 0.06,
+        "degraded": false
+      },
+      {
+        "date": "2026-10-31",
+        "confidence": "média",
+        "waveSpread": 0.66,
+        "windSpread": 0.74,
+        "degraded": false
+      }
+    ],
+    "updatedAt": "2026-10-25T14:09:09.329Z",
+    "airQualityIndex": 26,
+    "airQualityAt": "2026-10-25T14:00+00:00",
+    "waterQuality": {
+      "beachId": 44,
+      "beach": "TAMARGUEIRA",
+      "advice": 1,
+      "adviceTitlePt": "Adequada",
+      "adviceTitleEn": "Adequate",
+      "adviceAt": 1788739200000,
+      "motive": null,
+      "lastSampleAt": 1788739200000,
+      "annualClass": 1,
+      "annualClassDesc": "Excelente",
+      "seasonStart": 1781308800000,
+      "seasonEnd": 1789257600000,
+      "blueFlag": true,
+      "guarded": true,
+      "accessible": true,
+      "distKm": 0.4
+    },
+    "observed": {
+      "windSpeedKt": 7,
+      "windDirDeg": 270,
+      "windCardinal": "W",
+      "windCardinalEn": "W",
+      "tempC": 18.8,
+      "stationName": "Figueira da Foz, Vila Verde",
+      "distanceKm": 6.9,
+      "observedAt": "2026-10-25T13:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Figueira da Foz, Vila Verde",
+      "source": "ipma",
+      "me": -0.6,
+      "mae": 1.7,
+      "rmse": 2.3,
+      "n": 677
+    }
+  },
   "figueira-foz": {
     "waveHeight": 1.56,
     "wavePeriod": 7.35,
@@ -5038,6 +5093,127 @@
       "mae": 1.8,
       "rmse": 2.3,
       "n": 667
+    }
+  },
+  "cova-gala-sul": {
+    "waveHeight": 1.8,
+    "wavePeriod": 10.9,
+    "waveDirection": 318,
+    "swellHeight": 1.8,
+    "swellPeriod": 9.1,
+    "swellDirection": 318,
+    "windWaveHeight": 0,
+    "wavePowerKw": 14.742,
+    "windSpeed": 2.92,
+    "windDirection": 308,
+    "windGust": 7,
+    "waterTemp": 15.7,
+    "tideHeight": 1.323,
+    "tideStatus": "high",
+    "tideLabel": "Maré Alta",
+    "uvIndex": 4,
+    "uvIndexMax": 4.3,
+    "currentSpeed": 0.05,
+    "currentDir": 90,
+    "confidence": "baixa",
+    "confidenceDetail": {
+      "waveSpread": 0.82,
+      "windSpread": 1.28,
+      "waveSpreadPct": 0.458,
+      "windSpreadPct": 0.675,
+      "combinedSpreadPct": 0.566,
+      "degraded": true
+    },
+    "dailyConfidence": [
+      {
+        "date": "2026-10-25",
+        "confidence": "média",
+        "waveSpread": 0.73,
+        "windSpread": 0.34,
+        "degraded": false
+      },
+      {
+        "date": "2026-10-26",
+        "confidence": "baixa",
+        "waveSpread": 0.82,
+        "windSpread": 0.75,
+        "degraded": false
+      },
+      {
+        "date": "2026-10-27",
+        "confidence": "baixa",
+        "waveSpread": 0.7,
+        "windSpread": 1.65,
+        "degraded": false
+      },
+      {
+        "date": "2026-10-28",
+        "confidence": "baixa",
+        "waveSpread": 1.04,
+        "windSpread": 0.89,
+        "degraded": false
+      },
+      {
+        "date": "2026-10-29",
+        "confidence": "média",
+        "waveSpread": 0.43,
+        "windSpread": 0.18,
+        "degraded": false
+      },
+      {
+        "date": "2026-10-30",
+        "confidence": "alta",
+        "waveSpread": 0.25,
+        "windSpread": 0.1,
+        "degraded": false
+      },
+      {
+        "date": "2026-10-31",
+        "confidence": "baixa",
+        "waveSpread": 0.53,
+        "windSpread": 1.34,
+        "degraded": false
+      }
+    ],
+    "updatedAt": "2026-10-25T14:09:09.981Z",
+    "airQualityIndex": 26,
+    "airQualityAt": "2026-10-25T14:00+00:00",
+    "waterQuality": {
+      "beachId": 171,
+      "beach": "COVA-GALA",
+      "advice": 1,
+      "adviceTitlePt": "Adequada",
+      "adviceTitleEn": "Adequate",
+      "adviceAt": 1788739200000,
+      "motive": null,
+      "lastSampleAt": 1788739200000,
+      "annualClass": 1,
+      "annualClassDesc": "Excelente",
+      "seasonStart": 1781308800000,
+      "seasonEnd": 1789257600000,
+      "blueFlag": false,
+      "guarded": true,
+      "accessible": false,
+      "distKm": 1
+    },
+    "observed": {
+      "windSpeedKt": 7,
+      "windDirDeg": 270,
+      "windCardinal": "W",
+      "windCardinalEn": "W",
+      "tempC": 18.8,
+      "stationName": "Figueira da Foz, Vila Verde",
+      "distanceKm": 5.8,
+      "observedAt": "2026-10-25T13:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Figueira da Foz, Vila Verde",
+      "source": "ipma",
+      "me": -0.6,
+      "mae": 1.7,
+      "rmse": 2.3,
+      "n": 677
     }
   },
   "leirosa": {
@@ -5280,6 +5456,127 @@
       "mae": 2.5,
       "rmse": 3.2,
       "n": 326
+    }
+  },
+  "sao-pedro-moel": {
+    "waveHeight": 2.2,
+    "wavePeriod": 11.1,
+    "waveDirection": 323,
+    "swellHeight": 2.2,
+    "swellPeriod": 9.3,
+    "swellDirection": 323,
+    "windWaveHeight": 0,
+    "wavePowerKw": 22.506000000000004,
+    "windSpeed": 2.47,
+    "windDirection": 328,
+    "windGust": 7.1,
+    "waterTemp": 15.6,
+    "tideHeight": 1.293,
+    "tideStatus": "high",
+    "tideLabel": "Maré Alta",
+    "uvIndex": 3.9,
+    "uvIndexMax": 4.4,
+    "currentSpeed": 0.05,
+    "currentDir": 180,
+    "confidence": "média",
+    "confidenceDetail": {
+      "waveSpread": 0.12,
+      "windSpread": 0.6,
+      "waveSpreadPct": 0.06,
+      "windSpreadPct": 0.304,
+      "combinedSpreadPct": 0.182,
+      "degraded": true
+    },
+    "dailyConfidence": [
+      {
+        "date": "2026-10-25",
+        "confidence": "média",
+        "waveSpread": 0.11,
+        "windSpread": 0.81,
+        "degraded": false
+      },
+      {
+        "date": "2026-10-26",
+        "confidence": "média",
+        "waveSpread": 0.24,
+        "windSpread": 0.44,
+        "degraded": false
+      },
+      {
+        "date": "2026-10-27",
+        "confidence": "baixa",
+        "waveSpread": 0.18,
+        "windSpread": 2.08,
+        "degraded": false
+      },
+      {
+        "date": "2026-10-28",
+        "confidence": "baixa",
+        "waveSpread": 0.49,
+        "windSpread": 1.31,
+        "degraded": false
+      },
+      {
+        "date": "2026-10-29",
+        "confidence": "média",
+        "waveSpread": 0.27,
+        "windSpread": 0.69,
+        "degraded": false
+      },
+      {
+        "date": "2026-10-30",
+        "confidence": "média",
+        "waveSpread": 0.28,
+        "windSpread": 0.17,
+        "degraded": false
+      },
+      {
+        "date": "2026-10-31",
+        "confidence": "média",
+        "waveSpread": 0.07,
+        "windSpread": 1.29,
+        "degraded": false
+      }
+    ],
+    "updatedAt": "2026-10-25T14:09:10.956Z",
+    "airQualityIndex": 28,
+    "airQualityAt": "2026-10-25T14:00+00:00",
+    "waterQuality": {
+      "beachId": 337,
+      "beach": "S. PEDRO DE MOEL",
+      "advice": 1,
+      "adviceTitlePt": "Adequada",
+      "adviceTitleEn": "Adequate",
+      "adviceAt": 1787702400000,
+      "motive": null,
+      "lastSampleAt": 1787702400000,
+      "annualClass": 1,
+      "annualClassDesc": "Excelente",
+      "seasonStart": 1781308800000,
+      "seasonEnd": 1789257600000,
+      "blueFlag": true,
+      "guarded": true,
+      "accessible": false,
+      "distKm": 0.3
+    },
+    "observed": {
+      "windSpeedKt": 3,
+      "windDirDeg": 270,
+      "windCardinal": "W",
+      "windCardinalEn": "W",
+      "tempC": 18.2,
+      "stationName": "São Pedro de Moel",
+      "distanceKm": 1.1,
+      "observedAt": "2026-10-25T13:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "São Pedro de Moel",
+      "source": "ipma",
+      "me": 1.8,
+      "mae": 2.5,
+      "rmse": 3.1,
+      "n": 333
     }
   },
   "castelo-bode": {
@@ -5544,127 +5841,6 @@
       "altKm": 0
     }
   },
-  "foz-arelho": {
-    "waveHeight": 2.02,
-    "wavePeriod": 7.45,
-    "waveDirection": 334,
-    "swellHeight": 1.88,
-    "swellPeriod": 6.65,
-    "swellDirection": 332,
-    "windWaveHeight": 0.64,
-    "wavePowerKw": 11.75188,
-    "windSpeed": 3.51,
-    "windDirection": 355,
-    "windGust": 8.1,
-    "waterTemp": 17,
-    "tideHeight": 0.02,
-    "tideStatus": "rising",
-    "tideLabel": "Maré a Subir",
-    "uvIndex": 2,
-    "uvIndexMax": 5,
-    "currentSpeed": 0.27,
-    "currentDir": 248,
-    "confidence": "média",
-    "confidenceDetail": {
-      "waveSpread": 0.16,
-      "windSpread": 1.53,
-      "waveSpreadPct": 0.119,
-      "windSpreadPct": 0.286,
-      "combinedSpreadPct": 0.202,
-      "degraded": true
-    },
-    "dailyConfidence": [
-      {
-        "date": "2026-09-09",
-        "confidence": "média",
-        "waveSpread": 0.17,
-        "windSpread": 1.29,
-        "degraded": false
-      },
-      {
-        "date": "2026-09-10",
-        "confidence": "média",
-        "waveSpread": 0.15,
-        "windSpread": 1.36,
-        "degraded": false
-      },
-      {
-        "date": "2026-09-11",
-        "confidence": "média",
-        "waveSpread": 0.23,
-        "windSpread": 1.22,
-        "degraded": false
-      },
-      {
-        "date": "2026-09-12",
-        "confidence": "baixa",
-        "waveSpread": 0.08,
-        "windSpread": 1.18,
-        "degraded": false
-      },
-      {
-        "date": "2026-09-13",
-        "confidence": "baixa",
-        "waveSpread": 0.16,
-        "windSpread": 2.18,
-        "degraded": false
-      },
-      {
-        "date": "2026-09-14",
-        "confidence": "baixa",
-        "waveSpread": 0.24,
-        "windSpread": 1.27,
-        "degraded": false
-      },
-      {
-        "date": "2026-09-15",
-        "confidence": "baixa",
-        "waveSpread": 0.63,
-        "windSpread": 1.7,
-        "degraded": false
-      }
-    ],
-    "updatedAt": "2026-09-09T23:14:41.471Z",
-    "airQualityIndex": 33,
-    "airQualityAt": "2026-09-29T16:00",
-    "waterQuality": {
-      "beachId": 47,
-      "beach": "FOZ DO ARELHO-LAGOA",
-      "advice": 1,
-      "adviceTitlePt": "Adequada",
-      "adviceTitleEn": "Adequate",
-      "adviceAt": 1787875200000,
-      "motive": null,
-      "lastSampleAt": 1787875200000,
-      "annualClass": 1,
-      "annualClassDesc": "Excelente",
-      "seasonStart": 1781308800000,
-      "seasonEnd": 1789257600000,
-      "blueFlag": true,
-      "guarded": true,
-      "accessible": true,
-      "distKm": 1.2
-    },
-    "observed": {
-      "windSpeedKt": 1,
-      "windDirDeg": 45,
-      "windCardinal": "NE",
-      "windCardinalEn": "NE",
-      "tempC": 12,
-      "stationName": "Rio Maior",
-      "distanceKm": 25.3,
-      "observedAt": "2026-10-24T21:00:00.000Z",
-      "source": "ipma"
-    },
-    "windBias": {
-      "station": "Rio Maior",
-      "source": "ipma",
-      "me": -0.9,
-      "mae": 1.7,
-      "rmse": 2.2,
-      "n": 402
-    }
-  },
   "foil-foz-arelho": {
     "waveHeight": 2.02,
     "wavePeriod": 7.45,
@@ -5771,7 +5947,6 @@
       "windDirDeg": 45,
       "windCardinal": "NE",
       "windCardinalEn": "NE",
-      "tempC": 12,
       "stationName": "Rio Maior",
       "distanceKm": 25.3,
       "observedAt": "2026-10-24T21:00:00.000Z",
@@ -5869,12 +6044,29 @@
     "updatedAt": "2026-09-09T23:14:42.183Z",
     "airQualityIndex": 33,
     "airQualityAt": "2026-09-29T16:00",
+    "waterQuality": {
+      "beachId": 47,
+      "beach": "FOZ DO ARELHO-LAGOA",
+      "advice": 1,
+      "adviceTitlePt": "Adequada",
+      "adviceTitleEn": "Adequate",
+      "adviceAt": 1787875200000,
+      "motive": null,
+      "lastSampleAt": 1787875200000,
+      "annualClass": 1,
+      "annualClassDesc": "Excelente",
+      "seasonStart": 1781308800000,
+      "seasonEnd": 1789257600000,
+      "blueFlag": true,
+      "guarded": true,
+      "accessible": true,
+      "distKm": 3
+    },
     "observed": {
       "windSpeedKt": 1,
       "windDirDeg": 45,
       "windCardinal": "NE",
       "windCardinalEn": "NE",
-      "tempC": 12,
       "stationName": "Rio Maior",
       "distanceKm": 25.3,
       "observedAt": "2026-10-24T21:00:00.000Z",
@@ -5995,7 +6187,6 @@
       "windDirDeg": 45,
       "windCardinal": "NE",
       "windCardinalEn": "NE",
-      "tempC": 12,
       "stationName": "Rio Maior",
       "distanceKm": 27.2,
       "observedAt": "2026-10-24T21:00:00.000Z",
@@ -6110,6 +6301,24 @@
       "guarded": true,
       "accessible": false,
       "distKm": 1.7
+    },
+    "observed": {
+      "windSpeedKt": 4,
+      "windDirDeg": 225,
+      "windCardinal": "SW",
+      "windCardinalEn": "SW",
+      "stationName": "Cabo Carvoeiro",
+      "distanceKm": 10.2,
+      "observedAt": "2026-10-25T12:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Cabo Carvoeiro",
+      "source": "ipma",
+      "me": 2.6,
+      "mae": 3.5,
+      "rmse": 4.3,
+      "n": 1828
     }
   },
   "almagreira": {
@@ -6218,7 +6427,6 @@
       "windDirDeg": 90,
       "windCardinal": "E",
       "windCardinalEn": "E",
-      "tempC": 8.1,
       "stationName": "Santa Cruz (Aeródromo)",
       "distanceKm": 28.7,
       "observedAt": "2026-10-24T21:00:00.000Z",
@@ -6231,6 +6439,126 @@
       "mae": 1.8,
       "rmse": 2.3,
       "n": 3209
+    }
+  },
+  "lagide": {
+    "waveHeight": 1.92,
+    "wavePeriod": 10.9,
+    "waveDirection": 323,
+    "swellHeight": 1.92,
+    "swellPeriod": 9.15,
+    "swellDirection": 324,
+    "windWaveHeight": 0,
+    "wavePowerKw": 16.86528,
+    "windSpeed": 3.18,
+    "windDirection": 336,
+    "windGust": 5.5,
+    "waterTemp": 15.8,
+    "tideHeight": 1.3,
+    "tideStatus": "high",
+    "tideLabel": "Maré Alta",
+    "uvIndex": 4.2,
+    "uvIndexMax": 4.5,
+    "currentSpeed": 0.16,
+    "currentDir": 18,
+    "confidence": "média",
+    "confidenceDetail": {
+      "waveSpread": 0.56,
+      "windSpread": 0.63,
+      "waveSpreadPct": 0.315,
+      "windSpreadPct": 0.263,
+      "combinedSpreadPct": 0.289,
+      "degraded": true
+    },
+    "dailyConfidence": [
+      {
+        "date": "2026-10-25",
+        "confidence": "média",
+        "waveSpread": 0.57,
+        "windSpread": 0.22,
+        "degraded": false
+      },
+      {
+        "date": "2026-10-26",
+        "confidence": "média",
+        "waveSpread": 0.57,
+        "windSpread": 0.5,
+        "degraded": false
+      },
+      {
+        "date": "2026-10-27",
+        "confidence": "baixa",
+        "waveSpread": 0.69,
+        "windSpread": 1.32,
+        "degraded": false
+      },
+      {
+        "date": "2026-10-28",
+        "confidence": "baixa",
+        "waveSpread": 1.02,
+        "windSpread": 1,
+        "degraded": false
+      },
+      {
+        "date": "2026-10-29",
+        "confidence": "baixa",
+        "waveSpread": 0.47,
+        "windSpread": 0.9,
+        "degraded": false
+      },
+      {
+        "date": "2026-10-30",
+        "confidence": "baixa",
+        "waveSpread": 0.31,
+        "windSpread": 1.01,
+        "degraded": false
+      },
+      {
+        "date": "2026-10-31",
+        "confidence": "média",
+        "waveSpread": 0.63,
+        "windSpread": 0.14,
+        "degraded": false
+      }
+    ],
+    "updatedAt": "2026-10-25T14:09:13.557Z",
+    "airQualityIndex": 29,
+    "airQualityAt": "2026-10-25T14:00+00:00",
+    "waterQuality": {
+      "beachId": 466,
+      "beach": "BALEAL-NORTE",
+      "advice": 1,
+      "adviceTitlePt": "Adequada",
+      "adviceTitleEn": "Adequate",
+      "adviceAt": 1787616000000,
+      "motive": null,
+      "lastSampleAt": 1787616000000,
+      "annualClass": 1,
+      "annualClassDesc": "Excelente",
+      "seasonStart": 1780272000000,
+      "seasonEnd": 1789430400000,
+      "blueFlag": true,
+      "guarded": true,
+      "accessible": false,
+      "distKm": 0.2
+    },
+    "observed": {
+      "windSpeedKt": 4,
+      "windDirDeg": 225,
+      "windCardinal": "SW",
+      "windCardinalEn": "SW",
+      "stationName": "Cabo Carvoeiro",
+      "distanceKm": 6.2,
+      "observedAt": "2026-10-25T12:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Cabo Carvoeiro",
+      "source": "ipma",
+      "me": 2.6,
+      "mae": 3.5,
+      "rmse": 4.3,
+      "n": 1828
     }
   },
   "baleal": {
@@ -6339,7 +6667,6 @@
       "windDirDeg": 90,
       "windCardinal": "E",
       "windCardinalEn": "E",
-      "tempC": 8.1,
       "stationName": "Santa Cruz (Aeródromo)",
       "distanceKm": 27.6,
       "observedAt": "2026-10-24T21:00:00.000Z",
@@ -6390,6 +6717,246 @@
       "reason": "wmo-only",
       "attachedKm": 24,
       "altKm": 0
+    }
+  },
+  "baleal-sul": {
+    "waveHeight": 1.92,
+    "wavePeriod": 10.9,
+    "waveDirection": 323,
+    "swellHeight": 1.92,
+    "swellPeriod": 9.15,
+    "swellDirection": 324,
+    "windWaveHeight": 0,
+    "wavePowerKw": 16.86528,
+    "windSpeed": 3.18,
+    "windDirection": 336,
+    "windGust": 5.5,
+    "waterTemp": 15.8,
+    "tideHeight": 1.3,
+    "tideStatus": "high",
+    "tideLabel": "Maré Alta",
+    "uvIndex": 4.2,
+    "uvIndexMax": 4.5,
+    "currentSpeed": 0.16,
+    "currentDir": 18,
+    "confidence": "média",
+    "confidenceDetail": {
+      "waveSpread": 0.4,
+      "windSpread": 0.63,
+      "waveSpreadPct": 0.211,
+      "windSpreadPct": 0.263,
+      "combinedSpreadPct": 0.237,
+      "degraded": true
+    },
+    "dailyConfidence": [
+      {
+        "date": "2026-10-25",
+        "confidence": "alta",
+        "waveSpread": 0.33,
+        "windSpread": 0.22,
+        "degraded": false
+      },
+      {
+        "date": "2026-10-26",
+        "confidence": "média",
+        "waveSpread": 0.34,
+        "windSpread": 0.5,
+        "degraded": false
+      },
+      {
+        "date": "2026-10-27",
+        "confidence": "média",
+        "waveSpread": 0.26,
+        "windSpread": 1.32,
+        "degraded": false
+      },
+      {
+        "date": "2026-10-28",
+        "confidence": "média",
+        "waveSpread": 0.31,
+        "windSpread": 1,
+        "degraded": false
+      },
+      {
+        "date": "2026-10-29",
+        "confidence": "baixa",
+        "waveSpread": 0.47,
+        "windSpread": 0.9,
+        "degraded": false
+      },
+      {
+        "date": "2026-10-30",
+        "confidence": "baixa",
+        "waveSpread": 0.31,
+        "windSpread": 1.01,
+        "degraded": false
+      },
+      {
+        "date": "2026-10-31",
+        "confidence": "média",
+        "waveSpread": 0.63,
+        "windSpread": 0.14,
+        "degraded": false
+      }
+    ],
+    "updatedAt": "2026-10-25T14:09:14.206Z",
+    "airQualityIndex": 29,
+    "airQualityAt": "2026-10-25T14:00+00:00",
+    "waterQuality": {
+      "beachId": 33,
+      "beach": "COVA DA ALFARROBA",
+      "advice": 1,
+      "adviceTitlePt": "Adequada",
+      "adviceTitleEn": "Adequate",
+      "adviceAt": 1787616000000,
+      "motive": null,
+      "lastSampleAt": 1787616000000,
+      "annualClass": 1,
+      "annualClassDesc": "Excelente",
+      "seasonStart": 1780272000000,
+      "seasonEnd": 1789430400000,
+      "blueFlag": true,
+      "guarded": true,
+      "accessible": false,
+      "distKm": 0.8
+    },
+    "observed": {
+      "windSpeedKt": 4,
+      "windDirDeg": 225,
+      "windCardinal": "SW",
+      "windCardinalEn": "SW",
+      "stationName": "Cabo Carvoeiro",
+      "distanceKm": 5,
+      "observedAt": "2026-10-25T12:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Cabo Carvoeiro",
+      "source": "ipma",
+      "me": 2.6,
+      "mae": 3.5,
+      "rmse": 4.3,
+      "n": 1828
+    }
+  },
+  "gamboa": {
+    "waveHeight": 1.92,
+    "wavePeriod": 10.9,
+    "waveDirection": 323,
+    "swellHeight": 1.92,
+    "swellPeriod": 9.15,
+    "swellDirection": 324,
+    "windWaveHeight": 0,
+    "wavePowerKw": 16.86528,
+    "windSpeed": 3.18,
+    "windDirection": 336,
+    "windGust": 5.5,
+    "waterTemp": 15.8,
+    "tideHeight": 1.3,
+    "tideStatus": "high",
+    "tideLabel": "Maré Alta",
+    "uvIndex": 4.2,
+    "uvIndexMax": 4.5,
+    "currentSpeed": 0.16,
+    "currentDir": 18,
+    "confidence": "média",
+    "confidenceDetail": {
+      "waveSpread": 0.44,
+      "windSpread": 0.63,
+      "waveSpreadPct": 0.233,
+      "windSpreadPct": 0.263,
+      "combinedSpreadPct": 0.248,
+      "degraded": true
+    },
+    "dailyConfidence": [
+      {
+        "date": "2026-10-25",
+        "confidence": "alta",
+        "waveSpread": 0.37,
+        "windSpread": 0.22,
+        "degraded": false
+      },
+      {
+        "date": "2026-10-26",
+        "confidence": "média",
+        "waveSpread": 0.41,
+        "windSpread": 0.5,
+        "degraded": false
+      },
+      {
+        "date": "2026-10-27",
+        "confidence": "média",
+        "waveSpread": 0.25,
+        "windSpread": 1.32,
+        "degraded": false
+      },
+      {
+        "date": "2026-10-28",
+        "confidence": "média",
+        "waveSpread": 0.29,
+        "windSpread": 1,
+        "degraded": false
+      },
+      {
+        "date": "2026-10-29",
+        "confidence": "baixa",
+        "waveSpread": 0.49,
+        "windSpread": 0.9,
+        "degraded": false
+      },
+      {
+        "date": "2026-10-30",
+        "confidence": "baixa",
+        "waveSpread": 0.31,
+        "windSpread": 1.01,
+        "degraded": false
+      },
+      {
+        "date": "2026-10-31",
+        "confidence": "média",
+        "waveSpread": 0.6,
+        "windSpread": 0.14,
+        "degraded": false
+      }
+    ],
+    "updatedAt": "2026-10-25T14:09:14.532Z",
+    "airQualityIndex": 29,
+    "airQualityAt": "2026-10-25T14:00+00:00",
+    "waterQuality": {
+      "beachId": 254,
+      "beach": "PENICHE DE CIMA",
+      "advice": 1,
+      "adviceTitlePt": "Adequada",
+      "adviceTitleEn": "Adequate",
+      "adviceAt": 1787616000000,
+      "motive": null,
+      "lastSampleAt": 1787616000000,
+      "annualClass": 1,
+      "annualClassDesc": "Excelente",
+      "seasonStart": 1780272000000,
+      "seasonEnd": 1789430400000,
+      "blueFlag": false,
+      "guarded": true,
+      "accessible": false,
+      "distKm": 0.1
+    },
+    "observed": {
+      "windSpeedKt": 4,
+      "windDirDeg": 225,
+      "windCardinal": "SW",
+      "windCardinalEn": "SW",
+      "stationName": "Cabo Carvoeiro",
+      "distanceKm": 3.8,
+      "observedAt": "2026-10-25T12:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Cabo Carvoeiro",
+      "source": "ipma",
+      "me": 2.6,
+      "mae": 3.5,
+      "rmse": 4.3,
+      "n": 1828
     }
   },
   "supertubos": {
@@ -6498,7 +7065,6 @@
       "windDirDeg": 90,
       "windCardinal": "E",
       "windCardinalEn": "E",
-      "tempC": 8.1,
       "stationName": "Santa Cruz (Aeródromo)",
       "distanceKm": 24.3,
       "observedAt": "2026-10-24T21:00:00.000Z",
@@ -6511,6 +7077,126 @@
       "mae": 1.8,
       "rmse": 2.3,
       "n": 3209
+    }
+  },
+  "molhe-leste": {
+    "waveHeight": 1.92,
+    "wavePeriod": 10.9,
+    "waveDirection": 323,
+    "swellHeight": 1.92,
+    "swellPeriod": 9.15,
+    "swellDirection": 324,
+    "windWaveHeight": 0,
+    "wavePowerKw": 16.86528,
+    "windSpeed": 3.18,
+    "windDirection": 336,
+    "windGust": 5.5,
+    "waterTemp": 15.8,
+    "tideHeight": 1.3,
+    "tideStatus": "high",
+    "tideLabel": "Maré Alta",
+    "uvIndex": 4.2,
+    "uvIndexMax": 4.5,
+    "currentSpeed": 0.16,
+    "currentDir": 18,
+    "confidence": "média",
+    "confidenceDetail": {
+      "waveSpread": 0.42,
+      "windSpread": 0.63,
+      "waveSpreadPct": 0.237,
+      "windSpreadPct": 0.263,
+      "combinedSpreadPct": 0.25,
+      "degraded": true
+    },
+    "dailyConfidence": [
+      {
+        "date": "2026-10-25",
+        "confidence": "média",
+        "waveSpread": 0.47,
+        "windSpread": 0.22,
+        "degraded": false
+      },
+      {
+        "date": "2026-10-26",
+        "confidence": "média",
+        "waveSpread": 0.65,
+        "windSpread": 0.5,
+        "degraded": false
+      },
+      {
+        "date": "2026-10-27",
+        "confidence": "baixa",
+        "waveSpread": 0.54,
+        "windSpread": 1.32,
+        "degraded": false
+      },
+      {
+        "date": "2026-10-28",
+        "confidence": "média",
+        "waveSpread": 0.27,
+        "windSpread": 1,
+        "degraded": false
+      },
+      {
+        "date": "2026-10-29",
+        "confidence": "baixa",
+        "waveSpread": 0.61,
+        "windSpread": 0.9,
+        "degraded": false
+      },
+      {
+        "date": "2026-10-30",
+        "confidence": "baixa",
+        "waveSpread": 0.38,
+        "windSpread": 1.01,
+        "degraded": false
+      },
+      {
+        "date": "2026-10-31",
+        "confidence": "média",
+        "waveSpread": 0.65,
+        "windSpread": 0.14,
+        "degraded": false
+      }
+    ],
+    "updatedAt": "2026-10-25T14:09:15.184Z",
+    "airQualityIndex": 29,
+    "airQualityAt": "2026-10-25T14:00+00:00",
+    "waterQuality": {
+      "beachId": 523,
+      "beach": "MOLHE LESTE",
+      "advice": 1,
+      "adviceTitlePt": "Adequada",
+      "adviceTitleEn": "Adequate",
+      "adviceAt": 1787616000000,
+      "motive": null,
+      "lastSampleAt": 1787616000000,
+      "annualClass": 2,
+      "annualClassDesc": "Boa",
+      "seasonStart": 1780272000000,
+      "seasonEnd": 1789430400000,
+      "blueFlag": false,
+      "guarded": true,
+      "accessible": false,
+      "distKm": 0
+    },
+    "observed": {
+      "windSpeedKt": 4,
+      "windDirDeg": 225,
+      "windCardinal": "SW",
+      "windCardinalEn": "SW",
+      "stationName": "Cabo Carvoeiro",
+      "distanceKm": 4.8,
+      "observedAt": "2026-10-25T12:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Cabo Carvoeiro",
+      "source": "ipma",
+      "me": 2.6,
+      "mae": 3.5,
+      "rmse": 4.3,
+      "n": 1828
     }
   },
   "foz-sizandro": {
@@ -8538,15 +9224,13 @@
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 0,
-      "windDirMissing": false,
       "windCardinal": "—",
       "windCardinalEn": "—",
       "tempC": 24,
       "stationName": "Lajes (METAR)",
       "distanceKm": 4.2,
       "observedAt": "2026-09-09T23:00:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPLA"
+      "source": "metar"
     },
     "windBias": {
       "station": "Lajes (METAR)",
@@ -8664,15 +9348,13 @@
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 45,
-      "windDirMissing": false,
       "windCardinal": "NE",
       "windCardinalEn": "NE",
       "tempC": 23.6,
       "stationName": "Angra do Heroísmo",
       "distanceKm": 1.9,
       "observedAt": "2026-09-09T21:00:00.000Z",
-      "source": "ipma",
-      "metarIcao": "LPLA"
+      "source": "ipma"
     },
     "windBias": {
       "station": "Angra do Heroísmo",
@@ -10633,9 +11315,6 @@
     "uvIndexMax": 6,
     "currentSpeed": 0.18,
     "currentDir": 236,
-    "secondarySwellHeight": 0.3,
-    "secondarySwellPeriod": 12.35,
-    "secondarySwellDirection": 251,
     "confidence": "baixa",
     "confidenceDetail": {
       "waveSpread": 0.82,
@@ -10698,7 +11377,26 @@
     ],
     "updatedAt": "2026-09-09T23:14:55.039Z",
     "airQualityIndex": 31,
-    "airQualityAt": "2026-09-29T16:00"
+    "airQualityAt": "2026-09-29T16:00",
+    "observed": {
+      "windSpeedKt": 3,
+      "windDirDeg": 0,
+      "windCardinal": "N",
+      "windCardinalEn": "N",
+      "tempC": 22.8,
+      "stationName": "Alcácer do Sal, Barrosinha",
+      "distanceKm": 27.7,
+      "observedAt": "2026-10-25T12:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Alcácer do Sal, Barrosinha",
+      "source": "ipma",
+      "me": -0.6,
+      "mae": 2,
+      "rmse": 2.6,
+      "n": 166
+    }
   },
   "alqueva": {
     "waveHeight": null,
@@ -13155,9 +13853,6 @@
     "uvIndexMax": 6.1,
     "currentSpeed": 0.4,
     "currentDir": 210,
-    "secondarySwellHeight": 0.12,
-    "secondarySwellPeriod": 9.1,
-    "secondarySwellDirection": 276,
     "confidence": "alta",
     "confidenceDetail": {
       "waveSpread": 0.14,
@@ -13279,9 +13974,6 @@
     "uvIndexMax": 6.1,
     "currentSpeed": 0.32,
     "currentDir": 219,
-    "secondarySwellHeight": 0.12,
-    "secondarySwellPeriod": 9.1,
-    "secondarySwellDirection": 276,
     "confidence": "média",
     "confidenceDetail": {
       "waveSpread": 0.14,
@@ -13403,9 +14095,6 @@
     "uvIndexMax": 6.1,
     "currentSpeed": 0.32,
     "currentDir": 219,
-    "secondarySwellHeight": 0.12,
-    "secondarySwellPeriod": 9.1,
-    "secondarySwellDirection": 276,
     "confidence": "média",
     "confidenceDetail": {
       "waveSpread": 0.16,
@@ -13415,57 +14104,7 @@
       "combinedSpreadPct": 0.319,
       "degraded": true
     },
-    "dailyConfidence": [
-      {
-        "date": "2026-09-09",
-        "confidence": "média",
-        "waveSpread": 0.22,
-        "windSpread": 2.7,
-        "degraded": false
-      },
-      {
-        "date": "2026-09-10",
-        "confidence": "baixa",
-        "waveSpread": 0.44,
-        "windSpread": 3.07,
-        "degraded": false
-      },
-      {
-        "date": "2026-09-11",
-        "confidence": "baixa",
-        "waveSpread": 0.31,
-        "windSpread": 2.7,
-        "degraded": false
-      },
-      {
-        "date": "2026-09-12",
-        "confidence": "média",
-        "waveSpread": 0.27,
-        "windSpread": 0.59,
-        "degraded": false
-      },
-      {
-        "date": "2026-09-13",
-        "confidence": "baixa",
-        "waveSpread": 0.28,
-        "windSpread": 3.04,
-        "degraded": false
-      },
-      {
-        "date": "2026-09-14",
-        "confidence": "baixa",
-        "waveSpread": 0.28,
-        "windSpread": 2.38,
-        "degraded": false
-      },
-      {
-        "date": "2026-09-15",
-        "confidence": "média",
-        "waveSpread": 0.41,
-        "windSpread": 0.13,
-        "degraded": false
-      }
-    ],
+    "dailyConfidence": [],
     "updatedAt": "2026-09-09T23:16:02.538Z",
     "airQualityIndex": 36,
     "airQualityAt": "2026-09-29T16:00",
@@ -13527,9 +14166,6 @@
     "uvIndexMax": 6.1,
     "currentSpeed": 0.46,
     "currentDir": 193,
-    "secondarySwellHeight": 0.2,
-    "secondarySwellPeriod": 10.6,
-    "secondarySwellDirection": 227,
     "confidence": "média",
     "confidenceDetail": {
       "waveSpread": 0.14,
@@ -13539,57 +14175,7 @@
       "combinedSpreadPct": 0.191,
       "degraded": true
     },
-    "dailyConfidence": [
-      {
-        "date": "2026-09-09",
-        "confidence": "média",
-        "waveSpread": 0.24,
-        "windSpread": 2.44,
-        "degraded": false
-      },
-      {
-        "date": "2026-09-10",
-        "confidence": "baixa",
-        "waveSpread": 0.49,
-        "windSpread": 2.74,
-        "degraded": false
-      },
-      {
-        "date": "2026-09-11",
-        "confidence": "baixa",
-        "waveSpread": 0.4,
-        "windSpread": 1.78,
-        "degraded": false
-      },
-      {
-        "date": "2026-09-12",
-        "confidence": "baixa",
-        "waveSpread": 0.6,
-        "windSpread": 0.55,
-        "degraded": false
-      },
-      {
-        "date": "2026-09-13",
-        "confidence": "baixa",
-        "waveSpread": 0.72,
-        "windSpread": 2.46,
-        "degraded": false
-      },
-      {
-        "date": "2026-09-14",
-        "confidence": "baixa",
-        "waveSpread": 0.41,
-        "windSpread": 1.96,
-        "degraded": false
-      },
-      {
-        "date": "2026-09-15",
-        "confidence": "média",
-        "waveSpread": 0.35,
-        "windSpread": 0.13,
-        "degraded": false
-      }
-    ],
+    "dailyConfidence": [],
     "updatedAt": "2026-09-09T23:16:14.641Z",
     "airQualityIndex": 36,
     "airQualityAt": "2026-09-29T16:00",
@@ -13610,6 +14196,25 @@
       "guarded": true,
       "accessible": false,
       "distKm": 1.3
+    },
+    "observed": {
+      "windSpeedKt": 4,
+      "windDirDeg": 0,
+      "windCardinal": "N",
+      "windCardinalEn": "N",
+      "tempC": 22.3,
+      "stationName": "Aljezur",
+      "distanceKm": 24.8,
+      "observedAt": "2026-10-25T12:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Aljezur",
+      "source": "ipma",
+      "me": -3.9,
+      "mae": 4,
+      "rmse": 4.9,
+      "n": 1259
     }
   },
   "castelejo": {
@@ -13632,9 +14237,6 @@
     "uvIndexMax": 6.1,
     "currentSpeed": 0.46,
     "currentDir": 193,
-    "secondarySwellHeight": 0.2,
-    "secondarySwellPeriod": 10.6,
-    "secondarySwellDirection": 227,
     "confidence": "média",
     "confidenceDetail": {
       "waveSpread": 0.14,
@@ -13715,6 +14317,25 @@
       "guarded": true,
       "accessible": false,
       "distKm": 1.7
+    },
+    "observed": {
+      "windSpeedKt": 4,
+      "windDirDeg": 0,
+      "windCardinal": "N",
+      "windCardinalEn": "N",
+      "tempC": 22.3,
+      "stationName": "Aljezur",
+      "distanceKm": 27.4,
+      "observedAt": "2026-10-25T12:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Aljezur",
+      "source": "ipma",
+      "me": -3.9,
+      "mae": 4,
+      "rmse": 4.9,
+      "n": 1259
     }
   },
   "luz": {
@@ -14106,9 +14727,6 @@
     "uvIndexMax": 6.1,
     "currentSpeed": 0.4,
     "currentDir": 187,
-    "secondarySwellHeight": 0.2,
-    "secondarySwellPeriod": 10.6,
-    "secondarySwellDirection": 227,
     "confidence": "baixa",
     "confidenceDetail": {
       "waveSpread": 0.66,
@@ -14189,6 +14807,25 @@
       "guarded": true,
       "accessible": false,
       "distKm": 0.1
+    },
+    "observed": {
+      "windSpeedKt": 4,
+      "windDirDeg": 0,
+      "windCardinal": "N",
+      "windCardinalEn": "N",
+      "tempC": 22.3,
+      "stationName": "Aljezur",
+      "distanceKm": 26.1,
+      "observedAt": "2026-10-25T12:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Aljezur",
+      "source": "ipma",
+      "me": -3.9,
+      "mae": 4,
+      "rmse": 4.9,
+      "n": 1259
     }
   },
   "ferragudo": {
@@ -15435,9 +16072,6 @@
     "uvIndexMax": 6.1,
     "currentSpeed": 0.4,
     "currentDir": 187,
-    "secondarySwellHeight": 0.66,
-    "secondarySwellPeriod": 7.7,
-    "secondarySwellDirection": 348,
     "confidence": "média",
     "confidenceDetail": {
       "waveSpread": 0.02,
@@ -15540,9 +16174,6 @@
     "uvIndexMax": 6.1,
     "currentSpeed": 0.4,
     "currentDir": 187,
-    "secondarySwellHeight": 0.66,
-    "secondarySwellPeriod": 7.7,
-    "secondarySwellDirection": 348,
     "confidence": "baixa",
     "confidenceDetail": {
       "waveSpread": 0.66,
@@ -15645,6 +16276,9 @@
     "uvIndexMax": 5.8,
     "currentSpeed": 0.21,
     "currentDir": 135,
+    "secondarySwellHeight": 0.2,
+    "secondarySwellPeriod": 4.1,
+    "secondarySwellDirection": 285,
     "confidence": "baixa",
     "confidenceDetail": {
       "waveSpread": 0.3,
@@ -15748,6 +16382,9 @@
     "uvIndexMax": 6,
     "currentSpeed": 0.27,
     "currentDir": 68,
+    "secondarySwellHeight": 0.14,
+    "secondarySwellPeriod": 8.8,
+    "secondarySwellDirection": 289,
     "confidence": "baixa",
     "confidenceDetail": {
       "waveSpread": 0.42,
@@ -15869,6 +16506,9 @@
     "uvIndexMax": 5.8,
     "currentSpeed": 0.32,
     "currentDir": 108,
+    "secondarySwellHeight": 0.2,
+    "secondarySwellPeriod": 4.1,
+    "secondarySwellDirection": 285,
     "confidence": "baixa",
     "confidenceDetail": {
       "waveSpread": 0.3,
@@ -15990,6 +16630,9 @@
     "uvIndexMax": 5.8,
     "currentSpeed": 0.21,
     "currentDir": 135,
+    "secondarySwellHeight": 0.2,
+    "secondarySwellPeriod": 4.1,
+    "secondarySwellDirection": 285,
     "confidence": "baixa",
     "confidenceDetail": {
       "waveSpread": 0.3,
@@ -16111,6 +16754,9 @@
     "uvIndexMax": 5.7,
     "currentSpeed": 0.45,
     "currentDir": 96,
+    "secondarySwellHeight": 0.18,
+    "secondarySwellPeriod": 6.75,
+    "secondarySwellDirection": 289,
     "confidence": "baixa",
     "confidenceDetail": {
       "waveSpread": 0.4,
@@ -16232,6 +16878,9 @@
     "uvIndexMax": 6,
     "currentSpeed": 0.11,
     "currentDir": 63,
+    "secondarySwellHeight": 0.16,
+    "secondarySwellPeriod": 8.15,
+    "secondarySwellDirection": 289,
     "confidence": "baixa",
     "confidenceDetail": {
       "waveSpread": 0.4,
@@ -16716,9 +17365,6 @@
     "uvIndexMax": 6.1,
     "currentSpeed": 0.25,
     "currentDir": 169,
-    "secondarySwellHeight": 0.5,
-    "secondarySwellPeriod": 7.05,
-    "secondarySwellDirection": 283,
     "confidence": "baixa",
     "confidenceDetail": {
       "waveSpread": 0.42,
@@ -16839,9 +17485,6 @@
     "uvIndexMax": 6.1,
     "currentSpeed": 0.4,
     "currentDir": 187,
-    "secondarySwellHeight": 0.66,
-    "secondarySwellPeriod": 7.7,
-    "secondarySwellDirection": 348,
     "confidence": "baixa",
     "confidenceDetail": {
       "waveSpread": 0.66,
@@ -17279,15 +17922,13 @@
     "observed": {
       "windSpeedKt": 3,
       "windDirDeg": 225,
-      "windDirMissing": false,
       "windCardinal": "SW",
       "windCardinalEn": "SW",
       "tempC": 21,
       "stationName": "Madeira, S. Jorge, Santana",
       "distanceKm": 12.5,
       "observedAt": "2026-09-09T21:00:00.000Z",
-      "source": "ipma",
-      "metarIcao": "LPMA"
+      "source": "ipma"
     },
     "windBias": {
       "station": "Madeira, S. Jorge, Santana",
@@ -17525,6 +18166,25 @@
       "guarded": false,
       "accessible": false,
       "distKm": 0.3
+    },
+    "observed": {
+      "windSpeedKt": 3,
+      "windDirDeg": 270,
+      "windCardinal": "W",
+      "windCardinalEn": "W",
+      "tempC": 20.7,
+      "stationName": "Madeira, Calheta",
+      "distanceKm": 5.9,
+      "observedAt": "2026-10-25T12:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Madeira, Calheta",
+      "source": "ipma",
+      "me": -2.9,
+      "mae": 3.7,
+      "rmse": 4.4,
+      "n": 313
     }
   },
   "jardim-mar": {
@@ -18013,14 +18673,6 @@
       "distanceKm": 2.7,
       "observedAt": "2026-09-09T21:00:00.000Z",
       "source": "ipma"
-    },
-    "windBias": {
-      "station": "Funchal",
-      "source": "ipma",
-      "me": -1.7,
-      "mae": 2.4,
-      "rmse": 3.4,
-      "n": 41
     }
   },
   "barra-aveiro": {
@@ -18265,6 +18917,127 @@
       "n": 160
     }
   },
+  "porto-novo": {
+    "waveHeight": 1.96,
+    "wavePeriod": 11.05,
+    "waveDirection": 324,
+    "swellHeight": 1.96,
+    "swellPeriod": 9.2,
+    "swellDirection": 324,
+    "windWaveHeight": 0.02,
+    "wavePowerKw": 17.671359999999996,
+    "windSpeed": 3.88,
+    "windDirection": 325,
+    "windGust": 7.5,
+    "waterTemp": 15.9,
+    "tideHeight": 1.3,
+    "tideStatus": "high",
+    "tideLabel": "Maré Alta",
+    "uvIndex": 4.2,
+    "uvIndexMax": 4.6,
+    "currentSpeed": 0.07,
+    "currentDir": 45,
+    "confidence": "média",
+    "confidenceDetail": {
+      "waveSpread": 0.34,
+      "windSpread": 0.44,
+      "waveSpreadPct": 0.194,
+      "windSpreadPct": 0.166,
+      "combinedSpreadPct": 0.18,
+      "degraded": true
+    },
+    "dailyConfidence": [
+      {
+        "date": "2026-10-25",
+        "confidence": "média",
+        "waveSpread": 0.33,
+        "windSpread": 0.25,
+        "degraded": false
+      },
+      {
+        "date": "2026-10-26",
+        "confidence": "média",
+        "waveSpread": 0.44,
+        "windSpread": 0.34,
+        "degraded": false
+      },
+      {
+        "date": "2026-10-27",
+        "confidence": "baixa",
+        "waveSpread": 0.31,
+        "windSpread": 1.23,
+        "degraded": false
+      },
+      {
+        "date": "2026-10-28",
+        "confidence": "média",
+        "waveSpread": 0.39,
+        "windSpread": 1.01,
+        "degraded": false
+      },
+      {
+        "date": "2026-10-29",
+        "confidence": "baixa",
+        "waveSpread": 0.47,
+        "windSpread": 0.81,
+        "degraded": false
+      },
+      {
+        "date": "2026-10-30",
+        "confidence": "baixa",
+        "waveSpread": 0.34,
+        "windSpread": 1.06,
+        "degraded": false
+      },
+      {
+        "date": "2026-10-31",
+        "confidence": "média",
+        "waveSpread": 0.57,
+        "windSpread": 0.29,
+        "degraded": false
+      }
+    ],
+    "updatedAt": "2026-10-25T14:09:47.720Z",
+    "airQualityIndex": 29,
+    "airQualityAt": "2026-10-25T14:00+00:00",
+    "waterQuality": {
+      "beachId": 373,
+      "beach": "PORTO NOVO",
+      "advice": 1,
+      "adviceTitlePt": "Adequada",
+      "adviceTitleEn": "Adequate",
+      "adviceAt": 1787529600000,
+      "motive": null,
+      "lastSampleAt": 1787529600000,
+      "annualClass": 1,
+      "annualClassDesc": "Excelente",
+      "seasonStart": 1781308800000,
+      "seasonEnd": 1789257600000,
+      "blueFlag": true,
+      "guarded": true,
+      "accessible": true,
+      "distKm": 0.1
+    },
+    "observed": {
+      "windSpeedKt": 5,
+      "windDirDeg": 315,
+      "windCardinal": "NW",
+      "windCardinalEn": "NW",
+      "tempC": 16.5,
+      "stationName": "Santa Cruz (Aeródromo)",
+      "distanceKm": 6.1,
+      "observedAt": "2026-10-25T13:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Santa Cruz (Aeródromo)",
+      "source": "ipma",
+      "me": -0.3,
+      "mae": 1.8,
+      "rmse": 2.2,
+      "n": 3244
+    }
+  },
   "santa-cruz": {
     "waveHeight": 1.9,
     "wavePeriod": 7.35,
@@ -18492,7 +19265,6 @@
       "windDirDeg": 90,
       "windCardinal": "E",
       "windCardinalEn": "E",
-      "tempC": 8.1,
       "stationName": "Santa Cruz (Aeródromo)",
       "distanceKm": 23.6,
       "observedAt": "2026-10-24T21:00:00.000Z",
@@ -18613,7 +19385,6 @@
       "windDirDeg": 90,
       "windCardinal": "E",
       "windCardinalEn": "E",
-      "tempC": 8.1,
       "stationName": "Santa Cruz (Aeródromo)",
       "distanceKm": 15.2,
       "observedAt": "2026-10-24T21:00:00.000Z",
@@ -20126,9 +20897,6 @@
     "uvIndexMax": 6.1,
     "currentSpeed": 0.4,
     "currentDir": 187,
-    "secondarySwellHeight": 0.66,
-    "secondarySwellPeriod": 7.7,
-    "secondarySwellDirection": 348,
     "confidence": "baixa",
     "confidenceDetail": {
       "waveSpread": 0.66,
@@ -20438,27 +21206,6 @@
       "guarded": true,
       "accessible": false,
       "distKm": 1.1
-    },
-    "observed": {
-      "windSpeedKt": 9,
-      "windDirDeg": 10,
-      "windDirMissing": false,
-      "windCardinal": "N",
-      "windCardinalEn": "N",
-      "tempC": 25,
-      "stationName": "Madeira (METAR)",
-      "distanceKm": 33.7,
-      "observedAt": "2026-09-09T23:00:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPMA"
-    },
-    "windBias": {
-      "station": "Madeira (METAR)",
-      "source": "metar",
-      "me": 7.5,
-      "mae": 7.5,
-      "rmse": 8.5,
-      "n": 41
     }
   },
   "ponta-pargo": {
@@ -20546,7 +21293,26 @@
     ],
     "updatedAt": "2026-09-09T23:16:36.160Z",
     "airQualityIndex": 32,
-    "airQualityAt": "2026-09-29T16:00"
+    "airQualityAt": "2026-09-29T16:00",
+    "observed": {
+      "windSpeedKt": 3,
+      "windDirDeg": 270,
+      "windCardinal": "W",
+      "windCardinalEn": "W",
+      "tempC": 20.7,
+      "stationName": "Madeira, Calheta",
+      "distanceKm": 0.5,
+      "observedAt": "2026-10-25T12:00:00.000Z",
+      "source": "ipma"
+    },
+    "windBias": {
+      "station": "Madeira, Calheta",
+      "source": "ipma",
+      "me": -2.9,
+      "mae": 3.7,
+      "rmse": 4.4,
+      "n": 313
+    }
   },
   "madalena-mar": {
     "waveHeight": 0.7,
@@ -21466,15 +22232,13 @@
     "observed": {
       "windSpeedKt": 3,
       "windDirDeg": 100,
-      "windDirMissing": false,
       "windCardinal": "E",
       "windCardinalEn": "E",
       "tempC": 16,
       "stationName": "Porto (METAR)",
       "distanceKm": 9.5,
       "observedAt": "2026-09-09T23:00:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPPR"
+      "source": "metar"
     },
     "windBias": {
       "station": "Porto (METAR)",
@@ -21609,6 +22373,118 @@
       "n": 160
     }
   },
+  "foz-arelho": {
+    "waveHeight": 2.02,
+    "wavePeriod": 7.45,
+    "waveDirection": 334,
+    "swellHeight": 1.88,
+    "swellPeriod": 6.65,
+    "swellDirection": 332,
+    "windWaveHeight": 0.64,
+    "wavePowerKw": 11.75188,
+    "windSpeed": 3.51,
+    "windDirection": 355,
+    "windGust": 8.1,
+    "waterTemp": 17,
+    "tideHeight": 0.02,
+    "tideStatus": "rising",
+    "tideLabel": "Maré a Subir",
+    "uvIndex": 2,
+    "uvIndexMax": 5,
+    "currentSpeed": 0.27,
+    "currentDir": 248,
+    "confidence": "média",
+    "confidenceDetail": {
+      "waveSpread": 0.16,
+      "windSpread": 1.53,
+      "waveSpreadPct": 0.119,
+      "windSpreadPct": 0.286,
+      "combinedSpreadPct": 0.202,
+      "degraded": true
+    },
+    "dailyConfidence": [
+      {
+        "date": "2026-09-09",
+        "confidence": "média",
+        "waveSpread": 0.17,
+        "windSpread": 1.29,
+        "degraded": false
+      },
+      {
+        "date": "2026-09-10",
+        "confidence": "média",
+        "waveSpread": 0.15,
+        "windSpread": 1.36,
+        "degraded": false
+      },
+      {
+        "date": "2026-09-11",
+        "confidence": "média",
+        "waveSpread": 0.23,
+        "windSpread": 1.22,
+        "degraded": false
+      },
+      {
+        "date": "2026-09-12",
+        "confidence": "baixa",
+        "waveSpread": 0.08,
+        "windSpread": 1.18,
+        "degraded": false
+      },
+      {
+        "date": "2026-09-13",
+        "confidence": "baixa",
+        "waveSpread": 0.16,
+        "windSpread": 2.18,
+        "degraded": false
+      },
+      {
+        "date": "2026-09-14",
+        "confidence": "baixa",
+        "waveSpread": 0.24,
+        "windSpread": 1.27,
+        "degraded": false
+      },
+      {
+        "date": "2026-09-15",
+        "confidence": "baixa",
+        "waveSpread": 0.63,
+        "windSpread": 1.7,
+        "degraded": false
+      }
+    ],
+    "updatedAt": "2026-09-09T23:14:41.471Z",
+    "airQualityIndex": 33,
+    "airQualityAt": "2026-09-29T16:00",
+    "waterQuality": {
+      "beachId": 47,
+      "beach": "FOZ DO ARELHO-LAGOA",
+      "advice": 1,
+      "adviceTitlePt": "Adequada",
+      "adviceTitleEn": "Adequate",
+      "adviceAt": 1787875200000,
+      "motive": null,
+      "lastSampleAt": 1787875200000,
+      "annualClass": 1,
+      "annualClassDesc": "Excelente",
+      "seasonStart": 1781308800000,
+      "seasonEnd": 1789257600000,
+      "blueFlag": true,
+      "guarded": true,
+      "accessible": true,
+      "distKm": 1.2
+    },
+    "observed": {
+      "windSpeedKt": 1,
+      "windDirDeg": 45,
+      "windCardinal": "NE",
+      "windCardinalEn": "NE",
+      "stationName": "Rio Maior",
+      "distanceKm": 25.3,
+      "observedAt": "2026-10-24T21:00:00.000Z",
+      "source": "ipma"
+    }
+  },
   "obidos-lagoon-sul": {
     "waveHeight": 1.68,
     "wavePeriod": 7.15,
@@ -21715,120 +22591,6 @@
       "windDirDeg": 45,
       "windCardinal": "NE",
       "windCardinalEn": "NE",
-      "tempC": 12,
-      "stationName": "Rio Maior",
-      "distanceKm": 25.3,
-      "observedAt": "2026-10-24T21:00:00.000Z",
-      "source": "ipma"
-    }
-  },
-  "obidos-lagoon-foz": {
-    "waveHeight": 1.68,
-    "wavePeriod": 7.15,
-    "waveDirection": 328,
-    "swellHeight": 1.44,
-    "swellPeriod": 5.75,
-    "swellDirection": 329,
-    "windWaveHeight": 0.54,
-    "wavePowerKw": 5.9616,
-    "windSpeed": 4.53,
-    "windDirection": 354,
-    "windGust": 9.5,
-    "waterTemp": 17,
-    "tideHeight": 0.02,
-    "tideStatus": "rising",
-    "tideLabel": "Maré a Subir",
-    "uvIndex": 2,
-    "uvIndexMax": 5,
-    "currentSpeed": 0.27,
-    "currentDir": 248,
-    "confidence": "média",
-    "confidenceDetail": {
-      "waveSpread": 0.38,
-      "windSpread": 1.53,
-      "waveSpreadPct": 0.296,
-      "windSpreadPct": 0.281,
-      "combinedSpreadPct": 0.288,
-      "degraded": true
-    },
-    "dailyConfidence": [
-      {
-        "date": "2026-09-09",
-        "confidence": "média",
-        "waveSpread": 0.37,
-        "windSpread": 1.29,
-        "degraded": false
-      },
-      {
-        "date": "2026-09-10",
-        "confidence": "média",
-        "waveSpread": 0.29,
-        "windSpread": 0.79,
-        "degraded": false
-      },
-      {
-        "date": "2026-09-11",
-        "confidence": "média",
-        "waveSpread": 0.29,
-        "windSpread": 0.73,
-        "degraded": false
-      },
-      {
-        "date": "2026-09-12",
-        "confidence": "baixa",
-        "waveSpread": 0.32,
-        "windSpread": 0.99,
-        "degraded": false
-      },
-      {
-        "date": "2026-09-13",
-        "confidence": "baixa",
-        "waveSpread": 0.16,
-        "windSpread": 2.18,
-        "degraded": false
-      },
-      {
-        "date": "2026-09-14",
-        "confidence": "baixa",
-        "waveSpread": 0.24,
-        "windSpread": 1.22,
-        "degraded": false
-      },
-      {
-        "date": "2026-09-15",
-        "confidence": "baixa",
-        "waveSpread": 0.63,
-        "windSpread": 1.7,
-        "degraded": false
-      }
-    ],
-    "updatedAt": "2026-09-09T23:14:42.183Z",
-    "airQualityIndex": 33,
-    "airQualityAt": "2026-09-29T16:00",
-    "waterQuality": {
-      "beachId": 47,
-      "beach": "FOZ DO ARELHO-LAGOA",
-      "advice": 1,
-      "adviceTitlePt": "Adequada",
-      "adviceTitleEn": "Adequate",
-      "adviceAt": 1787875200000,
-      "motive": null,
-      "lastSampleAt": 1787875200000,
-      "annualClass": 1,
-      "annualClassDesc": "Excelente",
-      "seasonStart": 1781308800000,
-      "seasonEnd": 1789257600000,
-      "blueFlag": true,
-      "guarded": true,
-      "accessible": true,
-      "distKm": 0.1
-    },
-    "observed": {
-      "windSpeedKt": 1,
-      "windDirDeg": 45,
-      "windCardinal": "NE",
-      "windCardinalEn": "NE",
-      "tempC": 12,
       "stationName": "Rio Maior",
       "distanceKm": 25.3,
       "observedAt": "2026-10-24T21:00:00.000Z",
