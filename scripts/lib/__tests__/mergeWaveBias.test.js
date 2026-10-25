@@ -59,6 +59,7 @@ afterEach(() => {
     else process.env[k] = envBackup[k];
   }
   vi.unstubAllGlobals();
+  vi.useRealTimers(); // no-op quando o teste não congelou o Date
   fs.rmSync(tmpDir, { recursive: true, force: true });
 });
 
@@ -190,6 +191,58 @@ function lisbonHourKey() {
   return `${pick('year')}-${pick('month')}-${pick('day')}T${pick('hour')}:00`;
 }
 
+/**
+ * Instante fixo e inequívoco (verão, WEST = UTC+1) para os testes do viés de
+ * vento. Sem isto o teste dependia do relógio real: no run 40144907906 (main,
+ * 00:00 UTC de 2026-10-25) a hora 01:00 de Lisboa repetia-se (fim da hora de
+ * verão) e a chave IPMA local já não alinhava com os pares semeados em UTC.
+ */
+const FIXED_NOW_ISO = '2026-08-15T10:30:00.000Z';
+
+/** Congela só o Date (timers/fs/promises reais) — restaurar com vi.useRealTimers(). */
+function freezeDate(iso) {
+  vi.useFakeTimers({ toFake: ['Date'] });
+  vi.setSystemTime(new Date(iso));
+}
+
+/**
+ * Cenário IPMA fresco para o spot guincho (estação Cascais): station map,
+ * 9 pares históricos semeados em UTC e fetch mockado com a observação IPMA da
+ * hora actual em Lisboa (chave local, como o IPMA publica).
+ */
+function setupIpmaWindScenario() {
+  const files = setupFiles({ fresh: false });
+
+  // O spot guincho é servido pela estação IPMA Cascais (id 1210881), a ≤30 km.
+  fs.writeFileSync(
+    files.mapPath,
+    JSON.stringify({
+      guincho: { idEstacao: 1210881, stationName: 'Cascais', distanceKm: 5 },
+    }),
+  );
+  // Pré-semeia 9 pares históricos da mesma estação+spot (n=10 no total com o
+  // par do run) — o viés só é anexado quando n ≥ MIN_PAIRS (10).
+  const windBiasPath = tmpFile('wind-bias.json');
+  seedWindBiasArchive(windBiasPath, 'ipma|Cascais', 'guincho', 9);
+
+  // IPMA mockado: observação fresca (intensidadeVento 5 m/s → 10 kt) para a
+  // hora actual em Lisboa; o resto das fontes falha (offline, como os outros).
+  const ipmaKey = lisbonHourKey();
+  const ipmaObs = {
+    [ipmaKey]: {
+      1210881: { intensidadeVento: 5, idDireccVento: 5, temperatura: 19 },
+    },
+  };
+  vi.stubGlobal('fetch', (url) => {
+    if (String(url).includes('observations.json')) {
+      return Promise.resolve({ ok: true, json: async () => ipmaObs });
+    }
+    return Promise.reject(new Error('offline'));
+  });
+
+  return { ...files, windBiasPath, ipmaKey };
+}
+
 /** Pré-semeia o arquivo wind-bias com pares históricos (mesma estação+spot). */
 function seedWindBiasArchive(pathToFile, stationKey, spotId, nPairs) {
   const archive = {
@@ -281,33 +334,9 @@ describe('merge-observations preserva o waveBias da row', () => {
   });
 
   it('com observação IPMA fresca: acumula o par de vento e anexa o windBias da estação', async () => {
-    const { conditionsPath, mapPath, ihBuoysPath } = setupFiles({ fresh: false });
-
-    // O spot guincho é servido pela estação IPMA Cascais (id 1210881), a ≤30 km.
-    fs.writeFileSync(
-      mapPath,
-      JSON.stringify({
-        guincho: { idEstacao: 1210881, stationName: 'Cascais', distanceKm: 5 },
-      }),
-    );
-    // Pré-semeia 9 pares históricos da mesma estação+spot (n=10 no total com o
-    // par do run) — o viés só é anexado quando n ≥ MIN_PAIRS (10).
-    const windBiasPath = tmpFile('wind-bias.json');
-    seedWindBiasArchive(windBiasPath, 'ipma|Cascais', 'guincho', 9);
-
-    // IPMA mockado: observação fresca (intensidadeVento 5 m/s → 10 kt) para a
-    // hora actual em Lisboa; o resto das fontes falha (offline, como os outros).
-    const ipmaObs = {
-      [lisbonHourKey()]: {
-        1210881: { intensidadeVento: 5, idDireccVento: 5, temperatura: 19 },
-      },
-    };
-    vi.stubGlobal('fetch', (url) => {
-      if (String(url).includes('observations.json')) {
-        return Promise.resolve({ ok: true, json: async () => ipmaObs });
-      }
-      return Promise.reject(new Error('offline'));
-    });
+    // Relógio fixo (ver FIXED_NOW_ISO): chave IPMA local e pares UTC alinhados.
+    freezeDate(FIXED_NOW_ISO);
+    const { conditionsPath, mapPath, ihBuoysPath, windBiasPath } = setupIpmaWindScenario();
 
     const { mergeObservations } = await loadMerge(
       testEnv(conditionsPath, mapPath, ihBuoysPath),
@@ -345,6 +374,41 @@ describe('merge-observations preserva o waveBias da row', () => {
       me: -2,
       n: 10,
     });
+  });
+
+  it('hora repetida no fim da hora de verão (00:30 UTC de 2026-10-25): documenta a chave IPMA ambígua', async () => {
+    // 00:30 UTC = 01:30 WEST, a primeira passagem pela hora 01 (às 01:00 UTC
+    // repete-se 01:00–02:00 em WET). A chave IPMA "2026-10-25T01:00" não traz
+    // offset, logo é ambígua; o parseLisbonWallClock resolve-a para a segunda
+    // ocorrência (01:00 WET = 01:00 UTC), 30 min no futuro face ao relógio.
+    // Comportamento aceite (ambiguidade inerente a uma chave sem offset; a
+    // outra escolha perderia antes o par da segunda passagem): a observação
+    // continua a ser anexada, mas o par do run é descartado (idade < 0), pelo
+    // que o arquivo fica com 9 pares (< MIN_PAIRS) e não há windBias nesta
+    // hora. Na hora seguinte o par volta a acumular normalmente. Foi isto que
+    // falhou o run 40144907906 (o teste acima, sem relógio fixo, esperava n=10).
+    freezeDate('2026-10-25T00:30:00.000Z');
+    const { conditionsPath, mapPath, ihBuoysPath, windBiasPath, ipmaKey } = setupIpmaWindScenario();
+    expect(ipmaKey).toBe('2026-10-25T01:00');
+
+    const { mergeObservations } = await loadMerge(
+      testEnv(conditionsPath, mapPath, ihBuoysPath),
+    );
+    await mergeObservations();
+
+    const merged = JSON.parse(fs.readFileSync(conditionsPath, 'utf-8'));
+    const out = merged.guincho;
+
+    // A observação IPMA é anexada, datada da 2.ª ocorrência da hora (WET).
+    expect(out.observed).toMatchObject({ source: 'ipma', stationName: 'Cascais', windSpeedKt: 10 });
+    expect(out.observed.observedAt).toBe('2026-10-25T01:00:00.000Z');
+    // Par do run descartado (observedAt no futuro) → nenhum par novo neste run:
+    // o bloco do viés não corre (arquivo não é escrito, wind-bias.json fica
+    // como estava, com os 9 pares semeados) e a row não ganha windBias.
+    expect(out.windBias).toBeUndefined();
+    expect(fs.existsSync(tmpFile('wind-bias-archive.json'))).toBe(false);
+    const report = JSON.parse(fs.readFileSync(windBiasPath, 'utf-8'));
+    expect(report.pairs).toHaveLength(9);
   });
 
   it('recusa anexar a boia ES ao observedWaveAlt quando o par ES×PT está incoherent', async () => {
