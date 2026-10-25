@@ -25,6 +25,8 @@ const curva = (pts, x) => {
 };
 const degrau = (lista, x) => lista.reduce((p, [lim, pen]) => x > lim ? pen : p, 0);
 const pico = pts => pts.reduce((a, b) => b[1] > a[1] ? b : a)[0];
+// faixa do vento forte (kite) para um vento médio w: a última com w >= limiar
+const faixaForte = (fx, w) => fx.reduce((a, [lim, k]) => w >= lim ? k : a, fx[0][1]);
 
 function ModAvalia(MOD, opc) {
   const MD = MOD.def, CM = MOD.comum;
@@ -52,12 +54,16 @@ function ModAvalia(MOD, opc) {
         const f = { vento: 0, onda: 0, mare: 0 };
         if (noiteH(h)) return { n: null, f };
         const vr = ventoRel(sp, h.wd), s = Math.min(curva(p.vento, h.w), 10), dirF = p.dir[vr.k], raj = h.g - h.w;
-        const pr = degrau(p.rajada, raj), pt = h.g > p.tecto[0] ? p.tecto[1] : 0;
+        // vento forte (decisão do Pedro 25/10): «Só profissionais», sem a rajada absoluta, nota nunca abaixo do piso
+        const forte = p.forte && h.w >= p.forte.desde && p.forte.dir.includes(vr.k) ? p.forte : null;
+        const pr = degrau(p.rajada, raj), pt = forte ? 0 : p.tectoDegraus ? degrau(p.tectoDegraus, h.g) : (h.g > p.tecto[0] ? p.tecto[1] : 0);
         const po = h.hs > p.onda.acima ? p.onda.pen : 0, pm = h.tide > p.mare.acima ? p.mare.pen : 0;
-        const n = s * dirF - pr - pt - degrau(p.chuva, h.rain) - solBaixo(h) - po - pm;
+        const n0 = s * dirF - pr - pt - degrau(p.chuva, h.rain) - solBaixo(h) - po - pm;
+        const n = forte ? Math.max(n0, forte.piso) : n0;
         f.vento = (s * dirF >= p.favor && !pr && !pt) ? 1 : -1;
         f.onda = po ? -1 : (h.hs < p.onda.calma ? 1 : 0);
         f.mare = pm ? -1 : 0;
+        if (forte) return { n: clamp(Math.round(n), 0, 10), f, motivo: 'pro', soProfissionais: true, forte: faixaForte(forte.faixas, h.w) };
         const motivo = s < DA ? (h.w < pico(p.vento) ? 'pouco' : 'muito') : (vr.k === 'terra' || vr.k === 'lat-terra') ? 'terra' : (pr || pt) ? 'rajado' : 'banda';
         return { n: clamp(Math.round(n), 0, 10), f, motivo };
       },
@@ -92,7 +98,7 @@ function ModAvalia(MOD, opc) {
     L.avalia = (k, h) => L[MD[k].logica](h, MD[k]);                 // k: chave em def (kite, wing, surffoil, ondaGrande, wakeboard…)
     return L;
   }
-  return { MD, CM, DA, curva, degrau, pico, intervaloDa, ventoRel, dif, para, janelaDe };
+  return { MD, CM, DA, curva, degrau, pico, faixaForte, intervaloDa, ventoRel, dif, para, janelaDe };
 }
 ModAvalia.curva = curva; ModAvalia.degrau = degrau; ModAvalia.pico = pico; ModAvalia.ventoRel = ventoRel;
 if (typeof module !== 'undefined') module.exports = ModAvalia; else root.ModAvalia = ModAvalia;

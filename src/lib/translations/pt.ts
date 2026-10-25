@@ -1668,6 +1668,7 @@ export const translationsPt = {
   windSafety: {
     sideOffshore: 'Componente offshore: só avançados com barco de apoio',
     offshore: 'Vento offshore: perigo de deriva para o mar',
+    soProfissionais: 'Só profissionais: vento muito forte, risco de ser levantado ou arrastado. Kite pequeno, alguém em terra e saída segura',
   },
   spotPageVerdict: spotPageVerdict.pt,
   spotPageInstruments: spotPageInstruments.pt,

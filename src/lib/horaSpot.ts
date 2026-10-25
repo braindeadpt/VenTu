@@ -19,8 +19,13 @@
  * - em falta na fonte (`null`, auditoria 16/10, M2): a hora leva `semDados`
  *   ('vento' / 'onda') e o motor não a avalia (a UI diz «sem dados», não 0);
  * - sol: `sunEl`/`sunAz` calculados em cliente (`src/lib/sol.ts`, NOAA);
- * - chuva e nuvens: os forecasts não as têm → `null`. O motor degrada sem
- *   penalização (`degrau(chuva, null) = 0`) e a UI diz-o (`faltam`).
+ * - chuva e nuvens (#218): `precipitation` (mm/h) e `cloudCover` (%) da mesma
+ *   fonte e hora do vento. Formato compacto do pipeline
+ *   (`updateConditionsMerge.js:rainCloudFields`): `cloudCover` vem sempre que
+ *   há dados de tempo e `precipitation` só quando chove, por isso uma linha
+ *   com `cloudCover` e sem `precipitation` é 0 mm/h. Sem os dois (forecasts
+ *   antigos, fixture): `null`, o motor degrada sem penalização
+ *   (`degrau(chuva, null) = 0`) e a UI diz-o (`faltam`).
  */
 import type { HoraModalidade } from '@/lib/modalidades';
 import { findCoveredHourIndex, seriesTimeMs } from '@/lib/openMeteoTime';
@@ -106,9 +111,9 @@ export interface LinhaForecast {
   waterTemp?: number;
   airTemp?: number;
   tideHeight?: number;
-  /** Precipitação (mm/h), quando o feed a traz (o actual ainda não traz: fica null e o motor ignora-a). */
+  /** Precipitação (mm/h). O pipeline só a escreve quando chove: sem o campo e com `cloudCover` = 0 mm/h. */
   precipitation?: number;
-  /** Nebulosidade (%), quando o feed a traz. */
+  /** Nebulosidade (%). Presente = a hora tem dados de tempo (marca da chuva a 0). */
   cloudCover?: number;
 }
 
@@ -174,6 +179,16 @@ function extremoAfinado(validas: readonly LinhaForecast[], j: number, t: string,
   return { t: tt, h: r1(y1 - 0.25 * (y0 - y2) * dx) };
 }
 
+/**
+ * Chuva da linha (mm/h): o valor, 0 quando a linha tem `cloudCover` sem
+ * `precipitation` (o pipeline omite os zeros) e `null` sem dados de tempo.
+ */
+export function chuvaDe(l: Pick<LinhaForecast, 'precipitation' | 'cloudCover'>): number | null {
+  const p = num(l.precipitation);
+  if (p != null) return p;
+  return num(l.cloudCover) != null ? 0 : null;
+}
+
 const mareZH = (l: LinhaForecast | undefined, nm: number) => {
   const t = num(l?.tideHeight);
   return t == null ? NaN : r1(t + nm);
@@ -214,7 +229,7 @@ export function horaDeLinha(
     tide,
     tideUp: !!tideUp,
     cloud: num(l.cloudCover) ?? null,
-    rain: num(l.precipitation) ?? null,
+    rain: chuvaDe(l),
     sunEl: s.el,
     sunAz: s.az,
     agua: num(l.waterTemp),

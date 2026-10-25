@@ -1741,6 +1741,7 @@ export const translationsDe = {
   windSafety: {
     sideOffshore: 'Ablandige Komponente: nur für Fortgeschrittene mit Begleitboot',
     offshore: 'Ablandiger Wind: Gefahr, aufs Meer abzutreiben',
+    soProfissionais: 'Nur für Profis: sehr starker Wind, Gefahr, ausgehoben oder mitgeschleift zu werden. Kleiner Kite, jemand an Land und ein sicherer Ausstieg',
   },
   spotPageVerdict: spotPageVerdict.de,
   spotPageInstruments: spotPageInstruments.de,

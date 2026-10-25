@@ -59,6 +59,9 @@ const RANGES = Object.freeze({
   tideHeight: [-15, 15],
   tideObservedHeight: [-15, 15],
   tideAnomalyM: [-2, 2],
+  // chuva (mm/h; recorde horário em PT < 100 mm) e nebulosidade (%), #218
+  precipitation: [0, 200],
+  cloudCover: [0, 100],
   score: [0, 100],
   confidence: [0, 100],
 });

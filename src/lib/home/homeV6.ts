@@ -272,7 +272,8 @@ export function criarModelo(spots: SpotHome[], copy: HomeV6Copy = homeV6Copy('pt
         }
       } else {
         const vr = ventoRel(sp.sp, h.wd);
-        if (pouco(h, p)) l1 = c.poucoVento;
+        if (avaliacoes(d)[sp.id]?.[i]?.soProfissionais) l1 = c.soProfissionais;
+        else if (pouco(h, p)) l1 = c.poucoVento;
         else if (vr.k === 'terra' || vr.k === 'lat-terra') l1 = c.ventoTerra;
         else if (rajado(h, p)) l1 = c.rajado(c.banda[b], chove(h, p));
         else l1 = c.banda[b];

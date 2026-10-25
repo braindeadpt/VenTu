@@ -65,6 +65,8 @@ const pt = {
   relCurta: (vr: VentoRel) => vr.txt.split(',')[0],
   poucoVento: 'Pouco vento',
   ventoTerra: 'Vento de terra',
+  /** Kite com vento forte (≥ 30 kt médios): o estado «Só profissionais». */
+  soProfissionais: '⚠ Só profissionais: vento forte',
   rajado: (b: string, chuva: boolean) => `${b}: rajado${chuva ? ' e com chuva' : ''}`,
   mar: (hs: number, tp: number, r: string) => `${fmt1(hs, 'pt-PT')} m a ${tp} s de ${r}`,
   marCurto: (hs: number, tp: number) => `${fmt1(hs, 'pt-PT')} m a ${tp} s`,
@@ -182,6 +184,7 @@ const en: HomeV6Copy = {
   relCurta: (vr: VentoRel) => REL_EN[vr.k],
   poucoVento: 'Light wind',
   ventoTerra: 'Offshore wind',
+  soProfissionais: '⚠ Pros only: strong wind',
   rajado: (b: string, chuva: boolean) => `${b}: gusty${chuva ? ' and wet' : ''}`,
   mar: (hs: number, tp: number, r: string) => `${fmt1(hs, 'en-GB')} m at ${tp} s from ${r}`,
   marCurto: (hs: number, tp: number) => `${fmt1(hs, 'en-GB')} m at ${tp} s`,

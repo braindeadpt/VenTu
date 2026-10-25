@@ -48,7 +48,11 @@ export const spotPageV6 = {
       terra: 'Vento de terra: não é para {d}',
       rajado: '{banda}: {r} rajado{chuva}',
       banda: '{banda} para {d}',
+      pro: 'Só profissionais: vento {forte} para {d}{chuva}',
     } as Record<string, string>,
+    /** Faixa do vento forte (kite ≥ 30 kt médios), no «Só profissionais». */
+    forte: { forte: 'forte', 'muito-forte': 'muito forte', tempestade: 'de tempestade' } as Record<string, string>,
+    soProfissionaisPal: 'Só profissionais',
     motivoOnda: {
       vento: 'Vento a estragar o mar',
       pouca: 'Pouca onda para {d}',
@@ -227,7 +231,10 @@ export const spotPageV6 = {
       terra: 'Offshore wind: not for {d}',
       rajado: '{banda}: gusty {r}{chuva}',
       banda: '{banda} for {d}',
+      pro: 'Pros only: {forte} wind for {d}{chuva}',
     } as Record<string, string>,
+    forte: { forte: 'strong', 'muito-forte': 'very strong', tempestade: 'storm' } as Record<string, string>,
+    soProfissionaisPal: 'Pros only',
     motivoOnda: {
       vento: 'Wind spoiling the sea',
       pouca: 'Too small for {d}',

@@ -5,16 +5,20 @@ import { cn } from '@/lib/cn';
 
 type WindSafetyNoteVariant = 'default' | 'compact' | 'popup';
 
+/** `so-profissionais`: vento forte no kite (≥ 30 kt médios), só para profissionais. */
+export type WindSafetyNoteLevel = WindSafetyLevel | 'so-profissionais';
+
 interface WindSafetyNoteProps {
-  level: WindSafetyLevel;
+  level: WindSafetyNoteLevel;
   locale: string;
   variant?: WindSafetyNoteVariant;
   className?: string;
 }
 
-const LEVEL_CLASS: Record<WindSafetyLevel, string> = {
+const LEVEL_CLASS: Record<WindSafetyNoteLevel, string> = {
   'side-offshore': 'bg-score-fair/15 text-score-fair border-score-fair/40',
   offshore: 'bg-score-poor/15 text-score-poor border-score-poor/40',
+  'so-profissionais': 'bg-score-poor/15 text-score-poor border-score-poor/40',
 };
 
 const VARIANT_CLASS: Record<WindSafetyNoteVariant, string> = {
@@ -26,6 +30,7 @@ const VARIANT_CLASS: Record<WindSafetyNoteVariant, string> = {
 /**
  * Aviso visível (texto, não tooltip) da componente offshore do vento nos
  * desportos de vento — a mesma nota no veredicto, nos cartões e no mapa.
+ * Também o aviso «Só profissionais» do vento forte no kite (mesmo estilo do offshore).
  * Sem hooks: também é usada no HTML estático do popup Leaflet.
  */
 export default function WindSafetyNote({
@@ -35,7 +40,7 @@ export default function WindSafetyNote({
   className,
 }: WindSafetyNoteProps) {
   const t = getTranslation(locale).windSafety;
-  const text = level === 'offshore' ? t.offshore : t.sideOffshore;
+  const text = level === 'offshore' ? t.offshore : level === 'so-profissionais' ? t.soProfissionais : t.sideOffshore;
   return (
     <p
       role="note"

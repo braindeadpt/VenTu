@@ -54,6 +54,23 @@ export type Degraus = ReadonlyArray<Ponto>;
 /** `neutro`: água interior (`SpotModalidade.aguaInterior`), sem lado de mar nem de terra. */
 export type VentoRelK = 'mar' | 'lat-mar' | 'lat' | 'lat-terra' | 'terra' | 'neutro';
 
+/** Faixa do vento forte (kite): 30–34 forte, 35–39 muito forte, 40+ tempestade (nós, vento médio). */
+export type FaixaForte = 'forte' | 'muito-forte' | 'tempestade';
+
+/**
+ * Vento forte (decisão do Pedro, 25/10): acima de `desde` nós de vento MÉDIO,
+ * nas direcções `dir`, a hora é «Só profissionais». A nota (para os outros
+ * níveis) fica baixa, mas não cai a 0/1: nunca abaixo de `piso`; e a rajada
+ * absoluta (`tectoDegraus`) deixa de descontar, porque o vento médio já é forte.
+ */
+export interface DefForte {
+  desde: number;
+  piso: number;
+  dir: ReadonlyArray<VentoRelK>;
+  /** [[desde (nós), faixa], …] por ordem crescente. */
+  faixas: ReadonlyArray<readonly [number, FaixaForte]>;
+}
+
 export interface DefVento {
   nome: string;
   frase?: string;
@@ -63,6 +80,10 @@ export interface DefVento {
   dir: Record<Exclude<VentoRelK, 'neutro'>, number>;
   rajada: Degraus;
   tecto: Ponto;
+  /** Degraus pela rajada absoluta (nós); quando existe, substitui `tecto`. */
+  tectoDegraus?: Degraus;
+  /** Vento forte: estado «Só profissionais» (só o kite o tem). */
+  forte?: DefForte;
   chuva: Degraus;
   onda: { acima: number; pen: number; calma: number };
   mare: { acima: number; pen: number };
@@ -133,7 +154,8 @@ export type Motivo =
   | 'vento'
   | 'grande'
   | 'picada'
-  | 'fora';
+  | 'fora'
+  | 'pro';
 
 export interface Avaliacao {
   /** Nota inteira 0–10, ou `null` de noite / fora da modalidade. */
@@ -141,6 +163,10 @@ export interface Avaliacao {
   f: Fatores;
   motivo?: Motivo;
   fora?: boolean;
+  /** Vento forte (≥ `forte.desde` nós de vento médio, lateral ou lateral de mar): só para profissionais. */
+  soProfissionais?: true;
+  /** Faixa do vento forte, quando `soProfissionais`. */
+  forte?: FaixaForte;
 }
 
 export interface VentoRel {
@@ -186,6 +212,10 @@ export const curva = (pts: Curva, x: number): number => {
 export const degrau = (lista: Degraus, x: number | null | undefined): number =>
   lista.reduce((p, [lim, pen]) => ((x as number) > lim ? pen : p), 0);
 
+/** Faixa do vento forte para um vento médio `w` (a última com `w` ≥ limiar). */
+export const faixaForte = (fx: DefForte['faixas'], w: number): FaixaForte =>
+  fx.reduce<FaixaForte>((a, [lim, k]) => (w >= lim ? k : a), fx[0][1]);
+
 /** x do ponto mais alto da curva. */
 export const pico = (pts: Curva): number => pts.reduce((a, b) => (b[1] > a[1] ? b : a))[0];
 
@@ -204,6 +234,7 @@ export interface Motor {
   curva: typeof curva;
   degrau: typeof degrau;
   pico: typeof pico;
+  faixaForte: typeof faixaForte;
   intervaloDa(pts: Curva): [number | null, number | null];
   ventoRel: typeof ventoRel;
   dif: typeof dif;
@@ -257,14 +288,24 @@ export function modAvalia(MOD: ModalidadesDef, opc?: { DA?: number }): Motor {
         const s = Math.min(curva(p.vento, h.w), 10);
         const dirF = vr.k === 'neutro' ? DIR_AGUA_INTERIOR : p.dir[vr.k];
         const raj = h.g - h.w;
+        const forte = p.forte && h.w >= p.forte.desde && p.forte.dir.includes(vr.k) ? p.forte : null;
         const pr = degrau(p.rajada, raj);
-        const pt = h.g > p.tecto[0] ? p.tecto[1] : 0;
+        const pt = forte ? 0 : p.tectoDegraus ? degrau(p.tectoDegraus, h.g) : h.g > p.tecto[0] ? p.tecto[1] : 0;
         const po = h.hs > p.onda.acima ? p.onda.pen : 0;
         const pm = h.tide > p.mare.acima ? p.mare.pen : 0;
-        const n = s * dirF - pr - pt - degrau(p.chuva, h.rain) - solBaixo(h) - po - pm;
+        const n0 = s * dirF - pr - pt - degrau(p.chuva, h.rain) - solBaixo(h) - po - pm;
+        const n = forte ? Math.max(n0, forte.piso) : n0;
         f.vento = s * dirF >= p.favor && !pr && !pt ? 1 : -1;
         f.onda = po ? -1 : h.hs < p.onda.calma ? 1 : 0;
         f.mare = pm ? -1 : 0;
+        if (forte)
+          return {
+            n: clamp(Math.round(n), 0, 10),
+            f,
+            motivo: 'pro',
+            soProfissionais: true,
+            forte: faixaForte(forte.faixas, h.w),
+          };
         const motivo: Motivo =
           s < DA
             ? h.w < pico(p.vento)
@@ -332,5 +373,5 @@ export function modAvalia(MOD: ModalidadesDef, opc?: { DA?: number }): Motor {
     };
     return L;
   }
-  return { MD, CM, DA, curva, degrau, pico, intervaloDa, ventoRel, dif, para, janelaDe };
+  return { MD, CM, DA, curva, degrau, pico, faixaForte, intervaloDa, ventoRel, dif, para, janelaDe };
 }

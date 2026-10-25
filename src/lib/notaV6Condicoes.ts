@@ -65,7 +65,8 @@ export function notaV6DeCondicoes(
   const tCompleta = opc.t ?? `${lisbonHourKeyFromDate(new Date(opc.nowMs ?? Date.now()))}:00`;
   const t = tCompleta.slice(0, 16);
   const c = rawToScoreInput(raw);
-  const tide = typeof raw.tideHeight === 'number' && Number.isFinite(raw.tideHeight) ? raw.tideHeight : undefined;
+  const fin = (x: unknown): boolean => typeof x === 'number' && Number.isFinite(x);
+  const tide = fin(raw.tideHeight) ? (raw.tideHeight as number) : undefined;
   const linha: LinhaForecast = {
     time: tCompleta,
     windSpeed: c.windSpeed,
@@ -76,6 +77,9 @@ export function notaV6DeCondicoes(
     waveDirection: c.waveDirection,
     waterTemp: c.waterTemp,
     tideHeight: tide,
+    // chuva e nuvens da hora do forecast (#218): o alerta penaliza a chuva como a página do spot
+    ...(fin(raw.precipitation) ? { precipitation: raw.precipitation as number } : {}),
+    ...(fin(raw.cloudCover) ? { cloudCover: raw.cloudCover as number } : {}),
   };
   const ed = editorialDe(spot);
   const sp = spotModalidadeDe(ed);

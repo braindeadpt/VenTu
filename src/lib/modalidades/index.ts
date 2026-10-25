@@ -13,6 +13,11 @@
  * - Sem dados (auditoria 16/10, M2): uma hora sem vento (lógica de vento) ou
  *   sem onda (lógica de onda) na fonte não tem nota: `n = null` com
  *   `semDados: true` (a UI diz «sem dados», não «noite» nem 0).
+ * - Vento forte no kite (decisão do Pedro, 25/10): a partir de 30 kt de vento
+ *   médio, lateral ou lateral de mar, a hora traz `soProfissionais: true` e a
+ *   faixa (`forte`: forte / muito-forte / tempestade). A nota (para os outros
+ *   níveis) fica baixa mas nunca abaixo do piso 3 (definição `kite.forte`). Os
+ *   tectos de segurança de cima continuam por cima de tudo.
  */
 import defJson from './modalidades-def.json';
 import {

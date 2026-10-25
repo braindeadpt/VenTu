@@ -219,7 +219,13 @@ export function construirFrase(ctx: ContextoVeredicto) {
       const chove = (h.rain ?? 0) > P.chuva[0][0];
       if (P.logica === 'vento') {
         const tpl = c.motivoVento[r.motivo ?? 'banda'] ?? c.motivoVento.banda;
-        l1 = fmtCopy(tpl, { d: nomeD, banda: bandaNome(b), r: rumo(h.wd), chuva: chove ? c.eChuva : '' });
+        l1 = fmtCopy(tpl, {
+          d: nomeD,
+          banda: bandaNome(b),
+          r: rumo(h.wd),
+          chuva: chove ? c.eChuva : '',
+          forte: r.forte ? (c.forte[r.forte] ?? '') : '',
+        });
         l2 = [{ t: `${h.w} ${c.nos}`, b: true }, { t: ', ' + fmtCopy(c.rajadasAte, { g: h.g }) }];
       } else {
         const tpl = c.motivoOnda[r.motivo ?? 'banda'] ?? c.motivoOnda.banda;
@@ -244,9 +250,18 @@ export function construirFrase(ctx: ContextoVeredicto) {
 /** Texto corrido das partes (testes, títulos, aria). */
 export const parteTxt = (p: Parte[]) => p.map((x) => x.t).join('');
 
-/** A palavra da banda em grande e o resto da frase sem a repetir (como na maquete). */
-export function palavraEResto(c: SpotPageV6Copy, f: Frase, b: BandaK, semDados = false): { palavra: string; resto: string } {
-  const nome = semDados ? c.semDadosPal : c.bandas[b];
+/**
+ * A palavra da banda em grande e o resto da frase sem a repetir (como na maquete).
+ * Vento forte no kite (`soProfissionais`): a palavra é «Só profissionais», não a banda.
+ */
+export function palavraEResto(
+  c: SpotPageV6Copy,
+  f: Frase,
+  b: BandaK,
+  semDados = false,
+  soProfissionais = false,
+): { palavra: string; resto: string } {
+  const nome = semDados ? c.semDadosPal : soProfissionais ? c.soProfissionaisPal : c.bandas[b];
   const resto = f.l1.startsWith(nome) ? f.l1.slice(nome.length).replace(/^[.:\s]+/, '') : f.l1;
   return { palavra: nome, resto: resto.replace(/^./, (x) => x.toUpperCase()) };
 }
