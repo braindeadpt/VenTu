@@ -3,7 +3,8 @@
  * (origin bare + clone «do runner»): o que o pipeline apagou localmente tem de
  * chegar à main como deleção — sobretudo os ficheiros por spot de
  * public/data/forecasts/, que o `cp -a` (só acrescenta) deixava voltar do
- * origin como órfãos a cada commit do bot.
+ * origin como órfãos a cada commit do bot. E o agregado forecasts.json, que
+ * deixou de ser publicado (25/10/2026), nunca volta a entrar.
  */
 import { afterAll, describe, expect, it } from 'vitest';
 import { createRequire } from 'module';
@@ -44,6 +45,8 @@ function setup() {
   write(seed, 'public/data/forecasts/spot-removido.json', '{"v":1}\n');
   write(seed, 'public/data/radar/frames/old.png', 'old\n');
   write(seed, 'public/data/conditions.json', '{"v":1}\n');
+  // Agregado legado ainda trackeado (estado da main antes de 25/10/2026).
+  write(seed, 'public/data/forecasts.json', '{"guincho":[]}\n');
   git(seed, 'add', '.gitignore');
   git(seed, 'add', '-f', 'public/data');
   git(seed, 'commit', '-q', '-m', 'seed');
@@ -82,6 +85,26 @@ describe('push-data-update.sh (repo git temporário)', () => {
     expect(files).toContain('README.md'); // o commit concorrente fica
     expect(git(origin, 'show', 'main:public/data/forecasts/guincho.json')).toBe('{"v":2}');
     expect(git(origin, 'show', 'main:public/data/conditions.json')).toBe('{"v":2}');
+    expect(files).not.toContain('public/data/forecasts.json');
+  });
+
+  it('o agregado forecasts.json nunca é publicado, mesmo que o artefacto o traga', () => {
+    fs.rmSync(path.join(tmp, 'origin.git'), { recursive: true, force: true });
+    fs.rmSync(path.join(tmp, 'seed'), { recursive: true, force: true });
+    fs.rmSync(path.join(tmp, 'runner'), { recursive: true, force: true });
+    const { origin, runner } = setup();
+    // Artefacto de um run anterior à mudança: o agregado veio regenerado.
+    write(runner, 'public/data/forecasts.json', '{"guincho":[1]}\n');
+    write(runner, 'public/data/conditions.json', '{"v":3}\n');
+    execFileSync('bash', [SCRIPT, 'auto: teste'], {
+      cwd: runner,
+      env: { ...process.env, ...GIT_ENV, GITHUB_ACTIONS: 'true' },
+      encoding: 'utf8',
+    });
+    const files = git(origin, 'ls-tree', '-r', '--name-only', 'main').split('\n');
+    expect(files).not.toContain('public/data/forecasts.json');
+    expect(files).toContain('public/data/forecasts/guincho.json');
+    expect(git(origin, 'show', 'main:public/data/conditions.json')).toBe('{"v":3}');
   });
 
   it('recusa correr fora do GitHub Actions', () => {

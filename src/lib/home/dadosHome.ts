@@ -3,7 +3,7 @@
  *
  * Regra de ouro e paridade com a página de spot: cada hora de cada spot é o
  * objecto que `horaDeLinha` — a MESMA função da página de spot — dá para a
- * MESMA linha do forecast (`forecasts.json[conditionsSource ?? id]`, com as
+ * MESMA linha do forecast (`forecasts/<conditionsSource ?? id>.json`, com as
  * linhas vizinhas para o sentido da maré). A praia que o motor lê é a do spot
  * (`spotModalidadeDe(editorialDe(spot))`, em `MetaCosta`, calculada no
  * servidor: `dadosHomeServidor.ts`). Teste: `paridade-home-spot.test.ts`.

@@ -2,7 +2,7 @@
  * Real forecast skill — best_match vs IH buoys, accumulated over runs.
  *
  * On each full run this script:
- *   1. Reads forecasts.json (best_match wave_height per spot, Europe/Lisbon
+ *   1. Reads the per-spot forecasts/<id>.json (best_match wave_height per spot, Europe/Lisbon
  *      wall hours) and ih-buoys.json (stations + spot→buoy mapping).
  *   2. For every spot mapped to an ACTIVE buoy, archives the forecast hours
  *      ahead of `now` (up to MAX_FORECAST_LEAD_HOURS) with runAt = now.
@@ -47,6 +47,7 @@ const {
   isIhAuthError,
 } = require('./lib/ihBuoys.js');
 const { notifyIhAuthFailure } = require('./fetch-ih-buoys.js');
+const { readForecastsIndex } = require('./lib/forecastsIndex');
 const {
   emptyArchive,
   readArchive,
@@ -75,8 +76,12 @@ const OUTPUT_PATH =
 const ARCHIVE_PATH =
   process.env.FORECAST_SKILL_ARCHIVE_PATH || DEFAULT_ARCHIVE_PATH;
 // Inputs env-overridable (testes hermeticos — mesmo padrão do merge/fetch-wave-bias).
-const FORECASTS_PATH =
-  process.env.FORECASTS_PATH || path.join(__dirname, '../public/data/forecasts.json');
+// FORECASTS_PATH (opcional) aponta para um índice agregado `{ [id]: linhas }`
+// (testes, smoke-es-pipeline); por omissão o índice é montado dos ficheiros
+// por spot public/data/forecasts/<id>.json — o agregado forecasts.json deixou
+// de ser publicado (scripts/lib/forecastsIndex.js).
+const FORECASTS_PATH = process.env.FORECASTS_PATH || null;
+const FORECASTS_DATA_DIR = path.join(__dirname, '../public/data');
 const IH_BUOYS_PATH =
   process.env.IH_BUOYS_PATH || path.join(__dirname, '../public/data/ih-buoys.json');
 const WMO_BIAS_ARCHIVE_PATH =
@@ -117,9 +122,14 @@ function readJsonOrNull(filePath) {
 async function fetchForecastSkill() {
   console.log('📈 Forecast skill — best_match vs IH buoys (real skill, not ERA5)...\n');
 
-  const forecasts = readJsonOrNull(FORECASTS_PATH);
+  let forecasts = null;
+  try {
+    forecasts = FORECASTS_PATH ? readJsonOrNull(FORECASTS_PATH) : readForecastsIndex(FORECASTS_DATA_DIR);
+  } catch {
+    forecasts = null;
+  }
   if (!forecasts || typeof forecasts !== 'object') {
-    console.warn('⚠️ forecasts.json missing — nothing to archive this run (keep previous forecast-skill.json).');
+    console.warn('⚠️ forecasts (forecasts/<id>.json) missing — nothing to archive this run (keep previous forecast-skill.json).');
     return null;
   }
   const ihBuoys = readJsonOrNull(IH_BUOYS_PATH);

@@ -3,7 +3,7 @@ import {
   CONDITIONS_FRESH_TTL_MS,
   clearSpotDataCacheForTests,
   loadConditionsJson,
-  loadForecastsJson,
+  loadForecastForSpot,
 } from '@/lib/spotDataCache';
 
 describe('spotDataCache', () => {
@@ -28,15 +28,31 @@ describe('spotDataCache', () => {
 
   it('loads forecasts and conditions independently', async () => {
     vi.stubGlobal('fetch', vi.fn().mockImplementation((url: string) => {
-      const body = String(url).includes('forecasts') ? { fc: true } : { cond: true };
+      const body = String(url).includes('forecasts') ? [{ fc: true }] : { cond: true };
       return Promise.resolve({ ok: true, json: async () => body });
     }));
 
     const cond = await loadConditionsJson();
-    const fc = await loadForecastsJson();
+    const fc = await loadForecastForSpot('guincho');
     expect(cond).toEqual({ cond: true });
-    expect(fc).toEqual({ fc: true });
+    expect(fc).toEqual([{ fc: true }]);
     expect(fetch).toHaveBeenCalledTimes(2);
+    expect(String(vi.mocked(fetch).mock.calls[1][0])).toMatch(/\/data\/forecasts\/guincho\.json$/);
+  });
+
+  it('forecast por spot em falta → [] sem pedir o agregado (já não existe) e sem guardar a falha', async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce({ ok: false, status: 404, json: async () => ({}) })
+      .mockResolvedValue({ ok: true, json: async () => [{ time: 't' }] });
+    vi.stubGlobal('fetch', fetchMock);
+
+    await expect(loadForecastForSpot('sem-serie')).resolves.toEqual([]);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(fetchMock.mock.calls.some(([u]) => String(u).endsWith('/data/forecasts.json'))).toBe(false);
+    // A navegação seguinte volta a tentar (a falha não ficou em cache).
+    await expect(loadForecastForSpot('sem-serie')).resolves.toEqual([{ time: 't' }]);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
   });
 
   it('force: consumidores simultâneos da home partilham UM download (era 3–4×)', async () => {

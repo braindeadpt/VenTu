@@ -91,6 +91,23 @@ normal, falha antes de se tornar um problema de histórico.
 > estático e fica fora de `public/data` (não conta para este orçamento nem
 > muda com o pipeline).
 
+> 2026-10-25: **o agregado `public/data/forecasts.json` sai do repositório.**
+> Era o mesmo conteúdo de `forecasts/<id>.json`, indexado por spot (~11 MB),
+> reescrito e commitado a cada corrida (~30 min) — um terço da árvore e ~11 MB
+> de blobs por commit do bot. O cliente já só pedia os ficheiros por spot (o
+> agregado era só o fallback de um 404); os leitores do build e dos scripts
+> (`load-spot-data.ts`, `build-map-hours.js`, `build-spots-index-ts.ts`,
+> `fetch-forecast-skill.js`, `news/detect-events.js`, `validate-generated-data.js`,
+> helpers e2e) passam a montar o índice da pasta
+> (`scripts/lib/forecastsIndex.js`). O `update-conditions.js` deixa de o
+> escrever e o `push-data-update.sh` faz `git rm --cached` dele em cada
+> publicação (o `-f` do `git add` ignoraria o `.gitignore`) — é esse primeiro
+> commit do bot depois do merge que o apaga da `main` (o PR não lhe toca, para
+> não entrar em conflito com os commits de dados de 30 em 30 min). O orçamento de
+> 12 MB do agregado em `check-payload-budgets.js` passa para os ficheiros por
+> spot: ≤ 80 KB cada (é o que um visitante descarrega) e ≤ 14 MB a pasta.
+> Árvore trackeada: **247 ficheiros / 29,1 MB → 246 / 18,6 MB**.
+
 ## Porque cresce
 
 `scripts/push-data-update.sh` corre `git add -f public/data/` a cada ~30 min e
@@ -120,6 +137,7 @@ Médio prazo (PR próprio, fora deste lote — requer mexer no pipeline):
 - **Janela de retenção dos frames de radar**: manter as últimas 24 h e apagar
   os anteriores no próprio pipeline (`scripts/fetch-ipma-radar.js`), antes do
   `git add`. É o ganho maior em blobs binários e não muda nada no site.
+- ~~Cópia duplicada `forecasts.json`~~ — feito a 2026-10-25 (ver acima).
 - **Forecasts fora do git**: publicar `forecasts/` como artefacto de release
   (ou object storage) e manter no repo apenas um índice compacto; o build
   passa a descarregar o artefacto. Requer coordenação com o deploy estático.

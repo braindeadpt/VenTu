@@ -26,7 +26,7 @@ Lê este ficheiro antes de qualquer trabalho no repo. Define o estado do project
 | Marés (observado) | IH OGC API (hidrografico.pt) | Free, CC-BY 4.0, 33 estações |
 | Chat | Removido | UI removida 2026-05-21 |
 | IA notícias / Dawn Patrol | Gemini Flash + Groq Llama 3.3 + Cerebras | GitHub Actions (secrets no repo remoto) |
-| Previsões | Open-Meteo + `forecasts.json` precomputed | CI: full a cada 2h (06h–20h), multi-modelo 3×/dia (06h/12h/18h); crons de 30 min com gate de skip; client JSON first, live API fallback |
+| Previsões | Open-Meteo + `forecasts/<id>.json` precomputed (1 por spot; sem agregado desde 25/10/2026) | CI: full a cada 2h (06h–20h), multi-modelo 3×/dia (06h/12h/18h); crons de 30 min com gate de skip; client JSON first, live API fallback |
 | Testes | Vitest (unit) + Playwright (E2E) | `npm test` + `npm run test:e2e` |
 | Deploy | GitHub Pages (static export) | `output: 'export'` no `next.config.js` |
 
@@ -299,7 +299,7 @@ src/
 ├── lib/                   spots.ts (185), sportScore, openmeteo, i18n, homepageSport, gridFilters
 └── types/
 
-public/data/               conditions.json, forecasts.json, news.json, dawn-patrol.json, ih-tides.json, ih-buoys.json, spot-isobaths.json, ih-coastal-warnings.json, wmo-buoys.json, warnings.json, radar.json, radar/ipma-radar.png, radar/frames/*.png, model-health.json, map-hours.json
+public/data/               conditions.json, forecasts/<id>.json, news.json, dawn-patrol.json, ih-tides.json, ih-buoys.json, spot-isobaths.json, ih-coastal-warnings.json, wmo-buoys.json, warnings.json, radar.json, radar/ipma-radar.png, radar/frames/*.png, model-health.json, map-hours.json
 
 ## Avisos IPMA / MeteoAlarm — UI
 
@@ -359,8 +359,9 @@ public/data/               conditions.json, forecasts.json, news.json, dawn-patr
 - Os 4 modelos de onda (EWAM, ECMWF WAM, GFS Wave, GWAM) e os 4 de vento (ICON-EU,
   ECMWF IFS, GFS, Météo-France) já vinham nos payloads do run multi-modelo e eram
   **descartados** depois de reduzidos ao tier alta/média/baixa (`confidenceDetail`).
-  Agora a distribuição é guardada: cada linha horária de `forecasts.json` e de
-  `public/data/forecasts/<slug>.json` ganha `ens`.
+  Agora a distribuição é guardada: cada linha horária de
+  `public/data/forecasts/<slug>.json` ganha `ens` (o agregado `forecasts.json`,
+  que também a levava, deixou de existir a 25/10/2026).
 - **Contrato do array** (`ENSEMBLE_FIELDS` em `scripts/lib/ensembleQuantiles.js`):
   `[waveP10, waveP50, waveP90, windP10, windP50, windP90, waveN, windN]` — onda em m
   (2 casas), vento em m/s (1 casa), contagens de membros no fim. Quantil por

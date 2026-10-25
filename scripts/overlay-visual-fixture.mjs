@@ -16,15 +16,21 @@
  * radar/** fica de fora (como no sync-visual-fixture.mjs): os frames rodam a
  * cada refresh, o carrossel está mascarado e o spec usa o snapshot do build.
  *
+ * forecasts/ é TROCADA por inteiro (não sobreposta): desde 25/10/2026 o build
+ * lê as previsões dos ficheiros por spot (o agregado forecasts.json deixou de
+ * existir), e um spot real que a fixture não tem ficaria com a série do dia
+ * no HTML baked. O forecasts.json da fixture, se ainda existir, não é copiado
+ * — já ninguém o lê.
+ *
  *   node scripts/overlay-visual-fixture.mjs && npm run build
  */
-import { copyFileSync, existsSync, mkdirSync, readdirSync } from 'node:fs';
+import { copyFileSync, existsSync, mkdirSync, readdirSync, rmSync } from 'node:fs';
 import { dirname, join, relative } from 'node:path';
 
 const root = process.cwd();
 const src = join(root, 'tests', 'e2e', 'fixtures', 'data');
 const dest = join(root, 'public', 'data');
-const EXCLUIR = new Set(['radar']);
+const EXCLUIR = new Set(['radar', 'forecasts.json']);
 
 if (!existsSync(src)) {
   console.error(`overlay-visual-fixture: fixture em falta (${relative(root, src)})`);
@@ -47,5 +53,6 @@ function copiar(dir) {
     }
   }
 }
+if (existsSync(join(src, 'forecasts'))) rmSync(join(dest, 'forecasts'), { recursive: true, force: true });
 copiar(src);
 console.log(`overlay-visual-fixture: ${n} ficheiros da fixture copiados para public/data`);

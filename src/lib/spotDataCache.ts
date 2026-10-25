@@ -14,10 +14,6 @@ let conditionsInflight: Promise<Record<string, unknown>> | null = null;
  */
 export const CONDITIONS_FRESH_TTL_MS = 60_000;
 
-/** Parsed forecasts.json (~8MB) — one parse per session. */
-let forecastsCache: Record<string, unknown> | null = null;
-let forecastsInflight: Promise<Record<string, unknown>> | null = null;
-
 async function fetchJsonRecord(path: string, init?: RequestInit): Promise<Record<string, unknown>> {
   const res = await fetch(path, init);
   if (!res.ok) throw new Error(`fetch ${path} ${res.status}`);
@@ -60,25 +56,12 @@ export function loadConditionsJson(options?: { force?: boolean }): Promise<Recor
   return promise;
 }
 
-export function loadForecastsJson(): Promise<Record<string, unknown>> {
-  if (forecastsCache) return Promise.resolve(forecastsCache);
-  if (!forecastsInflight) {
-    forecastsInflight = fetchJsonRecord(getAssetPath('/data/forecasts.json'))
-      .then((data) => {
-        forecastsCache = data;
-        return data;
-      })
-      .catch((err) => {
-        forecastsInflight = null;
-        throw err;
-      });
-  }
-  return forecastsInflight;
-}
-
 /**
- * Per-spot forecast cache — loads ~50KB per spot instead of 8MB full file.
- * Falls back to full forecasts.json if per-spot file not found.
+ * Per-spot forecast cache — /data/forecasts/<id>.json (~55 KB por spot), a
+ * única cópia publicada: o agregado forecasts.json (~11 MB) deixou de existir
+ * a 25/10/2026. Sem ficheiro (404, rede em baixo) devolve [] — a página cai
+ * no snapshot, como já acontecia para um spot sem série — e NÃO guarda a
+ * falha em cache: a navegação seguinte volta a tentar.
  */
 const spotForecastCache = new Map<string, Record<string, unknown>[]>();
 const spotForecastInflight = new Map<string, Promise<Record<string, unknown>[]>>();
@@ -95,11 +78,7 @@ export function loadForecastForSpot(dataId: string): Promise<Record<string, unkn
       spotForecastCache.set(dataId, data);
       return data;
     } catch {
-      // Fallback: load the full forecasts.json
-      const full = await loadForecastsJson();
-      const fallback = (full[dataId] as Record<string, unknown>[]) ?? [];
-      spotForecastCache.set(dataId, fallback);
-      return fallback;
+      return [];
     }
   })();
 
@@ -112,9 +91,7 @@ export function loadForecastForSpot(dataId: string): Promise<Record<string, unkn
 export function clearSpotDataCacheForTests(): void {
   conditionsCache = null;
   conditionsFetchedAt = 0;
-  forecastsCache = null;
   conditionsInflight = null;
-  forecastsInflight = null;
   spotForecastCache.clear();
   spotForecastInflight.clear();
 }

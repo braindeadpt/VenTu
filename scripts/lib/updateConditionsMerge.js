@@ -43,8 +43,8 @@ function buildConditionsRow(marineData, weatherData, current, biasRow, confidenc
 /**
  * Chuva e nuvens da hora (#218, §1 da issue): a mesma fonte e a mesma hora do
  * vento (Open-Meteo forecast, `precipitation` mm/h e `cloud_cover` %).
- * Formato compacto, porque vai em `forecasts.json` E em `forecasts/<id>.json`
- * (as duas cópias contam para o orçamento de `public/data`):
+ * Formato compacto, porque vai em cada `forecasts/<id>.json`
+ * (conta para o orçamento de `public/data`):
  * - `cloudCover` (% inteiro) sempre que a série o traz: é também a marca de que
  *   a hora tem dados de tempo;
  * - `precipitation` (mm/h, 1 casa) só quando chove (> 0 depois de arredondar).
