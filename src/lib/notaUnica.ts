@@ -68,6 +68,8 @@ export interface SportScoreV6 extends SportScore {
   noite?: true;
   /** A fonte não traz o que a modalidade precisa nesta hora. */
   semDados?: true;
+  /** Kite com vento forte (≥ 30 kt médios): «Só profissionais» (a nota fica baixa para os outros níveis). */
+  soProfissionais?: true;
 }
 
 export interface SportScoreAntigo extends SportScore {
@@ -162,6 +164,14 @@ export function sportScoreDeV6(
     base.directionSafety = av.seguranca;
     base.warning = getTranslation('pt').windSafety[key];
     base.warningEn = getTranslation('en').windSafety[key];
+  }
+  if (av.soProfissionais) {
+    base.soProfissionais = true;
+    // o aviso de direcção (offshore) ganha; senão, o do vento forte
+    if (!base.warning) {
+      base.warning = getTranslation('pt').windSafety.soProfissionais;
+      base.warningEn = getTranslation('en').windSafety.soProfissionais;
+    }
   }
   return base;
 }
