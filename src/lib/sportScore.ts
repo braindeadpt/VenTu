@@ -140,7 +140,9 @@ const SUP_CONFIG = {
 
 export type WindCategory = 'onshore' | 'side-onshore' | 'side-offshore' | 'offshore'
 
-export function classifyWind(spot: Spot, windDir: number): WindCategory {
+/** `null` em água interior (`spot.aguaInterior`): não há lado de mar nem de terra. */
+export function classifyWind(spot: Spot, windDir: number): WindCategory | null {
+  if (spot.aguaInterior) return null
   const angleDiff = Math.abs(windDir - (spot.coastOrientation ?? 270))
   const normalizedDiff = angleDiff > 180 ? 360 - angleDiff : angleDiff
 
@@ -178,9 +180,10 @@ export function isWindDirectionSport(sport: SportType): boolean {
 }
 
 export interface WindSportDirectionSafety {
-  direction: WindSportDirection
-  /** 0 = straight onshore, 90 = cross-shore, 180 = straight offshore. */
-  angleFromOnshore: number
+  /** `null` em água interior (`spot.aguaInterior`): direcção neutra, sem banda. */
+  direction: WindSportDirection | null
+  /** 0 = straight onshore, 90 = cross-shore, 180 = straight offshore; `null` em água interior. */
+  angleFromOnshore: number | null
   /** Share (0–1) of the sport's direction points. */
   dirFactor: number
   safety: WindSafetyLevel | null
@@ -201,7 +204,7 @@ const WIND_SPORT_DIRECTION_BANDS: ReadonlyArray<{
   { maxAngle: 180, direction: 'offshore', dirFactor: 0 },        // perigo de deriva para o mar
 ]
 
-function angleFromOnshore(spot: Spot, windDir: number): number {
+function angleFromOnshore(spot: Pick<Spot, 'coastOrientation'>, windDir: number): number {
   const angleDiff = Math.abs(windDir - (spot.coastOrientation ?? 270)) % 360
   return angleDiff > 180 ? 360 - angleDiff : angleDiff
 }
@@ -213,7 +216,20 @@ function angleFromOnshore(spot: Spot, windDir: number): number {
  * with gusty, holey wind near the beach — partial points + a note for
  * side-offshore, zero points; both cap the total nota (5,0 / 2,5 /10).
  */
-export function windSportDirectionSafety(spot: Spot, windDir: number): WindSportDirectionSafety {
+/**
+ * Água interior: a direcção não entra na nota. O factor é 1 (os pontos de
+ * direcção ficam inteiros, como se a componente não existisse e o resto
+ * fosse a escala toda), sem aviso de segurança nem tecto — o mesmo para
+ * qualquer direcção do vento.
+ */
+export const WIND_DIR_FACTOR_AGUA_INTERIOR = 1
+
+export function windSportDirectionSafety(
+  spot: Pick<Spot, 'coastOrientation' | 'aguaInterior'>,
+  windDir: number,
+): WindSportDirectionSafety {
+  if (spot.aguaInterior)
+    return { direction: null, angleFromOnshore: null, dirFactor: WIND_DIR_FACTOR_AGUA_INTERIOR, safety: null, scoreCap: null }
   const angle = angleFromOnshore(spot, windDir)
   const band =
     WIND_SPORT_DIRECTION_BANDS.find((b) => angle <= b.maxAngle) ??
@@ -295,7 +311,8 @@ function scoreSurf(spot: Spot, c: Conditions): SportScore {
 
   const angleDiff = Math.abs(c.windDirection - (spot.coastOrientation ?? 270))
   const normalizedDiff = angleDiff > 180 ? 360 - angleDiff : angleDiff
-  const isOffshore = normalizedDiff > 90
+  // água interior: sem offshore (o vento conta como «outro», qualquer direcção)
+  const isOffshore = !spot.aguaInterior && normalizedDiff > 90
   const windScore = isOffshore
     ? Math.max(0, SURF_CONFIG.WIND_OFFSHORE_MAX - windKt * SURF_CONFIG.WIND_OFFSHORE_DECAY)
     : Math.max(0, SURF_CONFIG.WIND_OTHER_MAX - windKt * SURF_CONFIG.WIND_OTHER_DECAY)
@@ -338,7 +355,7 @@ function scoreKitesurf(spot: Spot, c: Conditions): SportScore {
     if (windKt >= 8) {
       const dirPts = Math.round(windDirFactor(dirSafety, KITE_CONFIG.WIND_DIR_PTS_MAX) * 0.5)
       score += dirPts
-      if (dirPts > 0) pushFactor(`Vento ${dirSafety.direction}`, `${dirSafety.direction} wind`)
+      if (dirPts > 0 && dirSafety.direction) pushFactor(`Vento ${dirSafety.direction}`, `${dirSafety.direction} wind`)
     }
     score = Math.min(score, WIND_SHORT_SCORE_CAP)
     pushFactor('Vento insuficiente', 'Not enough wind')
@@ -380,7 +397,7 @@ function scoreKitesurf(spot: Spot, c: Conditions): SportScore {
     score += dirPts
     // «Xkt vento» já está na lista — a direcção vai nua para não repetir.
     // A label vem da mesma banda que pontua (#195), não do classifyWind.
-    if (dirPts > 0) pushFactor(dirSafety.direction, dirSafety.direction)
+    if (dirPts > 0 && dirSafety.direction) pushFactor(dirSafety.direction, dirSafety.direction)
 
     score += Math.min(c.waterTemp * KITE_CONFIG.TEMP_PTS_PER_DEG, KITE_CONFIG.TEMP_PTS_MAX)
     score = withDirectionHeadroom(score, dirPts, KITE_CONFIG.WIND_DIR_PTS_MAX)
@@ -416,7 +433,7 @@ function scoreWindsurf(spot: Spot, c: Conditions): SportScore {
     if (windKt >= 10) {
       const dirPts = Math.round(windDirFactor(dirSafety, WIND_CONFIG.WIND_DIR_PTS_MAX) * 0.5)
       score += dirPts
-      if (dirPts > 0) pushFactor(`Vento ${dirSafety.direction}`, `${dirSafety.direction} wind`)
+      if (dirPts > 0 && dirSafety.direction) pushFactor(`Vento ${dirSafety.direction}`, `${dirSafety.direction} wind`)
     }
     score = Math.min(score, WIND_SHORT_SCORE_CAP)
     pushFactor('Vento insuficiente', 'Not enough wind')
@@ -438,7 +455,7 @@ function scoreWindsurf(spot: Spot, c: Conditions): SportScore {
 
     const windDirPts = windDirFactor(dirSafety, WIND_CONFIG.WIND_DIR_PTS_MAX)
     score += windDirPts
-    if (windDirPts > 0) pushFactor(dirSafety.direction, dirSafety.direction)
+    if (windDirPts > 0 && dirSafety.direction) pushFactor(dirSafety.direction, dirSafety.direction)
 
     score += Math.min(c.waterTemp * WIND_CONFIG.TEMP_PTS_PER_DEG, WIND_CONFIG.TEMP_PTS_MAX)
   }
@@ -624,7 +641,7 @@ function scoreFoil(spot: Spot, c: Conditions): SportScore {
   const dirSafety = windSportDirectionSafety(spot, c.windDirection)
   const dirPts = windDirFactor(dirSafety, FOIL_CONFIG.WIND_DIR_PTS_MAX)
   score += dirPts
-  if (dirPts > 0) pushFactor(dirSafety.direction, dirSafety.direction)
+  if (dirPts > 0 && dirSafety.direction) pushFactor(dirSafety.direction, dirSafety.direction)
 
   score += Math.min(c.waterTemp * FOIL_CONFIG.TEMP_PTS_PER_DEG, FOIL_CONFIG.TEMP_PTS_MAX)
 
@@ -764,12 +781,13 @@ export function windQualityTier(
 ): 'good' | 'fair' | 'poor' | null {
   if (isWindDirectionSport(sport)) {
     const { direction } = windSportDirectionSafety(spot, windDirection)
+    if (direction === null) return null
     if (direction === 'cross-shore' || direction === 'side-onshore') return 'good'
     if (direction === 'onshore') return 'fair'
     return 'poor'
   }
   const cat = classifyWind(spot, windDirection)
-  if (sport === 'wakeboard') return null
+  if (sport === 'wakeboard' || cat === null) return null
   // surf / bodyboard / sup — offshore cleans the face
   if (cat === 'offshore' || cat === 'side-offshore') return 'good'
   if (cat === 'side-onshore') return 'fair'

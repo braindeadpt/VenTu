@@ -23,6 +23,18 @@
 export type WindRelation = 'offshore' | 'onshore' | 'cross';
 
 /**
+ * Orientação da costa para classificar o vento, ou `undefined` quando o spot
+ * é de água interior (`aguaInterior`): aí não há onshore / offshore e quem
+ * chama trata `undefined` como «sem relação» (sem cor nem rótulo).
+ */
+export function orientacaoVento(spot: {
+  coastOrientation?: number;
+  aguaInterior?: boolean;
+}): number | undefined {
+  return spot.aguaInterior ? undefined : spot.coastOrientation;
+}
+
+/**
  * Determine whether wind is offshore, onshore, or cross-shore.
  *
  * @param windDirection — degrees (0–360), where the wind COMES FROM

@@ -54,7 +54,7 @@ export interface NotaV6 {
  * `null` se o desporto não tem v6.
  */
 export function notaV6DeCondicoes(
-  spot: Pick<Spot, 'id' | 'lat' | 'lon' | 'coastOrientation'>,
+  spot: Pick<Spot, 'id' | 'lat' | 'lon' | 'coastOrientation'> & Partial<Pick<Spot, 'aguaInterior'>>,
   sport: string,
   raw: Record<string, unknown>,
   opc: { nowMs?: number; t?: string } = {},
@@ -83,7 +83,7 @@ export function notaV6DeCondicoes(
   const r = MOTOR.para(sp).avalia(k, h);
   const def = MODALIDADES_DEF.def[k] as DefModalidade;
   if (def.logica !== 'vento' || r.n == null) return { n: r.n, nMotor: r.n, t };
-  const s = windSportDirectionSafety({ coastOrientation: sp.praiaVirada } as Spot, h.wd);
+  const s = windSportDirectionSafety({ coastOrientation: sp.praiaVirada, aguaInterior: sp.aguaInterior ? true : undefined }, h.wd);
   const tecto = tectoSeguranca(s.scoreCap);
   return { n: tecto != null ? Math.min(r.n, tecto) : r.n, nMotor: r.n, t };
 }

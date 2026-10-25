@@ -73,7 +73,8 @@ function factorLocale(locale: string): FactorLocale {
  *  classifyWind ou, nos desportos de vento, da banda de
  *  windSportDirectionSafety (#195: inclui cross-shore).
  *  M7: substitui as abreviaturas «s-off/s-on/off/on». */
-function windRelLabel(windCat: string, locale: string): string {
+function windRelLabel(windCat: string | null, locale: string): string {
+  if (windCat === null) return ''; // água interior: sem relação
   const rel = getTranslation(locale).spotPageInstruments;
   switch (windCat) {
     case 'offshore': return rel.windRelOffshore;
@@ -164,8 +165,8 @@ export function getSpotScoreFactors(input: SpotScoreFactorsInput): ScoreFactorSe
       // M7★: a forma longa também usa o rótulo canónico (windRel*) — é ela
       // que alimenta a linha «porquê» do hero do spot, que antes mostrava
       // o token cru do classifyWind («side-onshore 18 kt»).
-      label: `${windRel} ${windKt} kt`,
-      short: `${windKt} kt ${windRel}`,
+      label: `${windRel} ${windKt} kt`.trim(),
+      short: `${windKt} kt ${windRel}`.trim(),
     }),
     period: () => ({
       kind: 'period',

@@ -51,7 +51,8 @@ export type Ponto = readonly [number, number];
 export type Curva = ReadonlyArray<Ponto>;
 export type Degraus = ReadonlyArray<Ponto>;
 
-export type VentoRelK = 'mar' | 'lat-mar' | 'lat' | 'lat-terra' | 'terra';
+/** `neutro`: água interior (`SpotModalidade.aguaInterior`), sem lado de mar nem de terra. */
+export type VentoRelK = 'mar' | 'lat-mar' | 'lat' | 'lat-terra' | 'terra' | 'neutro';
 
 export interface DefVento {
   nome: string;
@@ -59,7 +60,7 @@ export interface DefVento {
   dica?: string;
   logica: 'vento';
   vento: Curva;
-  dir: Record<VentoRelK, number>;
+  dir: Record<Exclude<VentoRelK, 'neutro'>, number>;
   rajada: Degraus;
   tecto: Ponto;
   chuva: Degraus;
@@ -112,6 +113,8 @@ export interface SpotModalidade {
   praiaVirada: number;
   surf: { janela: readonly [number, number]; tol?: number };
   aguaPlana?: boolean;
+  /** Água interior: a direcção do vento é neutra (`ventoRel` → `neutro`, factor 1). */
+  aguaInterior?: boolean;
 }
 
 export type Efeito = -2 | -1 | 0 | 1;
@@ -154,7 +157,11 @@ export const dif = (a: number, b: number) => (((a - b) % 360) + 540) % 360 - 180
 const lado = (rel: number) => (rel > 0 ? 'pelo norte' : 'pelo sul');
 
 /** Relação do vento com a praia (`sp.praiaVirada` = para onde a praia olha). */
-export function ventoRel(sp: Pick<SpotModalidade, 'praiaVirada'>, wd: number): VentoRel {
+/** Factor de direcção em água interior: 1, o neutro do produto (a nota é só a do vento). */
+export const DIR_AGUA_INTERIOR = 1;
+
+export function ventoRel(sp: Pick<SpotModalidade, 'praiaVirada' | 'aguaInterior'>, wd: number): VentoRel {
+  if (sp.aguaInterior) return { k: 'neutro', txt: 'em água interior', a: 0, rel: 0 };
   const rel = dif(wd, sp.praiaVirada);
   const a = Math.abs(rel);
   if (a <= 30) return { k: 'mar', txt: 'de mar, de frente para a praia', a, rel };
@@ -248,7 +255,7 @@ export function modAvalia(MOD: ModalidadesDef, opc?: { DA?: number }): Motor {
         if (noiteH(h)) return { n: null, f };
         const vr = ventoRel(sp, h.wd);
         const s = Math.min(curva(p.vento, h.w), 10);
-        const dirF = p.dir[vr.k];
+        const dirF = vr.k === 'neutro' ? DIR_AGUA_INTERIOR : p.dir[vr.k];
         const raj = h.g - h.w;
         const pr = degrau(p.rajada, raj);
         const pt = h.g > p.tecto[0] ? p.tecto[1] : 0;

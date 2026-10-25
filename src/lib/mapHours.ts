@@ -12,6 +12,7 @@ import {
 import { getAssetPath } from '@/lib/paths';
 import { getMacroRegion, MACRO_REGIONS } from '@/lib/regions';
 import { detectThermal, lisbonHourFromMapTime, thermalCode } from '@/lib/mapThermal';
+import { orientacaoVento } from '@/lib/wind';
 
 export const MAP_HOURS_STEP = 3;
 export const MAP_HOURS_COUNT = 16;
@@ -423,7 +424,7 @@ export function buildMapHoursFile(opts: {
             sst: sstRaw,
             windSpeedMs: Number(raw.windSpeed) || 0,
             windDirection: Number(raw.windDirection) || 0,
-            coastOrientation: spot.coastOrientation,
+            coastOrientation: orientacaoVento(spot),
           })
         : null;
       thermalSeries.push(thermalCode(kind));

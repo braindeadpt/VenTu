@@ -46,6 +46,15 @@ export interface Spot {
   // Used for offshore/onshore wind calculation
   // 0=N, 90=E, 180=S, 270=W
   coastOrientation: number;
+  /**
+   * Água interior (albufeira, lagoa, rio interior, cable park): não há lado
+   * de mar nem de terra, por isso o vento não se classifica em onshore /
+   * offshore / lateral. A direcção fica neutra na nota (nem penaliza nem
+   * premeia) e a UI não mostra essa relação. `coastOrientation` fica no
+   * ficheiro (é obrigatório e os scripts lêem-no), mas não se usa para o
+   * vento. Ver docs/COAST-ORIENTATION.md.
+   */
+  aguaInterior?: true;
   /** Reuse conditions/forecasts from another spot (same weather cell; no extra API fetch). */
   conditionsSource?: string;
 }

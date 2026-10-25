@@ -16,7 +16,8 @@ export interface ThermalInput {
   sst: number;
   windSpeedMs: number;
   windDirection: number;
-  coastOrientation: number;
+  /** `undefined` em água interior (sem brisa de mar / de terra). */
+  coastOrientation: number | undefined;
 }
 
 /**
@@ -27,7 +28,7 @@ export function detectThermal(input: ThermalInput): ThermalKind | null {
   const { airTemp, sst, windSpeedMs, windDirection, coastOrientation } = input;
   if (!Number.isFinite(airTemp) || !Number.isFinite(sst)) return null;
   if (!Number.isFinite(windSpeedMs) || !Number.isFinite(windDirection)) return null;
-  if (!Number.isFinite(coastOrientation)) return null;
+  if (coastOrientation === undefined || !Number.isFinite(coastOrientation)) return null;
 
   const hour = ((input.lisbonHour % 24) + 24) % 24;
   const relation = getWindRelationToCoast(windDirection, coastOrientation);

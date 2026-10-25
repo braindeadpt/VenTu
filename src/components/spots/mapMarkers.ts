@@ -4,7 +4,7 @@ import type { Spot } from '@/types';
 import type { GridSportFilter } from '@/lib/sportRatings';
 import { includeSpotInViewportBounds } from './mapViewportBounds';
 import { resolveWavePowerKw, MS_TO_KNOTS } from '@/lib/waveEnergy';
-import { getCardinalLabel, getWindRelationLabel, getWindRelationToCoast } from '@/lib/wind';
+import { getCardinalLabel, getWindRelationLabel, getWindRelationToCoast, orientacaoVento } from '@/lib/wind';
 import { getScoreRgb } from '@/lib/map-constants';
 import { getScoreTier } from '@/lib/scoreThresholds';
 import { buildWindRingMarkerHtml, markerIconLayout, type MapMarkerWarning } from '@/lib/mapWindArrow';
@@ -35,7 +35,7 @@ export function buildMarkerIcon(
     windKtNum,
     showWind,
     locale,
-    spot.coastOrientation,
+    orientacaoVento(spot),
     warning,
   );
 
@@ -64,9 +64,10 @@ export function buildMarkerPopupContent(
     selectedSport !== 'all' && selectedSport !== 'big-wave' ? selectedSport : undefined;
 
   const windKt = (conditions.windSpeed * MS_TO_KNOTS).toFixed(0);
+  const coast = orientacaoVento(spot);
   const windRelation =
-    spot.coastOrientation !== undefined
-      ? getWindRelationToCoast(conditions.windDirection, spot.coastOrientation)
+    coast !== undefined
+      ? getWindRelationToCoast(conditions.windDirection, coast)
       : undefined;
   const windRelationLabel =
     windRelation != null

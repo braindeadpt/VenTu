@@ -22,6 +22,9 @@
  *    `praiaVirada` revisto à mão, para o motor antigo e o v6 dizerem o mesmo;
  *  - `osm`: o valor calculado (arredondado a 5°), quando a geometria é limpa;
  *  - `manual`: valor fixado à mão (`VALOR_MANUAL`, spots da lista de revisão manual);
+ *  - `agua-interior`: spots com `aguaInterior: true` em `src/lib/spots.ts` (albufeiras,
+ *    lagoas e rios interiores, cable parks): o vento não se classifica em
+ *    onshore/offshore; o valor fica como está e não se usa para o vento;
  *  - `mantido`: estuários, lagoas, rios e albufeiras (lista explícita abaixo),
  *    spots sem costa a < raio ou com geometria ambígua: NÃO se adivinha; o valor
  *    actual fica e o spot vai para revisão manual, com o calculado ao lado.
@@ -109,6 +112,24 @@ export const REVISAO_MANUAL = {
   'foz-sizandro': 'foz do Sizandro: 300° fixado à mão (a geometria junto à foz oscila 299–310°)',
   'sao-pedro-moel': 'São Pedro de Moel: 290° fixado à mão (areal 285–295° entre as lajes das pontas)',
   'porto-novo': 'Porto Novo (concha na foz do Alcabrichel): 275° fixado à mão (geometria ambígua no pin)',
+  // revisão v2 da orientação (25/10): valores fixados à mão em VALOR_MANUAL
+  'vila-praia-ancora': 'Vila Praia de Âncora',
+  'canide-sul': 'Canide Sul (esporões)',
+  'bairro-piscatorio': 'Espinho (esporões)',
+  'pescadores-ericeira': 'Pescadores (Ericeira)',
+  comporta: 'Comporta',
+  carvalhal: 'Carvalhal (enseada)',
+  'vila-real-santo-antonio': 'Vila Real de Santo António',
+  ferragudo: 'Praia Grande de Ferragudo (estuário do Arade)',
+  'praia-vitoria': 'Praia da Vitória (baía)',
+  'santa-catarina-terceira': 'Santa Catarina (Terceira)',
+  'porto-martins': 'Porto Martins (enseada)',
+  mosteiros: 'Mosteiros (ponta)',
+  'ponta-pargo': 'Ponta do Pargo',
+  'ponta-sao-lourenco': 'Ponta de São Lourenço',
+  machico: 'Machico (baía)',
+  'seixal-madeira': 'Seixal (ponta)',
+  'ribeira-brava': 'Ribeira Brava',
 };
 
 /**
@@ -128,6 +149,40 @@ export const VALOR_MANUAL = {
   'foz-sizandro': 300, // 25/10: pin na foz (fora da zona interdita); costa 300° (o recálculo dá 310°, 1 km 299°); aprovado pelo Pedro
   'sao-pedro-moel': 290, // 25/10: spot novo; costa 285–289° na proposta (o recálculo dá 295°, 1 km 287°); aprovado pelo Pedro
   'porto-novo': 275, // 25/10: spot novo numa concha (267° local, 286° a 1 km); aprovado pelo Pedro
+  // revisão v2 da orientação (25/10, «tudo de uma vez»)
+  'vila-praia-ancora': 240, // 25/10: pin da #295; OSM 232–238°; aprovado pelo Pedro
+  'foil-cabedelo': 210, // 25/10: margem sul da foz do Lima; OSM 199–210°; aprovado pelo Pedro
+  'canide-sul': 265, // 25/10: entre esporões; OSM 256–268°; aprovado pelo Pedro
+  'bairro-piscatorio': 275, // 25/10: esporões de Espinho; 1–2 km dão 243–273°; aprovado pelo Pedro
+  'marina-afurada-foil': 330, // 25/10: margem sul do Douro na marina (polígono do estuário, corda ±250/500 m: 330°/327°); os 255° eram a costa do mar a 1,3 km; aprovado pelo Pedro
+  'barrinha-esmoriz': 290, // 25/10: praia do mar, costa recta; OSM 285–290°; aprovado pelo Pedro
+  'ria-torreira': 90, // 25/10: margem da ria virada a nascente (sem costa OSM na ria); aprovado pelo Pedro
+  trafaria: 295, // 25/10: foz do Tejo; OSM 295–305°; aprovado pelo Pedro
+  'ponta-dos-corvos': 10, // 25/10: virada a norte, para Lisboa; OSM 10–21°; aprovado pelo Pedro
+  'pescadores-ericeira': 245, // 25/10: pin da #301; OSM 228–253°; aprovado pelo Pedro
+  'seixal-bay': 40, // 25/10: pin da #295; margem virada a NE, OSM 41–54°; aprovado pelo Pedro
+  'cova-do-vapor': 290, // 25/10: ponta da restinga; OSM 285–316° conforme a escala; aprovado pelo Pedro
+  troia: 25, // 25/10: margem virada ao Sado e a Setúbal; OSM 23–24°; aprovado pelo Pedro
+  'lagoa-santo-andre': 285, // 25/10: pin na lagoa junto à barra; praia do mar ao lado, OSM 285°; aprovado pelo Pedro
+  'vila-nova-milfontes': 175, // 25/10: foz do Mira; OSM 162–177°; aprovado pelo Pedro
+  comporta: 250, // 25/10: pin na Praia da Comporta; OSM 250° em todas as escalas (a proposta de 285° era do pin antigo); aprovado pelo Pedro
+  carvalhal: 300, // 25/10: enseada; OSM 297–324° conforme a escala; aprovado pelo Pedro
+  'cacela-velha': 165, // 25/10: OSM 158–170°; aprovado pelo Pedro
+  'cabanas-tavira': 150, // 25/10: costa recta; OSM 147–150°; aprovado pelo Pedro
+  'vila-real-santo-antonio': 195, // 25/10: pin na Praia de Santo António; OSM 195°; aprovado pelo Pedro
+  alvor: 185, // 25/10: a praia vira a sul; o cálculo (285°) apanha a ria; aprovado pelo Pedro
+  ferragudo: 235, // 25/10: pin na Praia Grande, no estuário do Arade: margem da praia 233–244° (a costa OSM a 800 m dava 200°, ambígua); aprovado pelo Pedro
+  'barrinha-faro': 215, // 25/10: pin da #296; lado do mar a SSW, OSM 211–217°; aprovado pelo Pedro
+  fuseta: 325, // 25/10: margem interior da ilha (pin), virada à vila e à laguna do kite; OSM 324–339°; aprovado pelo Pedro
+  'praia-vitoria': 110, // 25/10: baía virada a nascente; OSM 102–119°; aprovado pelo Pedro
+  'santa-catarina-terceira': 105, // 25/10: costa leste da Terceira; OSM 95–111°; aprovado pelo Pedro
+  'porto-martins': 150, // 25/10: enseada virada a SE; OSM 126–189° conforme a escala; aprovado pelo Pedro
+  mosteiros: 310, // 25/10: ponta; o areal vira a W/NW; aprovado pelo Pedro
+  'ponta-pargo': 300, // 25/10: extremo oeste da Madeira; OSM 286–309°; aprovado pelo Pedro
+  'ponta-sao-lourenco': 190, // 25/10: lado sul da ponta; OSM 188–197°; aprovado pelo Pedro
+  machico: 135, // 25/10: baía virada a SE; OSM 98–139°; aprovado pelo Pedro
+  'seixal-madeira': 45, // 25/10: ponta da costa norte, virada a NE; OSM 44–112°; aprovado pelo Pedro
+  'ribeira-brava': 220, // 25/10: pin na praia; eixo da praia 132°/312° → 222°, OSM 220–247°; aprovado pelo Pedro
 };
 
 /**
@@ -165,7 +220,8 @@ function lerSpots() {
     const ll = t.match(/\blat: (-?[\d.]+), lon: (-?[\d.]+)/);
     const co = t.match(/\bcoastOrientation: (\d+)/);
     if (!ll || !co) throw new Error(`spot ${id} sem lat/lon/coastOrientation`);
-    return { id, nome: nome ? nome[2].replace(/\\'/g, "'") : id, lat: +ll[1], lon: +ll[2], atual: +co[1] };
+    const interior = /\baguaInterior: true\b/.test(t);
+    return { id, nome: nome ? nome[2].replace(/\\'/g, "'") : id, lat: +ll[1], lon: +ll[2], atual: +co[1], interior };
   });
 }
 
@@ -300,6 +356,11 @@ function rever(spots) {
     if (cur) {
       final = n360(cur.praiaVirada);
       origem = 'curado';
+    } else if (s.interior) {
+      // água interior: não há onshore/offshore; o valor fica e o motor não o usa para o vento
+      final = s.atual;
+      origem = 'agua-interior';
+      motivos.push('água interior (aguaInterior): sem onshore/offshore, o vento fica neutro');
     } else if (manual && VALOR_MANUAL[s.id] !== undefined) {
       final = n360(VALOR_MANUAL[s.id]);
       origem = 'manual';
@@ -393,6 +454,7 @@ const resumo = {
   curado: linhas.filter((l) => l.origem === 'curado').length,
   mantido: linhas.filter((l) => l.origem === 'mantido').length,
   manual: linhas.filter((l) => l.origem === 'manual').length,
+  aguaInterior: linhas.filter((l) => l.origem === 'agua-interior').length,
   mudam: linhas.filter((l) => l.final !== l.atual).length,
   revisao: linhas.filter((l) => l.revisao).length,
   em270Antes: linhas.filter((l) => l.atual === 270).length,

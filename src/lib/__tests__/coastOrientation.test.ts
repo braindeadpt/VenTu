@@ -14,6 +14,44 @@ type Linha = { id: string; atual: number; calculado: number | null; curado: numb
 const linhas = (review as unknown as { spots: Linha[] }).spots;
 const porId = new Map(linhas.map((l) => [l.id, l]));
 const CURADOS = (editorial as unknown as { spots: Record<string, { praiaVirada: number }> }).spots;
+/** Água interior (`aguaInterior: true`): o vento não se classifica em onshore/offshore. */
+const AGUA_INTERIOR = ['cabedelo-wakepark', 'ilha-do-ermal', 'lagos-wakepark', 'castelo-bode', 'alqueva', 'praia-da-lomba', 'murtosa', 'foil-lagoa-albufeira', 'lagoa-sancha', 'foil-alvor'];
+/** Revisão v2 da orientação (25/10, aprovada pelo Pedro): [id, valor]. */
+const REVISAO_V2: Array<[string, number]> = [
+    ['vila-praia-ancora', 240],
+    ['foil-cabedelo', 210],
+    ['canide-sul', 265],
+    ['bairro-piscatorio', 275],
+    ['marina-afurada-foil', 330],
+    ['barrinha-esmoriz', 290],
+    ['ria-torreira', 90],
+    ['trafaria', 295],
+    ['ponta-dos-corvos', 10],
+    ['pescadores-ericeira', 245],
+    ['seixal-bay', 40],
+    ['cova-do-vapor', 290],
+    ['troia', 25],
+    ['lagoa-santo-andre', 285],
+    ['vila-nova-milfontes', 175],
+    ['comporta', 250],
+    ['carvalhal', 300],
+    ['cacela-velha', 165],
+    ['cabanas-tavira', 150],
+    ['vila-real-santo-antonio', 195],
+    ['alvor', 185],
+    ['ferragudo', 235],
+    ['barrinha-faro', 215],
+    ['fuseta', 325],
+    ['praia-vitoria', 110],
+    ['santa-catarina-terceira', 105],
+    ['porto-martins', 150],
+    ['mosteiros', 310],
+    ['ponta-pargo', 300],
+    ['ponta-sao-lourenco', 190],
+    ['machico', 135],
+    ['seixal-madeira', 45],
+    ['ribeira-brava', 220],
+];
 
 /** Linha recta de (lat0, lon0) com um rumo, em `n` passos de ~50 m (coords [lat, lon]). */
 function recta(lat0: number, lon0: number, rumoGraus: number, n = 80, passoM = 50): Array<[number, number]> {
@@ -87,18 +125,34 @@ describe('coastOrientation em src/lib/spots.ts', () => {
     for (const s of spots) expect(porId.get(s.id)?.final, s.id).toBe(s.coastOrientation);
   });
 
-  it('nenhum spot fica a 270° sem justificação', () => {
+  it('nenhum spot fica a 270° sem justificação (água interior isenta, explicitamente)', () => {
     const em270 = spots.filter((s) => s.coastOrientation === 270);
     for (const s of em270) {
       const l = porId.get(s.id)!;
       const justificado =
         (l.origem === 'curado' && l.curado === 270) ||
         (l.origem.startsWith('osm') && l.calculado === 270) ||
-        (l.origem === 'mantido' && l.revisao && l.motivos.length > 0);
+        (l.origem === 'mantido' && l.revisao && l.motivos.length > 0) ||
+        // água interior (albufeiras, lagoas, rios interiores, cable parks): a orientação não se usa para o vento
+        (l.origem === 'agua-interior' && s.aguaInterior === true && AGUA_INTERIOR.includes(s.id));
       expect(justificado, `${s.id}: ${JSON.stringify(l.motivos)}`).toBe(true);
     }
     // antes: 144 de 185 a 270°
     expect(em270.length).toBeLessThan(144);
+  });
+
+  it('água interior: só os 10 spots da lista, todos com origem `agua-interior`', () => {
+    expect(spots.filter((s) => s.aguaInterior).map((s) => s.id).sort()).toEqual([...AGUA_INTERIOR].sort());
+    for (const l of linhas) expect(l.origem === 'agua-interior', l.id).toBe(AGUA_INTERIOR.includes(l.id));
+  });
+
+  it.each(REVISAO_V2)('revisão v2 (25/10): %s fica a %i°, fixado à mão (VALOR_MANUAL)', (id, v) => {
+    const s = spots.find((x) => x.id === id)!;
+    expect(s.coastOrientation).toBe(v);
+    const l = porId.get(id)!;
+    expect(l.origem).toBe('manual');
+    expect(l.final).toBe(v);
+    expect(s.aguaInterior).toBeUndefined();
   });
 
   it('os spots curados da v6 têm a mesma orientação no motor antigo', () => {

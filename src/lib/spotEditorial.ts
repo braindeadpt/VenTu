@@ -31,6 +31,8 @@ export interface EditorialSpot {
   surf: { janela: [number, number]; terral: [number, number]; tol: number };
   aguaPlana: boolean;
   tipoAgua: TipoAgua;
+  /** Água interior (de `Spot.aguaInterior`): sem on/offshore. */
+  aguaInterior?: true;
   atencao?: { pt: string; en: string };
   melhorMare?: { pt: string; en: string };
   /**
@@ -70,9 +72,12 @@ export function zonaDe(lat: number, lon: number): Zona {
   return 'algarve';
 }
 
-export function editorialDe(spot: Pick<Spot, 'id' | 'lat' | 'lon' | 'coastOrientation'>): EditorialSpot {
+export function editorialDe(
+  spot: Pick<Spot, 'id' | 'lat' | 'lon' | 'coastOrientation'> & Partial<Pick<Spot, 'aguaInterior'>>,
+): EditorialSpot {
   const c = CURADOS[spot.id];
-  if (c) return { ...c, estimado: false };
+  const ai = spot.aguaInterior ? ({ aguaInterior: true } as const) : {};
+  if (c) return { ...c, ...ai, estimado: false };
   const v = n360(spot.coastOrientation ?? 270);
   return {
     praiaVirada: v,
@@ -80,14 +85,20 @@ export function editorialDe(spot: Pick<Spot, 'id' | 'lat' | 'lon' | 'coastOrient
     kite: { bom: [n360(v + 20), n360(v + 100)] },
     surf: { janela: [n360(v - 30), n360(v + 30)], terral: [n360(v + 140), n360(v + 220)], tol: 25 },
     aguaPlana: false,
-    tipoAgua: 'mar-aberto',
+    tipoAgua: spot.aguaInterior ? 'agua-plana' : 'mar-aberto',
+    ...ai,
     estimado: true,
   };
 }
 
 /** O que o motor lê de um spot. */
 export function spotModalidadeDe(e: EditorialSpot): SpotModalidade {
-  return { praiaVirada: e.praiaVirada, surf: { janela: e.surf.janela, tol: e.surf.tol }, aguaPlana: e.aguaPlana };
+  return {
+    praiaVirada: e.praiaVirada,
+    surf: { janela: e.surf.janela, tol: e.surf.tol },
+    aguaPlana: e.aguaPlana,
+    ...(e.aguaInterior ? { aguaInterior: true } : {}),
+  };
 }
 
 export const SPOTS_CURADOS = Object.keys(CURADOS);
