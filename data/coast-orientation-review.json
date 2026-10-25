@@ -17,12 +17,12 @@
     "osm1km": 2,
     "curado": 21,
     "mantido": 5,
-    "manual": 45,
-    "aguaInterior": 10,
-    "mudam": 159,
+    "manual": 44,
+    "aguaInterior": 11,
+    "mudam": 158,
     "revisao": 113,
     "em270Antes": 141,
-    "em270Depois": 20
+    "em270Depois": 21
   },
   "spots": [
     {
@@ -4538,13 +4538,14 @@
       "referencia": null,
       "difReferencia": null,
       "difCurado": null,
-      "final": 285,
-      "origem": "manual",
-      "delta": 15,
+      "final": 270,
+      "origem": "agua-interior",
+      "delta": 0,
       "deltaCalculado": 15,
       "revisao": true,
       "motivos": [
-        "água interior/abrigada: Lagoa de Santo André"
+        "água interior/abrigada: Lagoa de Santo André",
+        "água interior (aguaInterior): sem onshore/offshore, o vento fica neutro"
       ]
     },
     {

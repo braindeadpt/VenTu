@@ -15,7 +15,7 @@ const linhas = (review as unknown as { spots: Linha[] }).spots;
 const porId = new Map(linhas.map((l) => [l.id, l]));
 const CURADOS = (editorial as unknown as { spots: Record<string, { praiaVirada: number }> }).spots;
 /** Água interior (`aguaInterior: true`): o vento não se classifica em onshore/offshore. */
-const AGUA_INTERIOR = ['cabedelo-wakepark', 'ilha-do-ermal', 'lagos-wakepark', 'castelo-bode', 'alqueva', 'praia-da-lomba', 'murtosa', 'foil-lagoa-albufeira', 'lagoa-sancha', 'foil-alvor'];
+const AGUA_INTERIOR = ['cabedelo-wakepark', 'ilha-do-ermal', 'lagos-wakepark', 'castelo-bode', 'alqueva', 'praia-da-lomba', 'murtosa', 'foil-lagoa-albufeira', 'lagoa-sancha', 'foil-alvor', 'lagoa-santo-andre'];
 /** Revisão v2 da orientação (25/10, aprovada pelo Pedro): [id, valor]. */
 const REVISAO_V2: Array<[string, number]> = [
     ['vila-praia-ancora', 240],
@@ -31,7 +31,6 @@ const REVISAO_V2: Array<[string, number]> = [
     ['seixal-bay', 40],
     ['cova-do-vapor', 290],
     ['troia', 25],
-    ['lagoa-santo-andre', 285],
     ['vila-nova-milfontes', 175],
     ['comporta', 250],
     ['carvalhal', 300],
@@ -141,7 +140,7 @@ describe('coastOrientation em src/lib/spots.ts', () => {
     expect(em270.length).toBeLessThan(144);
   });
 
-  it('água interior: só os 10 spots da lista, todos com origem `agua-interior`', () => {
+  it('água interior: só os 11 spots da lista, todos com origem `agua-interior`', () => {
     expect(spots.filter((s) => s.aguaInterior).map((s) => s.id).sort()).toEqual([...AGUA_INTERIOR].sort());
     for (const l of linhas) expect(l.origem === 'agua-interior', l.id).toBe(AGUA_INTERIOR.includes(l.id));
   });

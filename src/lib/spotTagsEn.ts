@@ -190,7 +190,6 @@ export const SPOT_TAG_EN: Record<string, string> = {
   'Sem vigilância': 'No lifeguards',
   'Tráfego de barcos': 'Boat traffic',
   'Tráfego de barcos na foz': 'Boat traffic at the river mouth',
-  'Tráfego de barcos na ria': 'Boat traffic on the ria',
   'Tráfego de iniciantes': 'Beginner traffic',
   'Tráfego fluvial': 'River traffic',
   'Tráfego marítimo': 'Maritime traffic',

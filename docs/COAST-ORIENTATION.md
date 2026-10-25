@@ -66,8 +66,8 @@ Implementação pura e testada em `scripts/lib/coastOrientation.mjs`:
 | curado v6 | os 21 spots de `spotEditorial.json` (os 19 da maquete, mais as variantes da Lagoa de Óbidos: `obidos-lagoon-sul` e `foz-arelho`) | o `praiaVirada` revisto à mão: o motor antigo e o v6 passam a dizer o mesmo |
 | OSM | geometria limpa | o calculado (500 m) |
 | OSM 1 km | 500 m ambíguo, mas a corda de 1 km é limpa (corda/arco ≥ 0,85) | o calculado a 1 km |
-| **manual** | spot da lista `REVISAO_MANUAL` com valor fixado à mão em `VALOR_MANUAL` (`beliche` 230° e `coxos` 280°; na passagem de Peniche, 24/10: `consolacao` 260°, `lagide` 345°, `baleal-sul` 345°, `molhe-leste` 250°, `sao-martinho-porto` 315° e `foil-foz-arelho` 300°; na passagem Nazaré – Figueira e Santa Cruz – Guincho, 25/10: `leirosa` 285°, `foz-sizandro` 300°, `sao-pedro-moel` 290° e `porto-novo` 275°; na revisão v2, 25/10, mais 33 (ver «Revisão v2»); todos aprovados pelo Pedro) | o valor fixado: o recálculo mantém-no |
-| água interior | `aguaInterior: true` em `src/lib/spots.ts` (10 spots: albufeiras, lagoas e rios interiores, cable parks) | fica o valor que está, mas **não se usa para o vento**: sem onshore/offshore (ver «Água interior») |
+| **manual** | spot da lista `REVISAO_MANUAL` com valor fixado à mão em `VALOR_MANUAL` (`beliche` 230° e `coxos` 280°; na passagem de Peniche, 24/10: `consolacao` 260°, `lagide` 345°, `baleal-sul` 345°, `molhe-leste` 250°, `sao-martinho-porto` 315° e `foil-foz-arelho` 300°; na passagem Nazaré – Figueira e Santa Cruz – Guincho, 25/10: `leirosa` 285°, `foz-sizandro` 300°, `sao-pedro-moel` 290° e `porto-novo` 275°; na revisão v2, 25/10, mais 32 (ver «Revisão v2»); todos aprovados pelo Pedro) | o valor fixado: o recálculo mantém-no |
+| água interior | `aguaInterior: true` em `src/lib/spots.ts` (11 spots: albufeiras, lagoas e rios interiores, cable parks) | fica o valor que está, mas **não se usa para o vento**: sem onshore/offshore (ver «Água interior») |
 | **mantido** | rio, albufeira, lagoa, ria, estuário (lista explícita `REVISAO_MANUAL`: Tejo, Seixal, Sado, Óbidos, Albufeira, Santo André, Sancha, Aveiro, Alvor, Ria Formosa, Cávado, Lima, Douro, Mira, S. Martinho); sem costa OSM a < 2 km; geometria ambígua; spot a > 1 km da costa, numa costa que não é recta | **não se adivinha**: fica o valor antigo, e o spot vai para revisão manual com o calculado ao lado |
 
 Revisão (⚠) também quando:
@@ -202,11 +202,12 @@ a 400 m a geometria segue o molhe), `leirosa` 285°, `foz-sizandro` 300°, `sao-
 
 Os 43 spots que ainda estavam `mantido` com o valor de antes da #178 foram
 revistos um a um (OSM a 4 escalas, Overpass, e o polígono da água onde a costa
-OSM não chega). 33 ficam com valor fixado à mão (`VALOR_MANUAL`, aprovado pelo
-Pedro): `vila-praia-ancora` 240°, `foil-cabedelo` 210°, `canide-sul` 265°, `bairro-piscatorio` 275°, `marina-afurada-foil` 330°, `barrinha-esmoriz` 290°, `ria-torreira` 90°, `trafaria` 295°, `ponta-dos-corvos` 10°, `pescadores-ericeira` 245°, `seixal-bay` 40°, `cova-do-vapor` 290°, `troia` 25°, `lagoa-santo-andre` 285°, `vila-nova-milfontes` 175°, `comporta` 250°, `carvalhal` 300°, `cacela-velha` 165°, `cabanas-tavira` 150°, `vila-real-santo-antonio` 195°, `alvor` 185°, `ferragudo` 235°, `barrinha-faro` 215°, `fuseta` 325°, `praia-vitoria` 110°, `santa-catarina-terceira` 105°, `porto-martins` 150°, `mosteiros` 310°, `ponta-pargo` 300°, `ponta-sao-lourenco` 190°, `machico` 135°, `seixal-madeira` 45°, `ribeira-brava` 220°.
+OSM não chega). 32 ficam com valor fixado à mão (`VALOR_MANUAL`, aprovado pelo
+Pedro): `vila-praia-ancora` 240°, `foil-cabedelo` 210°, `canide-sul` 265°, `bairro-piscatorio` 275°, `marina-afurada-foil` 330°, `barrinha-esmoriz` 290°, `ria-torreira` 90°, `trafaria` 295°, `ponta-dos-corvos` 10°, `pescadores-ericeira` 245°, `seixal-bay` 40°, `cova-do-vapor` 290°, `troia` 25°, `vila-nova-milfontes` 175°, `comporta` 250°, `carvalhal` 300°, `cacela-velha` 165°, `cabanas-tavira` 150°, `vila-real-santo-antonio` 195°, `alvor` 185°, `ferragudo` 235°, `barrinha-faro` 215°, `fuseta` 325°, `praia-vitoria` 110°, `santa-catarina-terceira` 105°, `porto-martins` 150°, `mosteiros` 310°, `ponta-pargo` 300°, `ponta-sao-lourenco` 190°, `machico` 135°, `seixal-madeira` 45°, `ribeira-brava` 220°. A `lagoa-santo-andre` passou a água interior (confirmado pelo
+Pedro): o kite e o foil são na lagoa, em água plana (ver «Água interior»).
 
 Pins longe da água levados à praia ou ao lançamento (orientação revista no pin
-novo): `vila-real-santo-antonio` → 37.1715, -7.4154 (Praia de Santo António (o pin estava no cemitério da vila, a 2,9 km do mar)); `lagoa-santo-andre` → 38.1116, -8.7976 (lagoa junto à barra, na Costa de Santo André (o pin estava em terra, a 99 m da lagoa e 1,4 km do mar)); `ferragudo` → 37.11659, -8.52151 (água em frente ao centro da Praia Grande (o pin estava em terra, a 320 m da praia)); `ribeira-brava` → 32.67105, -17.06778 (água em frente à Praia da Ribeira Brava (o pin estava na vila, a 570 m do mar)); `comporta` → 38.3807, -8.8047 (água em frente à Praia da Comporta (o pin estava a 1,7 km, junto ao estuário)). A `marina-afurada-foil` fica na marina (o spot é a marina); a
+novo): `vila-real-santo-antonio` → 37.1715, -7.4154 (Praia de Santo António (o pin estava no cemitério da vila, a 2,9 km do mar); a descrição passa a ser a de uma praia de mar aberto na foz do Guadiana, já não «água plana na Ria Formosa»); `lagoa-santo-andre` → 38.1116, -8.7976 (lagoa junto à barra, na Costa de Santo André (o pin estava em terra, a 99 m da lagoa e 1,4 km do mar)); `ferragudo` → 37.11659, -8.52151 (água em frente ao centro da Praia Grande (o pin estava em terra, a 320 m da praia)); `ribeira-brava` → 32.67105, -17.06778 (água em frente à Praia da Ribeira Brava (o pin estava na vila, a 570 m do mar)); `comporta` → 38.3807, -8.8047 (água em frente à Praia da Comporta (o pin estava a 1,7 km, junto ao estuário)). A `marina-afurada-foil` fica na marina (o spot é a marina); a
 orientação é a da margem sul do Douro (330°), não a da costa do mar a 1,3 km. A
 `fuseta` fica a 325° (margem interior da ilha, onde está o pin, virada à laguna
 do kite): com 145° (lado da vila) o vento térmico de W, o `bestWind` do spot,
@@ -214,7 +215,7 @@ ficava side-offshore.
 
 ## Água interior
 
-Os 10 spots onde a orientação da costa não se aplica (`cabedelo-wakepark`, `ilha-do-ermal`, `lagos-wakepark`, `castelo-bode`, `alqueva`, `praia-da-lomba`, `murtosa`, `foil-lagoa-albufeira`, `lagoa-sancha`, `foil-alvor`) têm
+Os 11 spots onde a orientação da costa não se aplica (`cabedelo-wakepark`, `ilha-do-ermal`, `lagos-wakepark`, `castelo-bode`, `alqueva`, `praia-da-lomba`, `murtosa`, `foil-lagoa-albufeira`, `lagoa-sancha`, `foil-alvor`, `lagoa-santo-andre`) têm
 `aguaInterior: true`. O `coastOrientation` continua no ficheiro (é obrigatório
 e os scripts lêem-no), mas o motor não o usa para o vento:
 
@@ -234,10 +235,10 @@ Testes: `src/lib/__tests__/aguaInterior.test.ts`.
 
 ## Resultado (OSM de 2026-07-15T15:22:01Z)
 
-- 189 spots, dos quais **159 mudam** de valor face ao antes da #178.
-- Origem: OSM 106, OSM 1 km 2, curado 21, manual 45, água interior 10, mantido 5.
+- 189 spots, dos quais **158 mudam** de valor face ao antes da #178.
+- Origem: OSM 106, OSM 1 km 2, curado 21, manual 44, água interior 11, mantido 5.
 - 113 spots ficam marcados para revisão.
-- Spots a 270°: 141 → 20. Os que ficam têm 270° calculado, curado, mantido com motivo, ou são água interior (onde a orientação não se usa).
+- Spots a 270°: 141 → 21. Os que ficam têm 270° calculado, curado, mantido com motivo, ou são água interior (onde a orientação não se usa).
 
 | spot | antes | calculado | depois | Δ | origem | revisão |
 |---|---:|---:|---:|---:|---|---|
@@ -410,7 +411,7 @@ Testes: `src/lib/__tests__/aguaInterior.test.ts`.
 | `pescadores-ericeira` | 270 | 235 | **245** | 25 | **manual** | ⚠ geometria ambígua (dobra 56°, 500 m vs 1 km 6°: ponta, enseada ou foz); água interior/abrigada: Pescadores (Ericeira) |
 | `crazy-left` | 270 | 275 | **270** | 0 | **mantido** | ⚠ geometria ambígua (dobra 50°, 500 m vs 1 km 14°: ponta, enseada ou foz) |
 | `meco` | 270 | 285 | **285** | 15 | OSM |  |
-| `lagoa-santo-andre` | 270 | 285 | **285** | 15 | **manual** | ⚠ água interior/abrigada: Lagoa de Santo André |
+| `lagoa-santo-andre` | 270 | 285 | **270** | 0 | água interior | ⚠ água interior/abrigada: Lagoa de Santo André; água interior (aguaInterior): sem onshore/offshore, o vento fica neutro |
 | `lagoa-sancha` | 270 |  | **270** | 0 | água interior | ⚠ sem linha de costa OSM a < 2000 m; água interior/abrigada: Lagoa da Sancha; água interior (aguaInterior): sem onshore/offshore, o vento fica neutro |
 | `pessegueiro` | 270 | 260 | **260** | 10 | OSM |  |
 | `falesia` | 180 | 200 | **200** | 20 | OSM |  |

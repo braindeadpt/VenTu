@@ -1574,12 +1574,12 @@ export const spots: Spot[] = [
       id: 'vila-real-santo-antonio', slug: 'vila-real-santo-antonio', name: 'Vila Real de Santo António', nameEn: 'Vila Real de Santo Antonio',
       region: 'Algarve', regionEn: 'Algarve', lat: 37.1715, lon: -7.4154,
       coastOrientation: 195,
-      type: 'kitesurf', difficulty: 'beginner', bestWind: 'E, SE', bestSwell: 'Ria Formosa',
-      description: 'Água plana na Ria Formosa com vento de leste térmico consistente. Um dos spots mais fiáveis do Algarve para kitesurf. Praia extensa e segura.',
-      descriptionEn: 'Flat water in Ria Formosa with consistent east thermal wind. One of the most reliable spots in the Algarve for kitesurfing. Long and safe beach.',
+      type: 'kitesurf', difficulty: 'beginner', bestWind: 'E, SE', bestSwell: 'S, SE',
+      description: 'Praia de Santo António: mar aberto na foz do Guadiana, junto à fronteira. Kitesurf com vento de leste e sueste. Areal extenso.',
+      descriptionEn: 'Santo Antonio beach: open sea at the mouth of the Guadiana, by the Spanish border. Kitesurfing with east and south-east wind. Long sandy beach.',
       compatibleSports: ['kitesurf'],
       facilities: ['Estacionamento', 'Escolas kite', 'Aluguer', 'Restaurantes', 'WC'],
-      hazards: ['Tráfego de barcos na ria']
+      hazards: ['Tráfego de barcos na foz']
     },
   {
       id: 'monte-gordo', slug: 'monte-gordo', name: 'Monte Gordo', nameEn: 'Monte Gordo',
@@ -2041,7 +2041,8 @@ export const spots: Spot[] = [
   {
       id: 'lagoa-santo-andre', slug: 'lagoa-santo-andre', name: 'Lagoa de Santo André', nameEn: 'Santo Andre Lagoon',
       region: 'Alentejo', regionEn: 'Alentejo', lat: 38.1116, lon: -8.7976,
-      coastOrientation: 285,
+      coastOrientation: 270,
+      aguaInterior: true,
       type: 'kitesurf', difficulty: 'beginner', bestWind: 'NW, N', bestSwell: 'Lagoa',
       description: 'Lagoa costeira enorme com água plana e vento térmico consistente. Perfeita para kitesurf e windsurf. Reserva natural com flamingos.',
       descriptionEn: 'Huge coastal lagoon with flat water and consistent thermal wind. Perfect for kitesurf and windsurf. Nature reserve with flamingos.',

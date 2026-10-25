@@ -163,7 +163,7 @@ export const VALOR_MANUAL = {
   'seixal-bay': 40, // 25/10: pin da #295; margem virada a NE, OSM 41–54°; aprovado pelo Pedro
   'cova-do-vapor': 290, // 25/10: ponta da restinga; OSM 285–316° conforme a escala; aprovado pelo Pedro
   troia: 25, // 25/10: margem virada ao Sado e a Setúbal; OSM 23–24°; aprovado pelo Pedro
-  'lagoa-santo-andre': 285, // 25/10: pin na lagoa junto à barra; praia do mar ao lado, OSM 285°; aprovado pelo Pedro
+  // lagoa-santo-andre: sai daqui — é água interior (aguaInterior em spots.ts, 25/10, confirmado pelo Pedro): o kite/foil é na lagoa, água plana; os 285° ficam em spots.ts mas o motor não os usa para o vento
   'vila-nova-milfontes': 175, // 25/10: foz do Mira; OSM 162–177°; aprovado pelo Pedro
   comporta: 250, // 25/10: pin na Praia da Comporta; OSM 250° em todas as escalas (a proposta de 285° era do pin antigo); aprovado pelo Pedro
   carvalhal: 300, // 25/10: enseada; OSM 297–324° conforme a escala; aprovado pelo Pedro

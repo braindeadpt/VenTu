@@ -36,6 +36,8 @@ const INTERIOR = [
   'foil-lagoa-albufeira',
   'lagoa-sancha',
   'foil-alvor',
+  // 25/10 (confirmado pelo Pedro): o kite/foil é na lagoa, água plana
+  'lagoa-santo-andre',
 ];
 const kt = (x: number) => x / 1.94384;
 const base: Conditions = {
@@ -65,7 +67,7 @@ const hora = (wd: number): HoraModalidade => ({
 });
 
 describe('água interior: o modelo', () => {
-  it('são exactamente os 10 spots da revisão (albufeiras, lagoas, rios interiores, cable parks)', () => {
+  it('são exactamente os 11 spots da revisão (albufeiras, lagoas, rios interiores, cable parks)', () => {
     expect(spots.filter((s) => s.aguaInterior).map((s) => s.id).sort()).toEqual([...INTERIOR].sort());
   });
 
