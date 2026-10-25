@@ -23,7 +23,7 @@ function buildMarineParams(lat, lon, opts) {
   });
 }
 function buildWeatherParams(lat, lon, opts) {
-  return new URLSearchParams({ latitude: lat.toString(), longitude: lon.toString(), hourly: 'wind_speed_10m,wind_direction_10m,wind_gusts_10m,temperature_2m,uv_index', ...timeParams(lat, lon, opts), wind_speed_unit: 'ms' });
+  return new URLSearchParams({ latitude: lat.toString(), longitude: lon.toString(), hourly: 'wind_speed_10m,wind_direction_10m,wind_gusts_10m,temperature_2m,uv_index,precipitation,cloud_cover', ...timeParams(lat, lon, opts), wind_speed_unit: 'ms' });
 }
 function buildMarineModelsParams(lat, lon, opts) {
   return new URLSearchParams({ latitude: lat.toString(), longitude: lon.toString(), hourly: 'wave_height', models: WAVE_MODELS.join(','), ...timeParams(lat, lon, opts) });
