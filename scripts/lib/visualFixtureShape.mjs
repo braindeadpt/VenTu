@@ -14,6 +14,9 @@ const sameType = (a, b) => {
   return typeof a === typeof b;
 };
 
+/** Same type, or either side null (a nullable field's value, not its shape). */
+const compatible = (a, b) => a === null || b === null || sameType(a, b);
+
 /**
  * JSON structural skeleton: object keys sorted, nesting, scalar types, and the
  * element type of the first array entry. Deliberately ignores scalar values and
@@ -44,21 +47,32 @@ export function skeleton(v) {
  * baselines valid and confines the diff to the actual structural change.
  *
  * Rules:
- *  - objects: union of keys; a key present in both recurses (fixture value);
- *    a key only in the build comes from the build (new shape).
+ *  - objects: union of keys, in the fixture's key order; a key present in both
+ *    recurses (fixture value); a key only in the build comes from the build
+ *    (new shape); a key only in the FIXTURE is kept — a branch can add a field
+ *    to the fixture before the live pipeline publishes it (e.g. per-spot
+ *    `notaV6` in conditions.json, #218 PR 3), and dropping it on sync silently
+ *    reverts the branch's fixture so its baselines can never be recorded.
  *  - arrays: keep the fixture array verbatim when both are arrays with the
  *    same element type (values + length are masked/pinned); otherwise the
  *    build array wins (new shape).
  *  - scalars/null: keep the fixture value when the type matches, else build.
+ *  - null is a VALUE of a nullable field, not a shape: `null` vs a number (or
+ *    an object) on either side keeps the fixture value — and the fixture array
+ *    when that is its first element — instead of swapping in build values
+ *    (map-hours score arrays flip `null`↔`0` between runs).
  */
 export function mergeShape(fixtureValue, buildValue) {
   if (isPlainObject(buildValue)) {
-    if (!isPlainObject(fixtureValue)) return buildValue;
+    if (!isPlainObject(fixtureValue)) return fixtureValue === null ? fixtureValue : buildValue;
     const out = {};
-    for (const k of Object.keys(buildValue)) {
-      out[k] = Object.prototype.hasOwnProperty.call(fixtureValue, k)
+    for (const k of Object.keys(fixtureValue)) {
+      out[k] = Object.prototype.hasOwnProperty.call(buildValue, k)
         ? mergeShape(fixtureValue[k], buildValue[k])
-        : buildValue[k];
+        : fixtureValue[k]; // fixture-only key: kept (see Rules)
+    }
+    for (const k of Object.keys(buildValue)) {
+      if (!Object.prototype.hasOwnProperty.call(fixtureValue, k)) out[k] = buildValue[k];
     }
     return out;
   }
@@ -67,13 +81,13 @@ export function mergeShape(fixtureValue, buildValue) {
       Array.isArray(fixtureValue) &&
       fixtureValue.length > 0 &&
       buildValue.length > 0 &&
-      sameType(fixtureValue[0], buildValue[0])
+      compatible(fixtureValue[0], buildValue[0])
     ) {
       return fixtureValue;
     }
-    return buildValue;
+    return fixtureValue === null ? fixtureValue : buildValue;
   }
-  return fixtureValue !== undefined && sameType(fixtureValue, buildValue)
+  return fixtureValue !== undefined && compatible(fixtureValue, buildValue)
     ? fixtureValue
     : buildValue;
 }

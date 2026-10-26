@@ -8,7 +8,9 @@
  * spec header for the full reasoning). The fixture must be refreshed
  * DELIBERATELY, only when the data SHAPE changes — not the values:
  *
- *   - a new spot added to / removed from the spot set (card/marker counts);
+ *   - a new spot added to the spot set (card/marker counts) — keys and files
+ *     only in the fixture are KEPT (see mergeShape), so a removed spot or file
+ *     is pruned from the fixture by hand;
  *   - a new data file becomes layout-relevant on a captured route;
  *   - a schema change renames/restructures an existing file.
  *
@@ -36,7 +38,6 @@ import {
   mkdirSync,
   readdirSync,
   readFileSync,
-  rmSync,
   writeFileSync,
 } from 'node:fs';
 import { dirname, join, relative } from 'node:path';
@@ -77,7 +78,6 @@ const isExcluded = (rel) => {
 let copied = 0;
 let merged = 0;
 let skipped = 0;
-let deleted = 0;
 
 for (const f of walk(src)) {
   const rel = relative(src, f);
@@ -97,7 +97,15 @@ for (const f of walk(src)) {
       // while KEEPING the fixture's scalar values. A value rewrite here would
       // flip data-dependent layout (TopNow grid columns) and strand every
       // baseline recorded against the previous values — see visualFixtureShape.
-      const mergedValue = mergeShape(JSON.parse(fixtureText), JSON.parse(buildText));
+      const fixtureValue = JSON.parse(fixtureText);
+      const mergedValue = mergeShape(fixtureValue, JSON.parse(buildText));
+      // The merge keeps fixture values, fixture-only keys and null-vs-value
+      // flips, so a skeleton mismatch often merges back to the very same
+      // fixture — don't rewrite (re-format/re-order) an unchanged file.
+      if (JSON.stringify(mergedValue) === JSON.stringify(fixtureValue)) {
+        skipped += 1;
+        continue;
+      }
       mkdirSync(dirname(out), { recursive: true });
       writeFileSync(out, `${JSON.stringify(mergedValue, null, 2)}\n`);
       merged += 1;
@@ -114,22 +122,24 @@ for (const f of walk(src)) {
   copied += 1;
 }
 
-// Removal pass: fixture JSONs that no longer exist in the build are a shape
-// change — drop them so the fixture mirrors the set. Non-JSON and excluded
-// paths (radar) are never deleted.
+// Fixture JSONs absent from the build are KEPT, not deleted: tests read files
+// the live data no longer publishes (the aggregated forecasts.json, gone from
+// public/data since 25/10/2026, is still loaded by motorUnicoGolden.test.ts),
+// and a branch may add a file before the pipeline does — the same reason
+// mergeShape keeps fixture-only keys. Listed so a human can prune deliberately.
+const fixtureOnly = [];
 for (const f of walk(dest)) {
   const rel = relative(dest, f);
   if (isExcluded(rel) || !f.endsWith('.json')) continue;
-  if (!existsSync(join(src, rel))) {
-    rmSync(f, { force: true });
-    deleted += 1;
-  }
+  if (!existsSync(join(src, rel))) fixtureOnly.push(rel.split('\\').join('/'));
 }
 
 console.log(
-  `✅ Fixture synced: ${copied} copied (new), ${merged} merged (shape change, values kept), ${skipped} skipped (value-only), ${deleted} deleted.`,
+  `✅ Fixture synced: ${copied} copied (new), ${merged} merged (shape change, values kept), ${skipped} skipped (value-only), ${fixtureOnly.length} fixture-only kept${
+    fixtureOnly.length ? ` (${fixtureOnly.join(', ')})` : ''
+  }.`,
 );
-if (copied === 0 && merged === 0 && deleted === 0) {
+if (copied === 0 && merged === 0) {
   console.log('No structural change — the committed fixture already matches this build shape.');
 }
 console.log('Next: re-record the visual baselines on Linux (record-visual-baselines workflow).');

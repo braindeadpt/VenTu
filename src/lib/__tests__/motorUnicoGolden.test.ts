@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { spots } from '@/lib/spots';
 import type { Spot } from '@/types';
-import { getAllSportScores } from '@/lib/sportScore';
+import { allScoresComV6, notaV6DoSpot } from '@/lib/notaV6Agora';
 import { applyRegionalBiasFallback, rawToScoreInput } from '@/lib/scoreConditions';
 import { loadWaveBiasRegionsBuild } from '@/lib/waveBias';
 import { resolveConditionsEntry } from '@/lib/spotConditionsSource';
@@ -23,12 +23,13 @@ import { notaHora, type SportScoreV6 } from '@/lib/notaUnica';
  * - `regua`: as 16 frames do /mapa (`buildMapHoursFile`). Desde o PR 2 é o
  *   motor v6 (nota × 10; `null` de noite / sem dados); o golden foi regravado
  *   nesse PR (era o motor antigo, 0–100);
- * - `agora`: o bake do /mapa e da lista (`getAllSportScores` sobre a linha do
- *   `conditions.json`, com o viés regional como `buildSpotData`);
+ * - `agora`: o bake do /mapa e da lista (`buildSpotData`). Desde o PR 3, em
+ *   kitesurf e surf é o `notaV6` que o pipeline grava no `conditions.json`
+ *   (linha «agora» de D4) × 10; era o `getAllSportScores` sobre o snapshot;
  * - `spotV6`: a régua de 48 h da página do spot (`avaliaHoras` sobre
  *   `horaDeLinha`), nota /10 ou `null` (noite / sem dados).
  *
- * Os PRs seguintes mudam `regua` e `agora` DE PROPÓSITO (passam a ser iguais a
+ * Os PRs 2 e 3 mudaram `regua` e `agora` DE PROPÓSITO (passam a ser iguais a
  * `spotV6`): o golden regrava-se nesse PR, com a tabela antes/depois no corpo.
  * Regravar: `MOTOR_GOLDEN_UPDATE=1 npx vitest run src/lib/__tests__/motorUnicoGolden.test.ts`.
  */
@@ -66,7 +67,7 @@ function construir() {
     const raw = resolveConditionsEntry(sp, conditions) as Record<string, unknown>;
     const patch = applyRegionalBiasFallback(raw, sp.region, bias);
     const input = rawToScoreInput(raw);
-    const all = getAllSportScores(sp, patch ? { ...input, waveHeight: patch.waveHeight } : input);
+    const all = allScoresComV6(sp, patch ? { ...input, waveHeight: patch.waveHeight } : input, notaV6DoSpot(sp, conditions));
     out[sp.id] = {};
     for (const sport of SPORTS) {
       out[sp.id][sport] = {
@@ -130,14 +131,16 @@ describe('motor único (#218) — golden «antes» das superfícies (fixture e2e
     }
   });
 
-  it('o «agora» do bake (allScores) ainda é o motor antigo (PR 3): regista a divergência', () => {
-    let diferentes = 0;
+  it('PR 3: o «agora» do bake (allScores) e a frame 0 da régua do /mapa = régua do spot na hora coberta × 10 (0 diferenças)', () => {
+    const diferencas: string[] = [];
     for (const id of IDS) {
       for (const sport of SPORTS) {
-        const v6 = out[id][sport].spotV6[0];
-        if (v6 == null || Math.round(out[id][sport].agora / 10) !== v6) diferentes++;
+        const { agora, regua, spotV6 } = out[id][sport];
+        const v6 = spotV6[0];
+        if (agora !== (v6 == null ? 0 : v6 * 10)) diferencas.push(`${id} ${sport} agora ${agora} ≠ ${v6}`);
+        if (regua[0] !== (v6 == null ? null : v6 * 10)) diferencas.push(`${id} ${sport} régua[0] ${regua[0]} ≠ ${v6}`);
       }
     }
-    expect(diferentes).toBeGreaterThan(0);
+    expect(diferencas).toEqual([]);
   });
 });

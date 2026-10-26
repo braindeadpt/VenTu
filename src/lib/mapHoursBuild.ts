@@ -13,6 +13,7 @@ import type { Spot } from '@/types';
 import { ALL_SPORTS, type SportType } from '@/lib/sportRatings';
 import { getAllSportScores } from '@/lib/sportScore';
 import { rawToScoreInput } from '@/lib/scoreConditions';
+import { linhasAgora } from '@/lib/notaV6AgoraBuild';
 import type { LinhaForecast } from '@/lib/horaSpot';
 import { modalidadeDe, notaHora, type SportScoreV6 } from '@/lib/notaUnica';
 import { findCoveredHourIndex, hourKeyFromOpenMeteo, lisbonHourKeyFromDate, seriesTimeMs } from '@/lib/openMeteoTime';
@@ -153,39 +154,15 @@ function buildMapTides(
   return Object.keys(tides).length ? tides : undefined;
 }
 
-const finito = (x: unknown): x is number => typeof x === 'number' && Number.isFinite(x);
+// A linha ao vivo no formato do v6 vive com a linha «agora» de D4 (#218, PR 3).
+export { linhaDeCondicoes } from '@/lib/notaV6AgoraBuild';
 
 /**
- * Linha ao vivo (`conditions.json`) no formato que o v6 lê (`LinhaForecast`),
- * pelo mesmo caminho do motor antigo nesta frame: `rawToScoreInput` (boia e
- * vento observado quando frescos), como em `notaV6DeCondicoes`. O que a linha
- * não traz fica `undefined` (sem dados para o v6, não 0); `time` é a etiqueta
- * da hora coberta do forecast (com desvio: o sol conta pelo instante).
- */
-export function linhaDeCondicoes(raw: Record<string, unknown>, time: string): LinhaForecast {
-  const c = rawToScoreInput(raw);
-  const temVento = finito(raw.windSpeed) || c.windSpeed > 0;
-  const temOnda = finito(raw.waveHeight) || c.waveHeight > 0;
-  return {
-    time,
-    ...(temVento ? { windSpeed: c.windSpeed, windDirection: c.windDirection } : {}),
-    ...(temVento && c.windGust > 0 ? { windGust: c.windGust } : {}),
-    ...(temOnda ? { waveHeight: c.waveHeight, wavePeriod: c.wavePeriod } : {}),
-    ...(finito(raw.waveDirection) ? { waveDirection: c.waveDirection } : {}),
-    ...(finito(raw.swellDirection) ? { swellDirection: raw.swellDirection } : {}),
-    ...(finito(raw.waterTemp) ? { waterTemp: c.waterTemp } : {}),
-    ...(finito(raw.airTemp) ? { airTemp: raw.airTemp } : {}),
-    ...(finito(raw.tideHeight) ? { tideHeight: raw.tideHeight } : {}),
-    ...(finito(raw.precipitation) ? { precipitation: raw.precipitation } : {}),
-    ...(finito(raw.cloudCover) ? { cloudCover: raw.cloudCover } : {}),
-  };
-}
-
-/**
- * Linhas e índice que o v6 avalia numa frame (#218, PR 2):
- * - frame «agora» com linha ao vivo: a linha ao vivo (como o motor antigo)
- *   no lugar da hora coberta da série, para a maré subir/descer sair das
- *   vizinhas como na página do spot;
+ * Linhas e índice que o v6 avalia numa frame:
+ * - frame «agora» (hora coberta): a linha «agora» de D4 (#218, PR 3) — a hora
+ *   do forecast com as observações frescas por cima, como os alertas e o
+ *   `notaV6` do `conditions.json` (`notaV6AgoraBuild.linhasAgora`), no lugar
+ *   da hora coberta da série, para a maré subir/descer sair das vizinhas;
  * - outras frames: a linha do forecast nessa hora (sem ela: `null`, sem dados —
  *   o v6 não herda a linha ao vivo para horas futuras).
  */
@@ -194,17 +171,10 @@ function linhasV6(
   j: number,
   live: Record<string, unknown> | null,
   isNow: boolean,
-  time: string,
+  nowMs: number,
 ): { linhas: readonly LinhaForecast[]; j: number } | null {
-  const linhas = series as unknown as LinhaForecast[];
-  if (isNow && live) {
-    const linha = linhaDeCondicoes(live, j >= 0 ? linhas[j].time : time);
-    if (j < 0) return { linhas: [linha], j: 0 };
-    const copia = linhas.slice();
-    copia[j] = linha;
-    return { linhas: copia, j };
-  }
-  return j >= 0 ? { linhas, j } : null;
+  if (isNow && live) return linhasAgora(live, series, nowMs);
+  return j >= 0 ? { linhas: series as unknown as LinhaForecast[], j } : null;
 }
 
 /** Score v6 (nota × 10) de uma frame, ou `null` (noite / sem dados). */
@@ -273,7 +243,7 @@ export function buildMapHoursFile(opts: {
       // as outras no motor antigo até ao PR 6 (D5). `best` = máximo das
       // modalidades com número nesta hora (noite do v6 não entra).
       const scores = getAllSportScores(spot, rawToScoreInput(raw));
-      const alvo = linhasV6(series, j, live, isNow, time);
+      const alvo = linhasV6(series, j, live, isNow, now.getTime());
       let best = 0;
       for (const sport of ALL_SPORTS) {
         const n = modalidadeDe(sport)

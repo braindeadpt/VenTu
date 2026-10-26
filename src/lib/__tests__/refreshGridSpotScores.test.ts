@@ -31,9 +31,13 @@ function mockRow(spotId: string): GridSpotData {
 }
 
 describe('refreshGridSpotScores', () => {
-  it('boosts kitesurf score when fresh IPMA wind is stronger', () => {
+  // #218 PR 3: kitesurf e surf já não se recalculam no cliente (vêm do
+  // `notaV6` do pipeline, que aplica as observações frescas — ver o bloco
+  // «notaV6» abaixo). O vento observado continua a subir as modalidades do
+  // motor antigo (D5): windsurf.
+  it('boosts windsurf score when fresh IPMA wind is stronger', () => {
     const row = mockRow('guincho');
-    const before = row.allScores.kitesurf.score;
+    const before = row.allScores.windsurf.score;
     const json = {
       guincho: {
         waveHeight: 0.5,
@@ -55,8 +59,9 @@ describe('refreshGridSpotScores', () => {
       },
     };
     const [updated] = refreshGridSpotScores([row], json);
-    expect(updated.allScores.kitesurf.score).toBeGreaterThan(before);
-    expect(updated.allScores.kitesurf.score).toBeGreaterThan(60);
+    expect(updated.allScores.windsurf.score).toBeGreaterThan(before);
+    // sem `notaV6` no ficheiro servido, o kite fica o do bake (nunca o motor antigo no cliente)
+    expect(updated.allScores.kitesurf).toBe(row.allScores.kitesurf);
   });
 
   it('aplica o fallback do viés regional (wave-bias.json) quando a row não tem o meta', () => {
@@ -91,8 +96,9 @@ describe('refreshGridSpotScores', () => {
       deltaM: 0.3,
       fallback: true,
     });
-    // O score usa a altura corrigida — não a previsão crua.
-    expect(updated.allScores.surf.score).not.toBe(row.allScores.surf.score);
+    // O score usa a altura corrigida — não a previsão crua (bodyboard, motor
+    // antigo; o surf v6 vem do pipeline, PR 3).
+    expect(updated.allScores.bodyboard.score).not.toBe(row.allScores.bodyboard.score);
   });
 
   it('nunca corrige duas vezes: row já com meta waveBias (pipeline) fica intacta', () => {
@@ -282,5 +288,72 @@ describe('refreshGridSpotScores', () => {
     const [updated] = refreshGridSpotScores([row], json, null);
     expect(updated.conditions.waveHeight).toBe(1.5);
     expect(updated.conditions.waveBias).toBeUndefined();
+  });
+});
+
+describe('refreshGridSpotScores — notaV6 do pipeline (#218, PR 3)', () => {
+  const base = {
+    waveHeight: 1.5,
+    wavePeriod: 10,
+    waveDirection: 300,
+    windSpeed: ktToMs(18),
+    windDirection: 340,
+    windGust: ktToMs(22),
+    waterTemp: 18,
+  };
+
+  it('kitesurf e surf = notaV6 × 10 (uma atribuição); as outras no motor antigo', () => {
+    const row = mockRow('guincho');
+    const json = {
+      guincho: {
+        ...base,
+        notaV6: {
+          t: '2026-09-08T14:00',
+          kite: 7,
+          surf: 4,
+          seg: 'side-offshore',
+          f: { kite: ['18kt wind', 'side-offshore'], surf: ['1.5m waves', '10s period'] },
+        },
+      },
+    };
+    const [u] = refreshGridSpotScores([row], json);
+    expect(u.allScores.kitesurf.score).toBe(70);
+    expect(u.allScores.surf.score).toBe(40);
+    expect(u.allScores.kitesurf.factorsEn).toEqual(['18kt wind', 'side-offshore']);
+    expect(u.allScores.kitesurf.factors).toEqual(['18kt vento', 'side-offshore']);
+    expect(u.allScores.kitesurf.directionSafety).toBe('side-offshore');
+    expect(u.allScores.surf.primaryFactor).toBe('1.5m');
+    expect(u.allScores.windsurf.score).toBe(getAllSportScores(row.spot, base).windsurf.score);
+  });
+
+  it('noite: score 0 com a marca `noite` (não «0 · Não dá»)', () => {
+    const row = mockRow('guincho');
+    const [u] = refreshGridSpotScores([row], {
+      guincho: { ...base, notaV6: { t: '2026-09-08T23:00', kite: null, surf: null } },
+    });
+    expect(u.allScores.kitesurf).toMatchObject({ score: 0, rating: 'N/A', noite: true });
+    expect(u.allScores.surf).toMatchObject({ score: 0, rating: 'N/A', noite: true });
+  });
+
+  it('spot com conditionsSource lê o notaV6 da PRÓPRIA linha (a praia é a dele)', () => {
+    const alias = spots.find((s) => s.conditionsSource);
+    expect(alias).toBeDefined();
+    const row = mockRow(alias!.id);
+    const json = {
+      [alias!.conditionsSource!]: { ...base, notaV6: { t: '2026-09-08T14:00', kite: 9, surf: 9 } },
+      [alias!.id]: { ...base, notaV6: { t: '2026-09-08T14:00', kite: 2, surf: 3 } },
+    };
+    const [u] = refreshGridSpotScores([row], json);
+    expect(u.allScores.kitesurf.score).toBe(20);
+    expect(u.allScores.surf.score).toBe(30);
+  });
+
+  it('notaV6 estragado no ficheiro servido é ignorado (fica o bake)', () => {
+    const row = mockRow('guincho');
+    const [u] = refreshGridSpotScores([row], {
+      guincho: { ...base, notaV6: { t: 'x', kite: 'sete', surf: 4 } },
+    });
+    expect(u.allScores.kitesurf).toBe(row.allScores.kitesurf);
+    expect(u.allScores.surf).toBe(row.allScores.surf);
   });
 });

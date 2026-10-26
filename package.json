@@ -71,7 +71,7 @@
     "radar:fetch": "node scripts/fetch-ipma-radar.js",
     "sat:fetch": "python scripts/fetch-mtg-ir.py",
     "obs:map": "node scripts/build-station-map.mjs",
-    "obs:update": "node scripts/build-station-map.mjs && node scripts/merge-observations.mjs",
+    "obs:update": "node scripts/build-station-map.mjs && node scripts/merge-observations.mjs && node scripts/build-nota-v6-agora.js",
     "wind:validate": "node scripts/validate-coastal-wind.mjs",
     "update-ecowitt": "node scripts/update-ecowitt.mjs",
     "data:update": "npm run buoys:fetch && npm run isobaths:fetch && npm run wmo:fetch && npm run bias:fetch && npm run data:aqi && npm run conditions:update && npm run obs:update && npm run radar:fetch && npm run sat:fetch && npm run warnings:fetch && npm run warnings:nav && npm run storms:fetch && npm run storms:state && npm run spots:index && npm run spots:lite && npm run news:generate",
