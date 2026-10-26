@@ -22,6 +22,22 @@ async function abre(page: Page, slug = SPOT_SLUG, width = 1440, height = 900) {
   await expect(page.getByTestId('spot-contexto')).toBeAttached();
 }
 
+/**
+ * `map-hours.json` real com as séries v6 (kitesurf, surf) trocadas (#218, PR 2):
+ * de noite o v6 não dá nota (`null` → «–» no «Perto daqui»), por isso os testes
+ * da nota /10 não podem depender da hora a que o CI corre.
+ */
+async function mapHoursV6(page: Page, troca: (v: number | null) => number | null) {
+  await page.route('**/data/map-hours.json', async (route) => {
+    const res = await route.fetch();
+    const j = (await res.json()) as { spots?: Record<string, Record<string, Array<number | null>>> };
+    for (const row of Object.values(j.spots ?? {})) {
+      for (const k of ['kitesurf', 'surf']) if (Array.isArray(row[k])) row[k] = row[k].map(troca);
+    }
+    await route.fulfill({ response: res, json: j });
+  });
+}
+
 type Caixa = { name: string; x: number; y: number; width: number; height: number };
 
 async function caixas(page: Page): Promise<Caixa[]> {
@@ -161,6 +177,7 @@ test.describe('Contexto do spot (v6)', () => {
   });
 
   test('«Perto daqui»: nomes sem truncar, distância, ?sport= e a nota /10 na cor da banda v6', async ({ page }) => {
+    await mapHoursV6(page, (v) => v ?? 50); // independente da hora do CI (noite = null)
     await abre(page);
     const lista = page.getByTestId('nearby-spots');
     await lista.scrollIntoViewIfNeeded();
@@ -183,6 +200,19 @@ test.describe('Contexto do spot (v6)', () => {
     const fundo = await nota.evaluate((el) => getComputedStyle(el).backgroundColor);
     expect(['rgb(168, 70, 74)', 'rgb(68, 121, 238)', 'rgb(201, 158, 42)', 'rgb(64, 220, 208)', 'rgb(255, 240, 122)']).toContain(fundo);
     expect(await nota.evaluate((el) => getComputedStyle(el).fontFamily)).toMatch(/Barlow Condensed/);
+  });
+
+  test('«Perto daqui» de noite (map-hours v6 = null): «–» sem nota nem escalão, nunca 0', async ({ page }) => {
+    await mapHoursV6(page, () => null);
+    const carregou = page.waitForResponse((r) => r.url().includes('/data/map-hours.json'), { timeout: 20_000 });
+    await abre(page);
+    const lista = page.getByTestId('nearby-spots');
+    await lista.scrollIntoViewIfNeeded();
+    await carregou;
+    const chips = lista.locator('[data-nearby-score]');
+    expect(await chips.count()).toBeGreaterThanOrEqual(2);
+    await expect(lista.locator('[data-nearby-score][data-score-tier]')).toHaveCount(0);
+    for (const txt of await chips.allTextContents()) expect(txt.trim()).toBe('–');
   });
 
   test('«Perto daqui» segue a modalidade da página (kite → ?sport=kitesurf, surf → ?sport=surf)', async ({ page }) => {

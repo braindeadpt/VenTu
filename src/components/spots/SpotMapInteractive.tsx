@@ -393,14 +393,21 @@ export default function SpotMapInteractive({
   }, [initialCenter, initialZoom, isReady, mapInstanceRef]);
 
   // ── Visible spots (derivação partilhada: marcadores, lista, campos) ──
-  const hourScores = useMemo(() => {
-    if (!hoursLive || !hoursFile) return null;
+  /* `scoreAtHour`: número = score da hora; `null` = o v6 não dá nota nessa
+     hora (noite / sem dados, #218 D3); `undefined` = sem série. Os
+     marcadores e a lista só recebem números (o estado visual «noite» ainda
+     não existe no /mapa: sem número da hora caem no score ao vivo, como até
+     aqui); os spots de noite ficam num conjunto à parte para o «Só ON». */
+  const { hourScores, hourNight } = useMemo(() => {
+    if (!hoursLive || !hoursFile) return { hourScores: null, hourNight: null };
     const map = new Map<string, number>();
+    const night = new Set<string>();
     for (const d of spotsData) {
       const n = scoreAtHour(hoursFile, d.spot.id, selectedSport, hoursFrame);
-      if (n != null) map.set(d.spot.id, n);
+      if (n === null) night.add(d.spot.id);
+      else if (n !== undefined) map.set(d.spot.id, n);
     }
-    return map;
+    return { hourScores: map, hourNight: night };
   }, [hoursLive, hoursFile, selectedSport, hoursFrame, spotsData]);
 
   const visibleSpots = useMemo(() => {
@@ -409,13 +416,15 @@ export default function SpotMapInteractive({
       return spotsData.filter((d) => {
         if (!spotMatchesSportFilter(d, selectedSport)) return false;
         if (selectedSport === 'big-wave' && d.spot.type !== 'big-wave') return false;
+        // noite (v6 sem nota nessa hora): não está «ON»
+        if (hourNight?.has(d.spot.id)) return false;
         const hour = hourScores.get(d.spot.id);
         if (hour == null) return spotMeetsOnFilter(d, selectedSport);
         return hour >= MAP_ON_THRESHOLD;
       });
     }
     return spotsData.filter((d) => spotMeetsOnFilter(d, selectedSport));
-  }, [spotsData, onlyOnEnabled, selectedSport, hourScores]);
+  }, [spotsData, onlyOnEnabled, selectedSport, hourScores, hourNight]);
 
   // Campos ambientais (Hs/SST/correntes/vento) interpolam a partir de TODOS
   // os spots vivos — o mar não muda com o filtro de modalidade/região/nível

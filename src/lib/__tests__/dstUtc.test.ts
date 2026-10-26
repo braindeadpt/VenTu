@@ -15,7 +15,8 @@ import {
 } from '@/lib/openMeteoTime';
 import { construirHoras, horaDeLinha, type LinhaForecast } from '@/lib/horaSpot';
 import { instanteLisboa, posicaoSol } from '@/lib/sol';
-import { buildMapHoursFile, hsAtHour, mapHoursClock } from '@/lib/mapHours';
+import { hsAtHour, mapHoursClock } from '@/lib/mapHours';
+import { buildMapHoursFile } from '@/lib/mapHoursBuild';
 
 const H = 3_600_000;
 

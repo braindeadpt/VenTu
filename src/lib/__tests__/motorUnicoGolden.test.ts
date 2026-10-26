@@ -7,7 +7,7 @@ import { getAllSportScores } from '@/lib/sportScore';
 import { applyRegionalBiasFallback, rawToScoreInput } from '@/lib/scoreConditions';
 import { loadWaveBiasRegionsBuild } from '@/lib/waveBias';
 import { resolveConditionsEntry } from '@/lib/spotConditionsSource';
-import { buildMapHoursFile } from '@/lib/mapHours';
+import { buildMapHoursFile } from '@/lib/mapHoursBuild';
 import { findCoveredHourIndex } from '@/lib/openMeteoTime';
 import { horaDeLinha, type LinhaForecast } from '@/lib/horaSpot';
 import { avaliaHoras } from '@/lib/modalidades';
@@ -20,7 +20,9 @@ import { notaHora, type SportScoreV6 } from '@/lib/notaUnica';
  * Supertubos, Lagoa de Albufeira e Meia Praia no Algarve; kite e surf), sobre
  * a fixture e2e (`tests/e2e/fixtures/data`, 08/09 08:45):
  *
- * - `regua`: as 16 frames do /mapa (`buildMapHoursFile`, motor antigo, 0–100);
+ * - `regua`: as 16 frames do /mapa (`buildMapHoursFile`). Desde o PR 2 é o
+ *   motor v6 (nota × 10; `null` de noite / sem dados); o golden foi regravado
+ *   nesse PR (era o motor antigo, 0–100);
  * - `agora`: o bake do /mapa e da lista (`getAllSportScores` sobre a linha do
  *   `conditions.json`, com o viés regional como `buildSpotData`);
  * - `spotV6`: a régua de 48 h da página do spot (`avaliaHoras` sobre
@@ -39,7 +41,7 @@ const NH = 48;
 
 const ler = (f: string) => JSON.parse(fs.readFileSync(path.join(FIX, f), 'utf8'));
 
-type Golden = Record<string, Record<string, { regua: number[]; agora: number; spotV6: Array<number | null> }>> & {
+type Golden = Record<string, Record<string, { regua: Array<number | null>; agora: number; spotV6: Array<number | null> }>> & {
   _meta?: unknown;
 };
 
@@ -115,13 +117,25 @@ describe('motor único (#218) — golden «antes» das superfícies (fixture e2e
     }
   });
 
-  it('hoje as superfícies NÃO coincidem (é o que a #218 corrige): regista a divergência', () => {
-    // frame 0 do /mapa × hora coberta do spot, kite + surf nos 6 spots
+  it('PR 2: as frames futuras da régua do /mapa = régua do spot × 10 (mesma hora), noite incluída', () => {
+    // frame i (passos de 3 h desde a hora coberta) = hora i0 + 3i da régua do spot
+    for (const id of IDS) {
+      for (const sport of SPORTS) {
+        const { regua, spotV6 } = out[id][sport];
+        for (let i = 1; i < regua.length; i++) {
+          const n = spotV6[3 * i];
+          expect(regua[i], `${id} ${sport} #${i}`).toBe(n == null ? null : n * 10);
+        }
+      }
+    }
+  });
+
+  it('o «agora» do bake (allScores) ainda é o motor antigo (PR 3): regista a divergência', () => {
     let diferentes = 0;
     for (const id of IDS) {
       for (const sport of SPORTS) {
         const v6 = out[id][sport].spotV6[0];
-        if (v6 == null || Math.round(out[id][sport].regua[0] / 10) !== v6) diferentes++;
+        if (v6 == null || Math.round(out[id][sport].agora / 10) !== v6) diferentes++;
       }
     }
     expect(diferentes).toBeGreaterThan(0);

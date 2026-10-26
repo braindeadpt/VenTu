@@ -53,7 +53,8 @@ export function nearestSpots(
 }
 
 /** Score do vizinho para a modalidade no passo escolhido; `null` quando a
- *  modalidade não se pratica lá ou o ficheiro não tem a série («—» na UI). */
+ *  modalidade não se pratica lá, o ficheiro não tem a série ou o motor v6 não
+ *  dá nota nessa hora (noite / sem dados, #218) — «—» na UI. */
 export function nearbySpotScore(
   file: MapHoursFile | null | undefined,
   entry: NearbySpotEntry,
@@ -63,5 +64,5 @@ export function nearbySpotScore(
   const sports = entry.spot.compatibleSports;
   if (sports && sports.length > 0 && !sports.includes(sport)) return null;
   const n = scoreAtHour(file, entry.spot.id, sport, step);
-  return n === undefined ? null : n;
+  return n ?? null;
 }

@@ -11,7 +11,7 @@ const { register } = require('tsx/cjs/api');
 register();
 
 const { spots } = require('../src/lib/spots.ts');
-const { buildMapHoursFile } = require('../src/lib/mapHours.ts');
+const { buildMapHoursFile } = require('../src/lib/mapHoursBuild.ts');
 const { readForecastsIndex } = require('./lib/forecastsIndex');
 
 function readJson(file) {

@@ -113,6 +113,18 @@ describe('nearbySpotScore', () => {
     expect(nearbySpotScore(file, entry, 'surf', 2)).toBeNull();
   });
 
+  it('noite do v6 (null no map-hours, #218) → null («—»), nunca 0 nem o passo vizinho', () => {
+    const night = {
+      ...file,
+      spots: { near: { surf: [null, null, 0, 40], kitesurf: [null, 30, null, 0] } },
+    } as unknown as MapHoursFile;
+    const entry = { spot: fakeSpot('near', 0, 0, ['surf', 'kitesurf']), distanceKm: 1 };
+    expect(nearbySpotScore(night, entry, 'surf', 0)).toBeNull();
+    expect(nearbySpotScore(night, entry, 'surf', 2)).toBe(0);
+    expect(nearbySpotScore(night, entry, 'kitesurf', 1)).toBe(30);
+    expect(nearbySpotScore(night, entry, 'kitesurf', 2)).toBeNull();
+  });
+
   it('compatibleSports indefinido → decide pelo ficheiro', () => {
     const entry = { spot: fakeSpot('near', 0, 0, undefined), distanceKm: 1 };
     expect(nearbySpotScore(file, entry, 'sup', 0)).toBe(5);
