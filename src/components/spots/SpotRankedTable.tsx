@@ -17,6 +17,7 @@ import {
   getWindRelationToCoast,
   type WindRelation,
   getWindRelationLabel,
+  orientacaoVento,
 } from '@/lib/wind';
 import { resolveBestWindowForSport } from '@/lib/bestWindowToday';
 import { phaseFromConditionsStatus, TIDE_PHASE_CELL } from '@/lib/tideSchedule';
@@ -130,10 +131,10 @@ export default function SpotRankedTable({
                 spot.bestSwell,
               );
               const windKt = Math.round(conditions.windSpeed * 1.94384);
-              const relation = getWindRelationToCoast(
-                conditions.windDirection,
-                spot.coastOrientation,
-              );
+              const coast = orientacaoVento(spot);
+              // água interior: sem onshore/offshore (célula só com os nós)
+              const relation =
+                coast !== undefined ? getWindRelationToCoast(conditions.windDirection, coast) : null;
               const tidePhase = phaseFromConditionsStatus(
                 conditions.tideStatus as TidePhase | undefined,
               );
@@ -199,10 +200,15 @@ export default function SpotRankedTable({
                     )}
                   </td>
                   <td className="py-2 px-2 font-mono tabular-nums whitespace-nowrap">
-                    <span className="text-fg">{windKt}kt</span>{' '}
-                    <span className={cn('text-meta-sm font-sans', WIND_RELATION_TEXT[relation])}>
-                      {getWindRelationLabel(relation, locale).label}
-                    </span>
+                    <span className="text-fg">{windKt}kt</span>
+                    {relation ? (
+                      <>
+                        {' '}
+                        <span className={cn('text-meta-sm font-sans', WIND_RELATION_TEXT[relation])}>
+                          {getWindRelationLabel(relation, locale).label}
+                        </span>
+                      </>
+                    ) : null}
                   </td>
                   <td className="py-2 px-2 font-mono tabular-nums whitespace-nowrap hidden lg:table-cell">
                     {tideCell ? (

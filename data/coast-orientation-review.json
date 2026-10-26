@@ -16,12 +16,13 @@
     "osm": 106,
     "osm1km": 2,
     "curado": 21,
-    "mantido": 48,
-    "manual": 12,
-    "mudam": 126,
+    "mantido": 5,
+    "manual": 44,
+    "aguaInterior": 11,
+    "mudam": 158,
     "revisao": 113,
     "em270Antes": 141,
-    "em270Depois": 40
+    "em270Depois": 21
   },
   "spots": [
     {
@@ -67,13 +68,14 @@
       "referencia": null,
       "difReferencia": null,
       "difCurado": null,
-      "final": 270,
-      "origem": "mantido",
-      "delta": 0,
+      "final": 240,
+      "origem": "manual",
+      "delta": 30,
       "deltaCalculado": 30,
       "revisao": true,
       "motivos": [
-        "geometria ambígua (dobra 57°, 500 m vs 1 km 6°: ponta, enseada ou foz)"
+        "geometria ambígua (dobra 57°, 500 m vs 1 km 6°: ponta, enseada ou foz)",
+        "água interior/abrigada: Vila Praia de Âncora"
       ]
     },
     {
@@ -171,9 +173,9 @@
       "referencia": null,
       "difReferencia": null,
       "difCurado": null,
-      "final": 270,
-      "origem": "mantido",
-      "delta": 0,
+      "final": 210,
+      "origem": "manual",
+      "delta": 60,
       "deltaCalculado": 60,
       "revisao": true,
       "motivos": [
@@ -199,14 +201,15 @@
       "difReferencia": null,
       "difCurado": null,
       "final": 270,
-      "origem": "mantido",
+      "origem": "agua-interior",
       "delta": 0,
       "deltaCalculado": 55,
       "revisao": true,
       "motivos": [
         "spot a 1033 m da costa",
         "água interior/abrigada: rio Lima (wake park)",
-        "longe da costa e costa não recta: não aplicado"
+        "longe da costa e costa não recta: não aplicado",
+        "água interior (aguaInterior): sem onshore/offshore, o vento fica neutro"
       ]
     },
     {
@@ -483,9 +486,9 @@
       "referencia": null,
       "difReferencia": null,
       "difCurado": null,
-      "final": 270,
-      "origem": "mantido",
-      "delta": 0,
+      "final": 330,
+      "origem": "manual",
+      "delta": 60,
       "deltaCalculado": 15,
       "revisao": true,
       "motivos": [
@@ -513,13 +516,14 @@
       "difReferencia": null,
       "difCurado": null,
       "final": 270,
-      "origem": "mantido",
+      "origem": "agua-interior",
       "delta": 0,
       "deltaCalculado": null,
       "revisao": true,
       "motivos": [
         "sem linha de costa OSM a < 2000 m",
-        "água interior/abrigada: rio Douro (interior)"
+        "água interior/abrigada: rio Douro (interior)",
+        "água interior (aguaInterior): sem onshore/offshore, o vento fica neutro"
       ]
     },
     {
@@ -590,13 +594,14 @@
       "referencia": null,
       "difReferencia": null,
       "difCurado": null,
-      "final": 270,
-      "origem": "mantido",
-      "delta": 0,
+      "final": 265,
+      "origem": "manual",
+      "delta": 5,
       "deltaCalculado": 15,
       "revisao": true,
       "motivos": [
-        "geometria ambígua (dobra 63°, 500 m vs 1 km 13°: ponta, enseada ou foz)"
+        "geometria ambígua (dobra 63°, 500 m vs 1 km 13°: ponta, enseada ou foz)",
+        "água interior/abrigada: Canide Sul (esporões)"
       ]
     },
     {
@@ -692,13 +697,14 @@
       "referencia": null,
       "difReferencia": null,
       "difCurado": null,
-      "final": 270,
-      "origem": "mantido",
-      "delta": 0,
+      "final": 275,
+      "origem": "manual",
+      "delta": 5,
       "deltaCalculado": 50,
       "revisao": true,
       "motivos": [
-        "geometria ambígua (dobra 62°, 500 m vs 1 km 22°: ponta, enseada ou foz)"
+        "geometria ambígua (dobra 62°, 500 m vs 1 km 22°: ponta, enseada ou foz)",
+        "água interior/abrigada: Espinho (esporões)"
       ]
     },
     {
@@ -746,9 +752,9 @@
       "referencia": null,
       "difReferencia": null,
       "difCurado": null,
-      "final": 270,
-      "origem": "mantido",
-      "delta": 0,
+      "final": 290,
+      "origem": "manual",
+      "delta": 20,
       "deltaCalculado": 20,
       "revisao": true,
       "motivos": [
@@ -874,13 +880,14 @@
       "difReferencia": null,
       "difCurado": null,
       "final": 270,
-      "origem": "mantido",
+      "origem": "agua-interior",
       "delta": 0,
       "deltaCalculado": null,
       "revisao": true,
       "motivos": [
         "sem linha de costa OSM a < 2000 m",
-        "água interior/abrigada: Ria de Aveiro"
+        "água interior/abrigada: Ria de Aveiro",
+        "água interior (aguaInterior): sem onshore/offshore, o vento fica neutro"
       ]
     },
     {
@@ -901,9 +908,9 @@
       "referencia": null,
       "difReferencia": null,
       "difCurado": null,
-      "final": 270,
-      "origem": "mantido",
-      "delta": 0,
+      "final": 90,
+      "origem": "manual",
+      "delta": 180,
       "deltaCalculado": null,
       "revisao": true,
       "motivos": [
@@ -1261,13 +1268,14 @@
       "difReferencia": null,
       "difCurado": null,
       "final": 270,
-      "origem": "mantido",
+      "origem": "agua-interior",
       "delta": 0,
       "deltaCalculado": null,
       "revisao": true,
       "motivos": [
         "sem linha de costa OSM a < 2000 m",
-        "água interior/abrigada: albufeira (interior)"
+        "água interior/abrigada: albufeira (interior)",
+        "água interior (aguaInterior): sem onshore/offshore, o vento fica neutro"
       ]
     },
     {
@@ -2071,9 +2079,9 @@
       "referencia": null,
       "difReferencia": null,
       "difCurado": null,
-      "final": 0,
-      "origem": "mantido",
-      "delta": 0,
+      "final": 40,
+      "origem": "manual",
+      "delta": 40,
       "deltaCalculado": 40,
       "revisao": true,
       "motivos": [
@@ -2099,13 +2107,14 @@
       "referencia": null,
       "difReferencia": null,
       "difCurado": null,
-      "final": 270,
-      "origem": "mantido",
-      "delta": 0,
+      "final": 110,
+      "origem": "manual",
+      "delta": 160,
       "deltaCalculado": 170,
       "revisao": true,
       "motivos": [
-        "geometria ambígua (dobra 56°, 500 m vs 1 km 14°: ponta, enseada ou foz)"
+        "geometria ambígua (dobra 56°, 500 m vs 1 km 14°: ponta, enseada ou foz)",
+        "água interior/abrigada: Praia da Vitória (baía)"
       ]
     },
     {
@@ -2126,14 +2135,15 @@
       "referencia": null,
       "difReferencia": null,
       "difCurado": null,
-      "final": 270,
-      "origem": "mantido",
-      "delta": 0,
+      "final": 105,
+      "origem": "manual",
+      "delta": 165,
       "deltaCalculado": 165,
       "revisao": true,
       "motivos": [
         "geometria ambígua (dobra 53°, 500 m vs 1 km 10°: ponta, enseada ou foz)",
-        "outra costa a 231 m (margem oposta, ilhéu ou molhe)"
+        "outra costa a 231 m (margem oposta, ilhéu ou molhe)",
+        "água interior/abrigada: Santa Catarina (Terceira)"
       ]
     },
     {
@@ -2310,9 +2320,9 @@
       "referencia": null,
       "difReferencia": null,
       "difCurado": null,
-      "final": 225,
-      "origem": "mantido",
-      "delta": 0,
+      "final": 10,
+      "origem": "manual",
+      "delta": 145,
       "deltaCalculado": 145,
       "revisao": true,
       "motivos": [
@@ -2338,9 +2348,9 @@
       "referencia": null,
       "difReferencia": null,
       "difCurado": null,
-      "final": 270,
-      "origem": "mantido",
-      "delta": 0,
+      "final": 295,
+      "origem": "manual",
+      "delta": 25,
       "deltaCalculado": 25,
       "revisao": true,
       "motivos": [
@@ -2366,9 +2376,9 @@
       "referencia": null,
       "difReferencia": null,
       "difCurado": null,
-      "final": 270,
-      "origem": "mantido",
-      "delta": 0,
+      "final": 290,
+      "origem": "manual",
+      "delta": 20,
       "deltaCalculado": 45,
       "revisao": true,
       "motivos": [
@@ -2474,12 +2484,13 @@
       "difReferencia": null,
       "difCurado": null,
       "final": 270,
-      "origem": "mantido",
+      "origem": "agua-interior",
       "delta": 0,
       "deltaCalculado": 0,
       "revisao": true,
       "motivos": [
-        "água interior/abrigada: Lagoa de Albufeira"
+        "água interior/abrigada: Lagoa de Albufeira",
+        "água interior (aguaInterior): sem onshore/offshore, o vento fica neutro"
       ]
     },
     {
@@ -2525,9 +2536,9 @@
       "referencia": null,
       "difReferencia": null,
       "difCurado": null,
-      "final": 200,
-      "origem": "mantido",
-      "delta": 0,
+      "final": 25,
+      "origem": "manual",
+      "delta": 175,
       "deltaCalculado": 175,
       "revisao": true,
       "motivos": [
@@ -2538,28 +2549,28 @@
     {
       "id": "comporta",
       "nome": "Comporta",
-      "lat": 38.38,
-      "lon": -8.785,
+      "lat": 38.3807,
+      "lon": -8.8047,
       "atual": 270,
-      "calculado": 300,
-      "calculadoBruto": 298.9,
-      "segmentoProximo": 356,
-      "retidao": 0.407,
-      "dobra": 131,
-      "escala1km": 309,
-      "retidao1km": 0.348,
-      "distCostaM": 382,
+      "calculado": 250,
+      "calculadoBruto": 251.3,
+      "segmentoProximo": 251,
+      "retidao": 0.999,
+      "dobra": 2,
+      "escala1km": 250,
+      "retidao1km": 0.995,
+      "distCostaM": 70,
       "curado": null,
       "referencia": null,
       "difReferencia": null,
       "difCurado": null,
-      "final": 270,
-      "origem": "mantido",
-      "delta": 0,
-      "deltaCalculado": 30,
+      "final": 250,
+      "origem": "manual",
+      "delta": 20,
+      "deltaCalculado": 20,
       "revisao": true,
       "motivos": [
-        "geometria ambígua (dobra 131°, 500 m vs 1 km 10°: ponta, enseada ou foz)"
+        "água interior/abrigada: Comporta"
       ]
     },
     {
@@ -2606,13 +2617,14 @@
       "difReferencia": null,
       "difCurado": null,
       "final": 270,
-      "origem": "mantido",
+      "origem": "agua-interior",
       "delta": 0,
       "deltaCalculado": null,
       "revisao": true,
       "motivos": [
         "sem linha de costa OSM a < 2000 m",
-        "água interior/abrigada: albufeira (interior)"
+        "água interior/abrigada: albufeira (interior)",
+        "água interior (aguaInterior): sem onshore/offshore, o vento fica neutro"
       ]
     },
     {
@@ -2634,13 +2646,14 @@
       "difReferencia": null,
       "difCurado": null,
       "final": 270,
-      "origem": "mantido",
+      "origem": "agua-interior",
       "delta": 0,
       "deltaCalculado": null,
       "revisao": true,
       "motivos": [
         "sem linha de costa OSM a < 2000 m",
-        "água interior/abrigada: albufeira (interior)"
+        "água interior/abrigada: albufeira (interior)",
+        "água interior (aguaInterior): sem onshore/offshore, o vento fica neutro"
       ]
     },
     {
@@ -2740,14 +2753,15 @@
       "referencia": null,
       "difReferencia": null,
       "difCurado": null,
-      "final": 270,
-      "origem": "mantido",
-      "delta": 0,
+      "final": 310,
+      "origem": "manual",
+      "delta": 40,
       "deltaCalculado": 95,
       "revisao": true,
       "motivos": [
         "geometria ambígua (dobra 64°, 500 m vs 1 km 49°: ponta, enseada ou foz)",
-        "outra costa a 494 m (margem oposta, ilhéu ou molhe)"
+        "outra costa a 494 m (margem oposta, ilhéu ou molhe)",
+        "água interior/abrigada: Mosteiros (ponta)"
       ]
     },
     {
@@ -2897,9 +2911,9 @@
       "referencia": null,
       "difReferencia": null,
       "difCurado": null,
-      "final": 270,
-      "origem": "mantido",
-      "delta": 0,
+      "final": 175,
+      "origem": "manual",
+      "delta": 95,
       "deltaCalculado": 95,
       "revisao": true,
       "motivos": [
@@ -3004,13 +3018,14 @@
       "referencia": null,
       "difReferencia": null,
       "difCurado": null,
-      "final": 270,
-      "origem": "mantido",
-      "delta": 0,
+      "final": 300,
+      "origem": "manual",
+      "delta": 30,
       "deltaCalculado": 40,
       "revisao": true,
       "motivos": [
-        "geometria ambígua (dobra 119°, 500 m vs 1 km 7°: ponta, enseada ou foz)"
+        "geometria ambígua (dobra 119°, 500 m vs 1 km 7°: ponta, enseada ou foz)",
+        "água interior/abrigada: Carvalhal (enseada)"
       ]
     },
     {
@@ -3348,8 +3363,8 @@
     {
       "id": "ferragudo",
       "nome": "Praia Grande de Ferragudo",
-      "lat": 37.12,
-      "lon": -8.52,
+      "lat": 37.11659,
+      "lon": -8.52151,
       "atual": 180,
       "calculado": 200,
       "calculadoBruto": 201.1,
@@ -3358,47 +3373,46 @@
       "dobra": 83,
       "escala1km": 203,
       "retidao1km": 0.476,
-      "distCostaM": 1115,
+      "distCostaM": 749,
       "curado": null,
       "referencia": null,
       "difReferencia": null,
       "difCurado": null,
-      "final": 180,
-      "origem": "mantido",
-      "delta": 0,
+      "final": 235,
+      "origem": "manual",
+      "delta": 55,
       "deltaCalculado": 20,
       "revisao": true,
       "motivos": [
         "geometria ambígua (dobra 83°, 500 m vs 1 km 2°: ponta, enseada ou foz)",
-        "spot a 1115 m da costa",
-        "longe da costa e costa não recta: não aplicado"
+        "água interior/abrigada: Praia Grande de Ferragudo (estuário do Arade)"
       ]
     },
     {
       "id": "vila-real-santo-antonio",
       "nome": "Vila Real de Santo António",
-      "lat": 37.2,
-      "lon": -7.418,
+      "lat": 37.1715,
+      "lon": -7.4154,
       "atual": 180,
-      "calculado": null,
-      "calculadoBruto": null,
-      "segmentoProximo": null,
-      "retidao": null,
-      "dobra": null,
-      "escala1km": null,
-      "retidao1km": null,
-      "distCostaM": null,
+      "calculado": 195,
+      "calculadoBruto": 194.8,
+      "segmentoProximo": 194,
+      "retidao": 0.998,
+      "dobra": 4,
+      "escala1km": 194,
+      "retidao1km": 0.997,
+      "distCostaM": 50,
       "curado": null,
       "referencia": null,
       "difReferencia": null,
       "difCurado": null,
-      "final": 180,
-      "origem": "mantido",
-      "delta": 0,
-      "deltaCalculado": null,
+      "final": 195,
+      "origem": "manual",
+      "delta": 15,
+      "deltaCalculado": 15,
       "revisao": true,
       "motivos": [
-        "sem linha de costa OSM a < 2000 m"
+        "água interior/abrigada: Vila Real de Santo António"
       ]
     },
     {
@@ -3521,9 +3535,9 @@
       "referencia": null,
       "difReferencia": null,
       "difCurado": null,
-      "final": 180,
-      "origem": "mantido",
-      "delta": 0,
+      "final": 185,
+      "origem": "manual",
+      "delta": 5,
       "deltaCalculado": 105,
       "revisao": true,
       "motivos": [
@@ -3550,13 +3564,14 @@
       "difReferencia": null,
       "difCurado": null,
       "final": 270,
-      "origem": "mantido",
+      "origem": "agua-interior",
       "delta": 0,
       "deltaCalculado": 15,
       "revisao": true,
       "motivos": [
         "outra costa a 266 m (margem oposta, ilhéu ou molhe)",
-        "água interior/abrigada: Ria de Alvor"
+        "água interior/abrigada: Ria de Alvor",
+        "água interior (aguaInterior): sem onshore/offshore, o vento fica neutro"
       ]
     },
     {
@@ -3603,13 +3618,14 @@
       "difReferencia": null,
       "difCurado": null,
       "final": 270,
-      "origem": "mantido",
+      "origem": "agua-interior",
       "delta": 0,
       "deltaCalculado": 165,
       "revisao": true,
       "motivos": [
         "geometria ambígua (dobra 71°, 500 m vs 1 km 30°: ponta, enseada ou foz)",
-        "água interior/abrigada: lago de wake park (interior)"
+        "água interior/abrigada: lago de wake park (interior)",
+        "água interior (aguaInterior): sem onshore/offshore, o vento fica neutro"
       ]
     },
     {
@@ -3685,9 +3701,9 @@
       "referencia": null,
       "difReferencia": null,
       "difCurado": null,
-      "final": 180,
-      "origem": "mantido",
-      "delta": 0,
+      "final": 215,
+      "origem": "manual",
+      "delta": 35,
       "deltaCalculado": 30,
       "revisao": true,
       "motivos": [
@@ -3712,9 +3728,9 @@
       "referencia": null,
       "difReferencia": null,
       "difCurado": null,
-      "final": 180,
-      "origem": "mantido",
-      "delta": 0,
+      "final": 325,
+      "origem": "manual",
+      "delta": 145,
       "deltaCalculado": 145,
       "revisao": true,
       "motivos": [
@@ -3876,9 +3892,9 @@
       "referencia": null,
       "difReferencia": null,
       "difCurado": null,
-      "final": 180,
-      "origem": "mantido",
-      "delta": 0,
+      "final": 150,
+      "origem": "manual",
+      "delta": 30,
       "deltaCalculado": 30,
       "revisao": true,
       "motivos": [
@@ -3904,9 +3920,9 @@
       "referencia": null,
       "difReferencia": null,
       "difCurado": null,
-      "final": 180,
-      "origem": "mantido",
-      "delta": 0,
+      "final": 165,
+      "origem": "manual",
+      "delta": 15,
       "deltaCalculado": 10,
       "revisao": true,
       "motivos": [
@@ -4148,42 +4164,43 @@
       "referencia": null,
       "difReferencia": null,
       "difCurado": null,
-      "final": 90,
-      "origem": "mantido",
-      "delta": 0,
+      "final": 190,
+      "origem": "manual",
+      "delta": 100,
       "deltaCalculado": 105,
       "revisao": true,
       "motivos": [
         "geometria ambígua (dobra 63°, 500 m vs 1 km 9°: ponta, enseada ou foz)",
-        "outra costa a 492 m (margem oposta, ilhéu ou molhe)"
+        "outra costa a 492 m (margem oposta, ilhéu ou molhe)",
+        "água interior/abrigada: Ponta de São Lourenço"
       ]
     },
     {
       "id": "ribeira-brava",
       "nome": "Ribeira Brava",
-      "lat": 32.675,
-      "lon": -17.063,
+      "lat": 32.67105,
+      "lon": -17.06778,
       "atual": 90,
-      "calculado": 245,
-      "calculadoBruto": 246.8,
-      "segmentoProximo": 224,
-      "retidao": 0.43,
-      "dobra": 119,
-      "escala1km": 232,
-      "retidao1km": 0.59,
-      "distCostaM": 569,
+      "calculado": 260,
+      "calculadoBruto": 261.4,
+      "segmentoProximo": 48,
+      "retidao": 0.277,
+      "dobra": 83,
+      "escala1km": 231,
+      "retidao1km": 0.547,
+      "distCostaM": 35,
       "curado": null,
       "referencia": null,
       "difReferencia": null,
       "difCurado": null,
-      "final": 90,
-      "origem": "mantido",
-      "delta": 0,
-      "deltaCalculado": 155,
+      "final": 220,
+      "origem": "manual",
+      "delta": 130,
+      "deltaCalculado": 170,
       "revisao": true,
       "motivos": [
-        "geometria ambígua (dobra 119°, 500 m vs 1 km 15°: ponta, enseada ou foz)",
-        "outra costa a 490 m (margem oposta, ilhéu ou molhe)"
+        "geometria ambígua (dobra 83°, 500 m vs 1 km 30°: ponta, enseada ou foz)",
+        "água interior/abrigada: Ribeira Brava"
       ]
     },
     {
@@ -4441,13 +4458,14 @@
       "referencia": null,
       "difReferencia": null,
       "difCurado": null,
-      "final": 270,
-      "origem": "mantido",
-      "delta": 0,
+      "final": 245,
+      "origem": "manual",
+      "delta": 25,
       "deltaCalculado": 35,
       "revisao": true,
       "motivos": [
-        "geometria ambígua (dobra 56°, 500 m vs 1 km 6°: ponta, enseada ou foz)"
+        "geometria ambígua (dobra 56°, 500 m vs 1 km 6°: ponta, enseada ou foz)",
+        "água interior/abrigada: Pescadores (Ericeira)"
       ]
     },
     {
@@ -4505,29 +4523,29 @@
     {
       "id": "lagoa-santo-andre",
       "nome": "Lagoa de Santo André",
-      "lat": 38.09,
-      "lon": -8.792,
+      "lat": 38.1116,
+      "lon": -8.7976,
       "atual": 270,
       "calculado": 285,
-      "calculadoBruto": 287.1,
-      "segmentoProximo": 287,
+      "calculadoBruto": 285,
+      "segmentoProximo": 284,
       "retidao": 1,
-      "dobra": 0,
-      "escala1km": 287,
+      "dobra": 1,
+      "escala1km": 285,
       "retidao1km": 1,
-      "distCostaM": 1357,
+      "distCostaM": 200,
       "curado": null,
       "referencia": null,
       "difReferencia": null,
       "difCurado": null,
       "final": 270,
-      "origem": "mantido",
+      "origem": "agua-interior",
       "delta": 0,
       "deltaCalculado": 15,
       "revisao": true,
       "motivos": [
-        "spot a 1357 m da costa",
-        "água interior/abrigada: Lagoa de Santo André"
+        "água interior/abrigada: Lagoa de Santo André",
+        "água interior (aguaInterior): sem onshore/offshore, o vento fica neutro"
       ]
     },
     {
@@ -4549,13 +4567,14 @@
       "difReferencia": null,
       "difCurado": null,
       "final": 270,
-      "origem": "mantido",
+      "origem": "agua-interior",
       "delta": 0,
       "deltaCalculado": null,
       "revisao": true,
       "motivos": [
         "sem linha de costa OSM a < 2000 m",
-        "água interior/abrigada: Lagoa da Sancha"
+        "água interior/abrigada: Lagoa da Sancha",
+        "água interior (aguaInterior): sem onshore/offshore, o vento fica neutro"
       ]
     },
     {
@@ -4728,14 +4747,15 @@
       "referencia": null,
       "difReferencia": null,
       "difCurado": null,
-      "final": 90,
-      "origem": "mantido",
-      "delta": 0,
+      "final": 135,
+      "origem": "manual",
+      "delta": 45,
       "deltaCalculado": 50,
       "revisao": true,
       "motivos": [
         "geometria ambígua (dobra 57°, 500 m vs 1 km 28°: ponta, enseada ou foz)",
-        "outra costa a 448 m (margem oposta, ilhéu ou molhe)"
+        "outra costa a 448 m (margem oposta, ilhéu ou molhe)",
+        "água interior/abrigada: Machico (baía)"
       ]
     },
     {
@@ -4756,14 +4776,15 @@
       "referencia": null,
       "difReferencia": null,
       "difCurado": null,
-      "final": 270,
-      "origem": "mantido",
-      "delta": 0,
+      "final": 45,
+      "origem": "manual",
+      "delta": 135,
       "deltaCalculado": 165,
       "revisao": true,
       "motivos": [
         "geometria ambígua (dobra 100°, 500 m vs 1 km 39°: ponta, enseada ou foz)",
-        "outra costa a 78 m (margem oposta, ilhéu ou molhe)"
+        "outra costa a 78 m (margem oposta, ilhéu ou molhe)",
+        "água interior/abrigada: Seixal (ponta)"
       ]
     },
     {
@@ -4784,13 +4805,14 @@
       "referencia": null,
       "difReferencia": null,
       "difCurado": null,
-      "final": 270,
-      "origem": "mantido",
-      "delta": 0,
+      "final": 300,
+      "origem": "manual",
+      "delta": 30,
       "deltaCalculado": 30,
       "revisao": true,
       "motivos": [
-        "geometria ambígua (dobra 72°, 500 m vs 1 km 3°: ponta, enseada ou foz)"
+        "geometria ambígua (dobra 72°, 500 m vs 1 km 3°: ponta, enseada ou foz)",
+        "água interior/abrigada: Ponta do Pargo"
       ]
     },
     {
@@ -4918,13 +4940,14 @@
       "referencia": null,
       "difReferencia": null,
       "difCurado": null,
-      "final": 270,
-      "origem": "mantido",
-      "delta": 0,
+      "final": 150,
+      "origem": "manual",
+      "delta": 120,
       "deltaCalculado": 95,
       "revisao": true,
       "motivos": [
-        "geometria ambígua (dobra 51°, 500 m vs 1 km 24°: ponta, enseada ou foz)"
+        "geometria ambígua (dobra 51°, 500 m vs 1 km 24°: ponta, enseada ou foz)",
+        "água interior/abrigada: Porto Martins (enseada)"
       ]
     },
     {

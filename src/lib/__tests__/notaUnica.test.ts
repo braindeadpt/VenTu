@@ -171,3 +171,56 @@ describe('notaUnica — notaHora', () => {
     expect(c.antigo.nota).toBe(scoreToNota(old));
   });
 });
+
+describe('notaUnica — kite com vento forte (#330) e água interior (#326)', () => {
+  it('«Só profissionais» passa pelo adaptador: flag e aviso do vento forte (PT e EN)', () => {
+    const h = hora({ w: 33, g: 36, wd: PV + 45 }); // lateral de mar, 33 kt médios
+    const av = avaliaHoras(sp, 'kite', [h])[0];
+    expect(av.soProfissionais).toBe(true);
+    const s = sportScoreDeV6(av, h, 'kite', PV);
+    expect(s.soProfissionais).toBe(true);
+    expect(s.warning).toBe(getTranslation('pt').windSafety.soProfissionais);
+    expect(s.warningEn).toBe(getTranslation('en').windSafety.soProfissionais);
+  });
+
+  it('abaixo dos 30 kt não há «Só profissionais» nem aviso de vento forte', () => {
+    const h = hora({ w: 22, g: 26, wd: PV + 45 });
+    const s = sportScoreDeV6(avaliaHoras(sp, 'kite', [h])[0], h, 'kite', PV);
+    expect(s.soProfissionais).toBeUndefined();
+    expect(s.warning).toBeUndefined();
+  });
+
+  it('água interior com 33 kt médios: «Só profissionais» (flag + aviso), nota no piso 3', () => {
+    const lagoa = (spots as Spot[]).find((s) => s.aguaInterior)!;
+    const e = editorialDe(lagoa);
+    const h = hora({ w: 33, g: 36, wd: e.praiaVirada + 180 });
+    const av = avaliaHoras(spotModalidadeDe(e), 'kite', [h])[0];
+    expect(av.soProfissionais).toBe(true);
+    expect(av.n).toBe(3);
+    const s = sportScoreDeV6(av, h, 'kite', e.praiaVirada, true);
+    expect(s.soProfissionais).toBe(true);
+    expect(s.nota).toBe(3);
+    expect(s.directionSafety).toBeUndefined();
+    expect(s.warning).toBe(getTranslation('pt').windSafety.soProfissionais);
+    expect(s.warningEn).toBe(getTranslation('en').windSafety.soProfissionais);
+  });
+
+  it('água interior com 22 kt: sem «Só profissionais» nem aviso', () => {
+    const lagoa = (spots as Spot[]).find((s) => s.aguaInterior)!;
+    const e = editorialDe(lagoa);
+    const h = hora({ w: 22, g: 25, wd: e.praiaVirada + 180 });
+    const s = sportScoreDeV6(avaliaHoras(spotModalidadeDe(e), 'kite', [h])[0], h, 'kite', e.praiaVirada, true);
+    expect(s.soProfissionais).toBeUndefined();
+    expect(s.warning).toBeUndefined();
+  });
+
+  it('água interior: sem categoria de vento nos factores (direcção neutra)', () => {
+    const lagoa = (spots as Spot[]).find((s) => s.aguaInterior)!;
+    const e = editorialDe(lagoa);
+    const h = hora({ w: 18, g: 21, wd: e.praiaVirada + 180 });
+    const s = sportScoreDeV6(avaliaHoras(spotModalidadeDe(e), 'kite', [h])[0], h, 'kite', e.praiaVirada, true);
+    const cats = ['onshore', 'side-onshore', 'cross-shore', 'side-offshore', 'offshore'];
+    expect(s.factors.some((f) => cats.includes(f))).toBe(false);
+    expect(s.warning).toBeUndefined();
+  });
+});

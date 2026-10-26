@@ -43,6 +43,7 @@ const REL_EN: Record<VentoRel['k'], string> = {
   'lat-mar': 'cross-onshore',
   lat: 'cross-shore',
   'lat-terra': 'cross-offshore',
+  neutro: 'inland water',
   terra: 'offshore',
 };
 

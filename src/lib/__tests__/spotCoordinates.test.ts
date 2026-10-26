@@ -324,7 +324,7 @@ describe('coordenadas dos spots', () => {
 
   it('foz-lizandro: kite com regra da época balnear, sem «proibido no verão»', () => {
     const s = spots.find((x) => x.id === 'foz-lizandro')!;
-    const txt = [s.description, s.descriptionEn, ...(s.hazards ?? [])].join(' ');
+    const txt = [s.description, s.descriptionEn, ...s.hazards].join(' ');
     expect(txt).not.toMatch(/proibido no verão|forbidden in summer/i);
     expect(s.description).toContain('época balnear');
     expect(s.compatibleSports).toContain('kitesurf');
@@ -483,6 +483,49 @@ describe('coordenadas dos spots', () => {
     expect(s.coastOrientation, id).toBe(ori);
     expect(l.distCostaM, id).not.toBeNull();
     expect(l.distCostaM!, id).toBeLessThanOrEqual(1000);
+  });
+
+  /** 9.ª passagem (25/10, revisão da orientação): pins longe da água levados à praia/lançamento. */
+  const PINS_9: Array<[string, number, number, number]> = [
+    ['vila-real-santo-antonio', 37.1715, -7.4154, 195],
+    ['ferragudo', 37.11659, -8.52151, 235],
+    ['ribeira-brava', 32.67105, -17.06778, 220],
+    ['comporta', 38.3807, -8.8047, 250],
+  ];
+
+  it.each(PINS_9)('9.ª: %s fica a ≤ 20 m do pin novo, a ≤ 1 km da costa OSM, com a orientação fixada', (id, lat, lon, ori) => {
+    const s = spots.find((x) => x.id === id)!;
+    expect(distM(s.lat, s.lon, lat, lon)).toBeLessThanOrEqual(20);
+    const l = porId.get(id) as unknown as { final: number; origem: string; distCostaM: number | null };
+    expect(s.coastOrientation).toBe(ori);
+    expect(l.final).toBe(ori);
+    expect(l.origem).toBe('manual');
+    expect(l.distCostaM!).toBeLessThanOrEqual(1000);
+  });
+
+  it('9.ª: lagoa-santo-andre fica na lagoa (pin novo) e é água interior: o kite/foil é na lagoa, água plana', () => {
+    const s = spots.find((x) => x.id === 'lagoa-santo-andre')!;
+    expect(distM(s.lat, s.lon, 38.1116, -8.7976)).toBeLessThanOrEqual(20);
+    expect(s.aguaInterior).toBe(true);
+    const l = porId.get('lagoa-santo-andre') as unknown as { final: number; origem: string };
+    expect(l.origem).toBe('agua-interior');
+    expect(l.final).toBe(s.coastOrientation);
+  });
+
+  it('9.ª: a VRSA é a Praia de Santo António (mar aberto na foz do Guadiana), não a Ria Formosa', () => {
+    const s = spots.find((x) => x.id === 'vila-real-santo-antonio')!;
+    expect(s.aguaInterior).toBeUndefined();
+    for (const t of [s.description, s.descriptionEn, s.bestSwell, ...s.hazards]) {
+      expect(t).not.toMatch(/ria formosa|água plana|flat water|\bria\b/i);
+    }
+    expect(s.description).toMatch(/Guadiana/);
+    expect(s.descriptionEn).toMatch(/Guadiana/);
+  });
+
+  it('9.ª: a Marina da Afurada fica na marina (o spot é a marina), virada à margem do Douro', () => {
+    const s = spots.find((x) => x.id === 'marina-afurada-foil')!;
+    expect(distM(s.lat, s.lon, 41.141446, -8.652399)).toBeLessThanOrEqual(1);
+    expect(s.coastOrientation).toBe(330);
   });
 
   it('Figueira: figueira-foz é o Cabedelo (270° mantido, com motivo) e Buarcos é outro spot', () => {

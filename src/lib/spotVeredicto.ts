@@ -126,6 +126,7 @@ export function ventoRelTxt(c: SpotPageV6Copy, sp: SpotModalidade, wd: number): 
 
 /** Como a ondulação entra na praia. */
 export function ondaRelTxt(c: SpotPageV6Copy, sp: SpotModalidade, sd: number): string {
+  if (sp.aguaInterior) return c.ventoRel.neutro; // sem praia virada a um lado
   const rel = dif(sd, sp.praiaVirada);
   const a = Math.abs(rel);
   if (a <= 12) return c.ondaFrente;

@@ -15,7 +15,7 @@ import { getScoreTierLabel } from '@/lib/sportScore';
 import { getScoreRgb, getScoreTier } from '@/lib/scoreThresholds';
 import type { MarineConditionsFields } from '@/lib/marineConditions';
 import { resolveWavePowerKw, MS_TO_KNOTS } from '@/lib/waveEnergy';
-import { getCardinalLabel, getWindRelationLabel, getWindRelationToCoast, getWindRelationDotClass } from '@/lib/wind';
+import { getCardinalLabel, getWindRelationLabel, getWindRelationToCoast, getWindRelationDotClass, orientacaoVento } from '@/lib/wind';
 import { getDifficultyLabel } from '@/lib/mapDifficulty';
 import { getGoogleMapsDirectionsUrl, getSpotDetailHref } from '@/lib/mapSpotDetail';
 import { getMapSpotNarrative } from '@/lib/mapSpotNarrative';
@@ -76,9 +76,10 @@ export default function MapSpotPreview({
   const tideLine = getMapTideLine(spot, conditions, locale);
   const scoreFactors = getSpotScoreFactors({ spot, conditions, allScores, sport: highlightSport, locale });
   const windSafety = getExplainedWindSafety(spot, allScores, highlightSport);
+  const coast = orientacaoVento(spot);
   const windRelation =
-    spot.coastOrientation !== undefined
-      ? getWindRelationToCoast(conditions.windDirection, spot.coastOrientation)
+    coast !== undefined
+      ? getWindRelationToCoast(conditions.windDirection, coast)
       : undefined;
   const windRelationMeta =
     windRelation != null

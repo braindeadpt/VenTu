@@ -68,6 +68,8 @@ export interface SportScoreV6 extends SportScore {
   noite?: true;
   /** A fonte não traz o que a modalidade precisa nesta hora. */
   semDados?: true;
+  /** Kite com vento forte (≥ 30 kt médios): «Só profissionais» (a nota fica baixa para os outros níveis). */
+  soProfissionais?: true;
 }
 
 export interface SportScoreAntigo extends SportScore {
@@ -97,15 +99,23 @@ const fPeriodo = (h: HoraModalidade): Factor => ({ pt: `${h.tp}s período`, en: 
  * Factores pela ordem do que pesa, a partir do `motivo` e dos efeitos `f` do
  * motor v6 (nunca se recalculam pontos).
  */
-function factoresDe(av: AvaliacaoHora, h: HoraModalidade, d: Modalidade, praiaVirada: number): Factor[] {
+function factoresDe(
+  av: AvaliacaoHora,
+  h: HoraModalidade,
+  d: Modalidade,
+  praiaVirada: number,
+  aguaInterior: boolean,
+): Factor[] {
   const def = defDe(d);
   const out: Factor[] = [];
   if (def.logica === 'vento') {
     const p = def as DefVento;
     out.push(fVento(h));
-    // categoria do vento, a mesma banda que pontua o tecto (#195)
-    const cat = windSportDirectionSafety({ coastOrientation: praiaVirada } as Spot, h.wd).direction;
-    out.push({ pt: cat, en: cat });
+    // categoria do vento, a mesma banda que pontua o tecto (#195); em água
+    // interior não há categoria (direcção neutra, #326)
+    const cat = windSportDirectionSafety({ coastOrientation: praiaVirada, aguaInterior: aguaInterior || undefined }, h.wd)
+      .direction;
+    if (cat) out.push({ pt: cat, en: cat });
     if (av.f.onda === 1 && h.hs < p.onda.calma) out.push({ pt: 'Ondas pequenas', en: 'Small waves' });
     else if (av.f.onda === -1) out.push(fOnda(h));
     return out;
@@ -125,17 +135,19 @@ function factoresDe(av: AvaliacaoHora, h: HoraModalidade, d: Modalidade, praiaVi
 
 /**
  * Avaliação v6 de uma hora → formato `SportScore` (ver cabeçalho).
- * `praiaVirada` é a do editorial do spot (a mesma que `avaliaHoras` usou).
+ * `praiaVirada` é a do editorial do spot (a mesma que `avaliaHoras` usou);
+ * `aguaInterior` idem (direcção neutra, sem categoria de vento).
  */
 export function sportScoreDeV6(
   av: AvaliacaoHora,
   h: HoraModalidade,
   d: Modalidade,
   praiaVirada: number,
+  aguaInterior = false,
 ): SportScoreV6 {
   const n = av.n;
   const score = n == null ? 0 : Math.max(0, Math.min(100, Math.round(n * 10)));
-  const factores = n == null ? [] : factoresDe(av, h, d, praiaVirada);
+  const factores = n == null ? [] : factoresDe(av, h, d, praiaVirada, aguaInterior);
   const base: SportScoreV6 = {
     motor: 'v6',
     nota: n,
@@ -153,10 +165,18 @@ export function sportScoreDeV6(
     base.warning = getTranslation('pt').windSafety[key];
     base.warningEn = getTranslation('en').windSafety[key];
   }
+  if (av.soProfissionais) {
+    base.soProfissionais = true;
+    // o aviso de direcção (offshore) ganha; senão, o do vento forte
+    if (!base.warning) {
+      base.warning = getTranslation('pt').windSafety.soProfissionais;
+      base.warningEn = getTranslation('en').windSafety.soProfissionais;
+    }
+  }
   return base;
 }
 
-type SpotLocal = Pick<Spot, 'id' | 'lat' | 'lon' | 'coastOrientation'>;
+type SpotLocal = Pick<Spot, 'id' | 'lat' | 'lon' | 'coastOrientation'> & Partial<Pick<Spot, 'aguaInterior'>>;
 
 /**
  * Nota de UMA hora do forecast (`linhas[j]`; as vizinhas só dão o sentido da
@@ -177,7 +197,7 @@ export function notaHora(
   const ed = editorialDe(spot);
   const h = horaDeLinha(linhas, j, { lat: spot.lat, lon: spot.lon, praiaVirada: ed.praiaVirada });
   const [av] = avaliaHoras(spotModalidadeDe(ed), d, [h]);
-  return sportScoreDeV6(av, h, d, ed.praiaVirada);
+  return sportScoreDeV6(av, h, d, ed.praiaVirada, !!ed.aguaInterior);
 }
 
 /** Banda (chaves v6) de um score 0–100 do motor antigo. */

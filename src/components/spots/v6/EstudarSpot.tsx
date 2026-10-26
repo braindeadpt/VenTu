@@ -127,8 +127,10 @@ export default function EstudarSpot({ horas, NS, i, d, ed, sol, atencao, melhorM
         <dl className="praia">
           <dt>{c.viradaA}</dt>
           <dd>
-            {rumo(ed.praiaVirada)} ({ed.praiaVirada}°)
+            {ed.aguaInterior ? c.aguaInterior : `${rumo(ed.praiaVirada)} (${ed.praiaVirada}°)`}
           </dd>
+          {ed.aguaInterior ? null : (
+            <>
           <dt>{c.ventoBom}</dt>
           <dd>
             {fmtCopy(c.ventoBomTxt, { a: rumo(ed.kite.bom[0]), b: rumo(ed.kite.bom[1]) })}
@@ -143,6 +145,8 @@ export default function EstudarSpot({ horas, NS, i, d, ed, sol, atencao, melhorM
               d: rumo(ed.surf.terral[1]),
             })}
           </dd>
+            </>
+          )}
           <dt>{c.modalidades[d]}</dt>
           <dd>{regraTxt(d, c, locale)}</dd>
           {melhorMare ? (
@@ -168,7 +172,7 @@ export default function EstudarSpot({ horas, NS, i, d, ed, sol, atencao, melhorM
               .join(' · ')}
           </dd>
         </dl>
-        {ed.estimado ? <p className="estimado">{fmtCopy(c.regraDefaults, { graus: ed.praiaVirada })}</p> : null}
+        {ed.estimado && !ed.aguaInterior ? <p className="estimado">{fmtCopy(c.regraDefaults, { graus: ed.praiaVirada })}</p> : null}
         {extra}
       </div>
     </details>

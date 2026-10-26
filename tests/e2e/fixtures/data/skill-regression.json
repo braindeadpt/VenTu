@@ -58,20 +58,8 @@
     "20": {
       "name": "CSA82/D",
       "origin": "ih",
-      "recent": {
-        "snapshots": 7,
-        "rmse": 0.18285714285714283,
-        "me": 0.08857142857142856,
-        "n": 387
-      },
-      "baseline": {
-        "snapshots": 5,
-        "rmse": 0.17,
-        "me": 0.07,
-        "n": 492
-      },
-      "rmseDelta": 0.01,
-      "meAbsDelta": 0.02,
+      "recentSnapshots": 1,
+      "baselineSnapshots": 21,
       "verdict": "insufficient"
     },
     "33": {

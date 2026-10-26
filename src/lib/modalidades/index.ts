@@ -113,7 +113,7 @@ export function avaliaHoras(
 ): AvaliacaoHora[] {
   const L = MOTOR.para(sp);
   const def = defDe(d);
-  const coast = { coastOrientation: sp.praiaVirada } as Spot;
+  const coast = { coastOrientation: sp.praiaVirada, aguaInterior: sp.aguaInterior ? true : undefined } as Spot;
   const precisa = def.logica === 'vento' ? 'vento' : def.logica === 'onda' ? 'onda' : null;
   return horas.map((h) => {
     if (precisa && h.semDados?.includes(precisa))
