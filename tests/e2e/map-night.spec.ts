@@ -114,3 +114,56 @@ test.describe('/mapa — estado «noite» (#218 D3)', () => {
     await expect(page.locator('[data-row-night]')).toHaveCount(0);
   });
 });
+
+/**
+ * Capturas para a revisão do PR (390 e 1440): /pt/mapa numa frame de noite
+ * (lista aberta) e o «Perto daqui» da Guincho com o map-hours v6 a `null`.
+ * Ficam em test-results/ (artefacto do Agent verify). O bloco do «Perto
+ * daqui» só pede o map-hours quando se aproxima do ecrã — por isso a captura
+ * faz scroll até ele antes de fotografar (a fullPage do agent-screenshots
+ * não o carrega).
+ */
+for (const vp of [
+  { name: '390', width: 390, height: 844, mobile: true },
+  { name: '1440', width: 1440, height: 900, mobile: false },
+]) {
+  test.describe(`capturas noite ${vp.name}`, () => {
+    test.describe.configure({ timeout: 90_000 });
+    test.use({
+      viewport: { width: vp.width, height: vp.height },
+      hasTouch: vp.mobile,
+      isMobile: vp.mobile,
+      serviceWorkers: 'block',
+      reducedMotion: 'reduce',
+    });
+
+    test(`/pt/mapa numa frame de noite (${vp.name})`, async ({ page }, testInfo) => {
+      await stubNightMapHours(page);
+      await openMapa(page, '/pt/mapa/?hours=1&sport=surf');
+      await expect(page.locator('.leaflet-marker-icon.spot-marker [data-spot-night]').first()).toBeAttached({ timeout: 20_000 });
+      if (vp.mobile) {
+        // Sheet aberto: a lista com os chips «noite».
+        const sheet = page.locator('[data-explore-sheet]');
+        for (let i = 0; i < 3 && (await sheet.getAttribute('data-explore-sheet')) !== 'open'; i += 1) {
+          await page.locator('[data-sheet-grabber]').click();
+        }
+      }
+      await expect(page.locator('[data-row-night="true"]').first()).toBeVisible({ timeout: 20_000 });
+      await page.waitForTimeout(800);
+      await page.screenshot({ path: testInfo.outputPath(`mapa-noite-${vp.name}.png`) });
+    });
+
+    test(`«Perto daqui» de noite na Guincho (${vp.name})`, async ({ page }, testInfo) => {
+      await stubNightMapHours(page);
+      await page.goto('/pt/spots/guincho/?d=surf', { waitUntil: 'domcontentloaded', timeout: 60_000 });
+      await waitHydrated(page);
+      const perto = page.locator('#perto');
+      await perto.scrollIntoViewIfNeeded();
+      const noite = perto.locator('[data-nearby-night]');
+      await expect(noite.first()).toBeVisible({ timeout: 20_000 });
+      await expect(noite.first()).toHaveText('noite');
+      await page.waitForTimeout(500);
+      await perto.screenshot({ path: testInfo.outputPath(`perto-noite-${vp.name}.png`) });
+    });
+  });
+}
