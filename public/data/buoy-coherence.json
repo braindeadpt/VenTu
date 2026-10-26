@@ -99,7 +99,7 @@
       "suboptimal": []
     },
     "Esposende": {
-      "spotCount": 4,
+      "spotCount": 3,
       "withObservedWave": 0,
       "bySource": {},
       "audited": 0,
@@ -127,7 +127,7 @@
       "suboptimal": []
     },
     "Porto": {
-      "spotCount": 11,
+      "spotCount": 9,
       "withObservedWave": 0,
       "bySource": {},
       "audited": 0,
@@ -254,13 +254,30 @@
     },
     "Oeste": {
       "spotCount": 4,
-      "withObservedWave": 0,
-      "bySource": {},
-      "audited": 0,
+      "withObservedWave": 2,
+      "bySource": {
+        "wmo-buoy": 2
+      },
+      "audited": 2,
       "attachedIsClosest": 0,
-      "attachedNotClosest": 0,
+      "attachedNotClosest": 2,
       "onlySource": 0,
-      "notClosest": [],
+      "notClosest": [
+        {
+          "spot": "nazare",
+          "winner": "wmo-buoy",
+          "reason": "wmo-only",
+          "attachedKm": 281,
+          "altKm": 0
+        },
+        {
+          "spot": "sao-martinho-porto",
+          "winner": "wmo-buoy",
+          "reason": "wmo-only",
+          "attachedKm": 292,
+          "altKm": 0
+        }
+      ],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -296,13 +313,23 @@
     },
     "Peniche": {
       "spotCount": 8,
-      "withObservedWave": 0,
-      "bySource": {},
-      "audited": 0,
+      "withObservedWave": 1,
+      "bySource": {
+        "wmo-buoy": 1
+      },
+      "audited": 1,
       "attachedIsClosest": 0,
-      "attachedNotClosest": 0,
+      "attachedNotClosest": 1,
       "onlySource": 0,
-      "notClosest": [],
+      "notClosest": [
+        {
+          "spot": "baleal",
+          "winner": "wmo-buoy",
+          "reason": "wmo-only",
+          "attachedKm": 306,
+          "altKm": 0
+        }
+      ],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -645,7 +672,7 @@
       "suboptimal": []
     },
     "Faro": {
-      "spotCount": 4,
+      "spotCount": 2,
       "withObservedWave": 0,
       "bySource": {},
       "audited": 0,
@@ -799,7 +826,7 @@
       "suboptimal": []
     }
   },
-  "regionsAuditedAt": "2026-10-26T04:08:58.477Z",
+  "regionsAuditedAt": "2026-10-26T06:47:10.375Z",
   "pairs": [
     {
       "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",

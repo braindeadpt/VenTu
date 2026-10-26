@@ -1,6 +1,6 @@
 {
   "source": "forecast-skill-regression",
-  "checkedAt": "2026-10-26T04:06:25.452Z",
+  "checkedAt": "2026-10-26T06:30:44.487Z",
   "windowDays": 60,
   "recentDays": 7,
   "baselineDays": 21,
@@ -24,7 +24,7 @@
         "snapshots": 8,
         "rmse": 0.71625,
         "me": 0.55125,
-        "n": 649.5
+        "n": 648.875
       },
       "baseline": {
         "snapshots": 21,
@@ -43,7 +43,7 @@
         "snapshots": 8,
         "rmse": 0.2825,
         "me": 0.18249999999999997,
-        "n": 648.75
+        "n": 648.125
       },
       "baseline": {
         "snapshots": 21,
@@ -69,7 +69,7 @@
         "snapshots": 8,
         "rmse": 0.495,
         "me": -0.4375,
-        "n": 652.75
+        "n": 652.125
       },
       "baseline": {
         "snapshots": 21,
@@ -88,7 +88,7 @@
         "snapshots": 8,
         "rmse": 0.92875,
         "me": 0.7625000000000002,
-        "n": 644
+        "n": 643.375
       },
       "baseline": {
         "snapshots": 21,
@@ -105,9 +105,9 @@
       "origin": "wmo-es",
       "recent": {
         "snapshots": 8,
-        "rmse": 0.8274999999999999,
-        "me": 0.69,
-        "n": 582.5
+        "rmse": 0.82875,
+        "me": 0.69125,
+        "n": 582.625
       },
       "baseline": {
         "snapshots": 21,
@@ -126,7 +126,7 @@
         "snapshots": 8,
         "rmse": 0.47624999999999995,
         "me": 0.40249999999999997,
-        "n": 582.5
+        "n": 582.625
       },
       "baseline": {
         "snapshots": 21,
@@ -144,7 +144,7 @@
         "snapshots": 8,
         "rmse": 0.3725,
         "me": 0.16125,
-        "n": 567.625
+        "n": 567
       },
       "baseline": {
         "snapshots": 21,
@@ -164,8 +164,8 @@
       "name": "IH (Datawell)",
       "recent": {
         "days": 8,
-        "n": 2596.38,
-        "me": 0.26276972702325363
+        "n": 2593.88,
+        "me": 0.2627699869885789
       },
       "baseline": {
         "days": 21,
@@ -182,8 +182,8 @@
       "name": "WMO-ES (Copernicus)",
       "recent": {
         "days": 8,
-        "n": 1732.63,
-        "me": 0.41996320611788474
+        "n": 1732.25,
+        "me": 0.4204935777168423
       },
       "baseline": {
         "days": 21,
