@@ -12,6 +12,7 @@ register();
 
 const { spots } = require('../src/lib/spots.ts');
 const { buildMapHoursFile } = require('../src/lib/mapHours.ts');
+const { readForecastsIndex } = require('./lib/forecastsIndex');
 
 function readJson(file) {
   if (!fs.existsSync(file)) return null;
@@ -19,10 +20,10 @@ function readJson(file) {
 }
 
 function buildMapHours(dataDir = path.join(__dirname, '../public/data')) {
-  const forecasts = readJson(path.join(dataDir, 'forecasts.json'));
+  const forecasts = readForecastsIndex(dataDir);
   const conditions = readJson(path.join(dataDir, 'conditions.json')) ?? {};
   if (!forecasts || typeof forecasts !== 'object') {
-    console.warn('⚠️ build-map-hours: forecasts.json ausente — skip');
+    console.warn('⚠️ build-map-hours: forecasts/<id>.json ausentes — skip');
     return null;
   }
   const file = buildMapHoursFile({

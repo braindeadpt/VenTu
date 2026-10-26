@@ -96,18 +96,15 @@ function listingDirs(localeDir) {
 // Public data blobs in out/data/*.json — the client fetches these on every
 // page load, so a size regression (like the 10 MB forecasts.json bake) is a
 // download regression for every visitor even though no route dir changes.
-// Budgets sit ~1.2x current sizes (forecasts 10.2 MB, wind-bias 2.0 MB,
-// spots-index 1.0 MB, forecast-skill 0.03 MB, conditions 0.5 MB) — room for
-// organic growth (more spots/hours), nowhere near enough for a doubling.
-// forecasts.json grew to 10.8 MB on 2026-09-25 when the hourly ensemble band
-// (`ens`, see scripts/lib/ensembleQuantiles.js) started shipping: +1.1 MB for
-// 31,080 rows, which is why the field is a compact 8-number array. Raising
-// this budget to make room for a wider format is the wrong fix — measure the
-// format (the readable variant costs +1.9 MB and would sit at 97% of 12 MB).
+// Budgets sit ~1.2x current sizes (wind-bias 2.0 MB, spots-index 1.0 MB,
+// forecast-skill 0.03 MB, conditions 0.5 MB) — room for organic growth (more
+// spots/hours), nowhere near enough for a doubling.
 // forecast-skill is report-only since the 2026-09-18 split (raw series live
 // in data-state/): if it ever returns near 1 MB the raw arrays leaked back.
+// The aggregate forecasts.json (12 MB budget here until 2026-10-25) is no
+// longer generated nor published — its budget moved to the per-spot files
+// below (FORECAST_SPOT_*).
 const DATA_FILE_BUDGETS_MB = {
-  'forecasts.json': 12,
   'conditions.json': 1,
   'spots-index.json': 1.5,
   'wind-bias.json': 2.5,
@@ -156,6 +153,21 @@ const GEO_FILE_BUDGETS_MB = {
   'ocean-mask/algarve.json': 0.27,
 };
 
+// Per-spot hourly forecasts in data/forecasts/<id>.json — the only copy since
+// the aggregate forecasts.json went away (2026-10-25). The spot page, compare
+// and the home fetch ONE file per spot, so the per-file cap is what a visitor
+// downloads; the folder total is what the ~30-min bot commits rewrite (it
+// counts against the 32 MB tracked public/data budget of
+// check-data-history-budget.js). On 2026-10-25: 189 files, 55–58 KB each,
+// 10.5 MB in total. The hourly ensemble band (`ens`, see
+// scripts/lib/ensembleQuantiles.js) cost +1.1 MB over 31,080 rows on
+// 2026-09-25, which is why it is a compact 8-number array: a wider row format
+// is the thing to measure, not a reason to raise these. 80 KB / 14 MB leave
+// room for the rain/cloud fields of #218 PR 1 (~+5 KB per file) and a few more
+// spots, not for a doubling.
+const FORECAST_SPOT_FILE_BUDGET_KB = 80;
+const FORECAST_SPOT_DIR_BUDGET_MB = 14;
+
 const budgetBytes = BUDGET_MB * 1024 * 1024;
 const breaches = [];
 let checked = 0;
@@ -199,6 +211,27 @@ if (fs.existsSync(dataDir)) {
     const mb = fs.statSync(full).size / (1024 * 1024);
     if (mb > budgetMb) {
       breaches.push(`data/${name}: ${mb.toFixed(1)} MB > ${budgetMb} MB budget`);
+    }
+  }
+  const forecastsDir = path.join(dataDir, 'forecasts');
+  if (fs.existsSync(forecastsDir)) {
+    let total = 0;
+    const tooBig = [];
+    for (const f of fs.readdirSync(forecastsDir)) {
+      if (!f.endsWith('.json')) continue;
+      const size = fs.statSync(path.join(forecastsDir, f)).size;
+      total += size;
+      if (size > FORECAST_SPOT_FILE_BUDGET_KB * 1024) tooBig.push(`${f} ${(size / 1024).toFixed(0)} KB`);
+    }
+    dataChecked += 1;
+    if (tooBig.length > 0) {
+      breaches.push(
+        `data/forecasts/: ${tooBig.length} file(s) > ${FORECAST_SPOT_FILE_BUDGET_KB} KB budget per spot (${tooBig.slice(0, 5).join(', ')}${tooBig.length > 5 ? ', …' : ''})`,
+      );
+    }
+    const totalMb = total / (1024 * 1024);
+    if (totalMb > FORECAST_SPOT_DIR_BUDGET_MB) {
+      breaches.push(`data/forecasts/: ${totalMb.toFixed(1)} MB in total > ${FORECAST_SPOT_DIR_BUDGET_MB} MB budget`);
     }
   }
 }

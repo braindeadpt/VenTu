@@ -1,4 +1,4 @@
-import { readFileSync, existsSync } from 'fs'
+import { readFileSync, existsSync, readdirSync } from 'fs'
 import { join } from 'path'
 import { spots } from '@/lib/spots'
 import { getAllSportScores } from '@/lib/sportScore'
@@ -39,18 +39,31 @@ function toScoreInput(raw: RawConditions) {
   return rawToScoreInput(raw as Record<string, unknown>)
 }
 
+/**
+ * Índice `{ [série]: linhas }` montado dos ficheiros por spot
+ * public/data/forecasts/<id>.json — os mesmos que o cliente pede. O agregado
+ * forecasts.json (o mesmo conteúdo, ~11 MB) deixou de ser gerado a 25/10/2026
+ * (mesma regra de scripts/lib/forecastsIndex.js). Um ficheiro ilegível fica
+ * de fora (a série cai no snapshot, como sem forecast) em vez de partir o build.
+ */
 function loadForecastsJson(): Record<string, Array<Record<string, unknown>>> {
+  const out: Record<string, Array<Record<string, unknown>>> = {}
+  const dir = join(process.cwd(), 'public', 'data', 'forecasts')
+  let files: string[] = []
   try {
-    const filePath = join(process.cwd(), 'public', 'data', 'forecasts.json')
-    if (existsSync(filePath)) {
-      return JSON.parse(readFileSync(filePath, 'utf-8'))
-    }
+    if (existsSync(dir)) files = readdirSync(dir).filter((f) => f.endsWith('.json')).sort()
   } catch { /* noop */ }
-  return {}
+  for (const file of files) {
+    try {
+      const rows = JSON.parse(readFileSync(join(dir, file), 'utf-8'))
+      if (Array.isArray(rows)) out[file.slice(0, -'.json'.length)] = rows
+    } catch { /* noop */ }
+  }
+  return out
 }
 
 /**
- * Linhas horárias do forecast por série (`forecasts.json`), as mesmas que a
+ * Linhas horárias do forecast por série (`forecasts/<id>.json`), as mesmas que a
  * página de spot lê. A home v6 (#183) corta-as para os 19 spots da costa
  * (`src/lib/home/dadosHomeServidor.ts`) — nunca as serializa inteiras.
  */
@@ -326,7 +339,7 @@ function buildSpotData(
 // Build-time memoization: data files are immutable during a static build, so parse
 // once per worker instead of once per page. loadSpotData()/loadSpotListings() are
 // called by home, spots index, mapa, explorar (255 pages) and modalidades (40
-// pages) — each call re-parses the ~8.2MB forecasts.json and recomputes scores for
+// pages) — each call re-reads the ~10 MB of forecasts/<id>.json and recomputes scores for
 // all 185 spots (~230ms). Only cached in production (build): dev must see freshly
 // regenerated data files. The two caches are separate on purpose: mixing them
 // would hand a detail row (with forecast) to a listing page — the exact payload

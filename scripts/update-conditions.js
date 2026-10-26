@@ -314,8 +314,16 @@ async function updateConditions() {
   const coverage = validateCoverage(spots, allConditions);
   assertCoverage(coverage);
   atomicWriteJson(outputPath, allConditions);
-  const forecastsPath = path.join(__dirname, '../public/data/forecasts.json');
-  atomicWriteJson(forecastsPath, allForecasts);
+  // Só os ficheiros por spot (forecasts/<id>.json). O agregado forecasts.json
+  // (~11 MB, o mesmo conteúdo indexado por spot) deixou de ser escrito e
+  // commitado a 25/10/2026: os leitores montam o índice da pasta
+  // (scripts/lib/forecastsIndex.js). Um agregado velho no disco (árvore local
+  // de antes da mudança) é apagado para nunca voltar a ser publicado.
+  const legacyForecastsPath = path.join(__dirname, '../public/data/forecasts.json');
+  if (fs.existsSync(legacyForecastsPath)) {
+    fs.unlinkSync(legacyForecastsPath);
+    console.log('  🗑 Removed legacy public/data/forecasts.json (aggregate no longer published)');
+  }
   const perSpotDir = path.join(__dirname, '../public/data/forecasts');
   fs.mkdirSync(perSpotDir, { recursive: true });
   let perSpotCount = 0;
@@ -328,7 +336,7 @@ async function updateConditions() {
     }
   }
   // Espelha o directorio ao indice: um spot cujo fetch falhou (o gate de
-  // coverage tolera ate 5%) fica fora de forecasts.json, mas o ficheiro do
+  // coverage tolera ate 5%) fica fora de allForecasts, mas o ficheiro do
   // run anterior - commitado - ficava no disco e o validador
   // (forecasts.splitFiles) falhava com "N file(s) without key", matando o
   // pipeline em loop (2026-09-07: castelo-neiva, anjos). O indice e a
@@ -340,12 +348,11 @@ async function updateConditions() {
     if (!Object.prototype.hasOwnProperty.call(allForecasts, id)) {
       fs.unlinkSync(path.join(perSpotDir, file));
       staleRemoved++;
-      console.warn(`  🗑 Removed stale per-spot forecast ${file} - spot absent from this run's forecasts.json (fetch failed or spot removed)`);
+      console.warn(`  🗑 Removed stale per-spot forecast ${file} - spot absent from this run's forecasts (fetch failed or spot removed)`);
     }
   }
   if (staleRemoved > 0) console.warn(`⚠️ Removed ${staleRemoved} stale per-spot forecast file(s) - index/dir now consistent`);
   console.log(`\n✅ Conditions saved to ${outputPath}`);
-  console.log(`📈 Forecasts saved to ${forecastsPath}`);
   const { buildMapHours } = require('./build-map-hours');
   try {
     buildMapHours(path.join(__dirname, '../public/data'));

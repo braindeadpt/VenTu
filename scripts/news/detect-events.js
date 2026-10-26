@@ -1,12 +1,13 @@
 /**
  * VenTu — Event Detection (Etapa 2)
  *
- * Snapshot from conditions.json + forecast windows from forecasts.json.
+ * Snapshot from conditions.json + forecast windows from forecasts/<id>.json.
  * NO LLM involved.
  */
 
 const path = require('path');
 const fs = require('fs');
+const { readForecastsIndex } = require('../lib/forecastsIndex');
 
 function loadConditions() {
   try {
@@ -21,9 +22,9 @@ function loadConditions() {
 
 function loadForecasts() {
   try {
-    const fp = path.join(__dirname, '../../public/data/forecasts.json');
-    if (!fs.existsSync(fp)) return {};
-    return JSON.parse(fs.readFileSync(fp, 'utf-8'));
+    // Índice montado de public/data/forecasts/<id>.json (o agregado
+    // forecasts.json deixou de ser publicado — scripts/lib/forecastsIndex.js).
+    return readForecastsIndex(path.join(__dirname, '../../public/data')) ?? {};
   } catch (e) {
     console.warn('  ⚠️ Failed to load forecasts:', e.message);
     return {};
@@ -136,7 +137,7 @@ function detectSnapshotEvents(conditions) {
 }
 
 /**
- * Scan forecasts.json hourly arrays for upcoming 72h swell / 24h wind windows.
+ * Scan the per-spot forecast hourly arrays for upcoming 72h swell / 24h wind windows.
  */
 function detectForecastEvents(forecasts) {
   const events = [];
