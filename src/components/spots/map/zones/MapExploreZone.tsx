@@ -20,7 +20,7 @@ import { includeSpotInViewportBounds } from '../../mapViewportBounds';
 import type { GridSportFilter } from '@/lib/sportRatings';
 import type { MapFullscreenHudProps } from '../../mapHudTypes';
 import type { MapSpotData } from '../../mapSpotData';
-import { getBestScore } from '../../mapSpotData';
+import { getMapRankScore, isMapNight } from '../../mapSpotData';
 import { getSpotScoreFactors } from '@/lib/spotScoreFactors';
 import type {
   ExploreSheetState,
@@ -48,7 +48,8 @@ interface UseMapExploreZoneParams {
   isFullscreen: boolean;
   mapHud: MapHudProps | undefined;
   visibleSpots: MapSpotData[];
-  hourScores: Map<string, number> | null;
+  /** `null` por id = noite nessa frame (#218 D3). */
+  hourScores: Map<string, number | null> | null;
   selectedSport: GridSportFilter;
   selectedRegion: string;
   locale: string;
@@ -163,11 +164,17 @@ export function useMapExploreZone({
     );
     return inView
       .map((d) => {
+        const hour = hourScores?.get(d.spot.id);
+        // Noite (#218 D3): sem nota — chip «noite» e fim da lista (rank -1).
+        const night = isMapNight(hour)
+          ? { label: t.mapUiMarkers.night, aria: t.mapUiMarkers.nightAria }
+          : undefined;
         return {
           spotId: d.spot.id,
           name: localizedSpotDisplayName(d.spot, locale),
           region: localizedSpotRegion(d.spot, locale),
-          score: getBestScore(d, selectedSport, hourScores?.get(d.spot.id)),
+          score: getMapRankScore(d, selectedSport, hour),
+          night,
           factors: getSpotScoreFactors({
             spot: d.spot,
             conditions: d.conditions,
@@ -178,7 +185,7 @@ export function useMapExploreZone({
         };
       })
       .sort((a, b) => b.score - a.score || a.name.localeCompare(b.name));
-  }, [visibleSpots, hourScores, selectedSport, selectedRegion, locale, mapInstanceRef]);
+  }, [visibleSpots, hourScores, selectedSport, selectedRegion, locale, mapInstanceRef, t.mapUiMarkers.night, t.mapUiMarkers.nightAria]);
 
   const [viewRows, setViewRows] = useState<MapSpotListRow[]>([]);
   useEffect(() => {

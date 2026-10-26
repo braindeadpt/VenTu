@@ -13,6 +13,7 @@ import {
   type WindRelation,
 } from '@/lib/wind';
 import { warningLevelLabel } from '@/lib/ipmaWarnings';
+import { MAP_NIGHT_FILL, MAP_NIGHT_INK, MAP_NIGHT_MOON_PATH, type MapNightCopy } from '@/lib/mapNight';
 
 // Square viewBox, pin dead-centred — no tail. At map density (many spots a
 // few hundred metres apart) a pin's tail visually overlaps a neighbour's
@@ -220,7 +221,20 @@ export function buildWindRingSvg(
   `.trim();
 }
 
-function buildPinSvg(score: number, scoreRgb: string): string {
+function buildPinSvg(score: number, scoreRgb: string, night?: MapNightCopy | null): string {
+  if (night) {
+    // Noite (#218 D3): sem número — fill da banda v6 `noite` + a lua do v6.
+    const s = 14;
+    return `
+    <g class="ventu-marker-pin ventu-marker-pin--night" data-night="true">
+      <circle cx="${PIN_CX}" cy="${PIN_CY}" r="${PIN_R + 2.5}" fill="${OUTLINE}"/>
+      <circle cx="${PIN_CX}" cy="${PIN_CY}" r="${PIN_R}" fill="${MAP_NIGHT_FILL}" stroke="${HALO}" stroke-width="2.5"/>
+      <svg x="${PIN_CX - s / 2}" y="${PIN_CY - s / 2}" width="${s}" height="${s}" viewBox="0 0 24 24">
+        <path d="${MAP_NIGHT_MOON_PATH}" fill="${MAP_NIGHT_INK}"/>
+      </svg>
+    </g>
+  `.trim();
+  }
   const scoreLabel = scoreToNota(score);
 
   return `
@@ -250,9 +264,10 @@ export function buildWindRingMarkerSvg(
   speedKt: number,
   showWind: boolean,
   coastOrientation?: number,
+  night?: MapNightCopy | null,
 ): string {
   const windLayer = showWind ? buildWindRingSvg(fromDeg, speedKt, coastOrientation) : '';
-  const pinLayer = buildPinSvg(score, scoreRgb);
+  const pinLayer = buildPinSvg(score, scoreRgb, night);
 
   return `
     <svg class="ventu-wind-ring-marker" xmlns="http://www.w3.org/2000/svg"
@@ -279,6 +294,8 @@ export function buildWindRingMarkerHtml(
   locale: string,
   coastOrientation?: number,
   warning?: MapMarkerWarning | null,
+  /** Frame de noite (#218 D3): pin sem número; a cópia vem de `mapNightCopy`. */
+  night?: MapNightCopy | null,
 ): string {
   const windTitle = showWind
     ? buildMapWindRingTitle(fromDeg, speedKt, coastOrientation, locale)
@@ -288,15 +305,15 @@ export function buildWindRingMarkerHtml(
         ? `Aviso IPMA: ${warning.label} (${warningLevelLabel(warning.level, locale)})`
         : `IPMA warning: ${warning.label} (${warningLevelLabel(warning.level, locale)})`)
     : '';
-  const title = escapeHtmlAttr([windTitle, warningTitle].filter(Boolean).join(' · '));
-  const svg = buildWindRingMarkerSvg(score, scoreRgb, fromDeg, speedKt, showWind, coastOrientation);
+  const title = escapeHtmlAttr([night?.aria ?? '', windTitle, warningTitle].filter(Boolean).join(' · '));
+  const svg = buildWindRingMarkerSvg(score, scoreRgb, fromDeg, speedKt, showWind, coastOrientation, night);
   const badge = warning
     ? buildWarningBadgeSvg(warning, warningBadgeAriaLabel(warning, locale))
     : '';
 
   return `
     <div class="ventu-spot-marker-wrap ventu-marker-enter ventu-wind-ring-marker-wrap"
-      data-spot-score="${Math.round(score)}"
+      ${night ? 'data-spot-night="true"' : `data-spot-score="${Math.round(score)}"`}
       style="width:${MARKER_VIEWBOX_W}px;height:${MARKER_VIEWBOX_H}px;cursor:pointer"${title ? ` title="${title}"` : ''}>
       ${svg}
       ${badge}

@@ -24,7 +24,7 @@ async function abre(page: Page, slug = SPOT_SLUG, width = 1440, height = 900) {
 
 /**
  * `map-hours.json` real com as séries v6 (kitesurf, surf) trocadas (#218, PR 2):
- * de noite o v6 não dá nota (`null` → «–» no «Perto daqui»), por isso os testes
+ * de noite o v6 não dá nota (`null` → chip «noite» no «Perto daqui», #218 D3), por isso os testes
  * da nota /10 não podem depender da hora a que o CI corre.
  */
 async function mapHoursV6(page: Page, troca: (v: number | null) => number | null) {
@@ -202,7 +202,7 @@ test.describe('Contexto do spot (v6)', () => {
     expect(await nota.evaluate((el) => getComputedStyle(el).fontFamily)).toMatch(/Barlow Condensed/);
   });
 
-  test('«Perto daqui» de noite (map-hours v6 = null): «–» sem nota nem escalão, nunca 0', async ({ page }) => {
+  test('«Perto daqui» de noite (map-hours v6 = null): chip v6 «noite», sem nota nem escalão, nunca 0', async ({ page }) => {
     await mapHoursV6(page, () => null);
     const carregou = page.waitForResponse((r) => r.url().includes('/data/map-hours.json'), { timeout: 20_000 });
     await abre(page);
@@ -212,7 +212,14 @@ test.describe('Contexto do spot (v6)', () => {
     const chips = lista.locator('[data-nearby-score]');
     expect(await chips.count()).toBeGreaterThanOrEqual(2);
     await expect(lista.locator('[data-nearby-score][data-score-tier]')).toHaveCount(0);
-    for (const txt of await chips.allTextContents()) expect(txt.trim()).toBe('–');
+    // #218 D3 (opção 1): os vizinhos que praticam a modalidade mostram o chip
+    // v6 `noite` (#56677B, «noite, sem nota»); só os que não a praticam ficam «–».
+    const noite = lista.locator('[data-nearby-night]');
+    await expect(noite.first()).toBeVisible({ timeout: 15_000 });
+    for (const txt of await chips.allTextContents()) expect(['noite', '–']).toContain(txt.trim());
+    await expect(noite.first()).toHaveText('noite');
+    await expect(noite.first()).toHaveAttribute('aria-label', 'noite, sem nota');
+    expect(await noite.first().evaluate((el) => getComputedStyle(el).backgroundColor)).toBe('rgb(86, 103, 123)');
   });
 
   test('«Perto daqui» segue a modalidade da página (kite → ?sport=kitesurf, surf → ?sport=surf)', async ({ page }) => {

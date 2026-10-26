@@ -21,6 +21,10 @@ export const mapUiMarkers = {
     bestModality: 'Melhor modalidade',
     /** Hora actual no rótulo temporal do cartão. */
     now: 'agora',
+    /** Estado «noite» do /mapa (#218 D3): o v6 não dá nota nessa hora — sem número. */
+    night: 'noite',
+    /** Nome acessível do marcador/chip de noite. */
+    nightAria: 'noite, sem nota',
   },
   en: {
     backToList: 'Back to list',
@@ -34,6 +38,8 @@ export const mapUiMarkers = {
     metricWind: 'Wind',
     bestModality: 'Best sport',
     now: 'now',
+    night: 'night',
+    nightAria: 'night, no score',
   },
   es: {
     backToList: 'Volver a la lista',
@@ -47,6 +53,8 @@ export const mapUiMarkers = {
     metricWind: 'Viento',
     bestModality: 'Mejor modalidad',
     now: 'ahora',
+    night: 'noche',
+    nightAria: 'noche, sin nota',
   },
   de: {
     backToList: 'Zurück zur Liste',
@@ -60,6 +68,8 @@ export const mapUiMarkers = {
     metricWind: 'Wind',
     bestModality: 'Beste Sportart',
     now: 'jetzt',
+    night: 'Nacht',
+    nightAria: 'Nacht, keine Note',
   },
   fr: {
     backToList: 'Retour à la liste',
@@ -73,6 +83,8 @@ export const mapUiMarkers = {
     metricWind: 'Vent',
     bestModality: 'Meilleure discipline',
     now: 'maintenant',
+    night: 'nuit',
+    nightAria: 'nuit, pas de note',
   },
 } as const;
 

@@ -66,3 +66,25 @@ export function nearbySpotScore(
   const n = scoreAtHour(file, entry.spot.id, sport, step);
   return n ?? null;
 }
+
+/** Estado da nota do vizinho no «Perto daqui»: número, noite ou sem nota. */
+export type NearbySpotHour = number | 'noite' | null;
+
+/**
+ * Como `nearbySpotScore`, mas separa a noite (#218 D3): `'noite'` quando a
+ * modalidade se pratica lá, a série existe e o motor v6 não dá nota nessa
+ * hora (`scoreAtHour` → `null`) — chip v6 `noite`; `null` quando não se
+ * pratica ou não há série — «–».
+ */
+export function nearbySpotHour(
+  file: MapHoursFile | null | undefined,
+  entry: NearbySpotEntry,
+  sport: SportType,
+  step: number,
+): NearbySpotHour {
+  const sports = entry.spot.compatibleSports;
+  if (sports && sports.length > 0 && !sports.includes(sport)) return null;
+  const n = scoreAtHour(file, entry.spot.id, sport, step);
+  if (n === null) return 'noite';
+  return n ?? null;
+}

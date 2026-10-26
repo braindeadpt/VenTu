@@ -66,10 +66,13 @@ describe('mapExploreSheet (contrato do bottom sheet de 3 estados)', () => {
     expect(sheet).toContain('data-sheet-best');
   });
 
-  it('a lista é a mesma fonte dos marcadores (getBestScore + bounds)', () => {
-    // A zona explorar constrói viewRows com getBestScore (a fonte do score
-    // do marcador) filtrada pelos bounds do viewport.
-    expect(exploreZone).toContain('getBestScore(d, selectedSport, hourScores?.get(d.spot.id))');
+  it('a lista é a mesma fonte dos marcadores (getMapRankScore + bounds)', () => {
+    // A zona explorar constrói viewRows com getMapRankScore (a fonte do score
+    // do marcador — noite fica abaixo de qualquer nota, #218 D3) filtrada
+    // pelos bounds do viewport.
+    expect(exploreZone).toContain('const hour = hourScores?.get(d.spot.id);');
+    expect(exploreZone).toContain('getMapRankScore(d, selectedSport, hour)');
+    expect(exploreZone).toContain('isMapNight(hour)');
     expect(exploreZone).toContain('bounds.contains');
   });
 

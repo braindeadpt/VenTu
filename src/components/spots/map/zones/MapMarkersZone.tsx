@@ -19,7 +19,7 @@ import { strongestSpotWarning, warningBadgeLabel } from '@/lib/ipmaWarnings';
 import { SEA_STATE_WARNING_TYPES } from '@/lib/ipmaWarnings';
 import type { MapMarkerWarning } from '@/lib/mapWindArrow';
 import type { MapSpotData } from '../../mapSpotData';
-import { getBestScore } from '../../mapSpotData';
+import { getMapRankScore } from '../../mapSpotData';
 import { includeSpotInViewportBounds } from '../../mapViewportBounds';
 import { resolveExploreChrome } from '../../mapMarkers';
 import { useMapMarkers } from '../hooks/useMapMarkers';
@@ -50,7 +50,7 @@ interface UseMapMarkersZoneParams {
   activeCluster: boolean;
   showWindOnMarkers: boolean;
   locale: string;
-  hourScores: Map<string, number> | null;
+  hourScores: Map<string, number | null> | null;
   onSpotSelect?: (spotId: string) => void;
   onMarkerInteract: () => void;
   setSheetSpot: React.Dispatch<React.SetStateAction<MapSpotSheetData | null>>;
@@ -191,7 +191,7 @@ export function useMapMarkersZone({
       for (const child of children) {
         const d = (child as { ventuData?: MapSpotData }).ventuData;
         if (!d) continue;
-        const score = getBestScore(d, selectedSport, hourScores?.get(d.spot.id));
+        const score = getMapRankScore(d, selectedSport, hourScores?.get(d.spot.id));
         if (score > bestScore) {
           bestScore = score;
           best = d;

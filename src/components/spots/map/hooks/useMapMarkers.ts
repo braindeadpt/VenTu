@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import type L from 'leaflet';
 import type { MapSpotData } from '../../mapSpotData';
-import { getBestScore } from '../../mapSpotData';
+import { getMapRankScore } from '../../mapSpotData';
 import type { MapMarkerWarning } from '@/lib/mapWindArrow';
 import type { GridSportFilter } from '@/lib/sportRatings';
 import type { MapSpotSheetData } from '../../MapSpotSheet';
@@ -77,7 +77,8 @@ interface UseMapMarkersParams {
   locale: string;
   warningsBySpot: Map<string, MapMarkerWarning>;
   /** Score at the HUD hour (48 h mode). Missing ids keep live conditions. */
-  hourScores?: Map<string, number> | null;
+  /** `null` por id = noite nessa frame (#218 D3): marcador sem número. */
+  hourScores?: Map<string, number | null> | null;
   onSpotSelect?: (spotId: string) => void;
   onMarkerInteract?: () => void;
   setSheetSpot: React.Dispatch<React.SetStateAction<MapSpotSheetData | null>>;
@@ -290,7 +291,8 @@ export function useMapMarkers({
           id: d.spot.id,
           x: p.x,
           y: p.y,
-          score: getBestScore(d, selectedSport, hourScores?.get(d.spot.id)),
+          // Noite fica abaixo de qualquer nota: o melhor do grupo é numérico.
+          score: getMapRankScore(d, selectedSport, hourScores?.get(d.spot.id)),
         };
       });
       const radius = markerCollisionRadiusPx(map.getZoom(), isMobile);

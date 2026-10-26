@@ -49,6 +49,7 @@ const MapMarkersZone = dynamic(() => import('./map/zones/MapMarkersZoneView'));
 import {
   scoreAtHour,
 } from '@/lib/mapHours';
+import { mapNightAppliesTo } from '@/lib/mapNight';
 import { MAP_ON_THRESHOLD, spotMatchesSportFilter, spotMeetsOnFilter } from '@/lib/gridSpotFilters';
 import MapControls from './map/components/MapControls';
 
@@ -394,18 +395,23 @@ export default function SpotMapInteractive({
 
   // ── Visible spots (derivação partilhada: marcadores, lista, campos) ──
   /* `scoreAtHour`: número = score da hora; `null` = o v6 não dá nota nessa
-     hora (noite / sem dados, #218 D3); `undefined` = sem série. Os
-     marcadores e a lista só recebem números (o estado visual «noite» ainda
-     não existe no /mapa: sem número da hora caem no score ao vivo, como até
-     aqui); os spots de noite ficam num conjunto à parte para o «Só ON». */
+     hora (noite / sem dados, #218 D3); `undefined` = sem série (fica o score
+     ao vivo). Em kitesurf, surf e big-wave o `null` entra no mapa como
+     `null` → marcador, lista, cluster e pré-visualização mostram «noite»
+     sem número (opção 1 do D3). «Todas» (`best`, D5) e as modalidades no
+     motor antigo nunca mostram noite: sem número caem no ao vivo. Os spots
+     de noite ficam também num conjunto à parte para o «Só ON». */
   const { hourScores, hourNight } = useMemo(() => {
     if (!hoursLive || !hoursFile) return { hourScores: null, hourNight: null };
-    const map = new Map<string, number>();
+    const map = new Map<string, number | null>();
     const night = new Set<string>();
+    const nightShown = mapNightAppliesTo(selectedSport);
     for (const d of spotsData) {
       const n = scoreAtHour(hoursFile, d.spot.id, selectedSport, hoursFrame);
-      if (n === null) night.add(d.spot.id);
-      else if (n !== undefined) map.set(d.spot.id, n);
+      if (n === null) {
+        night.add(d.spot.id);
+        if (nightShown) map.set(d.spot.id, null);
+      } else if (n !== undefined) map.set(d.spot.id, n);
     }
     return { hourScores: map, hourNight: night };
   }, [hoursLive, hoursFile, selectedSport, hoursFrame, spotsData]);
