@@ -3,7 +3,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { spots } from '@/lib/spots';
 import type { Spot } from '@/types';
-import { buildMapHoursFile, linhaDeCondicoes } from '@/lib/mapHoursBuild';
+import { buildMapHoursFile } from '@/lib/mapHoursBuild';
+import { linhasAgora } from '@/lib/notaV6AgoraBuild';
 import { scoreAtHour } from '@/lib/mapHours';
 import { findCoveredHourIndex, hourKeyFromOpenMeteo, seriesTimeMs } from '@/lib/openMeteoTime';
 import { construirHoras, horaDeLinha, type LinhaForecast } from '@/lib/horaSpot';
@@ -17,9 +18,10 @@ import { editorialDe, spotModalidadeDe } from '@/lib/spotEditorial';
  * no Algarve) sobre a fixture e2e (`tests/e2e/fixtures/data`, 08/09 08:45), as
  * 16 frames de kitesurf e surf têm de ser EXACTAMENTE `avaliaHoras(horaDeLinha(…)) × 10`
  * (0 diferenças), `null` quando o v6 não dá nota (noite / sem dados):
- * - frame «agora» (hora coberta, com linha ao vivo): a linha do
- *   `conditions.json` no lugar da hora coberta da série (como o motor antigo
- *   usava nessa frame), as vizinhas dão o sentido da maré;
+ * - frame «agora» (hora coberta): desde o PR 3, a linha «agora» de D4 (hora
+ *   coberta do forecast com as observações frescas do `conditions.json` por
+ *   cima, `notaV6AgoraBuild.linhasAgora`) no lugar da hora coberta da série,
+ *   as vizinhas dão o sentido da maré;
  * - outras frames: a linha do forecast nessa hora — o mesmo número que a régua
  *   da página do spot (`construirHoras`) mostra para essa hora.
  */
@@ -69,8 +71,12 @@ describe('map-hours.json com o motor v6 (#218, PR 2) — golden das fixtures', (
         const j = linhas.findIndex((l) => slot(l.time) === slot(time));
         expect(j, `${sp.id} frame ${i}: hora na série`).toBeGreaterThanOrEqual(0);
         const isNow = findCoveredHourIndex([time], now) === 0;
-        const ls = isNow && live ? linhas.map((l, k) => (k === j ? linhaDeCondicoes(live, l.time) : l)) : linhas;
-        const h = horaDeLinha(ls, j, local);
+        // frame «agora»: a linha de D4 (#218, PR 3) — hora coberta do forecast + observações frescas
+        const alvo =
+          isNow && live
+            ? linhasAgora(live, linhas as unknown as Array<Record<string, unknown>>, now.getTime())!
+            : { linhas, j };
+        const h = horaDeLinha(alvo.linhas, alvo.j, local);
         for (const [sport, mod] of SPORTS) {
           const [av] = avaliaHoras(spotModalidadeDe(ed), mod, [h]);
           const esperado = av.n == null ? null : av.n * 10;
@@ -91,7 +97,6 @@ describe('map-hours.json com o motor v6 (#218, PR 2) — golden das fixtures', (
       const ed = editorialDe(sp);
       const { horas } = construirHoras(linhas, { lat: sp.lat, lon: sp.lon, praiaVirada: ed.praiaVirada }, now.getTime());
       mh.times.forEach((time, i) => {
-        if (i === 0) return; // frame «agora»: linha ao vivo (o PR 3 decide a linha do «agora», D4)
         const l = linhas.find((x) => slot(x.time) === slot(time))!;
         const hora = horas.find((x) => x.t === l.time.slice(0, 16));
         if (!hora) return; // fora das 48 h da régua do spot

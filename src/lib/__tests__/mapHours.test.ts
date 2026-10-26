@@ -255,14 +255,46 @@ describe('mapHours — motor v6 em kitesurf e surf (#218, PR 2)', () => {
     expect(typeof semVento.spots.nazare.surf[dia]).toBe('number');
   });
 
-  it('frame «agora» usa a linha ao vivo (conditions.json), como o motor antigo', () => {
+  it('frame «agora» (kitesurf e surf) = linha de D4 (#218, PR 3): a hora coberta do forecast, não o snapshot do conditions.json', () => {
     const calmo = build({ nazare: times.map(linha) });
-    const forte = build(
+    const snapshot = build(
       { nazare: times.map(linha) },
       { nazare: { ...linha('2026-09-03T08:00'), waveHeight: 0.2, wavePeriod: 5 } },
     );
-    expect(forte.spots.nazare.surf[0]).not.toBe(calmo.spots.nazare.surf[0]);
-    expect(forte.spots.nazare.surf.slice(1)).toEqual(calmo.spots.nazare.surf.slice(1));
+    // a onda do snapshot não conta: a hora coberta do forecast ganha (como os alertas)
+    expect(snapshot.spots.nazare.surf).toEqual(calmo.spots.nazare.surf);
+    expect(snapshot.spots.nazare.kitesurf).toEqual(calmo.spots.nazare.kitesurf);
+    // o motor antigo (outras modalidades) continua a ler o snapshot nessa frame (D5)
+    expect(snapshot.spots.nazare.bodyboard[0]).not.toBe(calmo.spots.nazare.bodyboard[0]);
+  });
+
+  it('frame «agora»: as observações frescas do conditions.json entram por cima da hora do forecast', () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2026-09-03T07:20:00Z')); // 08:20 WEST: observação de há 20 min = fresca
+    try {
+      const sem = build({ nazare: times.map(linha) }, { nazare: { ...linha('2026-09-03T08:00') } });
+      const com = build(
+        { nazare: times.map(linha) },
+        {
+          nazare: {
+            ...linha('2026-09-03T08:00'),
+            observed: {
+              windSpeedKt: 22,
+              windDirDeg: 0,
+              windCardinal: 'N',
+              stationName: 'Teste',
+              distanceKm: 3,
+              observedAt: '2026-09-03T07:00:00Z',
+              source: 'ipma',
+            },
+          },
+        },
+      );
+      expect(com.spots.nazare.kitesurf[0]).not.toBe(sem.spots.nazare.kitesurf[0]);
+      expect(com.spots.nazare.kitesurf.slice(1)).toEqual(sem.spots.nazare.kitesurf.slice(1));
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });
 

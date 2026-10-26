@@ -1,7 +1,7 @@
 import { readFileSync, existsSync, readdirSync } from 'fs'
 import { join } from 'path'
 import { spots } from '@/lib/spots'
-import { getAllSportScores } from '@/lib/sportScore'
+import { allScoresComV6, notaV6DoSpot, type NotaV6Agora } from '@/lib/notaV6Agora'
 import type { Spot } from '@/types'
 import type { SportType } from '@/lib/sportRatings'
 import type { SportScore } from '@/lib/sportScore'
@@ -220,6 +220,7 @@ function buildSpotData(
   raw: RawConditions | null,
   forecastsData: Record<string, Array<Record<string, unknown>>>,
   waveBiasRegions: ReturnType<typeof loadWaveBiasRegionsBuild>,
+  notaV6: NotaV6Agora | null,
   detail: true,
 ): SpotDetailData | null
 function buildSpotData(
@@ -227,6 +228,7 @@ function buildSpotData(
   raw: RawConditions | null,
   forecastsData: Record<string, Array<Record<string, unknown>>>,
   waveBiasRegions: ReturnType<typeof loadWaveBiasRegionsBuild>,
+  notaV6: NotaV6Agora | null,
   detail: false,
 ): SpotListingData | null
 function buildSpotData(
@@ -234,6 +236,7 @@ function buildSpotData(
   raw: RawConditions | null,
   forecastsData: Record<string, Array<Record<string, unknown>>>,
   waveBiasRegions: ReturnType<typeof loadWaveBiasRegionsBuild>,
+  notaV6: NotaV6Agora | null,
   detail: boolean,
 ): SpotListingData | SpotDetailData | null
 function buildSpotData(
@@ -241,6 +244,7 @@ function buildSpotData(
   raw: RawConditions | null,
   forecastsData: Record<string, Array<Record<string, unknown>>>,
   waveBiasRegions: ReturnType<typeof loadWaveBiasRegionsBuild>,
+  notaV6: NotaV6Agora | null,
   detail: boolean,
 ): SpotListingData | SpotDetailData | null {
   const useLakeDefault = !raw && isWakeboardOnly(spot)
@@ -258,7 +262,9 @@ function buildSpotData(
   const scoreInput = biasPatch
     ? { ...scoreInput0, waveHeight: biasPatch.waveHeight }
     : scoreInput0
-  const allScores = getAllSportScores(spot, scoreInput)
+  // Kitesurf e surf: a nota v6 «agora» que o pipeline gravou (#218, PR 3, D4)
+  // — uma atribuição, sem motor; as outras modalidades no sportScore (D5).
+  const allScores = allScoresComV6(spot, scoreInput, notaV6)
 
   const conditions: SpotListingConditions = {
     ...scoreInput,
@@ -362,7 +368,7 @@ function loadRows(detail: boolean): SpotListingData[] | SpotDetailData[] {
   const result: Array<SpotListingData | SpotDetailData> = []
   for (const spot of spots) {
     const raw = resolveConditionsEntry(spot, conditionsData) ?? null
-    const row = buildSpotData(spot, raw, forecastsData, waveBiasRegions, detail)
+    const row = buildSpotData(spot, raw, forecastsData, waveBiasRegions, notaV6DoSpot(spot, conditionsData), detail)
     if (row) result.push(row)
   }
 

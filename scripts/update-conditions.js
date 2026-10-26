@@ -353,6 +353,13 @@ async function updateConditions() {
   }
   if (staleRemoved > 0) console.warn(`⚠️ Removed ${staleRemoved} stale per-spot forecast file(s) - index/dir now consistent`);
   console.log(`\n✅ Conditions saved to ${outputPath}`);
+  // Nota v6 «agora» (#218, PR 3) antes do map-hours (a frame 0 usa a mesma
+  // linha); o `npm run obs:update` volta a gravá-la depois das observações.
+  try {
+    require('./build-nota-v6-agora').buildNotaV6Agora(path.join(__dirname, '../public/data'));
+  } catch (err) {
+    console.warn('⚠️ notaV6 «agora» skipped:', err.message);
+  }
   const { buildMapHours } = require('./build-map-hours');
   try {
     buildMapHours(path.join(__dirname, '../public/data'));

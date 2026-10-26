@@ -1,7 +1,9 @@
 import type { GridSpotData } from '@/lib/gridSpotFilters';
 import { pickMarineDisplayFields, pickObservedField } from '@/lib/marineConditions';
 import { resolveConditionsEntry } from '@/lib/spotConditionsSource';
-import { getAllSportScores } from '@/lib/sportScore';
+import { allScoresComV6, notaV6DoSpot, scoresMotorAntigo } from '@/lib/notaV6Agora';
+import type { SportType } from '@/lib/sportRatings';
+import type { SportScore } from '@/lib/sportScore';
 import { applyRegionalBiasFallback, rawToScoreInput } from '@/lib/scoreConditions';
 import type { WaveBiasRegionsFile } from '@/lib/waveBias';
 
@@ -29,7 +31,18 @@ export function refreshGridSpotScores<T extends GridSpotData>(
     const scoreInput = biasPatch
       ? { ...scoreInput0, waveHeight: biasPatch.waveHeight }
       : scoreInput0;
-    const allScores = getAllSportScores(row.spot, scoreInput);
+    // Kitesurf e surf: o `notaV6` que o pipeline gravou (#218, PR 3) — sem
+    // motor no cliente (antes: 189 × 2 getSportScore a cada refresh). Um
+    // ficheiro servido sem `notaV6` (anterior ao PR 3) mantém o kite/surf da
+    // linha (o bake), nunca recalcula no motor antigo.
+    const nv = notaV6DoSpot(row.spot, conditionsJson);
+    const allScores = nv
+      ? allScoresComV6(row.spot, scoreInput, nv)
+      : ({
+          ...scoresMotorAntigo(row.spot, scoreInput),
+          kitesurf: row.allScores.kitesurf,
+          surf: row.allScores.surf,
+        } as Record<SportType, SportScore>);
     const observed = pickObservedField(record);
 
     return {
