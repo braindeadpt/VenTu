@@ -1,5 +1,5 @@
 import type { Page } from '@playwright/test';
-import { readFileSync } from 'fs';
+import { readdirSync, readFileSync } from 'fs';
 import { join } from 'path';
 import { hasOffset, lisbonHourKeyFromDate } from '../../../src/lib/openMeteoTime';
 
@@ -30,7 +30,8 @@ import { hasOffset, lisbonHourKeyFromDate } from '../../../src/lib/openMeteoTime
  */
 
 export const CONDITIONS_PATH = join(process.cwd(), 'public', 'data', 'conditions.json');
-export const FORECASTS_PATH = join(process.cwd(), 'public', 'data', 'forecasts.json');
+/** Ficheiros por spot — a única cópia publicada desde 25/10/2026 (sem forecasts.json agregado). */
+export const FORECASTS_DIR = join(process.cwd(), 'public', 'data', 'forecasts');
 
 /** Read the real build conditions once per process (immutable snapshot). */
 const conditionsCache = new Map<string, Record<string, Record<string, unknown>>>();
@@ -189,19 +190,22 @@ export async function interceptMapHours(page: Page, file: unknown): Promise<void
   await interceptData(page, 'map-hours.json', file);
 }
 
-/** Read the real build forecasts once per process (immutable snapshot). */
+/**
+ * Read the real build forecasts once per process (immutable snapshot): the
+ * `{ [id]: rows }` index built from public/data/forecasts/<id>.json.
+ */
 const forecastsCache = new Map<string, Record<string, Array<Record<string, unknown>>>>();
 export function readRealForecasts(): Record<string, Array<Record<string, unknown>>> {
-  if (!forecastsCache.has(FORECASTS_PATH)) {
-    forecastsCache.set(
-      FORECASTS_PATH,
-      JSON.parse(readFileSync(FORECASTS_PATH, 'utf-8')) as Record<
-        string,
-        Array<Record<string, unknown>>
-      >,
-    );
+  if (!forecastsCache.has(FORECASTS_DIR)) {
+    const index: Record<string, Array<Record<string, unknown>>> = {};
+    for (const file of readdirSync(FORECASTS_DIR).filter((f) => f.endsWith('.json')).sort()) {
+      index[file.slice(0, -'.json'.length)] = JSON.parse(
+        readFileSync(join(FORECASTS_DIR, file), 'utf-8'),
+      ) as Array<Record<string, unknown>>;
+    }
+    forecastsCache.set(FORECASTS_DIR, index);
   }
-  return forecastsCache.get(FORECASTS_PATH)!;
+  return forecastsCache.get(FORECASTS_DIR)!;
 }
 
 /** Keep timeline/tide tests inside the data's coverage, independent of today's date.
@@ -251,20 +255,17 @@ function shiftLabel(t: string, shiftMs: number): string {
 
 export interface ForecastTransform {
   /**
-   * Per-spot transforms keyed by the forecasts.json spot id (e.g. 'guincho').
-   * The entry is the real build hourly series; return the transformed series.
+   * Per-spot transforms keyed by the forecast spot id (e.g. 'guincho', the
+   * name of public/data/forecasts/<id>.json). The entry is the real build
+   * hourly series; return the transformed series.
    */
   spots?: Record<string, (series: Array<Record<string, unknown>>) => Array<Record<string, unknown>>>;
-  /** Whole-file transform, applied AFTER the per-spot ones. */
-  all?: (
-    data: Record<string, Array<Record<string, unknown>>>,
-  ) => Record<string, Array<Record<string, unknown>>>;
 }
 
 /**
- * Intercept every request to /data/forecasts.json (full file) and
- * /data/forecasts/{id}.json (per-spot cache files, the path loadForecastForSpot
- * tries first) and serve the real build data with the requested transforms.
+ * Intercept every request to /data/forecasts/{id}.json (the per-spot files
+ * loadForecastForSpot fetches — the aggregate forecasts.json is no longer
+ * published) and serve the real build data with the requested transforms.
  * Register BEFORE page.goto. Specs that need a tide-less series (no
  * tideHeight → buildTideSchedule returns null) or a custom tide curve use
  * this — deterministic without touching conditions.json.
@@ -289,22 +290,6 @@ export async function interceptForecasts(
       status: 200,
       contentType: 'application/json',
       body: JSON.stringify(serveSeries(spotId, series)),
-    });
-  });
-
-  // Full file fallback: /data/forecasts.json
-  await page.route('**/data/forecasts.json', async (route) => {
-    const data = readRealForecasts();
-    const out: Record<string, Array<Record<string, unknown>>> = {};
-    for (const [key, series] of Object.entries(data)) {
-      const t = transform.spots?.[key];
-      out[key] = t ? t(series) : series;
-    }
-    const final = transform.all ? transform.all(out) : out;
-    await route.fulfill({
-      status: 200,
-      contentType: 'application/json',
-      body: JSON.stringify(final),
     });
   });
 }

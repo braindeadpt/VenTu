@@ -1,6 +1,6 @@
 import type { Spot } from '@/types';
 
-/** Spot id used in conditions.json / forecasts.json (may differ from map pin id). */
+/** Spot id used in conditions.json / forecasts/<id>.json (may differ from map pin id). */
 export function getConditionsDataId(spot: Pick<Spot, 'id' | 'conditionsSource'>): string {
   return spot.conditionsSource ?? spot.id;
 }

@@ -83,6 +83,13 @@ for attempt in $(seq 1 10); do
   # `*.tmp` is the atomic-write sidecar (scripts/lib/atomicWriteJson.js);
   # an orphan from a killed run must not be committed either.
   git reset -q -- '*.backup' '*.tmp'
+  # O agregado public/data/forecasts.json (~11 MB, o mesmo conteúdo dos
+  # forecasts/<slug>.json indexado por spot) deixou de ser publicado a
+  # 25/10/2026: os leitores montam o índice da pasta
+  # (scripts/lib/forecastsIndex.js). `rm --cached` (e não `reset`) para que um
+  # agregado ainda trackeado na main — ou trazido por um artefacto de um run
+  # anterior à mudança — saia de vez em vez de ficar congelado.
+  git rm -q --cached --ignore-unmatch -- public/data/forecasts.json
 
   if git diff --staged --quiet; then
     echo "Data already matches origin/main — nothing to publish"

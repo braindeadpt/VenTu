@@ -4,6 +4,7 @@
  */
 import { existsSync, readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
+import { readForecastsIndex } from './lib/forecastsIndex.js';
 import { spots } from '../src/lib/spots';
 import { getAllSportScores, type SportScore } from '../src/lib/sportScore';
 import type { SportType } from '../src/lib/sportRatings';
@@ -65,19 +66,17 @@ import { rawToScoreInput } from '../src/lib/scoreConditions';
 
 function build() {
   const conditionsPath = join(process.cwd(), 'public', 'data', 'conditions.json');
-  const forecastsPath = join(process.cwd(), 'public', 'data', 'forecasts.json');
   let conditionsData: ConditionsJson = {};
-  let forecastsData: ForecastJson = {};
   if (existsSync(conditionsPath)) {
     conditionsData = JSON.parse(readFileSync(conditionsPath, 'utf-8'));
   }
-  if (existsSync(forecastsPath)) {
-    forecastsData = JSON.parse(readFileSync(forecastsPath, 'utf-8'));
-  }
+  // Índice montado de public/data/forecasts/<id>.json (o agregado
+  // forecasts.json deixou de ser publicado — scripts/lib/forecastsIndex.js).
+  const forecastsData = (readForecastsIndex(join(process.cwd(), 'public', 'data')) ?? {}) as ForecastJson;
 
   console.log(`[spots-index] ${spots.length} spots in spots.ts`);
   console.log(`[spots-index] ${Object.keys(conditionsData).length} entries in conditions.json`);
-  console.log(`[spots-index] ${Object.keys(forecastsData).length} entries in forecasts.json`);
+  console.log(`[spots-index] ${Object.keys(forecastsData).length} per-spot forecast files`);
 
   const index = spots.map((spot) => {
     const dataId = spot.conditionsSource ?? spot.id;

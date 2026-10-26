@@ -34,7 +34,8 @@ function makeDataDir() {
     displayUpdatedAt: now(),
   });
   write('conditions.json', { nazare: { waveHeight: 1.8 } });
-  write('forecasts.json', { nazare: series });
+  // Só os ficheiros por spot: o agregado forecasts.json deixou de ser
+  // publicado (25/10/2026) e o validador já não o lê.
   fs.mkdirSync(path.join(dir, 'forecasts'));
   write('forecasts/nazare.json', series);
   // spots-index precisa de descrições pt/en VÁLIDAS por omissão — a auditoria
@@ -600,14 +601,33 @@ describe('validate-generated-data - splitFiles nomeia os orfaos (nao so conta)',
     expect(out).toMatch(/1 file\(s\) without key: orphan-spot/);
   });
 
-  it('chave sem ficheiro: o NOME da chave aparece no erro', () => {
+  it('chave do conditions.json sem ficheiro: o NOME da chave aparece no erro', () => {
     const dir = makeDataDir();
-    const f = JSON.parse(fs.readFileSync(path.join(dir, 'forecasts.json'), 'utf8'));
-    f['missing-spot'] = series();
-    fs.writeFileSync(path.join(dir, 'forecasts.json'), JSON.stringify(f));
+    const c = JSON.parse(fs.readFileSync(path.join(dir, 'conditions.json'), 'utf8'));
+    c['missing-spot'] = { waveHeight: 1.2 };
+    fs.writeFileSync(path.join(dir, 'conditions.json'), JSON.stringify(c));
     const { code, out } = runValidator(dir);
     expect(code).toBe(1);
-    expect(out).toMatch(/1 key\(s\) without file: missing-spot/);
+    expect(out).toMatch(/1 conditions key\(s\) without file: missing-spot/);
+  });
+
+  it('sem pasta forecasts/ → falha (o agregado legado já não conta)', () => {
+    const dir = makeDataDir();
+    const series24 = JSON.parse(fs.readFileSync(path.join(dir, 'forecasts', 'nazare.json'), 'utf8'));
+    fs.rmSync(path.join(dir, 'forecasts'), { recursive: true });
+    fs.writeFileSync(path.join(dir, 'forecasts.json'), JSON.stringify({ nazare: series24 }));
+    const { code, out } = runValidator(dir);
+    expect(code).toBe(1);
+    expect(out).toMatch(/forecasts: forecasts\/ missing or empty/);
+  });
+
+  it('agregado legado forecasts.json presente → aviso (não bloqueia o push)', () => {
+    const dir = makeDataDir();
+    const series24 = JSON.parse(fs.readFileSync(path.join(dir, 'forecasts', 'nazare.json'), 'utf8'));
+    fs.writeFileSync(path.join(dir, 'forecasts.json'), JSON.stringify({ nazare: series24 }));
+    const { code, out } = runValidator(dir);
+    expect(code).toBe(0);
+    expect(out).toMatch(/forecasts\.json: agregado legado presente/);
   });
 
   it('conditions.entries: o slug sem waveHeight numerico aparece no erro', () => {
@@ -676,18 +696,12 @@ describe('validate-generated-data — banda ensemble P10/P50/P90 (ens)', () => {
 
   const addBand = (rows, band) => rows.map((h) => (band ? { ...h, ens: band } : h));
 
-  /** forecasts.json é indexado por spot; o ficheiro por spot é o array cru. */
-  function setIndexEns(dir, band) {
-    const idx = JSON.parse(fs.readFileSync(path.join(dir, 'forecasts.json'), 'utf8'));
-    for (const k of Object.keys(idx)) idx[k] = addBand(idx[k], band);
-    fs.writeFileSync(path.join(dir, 'forecasts.json'), JSON.stringify(idx));
-  }
+  /** O ficheiro por spot é o array cru (o agregado forecasts.json já não existe). */
   function setSpotFileEns(dir, slug, band) {
     const rel = path.join(dir, 'forecasts', `${slug}.json`);
     fs.writeFileSync(rel, JSON.stringify(addBand(JSON.parse(fs.readFileSync(rel, 'utf8')), band)));
   }
   function setEns(dir, band) {
-    setIndexEns(dir, band);
     setSpotFileEns(dir, 'nazare', band);
   }
 
@@ -713,7 +727,7 @@ describe('validate-generated-data — banda ensemble P10/P50/P90 (ens)', () => {
     setEns(dir, VALID.slice(0, 7));
     const { code, out } = runValidator(dir);
     expect(code).toBe(1);
-    expect(out).toMatch(/forecasts\.nazare\.ensemble/);
+    expect(out).toMatch(/forecasts\/nazare\.ensemble/);
     expect(out).toMatch(/#0 ens com 7 valores \(esperado 8/);
   });
 
@@ -733,9 +747,8 @@ describe('validate-generated-data — banda ensemble P10/P50/P90 (ens)', () => {
     expect(out).toMatch(/wind: quantis parcialmente nulos/);
   });
 
-  it('banda má só no ficheiro por spot → o erro nomeia esse ficheiro', () => {
+  it('banda má no ficheiro por spot → o erro nomeia esse ficheiro', () => {
     const dir = makeDataDir();
-    // Índice sem banda; ficheiro por spot com banda fora de ordem.
     setSpotFileEns(dir, 'nazare', [1.54, 1.3, 1.13, 5.3, 6, 6.7, 4, 4]);
     const { code, out } = runValidator(dir);
     expect(code).toBe(1);

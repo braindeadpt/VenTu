@@ -145,9 +145,11 @@ if (conditions !== undefined) {
     `${semOnda.length} of ${slugs.length} spot(s) with waveHeight null (> 10 %): ${fmtNames(semOnda)}`);
 }
 
-// ── 3. forecasts.json + forecasts/<slug>.json — hourly arrays ──
-const forecasts = read('forecasts.json');
-check('forecasts', forecasts !== undefined, 'file missing');
+// ── 3. forecasts/<slug>.json — séries horárias por spot ──
+// Desde 25/10/2026 só os ficheiros por spot são publicados: o agregado
+// forecasts.json (o mesmo conteúdo indexado por spot, ~11 MB) deixou de ser
+// escrito e commitado — os leitores montam o índice da pasta
+// (scripts/lib/forecastsIndex.js).
 const FORECAST_MIN_HOURS = 24;
 /** Número, ou `null` explícito («sem dados» da fonte; auditoria 16/10, M2). */
 const numOrNull = (x) => typeof x === 'number' || x === null;
@@ -156,12 +158,13 @@ const semVento = (arr) => Array.isArray(arr) && arr.length > 0 && arr.every((h) 
 let forecastFiles = [];
 if (fs.existsSync(path.join(DATA, 'forecasts'))) {
   forecastFiles = fs.readdirSync(path.join(DATA, 'forecasts'))
-    .filter((f) => f.endsWith('.json')).map((f) => f.replace(/\.json$/, ''));
+    .filter((f) => f.endsWith('.json')).map((f) => f.replace(/\.json$/, '')).sort();
 }
-if (forecasts !== undefined) {
-  check('forecasts.shape', typeof forecasts === 'object' && !Array.isArray(forecasts), 'must be an object');
-  const keys = Object.keys(forecasts);
-  check('forecasts.nonEmpty', keys.length > 0, 'no spots');
+check('forecasts', forecastFiles.length > 0, 'forecasts/ missing or empty (no per-spot forecast files)');
+if (fs.existsSync(path.join(DATA, 'forecasts.json'))) {
+  warn('forecasts.json: agregado legado presente — já não é lido nem deve ser publicado (os leitores usam forecasts/<id>.json); apagar');
+}
+if (forecastFiles.length > 0) {
   // Banda ensemble (P10/P50/P90 por hora): só se valida o que existe — as
   // horas sem membros não trazem a chave (ver ensembleQuantiles.js). O shape é
   // preso aqui, e não no gerador, para uma mudança de formato aparecer como
@@ -171,16 +174,18 @@ if (forecasts !== undefined) {
       .map((h, i) => ({ i, err: h && Object.prototype.hasOwnProperty.call(h, 'ens') ? validateEnsembleEntry(h.ens) : null }))
       .filter(({ err }) => err);
   const fmtEns = (bad) => bad.slice(0, 3).map(({ i, err }) => `#${i} ${err}`).join('; ');
-  for (const k of keys) {
-    const arr = forecasts[k];
-    check(`forecasts.${k}.shape`, Array.isArray(arr) && arr.length >= FORECAST_MIN_HOURS,
+  const forecasts = {};
+  for (const f of forecastFiles) {
+    const arr = read(`forecasts/${f}.json`);
+    forecasts[f] = arr;
+    check(`forecasts/${f}.shape`, Array.isArray(arr) && arr.length >= FORECAST_MIN_HOURS,
       `expected array of ≥${FORECAST_MIN_HOURS} hours`);
     if (Array.isArray(arr)) {
       const bad = arr.map((h, i) => ({ h, i })).filter(({ h }) => !h || !isIso(h.time) || !numOrNull(h.waveHeight) || !numOrNull(h.windSpeed));
-      check(`forecasts.${k}.entries`, bad.length === 0 && !semVento(arr),
+      check(`forecasts/${f}.entries`, bad.length === 0 && !semVento(arr),
         `${bad.length} hour(s) missing time/waveHeight/windSpeed at index ${fmtNames(bad.map(({ i }) => i))}${semVento(arr) ? ' (no numeric windSpeed in the whole series)' : ''}`);
       const badBands = badEns(arr);
-      check(`forecasts.${k}.ensemble`, badBands.length === 0,
+      check(`forecasts/${f}.ensemble`, badBands.length === 0,
         `${badBands.length} hour(s) with an invalid P10/P50/P90 band: ${fmtEns(badBands)}`);
     }
   }
@@ -195,29 +200,22 @@ if (forecasts !== undefined) {
       warn(`forecasts.ensemble: nenhuma das ${total} horas tem banda P10/P90 apesar de a meta dizer mode=day — ver ensembleQuantiles.attachEnsemble no pipeline`);
     } else {
       checks.push('forecasts.ensembleCoverage');
-      console.log(`📊 forecasts ensemble: ${banded}/${total} horas com banda P10/P90 em ${bandedSpots}/${keys.length} spots`);
+      console.log(`📊 forecasts ensemble: ${banded}/${total} horas com banda P10/P90 em ${bandedSpots}/${forecastFiles.length} spots`);
     }
   }
-  // split-file integrity: every key has a file and vice versa. Ficheiro
-  // sem chave = spot cujo fetch falhou nesta corrida (o gate de coverage
-  // tolera ate 5% de falhas): o ficheiro commitado do run anterior fica
-  // no disco. update-conditions.js remove-o; isto e o cinto de seguranca.
-  const noFile = keys.filter((k) => !forecastFiles.includes(k));
-  const orphan = forecastFiles.filter((f) => !keys.includes(f));
-  check('forecasts.splitFiles', noFile.length === 0 && orphan.length === 0,
-    `${noFile.length} key(s) without file${noFile.length ? `: ${fmtNames(noFile)}` : ''}, ${orphan.length} file(s) without key${orphan.length ? `: ${fmtNames(orphan)}` : ''}`);
-  for (const f of forecastFiles) {
-    const arr = read(`forecasts/${f}.json`);
-    check(`forecasts/${f}.shape`, Array.isArray(arr) && arr.length >= FORECAST_MIN_HOURS,
-      `expected array of ≥${FORECAST_MIN_HOURS} hours`);
-    if (Array.isArray(arr)) {
-      const bad = arr.map((h, i) => ({ h, i })).filter(({ h }) => !h || !isIso(h.time) || !numOrNull(h.waveHeight) || !numOrNull(h.windSpeed));
-      check(`forecasts/${f}.entries`, bad.length === 0 && !semVento(arr),
-        `${bad.length} hour(s) missing time/waveHeight/windSpeed at index ${fmtNames(bad.map(({ i }) => i))}${semVento(arr) ? ' (no numeric windSpeed in the whole series)' : ''}`);
-      const badBands = badEns(arr);
-      check(`forecasts/${f}.ensemble`, badBands.length === 0,
-        `${badBands.length} hour(s) with an invalid P10/P50/P90 band: ${fmtEns(badBands)}`);
-    }
+  // split-file integrity (absorve o antigo crossFile.spotSets): o
+  // update-conditions.js escreve conditions.json e forecasts/<id>.json do
+  // MESMO conjunto de spots (allConditions e allForecasts andam juntos,
+  // aliases incluídos) — cada chave tem ficheiro e vice-versa. Ficheiro sem chave = spot cujo fetch falhou nesta corrida (o
+  // gate de coverage tolera ate 5% de falhas) ou removido: o ficheiro
+  // commitado do run anterior fica no disco. update-conditions.js remove-o;
+  // isto e o cinto de seguranca.
+  if (conditions && typeof conditions === 'object' && !Array.isArray(conditions)) {
+    const keys = Object.keys(conditions);
+    const noFile = keys.filter((k) => !forecastFiles.includes(k));
+    const orphan = forecastFiles.filter((f) => !keys.includes(f));
+    check('forecasts.splitFiles', noFile.length === 0 && orphan.length === 0,
+      `${noFile.length} conditions key(s) without file${noFile.length ? `: ${fmtNames(noFile)}` : ''}, ${orphan.length} file(s) without key${orphan.length ? `: ${fmtNames(orphan)}` : ''}`);
   }
 }
 
@@ -351,14 +349,10 @@ if (landMask !== undefined) {
 }
 
 // ── 4. Cross-file integrity: conditions and forecasts cover the same spots ──
-if (conditions !== undefined && forecasts !== undefined) {
-  const cKeys = Object.keys(conditions);
-  const fKeys = Object.keys(forecasts);
-  const onlyC = cKeys.filter((k) => !fKeys.includes(k));
-  const onlyF = fKeys.filter((k) => !cKeys.includes(k));
-  check('crossFile.spotSets', onlyC.length === 0 && onlyF.length === 0,
-    `spot set mismatch: ${onlyC.length} only in conditions${onlyC.length ? `: ${fmtNames(onlyC)}` : ''}, ${onlyF.length} only in forecasts${onlyF.length ? `: ${fmtNames(onlyF)}` : ''}`);
-}
+// Desde que o agregado forecasts.json saiu (25/10/2026), o índice das
+// previsões É a pasta forecasts/ — esta verificação (crossFile.spotSets) e a
+// integridade dos ficheiros por spot passaram a ser a mesma, feita uma só vez
+// em `forecasts.splitFiles` (secção 3), que nomeia os órfãos.
 
 // ── 5. spots-index.json + spots-lite.json ──
 const spotsIndex = read('spots-index.json');
