@@ -190,6 +190,30 @@ describe('notaUnica — kite com vento forte (#330) e água interior (#326)', ()
     expect(s.warning).toBeUndefined();
   });
 
+  it('água interior com 33 kt médios: «Só profissionais» (flag + aviso), nota no piso 3', () => {
+    const lagoa = (spots as Spot[]).find((s) => s.aguaInterior)!;
+    const e = editorialDe(lagoa);
+    const h = hora({ w: 33, g: 36, wd: e.praiaVirada + 180 });
+    const av = avaliaHoras(spotModalidadeDe(e), 'kite', [h])[0];
+    expect(av.soProfissionais).toBe(true);
+    expect(av.n).toBe(3);
+    const s = sportScoreDeV6(av, h, 'kite', e.praiaVirada, true);
+    expect(s.soProfissionais).toBe(true);
+    expect(s.nota).toBe(3);
+    expect(s.directionSafety).toBeUndefined();
+    expect(s.warning).toBe(getTranslation('pt').windSafety.soProfissionais);
+    expect(s.warningEn).toBe(getTranslation('en').windSafety.soProfissionais);
+  });
+
+  it('água interior com 22 kt: sem «Só profissionais» nem aviso', () => {
+    const lagoa = (spots as Spot[]).find((s) => s.aguaInterior)!;
+    const e = editorialDe(lagoa);
+    const h = hora({ w: 22, g: 25, wd: e.praiaVirada + 180 });
+    const s = sportScoreDeV6(avaliaHoras(spotModalidadeDe(e), 'kite', [h])[0], h, 'kite', e.praiaVirada, true);
+    expect(s.soProfissionais).toBeUndefined();
+    expect(s.warning).toBeUndefined();
+  });
+
   it('água interior: sem categoria de vento nos factores (direcção neutra)', () => {
     const lagoa = (spots as Spot[]).find((s) => s.aguaInterior)!;
     const e = editorialDe(lagoa);

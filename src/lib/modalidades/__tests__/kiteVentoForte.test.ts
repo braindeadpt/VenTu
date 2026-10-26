@@ -77,6 +77,25 @@ describe('kite · vento forte: «Só profissionais»', () => {
     expect(o.n).toBeLessThanOrEqual(2);
   });
 
+  it('água interior (#326, direcção neutra): ≥ 30 kt também é «Só profissionais», piso 3', () => {
+    const AI: SpotModalidade = { praiaVirada: 280, aguaInterior: true, surf: { janela: [270, 320] } };
+    const ai = (h: HoraModalidade) => avaliaHoras(AI, 'kite', [h])[0];
+    // 33 kt médios: curva 3,4 × 1 (neutro) → 3, com a faixa «forte»; sem tecto de direcção (#210)
+    for (const wd of [0, 90, 180, 280])
+      expect(ai(hora(33, 36, wd))).toMatchObject({ n: 3, soProfissionais: true, forte: 'forte', motivo: 'pro' });
+    expect(ai(hora(33, 36, 100)).seguranca).toBeFalsy();
+    expect(ai(hora(37, 42, 10))).toMatchObject({ soProfissionais: true, forte: 'muito-forte' });
+    // rajada +20, onda, chuva e maré alta não o tiram do piso
+    const r = ai(hora(40, 60, 200, { hs: 3.2, rain: 2, tide: 3 }));
+    expect(r).toMatchObject({ n: 3, soProfissionais: true, forte: 'tempestade' });
+    // 22 kt: sem estado, nota normal
+    const n = ai(hora(22, 25, 100));
+    expect(n.soProfissionais).toBeUndefined();
+    expect(n.forte).toBeUndefined();
+    expect(n.n).toBeGreaterThanOrEqual(9);
+    expect(ai(hora(29, 29, 100)).soProfissionais).toBeUndefined();
+  });
+
   it('de noite não há nota nem estado', () => {
     const r = um(hora(35, 40, DIR.lat, { sunEl: -5 }));
     expect(r.n).toBeNull();

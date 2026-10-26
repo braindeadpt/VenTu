@@ -163,7 +163,7 @@ export interface Avaliacao {
   f: Fatores;
   motivo?: Motivo;
   fora?: boolean;
-  /** Vento forte (≥ `forte.desde` nós de vento médio, lateral ou lateral de mar): só para profissionais. */
+  /** Vento forte (≥ `forte.desde` nós de vento médio, lateral, lateral de mar ou água interior): só para profissionais. */
   soProfissionais?: true;
   /** Faixa do vento forte, quando `soProfissionais`. */
   forte?: FaixaForte;
