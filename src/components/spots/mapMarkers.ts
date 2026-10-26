@@ -11,7 +11,8 @@ import { buildWindRingMarkerHtml, markerIconLayout, type MapMarkerWarning } from
 import { getSpotImage } from '@/lib/spotImage';
 import { getSpotDetailHref } from '@/lib/mapSpotDetail';
 import { renderSpotPopup } from './SpotPopupContent';
-import { getBestScore, type MapSpotData } from './mapSpotData';
+import { getBestScore, getMapRankScore, isMapNight, type MapHourScore, type MapSpotData } from './mapSpotData';
+import { MAP_NIGHT_FILL, MAP_NIGHT_INK, MAP_NIGHT_MOON_PATH, mapNightCopy } from '@/lib/mapNight';
 import { localizedSpotDisplayName } from '@/lib/localizedSpotText';
 
 export function buildMarkerIcon(
@@ -21,10 +22,11 @@ export function buildMarkerIcon(
   showWind: boolean,
   locale: string,
   warning?: MapMarkerWarning | null,
-  scoreOverride?: number,
+  scoreOverride?: MapHourScore,
 ): L.DivIcon {
   const { spot, conditions } = data;
   const score = getBestScore(data, selectedSport, scoreOverride);
+  const night = isMapNight(scoreOverride) ? mapNightCopy(locale) : null;
   const scoreRgb = getScoreRgb(score);
   const windKtNum = conditions.windSpeed * MS_TO_KNOTS;
 
@@ -37,6 +39,7 @@ export function buildMarkerIcon(
     locale,
     orientacaoVento(spot),
     warning,
+    night,
   );
 
   const layout = markerIconLayout(showWind);
@@ -55,6 +58,7 @@ export function buildMarkerPopupContent(
   locale: string,
   selectedSport: GridSportFilter,
   warning?: MapMarkerWarning | null,
+  scoreOverride?: MapHourScore,
 ): string {
   const { spot, conditions, allScores } = data;
   const swellH = conditions.swellHeight ?? conditions.waveHeight;
@@ -97,6 +101,7 @@ export function buildMarkerPopupContent(
     confidence: conditions.confidence,
     confidenceDetail: conditions.confidenceDetail,
     warning: warning ?? null,
+    night: isMapNight(scoreOverride) ? mapNightCopy(locale) : null,
   });
 }
 
@@ -107,9 +112,9 @@ export function buildMarkerCacheKey(
   locale: string,
   useMobileSheet: boolean,
   warningLevel?: string | null,
-  scoreOverride?: number,
+  scoreOverride?: MapHourScore,
 ): string {
-  const score = getBestScore(data, selectedSport, scoreOverride);
+  const score = isMapNight(scoreOverride) ? 'night' : getBestScore(data, selectedSport, scoreOverride);
   const windKey = showWind
     ? `${Math.round(data.conditions.windDirection)}:${Math.round(data.conditions.windSpeed * MS_TO_KNOTS)}`
     : '';
@@ -128,7 +133,7 @@ export function createSpotMarker(
     onSpotSelect?: (spotId: string) => void;
     onMarkerInteract?: () => void;
     warning?: MapMarkerWarning | null;
-    scoreOverride?: number;
+    scoreOverride?: MapHourScore;
   },
 ): L.Marker {
   const { spot } = data;
@@ -136,8 +141,12 @@ export function createSpotMarker(
   const scoreOverride = options.scoreOverride;
   const icon = buildMarkerIcon(Leaflet, data, selectedSport, showWind, locale, warning, scoreOverride);
   const marker = Leaflet.marker([spot.lat, spot.lon], { icon });
-  const withMeta = marker as L.Marker & { spotScore?: number; ventuData?: MapSpotData };
-  withMeta.spotScore = getBestScore(data, selectedSport, scoreOverride);
+  const withMeta = marker as L.Marker & { spotScore?: number; spotNight?: boolean; ventuData?: MapSpotData };
+  // Noite: sem score — o cluster ignora-o no «melhor» e só fica com estilo
+  // noite quando TODOS os filhos são noite (MapClusterIcon).
+  const night = isMapNight(scoreOverride) ? mapNightCopy(locale) : null;
+  if (night) withMeta.spotNight = true;
+  else withMeta.spotScore = getBestScore(data, selectedSport, scoreOverride);
   // Dados completos do spot no próprio marcador — o clusterclick do mapa
   // principal escolhe o melhor filho e abre o sheet sem re-buscar (D3).
   withMeta.ventuData = data;
@@ -147,14 +156,17 @@ export function createSpotMarker(
     const el = marker.getElement();
     if (!el) return;
     // Nome localizado — o mesmo da lista e do tooltip.
-    if (!el.hasAttribute('aria-label')) el.setAttribute('aria-label', localizedSpotDisplayName(spot, locale));
+    if (!el.hasAttribute('aria-label')) {
+      const name = localizedSpotDisplayName(spot, locale);
+      el.setAttribute('aria-label', night ? `${name} · ${night.aria}` : name);
+    }
     // Ponte de hover com a lista «Nesta vista» (M3 §5): a linha liga
     // .ventu-list-hover neste elemento e o hover do marcador realça a linha.
     el.setAttribute('data-spot-id', spot.id);
   });
 
   if (!options.useMobileSheet) {
-    marker.bindPopup(buildMarkerPopupContent(data, locale, selectedSport, warning), {
+    marker.bindPopup(buildMarkerPopupContent(data, locale, selectedSport, warning, scoreOverride), {
       className: 'spot-popup',
       maxWidth: 280,
       closeButton: true,
@@ -556,6 +568,16 @@ export interface V3MarkerIconOptions {
    * esta informação vive no nome do marcador.
    */
   moreAriaLabel?: string;
+  /**
+   * Frame de noite (#218 D3): sem número — disco no fill v6 `noite` com a lua.
+   * `score` é ignorado no desenho.
+   */
+  night?: boolean;
+}
+
+/** Lua do v6 (inline, branca) para o disco/ponto de noite. */
+function nightMoonSvg(px: number): string {
+  return `<svg width="${px}" height="${px}" viewBox="0 0 24 24" aria-hidden="true" style="display:block"><path d="${MAP_NIGHT_MOON_PATH}" fill="${MAP_NIGHT_INK}"/></svg>`;
 }
 
 /**
@@ -567,8 +589,9 @@ export function buildV3MarkerIcon(Leaflet: typeof L, opts: V3MarkerIconOptions):
   const members = opts.memberIds ?? [spotId];
   const hasMore = members.length > 1;
   const more = hasMore ? members.length - 1 : 0;
-  const tierBg = getScoreRgb(score);
-  const ink = markerScoreInkCss(score);
+  const night = opts.night === true;
+  const tierBg = night ? MAP_NIGHT_FILL : getScoreRgb(score);
+  const ink = night ? MAP_NIGHT_INK : markerScoreInkCss(score);
   const tick =
     opts.windBlowsToDeg != null && Number.isFinite(opts.windBlowsToDeg)
       ? `<i class="v3tick" data-wind-tick="true" aria-hidden="true" style="position:absolute;left:50%;top:50%;width:0;height:0;pointer-events:none;transform:rotate(${Math.round(opts.windBlowsToDeg)}deg)"><i style="position:absolute;left:-4px;top:-27px;border:4px solid transparent;border-bottom:7px solid rgb(var(--data-wind));border-top:0"></i></i>`
@@ -585,12 +608,11 @@ export function buildV3MarkerIcon(Leaflet: typeof L, opts: V3MarkerIconOptions):
         .map(escapeHtmlText)
         .join(',')}" style="position:absolute;right:-12px;top:-9px;min-width:22px;height:18px;padding:0 5px;border-radius:9px;background:rgb(var(--fg));color:rgb(var(--bg-base));font:600 10px/18px var(--font-geist-mono,ui-monospace,monospace);font-variant-numeric:tabular-nums;text-align:center;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.3)"><i style="position:absolute;inset:-8px"></i>+${more}</span>`
     : '';
-  const html = `<div class="v3mk" data-v3spot="${escapeHtmlText(spotId)}" data-v3kind="full" data-spot-score="${Math.round(
-    score,
-  )}" style="position:relative;width:${V3_MARKER_SIZE}px;height:${V3_MARKER_SIZE}px;cursor:pointer">` +
-    `<span class="v3in" style="display:grid;place-items:center;width:100%;height:100%;border-radius:50%;background:${tierBg};color:${ink};font:600 13px/1 var(--font-geist-mono,ui-monospace,monospace);font-variant-numeric:tabular-nums;box-shadow:0 0 0 2px rgb(var(--bg-base)),0 2px 6px rgba(0,0,0,.25);transition:transform .12s ease-out,box-shadow .16s ease-out">${scoreToNota(
-      score,
-    )}</span>${tick}${badge}</div>`;
+  const scoreAttr = night ? 'data-spot-night="true"' : `data-spot-score="${Math.round(score)}"`;
+  const html = `<div class="v3mk" data-v3spot="${escapeHtmlText(spotId)}" data-v3kind="full" ${scoreAttr} style="position:relative;width:${V3_MARKER_SIZE}px;height:${V3_MARKER_SIZE}px;cursor:pointer">` +
+    `<span class="v3in" style="display:grid;place-items:center;width:100%;height:100%;border-radius:50%;background:${tierBg};color:${ink};font:600 13px/1 var(--font-geist-mono,ui-monospace,monospace);font-variant-numeric:tabular-nums;box-shadow:0 0 0 2px rgb(var(--bg-base)),0 2px 6px rgba(0,0,0,.25);transition:transform .12s ease-out,box-shadow .16s ease-out">${
+      night ? nightMoonSvg(15) : scoreToNota(score)
+    }</span>${tick}${badge}</div>`;
   return Leaflet.divIcon({
     className: 'spot-marker v3mk-root',
     html,
@@ -600,12 +622,11 @@ export function buildV3MarkerIcon(Leaflet: typeof L, opts: V3MarkerIconOptions):
 }
 
 /** Ponto do nível de detalhe por colisão: 10 px na cor do escalão, hit 24 px. */
-export function buildV3DotIcon(Leaflet: typeof L, spotId: string, score: number): L.DivIcon {
+export function buildV3DotIcon(Leaflet: typeof L, spotId: string, score: number, night = false): L.DivIcon {
+  const scoreAttr = night ? 'data-spot-night="true"' : `data-spot-score="${Math.round(score)}"`;
   const html =
-    `<div class="v3dot" data-v3spot="${escapeHtmlText(spotId)}" data-v3kind="dot" data-spot-score="${Math.round(
-      score,
-    )}" style="position:relative;width:${V3_DOT_HIT}px;height:${V3_DOT_HIT}px;display:grid;place-items:center;cursor:pointer">` +
-    `<i style="width:10px;height:10px;border-radius:50%;background:${getScoreRgb(score)};box-shadow:0 0 0 1.5px rgb(var(--bg-base))"></i></div>`;
+    `<div class="v3dot" data-v3spot="${escapeHtmlText(spotId)}" data-v3kind="dot" ${scoreAttr} style="position:relative;width:${V3_DOT_HIT}px;height:${V3_DOT_HIT}px;display:grid;place-items:center;cursor:pointer">` +
+    `<i style="width:10px;height:10px;border-radius:50%;background:${night ? MAP_NIGHT_FILL : getScoreRgb(score)};box-shadow:0 0 0 1.5px rgb(var(--bg-base))"></i></div>`;
   return Leaflet.divIcon({
     className: 'spot-marker v3dot-root',
     html,
@@ -627,7 +648,8 @@ export interface V3SpotMarkerOptions {
   onHover?: (spotId: string | null) => void;
   /** Aria-label do badge «+N» — `{n}` é substituído pela contagem. */
   moreAriaTemplate?: string;
-  scoreOverride?: number;
+  /** Score da hora activa; `null` = noite (sem número). */
+  scoreOverride?: MapHourScore;
 }
 
 /**
@@ -642,7 +664,8 @@ export function createV3SpotMarker(
   options: V3SpotMarkerOptions,
 ): L.Marker {
   const { spot } = data;
-  const score = getBestScore(data, options.selectedSport, options.scoreOverride);
+  const night = isMapNight(options.scoreOverride);
+  const score = getMapRankScore(data, options.selectedSport, options.scoreOverride);
   const windBlows =
     options.showWindTick && Number.isFinite(data.conditions.windDirection)
       ? (data.conditions.windDirection + 180) % 360
@@ -662,15 +685,17 @@ export function createV3SpotMarker(
           memberIds: layout.memberIds,
           windBlowsToDeg: windBlows,
           moreAriaLabel,
+          night,
         })
-      : buildV3DotIcon(Leaflet, spot.id, score);
+      : buildV3DotIcon(Leaflet, spot.id, score, night);
   const marker = Leaflet.marker([spot.lat, spot.lon], {
     icon,
     // Pontos por baixo dos completos; o seleccionado sobe acima de todos.
     zIndexOffset: layout.kind === 'dot' ? -1000 : 0,
   });
-  const withMeta = marker as L.Marker & { spotScore?: number; ventuData?: MapSpotData };
-  withMeta.spotScore = score;
+  const withMeta = marker as L.Marker & { spotScore?: number; spotNight?: boolean; ventuData?: MapSpotData };
+  if (night) withMeta.spotNight = true;
+  else withMeta.spotScore = score;
   withMeta.ventuData = data;
 
   marker.on('add', () => {
@@ -681,7 +706,9 @@ export function createV3SpotMarker(
       // nome do marcador — senão o leitor de ecrã perdia a informação.
       // Nome localizado — o mesmo da lista «Nesta vista» e do tooltip.
       const name = localizedSpotDisplayName(spot, options.locale);
-      el.setAttribute('aria-label', moreAriaLabel ? `${name} · ${moreAriaLabel}` : name);
+      // Noite: «Guincho · noite, sem nota» — o disco não tem número para ler.
+      const label = night ? `${name} · ${mapNightCopy(options.locale).aria}` : name;
+      el.setAttribute('aria-label', moreAriaLabel ? `${label} · ${moreAriaLabel}` : label);
     }
     // Ponte de hover com a lista «Nesta vista» (M3 §5) — igual ao
     // marcador clássico: a linha liga .ventu-list-hover neste elemento e
@@ -739,7 +766,8 @@ export function applyV3LayoutIcon(
   layout: MarkerLayoutEntry,
   options: Pick<V3SpotMarkerOptions, 'selectedSport' | 'showWindTick' | 'moreAriaTemplate' | 'scoreOverride'>,
 ): void {
-  const score = getBestScore(data, options.selectedSport, options.scoreOverride);
+  const night = isMapNight(options.scoreOverride);
+  const score = getMapRankScore(data, options.selectedSport, options.scoreOverride);
   const windBlows =
     options.showWindTick && Number.isFinite(data.conditions.windDirection)
       ? (data.conditions.windDirection + 180) % 360
@@ -747,6 +775,7 @@ export function applyV3LayoutIcon(
   const icon =
     layout.kind === 'full'
       ? buildV3MarkerIcon(Leaflet, {
+          night,
           spotId: data.spot.id,
           score,
           memberIds: layout.memberIds,
@@ -756,7 +785,7 @@ export function applyV3LayoutIcon(
             String(Math.max(0, layout.memberIds.length - 1)),
           ),
         })
-      : buildV3DotIcon(Leaflet, data.spot.id, score);
+      : buildV3DotIcon(Leaflet, data.spot.id, score, night);
   marker.setIcon(icon);
   marker.setZIndexOffset(layout.kind === 'dot' ? -1000 : 0);
 }

@@ -5,6 +5,7 @@ import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { ChevronRight, Thermometer, Timer, Waves, Wind } from 'lucide-react';
 import { getScoreTokens } from '@/lib/sportScore';
 import type { ScoreFactorSegment } from '@/lib/spotScoreFactors';
+import { MAP_NIGHT_FILL, MAP_NIGHT_INK } from '@/lib/mapNight';
 
 /**
  * Lista sincronizada com a vista do mapa — partilhada entre o bottom sheet
@@ -30,7 +31,13 @@ export interface MapSpotListRow {
   spotId: string;
   name: string;
   region: string;
+  /** Score para ordenar; de noite é -1 (MAP_NIGHT_RANK) — ver `night`. */
   score: number;
+  /**
+   * Frame de noite (#218 D3): o v6 não dá nota nessa hora. Presente ⇒ o
+   * mosaico mostra o chip «noite» (fill v6 `noite`) no lugar da nota.
+   */
+  night?: { label: string; aria: string };
   /** Factores do score — mesma gramática do popup/sheet (versão curta). */
   factors: ScoreFactorSegment[];
 }
@@ -79,6 +86,30 @@ function FactorIcon({ kind }: { kind: ScoreFactorSegment['kind'] }) {
     default:
       return null;
   }
+}
+
+/**
+ * Mosaico «noite» (#218 D3) — o mesmo chip na lista e no peek «Melhor agora»:
+ * fill v6 `noite` (#56677B, régua do spot), «noite» em vez da nota.
+ */
+export function MapNightTile({
+  night,
+  className = '',
+}: {
+  night: { label: string; aria: string };
+  className?: string;
+}) {
+  return (
+    <span
+      className={`grid shrink-0 place-items-center rounded-[10px] font-mono text-[11px] font-semibold ${className}`}
+      style={{ background: MAP_NIGHT_FILL, color: MAP_NIGHT_INK }}
+      role="img"
+      aria-label={night.aria}
+      data-row-night="true"
+    >
+      {night.label}
+    </span>
+  );
 }
 
 /** Linhas renderizadas de imediato — o resto entra no primeiro idle (M7-F:
@@ -279,11 +310,15 @@ const MapSpotList = memo(function MapSpotList({
                 onMouseEnter={() => highlightMarker(row.spotId)}
                 className={`grid w-full grid-cols-[44px_minmax(0,1fr)_auto] items-center gap-3 rounded-card px-2 py-2 min-h-[64px] text-left transition-colors duration-150 hover:bg-surface-1/[0.06] focus-visible:outline-2 focus-visible:outline-accent ${focused || markerHovered ? 'bg-surface-1/[0.06]' : ''}`}
               >
-                <span
-                  className={`grid h-11 w-11 shrink-0 place-items-center rounded-[10px] font-mono text-base font-semibold tabular-nums ${tok.bg} ${tok.text}`}
-                >
-                  {scoreToNota(row.score)}
-                </span>
+                {row.night ? (
+                  <MapNightTile night={row.night} className="h-11 w-11" />
+                ) : (
+                  <span
+                    className={`grid h-11 w-11 shrink-0 place-items-center rounded-[10px] font-mono text-base font-semibold tabular-nums ${tok.bg} ${tok.text}`}
+                  >
+                    {scoreToNota(row.score)}
+                  </span>
+                )}
                 <span className="min-w-0">
                   {/* Nome até duas linhas, sem reticências (maquete). */}
                   <span className="block text-body-sm font-medium leading-snug text-fg">{row.name}</span>

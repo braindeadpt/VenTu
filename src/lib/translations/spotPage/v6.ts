@@ -185,6 +185,9 @@ export const spotPageV6 = {
     windguru: 'Comparar no Windguru',
     perto: 'Perto daqui',
     pertoNota: 'Nota da mesma modalidade à hora escolhida (passo de 3 h)',
+    /** Chip do vizinho quando o v6 não dá nota nessa hora (#218 D3). */
+    pertoNoite: 'noite',
+    pertoNoiteAria: 'noite, sem nota',
     escolas: 'Escolas e lojas',
     eventos: 'Eventos',
     eventoInscricao: 'Inscrição',
@@ -357,6 +360,8 @@ export const spotPageV6 = {
     windguru: 'Compare on Windguru',
     perto: 'Nearby',
     pertoNota: 'Same-sport score at the selected hour (3 h step)',
+    pertoNoite: 'night',
+    pertoNoiteAria: 'night, no score',
     escolas: 'Schools and shops',
     eventos: 'Events',
     eventoInscricao: 'Sign up',

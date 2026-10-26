@@ -23,6 +23,7 @@ import type { WindRelation } from '@/lib/wind';
 import { getWindRelationDotClass } from '@/lib/wind';
 import type { ConfidenceDetail, ConfidenceTier } from '@/lib/forecastConfidence';
 import { getSpotImageAlt } from '@/lib/spotImage';
+import { MAP_NIGHT_FILL, MAP_NIGHT_INK, type MapNightCopy } from '@/lib/mapNight';
 
 export interface SpotPopupContentProps {
   spot: Spot;
@@ -47,6 +48,8 @@ export interface SpotPopupContentProps {
   conditions?: MarineConditionsFields;
   /** Desporto seleccionado no mapa ('all' → melhor score). */
   highlightSport?: GridSportFilter;
+  /** Frame de noite na camada 48 h (#218 D3): «noite» no lugar da nota. */
+  night?: MapNightCopy | null;
 }
 
 export function SpotPopupContent({
@@ -69,6 +72,7 @@ export function SpotPopupContent({
   warning,
   conditions,
   highlightSport,
+  night,
 }: SpotPopupContentProps) {
   const isPt = locale === 'pt';
   const name = localizedSpotName(spot, locale);
@@ -114,7 +118,19 @@ export function SpotPopupContent({
         ) : (
           <div className="w-full h-16 rounded-t-lg bg-surface-1/[0.04]" />
         )}
-        {tokens && topScore > 0 && (
+        {night ? (
+          <div className="absolute top-1.5 right-12 rounded-pill bg-bg-elevated/95 backdrop-blur-sm px-1.5 py-1 shadow-sm">
+            <span
+              className="inline-flex items-center justify-center h-[22px] rounded-pill text-xs font-mono font-semibold px-2"
+              style={{ background: MAP_NIGHT_FILL, color: MAP_NIGHT_INK }}
+              role="img"
+              aria-label={night.aria}
+              data-popup-night="true"
+            >
+              {night.label}
+            </span>
+          </div>
+        ) : tokens && topScore > 0 && (
           <div className="absolute top-1.5 right-12 flex flex-col items-end gap-0.5 rounded-pill bg-bg-elevated/95 backdrop-blur-sm px-1.5 py-1 shadow-sm">
             {/* right-12 desvia o badge do botão ✕ do popup (44px, topo-direita) —
                 antes ficava por baixo do glifo e do hover do close. */}

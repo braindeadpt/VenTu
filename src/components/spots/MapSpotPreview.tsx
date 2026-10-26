@@ -22,6 +22,7 @@ import { getMapSpotNarrative } from '@/lib/mapSpotNarrative';
 import { getExplainedWindSafety, getSpotScoreFactors, scoreFactorClass } from '@/lib/spotScoreFactors';
 import { getMapTideLine } from '@/lib/spotTideRelevance';
 import { fetchMapHours, type MapHoursFile } from '@/lib/mapHours';
+import { MAP_NIGHT_FILL, MAP_NIGHT_INK } from '@/lib/mapNight';
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 import SpotImage from '@/components/ui/SpotImage';
 import ScoreBadge from '@/components/ui/ScoreBadge';
@@ -245,8 +246,11 @@ export interface SpotCardContentProps {
   locale: string;
   /** Modalidade do filtro activo (racional de score e série da sparkline). */
   highlightSport?: GridSportFilter;
-  /** Score à hora activa das 48 h — sobrepõe o melhor score live. */
-  scoreOverride?: number;
+  /**
+   * Score à hora activa das 48 h — sobrepõe o melhor score live. `null` =
+   * noite nessa frame (#218 D3): «noite» no lugar da nota, sem banda.
+   */
+  scoreOverride?: number | null;
   /** Índice da hora nas 48 h para o marcador «actual» da sparkline. */
   hoursFrame?: number;
   /** Rótulo temporal já localizado («agora» ou a hora escolhida). */
@@ -385,6 +389,7 @@ export function SpotCardContent({
 }: SpotCardContentProps) {
   const { spot, conditions, allScores, warning } = data;
   const t = getTranslation(locale);
+  const night = scoreOverride === null;
   const score = Math.max(0, Math.min(100, Math.round(bestScore(data, highlightSport, scoreOverride))));
   const scoreColor = getScoreRgb(score);
   const tierLabel = getScoreTierLabel(getScoreTier(score), locale);
@@ -434,6 +439,19 @@ export function SpotCardContent({
         <span className="capitalize">{getDifficultyLabel(spot.difficulty, locale)}</span>
       </p>
 
+      {night ? (
+        <div className="flex items-center gap-2 mt-3 mb-0.5">
+          <span
+            className="inline-flex h-11 items-center rounded-[10px] px-3 font-mono text-base font-semibold"
+            style={{ background: MAP_NIGHT_FILL, color: MAP_NIGHT_INK }}
+            role="img"
+            aria-label={t.mapUiMarkers.nightAria}
+            data-card-night="true"
+          >
+            {t.mapUiMarkers.night}
+          </span>
+        </div>
+      ) : (
       <div className="flex items-baseline gap-2 mt-3 mb-0.5">
         <span
           className="font-mono tabular-nums font-medium leading-none tracking-tight"
@@ -449,6 +467,7 @@ export function SpotCardContent({
           {tierLabel}
         </span>
       </div>
+      )}
 
       <p className="text-body-sm text-fg">
         {sportLabel} · {hourLabel ?? t.mapUiMarkers.now}
@@ -543,7 +562,7 @@ export function SpotCardContent({
 function bestScore(
   data: MapSpotPreviewData,
   sport: GridSportFilter,
-  scoreOverride?: number,
+  scoreOverride?: number | null,
 ): number {
   if (typeof scoreOverride === 'number' && Number.isFinite(scoreOverride)) return scoreOverride;
   if (sport === 'all') {

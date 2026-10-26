@@ -13,7 +13,7 @@ import { ExternalLink } from 'lucide-react';
 import { getTranslation } from '@/lib/i18n';
 import { spots } from '@/lib/spots';
 import { fetchMapHours, type MapHoursFile } from '@/lib/mapHours';
-import { nearbySpotScore, nearestSpots, pickMapHourStep } from '@/lib/context/nearbySpots';
+import { nearbySpotHour, nearestSpots, pickMapHourStep } from '@/lib/context/nearbySpots';
 import { formatDistance } from '@/lib/geolocation';
 import { scoreToNota } from '@/lib/nota';
 import { bandaDe } from '@/lib/modalidades';
@@ -135,7 +135,8 @@ export default function PertoV6({ spot, locale, copy: c, t, sport }: PertoV6Prop
               {vizinhos.map((e) => {
                 const s = e.spot;
                 const pratica = !s.compatibleSports?.length || s.compatibleSports.includes(sport);
-                const score = file && pratica ? nearbySpotScore(file, e, sport, passo) : null;
+                const hora = file && pratica ? nearbySpotHour(file, e, sport, passo) : null;
+                const score = typeof hora === 'number' ? hora : null;
                 const nota = score != null ? scoreToNota(score) : null;
                 return (
                   <li key={s.id}>
@@ -148,6 +149,18 @@ export default function PertoV6({ spot, locale, copy: c, t, sport }: PertoV6Prop
                           data-score-tier={getScoreTokens(score).tier}
                         >
                           {nota}
+                        </span>
+                      ) : hora === 'noite' ? (
+                        /* Noite (#218 D3): chip v6 `noite` em vez de «–». */
+                        <span
+                          className="pt-nota noite"
+                          style={bandaVars('noite') as React.CSSProperties}
+                          role="img"
+                          aria-label={c.pertoNoiteAria}
+                          data-nearby-score={s.id}
+                          data-nearby-night=""
+                        >
+                          {c.pertoNoite}
                         </span>
                       ) : (
                         <span

@@ -20,7 +20,8 @@ interface MapSpotSheetProps {
   /** UX v3 — «←» volta à lista de spots do viewport sem fechar o sheet. */
   onBackToList?: () => void;
   /** Score à hora activa das 48 h (mantém o cartão em sync com o marcador). */
-  scoreOverride?: number;
+  /** `null` = noite nessa frame (#218 D3): «noite» no lugar da nota. */
+  scoreOverride?: number | null;
   hoursFrame?: number;
   hourLabel?: string;
   onViewSpot?: (spotId: string) => void;
