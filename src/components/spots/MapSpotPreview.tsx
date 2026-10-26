@@ -306,8 +306,25 @@ function ScoreSparkline({
   const n = series.length;
   const X = (i: number) => (i / (n - 1)) * w;
   const Y = (v: number) => h - 2 - (Math.max(0, Math.min(100, v)) / 100) * (h - 6);
-  const d = series.map((v, i) => `${i ? 'L' : 'M'}${X(i).toFixed(1)} ${Y(v).toFixed(1)}`).join('');
+  /* Kitesurf e surf (v6, #218): `null` = noite / sem dados. A linha e a área
+     partem-se nesses passos (troços), em vez de inventar um 0. */
+  const trocos: Array<Array<[number, number]>> = [];
+  series.forEach((v, i) => {
+    if (typeof v !== 'number' || !Number.isFinite(v)) return;
+    const last = trocos[trocos.length - 1];
+    const p: [number, number] = [X(i), Y(v)];
+    if (last && last[last.length - 1][0] === X(i - 1)) last.push(p);
+    else trocos.push([p]);
+  });
+  const fmt = (x: number) => x.toFixed(1);
+  const d = trocos
+    .map((tr) => tr.map(([x, y], k) => `${k ? 'L' : 'M'}${fmt(x)} ${fmt(y)}`).join(''))
+    .join('');
+  const area = trocos
+    .map((tr) => `${tr.map(([x, y], k) => `${k ? 'L' : 'M'}${fmt(x)} ${fmt(y)}`).join('')}L${fmt(tr[tr.length - 1][0])} ${h}L${fmt(tr[0][0])} ${h}Z`)
+    .join('');
   const cur = Math.max(0, Math.min(n - 1, hoursFrame));
+  const curV = series[cur];
   const color = getScoreRgb(score);
   const lastTime = file?.times?.[n - 1];
 
@@ -320,7 +337,7 @@ function ScoreSparkline({
         aria-hidden="true"
       >
         <path
-          d={`${d}L${w} ${h}L0 ${h}Z`}
+          d={area}
           fill={color}
           opacity={0.12}
         />
@@ -335,7 +352,9 @@ function ScoreSparkline({
           vectorEffect="non-scaling-stroke"
         />
         <path d={d} fill="none" stroke={color} strokeWidth={1.6} vectorEffect="non-scaling-stroke" />
-        <circle cx={X(cur)} cy={Y(series[cur])} r={3.5} fill={color} />
+        {typeof curV === 'number' && Number.isFinite(curV) ? (
+          <circle cx={X(cur)} cy={Y(curV)} r={3.5} fill={color} />
+        ) : null}
       </svg>
       <div
         className="flex justify-between text-[10px] text-fg-subtle font-mono tabular-nums mb-3"

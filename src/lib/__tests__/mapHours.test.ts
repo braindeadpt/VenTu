@@ -1,7 +1,7 @@
 import { describe, expect, it, vi, afterEach } from 'vitest';
 import type { Spot } from '@/types';
+import { buildMapHoursFile } from '@/lib/mapHoursBuild';
 import {
-  buildMapHoursFile,
   indexForHourOfDay,
   mapHoursClock,
   parseHourOfDayParam,
@@ -13,6 +13,7 @@ import {
   currentAtHour,
   fetchMapHours,
   clearMapHoursCache,
+  type MapHoursFile,
 } from '@/lib/mapHours';
 
 function spot(id: string): Spot {
@@ -175,6 +176,113 @@ describe('mapHours', () => {
     expect(sstAtHour(file, 'nazare', indexForHourOfDay(file.times, 17))).toBe(18);
     expect(thermalAtHour(file, 'nazare', 0)).toBe(0);
     expect(thermalAtHour(file, 'nazare', indexForHourOfDay(file.times, 17))).toBe(1);
+  });
+});
+
+describe('mapHours — motor v6 em kitesurf e surf (#218, PR 2)', () => {
+  // 3–5/9, horas de Lisboa; agora = 3/9 08:00 WEST
+  const times = Array.from({ length: 72 }, (_, i) => {
+    const day = String(3 + Math.floor(i / 24)).padStart(2, '0');
+    const hh = String(i % 24).padStart(2, '0');
+    return `2026-09-${day}T${hh}:00`;
+  });
+  const now = new Date('2026-09-03T07:00:00.000Z');
+  const linha = (t: string) => ({ ...hour(t, 1.6, 0.5), windSpeed: 9, windDirection: 0, windGust: 10 });
+
+  function build(forecasts: Record<string, Array<Record<string, unknown>>>, conditions = {}) {
+    return buildMapHoursFile({ now, generatedAt: 'x', spots: [spot('nazare')], conditions, forecasts });
+  }
+
+  it('de noite kitesurf e surf são null; as outras modalidades e `best` continuam números', () => {
+    const file = build({ nazare: times.map(linha) });
+    const noite = file.times.findIndex((t) => t.endsWith('T23:00'));
+    expect(noite).toBeGreaterThan(0);
+    const row = file.spots.nazare;
+    expect(row.kitesurf[noite]).toBeNull();
+    expect(row.surf[noite]).toBeNull();
+    for (const sport of ['windsurf', 'wakeboard', 'bodyboard', 'sup', 'foil']) {
+      expect(typeof row[sport][noite]).toBe('number');
+    }
+    expect(typeof row.best[noite]).toBe('number');
+    expect(scoreAtHour(file, 'nazare', 'surf', noite)).toBeNull();
+    expect(scoreAtHour(file, 'nazare', 'big-wave', noite)).toBeNull();
+    expect(Number.isFinite(scoreAtHour(file, 'nazare', 'all', noite))).toBe(true);
+  });
+
+  it('de dia kitesurf e surf são nota × 10 e `best` = máximo das modalidades com número', () => {
+    const file = build({ nazare: times.map(linha) });
+    const row = file.spots.nazare;
+    const dia = file.times.findIndex((t) => t.endsWith('T14:00'));
+    for (const sport of ['kitesurf', 'surf']) {
+      const v = row[sport][dia];
+      expect(typeof v).toBe('number');
+      expect((v as number) % 10).toBe(0);
+    }
+    file.times.forEach((_, i) => {
+      const nums = Object.entries(row)
+        .filter(([k]) => k !== 'best')
+        .map(([, s]) => s[i])
+        .filter((v): v is number => typeof v === 'number');
+      expect(row.best[i]).toBe(Math.max(0, ...nums));
+    });
+  });
+
+  it('hora em falta na série (e não é «agora») → null em kitesurf e surf, sem herdar a linha ao vivo', () => {
+    // a 1.ª série (guincho, completa) dá as horas do mapa; a da Nazaré não tem as 14:00 de 3/9
+    const file = buildMapHoursFile({
+      now,
+      generatedAt: 'x',
+      spots: [spot('guincho'), spot('nazare')],
+      conditions: { nazare: linha(times[8]) },
+      forecasts: {
+        guincho: times.map(linha),
+        nazare: times.filter((_, k) => k !== 14).map(linha),
+      },
+    });
+    const i = file.times.indexOf(times[14]);
+    expect(i).toBeGreaterThan(0);
+    expect(file.spots.guincho.surf[i]).not.toBeNull();
+    expect(file.spots.nazare.kitesurf[i]).toBeNull();
+    expect(file.spots.nazare.surf[i]).toBeNull();
+    // o motor antigo continua a cair na linha ao vivo nessa hora (inalterado)
+    expect(typeof file.spots.nazare.windsurf[i]).toBe('number');
+  });
+
+  it('vento em falta na hora (null na fonte) → kitesurf null, surf continua com nota', () => {
+    const semVento = build({ nazare: times.map((t) => ({ ...linha(t), windSpeed: null })) });
+    const dia = semVento.times.findIndex((t) => t.endsWith('T14:00'));
+    expect(semVento.spots.nazare.kitesurf[dia]).toBeNull();
+    expect(typeof semVento.spots.nazare.surf[dia]).toBe('number');
+  });
+
+  it('frame «agora» usa a linha ao vivo (conditions.json), como o motor antigo', () => {
+    const calmo = build({ nazare: times.map(linha) });
+    const forte = build(
+      { nazare: times.map(linha) },
+      { nazare: { ...linha('2026-09-03T08:00'), waveHeight: 0.2, wavePeriod: 5 } },
+    );
+    expect(forte.spots.nazare.surf[0]).not.toBe(calmo.spots.nazare.surf[0]);
+    expect(forte.spots.nazare.surf.slice(1)).toEqual(calmo.spots.nazare.surf.slice(1));
+  });
+});
+
+describe('scoreAtHour — null (noite) ≠ undefined (sem dados)', () => {
+  const file = {
+    generatedAt: 'x',
+    stepHours: 3,
+    times: ['2026-09-03T20:00', '2026-09-03T23:00'],
+    sports: ['surf'],
+    spots: { nazare: { surf: [40, null], best: [40, 55] } },
+  } as unknown as MapHoursFile;
+
+  it('número, null e undefined', () => {
+    expect(scoreAtHour(file, 'nazare', 'surf', 0)).toBe(40);
+    expect(scoreAtHour(file, 'nazare', 'surf', 1)).toBeNull();
+    expect(scoreAtHour(file, 'nazare', 'all', 1)).toBe(55);
+    expect(scoreAtHour(file, 'nazare', 'surf', 2)).toBeUndefined();
+    expect(scoreAtHour(file, 'nazare', 'kitesurf', 0)).toBeUndefined();
+    expect(scoreAtHour(file, 'ghost', 'surf', 0)).toBeUndefined();
+    expect(scoreAtHour(null, 'nazare', 'surf', 0)).toBeUndefined();
   });
 });
 
