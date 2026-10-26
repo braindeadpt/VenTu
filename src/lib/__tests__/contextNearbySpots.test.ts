@@ -3,6 +3,7 @@ import {
   pickMapHourStep,
   nearestSpots,
   nearbySpotScore,
+  nearbySpotHour,
 } from '@/lib/context/nearbySpots';
 import type { MapHoursFile } from '@/lib/mapHours';
 import type { Spot } from '@/types';
@@ -128,5 +129,36 @@ describe('nearbySpotScore', () => {
   it('compatibleSports indefinido → decide pelo ficheiro', () => {
     const entry = { spot: fakeSpot('near', 0, 0, undefined), distanceKm: 1 };
     expect(nearbySpotScore(file, entry, 'sup', 0)).toBe(5);
+  });
+});
+
+describe('nearbySpotHour — chip «noite» do Perto daqui (#218 D3, opção 1)', () => {
+  const night = {
+    generatedAt: 'x',
+    stepHours: 3,
+    times: TIMES,
+    sports: ['surf', 'kitesurf', 'sup'],
+    spots: { near: { surf: [null, null, 0, 40], kitesurf: [null, 30, null, 0], sup: [5, 5, 5, 5] } },
+  } as unknown as MapHoursFile;
+
+  it('null do v6 numa modalidade praticada → «noite» (chip v6), não «–»', () => {
+    const entry = { spot: fakeSpot('near', 0, 0, ['surf', 'kitesurf']), distanceKm: 1 };
+    expect(nearbySpotHour(night, entry, 'surf', 0)).toBe('noite');
+    expect(nearbySpotHour(night, entry, 'kitesurf', 2)).toBe('noite');
+  });
+
+  it('número (incl. 0) passa tal e qual', () => {
+    const entry = { spot: fakeSpot('near', 0, 0, ['surf', 'kitesurf']), distanceKm: 1 };
+    expect(nearbySpotHour(night, entry, 'surf', 2)).toBe(0);
+    expect(nearbySpotHour(night, entry, 'kitesurf', 1)).toBe(30);
+  });
+
+  it('modalidade que não se pratica lá ou sem série → null («–»), nunca «noite»', () => {
+    const naoPratica = { spot: fakeSpot('near', 0, 0, ['sup']), distanceKm: 1 };
+    expect(nearbySpotHour(night, naoPratica, 'surf', 0)).toBeNull();
+    const semSerie = { spot: fakeSpot('ghost', 0, 0, ['surf']), distanceKm: 1 };
+    expect(nearbySpotHour(night, semSerie, 'surf', 0)).toBeNull();
+    const foraDoFicheiro = { spot: fakeSpot('near', 0, 0, ['surf']), distanceKm: 1 };
+    expect(nearbySpotHour(night, foraDoFicheiro, 'surf', 9)).toBeNull();
   });
 });

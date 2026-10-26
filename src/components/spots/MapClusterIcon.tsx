@@ -3,6 +3,7 @@
 import { scoreToNota } from '@/lib/nota';
 import type L from 'leaflet';
 import { getScoreRgb } from '@/lib/scoreThresholds';
+import { MAP_NIGHT_FILL, MAP_NIGHT_INK, MAP_NIGHT_MOON_PATH, mapNightCopy } from '@/lib/mapNight';
 
 /**
  * SVG arc path for a circle segment.
@@ -36,6 +37,15 @@ export function bestClusterScore(markers: { spotScore?: number }[]): number | nu
     }
   }
   return best;
+}
+
+/**
+ * Cluster de noite (#218 D3): TODOS os filhos estão numa frame em que o v6 não
+ * dá nota. Basta um filho com nota para o cluster mostrar o melhor numérico
+ * desses (bestClusterScore já ignora os de noite — não têm spotScore).
+ */
+export function isNightCluster(markers: ReadonlyArray<{ spotNight?: boolean; spotScore?: number }>): boolean {
+  return markers.length > 0 && markers.every((m) => m.spotNight === true);
 }
 
 /**
@@ -89,9 +99,12 @@ export function clusterLabel(
   bestScore: number | null,
   locale: string,
   kind: 'spots' | 'places',
+  night = false,
 ): string {
   const l = clusterLocale(locale);
   const base = `${total} ${AREA_PHRASE[l][kind]}`;
+  // «noite, sem nota · 12 spots nesta zona — ampliar»
+  if (kind === 'spots' && night) return `${mapNightCopy(locale).aria} · ${base}`;
   if (kind === 'spots' && bestScore !== null) {
     return `${BEST_SCORE_PHRASE[l]} ${scoreToNota(bestScore)}/10 · ${base}`;
   }
@@ -107,15 +120,16 @@ export function createClusterIconFunction(
   const kind = options.kind ?? 'spots';
 
   return function (cluster: L.MarkerCluster) {
-    const markers = cluster.getAllChildMarkers() as (L.Marker & { spotScore?: number })[];
+    const markers = cluster.getAllChildMarkers() as (L.Marker & { spotScore?: number; spotNight?: boolean })[];
     const total = markers.length;
     // kind 'places' nunca tem spotScore → bestScore null → aspecto de hoje.
     const bestScore = kind === 'spots' ? bestClusterScore(markers) : null;
+    const night = kind === 'spots' && isNightCluster(markers);
     const scoreColor = bestScore === null ? null : getScoreRgb(bestScore);
     const size = total < 10 ? 44 : total < 100 ? 52 : 60;
     const fontSize = total < 10 ? 12 : total < 100 ? 14 : 16;
     const c = size / 2;
-    const label = clusterLabel(total, bestScore, locale, kind);
+    const label = clusterLabel(total, bestScore, locale, kind, night);
 
     // Squircle (não círculo): distingue o cluster do pin de score. O número
     // principal é o MELHOR score (cor do tier — mesma linguagem dos pins);
@@ -127,6 +141,26 @@ export function createClusterIconFunction(
         background:rgb(var(--bg-elevated));border:1.5px solid rgb(var(--divider-strong));
         font-family:var(--font-geist-mono),'Geist Mono',ui-monospace,monospace;
         font-size:9px;font-weight:700;line-height:1;color:rgb(var(--fg-muted))">${total}</span>`;
+
+    // Todos de noite: squircle no fill v6 `noite` com a lua — sem número.
+    if (night) {
+      const moon = Math.round(size * 0.4);
+      const html = `
+        <span style="${SR_ONLY_STYLE}">${label}</span>
+        <div aria-hidden="true" data-cluster-night="true" style="position:relative;width:${size}px;height:${size}px;border-radius:34%;
+          display:flex;align-items:center;justify-content:center;
+          background:${MAP_NIGHT_FILL};border:2px solid rgb(var(--divider-strong));
+          box-shadow:0 1px 4px rgb(0 0 0 / 0.12)">
+          <svg width="${moon}" height="${moon}" viewBox="0 0 24 24" aria-hidden="true"><path d="${MAP_NIGHT_MOON_PATH}" fill="${MAP_NIGHT_INK}"/></svg>${countBadge}
+        </div>
+      `;
+      return L.divIcon({
+        className: 'ventu-cluster-icon',
+        html,
+        iconSize: [size, size],
+        iconAnchor: [c, c],
+      });
+    }
 
     if (simple) {
       const html = `
@@ -155,8 +189,11 @@ export function createClusterIconFunction(
     let goodCount = 0;
     let fairCount = 0;
     let poorCount = 0;
+    let nightCount = 0;
 
     markers.forEach((m) => {
+      // Noite não é «fraco»: fatia própria no fill `noite`.
+      if (m.spotNight) { nightCount++; return; }
       const score = typeof m.spotScore === 'number' ? m.spotScore : 0;
       if (score >= 60) goodCount++;
       else if (score >= 40) fairCount++;
@@ -191,6 +228,7 @@ export function createClusterIconFunction(
       addArc(goodCount, 'rgb(var(--score-good))');
       addArc(fairCount, 'rgb(var(--score-fair))');
       addArc(poorCount, 'rgb(var(--score-poor))');
+      addArc(nightCount, MAP_NIGHT_FILL);
     }
 
     const svgArcs = arcs

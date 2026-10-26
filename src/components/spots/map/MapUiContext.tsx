@@ -32,7 +32,8 @@ export interface MapUiData {
   hoursTimes: readonly string[];
   hoursFrame: number;
   /** Score por spot à hora escolhida; null fora do modo 48 h. */
-  hourScores: Map<string, number> | null;
+  /** Score da hora activa por spot; `null` = noite (#218 D3, sem número). */
+  hourScores: Map<string, number | null> | null;
   /** Spots visíveis após os filtros — fonte única dos marcadores e da lista. */
   visibleSpots: readonly MapSpotData[];
   /** Deep link ?spot= — linha focada da lista. */

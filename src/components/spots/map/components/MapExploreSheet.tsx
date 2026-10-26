@@ -4,7 +4,7 @@ import { scoreToNota } from '@/lib/nota';
 import { getTranslation } from '@/lib/i18n';
 import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
 import { ChevronDown, Minimize2, SlidersHorizontal } from 'lucide-react';
-import MapSpotList, { type MapListJump, type MapSpotListRow } from './MapSpotList';
+import MapSpotList, { MapNightTile, type MapListJump, type MapSpotListRow } from './MapSpotList';
 import MapExploreFilters, {
   MapFilterSwitch,
   countActiveExploreFilters,
@@ -465,9 +465,14 @@ export default function MapExploreSheet({
             className="grid min-h-[48px] grid-cols-[40px_minmax(0,1fr)] items-center gap-2.5 rounded-input border border-divider bg-surface-1/[0.05] px-2 py-1 text-left"
             data-sheet-best
           >
-            <span className={`grid h-10 w-10 shrink-0 place-items-center rounded-[10px] font-mono text-sm font-semibold tabular-nums ${bestTok.bg} ${bestTok.text}`}>
-              {scoreToNota(best.score)}
-            </span>
+            {best.night ? (
+              // Toda a vista de noite (#218 D3): o «melhor» também não tem nota.
+              <MapNightTile night={best.night} className="h-10 w-10" />
+            ) : (
+              <span className={`grid h-10 w-10 shrink-0 place-items-center rounded-[10px] font-mono text-sm font-semibold tabular-nums ${bestTok.bg} ${bestTok.text}`}>
+                {scoreToNota(best.score)}
+              </span>
+            )}
             <span className="min-w-0">
               <span className="block text-[10px] font-semibold uppercase tracking-wide text-fg-subtle">
                 {bestLabel}
