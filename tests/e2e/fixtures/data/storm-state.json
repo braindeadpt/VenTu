@@ -33,7 +33,11 @@
         "distKm": 9,
         "dirDeg": 39,
         "intensity": "moderate",
-        "approach": null
+        "approach": {
+          "state": "approaching",
+          "deg": 321,
+          "kmh": 134
+        }
       },
       "warnLevel": null,
       "inStormCone": false
@@ -44,7 +48,11 @@
         "distKm": 11,
         "dirDeg": 43,
         "intensity": "moderate",
-        "approach": null
+        "approach": {
+          "state": "approaching",
+          "deg": 129,
+          "kmh": 21
+        }
       },
       "warnLevel": null,
       "inStormCone": false
@@ -627,8 +635,8 @@
         "intensity": "heavy",
         "approach": {
           "state": "receding",
-          "deg": null,
-          "kmh": null
+          "deg": 36,
+          "kmh": 17
         }
       },
       "warnLevel": null,
@@ -642,8 +650,8 @@
         "intensity": "heavy",
         "approach": {
           "state": "approaching",
-          "deg": null,
-          "kmh": null
+          "deg": 112,
+          "kmh": 71
         }
       },
       "warnLevel": null,
@@ -657,8 +665,8 @@
         "intensity": "heavy",
         "approach": {
           "state": "receding",
-          "deg": null,
-          "kmh": null
+          "deg": 22,
+          "kmh": 20
         }
       },
       "warnLevel": null,
@@ -1467,8 +1475,8 @@
         "intensity": "moderate",
         "approach": {
           "state": "receding",
-          "deg": 219,
-          "kmh": 31
+          "deg": null,
+          "kmh": null
         }
       },
       "warnLevel": null,
@@ -2377,8 +2385,8 @@
         "intensity": "moderate",
         "approach": {
           "state": "receding",
-          "deg": 214,
-          "kmh": 36
+          "deg": null,
+          "kmh": null
         }
       },
       "warnLevel": null,
@@ -2392,8 +2400,8 @@
         "intensity": "moderate",
         "approach": {
           "state": "receding",
-          "deg": 294,
-          "kmh": 13
+          "deg": null,
+          "kmh": null
         }
       },
       "warnLevel": null,
