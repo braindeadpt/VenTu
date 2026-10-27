@@ -1,6 +1,7 @@
 import { validateLocale } from '@/lib/i18n'
 import type { SportScore } from '@/lib/sportScore'
 import { SCORE_TIER_THRESHOLDS } from '@/lib/sportScore'
+import { scoreToNota } from '@/lib/nota'
 import type { SportType, GridSportFilter } from '@/lib/sportRatings'
 import { getCompatibleSports, SPORT_LABELS } from '@/lib/sportRatings'
 import type { Spot } from '@/types'
@@ -187,8 +188,14 @@ interface TopNowCandidate {
   score: number
 }
 
+/**
+ * Ordem de «A bombar agora»: pela NOTA inteira mostrada (#218 PR 5, como o Top 8
+ * e o /spots no PR 4) — o score 0–100 do motor antigo (windsurf, bodyboard)
+ * não pode passar à frente de uma nota v6 igual só por ter mais «pontos».
+ */
 function byScoreThenSlug(a: TopNowCandidate, b: TopNowCandidate): number {
-  if (b.score !== a.score) return b.score - a.score
+  const byNota = scoreToNota(b.score) - scoreToNota(a.score)
+  if (byNota !== 0) return byNota
   if (a.data.spot.slug !== b.data.spot.slug) return a.data.spot.slug < b.data.spot.slug ? -1 : 1
   return TOP_NOW_SPORTS.indexOf(a.sport) - TOP_NOW_SPORTS.indexOf(b.sport)
 }
@@ -261,8 +268,11 @@ export function getTopNowCards(
   if (sport === 'all') {
     return getAdaptiveTopNowCards(spotsData, maxCards ?? TOP_NOW_AUTO_CARDS, minScore)
   }
-  return sortSpotsBySport(spotsData, sport)
+  return spotsData
     .filter((d) => spotMatchesFeaturedFilter(d, sport, minScore))
+    .map((data) => ({ data, nota: scoreToNota(getScoreForFilter(data, sport)) }))
+    .sort((a, b) => b.nota - a.nota || (a.data.spot.slug < b.data.spot.slug ? -1 : a.data.spot.slug > b.data.spot.slug ? 1 : 0))
+    .map(({ data }) => data)
     .slice(0, maxCards ?? TOP_NOW_SINGLE_SPORT_CARDS)
     .map((data) => ({ sport, data }))
 }

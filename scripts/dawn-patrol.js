@@ -1,25 +1,24 @@
 /**
  * Dawn Patrol AI Advisor
  * Generates morning surf advice for top spots using LLM (Gemini → Groq → Cerebras fallback)
- * 
- * FIXED: Open-Meteo Marine API doesn't support water_temperature or wind variables.
- * Marine API only has wave + sea_surface_temperature.
- * Wind comes from the Forecast API.
+ *
+ * Motor único (#218, PR 5): a manhã de cada spot sai da MESMA série que a
+ * página do spot lê (public/data/forecasts/<id>.json, gravada pelo pipeline)
+ * e a nota é a nota v6 de surf hora a hora (src/lib/dawnPatrolV6.ts), a mesma
+ * que a régua do spot mostra às 06–11 h. A heurística própria (E4) e o fetch
+ * próprio ao Open-Meteo acabaram. Os limiares go ≥ 70 / maybe ≥ 50 sobre
+ * score = nota × 10 são exactamente «Bom» (≥ 7) e «Dá» (≥ 5) da #210.
  */
 
 const fs = require('fs');
 const path = require('path');
 const { atomicWriteJson } = require('./lib/atomicWriteJson.js');
-const { utcRequestParams, localizeHourly } = require('./lib/openMeteoUtc');
 const { callLLM } = require('./llm-fallback');
 const { attachMoonTideLines } = require('./lib/attachMoonTide');
-const { morningScore, resolveMorningRecalibration } = require('./lib/dawnPatrolScore');
 const { scoreToNota } = require('./lib/scoreSpotConditions');
 const { coastalWarningsForSpot, coastalWarningLine } = require('./lib/ihCoastalWarnings');
 const { seaWarningForSpot, seaWarningLine } = require('./lib/ipmaWarnings');
 
-/** conditions.json committed by the pipeline (observedWave + waveBias meta). */
-const CONDITIONS_PATH = path.join(__dirname, '../public/data/conditions.json');
 /** Avisos costeiros vivos (coverage por spot) — para o prompt do LLM os mencionar. */
 const COASTAL_WARNINGS_PATH = path.join(__dirname, '../public/data/ih-coastal-warnings.json');
 /** warnings.json (IPMA/MeteoAlarm) — estado de agitação marítima por spot. */
@@ -101,129 +100,57 @@ function lisbonDateStr(date = new Date()) {
   return new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Lisbon' }).format(date);
 }
 
-function lisbonHour(date = new Date()) {
-  return Number(
-    new Intl.DateTimeFormat('en-GB', {
-      timeZone: 'Europe/Lisbon',
-      hour: 'numeric',
-      hour12: false,
-    }).format(date),
-  );
-}
+/** Pasta dos dados do pipeline (forecasts/<id>.json e conditions.json). */
+const DATA_DIR = path.join(__dirname, '../public/data');
 
-function addDays(date, days) {
-  const d = new Date(date);
-  d.setDate(d.getDate() + days);
-  return d;
-}
-
-async function fetchWithRetry(url, retries = 2) {
-  for (let attempt = 0; attempt <= retries; attempt++) {
+/** Série horária do spot (a mesma da página do spot): a própria, ou a da fonte. */
+function readSpotSeries(spot) {
+  for (const id of [spot.id, spot.conditionsSource].filter(Boolean)) {
+    const file = path.join(DATA_DIR, 'forecasts', `${id}.json`);
     try {
-      const response = await fetch(url, { headers: { 'User-Agent': 'VenTu-Bot/1.0 (+https://ventu.surf)' }, signal: AbortSignal.timeout(30_000) });
-      if (!response.ok) {
-        if (attempt < retries) {
-          console.log(`     Retry ${attempt + 1}/${retries} for ${url.slice(0, 60)}...`);
-          await new Promise(r => setTimeout(r, 1000 * (attempt + 1)));
-          continue;
-        }
-        console.error(`     Failed: HTTP ${response.status}`);
-        return null;
+      if (fs.existsSync(file)) {
+        const rows = JSON.parse(fs.readFileSync(file, 'utf-8'));
+        if (Array.isArray(rows) && rows.length) return rows;
       }
-      return await response.json();
     } catch (e) {
-      if (attempt < retries) {
-        console.log(`     Retry ${attempt + 1}/${retries}...`);
-        await new Promise(r => setTimeout(r, 1000 * (attempt + 1)));
-      } else {
-        console.error(`     Failed: ${e.message}`);
-        return null;
-      }
+      console.warn(`     ⚠️ forecasts/${id}.json unreadable: ${e.message}`);
     }
   }
   return null;
 }
 
-async function fetchSpotData(lat, lon) {
-  // Marine API: waves + sea surface temperature
-  // NOTE: water_temperature is NOT valid on marine-api. Use sea_surface_temperature.
-  // UTC + conversão hora a hora para Lisboa (auditoria M1): as etiquetas
-  // ficam `YYYY-MM-DDTHH:MM±hh:mm`, o prefixo `${dia}T${hh}` continua a servir.
-  const utc = new URLSearchParams(utcRequestParams({ days: 2 }));
-  const marineUrl = `https://marine-api.open-meteo.com/v1/marine?latitude=${lat}&longitude=${lon}&hourly=wave_height,wave_direction,wave_period,sea_surface_temperature,sea_level_height_msl&${utc}`;
-
-  // Forecast API: wind (10m) — marine API does not have wind variables
-  const forecastUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=wind_speed_10m,wind_direction_10m,wind_gusts_10m&${utc}&wind_speed_unit=ms`;
-
-  const [marine, forecast] = (await Promise.all([
-    fetchWithRetry(marineUrl),
-    fetchWithRetry(forecastUrl),
-  ])).map((j) => localizeHourly(j));
-
-  if (!marine?.hourly || !forecast?.hourly) {
-    console.log(`     Missing data: marine=${!!marine?.hourly}, forecast=${!!forecast?.hourly}`);
-    return null;
-  }
-
-  // Merge both datasets by time index
-  const time = marine.hourly.time;
-  const hourly = {
-    time,
-    wave_height: marine.hourly.wave_height,
-    wave_direction: marine.hourly.wave_direction,
-    wave_period: marine.hourly.wave_period,
-    sea_surface_temperature: marine.hourly.sea_surface_temperature,
-    sea_level_height_msl: marine.hourly.sea_level_height_msl,
-    wind_speed_10m: forecast.hourly.wind_speed_10m,
-    wind_direction_10m: forecast.hourly.wind_direction_10m,
-    wind_gusts_10m: forecast.hourly.wind_gusts_10m,
+/**
+ * Manhã de um spot no v6 (puro, testável): melhor hora 06–11 h pela nota de
+ * surf da régua do spot (horas futuras → previsão, como a régua). `null` sem
+ * nenhuma hora com nota (noite / sem dados).
+ * `scoreSource` fica sempre «previsão»: a boia só corrige a hora corrente
+ * (linha «agora» de D4), que nunca é uma hora da manhã analisada.
+ *
+ * @param {object} top entrada de TOP_SPOTS
+ * @param {object} siteSpot spot de src/lib/spots.ts (mesmo slug)
+ * @param {Array} series linhas do forecast do spot
+ * @param {number} nowMs
+ * @param {{ manhaSurfV6: Function, melhorManhaV6: Function }} v6
+ */
+function morningSpotV6(top, siteSpot, series, nowMs, v6) {
+  const horas = v6.manhaSurfV6(siteSpot, series, nowMs);
+  const best = v6.melhorManhaV6(horas);
+  if (!best) return null;
+  const score = best.nota * 10;
+  return {
+    ...top,
+    bestWindow: { ...best, score },
+    allConditions: horas,
+    // maré da própria série (primeira baixa-mar para a linha da lua)
+    hourly: {
+      time: series.map((r) => r.time),
+      sea_level_height_msl: series.map((r) => (typeof r.tideHeight === 'number' ? r.tideHeight : undefined)),
+    },
+    score,
+    scoreForecast: score,
+    scoreSource: 'previsão',
+    scoreMeta: null,
   };
-
-  return hourly;
-}
-
-function getMorningConditions(hourly) {
-  const now = new Date();
-  const morningHours = [6, 7, 8, 9, 10, 11];
-  const currentHour = lisbonHour(now);
-
-  const morningData = morningHours.map(h => {
-    // Past morning hours today → target same hour tomorrow (Lisbon local)
-    let dateStr = lisbonDateStr(now);
-    if (h <= currentHour) {
-      dateStr = lisbonDateStr(addDays(now, 1));
-    }
-
-    const prefix = `${dateStr}T${String(h).padStart(2, '0')}`;
-    const idx = hourly.time.findIndex(t => t.startsWith(prefix));
-
-    if (idx === -1) return null;
-
-    const seaLevel = hourly.sea_level_height_msl?.[idx] || 0;
-    const seaLevelNext = hourly.sea_level_height_msl?.[idx + 1];
-    const tideStatus = seaLevel > 0.3 ? 'high' : seaLevel < -0.3 ? 'low' : (seaLevelNext !== undefined && seaLevelNext > seaLevel) ? 'rising' : 'falling';
-
-    return {
-      hour: h,
-      waveHeight: hourly.wave_height[idx],
-      wavePeriod: hourly.wave_period[idx],
-      waveDirection: hourly.wave_direction[idx],
-      windSpeed: hourly.wind_speed_10m[idx],
-      windDirection: hourly.wind_direction_10m[idx],
-      windGust: hourly.wind_gusts_10m[idx],
-      waterTemp: hourly.sea_surface_temperature[idx],
-      tideHeight: seaLevel,
-      tideStatus,
-    };
-  }).filter(Boolean);
-
-  return morningData;
-}
-
-function findBestWindow(conditions) {
-  const scored = conditions.map((c) => ({ ...c, score: morningScore(c) }));
-  scored.sort((a, b) => b.score - a.score);
-  return scored[0];
 }
 
 /**
@@ -412,6 +339,7 @@ function resolveValidSlug(slug, validSlugs) {
   return null;
 }
 
+/** score = nota v6 × 10: go ≥ 70 = «Bom» (≥ 7), maybe ≥ 50 = «Dá» (≥ 5), bandas da #210. */
 function spotsFromMorningData(spotsData) {
   return spotsData.map((s) => ({
     name: s.name,
@@ -507,54 +435,31 @@ async function generateDawnPatrol() {
   console.log('🌅 Dawn Patrol AI Advisor - Generating...');
   console.log(`   Time: ${new Date().toLocaleString('pt-PT')}`);
 
-  const conditionsJson = (() => {
-    try {
-      if (fs.existsSync(CONDITIONS_PATH)) {
-        return JSON.parse(fs.readFileSync(CONDITIONS_PATH, 'utf-8'));
-      }
-    } catch (e) {
-      console.warn(`   ⚠️ conditions.json unreadable: ${e.message} — sem recalibração por boia`);
-    }
-    return null;
-  })();
-  if (conditionsJson) {
-    console.log('   📡 conditions.json loaded — score recalibrated by buoy layer when fresh');
-  }
-
   const validSlugs = loadValidSlugs();
   const spotsData = [];
 
-  for (const spot of TOP_SPOTS) {
-    console.log(`   Fetching ${spot.name}...`);
-    const hourly = await fetchSpotData(spot.lat, spot.lon);
-    if (!hourly) {
-      console.log(`     ⚠️  Skipped ${spot.name} — no data`);
+  // motor v6 (TS) só no run: os testes requerem este ficheiro sem o tsx
+  const { register } = require('tsx/cjs/api');
+  register();
+  const { spots } = require('../src/lib/spots.ts');
+  const { manhaSurfV6, melhorManhaV6 } = require('../src/lib/dawnPatrolV6.ts');
+  const v6 = { manhaSurfV6, melhorManhaV6 };
+  const nowMs = Date.now();
+
+  for (const top of TOP_SPOTS) {
+    const siteSpot = spots.find((s) => s.slug === top.slug);
+    const series = siteSpot ? readSpotSeries(siteSpot) : null;
+    if (!siteSpot || !series) {
+      console.log(`     ⚠️  Skipped ${top.name} — sem série do spot (forecasts/<id>.json)`);
       continue;
     }
-
-    const morningConditions = getMorningConditions(hourly);
-    if (morningConditions.length === 0) {
-      console.log(`     ⚠️  Skipped ${spot.name} — no morning conditions`);
+    const entry = morningSpotV6(top, siteSpot, series, nowMs, v6);
+    if (!entry) {
+      console.log(`     ⚠️  Skipped ${top.name} — nenhuma hora da manhã com nota (noite / sem dados)`);
       continue;
     }
-
-    const bestWindow = findBestWindow(morningConditions);
-
-    // Recalibração pela boia (leitura fresca) ou pelo viés regional da row —
-    // o score que o utilizador vê na manhã seguinte é o mesmo da página do spot.
-    const recal = resolveMorningRecalibration(spot, bestWindow, conditionsJson);
-    const recalibratedScore = recal ? morningScore({ ...bestWindow, waveHeight: recal.height }) : bestWindow.score;
-
-    spotsData.push({
-      ...spot,
-      bestWindow,
-      allConditions: morningConditions,
-      hourly,
-      score: recalibratedScore,
-      scoreForecast: bestWindow.score,
-      scoreSource: recal ? recal.source : 'previsão',
-      scoreMeta: recal ? recal.meta : null,
-    });
+    console.log(`   ${top.name}: ${entry.bestWindow.hour}h · nota ${entry.score / 10}`);
+    spotsData.push(entry);
   }
 
   console.log(`   Analyzed ${spotsData.length} spots`);
@@ -601,6 +506,8 @@ if (require.main === module) {
 
 module.exports = {
   buildDawnPatrolPrompt,
+  morningSpotV6,
+  readSpotSeries,
   generateBasicAdvice,
   resolveCoastalBySlug,
   resolveSeaBySlug,

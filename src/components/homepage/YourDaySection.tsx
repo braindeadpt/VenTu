@@ -65,7 +65,8 @@ export default function YourDaySection({
         const window = resolveBestWindowForSport(
           data.bestWindowToday,
           data.bestWindowsBySport,
-          sport === 'all' || sport === 'big-wave' ? bestSport : (sport as SportType),
+          // Big Wave lê o surf (D8, #218): a janela é a do surf
+          sport === 'big-wave' ? 'surf' : sport === 'all' ? bestSport : (sport as SportType),
         );
         return { data, sport: bestSport, score: sportScore, window };
       })

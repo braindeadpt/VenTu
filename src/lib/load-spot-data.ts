@@ -14,7 +14,7 @@ import { resolveConditionsEntry } from '@/lib/spotConditionsSource'
 import { applyRegionalBiasFallback, rawToScoreInput } from '@/lib/scoreConditions'
 import { loadWaveBiasRegionsBuild } from '@/lib/waveBias'
 import type { BestWindowToday, BestWindowsBySport, UpcomingWindowsBySport } from '@/lib/bestWindowToday'
-import { computeBestWindowsForSpot, computeUpcomingWindowsForSpot } from '@/lib/bestWindowToday'
+import { computeBestWindowsForSpot, computeUpcomingWindowsForSpot } from '@/lib/bestWindowBuild'
 
 const CALM_LAKE_CONDITIONS = {
   waveHeight: 0,
@@ -284,8 +284,11 @@ function buildSpotData(
   // Forecast rows are pipeline-guaranteed to carry `time`; the file rows are
   // loosely typed, so the assertion goes through unknown.
   const forecast = (forecastsData[dataId] ?? forecastsData[spot.id] ?? []) as unknown as ForecastRow[]
-  const { bestWindowToday, bestWindowsBySport } = computeBestWindowsForSpot(spot, forecast)
-  const upcomingWindowsBySport = computeUpcomingWindowsForSpot(spot, forecast, scoreInput)
+  // Janelas: kitesurf/surf das notas v6 hora a hora (as da régua do spot; na
+  // hora corrente, o mesmo `notaV6` do «agora»), #218 PR 5. Outras no antigo (D5).
+  const nowMs = Date.now()
+  const { bestWindowToday, bestWindowsBySport } = computeBestWindowsForSpot(spot, forecast, nowMs, notaV6)
+  const upcomingWindowsBySport = computeUpcomingWindowsForSpot(spot, forecast, scoreInput, nowMs, notaV6)
 
   if (!detail) {
     // D8 — a série diária de confiança (7 entradas × ~650 B por spot) só é
