@@ -86,13 +86,23 @@
     },
     "Viana do Castelo": {
       "spotCount": 7,
-      "withObservedWave": 0,
-      "bySource": {},
-      "audited": 0,
+      "withObservedWave": 1,
+      "bySource": {
+        "ih-buoy": 1
+      },
+      "audited": 1,
       "attachedIsClosest": 0,
-      "attachedNotClosest": 0,
+      "attachedNotClosest": 1,
       "onlySource": 0,
-      "notClosest": [],
+      "notClosest": [
+        {
+          "spot": "amorosa",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 39,
+          "altKm": 0
+        }
+      ],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -100,13 +110,44 @@
     },
     "Esposende": {
       "spotCount": 4,
-      "withObservedWave": 0,
-      "bySource": {},
-      "audited": 0,
+      "withObservedWave": 4,
+      "bySource": {
+        "ih-buoy": 4
+      },
+      "audited": 4,
       "attachedIsClosest": 0,
-      "attachedNotClosest": 0,
+      "attachedNotClosest": 4,
       "onlySource": 0,
-      "notClosest": [],
+      "notClosest": [
+        {
+          "spot": "esposende",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 29,
+          "altKm": 0
+        },
+        {
+          "spot": "esposende-praia",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 30,
+          "altKm": 0
+        },
+        {
+          "spot": "fao",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 28,
+          "altKm": 0
+        },
+        {
+          "spot": "apulia",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 25,
+          "altKm": 0
+        }
+      ],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -114,13 +155,37 @@
     },
     "Vila do Conde": {
       "spotCount": 3,
-      "withObservedWave": 0,
-      "bySource": {},
-      "audited": 0,
+      "withObservedWave": 3,
+      "bySource": {
+        "ih-buoy": 3
+      },
+      "audited": 3,
       "attachedIsClosest": 0,
-      "attachedNotClosest": 0,
+      "attachedNotClosest": 3,
       "onlySource": 0,
-      "notClosest": [],
+      "notClosest": [
+        {
+          "spot": "azurara",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 20,
+          "altKm": 0
+        },
+        {
+          "spot": "arvore",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 20,
+          "altKm": 0
+        },
+        {
+          "spot": "mindelo",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 20,
+          "altKm": 0
+        }
+      ],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -128,13 +193,79 @@
     },
     "Porto": {
       "spotCount": 11,
-      "withObservedWave": 0,
-      "bySource": {},
-      "audited": 0,
+      "withObservedWave": 9,
+      "bySource": {
+        "ih-buoy": 9
+      },
+      "audited": 9,
       "attachedIsClosest": 0,
-      "attachedNotClosest": 0,
+      "attachedNotClosest": 9,
       "onlySource": 0,
-      "notClosest": [],
+      "notClosest": [
+        {
+          "spot": "leca-palmeira",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 27,
+          "altKm": 0
+        },
+        {
+          "spot": "matosinhos",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 29,
+          "altKm": 0
+        },
+        {
+          "spot": "cabedelo-douro",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 33,
+          "altKm": 0
+        },
+        {
+          "spot": "marina-afurada-foil",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 34,
+          "altKm": 0
+        },
+        {
+          "spot": "salgueiros",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 34,
+          "altKm": 0
+        },
+        {
+          "spot": "sereia-costa-verde",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 35,
+          "altKm": 0
+        },
+        {
+          "spot": "canide-sul",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 35,
+          "altKm": 0
+        },
+        {
+          "spot": "vila-cha",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 21,
+          "altKm": 0
+        },
+        {
+          "spot": "aterro",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 25,
+          "altKm": 0
+        }
+      ],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -1002,7 +1133,7 @@
       "suboptimal": []
     }
   },
-  "regionsAuditedAt": "2026-10-27T16:08:47.903Z",
+  "regionsAuditedAt": "2026-10-27T18:09:05.191Z",
   "pairs": [
     {
       "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
