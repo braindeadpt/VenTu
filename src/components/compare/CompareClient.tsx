@@ -5,7 +5,8 @@ import { useState, useEffect, useMemo } from 'react';
 import { Trophy, Wind, Waves, Clock, ArrowLeft, Crown, Medal, Award, Check, Search, X } from 'lucide-react';
 import { spots } from '@/lib/spots';
 import { fetchMarineData, getCurrentConditions } from '@/lib/openmeteo';
-import { getAllSportScores, getScoreTokens, getSportScore } from '@/lib/sportScore';
+import { getAllSportScores, getScoreTokens } from '@/lib/sportScore';
+import { allScoresComV6, notaV6DoSpot, scoreAgoraComV6 } from '@/lib/notaV6Agora';
 import type { SportType } from '@/lib/sportRatings';
 import { SPORT_LABELS } from '@/lib/sportRatings';
 import { getAssetPath } from '@/lib/paths';
@@ -86,7 +87,8 @@ async function loadSpotBattleData(
     return {
       spot,
       conditions,
-      allScores: getAllSportScores(spot, scoreInput),
+      // kitesurf/surf do `notaV6` do pipeline (#218 PR 4): o mesmo «agora» do /mapa e das listas
+      allScores: allScoresComV6(spot, scoreInput, precomputed ? notaV6DoSpot(spot, precomputed as Record<string, unknown>) : null),
       driveTime,
       // A altura mostrada É a corrigida (scoreInput); o sufixo nomeia a origem
       // da correcção a partir da row crua (observedWave/waveBias).
@@ -290,7 +292,15 @@ export default function CompareClient() {
     for (const spot of spots) {
       const cond = pickerCond[getConditionsDataId(spot)] ?? pickerCond[spot.id];
       if (!cond) continue;
-      m.set(spot.slug, getSportScore(spot, selectedSport, rawToScoreInput(cond as Record<string, unknown>)).score);
+      m.set(
+        spot.slug,
+        scoreAgoraComV6(
+          spot,
+          selectedSport,
+          rawToScoreInput(cond as Record<string, unknown>),
+          notaV6DoSpot(spot, pickerCond as Record<string, unknown>),
+        ).score,
+      );
     }
     return m;
   }, [pickerCond, selectedSport]);

@@ -5,6 +5,8 @@ import {
 } from '@/lib/gridSpotFilters';
 import type { GridSpotData } from '@/lib/gridSpotFilters';
 import type { GridSportFilter, SportType } from '@/lib/sportRatings';
+import { scoreToNota } from '@/lib/nota';
+import { localizedSpotName } from '@/lib/localizedSpotText';
 
 export function getScoreSport(sport: GridSportFilter): SportType | null {
   if (sport === 'all' || sport === 'big-wave') return sport === 'big-wave' ? 'surf' : null;
@@ -59,4 +61,33 @@ export function alternativeSport(
   }
   const entries = Object.entries(counts).sort((a, b) => b[1] - a[1]);
   return entries.length > 0 ? (entries[0][0] as SportType) : null;
+}
+
+/** Score 0–100 que o ranking do /spots usa: `all` = melhor modalidade do spot. */
+export function rankingScore(d: GridSpotData, selectedSport: GridSportFilter): number {
+  if (selectedSport === 'all') {
+    return Math.max(...Object.values(d.allScores).map((s) => s.score || 0), 0);
+  }
+  const scoreKey = getScoreSport(selectedSport)!;
+  return d.allScores[scoreKey]?.score || 0;
+}
+
+/**
+ * Ordem do ranking do /spots (e das grelhas de /explorar e /modalidades):
+ * pela NOTA INTEIRA que a lista mostra (#218 PR 4) — dois spots com «7» não
+ * se ordenam por décimas escondidas do motor —, depois nome localizado e
+ * slug (o mesmo desempate do Top 8 da home), para a ordem não depender da
+ * ordem de entrada.
+ */
+export function compareRanking(
+  a: GridSpotData,
+  b: GridSpotData,
+  selectedSport: GridSportFilter,
+  locale: string,
+): number {
+  const byNota = scoreToNota(rankingScore(b, selectedSport)) - scoreToNota(rankingScore(a, selectedSport));
+  if (byNota !== 0) return byNota;
+  const byName = localizedSpotName(a.spot, locale).localeCompare(localizedSpotName(b.spot, locale), locale);
+  if (byName !== 0) return byName;
+  return a.spot.slug.localeCompare(b.spot.slug);
 }

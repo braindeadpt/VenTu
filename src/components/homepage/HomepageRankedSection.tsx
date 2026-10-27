@@ -63,7 +63,7 @@ function dayDiff(startIso: string, nowMs: number): number {
 }
 
 /**
- * Ordem determinística do ranking denso: score desc, depois nome localizado
+ * Ordem determinística do ranking denso: nota inteira desc, depois nome localizado
  * asc, depois slug. sortSpotsBySport é estável mas resolve empates pela ordem
  * de entrada — que é a ordenação score-desc do BAKE (loadRows), calculada com
  * os dados de uma corrida da pipeline diferente da que o cliente depois
@@ -77,7 +77,8 @@ export function compareHomeRanked(
   sport: GridSportFilter,
   locale: string,
 ): number {
-  const byScore = getScoreForFilter(b, sport) - getScoreForFilter(a, sport);
+  // pela nota inteira mostrada (#218 PR 4), como o ranking do /spots
+  const byScore = scoreToNota(getScoreForFilter(b, sport)) - scoreToNota(getScoreForFilter(a, sport));
   if (byScore !== 0) return byScore;
   const byName = localizedSpotName(a.spot, locale).localeCompare(
     localizedSpotName(b.spot, locale),

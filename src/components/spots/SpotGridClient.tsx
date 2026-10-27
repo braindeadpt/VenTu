@@ -132,7 +132,7 @@ export function SpotGridClient({
     latitude,
     geoLoading,
     requestLocation,
-  } = useSpotGridFilters({ spotsData: liveSpotsData, regions, initialSport, initialRegion });
+  } = useSpotGridFilters({ spotsData: liveSpotsData, regions, initialSport, initialRegion, locale });
 
   const mapSpotsData = useMemo(() => {
     if (mapDifficulty === 'all') return filtered;

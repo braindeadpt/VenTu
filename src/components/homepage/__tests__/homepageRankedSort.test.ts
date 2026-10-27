@@ -42,7 +42,7 @@ function row(
 }
 
 describe('compareHomeRanked (Top 8 da home)', () => {
-  it('ordena por score desc', () => {
+  it('ordena por nota desc', () => {
     const a = row('a', 'Alfa', 70);
     const b = row('b', 'Beta', 90);
     expect(compareHomeRanked(a, b, 'surf', 'pt')).toBeGreaterThan(0);
@@ -68,7 +68,7 @@ describe('compareHomeRanked (Top 8 da home)', () => {
       row('azurara', 'Azurara', 76),
       row('mindelo', 'Praia de Mindelo', 76),
       row('moledo', 'Moledo do Minho', 76),
-      row('paramos', 'Praia de Paramos', 79),
+      row('paramos', 'Praia de Paramos', 91),
       row('povoa-varzim', 'Póvoa do Varzim', 76),
     ];
     const sorted = [...spots].sort((a, b) => compareHomeRanked(a, b, 'surf', 'pt'));
@@ -82,6 +82,14 @@ describe('compareHomeRanked (Top 8 da home)', () => {
       'mindelo',
     ]);
     expect(reversed.map((s) => s.spot.slug)).toEqual(sorted.map((s) => s.spot.slug));
+  });
+
+  it('#218 PR 4: ordena pela NOTA inteira mostrada — 79 e 76 são ambos «8», desempata pelo nome', () => {
+    const paramos = row('paramos', 'Praia de Paramos', 79);
+    const azurara = row('azurara', 'Azurara', 76);
+    expect(compareHomeRanked(azurara, paramos, 'surf', 'pt')).toBeLessThan(0);
+    // 74 → «7» fica atrás de 75 → «8»
+    expect(compareHomeRanked(row('a', 'Alfa', 74), row('z', 'Zulu', 75), 'surf', 'pt')).toBeGreaterThan(0);
   });
 
   it('respeita o desporto activo no score comparado', () => {

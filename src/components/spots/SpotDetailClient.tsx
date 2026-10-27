@@ -6,7 +6,8 @@ import { ArrowLeft } from 'lucide-react';
 
 import type { Spot } from '@/types';
 import { fetchMarineData, getCurrentConditions, getForecastData } from '@/lib/openmeteo';
-import { getAllSportScores, getRelevantSports } from '@/lib/sportScore';
+import { getRelevantSports, type SportScore } from '@/lib/sportScore';
+import { allScoresComV6, notaV6DoSpot } from '@/lib/notaV6Agora';
 import type { SportType } from '@/lib/sportRatings';
 import { SPORT_LABELS } from '@/lib/sportRatings';
 import { getTranslation } from '@/lib/i18n';
@@ -101,10 +102,7 @@ interface Conditions {
 interface SpotData {
   spot: Spot;
   conditions: Conditions;
-  allScores: Record<
-    SportType,
-    ReturnType<typeof getAllSportScores> extends Record<SportType, infer V> ? V : never
-  >;
+  allScores: Record<SportType, SportScore>;
   forecast: Array<{
     time: string;
     waveHeight: number;
@@ -346,7 +344,10 @@ export default function SpotDetailClient({
 
             forecast = spotFc;
 
-            const allScores = getAllSportScores(spot, rawToScoreInput(spotCond));
+            // kitesurf/surf do `notaV6` do pipeline (#218 PR 4): o separador
+            // escolhido pela mesma nota «agora» do /mapa e das listas (o bake
+            // já a usa via buildSpotData); as outras no motor antigo (D5).
+            const allScores = allScoresComV6(spot, rawToScoreInput(spotCond), notaV6DoSpot(spot, condJson));
             if (cancelled || spot.slug !== loadSlug) return;
 
             setSpotData({ spot, conditions, allScores, forecast });
@@ -408,7 +409,7 @@ export default function SpotDetailClient({
           }
         }
 
-        const allScores = getAllSportScores(
+        const allScores = allScoresComV6(
           spot,
           rawToScoreInput({
             waveHeight: conditions.waveHeight,
@@ -421,6 +422,7 @@ export default function SpotDetailClient({
             observed: conditions.observed,
             observedWave: conditions.observedWave,
           }),
+          condJson ? notaV6DoSpot(spot, condJson) : null,
         );
 
         if (cancelled || spot.slug !== loadSlug) return;
