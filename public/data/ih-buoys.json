@@ -11,8 +11,16 @@
       "lat": 41.3155555555556,
       "lon": -8.9825,
       "lastPos": "2026-10-26T19:56:41+00:00",
-      "lastSea": "2026-10-27T10:26:42+00:00",
-      "family": "datawell"
+      "lastSea": "2026-10-27T12:26:43+00:00",
+      "family": "datawell",
+      "latest": {
+        "date": "2026-10-27T12:26:43.000Z",
+        "hm0": 3.42,
+        "tp": 12.5,
+        "thtp": 293,
+        "hmax": 5.01,
+        "temp": 16.5
+      }
     },
     "19": {
       "idEst": 19,
@@ -24,9 +32,17 @@
       "nrt": "near-real-time data available",
       "lat": 37.921111111111095,
       "lon": -8.92861111111111,
-      "lastPos": "2026-10-27T10:26:45+00:00",
-      "lastSea": "2026-10-27T10:26:45+00:00",
-      "family": "datawell"
+      "lastPos": "2026-10-27T12:26:45+00:00",
+      "lastSea": "2026-10-27T12:26:45+00:00",
+      "family": "datawell",
+      "latest": {
+        "date": "2026-10-27T12:26:45.000Z",
+        "hm0": 1.56,
+        "tp": 10.5,
+        "thtp": 312,
+        "hmax": 2.13,
+        "temp": 17.8
+      }
     },
     "20": {
       "idEst": 20,
@@ -39,8 +55,16 @@
       "lat": 36.904807999999996,
       "lon": -7.898416999999999,
       "lastPos": "2026-10-27T07:26:35+00:00",
-      "lastSea": "2026-10-27T10:26:35+00:00",
-      "family": "datawell"
+      "lastSea": "2026-10-27T11:56:35+00:00",
+      "family": "datawell",
+      "latest": {
+        "date": "2026-10-27T11:56:35.000Z",
+        "hm0": 0.42,
+        "tp": 8.3,
+        "thtp": 271,
+        "hmax": 0.66,
+        "temp": 20.4
+      }
     },
     "23": {
       "idEst": 23,
@@ -66,9 +90,17 @@
       "nrt": "near-real-time data available",
       "lat": 32.727777777777796,
       "lon": -16.723888888888897,
-      "lastPos": "2026-10-27T10:29:56+00:00",
-      "lastSea": "2026-10-27T10:29:56+00:00",
-      "family": "datawell"
+      "lastPos": "2026-10-27T12:29:57+00:00",
+      "lastSea": "2026-10-27T12:29:57+00:00",
+      "family": "datawell",
+      "latest": {
+        "date": "2026-10-27T12:29:57.000Z",
+        "hm0": 0.37,
+        "tp": 12.5,
+        "thtp": 159,
+        "hmax": 0.53,
+        "temp": 22.8
+      }
     },
     "66": {
       "idEst": 66,
@@ -136,9 +168,17 @@
       "nrt": "near-real-time data available",
       "lat": 39.08,
       "lon": -27.9633333333333,
-      "lastPos": "2026-10-27T10:19:06+00:00",
-      "lastSea": "2026-10-27T10:49:06+00:00",
-      "family": "datawell"
+      "lastPos": "2026-10-27T12:19:07+00:00",
+      "lastSea": "2026-10-27T12:49:06+00:00",
+      "family": "datawell",
+      "latest": {
+        "date": "2026-10-27T12:49:06.000Z",
+        "hm0": 2.88,
+        "tp": 12.5,
+        "thtp": 248,
+        "hmax": 4.35,
+        "temp": 20.6
+      }
     },
     "88": {
       "idEst": 88,
@@ -1304,51 +1344,11 @@
       "distanceKm": 25.3
     }
   },
-  "fetchedAt": "2026-10-27T12:05:57.265Z",
+  "fetchedAt": "2026-10-27T14:05:56.473Z",
   "sourceCollections": [
     "buoys_datawell"
   ],
   "apiKeyConfigured": true,
-  "hasWaveData": false,
-  "waveFetchStatus": "upstream-outage",
-  "upstreamOutage": {
-    "scope": "wave",
-    "since": "2026-10-23T18:35:59.878Z",
-    "lastAttemptAt": "2026-10-27T12:05:57.265Z",
-    "lastWaveOkAt": "2026-10-23T13:26:17.771Z",
-    "keptReadings": 0,
-    "newestKeptReadingAt": null,
-    "failures": [
-      {
-        "idEst": 4,
-        "error": "HTTP 500 for buoy 4",
-        "status": 500,
-        "transient": true
-      },
-      {
-        "idEst": 19,
-        "error": "HTTP 500 for buoy 19",
-        "status": 500,
-        "transient": true
-      },
-      {
-        "idEst": 20,
-        "error": "HTTP 500 for buoy 20",
-        "status": 500,
-        "transient": true
-      },
-      {
-        "idEst": 33,
-        "error": "HTTP 500 for buoy 33",
-        "status": 500,
-        "transient": true
-      },
-      {
-        "idEst": 86,
-        "error": "HTTP 500 for buoy 86",
-        "status": 500,
-        "transient": true
-      }
-    ]
-  }
+  "hasWaveData": true,
+  "waveFetchStatus": "ok"
 }
