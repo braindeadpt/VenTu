@@ -22,7 +22,6 @@ export default defineConfig({
       'scripts/lib/__tests__/ihBuoys.test.js',
       'scripts/lib/__tests__/ihApiKeyTest.test.js',
       'scripts/lib/__tests__/buoyBias.test.js',
-      'scripts/lib/__tests__/dawnPatrolScore.test.js',
       'scripts/lib/__tests__/meteoalarmApiKeyTest.test.js',
       'scripts/lib/__tests__/ipmaWarnings.test.js',
       'scripts/lib/__tests__/copernicusBuoys.test.js',

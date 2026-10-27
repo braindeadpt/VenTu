@@ -1,21 +1,20 @@
 /**
- * Build spots-index.json using sportScore.ts (single source of truth).
+ * Build spots-index.json. Kitesurf/surf: nota «agora» (`notaV6`) e janelas do
+ * motor v6, as mesmas do site (#218); as outras modalidades no sportScore (D5).
  * Usage: npx tsx scripts/build-spots-index-ts.ts
  */
 import { existsSync, readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import { readForecastsIndex } from './lib/forecastsIndex.js';
 import { spots } from '../src/lib/spots';
-import { getAllSportScores, type SportScore } from '../src/lib/sportScore';
+import type { SportScore } from '../src/lib/sportScore';
 import type { SportType } from '../src/lib/sportRatings';
 import { pickConfidenceFields } from '../src/lib/forecastConfidenceCore';
 import { resolveConditionsEntry } from '../src/lib/spotConditionsSource';
 import { pickMarineDisplayFields, pickObservedField } from '../src/lib/marineConditions';
-import {
-  computeBestWindowsForSpot,
-  type BestWindowToday,
-  type BestWindowsBySport,
-} from '../src/lib/bestWindowToday';
+import type { BestWindowToday, BestWindowsBySport } from '../src/lib/bestWindowToday';
+import { computeBestWindowsForSpot } from '../src/lib/bestWindowBuild';
+import { allScoresComV6, notaV6DoSpot } from '../src/lib/notaV6Agora';
 
 type ConditionsJson = Record<
   string,
@@ -81,7 +80,9 @@ function build() {
   const index = spots.map((spot) => {
     const dataId = spot.conditionsSource ?? spot.id;
     const forecast = forecastsData[dataId] ?? forecastsData[spot.id] ?? [];
-    const { bestWindowToday, bestWindowsBySport } = computeBestWindowsForSpot(spot, forecast);
+    // Kitesurf/surf: janela e nota «agora» do v6 (#218 PR 5), as mesmas do site.
+    const notaV6 = notaV6DoSpot(spot, conditionsData);
+    const { bestWindowToday, bestWindowsBySport } = computeBestWindowsForSpot(spot, forecast, Date.now(), notaV6);
     const cond = resolveConditionsEntry(spot, conditionsData);
     const useLakeDefault = !cond && isWakeboardOnly(spot);
     if (!cond && !useLakeDefault) {
@@ -122,7 +123,7 @@ function build() {
       ...pickConfidenceFields(rawCond),
     };
 
-    const allScores = getAllSportScores(spot, scoreInput);
+    const allScores = allScoresComV6(spot, scoreInput, notaV6);
     const bestScore = Math.max(...Object.values(allScores).map((s) => s.score), 0);
 
     return {

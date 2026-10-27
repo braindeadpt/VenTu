@@ -1,11 +1,12 @@
-import { computeMagicWindows, type HourlyCondition } from '@/lib/magicWindows';
-import { getCompatibleSports } from '@/lib/sportRatings';
+/**
+ * Tipos das janelas e a escolha por filtro (leve: vai para o bundle da home e
+ * do /spots). O cálculo — v6 para kitesurf/surf (#218, PR 5) e o motor antigo
+ * para as outras modalidades — está em `bestWindowBuild.ts` (só servidor).
+ */
 import type { SportType } from '@/lib/sportRatings';
-import { getHourlyScores, type Conditions } from '@/lib/sportScore';
-import type { Spot } from '@/types';
 
 export interface BestWindowToday {
-  /** Hour of day in Europe/Lisbon (from forecast timestamp). */
+  /** Hora de parede da etiqueta do forecast (a da régua do spot). */
   start: number;
   end: number;
   score: number;
@@ -17,11 +18,11 @@ export type BestWindowsBySport = Partial<
 >;
 
 /**
- * Upcoming magic window on the canonical score scale — the same scorer the
- * forecast table and spot-page windows use, so a home «Próximas janelas»
- * row can never disagree with the spot page. Unlike `BestWindowToday`
- * (heuristic + hour-of-day), this carries the ISO timestamps needed to
- * label «Hoje»/«Amanhã»/weekday against the reader's clock.
+ * Melhor janela das próximas 48 h — kitesurf/surf a partir das notas v6 hora a
+ * hora (as da régua do spot, #218 PR 5), por isso uma linha de «Próximas
+ * janelas» nunca discorda da página do spot. Ao contrário de `BestWindowToday`
+ * (hora do dia), traz as etiquetas ISO para rotular «Hoje»/«Amanhã»/dia da
+ * semana no relógio de quem lê.
  */
 export interface UpcomingWindow {
   /** ISO forecast timestamp of the window start. */
@@ -43,131 +44,19 @@ export interface ForecastHourRow {
   waterTemp?: number;
 }
 
-const HOUR_MS = 3_600_000;
-
-function toHourly(row: ForecastHourRow): HourlyCondition {
-  return {
-    time: row.time,
-    waveHeight: row.waveHeight ?? 0,
-    wavePeriod: row.wavePeriod ?? 0,
-    windSpeed: row.windSpeed ?? 0,
-    windDirection: row.windDirection ?? 0,
-    windGust: row.windGust ?? 0,
-    waterTemp: row.waterTemp ?? 0,
-  };
-}
-
-/** Next `hours` of hourly forecast — same filter as SpotDetailClient magic windows. */
-function filterForecastNextHours(
-  forecast: ForecastHourRow[],
-  hours: number,
-  nowMs: number,
-): HourlyCondition[] {
-  const cutoff = nowMs + hours * HOUR_MS;
-  return forecast
-    .map(toHourly)
-    .filter((h) => {
-      const t = new Date(h.time).getTime();
-      return t >= nowMs && t < cutoff;
-    });
-}
-
-/** Next 24h of hourly forecast — same filter as SpotDetailClient magic windows. */
-export function filterForecastNext24h(
-  forecast: ForecastHourRow[],
-  nowMs = Date.now(),
-): HourlyCondition[] {
-  return filterForecastNextHours(forecast, 24, nowMs);
-}
-
-function hourFromForecastTime(iso: string): number {
-  const h = iso.slice(11, 13);
-  const parsed = Number(h);
-  return Number.isFinite(parsed) ? parsed : 0;
-}
-
 /**
- * Pre-compute today's best magic window per compatible sport (rolling 24h).
- * Uses the same `computeMagicWindows` path as the spot detail page.
+ * Janela de hoje para um filtro (home / O teu dia / tabela do /spots).
+ * Com um desporto concreto, só a janela DESSE desporto (ou `null`): a de outro
+ * desporto não pode aparecer na coluna do escolhido (#218 PR 5 — com o v6 há
+ * menos janelas de kite, e a de windsurf/heurística aparecia no lugar dela).
+ * Com `all`, a melhor de todas.
  */
-export function computeBestWindowsForSpot(
-  spot: Pick<Spot, 'compatibleSports' | 'bestWind' | 'type'>,
-  forecast: ForecastHourRow[],
-  nowMs = Date.now(),
-): { bestWindowToday: BestWindowToday | null; bestWindowsBySport: BestWindowsBySport } {
-  const hourly = filterForecastNext24h(forecast, nowMs);
-  const bestWindowsBySport: BestWindowsBySport = {};
-  let bestWindowToday: BestWindowToday | null = null;
-
-  if (!hourly.length) {
-    return { bestWindowToday: null, bestWindowsBySport };
-  }
-
-  const sports = getCompatibleSports(spot as Spot);
-
-  for (const sport of sports) {
-    const windows = computeMagicWindows(hourly, sport, spot.bestWind || '');
-    const top = windows[0];
-    if (!top) continue;
-
-    const startRow = hourly[top.start];
-    const endRow = hourly[top.end];
-    if (!startRow || !endRow) continue;
-
-    const slice = {
-      start: hourFromForecastTime(startRow.time),
-      end: hourFromForecastTime(endRow.time),
-      score: top.score,
-    };
-    bestWindowsBySport[sport] = slice;
-
-    if (!bestWindowToday || slice.score > bestWindowToday.score) {
-      bestWindowToday = { ...slice, sport };
-    }
-  }
-
-  return { bestWindowToday, bestWindowsBySport };
-}
-
-/**
- * Best upcoming window per compatible sport over the next 48h, scored with
- * the canonical hourly scorer (`getHourlyScores` + `computeMagicWindows`
- * `scores` path — the spot page's own chain). Baked at SSG from the same
- * build-time clock as `computeBestWindowsForSpot`; the UI drops rows whose
- * `endIso` has passed on the reader's clock after mount.
- */
-export function computeUpcomingWindowsForSpot(
-  spot: Spot,
-  forecast: ForecastHourRow[],
-  currentConditions: Conditions,
-  nowMs = Date.now(),
-): UpcomingWindowsBySport {
-  const hourly = filterForecastNextHours(forecast, 48, nowMs);
-  const out: UpcomingWindowsBySport = {};
-  if (!hourly.length) return out;
-
-  for (const sport of getCompatibleSports(spot)) {
-    const scores = getHourlyScores(spot, sport, hourly, currentConditions);
-    const top = computeMagicWindows(hourly, sport, spot.bestWind || '', scores)[0];
-    if (!top) continue;
-    const startRow = hourly[top.start];
-    const endRow = hourly[top.end];
-    if (!startRow || !endRow) continue;
-    out[sport] = { startIso: startRow.time, endIso: endRow.time, score: top.score };
-  }
-
-  return out;
-}
-
-/** Resolve the best window for a sport filter (matches homepage / Your day). */
 export function resolveBestWindowForSport(
   bestWindowToday: BestWindowToday | null | undefined,
   bestWindowsBySport: BestWindowsBySport | undefined,
   sport: SportType | 'all',
 ): BestWindowToday | null {
-  if (sport !== 'all' && bestWindowsBySport?.[sport]) {
-    const w = bestWindowsBySport[sport]!;
-    return { ...w, sport };
-  }
-  return bestWindowToday ?? null;
+  if (sport === 'all') return bestWindowToday ?? null;
+  const w = bestWindowsBySport?.[sport];
+  return w ? { ...w, sport } : null;
 }

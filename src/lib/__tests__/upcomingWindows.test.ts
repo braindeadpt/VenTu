@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { computeUpcomingWindowsForSpot } from '@/lib/bestWindowToday';
+import { computeUpcomingWindowsForSpot } from '@/lib/bestWindowBuild';
 import { spots } from '@/lib/spots';
 import type { Conditions } from '@/lib/sportScore';
 import type { Spot } from '@/types';

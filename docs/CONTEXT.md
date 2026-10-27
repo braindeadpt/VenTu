@@ -318,12 +318,12 @@ public/data/               conditions.json, forecasts/<id>.json, news.json, dawn
 
 ## Score recalibrado por boia no Dawn Patrol e nos alertas
 
-- `scripts/lib/dawnPatrolScore.js` (puro) recalibra o score matinal do Dawn Patrol com a
-  camada de boias: **leitura fresca** do `conditions.json` (IH ≤3h, WMO ≤6h) → `source: 'boia'`;
-  senão o **viés regional da row** (`waveBias` meta da pipeline, gates n≥30 e |ME|∈[0.15,1.5]) →
-  `source: 'viés regional'`; senão `previsão` (sem correcção). O `dawn-patrol.json` passa a
-  incluir por spot `score` (recalibrado), `scoreForecast`, `scoreSource` e `scoreMeta` — o banner
-  mostra o score corrigido com tooltip da origem.
+- Dawn Patrol (motor único #218, PR 5): a nota da manhã é a nota v6 de surf da régua do spot
+  (`src/lib/dawnPatrolV6.ts` sobre `public/data/forecasts/<id>.json`, horas 06–11 h, a noite
+  não conta). A heurística própria e o fetch próprio ao Open-Meteo acabaram, e com eles a
+  recalibração matinal pela boia (`dawnPatrolScore.js`, apagado): as horas da manhã são sempre
+  futuras e a boia só corrige a hora corrente (linha «agora» de D4). O `dawn-patrol.json`
+  mantém por spot `score` (= nota × 10), `scoreForecast`, `scoreSource` («previsão») e `scoreMeta`.
 - `scripts/lib/scoreSpotConditions.js` → `computeScore` devolve `{ score, source }` (mesma
   resolução da UI via `resolveScoreWaveSource`); `evaluate-alerts.js` anexa a nota
   «(corrigido pela boia)» / «(viés regional)» ao score nos emails e no Telegram do resumo.
