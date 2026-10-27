@@ -1,6 +1,6 @@
 {
   "source": "forecast-skill-regression",
-  "checkedAt": "2026-10-27T04:06:15.171Z",
+  "checkedAt": "2026-10-27T06:06:26.892Z",
   "windowDays": 60,
   "recentDays": 7,
   "baselineDays": 21,
@@ -24,7 +24,7 @@
         "snapshots": 8,
         "rmse": 0.7337500000000001,
         "me": 0.5675,
-        "n": 636.75
+        "n": 636.125
       },
       "baseline": {
         "snapshots": 21,
@@ -43,7 +43,7 @@
         "snapshots": 8,
         "rmse": 0.28125,
         "me": 0.18249999999999997,
-        "n": 635.5
+        "n": 634.875
       },
       "baseline": {
         "snapshots": 21,
@@ -69,7 +69,7 @@
         "snapshots": 8,
         "rmse": 0.50125,
         "me": -0.44625,
-        "n": 640
+        "n": 639.375
       },
       "baseline": {
         "snapshots": 21,
@@ -88,7 +88,7 @@
         "snapshots": 8,
         "rmse": 0.9249999999999999,
         "me": 0.7574999999999998,
-        "n": 631.5
+        "n": 630.875
       },
       "baseline": {
         "snapshots": 21,
@@ -107,7 +107,7 @@
         "snapshots": 8,
         "rmse": 0.84875,
         "me": 0.715,
-        "n": 582.375
+        "n": 582.125
       },
       "baseline": {
         "snapshots": 21,
@@ -126,7 +126,7 @@
         "snapshots": 8,
         "rmse": 0.475,
         "me": 0.40375,
-        "n": 582.375
+        "n": 582.125
       },
       "baseline": {
         "snapshots": 21,
@@ -144,7 +144,7 @@
         "snapshots": 8,
         "rmse": 0.375,
         "me": 0.16874999999999998,
-        "n": 556.5
+        "n": 556
       },
       "baseline": {
         "snapshots": 21,
@@ -164,8 +164,8 @@
       "name": "IH (Datawell)",
       "recent": {
         "days": 8,
-        "n": 2543.75,
-        "me": 0.26364520884520887
+        "n": 2541.25,
+        "me": 0.2636512543039843
       },
       "baseline": {
         "days": 21,
@@ -182,8 +182,8 @@
       "name": "WMO-ES (Copernicus)",
       "recent": {
         "days": 8,
-        "n": 1721.25,
-        "me": 0.4327995642701525
+        "n": 1720.25,
+        "me": 0.432822990844354
       },
       "baseline": {
         "days": 21,
