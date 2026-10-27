@@ -15,6 +15,7 @@ import { applyRegionalBiasFallback, rawToScoreInput } from '@/lib/scoreCondition
 import { loadWaveBiasRegionsBuild } from '@/lib/waveBias'
 import type { BestWindowToday, BestWindowsBySport, UpcomingWindowsBySport } from '@/lib/bestWindowToday'
 import { computeBestWindowsForSpot, computeUpcomingWindowsForSpot } from '@/lib/bestWindowBuild'
+import { buildNowMs } from '@/lib/buildClock'
 
 const CALM_LAKE_CONDITIONS = {
   waveHeight: 0,
@@ -286,7 +287,8 @@ function buildSpotData(
   const forecast = (forecastsData[dataId] ?? forecastsData[spot.id] ?? []) as unknown as ForecastRow[]
   // Janelas: kitesurf/surf das notas v6 hora a hora (as da régua do spot; na
   // hora corrente, o mesmo `notaV6` do «agora»), #218 PR 5. Outras no antigo (D5).
-  const nowMs = Date.now()
+  // Relógio do build (VENTU_BUILD_NOW no pixel gate; senão Date.now()).
+  const nowMs = buildNowMs()
   const { bestWindowToday, bestWindowsBySport } = computeBestWindowsForSpot(spot, forecast, nowMs, notaV6)
   const upcomingWindowsBySport = computeUpcomingWindowsForSpot(spot, forecast, scoreInput, nowMs, notaV6)
 

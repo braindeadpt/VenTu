@@ -315,6 +315,11 @@ jobs:
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
           NEXT_PUBLIC_OBS_WORKER_URL: ${{ vars.NEXT_PUBLIC_OBS_WORKER_URL || 'https://ventu-observations.busntech-net.workers.dev' }}
           NEXT_PUBLIC_CARTO_API_KEY: ${{ secrets.NEXT_PUBLIC_CARTO_API_KEY }}
+          # Relógio do build congelado dentro das séries da fixture (24/25–31 Out):
+          # janelas, régua e bakedAtMs deixam de depender da hora a que o CI corre.
+          # = hora do build das baselines actuais (record 40494119788, 27/10 ~11:13 WET).
+          # Mesmo valor nos dois workflows (src/lib/buildClock.ts).
+          VENTU_BUILD_NOW: '2026-10-27T11:13:30Z'
         run: |
           mv out out-live
           node scripts/overlay-visual-fixture.mjs
