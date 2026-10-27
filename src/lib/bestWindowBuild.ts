@@ -23,6 +23,7 @@ import { getHourlyScores, type Conditions } from '@/lib/sportScore';
 import { modalidadeDe, notaHora, type SportScoreV6 } from '@/lib/notaUnica';
 import { findCoveredHourIndex, seriesTimeMs } from '@/lib/openMeteoTime';
 import { melhorJanelaV6 } from '@/lib/janelasV6';
+import { buildNowMs } from '@/lib/buildClock';
 import type { LinhaForecast } from '@/lib/horaSpot';
 import type { NotaV6Agora } from '@/lib/notaV6Agora';
 import type {
@@ -134,7 +135,7 @@ const v6Sport = (sport: SportType): 'kitesurf' | 'surf' | null => {
 export function computeBestWindowsForSpot(
   spot: SpotJanela,
   forecast: ForecastHourRow[],
-  nowMs = Date.now(),
+  nowMs = buildNowMs(),
   notaV6?: NotaV6Agora | null,
 ): { bestWindowToday: BestWindowToday | null; bestWindowsBySport: BestWindowsBySport } {
   const bestWindowsBySport: BestWindowsBySport = {};
@@ -175,7 +176,7 @@ export function computeUpcomingWindowsForSpot(
   spot: Spot,
   forecast: ForecastHourRow[],
   currentConditions: Conditions,
-  nowMs = Date.now(),
+  nowMs = buildNowMs(),
   notaV6?: NotaV6Agora | null,
 ): UpcomingWindowsBySport {
   const out: UpcomingWindowsBySport = {};

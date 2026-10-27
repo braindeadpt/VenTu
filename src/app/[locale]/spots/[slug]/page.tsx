@@ -6,6 +6,7 @@ import { locales, validateLocale } from '@/lib/i18n'
 import { buildSpotMetadata } from '@/lib/seo'
 import { loadEvents } from '@/lib/load-events'
 import { loadSpotData } from '@/lib/load-spot-data'
+import { buildNowMs } from '@/lib/buildClock'
 import SpotDetailClient from '@/components/spots/SpotDetailClient'
 import type { Metadata } from 'next'
 import { fotoDoSpot } from '@/lib/spotFotos'
@@ -74,7 +75,8 @@ export default async function SpotDetailPage({ params }: { params: Promise<{ loc
   // Thread the reference down so the client reproduces the exact baked
   // verdict on first paint; after mount SpotDetailClient switches to the
   // live clock (React #418 guard — see SpotDetailClient).
-  const bakedAtMs = Date.now()
+  // VENTU_BUILD_NOW congela-o no build do pixel gate (src/lib/buildClock.ts).
+  const bakedAtMs = buildNowMs()
 
   const baked = loadSpotData().find((d) => d.spot.id === spot.id) ?? null
   const initialData: InitialData | null = baked

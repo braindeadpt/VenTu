@@ -14,6 +14,7 @@ import { resolveConditionsEntry } from '../src/lib/spotConditionsSource';
 import { pickMarineDisplayFields, pickObservedField } from '../src/lib/marineConditions';
 import type { BestWindowToday, BestWindowsBySport } from '../src/lib/bestWindowToday';
 import { computeBestWindowsForSpot } from '../src/lib/bestWindowBuild';
+import { buildNowMs } from '../src/lib/buildClock';
 import { allScoresComV6, notaV6DoSpot } from '../src/lib/notaV6Agora';
 
 type ConditionsJson = Record<
@@ -82,7 +83,7 @@ function build() {
     const forecast = forecastsData[dataId] ?? forecastsData[spot.id] ?? [];
     // Kitesurf/surf: janela e nota «agora» do v6 (#218 PR 5), as mesmas do site.
     const notaV6 = notaV6DoSpot(spot, conditionsData);
-    const { bestWindowToday, bestWindowsBySport } = computeBestWindowsForSpot(spot, forecast, Date.now(), notaV6);
+    const { bestWindowToday, bestWindowsBySport } = computeBestWindowsForSpot(spot, forecast, buildNowMs(), notaV6);
     const cond = resolveConditionsEntry(spot, conditionsData);
     const useLakeDefault = !cond && isWakeboardOnly(spot);
     if (!cond && !useLakeDefault) {
