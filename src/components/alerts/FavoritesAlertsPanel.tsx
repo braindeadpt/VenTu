@@ -141,7 +141,7 @@ export default function FavoritesAlertsPanel({ locale, favoriteCount }: Favorite
           {' · '}
           {SPORT_LABELS[prefs!.sport as SportType]?.[isPt ? 'pt' : 'en'] ?? prefs!.sport}
           {' · '}
-          score ≥ {prefs!.min_score}
+          score ≥ {scoreToNota(prefs!.min_score)}
           {' · '}
           {alertModeLabel(prefs!.alert_mode, locale)}
           {prefs!.warn === true && ` · ${a.warnOptIn}`}

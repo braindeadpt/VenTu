@@ -7,6 +7,7 @@ import { Heart, ArrowLeft, Share2, Check, LogIn } from 'lucide-react';
 import { spots } from '@/lib/spots';
 import { fetchMarineData, getCurrentConditions } from '@/lib/openmeteo';
 import { getSportScore } from '@/lib/sportScore';
+import { notaV6DoSpot, scoreAgoraComV6 } from '@/lib/notaV6Agora';
 import type { SportType } from '@/lib/sportRatings';
 import { SPORT_LABELS } from '@/lib/sportRatings';
 import { getAssetPath } from '@/lib/paths';
@@ -89,7 +90,8 @@ export default function FavoritesClient() {
                 updatedAt: typeof cond.updatedAt === 'string' ? cond.updatedAt : undefined,
               };
               const primarySport = (spot.compatibleSports?.[0] || spot.type) as SportType;
-              scores[id] = getSportScore(spot, primarySport, scoreInput);
+              // kitesurf/surf: o `notaV6` do pipeline (#218 PR 4) — o mesmo número do /mapa e das listas
+              scores[id] = scoreAgoraComV6(spot, primarySport, scoreInput, notaV6DoSpot(spot, precomputed));
             }
           }
 

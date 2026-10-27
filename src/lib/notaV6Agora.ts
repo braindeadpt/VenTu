@@ -185,3 +185,21 @@ export function allScoresComV6(
     surf: sportScoreDeNotaV6(nv, 'surf'),
   } as Record<SportType, SportScore>;
 }
+
+/**
+ * Motor único (#218), PR 4: o score «agora» de UM desporto para as páginas
+ * que só mostram uma modalidade (favoritos, picker do comparar): kitesurf e
+ * surf do `notaV6` do pipeline (o mesmo número do /mapa, das listas e do
+ * alerta), as outras no `sportScore` (D5). Sem `notaV6` → motor antigo, como
+ * `allScoresComV6`.
+ */
+export function scoreAgoraComV6(
+  spot: Spot,
+  sport: SportType,
+  input: Conditions,
+  nv: NotaV6Agora | null,
+): SportScore {
+  if (nv && sport === 'kitesurf') return sportScoreDeNotaV6(nv, 'kite');
+  if (nv && sport === 'surf') return sportScoreDeNotaV6(nv, 'surf');
+  return getSportScore(spot, sport, input);
+}

@@ -5,7 +5,8 @@ import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import type { Spot } from '@/types';
 import type { SportType } from '@/lib/sportRatings';
-import { getHourlyScores, getScoreTokens, type Conditions } from '@/lib/sportScore';
+import { getScoreTokens, type Conditions } from '@/lib/sportScore';
+import { notasHorariasCompare } from '@/lib/compareHourlyScores';
 import { loadForecastForSpot } from '@/lib/spotDataCache';
 import { getConditionsDataId } from '@/lib/spotConditionsSource';
 import { getTranslation, validateLocale } from '@/lib/i18n';
@@ -14,7 +15,7 @@ import { cn } from '@/lib/cn';
 
 export interface CompareHourlyEntry {
   spot: Spot;
-  /** Score input já corrigido (boia/viés) — fallback de getHourlyScores. */
+  /** Score input já corrigido (boia/viés) — fallback do motor antigo (D5). */
   conditions: Conditions;
 }
 
@@ -110,32 +111,28 @@ export default function CompareHourlyTable({
     const columns = entries.map((e) => {
       const rows = forecasts[getConditionsDataId(e.spot)] ?? [];
       const byTime = new Map(rows.map((r) => [String(r.time ?? ''), r]));
+      // kitesurf/surf: motor v6 hora a hora (#218 PR 4), a mesma nota da régua
+      // do spot; noite → null («—»). Outras modalidades: motor antigo (D5).
+      const scores = notasHorariasCompare(
+        e.spot,
+        sport,
+        rows,
+        axis.map((h) => h.time),
+        e.conditions,
+      );
       const hourly = axis.map((h) => {
-        const r = byTime.get(h.time) as
-          | { waveHeight?: number; wavePeriod?: number; windSpeed?: number; windDirection?: number; windGust?: number; waterTemp?: number }
-          | undefined;
+        const r = byTime.get(h.time) as { waveHeight?: number; windSpeed?: number } | undefined;
         return {
-          time: h.time,
           waveHeight: r?.waveHeight ?? 0,
-          wavePeriod: r?.wavePeriod ?? 0,
           windSpeed: r?.windSpeed ?? 0,
-          windDirection: r?.windDirection ?? 0,
-          windGust: r?.windGust ?? e.conditions.windGust,
-          waterTemp: r?.waterTemp ?? e.conditions.waterTemp,
           present: Boolean(r),
         };
       });
-      const scores = getHourlyScores(
-        e.spot,
-        sport,
-        hourly.map(({ present: _present, ...rest }) => rest),
-        e.conditions,
-      );
       return {
         spot: e.spot,
         cells: hourly.map((h, i) => ({
           present: h.present,
-          score: scores[i] ?? 0,
+          score: scores[i],
           waveHeight: h.waveHeight,
           windKt: Math.round(h.windSpeed * 1.94384),
         })),
@@ -200,7 +197,7 @@ export default function CompareHourlyTable({
                 </th>
                 {prepared.columns.map((col) => {
                   const cell = col.cells[hi];
-                  if (!cell?.present) {
+                  if (!cell?.present || cell.score == null) {
                     return (
                       <td key={col.spot.id} className="py-1.5 px-3 text-fg-subtle">
                         —

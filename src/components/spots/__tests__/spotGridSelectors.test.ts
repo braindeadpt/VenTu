@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { onCount, marginalCount, top3, alternativeSport, getScoreSport } from '../spotGridSelectors'
+import { onCount, marginalCount, top3, alternativeSport, getScoreSport, compareRanking, rankingScore } from '../spotGridSelectors'
 import type { GridSpotData } from '@/lib/gridSpotFilters'
 import type { SportType, GridSportFilter } from '@/lib/sportRatings'
 import type { Spot } from '@/types'
@@ -196,5 +196,47 @@ describe('alternativeSport', () => {
     // Only spot a is in Algarve, so only 1 playable kitesurf spot
     const result = alternativeSport(spots, 'surf', 'Algarve')
     expect(result).toBe('kitesurf')
+  })
+})
+
+describe('compareRanking (#218 PR 4: ranking do /spots pela nota inteira)', () => {
+  const named = (id: string, name: string, scores: Partial<Record<SportType, number>>) => {
+    const d = makeData(id, 'Todos', scores)
+    return { ...d, spot: { ...d.spot, id, slug: id, name, nameEn: name } }
+  }
+
+  it('ordena pela nota mostrada, não pelas décimas do motor (66 e 74 são ambos «7»)', () => {
+    const a = named('a', 'Beta', { windsurf: 74 })
+    const b = named('b', 'Alfa', { windsurf: 66 })
+    // empate a 7 → nome: «Alfa» antes de «Beta»
+    expect(compareRanking(b, a, 'windsurf', 'pt')).toBeLessThan(0)
+    expect(compareRanking(a, b, 'windsurf', 'pt')).toBeGreaterThan(0)
+  })
+
+  it('nota maior primeiro; com «Todos» conta a melhor modalidade', () => {
+    const a = named('a', 'Alfa', { surf: 40, kitesurf: 90 })
+    const b = named('b', 'Beta', { surf: 80 })
+    expect(rankingScore(a, 'all')).toBe(90)
+    expect(compareRanking(a, b, 'all', 'pt')).toBeLessThan(0)
+    expect(compareRanking(a, b, 'surf', 'pt')).toBeGreaterThan(0)
+  })
+
+  it('a ordem não depende da ordem de entrada (desempate nome → slug)', () => {
+    const list = [
+      named('z', 'Mesmo', { surf: 70 }),
+      named('m', 'Outro', { surf: 72 }),
+      named('a', 'Mesmo', { surf: 68 }),
+      named('k', 'Topo', { surf: 90 }),
+    ]
+    const ids = (l: GridSpotData[]) => l.map((d) => d.spot.id)
+    const s1 = [...list].sort((x, y) => compareRanking(x, y, 'surf', 'pt'))
+    const s2 = [...list].reverse().sort((x, y) => compareRanking(x, y, 'surf', 'pt'))
+    expect(ids(s1)).toEqual(['k', 'a', 'z', 'm'])
+    expect(ids(s2)).toEqual(ids(s1))
+  })
+
+  it('big-wave lê o surf (D8)', () => {
+    const a = named('a', 'Alfa', { surf: 60 })
+    expect(rankingScore(a, 'big-wave')).toBe(60)
   })
 })

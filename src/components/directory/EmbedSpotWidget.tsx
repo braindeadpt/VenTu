@@ -4,7 +4,8 @@ import { scoreToNota } from '@/lib/nota';
 import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { getSpotBySlug, spots } from '@/lib/spots';
-import { getAllSportScores, getScoreTokens } from '@/lib/sportScore';
+import { getScoreTokens } from '@/lib/sportScore';
+import { allScoresComV6, notaV6DoSpot } from '@/lib/notaV6Agora';
 import { rawToScoreInput } from '@/lib/scoreConditions';
 import { SITE_URL } from '@/lib/site';
 import { getTranslation } from '@/lib/i18n';
@@ -44,7 +45,8 @@ export default function EmbedSpotWidget({ slug }: { slug: string }) {
         const raw = file[spot.id] || file[spot.slug];
         if (!raw) return;
         const input = rawToScoreInput(raw as Record<string, unknown>);
-        const sports = getAllSportScores(spot, input);
+        // kitesurf/surf do `notaV6` do pipeline (#218 PR 4), as outras no motor antigo (D5)
+        const sports = allScoresComV6(spot, input, notaV6DoSpot(spot, file as Record<string, unknown>));
         const best = Math.max(0, ...Object.values(sports).map((s) => s.score));
         setScore(Number.isFinite(best) ? best : 0);
         const h = raw.swellHeight ?? raw.waveHeight;

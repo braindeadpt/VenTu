@@ -17,7 +17,7 @@ import {
   marginalCount as computeMarginalCount,
   top3 as computeTop3,
   alternativeSport as computeAlternativeSport,
-  getScoreSport,
+  compareRanking,
 } from '../spotGridSelectors';
 
 type SortOption = 'score' | 'distance';
@@ -63,11 +63,14 @@ export function useSpotGridFilters({
   regions,
   initialSport,
   initialRegion,
+  locale = 'pt',
 }: {
   spotsData: GridSpotData[];
   regions: string[];
   initialSport?: string;
   initialRegion?: string;
+  /** Desempate do ranking por nome localizado. */
+  locale?: string;
 }) {
   const skipUrlSync = useRef(false);
   const [selectedSport, setSelectedSport] = useState<GridSportFilter>(DEFAULT_SPORT);
@@ -124,15 +127,9 @@ export function useSpotGridFilters({
         const distB = calculateDistance(latitude, longitude, b.spot.lat, b.spot.lon);
         return distA - distB;
       }
-      if (selectedSport === 'all') {
-        const bestA = Math.max(...Object.values(a.allScores).map(s => s.score || 0));
-        const bestB = Math.max(...Object.values(b.allScores).map(s => s.score || 0));
-        return bestB - bestA;
-      }
-      const scoreKey = getScoreSport(selectedSport)!;
-      return (b.allScores[scoreKey]?.score || 0) - (a.allScores[scoreKey]?.score || 0);
+      return compareRanking(a, b, selectedSport, locale);
     });
-  }, [filtered, selectedSport, sortBy, latitude, longitude]);
+  }, [filtered, selectedSport, sortBy, latitude, longitude, locale]);
 
   const onCountMemo = useMemo(
     () => computeOnCount(sorted, selectedSport),
