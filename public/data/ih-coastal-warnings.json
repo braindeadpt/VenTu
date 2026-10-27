@@ -351,70 +351,6 @@
       ]
     },
     {
-      "id": 18919,
-      "ref": "ANAV NR 2397/26",
-      "category": "Requisitos de segurança maritima",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=f20555be-59e6-48a1-ac1c-0b3190b1b652",
-      "source": "ih",
-      "collection": "nav_warning_coastal",
-      "polygons": [
-        [
-          [
-            -8.894598,
-            41.843222
-          ],
-          [
-            -8.894598,
-            41.872245
-          ],
-          [
-            -8.853409,
-            41.872245
-          ],
-          [
-            -8.853409,
-            41.843222
-          ],
-          [
-            -8.894598,
-            41.843222
-          ]
-        ]
-      ]
-    },
-    {
-      "id": 18921,
-      "ref": "ANAV NR 2398/26",
-      "category": "Requisitos de segurança maritima",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=482e10d9-cb7f-407e-963c-2dcd317ff414",
-      "source": "ih",
-      "collection": "nav_warning_coastal",
-      "polygons": [
-        [
-          [
-            -8.884657,
-            41.807725
-          ],
-          [
-            -8.884657,
-            41.822246
-          ],
-          [
-            -8.85428,
-            41.822246
-          ],
-          [
-            -8.85428,
-            41.807725
-          ],
-          [
-            -8.884657,
-            41.807725
-          ]
-        ]
-      ]
-    },
-    {
       "id": 18923,
       "ref": "ANAV NR 2399/26",
       "category": "Requisitos de segurança maritima",
@@ -7513,12 +7449,10 @@
   ],
   "coverage": {
     "moledo": [
-      18919,
       1003280,
       1003281
     ],
     "vila-praia-ancora": [
-      18921,
       1003280,
       1003281
     ],
@@ -8273,7 +8207,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-10-27T00:06:08.939Z",
+  "fetchedAt": "2026-10-27T12:06:32.083Z",
   "sourceCollection": "nav_warning_coastal+nav_warning_local+orca_anavnet_point",
   "sourceUrl": "https://ogcapi.hidrografico.pt/collections/nav_warning_coastal"
 }
