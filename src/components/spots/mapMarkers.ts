@@ -652,6 +652,23 @@ export interface V3SpotMarkerOptions {
   scoreOverride?: MapHourScore;
 }
 
+/** Nome acessível do marcador v3: nome do spot (+ noite) e, num grupo, a contagem. */
+interface V3MarkerAria {
+  label: string;
+  more?: string;
+}
+type V3MarkerMeta = L.Marker & {
+  spotScore?: number;
+  spotNight?: boolean;
+  ventuData?: MapSpotData;
+  ventuAria?: V3MarkerAria;
+};
+
+function setV3MarkerAria(el: Pick<HTMLElement, 'setAttribute'>, aria: V3MarkerAria | undefined): void {
+  if (!aria) return;
+  el.setAttribute('aria-label', aria.more ? `${aria.label} · ${aria.more}` : aria.label);
+}
+
 /**
  * Marcador Leaflet do nível de detalhe por colisão: full ou dot consoante a
  * decisão de `planMarkerLayout`. O clique abre a pré-visualização (cartão no
@@ -693,23 +710,27 @@ export function createV3SpotMarker(
     // Pontos por baixo dos completos; o seleccionado sobe acima de todos.
     zIndexOffset: layout.kind === 'dot' ? -1000 : 0,
   });
-  const withMeta = marker as L.Marker & { spotScore?: number; spotNight?: boolean; ventuData?: MapSpotData };
+  const withMeta = marker as V3MarkerMeta;
   if (night) withMeta.spotNight = true;
   else withMeta.spotScore = score;
   withMeta.ventuData = data;
+  // O badge «+N» é aria-hidden, por isso a contagem do grupo entra no
+  // nome do marcador — senão o leitor de ecrã perdia a informação.
+  // Nome localizado — o mesmo da lista «Nesta vista» e do tooltip.
+  // Noite: «Guincho · noite, sem nota» — o disco não tem número para ler.
+  // Guardado no marcador: `applyV3LayoutIcon` reescreve o nome quando o papel
+  // muda (o grupo desfaz-se ao desagrupar/ampliar) — o DivIcon reaproveita o
+  // mesmo <div> e o nome antigo («· Mais 36 spots perto») ficava agarrado.
+  const name = localizedSpotDisplayName(spot, options.locale);
+  withMeta.ventuAria = {
+    label: night ? `${name} · ${mapNightCopy(options.locale).aria}` : name,
+    more: moreAriaLabel,
+  };
 
   marker.on('add', () => {
     const el = marker.getElement();
     if (!el) return;
-    if (!el.hasAttribute('aria-label')) {
-      // O badge «+N» é aria-hidden, por isso a contagem do grupo entra no
-      // nome do marcador — senão o leitor de ecrã perdia a informação.
-      // Nome localizado — o mesmo da lista «Nesta vista» e do tooltip.
-      const name = localizedSpotDisplayName(spot, options.locale);
-      // Noite: «Guincho · noite, sem nota» — o disco não tem número para ler.
-      const label = night ? `${name} · ${mapNightCopy(options.locale).aria}` : name;
-      el.setAttribute('aria-label', moreAriaLabel ? `${label} · ${moreAriaLabel}` : label);
-    }
+    if (!el.hasAttribute('aria-label')) setV3MarkerAria(el, withMeta.ventuAria);
     // Ponte de hover com a lista «Nesta vista» (M3 §5) — igual ao
     // marcador clássico: a linha liga .ventu-list-hover neste elemento e
     // a delegação pointerover lê data-spot-id no sentido inverso.
@@ -788,4 +809,19 @@ export function applyV3LayoutIcon(
       : buildV3DotIcon(Leaflet, data.spot.id, score, night);
   marker.setIcon(icon);
   marker.setZIndexOffset(layout.kind === 'dot' ? -1000 : 0);
+  // O nome acessível acompanha o papel novo: «Nazaré · Mais 36 spots perto —
+  // ampliar» só enquanto o grupo existe (o setIcon reaproveita o <div> e não
+  // toca no aria-label que o `add` escreveu).
+  const meta = marker as V3MarkerMeta;
+  if (meta.ventuAria) {
+    meta.ventuAria = {
+      ...meta.ventuAria,
+      more:
+        layout.kind === 'full' && layout.memberIds.length > 1
+          ? options.moreAriaTemplate?.replace('{n}', String(layout.memberIds.length - 1))
+          : undefined,
+    };
+    const el = marker.getElement();
+    if (el) setV3MarkerAria(el, meta.ventuAria);
+  }
 }
