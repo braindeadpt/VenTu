@@ -2,6 +2,12 @@ import { expect, type Page } from '@playwright/test';
 import fs from 'node:fs';
 import path from 'node:path';
 import { forceLiveSpotMode } from './conditions';
+import { metaCosta } from '../../../src/lib/home/dadosHomeServidor';
+import { compactarCosta, montarCosta } from '../../../src/lib/home/dadosHome';
+import { criarModelo } from '../../../src/lib/home/homeV6';
+import { estadoHome } from '../../../src/lib/home/estadoHome';
+import { homeV6Copy } from '../../../src/lib/translations/homeV6';
+import type { LinhaForecast } from '../../../src/lib/horaSpot';
 
 /**
  * #183 — home v6 «Atlântico»: fixture hermética com os dados da maquete aprovada
@@ -44,6 +50,32 @@ export const FORECASTS_MAQUETE: Record<string, string> = Object.fromEntries(
 /** «agora» da maquete: qua 14 out 2026, 14h em Lisboa (WEST). */
 export const AGORA_MAQUETE = new Date('2026-10-14T13:00:00Z');
 export const NOITE_MAQUETE = new Date('2026-10-14T21:00:00Z');
+
+/**
+ * Frase nacional esperada para a fixture da maquete (kite, sem bloco escolhido), calculada
+ * em Node com o MESMO motor da home (`metaCosta` → `compactarCosta` → `montarCosta` →
+ * `criarModelo` → `estadoHome`) sobre as MESMAS linhas que `fixtureMaquete` serve.
+ *
+ * Porquê: a frase nomeia os spots das pontas da faixa «bons» e a zona («à volta de
+ * Lisboa» / «na costa oeste»), e isso depende dos metadados de cada spot (coordenadas,
+ * praia virada, modalidades) — que mudam com correcções de dados aprovadas (#321 pôs o
+ * Baleal no Cantinho da Baía, 300°, e a frase passou de «do Guincho à Lagoa» a «do Baleal
+ * à Lagoa»). Um literal no teste partia a cada correcção; aqui o teste prova que o HTML
+ * mostra o que o motor diz para estes dados, e o spec assere à parte a forma da frase.
+ * Texto sem marcas (`<b>`/`<em>`), como o `textContent` do parágrafo.
+ */
+export function fraseMaquete(locale: 'pt' | 'en' = 'pt', agora: Date = AGORA_MAQUETE): string {
+  const meta = metaCosta();
+  const linhasPorSpot: Record<string, LinhaForecast[]> = {};
+  for (const [id, m] of Object.entries(meta)) {
+    const body = FORECASTS_MAQUETE[m.serie];
+    linhasPorSpot[id] = body ? (JSON.parse(body) as LinhaForecast[]) : [];
+  }
+  const t = agora.getTime();
+  const costa = montarCosta(compactarCosta(linhasPorSpot, t, meta), t, meta);
+  const E = estadoHome(criarModelo(costa.spots, homeV6Copy(locale)), 'kite', costa.agoraI < 0 ? 0 : costa.agoraI, null);
+  return E.frase.txt.replace(/<[^>]+>/g, '');
+}
 
 /** Cookie + forecasts da maquete + relógio fixo. Chamar ANTES do goto. */
 export async function fixtureMaquete(page: Page, agora: Date = AGORA_MAQUETE) {

@@ -1,5 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
-import { abreHome, caixa, fixtureMaquete, NOITE_MAQUETE } from './helpers/homeV6';
+import { abreHome, caixa, fixtureMaquete, fraseMaquete, NOITE_MAQUETE } from './helpers/homeV6';
 import { VENTO_MOVEL } from '../../src/lib/home/hrefMapa';
 
 /**
@@ -16,7 +16,8 @@ import { VENTO_MOVEL } from '../../src/lib/home/hrefMapa';
  *  - WebGL2 obrigatório (fallback plano estático com setas), prefers-reduced-motion;
  *  - toques ≥ 44 × 44; créditos com ligação; ventu.modalidade {d, v} nos dois sentidos; PT e EN;
  *  - nunca «/100» nem números > 10 junto a rótulos de nota.
- * Os testes com conteúdo fixo usam os dados da maquete (`fixtureMaquete`): «VAI.», Guincho 9.
+ * Os testes com conteúdo fixo usam os dados da maquete (`fixtureMaquete`): «VAI.», Guincho 9; a frase
+ * nacional (que nomeia spots e zona) é derivada do motor sobre a mesma fixture (`fraseMaquete`).
  */
 
 async function leituraLista(page: Page) {
@@ -46,7 +47,11 @@ test.describe('#183 home v6 — 390 × 844', () => {
     await abreHome(page, '/pt/', { maquete: true });
     await expect(page.getByTestId('home-palavra')).toHaveText(/^Vai\./);
     await expect(page.getByTestId('home-palavra')).toHaveCSS('text-transform', 'uppercase');
-    await expect(page.getByTestId('home-frase')).toHaveText('Nortada a apertar à volta de Lisboa: kite bom a muito bom do Guincho à Lagoa, até às 19h.');
+    // A frase nomeia as pontas da faixa «bons» — derivada do motor sobre a fixture (ver
+    // fraseMaquete): os spots/zona mudam com correcções de dados, a forma não.
+    const frase = fraseMaquete('pt');
+    expect(frase).toMatch(/^Nortada a apertar .+: kite bom a muito bom .+, até às 19h\.$/);
+    await expect(page.getByTestId('home-frase')).toHaveText(frase);
     await expect(page.getByTestId('home-lider')).toHaveAttribute('data-spot', 'guincho');
     await expect(page.getByTestId('home-lider')).toHaveAttribute('data-nota', '9');
     await expect(page.getByTestId('home-quando')).toHaveText(/qua 14 out · 14h · agora/i);
@@ -387,7 +392,9 @@ test.describe('#183 home v6 — HTML estático, bundle, WebGL e movimento', () =
     await fixtureMaquete(page);
     await abreHome(page, '/en/', { maquete: true });
     await expect(page.getByTestId('home-palavra')).toHaveText(/^Go\./);
-    await expect(page.getByTestId('home-frase')).toContainText('kite good to very good from Guincho to Lagoa, until 19:00.');
+    const frase = fraseMaquete('en');
+    expect(frase).toMatch(/kite good to very good from .+ to .+, until 19:00\.$/);
+    await expect(page.getByTestId('home-frase')).toHaveText(frase);
     await expect(page.getByTestId('home-mapa').getByRole('link', { name: 'Explore the coast map' })).toHaveAttribute('href', /^\/en\/mapa\/\?sport=kitesurf/);
     await expect(page.getByTestId('home-regua')).toContainText(/Today · 14h|Today · 14:00/);
   });
