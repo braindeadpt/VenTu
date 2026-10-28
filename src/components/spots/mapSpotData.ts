@@ -2,6 +2,7 @@ import type { Spot } from '@/types';
 import type { SportType, GridSportFilter } from '@/lib/sportRatings';
 import type { SportScore } from '@/lib/sportScore';
 import type { MarineConditionsFields } from '@/lib/marineConditions';
+import { scoreTodos } from '@/lib/desportosV6';
 
 /** Spot + live conditions + scores — shared by map markers and SpotMapInteractive. */
 export interface MapSpotData {
@@ -50,9 +51,7 @@ export function getBestScore(
   if (typeof scoreOverride === 'number' && Number.isFinite(scoreOverride)) {
     return scoreOverride;
   }
-  if (sport === 'all') {
-    return Math.max(...Object.values(data.allScores).map((s) => s?.score || 0));
-  }
+  if (sport === 'all') return scoreTodos(data.spot, data.allScores);
   if (sport === 'big-wave') {
     return data.allScores.surf?.score || 0;
   }

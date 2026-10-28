@@ -1,16 +1,17 @@
 import { describe, it, expect } from 'vitest';
 import { spots } from '@/lib/spots';
-import { getAllSportScores } from '@/lib/sportScore';
+import { getSportScore } from '@/lib/sportScore';
+import { allScoresComV6 } from '@/lib/notaV6Agora';
 import { refreshGridSpotScores } from '@/lib/refreshGridSpotScores';
 import type { GridSpotData } from '@/lib/gridSpotFilters';
 import { ktToMs } from '@/lib/scoreConditions';
 
-function mockRow(spotId: string): GridSpotData {
+function mockRow(spotId: string, waveHeight = 0.5): GridSpotData {
   const spot = spots.find((s) => s.id === spotId)!;
   return {
     spot,
     conditions: {
-      waveHeight: 0.5,
+      waveHeight,
       wavePeriod: 8,
       waveDirection: 270,
       windSpeed: ktToMs(7),
@@ -18,26 +19,26 @@ function mockRow(spotId: string): GridSpotData {
       windGust: ktToMs(9),
       waterTemp: 18,
     },
-    allScores: getAllSportScores(spot, {
-      waveHeight: 0.5,
+    // bake sem notaV6: v6 «sem dados», SUP / wakeboard no motor antigo
+    allScores: allScoresComV6(spot, {
+      waveHeight,
       wavePeriod: 8,
       waveDirection: 270,
       windSpeed: ktToMs(7),
       windDirection: 270,
       windGust: ktToMs(9),
       waterTemp: 18,
-    }),
+    }, null),
   };
 }
 
 describe('refreshGridSpotScores', () => {
-  // #218 PR 3: kitesurf e surf já não se recalculam no cliente (vêm do
+  // #218 PRs 3 e 6: as modalidades v6 já não se recalculam no cliente (vêm do
   // `notaV6` do pipeline, que aplica as observações frescas — ver o bloco
-  // «notaV6» abaixo). O vento observado continua a subir as modalidades do
-  // motor antigo (D5): windsurf.
-  it('boosts windsurf score when fresh IPMA wind is stronger', () => {
+  // «notaV6» abaixo). O vento observado continua a entrar no motor antigo: SUP.
+  it('fresh IPMA wind (16 kt) lowers the SUP score; v6 stay as baked', () => {
     const row = mockRow('guincho');
-    const before = row.allScores.windsurf.score;
+    const before = row.allScores.sup.score;
     const json = {
       guincho: {
         waveHeight: 0.5,
@@ -59,16 +60,20 @@ describe('refreshGridSpotScores', () => {
       },
     };
     const [updated] = refreshGridSpotScores([row], json);
-    expect(updated.allScores.windsurf.score).toBeGreaterThan(before);
-    // sem `notaV6` no ficheiro servido, o kite fica o do bake (nunca o motor antigo no cliente)
-    expect(updated.allScores.kitesurf).toBe(row.allScores.kitesurf);
+    expect(updated.allScores.sup.score).toBeLessThan(before);
+    // sem `notaV6` no ficheiro servido, as v6 ficam as do bake (nunca um motor no cliente)
+    for (const s of ['kitesurf', 'surf', 'windsurf', 'bodyboard', 'foil'] as const) {
+      expect(updated.allScores[s]).toBe(row.allScores[s]);
+    }
   });
 
   it('aplica o fallback do viés regional (wave-bias.json) quando a row não tem o meta', () => {
-    const row = mockRow('guincho'); // região 'Cascais'
+    // SUP (motor antigo): 0,3 m é «plano» (< 0,5 m), 0,3 + 0,3 = 0,6 m já não —
+    // o score muda só se a altura corrigida entrar no motor.
+    const row = mockRow('guincho', 0.3); // região 'Cascais'
     const json = {
       guincho: {
-        waveHeight: 1.5,
+        waveHeight: 0.3,
         wavePeriod: 8,
         waveDirection: 270,
         windSpeed: ktToMs(7),
@@ -86,7 +91,7 @@ describe('refreshGridSpotScores', () => {
     };
 
     const [updated] = refreshGridSpotScores([row], json, waveBiasFile);
-    expect(updated.conditions.waveHeight).toBe(1.8); // round1(1.5 + 0.3)
+    expect(updated.conditions.waveHeight).toBe(0.6); // round1(0.3 + 0.3)
     // O fallback client-side marca `fallback: true` — distingue o tooltip da
     // correcção baked pela pipeline (que não carrega o campo).
     expect(updated.conditions.waveBias).toEqual({
@@ -96,9 +101,9 @@ describe('refreshGridSpotScores', () => {
       deltaM: 0.3,
       fallback: true,
     });
-    // O score usa a altura corrigida — não a previsão crua (bodyboard, motor
-    // antigo; o surf v6 vem do pipeline, PR 3).
-    expect(updated.allScores.bodyboard.score).not.toBe(row.allScores.bodyboard.score);
+    // O score usa a altura corrigida — não a previsão crua (SUP, motor antigo:
+    // 0,3 m plano → 0,6 m ondas pequenas; as v6 vêm do pipeline, PRs 3 e 6).
+    expect(updated.allScores.sup.score).not.toBe(row.allScores.sup.score);
   });
 
   it('nunca corrige duas vezes: row já com meta waveBias (pipeline) fica intacta', () => {
@@ -302,7 +307,7 @@ describe('refreshGridSpotScores — notaV6 do pipeline (#218, PR 3)', () => {
     waterTemp: 18,
   };
 
-  it('kitesurf e surf = notaV6 × 10 (uma atribuição); as outras no motor antigo', () => {
+  it('v6 = notaV6 × 10 (uma atribuição); modalidade que o ficheiro não traz fica a do bake; SUP no antigo', () => {
     const row = mockRow('guincho');
     const json = {
       guincho: {
@@ -323,7 +328,24 @@ describe('refreshGridSpotScores — notaV6 do pipeline (#218, PR 3)', () => {
     expect(u.allScores.kitesurf.factors).toEqual(['18kt vento', 'side-offshore']);
     expect(u.allScores.kitesurf.directionSafety).toBe('side-offshore');
     expect(u.allScores.surf.primaryFactor).toBe('1.5m');
-    expect(u.allScores.windsurf.score).toBe(getAllSportScores(row.spot, base).windsurf.score);
+    // notaV6 anterior ao PR 6 (sem windsurf/bodyboard/foil): fica o bake
+    expect(u.allScores.windsurf).toBe(row.allScores.windsurf);
+    expect(u.allScores.sup.score).toBe(getSportScore(row.spot, 'sup', base).score);
+  });
+
+  it('PR 6: windsurf, bodyboard e foil também do notaV6 (aviso de direcção em `sg`)', () => {
+    const row = mockRow('guincho');
+    const [u] = refreshGridSpotScores([row], {
+      guincho: {
+        ...base,
+        notaV6: { t: '2026-09-08T14:00', kite: 7, surf: 4, windsurf: 5, bodyboard: 6, foil: 8, vf: 'wing', sg: { windsurf: 'side-offshore' } },
+      },
+    });
+    expect(u.allScores.windsurf.score).toBe(50);
+    expect(u.allScores.windsurf.directionSafety).toBe('side-offshore');
+    expect(u.allScores.bodyboard.score).toBe(60);
+    expect(u.allScores.foil.score).toBe(80);
+    expect(u.allScores.foil.directionSafety).toBeUndefined();
   });
 
   it('noite: score 0 com a marca `noite` (não «0 · Não dá»)', () => {

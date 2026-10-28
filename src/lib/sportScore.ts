@@ -1,10 +1,13 @@
 // Sport-Specific Scoring System
-// Each sport has its own criteria — NO mixed generic score
+// Desde o motor único (#218, PR 6) este ficheiro só pontua SUP e wakeboard;
+// guarda os tipos partilhados (`SportScore`, `Conditions`), a segurança do
+// vento (`windSportDirectionSafety`, também usada pelo tecto do v6) e os
+// tokens de cor / etiquetas das bandas.
 
 import { getTranslation } from '@/lib/i18n';
 import { Spot } from '@/types'
 import { SportType, getCompatibleSports } from './sportRatings'
-import { SCORE_TIER_THRESHOLDS, notaToScore, scoreTierFromScore } from './nota'
+import { SCORE_TIER_THRESHOLDS, scoreTierFromScore } from './nota'
 
 export interface Conditions {
   waveHeight: number
@@ -31,94 +34,6 @@ export interface SportScore {
 }
 
 // ─── Per-sport config ───
-
-const SURF_CONFIG = {
-  WAVE_PTS_MAX: 40,
-  WAVE_PTS_PER_M: 15,
-  PERIOD_PTS_MAX: 20,
-  PERIOD_BASE_S: 5,
-  PERIOD_PTS_PER_S: 3,
-  WIND_OFFSHORE_MAX: 25,
-  WIND_OFFSHORE_DECAY: 0.5,
-  WIND_OTHER_MAX: 15,
-  WIND_OTHER_DECAY: 0.3,
-  TEMP_PTS_MAX: 15,
-  TEMP_PTS_PER_DEG: 0.5,
-} as const
-
-const BODYBOARD_CONFIG = {
-  WAVE_PTS_MAX: 45,
-  WAVE_PTS_PER_M: 18,
-  PERIOD_PTS_MAX: 20,
-  PERIOD_BASE_S: 4,
-  PERIOD_PTS_PER_S: 3,
-  WIND_MAX: 25,
-  WIND_DECAY: 0.4,
-  TEMP_PTS_MAX: 10,
-  TEMP_PTS_PER_DEG: 0.4,
-} as const
-
-const KITE_CONFIG = {
-  /** Below this: no «Razoável» — flat sea / gusts must not inflate the score. */
-  WIND_SESSION_MIN_KT: 15,
-  WIND_IDEAL_MIN_KT: 15,
-  WIND_IDEAL_MAX_KT: 30,
-  WIND_PTS_IDEAL: 60,
-  WIND_STRONG_PTS: 50,
-  WIND_PTS_PER_KT: 2,
-  /** Marginal band 12–14 kt before session minimum; no secondary bonuses. */
-  WIND_PTS_MIN_KT: 12,
-  /** Below 12 kt: linear scale (not flat 15) — still capped below «Razoável». */
-  WIND_MARGINAL_PTS_PER_KT: 2.5,
-  GUST_LOW_MAX: 10,
-  GUST_LOW_PTS: 15,
-  GUST_MED_MAX: 20,
-  GUST_MED_PTS: 10,
-  GUST_HIGH_PTS: 5,
-  WAVE_SMALL_MAX: 1.5,
-  WAVE_SMALL_PTS: 15,
-  WAVE_MED_MAX: 2.5,
-  WAVE_MED_PTS: 8,
-  TEMP_PTS_MAX: 10,
-  TEMP_PTS_PER_DEG: 0.3,
-  WIND_DIR_PTS_MAX: 10,
-} as const
-
-const WIND_CONFIG = {
-  WIND_SESSION_MIN_KT: 15,
-  WIND_IDEAL_MIN_KT: 15,
-  WIND_IDEAL_MAX_KT: 28,
-  WIND_IDEAL_PTS: 55,
-  WIND_PTS_PER_KT: 2,
-  /** Below session min: linear scale (not flat 15). */
-  WIND_PTS_MIN_KT: 15,
-  WIND_MARGINAL_PTS_PER_KT: 2.2,
-  WAVE_IDEAL_MIN: 1,
-  WAVE_IDEAL_MAX: 3,
-  WAVE_IDEAL_PTS: 20,
-  WAVE_OTHER_PTS: 10,
-  TEMP_PTS_MAX: 10,
-  TEMP_PTS_PER_DEG: 0.3,
-  WIND_DIR_PTS_MAX: 10,
-} as const
-
-const FOIL_CONFIG = {
-  WIND_IDEAL_MIN_KT: 10,
-  WIND_IDEAL_MAX_KT: 25,
-  WIND_IDEAL_PTS: 50,
-  WIND_LIGHT_PTS: 25,
-  WIND_STRONG_PTS: 20,
-  WIND_MIN_PTS: 5,
-  WAVE_FLAT_MAX: 0.5,
-  WAVE_FLAT_PTS: 25,
-  WAVE_SMALL_MAX: 1.0,
-  WAVE_SMALL_PTS: 15,
-  WAVE_MED_MAX: 1.5,
-  WAVE_MED_PTS: 5,
-  TEMP_PTS_MAX: 15,
-  TEMP_PTS_PER_DEG: 0.4,
-  WIND_DIR_PTS_MAX: 8,
-} as const
 
 const SUP_CONFIG = {
   WAVE_FLAT_MAX: 0.5,
@@ -168,8 +83,6 @@ export type WindSafetyLevel = 'side-offshore' | 'offshore'
 
 /** Offshore wind caps the whole wind-sport nota here (/10, #210). */
 export const WIND_SPORT_OFFSHORE_SCORE_CAP = 2.5
-/** Tecto do score com vento curto (kite/windsurf) — valor da fórmula, independente das bandas (#210). */
-const WIND_SHORT_SCORE_CAP = 39
 
 /** Side-offshore caps the whole wind-sport nota here (/10, #195) — never Bom/Muito bom. */
 export const WIND_SPORT_SIDE_OFFSHORE_SCORE_CAP = 5.0
@@ -250,228 +163,17 @@ export function windSportDirectionSafety(
   }
 }
 
-/** Direction points for a wind sport (redistributed within the 100-pt cap). */
-function windDirFactor(dir: WindSportDirectionSafety, maxPts: number): number {
-  return Math.round(maxPts * dir.dirFactor)
-}
+// ─── Motor antigo: só SUP e wakeboard (#218, PR 6) ───
+//
+// Surf, kitesurf, windsurf, bodyboard e foil pontuam no motor v6
+// (`notaUnica.notaHora` / o `notaV6` do pipeline). Aqui ficam só as duas
+// modalidades sem definição v6 usável: o SUP (sem definição) e o wakeboard (a
+// lógica `plana` do v6 só pontua spots de água plana curada, e nenhum dos
+// spots de wake o é — decisão do Pedro, 27/10).
 
-/**
- * Caps the non-direction points at `100 − maxDirPts` so a saturated session
- * (kite: wind+gust+waves+temp can exceed 100) still ranks by direction —
- * cross-shore 20 kt must beat onshore 20 kt instead of both pinning at 100.
- */
-function withDirectionHeadroom(score: number, dirPts: number, maxDirPts: number): number {
-  return Math.min(score - dirPts, 100 - maxDirPts) + dirPts
-}
+/** Modalidades que ainda pontuam no motor antigo. */
+export type DesportoAntigo = 'sup' | 'wakeboard'
 
-/** Applies the offshore / side-offshore cap and the visible safety warning to a wind-sport score. */
-function applyWindSafety(
-  result: SportScore,
-  dir: WindSportDirectionSafety,
-): SportScore {
-  if (!dir.safety) return result
-  // Tecto arredondado PARA BAIXO na escala da nota: 2,5 → 20 (2 · Não dá).
-  // Com 25 a nota mostrada era round(2,5) = 3 · Fraco, acima do tecto (auditoria 16/10, M7).
-  const score = dir.scoreCap !== null ? Math.min(result.score, notaToScore(Math.floor(dir.scoreCap + 1e-9))) : result.score
-  const pt = getTranslation('pt').windSafety
-  const en = getTranslation('en').windSafety
-  const key = dir.safety === 'offshore' ? 'offshore' : 'sideOffshore'
-  return {
-    ...result,
-    score,
-    ...getRatingLabels(score),
-    warning: pt[key],
-    warningEn: en[key],
-    directionSafety: dir.safety,
-  }
-}
-
-// ─── Sport Scoring Logic ───
-
-function scoreSurf(spot: Spot, c: Conditions): SportScore {
-  const factors: string[] = []
-  const factorsEn: string[] = []
-  let score = 0
-
-  const windKt = c.windSpeed * 1.94384
-
-  const waveScore = Math.min(c.waveHeight * SURF_CONFIG.WAVE_PTS_PER_M, SURF_CONFIG.WAVE_PTS_MAX)
-  score += waveScore
-  if (c.waveHeight > 0.5) {
-    factors.push(`${c.waveHeight.toFixed(1)}m ondas`)
-    factorsEn.push(`${c.waveHeight.toFixed(1)}m waves`)
-  }
-
-  const periodScore = Math.min((c.wavePeriod - SURF_CONFIG.PERIOD_BASE_S) * SURF_CONFIG.PERIOD_PTS_PER_S, SURF_CONFIG.PERIOD_PTS_MAX)
-  score += Math.max(0, periodScore)
-  if (c.wavePeriod > 8) {
-    factors.push(`${c.wavePeriod.toFixed(0)}s período`)
-    factorsEn.push(`${c.wavePeriod.toFixed(0)}s period`)
-  }
-
-  const angleDiff = Math.abs(c.windDirection - (spot.coastOrientation ?? 270))
-  const normalizedDiff = angleDiff > 180 ? 360 - angleDiff : angleDiff
-  // água interior: sem offshore (o vento conta como «outro», qualquer direcção)
-  const isOffshore = !spot.aguaInterior && normalizedDiff > 90
-  const windScore = isOffshore
-    ? Math.max(0, SURF_CONFIG.WIND_OFFSHORE_MAX - windKt * SURF_CONFIG.WIND_OFFSHORE_DECAY)
-    : Math.max(0, SURF_CONFIG.WIND_OTHER_MAX - windKt * SURF_CONFIG.WIND_OTHER_DECAY)
-  score += windScore
-  if (isOffshore) {
-    factors.push('Vento offshore')
-    factorsEn.push('Offshore wind')
-  } else if (windKt < 10) {
-    factors.push('Vento fraco')
-    factorsEn.push('Light wind')
-  }
-
-  score += Math.min(c.waterTemp * SURF_CONFIG.TEMP_PTS_PER_DEG, SURF_CONFIG.TEMP_PTS_MAX)
-
-  score = Math.round(Math.min(100, Math.max(0, score)))
-
-  return {
-    score,
-    ...getRatingLabels(score),
-    factors,
-    factorsEn,
-    primaryFactor: `${c.waveHeight.toFixed(1)}m @ ${c.wavePeriod.toFixed(0)}s`,
-  }
-}
-
-function scoreKitesurf(spot: Spot, c: Conditions): SportScore {
-  const factors: string[] = []
-  const factorsEn: string[] = []
-  const pushFactor = (pt: string, en: string) => {
-    factors.push(pt)
-    factorsEn.push(en)
-  }
-  let score = 0
-
-  const windKt = c.windSpeed * 1.94384
-  const dirSafety = windSportDirectionSafety(spot, c.windDirection)
-
-  if (windKt < KITE_CONFIG.WIND_PTS_MIN_KT) {
-    score = Math.round(windKt * KITE_CONFIG.WIND_MARGINAL_PTS_PER_KT)
-    if (windKt >= 8) {
-      const dirPts = Math.round(windDirFactor(dirSafety, KITE_CONFIG.WIND_DIR_PTS_MAX) * 0.5)
-      score += dirPts
-      if (dirPts > 0 && dirSafety.direction) pushFactor(`Vento ${dirSafety.direction}`, `${dirSafety.direction} wind`)
-    }
-    score = Math.min(score, WIND_SHORT_SCORE_CAP)
-    pushFactor('Vento insuficiente', 'Not enough wind')
-  } else if (windKt < KITE_CONFIG.WIND_SESSION_MIN_KT) {
-    score = Math.round(windKt * KITE_CONFIG.WIND_PTS_PER_KT)
-    pushFactor(`${windKt.toFixed(0)}kt vento fraco`, `${windKt.toFixed(0)}kt light wind`)
-    score = Math.min(score, WIND_SHORT_SCORE_CAP)
-  } else {
-    let windScore = 0
-    if (windKt >= KITE_CONFIG.WIND_IDEAL_MIN_KT && windKt <= KITE_CONFIG.WIND_IDEAL_MAX_KT) {
-      windScore = KITE_CONFIG.WIND_PTS_IDEAL
-      pushFactor(`${windKt.toFixed(0)}kt vento`, `${windKt.toFixed(0)}kt wind`)
-    } else if (windKt > KITE_CONFIG.WIND_IDEAL_MAX_KT) {
-      windScore = KITE_CONFIG.WIND_STRONG_PTS
-      pushFactor(`${windKt.toFixed(0)}kt vento forte`, `${windKt.toFixed(0)}kt strong wind`)
-    } else {
-      windScore = windKt * KITE_CONFIG.WIND_PTS_PER_KT
-      pushFactor(`${windKt.toFixed(0)}kt vento`, `${windKt.toFixed(0)}kt wind`)
-    }
-    score += windScore
-
-    const gustDiff = c.windGust - c.windSpeed
-    if (gustDiff < KITE_CONFIG.GUST_LOW_MAX) {
-      score += KITE_CONFIG.GUST_LOW_PTS
-    } else if (gustDiff < KITE_CONFIG.GUST_MED_MAX) {
-      score += KITE_CONFIG.GUST_MED_PTS
-    } else {
-      score += KITE_CONFIG.GUST_HIGH_PTS
-    }
-
-    if (c.waveHeight < KITE_CONFIG.WAVE_SMALL_MAX) {
-      score += KITE_CONFIG.WAVE_SMALL_PTS
-      pushFactor('Ondas pequenas', 'Small waves')
-    } else if (c.waveHeight < KITE_CONFIG.WAVE_MED_MAX) {
-      score += KITE_CONFIG.WAVE_MED_PTS
-    }
-
-    const dirPts = windDirFactor(dirSafety, KITE_CONFIG.WIND_DIR_PTS_MAX)
-    score += dirPts
-    // «Xkt vento» já está na lista — a direcção vai nua para não repetir.
-    // A label vem da mesma banda que pontua (#195), não do classifyWind.
-    if (dirPts > 0 && dirSafety.direction) pushFactor(dirSafety.direction, dirSafety.direction)
-
-    score += Math.min(c.waterTemp * KITE_CONFIG.TEMP_PTS_PER_DEG, KITE_CONFIG.TEMP_PTS_MAX)
-    score = withDirectionHeadroom(score, dirPts, KITE_CONFIG.WIND_DIR_PTS_MAX)
-  }
-
-  score = Math.round(Math.min(100, Math.max(0, score)))
-
-  return applyWindSafety({
-    score,
-    ...getRatingLabels(score),
-    factors,
-    factorsEn,
-    warning: windKt > 35 ? 'Vento muito forte — apenas avançados' : windKt < KITE_CONFIG.WIND_SESSION_MIN_KT ? 'Vento fraco — mínimo ~15kt para kite' : undefined,
-    warningEn: windKt > 35 ? 'Very strong wind — advanced only' : windKt < KITE_CONFIG.WIND_SESSION_MIN_KT ? 'Light wind — ~15kt minimum for kite' : undefined,
-    primaryFactor: `${windKt.toFixed(0)}kt`,
-  }, dirSafety)
-}
-
-function scoreWindsurf(spot: Spot, c: Conditions): SportScore {
-  const factors: string[] = []
-  const factorsEn: string[] = []
-  const pushFactor = (pt: string, en: string) => {
-    factors.push(pt)
-    factorsEn.push(en)
-  }
-  let score = 0
-
-  const windKt = c.windSpeed * 1.94384
-  const dirSafety = windSportDirectionSafety(spot, c.windDirection)
-
-  if (windKt < WIND_CONFIG.WIND_PTS_MIN_KT) {
-    score = Math.round(windKt * WIND_CONFIG.WIND_MARGINAL_PTS_PER_KT)
-    if (windKt >= 10) {
-      const dirPts = Math.round(windDirFactor(dirSafety, WIND_CONFIG.WIND_DIR_PTS_MAX) * 0.5)
-      score += dirPts
-      if (dirPts > 0 && dirSafety.direction) pushFactor(`Vento ${dirSafety.direction}`, `${dirSafety.direction} wind`)
-    }
-    score = Math.min(score, WIND_SHORT_SCORE_CAP)
-    pushFactor('Vento insuficiente', 'Not enough wind')
-  } else {
-    if (windKt >= WIND_CONFIG.WIND_IDEAL_MIN_KT && windKt <= WIND_CONFIG.WIND_IDEAL_MAX_KT) {
-      score += WIND_CONFIG.WIND_IDEAL_PTS
-      pushFactor(`${windKt.toFixed(0)}kt vento`, `${windKt.toFixed(0)}kt wind`)
-    } else {
-      score += windKt * WIND_CONFIG.WIND_PTS_PER_KT
-      pushFactor(`${windKt.toFixed(0)}kt vento`, `${windKt.toFixed(0)}kt wind`)
-    }
-
-    if (c.waveHeight > WIND_CONFIG.WAVE_IDEAL_MIN && c.waveHeight < WIND_CONFIG.WAVE_IDEAL_MAX) {
-      score += WIND_CONFIG.WAVE_IDEAL_PTS
-      pushFactor(`${c.waveHeight.toFixed(1)}m ondas`, `${c.waveHeight.toFixed(1)}m waves`)
-    } else if (c.waveHeight < 4) {
-      score += WIND_CONFIG.WAVE_OTHER_PTS
-    }
-
-    const windDirPts = windDirFactor(dirSafety, WIND_CONFIG.WIND_DIR_PTS_MAX)
-    score += windDirPts
-    if (windDirPts > 0 && dirSafety.direction) pushFactor(dirSafety.direction, dirSafety.direction)
-
-    score += Math.min(c.waterTemp * WIND_CONFIG.TEMP_PTS_PER_DEG, WIND_CONFIG.TEMP_PTS_MAX)
-  }
-
-  score = Math.round(Math.min(100, Math.max(0, score)))
-
-  return applyWindSafety({
-    score,
-    ...getRatingLabels(score),
-    factors,
-    factorsEn,
-    warning: windKt < WIND_CONFIG.WIND_PTS_MIN_KT ? 'Mínimo ~15kt para windsurf' : undefined,
-    warningEn: windKt < WIND_CONFIG.WIND_PTS_MIN_KT ? '~15kt minimum for windsurf' : undefined,
-    primaryFactor: `${windKt.toFixed(0)}kt`,
-  }, dirSafety)
-}
 
 function wakeboardAvailabilityLabel(spot: Spot): { pt: string; en: string; primary: string } {
   const facilities = (spot.facilities ?? []).map((f) => f.toLowerCase())
@@ -525,41 +227,6 @@ function scoreWakeboard(spot: Spot, c: Conditions): SportScore {
   }
 }
 
-function scoreBodyboard(spot: Spot, c: Conditions): SportScore {
-  const factors: string[] = []
-  const factorsEn: string[] = []
-  let score = 0
-
-  const windKt = c.windSpeed * 1.94384
-
-  const waveScore = Math.min(c.waveHeight * BODYBOARD_CONFIG.WAVE_PTS_PER_M, BODYBOARD_CONFIG.WAVE_PTS_MAX)
-  score += waveScore
-  if (c.waveHeight > 0.3) {
-    factors.push(`${c.waveHeight.toFixed(1)}m ondas`)
-    factorsEn.push(`${c.waveHeight.toFixed(1)}m waves`)
-  }
-
-  score += Math.min((c.wavePeriod - BODYBOARD_CONFIG.PERIOD_BASE_S) * BODYBOARD_CONFIG.PERIOD_PTS_PER_S, BODYBOARD_CONFIG.PERIOD_PTS_MAX)
-  if (c.wavePeriod > 6) {
-    factors.push(`${c.wavePeriod.toFixed(0)}s período`)
-    factorsEn.push(`${c.wavePeriod.toFixed(0)}s period`)
-  }
-
-  score += Math.max(0, BODYBOARD_CONFIG.WIND_MAX - windKt * BODYBOARD_CONFIG.WIND_DECAY)
-
-  score += Math.min(c.waterTemp * BODYBOARD_CONFIG.TEMP_PTS_PER_DEG, BODYBOARD_CONFIG.TEMP_PTS_MAX)
-
-  score = Math.round(Math.min(100, Math.max(0, score)))
-
-  return {
-    score,
-    ...getRatingLabels(score),
-    factors,
-    factorsEn,
-    primaryFactor: `${c.waveHeight.toFixed(1)}m`,
-  }
-}
-
 function scoreSUP(spot: Spot, c: Conditions): SportScore {
   const factors: string[] = []
   const factorsEn: string[] = []
@@ -604,58 +271,6 @@ function scoreSUP(spot: Spot, c: Conditions): SportScore {
   }
 }
 
-function scoreFoil(spot: Spot, c: Conditions): SportScore {
-  const factors: string[] = []
-  const factorsEn: string[] = []
-  const pushFactor = (pt: string, en: string) => {
-    factors.push(pt)
-    factorsEn.push(en)
-  }
-  const windKt = c.windSpeed * 1.94384
-
-  let score = 0
-
-  if (windKt >= FOIL_CONFIG.WIND_IDEAL_MIN_KT && windKt <= FOIL_CONFIG.WIND_IDEAL_MAX_KT) {
-    score += FOIL_CONFIG.WIND_IDEAL_PTS
-    pushFactor(`${windKt.toFixed(0)}kt vento ideal`, `${windKt.toFixed(0)}kt ideal wind`)
-  } else if (windKt >= 5 && windKt < FOIL_CONFIG.WIND_IDEAL_MIN_KT) {
-    score += FOIL_CONFIG.WIND_LIGHT_PTS
-    pushFactor('Vento fraco', 'Light wind')
-  } else if (windKt > FOIL_CONFIG.WIND_IDEAL_MAX_KT && windKt <= 35) {
-    score += FOIL_CONFIG.WIND_STRONG_PTS
-    pushFactor('Vento forte', 'Strong wind')
-  } else {
-    score += FOIL_CONFIG.WIND_MIN_PTS
-  }
-
-  if (c.waveHeight < FOIL_CONFIG.WAVE_FLAT_MAX) {
-    score += FOIL_CONFIG.WAVE_FLAT_PTS
-    pushFactor('Água plana', 'Flat water')
-  } else if (c.waveHeight < FOIL_CONFIG.WAVE_SMALL_MAX) {
-    score += FOIL_CONFIG.WAVE_SMALL_PTS
-  } else if (c.waveHeight < FOIL_CONFIG.WAVE_MED_MAX) {
-    score += FOIL_CONFIG.WAVE_MED_PTS
-  }
-
-  // Wind direction: cross-shore ideal, offshore unsafe (0-8 pts, cap)
-  const dirSafety = windSportDirectionSafety(spot, c.windDirection)
-  const dirPts = windDirFactor(dirSafety, FOIL_CONFIG.WIND_DIR_PTS_MAX)
-  score += dirPts
-  if (dirPts > 0 && dirSafety.direction) pushFactor(dirSafety.direction, dirSafety.direction)
-
-  score += Math.min(c.waterTemp * FOIL_CONFIG.TEMP_PTS_PER_DEG, FOIL_CONFIG.TEMP_PTS_MAX)
-
-  score = Math.round(Math.min(100, Math.max(0, score)))
-
-  return applyWindSafety({
-    score,
-    ...getRatingLabels(score),
-    factors,
-    factorsEn,
-    primaryFactor: windKt >= 10 && windKt <= 25 ? 'Vento ideal' : `${windKt.toFixed(0)}kt`,
-  }, dirSafety)
-}
-
 // ─── Helpers ───
 
 export { SCORE_TIER_THRESHOLDS }
@@ -668,36 +283,20 @@ function getRatingLabels(score: number): { rating: string; ratingEn: string } {
 
 // ─── Main Export ───
 
-export function getSportScore(spot: Spot, sport: SportType, conditions: Conditions): SportScore {
+/** Score do motor antigo (só SUP e wakeboard; as outras modalidades estão no v6). */
+export function getSportScore(spot: Spot, sport: DesportoAntigo, conditions: Conditions): SportScore {
   switch (sport) {
-    case 'surf': return scoreSurf(spot, conditions)
-    case 'kitesurf': return scoreKitesurf(spot, conditions)
-    case 'windsurf': return scoreWindsurf(spot, conditions)
     case 'wakeboard': return scoreWakeboard(spot, conditions)
-    case 'bodyboard': return scoreBodyboard(spot, conditions)
     case 'sup': return scoreSUP(spot, conditions)
-    case 'foil': return scoreFoil(spot, conditions)
     default: return { score: 0, rating: 'N/A', ratingEn: 'N/A', factors: [], factorsEn: [], primaryFactor: 'N/A' }
   }
 }
 
-export function getAllSportScores(spot: Spot, conditions: Conditions): Record<SportType, SportScore> {
-  return {
-    surf: getSportScore(spot, 'surf', conditions),
-    kitesurf: getSportScore(spot, 'kitesurf', conditions),
-    windsurf: getSportScore(spot, 'windsurf', conditions),
-    wakeboard: getSportScore(spot, 'wakeboard', conditions),
-    bodyboard: getSportScore(spot, 'bodyboard', conditions),
-    sup: getSportScore(spot, 'sup', conditions),
-    foil: getSportScore(spot, 'foil', conditions),
-  }
-}
-
-/** Calculate per-hour scores for a sport from hourly forecast data.
+/** Calculate per-hour scores (motor antigo: SUP e wakeboard) from hourly forecast data.
  *  Missing fields in hourly fallback to currentConditions. */
 export function getHourlyScores(
   spot: Spot,
-  sport: SportType,
+  sport: DesportoAntigo,
   hourly: Array<{
     waveHeight: number
     wavePeriod: number
@@ -765,33 +364,6 @@ export function getScoreTierLabel(tier: ScoreTier, locale: string = 'pt'): strin
     default:
       return t.closed
   }
-}
-
-/**
- * Wind-direction quality for display tinting — mirrors the scorer: for wind
- * sports `windSportDirectionSafety` (cross-shore / side-onshore ideal, any
- * offshore component is a drift-out hazard); for wave sports offshore
- * grooms the face.
- * Returns null when the relation is neutral (no tint).
- */
-export function windQualityTier(
-  spot: Spot,
-  windDirection: number,
-  sport: SportType,
-): 'good' | 'fair' | 'poor' | null {
-  if (isWindDirectionSport(sport)) {
-    const { direction } = windSportDirectionSafety(spot, windDirection)
-    if (direction === null) return null
-    if (direction === 'cross-shore' || direction === 'side-onshore') return 'good'
-    if (direction === 'onshore') return 'fair'
-    return 'poor'
-  }
-  const cat = classifyWind(spot, windDirection)
-  if (sport === 'wakeboard' || cat === null) return null
-  // surf / bodyboard / sup — offshore cleans the face
-  if (cat === 'offshore' || cat === 'side-offshore') return 'good'
-  if (cat === 'side-onshore') return 'fair'
-  return 'poor'
 }
 
 /** @deprecated Use getScoreTokens — kept for existing imports. */

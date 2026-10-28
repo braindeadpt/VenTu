@@ -396,11 +396,12 @@ export default function SpotMapInteractive({
   // ── Visible spots (derivação partilhada: marcadores, lista, campos) ──
   /* `scoreAtHour`: número = score da hora; `null` = o v6 não dá nota nessa
      hora (noite / sem dados, #218 D3); `undefined` = sem série (fica o score
-     ao vivo). Em kitesurf, surf e big-wave o `null` entra no mapa como
-     `null` → marcador, lista, cluster e pré-visualização mostram «noite»
-     sem número (opção 1 do D3). «Todas» (`best`, D5) e as modalidades no
-     motor antigo nunca mostram noite: sem número caem no ao vivo. Os spots
-     de noite ficam também num conjunto à parte para o «Só ON». */
+     ao vivo). Nas modalidades v6 (surf, kitesurf, windsurf, bodyboard,
+     foil, big-wave) e em «Todas» (`best`, quando as v6 estão todas de
+     noite) o `null` entra no mapa como `null` → marcador, lista, cluster e
+     pré-visualização mostram «noite» sem número (opção 1 do D3, alargada no
+     PR 6). SUP e wakeboard (motor antigo) nunca mostram noite. Os spots de
+     noite ficam também num conjunto à parte para o «Só ON». */
   const { hourScores, hourNight } = useMemo(() => {
     if (!hoursLive || !hoursFile) return { hourScores: null, hourNight: null };
     const map = new Map<string, number | null>();

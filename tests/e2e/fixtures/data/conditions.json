@@ -125,7 +125,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 7,
+      "windsurf": 0,
+      "bodyboard": 7,
+      "foil": 9,
+      "vf": "surffoil",
       "seg": "offshore",
+      "sg": {
+        "windsurf": "offshore"
+      },
       "f": {
         "kite": [
           "2kt wind",
@@ -133,6 +140,19 @@
           "Small waves"
         ],
         "surf": [
+          "1.3m waves",
+          "2kt wind"
+        ],
+        "windsurf": [
+          "2kt wind",
+          "offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.3m waves",
+          "2kt wind"
+        ],
+        "foil": [
           "1.3m waves",
           "2kt wind"
         ]
@@ -268,7 +288,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 4,
+      "windsurf": 0,
+      "bodyboard": 5,
+      "foil": 7,
+      "vf": "surffoil",
       "seg": "side-offshore",
+      "sg": {
+        "windsurf": "side-offshore"
+      },
       "f": {
         "kite": [
           "2kt wind",
@@ -276,6 +303,19 @@
           "Small waves"
         ],
         "surf": [
+          "1.2m waves",
+          "2kt wind"
+        ],
+        "windsurf": [
+          "2kt wind",
+          "side-offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.2m waves",
+          "2kt wind"
+        ],
+        "foil": [
           "1.2m waves",
           "2kt wind"
         ]
@@ -411,7 +451,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 6,
+      "windsurf": 0,
+      "bodyboard": 7,
+      "foil": 9,
+      "vf": "surffoil",
       "seg": "offshore",
+      "sg": {
+        "windsurf": "offshore"
+      },
       "f": {
         "kite": [
           "3kt wind",
@@ -419,6 +466,19 @@
           "Small waves"
         ],
         "surf": [
+          "1.2m waves",
+          "3kt wind"
+        ],
+        "windsurf": [
+          "3kt wind",
+          "offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.2m waves",
+          "3kt wind"
+        ],
+        "foil": [
           "1.2m waves",
           "3kt wind"
         ]
@@ -552,7 +612,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 4,
+      "windsurf": 0,
+      "bodyboard": 5,
+      "foil": 7,
+      "vf": "surffoil",
       "seg": "offshore",
+      "sg": {
+        "windsurf": "offshore"
+      },
       "f": {
         "kite": [
           "2kt wind",
@@ -560,6 +627,19 @@
           "Small waves"
         ],
         "surf": [
+          "1.1m waves",
+          "2kt wind"
+        ],
+        "windsurf": [
+          "2kt wind",
+          "offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.1m waves",
+          "2kt wind"
+        ],
+        "foil": [
           "1.1m waves",
           "2kt wind"
         ]
@@ -699,7 +779,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 6,
+      "windsurf": 0,
+      "bodyboard": 7,
+      "foil": 8,
+      "vf": "surffoil",
       "seg": "offshore",
+      "sg": {
+        "windsurf": "offshore"
+      },
       "f": {
         "kite": [
           "2kt wind",
@@ -707,6 +794,19 @@
           "Small waves"
         ],
         "surf": [
+          "1.0m waves",
+          "2kt wind"
+        ],
+        "windsurf": [
+          "2kt wind",
+          "offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.0m waves",
+          "2kt wind"
+        ],
+        "foil": [
           "1.0m waves",
           "2kt wind"
         ]
@@ -843,7 +943,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 4,
+      "windsurf": 0,
+      "bodyboard": 5,
+      "foil": 6,
+      "vf": "surffoil",
       "seg": "side-offshore",
+      "sg": {
+        "windsurf": "side-offshore"
+      },
       "f": {
         "kite": [
           "2kt wind",
@@ -851,6 +958,19 @@
           "Small waves"
         ],
         "surf": [
+          "1.0m waves",
+          "2kt wind"
+        ],
+        "windsurf": [
+          "2kt wind",
+          "side-offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.0m waves",
+          "2kt wind"
+        ],
+        "foil": [
           "1.0m waves",
           "2kt wind"
         ]
@@ -987,12 +1107,28 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 6,
+      "windsurf": 0,
+      "bodyboard": 7,
+      "foil": 9,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "2kt wind",
           "Small waves"
         ],
         "surf": [
+          "1.1m waves",
+          "2kt wind"
+        ],
+        "windsurf": [
+          "2kt wind",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.1m waves",
+          "2kt wind"
+        ],
+        "foil": [
           "1.1m waves",
           "2kt wind"
         ]
@@ -1129,7 +1265,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 6,
+      "windsurf": 0,
+      "bodyboard": 7,
+      "foil": 8,
+      "vf": "surffoil",
       "seg": "offshore",
+      "sg": {
+        "windsurf": "offshore"
+      },
       "f": {
         "kite": [
           "2kt wind",
@@ -1137,6 +1280,19 @@
           "Small waves"
         ],
         "surf": [
+          "1.0m waves",
+          "2kt wind"
+        ],
+        "windsurf": [
+          "2kt wind",
+          "offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.0m waves",
+          "2kt wind"
+        ],
+        "foil": [
           "1.0m waves",
           "2kt wind"
         ]
@@ -1269,7 +1425,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 6,
+      "windsurf": 0,
+      "bodyboard": 7,
+      "foil": 9,
+      "vf": "surffoil",
       "seg": "offshore",
+      "sg": {
+        "windsurf": "offshore"
+      },
       "f": {
         "kite": [
           "2kt wind",
@@ -1277,6 +1440,19 @@
           "Small waves"
         ],
         "surf": [
+          "1.1m waves",
+          "2kt wind"
+        ],
+        "windsurf": [
+          "2kt wind",
+          "offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.1m waves",
+          "2kt wind"
+        ],
+        "foil": [
           "1.1m waves",
           "2kt wind"
         ]
@@ -1412,7 +1588,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 6,
+      "windsurf": 0,
+      "bodyboard": 7,
+      "foil": 9,
+      "vf": "surffoil",
       "seg": "offshore",
+      "sg": {
+        "windsurf": "offshore"
+      },
       "f": {
         "kite": [
           "2kt wind",
@@ -1420,6 +1603,19 @@
           "Small waves"
         ],
         "surf": [
+          "1.1m waves",
+          "2kt wind"
+        ],
+        "windsurf": [
+          "2kt wind",
+          "offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.1m waves",
+          "2kt wind"
+        ],
+        "foil": [
           "1.1m waves",
           "2kt wind"
         ]
@@ -1555,7 +1751,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 4,
+      "windsurf": 0,
+      "bodyboard": 5,
+      "foil": 7,
+      "vf": "surffoil",
       "seg": "offshore",
+      "sg": {
+        "windsurf": "offshore"
+      },
       "f": {
         "kite": [
           "2kt wind",
@@ -1563,6 +1766,19 @@
           "Small waves"
         ],
         "surf": [
+          "1.1m waves",
+          "2kt wind"
+        ],
+        "windsurf": [
+          "2kt wind",
+          "offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.1m waves",
+          "2kt wind"
+        ],
+        "foil": [
           "1.1m waves",
           "2kt wind"
         ]
@@ -1698,7 +1914,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 4,
+      "windsurf": 0,
+      "bodyboard": 5,
+      "foil": 7,
+      "vf": "surffoil",
       "seg": "offshore",
+      "sg": {
+        "windsurf": "offshore"
+      },
       "f": {
         "kite": [
           "2kt wind",
@@ -1706,6 +1929,19 @@
           "Small waves"
         ],
         "surf": [
+          "1.2m waves",
+          "2kt wind"
+        ],
+        "windsurf": [
+          "2kt wind",
+          "offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.2m waves",
+          "2kt wind"
+        ],
+        "foil": [
           "1.2m waves",
           "2kt wind"
         ]
@@ -1842,7 +2078,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 5,
+      "windsurf": 0,
+      "bodyboard": 5,
+      "foil": 7,
+      "vf": "surffoil",
       "seg": "side-offshore",
+      "sg": {
+        "windsurf": "side-offshore"
+      },
       "f": {
         "kite": [
           "2kt wind",
@@ -1850,6 +2093,19 @@
           "Small waves"
         ],
         "surf": [
+          "1.3m waves",
+          "2kt wind"
+        ],
+        "windsurf": [
+          "2kt wind",
+          "side-offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.3m waves",
+          "2kt wind"
+        ],
+        "foil": [
           "1.3m waves",
           "2kt wind"
         ]
@@ -1986,6 +2242,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 6,
+      "windsurf": 0,
+      "bodyboard": 2,
+      "foil": 0,
+      "vf": "wing",
       "f": {
         "kite": [
           "7kt wind",
@@ -1995,6 +2255,20 @@
         "surf": [
           "3.1m waves",
           "12s period"
+        ],
+        "windsurf": [
+          "7kt wind",
+          "cross-shore",
+          "3.1m waves"
+        ],
+        "bodyboard": [
+          "3.1m waves",
+          "12s period"
+        ],
+        "foil": [
+          "7kt wind",
+          "cross-shore",
+          "3.1m waves"
         ]
       }
     },
@@ -2129,7 +2403,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 6,
+      "windsurf": 0,
+      "bodyboard": 7,
+      "foil": 9,
+      "vf": "surffoil",
       "seg": "side-offshore",
+      "sg": {
+        "windsurf": "side-offshore"
+      },
       "f": {
         "kite": [
           "2kt wind",
@@ -2137,6 +2418,19 @@
           "Small waves"
         ],
         "surf": [
+          "1.2m waves",
+          "2kt wind"
+        ],
+        "windsurf": [
+          "2kt wind",
+          "side-offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.2m waves",
+          "2kt wind"
+        ],
+        "foil": [
           "1.2m waves",
           "2kt wind"
         ]
@@ -2273,7 +2567,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 6,
+      "windsurf": 0,
+      "bodyboard": 7,
+      "foil": 9,
+      "vf": "surffoil",
       "seg": "side-offshore",
+      "sg": {
+        "windsurf": "side-offshore"
+      },
       "f": {
         "kite": [
           "2kt wind",
@@ -2281,6 +2582,19 @@
           "Small waves"
         ],
         "surf": [
+          "1.2m waves",
+          "2kt wind"
+        ],
+        "windsurf": [
+          "2kt wind",
+          "side-offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.2m waves",
+          "2kt wind"
+        ],
+        "foil": [
           "1.2m waves",
           "2kt wind"
         ]
@@ -2417,7 +2731,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 5,
+      "windsurf": 0,
+      "bodyboard": 5,
+      "foil": 7,
+      "vf": "surffoil",
       "seg": "side-offshore",
+      "sg": {
+        "windsurf": "side-offshore"
+      },
       "f": {
         "kite": [
           "2kt wind",
@@ -2425,6 +2746,19 @@
           "Small waves"
         ],
         "surf": [
+          "1.3m waves",
+          "2kt wind"
+        ],
+        "windsurf": [
+          "2kt wind",
+          "side-offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.3m waves",
+          "2kt wind"
+        ],
+        "foil": [
           "1.3m waves",
           "2kt wind"
         ]
@@ -2558,6 +2892,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 4,
+      "windsurf": 0,
+      "bodyboard": 5,
+      "foil": 7,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "1kt wind",
@@ -2565,6 +2903,19 @@
           "Small waves"
         ],
         "surf": [
+          "1.2m waves",
+          "1kt wind"
+        ],
+        "windsurf": [
+          "1kt wind",
+          "side-onshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.2m waves",
+          "1kt wind"
+        ],
+        "foil": [
           "1.2m waves",
           "1kt wind"
         ]
@@ -2698,6 +3049,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 0,
+      "windsurf": 0,
+      "bodyboard": 0,
+      "foil": 0,
+      "vf": "wing",
       "f": {
         "kite": [
           "1kt wind",
@@ -2707,6 +3062,19 @@
           "0.0m waves",
           "0s period",
           "1kt wind"
+        ],
+        "windsurf": [
+          "1kt wind",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "0.0m waves",
+          "0s period",
+          "1kt wind"
+        ],
+        "foil": [
+          "1kt wind",
+          "Small waves"
         ]
       }
     }
@@ -2835,7 +3203,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 4,
+      "windsurf": 0,
+      "bodyboard": 5,
+      "foil": 7,
+      "vf": "surffoil",
       "seg": "offshore",
+      "sg": {
+        "windsurf": "offshore"
+      },
       "f": {
         "kite": [
           "1kt wind",
@@ -2843,6 +3218,19 @@
           "Small waves"
         ],
         "surf": [
+          "1.2m waves",
+          "1kt wind"
+        ],
+        "windsurf": [
+          "1kt wind",
+          "offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.2m waves",
+          "1kt wind"
+        ],
+        "foil": [
           "1.2m waves",
           "1kt wind"
         ]
@@ -2976,7 +3364,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 6,
+      "windsurf": 0,
+      "bodyboard": 7,
+      "foil": 9,
+      "vf": "surffoil",
       "seg": "side-offshore",
+      "sg": {
+        "windsurf": "side-offshore"
+      },
       "f": {
         "kite": [
           "1kt wind",
@@ -2984,6 +3379,19 @@
           "Small waves"
         ],
         "surf": [
+          "1.2m waves",
+          "1kt wind"
+        ],
+        "windsurf": [
+          "1kt wind",
+          "side-offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.2m waves",
+          "1kt wind"
+        ],
+        "foil": [
           "1.2m waves",
           "1kt wind"
         ]
@@ -3117,7 +3525,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 3,
+      "windsurf": 0,
+      "bodyboard": 6,
+      "foil": 5,
+      "vf": "surffoil",
       "seg": "side-offshore",
+      "sg": {
+        "windsurf": "side-offshore"
+      },
       "f": {
         "kite": [
           "6kt wind",
@@ -3128,6 +3543,18 @@
           "1.4m waves",
           "7s period",
           "6kt wind"
+        ],
+        "windsurf": [
+          "6kt wind",
+          "side-offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.4m waves",
+          "6kt wind"
+        ],
+        "foil": [
+          "1.4m waves"
         ]
       }
     },
@@ -3259,7 +3686,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 7,
+      "windsurf": 0,
+      "bodyboard": 7,
+      "foil": 9,
+      "vf": "surffoil",
       "seg": "side-offshore",
+      "sg": {
+        "windsurf": "side-offshore"
+      },
       "f": {
         "kite": [
           "2kt wind",
@@ -3267,6 +3701,19 @@
           "Small waves"
         ],
         "surf": [
+          "1.3m waves",
+          "2kt wind"
+        ],
+        "windsurf": [
+          "2kt wind",
+          "side-offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.3m waves",
+          "2kt wind"
+        ],
+        "foil": [
           "1.3m waves",
           "2kt wind"
         ]
@@ -3400,7 +3847,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 7,
+      "windsurf": 0,
+      "bodyboard": 7,
+      "foil": 9,
+      "vf": "surffoil",
       "seg": "side-offshore",
+      "sg": {
+        "windsurf": "side-offshore"
+      },
       "f": {
         "kite": [
           "2kt wind",
@@ -3408,6 +3862,19 @@
           "Small waves"
         ],
         "surf": [
+          "1.3m waves",
+          "2kt wind"
+        ],
+        "windsurf": [
+          "2kt wind",
+          "side-offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.3m waves",
+          "2kt wind"
+        ],
+        "foil": [
           "1.3m waves",
           "2kt wind"
         ]
@@ -3541,7 +4008,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 7,
+      "windsurf": 0,
+      "bodyboard": 7,
+      "foil": 9,
+      "vf": "surffoil",
       "seg": "side-offshore",
+      "sg": {
+        "windsurf": "side-offshore"
+      },
       "f": {
         "kite": [
           "2kt wind",
@@ -3549,6 +4023,19 @@
           "Small waves"
         ],
         "surf": [
+          "1.3m waves",
+          "2kt wind"
+        ],
+        "windsurf": [
+          "2kt wind",
+          "side-offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.3m waves",
+          "2kt wind"
+        ],
+        "foil": [
           "1.3m waves",
           "2kt wind"
         ]
@@ -3684,7 +4171,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 7,
+      "windsurf": 0,
+      "bodyboard": 7,
+      "foil": 9,
+      "vf": "surffoil",
       "seg": "side-offshore",
+      "sg": {
+        "windsurf": "side-offshore"
+      },
       "f": {
         "kite": [
           "2kt wind",
@@ -3692,6 +4186,19 @@
           "Small waves"
         ],
         "surf": [
+          "1.3m waves",
+          "2kt wind"
+        ],
+        "windsurf": [
+          "2kt wind",
+          "side-offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.3m waves",
+          "2kt wind"
+        ],
+        "foil": [
           "1.3m waves",
           "2kt wind"
         ]
@@ -3827,6 +4334,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 7,
+      "windsurf": 0,
+      "bodyboard": 7,
+      "foil": 9,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "2kt wind",
@@ -3834,6 +4345,19 @@
           "Small waves"
         ],
         "surf": [
+          "1.3m waves",
+          "2kt wind"
+        ],
+        "windsurf": [
+          "2kt wind",
+          "cross-shore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.3m waves",
+          "2kt wind"
+        ],
+        "foil": [
           "1.3m waves",
           "2kt wind"
         ]
@@ -3966,12 +4490,30 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 9,
+      "windsurf": 0,
+      "bodyboard": 10,
+      "foil": 6,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "3kt wind",
           "cross-shore"
         ],
         "surf": [
+          "2.0m waves",
+          "12s period",
+          "3kt wind"
+        ],
+        "windsurf": [
+          "3kt wind",
+          "cross-shore"
+        ],
+        "bodyboard": [
+          "2.0m waves",
+          "12s period",
+          "3kt wind"
+        ],
+        "foil": [
           "2.0m waves",
           "12s period",
           "3kt wind"
@@ -4105,6 +4647,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 7,
+      "windsurf": 0,
+      "bodyboard": 7,
+      "foil": 9,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "2kt wind",
@@ -4112,6 +4658,19 @@
           "Small waves"
         ],
         "surf": [
+          "1.3m waves",
+          "2kt wind"
+        ],
+        "windsurf": [
+          "2kt wind",
+          "cross-shore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.3m waves",
+          "2kt wind"
+        ],
+        "foil": [
           "1.3m waves",
           "2kt wind"
         ]
@@ -4244,6 +4803,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 7,
+      "windsurf": 0,
+      "bodyboard": 7,
+      "foil": 9,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "2kt wind",
@@ -4251,6 +4814,19 @@
           "Small waves"
         ],
         "surf": [
+          "1.3m waves",
+          "2kt wind"
+        ],
+        "windsurf": [
+          "2kt wind",
+          "cross-shore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.3m waves",
+          "2kt wind"
+        ],
+        "foil": [
           "1.3m waves",
           "2kt wind"
         ]
@@ -4383,6 +4959,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 7,
+      "windsurf": 0,
+      "bodyboard": 7,
+      "foil": 9,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "2kt wind",
@@ -4390,6 +4970,19 @@
           "Small waves"
         ],
         "surf": [
+          "1.3m waves",
+          "2kt wind"
+        ],
+        "windsurf": [
+          "2kt wind",
+          "cross-shore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.3m waves",
+          "2kt wind"
+        ],
+        "foil": [
           "1.3m waves",
           "2kt wind"
         ]
@@ -4522,6 +5115,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 7,
+      "windsurf": 0,
+      "bodyboard": 7,
+      "foil": 9,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "2kt wind",
@@ -4529,6 +5126,19 @@
           "Small waves"
         ],
         "surf": [
+          "1.3m waves",
+          "2kt wind"
+        ],
+        "windsurf": [
+          "2kt wind",
+          "cross-shore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.3m waves",
+          "2kt wind"
+        ],
+        "foil": [
           "1.3m waves",
           "2kt wind"
         ]
@@ -4659,12 +5269,28 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 4,
+      "windsurf": 0,
+      "bodyboard": 5,
+      "foil": 6,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "2kt wind",
           "Small waves"
         ],
         "surf": [
+          "1.0m waves",
+          "2kt wind"
+        ],
+        "windsurf": [
+          "2kt wind",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.0m waves",
+          "2kt wind"
+        ],
+        "foil": [
           "1.0m waves",
           "2kt wind"
         ]
@@ -4798,6 +5424,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 4,
+      "windsurf": 0,
+      "bodyboard": 5,
+      "foil": 6,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "3kt wind",
@@ -4805,6 +5435,19 @@
           "Small waves"
         ],
         "surf": [
+          "1.0m waves",
+          "3kt wind"
+        ],
+        "windsurf": [
+          "3kt wind",
+          "cross-shore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.0m waves",
+          "3kt wind"
+        ],
+        "foil": [
           "1.0m waves",
           "3kt wind"
         ]
@@ -4938,6 +5581,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 6,
+      "windsurf": 0,
+      "bodyboard": 7,
+      "foil": 8,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "3kt wind",
@@ -4945,6 +5592,19 @@
           "Small waves"
         ],
         "surf": [
+          "1.0m waves",
+          "3kt wind"
+        ],
+        "windsurf": [
+          "3kt wind",
+          "side-onshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.0m waves",
+          "3kt wind"
+        ],
+        "foil": [
           "1.0m waves",
           "3kt wind"
         ]
@@ -5060,6 +5720,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 6,
+      "windsurf": 0,
+      "bodyboard": 7,
+      "foil": 9,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "3kt wind",
@@ -5067,6 +5731,19 @@
           "Small waves"
         ],
         "surf": [
+          "1.2m waves",
+          "3kt wind"
+        ],
+        "windsurf": [
+          "3kt wind",
+          "side-onshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.2m waves",
+          "3kt wind"
+        ],
+        "foil": [
           "1.2m waves",
           "3kt wind"
         ]
@@ -5214,6 +5891,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 6,
+      "windsurf": 0,
+      "bodyboard": 7,
+      "foil": 9,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "2kt wind",
@@ -5221,6 +5902,19 @@
           "Small waves"
         ],
         "surf": [
+          "1.1m waves",
+          "2kt wind"
+        ],
+        "windsurf": [
+          "2kt wind",
+          "cross-shore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.1m waves",
+          "2kt wind"
+        ],
+        "foil": [
           "1.1m waves",
           "2kt wind"
         ]
@@ -5354,6 +6048,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 6,
+      "windsurf": 0,
+      "bodyboard": 7,
+      "foil": 9,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "3kt wind",
@@ -5361,6 +6059,19 @@
           "Small waves"
         ],
         "surf": [
+          "1.2m waves",
+          "3kt wind"
+        ],
+        "windsurf": [
+          "3kt wind",
+          "cross-shore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.2m waves",
+          "3kt wind"
+        ],
+        "foil": [
           "1.2m waves",
           "3kt wind"
         ]
@@ -5497,6 +6208,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 6,
+      "windsurf": 0,
+      "bodyboard": 7,
+      "foil": 9,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "3kt wind",
@@ -5504,6 +6219,19 @@
           "Small waves"
         ],
         "surf": [
+          "1.2m waves",
+          "3kt wind"
+        ],
+        "windsurf": [
+          "3kt wind",
+          "cross-shore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.2m waves",
+          "3kt wind"
+        ],
+        "foil": [
           "1.2m waves",
           "3kt wind"
         ]
@@ -5637,6 +6365,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 7,
+      "windsurf": 0,
+      "bodyboard": 7,
+      "foil": 9,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "4kt wind",
@@ -5644,6 +6376,19 @@
           "Small waves"
         ],
         "surf": [
+          "1.3m waves",
+          "4kt wind"
+        ],
+        "windsurf": [
+          "4kt wind",
+          "cross-shore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.3m waves",
+          "4kt wind"
+        ],
+        "foil": [
           "1.3m waves",
           "4kt wind"
         ]
@@ -5777,6 +6522,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 7,
+      "windsurf": 0,
+      "bodyboard": 7,
+      "foil": 8,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "5kt wind",
@@ -5786,6 +6535,18 @@
         "surf": [
           "1.3m waves",
           "5kt wind"
+        ],
+        "windsurf": [
+          "5kt wind",
+          "side-onshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.3m waves",
+          "5kt wind"
+        ],
+        "foil": [
+          "1.3m waves"
         ]
       }
     },
@@ -5917,6 +6678,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 5,
+      "windsurf": 0,
+      "bodyboard": 6,
+      "foil": 2,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "6kt wind",
@@ -5925,6 +6690,18 @@
         "surf": [
           "1.8m waves",
           "6kt wind"
+        ],
+        "windsurf": [
+          "6kt wind",
+          "cross-shore"
+        ],
+        "bodyboard": [
+          "1.8m waves",
+          "6kt wind"
+        ],
+        "foil": [
+          "1.8m waves",
+          "11s period"
         ]
       }
     },
@@ -6059,6 +6836,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 4,
+      "windsurf": 0,
+      "bodyboard": 5,
+      "foil": 7,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "4kt wind",
@@ -6066,6 +6847,19 @@
           "Small waves"
         ],
         "surf": [
+          "1.2m waves",
+          "4kt wind"
+        ],
+        "windsurf": [
+          "4kt wind",
+          "cross-shore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.2m waves",
+          "4kt wind"
+        ],
+        "foil": [
           "1.2m waves",
           "4kt wind"
         ]
@@ -6202,6 +6996,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 5,
+      "windsurf": 0,
+      "bodyboard": 6,
+      "foil": 2,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "6kt wind",
@@ -6210,6 +7008,18 @@
         "surf": [
           "1.8m waves",
           "6kt wind"
+        ],
+        "windsurf": [
+          "6kt wind",
+          "onshore"
+        ],
+        "bodyboard": [
+          "1.8m waves",
+          "6kt wind"
+        ],
+        "foil": [
+          "1.8m waves",
+          "11s period"
         ]
       }
     },
@@ -6344,6 +7154,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 6,
+      "windsurf": 0,
+      "bodyboard": 7,
+      "foil": 9,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "3kt wind",
@@ -6351,6 +7165,19 @@
           "Small waves"
         ],
         "surf": [
+          "1.1m waves",
+          "3kt wind"
+        ],
+        "windsurf": [
+          "3kt wind",
+          "side-onshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.1m waves",
+          "3kt wind"
+        ],
+        "foil": [
           "1.1m waves",
           "3kt wind"
         ]
@@ -6487,6 +7314,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 7,
+      "windsurf": 0,
+      "bodyboard": 7,
+      "foil": 9,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "4kt wind",
@@ -6494,6 +7325,19 @@
           "Small waves"
         ],
         "surf": [
+          "1.3m waves",
+          "4kt wind"
+        ],
+        "windsurf": [
+          "4kt wind",
+          "side-onshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.3m waves",
+          "4kt wind"
+        ],
+        "foil": [
           "1.3m waves",
           "4kt wind"
         ]
@@ -6630,6 +7474,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 5,
+      "windsurf": 0,
+      "bodyboard": 5,
+      "foil": 1,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "5kt wind",
@@ -6638,6 +7486,18 @@
         "surf": [
           "2.2m waves",
           "5kt wind"
+        ],
+        "windsurf": [
+          "5kt wind",
+          "onshore"
+        ],
+        "bodyboard": [
+          "2.2m waves",
+          "5kt wind"
+        ],
+        "foil": [
+          "2.2m waves",
+          "11s period"
         ]
       }
     },
@@ -6754,6 +7614,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 0,
+      "windsurf": 0,
+      "bodyboard": 0,
+      "foil": 0,
+      "vf": "wing",
       "f": {
         "kite": [
           "8kt wind",
@@ -6762,6 +7626,18 @@
         "surf": [
           "0.0m waves",
           "0s period"
+        ],
+        "windsurf": [
+          "8kt wind",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "0.0m waves",
+          "0s period"
+        ],
+        "foil": [
+          "8kt wind",
+          "Small waves"
         ]
       }
     },
@@ -6931,6 +7807,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 7,
+      "windsurf": 0,
+      "bodyboard": 8,
+      "foil": 7,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "5kt wind",
@@ -6940,6 +7820,18 @@
         "surf": [
           "1.4m waves",
           "5kt wind"
+        ],
+        "windsurf": [
+          "5kt wind",
+          "cross-shore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.4m waves",
+          "5kt wind"
+        ],
+        "foil": [
+          "1.4m waves"
         ]
       }
     },
@@ -7073,6 +7965,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 5,
+      "windsurf": 0,
+      "bodyboard": 7,
+      "foil": 6,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "7kt wind",
@@ -7082,6 +7978,18 @@
         "surf": [
           "1.4m waves",
           "8s period"
+        ],
+        "windsurf": [
+          "7kt wind",
+          "side-onshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.4m waves"
+        ],
+        "foil": [
+          "7kt wind",
+          "1.4m waves"
         ]
       }
     },
@@ -7215,6 +8123,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 4,
+      "windsurf": 0,
+      "bodyboard": 6,
+      "foil": 7,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "8kt wind",
@@ -7224,6 +8136,18 @@
         "surf": [
           "1.2m waves",
           "8s period"
+        ],
+        "windsurf": [
+          "8kt wind",
+          "side-onshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.2m waves"
+        ],
+        "foil": [
+          "8kt wind",
+          "1.2m waves"
         ]
       }
     },
@@ -7357,6 +8281,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 5,
+      "windsurf": 0,
+      "bodyboard": 7,
+      "foil": 6,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "7kt wind",
@@ -7366,6 +8294,18 @@
         "surf": [
           "1.4m waves",
           "8s period"
+        ],
+        "windsurf": [
+          "7kt wind",
+          "onshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.4m waves"
+        ],
+        "foil": [
+          "7kt wind",
+          "1.4m waves"
         ]
       }
     },
@@ -7499,6 +8439,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 2,
+      "windsurf": 0,
+      "bodyboard": 4,
+      "foil": 4,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "9kt wind",
@@ -7508,6 +8452,18 @@
         "surf": [
           "1.2m waves",
           "8s period"
+        ],
+        "windsurf": [
+          "9kt wind",
+          "onshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.2m waves"
+        ],
+        "foil": [
+          "9kt wind",
+          "1.2m waves"
         ]
       }
     },
@@ -7641,6 +8597,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 2,
+      "windsurf": 0,
+      "bodyboard": 4,
+      "foil": 4,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "9kt wind",
@@ -7650,6 +8610,18 @@
         "surf": [
           "1.2m waves",
           "8s period"
+        ],
+        "windsurf": [
+          "9kt wind",
+          "onshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.2m waves"
+        ],
+        "foil": [
+          "9kt wind",
+          "1.2m waves"
         ]
       }
     },
@@ -7783,6 +8755,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 7,
+      "windsurf": 0,
+      "bodyboard": 8,
+      "foil": 4,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "6kt wind",
@@ -7791,6 +8767,18 @@
         "surf": [
           "1.9m waves",
           "6kt wind"
+        ],
+        "windsurf": [
+          "6kt wind",
+          "onshore"
+        ],
+        "bodyboard": [
+          "1.9m waves",
+          "6kt wind"
+        ],
+        "foil": [
+          "1.9m waves",
+          "11s period"
         ]
       }
     },
@@ -7962,6 +8950,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 4,
+      "windsurf": 0,
+      "bodyboard": 6,
+      "foil": 5,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "9kt wind",
@@ -7971,6 +8963,18 @@
         "surf": [
           "1.4m waves",
           "8s period"
+        ],
+        "windsurf": [
+          "9kt wind",
+          "side-onshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.4m waves"
+        ],
+        "foil": [
+          "9kt wind",
+          "1.4m waves"
         ]
       }
     },
@@ -8104,6 +9108,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 7,
+      "windsurf": 0,
+      "bodyboard": 8,
+      "foil": 4,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "6kt wind",
@@ -8112,6 +9120,18 @@
         "surf": [
           "1.9m waves",
           "6kt wind"
+        ],
+        "windsurf": [
+          "6kt wind",
+          "onshore"
+        ],
+        "bodyboard": [
+          "1.9m waves",
+          "6kt wind"
+        ],
+        "foil": [
+          "1.9m waves",
+          "11s period"
         ]
       }
     },
@@ -8245,6 +9265,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 5,
+      "windsurf": 0,
+      "bodyboard": 6,
+      "foil": 2,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "6kt wind",
@@ -8253,6 +9277,18 @@
         "surf": [
           "1.9m waves",
           "6kt wind"
+        ],
+        "windsurf": [
+          "6kt wind",
+          "side-onshore"
+        ],
+        "bodyboard": [
+          "1.9m waves",
+          "6kt wind"
+        ],
+        "foil": [
+          "1.9m waves",
+          "11s period"
         ]
       }
     },
@@ -8386,7 +9422,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 3,
+      "windsurf": 0,
+      "bodyboard": 5,
+      "foil": 5,
+      "vf": "surffoil",
       "seg": "side-offshore",
+      "sg": {
+        "windsurf": "side-offshore"
+      },
       "f": {
         "kite": [
           "9kt wind",
@@ -8396,6 +9439,17 @@
         "surf": [
           "1.4m waves",
           "8s period"
+        ],
+        "windsurf": [
+          "9kt wind",
+          "side-offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.4m waves"
+        ],
+        "foil": [
+          "1.4m waves"
         ]
       }
     },
@@ -8529,6 +9583,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 5,
+      "windsurf": 0,
+      "bodyboard": 6,
+      "foil": 2,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "6kt wind",
@@ -8537,6 +9595,18 @@
         "surf": [
           "1.9m waves",
           "6kt wind"
+        ],
+        "windsurf": [
+          "6kt wind",
+          "cross-shore"
+        ],
+        "bodyboard": [
+          "1.9m waves",
+          "6kt wind"
+        ],
+        "foil": [
+          "1.9m waves",
+          "11s period"
         ]
       }
     },
@@ -8671,6 +9741,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 5,
+      "windsurf": 0,
+      "bodyboard": 7,
+      "foil": 6,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "7kt wind",
@@ -8680,6 +9754,18 @@
         "surf": [
           "1.4m waves",
           "8s period"
+        ],
+        "windsurf": [
+          "7kt wind",
+          "side-onshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.4m waves"
+        ],
+        "foil": [
+          "7kt wind",
+          "1.4m waves"
         ]
       }
     },
@@ -8814,6 +9900,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 3,
+      "windsurf": 0,
+      "bodyboard": 6,
+      "foil": 5,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "6kt wind",
@@ -8824,6 +9914,18 @@
           "1.4m waves",
           "8s period",
           "6kt wind"
+        ],
+        "windsurf": [
+          "6kt wind",
+          "cross-shore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.4m waves",
+          "6kt wind"
+        ],
+        "foil": [
+          "1.4m waves"
         ]
       }
     },
@@ -8958,6 +10060,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 5,
+      "windsurf": 0,
+      "bodyboard": 8,
+      "foil": 7,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "6kt wind",
@@ -8968,6 +10074,18 @@
           "1.4m waves",
           "8s period",
           "6kt wind"
+        ],
+        "windsurf": [
+          "6kt wind",
+          "cross-shore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.4m waves",
+          "6kt wind"
+        ],
+        "foil": [
+          "1.4m waves"
         ]
       }
     },
@@ -9102,6 +10220,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 3,
+      "windsurf": 0,
+      "bodyboard": 6,
+      "foil": 5,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "6kt wind",
@@ -9112,6 +10234,18 @@
           "1.4m waves",
           "8s period",
           "6kt wind"
+        ],
+        "windsurf": [
+          "6kt wind",
+          "cross-shore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.4m waves",
+          "6kt wind"
+        ],
+        "foil": [
+          "1.4m waves"
         ]
       }
     },
@@ -9246,6 +10380,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 5,
+      "windsurf": 0,
+      "bodyboard": 8,
+      "foil": 7,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "6kt wind",
@@ -9256,6 +10394,18 @@
           "1.4m waves",
           "8s period",
           "6kt wind"
+        ],
+        "windsurf": [
+          "6kt wind",
+          "cross-shore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.4m waves",
+          "6kt wind"
+        ],
+        "foil": [
+          "1.4m waves"
         ]
       }
     },
@@ -9390,6 +10540,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 7,
+      "windsurf": 0,
+      "bodyboard": 6,
+      "foil": 1,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "5kt wind",
@@ -9398,6 +10552,18 @@
         "surf": [
           "2.4m waves",
           "5kt wind"
+        ],
+        "windsurf": [
+          "5kt wind",
+          "side-onshore"
+        ],
+        "bodyboard": [
+          "2.4m waves",
+          "5kt wind"
+        ],
+        "foil": [
+          "2.4m waves",
+          "11s period"
         ]
       }
     },
@@ -9532,6 +10698,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 3,
+      "windsurf": 0,
+      "bodyboard": 6,
+      "foil": 5,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "6kt wind",
@@ -9542,6 +10712,18 @@
           "1.4m waves",
           "8s period",
           "6kt wind"
+        ],
+        "windsurf": [
+          "6kt wind",
+          "cross-shore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.4m waves",
+          "6kt wind"
+        ],
+        "foil": [
+          "1.4m waves"
         ]
       }
     },
@@ -9676,6 +10858,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 3,
+      "windsurf": 0,
+      "bodyboard": 6,
+      "foil": 5,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "6kt wind",
@@ -9686,6 +10872,18 @@
           "1.4m waves",
           "8s period",
           "6kt wind"
+        ],
+        "windsurf": [
+          "6kt wind",
+          "cross-shore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.4m waves",
+          "6kt wind"
+        ],
+        "foil": [
+          "1.4m waves"
         ]
       }
     },
@@ -9822,6 +11020,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 7,
+      "windsurf": 0,
+      "bodyboard": 6,
+      "foil": 1,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "5kt wind",
@@ -9830,6 +11032,18 @@
         "surf": [
           "2.4m waves",
           "5kt wind"
+        ],
+        "windsurf": [
+          "5kt wind",
+          "cross-shore"
+        ],
+        "bodyboard": [
+          "2.4m waves",
+          "5kt wind"
+        ],
+        "foil": [
+          "2.4m waves",
+          "11s period"
         ]
       }
     },
@@ -9966,6 +11180,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 7,
+      "windsurf": 0,
+      "bodyboard": 6,
+      "foil": 1,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "5kt wind",
@@ -9974,6 +11192,18 @@
         "surf": [
           "2.4m waves",
           "5kt wind"
+        ],
+        "windsurf": [
+          "5kt wind",
+          "cross-shore"
+        ],
+        "bodyboard": [
+          "2.4m waves",
+          "5kt wind"
+        ],
+        "foil": [
+          "2.4m waves",
+          "11s period"
         ]
       }
     },
@@ -10110,6 +11340,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 4,
+      "windsurf": 0,
+      "bodyboard": 7,
+      "foil": 6,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "8kt wind",
@@ -10119,6 +11353,18 @@
         "surf": [
           "1.4m waves",
           "8s period"
+        ],
+        "windsurf": [
+          "8kt wind",
+          "side-onshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.4m waves"
+        ],
+        "foil": [
+          "8kt wind",
+          "1.4m waves"
         ]
       }
     },
@@ -10255,6 +11501,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 6,
+      "windsurf": 0,
+      "bodyboard": 6,
+      "foil": 0,
+      "vf": "wing",
       "f": {
         "kite": [
           "7kt wind",
@@ -10262,6 +11512,17 @@
         ],
         "surf": [
           "2.4m waves"
+        ],
+        "windsurf": [
+          "7kt wind",
+          "cross-shore"
+        ],
+        "bodyboard": [
+          "2.4m waves"
+        ],
+        "foil": [
+          "7kt wind",
+          "cross-shore"
         ]
       }
     },
@@ -10396,6 +11657,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 4,
+      "windsurf": 0,
+      "bodyboard": 6,
+      "foil": 5,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "9kt wind",
@@ -10405,6 +11670,18 @@
         "surf": [
           "1.4m waves",
           "8s period"
+        ],
+        "windsurf": [
+          "9kt wind",
+          "side-onshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.4m waves"
+        ],
+        "foil": [
+          "9kt wind",
+          "1.4m waves"
         ]
       }
     },
@@ -10539,6 +11816,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 4,
+      "windsurf": 0,
+      "bodyboard": 6,
+      "foil": 5,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "9kt wind",
@@ -10548,6 +11829,18 @@
         "surf": [
           "1.4m waves",
           "8s period"
+        ],
+        "windsurf": [
+          "9kt wind",
+          "side-onshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.4m waves"
+        ],
+        "foil": [
+          "9kt wind",
+          "1.4m waves"
         ]
       }
     },
@@ -10682,6 +11975,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 4,
+      "windsurf": 0,
+      "bodyboard": 6,
+      "foil": 4,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "10kt wind",
@@ -10692,6 +11989,19 @@
           "10kt wind",
           "1.4m waves",
           "8s period"
+        ],
+        "windsurf": [
+          "10kt wind",
+          "cross-shore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "10kt wind",
+          "1.4m waves"
+        ],
+        "foil": [
+          "10kt wind",
+          "1.4m waves"
         ]
       }
     },
@@ -10808,6 +12118,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 0,
+      "windsurf": 0,
+      "bodyboard": 0,
+      "foil": 0,
+      "vf": "wing",
       "f": {
         "kite": [
           "6kt wind",
@@ -10818,6 +12132,21 @@
           "0.1m waves",
           "2s period",
           "6kt wind"
+        ],
+        "windsurf": [
+          "6kt wind",
+          "side-onshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "0.1m waves",
+          "2s period",
+          "6kt wind"
+        ],
+        "foil": [
+          "6kt wind",
+          "side-onshore",
+          "Small waves"
         ]
       }
     },
@@ -10954,7 +12283,10 @@
     "notaV6": {
       "t": "2026-09-08T08:00",
       "kite": null,
-      "surf": null
+      "surf": null,
+      "windsurf": null,
+      "bodyboard": null,
+      "foil": null
     },
     "tideObservedHeight": 1.241,
     "tideObservedAt": "2026-10-26T17:34:00Z",
@@ -11086,7 +12418,10 @@
     "notaV6": {
       "t": "2026-09-08T08:00",
       "kite": null,
-      "surf": null
+      "surf": null,
+      "windsurf": null,
+      "bodyboard": null,
+      "foil": null
     },
     "tideObservedHeight": 1.241,
     "tideObservedAt": "2026-10-26T17:34:00Z",
@@ -11216,7 +12551,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 4,
+      "windsurf": 0,
+      "bodyboard": 5,
+      "foil": 7,
+      "vf": "surffoil",
       "seg": "offshore",
+      "sg": {
+        "windsurf": "offshore"
+      },
       "f": {
         "kite": [
           "7kt wind",
@@ -11224,6 +12566,19 @@
           "Small waves"
         ],
         "surf": [
+          "1.2m waves",
+          "7kt wind"
+        ],
+        "windsurf": [
+          "7kt wind",
+          "offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.2m waves",
+          "7kt wind"
+        ],
+        "foil": [
           "1.2m waves",
           "7kt wind"
         ]
@@ -11360,7 +12715,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 4,
+      "windsurf": 0,
+      "bodyboard": 5,
+      "foil": 7,
+      "vf": "surffoil",
       "seg": "offshore",
+      "sg": {
+        "windsurf": "offshore"
+      },
       "f": {
         "kite": [
           "7kt wind",
@@ -11368,6 +12730,19 @@
           "Small waves"
         ],
         "surf": [
+          "1.2m waves",
+          "7kt wind"
+        ],
+        "windsurf": [
+          "7kt wind",
+          "offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.2m waves",
+          "7kt wind"
+        ],
+        "foil": [
           "1.2m waves",
           "7kt wind"
         ]
@@ -11504,6 +12879,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 4,
+      "windsurf": 0,
+      "bodyboard": 5,
+      "foil": 5,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "6kt wind",
@@ -11513,6 +12892,18 @@
         "surf": [
           "1.1m waves",
           "6kt wind"
+        ],
+        "windsurf": [
+          "6kt wind",
+          "cross-shore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.1m waves",
+          "6kt wind"
+        ],
+        "foil": [
+          "1.1m waves"
         ]
       }
     },
@@ -11647,7 +13038,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 4,
+      "windsurf": 0,
+      "bodyboard": 5,
+      "foil": 6,
+      "vf": "surffoil",
       "seg": "side-offshore",
+      "sg": {
+        "windsurf": "side-offshore"
+      },
       "f": {
         "kite": [
           "7kt wind",
@@ -11655,6 +13053,17 @@
           "Small waves"
         ],
         "surf": [
+          "1.2m waves"
+        ],
+        "windsurf": [
+          "7kt wind",
+          "side-offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.2m waves"
+        ],
+        "foil": [
           "1.2m waves"
         ]
       }
@@ -11790,7 +13199,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 6,
+      "windsurf": 0,
+      "bodyboard": 7,
+      "foil": 8,
+      "vf": "surffoil",
       "seg": "side-offshore",
+      "sg": {
+        "windsurf": "side-offshore"
+      },
       "f": {
         "kite": [
           "5kt wind",
@@ -11800,6 +13216,18 @@
         "surf": [
           "1.1m waves",
           "5kt wind"
+        ],
+        "windsurf": [
+          "5kt wind",
+          "side-offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.1m waves",
+          "5kt wind"
+        ],
+        "foil": [
+          "1.1m waves"
         ]
       }
     },
@@ -11937,7 +13365,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 4,
+      "windsurf": 0,
+      "bodyboard": 5,
+      "foil": 6,
+      "vf": "surffoil",
       "seg": "side-offshore",
+      "sg": {
+        "windsurf": "side-offshore"
+      },
       "f": {
         "kite": [
           "6kt wind",
@@ -11947,6 +13382,18 @@
         "surf": [
           "1.2m waves",
           "6kt wind"
+        ],
+        "windsurf": [
+          "6kt wind",
+          "side-offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.2m waves",
+          "6kt wind"
+        ],
+        "foil": [
+          "1.2m waves"
         ]
       }
     },
@@ -12060,6 +13507,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 4,
+      "windsurf": 0,
+      "bodyboard": 5,
+      "foil": 7,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "4kt wind",
@@ -12067,6 +13518,19 @@
           "Small waves"
         ],
         "surf": [
+          "1.1m waves",
+          "4kt wind"
+        ],
+        "windsurf": [
+          "4kt wind",
+          "onshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.1m waves",
+          "4kt wind"
+        ],
+        "foil": [
           "1.1m waves",
           "4kt wind"
         ]
@@ -12206,6 +13670,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 4,
+      "windsurf": 0,
+      "bodyboard": 5,
+      "foil": 6,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "6kt wind",
@@ -12215,6 +13683,18 @@
         "surf": [
           "0.7m waves",
           "6kt wind"
+        ],
+        "windsurf": [
+          "6kt wind",
+          "side-onshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "0.7m waves",
+          "6kt wind"
+        ],
+        "foil": [
+          "0.7m waves"
         ]
       }
     },
@@ -12346,6 +13826,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 6,
+      "windsurf": 0,
+      "bodyboard": 7,
+      "foil": 7,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "7kt wind",
@@ -12353,6 +13837,18 @@
           "Small waves"
         ],
         "surf": [
+          "1.2m waves"
+        ],
+        "windsurf": [
+          "7kt wind",
+          "side-onshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.2m waves"
+        ],
+        "foil": [
+          "7kt wind",
           "1.2m waves"
         ]
       }
@@ -12488,7 +13984,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 4,
+      "windsurf": 0,
+      "bodyboard": 5,
+      "foil": 6,
+      "vf": "surffoil",
       "seg": "side-offshore",
+      "sg": {
+        "windsurf": "side-offshore"
+      },
       "f": {
         "kite": [
           "5kt wind",
@@ -12498,6 +14001,18 @@
         "surf": [
           "1.1m waves",
           "5kt wind"
+        ],
+        "windsurf": [
+          "5kt wind",
+          "side-offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.1m waves",
+          "5kt wind"
+        ],
+        "foil": [
+          "1.1m waves"
         ]
       }
     },
@@ -12634,7 +14149,10 @@
     "notaV6": {
       "t": "2026-09-08T08:00",
       "kite": null,
-      "surf": null
+      "surf": null,
+      "windsurf": null,
+      "bodyboard": null,
+      "foil": null
     },
     "tideObservedHeight": 1.218,
     "tideObservedAt": "2026-10-26T17:34:00Z",
@@ -12767,6 +14285,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 4,
+      "windsurf": 0,
+      "bodyboard": 5,
+      "foil": 6,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "5kt wind",
@@ -12776,6 +14298,18 @@
         "surf": [
           "1.2m waves",
           "5kt wind"
+        ],
+        "windsurf": [
+          "5kt wind",
+          "cross-shore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.2m waves",
+          "5kt wind"
+        ],
+        "foil": [
+          "1.2m waves"
         ]
       }
     },
@@ -12910,6 +14444,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 4,
+      "windsurf": 0,
+      "bodyboard": 5,
+      "foil": 6,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "5kt wind",
@@ -12918,6 +14456,17 @@
         "surf": [
           "1.2m waves",
           "5kt wind"
+        ],
+        "windsurf": [
+          "5kt wind",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.2m waves",
+          "5kt wind"
+        ],
+        "foil": [
+          "1.2m waves"
         ]
       }
     },
@@ -13052,6 +14601,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 4,
+      "windsurf": 0,
+      "bodyboard": 5,
+      "foil": 6,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "6kt wind",
@@ -13061,6 +14614,18 @@
         "surf": [
           "1.2m waves",
           "6kt wind"
+        ],
+        "windsurf": [
+          "6kt wind",
+          "cross-shore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.2m waves",
+          "6kt wind"
+        ],
+        "foil": [
+          "1.2m waves"
         ]
       }
     },
@@ -13195,6 +14760,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 0,
+      "windsurf": 0,
+      "bodyboard": 2,
+      "foil": 4,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "6kt wind",
@@ -13205,6 +14774,18 @@
           "0.6m waves",
           "8s period",
           "6kt wind"
+        ],
+        "windsurf": [
+          "6kt wind",
+          "side-onshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "0.6m waves",
+          "6kt wind"
+        ],
+        "foil": [
+          "0.6m waves"
         ]
       }
     },
@@ -13339,7 +14920,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 3,
+      "windsurf": 0,
+      "bodyboard": 4,
+      "foil": 5,
+      "vf": "surffoil",
       "seg": "side-offshore",
+      "sg": {
+        "windsurf": "side-offshore"
+      },
       "f": {
         "kite": [
           "6kt wind",
@@ -13349,6 +14937,18 @@
         "surf": [
           "0.9m waves",
           "6kt wind"
+        ],
+        "windsurf": [
+          "6kt wind",
+          "side-offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "0.9m waves",
+          "6kt wind"
+        ],
+        "foil": [
+          "0.9m waves"
         ]
       }
     },
@@ -13465,6 +15065,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 6,
+      "windsurf": 0,
+      "bodyboard": 7,
+      "foil": 8,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "5kt wind",
@@ -13474,6 +15078,18 @@
         "surf": [
           "1.0m waves",
           "5kt wind"
+        ],
+        "windsurf": [
+          "5kt wind",
+          "cross-shore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.0m waves",
+          "5kt wind"
+        ],
+        "foil": [
+          "1.0m waves"
         ]
       }
     },
@@ -13605,6 +15221,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 0,
+      "windsurf": 0,
+      "bodyboard": 0,
+      "foil": 0,
+      "vf": "wing",
       "f": {
         "kite": [
           "3kt wind",
@@ -13614,6 +15234,19 @@
           "0.0m waves",
           "0s period",
           "3kt wind"
+        ],
+        "windsurf": [
+          "3kt wind",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "0.0m waves",
+          "0s period",
+          "3kt wind"
+        ],
+        "foil": [
+          "3kt wind",
+          "Small waves"
         ]
       }
     }
@@ -13742,6 +15375,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 0,
+      "windsurf": 0,
+      "bodyboard": 0,
+      "foil": 0,
+      "vf": "wing",
       "f": {
         "kite": [
           "2kt wind",
@@ -13751,6 +15388,19 @@
           "0.0m waves",
           "0s period",
           "2kt wind"
+        ],
+        "windsurf": [
+          "2kt wind",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "0.0m waves",
+          "0s period",
+          "2kt wind"
+        ],
+        "foil": [
+          "2kt wind",
+          "Small waves"
         ]
       }
     },
@@ -13885,6 +15535,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 7,
+      "windsurf": 0,
+      "bodyboard": 7,
+      "foil": 8,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "5kt wind",
@@ -13894,6 +15548,18 @@
         "surf": [
           "1.3m waves",
           "5kt wind"
+        ],
+        "windsurf": [
+          "5kt wind",
+          "cross-shore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.3m waves",
+          "5kt wind"
+        ],
+        "foil": [
+          "1.3m waves"
         ]
       }
     },
@@ -14028,7 +15694,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 5,
+      "windsurf": 0,
+      "bodyboard": 5,
+      "foil": 6,
+      "vf": "surffoil",
       "seg": "side-offshore",
+      "sg": {
+        "windsurf": "side-offshore"
+      },
       "f": {
         "kite": [
           "5kt wind",
@@ -14038,6 +15711,18 @@
         "surf": [
           "1.3m waves",
           "5kt wind"
+        ],
+        "windsurf": [
+          "5kt wind",
+          "side-offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.3m waves",
+          "5kt wind"
+        ],
+        "foil": [
+          "1.3m waves"
         ]
       }
     },
@@ -14172,6 +15857,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 5,
+      "windsurf": 0,
+      "bodyboard": 5,
+      "foil": 1,
+      "vf": "kitefoil",
       "f": {
         "kite": [
           "8kt wind",
@@ -14180,6 +15869,18 @@
         "surf": [
           "2.1m waves",
           "12s period"
+        ],
+        "windsurf": [
+          "8kt wind",
+          "cross-shore"
+        ],
+        "bodyboard": [
+          "2.1m waves",
+          "12s period"
+        ],
+        "foil": [
+          "8kt wind",
+          "cross-shore"
         ]
       }
     },
@@ -14313,7 +16014,10 @@
     "notaV6": {
       "t": "2026-09-08T08:00",
       "kite": null,
-      "surf": null
+      "surf": null,
+      "windsurf": null,
+      "bodyboard": null,
+      "foil": null
     },
     "tideObservedHeight": 1.1,
     "tideObservedAt": "2026-10-26T17:34:00Z",
@@ -14396,7 +16100,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 5,
+      "windsurf": 0,
+      "bodyboard": 6,
+      "foil": 6,
+      "vf": "surffoil",
       "seg": "side-offshore",
+      "sg": {
+        "windsurf": "side-offshore"
+      },
       "f": {
         "kite": [
           "3kt wind",
@@ -14404,6 +16115,19 @@
           "Small waves"
         ],
         "surf": [
+          "1.4m waves",
+          "3kt wind"
+        ],
+        "windsurf": [
+          "3kt wind",
+          "side-offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.4m waves",
+          "3kt wind"
+        ],
+        "foil": [
           "1.4m waves",
           "3kt wind"
         ]
@@ -14539,7 +16263,10 @@
     "notaV6": {
       "t": "2026-09-08T08:00",
       "kite": null,
-      "surf": null
+      "surf": null,
+      "windsurf": null,
+      "bodyboard": null,
+      "foil": null
     },
     "tideObservedHeight": 1.1,
     "tideObservedAt": "2026-10-26T17:34:00Z",
@@ -14671,7 +16398,10 @@
     "notaV6": {
       "t": "2026-09-08T08:00",
       "kite": null,
-      "surf": null
+      "surf": null,
+      "windsurf": null,
+      "bodyboard": null,
+      "foil": null
     },
     "tideObservedHeight": 1.1,
     "tideObservedAt": "2026-10-26T17:34:00Z",
@@ -14804,6 +16534,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 7,
+      "windsurf": 0,
+      "bodyboard": 8,
+      "foil": 8,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "4kt wind",
@@ -14811,6 +16545,19 @@
           "Small waves"
         ],
         "surf": [
+          "1.4m waves",
+          "4kt wind"
+        ],
+        "windsurf": [
+          "4kt wind",
+          "cross-shore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.4m waves",
+          "4kt wind"
+        ],
+        "foil": [
           "1.4m waves",
           "4kt wind"
         ]
@@ -14946,7 +16693,10 @@
     "notaV6": {
       "t": "2026-09-08T08:00",
       "kite": null,
-      "surf": null
+      "surf": null,
+      "windsurf": null,
+      "bodyboard": null,
+      "foil": null
     },
     "tideObservedHeight": 1.1,
     "tideObservedAt": "2026-10-26T17:34:00Z",
@@ -15029,7 +16779,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 5,
+      "windsurf": 0,
+      "bodyboard": 6,
+      "foil": 6,
+      "vf": "surffoil",
       "seg": "offshore",
+      "sg": {
+        "windsurf": "offshore"
+      },
       "f": {
         "kite": [
           "6kt wind",
@@ -15037,6 +16794,19 @@
           "Small waves"
         ],
         "surf": [
+          "1.4m waves",
+          "6kt wind"
+        ],
+        "windsurf": [
+          "6kt wind",
+          "offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.4m waves",
+          "6kt wind"
+        ],
+        "foil": [
           "1.4m waves",
           "6kt wind"
         ]
@@ -15173,6 +16943,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 7,
+      "windsurf": 0,
+      "bodyboard": 8,
+      "foil": 8,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "3kt wind",
@@ -15180,6 +16954,19 @@
           "Small waves"
         ],
         "surf": [
+          "1.4m waves",
+          "3kt wind"
+        ],
+        "windsurf": [
+          "3kt wind",
+          "side-onshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.4m waves",
+          "3kt wind"
+        ],
+        "foil": [
           "1.4m waves",
           "3kt wind"
         ]
@@ -15315,7 +17102,10 @@
     "notaV6": {
       "t": "2026-09-08T08:00",
       "kite": null,
-      "surf": null
+      "surf": null,
+      "windsurf": null,
+      "bodyboard": null,
+      "foil": null
     },
     "tideObservedHeight": 1.1,
     "tideObservedAt": "2026-10-26T17:34:00Z",
@@ -15448,7 +17238,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 7,
+      "windsurf": 0,
+      "bodyboard": 8,
+      "foil": 8,
+      "vf": "surffoil",
       "seg": "side-offshore",
+      "sg": {
+        "windsurf": "side-offshore"
+      },
       "f": {
         "kite": [
           "4kt wind",
@@ -15456,6 +17253,19 @@
           "Small waves"
         ],
         "surf": [
+          "1.4m waves",
+          "4kt wind"
+        ],
+        "windsurf": [
+          "4kt wind",
+          "side-offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.4m waves",
+          "4kt wind"
+        ],
+        "foil": [
           "1.4m waves",
           "4kt wind"
         ]
@@ -15592,6 +17402,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 7,
+      "windsurf": 0,
+      "bodyboard": 8,
+      "foil": 8,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "4kt wind",
@@ -15599,6 +17413,19 @@
           "Small waves"
         ],
         "surf": [
+          "1.4m waves",
+          "4kt wind"
+        ],
+        "windsurf": [
+          "4kt wind",
+          "cross-shore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.4m waves",
+          "4kt wind"
+        ],
+        "foil": [
           "1.4m waves",
           "4kt wind"
         ]
@@ -15735,6 +17562,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 7,
+      "windsurf": 0,
+      "bodyboard": 8,
+      "foil": 8,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "4kt wind",
@@ -15742,6 +17573,19 @@
           "Small waves"
         ],
         "surf": [
+          "1.4m waves",
+          "4kt wind"
+        ],
+        "windsurf": [
+          "4kt wind",
+          "cross-shore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.4m waves",
+          "4kt wind"
+        ],
+        "foil": [
           "1.4m waves",
           "4kt wind"
         ]
@@ -15878,6 +17722,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 4,
+      "windsurf": 0,
+      "bodyboard": 6,
+      "foil": 4,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "6kt wind",
@@ -15888,6 +17736,18 @@
           "1.5m waves",
           "8s period",
           "6kt wind"
+        ],
+        "windsurf": [
+          "6kt wind",
+          "cross-shore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.5m waves",
+          "6kt wind"
+        ],
+        "foil": [
+          "1.5m waves"
         ]
       }
     },
@@ -16022,6 +17882,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 6,
+      "windsurf": 0,
+      "bodyboard": 8,
+      "foil": 6,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "6kt wind",
@@ -16032,6 +17896,18 @@
           "1.5m waves",
           "8s period",
           "6kt wind"
+        ],
+        "windsurf": [
+          "6kt wind",
+          "side-onshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.5m waves",
+          "6kt wind"
+        ],
+        "foil": [
+          "1.5m waves"
         ]
       }
     },
@@ -16166,6 +18042,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 6,
+      "windsurf": 0,
+      "bodyboard": 8,
+      "foil": 6,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "6kt wind",
@@ -16176,6 +18056,18 @@
           "1.5m waves",
           "8s period",
           "6kt wind"
+        ],
+        "windsurf": [
+          "6kt wind",
+          "cross-shore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.5m waves",
+          "6kt wind"
+        ],
+        "foil": [
+          "1.5m waves"
         ]
       }
     },
@@ -16310,6 +18202,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 5,
+      "windsurf": 0,
+      "bodyboard": 7,
+      "foil": 6,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "7kt wind",
@@ -16319,6 +18215,18 @@
         "surf": [
           "1.5m waves",
           "8s period"
+        ],
+        "windsurf": [
+          "7kt wind",
+          "side-onshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.5m waves"
+        ],
+        "foil": [
+          "7kt wind",
+          "1.5m waves"
         ]
       }
     },
@@ -16453,6 +18361,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 4,
+      "windsurf": 0,
+      "bodyboard": 7,
+      "foil": 6,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "8kt wind",
@@ -16462,6 +18374,18 @@
         "surf": [
           "1.4m waves",
           "8s period"
+        ],
+        "windsurf": [
+          "8kt wind",
+          "side-onshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.4m waves"
+        ],
+        "foil": [
+          "8kt wind",
+          "1.4m waves"
         ]
       }
     },
@@ -16596,6 +18520,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 2,
+      "windsurf": 0,
+      "bodyboard": 5,
+      "foil": 4,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "8kt wind",
@@ -16605,6 +18533,18 @@
         "surf": [
           "1.4m waves",
           "8s period"
+        ],
+        "windsurf": [
+          "8kt wind",
+          "cross-shore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.4m waves"
+        ],
+        "foil": [
+          "8kt wind",
+          "1.4m waves"
         ]
       }
     },
@@ -16739,6 +18679,10 @@
       "t": "2026-09-08T08:00",
       "kite": 4,
       "surf": 2,
+      "windsurf": 0,
+      "bodyboard": 4,
+      "foil": 7,
+      "vf": "kitefoil",
       "f": {
         "kite": [
           "14kt wind",
@@ -16749,6 +18693,20 @@
           "14kt wind",
           "1.6m waves",
           "8s period"
+        ],
+        "windsurf": [
+          "14kt wind",
+          "side-onshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "14kt wind",
+          "1.6m waves"
+        ],
+        "foil": [
+          "14kt wind",
+          "side-onshore",
+          "Small waves"
         ]
       }
     },
@@ -16883,6 +18841,10 @@
       "t": "2026-09-08T08:00",
       "kite": 4,
       "surf": 2,
+      "windsurf": 0,
+      "bodyboard": 4,
+      "foil": 7,
+      "vf": "kitefoil",
       "f": {
         "kite": [
           "14kt wind",
@@ -16893,6 +18855,20 @@
           "14kt wind",
           "1.6m waves",
           "8s period"
+        ],
+        "windsurf": [
+          "14kt wind",
+          "side-onshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "14kt wind",
+          "1.6m waves"
+        ],
+        "foil": [
+          "14kt wind",
+          "side-onshore",
+          "Small waves"
         ]
       }
     },
@@ -17026,7 +19002,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 0,
+      "windsurf": 0,
+      "bodyboard": 1,
+      "foil": 4,
+      "vf": "surffoil",
       "seg": "offshore",
+      "sg": {
+        "windsurf": "offshore"
+      },
       "f": {
         "kite": [
           "6kt wind",
@@ -17034,6 +19017,21 @@
           "Small waves"
         ],
         "surf": [
+          "0.6m waves",
+          "6s period",
+          "6kt wind"
+        ],
+        "windsurf": [
+          "6kt wind",
+          "offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "0.6m waves",
+          "6s period",
+          "6kt wind"
+        ],
+        "foil": [
           "0.6m waves",
           "6s period",
           "6kt wind"
@@ -17170,7 +19168,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 3,
+      "windsurf": 0,
+      "bodyboard": 5,
+      "foil": 7,
+      "vf": "surffoil",
       "seg": "offshore",
+      "sg": {
+        "windsurf": "offshore"
+      },
       "f": {
         "kite": [
           "6kt wind",
@@ -17180,6 +19185,19 @@
         "surf": [
           "1.2m waves",
           "7s period",
+          "6kt wind"
+        ],
+        "windsurf": [
+          "6kt wind",
+          "offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.2m waves",
+          "6kt wind"
+        ],
+        "foil": [
+          "1.2m waves",
           "6kt wind"
         ]
       }
@@ -17314,7 +19332,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 3,
+      "windsurf": 0,
+      "bodyboard": 5,
+      "foil": 6,
+      "vf": "surffoil",
       "seg": "offshore",
+      "sg": {
+        "windsurf": "offshore"
+      },
       "f": {
         "kite": [
           "13kt wind",
@@ -17325,6 +19350,18 @@
           "1.2m waves",
           "7s period",
           "13kt wind"
+        ],
+        "windsurf": [
+          "13kt wind",
+          "offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.2m waves",
+          "13kt wind"
+        ],
+        "foil": [
+          "1.2m waves"
         ]
       }
     },
@@ -17459,6 +19496,10 @@
       "t": "2026-09-08T08:00",
       "kite": 4,
       "surf": 2,
+      "windsurf": 0,
+      "bodyboard": 4,
+      "foil": 7,
+      "vf": "kitefoil",
       "f": {
         "kite": [
           "14kt wind",
@@ -17469,6 +19510,20 @@
           "14kt wind",
           "1.6m waves",
           "8s period"
+        ],
+        "windsurf": [
+          "14kt wind",
+          "side-onshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "14kt wind",
+          "1.6m waves"
+        ],
+        "foil": [
+          "14kt wind",
+          "side-onshore",
+          "Small waves"
         ]
       }
     },
@@ -17603,7 +19658,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 0,
+      "windsurf": 0,
+      "bodyboard": 0,
+      "foil": 2,
+      "vf": "surffoil",
       "seg": "offshore",
+      "sg": {
+        "windsurf": "offshore"
+      },
       "f": {
         "kite": [
           "2kt wind",
@@ -17611,6 +19673,21 @@
           "Small waves"
         ],
         "surf": [
+          "0.4m waves",
+          "5s period",
+          "2kt wind"
+        ],
+        "windsurf": [
+          "2kt wind",
+          "offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "0.4m waves",
+          "5s period",
+          "2kt wind"
+        ],
+        "foil": [
           "0.4m waves",
           "5s period",
           "2kt wind"
@@ -17745,7 +19822,15 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 0,
+      "windsurf": 0,
+      "bodyboard": 0,
+      "foil": 2,
+      "vf": "kitefoil",
       "seg": "offshore",
+      "sg": {
+        "windsurf": "offshore",
+        "foil": "offshore"
+      },
       "f": {
         "kite": [
           "9kt wind",
@@ -17755,6 +19840,20 @@
         "surf": [
           "0.3m waves",
           "3s period"
+        ],
+        "windsurf": [
+          "9kt wind",
+          "offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "0.3m waves",
+          "3s period"
+        ],
+        "foil": [
+          "9kt wind",
+          "offshore",
+          "Small waves"
         ]
       }
     }
@@ -17883,7 +19982,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 0,
+      "windsurf": 0,
+      "bodyboard": 0,
+      "foil": 1,
+      "vf": "surffoil",
       "seg": "offshore",
+      "sg": {
+        "windsurf": "offshore"
+      },
       "f": {
         "kite": [
           "9kt wind",
@@ -17891,6 +19997,21 @@
           "Small waves"
         ],
         "surf": [
+          "0.3m waves",
+          "4s period",
+          "9kt wind"
+        ],
+        "windsurf": [
+          "9kt wind",
+          "offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "0.3m waves",
+          "4s period",
+          "9kt wind"
+        ],
+        "foil": [
           "0.3m waves",
           "4s period",
           "9kt wind"
@@ -18022,7 +20143,15 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 0,
+      "windsurf": 0,
+      "bodyboard": 0,
+      "foil": 0,
+      "vf": "wing",
       "seg": "offshore",
+      "sg": {
+        "windsurf": "offshore",
+        "foil": "offshore"
+      },
       "f": {
         "kite": [
           "9kt wind",
@@ -18033,6 +20162,21 @@
           "0.2m waves",
           "4s period",
           "9kt wind"
+        ],
+        "windsurf": [
+          "9kt wind",
+          "offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "0.2m waves",
+          "4s period",
+          "9kt wind"
+        ],
+        "foil": [
+          "9kt wind",
+          "offshore",
+          "Small waves"
         ]
       }
     }
@@ -18161,7 +20305,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 0,
+      "windsurf": 0,
+      "bodyboard": 0,
+      "foil": 1,
+      "vf": "surffoil",
       "seg": "offshore",
+      "sg": {
+        "windsurf": "offshore"
+      },
       "f": {
         "kite": [
           "9kt wind",
@@ -18169,6 +20320,21 @@
           "Small waves"
         ],
         "surf": [
+          "0.3m waves",
+          "4s period",
+          "9kt wind"
+        ],
+        "windsurf": [
+          "9kt wind",
+          "offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "0.3m waves",
+          "4s period",
+          "9kt wind"
+        ],
+        "foil": [
           "0.3m waves",
           "4s period",
           "9kt wind"
@@ -18303,7 +20469,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 0,
+      "windsurf": 0,
+      "bodyboard": 0,
+      "foil": 2,
+      "vf": "surffoil",
       "seg": "offshore",
+      "sg": {
+        "windsurf": "offshore"
+      },
       "f": {
         "kite": [
           "2kt wind",
@@ -18311,6 +20484,21 @@
           "Small waves"
         ],
         "surf": [
+          "0.4m waves",
+          "5s period",
+          "2kt wind"
+        ],
+        "windsurf": [
+          "2kt wind",
+          "offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "0.4m waves",
+          "5s period",
+          "2kt wind"
+        ],
+        "foil": [
           "0.4m waves",
           "5s period",
           "2kt wind"
@@ -18447,6 +20635,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 0,
+      "windsurf": 0,
+      "bodyboard": 0,
+      "foil": 3,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "2kt wind",
@@ -18454,6 +20646,21 @@
           "Small waves"
         ],
         "surf": [
+          "0.5m waves",
+          "5s period",
+          "2kt wind"
+        ],
+        "windsurf": [
+          "2kt wind",
+          "cross-shore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "0.5m waves",
+          "5s period",
+          "2kt wind"
+        ],
+        "foil": [
           "0.5m waves",
           "5s period",
           "2kt wind"
@@ -18590,12 +20797,30 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 0,
+      "windsurf": 0,
+      "bodyboard": 0,
+      "foil": 3,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "2kt wind",
           "Small waves"
         ],
         "surf": [
+          "0.5m waves",
+          "5s period",
+          "2kt wind"
+        ],
+        "windsurf": [
+          "2kt wind",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "0.5m waves",
+          "5s period",
+          "2kt wind"
+        ],
+        "foil": [
           "0.5m waves",
           "5s period",
           "2kt wind"
@@ -18732,7 +20957,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 0,
+      "windsurf": 0,
+      "bodyboard": 0,
+      "foil": 3,
+      "vf": "surffoil",
       "seg": "side-offshore",
+      "sg": {
+        "windsurf": "side-offshore"
+      },
       "f": {
         "kite": [
           "2kt wind",
@@ -18740,6 +20972,21 @@
           "Small waves"
         ],
         "surf": [
+          "0.5m waves",
+          "5s period",
+          "2kt wind"
+        ],
+        "windsurf": [
+          "2kt wind",
+          "side-offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "0.5m waves",
+          "5s period",
+          "2kt wind"
+        ],
+        "foil": [
           "0.5m waves",
           "5s period",
           "2kt wind"
@@ -18876,12 +21123,30 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 0,
+      "windsurf": 0,
+      "bodyboard": 1,
+      "foil": 4,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "4kt wind",
           "Small waves"
         ],
         "surf": [
+          "0.6m waves",
+          "6s period",
+          "4kt wind"
+        ],
+        "windsurf": [
+          "4kt wind",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "0.6m waves",
+          "6s period",
+          "4kt wind"
+        ],
+        "foil": [
           "0.6m waves",
           "6s period",
           "4kt wind"
@@ -19000,7 +21265,15 @@
       "t": "2026-09-08T08:00",
       "kite": 1,
       "surf": 2,
+      "windsurf": 0,
+      "bodyboard": 4,
+      "foil": 2,
+      "vf": "wing",
       "seg": "side-offshore",
+      "sg": {
+        "windsurf": "side-offshore",
+        "foil": "side-offshore"
+      },
       "f": {
         "kite": [
           "14kt wind",
@@ -19011,6 +21284,20 @@
           "14kt wind",
           "1.6m waves",
           "8s period"
+        ],
+        "windsurf": [
+          "14kt wind",
+          "side-offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "14kt wind",
+          "1.6m waves"
+        ],
+        "foil": [
+          "14kt wind",
+          "side-offshore",
+          "Small waves"
         ]
       }
     },
@@ -19126,7 +21413,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 4,
+      "windsurf": 0,
+      "bodyboard": 6,
+      "foil": 4,
+      "vf": "surffoil",
       "seg": "offshore",
+      "sg": {
+        "windsurf": "offshore"
+      },
       "f": {
         "kite": [
           "14kt wind",
@@ -19137,6 +21431,18 @@
           "1.6m waves",
           "8s period",
           "14kt wind"
+        ],
+        "windsurf": [
+          "14kt wind",
+          "offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.6m waves",
+          "14kt wind"
+        ],
+        "foil": [
+          "1.6m waves"
         ]
       }
     },
@@ -19250,7 +21556,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 0,
+      "windsurf": 0,
+      "bodyboard": 2,
+      "foil": 5,
+      "vf": "surffoil",
       "seg": "side-offshore",
+      "sg": {
+        "windsurf": "side-offshore"
+      },
       "f": {
         "kite": [
           "2kt wind",
@@ -19260,6 +21573,19 @@
         "surf": [
           "0.6m waves",
           "8s period",
+          "2kt wind"
+        ],
+        "windsurf": [
+          "2kt wind",
+          "side-offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "0.6m waves",
+          "2kt wind"
+        ],
+        "foil": [
+          "0.6m waves",
           "2kt wind"
         ]
       }
@@ -19395,6 +21721,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 0,
+      "windsurf": 0,
+      "bodyboard": 2,
+      "foil": 4,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "2kt wind",
@@ -19404,6 +21734,19 @@
         "surf": [
           "0.5m waves",
           "8s period",
+          "2kt wind"
+        ],
+        "windsurf": [
+          "2kt wind",
+          "onshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "0.5m waves",
+          "2kt wind"
+        ],
+        "foil": [
+          "0.5m waves",
           "2kt wind"
         ]
       }
@@ -19539,6 +21882,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 0,
+      "windsurf": 0,
+      "bodyboard": 2,
+      "foil": 5,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "2kt wind",
@@ -19548,6 +21895,19 @@
         "surf": [
           "0.6m waves",
           "8s period",
+          "2kt wind"
+        ],
+        "windsurf": [
+          "2kt wind",
+          "cross-shore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "0.6m waves",
+          "2kt wind"
+        ],
+        "foil": [
+          "0.6m waves",
           "2kt wind"
         ]
       }
@@ -19683,7 +22043,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 0,
+      "windsurf": 0,
+      "bodyboard": 2,
+      "foil": 5,
+      "vf": "surffoil",
       "seg": "side-offshore",
+      "sg": {
+        "windsurf": "side-offshore"
+      },
       "f": {
         "kite": [
           "2kt wind",
@@ -19693,6 +22060,19 @@
         "surf": [
           "0.6m waves",
           "8s period",
+          "2kt wind"
+        ],
+        "windsurf": [
+          "2kt wind",
+          "side-offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "0.6m waves",
+          "2kt wind"
+        ],
+        "foil": [
+          "0.6m waves",
           "2kt wind"
         ]
       }
@@ -19831,7 +22211,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 0,
+      "windsurf": 0,
+      "bodyboard": 2,
+      "foil": 5,
+      "vf": "surffoil",
       "seg": "offshore",
+      "sg": {
+        "windsurf": "offshore"
+      },
       "f": {
         "kite": [
           "1kt wind",
@@ -19841,6 +22228,19 @@
         "surf": [
           "0.6m waves",
           "8s period",
+          "1kt wind"
+        ],
+        "windsurf": [
+          "1kt wind",
+          "offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "0.6m waves",
+          "1kt wind"
+        ],
+        "foil": [
+          "0.6m waves",
           "1kt wind"
         ]
       }
@@ -19976,7 +22376,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 0,
+      "windsurf": 0,
+      "bodyboard": 2,
+      "foil": 4,
+      "vf": "surffoil",
       "seg": "offshore",
+      "sg": {
+        "windsurf": "offshore"
+      },
       "f": {
         "kite": [
           "2kt wind",
@@ -19986,6 +22393,19 @@
         "surf": [
           "0.5m waves",
           "8s period",
+          "2kt wind"
+        ],
+        "windsurf": [
+          "2kt wind",
+          "offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "0.5m waves",
+          "2kt wind"
+        ],
+        "foil": [
+          "0.5m waves",
           "2kt wind"
         ]
       }
@@ -20118,7 +22538,15 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 0,
+      "windsurf": 0,
+      "bodyboard": 0,
+      "foil": 0,
+      "vf": "wing",
       "seg": "offshore",
+      "sg": {
+        "windsurf": "offshore",
+        "foil": "offshore"
+      },
       "f": {
         "kite": [
           "2kt wind",
@@ -20129,6 +22557,21 @@
           "0.2m waves",
           "4s period",
           "2kt wind"
+        ],
+        "windsurf": [
+          "2kt wind",
+          "offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "0.2m waves",
+          "4s period",
+          "2kt wind"
+        ],
+        "foil": [
+          "2kt wind",
+          "offshore",
+          "Small waves"
         ]
       }
     }
@@ -20257,7 +22700,15 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 0,
+      "windsurf": 0,
+      "bodyboard": 0,
+      "foil": 0,
+      "vf": "wing",
       "seg": "offshore",
+      "sg": {
+        "windsurf": "offshore",
+        "foil": "offshore"
+      },
       "f": {
         "kite": [
           "7kt wind",
@@ -20268,6 +22719,21 @@
           "0.2m waves",
           "4s period",
           "7kt wind"
+        ],
+        "windsurf": [
+          "7kt wind",
+          "offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "0.2m waves",
+          "4s period",
+          "7kt wind"
+        ],
+        "foil": [
+          "7kt wind",
+          "offshore",
+          "Small waves"
         ]
       }
     }
@@ -20396,7 +22862,15 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 0,
+      "windsurf": 0,
+      "bodyboard": 0,
+      "foil": 0,
+      "vf": "wing",
       "seg": "offshore",
+      "sg": {
+        "windsurf": "offshore",
+        "foil": "offshore"
+      },
       "f": {
         "kite": [
           "7kt wind",
@@ -20407,6 +22881,21 @@
           "0.2m waves",
           "4s period",
           "7kt wind"
+        ],
+        "windsurf": [
+          "7kt wind",
+          "offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "0.2m waves",
+          "4s period",
+          "7kt wind"
+        ],
+        "foil": [
+          "7kt wind",
+          "offshore",
+          "Small waves"
         ]
       }
     }
@@ -20537,7 +23026,14 @@
       "t": "2026-09-08T08:00",
       "kite": 1,
       "surf": 2,
+      "windsurf": 0,
+      "bodyboard": 4,
+      "foil": 3,
+      "vf": "surffoil",
       "seg": "side-offshore",
+      "sg": {
+        "windsurf": "side-offshore"
+      },
       "f": {
         "kite": [
           "13kt wind",
@@ -20548,6 +23044,19 @@
           "13kt wind",
           "1.4m waves",
           "8s period"
+        ],
+        "windsurf": [
+          "13kt wind",
+          "side-offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "13kt wind",
+          "1.4m waves"
+        ],
+        "foil": [
+          "13kt wind",
+          "1.4m waves"
         ]
       }
     },
@@ -20663,7 +23172,15 @@
       "t": "2026-09-08T08:00",
       "kite": 1,
       "surf": 2,
+      "windsurf": 0,
+      "bodyboard": 4,
+      "foil": 2,
+      "vf": "wing",
       "seg": "side-offshore",
+      "sg": {
+        "windsurf": "side-offshore",
+        "foil": "side-offshore"
+      },
       "f": {
         "kite": [
           "14kt wind",
@@ -20674,6 +23191,20 @@
           "14kt wind",
           "1.6m waves",
           "8s period"
+        ],
+        "windsurf": [
+          "14kt wind",
+          "side-offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "14kt wind",
+          "1.6m waves"
+        ],
+        "foil": [
+          "14kt wind",
+          "side-offshore",
+          "Small waves"
         ]
       }
     },
@@ -20807,7 +23338,10 @@
     "notaV6": {
       "t": "2026-09-08T08:00",
       "kite": null,
-      "surf": null
+      "surf": null,
+      "windsurf": null,
+      "bodyboard": null,
+      "foil": null
     },
     "tideObservedHeight": 1.115,
     "tideObservedAt": "2026-10-26T17:33:00Z",
@@ -20939,7 +23473,10 @@
     "notaV6": {
       "t": "2026-09-08T08:00",
       "kite": null,
-      "surf": null
+      "surf": null,
+      "windsurf": null,
+      "bodyboard": null,
+      "foil": null
     },
     "tideObservedHeight": 1.1,
     "tideObservedAt": "2026-10-26T17:34:00Z",
@@ -21072,7 +23609,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 1,
+      "windsurf": 0,
+      "bodyboard": 4,
+      "foil": 6,
+      "vf": "surffoil",
       "seg": "offshore",
+      "sg": {
+        "windsurf": "offshore"
+      },
       "f": {
         "kite": [
           "5kt wind",
@@ -21083,6 +23627,18 @@
           "0.7m waves",
           "8s period",
           "5kt wind"
+        ],
+        "windsurf": [
+          "5kt wind",
+          "offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "0.7m waves",
+          "5kt wind"
+        ],
+        "foil": [
+          "0.7m waves"
         ]
       }
     },
@@ -21217,6 +23773,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 1,
+      "windsurf": 0,
+      "bodyboard": 2,
+      "foil": 2,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "8kt wind",
@@ -21224,6 +23784,20 @@
           "Small waves"
         ],
         "surf": [
+          "1.4m waves",
+          "6s period"
+        ],
+        "windsurf": [
+          "8kt wind",
+          "cross-shore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.4m waves",
+          "6s period"
+        ],
+        "foil": [
+          "8kt wind",
           "1.4m waves",
           "6s period"
         ]
@@ -21360,7 +23934,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 2,
+      "windsurf": 0,
+      "bodyboard": 4,
+      "foil": 6,
+      "vf": "surffoil",
       "seg": "offshore",
+      "sg": {
+        "windsurf": "offshore"
+      },
       "f": {
         "kite": [
           "12kt wind",
@@ -21370,6 +23951,19 @@
         "surf": [
           "1.3m waves",
           "7s period",
+          "12kt wind"
+        ],
+        "windsurf": [
+          "12kt wind",
+          "offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.3m waves",
+          "12kt wind"
+        ],
+        "foil": [
+          "1.3m waves",
           "12kt wind"
         ]
       }
@@ -21505,7 +24099,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 2,
+      "windsurf": 0,
+      "bodyboard": 4,
+      "foil": 6,
+      "vf": "surffoil",
       "seg": "offshore",
+      "sg": {
+        "windsurf": "offshore"
+      },
       "f": {
         "kite": [
           "6kt wind",
@@ -21515,6 +24116,19 @@
         "surf": [
           "1.3m waves",
           "7s period",
+          "6kt wind"
+        ],
+        "windsurf": [
+          "6kt wind",
+          "offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.3m waves",
+          "6kt wind"
+        ],
+        "foil": [
+          "1.3m waves",
           "6kt wind"
         ]
       }
@@ -21650,7 +24264,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 2,
+      "windsurf": 0,
+      "bodyboard": 3,
+      "foil": 4,
+      "vf": "surffoil",
       "seg": "offshore",
+      "sg": {
+        "windsurf": "offshore"
+      },
       "f": {
         "kite": [
           "15kt wind",
@@ -21661,6 +24282,20 @@
           "1.2m waves",
           "5s period",
           "15kt wind"
+        ],
+        "windsurf": [
+          "15kt wind",
+          "offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.2m waves",
+          "5s period",
+          "15kt wind"
+        ],
+        "foil": [
+          "1.2m waves",
+          "5s period"
         ]
       }
     },
@@ -21795,7 +24430,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 0,
+      "windsurf": 0,
+      "bodyboard": 2,
+      "foil": 4,
+      "vf": "surffoil",
       "seg": "offshore",
+      "sg": {
+        "windsurf": "offshore"
+      },
       "f": {
         "kite": [
           "8kt wind",
@@ -21805,6 +24447,19 @@
         "surf": [
           "0.7m waves",
           "8s period",
+          "8kt wind"
+        ],
+        "windsurf": [
+          "8kt wind",
+          "offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "0.7m waves",
+          "8kt wind"
+        ],
+        "foil": [
+          "0.7m waves",
           "8kt wind"
         ]
       }
@@ -21940,7 +24595,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 1,
+      "windsurf": 0,
+      "bodyboard": 3,
+      "foil": 4,
+      "vf": "surffoil",
       "seg": "side-offshore",
+      "sg": {
+        "windsurf": "side-offshore"
+      },
       "f": {
         "kite": [
           "10kt wind",
@@ -21950,6 +24612,18 @@
         "surf": [
           "1.0m waves",
           "7s period"
+        ],
+        "windsurf": [
+          "10kt wind",
+          "side-offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.0m waves"
+        ],
+        "foil": [
+          "10kt wind",
+          "1.0m waves"
         ]
       }
     },
@@ -22081,6 +24755,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 6,
+      "windsurf": 0,
+      "bodyboard": 7,
+      "foil": 9,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "3kt wind",
@@ -22088,6 +24766,19 @@
           "Small waves"
         ],
         "surf": [
+          "1.2m waves",
+          "3kt wind"
+        ],
+        "windsurf": [
+          "3kt wind",
+          "cross-shore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.2m waves",
+          "3kt wind"
+        ],
+        "foil": [
           "1.2m waves",
           "3kt wind"
         ]
@@ -22221,7 +24912,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 5,
+      "windsurf": 0,
+      "bodyboard": 5,
+      "foil": 7,
+      "vf": "surffoil",
       "seg": "offshore",
+      "sg": {
+        "windsurf": "offshore"
+      },
       "f": {
         "kite": [
           "1kt wind",
@@ -22229,6 +24927,19 @@
           "Small waves"
         ],
         "surf": [
+          "1.3m waves",
+          "1kt wind"
+        ],
+        "windsurf": [
+          "1kt wind",
+          "offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.3m waves",
+          "1kt wind"
+        ],
+        "foil": [
           "1.3m waves",
           "1kt wind"
         ]
@@ -22365,6 +25076,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 4,
+      "windsurf": 0,
+      "bodyboard": 5,
+      "foil": 1,
+      "vf": "kitefoil",
       "f": {
         "kite": [
           "8kt wind",
@@ -22372,6 +25087,17 @@
         ],
         "surf": [
           "2.0m waves"
+        ],
+        "windsurf": [
+          "8kt wind",
+          "side-onshore"
+        ],
+        "bodyboard": [
+          "2.0m waves"
+        ],
+        "foil": [
+          "8kt wind",
+          "side-onshore"
         ]
       }
     },
@@ -22506,6 +25232,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 5,
+      "windsurf": 0,
+      "bodyboard": 7,
+      "foil": 6,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "7kt wind",
@@ -22515,6 +25245,18 @@
         "surf": [
           "1.4m waves",
           "8s period"
+        ],
+        "windsurf": [
+          "7kt wind",
+          "side-onshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.4m waves"
+        ],
+        "foil": [
+          "7kt wind",
+          "1.4m waves"
         ]
       }
     },
@@ -22648,6 +25390,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 2,
+      "windsurf": 0,
+      "bodyboard": 5,
+      "foil": 4,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "8kt wind",
@@ -22657,6 +25403,18 @@
         "surf": [
           "1.4m waves",
           "8s period"
+        ],
+        "windsurf": [
+          "8kt wind",
+          "cross-shore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.4m waves"
+        ],
+        "foil": [
+          "8kt wind",
+          "1.4m waves"
         ]
       }
     },
@@ -22790,6 +25548,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 3,
+      "windsurf": 0,
+      "bodyboard": 5,
+      "foil": 4,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "7kt wind",
@@ -22799,6 +25561,18 @@
         "surf": [
           "1.4m waves",
           "8s period"
+        ],
+        "windsurf": [
+          "7kt wind",
+          "cross-shore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.4m waves"
+        ],
+        "foil": [
+          "7kt wind",
+          "1.4m waves"
         ]
       }
     },
@@ -22971,6 +25745,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 5,
+      "windsurf": 0,
+      "bodyboard": 8,
+      "foil": 7,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "6kt wind",
@@ -22981,6 +25759,18 @@
           "1.4m waves",
           "8s period",
           "6kt wind"
+        ],
+        "windsurf": [
+          "6kt wind",
+          "side-onshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.4m waves",
+          "6kt wind"
+        ],
+        "foil": [
+          "1.4m waves"
         ]
       }
     },
@@ -23115,7 +25905,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 3,
+      "windsurf": 0,
+      "bodyboard": 6,
+      "foil": 5,
+      "vf": "surffoil",
       "seg": "side-offshore",
+      "sg": {
+        "windsurf": "side-offshore"
+      },
       "f": {
         "kite": [
           "6kt wind",
@@ -23126,6 +25923,18 @@
           "1.4m waves",
           "8s period",
           "6kt wind"
+        ],
+        "windsurf": [
+          "6kt wind",
+          "side-offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.4m waves",
+          "6kt wind"
+        ],
+        "foil": [
+          "1.4m waves"
         ]
       }
     },
@@ -23262,7 +26071,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 3,
+      "windsurf": 0,
+      "bodyboard": 5,
+      "foil": 5,
+      "vf": "surffoil",
       "seg": "side-offshore",
+      "sg": {
+        "windsurf": "side-offshore"
+      },
       "f": {
         "kite": [
           "8kt wind",
@@ -23272,6 +26088,17 @@
         "surf": [
           "1.4m waves",
           "8s period"
+        ],
+        "windsurf": [
+          "8kt wind",
+          "side-offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.4m waves"
+        ],
+        "foil": [
+          "1.4m waves"
         ]
       }
     },
@@ -23406,6 +26233,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 2,
+      "windsurf": 0,
+      "bodyboard": 5,
+      "foil": 4,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "8kt wind",
@@ -23415,6 +26246,18 @@
         "surf": [
           "1.4m waves",
           "8s period"
+        ],
+        "windsurf": [
+          "8kt wind",
+          "cross-shore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.4m waves"
+        ],
+        "foil": [
+          "8kt wind",
+          "1.4m waves"
         ]
       }
     },
@@ -23549,6 +26392,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 7,
+      "windsurf": 0,
+      "bodyboard": 7,
+      "foil": 8,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "5kt wind",
@@ -23558,6 +26405,18 @@
         "surf": [
           "1.3m waves",
           "5kt wind"
+        ],
+        "windsurf": [
+          "5kt wind",
+          "cross-shore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.3m waves",
+          "5kt wind"
+        ],
+        "foil": [
+          "1.3m waves"
         ]
       }
     },
@@ -23695,12 +26554,28 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 7,
+      "windsurf": 0,
+      "bodyboard": 7,
+      "foil": 9,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "4kt wind",
           "Small waves"
         ],
         "surf": [
+          "1.3m waves",
+          "4kt wind"
+        ],
+        "windsurf": [
+          "4kt wind",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.3m waves",
+          "4kt wind"
+        ],
+        "foil": [
           "1.3m waves",
           "4kt wind"
         ]
@@ -23819,12 +26694,28 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 5,
+      "windsurf": 0,
+      "bodyboard": 5,
+      "foil": 7,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "4kt wind",
           "Small waves"
         ],
         "surf": [
+          "1.3m waves",
+          "4kt wind"
+        ],
+        "windsurf": [
+          "4kt wind",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.3m waves",
+          "4kt wind"
+        ],
+        "foil": [
           "1.3m waves",
           "4kt wind"
         ]
@@ -23961,7 +26852,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 5,
+      "windsurf": 0,
+      "bodyboard": 6,
+      "foil": 5,
+      "vf": "surffoil",
       "seg": "side-offshore",
+      "sg": {
+        "windsurf": "side-offshore"
+      },
       "f": {
         "kite": [
           "6kt wind",
@@ -23971,6 +26869,18 @@
         "surf": [
           "1.4m waves",
           "6kt wind"
+        ],
+        "windsurf": [
+          "6kt wind",
+          "side-offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.4m waves",
+          "6kt wind"
+        ],
+        "foil": [
+          "1.4m waves"
         ]
       }
     },
@@ -24104,7 +27014,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 0,
+      "windsurf": 0,
+      "bodyboard": 2,
+      "foil": 4,
+      "vf": "surffoil",
       "seg": "offshore",
+      "sg": {
+        "windsurf": "offshore"
+      },
       "f": {
         "kite": [
           "3kt wind",
@@ -24114,6 +27031,19 @@
         "surf": [
           "0.5m waves",
           "7s period",
+          "3kt wind"
+        ],
+        "windsurf": [
+          "3kt wind",
+          "offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "0.5m waves",
+          "3kt wind"
+        ],
+        "foil": [
+          "0.5m waves",
           "3kt wind"
         ]
       }
@@ -24248,6 +27178,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 0,
+      "windsurf": 0,
+      "bodyboard": 0,
+      "foil": 3,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "2kt wind",
@@ -24255,6 +27189,21 @@
           "Small waves"
         ],
         "surf": [
+          "0.5m waves",
+          "5s period",
+          "2kt wind"
+        ],
+        "windsurf": [
+          "2kt wind",
+          "cross-shore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "0.5m waves",
+          "5s period",
+          "2kt wind"
+        ],
+        "foil": [
           "0.5m waves",
           "5s period",
           "2kt wind"
@@ -24391,7 +27340,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 0,
+      "windsurf": 0,
+      "bodyboard": 0,
+      "foil": 1,
+      "vf": "surffoil",
       "seg": "offshore",
+      "sg": {
+        "windsurf": "offshore"
+      },
       "f": {
         "kite": [
           "8kt wind",
@@ -24399,6 +27355,21 @@
           "Small waves"
         ],
         "surf": [
+          "0.3m waves",
+          "5s period",
+          "8kt wind"
+        ],
+        "windsurf": [
+          "8kt wind",
+          "offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "0.3m waves",
+          "5s period",
+          "8kt wind"
+        ],
+        "foil": [
           "0.3m waves",
           "5s period",
           "8kt wind"
@@ -24533,7 +27504,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 0,
+      "windsurf": 0,
+      "bodyboard": 0,
+      "foil": 1,
+      "vf": "surffoil",
       "seg": "offshore",
+      "sg": {
+        "windsurf": "offshore"
+      },
       "f": {
         "kite": [
           "8kt wind",
@@ -24541,6 +27519,21 @@
           "Small waves"
         ],
         "surf": [
+          "0.3m waves",
+          "5s period",
+          "8kt wind"
+        ],
+        "windsurf": [
+          "8kt wind",
+          "offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "0.3m waves",
+          "5s period",
+          "8kt wind"
+        ],
+        "foil": [
           "0.3m waves",
           "5s period",
           "8kt wind"
@@ -24659,7 +27652,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 4,
+      "windsurf": 0,
+      "bodyboard": 6,
+      "foil": 4,
+      "vf": "surffoil",
       "seg": "offshore",
+      "sg": {
+        "windsurf": "offshore"
+      },
       "f": {
         "kite": [
           "14kt wind",
@@ -24670,6 +27670,18 @@
           "1.6m waves",
           "8s period",
           "14kt wind"
+        ],
+        "windsurf": [
+          "14kt wind",
+          "offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.6m waves",
+          "14kt wind"
+        ],
+        "foil": [
+          "1.6m waves"
         ]
       }
     },
@@ -24804,7 +27816,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 1,
+      "windsurf": 0,
+      "bodyboard": 1,
+      "foil": 3,
+      "vf": "surffoil",
       "seg": "side-offshore",
+      "sg": {
+        "windsurf": "side-offshore"
+      },
       "f": {
         "kite": [
           "11kt wind",
@@ -24812,6 +27831,20 @@
           "Small waves"
         ],
         "surf": [
+          "1.2m waves",
+          "5s period"
+        ],
+        "windsurf": [
+          "11kt wind",
+          "side-offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.2m waves",
+          "5s period"
+        ],
+        "foil": [
+          "11kt wind",
           "1.2m waves",
           "5s period"
         ]
@@ -24950,6 +27983,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 2,
+      "windsurf": 0,
+      "bodyboard": 4,
+      "foil": 4,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "7kt wind",
@@ -24959,6 +27996,18 @@
         "surf": [
           "1.3m waves",
           "7s period"
+        ],
+        "windsurf": [
+          "7kt wind",
+          "onshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.3m waves"
+        ],
+        "foil": [
+          "7kt wind",
+          "1.3m waves"
         ]
       }
     },
@@ -25075,7 +28124,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 1,
+      "windsurf": 0,
+      "bodyboard": 3,
+      "foil": 2,
+      "vf": "surffoil",
       "seg": "side-offshore",
+      "sg": {
+        "windsurf": "side-offshore"
+      },
       "f": {
         "kite": [
           "12kt wind",
@@ -25085,6 +28141,18 @@
         "surf": [
           "1.5m waves",
           "7s period"
+        ],
+        "windsurf": [
+          "12kt wind",
+          "side-offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.5m waves"
+        ],
+        "foil": [
+          "12kt wind",
+          "1.5m waves"
         ]
       }
     },
@@ -25219,7 +28287,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 2,
+      "windsurf": 0,
+      "bodyboard": 4,
+      "foil": 5,
+      "vf": "surffoil",
       "seg": "offshore",
+      "sg": {
+        "windsurf": "offshore"
+      },
       "f": {
         "kite": [
           "8kt wind",
@@ -25229,6 +28304,19 @@
         "surf": [
           "1.0m waves",
           "8s period",
+          "8kt wind"
+        ],
+        "windsurf": [
+          "8kt wind",
+          "offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.0m waves",
+          "8kt wind"
+        ],
+        "foil": [
+          "1.0m waves",
           "8kt wind"
         ]
       }
@@ -25363,7 +28451,10 @@
     "notaV6": {
       "t": "2026-09-08T08:00",
       "kite": null,
-      "surf": null
+      "surf": null,
+      "windsurf": null,
+      "bodyboard": null,
+      "foil": null
     },
     "tideObservedHeight": 1.1,
     "tideObservedAt": "2026-10-26T17:34:00Z",
@@ -25495,7 +28586,10 @@
     "notaV6": {
       "t": "2026-09-08T08:00",
       "kite": null,
-      "surf": null
+      "surf": null,
+      "windsurf": null,
+      "bodyboard": null,
+      "foil": null
     },
     "tideObservedHeight": 1.1,
     "tideObservedAt": "2026-10-26T17:34:00Z",
@@ -25609,7 +28703,10 @@
     "notaV6": {
       "t": "2026-09-08T08:00",
       "kite": null,
-      "surf": null
+      "surf": null,
+      "windsurf": null,
+      "bodyboard": null,
+      "foil": null
     },
     "tideObservedHeight": 1.115,
     "tideObservedAt": "2026-10-26T17:33:00Z",
@@ -25741,7 +28838,10 @@
     "notaV6": {
       "t": "2026-09-08T08:00",
       "kite": null,
-      "surf": null
+      "surf": null,
+      "windsurf": null,
+      "bodyboard": null,
+      "foil": null
     },
     "tideObservedHeight": 1.241,
     "tideObservedAt": "2026-10-26T17:34:00Z",
@@ -25857,7 +28957,10 @@
     "notaV6": {
       "t": "2026-09-08T08:00",
       "kite": null,
-      "surf": null
+      "surf": null,
+      "windsurf": null,
+      "bodyboard": null,
+      "foil": null
     },
     "tideObservedHeight": 1.218,
     "tideObservedAt": "2026-10-26T17:34:00Z",
@@ -25971,7 +29074,10 @@
     "notaV6": {
       "t": "2026-09-08T08:00",
       "kite": null,
-      "surf": null
+      "surf": null,
+      "windsurf": null,
+      "bodyboard": null,
+      "foil": null
     },
     "tideObservedHeight": 1.218,
     "tideObservedAt": "2026-10-26T17:34:00Z",
@@ -26103,7 +29209,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 5,
+      "windsurf": 0,
+      "bodyboard": 5,
+      "foil": 7,
+      "vf": "surffoil",
       "seg": "offshore",
+      "sg": {
+        "windsurf": "offshore"
+      },
       "f": {
         "kite": [
           "2kt wind",
@@ -26111,6 +29224,19 @@
           "Small waves"
         ],
         "surf": [
+          "1.3m waves",
+          "2kt wind"
+        ],
+        "windsurf": [
+          "2kt wind",
+          "offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.3m waves",
+          "2kt wind"
+        ],
+        "foil": [
           "1.3m waves",
           "2kt wind"
         ]
@@ -26247,7 +29373,14 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 6,
+      "windsurf": 0,
+      "bodyboard": 7,
+      "foil": 9,
+      "vf": "surffoil",
       "seg": "side-offshore",
+      "sg": {
+        "windsurf": "side-offshore"
+      },
       "f": {
         "kite": [
           "2kt wind",
@@ -26255,6 +29388,19 @@
           "Small waves"
         ],
         "surf": [
+          "1.2m waves",
+          "2kt wind"
+        ],
+        "windsurf": [
+          "2kt wind",
+          "side-offshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.2m waves",
+          "2kt wind"
+        ],
+        "foil": [
           "1.2m waves",
           "2kt wind"
         ]
@@ -26381,16 +29527,32 @@
     "notaV6": {
       "t": "2026-09-08T08:00",
       "kite": 0,
-      "surf": 5,
+      "surf": 4,
+      "windsurf": 0,
+      "bodyboard": 6,
+      "foil": 7,
+      "vf": "surffoil",
       "f": {
         "kite": [
-          "7kt wind",
+          "8kt wind",
           "side-onshore",
           "Small waves"
         ],
         "surf": [
-          "1.4m waves",
+          "1.2m waves",
           "8s period"
+        ],
+        "windsurf": [
+          "8kt wind",
+          "side-onshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.2m waves"
+        ],
+        "foil": [
+          "8kt wind",
+          "1.2m waves"
         ]
       }
     },
@@ -26516,6 +29678,10 @@
       "t": "2026-09-08T08:00",
       "kite": 0,
       "surf": 4,
+      "windsurf": 0,
+      "bodyboard": 6,
+      "foil": 7,
+      "vf": "surffoil",
       "f": {
         "kite": [
           "8kt wind",
@@ -26525,6 +29691,18 @@
         "surf": [
           "1.2m waves",
           "8s period"
+        ],
+        "windsurf": [
+          "8kt wind",
+          "side-onshore",
+          "Small waves"
+        ],
+        "bodyboard": [
+          "1.2m waves"
+        ],
+        "foil": [
+          "8kt wind",
+          "1.2m waves"
         ]
       }
     },

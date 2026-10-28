@@ -5,8 +5,8 @@ import { useState, useEffect, useMemo } from 'react';
 import { Trophy, Wind, Waves, Clock, ArrowLeft, Crown, Medal, Award, Check, Search, X } from 'lucide-react';
 import { spots } from '@/lib/spots';
 import { fetchMarineData, getCurrentConditions } from '@/lib/openmeteo';
-import { getAllSportScores, getScoreTokens } from '@/lib/sportScore';
-import { allScoresComV6, notaV6DoSpot, scoreAgoraComV6 } from '@/lib/notaV6Agora';
+import { getScoreTokens } from '@/lib/sportScore';
+import { allScoresComV6, isSemDados, notaV6DoSpot, scoreAgoraComV6 } from '@/lib/notaV6Agora';
 import type { SportType } from '@/lib/sportRatings';
 import { SPORT_LABELS } from '@/lib/sportRatings';
 import { getAssetPath } from '@/lib/paths';
@@ -110,7 +110,9 @@ async function loadSpotBattleData(
     return {
       spot,
       conditions,
-      allScores: getAllSportScores(spot, conditions),
+      // Live Open-Meteo, sem `notaV6` do pipeline: as modalidades v6 ficam
+      // «sem dados» (#218, PR 6 — o motor antigo delas já não existe).
+      allScores: allScoresComV6(spot, conditions, null),
       driveTime,
       // Live Open-Meteo — sem correcção de boia/viés.
       waveSource: 'forecast',
@@ -211,6 +213,7 @@ export default function CompareClient() {
 
   const isPt = locale === 'pt';
   const cmp = getTranslation(validateLocale(locale)).compare;
+  const semDadosTxt = getTranslation(validateLocale(locale)).map.noData;
   const warningsData = useIpmaWarnings();
 
   useEffect(() => {
@@ -553,6 +556,8 @@ export default function CompareClient() {
   const winner = sorted[0];
   const winnerScore = winner.allScores[selectedSport]?.score || 0;
   const winnerTokens = getScoreTokens(winnerScore);
+  // v6 sem `notaV6` (live Open-Meteo): «Sem dados» e «—», não «0/10 · N/A» (#218 PR 6)
+  const winnerSemDados = isSemDados(winner.allScores[selectedSport]);
   const rankIcons = [Crown, Medal, Award];
   const rankColors = ['text-score-epic', 'text-score-good', 'text-score-fair'];
 
@@ -607,10 +612,14 @@ export default function CompareClient() {
           </p>
           <h2 className="text-h2 text-fg">{isPt ? winner.spot.name : winner.spot.nameEn}</h2>
           <p className="text-fg-muted mt-1">
-            {isPt ? winner.allScores[selectedSport]?.rating : winner.allScores[selectedSport]?.ratingEn}
+            {winnerSemDados
+              ? semDadosTxt
+              : isPt
+                ? winner.allScores[selectedSport]?.rating
+                : winner.allScores[selectedSport]?.ratingEn}
           </p>
           <div className={`text-display-lg font-mono tabular-nums ${winnerTokens.text} mt-4`}>
-            {scoreToNota(winnerScore)}/10
+            {winnerSemDados ? '—' : `${scoreToNota(winnerScore)}/10`}
           </div>
         </div>
 
@@ -659,8 +668,10 @@ export default function CompareClient() {
                 )}
 
                 <div className="text-center my-4">
-                  <div className={`text-display-lg font-mono tabular-nums ${tokens.text}`}>{scoreToNota(score?.score || 0)}</div>
-                  <div className="text-meta-sm text-fg-muted">/10</div>
+                  <div className={`text-display-lg font-mono tabular-nums ${tokens.text}`}>
+                    {isSemDados(score) ? '—' : scoreToNota(score?.score || 0)}
+                  </div>
+                  <div className="text-meta-sm text-fg-muted">{isSemDados(score) ? semDadosTxt : '/10'}</div>
                 </div>
 
                 <dl className="space-y-2 text-sm">

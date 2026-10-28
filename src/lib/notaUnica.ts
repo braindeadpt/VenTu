@@ -1,15 +1,13 @@
 /**
- * Motor único (#218), PR 0: rede de segurança. Ainda NINGUÉM importa isto na
- * app — o comportamento do site não muda neste PR. Os PRs seguintes trocam o
- * motor antigo (`sportScore`) pelo v6 superfície a superfície, sempre através
- * destas duas funções:
+ * Motor único (#218): o caminho único da nota de UMA hora e o adaptador para o
+ * formato `SportScore` que o /mapa e as listas lêem.
  *
  * - `notaHora(spot, desporto, linhas, j)`: a nota de UMA hora do forecast.
- *   Kitesurf e surf → motor v6 (`horaDeLinha` + `avaliaHoras`, o mesmo caminho
- *   da página do spot e da home). As restantes modalidades (bodyboard,
- *   windsurf, foil, wakeboard, sup) ficam no `sportScore` até o PR 6 decidir
- *   (D5 da auditoria).
- * - `sportScoreDeV6(av, h, modalidade)`: o adaptador da avaliação v6 para o
+ *   Surf, kitesurf, windsurf, bodyboard e foil → motor v6 (`horaDeLinha` +
+ *   `avaliaHorasSite`, o mesmo caminho da página do spot e da home; o foil é a
+ *   melhor das três vertentes). Só o SUP e o wakeboard ficam no `sportScore`
+ *   (PR 6, decisão do Pedro 27/10 — ver `desportosV6.ts`).
+ * - `sportScoreDeV6(av, h, chave)`: o adaptador da avaliação v6 para o
  *   formato `SportScore`. Marcadores, clusters, popup, pré-visualização,
  *   lista, filtros, legenda e narrativa do /mapa lêem `SportScore`; com o
  *   adaptador mudam de número sem mudar de código.
@@ -17,9 +15,9 @@
  *       a nota v6 e as bandas da #210 (`scoreTierFromScore`, «Só ON» ≥ 65)
  *       coincidem com `bandaDe(n)`;
  *     · noite e «sem dados» → `score: 0`, `rating: 'N/A'` e a marca
- *       `noite` / `semDados` (o estado visual novo chega no PR 2, D3);
+ *       `noite` / `semDados`;
  *     · `directionSafety`/`warning` vêm de `AvaliacaoHora.seguranca` com as
- *       mesmas strings `windSafety` do motor antigo;
+ *       mesmas strings `windSafety`;
  *     · `factorsEn` usa os templates que `spotScoreFactors.factorKind`
  *       reconhece («1.4m waves», «11s period», «18kt wind», categoria do vento).
  */
@@ -32,30 +30,29 @@ import {
   type SportScore,
 } from '@/lib/sportScore';
 import { rawToScoreInput } from '@/lib/scoreConditions';
-import { scoreTierFromScore, scoreToNota } from '@/lib/nota';
+import { scoreTierFromScore } from '@/lib/nota';
 import { getTranslation } from '@/lib/i18n';
 import { horaDeLinha, type LinhaForecast } from '@/lib/horaSpot';
 import {
-  avaliaHoras,
-  bandaDe,
+  avaliaHorasSite,
   defDe,
+  VERTENTES_FOIL,
   type AvaliacaoHora,
-  type BandaK,
   type DefOnda,
   type DefVento,
   type HoraModalidade,
-  type Modalidade,
+  type ModalidadeMotor,
+  type ModalidadeSite,
+  type VertenteFoil,
 } from '@/lib/modalidades';
 import { editorialDe, spotModalidadeDe } from '@/lib/spotEditorial';
+import { DESPORTO_PARA_AGORA, isDesportoMotorAntigo } from '@/lib/desportosV6';
 
-/** Desportos do site que já passam pelo v6 (os outros ficam no `sportScore`, D5). */
-export const DESPORTO_PARA_MODALIDADE: Readonly<Partial<Record<SportType, Modalidade>>> = {
-  kitesurf: 'kite',
-  surf: 'surf',
-};
+/** Desportos do site que passam pelo v6 (só o SUP e o wakeboard ficam no `sportScore`). */
+export const DESPORTO_PARA_MODALIDADE: Readonly<Partial<Record<SportType, ModalidadeSite>>> = DESPORTO_PARA_AGORA;
 
-/** Modalidade v6 de um desporto do site, ou `null` se ainda fica no motor antigo. */
-export function modalidadeDe(sport: SportType): Modalidade | null {
+/** Modalidade v6 de um desporto do site, ou `null` se fica no motor antigo (SUP, wakeboard). */
+export function modalidadeDe(sport: SportType): ModalidadeSite | null {
   return DESPORTO_PARA_MODALIDADE[sport] ?? null;
 }
 
@@ -70,6 +67,8 @@ export interface SportScoreV6 extends SportScore {
   semDados?: true;
   /** Kite com vento forte (≥ 30 kt médios): «Só profissionais» (a nota fica baixa para os outros níveis). */
   soProfissionais?: true;
+  /** Foil: a vertente que deu a nota (a melhor das três nesta hora). */
+  vertente?: VertenteFoil;
 }
 
 export interface SportScoreAntigo extends SportScore {
@@ -102,7 +101,7 @@ const fPeriodo = (h: HoraModalidade): Factor => ({ pt: `${h.tp}s período`, en: 
 function factoresDe(
   av: AvaliacaoHora,
   h: HoraModalidade,
-  d: Modalidade,
+  d: ModalidadeMotor,
   praiaVirada: number,
   aguaInterior: boolean,
 ): Factor[] {
@@ -135,13 +134,14 @@ function factoresDe(
 
 /**
  * Avaliação v6 de uma hora → formato `SportScore` (ver cabeçalho).
+ * `d` é a chave da definição que deu a nota (no foil, a vertente vencedora).
  * `praiaVirada` é a do editorial do spot (a mesma que `avaliaHoras` usou);
  * `aguaInterior` idem (direcção neutra, sem categoria de vento).
  */
 export function sportScoreDeV6(
   av: AvaliacaoHora,
   h: HoraModalidade,
-  d: Modalidade,
+  d: ModalidadeMotor,
   praiaVirada: number,
   aguaInterior = false,
 ): SportScoreV6 {
@@ -157,6 +157,7 @@ export function sportScoreDeV6(
     factorsEn: factores.map((f) => f.en),
     primaryFactor: defDe(d).logica === 'onda' ? `${r1(h.hs).toFixed(1)}m` : `${h.w}kt`,
   };
+  if ((VERTENTES_FOIL as readonly string[]).includes(d)) base.vertente = d as VertenteFoil;
   if (av.semDados) base.semDados = true;
   else if (n == null && !av.fora) base.noite = true;
   if (av.seguranca) {
@@ -180,8 +181,8 @@ type SpotLocal = Pick<Spot, 'id' | 'lat' | 'lon' | 'coastOrientation'> & Partial
 
 /**
  * Nota de UMA hora do forecast (`linhas[j]`; as vizinhas só dão o sentido da
- * maré), pelo motor que essa modalidade usa: v6 para kitesurf e surf, o
- * `sportScore` para as restantes.
+ * maré), pelo motor que essa modalidade usa: v6 para surf, kitesurf,
+ * windsurf, bodyboard e foil; o `sportScore` para o SUP e o wakeboard.
  */
 export function notaHora(
   spot: SpotLocal,
@@ -191,45 +192,12 @@ export function notaHora(
 ): NotaHora {
   const d = modalidadeDe(sport);
   if (!d) {
+    if (!isDesportoMotorAntigo(sport)) throw new Error(`notaHora: desporto desconhecido ${sport}`);
     const s = getSportScore(spot as Spot, sport, rawToScoreInput(linhas[j] as unknown as Record<string, unknown>));
     return { ...s, motor: 'antigo' };
   }
   const ed = editorialDe(spot);
   const h = horaDeLinha(linhas, j, { lat: spot.lat, lon: spot.lon, praiaVirada: ed.praiaVirada });
-  const [av] = avaliaHoras(spotModalidadeDe(ed), d, [h]);
-  return sportScoreDeV6(av, h, d, ed.praiaVirada, !!ed.aguaInterior);
-}
-
-/** Banda (chaves v6) de um score 0–100 do motor antigo. */
-export function bandaDoScore(score: number): Exclude<BandaK, 'noite'> {
-  return bandaDe(scoreToNota(score)) as Exclude<BandaK, 'noite'>;
-}
-
-export interface ComparacaoHora {
-  spot: string;
-  sport: SportType;
-  t: string;
-  antigo: { score: number; nota: number; banda: Exclude<BandaK, 'noite'> };
-  v6: { nota: number | null; banda: BandaK | 'sem-dados' };
-}
-
-/**
- * Os dois motores sobre a MESMA linha do forecast (a tabela antes/depois da
- * issue, `scripts/paridade-motor.ts`, e o golden «antes»). Só kitesurf e surf.
- */
-export function comparaHora(
-  spot: SpotLocal,
-  sport: 'kitesurf' | 'surf',
-  linhas: readonly LinhaForecast[],
-  j: number,
-): ComparacaoHora {
-  const antigo = getSportScore(spot as Spot, sport, rawToScoreInput(linhas[j] as unknown as Record<string, unknown>)).score;
-  const v6 = notaHora(spot, sport, linhas, j) as SportScoreV6;
-  return {
-    spot: spot.id,
-    sport,
-    t: String(linhas[j].time).slice(0, 16),
-    antigo: { score: antigo, nota: scoreToNota(antigo), banda: bandaDoScore(antigo) },
-    v6: { nota: v6.nota, banda: v6.semDados ? 'sem-dados' : bandaDe(v6.nota) },
-  };
+  const [av] = avaliaHorasSite(spotModalidadeDe(ed), d, [h]);
+  return sportScoreDeV6(av, h, av.chave, ed.praiaVirada, !!ed.aguaInterior);
 }

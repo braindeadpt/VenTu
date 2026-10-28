@@ -55,7 +55,9 @@ Lê este ficheiro antes de qualquer trabalho no repo. Define o estado do project
 
 | Ficheiro | Função |
 |---|---|
-| `src/lib/sportScore.ts` | Motor: scores 0–100 internos por modalidade, `getHourlyScores`, `getRelevantSports` |
+| `src/lib/sportScore.ts` | Motor ANTIGO (desde o #218 PR 6 só SUP e wakeboard): scores 0–100, `getHourlyScores`, `getRelevantSports` |
+| `src/lib/modalidades/` + `src/lib/notaUnica.ts` | Motor v6 (#218): surf, kitesurf, windsurf, bodyboard e foil, nota /10 por hora |
+| `src/lib/desportosV6.ts` | Que desporto pontua em que motor, regra do «Todos», desportos com alertas (módulo leve) |
 | `src/lib/nota.ts` | Escala única visível (#210): nota /10 inteira (`scoreToNota` = round(score/10)), bandas e limiares |
 | `src/lib/sportRatings.ts` | `SportType`, `getCompatibleSports`, `TYPE_TO_SPORTS` fallback |
 | `src/lib/homepageSport.ts` | Sort/ticker/hero por modalidade preferida (`ventu-preferred-sport`) |
@@ -71,9 +73,21 @@ Lê este ficheiro antes de qualquer trabalho no repo. Define o estado do project
 | Bom | 7–8 | 65–84 |
 | Muito bom | 9–10 (≥ 9) | 85–100 |
 
+**Motor único (#218) — estado depois do PR 6:**
+
+- **Motor v6** (`src/lib/modalidades/`, `notaUnica.notaHora`, `notaV6Agora`): surf, kitesurf, windsurf, bodyboard e foil em TODAS as superfícies — régua de 48 h da página do spot, frames do `map-hours.json` (/mapa), listas / spots-index (`allScoresComV6`), janelas (`bestWindowBuild`), comparador (tabela horária) e alertas (email / Telegram, `notaV6Condicoes`). O «agora» é o `notaV6` que o pipeline grava no `conditions.json` (`scripts/build-nota-v6-agora.js`, linha D4 = hora coberta + observações frescas), com as 5 modalidades.
+- **Foil** = a melhor das três vertentes v6 (wing, kitefoil, surffoil) em cada hora (`melhorVertente`). Com vento offshore o wing / kitefoil levam o tecto de segurança e o surffoil (onda) pode ganhar sem aviso de vento — aceite (Pedro, 27/10).
+- **Motor antigo** (`sportScore`) só para **SUP** (sem definição v6) e **wakeboard** (o `plana` do v6 só pontua água plana curada e nenhum spot de wake o é).
+- **«Todos»** (`melhorTodos` / `scoreTodos`) = máximo das 5 v6; SUP / wakeboard só contam num spot sem nenhuma v6 compatível (nunca se comparam escalas dos dois motores). Com as v6 todas de noite o «Todos» é noite.
+- **Noite** (sem nota, pin com lua no /mapa): nas 5 v6 e no «Todos».
+- **Sem `notaV6`** (Compare / Favoritos com dados ao vivo do Open-Meteo, sem linha no `conditions.json`): as v6 mostram «Sem dados» e «—» (`isSemDados`); SUP / wake continuam no motor antigo.
+- **Alertas de wakeboard desligados** por agora (`temAlertasCondicoes`; o formulário oferece `DESPORTOS_ALERTAS`); os avisos oficiais dos favoritos continuam.
+- **Anel do vento do /mapa** (e o rótulo / ponto do popup e da pré-visualização): classificação `ventoRel` do motor (`src/lib/ventoRelAnel.ts`) — mar + lateral de mar (≤ 65°) = onshore, lateral (≤ 110°) = cross, lateral de terra + terra = offshore; 3 cores. As outras superfícies (`WindCompass`, tabela) mantêm `getWindRelationToCoast`.
+- **Paridade:** `DATA_DIR=tests/e2e/fixtures/data npx tsx scripts/paridade-motor.ts` prova que todas as superfícies dão o mesmo número v6 por spot / hora / modalidade (sai 1 se houver diferenças). Goldens: `motorUnicoGolden`, `mapHoursV6Golden`, `agoraV6Golden`.
+
 Limiares/filtros: «nota ≥ n» ⇔ «score ≥ 10·n − 5» (ex. «Só a bombar» = nota ≥ 7 = score ≥ 65). Testes: `src/lib/__tests__/nota.test.ts`.
 
-**Testes:** `src/lib/__tests__/sportScore.test.ts` (20+ casos). Correr `npm test`.
+**Testes:** motor antigo `src/lib/__tests__/sportScore.test.ts`; motor v6 `notaUnica.test.ts`, `windSportDirectionSafety.test.ts`, goldens `motorUnicoGolden` / `mapHoursV6Golden` / `agoraV6Golden`. Correr `npm test`.
 
 **Direcção do vento nos desportos de vento (#179):** kite, windsurf e foil (e o futuro wing) usam `windSportDirectionSafety(spot, windDir)` em `src/lib/sportScore.ts` — uma só regra, também usada por `windQualityTier`. Ângulo entre o vento e o onshore puro (`coastOrientation`):
 

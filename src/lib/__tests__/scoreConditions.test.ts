@@ -1,6 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { spots } from '@/lib/spots';
-import { getSportScore, SCORE_TIER_THRESHOLDS } from '@/lib/sportScore';
+import { SCORE_TIER_THRESHOLDS } from '@/lib/sportScore';
+// #218 PR 6: as notas de surf / kitesurf / windsurf saem do motor v6 (o caminho do site)
+import { v6 as getSportScore } from './motorV6Teste';
 import {
   applyGustSessionProxy,
   applyObservedWaveForScore,
@@ -58,7 +60,8 @@ describe('scoreConditions', () => {
     const forecastScore = getSportScore(guincho, 'kitesurf', forecast).score;
     const observedScore = getSportScore(guincho, 'kitesurf', withObs).score;
     expect(forecastScore).toBeLessThan(40);
-    expect(observedScore).toBeGreaterThan(70);
+    // v6 (#218 PR 6): 16 kt observados de NNW em Guincho = 7 · Bom (o antigo dava > 70)
+    expect(observedScore).toBeGreaterThanOrEqual(70);
   });
 
   const freshWave = (hm0: number, period?: number, dir?: number): ObservedWave => ({
@@ -416,7 +419,9 @@ describe('scoreConditions', () => {
       observed: freshObserved(15, 337),
     };
     const score = getSportScore(guincho, 'kitesurf', rawToScoreInput(raw)).score;
-    expect(score).toBeGreaterThan(60);
+    // v6: 15 kt observados = 6 · Dá (o vento do modelo, 7 kt, dava 0)
+    expect(score).toBeGreaterThanOrEqual(60);
+    expect(getSportScore(guincho, 'kitesurf', rawToScoreInput({ ...raw, observed: undefined })).score).toBe(0);
   });
 
   it('rawToScoreInput accepts METAR observed source', () => {
@@ -568,8 +573,10 @@ describe('kite com rajadas 3:1 não é «Bom» (auditoria 16/10, #218)', () => {
   });
 });
 
+// v6 (#218 PR 6): abaixo do mínimo da modalidade o v6 dá 0 (o antigo tinha
+// uma escala marginal); o que importa é que nunca chega a «Dá».
 describe('kitesurf marginal wind differentiation', () => {
-  it('8kt and 10kt produce different scores (not flat 15)', () => {
+  it('8kt and 10kt stay below Dá', () => {
     const guincho = spotBySlug('guincho');
     const base = {
       waveHeight: 0.5,
@@ -581,14 +588,14 @@ describe('kitesurf marginal wind differentiation', () => {
     };
     const eight = getSportScore(guincho, 'kitesurf', { ...base, windSpeed: ktToMs(8) }).score;
     const ten = getSportScore(guincho, 'kitesurf', { ...base, windSpeed: ktToMs(10) }).score;
-    expect(eight).not.toEqual(ten);
+    expect(eight).toBeLessThanOrEqual(ten);
     expect(eight).toBeLessThan(SCORE_TIER_THRESHOLDS.fair);
     expect(ten).toBeLessThan(SCORE_TIER_THRESHOLDS.fair);
   });
 });
 
 describe('windsurf marginal wind differentiation', () => {
-  it('8kt and 12kt produce different scores (not flat 15)', () => {
+  it('8kt and 12kt stay below Dá', () => {
     const guincho = spotBySlug('guincho');
     const base = {
       waveHeight: 0.5,
@@ -600,7 +607,7 @@ describe('windsurf marginal wind differentiation', () => {
     };
     const eight = getSportScore(guincho, 'windsurf', { ...base, windSpeed: ktToMs(8) }).score;
     const twelve = getSportScore(guincho, 'windsurf', { ...base, windSpeed: ktToMs(12) }).score;
-    expect(eight).not.toEqual(twelve);
+    expect(eight).toBeLessThanOrEqual(twelve);
     expect(eight).toBeLessThan(SCORE_TIER_THRESHOLDS.fair);
     expect(twelve).toBeLessThan(SCORE_TIER_THRESHOLDS.fair);
   });

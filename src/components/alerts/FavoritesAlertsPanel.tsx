@@ -5,7 +5,8 @@ import { useCallback, useEffect, useState } from 'react';
 import { Bell, Send, X } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthProvider';
 import { getSupabaseClient } from '@/lib/supabase';
-import { SPORT_LABELS, ALL_SPORTS, type SportType } from '@/lib/sportRatings';
+import { SPORT_LABELS, type SportType } from '@/lib/sportRatings';
+import { DESPORTOS_ALERTAS, temAlertasCondicoes } from '@/lib/desportosV6';
 import { getTranslation } from '@/lib/i18n';
 import {
   deactivateUserAlerts,
@@ -51,7 +52,8 @@ export default function FavoritesAlertsPanel({ locale, favoriteCount }: Favorite
       const row = await fetchUserAlertPrefs(sb, session.user.id);
       setPrefs(row);
       if (row) {
-        setSport(row.sport as SportType);
+        // wakeboard sem alertas por agora (#218 PR 6): uma pref antiga abre no kitesurf
+        setSport(temAlertasCondicoes(row.sport) ? (row.sport as SportType) : 'kitesurf');
         setMinScore(row.min_score);
         setAlertMode(row.alert_mode);
         setWarn(row.warn === true);
@@ -170,7 +172,7 @@ export default function FavoritesAlertsPanel({ locale, favoriteCount }: Favorite
               onChange={(e) => setSport(e.target.value as SportType)}
               className="w-full px-3 py-2 rounded-lg bg-surface-1/[0.04] border border-divider text-sm text-fg"
             >
-              {ALL_SPORTS.map((s) => (
+              {DESPORTOS_ALERTAS.map((s) => (
                 <option key={s} value={s}>
                   {SPORT_LABELS[s][isPt ? 'pt' : 'en']}
                 </option>

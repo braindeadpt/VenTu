@@ -1,6 +1,18 @@
 import { describe, it, expect } from 'vitest';
 import { spots } from '@/lib/spots';
-import { getAllSportScores, type Conditions } from '@/lib/sportScore';
+import { getSportScore, type Conditions } from '@/lib/sportScore';
+import { getCompatibleSports, type SportType } from '@/lib/sportRatings';
+import { desportosTodos } from '@/lib/desportosV6';
+import { v6 } from './motorV6Teste';
+
+/** allScores do site para uma linha (#218 PR 6): v6 nas modalidades v6, motor antigo no SUP e no wakeboard. */
+function getAllSportScores(spot: Spot, c: Conditions) {
+  const out = {} as Record<SportType, ReturnType<typeof getSportScore>>;
+  for (const s of ['surf', 'kitesurf', 'windsurf', 'wakeboard', 'bodyboard', 'sup', 'foil'] as SportType[]) {
+    out[s] = s === 'sup' || s === 'wakeboard' ? getSportScore(spot, s, c) : v6(spot, s, c);
+  }
+  return out;
+}
 import {
   getSpotScoreFactors,
   resolveExplainedSport,
@@ -39,6 +51,24 @@ function input(
   return { spot, conditions, allScores: getAllSportScores(spot, conditions as Conditions), sport, locale };
 }
 
+/**
+ * A gramática lê os `factorsEn` no formato fechado do scorer («1.4m waves»…).
+ * O v6 (#218 PR 6) não os emite, por isso estes testes fixam o score do
+ * desporto explicado com um stub e provam só a gramática.
+ */
+function comFactores(
+  spot: Spot,
+  conditions: MarineConditionsFields,
+  sport: SportType,
+  factorsEn: string[],
+  locale = 'pt',
+) {
+  const base = input(spot, conditions, sport, locale);
+  base.allScores[sport] = { ...base.allScores[sport], score: 60, factors: [...factorsEn], factorsEn };
+  return base;
+}
+const FACTORES_SURF = ['1.4m waves', '11s period', '12kt wind'];
+
 describe('resolveExplainedSport', () => {
   const spot = spotBySlug('nazare');
   const allScores = getAllSportScores(spot, baseConditions as Conditions);
@@ -46,7 +76,11 @@ describe('resolveExplainedSport', () => {
   it("'all' escolhe o desporto compatível com melhor score", () => {
     const s = resolveExplainedSport(spot, allScores, 'all');
     expect(s).not.toBeNull();
-    const best = Math.max(...Object.values(allScores).map((x) => x.score));
+    // #218 PR 6: o «Todos» só compara as modalidades que entram nele (as v6 compatíveis)
+    const compat = new Set(getCompatibleSports(spot));
+    const contam = desportosTodos(spot).filter((d) => compat.has(d));
+    expect(contam).toContain(s);
+    const best = Math.max(...contam.map((d) => allScores[d].score));
     expect(allScores[s!].score).toBe(best);
   });
 
@@ -60,7 +94,7 @@ describe('getSpotScoreFactors — gramática canónica', () => {
   const spot = spotBySlug('nazare');
 
   it('surf: ondas, período e vento com métricas das condições (PT)', () => {
-    const segs = getSpotScoreFactors(input(spot, baseConditions, 'surf'));
+    const segs = getSpotScoreFactors(comFactores(spot, baseConditions, 'surf', FACTORES_SURF));
     const text = segs.map((s) => s.label).join(' · ');
     // ordem do scorer: ondas → período → vento; swell acrescenta quando cabe.
     expect(segs.length).toBeLessThanOrEqual(3);
@@ -72,14 +106,14 @@ describe('getSpotScoreFactors — gramática canónica', () => {
   });
 
   it('mesmo input em EN produz a gramática inglesa', () => {
-    const segs = getSpotScoreFactors(input(spot, baseConditions, 'surf', 'en'));
+    const segs = getSpotScoreFactors(comFactores(spot, baseConditions, 'surf', FACTORES_SURF, 'en'));
     const text = segs.map((s) => s.label).join(' · ');
     expect(text).toContain('waves 1.4 m');
     expect(text).toContain('period 11 s');
   });
 
   it('versão curta: mesmos factores, etiquetas compactas (PT)', () => {
-    const segs = getSpotScoreFactors(input(spot, baseConditions, 'surf'));
+    const segs = getSpotScoreFactors(comFactores(spot, baseConditions, 'surf', FACTORES_SURF));
     for (const s of segs) {
       expect(s.short.length).toBeLessThanOrEqual(s.label.length);
     }
@@ -93,7 +127,7 @@ describe('getSpotScoreFactors — gramática canónica', () => {
   });
 
   it('versão curta em EN: ponto decimal e «kt» com espaço', () => {
-    const segs = getSpotScoreFactors(input(spot, baseConditions, 'surf', 'en'));
+    const segs = getSpotScoreFactors(comFactores(spot, baseConditions, 'surf', FACTORES_SURF, 'en'));
     expect(segs.find((s) => s.kind === 'wind')?.short).toMatch(
       /^12 kt (Offshore|Onshore|Cross-off|Cross-on)$/,
     );
@@ -135,8 +169,8 @@ describe('getSpotScoreFactors — gramática canónica', () => {
       wavePeriod: 5,
       swellDirection: undefined,
     };
-    // bodyboard não emite factores abaixo de 0.3m/6s → factorsEn vazio
-    const segs = getSpotScoreFactors(input(spot, flat, 'bodyboard'));
+    // score sem factores (stub bodyboard com factorsEn vazio)
+    const segs = getSpotScoreFactors(comFactores(spot, flat, 'bodyboard', []));
     expect(segs.length).toBeGreaterThan(0);
     expect(segs.map((s) => s.kind)).toContain('waves');
     expect(segs.map((s) => s.kind)).toContain('wind');

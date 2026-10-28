@@ -19,7 +19,8 @@ import { refreshGridSpotScores } from '@/lib/refreshGridSpotScores';
 import { buildMapHoursFile } from '@/lib/mapHoursBuild';
 import { findCoveredHourIndex } from '@/lib/openMeteoTime';
 import { horaDeLinha, type LinhaForecast } from '@/lib/horaSpot';
-import { avaliaHoras } from '@/lib/modalidades';
+import { avaliaHorasSite } from '@/lib/modalidades';
+import { melhorTodos } from '@/lib/desportosV6';
 import { editorialDe, spotModalidadeDe } from '@/lib/spotEditorial';
 import { notaV6AgoraDe } from '@/lib/notaV6AgoraBuild';
 import { notaV6DoSpot, type NotaV6Agora, type SportScoreAgoraV6 } from '@/lib/notaV6Agora';
@@ -28,7 +29,8 @@ import { notaV6DoSpot, type NotaV6Agora, type SportScoreAgoraV6 } from '@/lib/no
  * Motor único (#218), PR 3: golden do «agora» v6 do /mapa.
  *
  * Sobre a fixture e2e (`tests/e2e/fixtures/data`, 08/09 08:45), para
- * Guincho, Nazaré, Lagoa de Albufeira e Meia Praia (Algarve), kitesurf e surf
+ * Guincho, Nazaré, Lagoa de Albufeira e Meia Praia (Algarve), as cinco
+ * modalidades v6 (kitesurf, surf e, desde o PR 6, windsurf, bodyboard e foil)
  * têm de dar EXACTAMENTE o mesmo número em:
  * - `allScores.<desporto>.score / 10` do bake (`loadSpotListings` → `buildSpotData`);
  * - o mesmo do refresh do cliente (`refreshGridSpotScores`);
@@ -48,6 +50,9 @@ const IDS = ['guincho', 'nazare', 'lagoa-albufeira', 'lagos'] as const;
 const SPORTS = [
   ['kitesurf', 'kite'],
   ['surf', 'surf'],
+  ['windsurf', 'windsurf'],
+  ['bodyboard', 'bodyboard'],
+  ['foil', 'foil'],
 ] as const;
 
 const ler = (f: string) => JSON.parse(fs.readFileSync(path.join(FIX, f), 'utf8'));
@@ -129,7 +134,7 @@ describe('«agora» v6 no /mapa (#218, PR 3) — golden das fixtures', () => {
         expect(i0).toBeGreaterThanOrEqual(0);
         const ed = editorialDe(sp);
         const h = horaDeLinha(linhas, i0, { lat: sp.lat, lon: sp.lon, praiaVirada: ed.praiaVirada });
-        const [av] = avaliaHoras(spotModalidadeDe(ed), mod, [h]);
+        const [av] = avaliaHorasSite(spotModalidadeDe(ed), mod, [h]);
         expect(av.n).toBe(n);
         expect(nv.t).toBe(linhas[i0].time.slice(0, 16));
 
@@ -154,7 +159,7 @@ describe('«agora» v6 no /mapa (#218, PR 3) — golden das fixtures', () => {
     }
   }
 
-  it('bake e refresh dão o MESMO kitesurf/surf em todos os spots (uma atribuição, sem motor)', () => {
+  it('bake e refresh dão o MESMO número nas cinco v6 em todos os spots (uma atribuição, sem motor)', () => {
     const diferencas: string[] = [];
     for (const row of bake) {
       const r = linhaDe(refresh, row.spot.id);
@@ -196,12 +201,8 @@ describe('«agora» v6 — as superfícies do /mapa lêem o notaV6 (189 spots, 0
         }
         vistos++;
         const data = row as unknown as GridSpotData;
-        for (const [filtro, mod] of [
-          ['kitesurf', 'kite'],
-          ['surf', 'surf'],
-          ['big-wave', 'surf'],
-        ] as const) {
-          const n = nv[mod];
+        for (const [filtro, mod] of [...SPORTS, ['big-wave', 'surf']] as const) {
+          const n = nv[mod] ?? null;
           const nota = n ?? 0;
           const id = `${row.spot.id} ${filtro}`;
           // marcador e lista sincronizada (MapExploreZone / useMapMarkers): getBestScore sem override
@@ -219,12 +220,13 @@ describe('«agora» v6 — as superfícies do /mapa lêem o notaV6 (189 spots, 0
           if (n != null && (s.noite || s.semDados)) diferencas.push(`${id}: marca noite de dia`);
         }
         for (const [filtro, mod] of SPORTS) {
-          const n = nv[mod];
+          const n = nv[mod] ?? null;
           const id = `${row.spot.id} ${filtro}`;
           // popup e pré-visualização: desporto explicado, aviso de vento e factores
           if (resolveExplainedSport(row.spot, row.allScores, filtro) !== filtro) diferencas.push(`${id}: desporto explicado`);
           const aviso = getExplainedWindSafety(row.spot, row.allScores, filtro);
-          const avisoEsperado = mod === 'kite' && n != null ? (nv.seg ?? null) : null;
+          const avisoEsperado =
+            n == null ? null : mod === 'kite' ? (nv.seg ?? null) : mod === 'windsurf' || mod === 'foil' ? (nv.sg?.[mod] ?? null) : null;
           if (aviso !== avisoEsperado) diferencas.push(`${id}: aviso ${aviso} ≠ ${avisoEsperado}`);
           const segs = getSpotScoreFactors({ spot: row.spot, conditions: row.conditions, allScores: row.allScores, sport: filtro, locale: 'pt', max: 6 });
           const f = n == null ? [] : (nv.f?.[mod] ?? []);
@@ -235,9 +237,12 @@ describe('«agora» v6 — as superfícies do /mapa lêem o notaV6 (189 spots, 0
           const narr = getMapSpotNarrative(row.spot, row.conditions, row.allScores, filtro as SportType, 'pt');
           if (typeof narr !== 'string' && narr != null && typeof narr !== 'object') diferencas.push(`${id}: narrativa`);
         }
-        // «Todos»: máximo das 7 (kite/surf v6 + as 5 do motor antigo, D5)
-        const max = Math.max(...Object.values(row.allScores).map((s) => s?.score || 0));
-        if (getBestScore(data, 'all') !== max || getGridSpotScore(data, 'all') !== max) diferencas.push(`${row.spot.id}: Todos`);
+        // «Todos» (PR 6): máximo das v6 do notaV6; SUP / wakeboard só num spot sem nenhuma v6 compatível
+        const v6 = { kitesurf: nv.kite, surf: nv.surf, windsurf: nv.windsurf, bodyboard: nv.bodyboard, foil: nv.foil } as Record<string, number | null | undefined>;
+        const todos =
+          melhorTodos(row.spot, (s) => (s in v6 ? (v6[s] == null ? null : (v6[s] as number) * 10) : row.allScores[s]?.score)) ?? 0;
+        if (getBestScore(data, 'all') !== todos || getGridSpotScore(data, 'all') !== todos)
+          diferencas.push(`${row.spot.id}: Todos ${getBestScore(data, 'all')} ≠ ${todos}`);
       }
     }
     expect(vistos).toBe(bake.length * 2);

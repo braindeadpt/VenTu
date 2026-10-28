@@ -4,18 +4,21 @@
  * (`fetchMapHours`, `scoreAtHour`, …) e não deve carregar os motores (v6 +
  * antigo) nem os dados editoriais no bundle. Nada aqui corre no browser.
  *
- * Kitesurf e surf vêm do motor v6 (`notaUnica.notaHora` = `horaDeLinha` +
- * `avaliaHoras`, o mesmo caminho da página do spot e da home): nota × 10 e
- * `null` de noite ou sem dados. As outras modalidades ficam no `sportScore`
- * até ao PR 6 (D5); `best` = máximo das modalidades com número nessa hora.
+ * Surf, kitesurf, windsurf, bodyboard e foil vêm do motor v6
+ * (`notaUnica.notaHora` = `horaDeLinha` + `avaliaHorasSite`, o mesmo caminho
+ * da página do spot e da home): nota × 10 e `null` de noite ou sem dados. SUP e
+ * wakeboard ficam no `sportScore` (PR 6). `best` segue a regra do «Todos»
+ * (`desportosV6.melhorTodos`): máximo das v6 com número nessa hora (`null` se
+ * estão todas de noite); SUP / wakeboard só num spot sem modalidade v6.
  */
 import type { Spot } from '@/types';
 import { ALL_SPORTS, type SportType } from '@/lib/sportRatings';
-import { getAllSportScores } from '@/lib/sportScore';
+import { getSportScore } from '@/lib/sportScore';
 import { rawToScoreInput } from '@/lib/scoreConditions';
 import { linhasAgora } from '@/lib/notaV6AgoraBuild';
 import type { LinhaForecast } from '@/lib/horaSpot';
 import { modalidadeDe, notaHora, type SportScoreV6 } from '@/lib/notaUnica';
+import { isDesportoMotorAntigo, melhorTodos } from '@/lib/desportosV6';
 import { findCoveredHourIndex, hourKeyFromOpenMeteo, lisbonHourKeyFromDate, seriesTimeMs } from '@/lib/openMeteoTime';
 import { getMacroRegion, MACRO_REGIONS } from '@/lib/regions';
 import { detectThermal, lisbonHourFromMapTime, thermalCode } from '@/lib/mapThermal';
@@ -229,7 +232,7 @@ export function buildMapHoursFile(opts: {
       const raw = (isNow && live) || (j >= 0 ? series[j] : null) || live;
       if (!raw) {
         for (const sport of ALL_SPORTS) bySport[sport].push(modalidadeDe(sport) ? null : 0);
-        bySport.best.push(0);
+        bySport.best.push(melhorTodos(spot, (sport) => (modalidadeDe(sport) ? null : 0)));
         hsSeries.push(0);
         sstSeries.push(0);
         thermalSeries.push(0);
@@ -239,20 +242,21 @@ export function buildMapHoursFile(opts: {
         windDir.push(0);
         continue;
       }
-      // kitesurf e surf: motor v6 (nota × 10, `null` de noite ou sem dados);
-      // as outras no motor antigo até ao PR 6 (D5). `best` = máximo das
-      // modalidades com número nesta hora (noite do v6 não entra).
-      const scores = getAllSportScores(spot, rawToScoreInput(raw));
+      // v6 (nota × 10, `null` de noite ou sem dados) nas cinco modalidades v6;
+      // SUP e wakeboard no motor antigo. `best` = regra do «Todos».
+      const input = rawToScoreInput(raw);
       const alvo = linhasV6(series, j, live, isNow, now.getTime());
-      let best = 0;
+      const daHora: Partial<Record<SportType, number | null>> = {};
       for (const sport of ALL_SPORTS) {
         const n = modalidadeDe(sport)
           ? scoreV6(spot, sport, alvo)
-          : Math.max(0, Math.min(100, Math.round(scores[sport]?.score ?? 0)));
+          : isDesportoMotorAntigo(sport)
+            ? Math.max(0, Math.min(100, Math.round(getSportScore(spot, sport, input).score ?? 0)))
+            : 0;
         bySport[sport].push(n);
-        if (n != null && n > best) best = n;
+        daHora[sport] = n;
       }
-      bySport.best.push(best);
+      bySport.best.push(melhorTodos(spot, (sport) => daHora[sport]));
       const wh = Number(raw.waveHeight);
       const rounded = Number.isFinite(wh) ? Math.round(Math.max(0, wh) * 10) / 10 : 0;
       hsSeries.push(rounded);

@@ -13,6 +13,7 @@
 import type { Spot } from '@/types';
 import type { SportType, GridSportFilter } from '@/lib/sportRatings';
 import { getCompatibleSports } from '@/lib/sportRatings';
+import { desportosTodos } from '@/lib/desportosV6';
 import type { SportScore, WindSafetyLevel } from '@/lib/sportScore';
 import { classifyWind, isWindDirectionSport, windSportDirectionSafety } from '@/lib/sportScore';
 import type { MarineConditionsFields } from '@/lib/marineConditions';
@@ -107,7 +108,9 @@ export function resolveExplainedSport(
 ): SportType | null {
   if (sport === 'big-wave') return 'surf';
   if (sport !== 'all') return sport;
-  const compatible = new Set(getCompatibleSports(spot));
+  // compatíveis que entram no «Todos» (#218, PR 6): sem misturar as escalas dos dois motores
+  const todos = new Set(desportosTodos(spot));
+  const compatible = new Set(getCompatibleSports(spot).filter((s) => todos.has(s)));
   let best: SportType | null = null;
   let bestScore = -1;
   for (const [s, sc] of Object.entries(allScores) as [SportType, SportScore][]) {

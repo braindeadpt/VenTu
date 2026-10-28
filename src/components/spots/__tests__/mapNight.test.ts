@@ -161,13 +161,12 @@ function v3Marker(scoreOverride: number | null | undefined, locale = 'pt', sport
 }
 
 describe('mapNight — regra e cópia', () => {
-  it('só kitesurf, surf e big-wave mostram noite; «Todas» (best, D5) e motor antigo não', () => {
-    expect(mapNightAppliesTo('kitesurf')).toBe(true);
-    expect(mapNightAppliesTo('surf')).toBe(true);
-    expect(mapNightAppliesTo('big-wave')).toBe(true);
-    expect(mapNightAppliesTo('all')).toBe(false);
-    expect(mapNightAppliesTo('bodyboard')).toBe(false);
-    expect(mapNightAppliesTo('windsurf')).toBe(false);
+  it('PR 6: as modalidades v6 e «Todas» (best) mostram noite; SUP e wakeboard (motor antigo) não', () => {
+    for (const s of ['kitesurf', 'surf', 'big-wave', 'windsurf', 'bodyboard', 'foil', 'all'] as const) {
+      expect(mapNightAppliesTo(s), s).toBe(true);
+    }
+    expect(mapNightAppliesTo('sup')).toBe(false);
+    expect(mapNightAppliesTo('wakeboard')).toBe(false);
   });
 
   it('fill = token v6 `noite` (#56677B, régua do spot) e texto branco AA', () => {

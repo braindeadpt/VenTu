@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Motor único (#218), PR 3: grava em cada linha de public/data/conditions.json
- * a nota v6 «agora» — `notaV6: { t, kite, surf, seg, … }` — com a linha
+ * a nota v6 «agora» — `notaV6: { t, kite, surf, windsurf, bodyboard, foil, … }` — com a linha
  * «agora» de D4 (a dos alertas: hora coberta do forecast + observações
  * frescas por cima). O bake do /mapa e das listagens e o refresh do cliente só
  * a lêem (`src/lib/notaV6Agora.ts`): o motor v6 não corre no browser.
@@ -12,7 +12,7 @@
  * update-conditions.js (antes do map-hours, cuja frame 0 usa a mesma linha).
  *
  * No run full o map-hours.json é gerado antes do merge das observações: se a
- * frame 0 do map-hours for a hora corrente, kitesurf e surf dessa frame passam
+ * frame 0 do map-hours for a hora corrente, as modalidades v6 dessa frame passam
  * a ser este `notaV6` (× 10, `best` recalculado), para o «agora» da régua e o
  * dos marcadores serem o mesmo número.
  *
@@ -82,7 +82,8 @@ function buildNotaV6Agora(dataDir = path.join(__dirname, '../public/data'), nowM
     const mh = JSON.parse(mhOriginal);
     const notas = {};
     for (const [id, row] of Object.entries(conditions)) if (row && row.notaV6) notas[id] = row.notaV6;
-    patched = remendarFrame0(mh, notas, nowMs);
+    const porId = new Map(spots.map((s) => [s.id, s]));
+    patched = remendarFrame0(mh, notas, nowMs, (id) => porId.get(id));
     if (patched > 0) writeJsonLike(mhPath, mhOriginal, mh);
   }
   console.log(
@@ -107,11 +108,12 @@ if (require.main === module) {
     if (!Number.isFinite(nowMs)) throw new Error(`VENTU_NOW_ISO inválido: ${process.env.VENTU_NOW_ISO}`);
     buildNotaV6Agora(dataDir, nowMs);
   } catch (err) {
-    // Nunca parte o pipeline: sem `notaV6` o bake e o refresh caem no motor
-    // antigo (como antes do PR 3). Uma nota de um run anterior não fica a
-    // passar por actual: tira-se de todas as linhas.
+    // Nunca parte o pipeline: sem `notaV6` o bake e o refresh mostram as
+    // modalidades v6 «sem dados» (PR 6: o motor antigo delas já não existe).
+    // Uma nota de um run anterior não fica a passar por actual: tira-se de
+    // todas as linhas.
     console.error(err);
-    console.log(`::warning title=notaV6 agora::build-nota-v6-agora falhou (${err && err.message}) — kite/surf no motor antigo neste run`);
+    console.log(`::warning title=notaV6 agora::build-nota-v6-agora falhou (${err && err.message}) — modalidades v6 «sem dados» neste run`);
     try {
       dropNotaV6(dataDir);
     } catch {

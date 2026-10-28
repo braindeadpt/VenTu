@@ -179,7 +179,7 @@ describe('mapHours', () => {
   });
 });
 
-describe('mapHours — motor v6 em kitesurf e surf (#218, PR 2)', () => {
+describe('mapHours — motor v6 (#218, PR 2; PR 6: as cinco modalidades v6 e o «Todos»)', () => {
   // 3–5/9, horas de Lisboa; agora = 3/9 08:00 WEST
   const times = Array.from({ length: 72 }, (_, i) => {
     const day = String(3 + Math.floor(i / 24)).padStart(2, '0');
@@ -193,37 +193,33 @@ describe('mapHours — motor v6 em kitesurf e surf (#218, PR 2)', () => {
     return buildMapHoursFile({ now, generatedAt: 'x', spots: [spot('nazare')], conditions, forecasts });
   }
 
-  it('de noite kitesurf e surf são null; as outras modalidades e `best` continuam números', () => {
+  it('de noite as cinco v6 e o `best` («Todos») são null; SUP e wakeboard continuam números', () => {
     const file = build({ nazare: times.map(linha) });
     const noite = file.times.findIndex((t) => t.endsWith('T23:00'));
     expect(noite).toBeGreaterThan(0);
     const row = file.spots.nazare;
-    expect(row.kitesurf[noite]).toBeNull();
-    expect(row.surf[noite]).toBeNull();
-    for (const sport of ['windsurf', 'wakeboard', 'bodyboard', 'sup', 'foil']) {
-      expect(typeof row[sport][noite]).toBe('number');
-    }
-    expect(typeof row.best[noite]).toBe('number');
+    for (const sport of ['kitesurf', 'surf', 'windsurf', 'bodyboard', 'foil']) expect(row[sport][noite]).toBeNull();
+    for (const sport of ['wakeboard', 'sup']) expect(typeof row[sport][noite]).toBe('number');
+    expect(row.best[noite]).toBeNull();
     expect(scoreAtHour(file, 'nazare', 'surf', noite)).toBeNull();
     expect(scoreAtHour(file, 'nazare', 'big-wave', noite)).toBeNull();
-    expect(Number.isFinite(scoreAtHour(file, 'nazare', 'all', noite))).toBe(true);
+    expect(scoreAtHour(file, 'nazare', 'all', noite)).toBeNull();
   });
 
-  it('de dia kitesurf e surf são nota × 10 e `best` = máximo das modalidades com número', () => {
+  it('de dia as v6 são nota × 10 e `best` = máximo das v6 com número (SUP / wakeboard não entram)', () => {
     const file = build({ nazare: times.map(linha) });
     const row = file.spots.nazare;
     const dia = file.times.findIndex((t) => t.endsWith('T14:00'));
-    for (const sport of ['kitesurf', 'surf']) {
+    for (const sport of ['kitesurf', 'surf', 'windsurf', 'bodyboard', 'foil']) {
       const v = row[sport][dia];
       expect(typeof v).toBe('number');
       expect((v as number) % 10).toBe(0);
     }
     file.times.forEach((_, i) => {
-      const nums = Object.entries(row)
-        .filter(([k]) => k !== 'best')
-        .map(([, s]) => s[i])
+      const nums = ['kitesurf', 'surf', 'windsurf', 'bodyboard', 'foil']
+        .map((k) => row[k][i])
         .filter((v): v is number => typeof v === 'number');
-      expect(row.best[i]).toBe(Math.max(0, ...nums));
+      expect(row.best[i]).toBe(nums.length ? Math.max(...nums) : null);
     });
   });
 
@@ -244,8 +240,9 @@ describe('mapHours — motor v6 em kitesurf e surf (#218, PR 2)', () => {
     expect(file.spots.guincho.surf[i]).not.toBeNull();
     expect(file.spots.nazare.kitesurf[i]).toBeNull();
     expect(file.spots.nazare.surf[i]).toBeNull();
-    // o motor antigo continua a cair na linha ao vivo nessa hora (inalterado)
-    expect(typeof file.spots.nazare.windsurf[i]).toBe('number');
+    expect(file.spots.nazare.windsurf[i]).toBeNull();
+    // o motor antigo (SUP) continua a cair na linha ao vivo nessa hora (inalterado)
+    expect(typeof file.spots.nazare.sup[i]).toBe('number');
   });
 
   it('vento em falta na hora (null na fonte) → kitesurf null, surf continua com nota', () => {
@@ -264,8 +261,9 @@ describe('mapHours — motor v6 em kitesurf e surf (#218, PR 2)', () => {
     // a onda do snapshot não conta: a hora coberta do forecast ganha (como os alertas)
     expect(snapshot.spots.nazare.surf).toEqual(calmo.spots.nazare.surf);
     expect(snapshot.spots.nazare.kitesurf).toEqual(calmo.spots.nazare.kitesurf);
-    // o motor antigo (outras modalidades) continua a ler o snapshot nessa frame (D5)
-    expect(snapshot.spots.nazare.bodyboard[0]).not.toBe(calmo.spots.nazare.bodyboard[0]);
+    expect(snapshot.spots.nazare.bodyboard).toEqual(calmo.spots.nazare.bodyboard);
+    // o motor antigo (SUP) continua a ler o snapshot nessa frame
+    expect(snapshot.spots.nazare.sup[0]).not.toBe(calmo.spots.nazare.sup[0]);
   });
 
   it('frame «agora»: as observações frescas do conditions.json entram por cima da hora do forecast', () => {

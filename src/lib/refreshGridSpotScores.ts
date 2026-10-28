@@ -2,6 +2,7 @@ import type { GridSpotData } from '@/lib/gridSpotFilters';
 import { pickMarineDisplayFields, pickObservedField } from '@/lib/marineConditions';
 import { resolveConditionsEntry } from '@/lib/spotConditionsSource';
 import { allScoresComV6, notaV6DoSpot, scoresMotorAntigo } from '@/lib/notaV6Agora';
+import { DESPORTO_PARA_AGORA, type ModalidadeAgora } from '@/lib/desportosV6';
 import type { SportType } from '@/lib/sportRatings';
 import type { SportScore } from '@/lib/sportScore';
 import { applyRegionalBiasFallback, rawToScoreInput } from '@/lib/scoreConditions';
@@ -31,18 +32,18 @@ export function refreshGridSpotScores<T extends GridSpotData>(
     const scoreInput = biasPatch
       ? { ...scoreInput0, waveHeight: biasPatch.waveHeight }
       : scoreInput0;
-    // Kitesurf e surf: o `notaV6` que o pipeline gravou (#218, PR 3) — sem
-    // motor no cliente (antes: 189 × 2 getSportScore a cada refresh). Um
-    // ficheiro servido sem `notaV6` (anterior ao PR 3) mantém o kite/surf da
-    // linha (o bake), nunca recalcula no motor antigo.
+    // Modalidades v6 (surf, kitesurf, windsurf, bodyboard, foil): o `notaV6`
+    // que o pipeline gravou (#218, PRs 3 e 6) — sem motor no cliente. Um
+    // ficheiro servido sem `notaV6`, ou sem uma modalidade (anterior ao PR 6),
+    // mantém a da linha (o bake), nunca recalcula. SUP e wakeboard: motor antigo.
     const nv = notaV6DoSpot(row.spot, conditionsJson);
-    const allScores = nv
-      ? allScoresComV6(row.spot, scoreInput, nv)
-      : ({
-          ...scoresMotorAntigo(row.spot, scoreInput),
-          kitesurf: row.allScores.kitesurf,
-          surf: row.allScores.surf,
-        } as Record<SportType, SportScore>);
+    const allScores = { ...row.allScores, ...scoresMotorAntigo(row.spot, scoreInput) } as Record<SportType, SportScore>;
+    if (nv) {
+      const v6 = allScoresComV6(row.spot, scoreInput, nv);
+      for (const [sport, d] of Object.entries(DESPORTO_PARA_AGORA) as Array<[SportType, ModalidadeAgora]>) {
+        if (nv[d] !== undefined) allScores[sport] = v6[sport];
+      }
+    }
     const observed = pickObservedField(record);
 
     return {

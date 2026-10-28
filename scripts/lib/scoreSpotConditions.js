@@ -6,8 +6,11 @@
  * Desde a auditoria de dados de 16/10 (C1, #218) a nota é a do motor v6 — a
  * mesma da home e da página de spot (`src/lib/notaV6Condicoes.ts`): vento
  * MÉDIO (sem *gust proxy*), tecto de segurança do vento e `null` de noite.
- * Só os desportos sem definição v6 (sup) caem no `sportScore` antigo, também
- * sem *gust proxy*.
+ * Só o SUP (sem definição v6) cai no `sportScore` antigo, também sem *gust
+ * proxy*. O foil é a melhor das três vertentes v6 (#218, PR 6); um desporto
+ * desconhecido é avaliado como surf (v6). O wakeboard não tem alertas de
+ * condições por agora (`temAlertasCondicoes`, decisão do Pedro 27/10): a nota
+ * é sempre `null` e o alerta nunca dispara.
  */
 
 let cached = null;
@@ -21,6 +24,7 @@ function loadScoring() {
   const { rawToScoreInput, resolveScoreWaveSource } = require('../../src/lib/scoreConditions.ts');
   const nota = require('../../src/lib/nota.ts');
   const { notaV6DeCondicoes } = require('../../src/lib/notaV6Condicoes.ts');
+  const { temAlertasCondicoes } = require('../../src/lib/desportosV6.ts');
   const { posicaoSol } = require('../../src/lib/sol.ts');
   const byId = Object.fromEntries(spots.map((s) => [s.id, s]));
   cached = {
@@ -29,6 +33,7 @@ function loadScoring() {
     rawToScoreInput,
     resolveScoreWaveSource,
     notaV6DeCondicoes,
+    temAlertasCondicoes,
     posicaoSol,
     notaToScore: nota.notaToScore,
     scoreToNota: nota.scoreToNota,
@@ -51,20 +56,31 @@ function loadScoring() {
  * @returns {{ score: number, nota: number, engine: 'v6' | 'legacy', source: 'observed' | 'bias-corrected' | 'forecast' } | null}
  */
 function computeScore(spotId, sport, conditionsJson, opc = {}) {
-  const { byId, getSportScore, rawToScoreInput, resolveScoreWaveSource, notaV6DeCondicoes, notaToScore, scoreToNota } =
-    loadScoring();
+  const {
+    byId,
+    getSportScore,
+    rawToScoreInput,
+    resolveScoreWaveSource,
+    notaV6DeCondicoes,
+    temAlertasCondicoes,
+    notaToScore,
+    scoreToNota,
+  } = loadScoring();
+  // wakeboard: sem alertas de condições por agora (#218 PR 6) — nunca dispara
+  if (!temAlertasCondicoes(sport)) return null;
   const spot = byId[spotId];
   const raw = conditionsJson[spotId] ?? (spot?.conditionsSource ? conditionsJson[spot.conditionsSource] : null);
   if (!spot || !raw || typeof raw !== 'object') return null;
 
   const source = resolveScoreWaveSource(raw, opc.nowMs);
-  const v6 = notaV6DeCondicoes(spot, sport, raw, opc);
+  const known = new Set(['surf', 'kitesurf', 'kite', 'windsurf', 'bodyboard', 'sup', 'foil', 'wakeboard']);
+  const sportKey = known.has(sport) ? sport : 'surf';
+  const v6 = notaV6DeCondicoes(spot, sportKey, raw, opc);
   if (v6) {
     if (v6.n == null) return null; // noite
     return { score: notaToScore(v6.n), nota: v6.n, engine: 'v6', source };
   }
-  const allowed = new Set(['surf', 'kitesurf', 'windsurf', 'bodyboard', 'sup', 'foil', 'wakeboard']);
-  const sportKey = allowed.has(sport) ? sport : 'surf';
+  // motor antigo: só o SUP chega aqui
   const score = getSportScore(spot, sportKey, rawToScoreInput(raw)).score;
   return { score, nota: scoreToNota(score), engine: 'legacy', source };
 }

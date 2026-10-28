@@ -1,5 +1,6 @@
 import { readFileSync, existsSync, readdirSync } from 'fs'
 import { join } from 'path'
+import { scoreTodos } from '@/lib/desportosV6'
 import { spots } from '@/lib/spots'
 import { allScoresComV6, notaV6DoSpot, type NotaV6Agora } from '@/lib/notaV6Agora'
 import type { Spot } from '@/types'
@@ -378,8 +379,8 @@ function loadRows(detail: boolean): SpotListingData[] | SpotDetailData[] {
   }
 
   result.sort((a, b) => {
-    const bestA = Math.max(...Object.values(a.allScores).map((s) => s.score), 0)
-    const bestB = Math.max(...Object.values(b.allScores).map((s) => s.score), 0)
+    const bestA = scoreTodos(a.spot, a.allScores)
+    const bestB = scoreTodos(b.spot, b.allScores)
     return bestB - bestA
   })
 

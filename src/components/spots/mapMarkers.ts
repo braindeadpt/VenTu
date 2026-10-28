@@ -4,7 +4,8 @@ import type { Spot } from '@/types';
 import type { GridSportFilter } from '@/lib/sportRatings';
 import { includeSpotInViewportBounds } from './mapViewportBounds';
 import { resolveWavePowerKw, MS_TO_KNOTS } from '@/lib/waveEnergy';
-import { getCardinalLabel, getWindRelationLabel, getWindRelationToCoast, orientacaoVento } from '@/lib/wind';
+import { getCardinalLabel, getWindRelationLabel, orientacaoVento } from '@/lib/wind';
+import { relacaoAnelVento } from '@/lib/ventoRelAnel';
 import { getScoreRgb } from '@/lib/map-constants';
 import { getScoreTier } from '@/lib/scoreThresholds';
 import { buildWindRingMarkerHtml, markerIconLayout, type MapMarkerWarning } from '@/lib/mapWindArrow';
@@ -71,7 +72,7 @@ export function buildMarkerPopupContent(
   const coast = orientacaoVento(spot);
   const windRelation =
     coast !== undefined
-      ? getWindRelationToCoast(conditions.windDirection, coast)
+      ? (relacaoAnelVento(conditions.windDirection, coast) ?? undefined) // = anel do vento (ventoRel, #218 PR 6)
       : undefined;
   const windRelationLabel =
     windRelation != null

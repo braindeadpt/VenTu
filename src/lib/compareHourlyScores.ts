@@ -1,21 +1,22 @@
 /**
  * Motor único (#218), PR 4: as notas da tabela horária do comparador.
  *
- * Kitesurf e surf saem do motor v6 hora a hora (`notaUnica.notaHora` =
- * `horaDeLinha` + `avaliaHoras` sobre a série do forecast do spot), o mesmo
+ * Surf, kitesurf, windsurf, bodyboard e foil saem do motor v6 hora a hora
+ * (`notaUnica.notaHora` = `horaDeLinha` + `avaliaHorasSite` sobre a série do
+ * forecast do spot), o mesmo
  * caminho da régua da página do spot e das frames do `map-hours.json`: a
  * mesma hora dá o mesmo número nas três. As vizinhas da série dão o sentido
  * da maré, por isso o motor recebe a série inteira e o índice da hora.
  * De noite (ou sem os dados que a modalidade precisa) o v6 não dá nota:
  * `null`, e a tabela mostra «—» como numa hora sem previsão.
  *
- * As outras modalidades (windsurf, bodyboard, …) ficam no `sportScore`
- * (`getHourlyScores`, D5) até ao PR 6.
+ * SUP e wakeboard ficam no `sportScore` (`getHourlyScores`, motor antigo; PR 6).
  */
 import type { Spot } from '@/types';
 import type { SportType } from '@/lib/sportRatings';
 import { getHourlyScores, type Conditions } from '@/lib/sportScore';
 import { modalidadeDe, notaHora, type SportScoreV6 } from '@/lib/notaUnica';
+import { isDesportoMotorAntigo } from '@/lib/desportosV6';
 import type { LinhaForecast } from '@/lib/horaSpot';
 
 type Linha = Record<string, unknown>;
@@ -46,6 +47,7 @@ export function notasHorariasCompare(
     });
   }
 
+  if (!isDesportoMotorAntigo(sport)) return times.map(() => null);
   const hourly = times.map((t) => {
     const j = idx.get(t);
     const r = (j === undefined ? undefined : rows[j]) as

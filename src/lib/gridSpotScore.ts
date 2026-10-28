@@ -1,5 +1,6 @@
 import type { GridSpotData } from '@/lib/gridSpotFilters';
 import type { GridSportFilter, SportType } from '@/lib/sportRatings';
+import { scoreTodos } from '@/lib/desportosV6';
 
 function getScoreSport(sport: GridSportFilter): SportType | null {
   if (sport === 'all' || sport === 'big-wave') return sport === 'big-wave' ? 'surf' : null;
@@ -8,9 +9,8 @@ function getScoreSport(sport: GridSportFilter): SportType | null {
 
 /** Score used for grid cards, map markers, and ranked lists. */
 export function getGridSpotScore(data: GridSpotData, sport: GridSportFilter): number {
-  if (sport === 'all') {
-    return Math.max(...Object.values(data.allScores).map((s) => s.score || 0), 0);
-  }
+  // «Todos» (#218, PR 6): máximo das modalidades v6; SUP / wakeboard só num spot sem nenhuma v6
+  if (sport === 'all') return scoreTodos(data.spot, data.allScores);
   if (sport === 'big-wave') {
     return data.spot.type === 'big-wave' ? (data.allScores.surf?.score ?? 0) : 0;
   }
