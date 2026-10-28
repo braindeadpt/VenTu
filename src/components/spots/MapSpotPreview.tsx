@@ -10,12 +10,14 @@ import type { MapMarkerWarning } from '@/lib/mapWindArrow';
 import type { Spot } from '@/types';
 import type { SportType, GridSportFilter } from '@/lib/sportRatings';
 import { getCompatibleSports, SPORT_LABELS } from '@/lib/sportRatings';
+import { scoreTodos } from '@/lib/desportosV6';
 import type { SportScore } from '@/lib/sportScore';
 import { getScoreTierLabel } from '@/lib/sportScore';
 import { getScoreRgb, getScoreTier } from '@/lib/scoreThresholds';
 import type { MarineConditionsFields } from '@/lib/marineConditions';
 import { resolveWavePowerKw, MS_TO_KNOTS } from '@/lib/waveEnergy';
-import { getCardinalLabel, getWindRelationLabel, getWindRelationToCoast, getWindRelationDotClass, orientacaoVento } from '@/lib/wind';
+import { getCardinalLabel, getWindRelationLabel, getWindRelationDotClass, orientacaoVento } from '@/lib/wind';
+import { relacaoAnelVento } from '@/lib/ventoRelAnel';
 import { getDifficultyLabel } from '@/lib/mapDifficulty';
 import { getGoogleMapsDirectionsUrl, getSpotDetailHref } from '@/lib/mapSpotDetail';
 import { getMapSpotNarrative } from '@/lib/mapSpotNarrative';
@@ -80,7 +82,7 @@ export default function MapSpotPreview({
   const coast = orientacaoVento(spot);
   const windRelation =
     coast !== undefined
-      ? getWindRelationToCoast(conditions.windDirection, coast)
+      ? (relacaoAnelVento(conditions.windDirection, coast) ?? undefined) // = anel do vento (ventoRel, #218 PR 6)
       : undefined;
   const windRelationMeta =
     windRelation != null
@@ -565,9 +567,7 @@ function bestScore(
   scoreOverride?: number | null,
 ): number {
   if (typeof scoreOverride === 'number' && Number.isFinite(scoreOverride)) return scoreOverride;
-  if (sport === 'all') {
-    return Math.max(...Object.values(data.allScores).map((s) => s?.score || 0));
-  }
+  if (sport === 'all') return scoreTodos(data.spot, data.allScores);
   if (sport === 'big-wave') return data.allScores.surf?.score || 0;
   return data.allScores[sport]?.score || 0;
 }

@@ -4,9 +4,10 @@
  * Numa frame das 48 h em que o motor v6 não dá nota (`scoreAtHour` → `null`:
  * noite / sem dados) para a modalidade activa, o marcador, a linha da lista,
  * o cluster e a pré-visualização mostram «noite» — sem número — no fill da
- * banda v6 `noite` (#56677B, o mesmo da régua do spot). Só kitesurf, surf e
- * big-wave: «Todas» (`best`) continua numérica (D5) e as outras modalidades
- * ainda estão no motor antigo.
+ * banda v6 `noite` (#56677B, o mesmo da régua do spot). Vale para todas as
+ * modalidades do v6 — surf, kitesurf, windsurf, bodyboard, foil, big-wave — e
+ * para «Todas» (`best`, quando as v6 estão todas de noite; PR 6, decisão do
+ * Pedro 27/10). SUP e wakeboard (motor antigo) nunca mostram noite.
  *
  * Módulo leve de propósito (só tokens + o dicionário mapUiMarkers, que o
  * /mapa já carrega): nada de imports pesados no bundle do mapa.
@@ -25,7 +26,7 @@ export const MAP_NIGHT_MOON_PATH = 'M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 1
 
 /** Modalidades do filtro do mapa em que o estado «noite» se aplica. */
 export function mapNightAppliesTo(sport: GridSportFilter): boolean {
-  return sport === 'kitesurf' || sport === 'surf' || sport === 'big-wave';
+  return sport !== 'sup' && sport !== 'wakeboard';
 }
 
 export interface MapNightCopy {

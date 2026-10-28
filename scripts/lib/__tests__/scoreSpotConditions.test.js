@@ -198,3 +198,33 @@ describe('computeScore — motor v6 nos alertas (auditoria 16/10)', () => {
     expect(computeScoreAt('guincho', 'surf', { guincho: row }, { t: '2026-10-16T03:00' })).toBeNull();
   });
 });
+
+describe('computeScore — desportos nos alertas (#218, PR 6)', () => {
+  const row = {
+    waveHeight: 1.2, wavePeriod: 9, waveDirection: 300,
+    windSpeed: 20 / 1.94384, windDirection: 335, windGust: 24 / 1.94384, waterTemp: 17.6,
+  };
+
+  it('wakeboard: sem alertas de condições por agora — null mesmo de dia e com dados', () => {
+    expect(computeScoreAt('guincho', 'wakeboard', { guincho: row }, { t: '2026-10-17T15:00' })).toBeNull();
+    expect(computeScoreAt('cabedelo-wakepark', 'wakeboard', { 'cabedelo-wakepark': row }, { t: '2026-10-17T15:00' })).toBeNull();
+  });
+
+  it('foil: motor v6 (melhor das três vertentes); com nortada offshore em Carcavelos o surffoil ganha (aceite)', () => {
+    const off = {
+      waveHeight: 1.2, wavePeriod: 10, waveDirection: 250,
+      windSpeed: 20 / 1.94384, windDirection: 355, windGust: 24 / 1.94384, waterTemp: 18,
+    };
+    const foil = computeScoreAt('carcavelos', 'foil', { carcavelos: off }, { t: '2026-10-16T15:00' });
+    const kite = computeScoreAt('carcavelos', 'kitesurf', { carcavelos: off }, { t: '2026-10-16T15:00' });
+    expect(foil.engine).toBe('v6');
+    expect(kite.nota).toBeLessThanOrEqual(3);
+    expect(foil.nota).toBeGreaterThan(kite.nota);
+  });
+
+  it('windsurf e bodyboard: motor v6; SUP: motor antigo', () => {
+    expect(computeScoreAt('guincho', 'windsurf', { guincho: row }, { t: '2026-10-17T15:00' }).engine).toBe('v6');
+    expect(computeScoreAt('guincho', 'bodyboard', { guincho: row }, { t: '2026-10-17T15:00' }).engine).toBe('v6');
+    expect(computeScoreAt('guincho', 'sup', { guincho: row }, { t: '2026-10-17T15:00' }).engine).toBe('legacy');
+  });
+});

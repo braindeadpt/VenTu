@@ -12,7 +12,7 @@ import { loadSpotListings, type SpotListingData } from '@/lib/load-spot-data';
 import { allScoresComV6, notaV6DoSpot, scoreAgoraComV6, type NotaV6Agora } from '@/lib/notaV6Agora';
 import { notasHorariasCompare } from '@/lib/compareHourlyScores';
 import { horaDeLinha, type LinhaForecast } from '@/lib/horaSpot';
-import { avaliaHoras } from '@/lib/modalidades';
+import { avaliaHorasSite, type ModalidadeSite } from '@/lib/modalidades';
 import { editorialDe, spotModalidadeDe } from '@/lib/spotEditorial';
 
 /**
@@ -28,16 +28,20 @@ import { editorialDe, spotModalidadeDe } from '@/lib/spotEditorial';
  *   spot (`allScoresComV6` com a linha de cada página);
  * - e, hora a hora, a tabela do comparar (`notasHorariasCompare`) = régua do
  *   spot (`avaliaHoras(horaDeLinha)`) = frames do `map-hours.json`.
- * As outras modalidades continuam no `sportScore` (D5).
+ * Desde o PR 6 o mesmo vale para windsurf, bodyboard e foil (melhor das três
+ * vertentes); só o SUP e o wakeboard continuam no `sportScore`.
  */
 const ROOT = path.join(__dirname, '..', '..', '..');
 const FIX = path.join(ROOT, 'tests/e2e/fixtures/data');
 const IDS = ['guincho', 'nazare', 'lagoa-albufeira', 'lagos'] as const;
-const V6: ReadonlyArray<readonly [SportType, 'kite' | 'surf']> = [
+const V6: ReadonlyArray<readonly [SportType, ModalidadeSite & ('kite' | 'surf' | 'windsurf' | 'bodyboard' | 'foil')]> = [
   ['kitesurf', 'kite'],
   ['surf', 'surf'],
+  ['windsurf', 'windsurf'],
+  ['bodyboard', 'bodyboard'],
+  ['foil', 'foil'],
 ];
-const ANTIGOS: readonly SportType[] = ['windsurf', 'bodyboard', 'foil', 'wakeboard', 'sup'];
+const ANTIGOS = ['wakeboard', 'sup'] as const;
 
 const ler = (f: string) => JSON.parse(fs.readFileSync(path.join(FIX, f), 'utf8'));
 const spotDe = (id: string) => (spots as Spot[]).find((s) => s.id === id)!;
@@ -72,7 +76,7 @@ afterAll(() => {
 const linhaPagina = (sp: Spot) => (conditions[getConditionsDataId(sp)] ?? conditions[sp.id]) as Record<string, unknown>;
 
 describe('#218 PR 4 — favoritos, comparar, embed e página do spot lêem o notaV6 (todos os spots, 0 diferenças)', () => {
-  it('kitesurf/surf = bake das listagens = notaV6; outras modalidades = sportScore (D5)', () => {
+  it('as cinco v6 = bake das listagens = notaV6; SUP e wakeboard = sportScore', () => {
     const diferencas: string[] = [];
     let vistos = 0;
     for (const row of bake) {
@@ -84,7 +88,7 @@ describe('#218 PR 4 — favoritos, comparar, embed e página do spot lêem o not
       const embed = (conditions[sp.id] ?? conditions[sp.slug]) as Record<string, unknown>;
       // favoritos / picker do comparar
       for (const [sport, mod] of V6) {
-        const esperado = nv[mod] == null ? 0 : nv[mod]! * 10;
+        const esperado = nv[mod] == null ? 0 : (nv[mod] as number) * 10;
         const fav = scoreAgoraComV6(sp, sport, rawToScoreInput(pagina), nv).score;
         const cartao = allScoresComV6(sp, rawToScoreInput(pagina), nv)[sport].score;
         const emb = allScoresComV6(sp, rawToScoreInput(embed), notaV6DoSpot(sp, conditions))[sport].score;
@@ -107,12 +111,13 @@ describe('#218 PR 4 — favoritos, comparar, embed e página do spot lêem o not
     expect(diferencas).toEqual([]);
   });
 
-  it('sem notaV6 (conditions.json anterior ao PR 3) → motor antigo nas 7, como até aqui', () => {
+  it('sem notaV6 → as v6 ficam «sem dados» (score 0; o motor antigo delas já não existe), SUP no antigo', () => {
     const sp = spotDe('guincho');
     const input = rawToScoreInput(linhaPagina(sp));
-    for (const sport of ['kitesurf', 'surf', 'windsurf'] as SportType[]) {
-      expect(scoreAgoraComV6(sp, sport, input, null)).toEqual(getSportScore(sp, sport, input));
+    for (const sport of ['kitesurf', 'surf', 'windsurf', 'bodyboard', 'foil'] as SportType[]) {
+      expect(scoreAgoraComV6(sp, sport, input, null)).toMatchObject({ score: 0, rating: 'N/A', semDados: true });
     }
+    expect(scoreAgoraComV6(sp, 'sup', input, null)).toEqual(getSportScore(sp, 'sup', input));
   });
 
   it('noite: kitesurf/surf sem nota → score 0 (fica no fundo do ranking, nunca «a bombar»)', () => {
@@ -140,7 +145,7 @@ describe('#218 PR 4 — tabela horária do comparar = régua do spot = map-hours
         let noites = 0;
         times.forEach((_, j) => {
           const h = horaDeLinha(linhas, j, { lat: sp.lat, lon: sp.lon, praiaVirada: ed.praiaVirada });
-          const [av] = avaliaHoras(spotModalidadeDe(ed), mod, [h]);
+          const [av] = avaliaHorasSite(spotModalidadeDe(ed), mod, [h]);
           expect(got[j]).toBe(av.n == null ? null : av.n * 10);
           if (av.n == null) noites++;
         });
@@ -164,16 +169,17 @@ describe('#218 PR 4 — tabela horária do comparar = régua do spot = map-hours
     }
   }
 
-  it('hora ausente da série → null («—»); windsurf continua no getHourlyScores (D5)', () => {
+  it('hora ausente da série → null («—»); o SUP continua no getHourlyScores (motor antigo)', () => {
     const sp = spotDe('guincho');
     const rows = (ler(`forecasts/${serieDe(sp)}.json`) as Array<Record<string, unknown>>).slice(0, 12);
     const times = [...rows.map((r) => String(r.time)), '2099-01-01T00:00'];
     const fallback = rawToScoreInput(linhaPagina(sp));
     expect(notasHorariasCompare(sp, 'surf', rows, times, fallback).at(-1)).toBeNull();
-    const ws = notasHorariasCompare(sp, 'windsurf', rows, times, fallback);
+    expect(notasHorariasCompare(sp, 'windsurf', rows, times, fallback).at(-1)).toBeNull();
+    const ws = notasHorariasCompare(sp, 'sup', rows, times, fallback);
     const antigo = getHourlyScores(
       sp,
-      'windsurf',
+      'sup',
       rows.map((r) => ({
         time: String(r.time),
         waveHeight: (r.waveHeight as number) ?? 0,

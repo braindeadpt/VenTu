@@ -14,7 +14,7 @@ import {
   type NotaV6Agora,
 } from '@/lib/notaV6Agora';
 import { escreverNotasV6Agora, linhaAgora, linhasAgora, notaV6AgoraDe, remendarFrame0 } from '@/lib/notaV6AgoraBuild';
-import { getAllSportScores } from '@/lib/sportScore';
+import { getSportScore } from '@/lib/sportScore';
 
 const req = createRequire(import.meta.url);
 const { alertRowAt } = req('../../../scripts/lib/scoreSpotConditions.js') as {
@@ -113,16 +113,41 @@ describe('notaV6AgoraDe e o adaptador sportScoreDeNotaV6', () => {
     });
   });
 
-  it('allScoresComV6: kitesurf/surf do notaV6, as outras 5 no sportScore; sem notaV6 = motor antigo nas 7', () => {
+  it('allScoresComV6 (PR 6): as 5 v6 do notaV6, SUP e wakeboard no sportScore; sem notaV6 = v6 «sem dados»', () => {
     const sp = spotDe('guincho');
     const input = { waveHeight: 1.4, wavePeriod: 10, waveDirection: 300, windSpeed: 9, windDirection: 340, windGust: 11, waterTemp: 17 };
-    const antigo = getAllSportScores(sp, input);
-    expect(allScoresComV6(sp, input, null)).toEqual(antigo);
-    const com = allScoresComV6(sp, input, { t: 'x', kite: 6, surf: 3 });
+    const sem = allScoresComV6(sp, input, null);
+    for (const s of ['kitesurf', 'surf', 'windsurf', 'bodyboard', 'foil'] as const) {
+      expect(sem[s]).toMatchObject({ score: 0, rating: 'N/A', semDados: true });
+    }
+    for (const s of ['wakeboard', 'sup'] as const) expect(sem[s]).toEqual(getSportScore(sp, s, input));
+    const com = allScoresComV6(sp, input, { t: 'x', kite: 6, surf: 3, windsurf: 4, bodyboard: null, foil: 7, vf: 'kitefoil' });
     expect(com.kitesurf.score).toBe(60);
     expect(com.surf.score).toBe(30);
-    for (const s of ['windsurf', 'wakeboard', 'bodyboard', 'sup', 'foil'] as const) expect(com[s]).toEqual(antigo[s]);
-    expect(Object.keys(scoresMotorAntigo(sp, input)).sort()).toEqual(['bodyboard', 'foil', 'sup', 'wakeboard', 'windsurf']);
+    expect(com.windsurf.score).toBe(40);
+    expect(com.bodyboard).toMatchObject({ score: 0, noite: true });
+    expect(com.foil.score).toBe(70);
+    // notaV6 anterior ao PR 6: as modalidades novas ficam «sem dados» (não «noite»)
+    const antigo = allScoresComV6(sp, input, { t: 'x', kite: 6, surf: 3 });
+    expect(antigo.windsurf).toMatchObject({ score: 0, semDados: true });
+    expect(Object.keys(scoresMotorAntigo(sp, input)).sort()).toEqual(['sup', 'wakeboard']);
+  });
+
+  it('lerNotaV6Agora (PR 6): windsurf, bodyboard, foil, vf e sg; valores estragados caem fora', () => {
+    expect(
+      lerNotaV6Agora({ t: 'x', kite: 1, surf: 2, windsurf: 3, bodyboard: null, foil: 9, vf: 'surffoil', sg: { windsurf: 'offshore', foil: 'x' }, sem: ['foil'] }),
+    ).toEqual({ t: 'x', kite: 1, surf: 2, windsurf: 3, bodyboard: null, foil: 9, vf: 'surffoil', sg: { windsurf: 'offshore' }, sem: ['foil'] });
+    expect(lerNotaV6Agora({ t: 'x', kite: 1, surf: 2, windsurf: 3.5, vf: 'jet' })).toEqual({ t: 'x', kite: 1, surf: 2 });
+  });
+
+  it('sportScoreDeNotaV6 (PR 6): factor principal do foil pela vertente; aviso de direcção do windsurf', () => {
+    const nv = { t: 'x', kite: 2, surf: 5, windsurf: 4, foil: 6, vf: 'surffoil' as const, sg: { windsurf: 'side-offshore' as const }, f: { foil: ['1.2m waves', '9kt wind'], windsurf: ['18kt wind', 'side-offshore'] } };
+    expect(sportScoreDeNotaV6(nv, 'foil').primaryFactor).toBe('1.2m');
+    expect(sportScoreDeNotaV6({ ...nv, vf: 'wing' }, 'foil').primaryFactor).toBe('9kt');
+    const ws = sportScoreDeNotaV6(nv, 'windsurf');
+    expect(ws.directionSafety).toBe('side-offshore');
+    expect(ws.primaryFactor).toBe('18kt');
+    expect(sportScoreDeNotaV6(nv, 'bodyboard')).toMatchObject({ score: 0, semDados: true });
   });
 });
 
@@ -161,5 +186,22 @@ describe('remendarFrame0 (map-hours depois das observações)', () => {
     const f = file();
     expect(remendarFrame0(f, { guincho: { t: 'x', kite: 7, surf: 3 } }, NOW_15H + 3 * 3_600_000)).toBe(0);
     expect(f).toEqual(file());
+  });
+});
+
+describe('isSemDados — Compare / Favoritos sem `notaV6` (#218, PR 6)', () => {
+  it('v6 sem notaV6 → sem dados; SUP / wakeboard (motor antigo) e v6 com nota → não', async () => {
+    const { isSemDados, scoreAgoraComV6, allScoresComV6 } = await import('@/lib/notaV6Agora');
+    const { spots } = await import('@/lib/spots');
+    const sp = spots.find((s) => s.id === 'guincho')!;
+    const input = { waveHeight: 1.2, wavePeriod: 9, waveDirection: 300, windSpeed: 8, windDirection: 330, windGust: 10, waterTemp: 17 };
+    for (const d of ['surf', 'kitesurf', 'windsurf', 'bodyboard', 'foil'] as const) {
+      expect(isSemDados(scoreAgoraComV6(sp, d, input, null))).toBe(true);
+    }
+    expect(isSemDados(scoreAgoraComV6(sp, 'sup', input, null))).toBe(false);
+    const all = allScoresComV6(sp, input, { t: '2026-10-17T15:00', kite: 7, surf: 4, windsurf: 6, bodyboard: 4, foil: 6 });
+    expect(isSemDados(all.kitesurf)).toBe(false);
+    expect(isSemDados(all.wakeboard)).toBe(false);
+    expect(isSemDados(null)).toBe(false);
   });
 });

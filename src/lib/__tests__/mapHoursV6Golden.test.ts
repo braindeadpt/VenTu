@@ -8,11 +8,14 @@ import { linhasAgora } from '@/lib/notaV6AgoraBuild';
 import { scoreAtHour } from '@/lib/mapHours';
 import { findCoveredHourIndex, hourKeyFromOpenMeteo, seriesTimeMs } from '@/lib/openMeteoTime';
 import { construirHoras, horaDeLinha, type LinhaForecast } from '@/lib/horaSpot';
-import { avaliaHoras } from '@/lib/modalidades';
+import { avaliaHorasSite } from '@/lib/modalidades';
+import { melhorTodos } from '@/lib/desportosV6';
 import { editorialDe, spotModalidadeDe } from '@/lib/spotEditorial';
 
 /**
- * Motor único (#218), PR 2: golden do `map-hours.json` com o v6.
+ * Motor único (#218), PR 2: golden do `map-hours.json` com o v6. Desde o PR 6
+ * as cinco modalidades v6 (kitesurf, surf, windsurf, bodyboard, foil = melhor
+ * vertente) e o `best` com a regra do «Todos» (`desportosV6.melhorTodos`).
  *
  * Para as fixtures da issue (Guincho, Nazaré, Lagoa de Albufeira e Meia Praia
  * no Algarve) sobre a fixture e2e (`tests/e2e/fixtures/data`, 08/09 08:45), as
@@ -31,6 +34,9 @@ const IDS = ['guincho', 'nazare', 'lagoa-albufeira', 'lagos'] as const;
 const SPORTS = [
   ['kitesurf', 'kite'],
   ['surf', 'surf'],
+  ['windsurf', 'windsurf'],
+  ['bodyboard', 'bodyboard'],
+  ['foil', 'foil'],
 ] as const;
 
 const ler = (f: string) => JSON.parse(fs.readFileSync(path.join(FIX, f), 'utf8'));
@@ -51,7 +57,7 @@ function construir() {
 describe('map-hours.json com o motor v6 (#218, PR 2) — golden das fixtures', () => {
   const { mh, now, conditions, sel, forecasts } = construir();
 
-  it('16 frames, kitesurf e surf com uma entrada por frame', () => {
+  it('16 frames, as cinco modalidades v6 com uma entrada por frame', () => {
     expect(mh.times).toHaveLength(16);
     for (const sp of sel) {
       for (const [sport] of SPORTS) expect(mh.spots[sp.id][sport]).toHaveLength(16);
@@ -59,7 +65,7 @@ describe('map-hours.json com o motor v6 (#218, PR 2) — golden das fixtures', (
     }
   });
 
-  it('kitesurf[i] e surf[i] = avaliaHoras(…) × 10 nas 16 frames: 0 diferenças', () => {
+  it('as cinco modalidades v6 = avaliaHorasSite(…) × 10 nas 16 frames: 0 diferenças', () => {
     const diferencas: string[] = [];
     let comparadas = 0;
     for (const sp of sel) {
@@ -78,7 +84,7 @@ describe('map-hours.json com o motor v6 (#218, PR 2) — golden das fixtures', (
             : { linhas, j };
         const h = horaDeLinha(alvo.linhas, alvo.j, local);
         for (const [sport, mod] of SPORTS) {
-          const [av] = avaliaHoras(spotModalidadeDe(ed), mod, [h]);
+          const [av] = avaliaHorasSite(spotModalidadeDe(ed), mod, [h]);
           const esperado = av.n == null ? null : av.n * 10;
           const real = mh.spots[sp.id][sport][i];
           comparadas++;
@@ -101,7 +107,7 @@ describe('map-hours.json com o motor v6 (#218, PR 2) — golden das fixtures', (
         const hora = horas.find((x) => x.t === l.time.slice(0, 16));
         if (!hora) return; // fora das 48 h da régua do spot
         for (const [sport, mod] of SPORTS) {
-          const [av] = avaliaHoras(spotModalidadeDe(ed), mod, [hora]);
+          const [av] = avaliaHorasSite(spotModalidadeDe(ed), mod, [hora]);
           const esperado = av.n == null ? null : av.n * 10;
           if (mh.spots[sp.id][sport][i] !== esperado) diferencas.push(`${sp.id} ${sport} #${i}`);
         }
@@ -110,19 +116,20 @@ describe('map-hours.json com o motor v6 (#218, PR 2) — golden das fixtures', (
     expect(diferencas).toEqual([]);
   });
 
-  it('de noite kitesurf e surf são null (não 0) e `best` continua um número (D5)', () => {
+  it('de noite as cinco v6 são null (não 0) e o `best` («Todos») também (PR 6)', () => {
     const noites = mh.times
       .map((t, i) => ({ i, h: Number(hourKeyFromOpenMeteo(t).slice(-2)) }))
       .filter(({ h }) => h === 23 || h === 2);
     expect(noites.length).toBeGreaterThanOrEqual(2);
     for (const sp of sel) {
       for (const { i } of noites) {
-        expect(mh.spots[sp.id].kitesurf[i]).toBeNull();
-        expect(mh.spots[sp.id].surf[i]).toBeNull();
+        for (const [sport] of SPORTS) expect(mh.spots[sp.id][sport][i]).toBeNull();
         expect(scoreAtHour(mh, sp.id, 'kitesurf', i)).toBeNull();
         expect(scoreAtHour(mh, sp.id, 'big-wave', i)).toBeNull();
-        expect(typeof mh.spots[sp.id].best[i]).toBe('number');
-        expect(Number.isFinite(scoreAtHour(mh, sp.id, 'all', i))).toBe(true);
+        expect(mh.spots[sp.id].best[i]).toBeNull();
+        expect(scoreAtHour(mh, sp.id, 'all', i)).toBeNull();
+        // SUP e wakeboard (motor antigo) continuam números
+        expect(typeof mh.spots[sp.id].sup[i]).toBe('number');
       }
     }
   });
@@ -139,4 +146,16 @@ describe('map-hours.json com o motor v6 (#218, PR 2) — golden das fixtures', (
       }
     }
   });
+
+  it('`best` = regra do «Todos» em todas as frames: máximo das v6 com nota (SUP / wakeboard não entram)', () => {
+    for (const sp of sel) {
+      mh.times.forEach((_, i) => {
+        const esperado = melhorTodos(sp, (sport) => mh.spots[sp.id][sport]?.[i]);
+        expect(mh.spots[sp.id].best[i], `${sp.id} #${i}`).toBe(esperado);
+        const v6 = SPORTS.map(([sport]) => mh.spots[sp.id][sport][i]).filter((v): v is number => v != null);
+        expect(mh.spots[sp.id].best[i]).toBe(v6.length ? Math.max(...v6) : null);
+      });
+    }
+  });
 });
+

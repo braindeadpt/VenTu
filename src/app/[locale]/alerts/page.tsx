@@ -9,6 +9,7 @@ import { buildPageMetadata } from '@/lib/seo';
 import { loadSpotListings } from '@/lib/load-spot-data';
 import { getScoreTokens } from '@/lib/sportScore';
 import { SPORT_LABELS } from '@/lib/sportRatings';
+import { desportosTodos } from '@/lib/desportosV6';
 
 const FEATURED_SPOTS = [
   { slug: 'guincho', namePt: 'Guincho', nameEn: 'Guincho' },
@@ -46,8 +47,10 @@ export default async function AlertsPage({
   const featured = FEATURED_SPOTS.map((f) => {
     const row = listings.find((l) => l.spot.slug === f.slug);
     if (!row) return { ...f, bestScore: null, bestSport: null };
+    // o «Todos» do spot (#218, PR 6): v6, ou SUP / wakeboard só num spot sem nenhuma v6
+    const contam = new Set<string>(desportosTodos(row.spot));
     const best = Object.entries(row.allScores).reduce(
-      (acc, [sport, s]) => (s.score > acc.score ? { sport, score: s.score } : acc),
+      (acc, [sport, s]) => (contam.has(sport) && s.score > acc.score ? { sport, score: s.score } : acc),
       { sport: 'surf', score: -1 },
     );
     return { ...f, bestScore: best.score, bestSport: best.sport };

@@ -3,6 +3,7 @@
 import { scoreToNota } from '@/lib/nota';
 import { getTranslation } from '@/lib/i18n';
 import { getSportLabel } from '@/lib/homepageSport';
+import { desportosTodos } from '@/lib/desportosV6';
 import { localizedSpotName, localizedSpotRegion } from '@/lib/localizedSpotText';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { Waves, Wind, Droplets, Eye, ArrowUpRight } from 'lucide-react';
@@ -84,8 +85,10 @@ export function SpotPopupContent({
   ) : null;
   const region = localizedSpotRegion(spot, locale);
 
+  // o desporto do «Todos» (#218, PR 6): v6, ou SUP / wakeboard só num spot sem nenhuma v6
+  const contam = new Set<SportType>(desportosTodos(spot));
   const topSport = (Object.entries(allScores) as [SportType, SportScore][])
-    .filter(([, s]) => s.score > 0)
+    .filter(([k, s]) => contam.has(k) && s.score > 0)
     .sort(([, a], [, b]) => b.score - a.score)[0];
   const topScore = topSport?.[1]?.score ?? 0;
   const topSportLabel = topScore > 0 && topSport

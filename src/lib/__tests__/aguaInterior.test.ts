@@ -8,9 +8,7 @@ import { describe, expect, it } from 'vitest';
 import { spots } from '@/lib/spots';
 import {
   classifyWind,
-  getAllSportScores,
-  getSportScore,
-  windQualityTier,
+  getSportScore as getSportScoreAntigo,
   windSportDirectionSafety,
   type Conditions,
 } from '@/lib/sportScore';
@@ -24,6 +22,15 @@ import { notaV6DeCondicoes } from '@/lib/notaV6Condicoes';
 import { ventoRelTxt, ondaRelTxt } from '@/lib/spotVeredicto';
 import { spotV6Copy } from '@/lib/translations/spotPage/v6';
 import type { Spot } from '@/types';
+import { v6 } from './motorV6Teste';
+
+/** A nota do site (#218 PR 6): v6 nas modalidades v6, motor antigo no SUP e no wakeboard. */
+function getSportScore(s: Spot, sport: SportType, c: Conditions) {
+  return sport === 'sup' || sport === 'wakeboard' ? getSportScoreAntigo(s, sport, c) : v6(s, sport, c);
+}
+function getAllSportScores(s: Spot, c: Conditions) {
+  return Object.fromEntries(DESPORTOS.map((sp) => [sp, getSportScore(s, sp, c)])) as Record<SportType, ReturnType<typeof getSportScore>>;
+}
 
 const INTERIOR = [
   'cabedelo-wakepark',
@@ -76,7 +83,7 @@ describe('água interior: o modelo', () => {
   });
 });
 
-describe('água interior: a direcção do vento não muda a nota (motor antigo)', () => {
+describe('água interior: a direcção do vento não muda a nota (nota do site)', () => {
   it.each(INTERIOR)('%s: a mesma nota para qualquer direcção, sem aviso offshore', (id) => {
     const s = porId(id);
     for (const sport of DESPORTOS) {
@@ -90,14 +97,12 @@ describe('água interior: a direcção do vento não muda a nota (motor antigo)'
     }
   });
 
-  it('classificação neutra: classifyWind null, banda de vento sem direcção nem tecto, sem cor de qualidade', () => {
+  it('classificação neutra: classifyWind null, banda de vento sem direcção nem tecto', () => {
     const s = porId('alqueva');
     for (const wd of RUMOS) {
       expect(classifyWind(s, wd)).toBeNull();
       const d = windSportDirectionSafety(s, wd);
       expect(d).toMatchObject({ direction: null, angleFromOnshore: null, dirFactor: 1, safety: null, scoreCap: null });
-      expect(windQualityTier(s, wd, 'kitesurf')).toBeNull();
-      expect(windQualityTier(s, wd, 'surf')).toBeNull();
     }
   });
 

@@ -47,6 +47,11 @@ interface SpotListCardProps {
   withImage?: boolean;
   spot?: Pick<Spot, 'slug' | 'type' | 'images' | 'name' | 'nameEn' | 'region'>;
   statusLine?: string;
+  /**
+   * Sem nota (ex. «Sem dados» numa modalidade v6 sem `notaV6`, #218 PR 6):
+   * o numeral passa a «—» e este rótulo substitui a banda.
+   */
+  semNota?: string | null;
   /** Active sea-state/wind IPMA warning — small badge on the card. */
   warning?: MapMarkerWarning | null;
   /** Offshore wind safety note (windSportDirectionSafety) for the scored sport. */
@@ -92,6 +97,7 @@ export default function SpotListCard({
   withImage = false,
   spot,
   statusLine,
+  semNota = null,
   warning,
   windSafety = null,
   waveCorrection,
@@ -104,7 +110,7 @@ export default function SpotListCard({
   // O score é a razão de existir do card — deixa de ser uma pílula de 11px no
   // canto e passa a ser a âncora visual, em numeral tabular grande.
   const scoreTokens = getScoreTokens(score);
-  const scoreTierLabel = getScoreTierLabel(scoreTokens.tier, locale);
+  const scoreTierLabel = semNota ?? getScoreTierLabel(scoreTokens.tier, locale);
   const hoverLine = getSpotListCardHoverLine(score, locale);
   // Sufixo honesto da altura: «(boia)» / «(viés regional)» quando a correcção
   // foi aplicada (a altura mostrada É a corrigida); '' para previsão pura.
@@ -219,7 +225,7 @@ export default function SpotListCard({
                 scoreTokens.text,
               )}
             >
-              {scoreToNota(score)}
+              {semNota ? '—' : scoreToNota(score)}
             </span>
             <span className={cn('mt-1 text-meta-sm font-medium', scoreTokens.text)}>
               {scoreTierLabel}

@@ -10,15 +10,18 @@
  * ficam e `rawToScoreInput` só as aplica se frescas. Essa linha vai para o
  * lugar da hora coberta da série, para o sentido da maré sair das vizinhas
  * como na página do spot, e o v6 avalia-a pelo caminho de sempre
- * (`notaUnica.notaHora` = `horaDeLinha` + `avaliaHoras`, tecto de segurança
- * incluído). É também a frame 0 do `map-hours.json` (kitesurf e surf).
+ * (`notaUnica.notaHora` = `horaDeLinha` + `avaliaHorasSite`, tecto de
+ * segurança incluído). É também a frame 0 do `map-hours.json` (as cinco
+ * modalidades v6: surf, kitesurf, windsurf, bodyboard, foil — PR 6).
  */
 import type { Spot } from '@/types';
 import type { LinhaForecast } from '@/lib/horaSpot';
 import { rawToScoreInput } from '@/lib/scoreConditions';
 import { findCoveredHourIndex, lisbonHourKeyFromDate } from '@/lib/openMeteoTime';
 import { notaHora, type SportScoreV6 } from '@/lib/notaUnica';
-import type { ModalidadeAgora, NotaV6Agora } from '@/lib/notaV6Agora';
+import { MODALIDADES_AGORA, type ModalidadeAgora, type NotaV6Agora } from '@/lib/notaV6Agora';
+import type { SportType } from '@/lib/sportRatings';
+import { melhorTodos } from '@/lib/desportosV6';
 
 const finito = (x: unknown): x is number => typeof x === 'number' && Number.isFinite(x);
 
@@ -101,25 +104,45 @@ export function linhasAgora(
 
 type SpotLocal = Pick<Spot, 'id' | 'lat' | 'lon' | 'coastOrientation'> & Partial<Pick<Spot, 'aguaInterior'>>;
 
-/** Nota v6 de kitesurf e surf nas linhas de `linhasAgora` (`null` sem linha). */
+/** Desporto do site de cada chave do `notaV6`. */
+const DESPORTO_DE: Record<ModalidadeAgora, SportType> = {
+  kite: 'kitesurf',
+  surf: 'surf',
+  windsurf: 'windsurf',
+  bodyboard: 'bodyboard',
+  foil: 'foil',
+};
+
+/** Nota v6 das cinco modalidades v6 (PR 6) nas linhas de `linhasAgora` (`null` sem linha). */
 export function notaV6DeLinhas(
   spot: SpotLocal,
   alvo: { linhas: readonly LinhaForecast[]; j: number } | null,
 ): NotaV6Agora | null {
   if (!alvo) return null;
-  const k = notaHora(spot, 'kitesurf', alvo.linhas, alvo.j) as SportScoreV6;
-  const s = notaHora(spot, 'surf', alvo.linhas, alvo.j) as SportScoreV6;
-  const out: NotaV6Agora = { t: String(alvo.linhas[alvo.j].time).slice(0, 16), kite: k.nota, surf: s.nota };
-  if (k.nota != null && k.directionSafety) out.seg = k.directionSafety;
-  if (k.nota != null && k.soProfissionais) out.sp = 1;
-  const sem: ModalidadeAgora[] = [];
-  if (k.semDados) sem.push('kite');
-  if (s.semDados) sem.push('surf');
+  const r = {} as Record<ModalidadeAgora, SportScoreV6>;
+  for (const m of MODALIDADES_AGORA) r[m] = notaHora(spot, DESPORTO_DE[m], alvo.linhas, alvo.j) as SportScoreV6;
+  const out: NotaV6Agora = {
+    t: String(alvo.linhas[alvo.j].time).slice(0, 16),
+    kite: r.kite.nota,
+    surf: r.surf.nota,
+    windsurf: r.windsurf.nota,
+    bodyboard: r.bodyboard.nota,
+    foil: r.foil.nota,
+  };
+  if (r.foil.nota != null && r.foil.vertente) out.vf = r.foil.vertente;
+  if (r.kite.nota != null && r.kite.directionSafety) out.seg = r.kite.directionSafety;
+  const sg: NonNullable<NotaV6Agora['sg']> = {};
+  for (const m of ['windsurf', 'foil'] as const) {
+    const seg = r[m].directionSafety;
+    if (r[m].nota != null && seg) sg[m] = seg;
+  }
+  if (sg.windsurf || sg.foil) out.sg = sg;
+  if (r.kite.nota != null && r.kite.soProfissionais) out.sp = 1;
+  const sem = MODALIDADES_AGORA.filter((m) => r[m].semDados);
   if (sem.length) out.sem = sem;
   const f: NotaV6Agora['f'] = {};
-  if (k.nota != null && k.factorsEn.length) f.kite = k.factorsEn;
-  if (s.nota != null && s.factorsEn.length) f.surf = s.factorsEn;
-  if (f.kite || f.surf) out.f = f;
+  for (const m of MODALIDADES_AGORA) if (r[m].nota != null && r[m].factorsEn.length) f[m] = r[m].factorsEn;
+  if (Object.keys(f).length) out.f = f;
   return out;
 }
 
@@ -165,7 +188,7 @@ export function escreverNotasV6Agora(
     }
     own.notaV6 = nv;
     escritos++;
-    if (nv.kite == null && nv.surf == null && !nv.sem) noite++;
+    if (MODALIDADES_AGORA.every((m) => nv[m] == null) && !nv.sem) noite++;
   }
   return { escritos, noite, semLinha };
 }
@@ -178,17 +201,19 @@ interface MapHoursLike {
 
 /**
  * Depois do merge das observações (que corre depois do `map-hours.json` no run
- * full), a frame 0 de kitesurf e surf passa a ser o `notaV6` acabado de gravar
+ * full), a frame 0 das modalidades v6 passa a ser o `notaV6` acabado de gravar
  * (× 10), para o «agora» da régua e o dos marcadores serem o mesmo número; o
- * `best` dessa frame é recalculado (máximo das modalidades com número, D5).
- * Só quando a frame 0 é a hora que contém `nowMs` (num run só de observações,
- * horas depois, a frame 0 já é passado e fica como está). Muta `file`;
- * devolve quantos spots mudaram.
+ * `best` dessa frame é recalculado com a regra do «Todos» (`melhorTodos`:
+ * máximo das v6 com nota, SUP / wakeboard só em spots sem modalidade v6;
+ * `null` = noite). Só quando a frame 0 é a hora que contém `nowMs` (num run só
+ * de observações, horas depois, a frame 0 já é passado e fica como está).
+ * Muta `file`; devolve quantos spots mudaram.
  */
 export function remendarFrame0(
   file: MapHoursLike,
   notas: Record<string, NotaV6Agora | undefined>,
   nowMs: number,
+  spotDe: (id: string) => Pick<Spot, 'type' | 'compatibleSports'> | undefined = () => undefined,
 ): number {
   if (!file?.times?.length || findCoveredHourIndex([file.times[0]], new Date(nowMs)) !== 0) return 0;
   let n = 0;
@@ -196,13 +221,12 @@ export function remendarFrame0(
     const nv = notas[id];
     if (!nv || !series) continue;
     let mudou = false;
-    for (const [sport, d] of [
-      ['kitesurf', 'kite'],
-      ['surf', 'surf'],
-    ] as const) {
-      const s = series[sport];
+    for (const d of MODALIDADES_AGORA) {
+      const s = series[DESPORTO_DE[d]];
       if (!Array.isArray(s) || !s.length) continue;
       const nota = nv[d];
+      // modalidade que o notaV6 não traz (ficheiro anterior ao PR 6): a frame fica
+      if (nota === undefined) continue;
       const v = nota == null ? null : nota * 10;
       if (s[0] !== v) {
         s[0] = v;
@@ -211,13 +235,9 @@ export function remendarFrame0(
     }
     if (!mudou) continue;
     if (Array.isArray(series.best) && series.best.length) {
-      let best = 0;
-      for (const [k, s] of Object.entries(series)) {
-        if (k === 'best' || !Array.isArray(s)) continue;
-        const v = s[0];
-        if (typeof v === 'number' && Number.isFinite(v) && v > best) best = v;
-      }
-      series.best[0] = best;
+      // spot desconhecido: a regra das v6
+      const spot = spotDe(id) ?? { type: 'surf', compatibleSports: ['surf'] };
+      series.best[0] = melhorTodos(spot, (sport) => series[sport]?.[0]);
     }
     n++;
   }

@@ -1,7 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import {
   getSportScore,
-  windQualityTier,
   windSportDirectionSafety,
   WIND_SPORT_OFFSHORE_SCORE_CAP,
   WIND_SPORT_SIDE_OFFSHORE_SCORE_CAP,
@@ -12,6 +11,15 @@ import { scoreToNota } from '@/lib/nota'
 import { getTranslation } from '@/lib/i18n'
 import { scoreBand } from '@/lib/verdict/scoreBand'
 import type { Spot } from '@/types'
+import type { SportType } from '@/lib/sportRatings'
+import { v6 } from './motorV6Teste'
+
+/*
+ * Motor único (#218), PR 6: os casos por modalidade de vento foram portados
+ * do `sportScore` antigo para o motor v6 (`notaHora`, hora de dia). O v6 tem
+ * a sua relação vento/praia (`ventoRel`: 30/65/110/150°) e o tecto de
+ * segurança desta banda (`windSportDirectionSafety`, 40/69/100/140°) por cima.
+ */
 
 /** Mock com orientação fixa (#179): não depende dos valores de spots.ts. */
 const MOCK_SPOT: Spot = {
@@ -88,50 +96,69 @@ describe('windSportDirectionSafety — bandas (costa a 270°)', () => {
   })
 })
 
-describe.each(['kitesurf', 'windsurf', 'foil'] as const)('%s a 20 kt limpos', (sport) => {
-  const score = (dir: number) => getSportScore(MOCK_SPOT, sport, clean20kt(dir))
+/** Nota v6 de uma modalidade de vento sobre o MOCK_SPOT (formato `SportScore`). */
+const v6Mock = (sport: SportType, c: Conditions) => v6(MOCK_SPOT, sport, c)
+
+describe.each(['kitesurf', 'windsurf', 'foil'] as const)('%s a 20 kt limpos (v6)', (sport) => {
+  const score = (dir: number) => v6Mock(sport, clean20kt(dir))
   const minOf = (dirs: readonly number[]) => Math.min(...dirs.map((d) => notaOf(score(d))))
   const maxOf = (dirs: readonly number[]) => Math.max(...dirs.map((d) => notaOf(score(d))))
+  const melhor = () => Math.max(minOf(DIRS.cross), minOf(DIRS.sideOnshore))
 
-  it('ordem: cross ≥ side-on > onshore > side-off > offshore', () => {
-    expect(minOf(DIRS.cross)).toBeGreaterThanOrEqual(maxOf(DIRS.sideOnshore))
-    expect(minOf(DIRS.sideOnshore)).toBeGreaterThan(maxOf(DIRS.onshore))
+  it('ordem: cross / side-on > onshore > side-off; offshore no fundo (kite e windsurf)', () => {
+    // o v6 prefere o lateral de mar (side-on) ao cruzado no windsurf e no foil; o antigo punha o cross à frente
+    expect(melhor()).toBeGreaterThan(maxOf(DIRS.onshore))
     expect(minOf(DIRS.onshore)).toBeGreaterThan(maxOf(DIRS.sideOffshore))
-    expect(minOf(DIRS.sideOffshore)).toBeGreaterThan(maxOf(DIRS.offshore))
+    if (sport !== 'foil') expect(minOf(DIRS.sideOffshore)).toBeGreaterThan(maxOf(DIRS.offshore))
   })
 
-  it('cross-shore = máximo da direcção, sem aviso', () => {
+  it('cross-shore sem aviso e ≥ 7', () => {
     const cross = score(0)
-    for (const d of [270, 315, 225, 45, 135, 90]) {
-      expect(cross.score).toBeGreaterThanOrEqual(score(d).score)
-    }
     expect(cross.directionSafety).toBeUndefined()
-  })
-
-  it('offshore → nota ≤ 2,5/10 (Fraco/Não dá) com aviso de deriva PT/EN', () => {
-    const off = score(90)
-    expect(notaOf(off)).toBeLessThanOrEqual(2.5)
-    expect(scoreToNota(off.score)).toBeLessThanOrEqual(3)
-    expect(['poor', 'closed']).toContain(scoreBand(off.score).key) // Fraco/Não dá
-    expect(off.directionSafety).toBe('offshore')
-    expect(off.warning).toBe('Vento offshore: perigo de deriva para o mar')
-    expect(off.warningEn).toBe(EN.offshore)
+    expect(cross.nota).toBeGreaterThanOrEqual(7)
   })
 
   it('side-offshore → menos que cross-shore e com aviso «só avançados»', () => {
     for (const d of DIRS.sideOffshore) {
       const so = score(d)
       expect(so.score).toBeLessThan(score(0).score)
+      expect(notaOf(so)).toBeLessThanOrEqual(WIND_SPORT_SIDE_OFFSHORE_SCORE_CAP)
       expect(so.directionSafety).toBe('side-offshore')
       expect(so.warning).toBe('Componente offshore: só avançados com barco de apoio')
       expect(so.warningEn).toBe(EN.sideOffshore)
     }
   })
+})
 
-  it('cap offshore também com vento marginal', () => {
-    const light = getSportScore(MOCK_SPOT, sport, { ...clean20kt(90), windSpeed: 13 * KT, windGust: 14 * KT })
+describe.each(['kitesurf', 'windsurf'] as const)('%s offshore (v6)', (sport) => {
+  it('offshore → nota ≤ 2,5/10 (Fraco/Não dá) com aviso de deriva PT/EN', () => {
+    const off = v6Mock(sport, clean20kt(90))
+    expect(notaOf(off)).toBeLessThanOrEqual(WIND_SPORT_OFFSHORE_SCORE_CAP)
+    expect(scoreToNota(off.score)).toBeLessThanOrEqual(3)
+    expect(['poor', 'closed']).toContain(scoreBand(off.score).key)
+    expect(off.directionSafety).toBe('offshore')
+    expect(off.warning).toBe('Vento offshore: perigo de deriva para o mar')
+    expect(off.warningEn).toBe(EN.offshore)
+  })
+
+  it('tecto offshore também com vento marginal', () => {
+    const light = v6Mock(sport, { ...clean20kt(90), windSpeed: 13 * KT, windGust: 14 * KT })
     expect(notaOf(light)).toBeLessThanOrEqual(WIND_SPORT_OFFSHORE_SCORE_CAP)
-    expect(light.directionSafety).toBe('offshore')
+  })
+})
+
+describe('foil offshore (melhor das três vertentes, decisão de 27/10)', () => {
+  it('wing e kitefoil levam o tecto offshore; ganha o surffoil (onda), sem aviso de vento', () => {
+    const off = v6Mock('foil', clean20kt(90))
+    expect(off.vertente).toBe('surffoil')
+    expect(off.directionSafety).toBeUndefined()
+    // o surffoil não tem tecto de vento: a nota sai da onda (0,5 m @ 8 s)
+    expect(off.nota).toBeLessThanOrEqual(5)
+  })
+
+  it('com vento cruzado ganha uma vertente de vento', () => {
+    expect(['wing', 'kitefoil']).toContain(v6Mock('foil', clean20kt(0)).vertente)
+    expect(v6Mock('foil', { ...clean20kt(0), windSpeed: 13 * KT, windGust: 14 * KT }).vertente).toBe('kitefoil')
   })
 })
 
@@ -140,8 +167,8 @@ function clean25kt(windDirection: number): Conditions {
   return { ...clean20kt(windDirection), windSpeed: 25 * KT, windGust: 27 * KT }
 }
 
-describe.each(['kitesurf', 'windsurf', 'foil'] as const)('%s a 25 kt limpos (#195)', (sport) => {
-  const score = (dir: number) => getSportScore(MOCK_SPOT, sport, clean25kt(dir))
+describe.each(['kitesurf', 'windsurf', 'foil'] as const)('%s a 25 kt limpos (#195, v6)', (sport) => {
+  const score = (dir: number) => v6Mock(sport, clean25kt(dir))
 
   it('side-offshore a 45° e a 135° → nota ≤ 5,0/10 (nunca Bom/Muito bom), com o aviso actual', () => {
     for (const d of DIRS.sideOffshore) {
@@ -158,16 +185,17 @@ describe.each(['kitesurf', 'windsurf', 'foil'] as const)('%s a 25 kt limpos (#19
   it('cross-shore continua > 5,0/10', () => {
     for (const d of DIRS.cross) expect(notaOf(score(d))).toBeGreaterThan(5.0)
   })
-
-  it('ordem: cross ≥ side-on > onshore > side-off > offshore', () => {
-    const minOf = (dirs: readonly number[]) => Math.min(...dirs.map((d) => notaOf(score(d))))
-    const maxOf = (dirs: readonly number[]) => Math.max(...dirs.map((d) => notaOf(score(d))))
-    expect(minOf(DIRS.cross)).toBeGreaterThanOrEqual(maxOf(DIRS.sideOnshore))
-    expect(minOf(DIRS.sideOnshore)).toBeGreaterThan(maxOf(DIRS.onshore))
-    expect(minOf(DIRS.onshore)).toBeGreaterThan(maxOf(DIRS.sideOffshore))
-    expect(minOf(DIRS.sideOffshore)).toBeGreaterThan(maxOf(DIRS.offshore))
-  })
 })
+
+/** allScores do site para uma linha: v6 nas modalidades v6, motor antigo no SUP e no wakeboard. */
+function allScoresV6(c: Conditions) {
+  return Object.fromEntries(
+    (['surf', 'kitesurf', 'windsurf', 'wakeboard', 'bodyboard', 'sup', 'foil'] as const).map((sp) => [
+      sp,
+      sp === 'sup' || sp === 'wakeboard' ? getSportScore(MOCK_SPOT, sp, c) : v6Mock(sp, c),
+    ]),
+  ) as Parameters<typeof getSpotScoreFactors>[0]['allScores']
+}
 
 describe('label de direcção alinhada com o score (#195)', () => {
   // 80° do onshore (costa a 270°): vento de 350° ou de 190°. O classifyWind
@@ -177,7 +205,7 @@ describe('label de direcção alinhada com o score (#195)', () => {
   it.each(['kitesurf', 'windsurf', 'foil'] as const)('%s: factor de direcção diz cross-shore', (sport) => {
     for (const d of AT_80_FROM_ONSHORE) {
       expect(windSportDirectionSafety(MOCK_SPOT, d).direction).toBe('cross-shore')
-      const s = getSportScore(MOCK_SPOT, sport, clean20kt(d))
+      const s = v6Mock(sport, clean20kt(d))
       expect(s.factorsEn).toContain('cross-shore')
       expect(s.factorsEn).not.toContain('side-onshore')
     }
@@ -185,10 +213,7 @@ describe('label de direcção alinhada com o score (#195)', () => {
 
   it.each(['kitesurf', 'windsurf', 'foil'] as const)('%s: linha «porquê» usa o termo cross das traduções', (sport) => {
     const c = { ...clean20kt(350), swellDirection: undefined }
-    const allScores = Object.fromEntries(
-      (['surf', 'kitesurf', 'windsurf', 'wakeboard', 'bodyboard', 'sup', 'foil'] as const)
-        .map((sp) => [sp, getSportScore(MOCK_SPOT, sp, c)]),
-    ) as Parameters<typeof getSpotScoreFactors>[0]['allScores']
+    const allScores = allScoresV6(c)
     const wind = (locale: string) =>
       getSpotScoreFactors({ spot: MOCK_SPOT, conditions: c, allScores, sport, locale })
         .find((f) => f.kind === 'wind')
@@ -198,33 +223,22 @@ describe('label de direcção alinhada com o score (#195)', () => {
 
   it('surf mantém o classifyWind (side-onshore → Cross-on)', () => {
     const c = { ...clean20kt(350), waveHeight: 1.5, wavePeriod: 12, windSpeed: 8 * KT, windGust: 9 * KT }
-    const allScores = Object.fromEntries(
-      (['surf', 'kitesurf', 'windsurf', 'wakeboard', 'bodyboard', 'sup', 'foil'] as const)
-        .map((sp) => [sp, getSportScore(MOCK_SPOT, sp, c)]),
-    ) as Parameters<typeof getSpotScoreFactors>[0]['allScores']
-    const segs = getSpotScoreFactors({ spot: MOCK_SPOT, conditions: c, allScores, sport: 'surf', locale: 'pt' })
+    const segs = getSpotScoreFactors({ spot: MOCK_SPOT, conditions: c, allScores: allScoresV6(c), sport: 'surf', locale: 'pt' })
     const wind = segs.find((f) => f.kind === 'wind')
     if (wind) expect(wind.label).toBe('Cross-on 8 kt')
-    expect(getSportScore(MOCK_SPOT, 'surf', c).factorsEn).not.toContain('cross-shore')
+    expect(v6Mock('surf', c).factorsEn).not.toContain('cross-shore')
   })
 })
 
 describe('desportos de onda não herdam o aviso', () => {
-  it('surf offshore continua bom e sem directionSafety', () => {
-    const surf = getSportScore(MOCK_SPOT, 'surf', { ...clean20kt(90), waveHeight: 1.5, wavePeriod: 12, windSpeed: 8 * KT })
+  it('surf com terral continua bom e sem directionSafety', () => {
+    const surf = v6Mock('surf', { ...clean20kt(90), waveHeight: 1.5, wavePeriod: 12, windSpeed: 8 * KT })
     expect(surf.directionSafety).toBeUndefined()
+    expect(surf.nota).toBeGreaterThanOrEqual(7)
   })
 })
 
-describe('windQualityTier (tingimento da relação vento/costa)', () => {
-  it('desportos de vento: cross/side-on bons, onshore razoável, offshore mau', () => {
-    expect(windQualityTier(MOCK_SPOT, 0, 'kitesurf')).toBe('good')
-    expect(windQualityTier(MOCK_SPOT, 315, 'windsurf')).toBe('good')
-    expect(windQualityTier(MOCK_SPOT, 270, 'foil')).toBe('fair')
-    expect(windQualityTier(MOCK_SPOT, 45, 'kitesurf')).toBe('poor')
-    expect(windQualityTier(MOCK_SPOT, 90, 'kitesurf')).toBe('poor')
-  })
-
+describe('mensagens', () => {
   it('PT é a língua primária das mensagens', () => {
     expect(PT.offshore).toBe('Vento offshore: perigo de deriva para o mar')
     expect(PT.sideOffshore).toBe('Componente offshore: só avançados com barco de apoio')

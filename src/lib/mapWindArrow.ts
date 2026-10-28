@@ -2,16 +2,14 @@
  * VenTu spot marker — score pin + integrated wind ring.
  *
  * Wind ring: thin arc on the pin rim (no external arrows) coloured by
- * offshore / onshore / cross relative to coastOrientation.
+ * offshore / onshore / cross relative to coastOrientation — pela classificação
+ * `ventoRel` do motor v6 (`ventoRelAnel.ts`, #218 PR 6): mar + lateral de mar
+ * = onshore, lateral = cross, lateral de terra + terra = offshore.
  */
 
 import { scoreToNota } from '@/lib/nota';
-import {
-  getCardinalLabel,
-  getWindRelationLabel,
-  getWindRelationToCoast,
-  type WindRelation,
-} from '@/lib/wind';
+import { getCardinalLabel, getWindRelationLabel, type WindRelation } from '@/lib/wind';
+import { relacaoAnelVento } from '@/lib/ventoRelAnel';
 import { warningLevelLabel } from '@/lib/ipmaWarnings';
 import { MAP_NIGHT_FILL, MAP_NIGHT_INK, MAP_NIGHT_MOON_PATH, type MapNightCopy } from '@/lib/mapNight';
 
@@ -92,8 +90,8 @@ export function windRingRelation(
   windFromDeg: number,
   coastOrientation?: number,
 ): WindRelation | null {
-  if (coastOrientation === undefined) return null;
-  return getWindRelationToCoast(windFromDeg, coastOrientation);
+  // a classificação do motor v6 (`ventoRel`), não os 67,5° / 112,5° de `getWindRelationToCoast`
+  return relacaoAnelVento(windFromDeg, coastOrientation);
 }
 
 export function windRingRelationClass(relation: WindRelation | null): string {

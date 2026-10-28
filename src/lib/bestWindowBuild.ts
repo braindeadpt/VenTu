@@ -5,22 +5,27 @@
  * `resolveBestWindowForSport` de `bestWindowToday.ts`.
  *
  * Motor único (#218), PR 5:
- * - Kitesurf e surf (e a Big Wave, que lê o surf, D8): a janela sai das notas
- *   v6 hora a hora (`notaUnica.notaHora` = `horaDeLinha` + `avaliaHoras`, o
+ * - Surf, kitesurf, windsurf, bodyboard e foil (PR 6; a Big Wave lê o surf,
+ *   D8): a janela sai das notas v6 hora a hora (`notaUnica.notaHora` =
+ *   `horaDeLinha` + `avaliaHorasSite`, o
  *   mesmo caminho da régua do spot e das frames do `map-hours.json`), pela
  *   regra de `janelasV6.ts` (horas contínuas ≥ 7 · Bom; a noite parte a
  *   janela). As horas são as da régua: a partir da hora que contém «agora».
  *   Na hora corrente vale a linha «agora» de D4 (`conditions.json[id].notaV6`,
  *   a mesma da hora 0 da régua e da frame 0 do mapa) quando o `notaV6` é dessa
  *   hora. Acabou a heurística E3 (`computeMagicWindows` sem `scores`) nestas
- *   duas modalidades.
- * - As outras modalidades ficam como estavam (D5, até ao PR 6): heurística
- *   para «hoje» e `getHourlyScores` para as 48 h.
+ *   modalidades.
+ * - SUP e wakeboard (motor antigo) ficam como estavam: heurística para «hoje»
+ *   e `getHourlyScores` para as 48 h.
+ * - A melhor janela de hoje do spot (`bestWindowToday`) escolhe entre os
+ *   desportos do «Todos» (`desportosV6.desportosTodos`): as escalas dos dois
+ *   motores não se comparam.
  */
 import { computeMagicWindows, type HourlyCondition } from '@/lib/magicWindows';
 import { getCompatibleSports, type SportType } from '@/lib/sportRatings';
 import { getHourlyScores, type Conditions } from '@/lib/sportScore';
 import { modalidadeDe, notaHora, type SportScoreV6 } from '@/lib/notaUnica';
+import { DESPORTO_PARA_AGORA, desportosTodos, isDesportoMotorAntigo } from '@/lib/desportosV6';
 import { findCoveredHourIndex, seriesTimeMs } from '@/lib/openMeteoTime';
 import { melhorJanelaV6 } from '@/lib/janelasV6';
 import { buildNowMs } from '@/lib/buildClock';
@@ -84,12 +89,12 @@ export function indicesRegua(forecast: readonly ForecastHourRow[], hours: number
 
 /**
  * Nota v6 (inteira, ou `null` = noite / sem dados) de cada índice `js` da
- * série, para kitesurf ou surf. Na hora que contém `nowMs`, o `notaV6` «agora»
+ * série, para um desporto v6. Na hora que contém `nowMs`, o `notaV6` «agora»
  * (D4) quando é dessa hora — o mesmo número da hora 0 da régua.
  */
 export function notasV6Horas(
   spot: Pick<Spot, 'id' | 'lat' | 'lon' | 'coastOrientation'> & Partial<Pick<Spot, 'aguaInterior'>>,
-  sport: 'kitesurf' | 'surf',
+  sport: SportType,
   forecast: readonly ForecastHourRow[],
   js: readonly number[],
   nowMs: number,
@@ -100,10 +105,11 @@ export function notasV6Horas(
     forecast.map((r) => String(r?.time ?? '')),
     new Date(nowMs),
   );
-  const agoraOk = notaV6 != null && jAgora >= 0 && String(forecast[jAgora].time).slice(0, 16) === notaV6.t;
-  const d = sport === 'kitesurf' ? 'kite' : 'surf';
+  const d = DESPORTO_PARA_AGORA[sport];
+  // o «agora» do pipeline só quando é desta hora e traz a modalidade (um ficheiro anterior ao PR 6 não traz as novas)
+  const agora = d && notaV6 != null && jAgora >= 0 && String(forecast[jAgora].time).slice(0, 16) === notaV6.t ? notaV6[d] : undefined;
   return js.map((j) => {
-    if (agoraOk && j === jAgora) return notaV6![d];
+    if (agora !== undefined && j === jAgora) return agora;
     return (notaHora(spot, sport, linhas, j) as SportScoreV6).nota;
   });
 }
@@ -111,7 +117,7 @@ export function notasV6Horas(
 /** Melhor janela v6 nas horas `js` da série → etiquetas da primeira e da última hora. */
 function janelaV6(
   spot: SpotJanela,
-  sport: 'kitesurf' | 'surf',
+  sport: SportType,
   forecast: readonly ForecastHourRow[],
   js: readonly number[],
   nowMs: number,
@@ -123,14 +129,12 @@ function janelaV6(
   return { startIso: String(forecast[js[w.a]].time), endIso: String(forecast[js[w.z]].time), score: w.score };
 }
 
-const v6Sport = (sport: SportType): 'kitesurf' | 'surf' | null => {
-  const d = modalidadeDe(sport);
-  return d === 'kite' ? 'kitesurf' : d === 'surf' ? 'surf' : null;
-};
+const v6Sport = (sport: SportType): SportType | null => (modalidadeDe(sport) ? sport : null);
 
 /**
  * Melhor janela de HOJE por desporto (próximas 24 h, horas da régua).
- * Kitesurf/surf: v6. Outras: heurística (D5).
+ * Modalidades v6: v6. SUP e wakeboard: heurística. A melhor do spot escolhe
+ * só entre os desportos do «Todos».
  */
 export function computeBestWindowsForSpot(
   spot: SpotJanela,
@@ -144,6 +148,7 @@ export function computeBestWindowsForSpot(
 
   const hourly = filterForecastNextHours(forecast, 24, nowMs);
   const js = indicesRegua(forecast, 24, nowMs);
+  const contam = new Set<SportType>(desportosTodos(spot));
 
   for (const sport of getCompatibleSports(spot as Spot)) {
     let slice: { start: number; end: number; score: number } | null = null;
@@ -160,7 +165,7 @@ export function computeBestWindowsForSpot(
     }
     if (!slice) continue;
     bestWindowsBySport[sport] = slice;
-    if (!bestWindowToday || slice.score > bestWindowToday.score) bestWindowToday = { ...slice, sport };
+    if (contam.has(sport) && (!bestWindowToday || slice.score > bestWindowToday.score)) bestWindowToday = { ...slice, sport };
   }
 
   return { bestWindowToday, bestWindowsBySport };
@@ -168,8 +173,8 @@ export function computeBestWindowsForSpot(
 
 /**
  * Melhor janela das próximas 48 h por desporto (as 48 horas da régua do spot).
- * Kitesurf/surf: v6 (horas ≥ 7, a noite parte). Outras: `getHourlyScores` +
- * `computeMagicWindows` (D5). Bake com o relógio da build; a UI tira as que
+ * Modalidades v6: v6 (horas ≥ 7, a noite parte). SUP e wakeboard:
+ * `getHourlyScores` + `computeMagicWindows`. Bake com o relógio da build; a UI tira as que
  * já acabaram no relógio de quem lê.
  */
 export function computeUpcomingWindowsForSpot(
@@ -191,7 +196,7 @@ export function computeUpcomingWindowsForSpot(
       if (w) out[sport] = w;
       continue;
     }
-    if (!hourly.length) continue;
+    if (!hourly.length || !isDesportoMotorAntigo(sport)) continue;
     const scores = getHourlyScores(spot, sport, hourly, currentConditions);
     const top = computeMagicWindows(hourly, sport, spot.bestWind || '', scores)[0];
     if (!top) continue;

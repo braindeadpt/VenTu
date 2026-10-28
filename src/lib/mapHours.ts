@@ -38,10 +38,12 @@ export interface MapTideCurve {
 }
 
 /**
- * Série de uma modalidade: score 0–100 por passo. Kitesurf e surf vêm do motor
- * v6 (#218, PR 2): nota × 10, inteira, e `null` quando o v6 não dá nota (noite
- * ou sem dados nessa hora). As restantes modalidades e `best` são sempre
- * números (motor antigo, D5).
+ * Série de uma modalidade: score 0–100 por passo. Surf, kitesurf, windsurf,
+ * bodyboard e foil vêm do motor v6 (#218, PRs 2 e 6): nota × 10, inteira, e
+ * `null` quando o v6 não dá nota (noite ou sem dados nessa hora). SUP e
+ * wakeboard são sempre números (motor antigo). `best` (o «Todos») é o máximo
+ * das v6 com nota — `null` quando estão todas de noite — ou, num spot sem
+ * modalidade v6, o do SUP / wakeboard.
  */
 export type MapHoursSeries = Array<number | null>;
 

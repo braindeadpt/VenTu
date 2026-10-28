@@ -6,8 +6,8 @@ import { useParams } from 'next/navigation';
 import { Heart, ArrowLeft, Share2, Check, LogIn } from 'lucide-react';
 import { spots } from '@/lib/spots';
 import { fetchMarineData, getCurrentConditions } from '@/lib/openmeteo';
-import { getSportScore } from '@/lib/sportScore';
-import { notaV6DoSpot, scoreAgoraComV6 } from '@/lib/notaV6Agora';
+import { isSemDados, notaV6DoSpot, scoreAgoraComV6 } from '@/lib/notaV6Agora';
+import { getTranslation } from '@/lib/i18n';
 import type { SportType } from '@/lib/sportRatings';
 import { SPORT_LABELS } from '@/lib/sportRatings';
 import { getAssetPath } from '@/lib/paths';
@@ -42,6 +42,7 @@ export default function FavoritesClient() {
   const loc = (params?.locale as string) || 'pt';
   const pt = loc === 'pt';
   const locale = (loc === 'en' ? 'en' : 'pt') as 'pt' | 'en';
+  const semDadosTxt = getTranslation(loc).map.noData;
   const {
     session,
     authLoading,
@@ -52,7 +53,7 @@ export default function FavoritesClient() {
     requestLogin,
   } = useAuth();
   const [conditions, setConditions] = useState<Record<string, SpotConditions>>({});
-  const [sportScores, setSportScores] = useState<Record<string, { score: number; rating: string; ratingEn: string }>>({});
+  const [sportScores, setSportScores] = useState<Record<string, { score: number; rating: string; ratingEn: string; semDados?: true }>>({});
   const [shareCopied, setShareCopied] = useState(false);
   // The Supabase-configured state is baked at build time, so a keyless build
   // and a keyed build disagree about it between server render and the first
@@ -70,7 +71,7 @@ export default function FavoritesClient() {
 
     const fetchAll = async () => {
       const results: Record<string, SpotConditions> = {};
-      const scores: Record<string, { score: number; rating: string; ratingEn: string }> = {};
+      const scores: Record<string, { score: number; rating: string; ratingEn: string; semDados?: true }> = {};
 
       try {
         const response = await fetch(getAssetPath('/data/conditions.json'), { cache: 'no-store' });
@@ -115,7 +116,8 @@ export default function FavoritesClient() {
             const current = getCurrentConditions(data);
             results[id] = current;
             const primarySport = (spot.compatibleSports?.[0] || spot.type) as SportType;
-            scores[id] = getSportScore(spot, primarySport, current);
+            // sem `notaV6` do pipeline: v6 «sem dados», SUP / wakeboard no motor antigo (#218, PR 6)
+            scores[id] = scoreAgoraComV6(spot, primarySport, current, null);
           } catch {
             /* ignore */
           }
@@ -264,6 +266,8 @@ export default function FavoritesClient() {
             {favoriteSpots.map((spot, index) => {
               const current = conditions[spot.id];
               const score = sportScores[spot.id]?.score ?? 0;
+              // v6 sem `notaV6` (live Open-Meteo): «Sem dados», não «0 · N/A» (#218 PR 6)
+              const semDados = isSemDados(sportScores[spot.id]);
               const primarySport = (spot.compatibleSports?.[0] || spot.type) as SportType;
               const sportLabel = SPORT_LABELS[primarySport]
                 ? pt
@@ -292,8 +296,11 @@ export default function FavoritesClient() {
                     rank={index + 1}
                     withImage
                     spot={spot}
+                    semNota={semDados ? semDadosTxt : null}
                     statusLine={
-                      current
+                      semDados
+                        ? semDadosTxt
+                        : current
                         ? pt
                           ? sportScores[spot.id]?.rating
                           : sportScores[spot.id]?.ratingEn

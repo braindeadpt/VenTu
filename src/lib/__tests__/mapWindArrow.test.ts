@@ -50,6 +50,10 @@ describe('wind ring marker', () => {
     expect(windRingRelation(90, 270)).toBe('offshore');
     expect(windRingRelation(270, 270)).toBe('onshore');
     expect(windRingRelation(0, 270)).toBe('cross');
+    // #218 PR 6: limites do `ventoRel` do motor v6 (65° / 110°), não 67,5° / 112,5°
+    expect(windRingRelation(270 + 66, 270)).toBe('cross');
+    expect(windRingRelation(270 - 111, 270)).toBe('offshore');
+    expect(windRingRelation(90, undefined)).toBeNull();
     expect(windRingRelationClass('offshore')).toBe('ventu-wind-ring--offshore');
     expect(windRingRelationClass('onshore')).toBe('ventu-wind-ring--onshore');
     expect(windRingRelationClass('cross')).toBe('ventu-wind-ring--cross');

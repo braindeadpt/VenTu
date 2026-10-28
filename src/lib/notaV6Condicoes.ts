@@ -15,7 +15,7 @@
  */
 import type { Spot } from '@/types';
 import { horaDeLinha, type LinhaForecast } from '@/lib/horaSpot';
-import { MOTOR, MODALIDADES_DEF, tectoSeguranca, type DefModalidade } from '@/lib/modalidades';
+import { avaliaHorasSite, MOTOR, MODALIDADES_DEF, tectoSeguranca, type DefModalidade } from '@/lib/modalidades';
 import { editorialDe, spotModalidadeDe } from '@/lib/spotEditorial';
 import { rawToScoreInput } from '@/lib/scoreConditions';
 import { windSportDirectionSafety } from '@/lib/sportScore';
@@ -26,7 +26,8 @@ export const DESPORTO_V6: Record<string, string> = {
   kitesurf: 'kite',
   kite: 'kite',
   windsurf: 'windsurf',
-  foil: 'kitefoil',
+  // o foil é a melhor das três vertentes (wing, kitefoil, surffoil) — #218 PR 6, decisão do Pedro 27/10
+  foil: 'foil',
   surf: 'surf',
   bodyboard: 'bodyboard',
   wakeboard: 'wakeboard',
@@ -35,6 +36,7 @@ export const DESPORTO_V6: Record<string, string> = {
 export function chaveV6(sport: string): string | null {
   const k = DESPORTO_V6[sport];
   if (!k) return null;
+  if (k === 'foil') return k;
   const d = MODALIDADES_DEF.def[k] as DefModalidade | undefined;
   return d && (d.logica === 'vento' || d.logica === 'onda' || d.logica === 'plana') ? k : null;
 }
@@ -84,6 +86,11 @@ export function notaV6DeCondicoes(
   const ed = editorialDe(spot);
   const sp = spotModalidadeDe(ed);
   const h = horaDeLinha([linha], 0, { lat: spot.lat, lon: spot.lon, praiaVirada: ed.praiaVirada });
+  if (k === 'foil') {
+    // o mesmo caminho da nota do site (`notaUnica.notaHora`): vertente vencedora, tecto incluído
+    const [a] = avaliaHorasSite(sp, 'foil', [h]);
+    return { n: a.n, nMotor: a.nMotor, t };
+  }
   const r = MOTOR.para(sp).avalia(k, h);
   const def = MODALIDADES_DEF.def[k] as DefModalidade;
   if (def.logica !== 'vento' || r.n == null) return { n: r.n, nMotor: r.n, t };

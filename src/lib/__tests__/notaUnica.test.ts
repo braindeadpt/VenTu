@@ -6,13 +6,12 @@ import { getSportScore, type SportScore } from '@/lib/sportScore';
 import { rawToScoreInput } from '@/lib/scoreConditions';
 import { notaTier, scoreTierFromScore, scoreToNota, SCORE_TIER_THRESHOLDS } from '@/lib/nota';
 import { getTranslation } from '@/lib/i18n';
-import { avaliaHoras, bandaDe, type AvaliacaoHora, type HoraModalidade } from '@/lib/modalidades';
+import { avaliaHoras, avaliaHorasSite, bandaDe, melhorVertente, VERTENTES_FOIL, type AvaliacaoHora, type HoraModalidade } from '@/lib/modalidades';
+import { horaDeLinha } from '@/lib/horaSpot';
 import { editorialDe, spotModalidadeDe } from '@/lib/spotEditorial';
 import { getSpotScoreFactors } from '@/lib/spotScoreFactors';
 import type { LinhaForecast } from '@/lib/horaSpot';
 import {
-  bandaDoScore,
-  comparaHora,
   modalidadeDe,
   notaHora,
   sportScoreDeV6,
@@ -44,10 +43,13 @@ const hora = (o: Partial<HoraModalidade>): HoraModalidade => ({
 const adapta = (d: 'kite' | 'surf', h: HoraModalidade) => sportScoreDeV6(avaliaHoras(sp, d, [h])[0], h, d, PV);
 
 describe('notaUnica — modalidadeDe', () => {
-  it('só kitesurf e surf passam pelo v6; o resto fica no sportScore (D5)', () => {
+  it('PR 6: surf, kitesurf, windsurf, bodyboard e foil no v6; só SUP e wakeboard no sportScore', () => {
     expect(modalidadeDe('kitesurf')).toBe('kite');
     expect(modalidadeDe('surf')).toBe('surf');
-    for (const s of ['windsurf', 'bodyboard', 'foil', 'wakeboard', 'sup'] as SportType[]) expect(modalidadeDe(s)).toBeNull();
+    expect(modalidadeDe('windsurf')).toBe('windsurf');
+    expect(modalidadeDe('bodyboard')).toBe('bodyboard');
+    expect(modalidadeDe('foil')).toBe('foil');
+    for (const s of ['wakeboard', 'sup'] as SportType[]) expect(modalidadeDe(s)).toBeNull();
   });
 });
 
@@ -60,7 +62,7 @@ describe('notaUnica — sportScoreDeV6 (adaptador para o formato SportScore)', (
       expect(s.score).toBe(n * 10);
       expect(scoreToNota(s.score)).toBe(n);
       expect(scoreTierFromScore(s.score)).toBe(notaTier(n));
-      expect(bandaDoScore(s.score)).toBe(bandaDe(n));
+      expect(bandaDe(scoreToNota(s.score))).toBe(bandaDe(n));
       // «Só ON» do /mapa (MAP_ON_THRESHOLD = 65) ⇔ nota ≥ 7
       expect(s.score >= SCORE_TIER_THRESHOLDS.good).toBe(n >= 7);
       if (n === 0) expect(s.rating).toBe('N/A');
@@ -146,29 +148,70 @@ describe('notaUnica — notaHora', () => {
     { time: '2026-09-08T15:00+01:00', windSpeed: 10, windGust: 13, windDirection: 340, waveHeight: 1.3, wavePeriod: 12, waveDirection: 292, waterTemp: 18, tideHeight: 0.6 },
   ];
 
-  it('kitesurf e surf: a nota é a do v6 (a mesma da página do spot)', () => {
-    for (const sport of ['kitesurf', 'surf'] as const) {
+  it('as cinco modalidades v6: a nota é a do v6 (a mesma da página do spot)', () => {
+    const ed = editorialDe(guincho);
+    const h = horaDeLinha(linhas, 1, { lat: guincho.lat, lon: guincho.lon, praiaVirada: ed.praiaVirada });
+    for (const [sport, d] of [
+      ['kitesurf', 'kite'],
+      ['surf', 'surf'],
+      ['windsurf', 'windsurf'],
+      ['bodyboard', 'bodyboard'],
+    ] as const) {
       const r = notaHora(guincho, sport, linhas, 1) as SportScoreV6;
       expect(r.motor).toBe('v6');
-      const c = comparaHora(guincho, sport, linhas, 1);
-      expect(c.v6.nota).toBe(r.nota);
-      expect(c.t).toBe('2026-09-08T14:00');
+      expect(r.nota).toBe(avaliaHoras(spotModalidadeDe(ed), d, [h])[0].n);
     }
   });
 
-  it('as outras modalidades ficam no sportScore, com o mesmo número de hoje', () => {
-    for (const sport of ['windsurf', 'bodyboard', 'foil', 'wakeboard', 'sup'] as SportType[]) {
+  it('foil: a melhor das três vertentes (wing, kitefoil, surffoil) nessa hora', () => {
+    const ed = editorialDe(guincho);
+    const h = horaDeLinha(linhas, 1, { lat: guincho.lat, lon: guincho.lon, praiaVirada: ed.praiaVirada });
+    const notas = VERTENTES_FOIL.map((v) => avaliaHoras(spotModalidadeDe(ed), v, [h])[0].n ?? -1);
+    const r = notaHora(guincho, 'foil', linhas, 1) as SportScoreV6;
+    expect(r.motor).toBe('v6');
+    expect(r.nota).toBe(Math.max(...notas));
+    expect(r.vertente).toBe(VERTENTES_FOIL[notas.indexOf(Math.max(...notas))]);
+  });
+
+  it('SUP e wakeboard ficam no sportScore, com o mesmo número de hoje', () => {
+    for (const sport of ['wakeboard', 'sup'] as const) {
       const r = notaHora(guincho, sport, linhas, 1);
       expect(r.motor).toBe('antigo');
       expect(r.score).toBe(getSportScore(guincho, sport, rawToScoreInput(linhas[1] as never)).score);
     }
   });
+});
 
-  it('comparaHora: o lado «antigo» é o sportScore sobre a mesma linha', () => {
-    const c = comparaHora(guincho, 'surf', linhas, 2);
-    const old = getSportScore(guincho, 'surf', rawToScoreInput(linhas[2] as never)).score;
-    expect(c.antigo.score).toBe(old);
-    expect(c.antigo.nota).toBe(scoreToNota(old));
+describe('notaUnica — foil (melhor vertente, decisão do Pedro 27/10)', () => {
+  const av = (n: number | null, extra: Partial<AvaliacaoHora> = {}): AvaliacaoHora => ({
+    n, f: { vento: 0, onda: 0, mare: 0 }, nMotor: n, seguranca: null, ...extra,
+  });
+
+  it('melhorVertente: a nota mais alta ganha; empate → a primeira (wing, kitefoil, surffoil)', () => {
+    expect(melhorVertente([av(3), av(6), av(5)])).toMatchObject({ n: 6, chave: 'kitefoil' });
+    expect(melhorVertente([av(4), av(4), av(4)])).toMatchObject({ n: 4, chave: 'wing' });
+    expect(melhorVertente([av(null), av(null), av(2)])).toMatchObject({ n: 2, chave: 'surffoil' });
+  });
+
+  it('melhorVertente sem nota: noite (não «sem dados») se pelo menos uma vertente tem dados', () => {
+    expect(melhorVertente([av(null, { semDados: true }), av(null), av(null)]).semDados).toBeFalsy();
+    expect(melhorVertente([av(null, { semDados: true }), av(null, { semDados: true }), av(null, { semDados: true })]).semDados).toBe(true);
+  });
+
+  it('avaliaHorasSite(foil) = máximo hora a hora de avaliaHoras nas três vertentes', () => {
+    const horas = [hora({ w: 6, g: 8 }), hora({ w: 14, g: 16 }), hora({ w: 22, g: 25 }), hora({ w: 4, hs: 1.4, tp: 12 })];
+    const site = avaliaHorasSite(sp, 'foil', horas);
+    const por = VERTENTES_FOIL.map((v) => avaliaHoras(sp, v, horas));
+    site.forEach((a, i) => {
+      const ns = por.map((p) => p[i].n ?? -1);
+      expect(a.n ?? -1).toBe(Math.max(...ns));
+    });
+  });
+
+  it('de noite o foil não tem nota (marca noite)', () => {
+    const r = sportScoreDeV6(avaliaHorasSite(sp, 'foil', [hora({ sunEl: -10 })])[0], hora({ sunEl: -10 }), 'wing', PV);
+    expect(r.score).toBe(0);
+    expect(r.noite).toBe(true);
   });
 });
 

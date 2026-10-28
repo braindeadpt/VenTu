@@ -8,6 +8,7 @@ import type { Spot } from '@/types';
 import { fetchMarineData, getCurrentConditions, getForecastData } from '@/lib/openmeteo';
 import { getRelevantSports, type SportScore } from '@/lib/sportScore';
 import { allScoresComV6, notaV6DoSpot } from '@/lib/notaV6Agora';
+import { desportoTodos } from '@/lib/desportosV6';
 import type { SportType } from '@/lib/sportRatings';
 import { SPORT_LABELS } from '@/lib/sportRatings';
 import { getTranslation } from '@/lib/i18n';
@@ -182,9 +183,8 @@ export default function SpotDetailClient({
       return sportFromUrl;
     }
     if (!forceLive && initialData) {
-      const best = (
-        Object.entries(initialData.allScores) as [SportType, { score: number }][]
-      ).sort(([, a], [, b]) => b.score - a.score)[0]?.[0];
+      // o desporto do «Todos» (#218, PR 6): sem misturar as escalas dos dois motores
+      const best = desportoTodos(initialData.spot, initialData.allScores);
       if (best) return best;
     }
     return initialSport;
@@ -363,9 +363,7 @@ export default function SpotDetailClient({
               // separador inteiro (scores/tabela/herói) = CLS ~0.6 no CI;
               // mantém-se a escolha do bake — os dados actualizam-se dentro
               // do separador, sem salto.
-              const bestSport = (
-                Object.entries(allScores) as [SportType, { score: number }][]
-              ).sort(([, a], [, b]) => b.score - a.score)[0]?.[0];
+              const bestSport = desportoTodos(spot, allScores);
               if (bestSport) setSelectedSport(bestSport);
             }
             return;
@@ -432,9 +430,7 @@ export default function SpotDetailClient({
         if (sportFromUrl && allScores[sportFromUrl]?.score > 0) {
           setSelectedSport(sportFromUrl);
         } else if (!initialData || forceLive) {
-          const bestSport = (
-            Object.entries(allScores) as [SportType, { score: number }][]
-          ).sort(([, a], [, b]) => b.score - a.score)[0]?.[0];
+          const bestSport = desportoTodos(spot, allScores);
           if (bestSport) setSelectedSport(bestSport);
         }
       } catch (e) {

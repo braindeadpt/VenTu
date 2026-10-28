@@ -6,6 +6,7 @@ import {
 import type { GridSpotData } from '@/lib/gridSpotFilters';
 import type { GridSportFilter, SportType } from '@/lib/sportRatings';
 import { scoreToNota } from '@/lib/nota';
+import { scoreTodos } from '@/lib/desportosV6';
 import { localizedSpotName } from '@/lib/localizedSpotText';
 
 export function getScoreSport(sport: GridSportFilter): SportType | null {
@@ -16,7 +17,7 @@ export function getScoreSport(sport: GridSportFilter): SportType | null {
 export function onCount(sorted: GridSpotData[], selectedSport: GridSportFilter): number {
   return sorted.filter(d => {
     if (selectedSport === 'all') {
-      return Math.max(...Object.values(d.allScores).map(s => s.score || 0)) >= 70;
+      return scoreTodos(d.spot, d.allScores) >= 70;
     }
     const scoreKey = getScoreSport(selectedSport)!;
     return (d.allScores[scoreKey]?.score || 0) >= 70;
@@ -26,7 +27,7 @@ export function onCount(sorted: GridSpotData[], selectedSport: GridSportFilter):
 export function marginalCount(sorted: GridSpotData[], selectedSport: GridSportFilter): number {
   return sorted.filter(d => {
     if (selectedSport === 'all') {
-      const best = Math.max(...Object.values(d.allScores).map(s => s.score || 0));
+      const best = scoreTodos(d.spot, d.allScores);
       return best >= 40 && best < 70;
     }
     const scoreKey = getScoreSport(selectedSport)!;
@@ -65,9 +66,7 @@ export function alternativeSport(
 
 /** Score 0–100 que o ranking do /spots usa: `all` = melhor modalidade do spot. */
 export function rankingScore(d: GridSpotData, selectedSport: GridSportFilter): number {
-  if (selectedSport === 'all') {
-    return Math.max(...Object.values(d.allScores).map((s) => s.score || 0), 0);
-  }
+  if (selectedSport === 'all') return scoreTodos(d.spot, d.allScores);
   const scoreKey = getScoreSport(selectedSport)!;
   return d.allScores[scoreKey]?.score || 0;
 }

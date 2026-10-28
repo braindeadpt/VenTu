@@ -30,22 +30,50 @@ import { hasOffset, lisbonHourKeyFromDate } from '../../../src/lib/openMeteoTime
  */
 
 export const CONDITIONS_PATH = join(process.cwd(), 'public', 'data', 'conditions.json');
+/**
+ * conditions.json da fixture e2e (o mesmo snapshot do pixel gate). O `notaV6` foi
+ * gravado com um relógio DIURNO (t 2026-09-08T08:00, scripts/build-nota-v6-agora.js
+ * com VENTU_NOW_ISO = generatedAt) → há spots «a bombar» em surf/bodyboard. Os specs
+ * que precisam de cards no «A bombar agora» servem esta base: o build real do CI
+ * corre a qualquer hora e, de noite, as 5 modalidades v6 não têm nota (estado vazio).
+ */
+export const FIXTURE_CONDITIONS_PATH = join(
+  process.cwd(),
+  'tests',
+  'e2e',
+  'fixtures',
+  'data',
+  'conditions.json',
+);
 /** Ficheiros por spot — a única cópia publicada desde 25/10/2026 (sem forecasts.json agregado). */
 export const FORECASTS_DIR = join(process.cwd(), 'public', 'data', 'forecasts');
 
 /** Read the real build conditions once per process (immutable snapshot). */
 const conditionsCache = new Map<string, Record<string, Record<string, unknown>>>();
-export function readRealConditions(): Record<string, Record<string, unknown>> {
-  if (!conditionsCache.has(CONDITIONS_PATH)) {
+function readConditionsAt(path: string): Record<string, Record<string, unknown>> {
+  if (!conditionsCache.has(path)) {
     conditionsCache.set(
-      CONDITIONS_PATH,
-      JSON.parse(readFileSync(CONDITIONS_PATH, 'utf-8')) as Record<string, Record<string, unknown>>,
+      path,
+      JSON.parse(readFileSync(path, 'utf-8')) as Record<string, Record<string, unknown>>,
     );
   }
-  return conditionsCache.get(CONDITIONS_PATH)!;
+  return conditionsCache.get(path)!;
+}
+export function readRealConditions(): Record<string, Record<string, unknown>> {
+  return readConditionsAt(CONDITIONS_PATH);
+}
+/** conditions.json da fixture e2e (notaV6 diurno) — ver FIXTURE_CONDITIONS_PATH. */
+export function readFixtureConditions(): Record<string, Record<string, unknown>> {
+  return readConditionsAt(FIXTURE_CONDITIONS_PATH);
 }
 
 export interface ConditionsTransform {
+  /**
+   * Ficheiro de partida: `build` (omissão) = o conditions.json do build servido;
+   * `fixture` = o da fixture e2e (notaV6 diurno) — para specs da home que precisam
+   * de cards «a bombar» seja qual for a hora a que o CI corre.
+   */
+  base?: 'build' | 'fixture';
   /**
    * Per-spot transforms keyed by the conditions.json spot id (e.g. 'guincho').
    * The entry is the real build entry; return the transformed entry.
@@ -107,7 +135,7 @@ export async function interceptData(
 export async function interceptConditions(page: Page, transform: ConditionsTransform = {}): Promise<void> {
   await forceLiveSpotMode(page);
   await page.route('**/data/conditions.json', async (route) => {
-    const data = readRealConditions();
+    const data = transform.base === 'fixture' ? readFixtureConditions() : readRealConditions();
     const out: Record<string, Record<string, unknown>> = {};
     for (const [key, entry] of Object.entries(data)) {
       const t = transform.spots?.[key];
@@ -120,6 +148,29 @@ export async function interceptConditions(page: Page, transform: ConditionsTrans
       body: JSON.stringify(final),
     });
   });
+}
+
+/**
+ * Transform `all` que põe as 5 modalidades v6 do `notaV6` de noite (null, como o
+ * pipeline grava fora das horas de luz) — o «A bombar agora» fica vazio.
+ */
+export function notaV6DeNoite(
+  data: Record<string, Record<string, unknown>>,
+): Record<string, Record<string, unknown>> {
+  const out: Record<string, Record<string, unknown>> = {};
+  for (const [id, entry] of Object.entries(data)) {
+    const nv = entry?.notaV6;
+    if (!nv || typeof nv !== 'object') {
+      out[id] = entry;
+      continue;
+    }
+    const { f: _f, vf: _vf, seg: _seg, sg: _sg, ...rest } = nv as Record<string, unknown>;
+    out[id] = {
+      ...entry,
+      notaV6: { ...rest, kite: null, surf: null, windsurf: null, bodyboard: null, foil: null },
+    };
+  }
+  return out;
 }
 
 /**

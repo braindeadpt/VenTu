@@ -45,12 +45,25 @@ export function isModalidade(x: unknown): x is Modalidade {
   return typeof x === 'string' && (MODALIDADES_VISIVEIS as readonly string[]).includes(x);
 }
 
+/**
+ * Chaves da definição que o motor avalia para o site (#218, PR 6): as duas
+ * visíveis e as que pontuam as outras modalidades do /mapa e das listas
+ * (windsurf, bodyboard e as três vertentes do foil). A UI continua a mostrar só
+ * `MODALIDADES_VISIVEIS`; o wakeboard (`plana`) fica de fora (motor antigo).
+ */
+export const MODALIDADES_MOTOR = ['kite', 'surf', 'windsurf', 'bodyboard', 'wing', 'kitefoil', 'surffoil'] as const;
+export type ModalidadeMotor = (typeof MODALIDADES_MOTOR)[number];
+
+/** As vertentes do foil (`def.foil.vertentes`): a nota do foil é a melhor das três em cada hora (decisão do Pedro, 27/10). */
+export const VERTENTES_FOIL = ['wing', 'kitefoil', 'surffoil'] as const satisfies readonly ModalidadeMotor[];
+export type VertenteFoil = (typeof VERTENTES_FOIL)[number];
+
 /** «Dá» a partir daqui: o mínimo da banda «Dá» da #210. */
 export const DA = NOTA_BAND_MIN.fair;
 
 export const MOTOR = modAvalia(MODALIDADES_DEF, { DA });
 
-export function defDe(d: Modalidade): DefModalidade {
+export function defDe(d: ModalidadeMotor): DefModalidade {
   return MODALIDADES_DEF.def[d] as DefModalidade;
 }
 
@@ -108,7 +121,7 @@ export function tectoSeguranca(cap: number | null): number | null {
 /** Avalia as horas de um spot numa modalidade (motor + tecto de segurança do vento). */
 export function avaliaHoras(
   sp: SpotModalidade,
-  d: Modalidade,
+  d: ModalidadeMotor,
   horas: readonly HoraModalidade[],
 ): AvaliacaoHora[] {
   const L = MOTOR.para(sp);
@@ -125,4 +138,45 @@ export function avaliaHoras(
     const n = tecto != null ? Math.min(r.n, tecto) : r.n;
     return { ...r, n, nMotor: r.n, seguranca: s.safety };
   });
+}
+
+/** Modalidade v6 de um desporto do site: uma chave do motor ou o foil (as três vertentes). */
+export type ModalidadeSite = Exclude<ModalidadeMotor, VertenteFoil> | 'foil';
+
+/** Avaliação de uma hora com a chave da definição que a deu (no foil, a vertente vencedora). */
+export interface AvaliacaoHoraSite extends AvaliacaoHora {
+  chave: ModalidadeMotor;
+}
+
+/**
+ * O foil numa hora: a melhor das três vertentes pela nota final (já com o
+ * tecto de segurança do vento). Empate → a primeira pela ordem de
+ * `VERTENTES_FOIL`. Sem nota em nenhuma: «sem dados» só se faltam dados às
+ * três; senão é noite (o sol é o mesmo para todas).
+ */
+export function melhorVertente(porVertente: ReadonlyArray<AvaliacaoHora>): AvaliacaoHoraSite {
+  let best = -1;
+  porVertente.forEach((a, i) => {
+    if (a.n != null && (best < 0 || a.n > (porVertente[best].n as number))) best = i;
+  });
+  if (best < 0) {
+    const i = porVertente.findIndex((a) => !a.semDados);
+    best = i >= 0 ? i : 0;
+  }
+  return { ...porVertente[best], chave: VERTENTES_FOIL[best] };
+}
+
+/**
+ * `avaliaHoras` para uma modalidade do site (#218, PR 6): as chaves simples
+ * passam directas; o foil avalia as três vertentes e fica com a melhor em cada
+ * hora (decisão do Pedro, 27/10).
+ */
+export function avaliaHorasSite(
+  sp: SpotModalidade,
+  d: ModalidadeSite,
+  horas: readonly HoraModalidade[],
+): AvaliacaoHoraSite[] {
+  if (d !== 'foil') return avaliaHoras(sp, d, horas).map((a) => ({ ...a, chave: d }));
+  const porVertente = VERTENTES_FOIL.map((v) => avaliaHoras(sp, v, horas));
+  return horas.map((_, i) => melhorVertente(porVertente.map((av) => av[i])));
 }

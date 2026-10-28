@@ -8,7 +8,8 @@ import {
   scoreToNota,
 } from '@/lib/nota';
 import { getScoreTier } from '@/lib/scoreThresholds';
-import { getScoreTierLabel, getScoreTokens, getSportScore } from '@/lib/sportScore';
+import { getScoreTierLabel, getScoreTokens } from '@/lib/sportScore';
+import { v6 as getSportScore } from './motorV6Teste';
 import { scoreBand } from '@/lib/verdict/scoreBand';
 import { spots } from '@/lib/spots';
 
@@ -133,6 +134,8 @@ describe('mesma hora → mesma nota e banda em todas as superfícies', () => {
       windGust: 3,
       waterTemp: 17,
     });
+    // v6 (#218 PR 6): nota 0 → «N/A»; acima, o rótulo da banda
+    expect(result.score).toBeGreaterThan(0);
     const tier = scoreTierFromScore(result.score);
     expect(result.rating).toBe(getScoreTierLabel(tier, 'pt'));
     expect(result.ratingEn).toBe(getScoreTierLabel(tier, 'en'));
