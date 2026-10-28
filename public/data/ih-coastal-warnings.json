@@ -455,6 +455,102 @@
       ]
     },
     {
+      "id": 18937,
+      "ref": "ANAV NR 2407/26",
+      "category": "Exercicios navais ou exercicios de tiro",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=c22f0d63-ca33-467d-a275-1e2acd77bb87",
+      "source": "ih",
+      "collection": "nav_warning_coastal",
+      "polygons": [
+        [
+          [
+            -8.966667,
+            38.34
+          ],
+          [
+            -8.825,
+            38.34
+          ],
+          [
+            -8.825,
+            38.275
+          ],
+          [
+            -8.966667,
+            38.275
+          ],
+          [
+            -8.966667,
+            38.34
+          ]
+        ]
+      ]
+    },
+    {
+      "id": 18939,
+      "ref": "ANAV NR 2406/26",
+      "category": "Anomalias no funcionamento dos sistemas de radio-posicionamento, sistema de transmissão rádio ou serviços satelite",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=0986940f-a239-462e-9f0c-54819a56bff4",
+      "source": "ih",
+      "collection": "nav_warning_coastal",
+      "polygons": [
+        [
+          [
+            -9.23043,
+            38.297643
+          ],
+          [
+            -9.23043,
+            38.594495
+          ],
+          [
+            -8.593528,
+            38.594495
+          ],
+          [
+            -8.593528,
+            38.297643
+          ],
+          [
+            -9.23043,
+            38.297643
+          ]
+        ]
+      ]
+    },
+    {
+      "id": 18941,
+      "ref": "ANAV NR 2400/26",
+      "category": "Exercicios navais ou exercicios de tiro",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=4cbe9311-fe28-431b-b1d0-30503a6707d6",
+      "source": "ih",
+      "collection": "nav_warning_coastal",
+      "polygons": [
+        [
+          [
+            -9,
+            38.166667
+          ],
+          [
+            -9.2,
+            38.166667
+          ],
+          [
+            -9.2,
+            38
+          ],
+          [
+            -9,
+            38
+          ],
+          [
+            -9,
+            38.166667
+          ]
+        ]
+      ]
+    },
+    {
       "id": 1000182,
       "ref": "ANAV NR 121/21",
       "category": "SEGURANÇA DA NAVEGAÇÃO - AVISO À NAVEGAÇÃO LOCAL",
@@ -7820,6 +7916,7 @@
       2018749
     ],
     "fonte-telha": [
+      18939,
       1000782,
       2017839,
       2018289,
@@ -7850,6 +7947,7 @@
       1009371
     ],
     "lagoa-albufeira": [
+      18939,
       1000782,
       2017839,
       2017849,
@@ -7860,6 +7958,7 @@
       2018769
     ],
     "foil-lagoa-albufeira": [
+      18939,
       1000782,
       2017839,
       2017849,
@@ -7870,6 +7969,7 @@
       2018769
     ],
     "praia-lagoa-albufeira": [
+      18939,
       2017839,
       2017849,
       2018177,
@@ -7879,6 +7979,7 @@
       2018769
     ],
     "troia": [
+      18939,
       1000786,
       1001983,
       2017839,
@@ -7886,6 +7987,7 @@
       2018289
     ],
     "comporta": [
+      18939,
       2017849,
       2018289
     ],
@@ -8182,6 +8284,7 @@
       2018213
     ],
     "meco": [
+      18939,
       2017839,
       2017849,
       2018177,
@@ -8275,7 +8378,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-10-28T14:06:52.090Z",
+  "fetchedAt": "2026-10-28T16:34:38.016Z",
   "sourceCollection": "nav_warning_coastal+nav_warning_local+orca_anavnet_point",
   "sourceUrl": "https://ogcapi.hidrografico.pt/collections/nav_warning_coastal"
 }
