@@ -28,6 +28,7 @@ import {
   type JanelaSeguinte,
 } from '@/lib/noiteListas';
 import { compareRanking } from '@/components/spots/spotGridSelectors';
+import { getGridSpotScore } from '@/lib/gridSpotScore';
 import { compareHomeRanked } from '@/components/homepage/HomepageRankedSection';
 
 const spotDe = (id: string) => (spots as Spot[]).find((s) => s.id === id)!;
@@ -220,6 +221,65 @@ describe('linhas e listas de noite', () => {
     const d2 = linha('d2', 'Beta', {}, false);
     // dois de dia: nota igual → nome
     expect(compareRanking(d2, dia, 'surf', 'pt', NOITE)).toBeLessThan(0);
+  });
+});
+
+/** Linha de dia com um `notaV6` à escolha (nota 0 de dia ≠ noite). */
+function linhaDia(id: string, nome: string, nv: NotaV6Agora): GridSpotData {
+  const r = linha(id, nome, {}, false);
+  return { ...r, allScores: allScoresComV6(r.spot as Spot, CALMO, nv) } as GridSpotData;
+}
+
+describe('listas mistas (continente de dia, Açores ainda de noite)', () => {
+  const NV_KITE0: NotaV6Agora = { ...NV_DIA, kite: 0 };
+  const NV_KITE3: NotaV6Agora = { ...NV_DIA, kite: 3 };
+  const amanha = { kitesurf: W('2026-10-29T07:00', '2026-10-29T11:00', 80), surf: W('2026-10-29T08:00', '2026-10-29T10:00', 70) };
+
+  it('linhas de dia com nota 0 não põem a lista de noite', () => {
+    const rows = [linhaDia('d0', 'Cova do Vapor', NV_KITE0), linha('az', 'Anjos', amanha)];
+    expect(linhaDeNoite(rows[0], 'kitesurf')).toBe(false);
+    expect(listaDeNoite(rows, 'kitesurf')).toBe(false);
+    expect(listaDeNoite(rows, 'surf')).toBe(false);
+    expect(listaDeNoite(rows, 'all')).toBe(false);
+    // só noite → lista de noite; uma de dia (mesmo com 0) → de dia
+    expect(listaDeNoite([rows[1], linha('az2', 'Mosteiros', {})], 'kitesurf')).toBe(true);
+    expect(listaDeNoite([rows[1], linha('az2', 'Mosteiros', {}), rows[0]], 'kitesurf')).toBe(false);
+  });
+
+  it('linhas sem dados não contam (nem dia nem noite)', () => {
+    const sem = linhaDia('sem', 'Sem dados', { ...NV_DIA, kite: null, sem: ['kite'] });
+    expect(listaDeNoite([linha('az', 'Anjos', amanha), sem], 'kitesurf')).toBe(true);
+    expect(listaDeNoite([sem], 'kitesurf')).toBe(false);
+  });
+
+  it('página de modalidade (kitesurf, 13h): dia por nota com as notas intactas, noite no fim', () => {
+    const rows = [
+      linha('az-anjos', 'Anjos', amanha),
+      linhaDia('alvor', 'Alvor', NV_KITE0),
+      linhaDia('vrsa', 'Vila Real de Santo António', NV_KITE3),
+      linha('az-agua', 'Água d\'Alto', {}),
+      linhaDia('cova', 'Cova do Vapor', NV_KITE3),
+      linhaDia('afife', 'Afife', NV_KITE0),
+    ];
+    expect(listaDeNoite(rows, 'kitesurf')).toBe(false);
+    const ordem = [...rows].sort((a, b) => compareRanking(a, b, 'kitesurf', 'pt', NOITE));
+    expect(ordem.map((r) => r.spot.id)).toEqual(['cova', 'vrsa', 'afife', 'alvor', 'az-anjos', 'az-agua']);
+    // as linhas de dia mantêm a nota (o 3 não vira 0); só as dos Açores levam a lua
+    expect(ordem.map((r) => getGridSpotScore(r, 'kitesurf'))).toEqual([30, 30, 0, 0, 0, 0]);
+    expect(ordem.map((r) => linhaDeNoite(r, 'kitesurf'))).toEqual([false, false, false, false, true, true]);
+    // a mesma lista no refresh do conditions.json servido (o caminho da página)
+    const json: Record<string, unknown> = {
+      'az-anjos': { notaV6: NV_NOITE },
+      alvor: { notaV6: NV_KITE0 },
+      vrsa: { notaV6: NV_KITE3 },
+      'az-agua': { notaV6: NV_NOITE },
+      cova: { notaV6: NV_KITE3 },
+      afife: { notaV6: NV_KITE0 },
+    };
+    const vivos = refreshGridSpotScores(rows, json);
+    expect(listaDeNoite(vivos, 'kitesurf')).toBe(false);
+    expect(vivos.map((r) => getGridSpotScore(r, 'kitesurf'))).toEqual([0, 0, 30, 0, 30, 0]);
+    expect(vivos.filter((r) => linhaDeNoite(r, 'kitesurf')).map((r) => r.spot.id)).toEqual(['az-anjos', 'az-agua']);
   });
 });
 

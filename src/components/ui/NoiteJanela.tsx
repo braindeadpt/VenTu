@@ -121,6 +121,8 @@ export function partesJanela(j: JanelaSeguinte, locale: string): { dia: string; 
  * A próxima janela (ou «Sem janela boa nas próximas horas»).
  * `pilha`: dia em versaletes por cima, horas + chip por baixo (tabela, Top 8).
  * `linha`: «amanhã 07–11h [8]» numa linha (cartões, comparador, widget).
+ * `tabela`: «Amanhã 07–11h · 8» numa só linha, sem quebra, com a altura de uma
+ * linha normal da tabela do /spots (sem janela: «–», o texto no `title`).
  */
 export function JanelaNoite({
   janela,
@@ -130,10 +132,18 @@ export function JanelaNoite({
 }: {
   janela: JanelaSeguinte | null;
   locale: string;
-  layout?: 'linha' | 'pilha';
+  layout?: 'linha' | 'pilha' | 'tabela';
   className?: string;
 }) {
   const t = getTranslation(locale).noite;
+  if (!janela && layout === 'tabela') {
+    return (
+      <span className={cn('text-fg-muted', className)} data-noite-sem-janela="" title={t.semJanela}>
+        <span aria-hidden>–</span>
+        <span className="sr-only">{t.semJanela}</span>
+      </span>
+    );
+  }
   if (!janela) {
     return (
       <span className={cn('text-meta text-fg-muted whitespace-normal', className)} data-noite-sem-janela="">
@@ -144,6 +154,19 @@ export function JanelaNoite({
   const { dia, horas } = partesJanela(janela, locale);
   const n = scoreToNota(janela.w.score);
   const aria = t.janelaAria.replace('{dia}', dia).replace('{horas}', horas).replace('{n}', String(n));
+  if (layout === 'tabela') {
+    return (
+      <span className={cn('whitespace-nowrap', className)} data-noite-janela="" aria-label={aria} role="group">
+        <span className="text-fg" aria-hidden>
+          {dia} <span className="font-mono tabular-nums">{horas}</span>
+        </span>
+        <span aria-hidden> </span>
+        <span aria-hidden>
+          <ChipNota score={janela.w.score} locale={locale} className="py-0 text-meta-sm" />
+        </span>
+      </span>
+    );
+  }
   if (layout === 'pilha') {
     return (
       <span className={cn('inline-flex flex-col items-end gap-1', className)} data-noite-janela="" aria-label={aria} role="group">

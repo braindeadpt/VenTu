@@ -173,7 +173,7 @@ export default function SpotRankedTable({
                   </td>
                   <td className="py-2 px-2">
                     {noite ? (
-                      <LuaNoite size={28} locale={locale} />
+                      <LuaNoite size={22} locale={locale} className="align-middle" />
                     ) : (
                       <span
                         className={cn('font-mono font-semibold tabular-nums', tokens.text)}
@@ -245,8 +245,8 @@ export default function SpotRankedTable({
                       <JanelaNoite
                         janela={janelaSeguinte(data, selectedSport, nowMs)}
                         locale={locale}
-                        layout="pilha"
-                        className="font-sans max-w-[9.5rem]"
+                        layout="tabela"
+                        className="font-sans"
                       />
                     ) : bestWindow ? (
                       <span className="text-fg">

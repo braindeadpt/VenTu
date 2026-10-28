@@ -21,7 +21,7 @@ import type { Spot } from '@/types';
 import { getCompatibleSports, type GridSportFilter, type SportType } from '@/lib/sportRatings';
 import type { UpcomingWindow, UpcomingWindowsBySport } from '@/lib/bestWindowToday';
 import { desportosTodos } from '@/lib/desportosV6';
-import { isNoite } from '@/lib/notaV6Agora';
+import { isNoite, isSemDados } from '@/lib/notaV6Agora';
 import { notaTier, scoreToNota } from '@/lib/nota';
 import type { BandaK } from '@/lib/modalidades';
 
@@ -62,17 +62,26 @@ export function linhaDeNoite(row: Pick<LinhaNoite, 'spot' | 'allScores'>, filter
 
 /**
  * A lista inteira está de noite (faixa «Noite», título «Top 8 · próxima
- * janela»)? Pelo menos uma linha de noite e nenhuma com nota de dia — no
- * crepúsculo (continente de noite, Açores ainda de dia) a lista fica de dia e
- * só as linhas de noite levam a lua.
+ * janela»)? Só quando TODAS as linhas estão de noite (as linhas sem dados não
+ * contam, mas é preciso pelo menos uma de noite). Uma linha de dia com nota 0
+ * (sem vento para o kite às 13h) NÃO é noite: numa lista mista — crepúsculo,
+ * ou de dia no continente com os Açores ainda antes do nascer do sol — a lista
+ * fica de dia, as linhas de dia mantêm a nota e a ordem por nota, e só as de
+ * noite levam a lua (no fim, `compararNoite`).
  */
 export function listaDeNoite(rows: ReadonlyArray<Pick<LinhaNoite, 'spot' | 'allScores'>>, filter: GridSportFilter | SportType): boolean {
   let noite = false;
   for (const r of rows) {
     if (linhaDeNoite(r, filter)) noite = true;
-    else if (desportosDoFiltro(r.spot, filter).some((s) => scoreDe(r.allScores[s]) > 0)) return false;
+    else if (!linhaSemDados(r, filter)) return false;
   }
   return noite;
+}
+
+/** Todos os desportos do filtro desta linha estão «sem dados» (nem dia nem noite)? */
+function linhaSemDados(row: Pick<LinhaNoite, 'spot' | 'allScores'>, filter: GridSportFilter | SportType): boolean {
+  const ds = desportosDoFiltro(row.spot, filter);
+  return ds.length > 0 && ds.every((s) => isSemDados(row.allScores[s]));
 }
 
 const lisboaFmt = new Intl.DateTimeFormat('en-CA', {

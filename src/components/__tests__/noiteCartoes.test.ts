@@ -75,6 +75,27 @@ describe('JanelaNoite / rótulo do dia', () => {
   });
 });
 
+describe('JanelaNoite na tabela do /spots (layout «tabela»): uma linha, altura de linha normal', () => {
+  it('«Amanhã 07–11h · 8» numa só linha, sem pilha nem quebra', () => {
+    const html = renderToStaticMarkup(createElement(JanelaNoite, { janela: JAN, locale: 'pt', layout: 'tabela' }));
+    expect(html).toContain('whitespace-nowrap');
+    expect(html).not.toContain('flex-col');
+    expect(html).not.toContain('flex-wrap');
+    expect(html.match(/data-nota-janela/g)).toHaveLength(1);
+    expect(html).toContain('Amanhã');
+    expect(html).toContain('07–11h');
+    expect(html).toContain('Próxima janela: Amanhã 07–11h, nota 8 em 10');
+  });
+
+  it('sem janela: «–» (o texto longo fica no title / leitor de ecrã, não parte a linha)', () => {
+    const html = renderToStaticMarkup(createElement(JanelaNoite, { janela: null, locale: 'pt', layout: 'tabela' }));
+    expect(html).toContain('data-noite-sem-janela');
+    expect(html).toContain('>–<');
+    expect(html).toContain('title="Sem janela boa nas próximas horas"');
+    expect(html).not.toContain('whitespace-normal');
+  });
+});
+
 describe('Comparador de noite: sem «Vencedor» falso', () => {
   it('«Amanhã ganha Guincho», à frente do segundo', () => {
     const html = renderToStaticMarkup(
