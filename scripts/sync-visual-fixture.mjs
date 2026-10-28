@@ -27,10 +27,16 @@
  * the carousel is masked in captures, and the spec's build-snapshot fallback
  * serves it — copying frames would churn 1.7MB of dead pixels per record.
  *
+ * When conditions.json or a forecasts/ file changed, the fixture's `notaV6`
+ * («agora») is recomputed from the fixture's own inputs at the fixture instant
+ * (map-hours.json generatedAt) with scripts/build-nota-v6-agora.js — the merge
+ * would otherwise graft live keys (e.g. `notaV6.sem`) onto fixture values.
+ *
  * Usage:  npm run build && node scripts/sync-visual-fixture.mjs
  *         (requires a fresh `out/`; only structurally-changed files are
  *          copied, everything else is reported as skipped)
  */
+import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import {
   copyFileSync,
@@ -41,6 +47,7 @@ import {
   writeFileSync,
 } from 'node:fs';
 import { dirname, join, relative } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { mergeShape, skeleton } from './lib/visualFixtureShape.mjs';
 
 const root = process.cwd();
@@ -78,6 +85,12 @@ const isExcluded = (rel) => {
 let copied = 0;
 let merged = 0;
 let skipped = 0;
+/** Ficheiros que a nota v6 «agora» lê (conditions.json + séries por spot). */
+const notaInputs = (rel) => {
+  const norm = rel.split('\\').join('/');
+  return norm === 'conditions.json' || norm.startsWith('forecasts/');
+};
+let notaInputsChanged = false;
 
 for (const f of walk(src)) {
   const rel = relative(src, f);
@@ -109,6 +122,7 @@ for (const f of walk(src)) {
       mkdirSync(dirname(out), { recursive: true });
       writeFileSync(out, `${JSON.stringify(mergedValue, null, 2)}\n`);
       merged += 1;
+      if (notaInputs(rel)) notaInputsChanged = true;
       continue;
     }
   } else if (existsSync(out)) {
@@ -120,6 +134,43 @@ for (const f of walk(src)) {
   mkdirSync(dirname(out), { recursive: true });
   copyFileSync(f, out);
   copied += 1;
+  if (notaInputs(rel)) notaInputsChanged = true;
+}
+
+// O merge copia as chaves novas do build com os valores live (ex. `notaV6.sem`)
+// para linhas cujos valores continuam os da fixture — a nota v6 «agora» ficava
+// incoerente com os inputs da própria fixture. Recalcula-se com o mesmo writer
+// do pipeline, no instante fixo da fixture (map-hours.generatedAt), para o
+// resultado não depender do relógio (frescura da boia).
+if (notaInputsChanged) recomputeNotaV6();
+
+function recomputeNotaV6() {
+  const mhPath = join(dest, 'map-hours.json');
+  let nowIso = null;
+  try {
+    nowIso = JSON.parse(readFileSync(mhPath, 'utf8')).generatedAt ?? null;
+  } catch {
+    /* sem map-hours legível */
+  }
+  if (typeof nowIso !== 'string' || !Number.isFinite(Date.parse(nowIso))) {
+    console.warn('⚠️ notaV6 da fixture NÃO recalculada: map-hours.json sem generatedAt (instante da fixture).');
+    return;
+  }
+  const builder = join(dirname(fileURLToPath(import.meta.url)), 'build-nota-v6-agora.js');
+  const r = spawnSync(process.execPath, [builder], {
+    cwd: root,
+    env: { ...process.env, VENTU_DATA_DIR: dest, VENTU_NOW_ISO: nowIso },
+    encoding: 'utf8',
+  });
+  if (r.stdout) process.stdout.write(r.stdout);
+  if (r.stderr) process.stderr.write(r.stderr);
+  // O builder nunca sai com erro (num falhanço tira a notaV6 e avisa): o aviso
+  // ::warning do stdout é o sinal.
+  if (r.status !== 0 || /::warning title=notaV6/.test(r.stdout ?? '')) {
+    console.error('❌ Recálculo da notaV6 da fixture falhou — ver acima.');
+    process.exit(1);
+  }
+  console.log(`🎯 notaV6 da fixture recalculada no instante da fixture (${nowIso}).`);
 }
 
 // Fixture JSONs absent from the build are KEPT, not deleted: tests read files
