@@ -1,6 +1,6 @@
 {
   "day": "20261028",
-  "fetchedAt": "2026-10-28T06:06:16.075Z",
+  "fetchedAt": "2026-10-28T08:06:28.902Z",
   "minPairs": 3,
   "minAccumulatedPairs": 10,
   "archive": {
@@ -822,7 +822,7 @@
       "suboptimal": []
     },
     "São Miguel": {
-      "spotCount": 6,
+      "spotCount": 7,
       "withObservedWave": 0,
       "bySource": {},
       "audited": 0,
@@ -1277,7 +1277,7 @@
       "suboptimal": []
     }
   },
-  "regionsAuditedAt": "2026-10-28T06:09:38.555Z",
+  "regionsAuditedAt": "2026-10-28T08:10:26.343Z",
   "pairs": [
     {
       "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
@@ -1293,8 +1293,8 @@
       "maxAbsDeltaM": 2.8,
       "corr": 0.73,
       "verdict": "coherent",
-      "firstHour": "2026-09-28T07",
-      "lastHour": "2026-10-28T04",
+      "firstHour": "2026-09-28T09",
+      "lastHour": "2026-10-28T06",
       "hours": [
         {
           "6200084": 3.2799999713897705,
@@ -1320,6 +1320,16 @@
           "6200084": 4.099999904632568,
           "6200199": 2.387700080871582,
           "hour": "2026-10-28T04"
+        },
+        {
+          "6200084": 4.340000152587891,
+          "6200199": 3.120120048522949,
+          "hour": "2026-10-28T05"
+        },
+        {
+          "6200084": 3.630000114440918,
+          "6200199": 2.5634799003601074,
+          "hour": "2026-10-28T06"
         }
       ]
     }
