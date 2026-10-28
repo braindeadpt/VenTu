@@ -28,6 +28,10 @@ import { MIN_BIAS_N, MIN_BIAS_M } from '../../scripts/lib/buoyBias.js';
  * positivos interceptam client-side (transform `all` — o top spot de cada
  * desporto carrega a correcção seja qual for), e os negativos servem o ficheiro
  * real/hermético. O SW é bloqueado (padrão da suite).
+ *
+ * Independente da hora do CI (#218 PR 6): as rows partem da FIXTURE (`base:
+ * 'fixture'`, notaV6 diurno) — de noite o build real não tem nenhum spot a bombar
+ * nas modalidades v6 e a secção mostra o estado vazio (correcto), sem cards.
  */
 test.describe('TopNow — badge do score de onda', () => {
   test.use({ serviceWorkers: 'block' });
@@ -94,6 +98,7 @@ test.describe('TopNow — badge do score de onda', () => {
     // quando há regiões acima dos limiares n/MIN_BIAS_M no ficheiro servido).
     await interceptWaveBias(page, { regions: {} });
     await interceptConditions(page, {
+      base: 'fixture',
       all: allSpots((entry) => {
         const { observedWave: _ow, observedWaveAlt: _alt, waveBias: _wb, ...rest } = entry;
         return rest;
@@ -128,6 +133,7 @@ test.describe('TopNow — badge do score de onda', () => {
     });
     await interceptWmoBuoys(page, { buoys: {}, hasWaveData: false, day: '20260815' });
     await interceptConditions(page, {
+      base: 'fixture',
       all: allSpots((entry) => {
         const { observedWave: _ow, observedWaveAlt: _alt, ...rest } = entry;
         return {
@@ -162,6 +168,7 @@ test.describe('TopNow — badge do score de onda', () => {
     // mantém o sinal) e a altura exibida é a row corrigida PARA BAIXO
     // (1.8 - 0.4 = 1.4m), nunca a crua acima.
     await interceptConditions(page, {
+      base: 'fixture',
       all: allSpots((entry) => {
         const { observedWave, ...rest } = entry;
         return {
@@ -226,6 +233,7 @@ test.describe('TopNow — badge do score de onda', () => {
     // o badge de correcção em tempo real + o relógio data-wave-clock (HH:MM,
     // mesmo formato do hero) + o sufixo «(boia)».
     await interceptConditions(page, {
+      base: 'fixture',
       all: allSpots((entry) => {
         const { waveBias, ...rest } = entry;
         return { ...rest, observedWave: freshObservedWave({ distanceKm: 30 }), observedWaveAlt: null };
@@ -255,6 +263,7 @@ test.describe('TopNow — badge do score de onda', () => {
     // o «(viés regional)» nunca aparece na secção. O refresh client-side traz
     // ambos os campos → a precedência prova-se sem rebuild.
     await interceptConditions(page, {
+      base: 'fixture',
       all: allSpots((entry) => {
         const { waveBias, ...rest } = entry;
         return {
@@ -328,6 +337,7 @@ test.describe('TopNow — badge do score de onda', () => {
     // — o tag «ref. PT (ME · n)» aparece na row de métricas do card, sem o
     // contexto do hero. O refresh traz a leitura → tag sem rebuild.
     await interceptConditions(page, {
+      base: 'fixture',
       all: allSpots((entry) => {
         const { waveBias, ...rest } = entry;
         return {
@@ -376,6 +386,7 @@ test.describe('TopNow — badge do score de onda', () => {
     // em qualquer build (incluindo builds com wave-bias.json de produção).
     await interceptWaveBias(page, { regions: {} });
     await interceptConditions(page, {
+      base: 'fixture',
       all: allSpots((entry) => {
         const { waveBias, ...rest } = entry;
         return {

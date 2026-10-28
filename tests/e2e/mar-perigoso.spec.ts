@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { interceptWarnings, readRealConditions } from './helpers/conditions';
+import { interceptConditions, interceptWarnings, readRealConditions } from './helpers/conditions';
 import { preseedWindRingLegend } from './helpers/map-setup';
 import { showAllMapMarkers, tapSpotMarker } from './helpers/map-sheet';
 
@@ -130,6 +130,8 @@ test.describe('Mar perigoso — tooltip do chip nos cards', () => {
 
   test('TopNow: o chip do SpotListCard tem o nível localizado no tooltip', async ({ page }) => {
     await interceptWarnings(page, warningsAllSeaState());
+    // Cards a partir da fixture diurna — de noite o build real não tem cards.
+    await interceptConditions(page, { base: 'fixture' });
     await page.goto('/pt/');
 
     // O chip de aviso do card da homepage (SpotListCard → WarningPill) mostra
@@ -142,6 +144,7 @@ test.describe('Mar perigoso — tooltip do chip nos cards', () => {
 
   test('TopNow EN: tooltip «IPMA warning: Dangerous sea (Orange)» no card', async ({ page }) => {
     await interceptWarnings(page, warningsAllSeaState());
+    await interceptConditions(page, { base: 'fixture' });
     await page.goto('/en/');
 
     const chip = page.locator('[title*="IPMA warning: Dangerous sea (Orange)"]').first();

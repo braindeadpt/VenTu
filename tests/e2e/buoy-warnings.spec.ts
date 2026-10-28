@@ -31,6 +31,13 @@ const STALE_ISO = new Date(Date.now() - 5 * 3_600_000).toISOString();
 const FRESH_ISO = new Date().toISOString();
 
 /**
+ * Título h2 do «A bombar agora» — nome EXACTO: o h3 do estado vazio (de noite,
+ * «Ninguém a bombar agora 😴») também casa com /A bombar agora/i.
+ */
+const topNowHeading = (page: import('@playwright/test').Page) =>
+  page.getByRole('heading', { name: 'A bombar agora', exact: true });
+
+/**
  * Página de spot v6 (#184): o aviso de boias vive na leitura da boia, no fim do
  * «Estudar o spot» (decisão do Pedro, 2026-10-15). Abre o <details> antes das
  * asserções (com retry: o clique pode cair antes da hidratação).
@@ -219,7 +226,7 @@ test.describe('Aviso de boias na homepage (BuoyLayerNotice scope=home)', () => {
   async function gotoHome(page: import('@playwright/test').Page) {
     await interceptWmoBuoys(page, WMO_DOWN);
     await page.goto('/pt/');
-    await expect(page.getByRole('heading', { name: /A bombar agora/i })).toBeVisible({
+    await expect(topNowHeading(page)).toBeVisible({
       timeout: 20_000,
     });
   }
@@ -330,7 +337,7 @@ test.describe('Aviso de boias no mapa interactivo (chip do HUD — auditoria C4)
     });
     await interceptWmoBuoys(page, WMO_DOWN);
     await page.goto('/pt/');
-    await expect(page.getByRole('heading', { name: /A bombar agora/i })).toBeVisible({
+    await expect(topNowHeading(page)).toBeVisible({
       timeout: 20_000,
     });
 
@@ -440,7 +447,7 @@ test.describe('Aviso de boias — dispensa (localStorage)', () => {
   async function gotoHome(page: import('@playwright/test').Page) {
     await interceptWmoBuoys(page, WMO_DOWN);
     await page.goto('/pt/');
-    await expect(page.getByRole('heading', { name: /A bombar agora/i })).toBeVisible({
+    await expect(topNowHeading(page)).toBeVisible({
       timeout: 20_000,
     });
   }
@@ -463,7 +470,7 @@ test.describe('Aviso de boias — dispensa (localStorage)', () => {
 
     // Reload (mesmas fixtures — os routes persistem) → continua escondido.
     await page.reload({ waitUntil: 'networkidle' });
-    await expect(page.getByRole('heading', { name: /A bombar agora/i })).toBeVisible({
+    await expect(topNowHeading(page)).toBeVisible({
       timeout: 20_000,
     });
     await expect(page.getByText('Onda observada desactivada')).toHaveCount(0);
@@ -483,7 +490,7 @@ test.describe('Aviso de boias — dispensa (localStorage)', () => {
     // A camada fica saudável (IH fresca): sem aviso E a dispensa é removida.
     await interceptIhBuoys(page, IH_OK);
     await page.reload({ waitUntil: 'networkidle' });
-    await expect(page.getByRole('heading', { name: /A bombar agora/i })).toBeVisible({
+    await expect(topNowHeading(page)).toBeVisible({
       timeout: 20_000,
     });
     await expect(
@@ -500,7 +507,7 @@ test.describe('Aviso de boias — dispensa (localStorage)', () => {
     // Volta ao no-key: a dispensa já não existe → o aviso reaparece.
     await interceptIhBuoys(page, IH_NO_KEY);
     await page.reload({ waitUntil: 'networkidle' });
-    await expect(page.getByRole('heading', { name: /A bombar agora/i })).toBeVisible({
+    await expect(topNowHeading(page)).toBeVisible({
       timeout: 20_000,
     });
     await expect(page.getByText('Onda observada desactivada')).toBeVisible({ timeout: 20_000 });
