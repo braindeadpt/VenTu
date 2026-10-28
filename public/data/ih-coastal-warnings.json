@@ -223,38 +223,6 @@
       ]
     },
     {
-      "id": 18883,
-      "ref": "ANAV NR 2374/26",
-      "category": "Exercicios navais ou exercicios de tiro",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=db5141c6-49f9-4ff5-a621-c53f532439fb",
-      "source": "ih",
-      "collection": "nav_warning_coastal",
-      "polygons": [
-        [
-          [
-            -8.8,
-            38.283333
-          ],
-          [
-            -8.766667,
-            38.283333
-          ],
-          [
-            -8.766667,
-            38.25
-          ],
-          [
-            -8.8,
-            38.25
-          ],
-          [
-            -8.8,
-            38.283333
-          ]
-        ]
-      ]
-    },
-    {
       "id": 18907,
       "ref": "ANAV NR 2391/26",
       "category": "Exercicios navais ou exercicios de tiro",
@@ -7927,7 +7895,6 @@
       2018289
     ],
     "carvalhal-comporta": [
-      18883,
       2017849
     ],
     "mosteiros": [
@@ -8314,7 +8281,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-10-27T20:06:30.929Z",
+  "fetchedAt": "2026-10-28T00:06:23.207Z",
   "sourceCollection": "nav_warning_coastal+nav_warning_local+orca_anavnet_point",
   "sourceUrl": "https://ogcapi.hidrografico.pt/collections/nav_warning_coastal"
 }
