@@ -1,6 +1,6 @@
 {
   "source": "forecast-skill-regression",
-  "checkedAt": "2026-10-28T00:06:20.629Z",
+  "checkedAt": "2026-10-28T04:06:19.836Z",
   "windowDays": 60,
   "recentDays": 7,
   "baselineDays": 21,
@@ -24,7 +24,7 @@
         "snapshots": 8,
         "rmse": 0.7537499999999999,
         "me": 0.5887499999999999,
-        "n": 635.25
+        "n": 635
       },
       "baseline": {
         "snapshots": 21,
@@ -43,7 +43,7 @@
         "snapshots": 8,
         "rmse": 0.28250000000000003,
         "me": 0.18374999999999997,
-        "n": 633.375
+        "n": 633.25
       },
       "baseline": {
         "snapshots": 21,
@@ -61,8 +61,8 @@
       "recent": {
         "snapshots": 2,
         "rmse": 0.11,
-        "me": 0.095,
-        "n": 55
+        "me": 0.09,
+        "n": 56.5
       },
       "baseline": {
         "snapshots": 20,
@@ -81,7 +81,7 @@
         "snapshots": 8,
         "rmse": 0.5025,
         "me": -0.4475,
-        "n": 638.375
+        "n": 638.25
       },
       "baseline": {
         "snapshots": 21,
@@ -98,9 +98,9 @@
       "origin": "ih",
       "recent": {
         "snapshots": 8,
-        "rmse": 0.9099999999999999,
-        "me": 0.7424999999999999,
-        "n": 630
+        "rmse": 0.90875,
+        "me": 0.74125,
+        "n": 629.875
       },
       "baseline": {
         "snapshots": 21,
@@ -117,7 +117,7 @@
       "origin": "wmo-es",
       "recent": {
         "snapshots": 8,
-        "rmse": 0.8675,
+        "rmse": 0.86875,
         "me": 0.735,
         "n": 581.125
       },
@@ -127,7 +127,7 @@
         "me": 0.5495238095238095,
         "n": 544.8095238095239
       },
-      "rmseDelta": 0.16,
+      "rmseDelta": 0.17,
       "meAbsDelta": 0.19,
       "verdict": "ok"
     },
@@ -137,7 +137,7 @@
       "recent": {
         "snapshots": 8,
         "rmse": 0.47375,
-        "me": 0.40374999999999994,
+        "me": 0.40499999999999997,
         "n": 581.125
       },
       "baseline": {
@@ -147,7 +147,7 @@
         "n": 544.9047619047619
       },
       "rmseDelta": -0.02,
-      "meAbsDelta": -0.01,
+      "meAbsDelta": 0,
       "verdict": "ok"
     },
     "6200199": {
@@ -176,8 +176,8 @@
       "name": "IH (Datawell)",
       "recent": {
         "days": 8,
-        "n": 2550.75,
-        "me": 0.2643438204449672
+        "n": 2550.5,
+        "me": 0.2639712801411488
       },
       "baseline": {
         "days": 21,
@@ -195,7 +195,7 @@
       "recent": {
         "days": 8,
         "n": 1709.5,
-        "me": 0.44316759286341034
+        "me": 0.44358803743784736
       },
       "baseline": {
         "days": 21,

@@ -287,38 +287,6 @@
       ]
     },
     {
-      "id": 18917,
-      "ref": "ANAV NR 2396/26",
-      "category": "Operações de reboque",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=ec85e3df-ff3f-4f35-837c-87b9fc3c5962",
-      "source": "ih",
-      "collection": "nav_warning_coastal",
-      "polygons": [
-        [
-          [
-            -9.268976,
-            38.267897
-          ],
-          [
-            -9.268976,
-            38.577755
-          ],
-          [
-            -8.763325,
-            38.577755
-          ],
-          [
-            -8.763325,
-            38.267897
-          ],
-          [
-            -9.268976,
-            38.267897
-          ]
-        ]
-      ]
-    },
-    {
       "id": 18923,
       "ref": "ANAV NR 2399/26",
       "category": "Requisitos de segurança maritima",
@@ -450,6 +418,38 @@
           [
             -8.777294,
             40.605612
+          ]
+        ]
+      ]
+    },
+    {
+      "id": 18933,
+      "ref": "ANAV NR 2404/26",
+      "category": "Requisitos de segurança maritima",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=be05570c-8b7f-4853-8dc1-a4365b01e6e1",
+      "source": "ih",
+      "collection": "nav_warning_coastal",
+      "polygons": [
+        [
+          [
+            -9.423044,
+            38.96091
+          ],
+          [
+            -9.423044,
+            38.963413
+          ],
+          [
+            -9.419375,
+            38.963413
+          ],
+          [
+            -9.419375,
+            38.96091
+          ],
+          [
+            -9.423044,
+            38.96091
           ]
         ]
       ]
@@ -7850,7 +7850,6 @@
       1009371
     ],
     "lagoa-albufeira": [
-      18917,
       1000782,
       2017839,
       2017849,
@@ -7861,7 +7860,6 @@
       2018769
     ],
     "foil-lagoa-albufeira": [
-      18917,
       1000782,
       2017839,
       2017849,
@@ -7872,7 +7870,6 @@
       2018769
     ],
     "praia-lagoa-albufeira": [
-      18917,
       2017839,
       2017849,
       2018177,
@@ -7882,7 +7879,6 @@
       2018769
     ],
     "troia": [
-      18917,
       1000786,
       1001983,
       2017839,
@@ -7890,7 +7886,6 @@
       2018289
     ],
     "comporta": [
-      18917,
       2017849,
       2018289
     ],
@@ -8187,7 +8182,6 @@
       2018213
     ],
     "meco": [
-      18917,
       2017839,
       2017849,
       2018177,
@@ -8281,7 +8275,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-10-28T00:06:23.207Z",
+  "fetchedAt": "2026-10-28T04:06:21.374Z",
   "sourceCollection": "nav_warning_coastal+nav_warning_local+orca_anavnet_point",
   "sourceUrl": "https://ogcapi.hidrografico.pt/collections/nav_warning_coastal"
 }
