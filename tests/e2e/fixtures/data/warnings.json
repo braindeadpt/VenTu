@@ -1,6 +1,230 @@
 {
   "source": "ipma",
   "fetchedAt": "2026-09-09T23:13:18.790Z",
-  "warnings": [],
-  "spotWarnings": {}
+  "warnings": [
+    {
+      "areaCode": "ACE",
+      "areaLabel": "Angra do Heroísmo",
+      "type": "Precipitação",
+      "level": "yellow",
+      "text": "Precipitação por vezes FORTE.",
+      "startTime": "2026-10-28T09:00:00",
+      "endTime": "2026-10-29T00:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "AOC",
+      "areaLabel": "Santa Cruz das Flores",
+      "type": "Precipitação",
+      "level": "yellow",
+      "text": "Precipitação por vezes FORTE.",
+      "startTime": "2026-10-28T03:00:00",
+      "endTime": "2026-10-28T15:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "AOR",
+      "areaLabel": "Vila do Porto",
+      "type": "Precipitação",
+      "level": "yellow",
+      "text": "Precipitação por vezes FORTE.",
+      "startTime": "2026-10-28T21:00:00",
+      "endTime": "2026-10-29T09:00:00",
+      "relevant": true
+    }
+  ],
+  "spotWarnings": {
+    "praia-vitoria": [
+      {
+        "areaCode": "ACE",
+        "areaLabel": "Angra do Heroísmo",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Precipitação por vezes FORTE.",
+        "startTime": "2026-10-28T09:00:00",
+        "endTime": "2026-10-29T00:00:00",
+        "relevant": true
+      }
+    ],
+    "santa-catarina-terceira": [
+      {
+        "areaCode": "ACE",
+        "areaLabel": "Angra do Heroísmo",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Precipitação por vezes FORTE.",
+        "startTime": "2026-10-28T09:00:00",
+        "endTime": "2026-10-29T00:00:00",
+        "relevant": true
+      }
+    ],
+    "almoxarife": [
+      {
+        "areaCode": "ACE",
+        "areaLabel": "Angra do Heroísmo",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Precipitação por vezes FORTE.",
+        "startTime": "2026-10-28T09:00:00",
+        "endTime": "2026-10-29T00:00:00",
+        "relevant": true
+      }
+    ],
+    "mosteiros": [
+      {
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Precipitação por vezes FORTE.",
+        "startTime": "2026-10-28T21:00:00",
+        "endTime": "2026-10-29T09:00:00",
+        "relevant": true
+      }
+    ],
+    "monte-verde": [
+      {
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Precipitação por vezes FORTE.",
+        "startTime": "2026-10-28T21:00:00",
+        "endTime": "2026-10-29T09:00:00",
+        "relevant": true
+      }
+    ],
+    "santa-barbara": [
+      {
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Precipitação por vezes FORTE.",
+        "startTime": "2026-10-28T21:00:00",
+        "endTime": "2026-10-29T09:00:00",
+        "relevant": true
+      }
+    ],
+    "milicias": [
+      {
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Precipitação por vezes FORTE.",
+        "startTime": "2026-10-28T21:00:00",
+        "endTime": "2026-10-29T09:00:00",
+        "relevant": true
+      }
+    ],
+    "agua-alto": [
+      {
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Precipitação por vezes FORTE.",
+        "startTime": "2026-10-28T21:00:00",
+        "endTime": "2026-10-29T09:00:00",
+        "relevant": true
+      }
+    ],
+    "anjos": [
+      {
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Precipitação por vezes FORTE.",
+        "startTime": "2026-10-28T21:00:00",
+        "endTime": "2026-10-29T09:00:00",
+        "relevant": true
+      }
+    ],
+    "ponta-delgada": [
+      {
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Precipitação por vezes FORTE.",
+        "startTime": "2026-10-28T21:00:00",
+        "endTime": "2026-10-29T09:00:00",
+        "relevant": true
+      }
+    ],
+    "calhetas": [
+      {
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Precipitação por vezes FORTE.",
+        "startTime": "2026-10-28T21:00:00",
+        "endTime": "2026-10-29T09:00:00",
+        "relevant": true
+      }
+    ],
+    "ribeira-quente": [
+      {
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Precipitação por vezes FORTE.",
+        "startTime": "2026-10-28T21:00:00",
+        "endTime": "2026-10-29T09:00:00",
+        "relevant": true
+      }
+    ],
+    "formosa-santa-maria": [
+      {
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Precipitação por vezes FORTE.",
+        "startTime": "2026-10-28T21:00:00",
+        "endTime": "2026-10-29T09:00:00",
+        "relevant": true
+      }
+    ],
+    "porto-martins": [
+      {
+        "areaCode": "ACE",
+        "areaLabel": "Angra do Heroísmo",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Precipitação por vezes FORTE.",
+        "startTime": "2026-10-28T09:00:00",
+        "endTime": "2026-10-29T00:00:00",
+        "relevant": true
+      }
+    ],
+    "cachorro-pico": [
+      {
+        "areaCode": "ACE",
+        "areaLabel": "Angra do Heroísmo",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Precipitação por vezes FORTE.",
+        "startTime": "2026-10-28T09:00:00",
+        "endTime": "2026-10-29T00:00:00",
+        "relevant": true
+      }
+    ],
+    "faja-cubres": [
+      {
+        "areaCode": "ACE",
+        "areaLabel": "Angra do Heroísmo",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Precipitação por vezes FORTE.",
+        "startTime": "2026-10-28T09:00:00",
+        "endTime": "2026-10-29T00:00:00",
+        "relevant": true
+      }
+    ]
+  }
 }
