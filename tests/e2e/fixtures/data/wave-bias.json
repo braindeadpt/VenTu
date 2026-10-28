@@ -14,66 +14,6 @@
     "minBiasM": 0.15
   },
   "buoys": {
-    "4": {
-      "name": "CSA92/D",
-      "area": "Continente - Leixões",
-      "lat": 41.3155555555556,
-      "lon": -8.9825,
-      "source": "ih",
-      "n": 188,
-      "me": 0.3,
-      "mae": 0.3,
-      "rmse": 0.4,
-      "corr": 0.85
-    },
-    "19": {
-      "name": "CSA83/1D",
-      "area": "Continente - Sines",
-      "lat": 37.921111111111095,
-      "lon": -8.92861111111111,
-      "source": "ih",
-      "n": 189,
-      "me": 0,
-      "mae": 0.1,
-      "rmse": 0.2,
-      "corr": 0.89
-    },
-    "20": {
-      "name": "CSA82/D",
-      "area": "Continente - Faro",
-      "lat": 36.904807999999996,
-      "lon": -7.898416999999999,
-      "source": "ih",
-      "n": 190,
-      "me": 0,
-      "mae": 0.1,
-      "rmse": 0.1,
-      "corr": 0.85
-    },
-    "33": {
-      "name": "CSA94",
-      "area": "Arquipélago da Madeira - Caniçal",
-      "lat": 32.727777777777796,
-      "lon": -16.723888888888897,
-      "source": "ih",
-      "n": 190,
-      "me": -0.3,
-      "mae": 0.3,
-      "rmse": 0.3,
-      "corr": 0.88
-    },
-    "86": {
-      "name": "BOND5",
-      "area": "Arquipélago dos Açores - Ilha da Graciosa",
-      "lat": 39.08,
-      "lon": -27.9633333333333,
-      "source": "ih",
-      "n": 189,
-      "me": -0.4,
-      "mae": 0.6,
-      "rmse": 0.8,
-      "corr": 0.77
-    },
     "6200024": {
       "name": "Bilbao",
       "area": "Cantábrico",
@@ -143,7 +83,7 @@
       "rmse": 10.2,
       "corr": -0.12,
       "buoys": [
-        4
+        "6200084"
       ]
     },
     "Viana do Castelo": {
@@ -153,7 +93,7 @@
       "rmse": 10.2,
       "corr": -0.12,
       "buoys": [
-        4
+        "6200084"
       ]
     },
     "Esposende": {
@@ -163,7 +103,7 @@
       "rmse": 10.2,
       "corr": -0.12,
       "buoys": [
-        4
+        "6200084"
       ]
     },
     "Vila do Conde": {
@@ -173,7 +113,7 @@
       "rmse": 10.2,
       "corr": -0.12,
       "buoys": [
-        4
+        "6200084"
       ]
     },
     "Porto": {
@@ -183,7 +123,7 @@
       "rmse": 10.2,
       "corr": -0.12,
       "buoys": [
-        4
+        "6200084"
       ]
     },
     "Gondomar": {
@@ -193,7 +133,7 @@
       "rmse": 10.2,
       "corr": -0.12,
       "buoys": [
-        4
+        "6200084"
       ]
     },
     "Espinho": {
@@ -203,7 +143,7 @@
       "rmse": 10.2,
       "corr": -0.12,
       "buoys": [
-        4
+        "6200084"
       ]
     },
     "Ovar": {
@@ -213,7 +153,7 @@
       "rmse": 10.2,
       "corr": -0.12,
       "buoys": [
-        4
+        "6200084"
       ]
     },
     "Aveiro": {
@@ -223,7 +163,7 @@
       "rmse": 10.2,
       "corr": -0.12,
       "buoys": [
-        4
+        "6200084"
       ]
     },
     "Cantanhede": {
@@ -233,7 +173,7 @@
       "rmse": 0.2,
       "corr": 0.88,
       "buoys": [
-        4
+        "6200084"
       ]
     },
     "Figueira da Foz": {
@@ -243,7 +183,7 @@
       "rmse": 0.2,
       "corr": 0.88,
       "buoys": [
-        4
+        "6200084"
       ]
     },
     "Alentejo": {
@@ -253,7 +193,7 @@
       "rmse": 0.2,
       "corr": 0.97,
       "buoys": [
-        19
+        "6200085"
       ]
     },
     "Vieira do Minho": {
@@ -263,7 +203,7 @@
       "rmse": 10.2,
       "corr": -0.12,
       "buoys": [
-        4
+        "6200084"
       ]
     },
     "Zambujeira do Mar": {
@@ -273,7 +213,7 @@
       "rmse": 0.2,
       "corr": 0.97,
       "buoys": [
-        19
+        "6200085"
       ]
     },
     "Aljezur": {
@@ -283,7 +223,7 @@
       "rmse": 0.2,
       "corr": 0.97,
       "buoys": [
-        19
+        "6200085"
       ]
     },
     "Algarve": {
@@ -293,8 +233,7 @@
       "rmse": 7.3,
       "corr": 0.01,
       "buoys": [
-        19,
-        20
+        "6200085"
       ]
     },
     "Carrapateira": {
@@ -304,7 +243,7 @@
       "rmse": 0.2,
       "corr": 0.97,
       "buoys": [
-        19
+        "6200085"
       ]
     },
     "Vila do Bispo": {
@@ -314,8 +253,7 @@
       "rmse": 7.3,
       "corr": 0.01,
       "buoys": [
-        19,
-        20
+        "6200085"
       ]
     },
     "Lagos": {
@@ -325,7 +263,7 @@
       "rmse": 10.3,
       "corr": 0.04,
       "buoys": [
-        20
+        "6200085"
       ]
     },
     "Lagoa": {
@@ -335,7 +273,7 @@
       "rmse": 10.3,
       "corr": 0.04,
       "buoys": [
-        20
+        "6200085"
       ]
     },
     "Portimão": {
@@ -345,7 +283,7 @@
       "rmse": 10.3,
       "corr": 0.04,
       "buoys": [
-        20
+        "6200085"
       ]
     },
     "Sagres": {
@@ -355,7 +293,7 @@
       "rmse": 10.3,
       "corr": 0.04,
       "buoys": [
-        20
+        "6200085"
       ]
     },
     "Olhão": {
@@ -365,7 +303,7 @@
       "rmse": 10.3,
       "corr": 0.04,
       "buoys": [
-        20
+        "6200085"
       ]
     },
     "Faro": {
@@ -375,7 +313,7 @@
       "rmse": 10.3,
       "corr": 0.04,
       "buoys": [
-        20
+        "6200085"
       ]
     },
     "Tavira": {
@@ -385,7 +323,7 @@
       "rmse": 10.3,
       "corr": 0.04,
       "buoys": [
-        20
+        "6200085"
       ]
     },
     "Vila Real de Santo António": {
@@ -395,7 +333,7 @@
       "rmse": 10.3,
       "corr": 0.04,
       "buoys": [
-        20
+        "6200085"
       ]
     },
     "Albufeira": {
@@ -405,7 +343,7 @@
       "rmse": 10.3,
       "corr": 0.04,
       "buoys": [
-        20
+        "6200085"
       ]
     },
     "Alvor": {
@@ -415,237 +353,7 @@
       "rmse": 10.3,
       "corr": 0.04,
       "buoys": [
-        20
-      ]
-    },
-    "Marinha Grande": {
-      "n": 188,
-      "me": 0.3,
-      "mae": 0.3,
-      "rmse": 0.4,
-      "corr": 0.85,
-      "buoys": [
-        4
-      ]
-    },
-    "Santarém": {
-      "n": 189,
-      "me": 0,
-      "mae": 0.1,
-      "rmse": 0.2,
-      "corr": 0.89,
-      "buoys": [
-        19
-      ]
-    },
-    "Oeste": {
-      "n": 189,
-      "me": 0,
-      "mae": 0.1,
-      "rmse": 0.2,
-      "corr": 0.89,
-      "buoys": [
-        19
-      ]
-    },
-    "Óbidos": {
-      "n": 189,
-      "me": 0,
-      "mae": 0.1,
-      "rmse": 0.2,
-      "corr": 0.89,
-      "buoys": [
-        19
-      ]
-    },
-    "Caldas da Rainha": {
-      "n": 189,
-      "me": 0,
-      "mae": 0.1,
-      "rmse": 0.2,
-      "corr": 0.89,
-      "buoys": [
-        19
-      ]
-    },
-    "Peniche": {
-      "n": 189,
-      "me": 0,
-      "mae": 0.1,
-      "rmse": 0.2,
-      "corr": 0.89,
-      "buoys": [
-        19
-      ]
-    },
-    "Torres Vedras": {
-      "n": 189,
-      "me": 0,
-      "mae": 0.1,
-      "rmse": 0.2,
-      "corr": 0.89,
-      "buoys": [
-        19
-      ]
-    },
-    "Ericeira": {
-      "n": 189,
-      "me": 0,
-      "mae": 0.1,
-      "rmse": 0.2,
-      "corr": 0.89,
-      "buoys": [
-        19
-      ]
-    },
-    "Sintra": {
-      "n": 189,
-      "me": 0,
-      "mae": 0.1,
-      "rmse": 0.2,
-      "corr": 0.89,
-      "buoys": [
-        19
-      ]
-    },
-    "Cascais": {
-      "n": 189,
-      "me": 0,
-      "mae": 0.1,
-      "rmse": 0.2,
-      "corr": 0.89,
-      "buoys": [
-        19
-      ]
-    },
-    "Seixal": {
-      "n": 189,
-      "me": 0,
-      "mae": 0.1,
-      "rmse": 0.2,
-      "corr": 0.89,
-      "buoys": [
-        19
-      ]
-    },
-    "Terceira": {
-      "n": 189,
-      "me": -0.4,
-      "mae": 0.6,
-      "rmse": 0.8,
-      "corr": 0.77,
-      "buoys": [
-        86
-      ]
-    },
-    "Costa da Caparica": {
-      "n": 189,
-      "me": 0,
-      "mae": 0.1,
-      "rmse": 0.2,
-      "corr": 0.89,
-      "buoys": [
-        19
-      ]
-    },
-    "Almada": {
-      "n": 189,
-      "me": 0,
-      "mae": 0.1,
-      "rmse": 0.2,
-      "corr": 0.89,
-      "buoys": [
-        19
-      ]
-    },
-    "Faial": {
-      "n": 189,
-      "me": -0.4,
-      "mae": 0.6,
-      "rmse": 0.8,
-      "corr": 0.77,
-      "buoys": [
-        86
-      ]
-    },
-    "Sesimbra": {
-      "n": 189,
-      "me": 0,
-      "mae": 0.1,
-      "rmse": 0.2,
-      "corr": 0.89,
-      "buoys": [
-        19
-      ]
-    },
-    "Grândola": {
-      "n": 189,
-      "me": 0,
-      "mae": 0.1,
-      "rmse": 0.2,
-      "corr": 0.89,
-      "buoys": [
-        19
-      ]
-    },
-    "São Miguel": {
-      "n": 189,
-      "me": -0.4,
-      "mae": 0.6,
-      "rmse": 0.8,
-      "corr": 0.77,
-      "buoys": [
-        86
-      ]
-    },
-    "Açores": {
-      "n": 189,
-      "me": -0.4,
-      "mae": 0.6,
-      "rmse": 0.8,
-      "corr": 0.77,
-      "buoys": [
-        86
-      ]
-    },
-    "Madeira": {
-      "n": 190,
-      "me": -0.3,
-      "mae": 0.3,
-      "rmse": 0.3,
-      "corr": 0.88,
-      "buoys": [
-        33
-      ]
-    },
-    "Lourinhã": {
-      "n": 189,
-      "me": 0,
-      "mae": 0.1,
-      "rmse": 0.2,
-      "corr": 0.89,
-      "buoys": [
-        19
-      ]
-    },
-    "Pico": {
-      "n": 189,
-      "me": -0.4,
-      "mae": 0.6,
-      "rmse": 0.8,
-      "corr": 0.77,
-      "buoys": [
-        86
-      ]
-    },
-    "São Jorge": {
-      "n": 189,
-      "me": -0.4,
-      "mae": 0.6,
-      "rmse": 0.8,
-      "corr": 0.77,
-      "buoys": [
-        86
+        "6200085"
       ]
     }
   }
