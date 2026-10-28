@@ -138,9 +138,15 @@ export function JanelaNoite({
   const t = getTranslation(locale).noite;
   if (!janela && layout === 'tabela') {
     return (
-      <span className={cn('text-fg-muted', className)} data-noite-sem-janela="" title={t.semJanela}>
-        <span aria-hidden>–</span>
-        <span className="sr-only">{t.semJanela}</span>
+      // sem `sr-only`: um absoluto dentro da tabela com scroll alarga a página (390 → 491 px)
+      <span
+        className={cn('text-fg-muted', className)}
+        data-noite-sem-janela=""
+        title={t.semJanela}
+        role="img"
+        aria-label={t.semJanela}
+      >
+        –
       </span>
     );
   }

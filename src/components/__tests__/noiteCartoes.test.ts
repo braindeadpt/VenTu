@@ -92,7 +92,10 @@ describe('JanelaNoite na tabela do /spots (layout «tabela»): uma linha, altura
     expect(html).toContain('data-noite-sem-janela');
     expect(html).toContain('>–<');
     expect(html).toContain('title="Sem janela boa nas próximas horas"');
+    expect(html).toContain('aria-label="Sem janela boa nas próximas horas"');
     expect(html).not.toContain('whitespace-normal');
+    // nada absoluto (sr-only) dentro da tabela com scroll: alargava a página no mobile
+    expect(html).not.toContain('sr-only');
   });
 });
 
