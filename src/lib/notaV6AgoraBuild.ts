@@ -32,8 +32,8 @@ const finito = (x: unknown): x is number => typeof x === 'number' && Number.isFi
  * a linha não traz fica `undefined` (sem dados para o v6, não 0); `time` é a
  * etiqueta da hora coberta do forecast (com desvio: o sol conta pelo instante).
  */
-export function linhaDeCondicoes(raw: Record<string, unknown>, time: string): LinhaForecast {
-  const c = rawToScoreInput(raw);
+export function linhaDeCondicoes(raw: Record<string, unknown>, time: string, nowMs?: number): LinhaForecast {
+  const c = rawToScoreInput(raw, nowMs);
   const temVento = finito(raw.windSpeed) || c.windSpeed > 0;
   const temOnda = finito(raw.waveHeight) || c.waveHeight > 0;
   return {
@@ -95,10 +95,10 @@ export function linhasAgora(
   if (!row) return null;
   if (j < 0 || !t) {
     const tl = `${lisbonHourKeyFromDate(new Date(nowMs))}:00`;
-    return { linhas: [linhaDeCondicoes(row, tl)], j: 0 };
+    return { linhas: [linhaDeCondicoes(row, tl, nowMs)], j: 0 };
   }
   const copia = (hours as unknown as LinhaForecast[]).slice();
-  copia[j] = linhaDeCondicoes(row, t);
+  copia[j] = linhaDeCondicoes(row, t, nowMs);
   return { linhas: copia, j };
 }
 

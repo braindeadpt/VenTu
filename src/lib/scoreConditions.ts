@@ -72,9 +72,10 @@ export function applyGustSessionProxy(conditions: Conditions): {
 export function applyObservedWaveForScore(
   conditions: Conditions,
   observedWave?: ObservedWave | null,
+  nowMs?: number,
 ): Conditions {
   // Só uma boia fresca E perto (≤ 40 km, auditoria 16/10 A5) substitui a onda do modelo.
-  if (!observedWave || !isObservedWaveFresh(observedWave) || !isObservedWaveNear(observedWave)) {
+  if (!observedWave || !isObservedWaveFresh(observedWave, nowMs) || !isObservedWaveNear(observedWave)) {
     return conditions;
   }
   return {
@@ -380,7 +381,7 @@ export function resolveScoreWindSource(
  * Waves: fresh buoy reading (measured hm0) recalibrates the forecast in real
  * time — the surf score then reflects what the waverider actually measured.
  */
-export function rawToScoreInput(raw: Record<string, unknown>): Conditions {
+export function rawToScoreInput(raw: Record<string, unknown>, nowMs?: number): Conditions {
   const base: Conditions = {
     waveHeight: Number(raw.waveHeight) || 0,
     wavePeriod: Number(raw.wavePeriod) || 0,
@@ -392,8 +393,8 @@ export function rawToScoreInput(raw: Record<string, unknown>): Conditions {
   };
   const observed = pickObservedField(raw);
   let out = base;
-  if (observed && isObservedFresh(observed.observedAt)) {
+  if (observed && isObservedFresh(observed.observedAt, undefined, nowMs)) {
     out = applyObservedWindForScore(out, observed);
   }
-  return applyObservedWaveForScore(out, raw.observedWave as ObservedWave | undefined);
+  return applyObservedWaveForScore(out, raw.observedWave as ObservedWave | undefined, nowMs);
 }
