@@ -487,38 +487,6 @@
       ]
     },
     {
-      "id": 18939,
-      "ref": "ANAV NR 2406/26",
-      "category": "Anomalias no funcionamento dos sistemas de radio-posicionamento, sistema de transmissão rádio ou serviços satelite",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=0986940f-a239-462e-9f0c-54819a56bff4",
-      "source": "ih",
-      "collection": "nav_warning_coastal",
-      "polygons": [
-        [
-          [
-            -9.23043,
-            38.297643
-          ],
-          [
-            -9.23043,
-            38.594495
-          ],
-          [
-            -8.593528,
-            38.594495
-          ],
-          [
-            -8.593528,
-            38.297643
-          ],
-          [
-            -9.23043,
-            38.297643
-          ]
-        ]
-      ]
-    },
-    {
       "id": 18941,
       "ref": "ANAV NR 2400/26",
       "category": "Exercicios navais ou exercicios de tiro",
@@ -7916,7 +7884,6 @@
       2018749
     ],
     "fonte-telha": [
-      18939,
       1000782,
       2017839,
       2018289,
@@ -7947,7 +7914,6 @@
       1009371
     ],
     "lagoa-albufeira": [
-      18939,
       1000782,
       2017839,
       2017849,
@@ -7958,7 +7924,6 @@
       2018769
     ],
     "foil-lagoa-albufeira": [
-      18939,
       1000782,
       2017839,
       2017849,
@@ -7969,7 +7934,6 @@
       2018769
     ],
     "praia-lagoa-albufeira": [
-      18939,
       2017839,
       2017849,
       2018177,
@@ -7979,7 +7943,6 @@
       2018769
     ],
     "troia": [
-      18939,
       1000786,
       1001983,
       2017839,
@@ -7987,7 +7950,6 @@
       2018289
     ],
     "comporta": [
-      18939,
       2017849,
       2018289
     ],
@@ -8284,7 +8246,6 @@
       2018213
     ],
     "meco": [
-      18939,
       2017839,
       2017849,
       2018177,
@@ -8378,7 +8339,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-10-28T19:08:35.604Z",
+  "fetchedAt": "2026-10-28T20:36:38.843Z",
   "sourceCollection": "nav_warning_coastal+nav_warning_local+orca_anavnet_point",
   "sourceUrl": "https://ogcapi.hidrografico.pt/collections/nav_warning_coastal"
 }
