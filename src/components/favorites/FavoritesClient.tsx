@@ -6,7 +6,10 @@ import { useParams } from 'next/navigation';
 import { Heart, ArrowLeft, Share2, Check, LogIn } from 'lucide-react';
 import { spots } from '@/lib/spots';
 import { fetchMarineData, getCurrentConditions } from '@/lib/openmeteo';
-import { isSemDados, notaV6DoSpot, scoreAgoraComV6 } from '@/lib/notaV6Agora';
+import { isNoite, isSemDados, notaV6DoSpot, scoreAgoraComV6 } from '@/lib/notaV6Agora';
+import type { UpcomingWindowsBySport } from '@/lib/bestWindowToday';
+import { compararJanelas, janelaSeguinte } from '@/lib/noiteListas';
+import { janelasDeNoite } from '@/lib/janelasNoiteCliente';
 import { getTranslation } from '@/lib/i18n';
 import type { SportType } from '@/lib/sportRatings';
 import { SPORT_LABELS } from '@/lib/sportRatings';
@@ -53,7 +56,9 @@ export default function FavoritesClient() {
     requestLogin,
   } = useAuth();
   const [conditions, setConditions] = useState<Record<string, SpotConditions>>({});
-  const [sportScores, setSportScores] = useState<Record<string, { score: number; rating: string; ratingEn: string; semDados?: true }>>({});
+  const [sportScores, setSportScores] = useState<Record<string, { score: number; rating: string; ratingEn: string; semDados?: true; noite?: true }>>({});
+  // Noite (opção A, 28/10): próximas janelas dos favoritos de noite (o mesmo cálculo do bake) e o relógio delas
+  const [janelas, setJanelas] = useState<{ nowMs: number; porSpot: Record<string, UpcomingWindowsBySport> } | null>(null);
   const [shareCopied, setShareCopied] = useState(false);
   // The Supabase-configured state is baked at build time, so a keyless build
   // and a keyed build disagree about it between server render and the first
@@ -71,7 +76,9 @@ export default function FavoritesClient() {
 
     const fetchAll = async () => {
       const results: Record<string, SpotConditions> = {};
-      const scores: Record<string, { score: number; rating: string; ratingEn: string; semDados?: true }> = {};
+      const scores: Record<string, { score: number; rating: string; ratingEn: string; semDados?: true; noite?: true }> = {};
+      const deNoite: Array<() => Promise<readonly [string, UpcomingWindowsBySport]>> = [];
+      const nowMs = Date.now();
 
       try {
         const response = await fetch(getAssetPath('/data/conditions.json'), { cache: 'no-store' });
@@ -92,13 +99,23 @@ export default function FavoritesClient() {
               };
               const primarySport = (spot.compatibleSports?.[0] || spot.type) as SportType;
               // kitesurf/surf: o `notaV6` do pipeline (#218 PR 4) — o mesmo número do /mapa e das listas
-              scores[id] = scoreAgoraComV6(spot, primarySport, scoreInput, notaV6DoSpot(spot, precomputed));
+              const nv = notaV6DoSpot(spot, precomputed);
+              scores[id] = scoreAgoraComV6(spot, primarySport, scoreInput, nv);
+              if (isNoite(scores[id]))
+                deNoite.push(() =>
+                  janelasDeNoite(spot, scoreInput, nv, nowMs)
+                    .catch(() => ({}) as UpcomingWindowsBySport)
+                    .then((w) => [id, w] as const),
+                );
             }
           }
 
           if (favorites.every((id) => results[id])) {
+            // de noite, as janelas chegam com os scores (nunca «Sem janela» à espera do forecast)
+            const pares = deNoite.length ? await Promise.all(deNoite.map((f) => f())) : [];
             setConditions(results);
             setSportScores(scores);
+            setJanelas(pares.length ? { nowMs, porSpot: Object.fromEntries(pares) } : null);
             return;
           }
         }
@@ -146,9 +163,21 @@ export default function FavoritesClient() {
   // not flip the global isSupabaseConfigured (the layout reads it during
   // render), so readiness is resolved locally on this page.
   const supabaseReady = isSupabaseReady || hasTestSupabaseClient();
+  const primaryOf = (spot: (typeof spots)[number]) => (spot.compatibleSports?.[0] || spot.type) as SportType;
+  const janelaDe = (spot: (typeof spots)[number]) =>
+    janelas && isNoite(sportScores[spot.id])
+      ? janelaSeguinte({ spot, upcomingWindowsBySport: janelas.porSpot[spot.id] }, primaryOf(spot), janelas.nowMs)
+      : null;
   const favoriteSpots = spots
     .filter((s) => favorites.includes(s.id))
-    .sort((a, b) => (sportScores[b.id]?.score ?? 0) - (sportScores[a.id]?.score ?? 0));
+    .sort((a, b) => {
+      // de noite pela próxima janela (dia, nota, início); os de dia à frente, pela nota
+      const na = isNoite(sportScores[a.id]);
+      const nb = isNoite(sportScores[b.id]);
+      if (na !== nb) return na ? 1 : -1;
+      if (na) return compararJanelas(janelaDe(a), janelaDe(b));
+      return (sportScores[b.id]?.score ?? 0) - (sportScores[a.id]?.score ?? 0);
+    });
 
   if (!mounted || loading) {
     return (
@@ -268,6 +297,7 @@ export default function FavoritesClient() {
               const score = sportScores[spot.id]?.score ?? 0;
               // v6 sem `notaV6` (live Open-Meteo): «Sem dados», não «0 · N/A» (#218 PR 6)
               const semDados = isSemDados(sportScores[spot.id]);
+              const noite = isNoite(sportScores[spot.id]);
               const primarySport = (spot.compatibleSports?.[0] || spot.type) as SportType;
               const sportLabel = SPORT_LABELS[primarySport]
                 ? pt
@@ -297,6 +327,7 @@ export default function FavoritesClient() {
                     withImage
                     spot={spot}
                     semNota={semDados ? semDadosTxt : null}
+                    noite={noite ? { janela: janelaDe(spot) } : null}
                     statusLine={
                       semDados
                         ? semDadosTxt

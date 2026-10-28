@@ -16,6 +16,7 @@ import { useLiveGridSpotData } from '@/hooks/useLiveGridSpotData';
 import { formatUpcomingWindowLabel } from '@/lib/upcomingWindowLabel';
 import SpotRankedTable from '@/components/spots/SpotRankedTable';
 import { cn } from '@/lib/cn';
+import { compararNoite, listaDeNoite } from '@/lib/noiteListas';
 
 interface HomepageRankedSectionProps {
   spotsData: HomepageSpotData[];
@@ -76,10 +77,19 @@ export function compareHomeRanked(
   b: HomepageSpotData,
   sport: GridSportFilter,
   locale: string,
+  /** Relógio do estado «Noite» (janelas que já acabaram); `null` = todas contam. */
+  nowMs: number | null = null,
 ): number {
-  // pela nota inteira mostrada (#218 PR 4), como o ranking do /spots
-  const byScore = scoreToNota(getScoreForFilter(b, sport)) - scoreToNota(getScoreForFilter(a, sport));
-  if (byScore !== 0) return byScore;
+  // Noite (regra aprovada 28/10): pela próxima janela — dia, nota, início —,
+  // sem janela no fim; linhas de dia à frente das de noite.
+  const noite = compararNoite(a, b, sport, nowMs);
+  if (noite !== null) {
+    if (noite !== 0) return noite;
+  } else {
+    // pela nota inteira mostrada (#218 PR 4), como o ranking do /spots
+    const byScore = scoreToNota(getScoreForFilter(b, sport)) - scoreToNota(getScoreForFilter(a, sport));
+    if (byScore !== 0) return byScore;
+  }
   const byName = localizedSpotName(a.spot, locale).localeCompare(
     localizedSpotName(b.spot, locale),
     locale,
@@ -118,10 +128,13 @@ export default function HomepageRankedSection({
   const top8 = useMemo(
     () =>
       [...liveSpotsData]
-        .sort((a, b) => compareHomeRanked(a, b, sport, locale))
+        .sort((a, b) => compareHomeRanked(a, b, sport, locale, nowMs))
         .slice(0, TOP_N),
-    [liveSpotsData, sport, locale],
+    [liveSpotsData, sport, locale, nowMs],
   );
+  // Top 8 de noite: «Top 8 · próxima janela» (opção A, 28/10)
+  const noiteTop = listaDeNoite(top8, sport);
+  const tn = getTranslation(locale).noite;
 
   const rows = useMemo<WindowRow[]>(() => {
     const wSport = windowSport(sport);
@@ -188,11 +201,15 @@ export default function HomepageRankedSection({
           selectedSport={sport}
           locale={locale}
           title={
-            sport === 'all'
-              ? `Top ${TOP_N}`
-              : `Top ${TOP_N} · ${getSportLabel(sport, locale)}`
+            noiteTop
+              ? tn.top8Titulo.replace('{n}', String(TOP_N))
+              : sport === 'all'
+                ? `Top ${TOP_N}`
+                : `Top ${TOP_N} · ${getSportLabel(sport, locale)}`
           }
-          subtitle={t.bestScoresNow}
+          subtitle={noiteTop ? tn.top8Sub : t.bestScoresNow}
+          nowMs={nowMs}
+          faixaNoite={false}
         />
 
         <aside

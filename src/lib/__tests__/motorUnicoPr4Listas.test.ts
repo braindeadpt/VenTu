@@ -9,7 +9,7 @@ import { getSportScore, getHourlyScores } from '@/lib/sportScore';
 import { rawToScoreInput } from '@/lib/scoreConditions';
 import { getConditionsDataId } from '@/lib/spotConditionsSource';
 import { loadSpotListings, type SpotListingData } from '@/lib/load-spot-data';
-import { allScoresComV6, notaV6DoSpot, scoreAgoraComV6, type NotaV6Agora } from '@/lib/notaV6Agora';
+import { allScoresComV6, isNoite, notaV6DoSpot, notaV6EhNoite, scoreAgoraComV6, type NotaV6Agora } from '@/lib/notaV6Agora';
 import { notasHorariasCompare } from '@/lib/compareHourlyScores';
 import { horaDeLinha, type LinhaForecast } from '@/lib/horaSpot';
 import { avaliaHorasSite, type ModalidadeSite } from '@/lib/modalidades';
@@ -76,7 +76,7 @@ afterAll(() => {
 const linhaPagina = (sp: Spot) => (conditions[getConditionsDataId(sp)] ?? conditions[sp.id]) as Record<string, unknown>;
 
 describe('#218 PR 4 — favoritos, comparar, embed e página do spot lêem o notaV6 (todos os spots, 0 diferenças)', () => {
-  it('as cinco v6 = bake das listagens = notaV6; SUP e wakeboard = sportScore', () => {
+  it('as cinco v6 = bake das listagens = notaV6; SUP e wakeboard = sportScore (de noite, noite)', () => {
     const diferencas: string[] = [];
     let vistos = 0;
     for (const row of bake) {
@@ -103,8 +103,13 @@ describe('#218 PR 4 — favoritos, comparar, embed e página do spot lêem o not
         }
       }
       for (const sport of ANTIGOS) {
-        const antigo = getSportScore(sp, sport, rawToScoreInput(pagina)).score;
-        if (scoreAgoraComV6(sp, sport, rawToScoreInput(pagina), nv).score !== antigo) diferencas.push(`${sp.id} ${sport} D5`);
+        // corte de noite (28/10): com o notaV6 de noite, SUP e wake também ficam noite (score 0)
+        const deNoite = notaV6EhNoite(nv);
+        const antigo = deNoite ? 0 : getSportScore(sp, sport, rawToScoreInput(pagina)).score;
+        const agora = scoreAgoraComV6(sp, sport, rawToScoreInput(pagina), nv);
+        if (agora.score !== antigo || isNoite(agora) !== deNoite) diferencas.push(`${sp.id} ${sport} D5`);
+        // a linha do bake (viés regional aplicado ao input) também fica noite
+        if (deNoite && !isNoite(row.allScores[sport])) diferencas.push(`${sp.id} ${sport} listagens noite`);
       }
     }
     expect(vistos).toBeGreaterThan(150);

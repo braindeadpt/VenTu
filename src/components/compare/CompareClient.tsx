@@ -6,7 +6,13 @@ import { Trophy, Wind, Waves, Clock, ArrowLeft, Crown, Medal, Award, Check, Sear
 import { spots } from '@/lib/spots';
 import { fetchMarineData, getCurrentConditions } from '@/lib/openmeteo';
 import { getScoreTokens } from '@/lib/sportScore';
-import { allScoresComV6, isSemDados, notaV6DoSpot, scoreAgoraComV6 } from '@/lib/notaV6Agora';
+import { allScoresComV6, isNoite, isSemDados, notaV6DoSpot, scoreAgoraComV6, type NotaV6Agora } from '@/lib/notaV6Agora';
+import type { Conditions } from '@/lib/sportScore';
+import type { UpcomingWindowsBySport } from '@/lib/bestWindowToday';
+import { janelaSeguinte, veredictoNoite, type JanelaSeguinte } from '@/lib/noiteListas';
+import VeredictoNoite from '@/components/compare/VeredictoNoite';
+import { janelasDeNoite } from '@/lib/janelasNoiteCliente';
+import { JanelaNoite, LuaNoite } from '@/components/ui/NoiteJanela';
 import type { SportType } from '@/lib/sportRatings';
 import { SPORT_LABELS } from '@/lib/sportRatings';
 import { getAssetPath } from '@/lib/paths';
@@ -50,6 +56,9 @@ interface SpotBattleData {
    * hero, porque o comparador não tem o contexto do card de onda observada.
    */
   observedWaveCalibration: ObservedWave['calibration'] | null;
+  /** Input do score e `notaV6` do spot: as janelas de noite usam-nos (o mesmo cálculo do bake). */
+  scoreInput: Conditions;
+  notaV6: NotaV6Agora | null;
 }
 
 interface PrecomputedCondition {
@@ -84,11 +93,14 @@ async function loadSpotBattleData(
       source: 'real' as const,
       updatedAt: cond.updatedAt,
     };
+    const notaV6 = precomputed ? notaV6DoSpot(spot, precomputed as Record<string, unknown>) : null;
     return {
       spot,
       conditions,
+      scoreInput,
+      notaV6,
       // kitesurf/surf do `notaV6` do pipeline (#218 PR 4): o mesmo «agora» do /mapa e das listas
-      allScores: allScoresComV6(spot, scoreInput, precomputed ? notaV6DoSpot(spot, precomputed as Record<string, unknown>) : null),
+      allScores: allScoresComV6(spot, scoreInput, notaV6),
       driveTime,
       // A altura mostrada É a corrigida (scoreInput); o sufixo nomeia a origem
       // da correcção a partir da row crua (observedWave/waveBias).
@@ -110,6 +122,8 @@ async function loadSpotBattleData(
     return {
       spot,
       conditions,
+      scoreInput: conditions,
+      notaV6: null,
       // Live Open-Meteo, sem `notaV6` do pipeline: as modalidades v6 ficam
       // «sem dados» (#218, PR 6 — o motor antigo delas já não existe).
       allScores: allScoresComV6(spot, conditions, null),
@@ -203,6 +217,9 @@ export default function CompareClient() {
   // Scores actuais por spot — o picker mostra o chip para o desporto
   // seleccionado (mesma leitura que o comparador usa depois).
   const [pickerCond, setPickerCond] = useState<Record<string, PrecomputedCondition> | null>(null);
+  // Noite (opção A, 28/10): próximas janelas dos spots comparados (o mesmo
+  // cálculo do bake, só de noite) e o relógio com que foram calculadas.
+  const [janelas, setJanelas] = useState<{ nowMs: number; porSpot: Record<string, UpcomingWindowsBySport> } | null>(null);
 
   useEffect(() => {
     const urlSlugs = getSpotsFromUrl();
@@ -250,6 +267,26 @@ export default function CompareClient() {
     return () => { cancelled = true; };
   }, [slugs, baseCity, retryKey]);
 
+  useEffect(() => {
+    setJanelas(null);
+    const deNoite = battleData.filter((d) => COMPARE_SPORTS.some((s) => isNoite(d.allScores[s])));
+    if (!deNoite.length) return;
+    let cancelled = false;
+    const nowMs = Date.now();
+    Promise.all(
+      deNoite.map((d) =>
+        janelasDeNoite(d.spot, d.scoreInput, d.notaV6, nowMs)
+          .catch(() => ({}) as UpcomingWindowsBySport)
+          .then((w) => [d.spot.id, w] as const),
+      ),
+    ).then((pares) => {
+      if (!cancelled) setJanelas({ nowMs, porSpot: Object.fromEntries(pares) });
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [battleData]);
+
   const startCompare = () => {
     if (selectedSlugs.length < 2) return;
     const url = `/${locale}/compare/?spots=${selectedSlugs.join(',')}`;
@@ -289,24 +326,27 @@ export default function CompareClient() {
 
   // Scores para TODOS os spots (não só os filtrados): o grupo «A bombar
   // agora» precisa do ranking global mesmo com a pesquisa vazia.
-  const pickerScores = useMemo(() => {
+  const pickerData = useMemo(() => {
     if (!pickerCond) return null;
     const m = new Map<string, number>();
+    const noite = new Set<string>();
     for (const spot of spots) {
       const cond = pickerCond[getConditionsDataId(spot)] ?? pickerCond[spot.id];
       if (!cond) continue;
-      m.set(
-        spot.slug,
-        scoreAgoraComV6(
-          spot,
-          selectedSport,
-          rawToScoreInput(cond as Record<string, unknown>),
-          notaV6DoSpot(spot, pickerCond as Record<string, unknown>),
-        ).score,
+      const s = scoreAgoraComV6(
+        spot,
+        selectedSport,
+        rawToScoreInput(cond as Record<string, unknown>),
+        notaV6DoSpot(spot, pickerCond as Record<string, unknown>),
       );
+      m.set(spot.slug, s.score);
+      if (isNoite(s)) noite.add(spot.slug);
     }
-    return m;
+    return { m, noite };
   }, [pickerCond, selectedSport]);
+  const pickerScores = pickerData?.m ?? null;
+  // Spots do picker de noite no desporto escolhido: a lua no lugar do «0»
+  const pickerNoite = pickerData?.noite;
 
   // Auditoria C2 — o picker é search + favoritos + top-agora, não um
   // directório de 185 spots. A pesquisa continua a cobrir a cauda longa.
@@ -349,6 +389,7 @@ export default function CompareClient() {
 
   const renderSpotButton = (spot: (typeof spots)[number]) => {
     const selected = selectedSlugs.includes(spot.slug);
+    const spotNoite = !!pickerNoite?.has(spot.slug);
     const atLimit = selectedSlugs.length >= 3 && !selected;
     const spotScore = pickerScores?.get(spot.slug);
     return (
@@ -381,7 +422,9 @@ export default function CompareClient() {
         </span>
         {/* Sem aria-hidden: o score é a razão do picker e tem de entrar no
             nome acessível do botão. */}
-        {spotScore !== undefined && (
+        {spotScore !== undefined && spotNoite ? (
+          <LuaNoite size={24} locale={locale} className="ml-auto" />
+        ) : spotScore !== undefined && (
           <span
             className={`ml-auto shrink-0 font-mono text-sm font-semibold tabular-nums ${getScoreTokens(spotScore).text}`}
           >
@@ -550,9 +593,24 @@ export default function CompareClient() {
     );
   }
 
-  const sorted = [...battleData].sort((a, b) =>
-    (b.allScores[selectedSport]?.score || 0) - (a.allScores[selectedSport]?.score || 0)
-  );
+  // Noite (opção A, 28/10): sem «Vencedor» falso. Com todos os spots de noite
+  // no desporto escolhido, a ordem é a da próxima janela (dia, nota, início) e
+  // ganha quem tem a melhor janela nas próximas 24 h («Amanhã ganha …»).
+  const tn = getTranslation(validateLocale(locale)).noite;
+  const noiteCmp = battleData.every((d) => isNoite(d.allScores[selectedSport]));
+  const nomeDe = (d: SpotBattleData) => (isPt ? d.spot.name : d.spot.nameEn);
+  const janelaDe = (d: SpotBattleData): JanelaSeguinte | null =>
+    janelas
+      ? janelaSeguinte({ spot: d.spot, upcomingWindowsBySport: janelas.porSpot[d.spot.id] }, selectedSport, janelas.nowMs)
+      : null;
+  const noiteV = noiteCmp && janelas ? veredictoNoite(battleData, janelaDe, nomeDe, janelas.nowMs, locale) : null;
+  const sorted = noiteV
+    ? noiteV.ordem
+    : [...battleData].sort((a, b) =>
+        (b.allScores[selectedSport]?.score || 0) - (a.allScores[selectedSport]?.score || 0)
+      );
+  const ganham24h = noiteV?.ganham24h ?? [];
+  const vencedorNoite = ganham24h[0] ?? null;
   const winner = sorted[0];
   const winnerScore = winner.allScores[selectedSport]?.score || 0;
   const winnerTokens = getScoreTokens(winnerScore);
@@ -605,6 +663,14 @@ export default function CompareClient() {
           ))}
         </div>
 
+        {noiteCmp ? (
+          <VeredictoNoite
+            locale={locale}
+            pronto={!!janelas}
+            vencedor={vencedorNoite ? { slug: vencedorNoite.spot.slug, nome: nomeDe(vencedorNoite) } : null}
+            segundo={ganham24h[1] ? nomeDe(ganham24h[1]) : null}
+          />
+        ) : (
         <div className={`card-1 p-6 text-center border ${winnerTokens.border} ${winnerTokens.glow}`}>
           <Crown className={`w-8 h-8 ${winnerTokens.text} mx-auto mb-2`} aria-hidden />
           <p className={`text-meta-sm font-bold uppercase tracking-wide ${winnerTokens.text} mb-2`}>
@@ -622,6 +688,7 @@ export default function CompareClient() {
             {winnerSemDados ? '—' : `${scoreToNota(winnerScore)}/10`}
           </div>
         </div>
+        )}
 
         <div className={`grid gap-6 ${sorted.length === 2 ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1 md:grid-cols-3'}`}>
           {sorted.map((data, i) => {
@@ -629,6 +696,7 @@ export default function CompareClient() {
             const scoreValue = data.allScores[selectedSport]?.score || 0;
             const tokens = getScoreTokens(scoreValue);
             const score = data.allScores[selectedSport];
+            const cardNoite = isNoite(score);
             // Aviso activo do spot (IPMA/MeteoAlarm) — mesmo chip partilhado
             // do card/sticky/mapa, para o comparador nunca divergir no rótulo.
             const warning = strongestSpotWarning(warningsData, data.spot.id);
@@ -643,8 +711,13 @@ export default function CompareClient() {
                       updatedAt={data.conditions.updatedAt}
                       locale={locale}
                     />
+                    {vencedorNoite === data ? (
+                      <span className="rounded-[6px] bg-score-epic px-1.5 py-1 text-meta-sm font-bold uppercase tracking-[0.12em] text-bg-base" data-compare-ganha-cartao="">
+                        {tn.cartaoGanha}
+                      </span>
+                    ) : null}
                   </div>
-                  <span className={`text-h2 font-mono tabular-nums ${tokens.text}`}>#{i + 1}</span>
+                  <span className={`text-h2 font-mono tabular-nums ${cardNoite ? 'text-fg-muted' : tokens.text}`}>#{i + 1}</span>
                 </div>
 
                 <h3 className="text-h3 text-fg">{isPt ? data.spot.name : data.spot.nameEn}</h3>
@@ -667,12 +740,25 @@ export default function CompareClient() {
                   </div>
                 )}
 
+                {cardNoite ? (
+                  <div className="my-4 flex flex-col items-center gap-2 text-center" data-noite="">
+                    <LuaNoite size={56} locale={locale} decorativa />
+                    <span className="text-meta-sm font-semibold uppercase tracking-[0.12em] text-fg">{tn.rotulo}</span>
+                    <span className="mt-1 text-meta-sm text-fg-muted">{tn.proximaJanela}</span>
+                    {janelas ? (
+                      <JanelaNoite janela={janelaDe(data)} locale={locale} className="justify-center text-meta" />
+                    ) : (
+                      <Skeleton className="h-5 w-32" />
+                    )}
+                  </div>
+                ) : (
                 <div className="text-center my-4">
                   <div className={`text-display-lg font-mono tabular-nums ${tokens.text}`}>
                     {isSemDados(score) ? '—' : scoreToNota(score?.score || 0)}
                   </div>
                   <div className="text-meta-sm text-fg-muted">{isSemDados(score) ? semDadosTxt : '/10'}</div>
                 </div>
+                )}
 
                 <dl className="space-y-2 text-sm">
                   <div className="flex justify-between">

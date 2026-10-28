@@ -11,6 +11,8 @@ import { getGridSpotScore, spotDetailHref } from '@/lib/gridSpotScore';
 import { getCalmWaterMetricLabel } from '@/lib/spotWaterContext';
 import SpotListCard from './SpotListCard';
 import Button from '@/components/ui/Button';
+import { janelaSeguinte, linhaDeNoite, listaDeNoite } from '@/lib/noiteListas';
+import { FaixaNoite } from '@/components/ui/NoiteJanela';
 
 const PAGE_SIZE = 12;
 
@@ -20,6 +22,8 @@ interface SpotGridRankedListProps {
   locale: string;
   /** Home Model A: omit spots already shown in Top agora */
   excludeSlugs?: string[];
+  /** Relógio do estado «Noite» (`useRelogioNoite`). */
+  nowMs?: number | null;
 }
 
 export default function SpotGridRankedList({
@@ -27,6 +31,7 @@ export default function SpotGridRankedList({
   selectedSport,
   locale,
   excludeSlugs,
+  nowMs = null,
 }: SpotGridRankedListProps) {
   const isPt = locale === 'pt';
   const t = getTranslation(locale as 'pt' | 'en');
@@ -60,7 +65,9 @@ export default function SpotGridRankedList({
       ? t.spotsUi.moreSpots
       : t.spotsUi.moreSpotsFor.replace('{sport}', sportLabel);
 
-  const subtitle = t.spotsUi.sortedByScore;
+  // Noite (opção A, 28/10): a faixa de contexto e a lua nos cartões
+  const noiteLista = listaDeNoite(list, selectedSport);
+  const subtitle = noiteLista ? t.noite.top8Sub : t.spotsUi.sortedByScore;
 
   return (
     <section className="mb-10" aria-labelledby="spot-ranked-heading">
@@ -70,6 +77,8 @@ export default function SpotGridRankedList({
         </h2>
         <p className="text-meta text-fg-muted mt-1">{subtitle}</p>
       </div>
+
+      {noiteLista ? <FaixaNoite locale={locale} className="mb-3" /> : null}
 
       <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 list-none p-0 m-0">
         {list.map((data, i) => (
@@ -93,6 +102,11 @@ export default function SpotGridRankedList({
                 data.conditions.waveHeight,
                 locale,
               )}
+              noite={
+                linhaDeNoite(data, selectedSport)
+                  ? { janela: janelaSeguinte(data, selectedSport, nowMs) }
+                  : null
+              }
             />
           </li>
         ))}

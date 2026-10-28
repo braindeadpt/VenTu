@@ -142,6 +142,7 @@
   font:900 26px/1 var(--disp);font-variant-numeric:tabular-nums;position:relative;transition:transform .2s}
 .v6h .bloco .bl{display:block;font:700 13px/1.1 var(--txt);margin-top:5px;color:var(--nevoa);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .v6h .bloco .bl .lg{display:none}
+.v6h .bloco .bar svg{width:.8em;height:.8em}
 .v6h .bloco[aria-pressed=true] .bar{box-shadow:0 0 0 3px var(--abismo),0 0 0 6px var(--espuma)}
 .v6h .bloco[aria-pressed=true] .bl{color:var(--espuma);font-weight:800}
 .v6h .bloco .bar u{position:absolute;top:-7px;width:0;height:0;margin-left:-7px;border:7px solid transparent;border-top-color:var(--espuma);border-bottom:0;filter:drop-shadow(0 1px 0 var(--abismo))}

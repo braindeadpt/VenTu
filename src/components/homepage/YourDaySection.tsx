@@ -20,12 +20,16 @@ import {
 } from '@/lib/bestWindow';
 import { resolveBestWindowForSport } from '@/lib/bestWindowToday';
 import Button from '@/components/ui/Button';
+import { compararJanelas, janelaSeguinte, linhaDeNoite } from '@/lib/noiteListas';
+import { JanelaNoite, LuaNoite } from '@/components/ui/NoiteJanela';
 
 interface YourDaySectionProps {
   locale: string;
   spotsData: HomepageSpotData[];
   favoriteIds: string[];
   activeSport?: GridSportFilter;
+  /** Relógio do estado «Noite» (o do build até montar, depois o real). */
+  nowMs?: number | null;
 }
 
 export default function YourDaySection({
@@ -33,6 +37,7 @@ export default function YourDaySection({
   spotsData,
   favoriteIds,
   activeSport = 'all',
+  nowMs = null,
 }: YourDaySectionProps) {
   const t = getTranslation(locale).homepage;
   const isPt = locale === 'pt';
@@ -68,10 +73,18 @@ export default function YourDaySection({
           // Big Wave lê o surf (D8, #218): a janela é a do surf
           sport === 'big-wave' ? 'surf' : sport === 'all' ? bestSport : (sport as SportType),
         );
-        return { data, sport: bestSport, score: sportScore, window };
+        // Noite (opção A, 28/10): lua + próxima janela em vez de «0/10»
+        const noite = linhaDeNoite(data, sport);
+        const janela = noite ? janelaSeguinte(data, sport, nowMs) : null;
+        return { data, sport: noite && janela ? janela.sport : bestSport, score: sportScore, window, noite, janela };
       })
-      .sort((a, b) => b.score - a.score);
-  }, [favoriteIds, spotsData, activeSport]);
+      .sort((a, b) => {
+        // de dia pela nota; de noite pela próxima janela (dia, nota, início), as de dia à frente
+        if (a.noite !== b.noite) return a.noite ? 1 : -1;
+        if (a.noite) return compararJanelas(a.janela, b.janela);
+        return b.score - a.score;
+      });
+  }, [favoriteIds, spotsData, activeSport, nowMs]);
 
   // Empty state
   if (cards.length === 0) {
@@ -127,7 +140,7 @@ export default function YourDaySection({
       </div>
 
       <ul className="space-y-2 list-none p-0 m-0">
-        {cards.map(({ data, sport, score, window }, i) => {
+        {cards.map(({ data, sport, score, window, noite, janela }, i) => {
           const name = localizedSpotName(data.spot, locale);
           const tokens = getScoreTokens(score);
           const sportLabel = getSportLabel(sport, locale);
@@ -144,7 +157,10 @@ export default function YourDaySection({
                 href={spotDetailHref(locale, data.spot.slug, sport)}
                 className="flex items-center gap-3 px-3 py-2.5 rounded-card border border-divider bg-surface-1/[0.04] hover:bg-surface-2/[0.08] hover:border-divider-strong transition-all duration-150 ease-out group"
               >
-                {/* Score pill */}
+                {/* Score pill (de noite, a lua) */}
+                {noite ? (
+                  <LuaNoite size={40} locale={locale} className="min-w-[44px]" />
+                ) : (
                 <span
                   className={[
                     'shrink-0 flex items-center justify-center min-w-[44px] h-10 rounded-pill font-mono font-semibold text-sm tabular-nums border',
@@ -156,6 +172,7 @@ export default function YourDaySection({
                 >
                   {scoreToNota(score)}
                 </span>
+                )}
 
                 {/* Info */}
                 <div className="flex-1 min-w-0">
@@ -163,10 +180,15 @@ export default function YourDaySection({
                     <span className="text-body-sm font-semibold text-fg truncate">
                       {name}
                     </span>
-                    <span className={['text-meta-sm font-medium', tokens.text].join(' ')}>
+                    <span className={['text-meta-sm font-medium', noite ? 'text-fg-muted' : tokens.text].join(' ')}>
                       {sportLabel}
                     </span>
                   </div>
+                  {noite ? (
+                    <div className="mt-0.5 text-meta-sm" data-noite="">
+                      <JanelaNoite janela={janela} locale={locale} />
+                    </div>
+                  ) : (
                   <div className="flex items-center gap-2 text-meta-sm text-fg-muted font-mono tabular-nums mt-0.5">
                     {window && (
                       <>
@@ -184,6 +206,7 @@ export default function YourDaySection({
                       {windKt}kt
                     </span>
                   </div>
+                  )}
                 </div>
 
                 <ArrowRight className="w-4 h-4 text-fg-subtle group-hover:text-fg transition-colors shrink-0" aria-hidden />

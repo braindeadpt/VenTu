@@ -23,6 +23,8 @@ import { resolveBestWindowForSport } from '@/lib/bestWindowToday';
 import { phaseFromConditionsStatus, TIDE_PHASE_CELL } from '@/lib/tideSchedule';
 import type { TidePhase } from '@/lib/tideSchedule';
 import { cn } from '@/lib/cn';
+import { janelaSeguinte, linhaDeNoite, listaDeNoite } from '@/lib/noiteListas';
+import { FaixaNoite, JanelaNoite, LuaNoite } from '@/components/ui/NoiteJanela';
 
 interface SpotRankedTableProps {
   sorted: GridSpotData[];
@@ -31,6 +33,13 @@ interface SpotRankedTableProps {
   /** Section heading overrides — home reuses the table as «Top 8 · Surf». */
   title?: string;
   subtitle?: string;
+  /**
+   * Relógio do estado «Noite» (dia da próxima janela; `useRelogioNoite`):
+   * o do build até montar, o real depois. `null` = sem relógio (dia da semana).
+   */
+  nowMs?: number | null;
+  /** Faixa «Noite. Por ordem da próxima janela boa…» quando a lista está toda de noite (a home usa o título). */
+  faixaNoite?: boolean;
 }
 
 function windowSport(sport: GridSportFilter): SportType | 'all' {
@@ -61,11 +70,15 @@ export default function SpotRankedTable({
   locale,
   title,
   subtitle,
+  nowMs = null,
+  faixaNoite = true,
 }: SpotRankedTableProps) {
   const isPt = locale === 'pt';
   const t = getTranslation(locale as Locale);
   const router = useRouter();
   const wSport = windowSport(selectedSport);
+  // Noite (opção A, 28/10): lua no lugar do «0» e a próxima janela na coluna Janela
+  const noiteLista = listaDeNoite(sorted, selectedSport);
 
   return (
     <section className="mb-10" aria-labelledby="spot-table-heading">
@@ -74,9 +87,11 @@ export default function SpotRankedTable({
           {title ?? t.ranked.spotRanking}
         </h2>
         <p className="text-meta text-fg-muted mt-1">
-          {subtitle ?? t.spotsUi.sortedByScore}
+          {subtitle ?? (noiteLista ? t.noite.top8Sub : t.spotsUi.sortedByScore)}
         </p>
       </div>
+
+      {noiteLista && faixaNoite ? <FaixaNoite locale={locale} className="mb-3" /> : null}
 
       <div
         role="region"
@@ -139,6 +154,7 @@ export default function SpotRankedTable({
                 conditions.tideStatus as TidePhase | undefined,
               );
               const tideCell = tidePhase ? TIDE_PHASE_CELL[tidePhase] : undefined;
+              const noite = linhaDeNoite(data, selectedSport);
               const bestWindow = resolveBestWindowForSport(
                 data.bestWindowToday,
                 data.bestWindowsBySport,
@@ -148,6 +164,7 @@ export default function SpotRankedTable({
               return (
                 <tr
                   key={spot.id}
+                  data-noite={noite ? '' : undefined}
                   onClick={() => router.push(href)}
                   className="border-b border-divider/60 last:border-0 cursor-pointer transition-colors duration-150 hover:bg-surface-2/[0.06]"
                 >
@@ -155,12 +172,16 @@ export default function SpotRankedTable({
                     {i + 1}
                   </td>
                   <td className="py-2 px-2">
-                    <span
-                      className={cn('font-mono font-semibold tabular-nums', tokens.text)}
-                      title={getScoreTierLabel(tokens.tier, locale)}
-                    >
-                      {scoreToNota(score)}
-                    </span>
+                    {noite ? (
+                      <LuaNoite size={28} locale={locale} />
+                    ) : (
+                      <span
+                        className={cn('font-mono font-semibold tabular-nums', tokens.text)}
+                        title={getScoreTierLabel(tokens.tier, locale)}
+                      >
+                        {scoreToNota(score)}
+                      </span>
+                    )}
                   </td>
                   <td className="py-2 px-2 min-w-0">
                     <Link
@@ -220,7 +241,14 @@ export default function SpotRankedTable({
                     )}
                   </td>
                   <td className="py-2 pl-2 pr-3 font-mono tabular-nums whitespace-nowrap">
-                    {bestWindow ? (
+                    {noite ? (
+                      <JanelaNoite
+                        janela={janelaSeguinte(data, selectedSport, nowMs)}
+                        locale={locale}
+                        layout="pilha"
+                        className="font-sans max-w-[9.5rem]"
+                      />
+                    ) : bestWindow ? (
                       <span className="text-fg">
                         {String(bestWindow.start).padStart(2, '0')}–{String(bestWindow.end).padStart(2, '0')}h
                         <span

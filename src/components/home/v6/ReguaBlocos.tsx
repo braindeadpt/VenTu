@@ -11,6 +11,7 @@ import { useRef, type CSSProperties, type KeyboardEvent } from 'react';
 import { bandaVars } from '@/lib/v6Tokens';
 import type { EstadoHome } from '@/lib/home/estadoHome';
 import type { HomeV6Copy } from '@/lib/translations/homeV6';
+import { LUA_D } from '@/components/v6/Nota';
 
 export default function ReguaBlocos({ E, copy: c, onEscolhe }: { E: EstadoHome; copy: HomeV6Copy; onEscolhe: (id: string) => void }) {
   const raiz = useRef<HTMLDivElement>(null);
@@ -50,7 +51,16 @@ export default function ReguaBlocos({ E, copy: c, onEscolhe }: { E: EstadoHome; 
                   onKeyDown={teclas}
                 >
                   <span className="bar">
-                    {cel.n ?? '–'}
+                    {/* noite: a lua do spot (o «–» é «sem dados» no resto do site) */}
+                    {cel.n != null ? (
+                      cel.n
+                    ) : cel.id === 'noite' ? (
+                      <svg viewBox="0 0 24 24" aria-hidden="true" data-lua="">
+                        <path d={LUA_D} fill="currentColor" />
+                      </svg>
+                    ) : (
+                      '–'
+                    )}
                     {cel.marca != null ? <u style={{ left: `${cel.marca}%` }} /> : null}
                   </span>
                   <span className="bl">

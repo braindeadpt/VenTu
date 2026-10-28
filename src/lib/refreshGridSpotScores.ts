@@ -37,7 +37,8 @@ export function refreshGridSpotScores<T extends GridSpotData>(
     // ficheiro servido sem `notaV6`, ou sem uma modalidade (anterior ao PR 6),
     // mantém a da linha (o bake), nunca recalcula. SUP e wakeboard: motor antigo.
     const nv = notaV6DoSpot(row.spot, conditionsJson);
-    const allScores = { ...row.allScores, ...scoresMotorAntigo(row.spot, scoreInput) } as Record<SportType, SportScore>;
+    // (de noite pelo `notaV6` do spot, SUP e wakeboard também ficam de noite)
+    const allScores = { ...row.allScores, ...scoresMotorAntigo(row.spot, scoreInput, nv) } as Record<SportType, SportScore>;
     if (nv) {
       const v6 = allScoresComV6(row.spot, scoreInput, nv);
       for (const [sport, d] of Object.entries(DESPORTO_PARA_AGORA) as Array<[SportType, ModalidadeAgora]>) {

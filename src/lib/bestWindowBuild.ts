@@ -3,6 +3,10 @@
  * — só servidor/pipeline: importa o motor v6 (`notaUnica`) e o editorial, que
  * não devem ir para o bundle das páginas. Os componentes só lêem os tipos e
  * `resolveBestWindowForSport` de `bestWindowToday.ts`.
+ * Excepção: de noite, o comparador, os favoritos e o widget embed (páginas só
+ * de cliente, sem linha do bake) calculam a próxima janela com
+ * `computeUpcomingWindowsForSpot` por import DINÂMICO (`janelasNoiteCliente.ts`):
+ * um chunk à parte que só carrega à noite.
  *
  * Motor único (#218), PR 5:
  * - Surf, kitesurf, windsurf, bodyboard e foil (PR 6; a Big Wave lê o surf,

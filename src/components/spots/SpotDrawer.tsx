@@ -18,11 +18,15 @@ import Button from '@/components/ui/Button';
 import { resolveWavePowerKw } from '@/lib/waveEnergy';
 import { spotDetailHref } from '@/lib/gridSpotScore';
 import type { MarineConditionsFields } from '@/lib/marineConditions';
+import type { UpcomingWindowsBySport } from '@/lib/bestWindowToday';
+import { isNoite } from '@/lib/notaV6Agora';
+import { janelaSeguinte } from '@/lib/noiteListas';
 
 interface SpotData {
   spot: Spot;
   conditions: MarineConditionsFields;
   allScores: Record<SportType, SportScore>;
+  upcomingWindowsBySport?: UpcomingWindowsBySport;
 }
 
 interface SpotDrawerProps {
@@ -30,6 +34,8 @@ interface SpotDrawerProps {
   onClose: () => void;
   locale: string;
   gridSport?: GridSportFilter;
+  /** Relógio do estado «Noite» (`useRelogioNoite`). */
+  nowMs?: number | null;
 }
 
 function kts(v: number): string {
@@ -61,6 +67,7 @@ export default function SpotDrawer({
   onClose,
   locale,
   gridSport = 'all',
+  nowMs = null,
 }: SpotDrawerProps) {
   const isPt = locale === 'pt';
   const t = getTranslation(locale);
@@ -80,6 +87,11 @@ export default function SpotDrawer({
   }, [spotData, gridSport, compatibleSports]);
 
   const currentScore = spotData?.allScores[selectedSport]?.score ?? 0;
+  // Noite (opção A, 28/10): lua + próxima janela do desporto escolhido
+  const noite =
+    spotData && isNoite(spotData.allScores[selectedSport])
+      ? { janela: janelaSeguinte(spotData, selectedSport, nowMs) }
+      : null;
   const wavePowerKw = conditions ? resolveWavePowerKw(conditions) : 0;
   const detailHref = spot
     ? spotDetailHref(locale, spot.slug, gridSport !== 'all' ? gridSport : selectedSport)
@@ -104,6 +116,7 @@ export default function SpotDrawer({
             wavePowerKw={wavePowerKw.toFixed(1)}
             waterTemp={Math.round(conditions.waterTemp)}
             locale={locale}
+            noite={noite}
           />
 
           <DataSourceBadge
@@ -123,6 +136,7 @@ export default function SpotDrawer({
                   key={sport}
                   sport={sport}
                   score={spotData.allScores[sport]?.score ?? 0}
+                  noite={isNoite(spotData.allScores[sport])}
                   active={selectedSport === sport}
                   onClick={() => setSelectedSport(sport)}
                   locale={locale}

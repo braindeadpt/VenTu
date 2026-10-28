@@ -24,6 +24,7 @@ import { useLiveGridSpotData } from '@/hooks/useLiveGridSpotData';
 import { strongestSpotWarning, warningBadgeLabel } from '@/lib/ipmaWarnings';
 import { resolveScoreWaveCorrection } from '@/lib/scoreConditions';
 import BuoyLayerNotice from '@/components/spots/BuoyLayerNotice';
+import { listaDeNoite } from '@/lib/noiteListas';
 
 interface HomepageTopNowProps {
   spotsData: HomepageSpotData[];
@@ -69,6 +70,8 @@ export default function HomepageTopNow({
   // num dia de vento, ambos num dia misto); com um desporto escolhido mostra
   // os melhores spots desse desporto.
   const cards = getTopNowCards(liveSpotsData, activeSport, maxCards);
+  // De noite o estado vazio não fala de «mar de espelho hoje» (opção A, 28/10)
+  const noite = cards.length === 0 && listaDeNoite(liveSpotsData, activeSport);
   const subtitle =
     activeSport === 'all'
       ? t.homepage.onlyFiringSpots
@@ -97,7 +100,7 @@ export default function HomepageTopNow({
         <EmptyState
           className="py-10"
           title={getPlayfulEmptyCopy('no-top-now', locale).title}
-          description={getPlayfulEmptyCopy('no-top-now', locale).description}
+          description={noite ? t.noite.topNowDesc : getPlayfulEmptyCopy('no-top-now', locale).description}
           action={
             <Button variant="secondary" href={`/${locale}/explorar/`} locale={cardLocale}>
               {t.homepage.viewForecasts}

@@ -64,6 +64,7 @@ export function useSpotGridFilters({
   initialSport,
   initialRegion,
   locale = 'pt',
+  nowMs = null,
 }: {
   spotsData: GridSpotData[];
   regions: string[];
@@ -71,6 +72,8 @@ export function useSpotGridFilters({
   initialRegion?: string;
   /** Desempate do ranking por nome localizado. */
   locale?: string;
+  /** Relógio do estado «Noite» (`useRelogioNoite`): ordem pela próxima janela. */
+  nowMs?: number | null;
 }) {
   const skipUrlSync = useRef(false);
   const [selectedSport, setSelectedSport] = useState<GridSportFilter>(DEFAULT_SPORT);
@@ -127,9 +130,9 @@ export function useSpotGridFilters({
         const distB = calculateDistance(latitude, longitude, b.spot.lat, b.spot.lon);
         return distA - distB;
       }
-      return compareRanking(a, b, selectedSport, locale);
+      return compareRanking(a, b, selectedSport, locale, nowMs);
     });
-  }, [filtered, selectedSport, sortBy, latitude, longitude, locale]);
+  }, [filtered, selectedSport, sortBy, latitude, longitude, locale, nowMs]);
 
   const onCountMemo = useMemo(
     () => computeOnCount(sorted, selectedSport),

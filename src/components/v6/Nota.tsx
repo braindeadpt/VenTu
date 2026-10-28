@@ -8,6 +8,9 @@ import type { CSSProperties } from 'react';
 import { bandaDe } from '@/lib/modalidades';
 import { bandaVars } from '@/lib/v6Tokens';
 
+/** Lua do estado «Noite» (partilhada com as listas fora do /mapa: `ui/NoiteJanela`). */
+export const LUA_D = 'M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z';
+
 export interface NotaProps {
   n: number | null;
   /** Texto acessível («Nota 9 em 10, Muito bom»). */
@@ -31,7 +34,7 @@ export default function Nota({ n, ariaLabel, className, style, semDados }: NotaP
     return (
       <span className={`nota${className ? ' ' + className : ''}`} style={vars} role="img" aria-label={ariaLabel} data-banda={b}>
         <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="currentColor" />
+          <path d={LUA_D} fill="currentColor" />
         </svg>
       </span>
     );
