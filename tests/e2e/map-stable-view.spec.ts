@@ -47,7 +47,15 @@ async function mapView(page: Page): Promise<MapView> {
 /** Dispara um refresh real de conditions.json e espera o pedido sair. */
 async function triggerRefresh(page: Page) {
   const req = page.waitForRequest('**/data/conditions.json', { timeout: 20_000 });
-  await page.evaluate(() => document.dispatchEvent(new Event('visibilitychange')));
+  // O refresh no visibilitychange só corre ≥ 5 min depois do último
+  // (useLiveGridSpotData): adianta o Date.now da página 6 min (desvio
+  // constante, o tempo continua a andar) para o pedido sair já, sem depender
+  // de o refresh diferido de 5 s cair dentro desta janela.
+  await page.evaluate(() => {
+    const real = Date.now.bind(Date);
+    Date.now = () => real() + 6 * 60 * 1000;
+    document.dispatchEvent(new Event('visibilitychange'));
+  });
   await req;
 }
 
