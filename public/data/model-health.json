@@ -1,12 +1,12 @@
 {
   "source": "open-meteo-model-health",
-  "checkedAt": "2026-10-28T06:09:34.643Z",
+  "checkedAt": "2026-10-28T12:10:44.577Z",
   "sampledSpots": 186,
   "wave": {
     "ewam": {
-      "ok": 12245,
-      "total": 26880,
-      "absentCount": 26,
+      "ok": 12166,
+      "total": 26712,
+      "absentCount": 27,
       "status": "ok"
     },
     "ecmwf_wam": {
@@ -30,9 +30,9 @@
   },
   "wind": {
     "icon_eu": {
-      "ok": 21171,
-      "total": 29400,
-      "absentCount": 11,
+      "ok": 22094,
+      "total": 29232,
+      "absentCount": 12,
       "status": "ok"
     },
     "ecmwf_ifs025": {
@@ -48,7 +48,7 @@
       "status": "ok"
     },
     "meteofrance_arpege_europe": {
-      "ok": 19143,
+      "ok": 20258,
       "total": 31248,
       "absentCount": 0,
       "status": "ok"
