@@ -351,38 +351,6 @@
       ]
     },
     {
-      "id": 18937,
-      "ref": "ANAV NR 2407/26",
-      "category": "Exercicios navais ou exercicios de tiro",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=c22f0d63-ca33-467d-a275-1e2acd77bb87",
-      "source": "ih",
-      "collection": "nav_warning_coastal",
-      "polygons": [
-        [
-          [
-            -8.966667,
-            38.34
-          ],
-          [
-            -8.825,
-            38.34
-          ],
-          [
-            -8.825,
-            38.275
-          ],
-          [
-            -8.966667,
-            38.275
-          ],
-          [
-            -8.966667,
-            38.34
-          ]
-        ]
-      ]
-    },
-    {
       "id": 18941,
       "ref": "ANAV NR 2400/26",
       "category": "Exercicios navais ou exercicios de tiro",
@@ -5021,38 +4989,6 @@
       ]
     },
     {
-      "id": 1006285,
-      "ref": "ANAV NR 81/24",
-      "category": "COLOCAÇÃO DE BOIA ODA",
-      "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=69fafc44-2b4b-4027-9aea-31bafed69a67",
-      "source": "ih",
-      "collection": "nav_warning_local",
-      "polygons": [
-        [
-          [
-            -25.667469,
-            37.72986
-          ],
-          [
-            -25.667469,
-            37.732507
-          ],
-          [
-            -25.661549,
-            37.732507
-          ],
-          [
-            -25.661549,
-            37.72986
-          ],
-          [
-            -25.667469,
-            37.72986
-          ]
-        ]
-      ]
-    },
-    {
       "id": 1006289,
       "ref": "ANAV NR 82/24",
       "category": "segurança da navegação",
@@ -8370,7 +8306,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-10-29T16:06:29.347Z",
+  "fetchedAt": "2026-10-29T17:06:28.599Z",
   "sourceCollection": "nav_warning_coastal+nav_warning_local+orca_anavnet_point",
   "sourceUrl": "https://ogcapi.hidrografico.pt/collections/nav_warning_coastal"
 }
