@@ -20,7 +20,7 @@ import type { SpotLocalTips } from '@/lib/spotTips';
 import { getTranslation } from '@/lib/i18n';
 import { getSpotLivecam } from '@/lib/spotLivecams';
 import { getSpotWeatherlink, getWeatherlinkEmbedUrl, getWeatherlinkPageUrl } from '@/lib/spotWeatherlink';
-import { getDifficultyLabel } from '@/lib/mapDifficulty';
+import { getDifficultyLabel, nivelDoSpot } from '@/lib/mapDifficulty';
 import { getNearAccommodationUrl } from '@/lib/accommodation';
 import { spotTagEn } from '@/lib/spotTagsEn';
 import { eventsForSpot } from '@/lib/events';
@@ -297,7 +297,7 @@ export default function SpotContextoV6({ spot, locale, events, dicas, aguaViva, 
             <dt>{t.spots.region}</dt>
             <dd className="cap">{regiao}</dd>
             <dt>{t.spots.level}</dt>
-            <dd>{getDifficultyLabel(spot.difficulty, locale)}</dd>
+            <dd>{getDifficultyLabel(nivelDoSpot(spot, sport), locale)}</dd>
             <dt>{td.location}</dt>
             <dd>
               <span className="num">

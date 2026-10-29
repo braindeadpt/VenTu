@@ -911,6 +911,9 @@ export const spots: Spot[] = [
       region: 'Cascais', regionEn: 'Cascais', lat: 38.73243, lon: -9.47537,
       coastOrientation: 280,
       type: 'multisport', difficulty: 'intermediate', bestWind: 'N, NNW', bestSwell: 'SW, W',
+      // Nível por modalidade (#nivel-logica): o Guincho é avançado só em
+      // kite; em surf e nas restantes fica intermédio (a `difficulty` base).
+      difficultyBySport: { kitesurf: 'advanced' },
       description: 'Spot icónico de kitesurf e windsurf. Vento térmico Nortada consistente no verão. Melhor vento de Portugal. Também surf, foil, SUP e bodyboard.',
       descriptionEn: 'Iconic kitesurf and windsurf spot. Consistent thermal Nortada wind in summer. Best wind in Portugal. Also surf, foil, SUP and bodyboard.',
       compatibleSports: ['surf', 'kitesurf', 'windsurf', 'foil', 'sup', 'bodyboard'],

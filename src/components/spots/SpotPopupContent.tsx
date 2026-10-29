@@ -18,7 +18,7 @@ import { getScoreTokens } from '@/lib/sportScore';
 import type { MarineConditionsFields } from '@/lib/marineConditions';
 import type { GridSportFilter } from '@/lib/sportRatings';
 import { getExplainedWindSafety, getSpotScoreFactors, scoreFactorClass } from '@/lib/spotScoreFactors';
-import { getDifficultyLabel } from '@/lib/mapDifficulty';
+import { getDifficultyLabel, nivelDoSpot } from '@/lib/mapDifficulty';
 import { getGoogleMapsDirectionsUrl } from '@/lib/mapSpotDetail';
 import type { WindRelation } from '@/lib/wind';
 import { getWindRelationDotClass } from '@/lib/wind';
@@ -84,6 +84,9 @@ export function SpotPopupContent({
     <WarningPill warning={warning} locale={locale} variant="popup" showLevel />
   ) : null;
   const region = localizedSpotRegion(spot, locale);
+  // Nível mostrado = nível do desporto activo (o mesmo que o filtro usa);
+  // sem desporto («Todos»/big-wave) fica a base da ficha.
+  const nivelSport = highlightSport && highlightSport !== 'all' && highlightSport !== 'big-wave' ? highlightSport : undefined;
 
   // o desporto do «Todos» (#218, PR 6): v6, ou SUP / wakeboard só num spot sem nenhuma v6
   const contam = new Set<SportType>(desportosTodos(spot));
@@ -180,7 +183,7 @@ export function SpotPopupContent({
           )}
         </div>
         <p className="text-[11px] text-fg-muted">
-          {region} · {getDifficultyLabel(spot.difficulty, locale)}
+          {region} · {getDifficultyLabel(nivelDoSpot(spot, nivelSport), locale)}
         </p>
         {scoreFactors.length > 0 && (
           <p

@@ -5,9 +5,11 @@
  */
 import type { LinhaForecast } from '@/lib/horaSpot';
 import { editorialDe, spotModalidadeDe } from '@/lib/spotEditorial';
+import type { SportType } from '@/lib/sportRatings';
 import { spots as TODOS } from '@/lib/spots';
 import { fotoDoSpot, type FotoSpot } from '@/lib/spotFotos';
 import type { Modalidade } from '@/lib/modalidades';
+import type { Spot } from '@/types';
 import { COSTA_V6 } from './homeV6';
 import { compactarCosta, type CostaCompacta, type MetaCosta } from './dadosHome';
 
@@ -29,6 +31,9 @@ export function costaCompacta(forecasts: Record<string, ReadonlyArray<Record<str
   return compactarCosta(linhas, agoraMs, meta, dias);
 }
 
+/** Desporto da ficha (`difficultyBySport`) → modalidade da home. */
+const DESPORTO_DA_MODALIDADE: Partial<Record<SportType, Modalidade>> = { kitesurf: 'kite', surf: 'surf' };
+
 /** Praia, série e posição de cada spot da costa (o mesmo `editorialDe` da página de spot). */
 export function metaCosta(): MetaCosta {
   const out: MetaCosta = {};
@@ -36,7 +41,21 @@ export function metaCosta(): MetaCosta {
     const s = TODOS.find((x) => x.id === c.id);
     if (!s) continue;
     const ed = editorialDe(s);
-    out[c.id] = { slug: s.slug, serie: serieDe(c.id), lat: s.lat, lon: s.lon, praiaVirada: ed.praiaVirada, sp: spotModalidadeDe(ed) };
+    let npm: Partial<Record<Modalidade, Spot['difficulty']>> | undefined;
+    for (const [desporto, nivel] of Object.entries(s.difficultyBySport ?? {})) {
+      const m = DESPORTO_DA_MODALIDADE[desporto as SportType];
+      if (m && nivel) (npm ??= {})[m] = nivel;
+    }
+    out[c.id] = {
+      slug: s.slug,
+      serie: serieDe(c.id),
+      lat: s.lat,
+      lon: s.lon,
+      praiaVirada: ed.praiaVirada,
+      sp: spotModalidadeDe(ed),
+      nivel: s.difficulty,
+      ...(npm ? { nivelPorModalidade: npm } : {}),
+    };
   }
   return out;
 }

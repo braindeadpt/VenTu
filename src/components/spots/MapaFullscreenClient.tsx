@@ -273,7 +273,8 @@ export default function MapaFullscreenClient({
   const filtered = useMemo(() => {
     let list = filterGridSpots(liveSpotsData, sport, region);
     if (difficulty !== 'all') {
-      list = list.filter((d) => spotMatchesDifficultyFilter(d.spot, difficulty));
+      const sportNivel = sport !== 'all' && sport !== 'big-wave' ? sport : undefined;
+      list = list.filter((d) => spotMatchesDifficultyFilter(d.spot, difficulty, sportNivel));
     }
     return list;
   }, [liveSpotsData, sport, region, difficulty]);

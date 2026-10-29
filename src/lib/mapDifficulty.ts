@@ -1,4 +1,5 @@
 import { getTranslation } from '@/lib/i18n';
+import type { SportType } from '@/lib/sportRatings';
 import type { Spot } from '@/types';
 
 export const MAP_DIFFICULTY_LS_KEY = 'ventu:map:difficulty';
@@ -29,18 +30,63 @@ export function readMapDifficultyFromStorage(): MapDifficultyFilter {
   return 'all';
 }
 
-export function spotMatchesDifficultyFilter(
-  spot: Pick<Spot, 'difficulty'>,
-  filter: MapDifficultyFilter,
+/** Nível escolhido pelo utilizador («Todos» não é um nível — é a ausência de filtro). */
+export type NivelUtilizador = Exclude<MapDifficultyFilter, 'all'>;
+
+/**
+ * Nível do spot para um desporto: a ficha pode sobrepor a `difficulty` por
+ * desporto (`difficultyBySport` — ex.: Guincho é avançado em kite mas
+ * intermédio em surf). Sem desporto ou sem entrada para ele, vale a
+ * `difficulty` da ficha.
+ */
+export function nivelDoSpot(
+  spot: Pick<Spot, 'difficulty' | 'difficultyBySport'>,
+  sport?: SportType,
+): Spot['difficulty'] {
+  return (sport && spot.difficultyBySport?.[sport]) ?? spot.difficulty;
+}
+
+/** «expert» conta como avançado na regra de tecto. */
+const ORDEM_NIVEL: Partial<Record<Spot['difficulty'], number>> = {
+  beginner: 0,
+  intermediate: 1,
+  advanced: 2,
+  expert: 2,
+};
+const TETO_NIVEL: Record<NivelUtilizador, number> = { beginner: 0, intermediate: 1, advanced: 2 };
+
+/**
+ * Regra de tecto (filtro de nível, #nivel-logica): «Iniciante» mostra
+ * iniciante; «Intermédio» mostra iniciante + intermédio; «Avançado» mostra
+ * tudo; «Todos» = sem filtro. Um spot com nível 'all', em falta ou
+ * desconhecido cabe sempre.
+ */
+export function spotDentroDoNivel(
+  nivelSpot: Spot['difficulty'] | null | undefined,
+  filtro: MapDifficultyFilter,
 ): boolean {
-  if (filter === 'all') return true;
-  if (spot.difficulty === 'all') return true;
-  if (filter === 'beginner') return spot.difficulty === 'beginner';
-  if (filter === 'intermediate') return spot.difficulty === 'intermediate';
-  if (filter === 'advanced') {
-    return spot.difficulty === 'advanced' || spot.difficulty === 'expert';
-  }
-  return true;
+  if (filtro === 'all') return true;
+  const n = nivelSpot != null ? ORDEM_NIVEL[nivelSpot] : undefined;
+  if (n === undefined) return true;
+  return n <= TETO_NIVEL[filtro];
+}
+
+export function spotMatchesDifficultyFilter(
+  spot: Pick<Spot, 'difficulty' | 'difficultyBySport'>,
+  filter: MapDifficultyFilter,
+  sport?: SportType,
+): boolean {
+  return spotDentroDoNivel(nivelDoSpot(spot, sport), filter);
+}
+
+/**
+ * O nível escolhido guardado em `ventu:map:difficulty`, como
+ * `readMapDifficultyFromStorage` mas com `null` para 'all' ou chave ausente
+ * («sem nível»).
+ */
+export function lerNivelEscolhido(): NivelUtilizador | null {
+  const v = readMapDifficultyFromStorage();
+  return v === 'all' ? null : v;
 }
 
 /** Marker ring colour for difficulty badge. */

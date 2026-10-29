@@ -1,3 +1,5 @@
+import type { SportType } from '@/lib/sportRatings';
+
 export type { ConfidenceDetail, ConfidenceTier, DailyConfidence } from '@/lib/forecastConfidenceCore';
 
 export interface Spot {
@@ -57,6 +59,12 @@ export interface Spot {
   aguaInterior?: true;
   /** Reuse conditions/forecasts from another spot (same weather cell; no extra API fetch). */
   conditionsSource?: string;
+  /**
+   * Nível do spot por desporto, quando difere da `difficulty` da ficha
+   * (ex.: Guincho é avançado em kite mas intermédio em surf). Em falta ou
+   * sem entrada para o desporto, vale `difficulty`.
+   */
+  difficultyBySport?: Partial<Record<SportType, Spot['difficulty']>>;
 }
 
 export interface MarineData {
