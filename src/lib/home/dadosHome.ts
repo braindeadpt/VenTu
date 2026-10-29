@@ -16,7 +16,8 @@
 import { horaDeLinha, type HoraSpot, type LinhaForecast } from '@/lib/horaSpot';
 import { lisbonHourKeyFromDate } from '@/lib/openMeteoTime';
 import { instanteLisboa, posicaoSol } from '@/lib/sol';
-import type { SpotModalidade } from '@/lib/modalidades';
+import type { Modalidade, SpotModalidade } from '@/lib/modalidades';
+import type { Spot } from '@/types';
 import { COSTA_V6, type SpotHome } from './homeV6';
 
 /** O que o cliente precisa de cada spot da costa (calculado no servidor). */
@@ -28,6 +29,10 @@ export interface MetaSpotCosta {
   lon: number;
   praiaVirada: number;
   sp: SpotModalidade;
+  /** Nível da ficha do spot (a `difficulty`; o bundle da home não lê spots.ts). */
+  nivel: Spot['difficulty'];
+  /** Sobreposição por modalidade, quando a ficha a tem (chaves 'kite'/'surf'). */
+  nivelPorModalidade?: Partial<Record<Modalidade, Spot['difficulty']>>;
 }
 export type MetaCosta = Record<string, MetaSpotCosta>;
 
@@ -140,7 +145,15 @@ export function montarCosta(compacta: CostaCompacta, agoraMs: number, meta: Meta
         sunAz: s.az,
       };
     });
-    out.push({ ...c, lat: m.lat, lon: m.lon, sp: m.sp, h });
+    out.push({
+      ...c,
+      lat: m.lat,
+      lon: m.lon,
+      sp: m.sp,
+      nivel: m.nivel,
+      ...(m.nivelPorModalidade ? { nivelPorModalidade: m.nivelPorModalidade } : {}),
+      h,
+    });
   }
   const agoraI = idx.findIndex((i) => compacta.horas[i].slice(0, 13) === key);
   return { spots: out, agoraI };

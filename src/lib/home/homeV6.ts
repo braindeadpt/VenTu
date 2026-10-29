@@ -60,6 +60,10 @@ export interface SpotHome extends SpotCosta {
   lon: number;
   /** O que o motor lê (`spotModalidadeDe(editorialDe(spot))`). */
   sp: SpotModalidade;
+  /** Nível da ficha (a `difficulty` do spot), via MetaCosta — filtro de nível. */
+  nivel?: import('@/types').Spot['difficulty'];
+  /** Sobreposição por modalidade quando a ficha a tem (chaves 'kite'/'surf'). */
+  nivelPorModalidade?: Partial<Record<Modalidade, import('@/types').Spot['difficulty']>>;
   /** Horas desde as 00h do dia 0 (hora local de Lisboa), uma por índice. */
   h: HoraSpot[];
 }
@@ -83,6 +87,13 @@ export interface Linha {
   jn: { a: number; z: number; b: BandaK } | null;
   fim: number;
   NS: Array<number | null>;
+  /**
+   * Filtro de nível (#nivel-logica): presente no top 3 apesar de ficar acima
+   * do nível escolhido (preenche quando há poucos do nível a «dar»), com a
+   * posição 1-based que tinha no ranking da costa (`nCosta`).
+   */
+  acimaDoNivel?: boolean;
+  nCosta?: number;
 }
 
 const CM = MODALIDADES_DEF.comum as unknown as { noite: number; rajadaNaFrase: number; estragaAcimaDe: number };

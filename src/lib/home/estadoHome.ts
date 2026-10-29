@@ -6,8 +6,9 @@
  * Lógica da maquete aprovada (`docs/design/maquetes/v6-atlantico/index.html`:
  * `renderHero`, `renderOutros`, `renderRegua`, `renderLeg`).
  */
-import { bandaRank, type BandaK, type Modalidade } from '@/lib/modalidades';
-import { ehNoite, type Bloco, type Linha, type Modelo } from './homeV6';
+import { bandaRank, DA, type BandaK, type Modalidade } from '@/lib/modalidades';
+import { spotDentroDoNivel, type MapDifficultyFilter } from '@/lib/mapDifficulty';
+import { ehNoite, type Bloco, type Linha, type Modelo, type SpotHome } from './homeV6';
 
 export type Palavra = 'vai' | 'da' | 'naoVai' | 'noite';
 
@@ -51,9 +52,21 @@ export interface EstadoHome {
   /** hora cujo vento e luz o mapa mostra */
   horaMapa: number;
   mapaQ: string;
+  /**
+   * Filtro de nível (#nivel-logica): o melhor spot da costa que ficou de
+   * fora por estar acima do nível (só se era o nº 1 sem filtro), com a nota.
+   */
+  fora?: Linha | null;
+  /** Spots do nível a «dar» (n ≥ 5) e total de spots do nível na modalidade. */
+  poucos?: { dar: number; total: number };
+  /**
+   * Com 0 spots do nível a «dar»: o próximo bloco da régua em que um spot do
+   * nível tem nota ≥ 5 (`null` se nunca).
+   */
+  proximoDoNivel?: { bloco: Bloco; linha: Linha } | null;
 }
 
-export function estadoHome(M: Modelo, d: Modalidade, agoraIn: number, bPedido: string | null): EstadoHome {
+export function estadoHome(M: Modelo, d: Modalidade, agoraIn: number, bPedido: string | null, nivel?: MapDifficultyFilter | null): EstadoHome {
   const c = M.copy;
   const agoraI = Math.max(0, Math.min(M.NH - 1, agoraIn));
   const REF = M.spots.find((s) => s.id === 'guincho') ?? M.spots[0];
@@ -69,7 +82,56 @@ export function estadoHome(M: Modelo, d: Modalidade, agoraIn: number, bPedido: s
   const nomeBloco = (b: Bloco) => c.nomeBloco(b.dia, b.k);
 
   const R = dados ? M.ranking(d, dados, agoraI) : [];
-  const top = R.slice(0, 3);
+
+  /* Filtro de nível (#nivel-logica): mesma lista `R` — nenhuma nota é
+   * recalculada; o nível só escolhe quem entra no top 3, na régua e no
+   * «fora». `null`/`'all'` = o comportamento de sempre, byte a byte. */
+  const nv = nivel && nivel !== 'all' ? nivel : null;
+  const nivelDe = (sp: SpotHome) => sp.nivelPorModalidade?.[d] ?? sp.nivel;
+  const dentroDo = (r: Linha) => spotDentroDoNivel(nivelDe(r.sp), nv ?? 'all');
+  const aDar = (r: Linha) => (r.n ?? -1) >= DA;
+  /** nº 1 de um bloco (filtrado pelo nível, se escolhido) — a régua e o 0-a-dar. */
+  const primeiroDe = (b: Bloco) => {
+    const RB = M.ranking(d, b, agoraI);
+    return nv ? RB.find(dentroDo) : RB[0];
+  };
+
+  let top: Linha[];
+  let fora: Linha | null | undefined;
+  let poucos: { dar: number; total: number } | undefined;
+  let proximoDoNivel: { bloco: Bloco; linha: Linha } | null | undefined;
+  if (nv) {
+    const dentro = R.filter(dentroDo);
+    const acima = R.filter((r) => !dentroDo(r));
+    const dar = dentro.filter(aDar).length;
+    poucos = { dar, total: dentro.length };
+    fora = R[0] && !dentroDo(R[0]) ? R[0] : null;
+    if (dar === 0) {
+      top = dentro.slice(0, 3);
+      proximoDoNivel = null;
+      for (const b of BL.filter((x) => !x.passado)) {
+        const r1 = primeiroDe(b);
+        if (r1 && aDar(r1)) {
+          proximoDoNivel = { bloco: b, linha: r1 };
+          break;
+        }
+      }
+    } else if (dar < 3) {
+      top = dentro.slice(0, 1);
+      for (const r of acima.filter(aDar)) {
+        if (top.length >= 3) break;
+        top.push({ ...r, acimaDoNivel: true, nCosta: R.indexOf(r) + 1 });
+      }
+      for (const r of dentro.slice(1)) {
+        if (top.length >= 3) break;
+        top.push(r);
+      }
+    } else {
+      top = dentro.slice(0, 3);
+    }
+  } else {
+    top = R.slice(0, 3);
+  }
   const t0 = top[0];
   const noite = !bloco;
   const palavra: Palavra = noite || !t0 ? 'noite' : bandaRank(t0.b) >= 3 ? 'vai' : bandaRank(t0.b) === 2 ? 'da' : 'naoVai';
@@ -98,7 +160,7 @@ export function estadoHome(M: Modelo, d: Modalidade, agoraIn: number, bPedido: s
   for (const dia of [0, 1] as const) {
     const vis = BL.filter((b) => b.dia === dia && !b.passado);
     const celulas: CelulaRegua[] = vis.map((b) => {
-      const r = M.ranking(d, b, agoraI)[0];
+      const r = primeiroDe(b);
       return {
         id: b.id,
         n: r?.n ?? null,
@@ -141,5 +203,12 @@ export function estadoHome(M: Modelo, d: Modalidade, agoraIn: number, bPedido: s
     regua,
     horaMapa,
     mapaQ,
+    ...(nv
+      ? {
+          fora: fora ?? null,
+          poucos: poucos ?? { dar: 0, total: 0 },
+          proximoDoNivel: proximoDoNivel ?? null,
+        }
+      : {}),
   };
 }

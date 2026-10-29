@@ -141,8 +141,9 @@ export function SpotGridClient({
 
   const mapSpotsData = useMemo(() => {
     if (mapDifficulty === 'all') return filtered;
-    return filtered.filter((d) => spotMatchesDifficultyFilter(d.spot, mapDifficulty));
-  }, [filtered, mapDifficulty]);
+    const sportNivel = selectedSport !== 'all' && selectedSport !== 'big-wave' ? selectedSport : undefined;
+    return filtered.filter((d) => spotMatchesDifficultyFilter(d.spot, mapDifficulty, sportNivel));
+  }, [filtered, mapDifficulty, selectedSport]);
 
   const handleMapReset = useCallback(() => {
     handleReset();
