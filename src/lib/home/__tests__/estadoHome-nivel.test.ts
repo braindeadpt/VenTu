@@ -162,6 +162,47 @@ describe('estadoHome com nível — top 3 dentro do nível', () => {
     expect(e.proximoDoNivel).toBeNull();
   });
 
+  it('o nº 1 acima do nível que entra no top («poucos») NÃO é `fora`', () => {
+    // kite @0-tarde: dentro só lagoa-albufeira dá (8); o nº 1 sem filtro
+    // (guincho, 9) preenche o top como acimaDoNivel — aparecer como excluído
+    // E recomendado era contraditório (review do PR #360).
+    const dentro = { 'lagoa-albufeira': 'beginner', cabedelo: 'beginner', moledo: 'beginner' } as Record<
+      string,
+      Spot['difficulty']
+    >;
+    const M = modeloComNiveis(dentro, 'advanced');
+    const e = estadoHome(M, 'kite', AGORA, null, 'beginner');
+    expect(e.poucos?.dar).toBe(1);
+    expect(e.top.map((r) => r.sp.id)).toEqual(['lagoa-albufeira', 'guincho', 'baleal']);
+    expect(e.top[1]).toMatchObject({ sp: { id: 'guincho' }, acimaDoNivel: true, nCosta: 1 });
+    expect(e.fora).toBeNull();
+  });
+
+  it('`proximoDoNivel` nunca aponta para trás do bloco seleccionado', () => {
+    // surf @1-tarde: arrifana fraco (o único do nível). @0-fim a arrifana
+    // dá (6), mas 0-fim fica ANTES de 1-tarde — «próximo» tem de ser a
+    // seguir à selecção, nunca para trás (review do PR #360).
+    const M = modeloComNiveis({ arrifana: 'beginner' }, 'advanced');
+    const e = estadoHome(M, 'surf', AGORA, '1-tarde', 'beginner');
+    expect(e.poucos).toEqual({ dar: 0, total: 1 });
+    expect(e.proximoDoNivel).toBeNull();
+  });
+
+  it('`proximoDoNivel` = o primeiro bloco a seguir a `dados` com um do nível a dar', () => {
+    // kite @1-manha: os três do nível estão fracos; @1-tarde todos dão —
+    // o primeiro do nível é a costa-caparica (10).
+    const dentro = { 'costa-caparica': 'beginner', 'fonte-telha': 'beginner', martinhal: 'beginner' } as Record<
+      string,
+      Spot['difficulty']
+    >;
+    const M = modeloComNiveis(dentro, 'advanced');
+    const e = estadoHome(M, 'kite', AGORA, '1-manha', 'beginner');
+    expect(e.poucos).toEqual({ dar: 0, total: 3 });
+    expect(e.proximoDoNivel?.bloco.id).toBe('1-tarde');
+    expect(e.proximoDoNivel?.linha.sp.id).toBe('costa-caparica');
+    expect(e.proximoDoNivel?.linha.n).toBe(10);
+  });
+
   it('a régua usa o nº 1 filtrado em cada bloco', () => {
     const M = modeloComNiveis({ guincho: 'advanced', moledo: 'advanced' }, 'intermediate');
     const e = estadoHome(M, 'kite', AGORA, null, 'intermediate');

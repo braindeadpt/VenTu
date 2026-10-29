@@ -54,14 +54,17 @@ export interface EstadoHome {
   mapaQ: string;
   /**
    * Filtro de nível (#nivel-logica): o melhor spot da costa que ficou de
-   * fora por estar acima do nível (só se era o nº 1 sem filtro), com a nota.
+   * fora por estar acima do nível E não entra no top 3 mostrado (só se era
+   * o nº 1 sem filtro), com a nota. No caso «poucos» o nº 1 sem filtro pode
+   * voltar ao top marcado `acimaDoNivel` — aí já não é «fora».
    */
   fora?: Linha | null;
   /** Spots do nível a «dar» (n ≥ 5) e total de spots do nível na modalidade. */
   poucos?: { dar: number; total: number };
   /**
-   * Com 0 spots do nível a «dar»: o próximo bloco da régua em que um spot do
-   * nível tem nota ≥ 5 (`null` se nunca).
+   * Com 0 spots do nível a «dar»: o primeiro bloco DEPOIS de `dados` em que
+   * um spot do nível tem nota ≥ 5 (`null` se nunca) — nunca aponta para
+   * trás da selecção.
    */
   proximoDoNivel?: { bloco: Bloco; linha: Linha } | null;
 }
@@ -105,11 +108,13 @@ export function estadoHome(M: Modelo, d: Modalidade, agoraIn: number, bPedido: s
     const acima = R.filter((r) => !dentroDo(r));
     const dar = dentro.filter(aDar).length;
     poucos = { dar, total: dentro.length };
-    fora = R[0] && !dentroDo(R[0]) ? R[0] : null;
     if (dar === 0) {
       top = dentro.slice(0, 3);
       proximoDoNivel = null;
-      for (const b of BL.filter((x) => !x.passado)) {
+      // «próximo» é sempre a seguir ao bloco mostrado: `dados` é o bloco
+      // seleccionado/actual e os anteriores não passados ficam antes dele.
+      const depoisDe = dados ? BL.indexOf(dados) + 1 : BL.length;
+      for (const b of BL.slice(depoisDe)) {
         const r1 = primeiroDe(b);
         if (r1 && aDar(r1)) {
           proximoDoNivel = { bloco: b, linha: r1 };
@@ -129,6 +134,9 @@ export function estadoHome(M: Modelo, d: Modalidade, agoraIn: number, bPedido: s
     } else {
       top = dentro.slice(0, 3);
     }
+    // `fora` só quando o nº 1 sem filtro está acima do nível E não aparece
+    // no top mostrado — no caso «poucos» pode voltar marcado acimaDoNivel.
+    fora = R[0] && !dentroDo(R[0]) && !top.some((r) => r.sp.id === R[0].sp.id) ? R[0] : null;
   } else {
     top = R.slice(0, 3);
   }
