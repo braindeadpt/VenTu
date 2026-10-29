@@ -19,6 +19,7 @@ import SpotGridRankedList from './SpotGridRankedList';
 import SpotRankedTable from './SpotRankedTable';
 import { useSpotGridFilters } from './hooks/useSpotGridFilters';
 import { useLiveGridSpotData } from '@/hooks/useLiveGridSpotData';
+import { useRelogioNoite } from '@/hooks/useRelogioNoite';
 import {
   DEFAULT_REGION,
   DEFAULT_SPORT,
@@ -68,6 +69,7 @@ export function SpotGridClient({
   initialSport,
   initialRegion,
   excludeTopNowSlugs,
+  bakedAtMs,
 }: {
   spotsData: SpotData[];
   locale: string;
@@ -76,10 +78,13 @@ export function SpotGridClient({
   initialRegion?: string;
   /** Home: exclude spots already in Top agora */
   excludeTopNowSlugs?: string[];
+  /** Relógio do build (SSG): estado «Noite» até montar, depois o real (#418). */
+  bakedAtMs?: number;
 }) {
   const isPt = locale === 'pt';
   const t = getTranslation(locale as Locale);
   const liveSpotsData = useLiveGridSpotData(spotsData);
+  const relogioNoite = useRelogioNoite(bakedAtMs);
   const [selectedSpotId, setSelectedSpotId] = useState<string | null>(null);
   const [mapDifficulty, setMapDifficulty] = useState<MapDifficultyFilter>('all');
   // Auditoria 2026-09-16 (C1): a tabela densa é a vista por omissão — responde
@@ -132,7 +137,7 @@ export function SpotGridClient({
     latitude,
     geoLoading,
     requestLocation,
-  } = useSpotGridFilters({ spotsData: liveSpotsData, regions, initialSport, initialRegion, locale });
+  } = useSpotGridFilters({ spotsData: liveSpotsData, regions, initialSport, initialRegion, locale, nowMs: relogioNoite });
 
   const mapSpotsData = useMemo(() => {
     if (mapDifficulty === 'all') return filtered;
@@ -357,6 +362,7 @@ export function SpotGridClient({
             sorted={sorted}
             selectedSport={selectedSport}
             locale={locale as Locale}
+            nowMs={relogioNoite}
           />
         ) : (
           <SpotGridRankedList
@@ -364,6 +370,7 @@ export function SpotGridClient({
             selectedSport={selectedSport}
             locale={locale as Locale}
             excludeSlugs={excludeTopNowSlugs}
+            nowMs={relogioNoite}
           />
         ))}
 
@@ -412,6 +419,7 @@ export function SpotGridClient({
         onClose={() => setSelectedSpotId(null)}
         locale={locale as Locale}
         gridSport={selectedSport}
+        nowMs={relogioNoite}
       />
     </section>
   );

@@ -3,6 +3,10 @@
  * — só servidor/pipeline: importa o motor v6 (`notaUnica`) e o editorial, que
  * não devem ir para o bundle das páginas. Os componentes só lêem os tipos e
  * `resolveBestWindowForSport` de `bestWindowToday.ts`.
+ * Excepção: de noite, o comparador, os favoritos e o widget embed (páginas só
+ * de cliente, sem linha do bake) calculam a próxima janela com
+ * `computeUpcomingWindowsForSpot` por import DINÂMICO (`janelasNoiteCliente.ts`):
+ * um chunk à parte que só carrega à noite.
  *
  * Motor único (#218), PR 5:
  * - Surf, kitesurf, windsurf, bodyboard e foil (PR 6; a Big Wave lê o surf,
@@ -27,7 +31,7 @@ import { getHourlyScores, type Conditions } from '@/lib/sportScore';
 import { modalidadeDe, notaHora, type SportScoreV6 } from '@/lib/notaUnica';
 import { DESPORTO_PARA_AGORA, desportosTodos, isDesportoMotorAntigo } from '@/lib/desportosV6';
 import { findCoveredHourIndex, seriesTimeMs } from '@/lib/openMeteoTime';
-import { melhorJanelaV6 } from '@/lib/janelasV6';
+import { janelasV6, melhorJanelaV6 } from '@/lib/janelasV6';
 import { buildNowMs } from '@/lib/buildClock';
 import type { LinhaForecast } from '@/lib/horaSpot';
 import type { NotaV6Agora } from '@/lib/notaV6Agora';
@@ -35,6 +39,8 @@ import type {
   BestWindowToday,
   BestWindowsBySport,
   ForecastHourRow,
+  JanelasCandidatasBySport,
+  UpcomingWindow,
   UpcomingWindowsBySport,
 } from '@/lib/bestWindowToday';
 import type { Spot } from '@/types';
@@ -207,4 +213,70 @@ export function computeUpcomingWindowsForSpot(
   }
 
   return out;
+}
+
+/** Máximo de candidatas por desporto (as primeiras por ordem de início). */
+const MAX_CANDIDATAS = 4;
+
+const porInicio = (a: UpcomingWindow, b: UpcomingWindow) => seriesTimeMs(a.startIso) - seriesTimeMs(b.startIso);
+
+/**
+ * TODAS as janelas candidatas das próximas 48 h por desporto (as mesmas regras
+ * de `computeUpcomingWindowsForSpot`: v6 = horas contínuas ≥ 7, 2–24 h, a
+ * noite parte; SUP / wakeboard = `computeMagicWindows` com `getHourlyScores`),
+ * por ordem de início. O estado «Noite» escolhe entre elas a PRÓXIMA (dia →
+ * nota → início, `noiteListas.janelaSeguinte`); `upcomingWindowsBySport` fica
+ * a melhor nota (home «Próximas janelas 48 h»). Revisão #358 (2).
+ */
+export function computeJanelasCandidatasForSpot(
+  spot: Spot,
+  forecast: ForecastHourRow[],
+  currentConditions: Conditions,
+  nowMs = buildNowMs(),
+  notaV6?: NotaV6Agora | null,
+): JanelasCandidatasBySport {
+  const out: JanelasCandidatasBySport = {};
+  if (!forecast.length) return out;
+  const hourly = filterForecastNextHours(forecast, 48, nowMs);
+  const js = indicesRegua(forecast, 48, nowMs);
+
+  for (const sport of getCompatibleSports(spot)) {
+    let ws: UpcomingWindow[] = [];
+    const v6 = v6Sport(sport);
+    if (v6) {
+      if (!js.length) continue;
+      ws = janelasV6(notasV6Horas(spot, v6, forecast, js, nowMs, notaV6)).map((w) => ({
+        startIso: String(forecast[js[w.a]].time),
+        endIso: String(forecast[js[w.z]].time),
+        score: w.score,
+      }));
+    } else if (hourly.length && isDesportoMotorAntigo(sport)) {
+      const scores = getHourlyScores(spot, sport, hourly, currentConditions);
+      for (const top of computeMagicWindows(hourly, sport, spot.bestWind || '', scores)) {
+        const a = hourly[top.start];
+        const z = hourly[top.end];
+        if (a && z) ws.push({ startIso: a.time, endIso: z.time, score: top.score });
+      }
+    }
+    if (ws.length) out[sport] = ws.sort(porInicio).slice(0, MAX_CANDIDATAS);
+  }
+  return out;
+}
+
+/**
+ * O que vai no bake (`janelasNoiteBySport` da linha): as candidatas que NÃO
+ * são a melhor (essa já vai em `upcomingWindowsBySport`); desportos sem outras
+ * ficam de fora e, sem nenhuma, `undefined` (a linha não ganha a chave).
+ */
+export function janelasNoiteExtra(
+  cands: JanelasCandidatasBySport,
+  upcoming: UpcomingWindowsBySport,
+): JanelasCandidatasBySport | undefined {
+  const out: JanelasCandidatasBySport = {};
+  for (const [sport, ws] of Object.entries(cands) as Array<[SportType, UpcomingWindow[]]>) {
+    const b = upcoming[sport];
+    const resto = ws.filter((w) => !b || w.startIso !== b.startIso || w.endIso !== b.endIso);
+    if (resto.length) out[sport] = resto;
+  }
+  return Object.keys(out).length ? out : undefined;
 }

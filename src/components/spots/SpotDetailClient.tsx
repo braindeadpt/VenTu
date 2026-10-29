@@ -118,6 +118,14 @@ interface SpotData {
   }>;
 }
 
+/**
+ * `?sport=` manda sempre que o desporto é do spot — também com nota 0 ou de
+ * noite (antes só quando pontuava: de noite caía no 1.º desporto; opção A, 28/10).
+ */
+function sportDoSpot(spot: Spot, s: SportType): boolean {
+  return getRelevantSports(spot).includes(s);
+}
+
 export default function SpotDetailClient({
   spot,
   locale,
@@ -179,7 +187,7 @@ export default function SpotDetailClient({
   // Same selection policy the fetch path applies after loadData: prefer the URL
   // sport when it scores, else the highest-scoring sport.
   const [selectedSport, setSelectedSport] = useState<SportType>(() => {
-    if (sportFromUrl && !forceLive && initialData?.allScores[sportFromUrl]?.score) {
+    if (sportFromUrl && !forceLive && initialData && sportDoSpot(spot, sportFromUrl)) {
       return sportFromUrl;
     }
     if (!forceLive && initialData) {
@@ -233,7 +241,7 @@ export default function SpotDetailClient({
   // ready and it scores, matching the old pre-hydration behaviour.
   useEffect(() => {
     if (!sportFromUrl || !spotData) return;
-    if (spotData.allScores[sportFromUrl]?.score > 0) {
+    if (sportDoSpot(spotData.spot, sportFromUrl)) {
       setSelectedSport(sportFromUrl);
     }
   }, [sportFromUrl, spotData]);
@@ -355,7 +363,7 @@ export default function SpotDetailClient({
               typeof spotCond.updatedAt === 'string' ? spotCond.updatedAt : undefined,
             );
 
-            if (sportFromUrl && allScores[sportFromUrl]?.score > 0) {
+            if (sportFromUrl && sportDoSpot(spot, sportFromUrl)) {
               setSelectedSport(sportFromUrl);
             } else if (!initialData || forceLive) {
               // Sem baked data a selecção inicial veio do placeholder — aplica
@@ -427,7 +435,7 @@ export default function SpotDetailClient({
 
         setSpotData({ spot, conditions, allScores, forecast });
 
-        if (sportFromUrl && allScores[sportFromUrl]?.score > 0) {
+        if (sportFromUrl && sportDoSpot(spot, sportFromUrl)) {
           setSelectedSport(sportFromUrl);
         } else if (!initialData || forceLive) {
           const bestSport = desportoTodos(spot, allScores);

@@ -34,6 +34,14 @@ export interface UpcomingWindow {
 
 export type UpcomingWindowsBySport = Partial<Record<SportType, UpcomingWindow>>;
 
+/**
+ * Janelas candidatas (≥ Bom, 2–24 h, próximas 48 h) por desporto, para o
+ * estado «Noite» escolher a PRÓXIMA (dia → nota → início) e não só a melhor
+ * nota (`upcomingWindowsBySport`). No bake vão só as que NÃO são a melhor
+ * (`janelasNoiteBySport`, omitido quando vazio); no cliente vão todas.
+ */
+export type JanelasCandidatasBySport = Partial<Record<SportType, UpcomingWindow[]>>;
+
 export interface ForecastHourRow {
   time: string;
   waveHeight?: number;

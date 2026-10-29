@@ -3,6 +3,7 @@ import { localizedText } from '@/lib/localizedText';
 import { loadSpotListings } from '@/lib/load-spot-data'
 import { MACRO_REGIONS } from '@/lib/regions'
 import { SpotGridClient } from '@/components/spots/SpotGridClient'
+import { buildNowMs } from '@/lib/buildClock'
 import MapTilePreconnect from '@/components/MapTilePreconnect'
 import { locales } from '@/lib/i18n'
 import type { Metadata } from 'next'
@@ -98,6 +99,7 @@ export default async function ModalidadePage({ params }: Props) {
         spotsData={filteredSpots}
         locale={locale}
         regions={[...MACRO_REGIONS]}
+        bakedAtMs={buildNowMs()}
         initialSport={slug}
         initialRegion={undefined}
       />

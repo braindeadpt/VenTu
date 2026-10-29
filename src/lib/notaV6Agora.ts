@@ -213,10 +213,37 @@ export function semNotaV6(): SportScoreAgoraV6 {
   return { score: 0, rating: 'N/A', ratingEn: 'N/A', factors: [], factorsEn: [], primaryFactor: '', semDados: true };
 }
 
-/** Só as modalidades do motor antigo (SUP e wakeboard). */
-export function scoresMotorAntigo(spot: Spot, input: Conditions): Record<DesportoMotorAntigo, SportScore> {
-  const out = {} as Record<DesportoMotorAntigo, SportScore>;
-  for (const s of DESPORTOS_MOTOR_ANTIGO) out[s] = getSportScore(spot, s, input);
+/**
+ * O `notaV6` deste spot diz que é de noite? As cinco modalidades v6 sem nota e
+ * pelo menos uma delas sem ser por falta de dados (o limiar do sol é comum a
+ * todas as definições, `comum.noite`; é o mesmo critério da contagem do
+ * pipeline, `escreverNotasV6Agora`).
+ */
+export function notaV6EhNoite(nv: NotaV6Agora | null | undefined): boolean {
+  if (!nv) return false;
+  if (!MODALIDADES_AGORA.every((m) => nv[m] == null)) return false;
+  return MODALIDADES_AGORA.some((m) => nv[m] === null && !nv.sem?.includes(m));
+}
+
+/** «Agora» de noite: sem nota (score 0, `rating` N/A) e a marca `noite`. */
+export function scoreDeNoite(): SportScoreAgoraV6 {
+  return { score: 0, rating: 'N/A', ratingEn: 'N/A', factors: [], factorsEn: [], primaryFactor: '', noite: true };
+}
+
+/**
+ * Só as modalidades do motor antigo (SUP e wakeboard). Com o `notaV6` do spot
+ * a dizer «noite», o SUP e o wakeboard também ficam de noite (corte de noite,
+ * decisão do Pedro 28/10): o motor antigo não conhece o sol e dava uma nota de
+ * dia às 22h (o «4» do widget embed).
+ */
+export function scoresMotorAntigo(
+  spot: Spot,
+  input: Conditions,
+  nv?: NotaV6Agora | null,
+): Record<DesportoMotorAntigo, SportScoreAgoraV6> {
+  const out = {} as Record<DesportoMotorAntigo, SportScoreAgoraV6>;
+  const noite = notaV6EhNoite(nv);
+  for (const s of DESPORTOS_MOTOR_ANTIGO) out[s] = noite ? scoreDeNoite() : getSportScore(spot, s, input);
   return out;
 }
 
@@ -230,7 +257,7 @@ export function allScoresComV6(
   input: Conditions,
   nv: NotaV6Agora | null,
 ): Record<SportType, SportScore> {
-  const out = { ...scoresMotorAntigo(spot, input) } as Record<SportType, SportScore>;
+  const out = { ...scoresMotorAntigo(spot, input, nv) } as Record<SportType, SportScore>;
   for (const [sport, d] of Object.entries(DESPORTO_PARA_AGORA) as Array<[SportType, ModalidadeAgora]>) {
     out[sport] = nv ? sportScoreDeNotaV6(nv, d) : semNotaV6();
   }
@@ -241,7 +268,7 @@ export function allScoresComV6(
  * O score «agora» de UM desporto para as páginas que só mostram uma
  * modalidade (favoritos, picker do comparar): as v6 do `notaV6` do pipeline
  * (o mesmo número do /mapa, das listas e do alerta), SUP e wakeboard no
- * `sportScore`. Sem `notaV6` → «sem dados» nas v6, como `allScoresComV6`.
+ * `sportScore` (de noite, com o corte de noite). Sem `notaV6` → «sem dados» nas v6, como `allScoresComV6`.
  */
 export function scoreAgoraComV6(
   spot: Spot,
@@ -249,7 +276,7 @@ export function scoreAgoraComV6(
   input: Conditions,
   nv: NotaV6Agora | null,
 ): SportScoreAgoraV6 {
-  if (isDesportoMotorAntigo(sport)) return getSportScore(spot, sport, input);
+  if (isDesportoMotorAntigo(sport)) return notaV6EhNoite(nv) ? scoreDeNoite() : getSportScore(spot, sport, input);
   const d = DESPORTO_PARA_AGORA[sport];
   return d && nv ? sportScoreDeNotaV6(nv, d) : semNotaV6();
 }
@@ -261,4 +288,14 @@ export function scoreAgoraComV6(
  */
 export function isSemDados(s: unknown): boolean {
   return !!s && typeof s === 'object' && (s as SportScoreAgoraV6).semDados === true;
+}
+
+/**
+ * A modalidade está «de noite» (sol abaixo do limiar: v6 pelo `notaV6`, SUP e
+ * wakeboard pelo corte de noite)? Fora do /mapa as listas, os cartões, o
+ * comparador e o widget mostram a lua e a próxima janela em vez de «0»
+ * (opção A, aprovada pelo Pedro 28/10).
+ */
+export function isNoite(s: unknown): boolean {
+  return !!s && typeof s === 'object' && (s as SportScoreAgoraV6).noite === true;
 }

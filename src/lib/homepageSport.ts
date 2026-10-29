@@ -64,6 +64,8 @@ export interface HomepageSpotData {
   bestWindowsBySport: import('@/lib/bestWindowToday').BestWindowsBySport
   /** Melhor janela ≥Bom por desporto nas próximas 48h (escala canónica). */
   upcomingWindowsBySport: import('@/lib/bestWindowToday').UpcomingWindowsBySport
+  /** Estado «Noite»: outras janelas candidatas ≥ Bom (bake; omitida quando não há). */
+  janelasNoiteBySport?: import('@/lib/bestWindowToday').JanelasCandidatasBySport
 }
 
 export function parseSportFilter(value?: string | null): GridSportFilter {

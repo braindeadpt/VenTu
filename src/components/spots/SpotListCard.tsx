@@ -22,6 +22,8 @@ import { waveFactorSuffix, type ScoreWaveCorrection } from '@/lib/scoreCondition
 import type { ObservedWave } from '@/lib/observedWave';
 import { formatObservedClockTime } from '@/lib/observations';
 import { cn } from '@/lib/cn';
+import type { JanelaSeguinte } from '@/lib/noiteListas';
+import { JanelaNoite, LuaNoite } from '@/components/ui/NoiteJanela';
 
 export interface SpotListCardConditions {
   waveHeight: number;
@@ -52,6 +54,12 @@ interface SpotListCardProps {
    * o numeral passa a «—» e este rótulo substitui a banda.
    */
   semNota?: string | null;
+  /**
+   * De noite (opção A, 28/10): a lua no lugar do numeral, «Noite» no lugar da
+   * banda e a próxima janela («amanhã 07–11h [8]») ou «Sem janela boa nas
+   * próximas horas» por baixo do nome. Paralelo a `semNota`.
+   */
+  noite?: { janela: JanelaSeguinte | null } | null;
   /** Active sea-state/wind IPMA warning — small badge on the card. */
   warning?: MapMarkerWarning | null;
   /** Offshore wind safety note (windSportDirectionSafety) for the scored sport. */
@@ -98,6 +106,7 @@ export default function SpotListCard({
   spot,
   statusLine,
   semNota = null,
+  noite = null,
   warning,
   windSafety = null,
   waveCorrection,
@@ -110,8 +119,10 @@ export default function SpotListCard({
   // O score é a razão de existir do card — deixa de ser uma pílula de 11px no
   // canto e passa a ser a âncora visual, em numeral tabular grande.
   const scoreTokens = getScoreTokens(score);
-  const scoreTierLabel = semNota ?? getScoreTierLabel(scoreTokens.tier, locale);
-  const hoverLine = getSpotListCardHoverLine(score, locale);
+  const tNoite = getTranslation(locale).noite;
+  const scoreTierLabel = noite ? tNoite.rotulo : (semNota ?? getScoreTierLabel(scoreTokens.tier, locale));
+  // de noite a frase de hover (do score 0) não diz nada
+  const hoverLine = noite ? null : getSpotListCardHoverLine(score, locale);
   // Sufixo honesto da altura: «(boia)» / «(viés regional)» quando a correcção
   // foi aplicada (a altura mostrada É a corrigida); '' para previsão pura.
   const waveSource = waveCorrection?.source ?? 'forecast';
@@ -218,24 +229,36 @@ export default function SpotListCard({
           <div
             className="shrink-0 flex flex-col items-center leading-none pt-0.5"
             data-visual-dynamic
+            data-noite={noite ? '' : undefined}
           >
-            <span
-              className={cn(
-                'font-mono font-semibold tabular-nums text-num-lg',
-                scoreTokens.text,
-              )}
-            >
-              {semNota ? '—' : scoreToNota(score)}
-            </span>
-            <span className={cn('mt-1 text-meta-sm font-medium', scoreTokens.text)}>
+            {noite ? (
+              <LuaNoite size={40} locale={locale} decorativa />
+            ) : (
+              <span
+                className={cn(
+                  'font-mono font-semibold tabular-nums text-num-lg',
+                  scoreTokens.text,
+                )}
+              >
+                {semNota ? '—' : scoreToNota(score)}
+              </span>
+            )}
+            <span className={cn('mt-1 text-meta-sm font-medium', noite ? 'text-fg uppercase tracking-[0.12em]' : scoreTokens.text)}>
               {scoreTierLabel}
             </span>
           </div>
           <div className="min-w-0 flex-1">
             <h3 className="font-display font-semibold text-fg truncate text-body-lg">{name}</h3>
             <p className="text-meta-sm text-fg-muted truncate">{region}</p>
-            {statusLine && (
-              <p className="text-meta-sm text-fg-subtle mt-0.5 capitalize" data-visual-dynamic>{statusLine}</p>
+            {noite ? (
+              <p className="mt-1 flex flex-wrap items-center gap-x-1.5 gap-y-1 text-meta-sm" data-visual-dynamic>
+                {noite.janela ? <span className="text-fg-muted">{tNoite.proximaJanela}</span> : null}
+                <JanelaNoite janela={noite.janela} locale={locale} />
+              </p>
+            ) : (
+              statusLine && (
+                <p className="text-meta-sm text-fg-subtle mt-0.5 capitalize" data-visual-dynamic>{statusLine}</p>
+              )
             )}
           </div>
         </div>

@@ -65,6 +65,7 @@ export default function HomeAdaptive({
             spotsData={spotsData}
             favoriteIds={favorites.length > 0 ? favorites : []}
             activeSport={activeSport}
+            nowMs={tickerNowMs}
           />
           <WaveDivider />
         </>

@@ -3,6 +3,7 @@ import { getTranslation, validateLocale } from '@/lib/i18n';
 import { loadSpotListings } from '@/lib/load-spot-data'
 import { MACRO_REGIONS } from '@/lib/regions'
 import { SpotGridClient } from '@/components/spots/SpotGridClient'
+import { buildNowMs } from '@/lib/buildClock'
 import MapTilePreconnect from '@/components/MapTilePreconnect'
 import { locales } from '@/lib/i18n'
 import {
@@ -121,6 +122,7 @@ export default async function ExplorarPage({ params }: Props) {
         spotsData={spotsData}
         locale={locale}
         regions={[...MACRO_REGIONS]}
+        bakedAtMs={buildNowMs()}
         initialSport={landing.sport}
         initialRegion={landing.region}
       />

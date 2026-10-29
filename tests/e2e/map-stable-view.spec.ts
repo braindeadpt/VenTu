@@ -47,7 +47,15 @@ async function mapView(page: Page): Promise<MapView> {
 /** Dispara um refresh real de conditions.json e espera o pedido sair. */
 async function triggerRefresh(page: Page) {
   const req = page.waitForRequest('**/data/conditions.json', { timeout: 20_000 });
-  await page.evaluate(() => document.dispatchEvent(new Event('visibilitychange')));
+  // O refresh no visibilitychange só corre ≥ 5 min depois do último
+  // (useLiveGridSpotData): adianta o Date.now da página 6 min (desvio
+  // constante, o tempo continua a andar) para o pedido sair já, sem depender
+  // de o refresh diferido de 5 s cair dentro desta janela.
+  await page.evaluate(() => {
+    const real = Date.now.bind(Date);
+    Date.now = () => real() + 6 * 60 * 1000;
+    document.dispatchEvent(new Event('visibilitychange'));
+  });
   await req;
 }
 
@@ -103,8 +111,18 @@ test.describe('Map stable view', () => {
       { waveHeight?: number; swellHeight?: number; wavePeriod?: number; swellPeriod?: number }
     >;
     const keys = Object.keys(baseJson);
+    // O build e2e usa o relógio real: de noite o `notaV6` cozido não tem nota
+    // em nenhuma modalidade v6 e, com o corte de noite no SUP/wake, «Só a
+    // bombar» fica sem marcadores. O teste é sobre a vista do mapa, não sobre
+    // a noite: tira o `notaV6` de noite (de dia não muda nada).
+    for (const e of Object.values(baseJson)) {
+      const nv = (e as { notaV6?: Record<string, unknown> } | null)?.notaV6;
+      if (nv && ['kite', 'surf', 'windsurf', 'bodyboard', 'foil'].every((m) => nv[m] == null)) {
+        delete (e as { notaV6?: unknown }).notaV6;
+      }
+    }
     await page.route('**/data/conditions.json', async (route) => {
-      if (!mutate) return route.continue();
+      if (!mutate) return route.fulfill({ json: baseJson });
       const json = structuredClone(baseJson);
       keys.forEach((key, i) => {
         const e = json[key];

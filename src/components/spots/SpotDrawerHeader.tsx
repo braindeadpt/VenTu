@@ -3,6 +3,8 @@
 import { getTranslation } from '@/lib/i18n';
 import ScoreGauge from '@/components/ui/ScoreGauge';
 import { Waves, Wind, Thermometer, Zap } from 'lucide-react';
+import type { JanelaSeguinte } from '@/lib/noiteListas';
+import { JanelaNoite, LuaNoite } from '@/components/ui/NoiteJanela';
 
 interface SpotDrawerHeaderProps {
   name: string;
@@ -13,6 +15,8 @@ interface SpotDrawerHeaderProps {
   wavePowerKw: string;
   waterTemp: string | number;
   locale: string;
+  /** De noite: a lua no lugar do medidor e a próxima janela (opção A, 28/10). */
+  noite?: { janela: JanelaSeguinte | null } | null;
 }
 
 export default function SpotDrawerHeader({
@@ -24,12 +28,13 @@ export default function SpotDrawerHeader({
   wavePowerKw,
   waterTemp,
   locale,
+  noite = null,
 }: SpotDrawerHeaderProps) {
   const isPt = locale === 'pt';
 
   return (
     <div className="flex items-start gap-4 pb-4 border-b border-divider">
-      <ScoreGauge score={score} size="sm" />
+      {noite ? <LuaNoite size={56} locale={locale} /> : <ScoreGauge score={score} size="sm" />}
       <div className="min-w-0 flex-1">
         <h3 className="text-lg font-bold text-fg truncate">{name}</h3>
         <p className="text-xs text-fg-muted">{region}</p>
@@ -53,9 +58,16 @@ export default function SpotDrawerHeader({
           </span>
         </div>
 
-        <p className="text-meta-sm text-fg-subtle/60 mt-1">
-          {getTranslation(locale).spotsMap.scoreForSelectedSport}
-        </p>
+        {noite ? (
+          <p className="mt-2 flex flex-wrap items-center gap-1.5 text-meta-sm" data-noite="">
+            {noite.janela ? <span className="text-fg-muted">{getTranslation(locale).noite.proximaJanela}</span> : null}
+            <JanelaNoite janela={noite.janela} locale={locale} />
+          </p>
+        ) : (
+          <p className="text-meta-sm text-fg-subtle/60 mt-1">
+            {getTranslation(locale).spotsMap.scoreForSelectedSport}
+          </p>
+        )}
       </div>
     </div>
   );

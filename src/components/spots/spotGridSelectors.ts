@@ -8,6 +8,7 @@ import type { GridSportFilter, SportType } from '@/lib/sportRatings';
 import { scoreToNota } from '@/lib/nota';
 import { scoreTodos } from '@/lib/desportosV6';
 import { localizedSpotName } from '@/lib/localizedSpotText';
+import { compararNoite } from '@/lib/noiteListas';
 
 export function getScoreSport(sport: GridSportFilter): SportType | null {
   if (sport === 'all' || sport === 'big-wave') return sport === 'big-wave' ? 'surf' : null;
@@ -83,9 +84,18 @@ export function compareRanking(
   b: GridSpotData,
   selectedSport: GridSportFilter,
   locale: string,
+  /** Relógio do estado «Noite» (janelas que já acabaram); `null` = todas contam. */
+  nowMs: number | null = null,
 ): number {
-  const byNota = scoreToNota(rankingScore(b, selectedSport)) - scoreToNota(rankingScore(a, selectedSport));
-  if (byNota !== 0) return byNota;
+  // Noite (regra aprovada 28/10): linhas de dia primeiro; de noite, pela
+  // próxima janela (dia, nota, início) — depois o nome, como de dia.
+  const noite = compararNoite(a, b, selectedSport, nowMs);
+  if (noite !== null) {
+    if (noite !== 0) return noite;
+  } else {
+    const byNota = scoreToNota(rankingScore(b, selectedSport)) - scoreToNota(rankingScore(a, selectedSport));
+    if (byNota !== 0) return byNota;
+  }
   const byName = localizedSpotName(a.spot, locale).localeCompare(localizedSpotName(b.spot, locale), locale);
   if (byName !== 0) return byName;
   return a.spot.slug.localeCompare(b.spot.slug);

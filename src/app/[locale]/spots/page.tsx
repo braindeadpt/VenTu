@@ -3,6 +3,7 @@ import { getTranslation } from '@/lib/i18n'
 import { loadSpotListings } from '@/lib/load-spot-data'
 import { MACRO_REGIONS } from '@/lib/regions'
 import { SpotGridClient } from '@/components/spots/SpotGridClient'
+import { buildNowMs } from '@/lib/buildClock'
 import MapTilePreconnect from '@/components/MapTilePreconnect'
 import PageHeader from '@/components/ui/PageHeader'
 import { buildPageMetadata, SPOT_COUNT } from '@/lib/seo'
@@ -45,6 +46,7 @@ export default async function SpotsPage({ params }: { params: Promise<{ locale: 
         spotsData={spotsData}
         locale={locale}
         regions={[...MACRO_REGIONS]}
+        bakedAtMs={buildNowMs()}
       />
     </div>
   )
