@@ -3,16 +3,6 @@
   "fetchedAt": "2026-10-28T20:36:37.659Z",
   "warnings": [
     {
-      "areaCode": "ACE",
-      "areaLabel": "Angra do Heroísmo",
-      "type": "Precipitação",
-      "level": "yellow",
-      "text": "Precipitação por vezes FORTE.",
-      "startTime": "2026-10-28T12:25:00",
-      "endTime": "2026-10-29T00:00:00",
-      "relevant": true
-    },
-    {
       "areaCode": "AOR",
       "areaLabel": "Vila do Porto",
       "type": "Precipitação",
@@ -24,42 +14,6 @@
     }
   ],
   "spotWarnings": {
-    "praia-vitoria": [
-      {
-        "areaCode": "ACE",
-        "areaLabel": "Angra do Heroísmo",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes FORTE.",
-        "startTime": "2026-10-28T12:25:00",
-        "endTime": "2026-10-29T00:00:00",
-        "relevant": true
-      }
-    ],
-    "santa-catarina-terceira": [
-      {
-        "areaCode": "ACE",
-        "areaLabel": "Angra do Heroísmo",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes FORTE.",
-        "startTime": "2026-10-28T12:25:00",
-        "endTime": "2026-10-29T00:00:00",
-        "relevant": true
-      }
-    ],
-    "almoxarife": [
-      {
-        "areaCode": "ACE",
-        "areaLabel": "Angra do Heroísmo",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes FORTE.",
-        "startTime": "2026-10-28T12:25:00",
-        "endTime": "2026-10-29T00:00:00",
-        "relevant": true
-      }
-    ],
     "mosteiros": [
       {
         "areaCode": "AOR",
@@ -179,42 +133,9 @@
         "endTime": "2026-10-29T09:00:00",
         "relevant": true
       }
-    ],
-    "porto-martins": [
-      {
-        "areaCode": "ACE",
-        "areaLabel": "Angra do Heroísmo",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes FORTE.",
-        "startTime": "2026-10-28T12:25:00",
-        "endTime": "2026-10-29T00:00:00",
-        "relevant": true
-      }
-    ],
-    "cachorro-pico": [
-      {
-        "areaCode": "ACE",
-        "areaLabel": "Angra do Heroísmo",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes FORTE.",
-        "startTime": "2026-10-28T12:25:00",
-        "endTime": "2026-10-29T00:00:00",
-        "relevant": true
-      }
-    ],
-    "faja-cubres": [
-      {
-        "areaCode": "ACE",
-        "areaLabel": "Angra do Heroísmo",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes FORTE.",
-        "startTime": "2026-10-28T12:25:00",
-        "endTime": "2026-10-29T00:00:00",
-        "relevant": true
-      }
     ]
-  }
+  },
+  "stale": true,
+  "staleSince": "2026-10-29T00:06:36.852Z",
+  "staleReason": "IPMA em baixo e fallback MeteoAlarm vazio"
 }

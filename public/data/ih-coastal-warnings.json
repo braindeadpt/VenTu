@@ -319,46 +319,6 @@
       ]
     },
     {
-      "id": 18927,
-      "ref": "ANAV NR 2401/26",
-      "category": "Requisitos de segurança maritima",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=a4fdcd39-0a6e-4180-aab0-fda34ce17e1e",
-      "source": "ih",
-      "collection": "nav_warning_coastal",
-      "polygons": [
-        [
-          [
-            -9.605,
-            38.4
-          ],
-          [
-            -10.466667,
-            38.338333
-          ],
-          [
-            -10.383333,
-            37.733333
-          ],
-          [
-            -9.784167,
-            37.652333
-          ],
-          [
-            -9.45,
-            38
-          ],
-          [
-            -9.6,
-            38.4
-          ],
-          [
-            -9.605,
-            38.4
-          ]
-        ]
-      ]
-    },
-    {
       "id": 18929,
       "ref": "ANAV NR 2402/26",
       "category": "Requisitos de segurança maritima",
@@ -514,6 +474,38 @@
           [
             -9,
             38.166667
+          ]
+        ]
+      ]
+    },
+    {
+      "id": 18945,
+      "ref": "ANAV NR 2409/26",
+      "category": "Requisitos de segurança maritima",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=4d395e23-13b5-4ba6-88e6-0d5b0c083d11",
+      "source": "ih",
+      "collection": "nav_warning_coastal",
+      "polygons": [
+        [
+          [
+            -9.422994,
+            38.960744
+          ],
+          [
+            -9.422994,
+            38.963246
+          ],
+          [
+            -9.419561,
+            38.963246
+          ],
+          [
+            -9.419561,
+            38.960744
+          ],
+          [
+            -9.422994,
+            38.960744
           ]
         ]
       ]
@@ -8339,7 +8331,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-10-28T20:36:38.843Z",
+  "fetchedAt": "2026-10-29T00:06:38.314Z",
   "sourceCollection": "nav_warning_coastal+nav_warning_local+orca_anavnet_point",
   "sourceUrl": "https://ogcapi.hidrografico.pt/collections/nav_warning_coastal"
 }
