@@ -1,47 +1,25 @@
 {
-  "date": "2026-10-28",
-  "generatedAt": "2026-10-28T04:36:21.576Z",
-  "topSpot": "Arrifana",
-  "topSpotSlug": "arrifana",
+  "date": "2026-10-29",
+  "generatedAt": "2026-10-29T04:22:13.686Z",
+  "topSpot": "Nazaré",
+  "topSpotSlug": "nazare",
   "pt": {
-    "headline": "Hoje é dia de Arrifana! 🌊",
-    "advice": "Melhor janela: 8:00h. Ondas de 2.4m com 3 nós de vento. ⚓ Avisos à Navegação Costeiros (IH): ANAV NR 2/22 — Plano de Salvamento Marítimo Lagos",
+    "headline": "Hoje é dia de Nazaré! 🌊",
+    "advice": "Melhor janela: 8:00h. Ondas de 2.3m com 2 nós de vento.",
     "bestTime": "8:00",
     "wetsuit": "3/2mm",
     "crowdTip": "Chega cedo para evitar crowd!",
-    "moonTideLine": "Gibosa minguante · Marés vivas · baixa-mar 09:00"
+    "moonTideLine": "Gibosa minguante · Marés vivas · baixa-mar 10:00"
   },
   "en": {
-    "headline": "Today is Arrifana day! 🌊",
-    "advice": "Best window: 8:00. 2.4m waves with 3 knot wind. ⚓ Coastal navigation warnings (IH): ANAV NR 2/22 — Plano de Salvamento Marítimo Lagos",
+    "headline": "Today is Nazaré day! 🌊",
+    "advice": "Best window: 8:00. 2.3m waves with 2 knot wind.",
     "bestTime": "8:00",
     "wetsuit": "3/2mm",
     "crowdTip": "Get there early to beat the crowd!",
-    "moonTideLine": "Waning gibbous · Spring tides · low tide 09:00"
+    "moonTideLine": "Waning gibbous · Spring tides · low tide 10:00"
   },
   "spots": [
-    {
-      "name": "Arrifana",
-      "slug": "arrifana",
-      "score": 100,
-      "scoreForecast": 100,
-      "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
-    },
-    {
-      "name": "Guincho",
-      "slug": "guincho",
-      "score": 90,
-      "scoreForecast": 90,
-      "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
-    },
     {
       "name": "Nazaré",
       "slug": "nazare",
@@ -54,10 +32,10 @@
       "enReason": "Excellent conditions"
     },
     {
-      "name": "Ribeira d'Ilhas",
-      "slug": "ribeira-ilhas",
-      "score": 90,
-      "scoreForecast": 90,
+      "name": "Guincho",
+      "slug": "guincho",
+      "score": 80,
+      "scoreForecast": 80,
       "scoreSource": "previsão",
       "scoreMeta": null,
       "verdict": "go",
@@ -65,8 +43,19 @@
       "enReason": "Excellent conditions"
     },
     {
-      "name": "Carcavelos",
-      "slug": "carcavelos",
+      "name": "Ribeira d'Ilhas",
+      "slug": "ribeira-ilhas",
+      "score": 80,
+      "scoreForecast": 80,
+      "scoreSource": "previsão",
+      "scoreMeta": null,
+      "verdict": "go",
+      "ptReason": "Condições excelentes",
+      "enReason": "Excellent conditions"
+    },
+    {
+      "name": "Arrifana",
+      "slug": "arrifana",
       "score": 80,
       "scoreForecast": 80,
       "scoreSource": "previsão",
@@ -78,28 +67,39 @@
     {
       "name": "Supertubos",
       "slug": "supertubos",
-      "score": 70,
-      "scoreForecast": 70,
+      "score": 60,
+      "scoreForecast": 60,
       "scoreSource": "previsão",
       "scoreMeta": null,
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
+      "verdict": "maybe",
+      "ptReason": "Condições razoáveis",
+      "enReason": "Fair conditions"
     },
     {
       "name": "Coxos",
       "slug": "coxos",
-      "score": 70,
-      "scoreForecast": 70,
+      "score": 60,
+      "scoreForecast": 60,
       "scoreSource": "previsão",
       "scoreMeta": null,
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
+      "verdict": "maybe",
+      "ptReason": "Condições razoáveis",
+      "enReason": "Fair conditions"
+    },
+    {
+      "name": "Carcavelos",
+      "slug": "carcavelos",
+      "score": 50,
+      "scoreForecast": 50,
+      "scoreSource": "previsão",
+      "scoreMeta": null,
+      "verdict": "maybe",
+      "ptReason": "Condições razoáveis",
+      "enReason": "Fair conditions"
     }
   ],
-  "topScore": 100,
-  "topScoreForecast": 100,
+  "topScore": 90,
+  "topScoreForecast": 90,
   "topScoreSource": "previsão",
   "topScoreMeta": null
 }
