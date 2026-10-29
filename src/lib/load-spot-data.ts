@@ -14,8 +14,13 @@ import type { ObservedWave, ObservedWaveMeta } from '@/lib/observedWave'
 import { resolveConditionsEntry } from '@/lib/spotConditionsSource'
 import { applyRegionalBiasFallback, rawToScoreInput } from '@/lib/scoreConditions'
 import { loadWaveBiasRegionsBuild } from '@/lib/waveBias'
-import type { BestWindowToday, BestWindowsBySport, UpcomingWindowsBySport } from '@/lib/bestWindowToday'
-import { computeBestWindowsForSpot, computeUpcomingWindowsForSpot } from '@/lib/bestWindowBuild'
+import type { BestWindowToday, BestWindowsBySport, JanelasCandidatasBySport, UpcomingWindowsBySport } from '@/lib/bestWindowToday'
+import {
+  computeBestWindowsForSpot,
+  computeJanelasCandidatasForSpot,
+  computeUpcomingWindowsForSpot,
+  janelasNoiteExtra,
+} from '@/lib/bestWindowBuild'
 import { buildNowMs } from '@/lib/buildClock'
 
 const CALM_LAKE_CONDITIONS = {
@@ -182,6 +187,9 @@ export interface SpotRowBase {
   /** Melhor janela ≥Bom por desporto nas próximas 48h, escala canónica —
    *  alimenta o bloco «Próximas janelas 48h» da home (auditoria C3). */
   upcomingWindowsBySport: UpcomingWindowsBySport
+  /** Estado «Noite»: as OUTRAS janelas candidatas ≥ Bom por desporto (a
+   *  próxima pode não ser a de melhor nota); omitida quando não há. */
+  janelasNoiteBySport?: JanelasCandidatasBySport
 }
 
 /**
@@ -292,6 +300,11 @@ function buildSpotData(
   const nowMs = buildNowMs()
   const { bestWindowToday, bestWindowsBySport } = computeBestWindowsForSpot(spot, forecast, nowMs, notaV6)
   const upcomingWindowsBySport = computeUpcomingWindowsForSpot(spot, forecast, scoreInput, nowMs, notaV6)
+  const janelasNoiteBySport = janelasNoiteExtra(
+    computeJanelasCandidatasForSpot(spot, forecast, scoreInput, nowMs, notaV6),
+    upcomingWindowsBySport,
+  )
+  const noiteExtra = janelasNoiteBySport ? { janelasNoiteBySport } : {}
 
   if (!detail) {
     // D8 — a série diária de confiança (7 entradas × ~650 B por spot) só é
@@ -308,6 +321,7 @@ function buildSpotData(
       bestWindowToday,
       bestWindowsBySport,
       upcomingWindowsBySport,
+      ...noiteExtra,
     }
   }
 
@@ -345,6 +359,7 @@ function buildSpotData(
     bestWindowToday,
     bestWindowsBySport,
     upcomingWindowsBySport,
+    ...noiteExtra,
   }
 }
 

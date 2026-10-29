@@ -8,8 +8,8 @@ import { fetchMarineData, getCurrentConditions } from '@/lib/openmeteo';
 import { getScoreTokens } from '@/lib/sportScore';
 import { allScoresComV6, isNoite, isSemDados, notaV6DoSpot, scoreAgoraComV6, type NotaV6Agora } from '@/lib/notaV6Agora';
 import type { Conditions } from '@/lib/sportScore';
-import type { UpcomingWindowsBySport } from '@/lib/bestWindowToday';
-import { janelaSeguinte, veredictoNoite, type JanelaSeguinte } from '@/lib/noiteListas';
+import type { JanelasCandidatasBySport } from '@/lib/bestWindowToday';
+import { janelaSeguinte, veredictoComparador, type JanelaSeguinte } from '@/lib/noiteListas';
 import VeredictoNoite from '@/components/compare/VeredictoNoite';
 import { janelasDeNoite } from '@/lib/janelasNoiteCliente';
 import { JanelaNoite, LuaNoite } from '@/components/ui/NoiteJanela';
@@ -219,7 +219,7 @@ export default function CompareClient() {
   const [pickerCond, setPickerCond] = useState<Record<string, PrecomputedCondition> | null>(null);
   // Noite (opção A, 28/10): próximas janelas dos spots comparados (o mesmo
   // cálculo do bake, só de noite) e o relógio com que foram calculadas.
-  const [janelas, setJanelas] = useState<{ nowMs: number; porSpot: Record<string, UpcomingWindowsBySport> } | null>(null);
+  const [janelas, setJanelas] = useState<{ nowMs: number; porSpot: Record<string, JanelasCandidatasBySport> } | null>(null);
 
   useEffect(() => {
     const urlSlugs = getSpotsFromUrl();
@@ -269,14 +269,15 @@ export default function CompareClient() {
 
   useEffect(() => {
     setJanelas(null);
-    const deNoite = battleData.filter((d) => COMPARE_SPORTS.some((s) => isNoite(d.allScores[s])));
-    if (!deNoite.length) return;
+    // com algum spot de noite, as janelas de TODOS (o veredicto misto também as lê, revisão #358)
+    if (!battleData.some((d) => COMPARE_SPORTS.some((s) => isNoite(d.allScores[s])))) return;
+    const deNoite = battleData;
     let cancelled = false;
     const nowMs = Date.now();
     Promise.all(
       deNoite.map((d) =>
         janelasDeNoite(d.spot, d.scoreInput, d.notaV6, nowMs)
-          .catch(() => ({}) as UpcomingWindowsBySport)
+          .catch(() => ({}) as JanelasCandidatasBySport)
           .then((w) => [d.spot.id, w] as const),
       ),
     ).then((pares) => {
@@ -597,21 +598,28 @@ export default function CompareClient() {
   // no desporto escolhido, a ordem é a da próxima janela (dia, nota, início) e
   // ganha quem tem a melhor janela nas próximas 24 h («Amanhã ganha …»).
   const tn = getTranslation(validateLocale(locale)).noite;
-  const noiteCmp = battleData.every((d) => isNoite(d.allScores[selectedSport]));
   const nomeDe = (d: SpotBattleData) => (isPt ? d.spot.name : d.spot.nameEn);
+  const linhaJanelas = (d: SpotBattleData) => ({ spot: d.spot, janelasNoiteBySport: janelas?.porSpot[d.spot.id] });
   const janelaDe = (d: SpotBattleData): JanelaSeguinte | null =>
-    janelas
-      ? janelaSeguinte({ spot: d.spot, upcomingWindowsBySport: janelas.porSpot[d.spot.id] }, selectedSport, janelas.nowMs)
-      : null;
-  const noiteV = noiteCmp && janelas ? veredictoNoite(battleData, janelaDe, nomeDe, janelas.nowMs, locale) : null;
-  const sorted = noiteV
-    ? noiteV.ordem
-    : [...battleData].sort((a, b) =>
-        (b.allScores[selectedSport]?.score || 0) - (a.allScores[selectedSport]?.score || 0)
-      );
-  const ganham24h = noiteV?.ganham24h ?? [];
-  const vencedorNoite = ganham24h[0] ?? null;
-  const winner = sorted[0];
+    janelas ? janelaSeguinte(linhaJanelas(d), selectedSport, janelas.nowMs) : null;
+  // o «Amanhã ganha» vê todas as candidatas que começam nas próximas 24 h (revisão #358, 2)
+  const janela24hDe = (d: SpotBattleData): JanelaSeguinte | null =>
+    janelas ? janelaSeguinte(linhaJanelas(d), selectedSport, janelas.nowMs, 24) : null;
+  // misto (revisão #358, 3): notas de dia à frente das luas; vencedor normal só de dia com nota > 0
+  const v = veredictoComparador(battleData, {
+    noite: (d) => isNoite(d.allScores[selectedSport]),
+    score: (d) => d.allScores[selectedSport]?.score || 0,
+    janelaDe,
+    janela24hDe,
+    nome: nomeDe,
+    nowMs: janelas?.nowMs ?? null,
+    locale,
+  });
+  const noiteCmp = v.modo !== 'dia' && !v.vencedorDia;
+  const sorted = v.ordem;
+  const ganham24h = v.ganham24h;
+  const vencedorNoite = noiteCmp ? (ganham24h[0] ?? null) : null;
+  const winner = v.vencedorDia ?? sorted[0];
   const winnerScore = winner.allScores[selectedSport]?.score || 0;
   const winnerTokens = getScoreTokens(winnerScore);
   // v6 sem `notaV6` (live Open-Meteo): «Sem dados» e «—», não «0/10 · N/A» (#218 PR 6)

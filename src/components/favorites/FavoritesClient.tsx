@@ -7,9 +7,9 @@ import { Heart, ArrowLeft, Share2, Check, LogIn } from 'lucide-react';
 import { spots } from '@/lib/spots';
 import { fetchMarineData, getCurrentConditions } from '@/lib/openmeteo';
 import { isNoite, isSemDados, notaV6DoSpot, scoreAgoraComV6 } from '@/lib/notaV6Agora';
-import type { UpcomingWindowsBySport } from '@/lib/bestWindowToday';
 import { compararJanelas, janelaSeguinte } from '@/lib/noiteListas';
 import { janelasDeNoite } from '@/lib/janelasNoiteCliente';
+import { carregarFavoritos, type JanelasFavoritos } from './carregarFavoritos';
 import { getTranslation } from '@/lib/i18n';
 import type { SportType } from '@/lib/sportRatings';
 import { SPORT_LABELS } from '@/lib/sportRatings';
@@ -58,7 +58,7 @@ export default function FavoritesClient() {
   const [conditions, setConditions] = useState<Record<string, SpotConditions>>({});
   const [sportScores, setSportScores] = useState<Record<string, { score: number; rating: string; ratingEn: string; semDados?: true; noite?: true }>>({});
   // Noite (opção A, 28/10): próximas janelas dos favoritos de noite (o mesmo cálculo do bake) e o relógio delas
-  const [janelas, setJanelas] = useState<{ nowMs: number; porSpot: Record<string, UpcomingWindowsBySport> } | null>(null);
+  const [janelas, setJanelas] = useState<JanelasFavoritos | null>(null);
   const [shareCopied, setShareCopied] = useState(false);
   // The Supabase-configured state is baked at build time, so a keyless build
   // and a keyed build disagree about it between server render and the first
@@ -74,78 +74,29 @@ export default function FavoritesClient() {
   useEffect(() => {
     if (!session?.user || !favorites.length) return;
 
+    let cancelled = false;
+    // cada carregamento novo substitui o estado inteiro (as janelas também: nunca as de um fetch anterior)
+    setJanelas(null);
     const fetchAll = async () => {
-      const results: Record<string, SpotConditions> = {};
-      const scores: Record<string, { score: number; rating: string; ratingEn: string; semDados?: true; noite?: true }> = {};
-      const deNoite: Array<() => Promise<readonly [string, UpcomingWindowsBySport]>> = [];
-      const nowMs = Date.now();
-
-      try {
-        const response = await fetch(getAssetPath('/data/conditions.json'), { cache: 'no-store' });
-        if (response.ok) {
-          const precomputed = await response.json();
-
-          for (const id of favorites) {
-            const spot = spots.find((s) => s.id === id);
-            if (!spot) continue;
-
-            const cond = precomputed[getConditionsDataId(spot)] ?? precomputed[spot.id];
-            if (cond && typeof cond === 'object') {
-              const scoreInput = rawToScoreInput(cond as Record<string, unknown>);
-              results[id] = {
-                ...scoreInput,
-                source: 'real',
-                updatedAt: typeof cond.updatedAt === 'string' ? cond.updatedAt : undefined,
-              };
-              const primarySport = (spot.compatibleSports?.[0] || spot.type) as SportType;
-              // kitesurf/surf: o `notaV6` do pipeline (#218 PR 4) — o mesmo número do /mapa e das listas
-              const nv = notaV6DoSpot(spot, precomputed);
-              scores[id] = scoreAgoraComV6(spot, primarySport, scoreInput, nv);
-              if (isNoite(scores[id]))
-                deNoite.push(() =>
-                  janelasDeNoite(spot, scoreInput, nv, nowMs)
-                    .catch(() => ({}) as UpcomingWindowsBySport)
-                    .then((w) => [id, w] as const),
-                );
-            }
-          }
-
-          if (favorites.every((id) => results[id])) {
-            // de noite, as janelas chegam com os scores (nunca «Sem janela» à espera do forecast)
-            const pares = deNoite.length ? await Promise.all(deNoite.map((f) => f())) : [];
-            setConditions(results);
-            setSportScores(scores);
-            setJanelas(pares.length ? { nowMs, porSpot: Object.fromEntries(pares) } : null);
-            return;
-          }
-        }
-      } catch {
-        /* fallback below */
-      }
-
-      await Promise.all(
-        favorites.map(async (id) => {
-          if (results[id]) return;
-          const spot = spots.find((s) => s.id === id);
-          if (!spot) return;
-          try {
-            const data = await fetchMarineData(spot.lat, spot.lon);
-            const current = getCurrentConditions(data);
-            results[id] = current;
-            const primarySport = (spot.compatibleSports?.[0] || spot.type) as SportType;
-            // sem `notaV6` do pipeline: v6 «sem dados», SUP / wakeboard no motor antigo (#218, PR 6)
-            scores[id] = scoreAgoraComV6(spot, primarySport, current, null);
-          } catch {
-            /* ignore */
-          }
-        }),
-      );
-
-      setConditions(results);
-      setSportScores(scores);
+      const r = await carregarFavoritos(favorites, spots, {
+        conditionsJson: async () => {
+          const response = await fetch(getAssetPath('/data/conditions.json'), { cache: 'no-store' });
+          return response.ok ? ((await response.json()) as Record<string, unknown>) : null;
+        },
+        marine: async (spot) => getCurrentConditions(await fetchMarineData(spot.lat, spot.lon)),
+        janelasDeNoite,
+        nowMs: Date.now(),
+      });
+      if (cancelled) return;
+      setConditions(r.conditions as Record<string, SpotConditions>);
+      setSportScores(r.scores);
+      setJanelas(r.janelas);
     };
 
     void fetchAll();
+    return () => {
+      cancelled = true;
+    };
   }, [favorites, session?.user]);
 
   const handleShare = async () => {
@@ -166,7 +117,7 @@ export default function FavoritesClient() {
   const primaryOf = (spot: (typeof spots)[number]) => (spot.compatibleSports?.[0] || spot.type) as SportType;
   const janelaDe = (spot: (typeof spots)[number]) =>
     janelas && isNoite(sportScores[spot.id])
-      ? janelaSeguinte({ spot, upcomingWindowsBySport: janelas.porSpot[spot.id] }, primaryOf(spot), janelas.nowMs)
+      ? janelaSeguinte({ spot, janelasNoiteBySport: janelas.porSpot[spot.id] }, primaryOf(spot), janelas.nowMs)
       : null;
   const favoriteSpots = spots
     .filter((s) => favorites.includes(s.id))

@@ -18,7 +18,7 @@ import Button from '@/components/ui/Button';
 import { resolveWavePowerKw } from '@/lib/waveEnergy';
 import { spotDetailHref } from '@/lib/gridSpotScore';
 import type { MarineConditionsFields } from '@/lib/marineConditions';
-import type { UpcomingWindowsBySport } from '@/lib/bestWindowToday';
+import type { JanelasCandidatasBySport, UpcomingWindowsBySport } from '@/lib/bestWindowToday';
 import { isNoite } from '@/lib/notaV6Agora';
 import { janelaSeguinte } from '@/lib/noiteListas';
 
@@ -27,6 +27,8 @@ interface SpotData {
   conditions: MarineConditionsFields;
   allScores: Record<SportType, SportScore>;
   upcomingWindowsBySport?: UpcomingWindowsBySport;
+  /** Outras janelas candidatas (estado «Noite»: a próxima, não só a melhor nota). */
+  janelasNoiteBySport?: JanelasCandidatasBySport;
 }
 
 interface SpotDrawerProps {

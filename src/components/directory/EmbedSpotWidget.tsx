@@ -13,6 +13,7 @@ import { scoreTodos } from '@/lib/desportosV6';
 import { SPORT_LABELS } from '@/lib/sportRatings';
 import { janelaSeguinte, linhaDeNoite, type JanelaSeguinte } from '@/lib/noiteListas';
 import { janelasDeNoite } from '@/lib/janelasNoiteCliente';
+import type { JanelasCandidatasBySport } from '@/lib/bestWindowToday';
 import { JanelaNoite, LuaNoite } from '@/components/ui/NoiteJanela';
 
 type ConditionsFile = Record<
@@ -64,10 +65,10 @@ export default function EmbedSpotWidget({ slug }: { slug: string }) {
         if (linhaDeNoite({ spot, allScores: sports }, 'all')) {
           const nowMs = Date.now();
           return janelasDeNoite(spot, input, nv, nowMs)
-            .catch(() => ({}))
+            .catch(() => ({}) as JanelasCandidatasBySport)
             .then((w) => {
               if (cancelled) return;
-              setNoite({ janela: janelaSeguinte({ spot, upcomingWindowsBySport: w }, 'all', nowMs) });
+              setNoite({ janela: janelaSeguinte({ spot, janelasNoiteBySport: w }, 'all', nowMs) });
               setScore(0);
             });
         }
