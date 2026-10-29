@@ -18,7 +18,7 @@ import type { MarineConditionsFields } from '@/lib/marineConditions';
 import { resolveWavePowerKw, MS_TO_KNOTS } from '@/lib/waveEnergy';
 import { getCardinalLabel, getWindRelationLabel, getWindRelationDotClass, orientacaoVento } from '@/lib/wind';
 import { relacaoAnelVento } from '@/lib/ventoRelAnel';
-import { getDifficultyLabel } from '@/lib/mapDifficulty';
+import { getDifficultyLabel, nivelDoSpot } from '@/lib/mapDifficulty';
 import { getGoogleMapsDirectionsUrl, getSpotDetailHref } from '@/lib/mapSpotDetail';
 import { getMapSpotNarrative } from '@/lib/mapSpotNarrative';
 import { getExplainedWindSafety, getSpotScoreFactors, scoreFactorClass } from '@/lib/spotScoreFactors';
@@ -57,6 +57,8 @@ export default function MapSpotPreview({
 }: MapSpotPreviewProps) {
   const isPt = locale === 'pt';
   const { spot, conditions, allScores, warning } = data;
+  // Nível mostrado = nível do desporto activo (o mesmo que o filtro usa).
+  const nivelSport = highlightSport !== 'all' && highlightSport !== 'big-wave' ? highlightSport : undefined;
   const windKt = Math.round(conditions.windSpeed * 1.94384);
   const swellH = conditions.swellHeight ?? conditions.waveHeight;
   const swellT = conditions.swellPeriod ?? conditions.wavePeriod;
@@ -108,7 +110,7 @@ export default function MapSpotPreview({
         <p className="text-meta text-fg-muted">
           {localizedSpotRegion(spot, locale)}
           <span aria-hidden> · </span>
-          <span className="capitalize">{getDifficultyLabel(spot.difficulty, locale)}</span>
+          <span className="capitalize">{getDifficultyLabel(nivelDoSpot(spot, nivelSport), locale)}</span>
         </p>
         <p className="text-body-sm text-fg leading-snug pt-1">{narrative}</p>
         {tideLine ? (
@@ -391,6 +393,8 @@ export function SpotCardContent({
 }: SpotCardContentProps) {
   const { spot, conditions, allScores, warning } = data;
   const t = getTranslation(locale);
+  // Nível mostrado = nível do desporto activo (o mesmo que o filtro usa).
+  const nivelSport = highlightSport !== 'all' && highlightSport !== 'big-wave' ? highlightSport : undefined;
   const night = scoreOverride === null;
   const score = Math.max(0, Math.min(100, Math.round(bestScore(data, highlightSport, scoreOverride))));
   const scoreColor = getScoreRgb(score);
@@ -438,7 +442,7 @@ export function SpotCardContent({
       <p className="text-meta text-fg-muted mt-0.5">
         {localizedSpotRegion(spot, locale)}
         <span aria-hidden> · </span>
-        <span className="capitalize">{getDifficultyLabel(spot.difficulty, locale)}</span>
+        <span className="capitalize">{getDifficultyLabel(nivelDoSpot(spot, nivelSport), locale)}</span>
       </p>
 
       {night ? (
