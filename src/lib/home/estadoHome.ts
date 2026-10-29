@@ -108,20 +108,23 @@ export function estadoHome(M: Modelo, d: Modalidade, agoraIn: number, bPedido: s
     const acima = R.filter((r) => !dentroDo(r));
     const dar = dentro.filter(aDar).length;
     poucos = { dar, total: dentro.length };
-    if (dar === 0) {
-      top = dentro.slice(0, 3);
-      proximoDoNivel = null;
-      // «próximo» é sempre a seguir ao bloco mostrado: `dados` é o bloco
-      // seleccionado/actual e os anteriores não passados ficam antes dele.
-      const depoisDe = dados ? BL.indexOf(dados) + 1 : BL.length;
-      for (const b of BL.slice(depoisDe)) {
-        const r1 = primeiroDe(b);
-        if (r1 && aDar(r1)) {
-          proximoDoNivel = { bloco: b, linha: r1 };
-          break;
+    if (dar < 3) {
+      if (dar === 0) {
+        proximoDoNivel = null;
+        // «próximo» é sempre a seguir ao bloco mostrado: `dados` é o bloco
+        // seleccionado/actual e os anteriores não passados ficam antes dele.
+        const depoisDe = dados ? BL.indexOf(dados) + 1 : BL.length;
+        for (const b of BL.slice(depoisDe)) {
+          const r1 = primeiroDe(b);
+          if (r1 && aDar(r1)) {
+            proximoDoNivel = { bloco: b, linha: r1 };
+            break;
+          }
         }
       }
-    } else if (dar < 3) {
+      // «poucos» e «zero» (estudo aprovado): nº 1 = melhor do nível mesmo
+      // fraco; depois os melhores da costa acima do nível a dar (marcados);
+      // só na falta deles entram os seguintes do nível.
       top = dentro.slice(0, 1);
       for (const r of acima.filter(aDar)) {
         if (top.length >= 3) break;

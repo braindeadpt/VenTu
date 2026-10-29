@@ -140,21 +140,57 @@ describe('estadoHome com nível — top 3 dentro do nível', () => {
     expect(e.top[2].acimaDoNivel).toBeUndefined();
   });
 
-  it('«zero» a dar: nº 1 é o melhor do nível mesmo fraco + `proximoDoNivel`', () => {
+  it('«zero» a dar (kite): nº 1 fraco do nível + melhores acima a dar, marcados', () => {
     // cabedelo 3 e moledo 2 em 0-tarde; o cabedelo chega a 5 já em 0-fim.
     const M = modeloComNiveis({ cabedelo: 'beginner', moledo: 'beginner' }, 'advanced');
     const e = estadoHome(M, 'kite', AGORA, null, 'beginner');
     expect(e.poucos).toEqual({ dar: 0, total: 2 });
     expect(e.top[0].sp.id).toBe('cabedelo');
     expect(e.top[0].n).toBe(3);
-    expect(e.top.map((r) => r.sp.id)).toEqual(['cabedelo', 'moledo']);
+    // estado «Zero» aprovado: a seguir ao nº 1 entram os melhores da costa
+    // acima do nível a dar, marcados — não os seguintes do nível.
+    expect(e.top.map((r) => r.sp.id)).toEqual(['cabedelo', 'guincho', 'lagoa-albufeira']);
+    expect(e.top[1]).toMatchObject({ acimaDoNivel: true, nCosta: 1 });
+    expect(e.top[2]).toMatchObject({ acimaDoNivel: true, nCosta: 2 });
     expect(e.proximoDoNivel?.bloco.id).toBe('0-fim');
     expect(e.proximoDoNivel?.linha.sp.id).toBe('cabedelo');
     expect(e.proximoDoNivel?.linha.n).toBe(5);
   });
 
+  it('«zero» a dar (surf iniciante): top[1..2] acima do nível a dar e `fora` null', () => {
+    // surf @0-tarde: cabedelo 3 e matosinhos 3 são os únicos do nível;
+    // acima, arrifana 7 e tonel 7 entram marcados — o nº 1 sem filtro
+    // (arrifana) está no top, logo não é «fora».
+    const M = modeloComNiveis({ cabedelo: 'beginner', matosinhos: 'beginner' }, 'advanced');
+    const e = estadoHome(M, 'surf', AGORA, null, 'beginner');
+    expect(e.poucos).toEqual({ dar: 0, total: 2 });
+    expect(e.top[0].sp.id).toBe('cabedelo');
+    expect(e.top[0].acimaDoNivel).toBeUndefined();
+    expect(e.top.map((r) => r.sp.id)).toEqual(['cabedelo', 'arrifana', 'tonel']);
+    expect(e.top[1]).toMatchObject({ acimaDoNivel: true, nCosta: 1, n: 7 });
+    expect(e.top[2]).toMatchObject({ acimaDoNivel: true, nCosta: 2, n: 7 });
+    expect(e.fora).toBeNull();
+  });
+
+  it('«zero» sem nenhum acima a dar: o top fica todo do nível', () => {
+    // surf @1-tarde: ninguém dá em toda a costa — não há acima a dar para
+    // preencher, entram os seguintes do nível.
+    const dentro = { arrifana: 'beginner', baleal: 'beginner', moledo: 'beginner' } as Record<
+      string,
+      Spot['difficulty']
+    >;
+    const M = modeloComNiveis(dentro, 'expert');
+    const e = estadoHome(M, 'surf', AGORA, '1-tarde', 'beginner');
+    expect(e.poucos).toEqual({ dar: 0, total: 3 });
+    expect(e.top).toHaveLength(3);
+    expect(e.top.map((r) => r.sp.id).sort()).toEqual(['arrifana', 'baleal', 'moledo']);
+    expect(e.top.every((r) => !r.acimaDoNivel)).toBe(true);
+    expect(e.top.every((r) => (r.n ?? -1) < 5)).toBe(true);
+    expect(e.proximoDoNivel).toBeNull();
+  });
+
   it('«zero» a dar sem nenhum bloco futuro a dar → `proximoDoNivel` null', () => {
-    // surf @ 1-tarde e 1-fim: ninguém dá — um spot fraco em todo o lado.
+    // martinhal fraco em todo o lado; no bloco seguinte ninguém do nível dá.
     const M = modeloComNiveis({ martinhal: 'beginner' }, 'advanced');
     const e = estadoHome(M, 'surf', AGORA, null, 'beginner');
     expect(e.poucos).toEqual({ dar: 0, total: 1 });
