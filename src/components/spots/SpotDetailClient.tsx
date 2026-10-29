@@ -618,6 +618,7 @@ export default function SpotDetailClient({
               aguaViva={spotData.conditions.waterQuality}
               t={h.t}
               sport={h.d === 'kite' ? 'kitesurf' : 'surf'}
+              nivel={h.nivel}
             />
           )}
           acoes={

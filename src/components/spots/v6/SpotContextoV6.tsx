@@ -20,7 +20,8 @@ import type { SpotLocalTips } from '@/lib/spotTips';
 import { getTranslation } from '@/lib/i18n';
 import { getSpotLivecam } from '@/lib/spotLivecams';
 import { getSpotWeatherlink, getWeatherlinkEmbedUrl, getWeatherlinkPageUrl } from '@/lib/spotWeatherlink';
-import { getDifficultyLabel, nivelDoSpot } from '@/lib/mapDifficulty';
+import { getDifficultyLabel, nivelDoSpot, type NivelUtilizador } from '@/lib/mapDifficulty';
+import { nivelCopy } from '@/lib/translations/nivel';
 import { getNearAccommodationUrl } from '@/lib/accommodation';
 import { spotTagEn } from '@/lib/spotTagsEn';
 import { eventsForSpot } from '@/lib/events';
@@ -42,6 +43,31 @@ export interface SpotContextoV6Props {
   /** Hora escolhida na régua (para as notas dos vizinhos) e modalidade da página. */
   t?: string;
   sport: SportType;
+  /** #nivel-ui: nível escolhido (null = sem nível): o «Perto daqui» abre com «Do teu nível, perto daqui». */
+  nivel?: NivelUtilizador | null;
+}
+
+const NIVEIS_CONHECIDOS = new Set(['beginner', 'intermediate', 'advanced', 'expert', 'all']);
+const MODS_V6: Array<[SportType, 'kite' | 'surf']> = [
+  ['kitesurf', 'kite'],
+  ['surf', 'surf'],
+];
+
+/**
+ * «Nível» no «Chegar e estar» (#nivel-ui): o da modalidade da página quando é
+ * igual nas duas; «avançado em kite, intermédio em surf» quando a ficha o
+ * separa por desporto; «por confirmar» quando falta.
+ */
+export function nivelTexto(spot: Spot, sport: SportType, locale: string): string {
+  const cn = nivelCopy(locale);
+  const lv = nivelDoSpot(spot, sport);
+  if (!lv || !NIVEIS_CONHECIDOS.has(lv)) return cn.porConfirmar;
+  const pratica = MODS_V6.filter(([s]) => !spot.compatibleSports?.length || spot.compatibleSports.includes(s));
+  const porMod = pratica.map(([s, m]) => [nivelDoSpot(spot, s), m] as const);
+  if (porMod.length > 1 && new Set(porMod.map(([n]) => n)).size > 1 && porMod.every(([n]) => n && NIVEIS_CONHECIDOS.has(n))) {
+    return porMod.map(([n, m]) => cn.nivelEm(getDifficultyLabel(n, locale), m)).join(', ');
+  }
+  return getDifficultyLabel(lv, locale);
 }
 
 /** Qualidade da água balnear (APA InfoÁgua / Bandeira Azul / ficha do spot), em chips v6. */
@@ -163,7 +189,7 @@ function temTexto(v: string | undefined | null): v is string {
   return t.length > 0 && t !== '—' && t !== '-';
 }
 
-export default function SpotContextoV6({ spot, locale, events, dicas, aguaViva, t: hora, sport }: SpotContextoV6Props) {
+export default function SpotContextoV6({ spot, locale, events, dicas, aguaViva, t: hora, sport, nivel = null }: SpotContextoV6Props) {
   const c6 = spotV6Copy(locale);
   const isPt = locale === 'pt';
   const t = getTranslation(locale);
@@ -297,7 +323,7 @@ export default function SpotContextoV6({ spot, locale, events, dicas, aguaViva, 
             <dt>{t.spots.region}</dt>
             <dd className="cap">{regiao}</dd>
             <dt>{t.spots.level}</dt>
-            <dd>{getDifficultyLabel(nivelDoSpot(spot, sport), locale)}</dd>
+            <dd data-testid="spot-nivel-ficha">{nivelTexto(spot, sport, locale)}</dd>
             <dt>{td.location}</dt>
             <dd>
               <span className="num">
@@ -345,7 +371,7 @@ export default function SpotContextoV6({ spot, locale, events, dicas, aguaViva, 
         </div>
       </div>
 
-      <PertoV6 spot={spot} locale={locale} copy={c6} t={hora} sport={sport} />
+      <PertoV6 spot={spot} locale={locale} copy={c6} t={hora} sport={sport} nivel={nivel} />
 
       {proximos.length ? <Eventos lista={proximos} locale={locale} c={c6} /> : null}
     </section>

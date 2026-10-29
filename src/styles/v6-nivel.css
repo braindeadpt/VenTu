@@ -1,0 +1,129 @@
+/* VenTu v6 «Atlântico» — o nível do utilizador (#nivel-ui). Maquete aprovada:
+   work/maquete-nivel (_build/nivel.css + home.html + spot.html). Partilhado pela
+   home (`.v6h`) e pelo spot (`.v6`); só os tokens dessas duas raízes. */
+
+/* ---------- glifo: três ondas, a de baixo = iniciante, acesas a --sol até ao nível ---------- */
+:is(.v6h,.v6) .ondas{width:22px;height:22px;flex:none;stroke:rgba(243,248,251,.3)}
+:is(.v6h,.v6) .ondas[data-n="1"] .o1,:is(.v6h,.v6) .ondas[data-n="2"] .o1,:is(.v6h,.v6) .ondas[data-n="2"] .o2,:is(.v6h,.v6) .ondas[data-n="3"] path{stroke:var(--sol)}
+
+/* ---------- o controlo (ao lado do selector Kite · Surf) ---------- */
+.v6h .hero-modo{display:flex;align-items:center;gap:8px}
+:is(.v6h,.v6) .nv{position:relative;flex:none}
+:is(.v6h,.v6) .nv-b{display:inline-flex;align-items:center;gap:8px;min-height:52px;padding:0 16px 0 13px;border:0;border-radius:999px;cursor:pointer;
+  background:rgba(3,14,24,.62);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:inset 0 0 0 1.5px rgba(243,248,251,.22);
+  font:800 italic 21px/1 var(--disp);text-transform:uppercase;letter-spacing:.02em;color:var(--espuma)}
+:is(.v6h,.v6) .nv-b .ondas{width:24px;height:24px}
+:is(.v6h,.v6) .nv-t .ct{display:none}
+:is(.v6h,.v6) .nv-b.vazio .nv-t{color:var(--nevoa)}
+:is(.v6h,.v6) .nv-b:hover{box-shadow:inset 0 0 0 1.5px rgba(243,248,251,.42)}
+:is(.v6h,.v6) .nv-b[aria-expanded=true]{box-shadow:inset 0 0 0 2px var(--sol)}
+:is(.v6h,.v6) .nv-m{position:absolute;right:0;top:calc(100% + 8px);z-index:80;width:320px;padding:14px 8px 10px;border-radius:16px;background:#071b2c;
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:inset 0 0 0 1.5px rgba(243,248,251,.16),0 24px 48px -16px rgba(0,0,0,.8);text-align:left}
+:is(.v6h,.v6) .nv-m[hidden]{display:none}
+/* menu aberto por cima do crédito da foto e de tudo o resto do hero */
+.v6h .hero-modo:has(.nv-m:not([hidden])){z-index:20}
+:is(.v6h,.v6) .nv-h{margin:0 8px 8px;font:900 italic 24px/1 var(--disp);text-transform:uppercase;color:var(--espuma)}
+:is(.v6h,.v6) .nv-m [role=radio]{display:flex;align-items:center;gap:12px;width:100%;min-height:52px;padding:6px 10px;border:0;border-radius:10px;background:none;cursor:pointer;text-align:left;color:var(--espuma)}
+:is(.v6h,.v6) .nv-m [role=radio]>span{display:flex;flex-direction:column;gap:2px}
+:is(.v6h,.v6) .nv-m [role=radio] b{font:700 17px/1.1 var(--txt)}
+:is(.v6h,.v6) .nv-m [role=radio] small{font:500 14px/1.25 var(--txt);color:var(--nevoa)}
+:is(.v6h,.v6) .nv-m [role=radio][aria-checked=true]{background:rgba(255,201,60,.12);box-shadow:inset 3px 0 0 var(--sol)}
+:is(.v6h,.v6) .nv-m [role=radio]:hover{background:rgba(243,248,251,.06)}
+:is(.v6h,.v6) .nv-m [role=radio]:focus-visible{outline:2px solid var(--sol);outline-offset:-2px;border-radius:10px}
+:is(.v6h,.v6) .nv-m .nv-todos{margin-top:4px;border-top:1px solid var(--linha);border-radius:0 0 10px 10px}
+:is(.v6h,.v6) .nv-p{margin:8px 10px 0;font:500 13px/1.4 var(--txt);color:var(--nevoa)}
+
+/* telemóvel: botão 58 × 52 com o glifo e o nome a 12 px (só o glifo lia-se como menu hambúrguer); o menu ocupa a largura */
+@media (max-width:1023.98px){
+  :is(.v6h,.v6) .nv-b{width:auto;min-width:58px;min-height:52px;padding:4px 7px 0;border-radius:16px;flex-direction:column;justify-content:center;gap:1px}
+  :is(.v6h,.v6) .nv-b .ondas{width:20px;height:20px}
+  :is(.v6h,.v6) .nv-b .nv-t{font:800 12px/1 var(--disp);font-style:normal;letter-spacing:.01em;white-space:nowrap}
+  :is(.v6h,.v6) .nv-t .lg{display:none}
+  :is(.v6h,.v6) .nv-t .ct{display:inline}
+  :is(.v6h,.v6) .nv{position:static}
+  .v6h .hero-modo .nv-m{right:0;width:min(366px,calc(100vw - 24px))}
+  .v6 .top{gap:8px;padding-left:12px;padding-right:12px}
+  .v6 .top .modo button{padding:0 11px;min-width:0;gap:6px}
+  .v6 .top .nv-m{left:12px;right:12px;width:auto;top:calc(100% - 4px)}
+}
+
+/* ---------- etiqueta de nível de um spot (cartões, aviso): o glifo + texto, nunca vermelho ---------- */
+:is(.v6h,.v6) .nv-tag{display:inline-flex;align-items:center;gap:6px;padding:4px 9px 4px 6px;border-radius:999px;background:rgba(3,14,24,.78);
+  box-shadow:inset 0 0 0 1.5px rgba(243,248,251,.22);font:700 13px/1 var(--txt);color:var(--espuma);white-space:nowrap}
+:is(.v6h,.v6) .nv-tag .ondas{width:18px;height:18px}
+
+/* ================= home ================= */
+/* por baixo do nº 1: quem ficou de fora, ou o aviso honesto quando cabem poucos (ou nenhum) */
+.v6h .nv-nota{margin-top:10px;font:500 15px/1.4 var(--txt);color:var(--nevoa)}
+.v6h .nv-nota .fora{margin:0}
+.v6h .nv-nota .fora .nota{--fs:17px;border-radius:5px;padding:.12em .3em .06em;min-width:0}
+.v6h .nv-nota a{color:var(--espuma);font-weight:700;text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:3px}
+.v6h .nv-nota .poucos{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;align-items:start;margin:0;padding:12px 14px;border-radius:12px;
+  background:rgba(3,14,24,.78);box-shadow:inset 0 0 0 1.5px rgba(255,201,60,.55);color:var(--espuma)}
+.v6h .nv-nota .poucos .ondas{grid-row:span 2;width:28px;height:28px;margin-top:1px}
+.v6h .nv-nota .poucos b{font:700 16px/1.3 var(--txt)}
+.v6h .nv-nota .poucos span{font:500 15px/1.4 var(--txt);color:var(--nevoa)}
+.v6h .lider .rk i,.v6h .card .rk i{font-style:normal;color:var(--sol);white-space:nowrap}
+/* com nível o rótulo pode ir a duas linhas («nº 1 hoje ao fim da tarde · intermédio»): entrelinha para respirar */
+.v6h .rk.rk-nv{line-height:1.25}
+/* etiqueta do cartão acima do nível: no telemóvel no canto (como a maquete); no desktop entra na coluna, por cima
+   do «nº N da costa», para não tocar no crédito da foto (os cartões têm ~340 px) */
+.v6h .card .in>.nv-tag{position:absolute;z-index:3;left:10px;top:8px}
+.v6h .rot.menor.acima{opacity:.45}
+.v6h .rot.menor.acima:hover,.v6h .rot.menor.acima:focus-visible{opacity:1}
+.v6h .cena .leg .nvleg{display:inline-flex;align-items:center;gap:5px;font:600 13px/1 var(--txt);color:var(--nevoa);margin:0 4px 4px 2px;vertical-align:middle}
+.v6h .cena .leg .nvleg i{display:inline-block;width:22px;height:14px;border-radius:999px;background:rgba(243,248,251,.25)}
+
+/* a data do hero apertada só quando tocava no canto do nível + selector (HomeHero mede) */
+.v6h .quando.aperta{font-size:14px;letter-spacing:.04em}
+.v6h .quando.aperta .nw{white-space:nowrap}
+@media (min-width:1024px){
+  .v6h .nv-nota{max-width:600px;font-size:15px}
+  /* poucos/zero: o aviso entra no hero e o «Não vai.» encolhe para o cartão não transbordar */
+  .v6h .topo.nv-poucos .gng{font-size:clamp(80px,6.6vw,118px)}
+  .v6h .topo.nv-poucos .nac{margin:8px 0 12px}
+  .v6h .topo.nv-poucos .hero-in{padding-top:22px;padding-bottom:22px}
+  .v6h .nv-nota .poucos{padding:10px 14px}
+  .v6h .card .in>.nv-tag{position:relative;left:auto;top:auto;grid-column:1/-1;justify-self:start;margin-bottom:-2px}
+}
+@media (min-width:1024px) and (max-height:860px){
+  .v6h .topo.nv-poucos .gng{font-size:clamp(64px,8.6vh,96px)}
+  .v6h .topo.nv-poucos .hero-in{padding-top:14px;padding-bottom:16px}
+}
+
+/* ================= spot ================= */
+/* aviso ao lado do veredicto (só quando o spot está acima do nível escolhido); dica discreta sem nível */
+.v6 .nv-av{margin-top:12px}
+.v6 .nv-av .nv-tag{font-size:15px;padding:6px 12px 6px 8px;background:rgba(3,14,24,.7);box-shadow:inset 0 0 0 1.5px rgba(255,201,60,.6)}
+.v6 .nv-av .nv-tag .ondas{width:20px;height:20px}
+.v6 .nv-av .porq{display:none}
+.v6 .nv-av .alt{margin:8px 0 0;font:600 15px/1.35 var(--txt)}
+.v6 .nv-av .alt a{color:var(--espuma);text-underline-offset:3px}
+.v6 .nv-av .alt .chips{display:none}
+.v6 .nv-av .dica{margin:0;display:flex;align-items:center;gap:6px;flex-wrap:wrap;font:500 14px/1.3 var(--txt);color:var(--nevoa)}
+.v6 .nv-av .dica .ondas{width:18px;height:18px}
+.v6 .nv-av .dica button{border:0;background:none;padding:0 2px;min-height:44px;cursor:pointer;color:var(--espuma);font:600 14px/1.3 var(--txt);text-decoration:underline;text-underline-offset:3px}
+@media (min-width:1024px){
+  .v6 .nv-av{margin-top:16px;max-width:760px}
+  .v6 .nv-av .porq{display:block;margin:10px 0 0;font:500 17px/1.4 var(--txt);color:var(--espuma)}
+  .v6 .nv-av .porq span{color:var(--nevoa)}
+  .v6 .nv-av .alt{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-top:10px;font-size:15px;color:var(--nevoa)}
+  .v6 .nv-av .alt .chips{display:contents}
+  .v6 .nv-av .alt .ch{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:3px 4px 3px 10px;border-radius:999px;background:rgba(3,14,24,.78);
+    box-shadow:inset 0 0 0 1.5px rgba(243,248,251,.18);text-decoration:none;color:var(--espuma);font:800 15px/1 var(--txt)}
+  .v6 .nv-av .alt .ch:hover{box-shadow:inset 0 0 0 1.5px rgba(243,248,251,.42)}
+  .v6 .nv-av .alt .ch .nota{--fs:18px;border-radius:999px;min-width:28px;padding:.16em .3em .1em;box-shadow:none}
+  .v6 .nv-av .alt .m{display:none}
+  .v6 .nv-av .dica{font-size:15px}
+}
+/* «Do teu nível, perto daqui» no «Perto daqui» (o destino do link do aviso) */
+.v6 .nv-perto{align-self:start;padding:14px;border-radius:12px;background:rgba(255,201,60,.06);box-shadow:inset 0 0 0 1px rgba(255,201,60,.35);scroll-margin-top:96px}
+.v6 .nv-perto h3{margin:0 0 4px;font:900 italic 22px/1 var(--disp);text-transform:uppercase;letter-spacing:0;color:var(--espuma)}
+.v6 .nv-perto>p{margin:0 0 10px;color:var(--nevoa);font-size:15px;line-height:1.45}
+.v6 .nv-perto ul{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.v6 .nv-perto li a{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;min-height:52px;padding:8px 10px 8px 12px;border-radius:10px;background:var(--abismo);text-decoration:none}
+.v6 .nv-perto li a:hover b{color:var(--gelo)}
+.v6 .nv-perto li .nm{display:grid;gap:3px;min-width:0}
+.v6 .nv-perto li b{font:900 italic 22px/1 var(--disp);text-transform:uppercase;overflow-wrap:anywhere}
+.v6 .nv-perto li .km{color:var(--nevoa);font:500 14px/1.25 var(--txt)}
+.v6 .nv-perto li .pt-nota{width:42px;height:38px;font-size:24px}

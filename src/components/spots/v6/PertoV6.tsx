@@ -34,6 +34,10 @@ import { safeExternalUrl } from '@/lib/safeUrl';
 import type { SpotPageV6Copy } from '@/lib/translations/spotPage/v6';
 import type { Spot } from '@/types';
 import { decimalV6 } from './boiaFmt';
+import { nivelDoSpot, spotDentroDoNivel, type NivelUtilizador } from '@/lib/mapDifficulty';
+import { vizinhosDoNivel } from '@/lib/vizinhosNivel';
+import { nivelCopyV6 } from '@/lib/translations/nivel';
+import { PERTO_NIVEL_ID, porqueNivel } from './NivelAviso';
 
 type Perto = DirectoryEntry & { distanceKm: number };
 
@@ -81,9 +85,11 @@ export interface PertoV6Props {
   /** Hora escolhida na régua (ISO local) e modalidade da página. */
   t?: string;
   sport: SportType;
+  /** #nivel-ui: com o spot acima do nível escolhido, abre com «Do teu nível, perto daqui». */
+  nivel?: NivelUtilizador | null;
 }
 
-export default function PertoV6({ spot, locale, copy: c, t, sport }: PertoV6Props) {
+export default function PertoV6({ spot, locale, copy: c, t, sport, nivel = null }: PertoV6Props) {
   const tr = getTranslation(locale);
   const tc = tr.spotPageContext;
   const dir = tr.directory;
@@ -121,12 +127,59 @@ export default function PertoV6({ spot, locale, copy: c, t, sport }: PertoV6Prop
   const vizinhos = useMemo(() => nearestSpots(spot, spots, { limit: 5 }), [spot]);
   const passo = pickMapHourStep(file?.times ?? [], t);
   const diretorio = useDiretorio(spot.id, spot.lat, spot.lon);
+  const cn = nivelCopyV6(locale);
+  const acima = !!nivel && !spotDentroDoNivel(nivelDoSpot(spot, sport), nivel);
+  const doNivel = useMemo(
+    () => (acima && nivel ? vizinhosDoNivel(spot, spots, sport, nivel, file, passo) : []),
+    [acima, nivel, spot, sport, file, passo],
+  );
+  const mod = sport === 'kitesurf' ? 'kite' : 'surf';
 
   return (
     <div className="ctx-bloco" id="perto" role="group" aria-labelledby="perto-t" ref={raiz}>
       <h2 className="ctx-t" id="perto-t">
         {c.perto}
       </h2>
+      {acima && nivel ? (
+        <div className="ctx-item nv-perto" id={PERTO_NIVEL_ID} data-ctx="nivel" data-testid="perto-nivel">
+          <h3>{cn.pertoT}</h3>
+          <p>
+            {porqueNivel(spot, mod, cn)}{' '}
+            {doNivel.length
+              ? cn.pertoSub(nivel, Math.max(1, Math.ceil(Math.max(...doNivel.map((v) => v.distanceKm)))))
+              : cn.nenhumPerto(nivel)}
+          </p>
+          {doNivel.length ? (
+            <ul>
+              {doNivel.map((v) => (
+                <li key={v.spot.id}>
+                  <a href={`/${locale}/spots/${v.spot.slug}/?d=${mod}`} data-spot={v.spot.id}>
+                    <span className="nm">
+                      <b>{isPt ? v.spot.name : v.spot.nameEn || v.spot.name}</b>
+                      <span className="km">{cn.pertoKm(decimalV6(formatDistance(v.distanceKm, locale), locale), v.nivel)}</span>
+                    </span>
+                    {typeof v.nota === 'number' && v.score != null ? (
+                      <span className="pt-nota" style={bandaVars(bandaDe(v.nota)) as React.CSSProperties} data-score-tier={getScoreTokens(v.score).tier}>
+                        {v.nota}
+                      </span>
+                    ) : v.nota === 'noite' ? (
+                      <span className="pt-nota noite" style={bandaVars('noite') as React.CSSProperties} role="img" aria-label={c.pertoNoiteAria}>
+                        {c.pertoNoite}
+                      </span>
+                    ) : (
+                      <span className="pt-nota vazio">–</span>
+                    )}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <a className="ctx-link" href={`/${locale}/`}>
+              {cn.verCosta}
+            </a>
+          )}
+        </div>
+      ) : null}
       <div className="ctx-item" data-ctx="vizinhos">
         <h3 className="ctx-rot">{tc.nearbySpots}</h3>
         {vizinhos.length ? (

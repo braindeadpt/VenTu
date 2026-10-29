@@ -18,6 +18,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import '@/styles/v6-fontes.css';
 import '@/styles/v6-home.css';
+import '@/styles/v6-nivel.css';
 import HomeHero from './HomeHero';
 import SpotCardV6 from './SpotCardV6';
 import ReguaBlocos from './ReguaBlocos';
@@ -33,6 +34,9 @@ import { getAssetPath } from '@/lib/paths';
 import { hrefMapa as montarHrefMapa } from '@/lib/home/hrefMapa';
 import type { FotoSpot } from '@/lib/spotFotos';
 import type { LinhaForecast } from '@/lib/horaSpot';
+import { useNivel } from '@/lib/nivelPref';
+import { nivelCopyV6 } from '@/lib/translations/nivel';
+import { emPoucos, fraseNivel, nivelDoSpotHome, rkDe } from './nivelHome';
 
 export interface HomeV6Props {
   locale: string;
@@ -50,6 +54,9 @@ const PRELOAD = ['BarlowCondensed-900i-latin.woff2', 'Barlow-600-latin.woff2', '
 
 export default function HomeV6({ locale, costa: costaSSG, meta, fotos, agoraMs, nSpots }: HomeV6Props) {
   const c = homeV6Copy(locale);
+  const cn = nivelCopyV6(locale);
+  // #nivel-ui: o nível do /mapa (`ventu:map:difficulty`), lido só depois de montar (null no SSG)
+  const [nivel, escolheNivel] = useNivel();
   const [d, setD] = useState<Modalidade>(MODALIDADE_OMISSAO);
   const [b, setB] = useState<string | null>(null);
   const [agora, setAgora] = useState(agoraMs);
@@ -108,7 +115,11 @@ export default function HomeV6({ locale, costa: costaSSG, meta, fotos, agoraMs, 
 
   const costa = useMemo(() => montarCosta(compacta, agora, meta), [compacta, agora, meta]);
   const M = useMemo(() => criarModelo(costa.spots, c), [costa.spots, c]);
-  const E = useMemo(() => (costa.spots.length ? estadoHome(M, d, costa.agoraI < 0 ? 0 : costa.agoraI, b) : null), [M, d, costa, b]);
+  const E = useMemo(
+    () => (costa.spots.length ? estadoHome(M, d, costa.agoraI < 0 ? 0 : costa.agoraI, b, nivel) : null),
+    [M, d, costa, b, nivel],
+  );
+  const fraseNv = useMemo(() => (E ? fraseNivel(E, nivel, c, cn) : null), [E, nivel, c, cn]);
 
   const hrefSpot = useCallback(
     (sp: SpotHome, i: number) => {
@@ -141,8 +152,8 @@ export default function HomeV6({ locale, costa: costaSSG, meta, fotos, agoraMs, 
 
   useEffect(() => {
     if (!E || !flags.vivo) return;
-    document.title = c.titulo(c.veredito[E.palavra], E.frase.txt.replace(/<[^>]+>/g, ''));
-  }, [E, c, flags.vivo]);
+    document.title = c.titulo(c.veredito[E.palavra], (fraseNv ?? E.frase).txt.replace(/<[^>]+>/g, ''));
+  }, [E, c, flags.vivo, fraseNv]);
 
   if (!E) return <p className="sr">{c.semDados}</p>;
   const heroFoto = E.top[0] ? (fotos[E.top[0].sp.id]?.[d] ?? null) : null;
@@ -159,8 +170,20 @@ export default function HomeV6({ locale, costa: costaSSG, meta, fotos, agoraMs, 
       {PRELOAD.map((fn) => (
         <link key={fn} rel="preload" as="font" type="font/woff2" crossOrigin="anonymous" href={getAssetPath(`/fonts/barlow/${fn}`)} />
       ))}
-      <div className="topo">
-        <HomeHero E={E} copy={c} foto={heroFoto} locale={locale} hrefSpot={hrefSpot} d={d} onModalidade={muda} />
+      <div className={`topo${nivel && emPoucos(E) ? ' nv-poucos' : ''}`}>
+        <HomeHero
+          E={E}
+          copy={c}
+          foto={heroFoto}
+          locale={locale}
+          hrefSpot={hrefSpot}
+          d={d}
+          onModalidade={muda}
+          nivel={nivel}
+          onNivel={escolheNivel}
+          cn={cn}
+          frase={fraseNv}
+        />
         <section className="outros" aria-label={c.outrosAria} data-testid="home-outros">
           {E.top.slice(1).map((r, k) => (
             <SpotCardV6
@@ -172,10 +195,16 @@ export default function HomeV6({ locale, costa: costaSSG, meta, fotos, agoraMs, 
               href={hrefSpot(r.sp, r.i)}
               copy={c}
               locale={locale}
+              rk={rkDe(E, r, E.linhas[k + 1]?.rk ?? '', c, cn)}
+              nivelRk={nivel ? cn.rkNivel(nivel) : null}
+              tagNivel={(() => {
+                const lv = r.acimaDoNivel ? nivelDoSpotHome(r.sp, d) : undefined;
+                return lv ? { txt: cn.tag(lv), lv } : null;
+              })()}
             />
           ))}
         </section>
-        <CostaMapa3D M={M} E={E} copy={c} hrefMapa={hrefMapa} nSpots={nSpots[d]} forcarPlano={flags.plano} />
+        <CostaMapa3D M={M} E={E} copy={c} hrefMapa={hrefMapa} nSpots={nSpots[d]} forcarPlano={flags.plano} nivel={nivel} legendaNivel={cn.legenda} />
       </div>
       <ReguaBlocos E={E} copy={c} onEscolhe={escolhe} />
       {/* div e não <footer>: o rodapé da página é o do site (contentinfo único, spec data-sources) */}

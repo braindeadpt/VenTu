@@ -5,9 +5,14 @@
  * «Noite.») na cor da banda do nº 1, frase nacional e o cartão do nº 1
  * (`LiderCard`). Palavra e frase saem no HTML estático (LCP).
  */
-import type { CSSProperties } from 'react';
+import { useLayoutEffect, useRef, type CSSProperties } from 'react';
 import FotoCredito from '@/components/v6/FotoCredito';
 import ModalidadeToggle from '@/components/v6/ModalidadeToggle';
+import NivelControl from '@/components/v6/NivelControl';
+import Ondas, { ondasDe } from '@/components/v6/Ondas';
+import type { MapDifficultyFilter, NivelUtilizador } from '@/lib/mapDifficulty';
+import type { NivelCopy } from '@/lib/translations/nivel';
+import { emPoucos, nivelDoSpotHome, quandoDe, rkDe } from './nivelHome';
 import type { Modalidade } from '@/lib/modalidades';
 import Frase from './Frase';
 import LinhaSpot from './LinhaSpot';
@@ -15,6 +20,7 @@ import { bandaVars } from '@/lib/v6Tokens';
 import type { EstadoHome } from '@/lib/home/estadoHome';
 import type { SpotHome } from '@/lib/home/homeV6';
 import type { FotoSpot } from '@/lib/spotFotos';
+import type { BandaK } from '@/lib/modalidades';
 import type { HomeV6Copy } from '@/lib/translations/homeV6';
 
 export function fotoVars(f: FotoSpot | null): CSSProperties {
@@ -34,6 +40,10 @@ export default function HomeHero({
   hrefSpot,
   d,
   onModalidade,
+  nivel,
+  onNivel,
+  cn,
+  frase,
 }: {
   E: EstadoHome;
   copy: HomeV6Copy;
@@ -42,10 +52,66 @@ export default function HomeHero({
   hrefSpot: (sp: SpotHome, i: number) => string;
   d: Modalidade;
   onModalidade: (d: Modalidade) => void;
+  /** #nivel-ui: nível escolhido (null = sem nível, a home fica igual à v6). */
+  nivel: NivelUtilizador | null;
+  onNivel: (v: MapDifficultyFilter) => void;
+  cn: NivelCopy;
+  /** A frase do nível nos casos «poucos» e «zero» (no lugar da nacional). */
+  frase: { txt: string; b: BandaK } | null;
 }) {
   const top = E.top[0];
+  const fr = frase ?? E.frase;
+  const poucos = !!nivel && emPoucos(E) && E.poucos ? E.poucos : null;
+  const fora = nivel && !poucos && E.fora ? E.fora : null;
+  const foraLv = fora ? nivelDoSpotHome(fora.sp, d) : undefined;
+  const q = quandoDe(E, c);
+  const prox = poucos && !poucos.dar ? E.proximoDoNivel : undefined;
+  const temAcima = E.top.some((r) => r.acimaDoNivel);
   const l = E.linhas[0];
   const pal = c.veredito[E.palavra];
+  // #nivel-ui: com o botão do nível o canto do selector fica mais largo, e uma data comprida
+  // («qua 14 out · fim de tarde · 17h–20h») passava por baixo dele no desktop. Só quando se
+  // tocam, a data quebra antes do selector (sem nível e no telemóvel nada muda).
+  const modoRef = useRef<HTMLDivElement>(null);
+  const quandoRef = useRef<HTMLParagraphElement>(null);
+  const quandoTxt = `${E.quando.dia}|${E.quando.forte}|${E.quando.resto}`;
+  useLayoutEffect(() => {
+    const m = modoRef.current;
+    const q = quandoRef.current;
+    if (!m || !q) return;
+    const toca = () => {
+      const a = m.getBoundingClientRect();
+      const b = q.getBoundingClientRect();
+      return b.right > a.left - 12 && b.top < a.bottom + 4 && b.bottom > a.top ? Math.floor(a.left - 12 - b.left) : 0;
+    };
+    // 1.º aperta a data (letra e espaçamento) para caber numa linha; só se não chegar, quebra
+    const ajusta = () => {
+      q.style.maxWidth = '';
+      q.classList.remove('aperta');
+      if (!toca()) return;
+      q.classList.add('aperta');
+      const w = toca();
+      if (w) q.style.maxWidth = `${Math.max(160, w)}px`;
+    };
+    ajusta();
+    if (typeof ResizeObserver === 'undefined') return;
+    // só larguras: a altura muda com a própria quebra (não pode voltar a disparar)
+    const larg = new Map<Element, number>();
+    const ro = new ResizeObserver((es) => {
+      let mudou = false;
+      for (const e of es) {
+        const w = Math.round(e.contentRect.width);
+        if (larg.get(e.target) !== w) {
+          larg.set(e.target, w);
+          mudou = true;
+        }
+      }
+      if (mudou) ajusta();
+    });
+    ro.observe(m);
+    if (q.parentElement) ro.observe(q.parentElement);
+    return () => ro.disconnect();
+  }, [quandoTxt, nivel]);
   const alt = foto && top ? `${top.sp.nome}: ${locale === 'pt' ? foto.altPt : foto.altEn}` : '';
   return (
     <section className="hero" aria-label={c.heroAria} data-testid="home-hero">
@@ -69,20 +135,21 @@ export default function HomeHero({
         ) : null}
       </div>
       <div className="veu" aria-hidden="true" />
-      <div className="hero-modo" data-testid="home-modo">
+      <div className="hero-modo" data-testid="home-modo" ref={modoRef}>
+        <NivelControl nivel={nivel} onEscolhe={onNivel} copy={cn} />
         <ModalidadeToggle valor={d} onChange={onModalidade} rotulos={c.modalidades} ariaLabel={c.modalidadeAria} />
       </div>
       <div className="hero-in">
-        <p className="quando" data-testid="home-quando">
-          {E.quando.dia} · <b>{E.quando.forte}</b> · {E.quando.resto}
+        <p className="quando" data-testid="home-quando" ref={quandoRef}>
+          {E.quando.dia} · <b>{E.quando.forte}</b> · <span className="nw">{E.quando.resto}</span>
         </p>
         <p className="gng" data-testid="home-palavra" data-palavra={E.palavra} aria-live="polite">
           {pal}
           {E.noite ? <small>{c.noiteSub}</small> : null}
-          <span className="sr">: {c.banda[E.frase.b]}</span>
+          <span className="sr">: {c.banda[fr.b]}</span>
         </p>
-        <p className="nac" data-testid="home-frase">
-          <Frase txt={E.frase.txt} banda={E.frase.b} />
+        <p className="nac" data-testid="home-frase" data-frase-nivel={frase ? '' : undefined}>
+          <Frase txt={fr.txt} banda={fr.b} />
         </p>
         {top && l ? (
           <a
@@ -93,8 +160,33 @@ export default function HomeHero({
             data-spot={top.sp.id}
             data-nota={top.n ?? ''}
           >
-            <LinhaSpot r={top} l={l} copy={c} seta />
+            <LinhaSpot r={top} l={l} copy={c} seta rk={rkDe(E, top, l.rk, c, cn)} nivelRk={nivel ? cn.rkNivel(nivel) : null} />
           </a>
+        ) : null}
+        {fora && foraLv ? (
+          <div className="nv-nota" data-testid="nivel-nota" data-estado="fora">
+            <p className="fora">
+              <a href={hrefSpot(fora.sp, fora.i)} data-spot={fora.sp.id}>
+                {fora.sp.curto || fora.sp.nome}
+              </a>{' '}
+              <span className="nota" style={bandaVars(fora.b) as CSSProperties}>
+                {fora.n ?? '–'}
+              </span>
+              {cn.foraResto(foraLv)}
+            </p>
+          </div>
+        ) : null}
+        {poucos && nivel ? (
+          <div className="nv-nota" data-testid="nivel-nota" data-estado={poucos.dar ? 'poucos' : 'zero'}>
+            <p className="poucos">
+              <Ondas n={ondasDe(nivel)} />
+              <b>{cn.poucosT(poucos.dar, poucos.total, nivel, q)}</b>
+              <span>
+                {prox !== undefined ? (prox ? cn.proximo(c.nomeBloco(prox.bloco.dia, prox.bloco.k), prox.linha.sp.curto || prox.linha.sp.nome) : cn.nuncaMais) + ' ' : ''}
+                {temAcima ? cn.marcados : cn.soNivel}
+              </span>
+            </p>
+          </div>
         ) : null}
       </div>
       <div className="swell" aria-hidden="true">
