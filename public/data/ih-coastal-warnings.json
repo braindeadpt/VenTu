@@ -319,70 +319,6 @@
       ]
     },
     {
-      "id": 18929,
-      "ref": "ANAV NR 2402/26",
-      "category": "Requisitos de segurança maritima",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=06f868db-5dfc-4edf-860b-536290a8a886",
-      "source": "ih",
-      "collection": "nav_warning_coastal",
-      "polygons": [
-        [
-          [
-            -8.886544,
-            40.136891
-          ],
-          [
-            -8.886544,
-            40.14811
-          ],
-          [
-            -8.864578,
-            40.14811
-          ],
-          [
-            -8.864578,
-            40.136891
-          ],
-          [
-            -8.886544,
-            40.136891
-          ]
-        ]
-      ]
-    },
-    {
-      "id": 18931,
-      "ref": "ANAV NR 2403/26",
-      "category": "Requisitos de segurança maritima",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=6c2d5ddb-4975-48e6-a309-9609e41e6cc7",
-      "source": "ih",
-      "collection": "nav_warning_coastal",
-      "polygons": [
-        [
-          [
-            -8.777294,
-            40.605612
-          ],
-          [
-            -8.777294,
-            40.671264
-          ],
-          [
-            -8.689082,
-            40.671264
-          ],
-          [
-            -8.689082,
-            40.605612
-          ],
-          [
-            -8.777294,
-            40.605612
-          ]
-        ]
-      ]
-    },
-    {
       "id": 18933,
       "ref": "ANAV NR 2404/26",
       "category": "Requisitos de segurança maritima",
@@ -506,6 +442,110 @@
           [
             -9.422994,
             38.960744
+          ]
+        ]
+      ]
+    },
+    {
+      "id": 18947,
+      "ref": "ANAV NR 2410/26",
+      "category": "Requisitos de segurança maritima",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=44257f39-45bb-4445-b0ed-bd6a80882d28",
+      "source": "ih",
+      "collection": "nav_warning_coastal",
+      "polygons": [
+        [
+          [
+            -8.777989,
+            40.606133
+          ],
+          [
+            -8.777989,
+            40.670744
+          ],
+          [
+            -8.685315,
+            40.670744
+          ],
+          [
+            -8.685315,
+            40.606133
+          ],
+          [
+            -8.777989,
+            40.606133
+          ]
+        ]
+      ]
+    },
+    {
+      "id": 18949,
+      "ref": "ANAV NR 2411/26",
+      "category": "Requisitos de segurança maritima",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=db1cf23e-4f15-47ec-b630-001b44b6a252",
+      "source": "ih",
+      "collection": "nav_warning_coastal",
+      "polygons": [
+        [
+          [
+            -9.605,
+            38.4
+          ],
+          [
+            -10.466667,
+            38.338333
+          ],
+          [
+            -10.383333,
+            37.733333
+          ],
+          [
+            -9.784167,
+            37.652333
+          ],
+          [
+            -9.45,
+            38
+          ],
+          [
+            -9.6,
+            38.4
+          ],
+          [
+            -9.605,
+            38.4
+          ]
+        ]
+      ]
+    },
+    {
+      "id": 18951,
+      "ref": "ANAV NR 2412/26",
+      "category": "Requisitos de segurança maritima",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=17a6ed79-d4cf-4cf3-89bd-5a4df7fd5ab6",
+      "source": "ih",
+      "collection": "nav_warning_coastal",
+      "polygons": [
+        [
+          [
+            -7.871103,
+            36.968615
+          ],
+          [
+            -7.871103,
+            36.975404
+          ],
+          [
+            -7.862091,
+            36.975404
+          ],
+          [
+            -7.862091,
+            36.968615
+          ],
+          [
+            -7.871103,
+            36.968615
           ]
         ]
       ]
@@ -7723,11 +7763,11 @@
       1000708
     ],
     "sao-jacinto": [
-      18931,
+      18947,
       1000711
     ],
     "costa-nova": [
-      18931,
+      18947,
       1000711
     ],
     "figueira-foz": [
@@ -8204,7 +8244,7 @@
       1000459
     ],
     "barra-aveiro": [
-      18931,
+      18947,
       1000711
     ],
     "vila-cha": [
@@ -8331,7 +8371,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-10-29T00:06:38.314Z",
+  "fetchedAt": "2026-10-29T04:06:15.098Z",
   "sourceCollection": "nav_warning_coastal+nav_warning_local+orca_anavnet_point",
   "sourceUrl": "https://ogcapi.hidrografico.pt/collections/nav_warning_coastal"
 }
