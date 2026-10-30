@@ -1,6 +1,6 @@
 {
   "day": "20261030",
-  "fetchedAt": "2026-10-30T04:06:02.936Z",
+  "fetchedAt": "2026-10-30T06:06:07.655Z",
   "minPairs": 3,
   "minAccumulatedPairs": 10,
   "archive": {
@@ -85,7 +85,7 @@
       "suboptimal": []
     },
     "Viana do Castelo": {
-      "spotCount": 7,
+      "spotCount": 6,
       "withObservedWave": 1,
       "bySource": {
         "ih-buoy": 1
@@ -109,14 +109,14 @@
       "suboptimal": []
     },
     "Esposende": {
-      "spotCount": 4,
-      "withObservedWave": 4,
+      "spotCount": 3,
+      "withObservedWave": 3,
       "bySource": {
-        "ih-buoy": 4
+        "ih-buoy": 3
       },
-      "audited": 4,
+      "audited": 3,
       "attachedIsClosest": 0,
-      "attachedNotClosest": 4,
+      "attachedNotClosest": 3,
       "onlySource": 0,
       "notClosest": [
         {
@@ -138,13 +138,6 @@
           "winner": "ih-buoy",
           "reason": "ih-only",
           "attachedKm": 28,
-          "altKm": 0
-        },
-        {
-          "spot": "apulia",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 25,
           "altKm": 0
         }
       ],
@@ -1277,7 +1270,7 @@
       "suboptimal": []
     }
   },
-  "regionsAuditedAt": "2026-10-30T04:08:48.213Z",
+  "regionsAuditedAt": "2026-10-30T06:14:59.064Z",
   "pairs": [
     {
       "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
@@ -1293,8 +1286,8 @@
       "maxAbsDeltaM": 2.8,
       "corr": 0.78,
       "verdict": "coherent",
-      "firstHour": "2026-09-30T05",
-      "lastHour": "2026-10-30T02",
+      "firstHour": "2026-09-30T07",
+      "lastHour": "2026-10-30T04",
       "hours": [
         {
           "6200084": 1.2899999618530273,
@@ -1310,6 +1303,16 @@
           "6200084": 1.0499999523162842,
           "6200199": 1.2304699420928955,
           "hour": "2026-10-30T02"
+        },
+        {
+          "6200084": 1.0499999523162842,
+          "6200199": 0.9375,
+          "hour": "2026-10-30T03"
+        },
+        {
+          "6200084": 1.0499999523162842,
+          "6200199": 1.1132800579071045,
+          "hour": "2026-10-30T04"
         }
       ]
     }
