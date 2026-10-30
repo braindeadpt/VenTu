@@ -60,7 +60,21 @@
       "origin": "ih",
       "recentSnapshots": 1,
       "baselineSnapshots": 21,
-      "verdict": "insufficient"
+      "verdict": "insufficient",
+      "recent": {
+        "snapshots": 3,
+        "rmse": 0.12666666666666668,
+        "me": 0.07333333333333335,
+        "n": 76.66666666666667
+      },
+      "baseline": {
+        "snapshots": 18,
+        "rmse": 0.22166666666666665,
+        "me": 0.14111111111111108,
+        "n": 205.77777777777777
+      },
+      "rmseDelta": -0.09,
+      "meAbsDelta": -0.07
     },
     "33": {
       "name": "CSA94",
