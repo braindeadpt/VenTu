@@ -276,3 +276,25 @@
   .v6h.vivo .foto.kb img,.v6h.vivo .swell svg,.v6h .entra{animation:none}
   .v6h .modo .pista,.v6h .card .foto img,.v6h .bloco .bar{transition:none}
 }
+
+/* ---------- crédito da foto no telemóvel (< 640 px): pílula «©» que abre o crédito ----------
+   A linha de texto tapava a foto; fica uma pílula 24×24 (área de toque 44×44) no mesmo canto e o
+   <details> abre o mesmo crédito, com as mesmas ligações. ≥ 640 px: só o <p> de sempre. */
+.v6h .credito-pilula{display:none}
+@media (max-width:639.98px){
+  .v6h .credito-foto{display:none}
+  .v6h .credito-pilula{display:block;position:absolute;inset:0;z-index:5;margin:0;pointer-events:none}
+  .v6h .credito-pilula summary{position:absolute;display:grid;place-items:center;width:44px;height:44px;list-style:none;cursor:pointer;pointer-events:auto;-webkit-tap-highlight-color:transparent}
+  .v6h .credito-pilula summary::-webkit-details-marker{display:none}
+  .v6h .credito-pilula summary span{display:grid;place-items:center;box-sizing:border-box;width:24px;height:24px;border-radius:999px;font:600 12px/1 var(--txt);color:#F3F8FB;background:rgba(3,14,24,.55);border:1px solid rgba(243,248,251,.25);text-shadow:none}
+  .v6h .credito-pilula summary:focus{outline:none}
+  .v6h .credito-pilula summary:focus-visible span{outline:2px solid var(--sol);outline-offset:2px}
+  .v6h .credito-pilula[open] summary span{background:rgba(3,14,24,.88);border-color:rgba(243,248,251,.5)}
+  .v6h .credito-pilula p{position:absolute;margin:0;width:max-content;max-width:min(260px,calc(100% - 16px));box-sizing:border-box;padding:6px 8px;border-radius:8px;background:rgba(3,14,24,.88);font:500 11px/1.3 var(--txt);color:#F3F8FB;text-align:left;pointer-events:auto}
+  .v6h .credito-pilula p a{color:inherit;text-decoration:underline;text-underline-offset:2px}
+  /* a pílula fica onde estava a linha; o painel abre por baixo, encostado ao mesmo canto */
+  .v6h .hero .credito-pilula summary{top:62px;right:2px}
+  .v6h .hero .credito-pilula p{top:102px;right:12px}
+  .v6h .card .credito-pilula summary{top:0;right:0}
+  .v6h .card .credito-pilula p{top:40px;right:10px}
+}
