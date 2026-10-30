@@ -52,6 +52,18 @@ export interface HomeV6Props {
 /** Fontes do primeiro ecrã (palavra, nomes, frase). */
 const PRELOAD = ['BarlowCondensed-900i-latin.woff2', 'Barlow-600-latin.woff2', 'Barlow-700-latin.woff2'];
 
+/** Texto sem marcação (para document.title); sem regex, nada de < ou > sobrevive. */
+function semTags(s: string): string {
+  let o = '';
+  let dentro = false;
+  for (const ch of s) {
+    if (ch === '<') dentro = true;
+    else if (ch === '>') dentro = false;
+    else if (!dentro) o += ch;
+  }
+  return o;
+}
+
 export default function HomeV6({ locale, costa: costaSSG, meta, fotos, agoraMs, nSpots }: HomeV6Props) {
   const c = homeV6Copy(locale);
   const cn = nivelCopyV6(locale);
@@ -152,7 +164,7 @@ export default function HomeV6({ locale, costa: costaSSG, meta, fotos, agoraMs, 
 
   useEffect(() => {
     if (!E || !flags.vivo) return;
-    document.title = c.titulo(c.veredito[E.palavra], (fraseNv ?? E.frase).txt.replace(/<[^>]*>/g, '').replace(/[<>]/g, ''));
+    document.title = c.titulo(c.veredito[E.palavra], semTags((fraseNv ?? E.frase).txt));
   }, [E, c, flags.vivo, fraseNv]);
 
   if (!E) return <p className="sr">{c.semDados}</p>;
