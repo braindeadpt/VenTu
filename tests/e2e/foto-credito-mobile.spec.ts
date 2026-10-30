@@ -43,7 +43,8 @@ async function verificaPilula(cred: Locator, contentor: Locator) {
     const href = (await a.getAttribute('href')) ?? '';
     expect(href).toMatch(/^https:\/\//);
     // Unsplash pede a atribuição com utm; no Commons a ligação é a página do ficheiro
-    if (href.includes('unsplash.com')) expect(href).toMatch(/utm_source=ventu&utm_medium=referral/);
+    const host = new URL(href).hostname;
+    if (host === 'unsplash.com' || host.endsWith('.unsplash.com')) expect(href).toMatch(/utm_source=ventu&utm_medium=referral/);
     await expect(a).toHaveAttribute('target', '_blank');
   }
   const p = (await painel.boundingBox())!;
