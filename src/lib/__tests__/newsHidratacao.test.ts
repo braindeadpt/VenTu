@@ -58,6 +58,14 @@ describe('groupByDay — dia de Lisboa e nowMs explícito', () => {
     expect(g[0].date).toBe('2025-07-15');
     expect(g[0].label).toBe('Hoje');
   });
+
+  it('o heading de grupos antigos mostra a data da chave, não o fuso do leitor', () => {
+    // Artigo de 14 jul 23:30 UTC → grupo Lisboa 15 jul. Formatado com
+    // timeZone:'UTC' — um leitor a oeste de UTC via «14 July» sem a fixa.
+    const g = groupByDay([item('v', '2025-07-14T23:30:00Z')], 'en', INV_0030);
+    expect(g[0].date).toBe('2025-07-15');
+    expect(g[0].labelEn).toBe('15 July 2025');
+  });
 });
 
 describe('filterNewsByDate — corte por dia de Lisboa', () => {
@@ -74,6 +82,20 @@ describe('filterNewsByDate — corte por dia de Lisboa', () => {
   it('30d e all mantêm o comportamento', () => {
     expect(filterNewsByDate(N, 'all', INV_0030)).toHaveLength(3);
     expect(filterNewsByDate(N, '30d', INV_0030)).toHaveLength(3);
+  });
+
+  // Mudança de hora de primavera em Lisboa: 2025-03-30 01:00 UTC → UTC+1.
+  // 2025-03-30T23:30Z = 31 mar 00:30 Lisboa. O corte subtrai DIAS DE
+  // CALENDÁRIO à chave de Lisboa — o dia tem 23h e subtrair 86400000×N
+  // em ms caía um dia antes (incluía o dia anterior ao corte).
+  const PRIMAVERA_0030 = Date.parse('2025-03-30T23:30:00Z'); // 31 mar 00:30 Lisboa
+  it('DST primavera — corte 7d é 24 mar (não 23 mar)', () => {
+    const n = [item('fora', '2025-03-23T12:00:00Z'), item('dentro', '2025-03-24T06:00:00Z')];
+    expect(filterNewsByDate(n, '7d', PRIMAVERA_0030).map((i) => i.id)).toEqual(['dentro']);
+  });
+  it('DST primavera — corte 30d é 1 mar (não 28 fev)', () => {
+    const n = [item('fora', '2025-02-28T12:00:00Z'), item('dentro', '2025-03-01T06:00:00Z')];
+    expect(filterNewsByDate(n, '30d', PRIMAVERA_0030).map((i) => i.id)).toEqual(['dentro']);
   });
 });
 

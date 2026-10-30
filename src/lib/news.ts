@@ -62,8 +62,13 @@ export function filterNewsByDate(news: NewsItem[], period: DateFilter, nowMs?: n
   const now = nowMs != null ? new Date(nowMs) : new Date();
   // Corte por dia de calendário de Lisboa — determinista em qualquer fuso do
   // servidor/cliente (o HTML do build e o primeiro render têm de coincidir).
+  // A subtracção faz-se na data de calendário (UTC), não em ms: o dia de
+  // Lisboa tem 23h na mudança de primavera e 86400000×N caía um dia antes.
   const dias = period === 'today' ? 0 : period === '7d' ? 7 : 30;
-  const corte = lisbonDateKey(new Date(now.getTime() - dias * 86400000));
+  const [cy, cm, cd] = lisbonDateKey(now).split('-').map(Number);
+  const corteD = new Date(Date.UTC(cy, cm - 1, cd));
+  corteD.setUTCDate(corteD.getUTCDate() - dias);
+  const corte = corteD.toISOString().slice(0, 10);
   return news.filter((item) => lisbonDateKey(new Date(item.publishedAt)) >= corte);
 }
 
@@ -137,8 +142,8 @@ export function groupByDay(news: NewsItem[], locale: string, nowMs?: number): Da
         label = 'Ontem';
         labelEn = 'Yesterday';
       } else {
-        label = d.toLocaleDateString('pt-PT', { day: 'numeric', month: 'long', year: 'numeric' });
-        labelEn = d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+        label = d.toLocaleDateString('pt-PT', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+        labelEn = d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
       }
       return { date: dateStr, label, labelEn, items };
     });
