@@ -1,6 +1,6 @@
 {
   "source": "forecast-skill-regression",
-  "checkedAt": "2026-10-30T06:06:21.147Z",
+  "checkedAt": "2026-10-30T08:06:37.610Z",
   "windowDays": 60,
   "recentDays": 7,
   "baselineDays": 21,
@@ -23,7 +23,7 @@
       "recent": {
         "snapshots": 8,
         "rmse": 0.785,
-        "me": 0.62,
+        "me": 0.61875,
         "n": 623.5
       },
       "baseline": {
@@ -41,7 +41,7 @@
       "origin": "ih",
       "recent": {
         "snapshots": 8,
-        "rmse": 0.27875000000000005,
+        "rmse": 0.2775,
         "me": 0.18124999999999997,
         "n": 620.875
       },
@@ -60,9 +60,9 @@
       "origin": "ih",
       "recent": {
         "snapshots": 4,
-        "rmse": 0.14,
+        "rmse": 0.14250000000000002,
         "me": 0.08000000000000002,
-        "n": 85.25
+        "n": 85.5
       },
       "baseline": {
         "snapshots": 18,
@@ -118,7 +118,7 @@
       "recent": {
         "snapshots": 8,
         "rmse": 0.9012500000000001,
-        "me": 0.77125,
+        "me": 0.77,
         "n": 578.375
       },
       "baseline": {
@@ -128,7 +128,7 @@
         "n": 549.6190476190476
       },
       "rmseDelta": 0.17,
-      "meAbsDelta": 0.2,
+      "meAbsDelta": 0.19,
       "verdict": "ok"
     },
     "6200085": {
@@ -154,7 +154,7 @@
       "name": "Nazaré Costeira (WMO)",
       "recent": {
         "snapshots": 8,
-        "rmse": 0.37625,
+        "rmse": 0.375,
         "me": 0.18624999999999997,
         "n": 527.875
       },
@@ -176,8 +176,8 @@
       "name": "IH (Datawell)",
       "recent": {
         "days": 8,
-        "n": 2531.38,
-        "me": 0.25364623969186706
+        "n": 2531.5,
+        "me": 0.25333251036934623
       },
       "baseline": {
         "days": 21,
@@ -195,7 +195,7 @@
       "recent": {
         "days": 8,
         "n": 1684.63,
-        "me": 0.46412777324330334
+        "me": 0.4637048304518809
       },
       "baseline": {
         "days": 21,
