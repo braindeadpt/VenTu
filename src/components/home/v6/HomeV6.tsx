@@ -152,7 +152,7 @@ export default function HomeV6({ locale, costa: costaSSG, meta, fotos, agoraMs, 
 
   useEffect(() => {
     if (!E || !flags.vivo) return;
-    document.title = c.titulo(c.veredito[E.palavra], (fraseNv ?? E.frase).txt.replace(/<[^>]+>/g, ''));
+    document.title = c.titulo(c.veredito[E.palavra], (fraseNv ?? E.frase).txt.replace(/<[^>]*>/g, '').replace(/[<>]/g, ''));
   }, [E, c, flags.vivo, fraseNv]);
 
   if (!E) return <p className="sr">{c.semDados}</p>;
