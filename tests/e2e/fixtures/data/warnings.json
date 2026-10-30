@@ -1,6 +1,88 @@
 {
   "source": "ipma",
   "fetchedAt": "2026-09-09T23:13:18.790Z",
-  "warnings": [],
-  "spotWarnings": {}
+  "warnings": [
+    {
+      "areaCode": "MRM",
+      "areaLabel": "Madeira — Regiões Montanhosas",
+      "type": "Precipitação",
+      "level": "yellow",
+      "text": "Aguaceiros, por vezes fortes, podendo ser acompanhados de trovoada.",
+      "startTime": "2026-11-01T00:00:00",
+      "endTime": "2026-11-01T09:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "MCS",
+      "areaLabel": "Funchal",
+      "type": "Precipitação",
+      "level": "yellow",
+      "text": "Aguaceiros, por vezes fortes, podendo ser acompanhados de trovoada.",
+      "startTime": "2026-11-01T00:00:00",
+      "endTime": "2026-11-01T09:00:00",
+      "relevant": true
+    }
+  ],
+  "spotWarnings": {
+    "porto-da-cruz": [
+      {
+        "areaCode": "MRM",
+        "areaLabel": "Madeira — Regiões Montanhosas",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Aguaceiros, por vezes fortes, podendo ser acompanhados de trovoada.",
+        "startTime": "2026-11-01T00:00:00",
+        "endTime": "2026-11-01T09:00:00",
+        "relevant": true
+      }
+    ],
+    "ponta-sao-lourenco": [
+      {
+        "areaCode": "MCS",
+        "areaLabel": "Funchal",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Aguaceiros, por vezes fortes, podendo ser acompanhados de trovoada.",
+        "startTime": "2026-11-01T00:00:00",
+        "endTime": "2026-11-01T09:00:00",
+        "relevant": true
+      }
+    ],
+    "ribeira-brava": [
+      {
+        "areaCode": "MRM",
+        "areaLabel": "Madeira — Regiões Montanhosas",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Aguaceiros, por vezes fortes, podendo ser acompanhados de trovoada.",
+        "startTime": "2026-11-01T00:00:00",
+        "endTime": "2026-11-01T09:00:00",
+        "relevant": true
+      }
+    ],
+    "funchal": [
+      {
+        "areaCode": "MCS",
+        "areaLabel": "Funchal",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Aguaceiros, por vezes fortes, podendo ser acompanhados de trovoada.",
+        "startTime": "2026-11-01T00:00:00",
+        "endTime": "2026-11-01T09:00:00",
+        "relevant": true
+      }
+    ],
+    "machico": [
+      {
+        "areaCode": "MCS",
+        "areaLabel": "Funchal",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Aguaceiros, por vezes fortes, podendo ser acompanhados de trovoada.",
+        "startTime": "2026-11-01T00:00:00",
+        "endTime": "2026-11-01T09:00:00",
+        "relevant": true
+      }
+    ]
+  }
 }

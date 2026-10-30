@@ -3,7 +3,7 @@
  * «CASCAIS · QUA 14 OUT · 14H · AGORA», a Nota no fill da banda, a palavra da
  * banda, a frase curta e a linha de apoio. Lê só o objecto da hora.
  */
-import type { CSSProperties } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 import Nota from '@/components/v6/Nota';
 import FotoCredito from '@/components/v6/FotoCredito';
 import type { FotoSpot } from '@/lib/spotFotos';
@@ -25,9 +25,11 @@ export interface SpotHeroProps {
   faltaTxt?: string | null;
   /** Hora sem o dado da fonte (vento/onda): «–» e «Sem dados», não a lua. */
   semDados?: boolean;
+  /** #nivel-ui: aviso (spot acima do nível) ou dica (sem nível) dentro do `.ver`, ao lado da palavra e da frase. */
+  aviso?: ReactNode;
 }
 
-export default function SpotHero({ nome, quando, n, banda, palavra, resto, apoio, foto, locale, copy, faltaTxt, semDados }: SpotHeroProps) {
+export default function SpotHero({ nome, quando, n, banda, palavra, resto, apoio, foto, locale, copy, faltaTxt, semDados, aviso }: SpotHeroProps) {
   const fotoStyle = foto
     ? ({ '--up': foto.up ?? 0, '--fl': `${foto.fl ?? 0}%`, '--pd': foto.posd || foto.pos || '50% 50%' } as CSSProperties)
     : undefined;
@@ -63,10 +65,20 @@ export default function SpotHero({ nome, quando, n, banda, palavra, resto, apoio
         </p>
         <div className="ver" aria-live="polite" aria-atomic="true" data-testid="spot-veredicto" data-banda={banda}>
           <Nota n={n} ariaLabel={ariaNota} semDados={semDados} />
-          <p style={{ margin: 0 }}>
-            <span className="pal">{palavra}</span>
-            <span className="l1">{resto}</span>
-          </p>
+          {aviso ? (
+            <div className="ver-t">
+              <p style={{ margin: 0 }}>
+                <span className="pal">{palavra}</span>
+                <span className="l1">{resto}</span>
+              </p>
+              {aviso}
+            </div>
+          ) : (
+            <p style={{ margin: 0 }}>
+              <span className="pal">{palavra}</span>
+              <span className="l1">{resto}</span>
+            </p>
+          )}
         </div>
         <p className="l2" data-testid="spot-apoio">
           {apoio.map((p, k) => (p.b ? <b key={k}>{p.t}</b> : <span key={k}>{p.t}</span>))}

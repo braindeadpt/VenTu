@@ -12,6 +12,7 @@ import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react
 import WindSafetyNote from '@/components/ui/WindSafetyNote';
 import '@/styles/v6-fontes.css';
 import '@/styles/v6-atlantico.css';
+import '@/styles/v6-nivel.css';
 import TopBar from './TopBar';
 import SpotHero from './SpotHero';
 import Regua48h from './Regua48h';
@@ -19,6 +20,11 @@ import Porque from './Porque';
 import PraiaCena3D, { type Vizinho } from './PraiaCena3D';
 import EstudarSpot from './EstudarSpot';
 import AvisoRegua from './AvisoRegua';
+import NivelAviso from './NivelAviso';
+import { useVizinhosNivel } from './useVizinhosNivel';
+import { useNivel } from '@/lib/nivelPref';
+import { nivelCopyV6 } from '@/lib/translations/nivel';
+import { nivelDoSpot, spotDentroDoNivel, type NivelUtilizador } from '@/lib/mapDifficulty';
 import { avaliaHoras, isModalidade, MODALIDADE_OMISSAO, type Modalidade } from '@/lib/modalidades';
 import { construirHoras, type LinhaForecast, type MareExtremo } from '@/lib/horaSpot';
 import { editorialDe, spotModalidadeDe } from '@/lib/spotEditorial';
@@ -39,6 +45,8 @@ export interface SpotV6Hora {
   mares: readonly MareExtremo[];
   /** O extremo que o Porquê cita para esta hora (não se repete noutro sítio). */
   citada?: MareExtremo;
+  /** #nivel-ui: nível escolhido (null = sem nível), para o «Do teu nível, perto daqui». */
+  nivel: NivelUtilizador | null;
 }
 
 export interface SpotV6Props {
@@ -78,6 +86,10 @@ export default function SpotV6({ spot, nome, local, locale, linhas, agoraMs, fot
   const [i, setI] = useState(0);
   const [pendH, setPendH] = useState<number | null>(null);
   const [flags, setFlags] = useState({ plano: false, estudo: false, vivo: false });
+  // #nivel-ui: o nível do /mapa (`ventu:map:difficulty`), lido só depois de montar (null no SSG)
+  const cn = nivelCopyV6(locale);
+  const [nivel, escolheNivel] = useNivel();
+  const [menuNivel, setMenuNivel] = useState(false);
 
   // depois de montar: relógio real, ?d= / ventu.modalidade, ?h=, ?webgl=0, ?estudo=1
   useEffect(() => {
@@ -127,6 +139,14 @@ export default function SpotV6({ spot, nome, local, locale, linhas, agoraMs, fot
     [onModalidade],
   );
 
+  const sport = d === 'kite' ? 'kitesurf' : 'surf';
+  const nivelSpot = nivelDoSpot(spot, sport);
+  const acimaNivel = !!nivel && !spotDentroDoNivel(nivelSpot, nivel);
+  // sem nível: só a dica, e só num spot intermédio ou acima (o estudo §4); «Todos os níveis» e sem nível na ficha nunca
+  const dicaNivel = !nivel && (nivelSpot === 'intermediate' || nivelSpot === 'advanced' || nivelSpot === 'expert');
+  const tSel = H[iSel]?.t;
+  const vizinhosNivel = useVizinhosNivel(spot, sport, nivel, tSel, acimaNivel);
+
   if (!H.length) return null;
   const h = H[iSel];
   const r = NS[iSel];
@@ -144,6 +164,7 @@ export default function SpotV6({ spot, nome, local, locale, linhas, agoraMs, fot
     d,
     mares: dados.mares,
     citada: Number.isFinite(h.tide) ? dados.mares.find((m) => m.t > h.t) : undefined,
+    nivel,
   };
 
   return (
@@ -158,7 +179,17 @@ export default function SpotV6({ spot, nome, local, locale, linhas, agoraMs, fot
       {PRELOAD.map((fn) => (
         <link key={fn} rel="preload" as="font" type="font/woff2" crossOrigin="anonymous" href={getAssetPath(`/fonts/barlow/${fn}`)} />
       ))}
-      <TopBar locale={locale} copy={copy} d={d} onModalidade={muda} />
+      <TopBar
+        locale={locale}
+        copy={copy}
+        d={d}
+        onModalidade={muda}
+        nivel={nivel}
+        onNivel={escolheNivel}
+        cn={cn}
+        menuNivel={menuNivel}
+        onMenuNivel={setMenuNivel}
+      />
       <SpotHero
         nome={nome}
         quando={{ local, dia: quandoDia, hora: horaTxt(copy, horaDe(h.t)), agora: ehAgora }}
@@ -172,6 +203,21 @@ export default function SpotV6({ spot, nome, local, locale, linhas, agoraMs, fot
         copy={copy}
         faltaTxt={dados.semAgora ? copy.semPrevisao : null}
         semDados={!!r.semDados}
+        aviso={
+          acimaNivel || dicaNivel ? (
+            <NivelAviso
+              spot={spot}
+              d={d}
+              nivel={nivel}
+              nivelSpot={nivelSpot}
+              modo={acimaNivel ? 'acima' : 'dica'}
+              vizinhos={vizinhosNivel}
+              locale={locale}
+              cn={cn}
+              onQualNivel={() => setMenuNivel(true)}
+            />
+          ) : null
+        }
       />
       {r.soProfissionais ? (
         <div className="seguranca" data-testid="spot-so-profissionais">

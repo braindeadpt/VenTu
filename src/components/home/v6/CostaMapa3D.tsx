@@ -28,6 +28,7 @@ import { BANDAS_ORDEM, type BandaK } from '@/lib/modalidades';
 import { bandaVars, V6_BANDAS } from '@/lib/v6Tokens';
 import { getAssetPath } from '@/lib/paths';
 import type { HomeV6Copy } from '@/lib/translations/homeV6';
+import { spotDentroDoNivel, type NivelUtilizador } from '@/lib/mapDifficulty';
 import type { HandleCostaGL } from './costaMapaGL';
 
 type Modo = 'poster' | '3d' | 'plano';
@@ -66,9 +67,13 @@ export interface CostaMapa3DProps {
   /** spots da modalidade no /mapa (contagem real do índice de spots), para a linha do CTA */
   nSpots: number;
   forcarPlano: boolean;
+  /** #nivel-ui: com nível escolhido, os rótulos menores dos spots acima dele ficam esbatidos (nota e cor iguais). */
+  nivel?: NivelUtilizador | null;
+  /** «esbatido: acima do teu nível» (chip da legenda, só com nível). */
+  legendaNivel?: string;
 }
 
-export default function CostaMapa3D({ M, E, copy: c, hrefMapa, nSpots, forcarPlano }: CostaMapa3DProps) {
+export default function CostaMapa3D({ M, E, copy: c, hrefMapa, nSpots, forcarPlano, nivel = null, legendaNivel }: CostaMapa3DProps) {
   const sec = useRef<HTMLElement>(null);
   const fig = useRef<HTMLElement>(null);
   const mapaEl = useRef<HTMLDivElement>(null);
@@ -87,10 +92,10 @@ export default function CostaMapa3D({ M, E, copy: c, hrefMapa, nSpots, forcarPla
   const modoRef = useRef<Modo>('poster');
   const [pronto, setPronto] = useState(false);
   // o estado mais recente para os callbacks imperativos (MapLibre, resize)
-  const st = useRef({ M, E, c, hrefMapa });
+  const st = useRef({ M, E, c, hrefMapa, nivel });
   const forcarRef = useRef(forcarPlano);
   useLayoutEffect(() => {
-    st.current = { M, E, c, hrefMapa };
+    st.current = { M, E, c, hrefMapa, nivel };
     forcarRef.current = forcarPlano;
   });
   const [reduzido, setReduzido] = useState(false);
@@ -122,7 +127,7 @@ export default function CostaMapa3D({ M, E, copy: c, hrefMapa, nSpots, forcarPla
     box.querySelectorAll('.rot,.top-lbl').forEach((e) => e.remove());
     while (svg.firstChild) svg.removeChild(svg.firstChild);
     if (!p) return;
-    const { M: m, E: e, c: cc, hrefMapa: href } = st.current;
+    const { M: m, E: e, c: cc, hrefMapa: href, nivel: nv } = st.current;
     const W = box.clientWidth;
     const H = box.clientHeight;
     const ids = e.top.map((r) => r.sp.id);
@@ -164,7 +169,9 @@ export default function CostaMapa3D({ M, E, copy: c, hrefMapa, nSpots, forcarPla
     for (const o of items) {
       const b: BandaK = e.noite ? 'noite' : o.r ? o.r.b : 'noite';
       const a = document.createElement('a');
-      a.className = 'rot' + (o.top ? '' : ' menor');
+      const acima = !o.top && !!nv && !spotDentroDoNivel(o.sp.nivelPorModalidade?.[e.d] ?? o.sp.nivel, nv);
+      a.className = 'rot' + (o.top ? '' : ' menor') + (acima ? ' acima' : '');
+      if (acima) a.dataset.acimaNivel = '';
       a.href = href(o.sp.id);
       a.style.setProperty('--c', V6_BANDAS[b].c);
       a.style.setProperty('--t', V6_BANDAS[b].t);
@@ -581,7 +588,7 @@ export default function CostaMapa3D({ M, E, copy: c, hrefMapa, nSpots, forcarPla
   }, []);
 
   /* ---------- mudar de modalidade / bloco: o mesmo ranking pinta o mar, os rótulos e o vento ---------- */
-  const chaveEstado = `${E.d}|${E.bId}|${E.horaMapa}|${E.top.map((r) => r.sp.id + r.n).join(',')}|${M.spots.length}`;
+  const chaveEstado = `${E.d}|${E.bId}|${E.horaMapa}|${E.top.map((r) => r.sp.id + r.n).join(',')}|${M.spots.length}|${nivel ?? ''}`;
   useEffect(() => {
     if (modoRef.current === 'plano') {
       carta();
@@ -648,6 +655,12 @@ export default function CostaMapa3D({ M, E, copy: c, hrefMapa, nSpots, forcarPla
               {c.legNum[b] ? <b> {c.legNum[b]}</b> : null}
             </span>
           ))}
+          {nivel && legendaNivel ? (
+            <span className="nvleg" data-testid="legenda-nivel">
+              <i aria-hidden="true" />
+              {legendaNivel}
+            </span>
+          ) : null}
           <span className="txt">{c.legenda}</span>
         </div>
         <div className="cta" aria-hidden="true">

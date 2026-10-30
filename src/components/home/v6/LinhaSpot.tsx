@@ -8,7 +8,23 @@ import type { HomeV6Copy } from '@/lib/translations/homeV6';
 /** número e unidade nunca se separam na quebra de linha («8 nós», «12 s», «1,5 m») */
 const colaUnidade = (t: string) => t.replace(/(\d) (nós|kt|s|m)(?=[\s,.·<]|$)/g, '$1\u00a0$2');
 
-export default function LinhaSpot({ r, l, copy: c, seta }: { r: Linha; l: { l1: string; l2: string; pal: string | null; rk: string }; copy: HomeV6Copy; seta?: boolean }) {
+export default function LinhaSpot({
+  r,
+  l,
+  copy: c,
+  seta,
+  rk,
+  nivelRk,
+}: {
+  r: Linha;
+  l: { l1: string; l2: string; pal: string | null; rk: string };
+  copy: HomeV6Copy;
+  seta?: boolean;
+  /** `rk` do nível (#nivel-ui): «nº N da costa agora» nos cartões acima do nível. */
+  rk?: string;
+  /** «· iniciante» a seguir ao «nº k agora», com nível escolhido (não nos acima do nível). */
+  nivelRk?: string | null;
+}) {
   const sub = r.sp.concelho === r.sp.nome || r.sp.concelho === r.sp.curto ? c.zonaNome(r.sp.zona) : r.sp.concelho;
   return (
     <>
@@ -16,7 +32,15 @@ export default function LinhaSpot({ r, l, copy: c, seta }: { r: Linha; l: { l1: 
         {r.n ?? '–'}
       </span>
       <span>
-        <span className="rk">{l.rk}</span>
+        <span className={`rk${nivelRk || (rk && rk !== l.rk) ? ' rk-nv' : ''}`}>
+          {rk ?? l.rk}
+          {nivelRk && !r.acimaDoNivel ? (
+            <>
+              {' · '}
+              <i data-testid="rk-nivel">{nivelRk}</i>
+            </>
+          ) : null}
+        </span>
         <span className="nm">
           {r.sp.curto || r.sp.nome}
           <span>{sub}</span>

@@ -6,6 +6,7 @@
 import type { CSSProperties } from 'react';
 import FotoCredito from '@/components/v6/FotoCredito';
 import LinhaSpot from './LinhaSpot';
+import Ondas, { ondasDe } from '@/components/v6/Ondas';
 import { fotoVars } from './HomeHero';
 import { bandaVars } from '@/lib/v6Tokens';
 import type { Linha } from '@/lib/home/homeV6';
@@ -20,6 +21,9 @@ export default function SpotCardV6({
   href,
   copy: c,
   locale,
+  rk,
+  nivelRk,
+  tagNivel,
 }: {
   r: Linha;
   l: { l1: string; l2: string; pal: string | null; rk: string };
@@ -28,14 +32,21 @@ export default function SpotCardV6({
   href: string;
   copy: HomeV6Copy;
   locale: string;
+  /** #nivel-ui: `rk` do cartão acima do nível («nº N da costa agora»). */
+  rk?: string;
+  /** #nivel-ui: «· iniciante» no rótulo. */
+  nivelRk?: string | null;
+  /** #nivel-ui: etiqueta «Spot para intermédios» nos cartões acima do nível escolhido. */
+  tagNivel?: { txt: string; lv: Linha['sp']['nivel'] } | null;
 }) {
   return (
     <article
-      className="card entra"
+      className={`card entra${tagNivel ? ' acima' : ''}`}
       style={{ animationDelay: `${k * 70}ms`, ...(bandaVars(r.b) as CSSProperties) }}
       data-testid="home-cartao"
       data-spot={r.sp.id}
       data-nota={r.n ?? ''}
+      data-acima-nivel={tagNivel ? '' : undefined}
     >
       <div className="foto" style={fotoVars(foto)}>
         {foto ? (
@@ -55,7 +66,13 @@ export default function SpotCardV6({
       </div>
       <div className="veu" aria-hidden="true" />
       <a className="in" href={href}>
-        <LinhaSpot r={r} l={l} copy={c} />
+        {tagNivel ? (
+          <span className="nv-tag" data-testid="cartao-nivel">
+            <Ondas n={ondasDe(tagNivel.lv)} />
+            {tagNivel.txt}
+          </span>
+        ) : null}
+        <LinhaSpot r={r} l={l} copy={c} rk={rk} nivelRk={nivelRk} />
       </a>
       {foto ? <FotoCredito foto={foto} rotulo={c.foto} /> : null}
     </article>

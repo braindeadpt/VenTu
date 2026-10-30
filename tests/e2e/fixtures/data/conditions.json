@@ -160,7 +160,8 @@
     },
     "tideObservedHeight": 2.377,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Viana do Castelo"
+    "tideStation": "Viana do Castelo",
+    "tideAnomalyM": 0.185
   },
   "vila-praia-ancora": {
     "waveHeight": 1.36,
@@ -323,7 +324,8 @@
     },
     "tideObservedHeight": 2.377,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Viana do Castelo"
+    "tideStation": "Viana do Castelo",
+    "tideAnomalyM": 0.185
   },
   "afife": {
     "waveHeight": 1.36,
@@ -486,7 +488,8 @@
     },
     "tideObservedHeight": 2.377,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Viana do Castelo"
+    "tideStation": "Viana do Castelo",
+    "tideAnomalyM": 0.185
   },
   "amorosa": {
     "waveHeight": 1.26,
@@ -650,7 +653,44 @@
     "secondarySwellDirection": 274,
     "tideObservedHeight": 2.377,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Viana do Castelo"
+    "tideStation": "Viana do Castelo",
+    "tideAnomalyM": 0.195,
+    "observedWave": {
+      "waveHeight": 1.78,
+      "wavePeriod": 10,
+      "waveDirection": 321,
+      "maxWaveHeight": 2.56,
+      "waterTemp": 16.3,
+      "stationName": "CSA92/D",
+      "stationArea": "Continente - Leixões",
+      "distanceKm": 39,
+      "observedAt": "2026-10-29T18:26:43.000Z",
+      "source": "ih-buoy",
+      "skill": {
+        "me": 0.66,
+        "n": 619,
+        "origin": "ih",
+        "mae": 0.66,
+        "rmse": 0.83,
+        "corr": 0.88,
+        "meanLeadHours": 45.5,
+        "buoyName": "CSA92/D"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "ih",
+      "reason": "ih-only",
+      "ihAgeHours": 1.7,
+      "wmoAgeHours": null,
+      "ihDistanceKm": 39,
+      "wmoDistanceKm": null
+    },
+    "observedWaveNotClosest": {
+      "winner": "ih-buoy",
+      "reason": "ih-only",
+      "attachedKm": 39,
+      "altKm": 0
+    }
   },
   "cabedelo": {
     "waveHeight": 1.12,
@@ -814,7 +854,8 @@
     },
     "tideObservedHeight": 2.377,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Viana do Castelo"
+    "tideStation": "Viana do Castelo",
+    "tideAnomalyM": 0.185
   },
   "foil-cabedelo": {
     "waveHeight": 1.12,
@@ -978,7 +1019,8 @@
     },
     "tideObservedHeight": 2.377,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Viana do Castelo"
+    "tideStation": "Viana do Castelo",
+    "tideAnomalyM": 0.185
   },
   "cabedelo-wakepark": {
     "waveHeight": 1.26,
@@ -1136,7 +1178,8 @@
     },
     "tideObservedHeight": 2.377,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Viana do Castelo"
+    "tideStation": "Viana do Castelo",
+    "tideAnomalyM": 0.195
   },
   "rodanho": {
     "waveHeight": 1.12,
@@ -1300,7 +1343,8 @@
     },
     "tideObservedHeight": 2.377,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Viana do Castelo"
+    "tideStation": "Viana do Castelo",
+    "tideAnomalyM": 0.185
   },
   "esposende": {
     "waveHeight": 1.2,
@@ -1463,7 +1507,44 @@
     "secondarySwellDirection": 328,
     "tideObservedHeight": 2.377,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Viana do Castelo"
+    "tideStation": "Viana do Castelo",
+    "tideAnomalyM": 0.195,
+    "observedWave": {
+      "waveHeight": 1.78,
+      "wavePeriod": 10,
+      "waveDirection": 321,
+      "maxWaveHeight": 2.56,
+      "waterTemp": 16.3,
+      "stationName": "CSA92/D",
+      "stationArea": "Continente - Leixões",
+      "distanceKm": 29.1,
+      "observedAt": "2026-10-29T18:26:43.000Z",
+      "source": "ih-buoy",
+      "skill": {
+        "me": 0.66,
+        "n": 619,
+        "origin": "ih",
+        "mae": 0.66,
+        "rmse": 0.83,
+        "corr": 0.88,
+        "meanLeadHours": 45.5,
+        "buoyName": "CSA92/D"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "ih",
+      "reason": "ih-only",
+      "ihAgeHours": 1.7,
+      "wmoAgeHours": null,
+      "ihDistanceKm": 29.1,
+      "wmoDistanceKm": null
+    },
+    "observedWaveNotClosest": {
+      "winner": "ih-buoy",
+      "reason": "ih-only",
+      "attachedKm": 29,
+      "altKm": 0
+    }
   },
   "esposende-praia": {
     "waveHeight": 1.2,
@@ -1626,7 +1707,44 @@
     "secondarySwellDirection": 328,
     "tideObservedHeight": 2.377,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Viana do Castelo"
+    "tideStation": "Viana do Castelo",
+    "tideAnomalyM": 0.195,
+    "observedWave": {
+      "waveHeight": 1.78,
+      "wavePeriod": 10,
+      "waveDirection": 321,
+      "maxWaveHeight": 2.56,
+      "waterTemp": 16.3,
+      "stationName": "CSA92/D",
+      "stationArea": "Continente - Leixões",
+      "distanceKm": 29.9,
+      "observedAt": "2026-10-29T18:26:43.000Z",
+      "source": "ih-buoy",
+      "skill": {
+        "me": 0.66,
+        "n": 619,
+        "origin": "ih",
+        "mae": 0.66,
+        "rmse": 0.83,
+        "corr": 0.88,
+        "meanLeadHours": 45.5,
+        "buoyName": "CSA92/D"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "ih",
+      "reason": "ih-only",
+      "ihAgeHours": 1.7,
+      "wmoAgeHours": null,
+      "ihDistanceKm": 29.9,
+      "wmoDistanceKm": null
+    },
+    "observedWaveNotClosest": {
+      "winner": "ih-buoy",
+      "reason": "ih-only",
+      "attachedKm": 30,
+      "altKm": 0
+    }
   },
   "fao": {
     "waveHeight": 1.2,
@@ -1789,7 +1907,44 @@
     "secondarySwellDirection": 328,
     "tideObservedHeight": 2.377,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Viana do Castelo"
+    "tideStation": "Viana do Castelo",
+    "tideAnomalyM": 0.195,
+    "observedWave": {
+      "waveHeight": 1.78,
+      "wavePeriod": 10,
+      "waveDirection": 321,
+      "maxWaveHeight": 2.56,
+      "waterTemp": 16.3,
+      "stationName": "CSA92/D",
+      "stationArea": "Continente - Leixões",
+      "distanceKm": 28.1,
+      "observedAt": "2026-10-29T18:26:43.000Z",
+      "source": "ih-buoy",
+      "skill": {
+        "me": 0.66,
+        "n": 619,
+        "origin": "ih",
+        "mae": 0.66,
+        "rmse": 0.83,
+        "corr": 0.88,
+        "meanLeadHours": 45.5,
+        "buoyName": "CSA92/D"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "ih",
+      "reason": "ih-only",
+      "ihAgeHours": 1.7,
+      "wmoAgeHours": null,
+      "ihDistanceKm": 28.1,
+      "wmoDistanceKm": null
+    },
+    "observedWaveNotClosest": {
+      "winner": "ih-buoy",
+      "reason": "ih-only",
+      "attachedKm": 28,
+      "altKm": 0
+    }
   },
   "apulia": {
     "waveHeight": 1.32,
@@ -1952,7 +2107,44 @@
     "secondarySwellDirection": 290,
     "tideObservedHeight": 2.377,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Viana do Castelo"
+    "tideStation": "Viana do Castelo",
+    "tideAnomalyM": 0.205,
+    "observedWave": {
+      "waveHeight": 1.78,
+      "wavePeriod": 10,
+      "waveDirection": 321,
+      "maxWaveHeight": 2.56,
+      "waterTemp": 16.3,
+      "stationName": "CSA92/D",
+      "stationArea": "Continente - Leixões",
+      "distanceKm": 25.2,
+      "observedAt": "2026-10-29T18:26:43.000Z",
+      "source": "ih-buoy",
+      "skill": {
+        "me": 0.66,
+        "n": 619,
+        "origin": "ih",
+        "mae": 0.66,
+        "rmse": 0.83,
+        "corr": 0.88,
+        "meanLeadHours": 45.5,
+        "buoyName": "CSA92/D"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "ih",
+      "reason": "ih-only",
+      "ihAgeHours": 1.7,
+      "wmoAgeHours": null,
+      "ihDistanceKm": 25.2,
+      "wmoDistanceKm": null
+    },
+    "observedWaveNotClosest": {
+      "winner": "ih-buoy",
+      "reason": "ih-only",
+      "attachedKm": 25,
+      "altKm": 0
+    }
   },
   "azurara": {
     "waveHeight": 1.42,
@@ -2116,7 +2308,44 @@
     "secondarySwellDirection": 283,
     "tideObservedHeight": 2.413,
     "tideObservedAt": "2026-10-26T17:32:54Z",
-    "tideStation": "Leixões"
+    "tideStation": "Leixões",
+    "tideAnomalyM": 0.207,
+    "observedWave": {
+      "waveHeight": 1.78,
+      "wavePeriod": 10,
+      "waveDirection": 321,
+      "maxWaveHeight": 2.56,
+      "waterTemp": 16.3,
+      "stationName": "CSA92/D",
+      "stationArea": "Continente - Leixões",
+      "distanceKm": 20.2,
+      "observedAt": "2026-10-29T18:26:43.000Z",
+      "source": "ih-buoy",
+      "skill": {
+        "me": 0.66,
+        "n": 619,
+        "origin": "ih",
+        "mae": 0.66,
+        "rmse": 0.83,
+        "corr": 0.88,
+        "meanLeadHours": 45.5,
+        "buoyName": "CSA92/D"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "ih",
+      "reason": "ih-only",
+      "ihAgeHours": 1.7,
+      "wmoAgeHours": null,
+      "ihDistanceKm": 20.2,
+      "wmoDistanceKm": null
+    },
+    "observedWaveNotClosest": {
+      "winner": "ih-buoy",
+      "reason": "ih-only",
+      "attachedKm": 20,
+      "altKm": 0
+    }
   },
   "arvore": {
     "waveHeight": 3.14,
@@ -2277,7 +2506,44 @@
     "secondarySwellDirection": 283,
     "tideObservedHeight": 2.413,
     "tideObservedAt": "2026-10-26T17:32:54Z",
-    "tideStation": "Leixões"
+    "tideStation": "Leixões",
+    "tideAnomalyM": 0.207,
+    "observedWave": {
+      "waveHeight": 1.78,
+      "wavePeriod": 10,
+      "waveDirection": 321,
+      "maxWaveHeight": 2.56,
+      "waterTemp": 16.3,
+      "stationName": "CSA92/D",
+      "stationArea": "Continente - Leixões",
+      "distanceKm": 20.4,
+      "observedAt": "2026-10-29T18:26:43.000Z",
+      "source": "ih-buoy",
+      "skill": {
+        "me": 0.66,
+        "n": 619,
+        "origin": "ih",
+        "mae": 0.66,
+        "rmse": 0.83,
+        "corr": 0.88,
+        "meanLeadHours": 45.5,
+        "buoyName": "CSA92/D"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "ih",
+      "reason": "ih-only",
+      "ihAgeHours": 1.7,
+      "wmoAgeHours": null,
+      "ihDistanceKm": 20.4,
+      "wmoDistanceKm": null
+    },
+    "observedWaveNotClosest": {
+      "winner": "ih-buoy",
+      "reason": "ih-only",
+      "attachedKm": 20,
+      "altKm": 0
+    }
   },
   "leca-palmeira": {
     "waveHeight": 1.4,
@@ -2441,7 +2707,44 @@
     "secondarySwellDirection": 236,
     "tideObservedHeight": 2.413,
     "tideObservedAt": "2026-10-26T17:32:54Z",
-    "tideStation": "Leixões"
+    "tideStation": "Leixões",
+    "tideAnomalyM": 0.207,
+    "observedWave": {
+      "waveHeight": 1.78,
+      "wavePeriod": 10,
+      "waveDirection": 321,
+      "maxWaveHeight": 2.56,
+      "waterTemp": 16.3,
+      "stationName": "CSA92/D",
+      "stationArea": "Continente - Leixões",
+      "distanceKm": 27.1,
+      "observedAt": "2026-10-29T18:26:43.000Z",
+      "source": "ih-buoy",
+      "skill": {
+        "me": 0.66,
+        "n": 619,
+        "origin": "ih",
+        "mae": 0.66,
+        "rmse": 0.83,
+        "corr": 0.88,
+        "meanLeadHours": 45.5,
+        "buoyName": "CSA92/D"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "ih",
+      "reason": "ih-only",
+      "ihAgeHours": 1.7,
+      "wmoAgeHours": null,
+      "ihDistanceKm": 27.1,
+      "wmoDistanceKm": null
+    },
+    "observedWaveNotClosest": {
+      "winner": "ih-buoy",
+      "reason": "ih-only",
+      "attachedKm": 27,
+      "altKm": 0
+    }
   },
   "matosinhos": {
     "waveHeight": 1.4,
@@ -2605,7 +2908,44 @@
     "secondarySwellDirection": 236,
     "tideObservedHeight": 2.413,
     "tideObservedAt": "2026-10-26T17:32:54Z",
-    "tideStation": "Leixões"
+    "tideStation": "Leixões",
+    "tideAnomalyM": 0.207,
+    "observedWave": {
+      "waveHeight": 1.78,
+      "wavePeriod": 10,
+      "waveDirection": 321,
+      "maxWaveHeight": 2.56,
+      "waterTemp": 16.3,
+      "stationName": "CSA92/D",
+      "stationArea": "Continente - Leixões",
+      "distanceKm": 28.8,
+      "observedAt": "2026-10-29T18:26:43.000Z",
+      "source": "ih-buoy",
+      "skill": {
+        "me": 0.66,
+        "n": 619,
+        "origin": "ih",
+        "mae": 0.66,
+        "rmse": 0.83,
+        "corr": 0.88,
+        "meanLeadHours": 45.5,
+        "buoyName": "CSA92/D"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "ih",
+      "reason": "ih-only",
+      "ihAgeHours": 1.7,
+      "wmoAgeHours": null,
+      "ihDistanceKm": 28.8,
+      "wmoDistanceKm": null
+    },
+    "observedWaveNotClosest": {
+      "winner": "ih-buoy",
+      "reason": "ih-only",
+      "attachedKm": 29,
+      "altKm": 0
+    }
   },
   "cabedelo-douro": {
     "waveHeight": 1.5,
@@ -2766,7 +3106,47 @@
     },
     "secondarySwellHeight": 0.16,
     "secondarySwellPeriod": 12.4,
-    "secondarySwellDirection": 230
+    "secondarySwellDirection": 230,
+    "tideObservedHeight": 2.488,
+    "tideObservedAt": "2026-10-29T20:04:00Z",
+    "tideStation": "B. do Douro - Cantareira",
+    "tideAnomalyM": 0.249,
+    "observedWave": {
+      "waveHeight": 1.78,
+      "wavePeriod": 10,
+      "waveDirection": 321,
+      "maxWaveHeight": 2.56,
+      "waterTemp": 16.3,
+      "stationName": "CSA92/D",
+      "stationArea": "Continente - Leixões",
+      "distanceKm": 32.8,
+      "observedAt": "2026-10-29T18:26:43.000Z",
+      "source": "ih-buoy",
+      "skill": {
+        "me": 0.66,
+        "n": 619,
+        "origin": "ih",
+        "mae": 0.66,
+        "rmse": 0.83,
+        "corr": 0.88,
+        "meanLeadHours": 45.5,
+        "buoyName": "CSA92/D"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "ih",
+      "reason": "ih-only",
+      "ihAgeHours": 1.7,
+      "wmoAgeHours": null,
+      "ihDistanceKm": 32.8,
+      "wmoDistanceKm": null
+    },
+    "observedWaveNotClosest": {
+      "winner": "ih-buoy",
+      "reason": "ih-only",
+      "attachedKm": 33,
+      "altKm": 0
+    }
   },
   "marina-afurada-foil": {
     "waveHeight": 1.3,
@@ -2923,7 +3303,47 @@
     },
     "secondarySwellHeight": 0.34,
     "secondarySwellPeriod": 11.35,
-    "secondarySwellDirection": 270
+    "secondarySwellDirection": 270,
+    "tideObservedHeight": 2.488,
+    "tideObservedAt": "2026-10-29T20:04:00Z",
+    "tideStation": "B. do Douro - Cantareira",
+    "tideAnomalyM": 0.249,
+    "observedWave": {
+      "waveHeight": 1.78,
+      "wavePeriod": 10,
+      "waveDirection": 321,
+      "maxWaveHeight": 2.56,
+      "waterTemp": 16.3,
+      "stationName": "CSA92/D",
+      "stationArea": "Continente - Leixões",
+      "distanceKm": 33.7,
+      "observedAt": "2026-10-29T18:26:43.000Z",
+      "source": "ih-buoy",
+      "skill": {
+        "me": 0.66,
+        "n": 619,
+        "origin": "ih",
+        "mae": 0.66,
+        "rmse": 0.83,
+        "corr": 0.88,
+        "meanLeadHours": 45.5,
+        "buoyName": "CSA92/D"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "ih",
+      "reason": "ih-only",
+      "ihAgeHours": 1.7,
+      "wmoAgeHours": null,
+      "ihDistanceKm": 33.7,
+      "wmoDistanceKm": null
+    },
+    "observedWaveNotClosest": {
+      "winner": "ih-buoy",
+      "reason": "ih-only",
+      "attachedKm": 34,
+      "altKm": 0
+    }
   },
   "praia-da-lomba": {
     "waveHeight": null,
@@ -3077,7 +3497,11 @@
           "Small waves"
         ]
       }
-    }
+    },
+    "tideObservedHeight": 2.488,
+    "tideObservedAt": "2026-10-29T20:04:00Z",
+    "tideStation": "B. do Douro - Cantareira",
+    "tideAnomalyM": -0.551
   },
   "salgueiros": {
     "waveHeight": 1.3,
@@ -3238,7 +3662,47 @@
     },
     "secondarySwellHeight": 0.34,
     "secondarySwellPeriod": 11.35,
-    "secondarySwellDirection": 270
+    "secondarySwellDirection": 270,
+    "tideObservedHeight": 2.488,
+    "tideObservedAt": "2026-10-29T20:04:00Z",
+    "tideStation": "B. do Douro - Cantareira",
+    "tideAnomalyM": 0.249,
+    "observedWave": {
+      "waveHeight": 1.78,
+      "wavePeriod": 10,
+      "waveDirection": 321,
+      "maxWaveHeight": 2.56,
+      "waterTemp": 16.3,
+      "stationName": "CSA92/D",
+      "stationArea": "Continente - Leixões",
+      "distanceKm": 34.3,
+      "observedAt": "2026-10-29T18:26:43.000Z",
+      "source": "ih-buoy",
+      "skill": {
+        "me": 0.66,
+        "n": 619,
+        "origin": "ih",
+        "mae": 0.66,
+        "rmse": 0.83,
+        "corr": 0.88,
+        "meanLeadHours": 45.5,
+        "buoyName": "CSA92/D"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "ih",
+      "reason": "ih-only",
+      "ihAgeHours": 1.7,
+      "wmoAgeHours": null,
+      "ihDistanceKm": 34.3,
+      "wmoDistanceKm": null
+    },
+    "observedWaveNotClosest": {
+      "winner": "ih-buoy",
+      "reason": "ih-only",
+      "attachedKm": 34,
+      "altKm": 0
+    }
   },
   "sereia-costa-verde": {
     "waveHeight": 1.3,
@@ -3399,7 +3863,47 @@
     },
     "secondarySwellHeight": 0.34,
     "secondarySwellPeriod": 11.35,
-    "secondarySwellDirection": 270
+    "secondarySwellDirection": 270,
+    "tideObservedHeight": 2.488,
+    "tideObservedAt": "2026-10-29T20:04:00Z",
+    "tideStation": "B. do Douro - Cantareira",
+    "tideAnomalyM": 0.249,
+    "observedWave": {
+      "waveHeight": 1.78,
+      "wavePeriod": 10,
+      "waveDirection": 321,
+      "maxWaveHeight": 2.56,
+      "waterTemp": 16.3,
+      "stationName": "CSA92/D",
+      "stationArea": "Continente - Leixões",
+      "distanceKm": 34.6,
+      "observedAt": "2026-10-29T18:26:43.000Z",
+      "source": "ih-buoy",
+      "skill": {
+        "me": 0.66,
+        "n": 619,
+        "origin": "ih",
+        "mae": 0.66,
+        "rmse": 0.83,
+        "corr": 0.88,
+        "meanLeadHours": 45.5,
+        "buoyName": "CSA92/D"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "ih",
+      "reason": "ih-only",
+      "ihAgeHours": 1.7,
+      "wmoAgeHours": null,
+      "ihDistanceKm": 34.6,
+      "wmoDistanceKm": null
+    },
+    "observedWaveNotClosest": {
+      "winner": "ih-buoy",
+      "reason": "ih-only",
+      "attachedKm": 35,
+      "altKm": 0
+    }
   },
   "canide-sul": {
     "waveHeight": 1.38,
@@ -3560,7 +4064,47 @@
     },
     "secondarySwellHeight": 0.34,
     "secondarySwellPeriod": 11.35,
-    "secondarySwellDirection": 270
+    "secondarySwellDirection": 270,
+    "tideObservedHeight": 2.488,
+    "tideObservedAt": "2026-10-29T20:04:00Z",
+    "tideStation": "B. do Douro - Cantareira",
+    "tideAnomalyM": 0.249,
+    "observedWave": {
+      "waveHeight": 1.78,
+      "wavePeriod": 10,
+      "waveDirection": 321,
+      "maxWaveHeight": 2.56,
+      "waterTemp": 16.3,
+      "stationName": "CSA92/D",
+      "stationArea": "Continente - Leixões",
+      "distanceKm": 35,
+      "observedAt": "2026-10-29T18:26:43.000Z",
+      "source": "ih-buoy",
+      "skill": {
+        "me": 0.66,
+        "n": 619,
+        "origin": "ih",
+        "mae": 0.66,
+        "rmse": 0.83,
+        "corr": 0.88,
+        "meanLeadHours": 45.5,
+        "buoyName": "CSA92/D"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "ih",
+      "reason": "ih-only",
+      "ihAgeHours": 1.7,
+      "wmoAgeHours": null,
+      "ihDistanceKm": 35,
+      "wmoDistanceKm": null
+    },
+    "observedWaveNotClosest": {
+      "winner": "ih-buoy",
+      "reason": "ih-only",
+      "attachedKm": 35,
+      "altKm": 0
+    }
   },
   "aguda": {
     "waveHeight": 1.38,
@@ -3721,7 +4265,11 @@
     },
     "secondarySwellHeight": 0.36,
     "secondarySwellPeriod": 10.95,
-    "secondarySwellDirection": 234
+    "secondarySwellDirection": 234,
+    "tideObservedHeight": 2.488,
+    "tideObservedAt": "2026-10-29T20:04:00Z",
+    "tideStation": "B. do Douro - Cantareira",
+    "tideAnomalyM": 0.249
   },
   "espinho": {
     "waveHeight": 1.38,
@@ -3882,7 +4430,11 @@
     },
     "secondarySwellHeight": 0.36,
     "secondarySwellPeriod": 10.95,
-    "secondarySwellDirection": 234
+    "secondarySwellDirection": 234,
+    "tideObservedHeight": 2.488,
+    "tideObservedAt": "2026-10-29T20:04:00Z",
+    "tideStation": "B. do Douro - Cantareira",
+    "tideAnomalyM": 0.249
   },
   "praia-37": {
     "waveHeight": 1.38,
@@ -4043,7 +4595,11 @@
     },
     "secondarySwellHeight": 0.36,
     "secondarySwellPeriod": 10.95,
-    "secondarySwellDirection": 234
+    "secondarySwellDirection": 234,
+    "tideObservedHeight": 2.488,
+    "tideObservedAt": "2026-10-29T20:04:00Z",
+    "tideStation": "B. do Douro - Cantareira",
+    "tideAnomalyM": 0.249
   },
   "bairro-piscatorio": {
     "waveHeight": 1.38,
@@ -4206,7 +4762,11 @@
     },
     "secondarySwellHeight": 0.36,
     "secondarySwellPeriod": 10.95,
-    "secondarySwellDirection": 234
+    "secondarySwellDirection": 234,
+    "tideObservedHeight": 2.488,
+    "tideObservedAt": "2026-10-29T20:04:00Z",
+    "tideStation": "B. do Douro - Cantareira",
+    "tideAnomalyM": 0.249
   },
   "paramos": {
     "waveHeight": 1.62,
@@ -4362,7 +4922,14 @@
           "2kt wind"
         ]
       }
-    }
+    },
+    "secondarySwellHeight": 0.1,
+    "secondarySwellPeriod": 14.85,
+    "secondarySwellDirection": 263,
+    "tideObservedHeight": 2.488,
+    "tideObservedAt": "2026-10-29T20:04:00Z",
+    "tideStation": "B. do Douro - Cantareira",
+    "tideAnomalyM": 0.249
   },
   "barrinha-esmoriz": {
     "waveHeight": 2.04,
@@ -4519,7 +5086,14 @@
           "3kt wind"
         ]
       }
-    }
+    },
+    "secondarySwellHeight": 0.1,
+    "secondarySwellPeriod": 14.85,
+    "secondarySwellDirection": 263,
+    "tideObservedHeight": 2.488,
+    "tideObservedAt": "2026-10-29T20:04:00Z",
+    "tideStation": "B. do Douro - Cantareira",
+    "tideAnomalyM": 0.249
   },
   "esmoriz": {
     "waveHeight": 1.62,
@@ -4675,7 +5249,14 @@
           "2kt wind"
         ]
       }
-    }
+    },
+    "secondarySwellHeight": 0.1,
+    "secondarySwellPeriod": 14.85,
+    "secondarySwellDirection": 263,
+    "tideObservedHeight": 2.488,
+    "tideObservedAt": "2026-10-29T20:04:00Z",
+    "tideStation": "B. do Douro - Cantareira",
+    "tideAnomalyM": 0.249
   },
   "cortegaca": {
     "waveHeight": 1.62,
@@ -4831,7 +5412,14 @@
           "2kt wind"
         ]
       }
-    }
+    },
+    "secondarySwellHeight": 0.1,
+    "secondarySwellPeriod": 14.85,
+    "secondarySwellDirection": 263,
+    "tideObservedHeight": 2.488,
+    "tideObservedAt": "2026-10-29T20:04:00Z",
+    "tideStation": "B. do Douro - Cantareira",
+    "tideAnomalyM": 0.249
   },
   "cortegaca-sul": {
     "waveHeight": 1.62,
@@ -4987,7 +5575,14 @@
           "2kt wind"
         ]
       }
-    }
+    },
+    "secondarySwellHeight": 0.1,
+    "secondarySwellPeriod": 14.85,
+    "secondarySwellDirection": 263,
+    "tideObservedHeight": 2.488,
+    "tideObservedAt": "2026-10-29T20:04:00Z",
+    "tideStation": "B. do Douro - Cantareira",
+    "tideAnomalyM": 0.249
   },
   "maceda": {
     "waveHeight": 1.62,
@@ -5143,7 +5738,14 @@
           "2kt wind"
         ]
       }
-    }
+    },
+    "secondarySwellHeight": 0.1,
+    "secondarySwellPeriod": 14.85,
+    "secondarySwellDirection": 263,
+    "tideObservedHeight": 2.488,
+    "tideObservedAt": "2026-10-29T20:04:00Z",
+    "tideStation": "B. do Douro - Cantareira",
+    "tideAnomalyM": 0.249
   },
   "murtosa": {
     "waveHeight": 1.4,
@@ -5298,7 +5900,11 @@
     },
     "tideObservedHeight": 2.471,
     "tideObservedAt": "2026-10-26T17:33:00Z",
-    "tideStation": "Aveiro-B"
+    "tideStation": "Aveiro-B",
+    "secondarySwellHeight": 0.14,
+    "secondarySwellPeriod": 14.95,
+    "secondarySwellDirection": 279,
+    "tideAnomalyM": 0.29
   },
   "ria-torreira": {
     "waveHeight": 1.4,
@@ -5455,7 +6061,11 @@
     },
     "tideObservedHeight": 2.471,
     "tideObservedAt": "2026-10-26T17:33:00Z",
-    "tideStation": "Aveiro-B"
+    "tideStation": "Aveiro-B",
+    "secondarySwellHeight": 0.14,
+    "secondarySwellPeriod": 14.95,
+    "secondarySwellDirection": 279,
+    "tideAnomalyM": 0.29
   },
   "praia-torreira": {
     "waveHeight": 1.4,
@@ -5612,7 +6222,11 @@
     },
     "tideObservedHeight": 2.471,
     "tideObservedAt": "2026-10-26T17:33:00Z",
-    "tideStation": "Aveiro-B"
+    "tideStation": "Aveiro-B",
+    "secondarySwellHeight": 0.14,
+    "secondarySwellPeriod": 14.95,
+    "secondarySwellDirection": 279,
+    "tideAnomalyM": 0.29
   },
   "muranzel": {
     "waveHeight": 1.52,
@@ -5754,7 +6368,8 @@
     "secondarySwellDirection": 283,
     "tideObservedHeight": 2.471,
     "tideObservedAt": "2026-10-26T17:33:00Z",
-    "tideStation": "Aveiro-B"
+    "tideStation": "Aveiro-B",
+    "tideAnomalyM": 0.29
   },
   "furadouro": {
     "waveHeight": 1.56,
@@ -5922,7 +6537,11 @@
     },
     "tideObservedHeight": 2.471,
     "tideObservedAt": "2026-10-26T17:33:00Z",
-    "tideStation": "Aveiro-B"
+    "tideStation": "Aveiro-B",
+    "secondarySwellHeight": 0.1,
+    "secondarySwellPeriod": 15.8,
+    "secondarySwellDirection": 279,
+    "tideAnomalyM": 0.28
   },
   "sao-jacinto": {
     "waveHeight": 1.52,
@@ -6082,7 +6701,8 @@
     "secondarySwellDirection": 283,
     "tideObservedHeight": 2.469,
     "tideObservedAt": "2026-10-26T17:32:04Z",
-    "tideStation": "Aveiro - Molhe Central"
+    "tideStation": "Aveiro - Molhe Central",
+    "tideAnomalyM": 0.29
   },
   "costa-nova": {
     "waveHeight": 1.5,
@@ -6239,7 +6859,11 @@
     },
     "tideObservedHeight": 2.471,
     "tideObservedAt": "2026-10-26T17:33:00Z",
-    "tideStation": "Aveiro-B"
+    "tideStation": "Aveiro-B",
+    "secondarySwellHeight": 0.22,
+    "secondarySwellPeriod": 13.75,
+    "secondarySwellDirection": 322,
+    "tideAnomalyM": 0.29
   },
   "tocha": {
     "waveHeight": 1.72,
@@ -6396,7 +7020,11 @@
     },
     "tideObservedHeight": 2.423,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Figueira da Foz - C. Comercial"
+    "tideStation": "Figueira da Foz - C. Comercial",
+    "secondarySwellHeight": 0.16,
+    "secondarySwellPeriod": 16.95,
+    "secondarySwellDirection": 287,
+    "tideAnomalyM": 0.273
   },
   "quiaios": {
     "waveHeight": 1.68,
@@ -6552,7 +7180,11 @@
     },
     "tideObservedHeight": 2.423,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Figueira da Foz - C. Comercial"
+    "tideStation": "Figueira da Foz - C. Comercial",
+    "secondarySwellHeight": 0.16,
+    "secondarySwellPeriod": 16.95,
+    "secondarySwellDirection": 287,
+    "tideAnomalyM": 0.283
   },
   "buarcos": {
     "waveHeight": 1.8,
@@ -6710,7 +7342,8 @@
     "secondarySwellDirection": 280,
     "tideObservedHeight": 2.423,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Figueira da Foz - C. Comercial"
+    "tideStation": "Figueira da Foz - C. Comercial",
+    "tideAnomalyM": 0.293
   },
   "figueira-foz": {
     "waveHeight": 1.56,
@@ -6870,7 +7503,8 @@
     "secondarySwellDirection": 280,
     "tideObservedHeight": 2.429,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Figueira da Foz - C"
+    "tideStation": "Figueira da Foz - C",
+    "tideAnomalyM": 0.313
   },
   "cova-gala-sul": {
     "waveHeight": 1.8,
@@ -7028,7 +7662,8 @@
     "secondarySwellDirection": 280,
     "tideObservedHeight": 2.429,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Figueira da Foz - C"
+    "tideStation": "Figueira da Foz - C",
+    "tideAnomalyM": 0.313
   },
   "leirosa": {
     "waveHeight": 1.38,
@@ -7188,7 +7823,8 @@
     "secondarySwellDirection": 284,
     "tideObservedHeight": 2.429,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Figueira da Foz - C"
+    "tideStation": "Figueira da Foz - C",
+    "tideAnomalyM": 0.313
   },
   "praia-da-vieira": {
     "waveHeight": 1.64,
@@ -7348,7 +7984,8 @@
     "secondarySwellDirection": 230,
     "tideObservedHeight": 2.429,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Figueira da Foz - C"
+    "tideStation": "Figueira da Foz - C",
+    "tideAnomalyM": 0.323
   },
   "sao-pedro-moel": {
     "waveHeight": 2.2,
@@ -7506,7 +8143,43 @@
     "secondarySwellDirection": 314,
     "tideObservedHeight": 2.235,
     "tideObservedAt": "2026-10-26T17:32:55Z",
-    "tideStation": "Nazaré - B"
+    "tideStation": "Nazaré - B",
+    "tideAnomalyM": 0.217,
+    "observedWave": {
+      "waveHeight": 1.655269980430603,
+      "wavePeriod": 11.660200119018555,
+      "maxWaveHeight": 2.4316399097442627,
+      "waterTemp": 16.9360408782959,
+      "stationName": "Nazaré Costeira (WMO)",
+      "stationArea": "Nazaré",
+      "distanceKm": 26.2,
+      "observedAt": "2026-10-29T18:00:00.000Z",
+      "source": "wmo-buoy",
+      "skill": {
+        "me": 0.2,
+        "n": 506,
+        "origin": "wmo-pt",
+        "mae": 0.28,
+        "rmse": 0.38,
+        "corr": 0.92,
+        "meanLeadHours": 45.5,
+        "buoyName": "Nazaré Costeira (WMO)"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "wmo",
+      "reason": "wmo-only",
+      "ihAgeHours": null,
+      "wmoAgeHours": 2.1,
+      "ihDistanceKm": null,
+      "wmoDistanceKm": 26.2
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 26,
+      "altKm": 0
+    }
   },
   "castelo-bode": {
     "waveHeight": null,
@@ -7643,7 +8316,8 @@
     },
     "tideObservedHeight": 2.235,
     "tideObservedAt": "2026-10-26T17:32:55Z",
-    "tideStation": "Nazaré - B"
+    "tideStation": "Nazaré - B",
+    "tideAnomalyM": -0.663
   },
   "nazare": {
     "waveHeight": 2,
@@ -7779,7 +8453,8 @@
         "corr": 0.92,
         "meanLeadHours": 45.4,
         "buoyName": "Nazaré Costeira (WMO)"
-      }
+      },
+      "maxWaveHeight": 2.4316399097442627
     },
     "observedWaveMeta": {
       "winner": "wmo",
@@ -7840,7 +8515,8 @@
     "secondarySwellDirection": 310,
     "tideObservedHeight": 2.235,
     "tideObservedAt": "2026-10-26T17:32:55Z",
-    "tideStation": "Nazaré - B"
+    "tideStation": "Nazaré - B",
+    "tideAnomalyM": 0.207
   },
   "foil-foz-arelho": {
     "waveHeight": 2.02,
@@ -7998,7 +8674,43 @@
     "secondarySwellDirection": 302,
     "tideObservedHeight": 2.266,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Peniche - C"
+    "tideStation": "Peniche - C",
+    "tideAnomalyM": 0.298,
+    "observedWave": {
+      "waveHeight": 1.655269980430603,
+      "wavePeriod": 11.660200119018555,
+      "maxWaveHeight": 2.4316399097442627,
+      "waterTemp": 16.9360408782959,
+      "stationName": "Nazaré Costeira (WMO)",
+      "stationArea": "Nazaré",
+      "distanceKm": 16.7,
+      "observedAt": "2026-10-29T18:00:00.000Z",
+      "source": "wmo-buoy",
+      "skill": {
+        "me": 0.2,
+        "n": 506,
+        "origin": "wmo-pt",
+        "mae": 0.28,
+        "rmse": 0.38,
+        "corr": 0.92,
+        "meanLeadHours": 45.5,
+        "buoyName": "Nazaré Costeira (WMO)"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "wmo",
+      "reason": "wmo-only",
+      "ihAgeHours": null,
+      "wmoAgeHours": 2.1,
+      "ihDistanceKm": null,
+      "wmoDistanceKm": 16.7
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 17,
+      "altKm": 0
+    }
   },
   "obidos-lagoon": {
     "waveHeight": 1.68,
@@ -8156,7 +8868,43 @@
     "secondarySwellDirection": 302,
     "tideObservedHeight": 2.266,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Peniche - C"
+    "tideStation": "Peniche - C",
+    "tideAnomalyM": 0.298,
+    "observedWave": {
+      "waveHeight": 1.655269980430603,
+      "wavePeriod": 11.660200119018555,
+      "maxWaveHeight": 2.4316399097442627,
+      "waterTemp": 16.9360408782959,
+      "stationName": "Nazaré Costeira (WMO)",
+      "stationArea": "Nazaré",
+      "distanceKm": 17.6,
+      "observedAt": "2026-10-29T18:00:00.000Z",
+      "source": "wmo-buoy",
+      "skill": {
+        "me": 0.2,
+        "n": 506,
+        "origin": "wmo-pt",
+        "mae": 0.28,
+        "rmse": 0.38,
+        "corr": 0.92,
+        "meanLeadHours": 45.5,
+        "buoyName": "Nazaré Costeira (WMO)"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "wmo",
+      "reason": "wmo-only",
+      "ihAgeHours": null,
+      "wmoAgeHours": 2.1,
+      "ihDistanceKm": null,
+      "wmoDistanceKm": 17.6
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 18,
+      "altKm": 0
+    }
   },
   "foz-arelho-beach": {
     "waveHeight": 2.02,
@@ -8314,7 +9062,43 @@
     "secondarySwellDirection": 324,
     "tideObservedHeight": 2.266,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Peniche - C"
+    "tideStation": "Peniche - C",
+    "tideAnomalyM": 0.298,
+    "observedWave": {
+      "waveHeight": 1.655269980430603,
+      "wavePeriod": 11.660200119018555,
+      "maxWaveHeight": 2.4316399097442627,
+      "waterTemp": 16.9360408782959,
+      "stationName": "Nazaré Costeira (WMO)",
+      "stationArea": "Nazaré",
+      "distanceKm": 14.5,
+      "observedAt": "2026-10-29T18:00:00.000Z",
+      "source": "wmo-buoy",
+      "skill": {
+        "me": 0.2,
+        "n": 506,
+        "origin": "wmo-pt",
+        "mae": 0.28,
+        "rmse": 0.38,
+        "corr": 0.92,
+        "meanLeadHours": 45.5,
+        "buoyName": "Nazaré Costeira (WMO)"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "wmo",
+      "reason": "wmo-only",
+      "ihAgeHours": null,
+      "wmoAgeHours": 2.1,
+      "ihDistanceKm": null,
+      "wmoDistanceKm": 14.5
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 15,
+      "altKm": 0
+    }
   },
   "praia-del-rey": {
     "waveHeight": 1.68,
@@ -8472,7 +9256,43 @@
     "secondarySwellDirection": 302,
     "tideObservedHeight": 2.266,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Peniche - C"
+    "tideStation": "Peniche - C",
+    "tideAnomalyM": 0.308,
+    "observedWave": {
+      "waveHeight": 1.655269980430603,
+      "wavePeriod": 11.660200119018555,
+      "maxWaveHeight": 2.4316399097442627,
+      "waterTemp": 16.9360408782959,
+      "stationName": "Nazaré Costeira (WMO)",
+      "stationArea": "Nazaré",
+      "distanceKm": 19.8,
+      "observedAt": "2026-10-29T18:00:00.000Z",
+      "source": "wmo-buoy",
+      "skill": {
+        "me": 0.2,
+        "n": 506,
+        "origin": "wmo-pt",
+        "mae": 0.28,
+        "rmse": 0.38,
+        "corr": 0.92,
+        "meanLeadHours": 45.5,
+        "buoyName": "Nazaré Costeira (WMO)"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "wmo",
+      "reason": "wmo-only",
+      "ihAgeHours": null,
+      "wmoAgeHours": 2.1,
+      "ihDistanceKm": null,
+      "wmoDistanceKm": 19.8
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 20,
+      "altKm": 0
+    }
   },
   "almagreira": {
     "waveHeight": 1.68,
@@ -8630,7 +9450,43 @@
     "secondarySwellDirection": 302,
     "tideObservedHeight": 2.266,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Peniche - C"
+    "tideStation": "Peniche - C",
+    "tideAnomalyM": 0.308,
+    "observedWave": {
+      "waveHeight": 1.655269980430603,
+      "wavePeriod": 11.660200119018555,
+      "maxWaveHeight": 2.4316399097442627,
+      "waterTemp": 16.9360408782959,
+      "stationName": "Nazaré Costeira (WMO)",
+      "stationArea": "Nazaré",
+      "distanceKm": 21.9,
+      "observedAt": "2026-10-29T18:00:00.000Z",
+      "source": "wmo-buoy",
+      "skill": {
+        "me": 0.2,
+        "n": 506,
+        "origin": "wmo-pt",
+        "mae": 0.28,
+        "rmse": 0.38,
+        "corr": 0.92,
+        "meanLeadHours": 45.5,
+        "buoyName": "Nazaré Costeira (WMO)"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "wmo",
+      "reason": "wmo-only",
+      "ihAgeHours": null,
+      "wmoAgeHours": 2.1,
+      "ihDistanceKm": null,
+      "wmoDistanceKm": 21.9
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 22,
+      "altKm": 0
+    }
   },
   "lagide": {
     "waveHeight": 1.92,
@@ -8787,7 +9643,43 @@
     "secondarySwellDirection": 324,
     "tideObservedHeight": 2.266,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Peniche - C"
+    "tideStation": "Peniche - C",
+    "tideAnomalyM": 0.318,
+    "observedWave": {
+      "waveHeight": 1.655269980430603,
+      "wavePeriod": 11.660200119018555,
+      "maxWaveHeight": 2.4316399097442627,
+      "waterTemp": 16.9360408782959,
+      "stationName": "Nazaré Costeira (WMO)",
+      "stationArea": "Nazaré",
+      "distanceKm": 23.3,
+      "observedAt": "2026-10-29T18:00:00.000Z",
+      "source": "wmo-buoy",
+      "skill": {
+        "me": 0.2,
+        "n": 506,
+        "origin": "wmo-pt",
+        "mae": 0.28,
+        "rmse": 0.38,
+        "corr": 0.92,
+        "meanLeadHours": 45.5,
+        "buoyName": "Nazaré Costeira (WMO)"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "wmo",
+      "reason": "wmo-only",
+      "ihAgeHours": null,
+      "wmoAgeHours": 2.1,
+      "ihDistanceKm": null,
+      "wmoDistanceKm": 23.3
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 23,
+      "altKm": 0
+    }
   },
   "baleal": {
     "waveHeight": 1.96,
@@ -8922,7 +9814,8 @@
         "corr": 0.92,
         "meanLeadHours": 45.4,
         "buoyName": "Nazaré Costeira (WMO)"
-      }
+      },
+      "maxWaveHeight": 2.4316399097442627
     },
     "observedWaveMeta": {
       "winner": "wmo",
@@ -8983,7 +9876,8 @@
     "secondarySwellDirection": 324,
     "tideObservedHeight": 2.266,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Peniche - C"
+    "tideStation": "Peniche - C",
+    "tideAnomalyM": 0.318
   },
   "baleal-sul": {
     "waveHeight": 1.92,
@@ -9140,7 +10034,43 @@
     "secondarySwellDirection": 324,
     "tideObservedHeight": 2.266,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Peniche - C"
+    "tideStation": "Peniche - C",
+    "tideAnomalyM": 0.318,
+    "observedWave": {
+      "waveHeight": 1.655269980430603,
+      "wavePeriod": 11.660200119018555,
+      "maxWaveHeight": 2.4316399097442627,
+      "waterTemp": 16.9360408782959,
+      "stationName": "Nazaré Costeira (WMO)",
+      "stationArea": "Nazaré",
+      "distanceKm": 25.2,
+      "observedAt": "2026-10-29T18:00:00.000Z",
+      "source": "wmo-buoy",
+      "skill": {
+        "me": 0.2,
+        "n": 506,
+        "origin": "wmo-pt",
+        "mae": 0.28,
+        "rmse": 0.38,
+        "corr": 0.92,
+        "meanLeadHours": 45.5,
+        "buoyName": "Nazaré Costeira (WMO)"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "wmo",
+      "reason": "wmo-only",
+      "ihAgeHours": null,
+      "wmoAgeHours": 2.1,
+      "ihDistanceKm": null,
+      "wmoDistanceKm": 25.2
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 25,
+      "altKm": 0
+    }
   },
   "gamboa": {
     "waveHeight": 1.92,
@@ -9297,7 +10227,43 @@
     "secondarySwellDirection": 324,
     "tideObservedHeight": 2.266,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Peniche - C"
+    "tideStation": "Peniche - C",
+    "tideAnomalyM": 0.318,
+    "observedWave": {
+      "waveHeight": 1.655269980430603,
+      "wavePeriod": 11.660200119018555,
+      "maxWaveHeight": 2.4316399097442627,
+      "waterTemp": 16.9360408782959,
+      "stationName": "Nazaré Costeira (WMO)",
+      "stationArea": "Nazaré",
+      "distanceKm": 25.8,
+      "observedAt": "2026-10-29T18:00:00.000Z",
+      "source": "wmo-buoy",
+      "skill": {
+        "me": 0.2,
+        "n": 506,
+        "origin": "wmo-pt",
+        "mae": 0.28,
+        "rmse": 0.38,
+        "corr": 0.92,
+        "meanLeadHours": 45.5,
+        "buoyName": "Nazaré Costeira (WMO)"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "wmo",
+      "reason": "wmo-only",
+      "ihAgeHours": null,
+      "wmoAgeHours": 2.1,
+      "ihDistanceKm": null,
+      "wmoDistanceKm": 25.8
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 26,
+      "altKm": 0
+    }
   },
   "supertubos": {
     "waveHeight": 1.96,
@@ -9458,7 +10424,43 @@
     "secondarySwellDirection": 324,
     "tideObservedHeight": 2.266,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Peniche - C"
+    "tideStation": "Peniche - C",
+    "tideAnomalyM": 0.318,
+    "observedWave": {
+      "waveHeight": 1.655269980430603,
+      "wavePeriod": 11.660200119018555,
+      "maxWaveHeight": 2.4316399097442627,
+      "waterTemp": 16.9360408782959,
+      "stationName": "Nazaré Costeira (WMO)",
+      "stationArea": "Nazaré",
+      "distanceKm": 27.3,
+      "observedAt": "2026-10-29T18:00:00.000Z",
+      "source": "wmo-buoy",
+      "skill": {
+        "me": 0.2,
+        "n": 506,
+        "origin": "wmo-pt",
+        "mae": 0.28,
+        "rmse": 0.38,
+        "corr": 0.92,
+        "meanLeadHours": 45.5,
+        "buoyName": "Nazaré Costeira (WMO)"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "wmo",
+      "reason": "wmo-only",
+      "ihAgeHours": null,
+      "wmoAgeHours": 2.1,
+      "ihDistanceKm": null,
+      "wmoDistanceKm": 27.3
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 27,
+      "altKm": 0
+    }
   },
   "molhe-leste": {
     "waveHeight": 1.92,
@@ -9615,7 +10617,43 @@
     "secondarySwellDirection": 324,
     "tideObservedHeight": 2.266,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Peniche - C"
+    "tideStation": "Peniche - C",
+    "tideAnomalyM": 0.318,
+    "observedWave": {
+      "waveHeight": 1.655269980430603,
+      "wavePeriod": 11.660200119018555,
+      "maxWaveHeight": 2.4316399097442627,
+      "waterTemp": 16.9360408782959,
+      "stationName": "Nazaré Costeira (WMO)",
+      "stationArea": "Nazaré",
+      "distanceKm": 27,
+      "observedAt": "2026-10-29T18:00:00.000Z",
+      "source": "wmo-buoy",
+      "skill": {
+        "me": 0.2,
+        "n": 506,
+        "origin": "wmo-pt",
+        "mae": 0.28,
+        "rmse": 0.38,
+        "corr": 0.92,
+        "meanLeadHours": 45.5,
+        "buoyName": "Nazaré Costeira (WMO)"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "wmo",
+      "reason": "wmo-only",
+      "ihAgeHours": null,
+      "wmoAgeHours": 2.1,
+      "ihDistanceKm": null,
+      "wmoDistanceKm": 27
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 27,
+      "altKm": 0
+    }
   },
   "foz-sizandro": {
     "waveHeight": 1.9,
@@ -9774,7 +10812,8 @@
     "secondarySwellDirection": 326,
     "tideObservedHeight": 2.266,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Peniche - C"
+    "tideStation": "Peniche - C",
+    "tideAnomalyM": 0.368
   },
   "coxos": {
     "waveHeight": 2.04,
@@ -9934,7 +10973,8 @@
     "secondarySwellDirection": 332,
     "tideObservedHeight": 2.266,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Peniche - C"
+    "tideStation": "Peniche - C",
+    "tideAnomalyM": 0.378
   },
   "ribeira-ilhas": {
     "waveHeight": 2.04,
@@ -10094,7 +11134,8 @@
     "secondarySwellDirection": 329,
     "tideObservedHeight": 2.55,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Lisboa - Alcântara"
+    "tideStation": "Lisboa - Alcântara",
+    "tideAnomalyM": 0.588
   },
   "empa": {
     "waveHeight": 2.04,
@@ -10254,7 +11295,8 @@
     "secondarySwellDirection": 329,
     "tideObservedHeight": 2.55,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Lisboa - Alcântara"
+    "tideStation": "Lisboa - Alcântara",
+    "tideAnomalyM": 0.588
   },
   "sao-lourenco": {
     "waveHeight": 2.04,
@@ -10414,7 +11456,8 @@
     "secondarySwellDirection": 332,
     "tideObservedHeight": 2.266,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Peniche - C"
+    "tideStation": "Peniche - C",
+    "tideAnomalyM": 0.378
   },
   "calada": {
     "waveHeight": 2.36,
@@ -10572,7 +11615,8 @@
     "secondarySwellDirection": 332,
     "tideObservedHeight": 2.266,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Peniche - C"
+    "tideStation": "Peniche - C",
+    "tideAnomalyM": 0.378
   },
   "pedra-branca": {
     "waveHeight": 2.04,
@@ -10732,7 +11776,8 @@
     "secondarySwellDirection": 329,
     "tideObservedHeight": 2.55,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Lisboa - Alcântara"
+    "tideStation": "Lisboa - Alcântara",
+    "tideAnomalyM": 0.588
   },
   "sao-sebastiao": {
     "waveHeight": 2.04,
@@ -10892,7 +11937,8 @@
     "secondarySwellDirection": 329,
     "tideObservedHeight": 2.55,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Lisboa - Alcântara"
+    "tideStation": "Lisboa - Alcântara",
+    "tideAnomalyM": 0.588
   },
   "praia-norte-ericeira": {
     "waveHeight": 2.4,
@@ -11052,7 +12098,8 @@
     "secondarySwellDirection": 329,
     "tideObservedHeight": 2.55,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Lisboa - Alcântara"
+    "tideStation": "Lisboa - Alcântara",
+    "tideAnomalyM": 0.588
   },
   "praia-sul-ericeira": {
     "waveHeight": 2.4,
@@ -11212,7 +12259,8 @@
     "secondarySwellDirection": 329,
     "tideObservedHeight": 2.55,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Lisboa - Alcântara"
+    "tideStation": "Lisboa - Alcântara",
+    "tideAnomalyM": 0.588
   },
   "foz-lizandro": {
     "waveHeight": 2.04,
@@ -11373,7 +12421,8 @@
     "secondarySwellDirection": 329,
     "tideObservedHeight": 2.55,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Lisboa - Alcântara"
+    "tideStation": "Lisboa - Alcântara",
+    "tideAnomalyM": 0.588
   },
   "sao-juliao": {
     "waveHeight": 2.4,
@@ -11531,7 +12580,8 @@
     "secondarySwellDirection": 329,
     "tideObservedHeight": 2.55,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Lisboa - Alcântara"
+    "tideStation": "Lisboa - Alcântara",
+    "tideAnomalyM": 0.588
   },
   "praia-grande-sintra": {
     "waveHeight": 1.92,
@@ -11690,7 +12740,8 @@
     "secondarySwellDirection": 329,
     "tideObservedHeight": 2.55,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Lisboa - Alcântara"
+    "tideStation": "Lisboa - Alcântara",
+    "tideAnomalyM": 0.598
   },
   "adraga": {
     "waveHeight": 1.92,
@@ -11849,7 +12900,8 @@
     "secondarySwellDirection": 329,
     "tideObservedHeight": 2.55,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Lisboa - Alcântara"
+    "tideStation": "Lisboa - Alcântara",
+    "tideAnomalyM": 0.598
   },
   "guincho": {
     "waveHeight": 1.88,
@@ -12010,7 +13062,8 @@
     "secondarySwellDirection": 331,
     "tideObservedHeight": 2.55,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Lisboa - Alcântara"
+    "tideStation": "Lisboa - Alcântara",
+    "tideAnomalyM": 0.598
   },
   "seixal-bay": {
     "waveHeight": 0.12,
@@ -12155,7 +13208,8 @@
     "secondarySwellDirection": 309,
     "tideObservedHeight": 2.71,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Base Naval de Lisboa"
+    "tideStation": "Base Naval de Lisboa",
+    "tideAnomalyM": 0.776
   },
   "praia-vitoria": {
     "waveHeight": 0.7,
@@ -12290,7 +13344,8 @@
     },
     "tideObservedHeight": 1.241,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Angra do Heroísmo"
+    "tideStation": "Angra do Heroísmo",
+    "tideAnomalyM": 0.047
   },
   "santa-catarina-terceira": {
     "waveHeight": 0.66,
@@ -12425,7 +13480,8 @@
     },
     "tideObservedHeight": 1.241,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Angra do Heroísmo"
+    "tideStation": "Angra do Heroísmo",
+    "tideAnomalyM": 0.047
   },
   "parede": {
     "waveHeight": 1.46,
@@ -12589,7 +13645,8 @@
     "secondarySwellDirection": 322,
     "tideObservedHeight": 2.55,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Lisboa - Alcântara"
+    "tideStation": "Lisboa - Alcântara",
+    "tideAnomalyM": 0.598
   },
   "carcavelos": {
     "waveHeight": 1.46,
@@ -12753,7 +13810,8 @@
     "secondarySwellDirection": 322,
     "tideObservedHeight": 2.55,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Lisboa - Alcântara"
+    "tideStation": "Lisboa - Alcântara",
+    "tideAnomalyM": 0.598
   },
   "nova-vaga": {
     "waveHeight": 1.08,
@@ -12912,7 +13970,8 @@
     "secondarySwellDirection": 309,
     "tideObservedHeight": 2.71,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Base Naval de Lisboa"
+    "tideStation": "Base Naval de Lisboa",
+    "tideAnomalyM": 0.776
   },
   "sao-joao-caparica": {
     "waveHeight": 1.34,
@@ -13073,7 +14132,8 @@
     "secondarySwellDirection": 309,
     "tideObservedHeight": 2.55,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Lisboa - Alcântara"
+    "tideStation": "Lisboa - Alcântara",
+    "tideAnomalyM": 0.598
   },
   "costa-caparica": {
     "waveHeight": 1.08,
@@ -13236,7 +14296,8 @@
     "secondarySwellDirection": 309,
     "tideObservedHeight": 2.71,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Base Naval de Lisboa"
+    "tideStation": "Base Naval de Lisboa",
+    "tideAnomalyM": 0.776
   },
   "fonte-telha": {
     "waveHeight": 1.26,
@@ -13399,7 +14460,8 @@
     },
     "tideObservedHeight": 2.71,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Base Naval de Lisboa"
+    "tideStation": "Base Naval de Lisboa",
+    "tideAnomalyM": 0.776
   },
   "ponta-dos-corvos": {
     "waveHeight": 1.08,
@@ -13541,7 +14603,8 @@
     "secondarySwellDirection": 309,
     "tideObservedHeight": 2.71,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Base Naval de Lisboa"
+    "tideStation": "Base Naval de Lisboa",
+    "tideAnomalyM": 0.776
   },
   "trafaria": {
     "waveHeight": 0.76,
@@ -13700,7 +14763,8 @@
     },
     "tideObservedHeight": 2.55,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Lisboa - Alcântara"
+    "tideStation": "Lisboa - Alcântara",
+    "tideAnomalyM": 0.598
   },
   "cova-do-vapor": {
     "waveHeight": 1.34,
@@ -13858,7 +14922,8 @@
     "secondarySwellDirection": 309,
     "tideObservedHeight": 2.55,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Lisboa - Alcântara"
+    "tideStation": "Lisboa - Alcântara",
+    "tideAnomalyM": 0.598
   },
   "praia-da-rainha": {
     "waveHeight": 1.08,
@@ -14021,7 +15086,8 @@
     "secondarySwellDirection": 309,
     "tideObservedHeight": 2.71,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Base Naval de Lisboa"
+    "tideStation": "Base Naval de Lisboa",
+    "tideAnomalyM": 0.776
   },
   "almoxarife": {
     "waveHeight": 0.8,
@@ -14156,7 +15222,8 @@
     },
     "tideObservedHeight": 1.218,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Horta"
+    "tideStation": "Horta",
+    "tideAnomalyM": 0.065
   },
   "lagoa-albufeira": {
     "waveHeight": 1.26,
@@ -14315,7 +15382,8 @@
     },
     "tideObservedHeight": 2.049,
     "tideObservedAt": "2026-10-26T17:33:00Z",
-    "tideStation": "Sesimbra"
+    "tideStation": "Sesimbra",
+    "tideAnomalyM": 0.258
   },
   "foil-lagoa-albufeira": {
     "waveHeight": 1.26,
@@ -14472,7 +15540,8 @@
     },
     "tideObservedHeight": 2.049,
     "tideObservedAt": "2026-10-26T17:33:00Z",
-    "tideStation": "Sesimbra"
+    "tideStation": "Sesimbra",
+    "tideAnomalyM": 0.258
   },
   "praia-lagoa-albufeira": {
     "waveHeight": 1.26,
@@ -14631,7 +15700,8 @@
     },
     "tideObservedHeight": 2.049,
     "tideObservedAt": "2026-10-26T17:33:00Z",
-    "tideStation": "Sesimbra"
+    "tideStation": "Sesimbra",
+    "tideAnomalyM": 0.258
   },
   "troia": {
     "waveHeight": 0.6,
@@ -15249,7 +16319,11 @@
           "Small waves"
         ]
       }
-    }
+    },
+    "tideObservedHeight": 2.012,
+    "tideObservedAt": "2026-10-29T20:04:00Z",
+    "tideStation": "Vila Real de S. António",
+    "tideAnomalyM": 0.944
   },
   "ilha-do-ermal": {
     "waveHeight": null,
@@ -15406,7 +16480,8 @@
     },
     "tideObservedHeight": 2.377,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Viana do Castelo"
+    "tideStation": "Viana do Castelo",
+    "tideAnomalyM": -0.585
   },
   "melides": {
     "waveHeight": 1.34,
@@ -15565,7 +16640,44 @@
     },
     "tideObservedHeight": 2.115,
     "tideObservedAt": "2026-10-26T17:32:16Z",
-    "tideStation": "Sines - Posto 3"
+    "tideStation": "Sines - Posto 3",
+    "tideAnomalyM": 0.258,
+    "observedWave": {
+      "waveHeight": 1.15,
+      "wavePeriod": 11.1,
+      "waveDirection": 302,
+      "maxWaveHeight": 1.96,
+      "waterTemp": 18.8,
+      "stationName": "CSA83/1D",
+      "stationArea": "Continente - Sines",
+      "distanceKm": 26,
+      "observedAt": "2026-10-29T18:26:45.000Z",
+      "source": "ih-buoy",
+      "skill": {
+        "me": 0.18,
+        "n": 617,
+        "origin": "ih",
+        "mae": 0.21,
+        "rmse": 0.27,
+        "corr": 0.93,
+        "meanLeadHours": 45.5,
+        "buoyName": "CSA83/1D"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "ih",
+      "reason": "ih-only",
+      "ihAgeHours": 1.7,
+      "wmoAgeHours": null,
+      "ihDistanceKm": 26,
+      "wmoDistanceKm": null
+    },
+    "observedWaveNotClosest": {
+      "winner": "ih-buoy",
+      "reason": "ih-only",
+      "attachedKm": 26,
+      "altKm": 0
+    }
   },
   "sao-torpes": {
     "waveHeight": 1.46,
@@ -15728,7 +16840,44 @@
     },
     "tideObservedHeight": 2.054,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Sines - Terminal XXI"
+    "tideStation": "Sines - Terminal XXI",
+    "tideAnomalyM": 0.267,
+    "observedWave": {
+      "waveHeight": 1.15,
+      "wavePeriod": 11.1,
+      "waveDirection": 302,
+      "maxWaveHeight": 1.96,
+      "waterTemp": 18.8,
+      "stationName": "CSA83/1D",
+      "stationArea": "Continente - Sines",
+      "distanceKm": 10.8,
+      "observedAt": "2026-10-29T18:26:45.000Z",
+      "source": "ih-buoy",
+      "skill": {
+        "me": 0.18,
+        "n": 617,
+        "origin": "ih",
+        "mae": 0.21,
+        "rmse": 0.27,
+        "corr": 0.93,
+        "meanLeadHours": 45.5,
+        "buoyName": "CSA83/1D"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "ih",
+      "reason": "ih-only",
+      "ihAgeHours": 1.7,
+      "wmoAgeHours": null,
+      "ihDistanceKm": 10.8,
+      "wmoDistanceKm": null
+    },
+    "observedWaveNotClosest": {
+      "winner": "ih-buoy",
+      "reason": "ih-only",
+      "attachedKm": 11,
+      "altKm": 0
+    }
   },
   "vale-figueiros-sines": {
     "waveHeight": 2.08,
@@ -15886,7 +17035,44 @@
     },
     "tideObservedHeight": 2.054,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Sines - Terminal XXI"
+    "tideStation": "Sines - Terminal XXI",
+    "tideAnomalyM": 0.277,
+    "observedWave": {
+      "waveHeight": 1.15,
+      "wavePeriod": 11.1,
+      "waveDirection": 302,
+      "maxWaveHeight": 1.96,
+      "waterTemp": 18.8,
+      "stationName": "CSA83/1D",
+      "stationArea": "Continente - Sines",
+      "distanceKm": 11.8,
+      "observedAt": "2026-10-29T18:26:45.000Z",
+      "source": "ih-buoy",
+      "skill": {
+        "me": 0.18,
+        "n": 617,
+        "origin": "ih",
+        "mae": 0.21,
+        "rmse": 0.27,
+        "corr": 0.93,
+        "meanLeadHours": 45.5,
+        "buoyName": "CSA83/1D"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "ih",
+      "reason": "ih-only",
+      "ihAgeHours": 1.7,
+      "wmoAgeHours": null,
+      "ihDistanceKm": 11.8,
+      "wmoDistanceKm": null
+    },
+    "observedWaveNotClosest": {
+      "winner": "ih-buoy",
+      "reason": "ih-only",
+      "attachedKm": 12,
+      "altKm": 0
+    }
   },
   "mosteiros": {
     "waveHeight": 0.84,
@@ -16021,7 +17207,8 @@
     },
     "tideObservedHeight": 1.1,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Ponta Delgada - B"
+    "tideStation": "Ponta Delgada - B",
+    "tideAnomalyM": 0.097
   },
   "porto-covo": {
     "waveHeight": 1.56,
@@ -16055,7 +17242,57 @@
       "combinedSpreadPct": 0.639,
       "degraded": true
     },
-    "dailyConfidence": [],
+    "dailyConfidence": [
+      {
+        "date": "2026-10-29",
+        "confidence": "baixa",
+        "waveSpread": 1.14,
+        "windSpread": 0.45,
+        "degraded": false
+      },
+      {
+        "date": "2026-10-30",
+        "confidence": "baixa",
+        "waveSpread": 0.64,
+        "windSpread": 0.4,
+        "degraded": false
+      },
+      {
+        "date": "2026-10-31",
+        "confidence": "média",
+        "waveSpread": 0.32,
+        "windSpread": 0.47,
+        "degraded": false
+      },
+      {
+        "date": "2026-11-01",
+        "confidence": "baixa",
+        "waveSpread": 0.76,
+        "windSpread": 0.9,
+        "degraded": false
+      },
+      {
+        "date": "2026-11-02",
+        "confidence": "baixa",
+        "waveSpread": 0.7,
+        "windSpread": 0.88,
+        "degraded": false
+      },
+      {
+        "date": "2026-11-03",
+        "confidence": "baixa",
+        "waveSpread": 0.72,
+        "windSpread": 0.99,
+        "degraded": false
+      },
+      {
+        "date": "2026-11-04",
+        "confidence": "baixa",
+        "waveSpread": 0.57,
+        "windSpread": 1.42,
+        "degraded": false
+      }
+    ],
     "updatedAt": "2026-09-09T23:14:57.537Z",
     "airQualityIndex": 30,
     "airQualityAt": "2026-09-29T16:00",
@@ -16135,7 +17372,44 @@
     },
     "tideObservedHeight": 2.054,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Sines - Terminal XXI"
+    "tideStation": "Sines - Terminal XXI",
+    "tideAnomalyM": 0.277,
+    "observedWave": {
+      "waveHeight": 1.15,
+      "wavePeriod": 11.1,
+      "waveDirection": 302,
+      "maxWaveHeight": 1.96,
+      "waterTemp": 18.8,
+      "stationName": "CSA83/1D",
+      "stationArea": "Continente - Sines",
+      "distanceKm": 13.8,
+      "observedAt": "2026-10-29T18:26:45.000Z",
+      "source": "ih-buoy",
+      "skill": {
+        "me": 0.18,
+        "n": 617,
+        "origin": "ih",
+        "mae": 0.21,
+        "rmse": 0.27,
+        "corr": 0.93,
+        "meanLeadHours": 45.5,
+        "buoyName": "CSA83/1D"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "ih",
+      "reason": "ih-only",
+      "ihAgeHours": 1.7,
+      "wmoAgeHours": null,
+      "ihDistanceKm": 13.8,
+      "wmoDistanceKm": null
+    },
+    "observedWaveNotClosest": {
+      "winner": "ih-buoy",
+      "reason": "ih-only",
+      "attachedKm": 14,
+      "altKm": 0
+    }
   },
   "monte-verde": {
     "waveHeight": 0.66,
@@ -16270,7 +17544,8 @@
     },
     "tideObservedHeight": 1.1,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Ponta Delgada - B"
+    "tideStation": "Ponta Delgada - B",
+    "tideAnomalyM": 0.087
   },
   "santa-barbara": {
     "waveHeight": 0.8,
@@ -16405,7 +17680,8 @@
     },
     "tideObservedHeight": 1.1,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Ponta Delgada - B"
+    "tideStation": "Ponta Delgada - B",
+    "tideAnomalyM": 0.087
   },
   "malhao": {
     "waveHeight": 1.56,
@@ -16565,7 +17841,44 @@
     },
     "tideObservedHeight": 2.054,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Sines - Terminal XXI"
+    "tideStation": "Sines - Terminal XXI",
+    "tideAnomalyM": 0.277,
+    "observedWave": {
+      "waveHeight": 1.15,
+      "wavePeriod": 11.1,
+      "waveDirection": 302,
+      "maxWaveHeight": 1.96,
+      "waterTemp": 18.8,
+      "stationName": "CSA83/1D",
+      "stationArea": "Continente - Sines",
+      "distanceKm": 18.7,
+      "observedAt": "2026-10-29T18:26:45.000Z",
+      "source": "ih-buoy",
+      "skill": {
+        "me": 0.18,
+        "n": 617,
+        "origin": "ih",
+        "mae": 0.21,
+        "rmse": 0.27,
+        "corr": 0.93,
+        "meanLeadHours": 45.5,
+        "buoyName": "CSA83/1D"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "ih",
+      "reason": "ih-only",
+      "ihAgeHours": 1.7,
+      "wmoAgeHours": null,
+      "ihDistanceKm": 18.7,
+      "wmoDistanceKm": null
+    },
+    "observedWaveNotClosest": {
+      "winner": "ih-buoy",
+      "reason": "ih-only",
+      "attachedKm": 19,
+      "altKm": 0
+    }
   },
   "milicias": {
     "waveHeight": 0.66,
@@ -16700,7 +18013,8 @@
     },
     "tideObservedHeight": 1.1,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Ponta Delgada - B"
+    "tideStation": "Ponta Delgada - B",
+    "tideAnomalyM": 0.077
   },
   "vila-nova-milfontes": {
     "waveHeight": 1.6,
@@ -16734,7 +18048,57 @@
       "combinedSpreadPct": 0.346,
       "degraded": true
     },
-    "dailyConfidence": [],
+    "dailyConfidence": [
+      {
+        "date": "2026-10-29",
+        "confidence": "baixa",
+        "waveSpread": 0.7,
+        "windSpread": 0.78,
+        "degraded": false
+      },
+      {
+        "date": "2026-10-30",
+        "confidence": "média",
+        "waveSpread": 0.38,
+        "windSpread": 0.66,
+        "degraded": false
+      },
+      {
+        "date": "2026-10-31",
+        "confidence": "média",
+        "waveSpread": 0.14,
+        "windSpread": 0.46,
+        "degraded": false
+      },
+      {
+        "date": "2026-11-01",
+        "confidence": "média",
+        "waveSpread": 0.32,
+        "windSpread": 0.9,
+        "degraded": false
+      },
+      {
+        "date": "2026-11-02",
+        "confidence": "média",
+        "waveSpread": 0.27,
+        "windSpread": 0.64,
+        "degraded": false
+      },
+      {
+        "date": "2026-11-03",
+        "confidence": "média",
+        "waveSpread": 0.43,
+        "windSpread": 0.32,
+        "degraded": false
+      },
+      {
+        "date": "2026-11-04",
+        "confidence": "baixa",
+        "waveSpread": 0.39,
+        "windSpread": 1.41,
+        "degraded": false
+      }
+    ],
     "updatedAt": "2026-09-09T23:14:59.321Z",
     "airQualityIndex": 30,
     "airQualityAt": "2026-09-29T16:00",
@@ -16814,7 +18178,44 @@
     },
     "tideObservedHeight": 2.054,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Sines - Terminal XXI"
+    "tideStation": "Sines - Terminal XXI",
+    "tideAnomalyM": 0.287,
+    "observedWave": {
+      "waveHeight": 1.15,
+      "wavePeriod": 11.1,
+      "waveDirection": 302,
+      "maxWaveHeight": 1.96,
+      "waterTemp": 18.8,
+      "stationName": "CSA83/1D",
+      "stationArea": "Continente - Sines",
+      "distanceKm": 25.5,
+      "observedAt": "2026-10-29T18:26:45.000Z",
+      "source": "ih-buoy",
+      "skill": {
+        "me": 0.18,
+        "n": 617,
+        "origin": "ih",
+        "mae": 0.21,
+        "rmse": 0.27,
+        "corr": 0.93,
+        "meanLeadHours": 45.5,
+        "buoyName": "CSA83/1D"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "ih",
+      "reason": "ih-only",
+      "ihAgeHours": 1.7,
+      "wmoAgeHours": null,
+      "ihDistanceKm": 25.5,
+      "wmoDistanceKm": null
+    },
+    "observedWaveNotClosest": {
+      "winner": "ih-buoy",
+      "reason": "ih-only",
+      "attachedKm": 26,
+      "altKm": 0
+    }
   },
   "alteirinhos": {
     "waveHeight": 1.64,
@@ -16974,7 +18375,8 @@
     },
     "tideObservedHeight": 2.054,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Sines - Terminal XXI"
+    "tideStation": "Sines - Terminal XXI",
+    "tideAnomalyM": 0.297
   },
   "agua-alto": {
     "waveHeight": 0.58,
@@ -17109,7 +18511,8 @@
     },
     "tideObservedHeight": 1.1,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Ponta Delgada - B"
+    "tideStation": "Ponta Delgada - B",
+    "tideAnomalyM": 0.057
   },
   "zambujeira": {
     "waveHeight": 1.7,
@@ -17273,7 +18676,8 @@
     },
     "tideObservedHeight": 2.054,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Sines - Terminal XXI"
+    "tideStation": "Sines - Terminal XXI",
+    "tideAnomalyM": 0.297
   },
   "carvalhal": {
     "waveHeight": 1.7,
@@ -17433,7 +18837,8 @@
     },
     "tideObservedHeight": 2.054,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Sines - Terminal XXI"
+    "tideStation": "Sines - Terminal XXI",
+    "tideAnomalyM": 0.297
   },
   "odeceixe": {
     "waveHeight": 1.68,
@@ -17593,7 +18998,8 @@
     },
     "tideObservedHeight": 2.054,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Sines - Terminal XXI"
+    "tideStation": "Sines - Terminal XXI",
+    "tideAnomalyM": 0.297
   },
   "amoreira": {
     "waveHeight": 1.88,
@@ -17753,7 +19159,8 @@
     },
     "tideObservedHeight": 2.054,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Sines - Terminal XXI"
+    "tideStation": "Sines - Terminal XXI",
+    "tideAnomalyM": 0.297
   },
   "monte-clerigo": {
     "waveHeight": 1.88,
@@ -17913,7 +19320,8 @@
     },
     "tideObservedHeight": 2.054,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Sines - Terminal XXI"
+    "tideStation": "Sines - Terminal XXI",
+    "tideAnomalyM": 0.297
   },
   "arrifana": {
     "waveHeight": 1.86,
@@ -18073,7 +19481,8 @@
     },
     "tideObservedHeight": 2.054,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Sines - Terminal XXI"
+    "tideStation": "Sines - Terminal XXI",
+    "tideAnomalyM": 0.307
   },
   "vale-figueiras": {
     "waveHeight": 1.86,
@@ -18232,7 +19641,8 @@
     },
     "tideObservedHeight": 2.054,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Sines - Terminal XXI"
+    "tideStation": "Sines - Terminal XXI",
+    "tideAnomalyM": 0.317
   },
   "bordeira": {
     "waveHeight": 1.68,
@@ -18391,7 +19801,8 @@
     },
     "tideObservedHeight": 2.054,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Sines - Terminal XXI"
+    "tideStation": "Sines - Terminal XXI",
+    "tideAnomalyM": 0.317
   },
   "amado": {
     "waveHeight": 1.68,
@@ -18550,7 +19961,8 @@
     },
     "tideObservedHeight": 2.054,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Sines - Terminal XXI"
+    "tideStation": "Sines - Terminal XXI",
+    "tideAnomalyM": 0.317
   },
   "barriga": {
     "waveHeight": 1.86,
@@ -18712,7 +20124,8 @@
     },
     "tideObservedHeight": 2.054,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Sines - Terminal XXI"
+    "tideStation": "Sines - Terminal XXI",
+    "tideAnomalyM": 0.317
   },
   "castelejo": {
     "waveHeight": 1.86,
@@ -18874,7 +20287,8 @@
     },
     "tideObservedHeight": 2.054,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Sines - Terminal XXI"
+    "tideStation": "Sines - Terminal XXI",
+    "tideAnomalyM": 0.317
   },
   "luz": {
     "waveHeight": 0.76,
@@ -19040,7 +20454,8 @@
     },
     "tideObservedHeight": 2.335,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Barra de Faro-Olhão"
+    "tideStation": "Barra de Faro-Olhão",
+    "tideAnomalyM": 0.572
   },
   "burgau": {
     "waveHeight": 1.32,
@@ -19204,7 +20619,8 @@
     },
     "tideObservedHeight": 2.335,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Barra de Faro-Olhão"
+    "tideStation": "Barra de Faro-Olhão",
+    "tideAnomalyM": 0.562
   },
   "salema": {
     "waveHeight": 1.32,
@@ -19367,7 +20783,8 @@
     },
     "tideObservedHeight": 2.335,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Barra de Faro-Olhão"
+    "tideStation": "Barra de Faro-Olhão",
+    "tideAnomalyM": 0.562
   },
   "cordoama": {
     "waveHeight": 1.88,
@@ -19529,7 +20946,8 @@
     },
     "tideObservedHeight": 2.054,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Sines - Terminal XXI"
+    "tideStation": "Sines - Terminal XXI",
+    "tideAnomalyM": 0.317
   },
   "ferragudo": {
     "waveHeight": 0.52,
@@ -19696,7 +21114,8 @@
     },
     "tideObservedHeight": 2.335,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Barra de Faro-Olhão"
+    "tideStation": "Barra de Faro-Olhão",
+    "tideAnomalyM": 0.572
   },
   "vila-real-santo-antonio": {
     "waveHeight": 0.42,
@@ -19856,7 +21275,10 @@
           "Small waves"
         ]
       }
-    }
+    },
+    "tideObservedHeight": 2.012,
+    "tideObservedAt": "2026-10-29T20:04:00Z",
+    "tideStation": "Vila Real de S. António"
   },
   "monte-gordo": {
     "waveHeight": 0.46,
@@ -20017,7 +21439,10 @@
           "9kt wind"
         ]
       }
-    }
+    },
+    "tideObservedHeight": 2.012,
+    "tideObservedAt": "2026-10-29T20:04:00Z",
+    "tideStation": "Vila Real de S. António"
   },
   "praia-verde": {
     "waveHeight": 0.4,
@@ -20179,7 +21604,10 @@
           "Small waves"
         ]
       }
-    }
+    },
+    "tideObservedHeight": 2.012,
+    "tideObservedAt": "2026-10-29T20:04:00Z",
+    "tideStation": "Vila Real de S. António"
   },
   "altura": {
     "waveHeight": 0.46,
@@ -20340,7 +21768,10 @@
           "9kt wind"
         ]
       }
-    }
+    },
+    "tideObservedHeight": 2.012,
+    "tideObservedAt": "2026-10-29T20:04:00Z",
+    "tideStation": "Vila Real de S. António"
   },
   "praia-rocha": {
     "waveHeight": 0.52,
@@ -20507,7 +21938,8 @@
     },
     "tideObservedHeight": 2.335,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Barra de Faro-Olhão"
+    "tideStation": "Barra de Faro-Olhão",
+    "tideAnomalyM": 0.572
   },
   "alvor": {
     "waveHeight": 0.6,
@@ -20669,7 +22101,8 @@
     },
     "tideObservedHeight": 2.335,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Barra de Faro-Olhão"
+    "tideStation": "Barra de Faro-Olhão",
+    "tideAnomalyM": 0.572
   },
   "foil-alvor": {
     "waveHeight": 0.6,
@@ -20829,7 +22262,8 @@
     },
     "tideObservedHeight": 2.335,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Barra de Faro-Olhão"
+    "tideStation": "Barra de Faro-Olhão",
+    "tideAnomalyM": 0.572
   },
   "lagos": {
     "waveHeight": 0.6,
@@ -20995,7 +22429,8 @@
     },
     "tideObservedHeight": 2.335,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Barra de Faro-Olhão"
+    "tideStation": "Barra de Faro-Olhão",
+    "tideAnomalyM": 0.572
   },
   "lagos-wakepark": {
     "waveHeight": 0.76,
@@ -21155,7 +22590,8 @@
     },
     "tideObservedHeight": 2.335,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Barra de Faro-Olhão"
+    "tideStation": "Barra de Faro-Olhão",
+    "tideAnomalyM": 0.572
   },
   "beliche": {
     "waveHeight": 1.88,
@@ -21303,7 +22739,8 @@
     },
     "tideObservedHeight": 2.335,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Barra de Faro-Olhão"
+    "tideStation": "Barra de Faro-Olhão",
+    "tideAnomalyM": 0.552
   },
   "martinhal": {
     "waveHeight": 1.88,
@@ -21448,7 +22885,8 @@
     },
     "tideObservedHeight": 2.335,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Barra de Faro-Olhão"
+    "tideStation": "Barra de Faro-Olhão",
+    "tideAnomalyM": 0.552
   },
   "barrinha-faro": {
     "waveHeight": 0.72,
@@ -21595,7 +23033,44 @@
     "secondarySwellDirection": 298,
     "tideObservedHeight": 2.335,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Barra de Faro-Olhão"
+    "tideStation": "Barra de Faro-Olhão",
+    "tideAnomalyM": 0.572,
+    "observedWave": {
+      "waveHeight": 1.29,
+      "wavePeriod": 6.7,
+      "waveDirection": 136,
+      "maxWaveHeight": 1.95,
+      "waterTemp": 19.5,
+      "stationName": "CSA82/D",
+      "stationArea": "Continente - Faro",
+      "distanceKm": 10.8,
+      "observedAt": "2026-10-29T17:56:37.000Z",
+      "source": "ih-buoy",
+      "skill": {
+        "me": 0.08,
+        "n": 100,
+        "origin": "ih",
+        "mae": 0.12,
+        "rmse": 0.16,
+        "corr": 0.85,
+        "meanLeadHours": 46.8,
+        "buoyName": "CSA82/D"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "ih",
+      "reason": "ih-only",
+      "ihAgeHours": 2.2,
+      "wmoAgeHours": null,
+      "ihDistanceKm": 10.8,
+      "wmoDistanceKm": null
+    },
+    "observedWaveNotClosest": {
+      "winner": "ih-buoy",
+      "reason": "ih-only",
+      "attachedKm": 11,
+      "altKm": 0
+    }
   },
   "fuseta": {
     "waveHeight": 0.64,
@@ -21756,7 +23231,44 @@
     "secondarySwellDirection": 296,
     "tideObservedHeight": 2.335,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Barra de Faro-Olhão"
+    "tideStation": "Barra de Faro-Olhão",
+    "tideAnomalyM": 0.592,
+    "observedWave": {
+      "waveHeight": 1.29,
+      "wavePeriod": 6.7,
+      "waveDirection": 136,
+      "maxWaveHeight": 1.95,
+      "waterTemp": 19.5,
+      "stationName": "CSA82/D",
+      "stationArea": "Continente - Faro",
+      "distanceKm": 21.6,
+      "observedAt": "2026-10-29T17:56:37.000Z",
+      "source": "ih-buoy",
+      "skill": {
+        "me": 0.08,
+        "n": 100,
+        "origin": "ih",
+        "mae": 0.12,
+        "rmse": 0.16,
+        "corr": 0.85,
+        "meanLeadHours": 46.8,
+        "buoyName": "CSA82/D"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "ih",
+      "reason": "ih-only",
+      "ihAgeHours": 2.2,
+      "wmoAgeHours": null,
+      "ihDistanceKm": 21.6,
+      "wmoDistanceKm": null
+    },
+    "observedWaveNotClosest": {
+      "winner": "ih-buoy",
+      "reason": "ih-only",
+      "attachedKm": 22,
+      "altKm": 0
+    }
   },
   "ilha-faro": {
     "waveHeight": 0.72,
@@ -21917,7 +23429,44 @@
     "secondarySwellDirection": 298,
     "tideObservedHeight": 2.335,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Barra de Faro-Olhão"
+    "tideStation": "Barra de Faro-Olhão",
+    "tideAnomalyM": 0.582,
+    "observedWave": {
+      "waveHeight": 1.29,
+      "wavePeriod": 6.7,
+      "waveDirection": 136,
+      "maxWaveHeight": 1.95,
+      "waterTemp": 19.5,
+      "stationName": "CSA82/D",
+      "stationArea": "Continente - Faro",
+      "distanceKm": 13.4,
+      "observedAt": "2026-10-29T17:56:37.000Z",
+      "source": "ih-buoy",
+      "skill": {
+        "me": 0.08,
+        "n": 100,
+        "origin": "ih",
+        "mae": 0.12,
+        "rmse": 0.16,
+        "corr": 0.85,
+        "meanLeadHours": 46.8,
+        "buoyName": "CSA82/D"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "ih",
+      "reason": "ih-only",
+      "ihAgeHours": 2.2,
+      "wmoAgeHours": null,
+      "ihDistanceKm": 13.4,
+      "wmoDistanceKm": null
+    },
+    "observedWaveNotClosest": {
+      "winner": "ih-buoy",
+      "reason": "ih-only",
+      "attachedKm": 13,
+      "altKm": 0
+    }
   },
   "faro-mar": {
     "waveHeight": 0.72,
@@ -22082,7 +23631,44 @@
     "secondarySwellDirection": 298,
     "tideObservedHeight": 2.335,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Barra de Faro-Olhão"
+    "tideStation": "Barra de Faro-Olhão",
+    "tideAnomalyM": 0.582,
+    "observedWave": {
+      "waveHeight": 1.29,
+      "wavePeriod": 6.7,
+      "waveDirection": 136,
+      "maxWaveHeight": 1.95,
+      "waterTemp": 19.5,
+      "stationName": "CSA82/D",
+      "stationArea": "Continente - Faro",
+      "distanceKm": 14.4,
+      "observedAt": "2026-10-29T17:56:37.000Z",
+      "source": "ih-buoy",
+      "skill": {
+        "me": 0.08,
+        "n": 100,
+        "origin": "ih",
+        "mae": 0.12,
+        "rmse": 0.16,
+        "corr": 0.85,
+        "meanLeadHours": 46.8,
+        "buoyName": "CSA82/D"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "ih",
+      "reason": "ih-only",
+      "ihAgeHours": 2.2,
+      "wmoAgeHours": null,
+      "ihDistanceKm": 14.4,
+      "wmoDistanceKm": null
+    },
+    "observedWaveNotClosest": {
+      "winner": "ih-buoy",
+      "reason": "ih-only",
+      "attachedKm": 14,
+      "altKm": 0
+    }
   },
   "culatra": {
     "waveHeight": 0.7,
@@ -22247,7 +23833,44 @@
     },
     "tideObservedHeight": 2.335,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Barra de Faro-Olhão"
+    "tideStation": "Barra de Faro-Olhão",
+    "tideAnomalyM": 0.572,
+    "observedWave": {
+      "waveHeight": 1.29,
+      "wavePeriod": 6.7,
+      "waveDirection": 136,
+      "maxWaveHeight": 1.95,
+      "waterTemp": 19.5,
+      "stationName": "CSA82/D",
+      "stationArea": "Continente - Faro",
+      "distanceKm": 11,
+      "observedAt": "2026-10-29T17:56:37.000Z",
+      "source": "ih-buoy",
+      "skill": {
+        "me": 0.08,
+        "n": 100,
+        "origin": "ih",
+        "mae": 0.12,
+        "rmse": 0.16,
+        "corr": 0.85,
+        "meanLeadHours": 46.8,
+        "buoyName": "CSA82/D"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "ih",
+      "reason": "ih-only",
+      "ihAgeHours": 2.2,
+      "wmoAgeHours": null,
+      "ihDistanceKm": 11,
+      "wmoDistanceKm": null
+    },
+    "observedWaveNotClosest": {
+      "winner": "ih-buoy",
+      "reason": "ih-only",
+      "attachedKm": 11,
+      "altKm": 0
+    }
   },
   "armona": {
     "waveHeight": 0.66,
@@ -22412,7 +24035,44 @@
     },
     "tideObservedHeight": 2.335,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Barra de Faro-Olhão"
+    "tideStation": "Barra de Faro-Olhão",
+    "tideAnomalyM": 0.602,
+    "observedWave": {
+      "waveHeight": 1.29,
+      "wavePeriod": 6.7,
+      "waveDirection": 136,
+      "maxWaveHeight": 1.95,
+      "waterTemp": 19.5,
+      "stationName": "CSA82/D",
+      "stationArea": "Continente - Faro",
+      "distanceKm": 15.1,
+      "observedAt": "2026-10-29T17:56:37.000Z",
+      "source": "ih-buoy",
+      "skill": {
+        "me": 0.08,
+        "n": 100,
+        "origin": "ih",
+        "mae": 0.12,
+        "rmse": 0.16,
+        "corr": 0.85,
+        "meanLeadHours": 46.8,
+        "buoyName": "CSA82/D"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "ih",
+      "reason": "ih-only",
+      "ihAgeHours": 2.2,
+      "wmoAgeHours": null,
+      "ihDistanceKm": 15.1,
+      "wmoDistanceKm": null
+    },
+    "observedWaveNotClosest": {
+      "winner": "ih-buoy",
+      "reason": "ih-only",
+      "attachedKm": 15,
+      "altKm": 0
+    }
   },
   "ilha-tavira": {
     "waveHeight": 0.36,
@@ -22574,6 +24234,45 @@
           "Small waves"
         ]
       }
+    },
+    "tideObservedHeight": 2.012,
+    "tideObservedAt": "2026-10-29T20:04:00Z",
+    "tideStation": "Vila Real de S. António",
+    "observedWave": {
+      "waveHeight": 1.29,
+      "wavePeriod": 6.7,
+      "waveDirection": 136,
+      "maxWaveHeight": 1.95,
+      "waterTemp": 19.5,
+      "stationName": "CSA82/D",
+      "stationArea": "Continente - Faro",
+      "distanceKm": 33.6,
+      "observedAt": "2026-10-29T17:56:37.000Z",
+      "source": "ih-buoy",
+      "skill": {
+        "me": 0.08,
+        "n": 100,
+        "origin": "ih",
+        "mae": 0.12,
+        "rmse": 0.16,
+        "corr": 0.85,
+        "meanLeadHours": 46.8,
+        "buoyName": "CSA82/D"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "ih",
+      "reason": "ih-only",
+      "ihAgeHours": 2.2,
+      "wmoAgeHours": null,
+      "ihDistanceKm": 33.6,
+      "wmoDistanceKm": null
+    },
+    "observedWaveNotClosest": {
+      "winner": "ih-buoy",
+      "reason": "ih-only",
+      "attachedKm": 34,
+      "altKm": 0
     }
   },
   "cabanas-tavira": {
@@ -22736,6 +24435,45 @@
           "Small waves"
         ]
       }
+    },
+    "tideObservedHeight": 2.012,
+    "tideObservedAt": "2026-10-29T20:04:00Z",
+    "tideStation": "Vila Real de S. António",
+    "observedWave": {
+      "waveHeight": 1.29,
+      "wavePeriod": 6.7,
+      "waveDirection": 136,
+      "maxWaveHeight": 1.95,
+      "waterTemp": 19.5,
+      "stationName": "CSA82/D",
+      "stationArea": "Continente - Faro",
+      "distanceKm": 37.2,
+      "observedAt": "2026-10-29T17:56:37.000Z",
+      "source": "ih-buoy",
+      "skill": {
+        "me": 0.08,
+        "n": 100,
+        "origin": "ih",
+        "mae": 0.12,
+        "rmse": 0.16,
+        "corr": 0.85,
+        "meanLeadHours": 46.8,
+        "buoyName": "CSA82/D"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "ih",
+      "reason": "ih-only",
+      "ihAgeHours": 2.2,
+      "wmoAgeHours": null,
+      "ihDistanceKm": 37.2,
+      "wmoDistanceKm": null
+    },
+    "observedWaveNotClosest": {
+      "winner": "ih-buoy",
+      "reason": "ih-only",
+      "attachedKm": 37,
+      "altKm": 0
     }
   },
   "cacela-velha": {
@@ -22898,7 +24636,10 @@
           "Small waves"
         ]
       }
-    }
+    },
+    "tideObservedHeight": 2.012,
+    "tideObservedAt": "2026-10-29T20:04:00Z",
+    "tideStation": "Vila Real de S. António"
   },
   "zavial": {
     "waveHeight": 1.56,
@@ -23062,7 +24803,8 @@
     },
     "tideObservedHeight": 2.335,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Barra de Faro-Olhão"
+    "tideStation": "Barra de Faro-Olhão",
+    "tideAnomalyM": 0.562
   },
   "tonel": {
     "waveHeight": 1.88,
@@ -23210,7 +24952,8 @@
     },
     "tideObservedHeight": 2.335,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Barra de Faro-Olhão"
+    "tideStation": "Barra de Faro-Olhão",
+    "tideAnomalyM": 0.552
   },
   "anjos": {
     "waveHeight": 0.8,
@@ -23345,7 +25088,8 @@
     },
     "tideObservedHeight": 1.115,
     "tideObservedAt": "2026-10-26T17:33:00Z",
-    "tideStation": "Vila do Porto"
+    "tideStation": "Vila do Porto",
+    "tideAnomalyM": 0.052
   },
   "ponta-delgada": {
     "waveHeight": 0.74,
@@ -23480,7 +25224,8 @@
     },
     "tideObservedHeight": 1.1,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Ponta Delgada - B"
+    "tideStation": "Ponta Delgada - B",
+    "tideAnomalyM": 0.087
   },
   "sao-vicente-madeira": {
     "waveHeight": 0.56,
@@ -23644,7 +25389,44 @@
     },
     "tideObservedHeight": 1.236,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Funchal"
+    "tideStation": "Funchal",
+    "tideAnomalyM": 0.167,
+    "observedWave": {
+      "waveHeight": 0.71,
+      "wavePeriod": 5.9,
+      "waveDirection": 100,
+      "maxWaveHeight": 1.05,
+      "waterTemp": 22.4,
+      "stationName": "CSA94",
+      "stationArea": "Arquipélago da Madeira - Caniçal",
+      "distanceKm": 31.5,
+      "observedAt": "2026-10-29T18:29:57.000Z",
+      "source": "ih-buoy",
+      "skill": {
+        "me": -0.43,
+        "n": 622,
+        "origin": "ih",
+        "mae": 0.43,
+        "rmse": 0.49,
+        "corr": 0.3,
+        "meanLeadHours": 45.5,
+        "buoyName": "CSA94"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "ih",
+      "reason": "ih-only",
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": null,
+      "ihDistanceKm": 31.5,
+      "wmoDistanceKm": null
+    },
+    "observedWaveNotClosest": {
+      "winner": "ih-buoy",
+      "reason": "ih-only",
+      "attachedKm": 32,
+      "altKm": 0
+    }
   },
   "porto-da-cruz": {
     "waveHeight": 0.88,
@@ -23805,7 +25587,44 @@
     },
     "tideObservedHeight": 1.236,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Funchal"
+    "tideStation": "Funchal",
+    "tideAnomalyM": 0.177,
+    "observedWave": {
+      "waveHeight": 0.71,
+      "wavePeriod": 5.9,
+      "waveDirection": 100,
+      "maxWaveHeight": 1.05,
+      "waterTemp": 22.4,
+      "stationName": "CSA94",
+      "stationArea": "Arquipélago da Madeira - Caniçal",
+      "distanceKm": 11.1,
+      "observedAt": "2026-10-29T18:29:57.000Z",
+      "source": "ih-buoy",
+      "skill": {
+        "me": -0.43,
+        "n": 622,
+        "origin": "ih",
+        "mae": 0.43,
+        "rmse": 0.49,
+        "corr": 0.3,
+        "meanLeadHours": 45.5,
+        "buoyName": "CSA94"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "ih",
+      "reason": "ih-only",
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": null,
+      "ihDistanceKm": 11.1,
+      "wmoDistanceKm": null
+    },
+    "observedWaveNotClosest": {
+      "winner": "ih-buoy",
+      "reason": "ih-only",
+      "attachedKm": 11,
+      "altKm": 0
+    }
   },
   "paul-mar": {
     "waveHeight": 0.82,
@@ -23970,7 +25789,8 @@
     },
     "tideObservedHeight": 1.236,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Funchal"
+    "tideStation": "Funchal",
+    "tideAnomalyM": 0.147
   },
   "jardim-mar": {
     "waveHeight": 0.82,
@@ -24135,7 +25955,8 @@
     },
     "tideObservedHeight": 1.236,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Funchal"
+    "tideStation": "Funchal",
+    "tideAnomalyM": 0.147
   },
   "ponta-sao-lourenco": {
     "waveHeight": 0.84,
@@ -24301,7 +26122,44 @@
     },
     "tideObservedHeight": 1.236,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Funchal"
+    "tideStation": "Funchal",
+    "tideAnomalyM": 0.167,
+    "observedWave": {
+      "waveHeight": 0.71,
+      "wavePeriod": 5.9,
+      "waveDirection": 100,
+      "maxWaveHeight": 1.05,
+      "waterTemp": 22.4,
+      "stationName": "CSA94",
+      "stationArea": "Arquipélago da Madeira - Caniçal",
+      "distanceKm": 2.5,
+      "observedAt": "2026-10-29T18:29:57.000Z",
+      "source": "ih-buoy",
+      "skill": {
+        "me": -0.43,
+        "n": 622,
+        "origin": "ih",
+        "mae": 0.43,
+        "rmse": 0.49,
+        "corr": 0.3,
+        "meanLeadHours": 45.5,
+        "buoyName": "CSA94"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "ih",
+      "reason": "ih-only",
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": null,
+      "ihDistanceKm": 2.5,
+      "wmoDistanceKm": null
+    },
+    "observedWaveNotClosest": {
+      "winner": "ih-buoy",
+      "reason": "ih-only",
+      "attachedKm": 3,
+      "altKm": 0
+    }
   },
   "ribeira-brava": {
     "waveHeight": 0.56,
@@ -24466,7 +26324,44 @@
     },
     "tideObservedHeight": 1.236,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Funchal"
+    "tideStation": "Funchal",
+    "tideAnomalyM": 0.157,
+    "observedWave": {
+      "waveHeight": 0.71,
+      "wavePeriod": 5.9,
+      "waveDirection": 100,
+      "maxWaveHeight": 1.05,
+      "waterTemp": 22.4,
+      "stationName": "CSA94",
+      "stationArea": "Arquipélago da Madeira - Caniçal",
+      "distanceKm": 32.8,
+      "observedAt": "2026-10-29T18:29:57.000Z",
+      "source": "ih-buoy",
+      "skill": {
+        "me": -0.43,
+        "n": 622,
+        "origin": "ih",
+        "mae": 0.43,
+        "rmse": 0.49,
+        "corr": 0.3,
+        "meanLeadHours": 45.5,
+        "buoyName": "CSA94"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "ih",
+      "reason": "ih-only",
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": null,
+      "ihDistanceKm": 32.8,
+      "wmoDistanceKm": null
+    },
+    "observedWaveNotClosest": {
+      "winner": "ih-buoy",
+      "reason": "ih-only",
+      "attachedKm": 33,
+      "altKm": 0
+    }
   },
   "funchal": {
     "waveHeight": 0.76,
@@ -24629,7 +26524,44 @@
     },
     "tideObservedHeight": 1.236,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Funchal"
+    "tideStation": "Funchal",
+    "tideAnomalyM": 0.157,
+    "observedWave": {
+      "waveHeight": 0.71,
+      "wavePeriod": 5.9,
+      "waveDirection": 100,
+      "maxWaveHeight": 1.05,
+      "waterTemp": 22.4,
+      "stationName": "CSA94",
+      "stationArea": "Arquipélago da Madeira - Caniçal",
+      "distanceKm": 23.4,
+      "observedAt": "2026-10-29T18:29:57.000Z",
+      "source": "ih-buoy",
+      "skill": {
+        "me": -0.43,
+        "n": 622,
+        "origin": "ih",
+        "mae": 0.43,
+        "rmse": 0.49,
+        "corr": 0.3,
+        "meanLeadHours": 45.5,
+        "buoyName": "CSA94"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "ih",
+      "reason": "ih-only",
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": null,
+      "ihDistanceKm": 23.4,
+      "wmoDistanceKm": null
+    },
+    "observedWaveNotClosest": {
+      "winner": "ih-buoy",
+      "reason": "ih-only",
+      "attachedKm": 23,
+      "altKm": 0
+    }
   },
   "barra-aveiro": {
     "waveHeight": 1.5,
@@ -24786,7 +26718,11 @@
     },
     "tideObservedHeight": 2.469,
     "tideObservedAt": "2026-10-26T17:32:04Z",
-    "tideStation": "Aveiro - Molhe Central"
+    "tideStation": "Aveiro - Molhe Central",
+    "secondarySwellHeight": 0.22,
+    "secondarySwellPeriod": 13.75,
+    "secondarySwellDirection": 322,
+    "tideAnomalyM": 0.29
   },
   "vila-cha": {
     "waveHeight": 1.52,
@@ -24950,7 +26886,44 @@
     "secondarySwellDirection": 283,
     "tideObservedHeight": 2.413,
     "tideObservedAt": "2026-10-26T17:32:54Z",
-    "tideStation": "Leixões"
+    "tideStation": "Leixões",
+    "tideAnomalyM": 0.207,
+    "observedWave": {
+      "waveHeight": 1.78,
+      "wavePeriod": 10,
+      "waveDirection": 321,
+      "maxWaveHeight": 2.56,
+      "waterTemp": 16.3,
+      "stationName": "CSA92/D",
+      "stationArea": "Continente - Leixões",
+      "distanceKm": 21,
+      "observedAt": "2026-10-29T18:26:43.000Z",
+      "source": "ih-buoy",
+      "skill": {
+        "me": 0.66,
+        "n": 619,
+        "origin": "ih",
+        "mae": 0.66,
+        "rmse": 0.83,
+        "corr": 0.88,
+        "meanLeadHours": 45.5,
+        "buoyName": "CSA92/D"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "ih",
+      "reason": "ih-only",
+      "ihAgeHours": 1.7,
+      "wmoAgeHours": null,
+      "ihDistanceKm": 21,
+      "wmoDistanceKm": null
+    },
+    "observedWaveNotClosest": {
+      "winner": "ih-buoy",
+      "reason": "ih-only",
+      "attachedKm": 21,
+      "altKm": 0
+    }
   },
   "porto-novo": {
     "waveHeight": 1.96,
@@ -25106,7 +27079,8 @@
     "secondarySwellDirection": 331,
     "tideObservedHeight": 2.266,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Peniche - C"
+    "tideStation": "Peniche - C",
+    "tideAnomalyM": 0.348
   },
   "santa-cruz": {
     "waveHeight": 1.9,
@@ -25265,7 +27239,8 @@
     "secondarySwellDirection": 326,
     "tideObservedHeight": 2.266,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Peniche - C"
+    "tideStation": "Peniche - C",
+    "tideAnomalyM": 0.368
   },
   "consolacao": {
     "waveHeight": 1.96,
@@ -25423,7 +27398,43 @@
     "secondarySwellDirection": 324,
     "tideObservedHeight": 2.266,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Peniche - C"
+    "tideStation": "Peniche - C",
+    "tideAnomalyM": 0.338,
+    "observedWave": {
+      "waveHeight": 1.655269980430603,
+      "wavePeriod": 11.660200119018555,
+      "maxWaveHeight": 2.4316399097442627,
+      "waterTemp": 16.9360408782959,
+      "stationName": "Nazaré Costeira (WMO)",
+      "stationArea": "Nazaré",
+      "distanceKm": 29.3,
+      "observedAt": "2026-10-29T18:00:00.000Z",
+      "source": "wmo-buoy",
+      "skill": {
+        "me": 0.2,
+        "n": 506,
+        "origin": "wmo-pt",
+        "mae": 0.28,
+        "rmse": 0.38,
+        "corr": 0.92,
+        "meanLeadHours": 45.5,
+        "buoyName": "Nazaré Costeira (WMO)"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "wmo",
+      "reason": "wmo-only",
+      "ihAgeHours": null,
+      "wmoAgeHours": 2.1,
+      "ihDistanceKm": null,
+      "wmoDistanceKm": 29.3
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 29,
+      "altKm": 0
+    }
   },
   "areia-branca": {
     "waveHeight": 1.96,
@@ -25581,7 +27592,43 @@
     "secondarySwellDirection": 324,
     "tideObservedHeight": 2.266,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Peniche - C"
+    "tideStation": "Peniche - C",
+    "tideAnomalyM": 0.338,
+    "observedWave": {
+      "waveHeight": 1.655269980430603,
+      "wavePeriod": 11.660200119018555,
+      "maxWaveHeight": 2.4316399097442627,
+      "waterTemp": 16.9360408782959,
+      "stationName": "Nazaré Costeira (WMO)",
+      "stationArea": "Nazaré",
+      "distanceKm": 34.4,
+      "observedAt": "2026-10-29T18:00:00.000Z",
+      "source": "wmo-buoy",
+      "skill": {
+        "me": 0.2,
+        "n": 506,
+        "origin": "wmo-pt",
+        "mae": 0.28,
+        "rmse": 0.38,
+        "corr": 0.92,
+        "meanLeadHours": 45.5,
+        "buoyName": "Nazaré Costeira (WMO)"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "wmo",
+      "reason": "wmo-only",
+      "ihAgeHours": null,
+      "wmoAgeHours": 2.1,
+      "ihDistanceKm": null,
+      "wmoDistanceKm": 34.4
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 34,
+      "altKm": 0
+    }
   },
   "sao-martinho-porto": {
     "waveHeight": 2.02,
@@ -25717,7 +27764,8 @@
         "corr": 0.92,
         "meanLeadHours": 45.4,
         "buoyName": "Nazaré Costeira (WMO)"
-      }
+      },
+      "maxWaveHeight": 2.4316399097442627
     },
     "observedWaveMeta": {
       "winner": "wmo",
@@ -25779,7 +27827,8 @@
     "secondarySwellDirection": 322,
     "tideObservedHeight": 2.235,
     "tideObservedAt": "2026-10-26T17:32:55Z",
-    "tideStation": "Nazaré - B"
+    "tideStation": "Nazaré - B",
+    "tideAnomalyM": 0.207
   },
   "cave-ericeira": {
     "waveHeight": 2.04,
@@ -25943,7 +27992,8 @@
     "secondarySwellDirection": 329,
     "tideObservedHeight": 2.55,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Lisboa - Alcântara"
+    "tideStation": "Lisboa - Alcântara",
+    "tideAnomalyM": 0.588
   },
   "pescadores-ericeira": {
     "waveHeight": 2.04,
@@ -26107,7 +28157,8 @@
     "secondarySwellDirection": 329,
     "tideObservedHeight": 2.55,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Lisboa - Alcântara"
+    "tideStation": "Lisboa - Alcântara",
+    "tideAnomalyM": 0.588
   },
   "crazy-left": {
     "waveHeight": 2.04,
@@ -26266,7 +28317,8 @@
     "secondarySwellDirection": 329,
     "tideObservedHeight": 2.266,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Peniche - C"
+    "tideStation": "Peniche - C",
+    "tideAnomalyM": 0.378
   },
   "meco": {
     "waveHeight": 1.42,
@@ -26425,7 +28477,8 @@
     "secondarySwellDirection": 311,
     "tideObservedHeight": 2.049,
     "tideObservedAt": "2026-10-26T17:33:00Z",
-    "tideStation": "Sesimbra"
+    "tideStation": "Sesimbra",
+    "tideAnomalyM": 0.268
   },
   "lagoa-santo-andre": {
     "waveHeight": 1.34,
@@ -26583,7 +28636,44 @@
     },
     "tideObservedHeight": 2.115,
     "tideObservedAt": "2026-10-26T17:32:16Z",
-    "tideStation": "Sines - Posto 3"
+    "tideStation": "Sines - Posto 3",
+    "tideAnomalyM": 0.258,
+    "observedWave": {
+      "waveHeight": 1.15,
+      "wavePeriod": 11.1,
+      "waveDirection": 302,
+      "maxWaveHeight": 1.96,
+      "waterTemp": 18.8,
+      "stationName": "CSA83/1D",
+      "stationArea": "Continente - Sines",
+      "distanceKm": 24.1,
+      "observedAt": "2026-10-29T18:26:45.000Z",
+      "source": "ih-buoy",
+      "skill": {
+        "me": 0.18,
+        "n": 617,
+        "origin": "ih",
+        "mae": 0.21,
+        "rmse": 0.27,
+        "corr": 0.93,
+        "meanLeadHours": 45.5,
+        "buoyName": "CSA83/1D"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "ih",
+      "reason": "ih-only",
+      "ihAgeHours": 1.7,
+      "wmoAgeHours": null,
+      "ihDistanceKm": 24.1,
+      "wmoDistanceKm": null
+    },
+    "observedWaveNotClosest": {
+      "winner": "ih-buoy",
+      "reason": "ih-only",
+      "attachedKm": 24,
+      "altKm": 0
+    }
   },
   "lagoa-sancha": {
     "waveHeight": 1.44,
@@ -26723,7 +28813,44 @@
     },
     "tideObservedHeight": 2.054,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Sines - Terminal XXI"
+    "tideStation": "Sines - Terminal XXI",
+    "tideAnomalyM": 0.267,
+    "observedWave": {
+      "waveHeight": 1.15,
+      "wavePeriod": 11.1,
+      "waveDirection": 302,
+      "maxWaveHeight": 1.96,
+      "waterTemp": 18.8,
+      "stationName": "CSA83/1D",
+      "stationArea": "Continente - Sines",
+      "distanceKm": 16.3,
+      "observedAt": "2026-10-29T18:26:45.000Z",
+      "source": "ih-buoy",
+      "skill": {
+        "me": 0.18,
+        "n": 617,
+        "origin": "ih",
+        "mae": 0.21,
+        "rmse": 0.27,
+        "corr": 0.93,
+        "meanLeadHours": 45.5,
+        "buoyName": "CSA83/1D"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "ih",
+      "reason": "ih-only",
+      "ihAgeHours": 1.7,
+      "wmoAgeHours": null,
+      "ihDistanceKm": 16.3,
+      "wmoDistanceKm": null
+    },
+    "observedWaveNotClosest": {
+      "winner": "ih-buoy",
+      "reason": "ih-only",
+      "attachedKm": 16,
+      "altKm": 0
+    }
   },
   "pessegueiro": {
     "waveHeight": 1.56,
@@ -26886,7 +29013,44 @@
     },
     "tideObservedHeight": 2.054,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Sines - Terminal XXI"
+    "tideStation": "Sines - Terminal XXI",
+    "tideAnomalyM": 0.277,
+    "observedWave": {
+      "waveHeight": 1.15,
+      "wavePeriod": 11.1,
+      "waveDirection": 302,
+      "maxWaveHeight": 1.96,
+      "waterTemp": 18.8,
+      "stationName": "CSA83/1D",
+      "stationArea": "Continente - Sines",
+      "distanceKm": 15.7,
+      "observedAt": "2026-10-29T18:26:45.000Z",
+      "source": "ih-buoy",
+      "skill": {
+        "me": 0.18,
+        "n": 617,
+        "origin": "ih",
+        "mae": 0.21,
+        "rmse": 0.27,
+        "corr": 0.93,
+        "meanLeadHours": 45.5,
+        "buoyName": "CSA83/1D"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "ih",
+      "reason": "ih-only",
+      "ihAgeHours": 1.7,
+      "wmoAgeHours": null,
+      "ihDistanceKm": 15.7,
+      "wmoDistanceKm": null
+    },
+    "observedWaveNotClosest": {
+      "winner": "ih-buoy",
+      "reason": "ih-only",
+      "attachedKm": 16,
+      "altKm": 0
+    }
   },
   "falesia": {
     "waveHeight": 0.6,
@@ -27050,7 +29214,44 @@
     },
     "tideObservedHeight": 2.335,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Barra de Faro-Olhão"
+    "tideStation": "Barra de Faro-Olhão",
+    "tideAnomalyM": 0.582,
+    "observedWave": {
+      "waveHeight": 1.29,
+      "wavePeriod": 6.7,
+      "waveDirection": 136,
+      "maxWaveHeight": 1.95,
+      "waterTemp": 19.5,
+      "stationName": "CSA82/D",
+      "stationArea": "Continente - Faro",
+      "distanceKm": 28.3,
+      "observedAt": "2026-10-29T17:56:37.000Z",
+      "source": "ih-buoy",
+      "skill": {
+        "me": 0.08,
+        "n": 100,
+        "origin": "ih",
+        "mae": 0.12,
+        "rmse": 0.16,
+        "corr": 0.85,
+        "meanLeadHours": 46.8,
+        "buoyName": "CSA82/D"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "ih",
+      "reason": "ih-only",
+      "ihAgeHours": 2.2,
+      "wmoAgeHours": null,
+      "ihDistanceKm": 28.3,
+      "wmoDistanceKm": null
+    },
+    "observedWaveNotClosest": {
+      "winner": "ih-buoy",
+      "reason": "ih-only",
+      "attachedKm": 28,
+      "altKm": 0
+    }
   },
   "tres-irmaos": {
     "waveHeight": 0.6,
@@ -27212,7 +29413,8 @@
     },
     "tideObservedHeight": 2.335,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Barra de Faro-Olhão"
+    "tideStation": "Barra de Faro-Olhão",
+    "tideAnomalyM": 0.572
   },
   "canavial": {
     "waveHeight": 0.4,
@@ -27378,7 +29580,8 @@
     },
     "tideObservedHeight": 2.335,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Barra de Faro-Olhão"
+    "tideStation": "Barra de Faro-Olhão",
+    "tideAnomalyM": 0.572
   },
   "armacao-pera": {
     "waveHeight": 0.4,
@@ -27542,7 +29745,11 @@
     },
     "tideObservedHeight": 2.335,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Barra de Faro-Olhão"
+    "tideStation": "Barra de Faro-Olhão",
+    "secondarySwellHeight": 0.14,
+    "secondarySwellPeriod": 8.95,
+    "secondarySwellDirection": 263,
+    "tideAnomalyM": 0.582
   },
   "mareta": {
     "waveHeight": 1.88,
@@ -27687,7 +29894,8 @@
     },
     "tideObservedHeight": 2.335,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Barra de Faro-Olhão"
+    "tideStation": "Barra de Faro-Olhão",
+    "tideAnomalyM": 0.552
   },
   "machico": {
     "waveHeight": 0.84,
@@ -27852,7 +30060,44 @@
     },
     "tideObservedHeight": 1.236,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Funchal"
+    "tideStation": "Funchal",
+    "tideAnomalyM": 0.167,
+    "observedWave": {
+      "waveHeight": 0.71,
+      "wavePeriod": 5.9,
+      "waveDirection": 100,
+      "maxWaveHeight": 1.05,
+      "waterTemp": 22.4,
+      "stationName": "CSA94",
+      "stationArea": "Arquipélago da Madeira - Caniçal",
+      "distanceKm": 4.1,
+      "observedAt": "2026-10-29T18:29:57.000Z",
+      "source": "ih-buoy",
+      "skill": {
+        "me": -0.43,
+        "n": 622,
+        "origin": "ih",
+        "mae": 0.43,
+        "rmse": 0.49,
+        "corr": 0.3,
+        "meanLeadHours": 45.5,
+        "buoyName": "CSA94"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "ih",
+      "reason": "ih-only",
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": null,
+      "ihDistanceKm": 4.1,
+      "wmoDistanceKm": null
+    },
+    "observedWaveNotClosest": {
+      "winner": "ih-buoy",
+      "reason": "ih-only",
+      "attachedKm": 4,
+      "altKm": 0
+    }
   },
   "seixal-madeira": {
     "waveHeight": 0.82,
@@ -28013,7 +30258,44 @@
     },
     "tideObservedHeight": 1.236,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Funchal"
+    "tideStation": "Funchal",
+    "tideAnomalyM": 0.167,
+    "observedWave": {
+      "waveHeight": 0.71,
+      "wavePeriod": 5.9,
+      "waveDirection": 100,
+      "maxWaveHeight": 1.05,
+      "waterTemp": 22.4,
+      "stationName": "CSA94",
+      "stationArea": "Arquipélago da Madeira - Caniçal",
+      "distanceKm": 37,
+      "observedAt": "2026-10-29T18:29:57.000Z",
+      "source": "ih-buoy",
+      "skill": {
+        "me": -0.43,
+        "n": 622,
+        "origin": "ih",
+        "mae": 0.43,
+        "rmse": 0.49,
+        "corr": 0.3,
+        "meanLeadHours": 45.5,
+        "buoyName": "CSA94"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "ih",
+      "reason": "ih-only",
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": null,
+      "ihDistanceKm": 37,
+      "wmoDistanceKm": null
+    },
+    "observedWaveNotClosest": {
+      "winner": "ih-buoy",
+      "reason": "ih-only",
+      "attachedKm": 37,
+      "altKm": 0
+    }
   },
   "ponta-pargo": {
     "waveHeight": 0.92,
@@ -28158,7 +30440,8 @@
     },
     "tideObservedHeight": 1.236,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Funchal"
+    "tideStation": "Funchal",
+    "tideAnomalyM": 0.157
   },
   "madalena-mar": {
     "waveHeight": 0.7,
@@ -28323,7 +30606,44 @@
     },
     "tideObservedHeight": 1.236,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Funchal"
+    "tideStation": "Funchal",
+    "tideAnomalyM": 0.157,
+    "observedWave": {
+      "waveHeight": 0.71,
+      "wavePeriod": 5.9,
+      "waveDirection": 100,
+      "maxWaveHeight": 1.05,
+      "waterTemp": 22.4,
+      "stationName": "CSA94",
+      "stationArea": "Arquipélago da Madeira - Caniçal",
+      "distanceKm": 38.3,
+      "observedAt": "2026-10-29T18:29:57.000Z",
+      "source": "ih-buoy",
+      "skill": {
+        "me": -0.43,
+        "n": 622,
+        "origin": "ih",
+        "mae": 0.43,
+        "rmse": 0.49,
+        "corr": 0.3,
+        "meanLeadHours": 45.5,
+        "buoyName": "CSA94"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "ih",
+      "reason": "ih-only",
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": null,
+      "ihDistanceKm": 38.3,
+      "wmoDistanceKm": null
+    },
+    "observedWaveNotClosest": {
+      "winner": "ih-buoy",
+      "reason": "ih-only",
+      "attachedKm": 38,
+      "altKm": 0
+    }
   },
   "calhetas": {
     "waveHeight": 0.66,
@@ -28458,7 +30778,8 @@
     },
     "tideObservedHeight": 1.1,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Ponta Delgada - B"
+    "tideStation": "Ponta Delgada - B",
+    "tideAnomalyM": 0.077
   },
   "ribeira-quente": {
     "waveHeight": 0.56,
@@ -28593,7 +30914,8 @@
     },
     "tideObservedHeight": 1.1,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Ponta Delgada - B"
+    "tideStation": "Ponta Delgada - B",
+    "tideAnomalyM": 0.047
   },
   "formosa-santa-maria": {
     "waveHeight": 0.8,
@@ -28710,7 +31032,8 @@
     },
     "tideObservedHeight": 1.115,
     "tideObservedAt": "2026-10-26T17:33:00Z",
-    "tideStation": "Vila do Porto"
+    "tideStation": "Vila do Porto",
+    "tideAnomalyM": 0.052
   },
   "porto-martins": {
     "waveHeight": 0.7,
@@ -28845,7 +31168,8 @@
     },
     "tideObservedHeight": 1.241,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Angra do Heroísmo"
+    "tideStation": "Angra do Heroísmo",
+    "tideAnomalyM": 0.057
   },
   "cachorro-pico": {
     "waveHeight": 1.58,
@@ -28964,7 +31288,8 @@
     },
     "tideObservedHeight": 1.218,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Horta"
+    "tideStation": "Horta",
+    "tideAnomalyM": 0.075
   },
   "faja-cubres": {
     "waveHeight": 0.52,
@@ -29081,7 +31406,8 @@
     },
     "tideObservedHeight": 1.218,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Horta"
+    "tideStation": "Horta",
+    "tideAnomalyM": 0.065
   },
   "mindelo": {
     "waveHeight": 1.52,
@@ -29247,7 +31573,44 @@
     "secondarySwellDirection": 283,
     "tideObservedHeight": 2.413,
     "tideObservedAt": "2026-10-26T17:32:54Z",
-    "tideStation": "Leixões"
+    "tideStation": "Leixões",
+    "tideAnomalyM": 0.207,
+    "observedWave": {
+      "waveHeight": 1.78,
+      "wavePeriod": 10,
+      "waveDirection": 321,
+      "maxWaveHeight": 2.56,
+      "waterTemp": 16.3,
+      "stationName": "CSA92/D",
+      "stationArea": "Continente - Leixões",
+      "distanceKm": 20.3,
+      "observedAt": "2026-10-29T18:26:43.000Z",
+      "source": "ih-buoy",
+      "skill": {
+        "me": 0.66,
+        "n": 619,
+        "origin": "ih",
+        "mae": 0.66,
+        "rmse": 0.83,
+        "corr": 0.88,
+        "meanLeadHours": 45.5,
+        "buoyName": "CSA92/D"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "ih",
+      "reason": "ih-only",
+      "ihAgeHours": 1.7,
+      "wmoAgeHours": null,
+      "ihDistanceKm": 20.3,
+      "wmoDistanceKm": null
+    },
+    "observedWaveNotClosest": {
+      "winner": "ih-buoy",
+      "reason": "ih-only",
+      "attachedKm": 20,
+      "altKm": 0
+    }
   },
   "aterro": {
     "waveHeight": 1.4,
@@ -29411,7 +31774,44 @@
     "secondarySwellDirection": 236,
     "tideObservedHeight": 2.413,
     "tideObservedAt": "2026-10-26T17:32:54Z",
-    "tideStation": "Leixões"
+    "tideStation": "Leixões",
+    "tideAnomalyM": 0.207,
+    "observedWave": {
+      "waveHeight": 1.78,
+      "wavePeriod": 10,
+      "waveDirection": 321,
+      "maxWaveHeight": 2.56,
+      "waterTemp": 16.3,
+      "stationName": "CSA92/D",
+      "stationArea": "Continente - Leixões",
+      "distanceKm": 25.3,
+      "observedAt": "2026-10-29T18:26:43.000Z",
+      "source": "ih-buoy",
+      "skill": {
+        "me": 0.66,
+        "n": 619,
+        "origin": "ih",
+        "mae": 0.66,
+        "rmse": 0.83,
+        "corr": 0.88,
+        "meanLeadHours": 45.5,
+        "buoyName": "CSA92/D"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "ih",
+      "reason": "ih-only",
+      "ihAgeHours": 1.7,
+      "wmoAgeHours": null,
+      "ihDistanceKm": 25.3,
+      "wmoDistanceKm": null
+    },
+    "observedWaveNotClosest": {
+      "winner": "ih-buoy",
+      "reason": "ih-only",
+      "attachedKm": 25,
+      "altKm": 0
+    }
   },
   "foz-arelho": {
     "waveHeight": 2.02,
@@ -29561,7 +31961,43 @@
     "secondarySwellDirection": 302,
     "tideObservedHeight": 2.266,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Peniche - C"
+    "tideStation": "Peniche - C",
+    "tideAnomalyM": 0.298,
+    "observedWave": {
+      "waveHeight": 1.655269980430603,
+      "wavePeriod": 11.660200119018555,
+      "maxWaveHeight": 2.4316399097442627,
+      "waterTemp": 16.9360408782959,
+      "stationName": "Nazaré Costeira (WMO)",
+      "stationArea": "Nazaré",
+      "distanceKm": 17.6,
+      "observedAt": "2026-10-29T18:00:00.000Z",
+      "source": "wmo-buoy",
+      "skill": {
+        "me": 0.2,
+        "n": 506,
+        "origin": "wmo-pt",
+        "mae": 0.28,
+        "rmse": 0.38,
+        "corr": 0.92,
+        "meanLeadHours": 45.5,
+        "buoyName": "Nazaré Costeira (WMO)"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "wmo",
+      "reason": "wmo-only",
+      "ihAgeHours": null,
+      "wmoAgeHours": 2.1,
+      "ihDistanceKm": null,
+      "wmoDistanceKm": 17.6
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 18,
+      "altKm": 0
+    }
   },
   "obidos-lagoon-sul": {
     "waveHeight": 1.68,
@@ -29711,6 +32147,42 @@
     "secondarySwellDirection": 302,
     "tideObservedHeight": 2.266,
     "tideObservedAt": "2026-10-26T17:34:00Z",
-    "tideStation": "Peniche - C"
+    "tideStation": "Peniche - C",
+    "tideAnomalyM": 0.298,
+    "observedWave": {
+      "waveHeight": 1.655269980430603,
+      "wavePeriod": 11.660200119018555,
+      "maxWaveHeight": 2.4316399097442627,
+      "waterTemp": 16.9360408782959,
+      "stationName": "Nazaré Costeira (WMO)",
+      "stationArea": "Nazaré",
+      "distanceKm": 17.6,
+      "observedAt": "2026-10-29T18:00:00.000Z",
+      "source": "wmo-buoy",
+      "skill": {
+        "me": 0.2,
+        "n": 506,
+        "origin": "wmo-pt",
+        "mae": 0.28,
+        "rmse": 0.38,
+        "corr": 0.92,
+        "meanLeadHours": 45.5,
+        "buoyName": "Nazaré Costeira (WMO)"
+      }
+    },
+    "observedWaveMeta": {
+      "winner": "wmo",
+      "reason": "wmo-only",
+      "ihAgeHours": null,
+      "wmoAgeHours": 2.1,
+      "ihDistanceKm": null,
+      "wmoDistanceKm": 17.6
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 18,
+      "altKm": 0
+    }
   }
 }
