@@ -4,6 +4,7 @@ import { loadEvents } from '@/lib/load-events'
 import { upcomingEvents } from '@/lib/events'
 import NewsArchiveClient from '@/components/news/NewsArchiveClient'
 import { getTranslation, validateLocale } from '@/lib/i18n'
+import { buildNowMs } from '@/lib/buildClock'
 import type { Metadata } from 'next'
 import { buildPageMetadata } from '@/lib/seo'
 
@@ -46,7 +47,7 @@ export default async function NewsPage({ params }: { params: Promise<{ locale: s
 
   return (
     <div className="min-h-screen">
-      <NewsArchiveClient bakedNews={news as NewsItem[]} bakedEvents={events} locale={locale} />
+      <NewsArchiveClient bakedNews={news as NewsItem[]} bakedEvents={events} bakedNowMs={buildNowMs()} locale={locale} />
     </div>
   )
 }

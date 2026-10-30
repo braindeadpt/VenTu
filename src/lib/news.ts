@@ -1,6 +1,7 @@
 import type { NewsItem, Spot } from '@/types';
 import type { SportType } from '@/lib/sportRatings';
 import { getMacroRegion } from '@/lib/regions';
+import { lisbonDateKey } from '@/lib/events';
 
 export const ITEMS_PER_PAGE = 12;
 
@@ -56,19 +57,22 @@ export function getNewsBySlug(news: NewsItem[], slug: string): NewsItem | undefi
   return news.find(item => newsSlug(item) === slug);
 }
 
-export function filterNewsByDate(news: NewsItem[], period: DateFilter): NewsItem[] {
+export function filterNewsByDate(news: NewsItem[], period: DateFilter, nowMs?: number): NewsItem[] {
   if (period === 'all') return news;
-  const start = new Date();
-  start.setHours(0, 0, 0, 0);
-  if (period === '7d') {
-    start.setDate(start.getDate() - 7);
-  } else if (period === '30d') {
-    start.setDate(start.getDate() - 30);
-  }
-  return news.filter(item => new Date(item.publishedAt) >= start);
+  const now = nowMs != null ? new Date(nowMs) : new Date();
+  // Corte por dia de calendário de Lisboa — determinista em qualquer fuso do
+  // servidor/cliente (o HTML do build e o primeiro render têm de coincidir).
+  // A subtracção faz-se na data de calendário (UTC), não em ms: o dia de
+  // Lisboa tem 23h na mudança de primavera e 86400000×N caía um dia antes.
+  const dias = period === 'today' ? 0 : period === '7d' ? 7 : 30;
+  const [cy, cm, cd] = lisbonDateKey(now).split('-').map(Number);
+  const corteD = new Date(Date.UTC(cy, cm - 1, cd));
+  corteD.setUTCDate(corteD.getUTCDate() - dias);
+  const corte = corteD.toISOString().slice(0, 10);
+  return news.filter((item) => lisbonDateKey(new Date(item.publishedAt)) >= corte);
 }
 
-export function filterNews(news: NewsItem[], filters: NewsFiltersState): NewsItem[] {
+export function filterNews(news: NewsItem[], filters: NewsFiltersState, nowMs?: number): NewsItem[] {
   let result = [...news];
 
   if (filters.category !== 'all') {
@@ -79,7 +83,7 @@ export function filterNews(news: NewsItem[], filters: NewsFiltersState): NewsIte
     result = result.filter(item => (item.sourceRegion ?? 'intl') === filters.region);
   }
 
-  result = filterNewsByDate(result, filters.period);
+  result = filterNewsByDate(result, filters.period, nowMs);
 
   if (filters.query.trim()) {
     const q = filters.query.toLowerCase().trim();
@@ -112,19 +116,24 @@ export interface DayGroup {
   items: NewsItem[];
 }
 
-export function groupByDay(news: NewsItem[], locale: string): DayGroup[] {
+export function groupByDay(news: NewsItem[], locale: string, nowMs?: number): DayGroup[] {
   const groups = new Map<string, NewsItem[]>();
   for (const item of news) {
-    const d = new Date(item.publishedAt);
-    const key = d.toISOString().slice(0, 10);
+    // Dia de calendário de Lisboa (era toISOString → UTC, e partia ao virar a meia-noite local)
+    const key = lisbonDateKey(new Date(item.publishedAt));
     if (!groups.has(key)) groups.set(key, []);
     groups.get(key)!.push(item);
   }
 
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const yesterday = new Date(today);
-  yesterday.setDate(yesterday.getDate() - 1);
+  const now = nowMs != null ? new Date(nowMs) : new Date();
+  const hoje = lisbonDateKey(now);
+  // «Ontem» em aritmética de calendário UTC: o dia de Lisboa tem 23h após a
+  // mudança de primavera — subtrair 86400000 ms caía dois dias atrás entre
+  // as 00:00 e as 00:59 locais.
+  const [gy, gm, gd] = hoje.split('-').map(Number);
+  const ontemD = new Date(Date.UTC(gy, gm - 1, gd));
+  ontemD.setUTCDate(ontemD.getUTCDate() - 1);
+  const ontem = ontemD.toISOString().slice(0, 10);
 
   return Array.from(groups.entries())
     .sort(([a], [b]) => b.localeCompare(a))
@@ -132,15 +141,15 @@ export function groupByDay(news: NewsItem[], locale: string): DayGroup[] {
       const d = new Date(dateStr + 'T00:00:00Z');
       let label: string;
       let labelEn: string;
-      if (d.getTime() === today.getTime()) {
+      if (dateStr === hoje) {
         label = 'Hoje';
         labelEn = 'Today';
-      } else if (d.getTime() === yesterday.getTime()) {
+      } else if (dateStr === ontem) {
         label = 'Ontem';
         labelEn = 'Yesterday';
       } else {
-        label = d.toLocaleDateString('pt-PT', { day: 'numeric', month: 'long', year: 'numeric' });
-        labelEn = d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+        label = d.toLocaleDateString('pt-PT', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+        labelEn = d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
       }
       return { date: dateStr, label, labelEn, items };
     });
