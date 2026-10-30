@@ -1,11 +1,11 @@
 {
   "day": "20261030",
-  "fetchedAt": "2026-10-30T18:06:18.429Z",
+  "fetchedAt": "2026-10-30T20:06:14.063Z",
   "minPairs": 3,
   "minAccumulatedPairs": 10,
   "archive": {
     "windowDays": 30,
-    "pairHourCount": 571,
+    "pairHourCount": 570,
     "path": "buoy-coherence-archive.json"
   },
   "daily": {
@@ -14,12 +14,12 @@
     "trend": {
       "6200084|6200199": {
         "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
-        "coherent": 31,
+        "coherent": 30,
         "review": 4,
         "incoherent": 1,
-        "insufficient": 19,
+        "insufficient": 20,
         "days": 55,
-        "incoherentRatio": 0.028
+        "incoherentRatio": 0.029
       },
       "6200083|6201079": {
         "pair": "Villano-Sisargas × Datawell ao largo de Faro",
@@ -85,28 +85,38 @@
       "suboptimal": []
     },
     "Viana do Castelo": {
-      "spotCount": 6,
-      "withObservedWave": 0,
-      "bySource": {},
-      "audited": 0,
+      "spotCount": 7,
+      "withObservedWave": 1,
+      "bySource": {
+        "ih-buoy": 1
+      },
+      "audited": 1,
       "attachedIsClosest": 0,
-      "attachedNotClosest": 0,
+      "attachedNotClosest": 1,
       "onlySource": 0,
-      "notClosest": [],
+      "notClosest": [
+        {
+          "spot": "amorosa",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 39,
+          "altKm": 0
+        }
+      ],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
       "suboptimal": []
     },
     "Esposende": {
-      "spotCount": 3,
-      "withObservedWave": 3,
+      "spotCount": 4,
+      "withObservedWave": 4,
       "bySource": {
-        "ih-buoy": 3
+        "ih-buoy": 4
       },
-      "audited": 3,
+      "audited": 4,
       "attachedIsClosest": 0,
-      "attachedNotClosest": 3,
+      "attachedNotClosest": 4,
       "onlySource": 0,
       "notClosest": [
         {
@@ -114,6 +124,13 @@
           "winner": "ih-buoy",
           "reason": "ih-only",
           "attachedKm": 29,
+          "altKm": 0
+        },
+        {
+          "spot": "esposende-praia",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 30,
           "altKm": 0
         },
         {
@@ -175,14 +192,14 @@
       "suboptimal": []
     },
     "Porto": {
-      "spotCount": 9,
-      "withObservedWave": 7,
+      "spotCount": 11,
+      "withObservedWave": 9,
       "bySource": {
-        "ih-buoy": 7
+        "ih-buoy": 9
       },
-      "audited": 7,
+      "audited": 9,
       "attachedIsClosest": 0,
-      "attachedNotClosest": 7,
+      "attachedNotClosest": 9,
       "onlySource": 0,
       "notClosest": [
         {
@@ -190,6 +207,20 @@
           "winner": "ih-buoy",
           "reason": "ih-only",
           "attachedKm": 27,
+          "altKm": 0
+        },
+        {
+          "spot": "matosinhos",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 29,
+          "altKm": 0
+        },
+        {
+          "spot": "cabedelo-douro",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 33,
           "altKm": 0
         },
         {
@@ -1246,7 +1277,7 @@
       "suboptimal": []
     }
   },
-  "regionsAuditedAt": "2026-10-30T18:15:54.062Z",
+  "regionsAuditedAt": "2026-10-30T20:08:48.805Z",
   "pairs": [
     {
       "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
@@ -1256,14 +1287,14 @@
       ],
       "distanceKm": 285.3,
       "ptSource": "wmo",
-      "n": 541,
+      "n": 540,
       "meanDeltaM": -0.3,
       "meanAbsDeltaM": 0.5,
       "maxAbsDeltaM": 2.8,
       "corr": 0.79,
       "verdict": "coherent",
-      "firstHour": "2026-09-30T19",
-      "lastHour": "2026-10-30T16",
+      "firstHour": "2026-09-30T21",
+      "lastHour": "2026-10-30T17",
       "hours": [
         {
           "6200084": 1.2899999618530273,
@@ -1349,6 +1380,11 @@
           "6200084": 1.1699999570846558,
           "6200199": 0.732420027256012,
           "hour": "2026-10-30T16"
+        },
+        {
+          "6200084": 1.409999966621399,
+          "6200199": 0.7470700144767761,
+          "hour": "2026-10-30T17"
         }
       ]
     }
