@@ -127,7 +127,13 @@ export function groupByDay(news: NewsItem[], locale: string, nowMs?: number): Da
 
   const now = nowMs != null ? new Date(nowMs) : new Date();
   const hoje = lisbonDateKey(now);
-  const ontem = lisbonDateKey(new Date(now.getTime() - 86400000));
+  // «Ontem» em aritmética de calendário UTC: o dia de Lisboa tem 23h após a
+  // mudança de primavera — subtrair 86400000 ms caía dois dias atrás entre
+  // as 00:00 e as 00:59 locais.
+  const [gy, gm, gd] = hoje.split('-').map(Number);
+  const ontemD = new Date(Date.UTC(gy, gm - 1, gd));
+  ontemD.setUTCDate(ontemD.getUTCDate() - 1);
+  const ontem = ontemD.toISOString().slice(0, 10);
 
   return Array.from(groups.entries())
     .sort(([a], [b]) => b.localeCompare(a))

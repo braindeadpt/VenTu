@@ -29,6 +29,7 @@ const item = (id: string, publishedAt: string): NewsItem =>
     category: 'surf',
     source: 'x',
     sourceType: 'rss',
+    sourceRegion: 'pt',
     keyPoints: [],
     url: 'https://x.pt',
     tags: [],
@@ -68,24 +69,35 @@ describe('NewsArchiveClient — hidratação real (jsdom)', () => {
     expect(errors).toEqual([]);
   });
 
-  it('o primeiro render do cliente usa bakedNowMs, não o relógio real', async () => {
-    // Se o render usasse Date.now(), o grupo «Hoje» do cliente seria o dia
-    // actual (≠14 nov 2025) e a hidratação falhava — apanha a regressão.
-    const serverHtml = renderToString(createElement(NewsArchiveClient, props()));
-    expect(serverHtml).toContain('Hoje');
+  it('depois do mount troca para o relógio real (fake timers)', async () => {
+    // Build: 14 nov 23:30 (bakedNowMs). «Visita»: 15 nov 12:00 — o mount
+    // effect faz setNowMs(Date.now()) e re-renderiza com o relógio real.
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2025-11-15T12:00:00Z'));
+    try {
+      const serverHtml = renderToString(createElement(NewsArchiveClient, props()));
+      expect(serverHtml).toContain('Hoje');
+      expect(serverHtml).not.toContain('Ontem'); // 14 nov ainda é «Hoje» no HTML do build
 
-    const container = document.createElement('div');
-    container.innerHTML = serverHtml;
-    const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
-    await act(async () => {
-      hydrateRoot(container, createElement(NewsArchiveClient, props()));
-    });
-    spy.mockRestore();
+      const container = document.createElement('div');
+      container.innerHTML = serverHtml;
+      const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
+      await act(async () => {
+        hydrateRoot(container, createElement(NewsArchiveClient, props()));
+      });
+      // Efeitos pós-mount podem ficar pendentes em timers congelados — flush.
+      await act(async () => {
+        vi.runOnlyPendingTimers();
+      });
+      const errors = hydrationErrors(spy);
+      spy.mockRestore();
 
-    // Depois dos efeitos o relógio real já pode mudar o conteúdo — mas o
-    // grupo «Hoje» do dia do build continua presente ou foi substituído
-    // pelo render pós-mount; em nenhum dos casos houve erro de hidratação.
-    expect(hydrationErrors(spy)).toEqual([]);
-    expect(container.querySelector('div')).toBeTruthy();
+      expect(errors).toEqual([]);
+      // Pós-mount, a 15 nov: 15 → «Hoje», 14 → «Ontem»
+      expect(container.innerHTML).toContain('Hoje');
+      expect(container.innerHTML).toContain('Ontem');
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });

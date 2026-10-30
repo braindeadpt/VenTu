@@ -14,7 +14,7 @@ import type { NewsItem } from '@/types';
 import type { VentuEvent } from '@/types/events';
 
 const item = (id: string, publishedAt: string): NewsItem =>
-  ({ id, publishedAt, title: id, titleEn: id, summary: '', summaryEn: '', category: 'surf', source: 'x', sourceType: 'rss', keyPoints: [], url: 'https://x.pt', tags: [] }) as NewsItem;
+  ({ id, publishedAt, title: id, titleEn: id, summary: '', summaryEn: '', category: 'surf', source: 'x', sourceType: 'rss', sourceRegion: 'pt', keyPoints: [], url: 'https://x.pt', tags: [] }) as NewsItem;
 
 const ev = (id: string, startDate: string, endDate?: string): VentuEvent =>
   ({ id, startDate, endDate, title: id, kind: 'competition', sports: ['surf'] }) as unknown as VentuEvent;
@@ -57,6 +57,15 @@ describe('groupByDay — dia de Lisboa e nowMs explícito', () => {
     const g = groupByDay([item('tarde', '2025-07-14T23:30:00Z')], 'pt', VER_0030);
     expect(g[0].date).toBe('2025-07-15');
     expect(g[0].label).toBe('Hoje');
+  });
+
+  it('«Ontem» no dia a seguir à mudança de primavera (00:30 Lisboa)', () => {
+    // 31 mar 00:30 WEST = 30 mar 23:30 UTC. «Hoje» = 31 mar; «Ontem» tem de
+    // ser 30 mar — com subtracção de 86400000 ms caía em 29 mar (WET).
+    const N31 = [item('h31', '2025-03-30T23:45:00Z'), item('o30', '2025-03-30T10:00:00Z')];
+    const g = groupByDay(N31, 'pt', Date.parse('2025-03-30T23:30:00Z'));
+    expect(g.find((x) => x.date === '2025-03-31')?.label).toBe('Hoje');
+    expect(g.find((x) => x.date === '2025-03-30')?.label).toBe('Ontem');
   });
 
   it('o heading de grupos antigos mostra a data da chave, não o fuso do leitor', () => {
