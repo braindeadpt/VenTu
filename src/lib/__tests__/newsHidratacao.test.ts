@@ -113,13 +113,9 @@ describe('NewsArchiveClient — primeiro render igual ao servidor', () => {
   const BAKED = INV_2330; // build de 14 nov à noite
   const NEWS = [item('a', '2025-11-14T10:00:00Z'), item('b', '2025-11-15T01:00:00Z')];
 
-  it('o markup do cliente com bakedNowMs é byte a byte o do servidor', () => {
-    const render = () =>
-      renderToStaticMarkup(
-        createElement(NewsArchiveClient, { bakedNews: NEWS, bakedEvents: [], bakedNowMs: BAKED, locale: 'pt' }),
-      );
-    expect(render()).toBe(render());
-  });
+  // A hidratação REAL (HTML do servidor + hydrateRoot num DOM) está em
+  // newsHidratacaoDom.test.ts — renderToStaticMarkup duas vezes só prova
+  // determinismo, não apanha mismatches de browser.
 
   it('usa o relógio do build, não o actual: «Hoje» = o dia do build (14 nov)', () => {
     const html = renderToStaticMarkup(
