@@ -29,16 +29,26 @@ interface NewsArchiveClientProps {
   bakedNews: NewsItem[];
   /** Build-time baked events snapshot. */
   bakedEvents?: VentuEvent[];
+  /**
+   * «Agora» do build (`buildNowMs()` no server component). O primeiro render
+   * usa esta referência fixa — igual ao HTML — e só depois do mount troca
+   * para `Date.now()` (hidratação #418: sem ela, «Hoje»/«Ontem», o filtro de
+   * período e os eventos divergiam quando o dia virava entre build e visita).
+   */
+  bakedNowMs: number;
   locale: string;
 }
 
 export default function NewsArchiveClient({
   bakedNews,
   bakedEvents = [],
+  bakedNowMs,
   locale,
 }: NewsArchiveClientProps) {
   const t = getTranslation(locale);
   const isPt = locale === 'pt';
+  // Referência fixa do build até ao mount; depois o relógio real.
+  const [nowMs, setNowMs] = useState(bakedNowMs);
   // E2E seam (same pattern as AboutDataCards): with the ventu_live cookie the
   // baked props are the BUILD's data, which page.route can never alternate on
   // a static export. Seed null and re-derive from client-fetched /data/ JSON
@@ -119,6 +129,7 @@ export default function NewsArchiveClient({
     } catch {
       /* noop */
     }
+    setNowMs(Date.now());
     setHydrated(true);
   }, []);
 
@@ -201,14 +212,14 @@ export default function NewsArchiveClient({
   );
 
   const isDebouncing = searchInput !== debouncedQuery && searchInput !== '';
-  const filteredAll = useMemo(() => filterNews(news, currentFilters), [news, currentFilters]);
+  const filteredAll = useMemo(() => filterNews(news, currentFilters, nowMs), [news, currentFilters, nowMs]);
   const { items: pageItems, totalPages, currentPage } = useMemo(
     () => paginateNews(filteredAll, page),
     [filteredAll, page],
   );
-  const groups = useMemo(() => groupByDay(pageItems, locale), [pageItems, locale]);
+  const groups = useMemo(() => groupByDay(pageItems, locale, nowMs), [pageItems, locale, nowMs]);
 
-  const liveEvents = useMemo(() => upcomingEvents(events), [events]);
+  const liveEvents = useMemo(() => upcomingEvents(events, new Date(nowMs)), [events, nowMs]);
 
   return (
     <div className="space-y-8" data-hydration-gate="news">
