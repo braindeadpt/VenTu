@@ -1,6 +1,6 @@
 {
   "day": "20261031",
-  "fetchedAt": "2026-10-31T20:00:09.832Z",
+  "fetchedAt": "2026-10-31T20:13:49.762Z",
   "minPairs": 3,
   "minAccumulatedPairs": 10,
   "archive": {
@@ -85,14 +85,24 @@
       "suboptimal": []
     },
     "Viana do Castelo": {
-      "spotCount": 6,
-      "withObservedWave": 0,
-      "bySource": {},
-      "audited": 0,
+      "spotCount": 7,
+      "withObservedWave": 1,
+      "bySource": {
+        "ih-buoy": 1
+      },
+      "audited": 1,
       "attachedIsClosest": 0,
-      "attachedNotClosest": 0,
+      "attachedNotClosest": 1,
       "onlySource": 0,
-      "notClosest": [],
+      "notClosest": [
+        {
+          "spot": "amorosa",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 39,
+          "altKm": 0
+        }
+      ],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -1267,7 +1277,7 @@
       "suboptimal": []
     }
   },
-  "regionsAuditedAt": "2026-10-31T20:00:21.252Z",
+  "regionsAuditedAt": "2026-10-31T20:17:04.716Z",
   "pairs": [
     {
       "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
