@@ -75,6 +75,21 @@ for attempt in $(seq 1 10); do
     mkdir -p data-state
     cp -a "$DATA_BACKUP/data-state/." data-state/
   fi
+  # Ficheiros de public/data que NÃO são deste pipeline: cada um tem o seu bot
+  # (update-news, dawn-patrol, apply-contributions) ou é editado à mão
+  # (directory.json). O artefacto traz a cópia do checkout do início do run
+  # (~20 min antes); o cp -a acima repunha-a por cima de um commit que entretanto
+  # aterrou na main. Visto a 31/10/2026: 8568e4bc (dados, 12:29) reverteu o
+  # news.json do 39d68a4f (notícias, 12:09) e deixou o sitemap (gerado do
+  # news.json) desfasado — drift guard do ci.yml vermelho e deploy parado.
+  # Ficam sempre como estão na origin/main (ou ausentes, se lá não existem).
+  for owned_elsewhere in news.json dawn-patrol.json community-tips.json directory.json; do
+    if git cat-file -e "origin/main:public/data/$owned_elsewhere" 2>/dev/null; then
+      git checkout -q origin/main -- "public/data/$owned_elsewhere"
+    else
+      rm -f "public/data/$owned_elsewhere"
+    fi
+  done
   git add -f public/data/
   git add data-state/ 2>/dev/null || true
   # The -f above is required (public/data/ is gitignored) but it also
@@ -90,6 +105,20 @@ for attempt in $(seq 1 10); do
   # agregado ainda trackeado na main — ou trazido por um artefacto de um run
   # anterior à mudança — saia de vez em vez de ficar congelado.
   git rm -q --cached --ignore-unmatch -- public/data/forecasts.json
+
+  # Rede de segurança do sitemap (gerado de news.json, directory.json e
+  # src/lib/spots.ts): se este commit mudar a estrutura dele, o sitemap vai no
+  # mesmo commit. Só lastmod diferente (data de hoje) não conta e é descartado,
+  # para não criar churn. Gerador e guard são node puro (sem npm ci).
+  if [ -f scripts/generate-sitemap.js ] && [ -f scripts/check-sitemap-drift.js ]; then
+    node scripts/generate-sitemap.js >/dev/null
+    if node scripts/check-sitemap-drift.js >/dev/null 2>&1; then
+      git checkout -q -- public/sitemap.xml
+    else
+      echo "Sitemap: estrutura mudou com estes dados — regenerado no mesmo commit"
+      git add -f public/sitemap.xml
+    fi
+  fi
 
   if git diff --staged --quiet; then
     echo "Data already matches origin/main — nothing to publish"

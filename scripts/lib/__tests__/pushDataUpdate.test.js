@@ -107,6 +107,36 @@ describe('push-data-update.sh (repo git temporário)', () => {
     expect(git(origin, 'show', 'main:public/data/conditions.json')).toBe('{"v":3}');
   });
 
+  it('ficheiros de outros bots (news.json, …) ficam como na main, não como no artefacto', () => {
+    fs.rmSync(path.join(tmp, 'origin.git'), { recursive: true, force: true });
+    fs.rmSync(path.join(tmp, 'seed'), { recursive: true, force: true });
+    fs.rmSync(path.join(tmp, 'runner'), { recursive: true, force: true });
+    const { origin, seed, runner } = setup();
+    // O runner fez checkout com o news.json antigo; entretanto o bot das
+    // notícias publica um novo na main (31/10/2026: 39d68a4f vs 8568e4bc).
+    write(runner, 'public/data/news.json', '[{"v":"antigo"}]\n');
+    write(runner, 'public/data/dawn-patrol.json', '{"v":"antigo"}\n');
+    write(runner, 'public/data/community-tips.json', '{}\n');
+    write(runner, 'public/data/conditions.json', '{"v":4}\n');
+    write(seed, 'public/data/news.json', '[{"v":"novo"}]\n');
+    write(seed, 'public/data/dawn-patrol.json', '{"v":"novo"}\n');
+    git(seed, 'add', '-f', 'public/data');
+    git(seed, 'commit', '-q', '-m', 'auto: news');
+    git(seed, 'push', '-q', 'origin', 'HEAD:main');
+
+    execFileSync('bash', [SCRIPT, 'auto: teste'], {
+      cwd: runner,
+      env: { ...process.env, ...GIT_ENV, GITHUB_ACTIONS: 'true' },
+      encoding: 'utf8',
+    });
+    expect(git(origin, 'show', 'main:public/data/news.json')).toBe('[{"v":"novo"}]');
+    expect(git(origin, 'show', 'main:public/data/dawn-patrol.json')).toBe('{"v":"novo"}');
+    expect(git(origin, 'show', 'main:public/data/conditions.json')).toBe('{"v":4}');
+    // Ficheiro de outro bot que não existe na main não entra pela mão deste.
+    const files = git(origin, 'ls-tree', '-r', '--name-only', 'main').split('\n');
+    expect(files).not.toContain('public/data/community-tips.json');
+  });
+
   it('recusa correr fora do GitHub Actions', () => {
     let code = 0;
     try {
