@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-10-31T12:07:05.935Z",
+  "fetchedAt": "2026-10-31T13:56:12.028Z",
   "windowDays": 90,
   "dayCount": 60,
   "days": [
@@ -66354,18 +66354,18 @@
           "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=0032ee1a-9608-424f-a30e-ada23989ae71"
         },
         {
-          "id": 18941,
-          "ref": "ANAV NR 2400/26",
-          "category": "Exercicios navais ou exercicios de tiro",
-          "source": "ih",
-          "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=4cbe9311-fe28-431b-b1d0-30503a6707d6"
-        },
-        {
           "id": 18951,
           "ref": "ANAV NR 2412/26",
           "category": "Requisitos de segurança maritima",
           "source": "ih",
           "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=17a6ed79-d4cf-4cf3-89bd-5a4df7fd5ab6"
+        },
+        {
+          "id": 18967,
+          "ref": "ANAV NR 2421/26",
+          "category": "Requisitos de segurança maritima",
+          "source": "ih",
+          "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=d8396f8d-7b83-489b-a189-0103c4b4adf1"
         },
         {
           "id": 1000182,
@@ -73092,21 +73092,6 @@
       "nDays": 44
     },
     {
-      "ref": "ANAV NR 2400/26",
-      "category": "Exercicios navais ou exercicios de tiro",
-      "source": "ih",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=4cbe9311-fe28-431b-b1d0-30503a6707d6",
-      "firstSeen": "2026-10-28",
-      "lastSeen": "2026-10-31",
-      "daysInForce": [
-        "2026-10-28",
-        "2026-10-29",
-        "2026-10-30",
-        "2026-10-31"
-      ],
-      "nDays": 4
-    },
-    {
       "ref": "ANAV NR 241/25",
       "category": "Assinalamento Marítimo",
       "source": "ih",
@@ -73180,6 +73165,18 @@
         "2026-10-31"
       ],
       "nDays": 3
+    },
+    {
+      "ref": "ANAV NR 2421/26",
+      "category": "Requisitos de segurança maritima",
+      "source": "ih",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=d8396f8d-7b83-489b-a189-0103c4b4adf1",
+      "firstSeen": "2026-10-31",
+      "lastSeen": "2026-10-31",
+      "daysInForce": [
+        "2026-10-31"
+      ],
+      "nDays": 1
     },
     {
       "ref": "ANAV NR 249/24",
@@ -77073,6 +77070,20 @@
         "2026-10-31"
       ],
       "nDays": 50
+    },
+    {
+      "ref": "ANAV NR 2400/26",
+      "category": "Exercicios navais ou exercicios de tiro",
+      "source": "ih",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=4cbe9311-fe28-431b-b1d0-30503a6707d6",
+      "firstSeen": "2026-10-28",
+      "lastSeen": "2026-10-30",
+      "daysInForce": [
+        "2026-10-28",
+        "2026-10-29",
+        "2026-10-30"
+      ],
+      "nDays": 3
     },
     {
       "ref": "ANAV NR 2334/26",

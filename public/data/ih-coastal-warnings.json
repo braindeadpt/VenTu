@@ -233,38 +233,6 @@
       ]
     },
     {
-      "id": 18941,
-      "ref": "ANAV NR 2400/26",
-      "category": "Exercicios navais ou exercicios de tiro",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=4cbe9311-fe28-431b-b1d0-30503a6707d6",
-      "source": "ih",
-      "collection": "nav_warning_coastal",
-      "polygons": [
-        [
-          [
-            -9,
-            38.166667
-          ],
-          [
-            -9.2,
-            38.166667
-          ],
-          [
-            -9.2,
-            38
-          ],
-          [
-            -9,
-            38
-          ],
-          [
-            -9,
-            38.166667
-          ]
-        ]
-      ]
-    },
-    {
       "id": 18951,
       "ref": "ANAV NR 2412/26",
       "category": "Requisitos de segurança maritima",
@@ -292,6 +260,38 @@
           [
             -7.871103,
             36.968615
+          ]
+        ]
+      ]
+    },
+    {
+      "id": 18967,
+      "ref": "ANAV NR 2421/26",
+      "category": "Requisitos de segurança maritima",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=d8396f8d-7b83-489b-a189-0103c4b4adf1",
+      "source": "ih",
+      "collection": "nav_warning_coastal",
+      "polygons": [
+        [
+          [
+            -8.804451,
+            41.52066
+          ],
+          [
+            -8.804451,
+            41.551242
+          ],
+          [
+            -8.763211,
+            41.551242
+          ],
+          [
+            -8.763211,
+            41.52066
+          ],
+          [
+            -8.804451,
+            41.52066
           ]
         ]
       ]
@@ -7344,17 +7344,20 @@
       2018401
     ],
     "esposende": [
+      18967,
       1000657,
       1009684,
       2018401,
       2018801
     ],
     "esposende-praia": [
+      18967,
       1009684,
       2018401,
       2018801
     ],
     "fao": [
+      18967,
       1009684,
       2018401,
       2018801
@@ -8049,7 +8052,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-10-31T12:07:05.903Z",
+  "fetchedAt": "2026-10-31T13:56:11.861Z",
   "sourceCollection": "nav_warning_coastal+nav_warning_local+orca_anavnet_point",
   "sourceUrl": "https://ogcapi.hidrografico.pt/collections/nav_warning_coastal"
 }
