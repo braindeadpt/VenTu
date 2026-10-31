@@ -1,6 +1,6 @@
 {
   "day": "20261031",
-  "fetchedAt": "2026-10-31T07:32:38.287Z",
+  "fetchedAt": "2026-10-31T08:06:54.023Z",
   "minPairs": 3,
   "minAccumulatedPairs": 10,
   "archive": {
@@ -85,7 +85,7 @@
       "suboptimal": []
     },
     "Viana do Castelo": {
-      "spotCount": 6,
+      "spotCount": 7,
       "withObservedWave": 0,
       "bySource": {},
       "audited": 0,
@@ -127,7 +127,7 @@
       "suboptimal": []
     },
     "Porto": {
-      "spotCount": 10,
+      "spotCount": 11,
       "withObservedWave": 0,
       "bySource": {},
       "audited": 0,
@@ -1146,7 +1146,7 @@
       "suboptimal": []
     }
   },
-  "regionsAuditedAt": "2026-10-31T07:32:48.555Z",
+  "regionsAuditedAt": "2026-10-31T08:09:19.392Z",
   "pairs": [
     {
       "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
@@ -1162,8 +1162,8 @@
       "maxAbsDeltaM": 2.8,
       "corr": 0.79,
       "verdict": "coherent",
-      "firstHour": "2026-10-01T08",
-      "lastHour": "2026-10-31T05",
+      "firstHour": "2026-10-01T09",
+      "lastHour": "2026-10-31T06",
       "hours": [
         {
           "6200084": 1.8799999952316284,
@@ -1194,6 +1194,11 @@
           "6200084": 2.3399999141693115,
           "6200199": 1.1132800579071045,
           "hour": "2026-10-31T05"
+        },
+        {
+          "6200084": 2.3399999141693115,
+          "6200199": 1.5820300579071045,
+          "hour": "2026-10-31T06"
         }
       ]
     }
