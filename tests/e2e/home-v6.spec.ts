@@ -201,22 +201,29 @@ test.describe('#183 home v6 — 390 × 844', () => {
     await expect(rodape.getByRole('link', { name: /Mapa da costa/ })).toHaveCount(0);
   });
 
-  test('a foto do hero e dos cartões tem crédito visível com ligações; substitutas dizem o sítio real', async ({ page }) => {
+  test('a foto do hero e dos cartões tem crédito (pílula «©» a 390) com ligações; substitutas dizem o sítio real', async ({ page }) => {
     await fixtureMaquete(page);
     await abreHome(page, '/pt/', { maquete: true });
-    const cred = page.getByTestId('home-hero').getByTestId('foto-credito');
-    await expect(cred).toBeVisible();
+    // < 640 px: a linha de texto dá lugar à pílula «©»; o crédito abre com as mesmas ligações
+    await expect(page.getByTestId('home-hero').getByTestId('foto-credito')).toBeHidden();
+    const cred = page.getByTestId('home-hero').getByTestId('foto-credito-m');
+    await expect(cred.locator('summary')).toBeVisible();
+    await cred.locator('summary').click();
     await expect(cred).toContainText('Foto: Alvesgaspar / Commons, CC BY-SA 3.0');
     await expect(cred.getByRole('link')).toHaveCount(2);
     for (const c of await page.getByTestId('home-cartao').all()) {
-      const cc = c.getByTestId('foto-credito');
-      await expect(cc).toBeVisible();
+      const cc = c.getByTestId('foto-credito-m');
+      await expect(cc.locator('summary')).toBeVisible();
+      await cc.locator('summary').click();
       await expect(cc.getByRole('link')).toHaveCount(2);
-      for (const a of await cc.getByRole('link').all()) await expect(a).toHaveAttribute('href', /utm_source=ventu&utm_medium=referral/);
+      for (const a of await cc.getByRole('link').all()) {
+        await expect(a).toBeVisible();
+        await expect(a).toHaveAttribute('href', /utm_source=ventu&utm_medium=referral/);
+      }
     }
     // Lagoa de Albufeira e Caparica em kite: substitutas de Sines
-    await expect(page.getByTestId('home-cartao').first().getByTestId('foto-credito')).toHaveAttribute('data-estado', 'sub');
-    await expect(page.getByTestId('home-cartao').first().getByTestId('foto-credito')).toContainText('· Sines');
+    await expect(page.getByTestId('home-cartao').first().getByTestId('foto-credito-m')).toHaveAttribute('data-estado', 'sub');
+    await expect(page.getByTestId('home-cartao').first().getByTestId('foto-credito-m')).toContainText('· Sines');
   });
 
   test('Kite/Surf grava {d, v}, sobrevive ao reload e ?d= tem prioridade; a string antiga migra', async ({ page }) => {
