@@ -241,7 +241,16 @@ for (const pele of PELES) {
           // não se exige contagem, só que a pele não os esconda (mesmo nº nas duas).
           const arcos = await page.locator('.ventu-wind-ring, .ventu-wind-wedge, [data-wind-tick]').count();
           test.info().annotations.push({ type: 'arcos-vento', description: String(arcos) });
-          await page.getByRole('button', { name: /Como ler o vento no mapa/i }).first().click();
+          // No desktop o «Como ler o vento» é a dica única que surge após a 1.ª
+          // interacção com um marcador (e some aos 12 s): limpa-se a marca de
+          // «já visto», toca-se num pin e abre-se a legenda a partir da dica.
+          await page.evaluate(() => localStorage.removeItem('ventu:windRingLegendSeen'));
+          const pin = page.locator('.leaflet-marker-icon.spot-marker').first();
+          await expect(pin).toBeVisible({ timeout: 20_000 });
+          await pin.click();
+          const dica = page.getByRole('note', { name: /Como ler o vento no mapa/i });
+          await expect(dica).toBeVisible({ timeout: 10_000 });
+          await dica.getByRole('button', { name: /Como ler o vento no mapa/i }).click();
           await expect(page.getByRole('dialog', { name: /Ler o vento no mapa/i })).toBeVisible({ timeout: 10_000 });
         });
       });
@@ -294,10 +303,14 @@ for (const pele of PELES) {
           for (const g of ['Base', 'Tempo', 'Mar', 'Navegação']) await expect(pop.getByText(g, { exact: true }).first()).toBeVisible();
         });
         await test.step('#21 Tempo (48 h, radar, satélite IR), #22 Mar (SST, correntes), #23 Navegação, #24 tempestades e áreas', async () => {
-          for (const t of [
-            'hours', 'radar', 'goes-ir', 'sst', 'currents', 'buoys', 'nautical-chart', 'coastal-warnings', 'storms', 'warn-areas',
-          ]) {
+          for (const t of ['hours', 'radar', 'goes-ir', 'sst', 'currents', 'buoys', 'nautical-chart', 'coastal-warnings']) {
             await expect(pop.locator(`[data-map-${t}-toggle]`).first(), t).toBeAttached();
+          }
+          // Tempestades e áreas sob aviso são sazonais/de evento: sem dados o
+          // toggle esconde-se (MapLayersZone). Regista-se a presença, sem a exigir.
+          for (const t of ['storms', 'warn-areas']) {
+            const n = await pop.locator(`[data-map-${t}-toggle]`).count();
+            test.info().annotations.push({ type: `toggle-${t}`, description: String(n) });
           }
         });
         await test.step('#25 limite de 2 raster pesadas (a 3.ª desliga a mais antiga, com toast) e #26 mini-legenda', async () => {
