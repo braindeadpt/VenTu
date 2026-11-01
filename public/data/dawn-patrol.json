@@ -1,30 +1,41 @@
 {
-  "date": "2026-10-31",
-  "generatedAt": "2026-10-31T04:37:11.272Z",
-  "topSpot": "Guincho",
-  "topSpotSlug": "guincho",
+  "date": "2026-11-01",
+  "generatedAt": "2026-11-01T04:26:49.456Z",
+  "topSpot": "Arrifana",
+  "topSpotSlug": "arrifana",
   "pt": {
-    "headline": "Hoje é dia de Guincho! 🌊",
-    "advice": "Melhor janela: 9:00h. Ondas de 1.8m com 2 nós de vento. ⚓ Avisos à Navegação Costeiros (IH): ANAV NR 1445/26 — Animais Marinhos - Interação · ANAV NR 1727/26 — Animais Marinhos - Avistamento",
-    "bestTime": "9:00",
+    "headline": "Hoje é dia de Arrifana! 🌊",
+    "advice": "Melhor janela: 8:00h. Ondas de 1.9m com 4 nós de vento. ⚓ Avisos à Navegação Costeiros (IH): ANAV NR 2423/26 — Requisitos de segurança maritima · ANAV NR 2/22 — Plano de Salvamento Marítimo Lagos",
+    "bestTime": "8:00",
     "wetsuit": "3/2mm",
     "crowdTip": "Chega cedo para evitar crowd!",
-    "moonTideLine": "Gibosa minguante · Transição · baixa-mar 12:00"
+    "moonTideLine": "Quarto minguante · Transição · baixa-mar 13:00"
   },
   "en": {
-    "headline": "Today is Guincho day! 🌊",
-    "advice": "Best window: 9:00. 1.8m waves with 2 knot wind. ⚓ Coastal navigation warnings (IH): ANAV NR 1445/26 — Animais Marinhos - Interação · ANAV NR 1727/26 — Animais Marinhos - Avistamento",
-    "bestTime": "9:00",
+    "headline": "Today is Arrifana day! 🌊",
+    "advice": "Best window: 8:00. 1.9m waves with 4 knot wind. ⚓ Coastal navigation warnings (IH): ANAV NR 2423/26 — Requisitos de segurança maritima · ANAV NR 2/22 — Plano de Salvamento Marítimo Lagos",
+    "bestTime": "8:00",
     "wetsuit": "3/2mm",
     "crowdTip": "Get there early to beat the crowd!",
-    "moonTideLine": "Waning gibbous · Transition · low tide 12:00"
+    "moonTideLine": "Last quarter · Transition · low tide 13:00"
   },
   "spots": [
     {
-      "name": "Guincho",
-      "slug": "guincho",
+      "name": "Arrifana",
+      "slug": "arrifana",
       "score": 90,
       "scoreForecast": 90,
+      "scoreSource": "previsão",
+      "scoreMeta": null,
+      "verdict": "go",
+      "ptReason": "Condições excelentes",
+      "enReason": "Excellent conditions"
+    },
+    {
+      "name": "Guincho",
+      "slug": "guincho",
+      "score": 80,
+      "scoreForecast": 80,
       "scoreSource": "previsão",
       "scoreMeta": null,
       "verdict": "go",
@@ -34,8 +45,8 @@
     {
       "name": "Nazaré",
       "slug": "nazare",
-      "score": 90,
-      "scoreForecast": 90,
+      "score": 80,
+      "scoreForecast": 80,
       "scoreSource": "previsão",
       "scoreMeta": null,
       "verdict": "go",
@@ -45,28 +56,6 @@
     {
       "name": "Ribeira d'Ilhas",
       "slug": "ribeira-ilhas",
-      "score": 90,
-      "scoreForecast": 90,
-      "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
-    },
-    {
-      "name": "Coxos",
-      "slug": "coxos",
-      "score": 90,
-      "scoreForecast": 90,
-      "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
-    },
-    {
-      "name": "Arrifana",
-      "slug": "arrifana",
       "score": 80,
       "scoreForecast": 80,
       "scoreSource": "previsão",
@@ -78,13 +67,24 @@
     {
       "name": "Supertubos",
       "slug": "supertubos",
-      "score": 70,
-      "scoreForecast": 70,
+      "score": 60,
+      "scoreForecast": 60,
       "scoreSource": "previsão",
       "scoreMeta": null,
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
+      "verdict": "maybe",
+      "ptReason": "Condições razoáveis",
+      "enReason": "Fair conditions"
+    },
+    {
+      "name": "Coxos",
+      "slug": "coxos",
+      "score": 60,
+      "scoreForecast": 60,
+      "scoreSource": "previsão",
+      "scoreMeta": null,
+      "verdict": "maybe",
+      "ptReason": "Condições razoáveis",
+      "enReason": "Fair conditions"
     },
     {
       "name": "Carcavelos",
