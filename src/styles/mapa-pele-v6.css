@@ -32,7 +32,7 @@
   --windDir-offshore:127 231 255;--windDir-cross:169 194 212;--windDir-onshore:255 138 128;
   /* Superfície sempre escura: com `.theme-ocean` no documento os tokens de dados, desporto,
      acento e as variantes -rgb herdam os valores claros (escuros, para fundo claro) e ficariam
-     ilegíveis nos painéis #071B2C. Repõem-se aqui os valores do tema escuro (globals.css :root),
+     ilegíveis nos painéis #071B2C. Repõem-se aqui os valores do tema escuro (o bloco escuro por defeito de globals.css),
      os mesmos que o /mapa usa hoje em modo escuro; nota e vento já vêm dos remaps acima. */
   --data-waves:14 165 233;--data-wind:167 139 250;--data-water:34 211 238;--data-period:251 191 36;
   --sport-surf:14 165 233;--sport-kitesurf:167 139 250;--sport-windsurf:245 158 11;--sport-bodyboard:16 185 129;
@@ -45,8 +45,8 @@
 }
 /* Os <select> nativos (região, nível) seguem a superfície escura também com `.theme-ocean`:
    a regra `.theme-ocean select{color-scheme:light}` de globals.css ganha ao herdado, por isso
-   repete-se aqui com mais especificidade, como a excepção de `.v6`/`.v6h`. */
-.theme-ocean [data-pele='v6'] select,[data-pele='v6'] select{color-scheme:dark}
+   repete-se aqui com mais especificidade (0,2,1 com o :is), como a excepção de `.v6`/`.v6h`. */
+[data-pele='v6'] select,[data-pele='v6'] select:is(.theme-ocean *){color-scheme:dark}
 [data-pele='v6'] select option,[data-pele='v6'] select optgroup{background-color:var(--fundo);color:var(--espuma)}
 [data-pele='v6'] .leaflet-container{font-family:var(--txt)}
 
@@ -55,6 +55,9 @@
    regras da pele levam !important — mas só dentro de [data-pele='v6']. A cor do disco vem do
    remap --score-* acima; a tinta continua a de markerScoreInkCss (abismo, branco no «Não dá»),
    ≥ 4,5:1 em todas as bandas e 5,9:1 na noite. */
+/* Tipografia: excepção v6 registada em .agents/skills/ventu-premium-frontend (aprovada pelo
+   Pedro a 01/11/2026). Nas superfícies v6 os números usam Barlow Condensed com tabular-nums em
+   vez de Geist Mono; fora delas mantém-se a regra das quatro famílias. */
 [data-pele='v6'] .v3in{
   font:900 19px/1 var(--disp)!important;font-variant-numeric:tabular-nums;
   box-shadow:0 0 0 2px var(--abismo),0 0 0 3.5px rgba(243,248,251,.22),0 4px 10px -4px rgba(0,0,0,.8)!important;

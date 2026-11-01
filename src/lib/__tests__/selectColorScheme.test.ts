@@ -102,7 +102,8 @@ describe('<select> nativo — pele v6 do /mapa ([data-pele=v6], sempre escura)',
   });
 
   it('volta a dark com .theme-ocean, com mais especificidade que `.theme-ocean select`', () => {
-    expect(regras.get(".theme-ocean [data-pele='v6'] select")?.['color-scheme']).toBe('dark');
+    // :is(.theme-ocean *) dá 0,2,1 > 0,1,1 de `.theme-ocean select` e mantém o seletor no âmbito
+    expect(regras.get("[data-pele='v6'] select:is(.theme-ocean *)")?.['color-scheme']).toBe('dark');
     expect(regras.get("[data-pele='v6'] select")?.['color-scheme']).toBe('dark');
   });
 
