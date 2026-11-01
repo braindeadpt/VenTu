@@ -23,7 +23,48 @@
   --divider:30 67 97;--divider-strong:30 67 97;--fg:243 248 251;--fg-muted:169 194 212;--fg-subtle:169 194 212;
   --accent:127 231 255;--accent-hover:255 201 60;--accent-active:255 201 60;
   --font-geist-sans:'Barlow',system-ui,sans-serif;--font-display:'Barlow Condensed','Arial Narrow',sans-serif;
+  /* B1: os escalões da nota passam às bandas v6 (Não dá → Muito bom), na mesma ordem que
+     scoreThresholds/nota.ts. Tudo o que o /mapa pinta com rgb(var(--score-*)) (marcadores,
+     pontos, grupos «+N») veste as bandas sem mudar de markup. Espelho testado em
+     src/lib/__tests__/mapPeleMarcadores.test.ts contra V6_BANDAS (v6Tokens.ts). */
+  --score-closed:168 70 74;--score-poor:68 121 238;--score-fair:201 158 42;--score-good:64 220 208;--score-epic:255 240 122;
+  /* B1: anel do vento por ventoRel — gelo offshore, névoa cross, coral onshore */
+  --windDir-offshore:127 231 255;--windDir-cross:169 194 212;--windDir-onshore:255 138 128;
   color-scheme:dark;
   font-family:var(--txt);
 }
 [data-pele='v6'] .leaflet-container{font-family:var(--txt)}
+
+/* ── B1 · marcadores, grupos e noite (maquete da fase B, `.mk .n` / `.cl`) ──
+   Os divIcons do /mapa trazem estilos inline (buildV3MarkerIcon/buildV3DotIcon), por isso as
+   regras da pele levam !important — mas só dentro de [data-pele='v6']. A cor do disco vem do
+   remap --score-* acima; a tinta continua a de markerScoreInkCss (abismo, branco no «Não dá»),
+   ≥ 4,5:1 em todas as bandas e 5,9:1 na noite. */
+[data-pele='v6'] .v3in{
+  font:900 19px/1 var(--disp)!important;font-variant-numeric:tabular-nums;
+  box-shadow:0 0 0 2px var(--abismo),0 0 0 3.5px rgba(243,248,251,.22),0 4px 10px -4px rgba(0,0,0,.8)!important;
+}
+[data-pele='v6'] .v3mk[data-spot-night] .v3in{box-shadow:0 0 0 2px var(--abismo),0 0 0 3.5px rgba(243,248,251,.16),0 4px 10px -4px rgba(0,0,0,.8)!important}
+/* «+N» do grupo: o melhor do grupo é o disco; a contagem em espuma, como o `.cl .q` da maquete */
+[data-pele='v6'] .v3more{
+  background:var(--espuma)!important;color:var(--ink)!important;
+  font:800 12px/18px var(--txt)!important;box-shadow:0 0 0 2px var(--abismo)!important;
+}
+[data-pele='v6'] .v3dot>i{box-shadow:0 0 0 1.5px var(--abismo),0 1px 3px rgba(0,0,0,.6)!important}
+/* Tique de vento → arco v6 de 60° no aro + ponta em ponto, na cor do ventoRel. O tique roda
+   para onde o vento sopra; o arco fica centrado nessa direcção. Sem relação (água interior)
+   fica só a ponta, em névoa. */
+[data-pele='v6'] .v3tick{--rel:var(--nevoa)}
+[data-pele='v6'] .v3tick[data-vento-rel='offshore']{--rel:rgb(var(--windDir-offshore))}
+[data-pele='v6'] .v3tick[data-vento-rel='cross']{--rel:rgb(var(--windDir-cross))}
+[data-pele='v6'] .v3tick[data-vento-rel='onshore']{--rel:rgb(var(--windDir-onshore))}
+[data-pele='v6'] .v3tick[data-vento-rel]::before{
+  content:'';position:absolute;left:-23px;top:-23px;width:46px;height:46px;box-sizing:border-box;border-radius:50%;
+  border:3.6px solid transparent;border-top-color:var(--rel);
+  -webkit-mask:conic-gradient(from -30deg,#000 0 60deg,transparent 60deg);mask:conic-gradient(from -30deg,#000 0 60deg,transparent 60deg);
+  filter:drop-shadow(0 0 1.4px var(--abismo)) drop-shadow(0 0 .8px var(--abismo));
+}
+[data-pele='v6'] .v3tick .v3tip{
+  left:-5px!important;top:-31px!important;width:10px;height:10px;box-sizing:border-box;
+  border:1.6px solid var(--abismo)!important;border-radius:50%;background:var(--rel);
+}
