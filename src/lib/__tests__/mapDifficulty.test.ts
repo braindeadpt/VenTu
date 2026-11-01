@@ -3,6 +3,7 @@ import {
   lerNivelEscolhido,
   MAP_DIFFICULTY_LS_KEY,
   nivelDoSpot,
+  nivelFromUrlParam,
   spotDentroDoNivel,
   spotMatchesDifficultyFilter,
   type MapDifficultyFilter,
@@ -108,5 +109,21 @@ describe('lerNivelEscolhido — «sem nível» é null', () => {
     const { store } = mockLocalStorage();
     store.set(MAP_DIFFICULTY_LS_KEY, 'lixo');
     expect(lerNivelEscolhido()).toBeNull();
+  });
+});
+
+describe('nivelFromUrlParam — ?nivel= nos links partilhados do /mapa', () => {
+  it.each([
+    ['beginner', 'beginner'],
+    ['intermediate', 'intermediate'],
+    ['advanced', 'advanced'],
+  ] as const)('%s → nível válido', (raw, esperado) => {
+    expect(nivelFromUrlParam(raw)).toBe(esperado);
+  });
+  it.each(['expert', 'all', 'lixo', '', 'BEGINNER'])('inválido «%s» → undefined (cai para o localStorage)', (raw) => {
+    expect(nivelFromUrlParam(raw)).toBeUndefined();
+  });
+  it('parâmetro ausente (null) → undefined', () => {
+    expect(nivelFromUrlParam(null)).toBeUndefined();
   });
 });

@@ -1,5 +1,6 @@
 import type { GridSportFilter } from '@/lib/sportRatings';
 import type { BasemapMode } from '@/components/spots/MapLayerToggle';
+import type { MapDifficultyFilter } from '@/lib/mapDifficulty';
 import { DEFAULT_REGION } from '@/lib/gridFilters';
 
 /**
@@ -38,6 +39,8 @@ export interface MapShareView {
   layers?: MapShareLayers;
   /** 'satellite' partilha o basemap de satélite; ausente = «mapa». */
   basemap?: BasemapMode;
+  /** Nível activo → `?nivel=`. 'all'/ausente não sai no URL. */
+  difficulty?: MapDifficultyFilter;
 }
 
 export function buildMapShareSearch(view: MapShareView): string {
@@ -60,6 +63,7 @@ export function buildMapShareSearch(view: MapShareView): string {
   }
   if (view.layers?.windOff && !view.layers.wind && !view.layers.swell) params.set('wind', '0');
   if (view.basemap === 'satellite') params.set('basemap', 'sat');
+  if (view.difficulty && view.difficulty !== 'all') params.set('nivel', view.difficulty);
   return `?${params.toString()}`;
 }
 

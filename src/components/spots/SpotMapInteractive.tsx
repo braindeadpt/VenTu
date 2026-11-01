@@ -496,6 +496,7 @@ export default function SpotMapInteractive({
     locale,
     selectedSport,
     selectedRegion,
+    selectedDifficulty: mapHud?.selectedDifficulty,
     windEnabled,
     radarEnabled,
     radarFrameList,
