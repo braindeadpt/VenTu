@@ -81,6 +81,69 @@ test.describe('/mapa pele v6 — marcadores nas bandas (B1)', () => {
     for (const d of await lerDiscos(page)) expect(v6.has(d.bg), `nota ${d.nota} (${d.bg})`).toBe(false);
   });
 
+  test('com ?pele=v6: arco do vento na cor do ventoRel e centrado na direcção do tique', async ({ page }) => {
+    await abrir(page, '/pt/mapa/?pele=v6&sport=kitesurf&wind=1');
+    const scope = page.locator('[data-pele="v6"]');
+    await expect(scope).toBeAttached({ timeout: 15_000 });
+    // Determinístico, sem depender do vento do build: um tique sintético por relação, com o
+    // mesmo markup de buildV3MarkerIcon, dentro do âmbito da pele. Lê-se o ::before (arco),
+    // a ponta e a direcção real no ecrã (centro da ponta face ao centro do tique).
+    const lidos = await scope.evaluate((root) => {
+      const casos: Array<[string | null, number]> = [['offshore', 0], ['cross', 90], ['onshore', 225], [null, 135]];
+      const host = document.createElement('div');
+      host.style.cssText = 'position:fixed;left:200px;top:200px;width:80px;height:80px;z-index:99999';
+      root.appendChild(host);
+      const out = casos.map(([rel, deg]) => {
+        host.innerHTML = `<i class="v3tick" data-wind-tick="true"${rel ? ` data-vento-rel="${rel}"` : ''} style="position:absolute;left:50%;top:50%;width:0;height:0;transform:rotate(${deg}deg)"><i class="v3tip" style="position:absolute;left:-4px;top:-27px"></i></i>`;
+        const tick = host.querySelector<HTMLElement>('.v3tick')!;
+        const tip = host.querySelector<HTMLElement>('.v3tip')!;
+        const arco = getComputedStyle(tick, '::before');
+        const h = host.getBoundingClientRect();
+        const p = tip.getBoundingClientRect();
+        const dx = p.left + p.width / 2 - (h.left + h.width / 2);
+        const dy = p.top + p.height / 2 - (h.top + h.height / 2);
+        return {
+          rel, deg,
+          arcoCor: arco.borderTopColor,
+          arcoConteudo: arco.content,
+          arcoLargura: arco.width,
+          mascara: arco.maskImage || (arco as unknown as Record<string, string>).webkitMaskImage || '',
+          pontaCor: getComputedStyle(tip).backgroundColor,
+          // ângulo no ecrã, 0° = cima, sentido horário (o mesmo do rotate)
+          angulo: (Math.atan2(dx, -dy) * 180) / Math.PI,
+        };
+      });
+      host.remove();
+      return out;
+    });
+    const COR: Record<string, string> = {
+      offshore: 'rgb(127, 231, 255)', // gelo
+      cross: 'rgb(169, 194, 212)', // névoa
+      onshore: 'rgb(255, 138, 128)', // coral
+    };
+    const dif = (a: number, b: number) => Math.abs(((a - b + 540) % 360) - 180);
+    for (const l of lidos) {
+      expect(dif(l.angulo, l.deg), `direcção ${l.rel} ${l.deg}° (${l.angulo.toFixed(1)}°)`).toBeLessThan(3);
+      if (l.rel) {
+        expect(l.arcoConteudo, `arco ${l.rel}`).not.toBe('none');
+        expect(l.arcoLargura).toBe('46px');
+        expect(l.mascara, `máscara de 60° ${l.rel}`).toContain('conic-gradient');
+        expect(l.arcoCor, `cor do arco ${l.rel}`).toBe(COR[l.rel]);
+        expect(l.pontaCor, `cor da ponta ${l.rel}`).toBe(COR[l.rel]);
+      } else {
+        // sem relação (água interior): sem arco, só a ponta em névoa
+        expect(l.arcoConteudo).toBe('none');
+        expect(l.pontaCor).toBe(COR.cross);
+      }
+    }
+    // E os tiques reais, quando o vento do build os desenha: cada um com a cor da sua relação.
+    const reais = await page.locator('[data-v3spot] .v3tick[data-vento-rel]').evaluateAll((els) =>
+      els.slice(0, 30).map((el) => ({ rel: el.getAttribute('data-vento-rel')!, cor: getComputedStyle(el, '::before').borderTopColor })),
+    );
+    test.info().annotations.push({ type: 'arcos-reais', description: String(reais.length) });
+    for (const r of reais) expect(r.cor, `arco real ${r.rel}`).toBe(COR[r.rel]);
+  });
+
   test('com ?pele=v6 numa frame de noite: disco #56677B, sem número', async ({ page }) => {
     await page.route('**/data/map-hours.json', async (route) => {
       const res = await route.fetch();

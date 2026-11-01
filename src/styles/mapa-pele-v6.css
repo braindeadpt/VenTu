@@ -30,9 +30,24 @@
   --score-closed:168 70 74;--score-poor:68 121 238;--score-fair:201 158 42;--score-good:64 220 208;--score-epic:255 240 122;
   /* B1: anel do vento por ventoRel — gelo offshore, névoa cross, coral onshore */
   --windDir-offshore:127 231 255;--windDir-cross:169 194 212;--windDir-onshore:255 138 128;
+  /* Superfície sempre escura: com `.theme-ocean` no documento os tokens de dados, desporto,
+     acento e as variantes -rgb herdam os valores claros (escuros, para fundo claro) e ficariam
+     ilegíveis nos painéis #071B2C. Repõem-se aqui os valores do tema escuro (globals.css :root),
+     os mesmos que o /mapa usa hoje em modo escuro; nota e vento já vêm dos remaps acima. */
+  --data-waves:14 165 233;--data-wind:167 139 250;--data-water:34 211 238;--data-period:251 191 36;
+  --sport-surf:14 165 233;--sport-kitesurf:167 139 250;--sport-windsurf:245 158 11;--sport-bodyboard:16 185 129;
+  --sport-sup:6 182 212;--sport-wakeboard:236 72 153;--sport-foil:129 140 248;
+  --fg-rgb:243 248 251;--fg-muted-rgb:169 194 212;--fg-subtle-rgb:169 194 212;--fg-disabled:100 116 139 / 0.50;--fg-disabled-rgb:100 116 139;
+  --surface-1-rgb:255 255 255;--surface-2-rgb:255 255 255;--surface-3-rgb:255 255 255;--divider-rgb:255 255 255;--divider-strong-rgb:255 255 255;
+  --accent-rgb:127 231 255;--daypart-tint:14 165 233;--skeleton-bg:255 255 255;--skeleton-shimmer:255 255 255;
   color-scheme:dark;
   font-family:var(--txt);
 }
+/* Os <select> nativos (região, nível) seguem a superfície escura também com `.theme-ocean`:
+   a regra `.theme-ocean select{color-scheme:light}` de globals.css ganha ao herdado, por isso
+   repete-se aqui com mais especificidade, como a excepção de `.v6`/`.v6h`. */
+.theme-ocean [data-pele='v6'] select,[data-pele='v6'] select{color-scheme:dark}
+[data-pele='v6'] select option,[data-pele='v6'] select optgroup{background-color:var(--fundo);color:var(--espuma)}
 [data-pele='v6'] .leaflet-container{font-family:var(--txt)}
 
 /* ── B1 · marcadores, grupos e noite (maquete da fase B, `.mk .n` / `.cl`) ──

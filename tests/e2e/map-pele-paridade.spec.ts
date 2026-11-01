@@ -135,6 +135,29 @@ async function abre(page: Page, pele: Pele, query = '', opts: AbreOpts = {}): Pr
   return erros;
 }
 
+/**
+ * Conta os arcos/tiques do vento depois de assentarem: os marcadores e a grelha de vento
+ * chegam em assíncrono, por isso espera-se que a contagem fique igual em duas leituras.
+ */
+async function contaArcos(page: Page): Promise<number> {
+  await expect(page.locator('.leaflet-container')).toHaveAttribute('data-map-windfield', 'true', { timeout: 20_000 });
+  await page.waitForFunction(() => document.querySelectorAll('[data-v3spot]').length > 0, undefined, { timeout: 30_000 });
+  const sel = '.ventu-wind-ring, .ventu-wind-wedge, [data-wind-tick]';
+  let antes = -1;
+  await expect
+    .poll(
+      async () => {
+        const agora = await page.locator(sel).count();
+        const estavel = agora === antes;
+        antes = agora;
+        return estavel;
+      },
+      { timeout: 15_000, intervals: [500] },
+    )
+    .toBe(true);
+  return antes;
+}
+
 const painel = (page: Page) => page.locator('[data-map-panel="open"]');
 const marcador = (page: Page, id: string) => page.locator(`.leaflet-marker-icon.spot-marker[data-spot-id="${id}"]`);
 
@@ -239,8 +262,19 @@ for (const pele of PELES) {
         await test.step('#16/#49 arcos do vento nos pins + «Como ler o vento»', async () => {
           // Os arcos dependem do vento dos dados do build (calma = sem arcos):
           // não se exige contagem, só que a pele não os esconda (mesmo nº nas duas).
-          const arcos = await page.locator('.ventu-wind-ring, .ventu-wind-wedge, [data-wind-tick]').count();
+          const arcos = await contaArcos(page);
           test.info().annotations.push({ type: 'arcos-vento', description: String(arcos) });
+          if (pele.on) {
+            // Paridade a sério: as duas peles correm em testes separados, por isso a mesma vista
+            // abre-se aqui também com a pele desligada, num separador novo do mesmo contexto,
+            // e as contagens têm de bater (a pele não pode esconder nem duplicar arcos).
+            const outra = await page.context().newPage();
+            await abre(outra, PELES[0], '?sport=kitesurf&wind=1', { cluster: '0' });
+            const semPele = await contaArcos(outra);
+            await outra.close();
+            test.info().annotations.push({ type: 'arcos-vento-sem-pele', description: String(semPele) });
+            expect(arcos, 'arcos do vento com a pele v6 = sem a pele').toBe(semPele);
+          }
           // No desktop o «Como ler o vento» é a dica única que surge após a 1.ª
           // interacção com um marcador (e some aos 12 s): limpa-se a marca de
           // «já visto», toca-se num pin e abre-se a legenda a partir da dica.
