@@ -1,103 +1,103 @@
 {
-  "date": "2026-10-31",
-  "generatedAt": "2026-10-31T04:37:11.272Z",
-  "topSpot": "Guincho",
-  "topSpotSlug": "guincho",
+  "date": "2026-11-01",
+  "topSpot": "Arrifana",
+  "topSpotSlug": "arrifana",
   "pt": {
-    "headline": "Hoje é dia de Guincho! 🌊",
-    "advice": "Melhor janela: 9:00h. Ondas de 1.8m com 2 nós de vento. ⚓ Avisos à Navegação Costeiros (IH): ANAV NR 1445/26 — Animais Marinhos - Interação · ANAV NR 1727/26 — Animais Marinhos - Avistamento",
-    "bestTime": "9:00",
+    "headline": "Arrifana oferece ondas perfeitas e clima ideal hoje!",
+    "advice": "Ondas de 1,9 m com período de 12 s e vento leve (4 kt) criam condições ótimas. Aviso à navegação costeira ANAV NR 2423/26 e ANAV NR 2/22 em vigor na zona – fique atento, mas nada impede de surfar. Use fato 3/2 mm e chegue cedo para evitar a lotação.",
+    "bestTime": "09:00",
     "wetsuit": "3/2mm",
-    "crowdTip": "Chega cedo para evitar crowd!",
-    "moonTideLine": "Gibosa minguante · Transição · baixa-mar 12:00"
+    "crowdTip": "Chegue antes das 10 h para pegar a melhor onda com menos gente.",
+    "moonTideLine": "Quarto minguante · Transição · baixa-mar 13:00"
   },
   "en": {
-    "headline": "Today is Guincho day! 🌊",
-    "advice": "Best window: 9:00. 1.8m waves with 2 knot wind. ⚓ Coastal navigation warnings (IH): ANAV NR 1445/26 — Animais Marinhos - Interação · ANAV NR 1727/26 — Animais Marinhos - Avistamento",
-    "bestTime": "9:00",
+    "headline": "Arrifana serves perfect waves and ideal conditions today!",
+    "advice": "1.9 m waves with a 12‑second period and light wind (4 kt) make for prime surf. Coastal navigation warning ANAV NR 2423/26 and ANAV NR 2/22 are in effect – stay aware but surfable. Wear a 3/2 mm wetsuit and arrive early to beat the crowd.",
+    "bestTime": "09:00",
     "wetsuit": "3/2mm",
-    "crowdTip": "Get there early to beat the crowd!",
-    "moonTideLine": "Waning gibbous · Transition · low tide 12:00"
+    "crowdTip": "Get there before 10 am to catch the best waves with fewer people.",
+    "moonTideLine": "Last quarter · Transition · low tide 13:00"
   },
   "spots": [
     {
+      "name": "Supertubos",
+      "slug": "supertubos",
+      "score": 60,
+      "verdict": "maybe",
+      "ptReason": "Nota 6/10, vento leve, mas avisos costeiros (ANAV NR 12/24, ANAV NR 2257/26) exigem atenção.",
+      "enReason": "Score 6/10, light wind, but coastal warnings (ANAV NR 12/24, ANAV NR 2257/26) require caution.",
+      "scoreForecast": 60,
+      "scoreSource": "previsão",
+      "scoreMeta": null
+    },
+    {
       "name": "Guincho",
       "slug": "guincho",
-      "score": 90,
-      "scoreForecast": 90,
-      "scoreSource": "previsão",
-      "scoreMeta": null,
+      "score": 80,
       "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
+      "ptReason": "Nota 8/10, boas ondas e vento fraco; avisos de animais marinhos, mas sem risco imediato.",
+      "enReason": "Score 8/10, solid waves and light wind; marine animal notices present but no immediate hazard.",
+      "scoreForecast": 80,
+      "scoreSource": "previsão",
+      "scoreMeta": null
     },
     {
       "name": "Nazaré",
       "slug": "nazare",
-      "score": 90,
-      "scoreForecast": 90,
-      "scoreSource": "previsão",
-      "scoreMeta": null,
+      "score": 80,
       "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
+      "ptReason": "Nota 8/10, ondas consistentes e vento quase nulo – ótimo para surf de qualidade.",
+      "enReason": "Score 8/10, consistent waves and almost no wind – great for quality surf.",
+      "scoreForecast": 80,
+      "scoreSource": "previsão",
+      "scoreMeta": null
     },
     {
       "name": "Ribeira d'Ilhas",
       "slug": "ribeira-ilhas",
-      "score": 90,
-      "scoreForecast": 90,
-      "scoreSource": "previsão",
-      "scoreMeta": null,
+      "score": 80,
       "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
+      "ptReason": "Nota 8/10, condições equilibradas; aviso de avistamento de animais marinhos apenas informativo.",
+      "enReason": "Score 8/10, balanced conditions; marine animal sighting notice is informational only.",
+      "scoreForecast": 80,
+      "scoreSource": "previsão",
+      "scoreMeta": null
     },
     {
       "name": "Coxos",
       "slug": "coxos",
-      "score": 90,
-      "scoreForecast": 90,
+      "score": 60,
+      "verdict": "maybe",
+      "ptReason": "Nota 6/10, ondas boas mas vento de 3 kt pode gerar alguma agitação; aviso de avistamento de animais marinhos.",
+      "enReason": "Score 6/10, decent waves but 3 kt wind may add some chop; marine animal sighting notice.",
+      "scoreForecast": 60,
       "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
+      "scoreMeta": null
     },
     {
       "name": "Arrifana",
       "slug": "arrifana",
-      "score": 80,
-      "scoreForecast": 80,
-      "scoreSource": "previsão",
-      "scoreMeta": null,
+      "score": 90,
       "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
-    },
-    {
-      "name": "Supertubos",
-      "slug": "supertubos",
-      "score": 70,
-      "scoreForecast": 70,
+      "ptReason": "Nota 9/10, ondas perfeitas, vento leve; avisos de segurança marítima (ANAV NR 2423/26, ANAV NR 2/22) apenas informativos.",
+      "enReason": "Score 9/10, perfect waves, light wind; maritime safety notices (ANAV NR 2423/26, ANAV NR 2/22) are informational.",
+      "scoreForecast": 90,
       "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
+      "scoreMeta": null
     },
     {
       "name": "Carcavelos",
       "slug": "carcavelos",
       "score": 60,
+      "verdict": "maybe",
+      "ptReason": "Nota 6/10, ondas menores e vento de 4 kt; múltiplos avisos de interação com animais marinhos.",
+      "enReason": "Score 6/10, smaller waves and 4 kt wind; several marine animal interaction notices.",
       "scoreForecast": 60,
       "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "maybe",
-      "ptReason": "Condições razoáveis",
-      "enReason": "Fair conditions"
+      "scoreMeta": null
     }
   ],
+  "generatedAt": "2026-11-01T04:36:57.596Z",
   "topScore": 90,
   "topScoreForecast": 90,
   "topScoreSource": "previsão",
