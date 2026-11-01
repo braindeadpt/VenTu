@@ -237,10 +237,30 @@ test.describe('/pt/mapa ?nivel= (link partilhado)', () => {
     const level = page.getByRole('combobox', { name: /Nível|Level/i });
     await expect(level).toHaveValue('intermediate');
 
-    // Mudança manual volta a gravar, como hoje.
+    // Mudança manual volta a gravar, como hoje — e o ?nivel= sai da barra
+    // (um refresh ou cópia do URL não reaplicava o nível da visita).
     await level.selectOption('beginner');
     await expect
       .poll(async () => page.evaluate(() => localStorage.getItem('ventu:map:difficulty')))
       .toBe('beginner');
+    expect(new URL(page.url()).searchParams.get('nivel')).toBeNull();
+  });
+
+  test('«Limpar» tira o nivel do URL e o select volta a «Todos»', async ({ page }) => {
+    await preseedWindRingLegend(page);
+    await page.goto('/pt/mapa/?nivel=intermediate');
+    await page.waitForSelector('.leaflet-container', { timeout: 25_000 });
+
+    await page.getByRole('button', { name: /Mostrar filtros|Show filters/i }).click();
+    const level = page.getByRole('combobox', { name: /Nível|Level/i });
+    await expect(level).toHaveValue('intermediate');
+
+    await page.getByRole('button', { name: /Limpar|Clear/i }).click();
+    await expect(level).toHaveValue('all');
+    expect(new URL(page.url()).searchParams.get('nivel')).toBeNull();
+    // E grava 'all' — a escolha manual repõe a persistência.
+    await expect
+      .poll(async () => page.evaluate(() => localStorage.getItem('ventu:map:difficulty')))
+      .toBe('all');
   });
 });

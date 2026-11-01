@@ -26,6 +26,7 @@ import {
 } from '@/lib/gridFilters';
 import { dispatchSportChange, LS_SPORT_KEY, readSportFromStorage } from '@/lib/homepageSport';
 import { unlockPageInteraction } from '@/lib/mapFullscreen';
+import { setMapLayerUrlParam } from '@/lib/mapShareUrl';
 import { getSpotDetailHref } from '@/lib/mapSpotDetail';
 import { getTranslation } from '@/lib/i18n';
 import { useLiveGridSpotData } from '@/hooks/useLiveGridSpotData';
@@ -294,8 +295,12 @@ export default function MapaFullscreenClient({
   const handleSportChange = useCallback((next: GridSportFilter) => setSport(next), []);
   const handleRegionChange = useCallback((next: string) => setRegion(next), []);
   const handleDifficultyChange = useCallback((next: MapDifficultyFilter) => {
-    // Escolha manual volta a gravar a pref — o ?nivel= era só da visita.
-    nivelDoUrlRef.current = false;
+    // Escolha manual volta a gravar a pref — o ?nivel= era só da visita e
+    // sai da barra (um refresh/cópia não reaplicava o nível antigo).
+    if (nivelDoUrlRef.current) {
+      nivelDoUrlRef.current = false;
+      setMapLayerUrlParam('nivel', false);
+    }
     setDifficulty(next);
   }, []);
 
@@ -303,7 +308,10 @@ export default function MapaFullscreenClient({
   // componente) — a modalidade fica: é a escolha principal e tem o seu
   // próprio chip «×».
   const handleReset = useCallback(() => {
-    nivelDoUrlRef.current = false;
+    if (nivelDoUrlRef.current) {
+      nivelDoUrlRef.current = false;
+      setMapLayerUrlParam('nivel', false);
+    }
     setRegion(DEFAULT_REGION);
     setDifficulty('all');
   }, []);
