@@ -1,856 +1,178 @@
 {
-  "source": "meteoalarm",
-  "fetchedAt": "2026-11-01T08:07:32.350Z",
+  "source": "ipma",
+  "fetchedAt": "2026-11-01T10:07:03.735Z",
   "warnings": [
     {
-      "areaCode": "Madeira - Costa Norte",
-      "areaLabel": "Madeira - Costa Norte",
+      "areaCode": "MRM",
+      "areaLabel": "Madeira — Regiões Montanhosas",
       "type": "Precipitação",
       "level": "yellow",
       "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-      "startTime": "2026-10-31T21:00:00.000Z",
-      "endTime": "2026-11-01T12:00:00.000Z",
+      "startTime": "2026-11-01T09:00:00",
+      "endTime": "2026-11-01T21:00:00",
       "relevant": true
     },
     {
-      "areaCode": "Madeira - Costa Sul",
-      "areaLabel": "Madeira - Costa Sul",
+      "areaCode": "MCN",
+      "areaLabel": "Madeira — Costa Norte",
       "type": "Precipitação",
       "level": "yellow",
       "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-      "startTime": "2026-11-01T09:00:00.000Z",
-      "endTime": "2026-11-01T12:00:00.000Z",
+      "startTime": "2026-11-01T07:32:00",
+      "endTime": "2026-11-01T21:00:00",
       "relevant": true
     },
     {
-      "areaCode": "Madeira - Costa Sul",
-      "areaLabel": "Madeira - Costa Sul",
-      "type": "Precipitação",
-      "level": "orange",
-      "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-      "startTime": "2026-11-01T00:00:00.000Z",
-      "endTime": "2026-11-01T09:00:00.000Z",
-      "relevant": true
-    },
-    {
-      "areaCode": "Madeira - Regiões Montanhosas",
-      "areaLabel": "Madeira - Regiões Montanhosas",
-      "type": "Precipitação",
-      "level": "orange",
-      "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-      "startTime": "2026-11-01T00:00:00.000Z",
-      "endTime": "2026-11-01T09:00:00.000Z",
-      "relevant": true
-    },
-    {
-      "areaCode": "Madeira - Porto Santo",
-      "areaLabel": "Madeira - Porto Santo",
+      "areaCode": "MPS",
+      "areaLabel": "Porto Santo",
       "type": "Precipitação",
       "level": "yellow",
       "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-      "startTime": "2026-11-01T06:00:00.000Z",
-      "endTime": "2026-11-01T15:00:00.000Z",
+      "startTime": "2026-11-01T07:32:00",
+      "endTime": "2026-11-01T21:00:00",
       "relevant": true
     },
     {
-      "areaCode": "Madeira - Regiões Montanhosas",
-      "areaLabel": "Madeira - Regiões Montanhosas",
+      "areaCode": "MCS",
+      "areaLabel": "Funchal",
       "type": "Precipitação",
       "level": "yellow",
       "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-      "startTime": "2026-11-01T09:00:00.000Z",
-      "endTime": "2026-11-01T12:00:00.000Z",
-      "relevant": true
-    },
-    {
-      "areaCode": "Madeira - Costa Sul",
-      "areaLabel": "Madeira - Costa Sul",
-      "type": "Precipitação",
-      "level": "orange",
-      "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-      "startTime": "2026-11-01T00:00:00.000Z",
-      "endTime": "2026-11-01T09:00:00.000Z",
-      "relevant": true
-    },
-    {
-      "areaCode": "Madeira - Costa Norte",
-      "areaLabel": "Madeira - Costa Norte",
-      "type": "Precipitação",
-      "level": "yellow",
-      "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-      "startTime": "2026-10-31T18:06:00.000Z",
-      "endTime": "2026-11-01T12:00:00.000Z",
-      "relevant": true
-    },
-    {
-      "areaCode": "Madeira - Regiões Montanhosas",
-      "areaLabel": "Madeira - Regiões Montanhosas",
-      "type": "Precipitação",
-      "level": "orange",
-      "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-      "startTime": "2026-11-01T00:00:00.000Z",
-      "endTime": "2026-11-01T09:00:00.000Z",
-      "relevant": true
-    },
-    {
-      "areaCode": "Madeira - Costa Norte",
-      "areaLabel": "Madeira - Costa Norte",
-      "type": "Precipitação",
-      "level": "yellow",
-      "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-      "startTime": "2026-11-01T07:32:00.000Z",
-      "endTime": "2026-11-01T21:00:00.000Z",
-      "relevant": true
-    },
-    {
-      "areaCode": "Madeira - Costa Sul",
-      "areaLabel": "Madeira - Costa Sul",
-      "type": "Precipitação",
-      "level": "yellow",
-      "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-      "startTime": "2026-11-01T09:00:00.000Z",
-      "endTime": "2026-11-01T21:00:00.000Z",
-      "relevant": true
-    },
-    {
-      "areaCode": "Madeira - Regiões Montanhosas",
-      "areaLabel": "Madeira - Regiões Montanhosas",
-      "type": "Precipitação",
-      "level": "yellow",
-      "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-      "startTime": "2026-11-01T09:00:00.000Z",
-      "endTime": "2026-11-01T21:00:00.000Z",
-      "relevant": true
-    },
-    {
-      "areaCode": "Madeira - Porto Santo",
-      "areaLabel": "Madeira - Porto Santo",
-      "type": "Precipitação",
-      "level": "yellow",
-      "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-      "startTime": "2026-11-01T07:32:00.000Z",
-      "endTime": "2026-11-01T21:00:00.000Z",
+      "startTime": "2026-11-01T09:00:00",
+      "endTime": "2026-11-01T21:00:00",
       "relevant": true
     }
   ],
   "spotWarnings": {
     "sao-vicente-madeira": [
       {
-        "areaCode": "Madeira - Costa Norte",
-        "areaLabel": "Madeira - Costa Norte",
+        "areaCode": "MCN",
+        "areaLabel": "Madeira — Costa Norte",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-10-31T21:00:00.000Z",
-        "endTime": "2026-11-01T12:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Costa Sul",
-        "areaLabel": "Madeira - Costa Sul",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-01T09:00:00.000Z",
-        "endTime": "2026-11-01T12:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Costa Sul",
-        "areaLabel": "Madeira - Costa Sul",
-        "type": "Precipitação",
-        "level": "orange",
-        "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-01T00:00:00.000Z",
-        "endTime": "2026-11-01T09:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Regiões Montanhosas",
-        "areaLabel": "Madeira - Regiões Montanhosas",
-        "type": "Precipitação",
-        "level": "orange",
-        "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-01T00:00:00.000Z",
-        "endTime": "2026-11-01T09:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Regiões Montanhosas",
-        "areaLabel": "Madeira - Regiões Montanhosas",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-01T09:00:00.000Z",
-        "endTime": "2026-11-01T12:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Costa Sul",
-        "areaLabel": "Madeira - Costa Sul",
-        "type": "Precipitação",
-        "level": "orange",
-        "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-01T00:00:00.000Z",
-        "endTime": "2026-11-01T09:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Costa Norte",
-        "areaLabel": "Madeira - Costa Norte",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-10-31T18:06:00.000Z",
-        "endTime": "2026-11-01T12:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Regiões Montanhosas",
-        "areaLabel": "Madeira - Regiões Montanhosas",
-        "type": "Precipitação",
-        "level": "orange",
-        "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-01T00:00:00.000Z",
-        "endTime": "2026-11-01T09:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Costa Norte",
-        "areaLabel": "Madeira - Costa Norte",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-01T07:32:00.000Z",
-        "endTime": "2026-11-01T21:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Costa Sul",
-        "areaLabel": "Madeira - Costa Sul",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-01T09:00:00.000Z",
-        "endTime": "2026-11-01T21:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Regiões Montanhosas",
-        "areaLabel": "Madeira - Regiões Montanhosas",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-01T09:00:00.000Z",
-        "endTime": "2026-11-01T21:00:00.000Z",
+        "startTime": "2026-11-01T07:32:00",
+        "endTime": "2026-11-01T21:00:00",
         "relevant": true
       }
     ],
     "porto-da-cruz": [
       {
-        "areaCode": "Madeira - Costa Norte",
-        "areaLabel": "Madeira - Costa Norte",
+        "areaCode": "MRM",
+        "areaLabel": "Madeira — Regiões Montanhosas",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-10-31T21:00:00.000Z",
-        "endTime": "2026-11-01T12:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Costa Sul",
-        "areaLabel": "Madeira - Costa Sul",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-01T09:00:00.000Z",
-        "endTime": "2026-11-01T12:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Costa Sul",
-        "areaLabel": "Madeira - Costa Sul",
-        "type": "Precipitação",
-        "level": "orange",
-        "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-01T00:00:00.000Z",
-        "endTime": "2026-11-01T09:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Costa Sul",
-        "areaLabel": "Madeira - Costa Sul",
-        "type": "Precipitação",
-        "level": "orange",
-        "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-01T00:00:00.000Z",
-        "endTime": "2026-11-01T09:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Costa Norte",
-        "areaLabel": "Madeira - Costa Norte",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-10-31T18:06:00.000Z",
-        "endTime": "2026-11-01T12:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Costa Norte",
-        "areaLabel": "Madeira - Costa Norte",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-01T07:32:00.000Z",
-        "endTime": "2026-11-01T21:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Costa Sul",
-        "areaLabel": "Madeira - Costa Sul",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-01T09:00:00.000Z",
-        "endTime": "2026-11-01T21:00:00.000Z",
+        "startTime": "2026-11-01T09:00:00",
+        "endTime": "2026-11-01T21:00:00",
         "relevant": true
       }
     ],
     "paul-mar": [
       {
-        "areaCode": "Madeira - Costa Norte",
-        "areaLabel": "Madeira - Costa Norte",
+        "areaCode": "MCN",
+        "areaLabel": "Madeira — Costa Norte",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-10-31T21:00:00.000Z",
-        "endTime": "2026-11-01T12:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Costa Sul",
-        "areaLabel": "Madeira - Costa Sul",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-01T09:00:00.000Z",
-        "endTime": "2026-11-01T12:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Costa Sul",
-        "areaLabel": "Madeira - Costa Sul",
-        "type": "Precipitação",
-        "level": "orange",
-        "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-01T00:00:00.000Z",
-        "endTime": "2026-11-01T09:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Costa Sul",
-        "areaLabel": "Madeira - Costa Sul",
-        "type": "Precipitação",
-        "level": "orange",
-        "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-01T00:00:00.000Z",
-        "endTime": "2026-11-01T09:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Costa Norte",
-        "areaLabel": "Madeira - Costa Norte",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-10-31T18:06:00.000Z",
-        "endTime": "2026-11-01T12:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Costa Norte",
-        "areaLabel": "Madeira - Costa Norte",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-01T07:32:00.000Z",
-        "endTime": "2026-11-01T21:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Costa Sul",
-        "areaLabel": "Madeira - Costa Sul",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-01T09:00:00.000Z",
-        "endTime": "2026-11-01T21:00:00.000Z",
+        "startTime": "2026-11-01T07:32:00",
+        "endTime": "2026-11-01T21:00:00",
         "relevant": true
       }
     ],
     "jardim-mar": [
       {
-        "areaCode": "Madeira - Costa Norte",
-        "areaLabel": "Madeira - Costa Norte",
+        "areaCode": "MCN",
+        "areaLabel": "Madeira — Costa Norte",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-10-31T21:00:00.000Z",
-        "endTime": "2026-11-01T12:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Costa Sul",
-        "areaLabel": "Madeira - Costa Sul",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-01T09:00:00.000Z",
-        "endTime": "2026-11-01T12:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Costa Sul",
-        "areaLabel": "Madeira - Costa Sul",
-        "type": "Precipitação",
-        "level": "orange",
-        "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-01T00:00:00.000Z",
-        "endTime": "2026-11-01T09:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Regiões Montanhosas",
-        "areaLabel": "Madeira - Regiões Montanhosas",
-        "type": "Precipitação",
-        "level": "orange",
-        "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-01T00:00:00.000Z",
-        "endTime": "2026-11-01T09:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Regiões Montanhosas",
-        "areaLabel": "Madeira - Regiões Montanhosas",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-01T09:00:00.000Z",
-        "endTime": "2026-11-01T12:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Costa Sul",
-        "areaLabel": "Madeira - Costa Sul",
-        "type": "Precipitação",
-        "level": "orange",
-        "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-01T00:00:00.000Z",
-        "endTime": "2026-11-01T09:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Costa Norte",
-        "areaLabel": "Madeira - Costa Norte",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-10-31T18:06:00.000Z",
-        "endTime": "2026-11-01T12:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Regiões Montanhosas",
-        "areaLabel": "Madeira - Regiões Montanhosas",
-        "type": "Precipitação",
-        "level": "orange",
-        "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-01T00:00:00.000Z",
-        "endTime": "2026-11-01T09:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Costa Norte",
-        "areaLabel": "Madeira - Costa Norte",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-01T07:32:00.000Z",
-        "endTime": "2026-11-01T21:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Costa Sul",
-        "areaLabel": "Madeira - Costa Sul",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-01T09:00:00.000Z",
-        "endTime": "2026-11-01T21:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Regiões Montanhosas",
-        "areaLabel": "Madeira - Regiões Montanhosas",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-01T09:00:00.000Z",
-        "endTime": "2026-11-01T21:00:00.000Z",
+        "startTime": "2026-11-01T07:32:00",
+        "endTime": "2026-11-01T21:00:00",
         "relevant": true
       }
     ],
     "ponta-sao-lourenco": [
       {
-        "areaCode": "Madeira - Costa Sul",
-        "areaLabel": "Madeira - Costa Sul",
+        "areaCode": "MCS",
+        "areaLabel": "Funchal",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-01T09:00:00.000Z",
-        "endTime": "2026-11-01T12:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Costa Sul",
-        "areaLabel": "Madeira - Costa Sul",
-        "type": "Precipitação",
-        "level": "orange",
-        "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-01T00:00:00.000Z",
-        "endTime": "2026-11-01T09:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Costa Sul",
-        "areaLabel": "Madeira - Costa Sul",
-        "type": "Precipitação",
-        "level": "orange",
-        "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-01T00:00:00.000Z",
-        "endTime": "2026-11-01T09:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Costa Sul",
-        "areaLabel": "Madeira - Costa Sul",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-01T09:00:00.000Z",
-        "endTime": "2026-11-01T21:00:00.000Z",
+        "startTime": "2026-11-01T09:00:00",
+        "endTime": "2026-11-01T21:00:00",
         "relevant": true
       }
     ],
     "ribeira-brava": [
       {
-        "areaCode": "Madeira - Costa Sul",
-        "areaLabel": "Madeira - Costa Sul",
+        "areaCode": "MRM",
+        "areaLabel": "Madeira — Regiões Montanhosas",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-01T09:00:00.000Z",
-        "endTime": "2026-11-01T12:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Costa Sul",
-        "areaLabel": "Madeira - Costa Sul",
-        "type": "Precipitação",
-        "level": "orange",
-        "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-01T00:00:00.000Z",
-        "endTime": "2026-11-01T09:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Costa Sul",
-        "areaLabel": "Madeira - Costa Sul",
-        "type": "Precipitação",
-        "level": "orange",
-        "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-01T00:00:00.000Z",
-        "endTime": "2026-11-01T09:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Costa Sul",
-        "areaLabel": "Madeira - Costa Sul",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-01T09:00:00.000Z",
-        "endTime": "2026-11-01T21:00:00.000Z",
+        "startTime": "2026-11-01T09:00:00",
+        "endTime": "2026-11-01T21:00:00",
         "relevant": true
       }
     ],
     "funchal": [
       {
-        "areaCode": "Madeira - Costa Sul",
-        "areaLabel": "Madeira - Costa Sul",
+        "areaCode": "MCS",
+        "areaLabel": "Funchal",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-01T09:00:00.000Z",
-        "endTime": "2026-11-01T12:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Costa Sul",
-        "areaLabel": "Madeira - Costa Sul",
-        "type": "Precipitação",
-        "level": "orange",
-        "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-01T00:00:00.000Z",
-        "endTime": "2026-11-01T09:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Costa Sul",
-        "areaLabel": "Madeira - Costa Sul",
-        "type": "Precipitação",
-        "level": "orange",
-        "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-01T00:00:00.000Z",
-        "endTime": "2026-11-01T09:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Costa Sul",
-        "areaLabel": "Madeira - Costa Sul",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-01T09:00:00.000Z",
-        "endTime": "2026-11-01T21:00:00.000Z",
+        "startTime": "2026-11-01T09:00:00",
+        "endTime": "2026-11-01T21:00:00",
         "relevant": true
       }
     ],
     "machico": [
       {
-        "areaCode": "Madeira - Costa Norte",
-        "areaLabel": "Madeira - Costa Norte",
+        "areaCode": "MCS",
+        "areaLabel": "Funchal",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-10-31T21:00:00.000Z",
-        "endTime": "2026-11-01T12:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Costa Sul",
-        "areaLabel": "Madeira - Costa Sul",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-01T09:00:00.000Z",
-        "endTime": "2026-11-01T12:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Costa Sul",
-        "areaLabel": "Madeira - Costa Sul",
-        "type": "Precipitação",
-        "level": "orange",
-        "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-01T00:00:00.000Z",
-        "endTime": "2026-11-01T09:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Costa Sul",
-        "areaLabel": "Madeira - Costa Sul",
-        "type": "Precipitação",
-        "level": "orange",
-        "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-01T00:00:00.000Z",
-        "endTime": "2026-11-01T09:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Costa Norte",
-        "areaLabel": "Madeira - Costa Norte",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-10-31T18:06:00.000Z",
-        "endTime": "2026-11-01T12:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Costa Norte",
-        "areaLabel": "Madeira - Costa Norte",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-01T07:32:00.000Z",
-        "endTime": "2026-11-01T21:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Costa Sul",
-        "areaLabel": "Madeira - Costa Sul",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-01T09:00:00.000Z",
-        "endTime": "2026-11-01T21:00:00.000Z",
+        "startTime": "2026-11-01T09:00:00",
+        "endTime": "2026-11-01T21:00:00",
         "relevant": true
       }
     ],
     "seixal-madeira": [
       {
-        "areaCode": "Madeira - Costa Norte",
-        "areaLabel": "Madeira - Costa Norte",
+        "areaCode": "MCN",
+        "areaLabel": "Madeira — Costa Norte",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-10-31T21:00:00.000Z",
-        "endTime": "2026-11-01T12:00:00.000Z",
+        "startTime": "2026-11-01T07:32:00",
+        "endTime": "2026-11-01T21:00:00",
         "relevant": true
-      },
+      }
+    ],
+    "ponta-pargo": [
       {
-        "areaCode": "Madeira - Regiões Montanhosas",
-        "areaLabel": "Madeira - Regiões Montanhosas",
-        "type": "Precipitação",
-        "level": "orange",
-        "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-01T00:00:00.000Z",
-        "endTime": "2026-11-01T09:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Regiões Montanhosas",
-        "areaLabel": "Madeira - Regiões Montanhosas",
+        "areaCode": "MCN",
+        "areaLabel": "Madeira — Costa Norte",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-01T09:00:00.000Z",
-        "endTime": "2026-11-01T12:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Costa Norte",
-        "areaLabel": "Madeira - Costa Norte",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-10-31T18:06:00.000Z",
-        "endTime": "2026-11-01T12:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Regiões Montanhosas",
-        "areaLabel": "Madeira - Regiões Montanhosas",
-        "type": "Precipitação",
-        "level": "orange",
-        "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-01T00:00:00.000Z",
-        "endTime": "2026-11-01T09:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Costa Norte",
-        "areaLabel": "Madeira - Costa Norte",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-01T07:32:00.000Z",
-        "endTime": "2026-11-01T21:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Regiões Montanhosas",
-        "areaLabel": "Madeira - Regiões Montanhosas",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-01T09:00:00.000Z",
-        "endTime": "2026-11-01T21:00:00.000Z",
+        "startTime": "2026-11-01T07:32:00",
+        "endTime": "2026-11-01T21:00:00",
         "relevant": true
       }
     ],
     "madalena-mar": [
       {
-        "areaCode": "Madeira - Costa Sul",
-        "areaLabel": "Madeira - Costa Sul",
+        "areaCode": "MCN",
+        "areaLabel": "Madeira — Costa Norte",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-01T09:00:00.000Z",
-        "endTime": "2026-11-01T12:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Costa Sul",
-        "areaLabel": "Madeira - Costa Sul",
-        "type": "Precipitação",
-        "level": "orange",
-        "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-01T00:00:00.000Z",
-        "endTime": "2026-11-01T09:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Regiões Montanhosas",
-        "areaLabel": "Madeira - Regiões Montanhosas",
-        "type": "Precipitação",
-        "level": "orange",
-        "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-01T00:00:00.000Z",
-        "endTime": "2026-11-01T09:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Regiões Montanhosas",
-        "areaLabel": "Madeira - Regiões Montanhosas",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-01T09:00:00.000Z",
-        "endTime": "2026-11-01T12:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Costa Sul",
-        "areaLabel": "Madeira - Costa Sul",
-        "type": "Precipitação",
-        "level": "orange",
-        "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-01T00:00:00.000Z",
-        "endTime": "2026-11-01T09:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Regiões Montanhosas",
-        "areaLabel": "Madeira - Regiões Montanhosas",
-        "type": "Precipitação",
-        "level": "orange",
-        "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-01T00:00:00.000Z",
-        "endTime": "2026-11-01T09:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Costa Sul",
-        "areaLabel": "Madeira - Costa Sul",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-01T09:00:00.000Z",
-        "endTime": "2026-11-01T21:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Regiões Montanhosas",
-        "areaLabel": "Madeira - Regiões Montanhosas",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-01T09:00:00.000Z",
-        "endTime": "2026-11-01T21:00:00.000Z",
+        "startTime": "2026-11-01T07:32:00",
+        "endTime": "2026-11-01T21:00:00",
         "relevant": true
       }
     ]
