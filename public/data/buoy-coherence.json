@@ -1,11 +1,11 @@
 {
   "day": "20261101",
-  "fetchedAt": "2026-11-01T19:55:23.958Z",
+  "fetchedAt": "2026-11-01T20:11:14.298Z",
   "minPairs": 3,
   "minAccumulatedPairs": 10,
   "archive": {
     "windowDays": 30,
-    "pairHourCount": 563,
+    "pairHourCount": 562,
     "path": "buoy-coherence-archive.json"
   },
   "daily": {
@@ -85,7 +85,7 @@
       "suboptimal": []
     },
     "Viana do Castelo": {
-      "spotCount": 5,
+      "spotCount": 7,
       "withObservedWave": 0,
       "bySource": {},
       "audited": 0,
@@ -127,7 +127,7 @@
       "suboptimal": []
     },
     "Porto": {
-      "spotCount": 10,
+      "spotCount": 11,
       "withObservedWave": 0,
       "bySource": {},
       "audited": 0,
@@ -757,7 +757,7 @@
       "suboptimal": []
     },
     "Carrapateira": {
-      "spotCount": 1,
+      "spotCount": 2,
       "withObservedWave": 0,
       "bySource": {},
       "audited": 0,
@@ -1146,7 +1146,7 @@
       "suboptimal": []
     }
   },
-  "regionsAuditedAt": "2026-11-01T19:55:32.580Z",
+  "regionsAuditedAt": "2026-11-01T20:14:05.370Z",
   "pairs": [
     {
       "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
@@ -1156,13 +1156,13 @@
       ],
       "distanceKm": 285.3,
       "ptSource": "wmo",
-      "n": 535,
+      "n": 534,
       "meanDeltaM": -0.3,
       "meanAbsDeltaM": 0.5,
       "maxAbsDeltaM": 2.8,
       "corr": 0.76,
       "verdict": "coherent",
-      "firstHour": "2026-10-02T20",
+      "firstHour": "2026-10-02T21",
       "lastHour": "2026-11-01T18",
       "hours": [
         {
