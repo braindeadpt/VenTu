@@ -247,10 +247,13 @@ for (const pele of PELES) {
           await page.evaluate(() => localStorage.removeItem('ventu:windRingLegendSeen'));
           const pin = page.locator('.leaflet-marker-icon.spot-marker').first();
           await expect(pin).toBeVisible({ timeout: 20_000 });
-          await pin.click();
+          // dispatchEvent como em wind-ring-legend.spec: com cluster=0 o 1.º pin
+          // fica tapado por um vizinho (Amorosa) e o click real nunca é «hittable».
+          await pin.dispatchEvent('click');
           const dica = page.getByRole('note', { name: /Como ler o vento no mapa/i });
           await expect(dica).toBeVisible({ timeout: 10_000 });
-          await dica.getByRole('button', { name: /Como ler o vento no mapa/i }).click();
+          // force: a animação de entrada da dica mantém o teste de estabilidade ocupado
+          await dica.getByRole('button', { name: /Como ler o vento no mapa/i }).click({ force: true });
           await expect(page.getByRole('dialog', { name: /Ler o vento no mapa/i })).toBeVisible({ timeout: 10_000 });
         });
       });
