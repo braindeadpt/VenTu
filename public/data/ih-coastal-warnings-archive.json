@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-11-02T08:06:56.622Z",
+  "fetchedAt": "2026-11-02T10:07:10.078Z",
   "windowDays": 90,
   "dayCount": 62,
   "days": [
@@ -69031,13 +69031,6 @@
           "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=0032ee1a-9608-424f-a30e-ada23989ae71"
         },
         {
-          "id": 18967,
-          "ref": "ANAV NR 2421/26",
-          "category": "Requisitos de segurança maritima",
-          "source": "ih",
-          "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=d8396f8d-7b83-489b-a189-0103c4b4adf1"
-        },
-        {
           "id": 18969,
           "ref": "ANAV NR 2422/26",
           "category": "Requisitos de segurança maritima",
@@ -69057,6 +69050,13 @@
           "category": "Requisitos de segurança maritima",
           "source": "ih",
           "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=76fb0a33-39b2-432e-9533-22f1cefcd064"
+        },
+        {
+          "id": 18979,
+          "ref": "ANAV NR 2427/26",
+          "category": "Requisitos de segurança maritima",
+          "source": "ih",
+          "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=9cd91611-0d5c-47c8-90c1-02e0a5c90c53"
         },
         {
           "id": 1000182,
@@ -69232,13 +69232,6 @@
           "category": "Abatimento da cabeça do molhe Leste da Barra de Tavira",
           "source": "ih",
           "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=ca58d9f6-d075-4c02-9fcf-5d0109bfee39"
-        },
-        {
-          "id": 1000372,
-          "ref": "ANAV NR 4/22",
-          "category": "Farolim desativado",
-          "source": "ih",
-          "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=b9d9b431-7401-4021-959c-6ad73e29bc84"
         },
         {
           "id": 1000391,
@@ -70114,6 +70107,13 @@
           "category": "BOIA AQ4 (LL 741.4) RETIRADA",
           "source": "ih",
           "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=09757503-c4ff-4013-a681-7e41d56016cc"
+        },
+        {
+          "id": 1010838,
+          "ref": "ANAV NR 51/26",
+          "category": "ESTADO DA BARRA",
+          "source": "ih",
+          "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=d3b923e7-4ece-4b6e-820a-b08f25675f2e"
         },
         {
           "id": 2017775,
@@ -76019,20 +76019,6 @@
       "nDays": 52
     },
     {
-      "ref": "ANAV NR 2421/26",
-      "category": "Requisitos de segurança maritima",
-      "source": "ih",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=d8396f8d-7b83-489b-a189-0103c4b4adf1",
-      "firstSeen": "2026-10-31",
-      "lastSeen": "2026-11-02",
-      "daysInForce": [
-        "2026-10-31",
-        "2026-11-01",
-        "2026-11-02"
-      ],
-      "nDays": 3
-    },
-    {
       "ref": "ANAV NR 2422/26",
       "category": "Requisitos de segurança maritima",
       "source": "ih",
@@ -76070,6 +76056,18 @@
         "2026-11-02"
       ],
       "nDays": 2
+    },
+    {
+      "ref": "ANAV NR 2427/26",
+      "category": "Requisitos de segurança maritima",
+      "source": "ih",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=9cd91611-0d5c-47c8-90c1-02e0a5c90c53",
+      "firstSeen": "2026-11-02",
+      "lastSeen": "2026-11-02",
+      "daysInForce": [
+        "2026-11-02"
+      ],
+      "nDays": 1
     },
     {
       "ref": "ANAV NR 249/24",
@@ -77135,9 +77133,9 @@
     },
     {
       "ref": "ANAV NR 4/22",
-      "category": "Farolim desativado",
+      "category": "PARQUE SUBAQUATICO OCEAN REVIVAL - ALTERAÇÃO LIMITES",
       "source": "ih",
-      "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=b9d9b431-7401-4021-959c-6ad73e29bc84",
+      "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=b583ca5a-90ca-43b6-882f-ae8b85994439",
       "firstSeen": "2026-09-11",
       "lastSeen": "2026-11-02",
       "daysInForce": [
@@ -78093,6 +78091,18 @@
         "2026-11-02"
       ],
       "nDays": 52
+    },
+    {
+      "ref": "ANAV NR 51/26",
+      "category": "ESTADO DA BARRA",
+      "source": "ih",
+      "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=d3b923e7-4ece-4b6e-820a-b08f25675f2e",
+      "firstSeen": "2026-11-02",
+      "lastSeen": "2026-11-02",
+      "daysInForce": [
+        "2026-11-02"
+      ],
+      "nDays": 1
     },
     {
       "ref": "ANAV NR 54/23",
@@ -80119,6 +80129,19 @@
         "2026-11-01"
       ],
       "nDays": 7
+    },
+    {
+      "ref": "ANAV NR 2421/26",
+      "category": "Requisitos de segurança maritima",
+      "source": "ih",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=d8396f8d-7b83-489b-a189-0103c4b4adf1",
+      "firstSeen": "2026-10-31",
+      "lastSeen": "2026-11-01",
+      "daysInForce": [
+        "2026-10-31",
+        "2026-11-01"
+      ],
+      "nDays": 2
     },
     {
       "ref": "ANAV NR 2412/26",

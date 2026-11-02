@@ -201,38 +201,6 @@
       ]
     },
     {
-      "id": 18967,
-      "ref": "ANAV NR 2421/26",
-      "category": "Requisitos de segurança maritima",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=d8396f8d-7b83-489b-a189-0103c4b4adf1",
-      "source": "ih",
-      "collection": "nav_warning_coastal",
-      "polygons": [
-        [
-          [
-            -8.804451,
-            41.52066
-          ],
-          [
-            -8.804451,
-            41.551242
-          ],
-          [
-            -8.763211,
-            41.551242
-          ],
-          [
-            -8.763211,
-            41.52066
-          ],
-          [
-            -8.804451,
-            41.52066
-          ]
-        ]
-      ]
-    },
-    {
       "id": 18969,
       "ref": "ANAV NR 2422/26",
       "category": "Requisitos de segurança maritima",
@@ -350,6 +318,38 @@
           [
             -7.398122,
             37.158729
+          ]
+        ]
+      ]
+    },
+    {
+      "id": 18979,
+      "ref": "ANAV NR 2427/26",
+      "category": "Requisitos de segurança maritima",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=9cd91611-0d5c-47c8-90c1-02e0a5c90c53",
+      "source": "ih",
+      "collection": "nav_warning_coastal",
+      "polygons": [
+        [
+          [
+            -8.833593,
+            41.511405
+          ],
+          [
+            -8.833593,
+            41.562546
+          ],
+          [
+            -8.751559,
+            41.562546
+          ],
+          [
+            -8.751559,
+            41.511405
+          ],
+          [
+            -8.833593,
+            41.511405
           ]
         ]
       ]
@@ -1282,38 +1282,6 @@
           [
             -7.622269,
             37.114281
-          ]
-        ]
-      ]
-    },
-    {
-      "id": 1000372,
-      "ref": "ANAV NR 4/22",
-      "category": "Farolim desativado",
-      "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=b9d9b431-7401-4021-959c-6ad73e29bc84",
-      "source": "ih",
-      "collection": "nav_warning_local",
-      "polygons": [
-        [
-          [
-            -31.171659,
-            39.379855
-          ],
-          [
-            -31.171659,
-            39.380535
-          ],
-          [
-            -31.170781,
-            39.380535
-          ],
-          [
-            -31.170781,
-            39.379855
-          ],
-          [
-            -31.171659,
-            39.379855
           ]
         ]
       ]
@@ -6879,6 +6847,38 @@
       ]
     },
     {
+      "id": 1010838,
+      "ref": "ANAV NR 51/26",
+      "category": "ESTADO DA BARRA",
+      "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=d3b923e7-4ece-4b6e-820a-b08f25675f2e",
+      "source": "ih",
+      "collection": "nav_warning_local",
+      "polygons": [
+        [
+          [
+            -8.750556,
+            41.336027
+          ],
+          [
+            -8.750556,
+            41.338927
+          ],
+          [
+            -8.746652,
+            41.338927
+          ],
+          [
+            -8.746652,
+            41.336027
+          ],
+          [
+            -8.750556,
+            41.336027
+          ]
+        ]
+      ]
+    },
+    {
       "id": 2017775,
       "ref": "ANAV NR 1361/26",
       "category": "Animais Marinhos - Avistamento",
@@ -7402,20 +7402,20 @@
       2018401
     ],
     "esposende": [
-      18967,
+      18979,
       1000657,
       1009684,
       2018401,
       2018801
     ],
     "esposende-praia": [
-      18967,
+      18979,
       1009684,
       2018401,
       2018801
     ],
     "fao": [
-      18967,
+      18979,
       1009684,
       2018401,
       2018801
@@ -8154,7 +8154,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-11-02T08:06:56.593Z",
+  "fetchedAt": "2026-11-02T10:07:10.044Z",
   "sourceCollection": "nav_warning_coastal+nav_warning_local+orca_anavnet_point",
   "sourceUrl": "https://ogcapi.hidrografico.pt/collections/nav_warning_coastal"
 }
