@@ -1,0 +1,29 @@
+/* VenTu /mapa — pele v6 «Atlântico», fase B, PR B0 (estudo aprovado a 01/11).
+   Contrato: docs/design/maquetes/v6-atlantico/cores.md (os mesmos tokens da home `.v6h`
+   e do spot `.v6`; espelho em src/lib/v6Tokens.ts) e a maquete da fase B.
+   Tudo fica dentro de `[data-pele=v6]`, que só existe no contentor do /mapa quando a
+   flag está ligada (?pele=v6 ou localStorage['ventu:map:pele']=v6 — src/lib/mapPele.ts).
+   Com a flag desligada nenhuma regra deste ficheiro se aplica: zero diferença visual.
+   Nesta PR só mudam os tokens e as fontes; marcadores, régua, painéis e o resto
+   chegam nas PR B1–B8. As fontes são as já auto-alojadas (v6-fontes.css): o browser
+   só as descarrega quando há texto em Barlow, ou seja, só com a flag ligada.
+   Nota: os popovers em portal (menu Camadas, «Como ler o vento», chip das boias)
+   saem para o <body> e ficam fora deste âmbito até à PR B5. */
+[data-pele='v6']{
+  /* tokens v6 (cores.md) */
+  --abismo:#030E18;--fundo:#071B2C;--mar:#0C2A42;--linha:#1E4361;--espuma:#F3F8FB;--nevoa:#A9C2D4;--sol:#FFC93C;--gelo:#7FE7FF;--ink:#04131F;
+  /* bandas da nota /10 (fill e texto no fill) + noite */
+  --b-nao:#A8464A;--b-nao-t:#FFFFFF;--b-fraco:#4479EE;--b-fraco-t:#04131F;--b-da:#C99E2A;--b-da-t:#04131F;
+  --b-bom:#40DCD0;--b-bom-t:#04131F;--b-mb:#FFF07A;--b-mb-t:#04131F;--b-noite:#56677B;--b-noite-t:#FFFFFF;
+  /* tipografia v6: Barlow Condensed (títulos, números) + Barlow (texto) */
+  --disp:'Barlow Condensed','Arial Narrow',sans-serif;--txt:'Barlow',system-ui,sans-serif;
+  /* os tokens semânticos do Tailwind passam aos v6 (o mesmo mapeamento do cabeçalho da home,
+     `.site-header[data-v6=home]` em v6-home.css): o cromo actual veste a paleta sem mudar de markup */
+  --bg-base:3 14 24;--bg-elevated:7 27 44;--surface-1:243 248 251;--surface-2:243 248 251;--surface-3:12 42 66;
+  --divider:30 67 97;--divider-strong:30 67 97;--fg:243 248 251;--fg-muted:169 194 212;--fg-subtle:169 194 212;
+  --accent:127 231 255;--accent-hover:255 201 60;--accent-active:255 201 60;
+  --font-geist-sans:'Barlow',system-ui,sans-serif;--font-display:'Barlow Condensed','Arial Narrow',sans-serif;
+  color-scheme:dark;
+  font-family:var(--txt);
+}
+[data-pele='v6'] .leaflet-container{font-family:var(--txt)}
