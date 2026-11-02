@@ -127,3 +127,28 @@ describe('camada «Ondulação» no URL', () => {
   });
 });
 
+
+describe('?nivel= no URL de partilha', () => {
+  it('leva nivel= quando há nível activo', () => {
+    const qs = buildMapShareSearch({
+      center: [39.6, -9.07],
+      sport: 'kitesurf',
+      difficulty: 'intermediate',
+    });
+    expect(new URLSearchParams(qs).get('nivel')).toBe('intermediate');
+  });
+
+  it('os 3 níveis partilháveis saem no URL', () => {
+    for (const nivel of ['beginner', 'intermediate', 'advanced'] as const) {
+      const qs = buildMapShareSearch({ center: [39.6, -9.07], sport: 'surf', difficulty: nivel });
+      expect(new URLSearchParams(qs).get('nivel')).toBe(nivel);
+    }
+  });
+
+  it('sem nível («all» ou ausente) o URL fica igual ao de hoje', () => {
+    const sem = buildMapShareSearch({ center: [39.6, -9.07], sport: 'surf' });
+    const all = buildMapShareSearch({ center: [39.6, -9.07], sport: 'surf', difficulty: 'all' });
+    expect(new URLSearchParams(sem).get('nivel')).toBeNull();
+    expect(all).toBe(sem);
+  });
+});

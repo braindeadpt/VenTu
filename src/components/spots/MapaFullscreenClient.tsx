@@ -12,6 +12,7 @@ import {
   MAP_DIFFICULTY_LS_KEY,
   MAP_DIFFICULTY_OPTIONS,
   readMapDifficultyFromStorage,
+  nivelFromUrlParam,
   spotMatchesDifficultyFilter,
   type MapDifficultyFilter,
 } from '@/lib/mapDifficulty';
@@ -25,6 +26,7 @@ import {
 } from '@/lib/gridFilters';
 import { dispatchSportChange, LS_SPORT_KEY, readSportFromStorage } from '@/lib/homepageSport';
 import { unlockPageInteraction } from '@/lib/mapFullscreen';
+import { setMapLayerUrlParam } from '@/lib/mapShareUrl';
 import { getSpotDetailHref } from '@/lib/mapSpotDetail';
 import { getTranslation } from '@/lib/i18n';
 import { useLiveGridSpotData } from '@/hooks/useLiveGridSpotData';
@@ -68,6 +70,8 @@ function readMapSearchParams(): {
   warnAreas: boolean;
   coastalWarnings: boolean;
   basemapSat: boolean;
+  /** `?nivel=` partilhado: aplica-se só na visita (não grava a pref). */
+  nivel: MapDifficultyFilter | undefined;
   spot: string | undefined;
   openSpotDetail: boolean;
   center: [number, number] | undefined;
@@ -91,6 +95,7 @@ function readMapSearchParams(): {
     warnAreas: false,
     coastalWarnings: false,
     basemapSat: false,
+    nivel: undefined,
     spot: undefined,
     openSpotDetail: false,
     center: undefined,
@@ -133,6 +138,7 @@ function readMapSearchParams(): {
     warnAreas: params.get('warnAreas') === '1',
     coastalWarnings: params.get('coastalWarnings') === '1',
     basemapSat: params.get('basemap') === 'sat',
+    nivel: nivelFromUrlParam(params.get('nivel')),
     spot,
     openSpotDetail: params.get('de') === 'home' && !!spot,
     center:
@@ -209,6 +215,10 @@ export default function MapaFullscreenClient({
   const [paramsReady, setParamsReady] = useState(false);
   // StrictMode dev: o segundo mount não volta a capturar (o estado mantém-se).
   const deepLinksCapturedRef = useRef(false);
+  // `?nivel=` do link partilhado: activo só nesta visita — enquanto true, a
+  // pref de nível NÃO é gravada (como o ?wind=0). Uma mudança manual repõe
+  // a persistência, como hoje.
+  const nivelDoUrlRef = useRef(false);
   useLayoutEffect(() => {
     if (deepLinksCapturedRef.current) return;
     deepLinksCapturedRef.current = true;
@@ -219,7 +229,8 @@ export default function MapaFullscreenClient({
     const hasSportParam = new URLSearchParams(window.location.search).has('sport');
     setSport(hasSportParam ? urlSport : readSportFromStorage());
     setRegion(urlRegion);
-    setDifficulty(readMapDifficultyFromStorage());
+    nivelDoUrlRef.current = s.nivel != null;
+    setDifficulty(s.nivel ?? readMapDifficultyFromStorage());
     setInitialRadar(s.radar);
     setInitialNauticalChart(s.nauticalChart);
     setInitialHours(s.hours);
@@ -250,7 +261,9 @@ export default function MapaFullscreenClient({
     if (!paramsReady) return;
     try {
       localStorage.setItem(LS_SPORT_KEY, sport);
-      localStorage.setItem(MAP_DIFFICULTY_LS_KEY, difficulty);
+      if (!nivelDoUrlRef.current) {
+        localStorage.setItem(MAP_DIFFICULTY_LS_KEY, difficulty);
+      }
     } catch {
       /* noop */
     }
@@ -287,12 +300,24 @@ export default function MapaFullscreenClient({
 
   const handleSportChange = useCallback((next: GridSportFilter) => setSport(next), []);
   const handleRegionChange = useCallback((next: string) => setRegion(next), []);
-  const handleDifficultyChange = useCallback((next: MapDifficultyFilter) => setDifficulty(next), []);
+  const handleDifficultyChange = useCallback((next: MapDifficultyFilter) => {
+    // Escolha manual volta a gravar a pref — o ?nivel= era só da visita e
+    // sai da barra (um refresh/cópia não reaplicava o nível antigo).
+    if (nivelDoUrlRef.current) {
+      nivelDoUrlRef.current = false;
+      setMapLayerUrlParam('nivel', false);
+    }
+    setDifficulty(next);
+  }, []);
 
   // «Limpar filtros» limpa região/território, nível (e «Só a bombar», no
   // componente) — a modalidade fica: é a escolha principal e tem o seu
   // próprio chip «×».
   const handleReset = useCallback(() => {
+    if (nivelDoUrlRef.current) {
+      nivelDoUrlRef.current = false;
+      setMapLayerUrlParam('nivel', false);
+    }
     setRegion(DEFAULT_REGION);
     setDifficulty('all');
   }, []);

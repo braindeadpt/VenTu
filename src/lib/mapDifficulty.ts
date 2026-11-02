@@ -34,6 +34,16 @@ export function readMapDifficultyFromStorage(): MapDifficultyFilter {
 export type NivelUtilizador = Exclude<MapDifficultyFilter, 'all'>;
 
 /**
+ * `?nivel=` nos links partilhados do /mapa: só os 3 níveis concretos são
+ * válidos. Inválido, 'all' ou ausente → `undefined` (cai para o
+ * localStorage, como antes). Aplica-se só na visita — não grava a pref.
+ */
+export function nivelFromUrlParam(raw: string | null): NivelUtilizador | undefined {
+  if (raw === 'beginner' || raw === 'intermediate' || raw === 'advanced') return raw;
+  return undefined;
+}
+
+/**
  * Nível do spot para um desporto: a ficha pode sobrepor a `difficulty` por
  * desporto (`difficultyBySport` — ex.: Guincho é avançado em kite mas
  * intermédio em surf). Sem desporto ou sem entrada para ele, vale a

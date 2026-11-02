@@ -213,3 +213,54 @@ test.describe('#273 home → /mapa: ?dia= e ?de=home', () => {
     });
   });
 });
+
+test.describe('/pt/mapa ?nivel= (link partilhado)', () => {
+  test.use({
+    viewport: { width: 390, height: 844 },
+    hasTouch: true,
+  });
+
+  test('aplica o nível só na visita e não grava a pref', async ({ page }) => {
+    await preseedWindRingLegend(page);
+    await page.goto('/pt/mapa/?nivel=intermediate');
+    await page.waitForSelector('.leaflet-container', { timeout: 25_000 });
+
+    // O ?nivel= não escreve no localStorage (como o ?wind=0). Espera a
+    // página assentar — a escrita, se existisse, corria logo após o mount.
+    await waitHydrated(page);
+    await page.waitForTimeout(800);
+    const stored = await page.evaluate(() => localStorage.getItem('ventu:map:difficulty'));
+    expect(stored).toBeNull();
+
+    // O select do nível mostra o valor do URL (o tecto filtra como sempre).
+    await page.getByRole('button', { name: /Mostrar filtros|Show filters/i }).click();
+    const level = page.getByRole('combobox', { name: /Nível|Level/i });
+    await expect(level).toHaveValue('intermediate');
+
+    // Mudança manual volta a gravar, como hoje — e o ?nivel= sai da barra
+    // (um refresh ou cópia do URL não reaplicava o nível da visita).
+    await level.selectOption('beginner');
+    await expect
+      .poll(async () => page.evaluate(() => localStorage.getItem('ventu:map:difficulty')))
+      .toBe('beginner');
+    expect(new URL(page.url()).searchParams.get('nivel')).toBeNull();
+  });
+
+  test('«Limpar» tira o nivel do URL e o select volta a «Todos»', async ({ page }) => {
+    await preseedWindRingLegend(page);
+    await page.goto('/pt/mapa/?nivel=intermediate');
+    await page.waitForSelector('.leaflet-container', { timeout: 25_000 });
+
+    await page.getByRole('button', { name: /Mostrar filtros|Show filters/i }).click();
+    const level = page.getByRole('combobox', { name: /Nível|Level/i });
+    await expect(level).toHaveValue('intermediate');
+
+    await page.getByRole('button', { name: /Limpar|Clear/i }).click();
+    await expect(level).toHaveValue('all');
+    expect(new URL(page.url()).searchParams.get('nivel')).toBeNull();
+    // E grava 'all' — a escolha manual repõe a persistência.
+    await expect
+      .poll(async () => page.evaluate(() => localStorage.getItem('ventu:map:difficulty')))
+      .toBe('all');
+  });
+});

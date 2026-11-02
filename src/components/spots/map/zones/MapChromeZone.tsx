@@ -13,6 +13,7 @@ import type L from 'leaflet';
 import { getTranslation } from '@/lib/i18n';
 import type { GridSportFilter } from '@/lib/sportRatings';
 import type { BasemapMode } from '@/components/spots/MapLayerToggle';
+import type { MapDifficultyFilter } from '@/lib/mapDifficulty';
 import { useToast } from '@/components/ui/ToastProvider';
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 import { useMapLocate } from '../hooks/useMapLocate';
@@ -47,6 +48,8 @@ interface UseMapChromeZoneParams {
   locale: string;
   selectedSport: GridSportFilter;
   selectedRegion: string;
+  /** Nível activo → `?nivel=` no «Partilhar vista» (só quando ≠ 'all'). */
+  selectedDifficulty?: MapDifficultyFilter;
   windEnabled: boolean;
   // Estados das camadas usados pelo trilho e pela partilha (dono M5)
   radarEnabled: boolean;
@@ -86,6 +89,7 @@ export function useMapChromeZone({
   locale,
   selectedSport,
   selectedRegion,
+  selectedDifficulty,
   windEnabled,
   radarEnabled,
   radarFrameList,
@@ -262,6 +266,7 @@ export function useMapChromeZone({
       zoom: map.getZoom(),
       sport: selectedSport,
       region: selectedRegion,
+      difficulty: selectedDifficulty,
       layers: {
         radar: radarEnabled,
         hours: hoursOn,
@@ -291,7 +296,7 @@ export function useMapChromeZone({
       // AbortError (partilha cancelada) ou clipboard negado — sem toast.
     }
   }, [
-    mapInstanceRef, locale, selectedSport, selectedRegion,
+    mapInstanceRef, locale, selectedSport, selectedRegion, selectedDifficulty,
     radarEnabled, nauticalChartEnabled, hoursOn, buoysEnabled,
     hsEnabled, sstEnabled, currentsEnabled, swellEnabled, windEnabled, basemapMode,
     goesIrEnabled,
