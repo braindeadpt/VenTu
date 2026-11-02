@@ -23,6 +23,7 @@ const ROOT = join(__dirname, '..', '..', '..');
 const css = readFileSync(join(ROOT, 'src/app/globals.css'), 'utf-8');
 const v6Home = readFileSync(join(ROOT, 'src/styles/v6-home.css'), 'utf-8');
 const v6Atl = readFileSync(join(ROOT, 'src/styles/v6-atlantico.css'), 'utf-8');
+const mapaPele = readFileSync(join(ROOT, 'src/styles/mapa-pele-v6.css'), 'utf-8');
 
 /** Regras dentro de `@layer base` → mapa selector normalizado → declarações. */
 function baseLayerRules(src: string): Map<string, Record<string, string>> {
@@ -87,5 +88,36 @@ describe('<select> nativo — color-scheme por tema (popup legível)', () => {
   it('não põe color-scheme no :root nem no .theme-ocean (scrollbars e outros controlos intactos)', () => {
     expect(rules.get(':root')?.['color-scheme']).toBeUndefined();
     expect(rules.get('.theme-ocean')?.['color-scheme']).toBeUndefined();
+  });
+});
+
+describe('<select> nativo — pele v6 do /mapa ([data-pele=v6], sempre escura)', () => {
+  const regras = new Map<string, Record<string, string>>();
+  postcss.parse(mapaPele).walkRules((rule: Rule) => {
+    const decls: Record<string, string> = {};
+    rule.walkDecls((d) => {
+      decls[d.prop] = d.value.replace(/\s+/g, ' ').trim();
+    });
+    for (const sel of rule.selectors) regras.set(sel.replace(/\s+/g, ' ').trim(), { ...(regras.get(sel) ?? {}), ...decls });
+  });
+
+  it('volta a dark com .theme-ocean, com mais especificidade que `.theme-ocean select`', () => {
+    // :is(.theme-ocean *) dá 0,2,1 > 0,1,1 de `.theme-ocean select` e mantém o seletor no âmbito
+    expect(regras.get("[data-pele='v6'] select:is(.theme-ocean *)")?.['color-scheme']).toBe('dark');
+    expect(regras.get("[data-pele='v6'] select")?.['color-scheme']).toBe('dark');
+  });
+
+  it('opções no fundo e na espuma v6', () => {
+    for (const sel of ["[data-pele='v6'] select option", "[data-pele='v6'] select optgroup"]) {
+      expect(regras.get(sel)?.['background-color']).toBe('var(--fundo)');
+      expect(regras.get(sel)?.['color']).toBe('var(--espuma)');
+    }
+  });
+
+  it('repõe os tokens de dados, desporto e acento do tema escuro (não herda os claros)', () => {
+    const raiz = regras.get("[data-pele='v6']") ?? {};
+    for (const t of ['--data-waves', '--data-wind', '--data-water', '--data-period', '--sport-surf', '--sport-kitesurf',
+      '--sport-windsurf', '--sport-bodyboard', '--sport-sup', '--sport-wakeboard', '--sport-foil', '--score-good',
+      '--windDir-offshore', '--accent-rgb', '--fg-rgb']) expect(raiz[t], t).toBeTruthy();
   });
 });

@@ -32,6 +32,7 @@ One justified risk: large tabular scores as the hero, not a stock wave photo wit
 - Editorial only (news article, about): IBM Plex Serif
 - Do not introduce Inter, Roboto, Arial, Comic fonts, or random Google Display faces.
 - Do not add another family — these four cover every surface.
+- Exception (approved by Pedro, 01/11/2026): the v6 «Atlântico» surfaces (`.v6`, `.v6h`, `.site-header[data-v6]`, and `/mapa` under `[data-pele='v6']`) use the self-hosted Barlow Condensed (display, scores, numbers with `tabular-nums`) and Barlow (text) from `src/styles/v6-fontes.css`, scoped to those roots only. Everywhere else the four families above still apply.
 
 ### Color (tokens only)
 Use CSS variables from the design system.

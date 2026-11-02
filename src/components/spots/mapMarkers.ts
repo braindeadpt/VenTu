@@ -4,7 +4,7 @@ import type { Spot } from '@/types';
 import type { GridSportFilter } from '@/lib/sportRatings';
 import { includeSpotInViewportBounds } from './mapViewportBounds';
 import { resolveWavePowerKw, MS_TO_KNOTS } from '@/lib/waveEnergy';
-import { getCardinalLabel, getWindRelationLabel, orientacaoVento } from '@/lib/wind';
+import { getCardinalLabel, getWindRelationLabel, orientacaoVento, type WindRelation } from '@/lib/wind';
 import { relacaoAnelVento } from '@/lib/ventoRelAnel';
 import { getScoreRgb } from '@/lib/map-constants';
 import { getScoreTier } from '@/lib/scoreThresholds';
@@ -561,6 +561,13 @@ export interface V3MarkerIconOptions {
   memberIds?: string[];
   /** Tique de vento: direcção PARA onde sopra (graus) — só com vento ligado e z≥8.5. */
   windBlowsToDeg?: number | null;
+  /**
+   * Relação do vento com a praia pela classificação `ventoRel` do motor
+   * (`relacaoAnelVento`). Só marca o tique com `data-vento-rel`: com a pele
+   * desligada o desenho não muda; a pele v6 (`[data-pele=v6]`, B1) pinta o
+   * arco nas 3 cores (gelo offshore, névoa cross, coral onshore).
+   */
+  windRel?: WindRelation | null;
   /** aria-label do badge «+N» (já localizado). */
   /**
    * Rótulo do grupo para o nome acessível do marcador, com `{n}` para a
@@ -595,7 +602,7 @@ export function buildV3MarkerIcon(Leaflet: typeof L, opts: V3MarkerIconOptions):
   const ink = night ? MAP_NIGHT_INK : markerScoreInkCss(score);
   const tick =
     opts.windBlowsToDeg != null && Number.isFinite(opts.windBlowsToDeg)
-      ? `<i class="v3tick" data-wind-tick="true" aria-hidden="true" style="position:absolute;left:50%;top:50%;width:0;height:0;pointer-events:none;transform:rotate(${Math.round(opts.windBlowsToDeg)}deg)"><i style="position:absolute;left:-4px;top:-27px;border:4px solid transparent;border-bottom:7px solid rgb(var(--data-wind));border-top:0"></i></i>`
+      ? `<i class="v3tick" data-wind-tick="true"${opts.windRel ? ` data-vento-rel="${opts.windRel}"` : ''} aria-hidden="true" style="position:absolute;left:50%;top:50%;width:0;height:0;pointer-events:none;transform:rotate(${Math.round(opts.windBlowsToDeg)}deg)"><i class="v3tip" style="position:absolute;left:-4px;top:-27px;border:4px solid transparent;border-bottom:7px solid rgb(var(--data-wind));border-top:0"></i></i>`
       : '';
   // Badge «+N» — amplia para o grupo. NÃO é `role="button"`: vive DENTRO do
   // marcador, que o Leaflet marca como `role="button" tabindex="0"`, e dois
@@ -620,6 +627,15 @@ export function buildV3MarkerIcon(Leaflet: typeof L, opts: V3MarkerIconOptions):
     iconSize: [V3_MARKER_SIZE, V3_MARKER_SIZE],
     iconAnchor: [V3_MARKER_SIZE / 2, V3_MARKER_SIZE / 2],
   });
+}
+
+/**
+ * Relação do vento do tique (`ventoRel`, a mesma do anel e da lista) — só
+ * quando o tique está ligado; `null` em água interior / spot sem costa.
+ */
+export function v3WindRel(data: MapSpotData, showWindTick: boolean): WindRelation | null {
+  if (!showWindTick || !Number.isFinite(data.conditions.windDirection)) return null;
+  return relacaoAnelVento(data.conditions.windDirection, orientacaoVento(data.spot));
 }
 
 /** Ponto do nível de detalhe por colisão: 10 px na cor do escalão, hit 24 px. */
@@ -702,6 +718,7 @@ export function createV3SpotMarker(
           score,
           memberIds: layout.memberIds,
           windBlowsToDeg: windBlows,
+          windRel: v3WindRel(data, options.showWindTick),
           moreAriaLabel,
           night,
         })
@@ -802,6 +819,7 @@ export function applyV3LayoutIcon(
           score,
           memberIds: layout.memberIds,
           windBlowsToDeg: windBlows,
+          windRel: v3WindRel(data, options.showWindTick),
           moreAriaLabel: options.moreAriaTemplate?.replace(
             '{n}',
             String(Math.max(0, layout.memberIds.length - 1)),
