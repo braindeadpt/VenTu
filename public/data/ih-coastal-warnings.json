@@ -129,38 +129,6 @@
       ]
     },
     {
-      "id": 18971,
-      "ref": "ANAV NR 2423/26",
-      "category": "Requisitos de segurança maritima",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=489ec9cb-5638-4977-a5bc-92c57865552f",
-      "source": "ih",
-      "collection": "nav_warning_coastal",
-      "polygons": [
-        [
-          [
-            -10.184326,
-            37.291535
-          ],
-          [
-            -10.184326,
-            38.401949
-          ],
-          [
-            -8.76709,
-            38.401949
-          ],
-          [
-            -8.76709,
-            37.291535
-          ],
-          [
-            -10.184326,
-            37.291535
-          ]
-        ]
-      ]
-    },
-    {
       "id": 18973,
       "ref": "ANAV NR 2424/26",
       "category": "Requisitos de segurança maritima",
@@ -7655,28 +7623,14 @@
       2018289
     ],
     "comporta": [
-      18971,
       2017849,
       2018289
     ],
     "carvalhal-comporta": [
-      18971,
       2017849
-    ],
-    "melides": [
-      18971
-    ],
-    "sao-torpes": [
-      18971
-    ],
-    "vale-figueiros-sines": [
-      18971
     ],
     "mosteiros": [
       18683
-    ],
-    "porto-covo": [
-      18971
     ],
     "monte-verde": [
       18683
@@ -7684,40 +7638,19 @@
     "santa-barbara": [
       18683
     ],
-    "malhao": [
-      18971
-    ],
     "milicias": [
       18683
-    ],
-    "vila-nova-milfontes": [
-      18971
-    ],
-    "alteirinhos": [
-      18971
     ],
     "agua-alto": [
       18683
     ],
-    "zambujeira": [
-      18971
-    ],
-    "carvalhal": [
-      18971
-    ],
-    "odeceixe": [
-      18971
-    ],
     "amoreira": [
-      18971,
       2017815
     ],
     "monte-clerigo": [
-      18971,
       2017815
     ],
     "arrifana": [
-      18971,
       1001633
     ],
     "vale-figueiras": [
@@ -7987,15 +7920,6 @@
       2018749,
       2018769
     ],
-    "lagoa-santo-andre": [
-      18971
-    ],
-    "lagoa-sancha": [
-      18971
-    ],
-    "pessegueiro": [
-      18971
-    ],
     "falesia": [
       2018203,
       2018205
@@ -8082,7 +8006,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-11-02T20:07:16.771Z",
+  "fetchedAt": "2026-11-03T00:04:30.850Z",
   "sourceCollection": "nav_warning_coastal+nav_warning_local+orca_anavnet_point",
   "sourceUrl": "https://ogcapi.hidrografico.pt/collections/nav_warning_coastal"
 }
