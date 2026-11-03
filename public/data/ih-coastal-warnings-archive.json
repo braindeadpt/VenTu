@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-11-03T14:07:25.648Z",
+  "fetchedAt": "2026-11-03T15:30:15.872Z",
   "windowDays": 90,
   "dayCount": 63,
   "days": [
@@ -70520,13 +70520,6 @@
           "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=c6cb0020-6835-495e-99c8-6a4f18acbf15"
         },
         {
-          "id": 1000318,
-          "ref": "ANAV NR 2/22",
-          "category": "Embarcação parcialmente submersa",
-          "source": "ih",
-          "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=64d54dbe-e09b-4085-9f27-d4837aad9616"
-        },
-        {
           "id": 1000320,
           "ref": "ANAV NR 4/22",
           "category": "PARQUE SUBAQUATICO OCEAN REVIVAL - ALTERAÇÃO LIMITES",
@@ -71449,6 +71442,20 @@
           "category": "ESTADO DA BARRA",
           "source": "ih",
           "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=d3b923e7-4ece-4b6e-820a-b08f25675f2e"
+        },
+        {
+          "id": 1010897,
+          "ref": "ANAV NR 40/26",
+          "category": "SEGURANÇA À NAVEGAÇÃO",
+          "source": "ih",
+          "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=ef46d4fe-cb6b-4f69-a0d9-6e57ace21f1e"
+        },
+        {
+          "id": 1010912,
+          "ref": "ANAV NR 46/26",
+          "category": "SEGURANÇA MARÍTIMA - DETETADA ALTERAÇÃO DE SONDAS MINIMAS NA ENTRADA DA BARRA",
+          "source": "ih",
+          "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=7941f565-a907-4207-abdd-574d3d731bbb"
         },
         {
           "id": 2017775,
@@ -78831,6 +78838,18 @@
       "nDays": 53
     },
     {
+      "ref": "ANAV NR 40/26",
+      "category": "SEGURANÇA À NAVEGAÇÃO",
+      "source": "ih",
+      "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=ef46d4fe-cb6b-4f69-a0d9-6e57ace21f1e",
+      "firstSeen": "2026-11-03",
+      "lastSeen": "2026-11-03",
+      "daysInForce": [
+        "2026-11-03"
+      ],
+      "nDays": 1
+    },
+    {
       "ref": "ANAV NR 41/25",
       "category": "ASSINALAMENTO PROVISORIO",
       "source": "ih",
@@ -79213,6 +79232,18 @@
         "2026-11-03"
       ],
       "nDays": 53
+    },
+    {
+      "ref": "ANAV NR 46/26",
+      "category": "SEGURANÇA MARÍTIMA - DETETADA ALTERAÇÃO DE SONDAS MINIMAS NA ENTRADA DA BARRA",
+      "source": "ih",
+      "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=7941f565-a907-4207-abdd-574d3d731bbb",
+      "firstSeen": "2026-11-03",
+      "lastSeen": "2026-11-03",
+      "daysInForce": [
+        "2026-11-03"
+      ],
+      "nDays": 1
     },
     {
       "ref": "ANAV NR 47/21",
