@@ -187,38 +187,6 @@
       ]
     },
     {
-      "id": 18979,
-      "ref": "ANAV NR 2427/26",
-      "category": "Requisitos de segurança maritima",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=9cd91611-0d5c-47c8-90c1-02e0a5c90c53",
-      "source": "ih",
-      "collection": "nav_warning_coastal",
-      "polygons": [
-        [
-          [
-            -8.833593,
-            41.511405
-          ],
-          [
-            -8.833593,
-            41.562546
-          ],
-          [
-            -8.751559,
-            41.562546
-          ],
-          [
-            -8.751559,
-            41.511405
-          ],
-          [
-            -8.833593,
-            41.511405
-          ]
-        ]
-      ]
-    },
-    {
       "id": 18981,
       "ref": "ANAV NR 2428/26",
       "category": "Requisitos de segurança maritima",
@@ -7338,20 +7306,17 @@
       2018401
     ],
     "esposende": [
-      18979,
       1000657,
       1009684,
       2018401,
       2018801
     ],
     "esposende-praia": [
-      18979,
       1009684,
       2018401,
       2018801
     ],
     "fao": [
-      18979,
       1009684,
       2018401,
       2018801
@@ -8046,7 +8011,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-11-03T10:06:53.753Z",
+  "fetchedAt": "2026-11-03T12:07:11.833Z",
   "sourceCollection": "nav_warning_coastal+nav_warning_local+orca_anavnet_point",
   "sourceUrl": "https://ogcapi.hidrografico.pt/collections/nav_warning_coastal"
 }
