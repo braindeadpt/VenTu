@@ -1,39 +1,39 @@
 {
-  "date": "2026-11-03",
-  "generatedAt": "2026-11-03T04:37:03.555Z",
-  "topSpot": "Arrifana",
-  "topSpotSlug": "arrifana",
+  "date": "2026-11-04",
+  "generatedAt": "2026-11-04T04:24:21.253Z",
+  "topSpot": "Supertubos",
+  "topSpotSlug": "supertubos",
   "pt": {
-    "headline": "Hoje é dia de Arrifana! 🌊",
-    "advice": "Melhor janela: 11:00h. Ondas de 1.0m com 4 nós de vento. ⚓ Avisos à Navegação Costeiros (IH): ANAV NR 2/22 — Plano de Salvamento Marítimo Lagos",
-    "bestTime": "11:00",
+    "headline": "Hoje é dia de Supertubos! 🌊",
+    "advice": "Melhor janela: 8:00h. Ondas de 1.1m com 3 nós de vento. ⚓ Avisos à Navegação Costeiros (IH): ANAV NR 12/24 — Edital n.º 712 de 2024 · ANAV NR 2257/26 — Animais Marinhos - Interação",
+    "bestTime": "8:00",
     "wetsuit": "3/2mm",
     "crowdTip": "Chega cedo para evitar crowd!",
-    "moonTideLine": "Quarto minguante · Transição · baixa-mar 16:00"
+    "moonTideLine": "Quarto minguante · Marés mortas · baixa-mar 17:00"
   },
   "en": {
-    "headline": "Today is Arrifana day! 🌊",
-    "advice": "Best window: 11:00. 1.0m waves with 4 knot wind. ⚓ Coastal navigation warnings (IH): ANAV NR 2/22 — Plano de Salvamento Marítimo Lagos",
-    "bestTime": "11:00",
+    "headline": "Today is Supertubos day! 🌊",
+    "advice": "Best window: 8:00. 1.1m waves with 3 knot wind. ⚓ Coastal navigation warnings (IH): ANAV NR 12/24 — Edital n.º 712 de 2024 · ANAV NR 2257/26 — Animais Marinhos - Interação",
+    "bestTime": "8:00",
     "wetsuit": "3/2mm",
     "crowdTip": "Get there early to beat the crowd!",
-    "moonTideLine": "Last quarter · Transition · low tide 16:00"
+    "moonTideLine": "Last quarter · Neap tides · low tide 17:00"
   },
   "spots": [
     {
-      "name": "Arrifana",
-      "slug": "arrifana",
-      "score": 60,
-      "scoreForecast": 60,
-      "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "maybe",
-      "ptReason": "Condições razoáveis",
-      "enReason": "Fair conditions"
-    },
-    {
       "name": "Supertubos",
       "slug": "supertubos",
+      "score": 40,
+      "scoreForecast": 40,
+      "scoreSource": "previsão",
+      "scoreMeta": null,
+      "verdict": "skip",
+      "ptReason": "Não vale a pena",
+      "enReason": "Not worth it"
+    },
+    {
+      "name": "Guincho",
+      "slug": "guincho",
       "score": 40,
       "scoreForecast": 40,
       "scoreSource": "previsão",
@@ -54,21 +54,10 @@
       "enReason": "Not worth it"
     },
     {
-      "name": "Guincho",
-      "slug": "guincho",
-      "score": 30,
-      "scoreForecast": 30,
-      "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "skip",
-      "ptReason": "Não vale a pena",
-      "enReason": "Not worth it"
-    },
-    {
       "name": "Ribeira d'Ilhas",
       "slug": "ribeira-ilhas",
-      "score": 30,
-      "scoreForecast": 30,
+      "score": 40,
+      "scoreForecast": 40,
       "scoreSource": "previsão",
       "scoreMeta": null,
       "verdict": "skip",
@@ -78,8 +67,19 @@
     {
       "name": "Coxos",
       "slug": "coxos",
-      "score": 30,
-      "scoreForecast": 30,
+      "score": 40,
+      "scoreForecast": 40,
+      "scoreSource": "previsão",
+      "scoreMeta": null,
+      "verdict": "skip",
+      "ptReason": "Não vale a pena",
+      "enReason": "Not worth it"
+    },
+    {
+      "name": "Arrifana",
+      "slug": "arrifana",
+      "score": 40,
+      "scoreForecast": 40,
       "scoreSource": "previsão",
       "scoreMeta": null,
       "verdict": "skip",
@@ -98,8 +98,8 @@
       "enReason": "Not worth it"
     }
   ],
-  "topScore": 60,
-  "topScoreForecast": 60,
+  "topScore": 40,
+  "topScoreForecast": 40,
   "topScoreSource": "previsão",
   "topScoreMeta": null
 }
