@@ -1,7 +1,17 @@
 {
   "source": "ipma",
-  "fetchedAt": "2026-11-03T20:08:38.686Z",
+  "fetchedAt": "2026-11-04T00:06:50.629Z",
   "warnings": [
+    {
+      "areaCode": "ACE",
+      "areaLabel": "Angra do Heroísmo",
+      "type": "Precipitação",
+      "level": "yellow",
+      "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada.",
+      "startTime": "2026-11-04T15:00:00",
+      "endTime": "2026-11-05T06:00:00",
+      "relevant": true
+    },
     {
       "areaCode": "MRM",
       "areaLabel": "Madeira — Regiões Montanhosas",
@@ -24,6 +34,42 @@
     }
   ],
   "spotWarnings": {
+    "praia-vitoria": [
+      {
+        "areaCode": "ACE",
+        "areaLabel": "Angra do Heroísmo",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada.",
+        "startTime": "2026-11-04T15:00:00",
+        "endTime": "2026-11-05T06:00:00",
+        "relevant": true
+      }
+    ],
+    "santa-catarina-terceira": [
+      {
+        "areaCode": "ACE",
+        "areaLabel": "Angra do Heroísmo",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada.",
+        "startTime": "2026-11-04T15:00:00",
+        "endTime": "2026-11-05T06:00:00",
+        "relevant": true
+      }
+    ],
+    "almoxarife": [
+      {
+        "areaCode": "ACE",
+        "areaLabel": "Angra do Heroísmo",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada.",
+        "startTime": "2026-11-04T15:00:00",
+        "endTime": "2026-11-05T06:00:00",
+        "relevant": true
+      }
+    ],
     "porto-da-cruz": [
       {
         "areaCode": "MRM",
@@ -81,6 +127,42 @@
         "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
         "startTime": "2026-11-06T00:00:00",
         "endTime": "2026-11-06T09:00:00",
+        "relevant": true
+      }
+    ],
+    "porto-martins": [
+      {
+        "areaCode": "ACE",
+        "areaLabel": "Angra do Heroísmo",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada.",
+        "startTime": "2026-11-04T15:00:00",
+        "endTime": "2026-11-05T06:00:00",
+        "relevant": true
+      }
+    ],
+    "cachorro-pico": [
+      {
+        "areaCode": "ACE",
+        "areaLabel": "Angra do Heroísmo",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada.",
+        "startTime": "2026-11-04T15:00:00",
+        "endTime": "2026-11-05T06:00:00",
+        "relevant": true
+      }
+    ],
+    "faja-cubres": [
+      {
+        "areaCode": "ACE",
+        "areaLabel": "Angra do Heroísmo",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada.",
+        "startTime": "2026-11-04T15:00:00",
+        "endTime": "2026-11-05T06:00:00",
         "relevant": true
       }
     ]
