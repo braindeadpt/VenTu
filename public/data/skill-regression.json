@@ -1,6 +1,6 @@
 {
   "source": "forecast-skill-regression",
-  "checkedAt": "2026-11-04T08:05:02.270Z",
+  "checkedAt": "2026-11-04T10:07:17.708Z",
   "windowDays": 60,
   "recentDays": 7,
   "baselineDays": 21,
@@ -24,7 +24,7 @@
         "snapshots": 8,
         "rmse": 0.77125,
         "me": 0.6012500000000001,
-        "n": 618.625
+        "n": 618.5
       },
       "baseline": {
         "snapshots": 21,
@@ -60,9 +60,9 @@
       "origin": "ih",
       "recent": {
         "snapshots": 8,
-        "rmse": 0.18249999999999997,
+        "rmse": 0.18124999999999997,
         "me": 0.09499999999999999,
-        "n": 159
+        "n": 159.375
       },
       "baseline": {
         "snapshots": 14,
@@ -176,8 +176,8 @@
       "name": "IH (Datawell)",
       "recent": {
         "days": 8,
-        "n": 2630.88,
-        "me": 0.22800446619470707
+        "n": 2631.13,
+        "me": 0.22796949973870492
       },
       "baseline": {
         "days": 21,
