@@ -1,105 +1,105 @@
 {
-  "date": "2026-11-04",
-  "topSpot": "Ribeira d'Ilhas",
-  "topSpotSlug": "ribeira-ilhas",
+  "date": "2026-11-05",
+  "generatedAt": "2026-11-05T04:25:23.320Z",
+  "topSpot": "Arrifana",
+  "topSpotSlug": "arrifana",
   "pt": {
-    "headline": "Ondas consistentes e boas para todos os níveis",
-    "advice": "Ribeira d'Ilhas tem 1,2 m de onda a 9 s, vento leve (5 kt) e água a 16,2 °C. Aviso à navegação costeira ANAV NR 1727/26 (Animais Marinhos - Avistamento) em vigor na zona – fique atento, mas nada impede de surfar. Chegue cedo para evitar a multidão e aproveite a sessão.",
-    "bestTime": "09:30",
+    "headline": "Hoje é dia de Arrifana! 🌊",
+    "advice": "Melhor janela: 8:00h. Ondas de 1.1m com 3 nós de vento. ⚓ Avisos à Navegação Costeiros (IH): ANAV NR 2/22 — Plano de Salvamento Marítimo Lagos",
+    "bestTime": "8:00",
     "wetsuit": "3/2mm",
-    "crowdTip": "Chegue antes das 10h para surfar com menos gente",
-    "moonTideLine": "Quarto minguante · Marés mortas · baixa-mar 17:00"
+    "crowdTip": "Chega cedo para evitar crowd!",
+    "moonTideLine": "Lua minguante · Marés mortas · baixa-mar 05:00"
   },
   "en": {
-    "headline": "Consistent waves, great for all levels",
-    "advice": "Ribeira d'Ilhas offers 1.2 m waves at 9 s, light wind (5 kt) and water at 16.2 °C. Coastal navigation warning ANAV NR 1727/26 (Marine Animals – Sighting) is in effect – stay aware but it’s safe to surf. Arrive early to beat the crowd and make the most of the session.",
-    "bestTime": "09:30",
+    "headline": "Today is Arrifana day! 🌊",
+    "advice": "Best window: 8:00. 1.1m waves with 3 knot wind. ⚓ Coastal navigation warnings (IH): ANAV NR 2/22 — Plano de Salvamento Marítimo Lagos",
+    "bestTime": "8:00",
     "wetsuit": "3/2mm",
-    "crowdTip": "Get there before 10 am for fewer surfers",
-    "moonTideLine": "Last quarter · Neap tides · low tide 17:00"
+    "crowdTip": "Get there early to beat the crowd!",
+    "moonTideLine": "Waning crescent · Neap tides · low tide 05:00"
   },
   "spots": [
     {
-      "name": "Ribeira d'Ilhas",
-      "slug": "ribeira-ilhas",
-      "score": 40,
-      "verdict": "go",
-      "ptReason": "Ondas de 1,2 m, vento leve e boa temperatura; aviso apenas de avistamento de animais, sem risco.",
-      "enReason": "1.2 m waves, light wind and decent water temperature; only a marine‑animal sighting warning, no hazard.",
-      "scoreForecast": 40,
+      "name": "Arrifana",
+      "slug": "arrifana",
+      "score": 70,
+      "scoreForecast": 70,
       "scoreSource": "previsão",
-      "scoreMeta": null
+      "scoreMeta": null,
+      "verdict": "go",
+      "ptReason": "Condições excelentes",
+      "enReason": "Excellent conditions"
     },
     {
-      "name": "Coxos",
-      "slug": "coxos",
-      "score": 40,
-      "verdict": "maybe",
-      "ptReason": "Ondas semelhantes a Ribeira, mas vento de 5 kt pode tornar a esquerda mais desafiadora para iniciantes.",
-      "enReason": "Similar waves to Ribeira, but 5 kt wind can make the left more challenging for beginners.",
-      "scoreForecast": 40,
+      "name": "Guincho",
+      "slug": "guincho",
+      "score": 60,
+      "scoreForecast": 60,
       "scoreSource": "previsão",
-      "scoreMeta": null
+      "scoreMeta": null,
+      "verdict": "maybe",
+      "ptReason": "Condições razoáveis",
+      "enReason": "Fair conditions"
+    },
+    {
+      "name": "Nazaré",
+      "slug": "nazare",
+      "score": 60,
+      "scoreForecast": 60,
+      "scoreSource": "previsão",
+      "scoreMeta": null,
+      "verdict": "maybe",
+      "ptReason": "Condições razoáveis",
+      "enReason": "Fair conditions"
+    },
+    {
+      "name": "Ribeira d'Ilhas",
+      "slug": "ribeira-ilhas",
+      "score": 60,
+      "scoreForecast": 60,
+      "scoreSource": "previsão",
+      "scoreMeta": null,
+      "verdict": "maybe",
+      "ptReason": "Condições razoáveis",
+      "enReason": "Fair conditions"
     },
     {
       "name": "Supertubos",
       "slug": "supertubos",
       "score": 40,
-      "verdict": "maybe",
-      "ptReason": "Boa onda de 1,1 m, porém spot mais popular; atenção aos avisos de interação com fauna marinha.",
-      "enReason": "Good 1.1 m wave but a busier spot; watch the marine‑animal interaction warnings.",
       "scoreForecast": 40,
       "scoreSource": "previsão",
-      "scoreMeta": null
+      "scoreMeta": null,
+      "verdict": "skip",
+      "ptReason": "Não vale a pena",
+      "enReason": "Not worth it"
     },
     {
-      "name": "Guincho",
-      "slug": "guincho",
+      "name": "Coxos",
+      "slug": "coxos",
       "score": 40,
-      "verdict": "maybe",
-      "ptReason": "Condições parecidas com Supertubos, porém ligeiro aumento do vento (4 kt) e avisos de fauna.",
-      "enReason": "Similar conditions to Supertubos with slightly higher wind (4 kt) and marine‑animal warnings.",
       "scoreForecast": 40,
       "scoreSource": "previsão",
-      "scoreMeta": null
-    },
-    {
-      "name": "Nazaré",
-      "slug": "nazare",
-      "score": 40,
-      "verdict": "maybe",
-      "ptReason": "Ondas pequenas para a fama da zona; vento leve, mas menos interessante para surf.",
-      "enReason": "Waves are small for Nazaré’s reputation; light wind but less exciting for surfing.",
-      "scoreForecast": 40,
-      "scoreSource": "previsão",
-      "scoreMeta": null
-    },
-    {
-      "name": "Arrifana",
-      "slug": "arrifana",
-      "score": 40,
-      "verdict": "maybe",
-      "ptReason": "Ondas de 0,8 m e vento de 4 kt; bom para iniciantes, porém menos ação.",
-      "enReason": "0.8 m waves and 4 kt wind; suitable for beginners but less action.",
-      "scoreForecast": 40,
-      "scoreSource": "previsão",
-      "scoreMeta": null
+      "scoreMeta": null,
+      "verdict": "skip",
+      "ptReason": "Não vale a pena",
+      "enReason": "Not worth it"
     },
     {
       "name": "Carcavelos",
       "slug": "carcavelos",
-      "score": 20,
-      "verdict": "skip",
-      "ptReason": "Ondas curtas (0,8 m) e nota baixa (2/10); múltiplos avisos de interação com fauna marinha.",
-      "enReason": "Short 0.8 m waves and low rating (2/10); multiple marine‑animal interaction warnings.",
-      "scoreForecast": 20,
+      "score": 40,
+      "scoreForecast": 40,
       "scoreSource": "previsão",
-      "scoreMeta": null
+      "scoreMeta": null,
+      "verdict": "skip",
+      "ptReason": "Não vale a pena",
+      "enReason": "Not worth it"
     }
   ],
-  "generatedAt": "2026-11-04T04:37:08.348Z",
-  "topScore": 40,
-  "topScoreForecast": 40,
+  "topScore": 70,
+  "topScoreForecast": 70,
   "topScoreSource": "previsão",
   "topScoreMeta": null
 }
