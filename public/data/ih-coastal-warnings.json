@@ -283,6 +283,92 @@
       ]
     },
     {
+      "id": 19011,
+      "ref": "ANAV NR 2443/26",
+      "category": "Requisitos de segurança maritima",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=3379583a-2bbe-49ea-baa3-aaffb289d83d",
+      "source": "ih",
+      "collection": "nav_warning_coastal",
+      "polygons": [
+        [
+          [
+            -10.139041,
+            38.831721
+          ],
+          [
+            -10.139041,
+            39.614717
+          ],
+          [
+            -9.084684,
+            39.614717
+          ],
+          [
+            -9.084684,
+            38.831721
+          ],
+          [
+            -10.139041,
+            38.831721
+          ]
+        ]
+      ]
+    },
+    {
+      "id": 19013,
+      "ref": "ANAV NR 2444/26",
+      "category": "Operações de reboque",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=2905e5a5-9cd7-4e6d-aac2-0256ecd9d48e",
+      "source": "ih",
+      "collection": "nav_warning_coastal",
+      "polygons": [
+        [
+          [
+            -8.870845,
+            41.440908
+          ],
+          [
+            -8.870845,
+            41.473328
+          ],
+          [
+            -8.814558,
+            41.473328
+          ],
+          [
+            -8.814558,
+            41.440908
+          ],
+          [
+            -8.870845,
+            41.440908
+          ]
+        ],
+        [
+          [
+            -8.864755,
+            41.664021
+          ],
+          [
+            -8.864755,
+            41.699406
+          ],
+          [
+            -8.811899,
+            41.699406
+          ],
+          [
+            -8.811899,
+            41.664021
+          ],
+          [
+            -8.864755,
+            41.664021
+          ]
+        ]
+      ]
+    },
+    {
       "id": 1000182,
       "ref": "ANAV NR 121/21",
       "category": "SEGURANÇA DA NAVEGAÇÃO - AVISO À NAVEGAÇÃO LOCAL",
@@ -7333,6 +7419,7 @@
       2018401
     ],
     "cabedelo": [
+      19013,
       1000655,
       1000656,
       1005679,
@@ -7343,6 +7430,7 @@
       2018401
     ],
     "foil-cabedelo": [
+      19013,
       1000655,
       1000656,
       1005679,
@@ -7353,12 +7441,14 @@
       2018401
     ],
     "cabedelo-wakepark": [
+      19013,
       1000655,
       1005679,
       1007416,
       2018401
     ],
     "rodanho": [
+      19013,
       1007416,
       1009684,
       2018401
@@ -7486,90 +7576,118 @@
     "sao-pedro-moel": [
       2018335
     ],
+    "nazare": [
+      19011
+    ],
     "foz-arelho": [
+      19011,
       1005730,
       2018763
     ],
     "foil-foz-arelho": [
+      19011,
       1005730
     ],
     "obidos-lagoon": [
+      19011,
       1005730,
       2018763
     ],
     "obidos-lagoon-sul": [
+      19011,
       1005730,
       2018763
     ],
     "foz-arelho-beach": [
+      19011,
       2018763
     ],
     "praia-del-rey": [
+      19011,
       1005730,
       2018763
     ],
     "almagreira": [
+      19011,
       2018763
     ],
     "lagide": [
+      19011,
       2018763
     ],
     "baleal": [
+      19011,
       1005730,
       2018763
     ],
     "baleal-sul": [
+      19011,
       1005730,
       2018763
     ],
     "gamboa": [
+      19011,
       2018763
     ],
     "supertubos": [
+      19011,
       1005730,
       2018763
     ],
     "molhe-leste": [
+      19011,
       1005730,
       2018763
     ],
     "foz-sizandro": [
+      19011,
       1005730,
       2018213
     ],
     "coxos": [
+      19011,
       2018213
     ],
     "ribeira-ilhas": [
+      19011,
       2018213
     ],
     "empa": [
+      19011,
       1007841,
       2018213
     ],
     "sao-lourenco": [
+      19011,
       2018213
     ],
     "calada": [
+      19011,
       2018213
     ],
     "pedra-branca": [
+      19011,
       1007841,
       2018213
     ],
     "sao-sebastiao": [
+      19011,
       2018213
     ],
     "praia-norte-ericeira": [
+      19011,
       2018213
     ],
     "praia-sul-ericeira": [
+      19011,
       2018213
     ],
     "foz-lizandro": [
+      19011,
       2018213
     ],
     "sao-juliao": [
+      19011,
       2017877,
       2018213
     ],
@@ -7948,28 +8066,38 @@
       2018801
     ],
     "porto-novo": [
+      19011,
       1005730
     ],
     "santa-cruz": [
+      19011,
       1005730,
       2018213
     ],
     "consolacao": [
+      19011,
       1005730,
       2018763
     ],
     "areia-branca": [
+      19011,
       1005730,
       2018763
     ],
+    "sao-martinho-porto": [
+      19011
+    ],
     "cave-ericeira": [
+      19011,
       2018213
     ],
     "pescadores-ericeira": [
+      19011,
       1000257,
       2018213
     ],
     "crazy-left": [
+      19011,
       2018213
     ],
     "meco": [
@@ -8067,7 +8195,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-11-05T14:06:43.295Z",
+  "fetchedAt": "2026-11-05T16:06:55.757Z",
   "sourceCollection": "nav_warning_coastal+nav_warning_local+orca_anavnet_point",
   "sourceUrl": "https://ogcapi.hidrografico.pt/collections/nav_warning_coastal"
 }
