@@ -1,17 +1,7 @@
 {
   "source": "ipma",
-  "fetchedAt": "2026-11-05T06:07:01.183Z",
+  "fetchedAt": "2026-11-05T08:06:58.707Z",
   "warnings": [
-    {
-      "areaCode": "ACE",
-      "areaLabel": "Angra do Heroísmo",
-      "type": "Precipitação",
-      "level": "yellow",
-      "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada.",
-      "startTime": "2026-11-04T16:11:00",
-      "endTime": "2026-11-05T06:00:00",
-      "relevant": true
-    },
     {
       "areaCode": "MRM",
       "areaLabel": "Madeira — Regiões Montanhosas",
@@ -19,7 +9,27 @@
       "level": "yellow",
       "text": "Aguaceiros por vezes fortes, que podem ser acompanhados de trovoada.",
       "startTime": "2026-11-05T09:00:00",
-      "endTime": "2026-11-06T15:00:00",
+      "endTime": "2026-11-08T03:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "MCN",
+      "areaLabel": "Madeira — Costa Norte",
+      "type": "Precipitação",
+      "level": "yellow",
+      "text": "Precipitação, por vezes forte e persistente, podendo ser acompanhada de trovoada.",
+      "startTime": "2026-11-07T12:00:00",
+      "endTime": "2026-11-08T03:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "MPS",
+      "areaLabel": "Porto Santo",
+      "type": "Precipitação",
+      "level": "yellow",
+      "text": "Precipitação, por vezes forte e persistente, podendo ser acompanhada de trovoada.",
+      "startTime": "2026-11-07T12:00:00",
+      "endTime": "2026-11-08T03:00:00",
       "relevant": true
     },
     {
@@ -29,44 +39,70 @@
       "level": "yellow",
       "text": "Aguaceiros por vezes fortes, que podem ser acompanhados de trovoada.",
       "startTime": "2026-11-05T09:00:00",
-      "endTime": "2026-11-06T15:00:00",
+      "endTime": "2026-11-08T03:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "MRM",
+      "areaLabel": "Madeira — Regiões Montanhosas",
+      "type": "Vento",
+      "level": "yellow",
+      "text": "Rajadas até 110 km/h.",
+      "startTime": "2026-11-07T12:00:00",
+      "endTime": "2026-11-08T00:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "MCN",
+      "areaLabel": "Madeira — Costa Norte",
+      "type": "Vento",
+      "level": "yellow",
+      "text": "Rajadas até 90 km/h.",
+      "startTime": "2026-11-07T12:00:00",
+      "endTime": "2026-11-08T00:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "MPS",
+      "areaLabel": "Porto Santo",
+      "type": "Vento",
+      "level": "yellow",
+      "text": "Rajadas até 90 km/h.",
+      "startTime": "2026-11-07T12:00:00",
+      "endTime": "2026-11-08T00:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "MCS",
+      "areaLabel": "Funchal",
+      "type": "Vento",
+      "level": "yellow",
+      "text": "Rajadas até 90 km/h.",
+      "startTime": "2026-11-07T12:00:00",
+      "endTime": "2026-11-08T00:00:00",
       "relevant": true
     }
   ],
   "spotWarnings": {
-    "praia-vitoria": [
+    "sao-vicente-madeira": [
       {
-        "areaCode": "ACE",
-        "areaLabel": "Angra do Heroísmo",
+        "areaCode": "MCN",
+        "areaLabel": "Madeira — Costa Norte",
         "type": "Precipitação",
         "level": "yellow",
-        "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada.",
-        "startTime": "2026-11-04T16:11:00",
-        "endTime": "2026-11-05T06:00:00",
+        "text": "Precipitação, por vezes forte e persistente, podendo ser acompanhada de trovoada.",
+        "startTime": "2026-11-07T12:00:00",
+        "endTime": "2026-11-08T03:00:00",
         "relevant": true
-      }
-    ],
-    "santa-catarina-terceira": [
+      },
       {
-        "areaCode": "ACE",
-        "areaLabel": "Angra do Heroísmo",
-        "type": "Precipitação",
+        "areaCode": "MCN",
+        "areaLabel": "Madeira — Costa Norte",
+        "type": "Vento",
         "level": "yellow",
-        "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada.",
-        "startTime": "2026-11-04T16:11:00",
-        "endTime": "2026-11-05T06:00:00",
-        "relevant": true
-      }
-    ],
-    "almoxarife": [
-      {
-        "areaCode": "ACE",
-        "areaLabel": "Angra do Heroísmo",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada.",
-        "startTime": "2026-11-04T16:11:00",
-        "endTime": "2026-11-05T06:00:00",
+        "text": "Rajadas até 90 km/h.",
+        "startTime": "2026-11-07T12:00:00",
+        "endTime": "2026-11-08T00:00:00",
         "relevant": true
       }
     ],
@@ -78,7 +114,61 @@
         "level": "yellow",
         "text": "Aguaceiros por vezes fortes, que podem ser acompanhados de trovoada.",
         "startTime": "2026-11-05T09:00:00",
-        "endTime": "2026-11-06T15:00:00",
+        "endTime": "2026-11-08T03:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "MRM",
+        "areaLabel": "Madeira — Regiões Montanhosas",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Rajadas até 110 km/h.",
+        "startTime": "2026-11-07T12:00:00",
+        "endTime": "2026-11-08T00:00:00",
+        "relevant": true
+      }
+    ],
+    "paul-mar": [
+      {
+        "areaCode": "MCN",
+        "areaLabel": "Madeira — Costa Norte",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Precipitação, por vezes forte e persistente, podendo ser acompanhada de trovoada.",
+        "startTime": "2026-11-07T12:00:00",
+        "endTime": "2026-11-08T03:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "MCN",
+        "areaLabel": "Madeira — Costa Norte",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Rajadas até 90 km/h.",
+        "startTime": "2026-11-07T12:00:00",
+        "endTime": "2026-11-08T00:00:00",
+        "relevant": true
+      }
+    ],
+    "jardim-mar": [
+      {
+        "areaCode": "MCN",
+        "areaLabel": "Madeira — Costa Norte",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Precipitação, por vezes forte e persistente, podendo ser acompanhada de trovoada.",
+        "startTime": "2026-11-07T12:00:00",
+        "endTime": "2026-11-08T03:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "MCN",
+        "areaLabel": "Madeira — Costa Norte",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Rajadas até 90 km/h.",
+        "startTime": "2026-11-07T12:00:00",
+        "endTime": "2026-11-08T00:00:00",
         "relevant": true
       }
     ],
@@ -90,7 +180,17 @@
         "level": "yellow",
         "text": "Aguaceiros por vezes fortes, que podem ser acompanhados de trovoada.",
         "startTime": "2026-11-05T09:00:00",
-        "endTime": "2026-11-06T15:00:00",
+        "endTime": "2026-11-08T03:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "MCS",
+        "areaLabel": "Funchal",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Rajadas até 90 km/h.",
+        "startTime": "2026-11-07T12:00:00",
+        "endTime": "2026-11-08T00:00:00",
         "relevant": true
       }
     ],
@@ -102,7 +202,17 @@
         "level": "yellow",
         "text": "Aguaceiros por vezes fortes, que podem ser acompanhados de trovoada.",
         "startTime": "2026-11-05T09:00:00",
-        "endTime": "2026-11-06T15:00:00",
+        "endTime": "2026-11-08T03:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "MRM",
+        "areaLabel": "Madeira — Regiões Montanhosas",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Rajadas até 110 km/h.",
+        "startTime": "2026-11-07T12:00:00",
+        "endTime": "2026-11-08T00:00:00",
         "relevant": true
       }
     ],
@@ -114,7 +224,17 @@
         "level": "yellow",
         "text": "Aguaceiros por vezes fortes, que podem ser acompanhados de trovoada.",
         "startTime": "2026-11-05T09:00:00",
-        "endTime": "2026-11-06T15:00:00",
+        "endTime": "2026-11-08T03:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "MCS",
+        "areaLabel": "Funchal",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Rajadas até 90 km/h.",
+        "startTime": "2026-11-07T12:00:00",
+        "endTime": "2026-11-08T00:00:00",
         "relevant": true
       }
     ],
@@ -126,43 +246,83 @@
         "level": "yellow",
         "text": "Aguaceiros por vezes fortes, que podem ser acompanhados de trovoada.",
         "startTime": "2026-11-05T09:00:00",
-        "endTime": "2026-11-06T15:00:00",
+        "endTime": "2026-11-08T03:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "MCS",
+        "areaLabel": "Funchal",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Rajadas até 90 km/h.",
+        "startTime": "2026-11-07T12:00:00",
+        "endTime": "2026-11-08T00:00:00",
         "relevant": true
       }
     ],
-    "porto-martins": [
+    "seixal-madeira": [
       {
-        "areaCode": "ACE",
-        "areaLabel": "Angra do Heroísmo",
+        "areaCode": "MCN",
+        "areaLabel": "Madeira — Costa Norte",
         "type": "Precipitação",
         "level": "yellow",
-        "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada.",
-        "startTime": "2026-11-04T16:11:00",
-        "endTime": "2026-11-05T06:00:00",
+        "text": "Precipitação, por vezes forte e persistente, podendo ser acompanhada de trovoada.",
+        "startTime": "2026-11-07T12:00:00",
+        "endTime": "2026-11-08T03:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "MCN",
+        "areaLabel": "Madeira — Costa Norte",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Rajadas até 90 km/h.",
+        "startTime": "2026-11-07T12:00:00",
+        "endTime": "2026-11-08T00:00:00",
         "relevant": true
       }
     ],
-    "cachorro-pico": [
+    "ponta-pargo": [
       {
-        "areaCode": "ACE",
-        "areaLabel": "Angra do Heroísmo",
+        "areaCode": "MCN",
+        "areaLabel": "Madeira — Costa Norte",
         "type": "Precipitação",
         "level": "yellow",
-        "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada.",
-        "startTime": "2026-11-04T16:11:00",
-        "endTime": "2026-11-05T06:00:00",
+        "text": "Precipitação, por vezes forte e persistente, podendo ser acompanhada de trovoada.",
+        "startTime": "2026-11-07T12:00:00",
+        "endTime": "2026-11-08T03:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "MCN",
+        "areaLabel": "Madeira — Costa Norte",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Rajadas até 90 km/h.",
+        "startTime": "2026-11-07T12:00:00",
+        "endTime": "2026-11-08T00:00:00",
         "relevant": true
       }
     ],
-    "faja-cubres": [
+    "madalena-mar": [
       {
-        "areaCode": "ACE",
-        "areaLabel": "Angra do Heroísmo",
+        "areaCode": "MCN",
+        "areaLabel": "Madeira — Costa Norte",
         "type": "Precipitação",
         "level": "yellow",
-        "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada.",
-        "startTime": "2026-11-04T16:11:00",
-        "endTime": "2026-11-05T06:00:00",
+        "text": "Precipitação, por vezes forte e persistente, podendo ser acompanhada de trovoada.",
+        "startTime": "2026-11-07T12:00:00",
+        "endTime": "2026-11-08T03:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "MCN",
+        "areaLabel": "Madeira — Costa Norte",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Rajadas até 90 km/h.",
+        "startTime": "2026-11-07T12:00:00",
+        "endTime": "2026-11-08T00:00:00",
         "relevant": true
       }
     ]
