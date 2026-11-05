@@ -1,11 +1,11 @@
 {
   "day": "20261105",
-  "fetchedAt": "2026-11-05T19:02:21.453Z",
+  "fetchedAt": "2026-11-05T20:06:30.615Z",
   "minPairs": 3,
   "minAccumulatedPairs": 10,
   "archive": {
     "windowDays": 30,
-    "pairHourCount": 536,
+    "pairHourCount": 535,
     "path": "buoy-coherence-archive.json"
   },
   "daily": {
@@ -728,14 +728,14 @@
       "suboptimal": []
     },
     "Alentejo": {
-      "spotCount": 11,
-      "withObservedWave": 8,
+      "spotCount": 13,
+      "withObservedWave": 9,
       "bySource": {
-        "ih-buoy": 8
+        "ih-buoy": 9
       },
-      "audited": 8,
+      "audited": 9,
       "attachedIsClosest": 0,
-      "attachedNotClosest": 8,
+      "attachedNotClosest": 9,
       "onlySource": 0,
       "notClosest": [
         {
@@ -771,6 +771,13 @@
           "winner": "ih-buoy",
           "reason": "ih-only",
           "attachedKm": 19,
+          "altKm": 0
+        },
+        {
+          "spot": "vila-nova-milfontes",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 26,
           "altKm": 0
         },
         {
@@ -815,7 +822,21 @@
       "suboptimal": []
     },
     "São Miguel": {
-      "spotCount": 6,
+      "spotCount": 7,
+      "withObservedWave": 0,
+      "bySource": {},
+      "audited": 0,
+      "attachedIsClosest": 0,
+      "attachedNotClosest": 0,
+      "onlySource": 0,
+      "notClosest": [],
+      "calibrated": 0,
+      "calibrationRefs": {},
+      "suboptimalRefs": 0,
+      "suboptimal": []
+    },
+    "Zambujeira do Mar": {
+      "spotCount": 1,
       "withObservedWave": 0,
       "bySource": {},
       "audited": 0,
@@ -829,7 +850,7 @@
       "suboptimal": []
     },
     "Aljezur": {
-      "spotCount": 1,
+      "spotCount": 3,
       "withObservedWave": 0,
       "bySource": {},
       "audited": 0,
@@ -881,7 +902,7 @@
       "suboptimal": []
     },
     "Vila do Bispo": {
-      "spotCount": 3,
+      "spotCount": 5,
       "withObservedWave": 0,
       "bySource": {},
       "audited": 0,
@@ -1256,7 +1277,7 @@
       "suboptimal": []
     }
   },
-  "regionsAuditedAt": "2026-11-05T19:02:31.383Z",
+  "regionsAuditedAt": "2026-11-05T20:08:53.375Z",
   "pairs": [
     {
       "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
@@ -1266,13 +1287,13 @@
       ],
       "distanceKm": 285.3,
       "ptSource": "wmo",
-      "n": 526,
+      "n": 525,
       "meanDeltaM": -0.3,
       "meanAbsDeltaM": 0.5,
       "maxAbsDeltaM": 2.8,
       "corr": 0.77,
       "verdict": "coherent",
-      "firstHour": "2026-10-06T20",
+      "firstHour": "2026-10-07T00",
       "lastHour": "2026-11-05T17",
       "hours": [
         {
