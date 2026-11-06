@@ -369,6 +369,38 @@
       ]
     },
     {
+      "id": 19015,
+      "ref": "ANAV NR 2445/26",
+      "category": "Requisitos de segurança maritima",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=b1305d68-8eaa-4702-ab70-685f40d49260",
+      "source": "ih",
+      "collection": "nav_warning_coastal",
+      "polygons": [
+        [
+          [
+            -9.091001,
+            41.66727
+          ],
+          [
+            -9.091001,
+            41.704703
+          ],
+          [
+            -9.027158,
+            41.704703
+          ],
+          [
+            -9.027158,
+            41.66727
+          ],
+          [
+            -9.091001,
+            41.66727
+          ]
+        ]
+      ]
+    },
+    {
       "id": 1000182,
       "ref": "ANAV NR 121/21",
       "category": "SEGURANÇA DA NAVEGAÇÃO - AVISO À NAVEGAÇÃO LOCAL",
@@ -1070,104 +1102,6 @@
           [
             -8.596211,
             37.072747
-          ]
-        ]
-      ]
-    },
-    {
-      "id": 1000325,
-      "ref": "ANAV NR 9/22",
-      "category": "ASSINALAMENTO PARQUE SUBAQUÁTICO OCEAN REVIVAL",
-      "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=3aa3c417-7679-4ffe-887f-cb4644420858",
-      "source": "ih",
-      "collection": "nav_warning_local",
-      "polygons": [
-        [
-          [
-            -8.590411,
-            37.097588
-          ],
-          [
-            -8.590411,
-            37.099916
-          ],
-          [
-            -8.587665,
-            37.099916
-          ],
-          [
-            -8.587665,
-            37.097588
-          ],
-          [
-            -8.590411,
-            37.097588
-          ]
-        ],
-        [
-          [
-            -8.580714,
-            37.097725
-          ],
-          [
-            -8.580714,
-            37.099779
-          ],
-          [
-            -8.578225,
-            37.099779
-          ],
-          [
-            -8.578225,
-            37.097725
-          ],
-          [
-            -8.580714,
-            37.097725
-          ]
-        ],
-        [
-          [
-            -8.590325,
-            37.085128
-          ],
-          [
-            -8.590325,
-            37.087387
-          ],
-          [
-            -8.587579,
-            37.087387
-          ],
-          [
-            -8.587579,
-            37.085128
-          ],
-          [
-            -8.590325,
-            37.085128
-          ]
-        ],
-        [
-          [
-            -8.580714,
-            37.085059
-          ],
-          [
-            -8.580714,
-            37.087113
-          ],
-          [
-            -8.57814,
-            37.087113
-          ],
-          [
-            -8.57814,
-            37.085059
-          ],
-          [
-            -8.580714,
-            37.085059
           ]
         ]
       ]
@@ -6925,6 +6859,38 @@
       ]
     },
     {
+      "id": 1010983,
+      "ref": "ANAV NR 15/26",
+      "category": "NAUTIMODELISMO",
+      "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=f0aa0de6-c819-497e-8e30-c7d7ebac41ed",
+      "source": "ih",
+      "collection": "nav_warning_local",
+      "polygons": [
+        [
+          [
+            -7.648281,
+            37.125971
+          ],
+          [
+            -7.647637,
+            37.125765
+          ],
+          [
+            -7.647294,
+            37.126433
+          ],
+          [
+            -7.64798,
+            37.126689
+          ],
+          [
+            -7.648281,
+            37.125971
+          ]
+        ]
+      ]
+    },
+    {
       "id": 2017775,
       "ref": "ANAV NR 1361/26",
       "category": "Animais Marinhos - Avistamento",
@@ -8195,7 +8161,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-11-05T20:06:46.006Z",
+  "fetchedAt": "2026-11-06T00:06:52.881Z",
   "sourceCollection": "nav_warning_coastal+nav_warning_local+orca_anavnet_point",
   "sourceUrl": "https://ogcapi.hidrografico.pt/collections/nav_warning_coastal"
 }
