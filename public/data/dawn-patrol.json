@@ -1,41 +1,30 @@
 {
-  "date": "2026-11-05",
-  "generatedAt": "2026-11-05T04:36:50.549Z",
-  "topSpot": "Arrifana",
-  "topSpotSlug": "arrifana",
+  "date": "2026-11-06",
+  "generatedAt": "2026-11-06T04:22:24.891Z",
+  "topSpot": "Guincho",
+  "topSpotSlug": "guincho",
   "pt": {
-    "headline": "Hoje é dia de Arrifana! 🌊",
-    "advice": "Melhor janela: 8:00h. Ondas de 1.1m com 3 nós de vento. ⚓ Avisos à Navegação Costeiros (IH): ANAV NR 2/22 — Plano de Salvamento Marítimo Lagos",
+    "headline": "Hoje é dia de Guincho! 🌊",
+    "advice": "Melhor janela: 8:00h. Ondas de 0.9m com 8 nós de vento. ⚓ Avisos à Navegação Costeiros (IH): ANAV NR 1445/26 — Animais Marinhos - Interação · ANAV NR 1727/26 — Animais Marinhos - Avistamento",
     "bestTime": "8:00",
     "wetsuit": "3/2mm",
     "crowdTip": "Chega cedo para evitar crowd!",
-    "moonTideLine": "Lua minguante · Marés mortas · baixa-mar 05:00"
+    "moonTideLine": "Lua minguante · Marés mortas · baixa-mar 06:00"
   },
   "en": {
-    "headline": "Today is Arrifana day! 🌊",
-    "advice": "Best window: 8:00. 1.1m waves with 3 knot wind. ⚓ Coastal navigation warnings (IH): ANAV NR 2/22 — Plano de Salvamento Marítimo Lagos",
+    "headline": "Today is Guincho day! 🌊",
+    "advice": "Best window: 8:00. 0.9m waves with 8 knot wind. ⚓ Coastal navigation warnings (IH): ANAV NR 1445/26 — Animais Marinhos - Interação · ANAV NR 1727/26 — Animais Marinhos - Avistamento",
     "bestTime": "8:00",
     "wetsuit": "3/2mm",
     "crowdTip": "Get there early to beat the crowd!",
-    "moonTideLine": "Waning crescent · Neap tides · low tide 05:00"
+    "moonTideLine": "Waning crescent · Neap tides · low tide 06:00"
   },
   "spots": [
     {
-      "name": "Arrifana",
-      "slug": "arrifana",
-      "score": 70,
-      "scoreForecast": 70,
-      "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
-    },
-    {
       "name": "Guincho",
       "slug": "guincho",
-      "score": 60,
-      "scoreForecast": 60,
+      "score": 50,
+      "scoreForecast": 50,
       "scoreSource": "previsão",
       "scoreMeta": null,
       "verdict": "maybe",
@@ -45,8 +34,8 @@
     {
       "name": "Nazaré",
       "slug": "nazare",
-      "score": 60,
-      "scoreForecast": 60,
+      "score": 50,
+      "scoreForecast": 50,
       "scoreSource": "previsão",
       "scoreMeta": null,
       "verdict": "maybe",
@@ -56,8 +45,8 @@
     {
       "name": "Ribeira d'Ilhas",
       "slug": "ribeira-ilhas",
-      "score": 60,
-      "scoreForecast": 60,
+      "score": 50,
+      "scoreForecast": 50,
       "scoreSource": "previsão",
       "scoreMeta": null,
       "verdict": "maybe",
@@ -65,10 +54,21 @@
       "enReason": "Fair conditions"
     },
     {
-      "name": "Supertubos",
-      "slug": "supertubos",
-      "score": 40,
-      "scoreForecast": 40,
+      "name": "Arrifana",
+      "slug": "arrifana",
+      "score": 50,
+      "scoreForecast": 50,
+      "scoreSource": "previsão",
+      "scoreMeta": null,
+      "verdict": "maybe",
+      "ptReason": "Condições razoáveis",
+      "enReason": "Fair conditions"
+    },
+    {
+      "name": "Coxos",
+      "slug": "coxos",
+      "score": 30,
+      "scoreForecast": 30,
       "scoreSource": "previsão",
       "scoreMeta": null,
       "verdict": "skip",
@@ -76,10 +76,10 @@
       "enReason": "Not worth it"
     },
     {
-      "name": "Coxos",
-      "slug": "coxos",
-      "score": 40,
-      "scoreForecast": 40,
+      "name": "Supertubos",
+      "slug": "supertubos",
+      "score": 20,
+      "scoreForecast": 20,
       "scoreSource": "previsão",
       "scoreMeta": null,
       "verdict": "skip",
@@ -89,8 +89,8 @@
     {
       "name": "Carcavelos",
       "slug": "carcavelos",
-      "score": 40,
-      "scoreForecast": 40,
+      "score": 20,
+      "scoreForecast": 20,
       "scoreSource": "previsão",
       "scoreMeta": null,
       "verdict": "skip",
@@ -98,8 +98,8 @@
       "enReason": "Not worth it"
     }
   ],
-  "topScore": 70,
-  "topScoreForecast": 70,
+  "topScore": 50,
+  "topScoreForecast": 50,
   "topScoreSource": "previsão",
   "topScoreMeta": null
 }
