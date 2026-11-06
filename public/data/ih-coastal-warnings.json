@@ -401,6 +401,102 @@
       ]
     },
     {
+      "id": 19029,
+      "ref": "ANAV NR 2453/26",
+      "category": "Requisitos de segurança maritima",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=eb99699d-3b45-4e3a-810a-c37b83a35705",
+      "source": "ih",
+      "collection": "nav_warning_coastal",
+      "polygons": [
+        [
+          [
+            -8.896866,
+            38.212288
+          ],
+          [
+            -8.896866,
+            38.32065
+          ],
+          [
+            -8.786316,
+            38.32065
+          ],
+          [
+            -8.786316,
+            38.212288
+          ],
+          [
+            -8.896866,
+            38.212288
+          ]
+        ]
+      ]
+    },
+    {
+      "id": 19031,
+      "ref": "ANAV NR 2454/26",
+      "category": "Requisitos de segurança maritima",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=2bc39a9c-9219-4eff-8922-75ff58182e72",
+      "source": "ih",
+      "collection": "nav_warning_coastal",
+      "polygons": [
+        [
+          [
+            -8.912659,
+            40.088579
+          ],
+          [
+            -8.912659,
+            40.153687
+          ],
+          [
+            -8.835754,
+            40.153687
+          ],
+          [
+            -8.835754,
+            40.088579
+          ],
+          [
+            -8.912659,
+            40.088579
+          ]
+        ]
+      ]
+    },
+    {
+      "id": 19033,
+      "ref": "ANAV NR 2455/26",
+      "category": "Requisitos de segurança maritima",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=b2ecabf8-94bc-48b2-88ac-8e31efe57009",
+      "source": "ih",
+      "collection": "nav_warning_coastal",
+      "polygons": [
+        [
+          [
+            -8.699748,
+            41.178654
+          ],
+          [
+            -8.714507,
+            41.175553
+          ],
+          [
+            -8.684989,
+            41.114021
+          ],
+          [
+            -8.668857,
+            41.115831
+          ],
+          [
+            -8.699748,
+            41.178654
+          ]
+        ]
+      ]
+    },
+    {
       "id": 1000182,
       "ref": "ANAV NR 121/21",
       "category": "SEGURANÇA DA NAVEGAÇÃO - AVISO À NAVEGAÇÃO LOCAL",
@@ -7667,7 +7763,11 @@
       1000711
     ],
     "figueira-foz": [
-      18199
+      18199,
+      19031
+    ],
+    "cova-gala-sul": [
+      19031
     ],
     "leirosa": [
       2018335
@@ -8295,7 +8395,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-11-06T16:06:46.100Z",
+  "fetchedAt": "2026-11-06T18:06:40.964Z",
   "sourceCollection": "nav_warning_coastal+nav_warning_local+orca_anavnet_point",
   "sourceUrl": "https://ogcapi.hidrografico.pt/collections/nav_warning_coastal"
 }
