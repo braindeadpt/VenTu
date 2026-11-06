@@ -1,6 +1,6 @@
 {
   "source": "forecast-skill-regression",
-  "checkedAt": "2026-11-06T00:06:50.615Z",
+  "checkedAt": "2026-11-06T04:06:47.372Z",
   "windowDays": 60,
   "recentDays": 7,
   "baselineDays": 21,
@@ -24,7 +24,7 @@
         "snapshots": 8,
         "rmse": 0.75,
         "me": 0.57375,
-        "n": 618.5
+        "n": 618.375
       },
       "baseline": {
         "snapshots": 21,
@@ -43,7 +43,7 @@
         "snapshots": 8,
         "rmse": 0.2625,
         "me": 0.15000000000000002,
-        "n": 618.5
+        "n": 618.375
       },
       "baseline": {
         "snapshots": 21,
@@ -60,9 +60,9 @@
       "origin": "ih",
       "recent": {
         "snapshots": 8,
-        "rmse": 0.19499999999999998,
+        "rmse": 0.19374999999999998,
         "me": 0.10499999999999998,
-        "n": 206.125
+        "n": 206.625
       },
       "baseline": {
         "snapshots": 14,
@@ -81,7 +81,7 @@
         "snapshots": 8,
         "rmse": 0.46,
         "me": -0.375,
-        "n": 622.625
+        "n": 622.5
       },
       "baseline": {
         "snapshots": 21,
@@ -100,7 +100,7 @@
         "snapshots": 8,
         "rmse": 0.80625,
         "me": 0.6037499999999999,
-        "n": 612.375
+        "n": 612.25
       },
       "baseline": {
         "snapshots": 21,
@@ -155,7 +155,7 @@
       "recent": {
         "snapshots": 8,
         "rmse": 0.31625,
-        "me": 0.1275,
+        "me": 0.12625,
         "n": 495
       },
       "baseline": {
@@ -177,7 +177,7 @@
       "recent": {
         "days": 8,
         "n": 2678.13,
-        "me": 0.22599673278879814
+        "me": 0.2259687281213536
       },
       "baseline": {
         "days": 21,
@@ -195,7 +195,7 @@
       "recent": {
         "days": 8,
         "n": 1617.75,
-        "me": 0.45107865863081437
+        "me": 0.45070004636068617
       },
       "baseline": {
         "days": 21,
