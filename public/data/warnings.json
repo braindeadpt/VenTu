@@ -1,6 +1,6 @@
 {
   "source": "ipma",
-  "fetchedAt": "2026-11-06T08:06:42.262Z",
+  "fetchedAt": "2026-11-06T10:06:58.937Z",
   "warnings": [
     {
       "areaCode": "MRM",
@@ -83,6 +83,16 @@
       "relevant": true
     },
     {
+      "areaCode": "MCS",
+      "areaLabel": "Funchal",
+      "type": "Agitação Marítima",
+      "level": "yellow",
+      "text": "Ondas de sudoeste com 4 metros-",
+      "startTime": "2026-11-08T12:00:00",
+      "endTime": "2026-11-09T06:00:00",
+      "relevant": true
+    },
+    {
       "areaCode": "PTO",
       "areaLabel": "Porto",
       "type": "Precipitação",
@@ -118,7 +128,7 @@
       "type": "Precipitação",
       "level": "yellow",
       "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-      "startTime": "2026-11-06T00:00:00",
+      "startTime": "2026-11-06T07:15:00",
       "endTime": "2026-11-07T18:00:00",
       "relevant": true
     },
@@ -208,7 +218,7 @@
       "type": "Precipitação",
       "level": "yellow",
       "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-      "startTime": "2026-11-06T00:00:00",
+      "startTime": "2026-11-06T07:15:00",
       "endTime": "2026-11-07T18:00:00",
       "relevant": true
     },
@@ -219,7 +229,7 @@
       "level": "yellow",
       "text": "Rajadas até 110 km/h.",
       "startTime": "2026-11-07T12:00:00",
-      "endTime": "2026-11-08T03:00:00",
+      "endTime": "2026-11-08T21:00:00",
       "relevant": true
     },
     {
@@ -229,7 +239,7 @@
       "level": "yellow",
       "text": "Rajadas até 90 km/h.",
       "startTime": "2026-11-07T12:00:00",
-      "endTime": "2026-11-08T03:00:00",
+      "endTime": "2026-11-08T21:00:00",
       "relevant": true
     },
     {
@@ -239,7 +249,7 @@
       "level": "yellow",
       "text": "Rajadas até 90 km/h.",
       "startTime": "2026-11-07T12:00:00",
-      "endTime": "2026-11-08T03:00:00",
+      "endTime": "2026-11-08T21:00:00",
       "relevant": true
     },
     {
@@ -249,7 +259,7 @@
       "level": "yellow",
       "text": "Rajadas até 90 km/h.",
       "startTime": "2026-11-07T12:00:00",
-      "endTime": "2026-11-08T03:00:00",
+      "endTime": "2026-11-08T21:00:00",
       "relevant": true
     }
   ],
@@ -1432,7 +1442,7 @@
         "level": "yellow",
         "text": "Rajadas até 90 km/h.",
         "startTime": "2026-11-07T12:00:00",
-        "endTime": "2026-11-08T03:00:00",
+        "endTime": "2026-11-08T21:00:00",
         "relevant": true
       }
     ],
@@ -1463,7 +1473,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-06T00:00:00",
+        "startTime": "2026-11-06T07:15:00",
         "endTime": "2026-11-07T18:00:00",
         "relevant": true
       },
@@ -1474,7 +1484,7 @@
         "level": "yellow",
         "text": "Rajadas até 110 km/h.",
         "startTime": "2026-11-07T12:00:00",
-        "endTime": "2026-11-08T03:00:00",
+        "endTime": "2026-11-08T21:00:00",
         "relevant": true
       }
     ],
@@ -1516,7 +1526,7 @@
         "level": "yellow",
         "text": "Rajadas até 90 km/h.",
         "startTime": "2026-11-07T12:00:00",
-        "endTime": "2026-11-08T03:00:00",
+        "endTime": "2026-11-08T21:00:00",
         "relevant": true
       }
     ],
@@ -1558,7 +1568,7 @@
         "level": "yellow",
         "text": "Rajadas até 90 km/h.",
         "startTime": "2026-11-07T12:00:00",
-        "endTime": "2026-11-08T03:00:00",
+        "endTime": "2026-11-08T21:00:00",
         "relevant": true
       }
     ],
@@ -1586,10 +1596,20 @@
       {
         "areaCode": "MCS",
         "areaLabel": "Funchal",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de sudoeste com 4 metros-",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "MCS",
+        "areaLabel": "Funchal",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-06T00:00:00",
+        "startTime": "2026-11-06T07:15:00",
         "endTime": "2026-11-07T18:00:00",
         "relevant": true
       },
@@ -1600,7 +1620,7 @@
         "level": "yellow",
         "text": "Rajadas até 90 km/h.",
         "startTime": "2026-11-07T12:00:00",
-        "endTime": "2026-11-08T03:00:00",
+        "endTime": "2026-11-08T21:00:00",
         "relevant": true
       }
     ],
@@ -1631,7 +1651,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-06T00:00:00",
+        "startTime": "2026-11-06T07:15:00",
         "endTime": "2026-11-07T18:00:00",
         "relevant": true
       },
@@ -1642,7 +1662,7 @@
         "level": "yellow",
         "text": "Rajadas até 110 km/h.",
         "startTime": "2026-11-07T12:00:00",
-        "endTime": "2026-11-08T03:00:00",
+        "endTime": "2026-11-08T21:00:00",
         "relevant": true
       }
     ],
@@ -1670,10 +1690,20 @@
       {
         "areaCode": "MCS",
         "areaLabel": "Funchal",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de sudoeste com 4 metros-",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "MCS",
+        "areaLabel": "Funchal",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-06T00:00:00",
+        "startTime": "2026-11-06T07:15:00",
         "endTime": "2026-11-07T18:00:00",
         "relevant": true
       },
@@ -1684,7 +1714,7 @@
         "level": "yellow",
         "text": "Rajadas até 90 km/h.",
         "startTime": "2026-11-07T12:00:00",
-        "endTime": "2026-11-08T03:00:00",
+        "endTime": "2026-11-08T21:00:00",
         "relevant": true
       }
     ],
@@ -1856,10 +1886,20 @@
       {
         "areaCode": "MCS",
         "areaLabel": "Funchal",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de sudoeste com 4 metros-",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "MCS",
+        "areaLabel": "Funchal",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Aguaceiros, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-06T00:00:00",
+        "startTime": "2026-11-06T07:15:00",
         "endTime": "2026-11-07T18:00:00",
         "relevant": true
       },
@@ -1870,7 +1910,7 @@
         "level": "yellow",
         "text": "Rajadas até 90 km/h.",
         "startTime": "2026-11-07T12:00:00",
-        "endTime": "2026-11-08T03:00:00",
+        "endTime": "2026-11-08T21:00:00",
         "relevant": true
       }
     ],
@@ -1912,7 +1952,7 @@
         "level": "yellow",
         "text": "Rajadas até 90 km/h.",
         "startTime": "2026-11-07T12:00:00",
-        "endTime": "2026-11-08T03:00:00",
+        "endTime": "2026-11-08T21:00:00",
         "relevant": true
       }
     ],
@@ -1954,7 +1994,7 @@
         "level": "yellow",
         "text": "Rajadas até 90 km/h.",
         "startTime": "2026-11-07T12:00:00",
-        "endTime": "2026-11-08T03:00:00",
+        "endTime": "2026-11-08T21:00:00",
         "relevant": true
       }
     ],
@@ -1996,7 +2036,7 @@
         "level": "yellow",
         "text": "Rajadas até 90 km/h.",
         "startTime": "2026-11-07T12:00:00",
-        "endTime": "2026-11-08T03:00:00",
+        "endTime": "2026-11-08T21:00:00",
         "relevant": true
       }
     ],
