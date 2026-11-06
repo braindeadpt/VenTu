@@ -5617,38 +5617,6 @@
       ]
     },
     {
-      "id": 1009373,
-      "ref": "ANAV NR 96/25",
-      "category": "SEGURANÇA À NAVEGAÇÃO",
-      "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=211ed4ee-7a60-4009-a3ef-7f85b6271e78",
-      "source": "ih",
-      "collection": "nav_warning_local",
-      "polygons": [
-        [
-          [
-            -9.089253,
-            41.694706
-          ],
-          [
-            -9.089253,
-            41.698936
-          ],
-          [
-            -9.083933,
-            41.698936
-          ],
-          [
-            -9.083933,
-            41.694706
-          ],
-          [
-            -9.089253,
-            41.694706
-          ]
-        ]
-      ]
-    },
-    {
       "id": 1009374,
       "ref": "ANAV NR 97/25",
       "category": "SEGURANÇA À NAVEGAÇÃO",
@@ -8327,7 +8295,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-11-06T12:06:54.620Z",
+  "fetchedAt": "2026-11-06T14:06:42.230Z",
   "sourceCollection": "nav_warning_coastal+nav_warning_local+orca_anavnet_point",
   "sourceUrl": "https://ogcapi.hidrografico.pt/collections/nav_warning_coastal"
 }
