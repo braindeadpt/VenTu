@@ -1,103 +1,103 @@
 {
   "date": "2026-11-06",
-  "generatedAt": "2026-11-06T04:22:24.891Z",
-  "topSpot": "Guincho",
-  "topSpotSlug": "guincho",
+  "topSpot": "Nazaré",
+  "topSpotSlug": "nazare",
   "pt": {
-    "headline": "Hoje é dia de Guincho! 🌊",
-    "advice": "Melhor janela: 8:00h. Ondas de 0.9m com 8 nós de vento. ⚓ Avisos à Navegação Costeiros (IH): ANAV NR 1445/26 — Animais Marinhos - Interação · ANAV NR 1727/26 — Animais Marinhos - Avistamento",
-    "bestTime": "8:00",
+    "headline": "Nazaré oferece ondas perfeitas e vento calmo hoje!",
+    "advice": "Ondas de 0.9 m com período de 10 s e vento fraco (3 kt) criam condições ideais. Aviso à navegação costeira ANAV NR 2443/26 em vigor na zona — respeite as regras de segurança. Use fato 3/2 mm e chegue cedo para evitar lotação.",
+    "bestTime": "09:30",
     "wetsuit": "3/2mm",
-    "crowdTip": "Chega cedo para evitar crowd!",
+    "crowdTip": "Chegue antes das 09:00 para pegar a melhor posição.",
     "moonTideLine": "Lua minguante · Marés mortas · baixa-mar 06:00"
   },
   "en": {
-    "headline": "Today is Guincho day! 🌊",
-    "advice": "Best window: 8:00. 0.9m waves with 8 knot wind. ⚓ Coastal navigation warnings (IH): ANAV NR 1445/26 — Animais Marinhos - Interação · ANAV NR 1727/26 — Animais Marinhos - Avistamento",
-    "bestTime": "8:00",
+    "headline": "Nazaré serves perfect waves with calm wind today!",
+    "advice": "Waves at 0.9 m with a 10 s period and light wind (3 kt) give ideal conditions. Coastal navigation warning ANAV NR 2443/26 is in effect – follow safety rules. Wear a 3/2 mm wetsuit and arrive early to beat the crowd.",
+    "bestTime": "09:30",
     "wetsuit": "3/2mm",
-    "crowdTip": "Get there early to beat the crowd!",
+    "crowdTip": "Get there before 09:00 to claim the best spot.",
     "moonTideLine": "Waning crescent · Neap tides · low tide 06:00"
   },
   "spots": [
     {
+      "name": "Supertubos",
+      "slug": "supertubos",
+      "score": 20,
+      "verdict": "skip",
+      "ptReason": "Onda pequena, vento forte (8 kt) e nota baixa; melhor evitar.",
+      "enReason": "Small wave, strong wind (8 kt) and low rating; better to skip.",
+      "scoreForecast": 20,
+      "scoreSource": "previsão",
+      "scoreMeta": null
+    },
+    {
       "name": "Guincho",
       "slug": "guincho",
       "score": 50,
+      "verdict": "go",
+      "ptReason": "Ondas adequadas, mas vento forte (8 kt) e avisos de animais marinhos; ainda surfável para quem gosta de desafio.",
+      "enReason": "Decent waves, but strong wind (8 kt) and marine‑animal warnings; still surfable for the adventurous.",
       "scoreForecast": 50,
       "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "maybe",
-      "ptReason": "Condições razoáveis",
-      "enReason": "Fair conditions"
+      "scoreMeta": null
     },
     {
       "name": "Nazaré",
       "slug": "nazare",
       "score": 50,
+      "verdict": "go",
+      "ptReason": "Ondas consistentes, vento leve, água fria e apenas aviso de segurança marítima; condições ótimas.",
+      "enReason": "Consistent waves, light wind, cold water and only a maritime safety notice; excellent conditions.",
       "scoreForecast": 50,
       "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "maybe",
-      "ptReason": "Condições razoáveis",
-      "enReason": "Fair conditions"
+      "scoreMeta": null
     },
     {
       "name": "Ribeira d'Ilhas",
       "slug": "ribeira-ilhas",
       "score": 50,
+      "verdict": "go",
+      "ptReason": "Boa onda e vento moderado (6 kt); porém há avisos de animais marinhos que exigem atenção.",
+      "enReason": "Good wave and moderate wind (6 kt); however marine‑animal alerts require caution.",
       "scoreForecast": 50,
       "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "maybe",
-      "ptReason": "Condições razoáveis",
-      "enReason": "Fair conditions"
-    },
-    {
-      "name": "Arrifana",
-      "slug": "arrifana",
-      "score": 50,
-      "scoreForecast": 50,
-      "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "maybe",
-      "ptReason": "Condições razoáveis",
-      "enReason": "Fair conditions"
+      "scoreMeta": null
     },
     {
       "name": "Coxos",
       "slug": "coxos",
       "score": 30,
+      "verdict": "maybe",
+      "ptReason": "Ondas ok, mas vento moderado (6 kt) e avisos de segurança; pode ser divertido se o pico estiver vazio.",
+      "enReason": "Waves are okay, but moderate wind (6 kt) and safety alerts; worth trying if the line is short.",
       "scoreForecast": 30,
       "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "skip",
-      "ptReason": "Não vale a pena",
-      "enReason": "Not worth it"
+      "scoreMeta": null
     },
     {
-      "name": "Supertubos",
-      "slug": "supertubos",
-      "score": 20,
-      "scoreForecast": 20,
+      "name": "Arrifana",
+      "slug": "arrifana",
+      "score": 50,
+      "verdict": "go",
+      "ptReason": "Ondas decentes, vento leve (5 kt) e água mais quente; aviso de salvamento local apenas.",
+      "enReason": "Decent waves, light wind (5 kt) and warmer water; only a local rescue plan notice.",
+      "scoreForecast": 50,
       "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "skip",
-      "ptReason": "Não vale a pena",
-      "enReason": "Not worth it"
+      "scoreMeta": null
     },
     {
       "name": "Carcavelos",
       "slug": "carcavelos",
       "score": 20,
+      "verdict": "skip",
+      "ptReason": "Onda curta (0.7 m) e nota baixa; múltiplos avisos de interação com animais marinhos tornam o local menos atraente.",
+      "enReason": "Short wave (0.7 m) and low rating; multiple marine‑animal interaction warnings make it less appealing.",
       "scoreForecast": 20,
       "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "skip",
-      "ptReason": "Não vale a pena",
-      "enReason": "Not worth it"
+      "scoreMeta": null
     }
   ],
+  "generatedAt": "2026-11-06T04:36:45.584Z",
   "topScore": 50,
   "topScoreForecast": 50,
   "topScoreSource": "previsão",
