@@ -1,11 +1,11 @@
 {
   "day": "20261107",
-  "fetchedAt": "2026-11-07T15:12:24.123Z",
+  "fetchedAt": "2026-11-07T16:06:23.001Z",
   "minPairs": 3,
   "minAccumulatedPairs": 10,
   "archive": {
     "windowDays": 30,
-    "pairHourCount": 521,
+    "pairHourCount": 522,
     "path": "buoy-coherence-archive.json"
   },
   "daily": {
@@ -984,72 +984,13 @@
     },
     "Madeira": {
       "spotCount": 11,
-      "withObservedWave": 8,
-      "bySource": {
-        "ih-buoy": 8
-      },
-      "audited": 8,
+      "withObservedWave": 0,
+      "bySource": {},
+      "audited": 0,
       "attachedIsClosest": 0,
-      "attachedNotClosest": 8,
+      "attachedNotClosest": 0,
       "onlySource": 0,
-      "notClosest": [
-        {
-          "spot": "sao-vicente-madeira",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 32,
-          "altKm": 0
-        },
-        {
-          "spot": "porto-da-cruz",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 11,
-          "altKm": 0
-        },
-        {
-          "spot": "ponta-sao-lourenco",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 3,
-          "altKm": 0
-        },
-        {
-          "spot": "ribeira-brava",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 33,
-          "altKm": 0
-        },
-        {
-          "spot": "funchal",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 23,
-          "altKm": 0
-        },
-        {
-          "spot": "machico",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 4,
-          "altKm": 0
-        },
-        {
-          "spot": "seixal-madeira",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 37,
-          "altKm": 0
-        },
-        {
-          "spot": "madalena-mar",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 38,
-          "altKm": 0
-        }
-      ],
+      "notClosest": [],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -1146,7 +1087,7 @@
       "suboptimal": []
     }
   },
-  "regionsAuditedAt": "2026-11-07T15:13:59.255Z",
+  "regionsAuditedAt": "2026-11-07T16:09:12.248Z",
   "pairs": [
     {
       "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
@@ -1156,14 +1097,14 @@
       ],
       "distanceKm": 285.3,
       "ptSource": "wmo",
-      "n": 515,
+      "n": 516,
       "meanDeltaM": -0.4,
       "meanAbsDeltaM": 0.5,
       "maxAbsDeltaM": 2.8,
       "corr": 0.78,
       "verdict": "coherent",
       "firstHour": "2026-10-09T00",
-      "lastHour": "2026-11-07T13",
+      "lastHour": "2026-11-07T14",
       "hours": [
         {
           "6200084": 2.2300000190734863,
@@ -1204,6 +1145,11 @@
           "6200084": 1.5199999809265137,
           "6200199": 0.7031300067901611,
           "hour": "2026-11-07T13"
+        },
+        {
+          "6200084": 1.5199999809265137,
+          "6200199": 0.6591799855232239,
+          "hour": "2026-11-07T14"
         }
       ]
     }
