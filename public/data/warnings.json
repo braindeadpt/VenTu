@@ -1,6 +1,6 @@
 {
   "source": "ipma",
-  "fetchedAt": "2026-11-06T20:06:51.441Z",
+  "fetchedAt": "2026-11-07T00:06:52.566Z",
   "warnings": [
     {
       "areaCode": "MRM",
@@ -83,11 +83,31 @@
       "relevant": true
     },
     {
+      "areaCode": "ACE",
+      "areaLabel": "Angra do Heroísmo",
+      "type": "Agitação Marítima",
+      "level": "yellow",
+      "text": "Ondas de noroeste (NW).",
+      "startTime": "2026-11-08T12:00:00",
+      "endTime": "2026-11-09T00:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "AOR",
+      "areaLabel": "Vila do Porto",
+      "type": "Agitação Marítima",
+      "level": "yellow",
+      "text": "Ondas de noroeste (NW).",
+      "startTime": "2026-11-08T15:00:00",
+      "endTime": "2026-11-09T06:00:00",
+      "relevant": true
+    },
+    {
       "areaCode": "MCS",
       "areaLabel": "Funchal",
       "type": "Agitação Marítima",
       "level": "yellow",
-      "text": "Ondas de sudoeste com 4 metros-",
+      "text": "Ondas de sudoeste com 4 a 4,5 metros.",
       "startTime": "2026-11-08T12:00:00",
       "endTime": "2026-11-09T06:00:00",
       "relevant": true
@@ -108,7 +128,7 @@
       "type": "Precipitação",
       "level": "yellow",
       "text": "Precipitação, por vezes FORTE.",
-      "startTime": "2026-11-06T18:00:00",
+      "startTime": "2026-11-06T20:03:00",
       "endTime": "2026-11-07T06:00:00",
       "relevant": true
     },
@@ -190,6 +210,36 @@
       "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
       "startTime": "2026-11-07T09:00:00",
       "endTime": "2026-11-07T18:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "ACE",
+      "areaLabel": "Angra do Heroísmo",
+      "type": "Vento",
+      "level": "yellow",
+      "text": "Direção de noroeste (NW).",
+      "startTime": "2026-11-08T06:00:00",
+      "endTime": "2026-11-09T06:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "AOC",
+      "areaLabel": "Santa Cruz das Flores",
+      "type": "Vento",
+      "level": "yellow",
+      "text": "Direção de noroeste (NW).",
+      "startTime": "2026-11-08T06:00:00",
+      "endTime": "2026-11-08T21:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "AOR",
+      "areaLabel": "Vila do Porto",
+      "type": "Vento",
+      "level": "yellow",
+      "text": "Direção de noroeste (NW).",
+      "startTime": "2026-11-08T12:00:00",
+      "endTime": "2026-11-09T06:00:00",
       "relevant": true
     },
     {
@@ -762,6 +812,72 @@
         "relevant": true
       }
     ],
+    "praia-vitoria": [
+      {
+        "areaCode": "ACE",
+        "areaLabel": "Angra do Heroísmo",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste (NW).",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-09T00:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "ACE",
+        "areaLabel": "Angra do Heroísmo",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Direção de noroeste (NW).",
+        "startTime": "2026-11-08T06:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      }
+    ],
+    "santa-catarina-terceira": [
+      {
+        "areaCode": "ACE",
+        "areaLabel": "Angra do Heroísmo",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste (NW).",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-09T00:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "ACE",
+        "areaLabel": "Angra do Heroísmo",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Direção de noroeste (NW).",
+        "startTime": "2026-11-08T06:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      }
+    ],
+    "almoxarife": [
+      {
+        "areaCode": "ACE",
+        "areaLabel": "Angra do Heroísmo",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste (NW).",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-09T00:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "ACE",
+        "areaLabel": "Angra do Heroísmo",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Direção de noroeste (NW).",
+        "startTime": "2026-11-08T06:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      }
+    ],
     "ilha-do-ermal": [
       {
         "areaCode": "BRG",
@@ -778,11 +894,31 @@
       {
         "areaCode": "AOR",
         "areaLabel": "Vila do Porto",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste (NW).",
+        "startTime": "2026-11-08T15:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação, por vezes FORTE.",
-        "startTime": "2026-11-06T18:00:00",
+        "startTime": "2026-11-06T20:03:00",
         "endTime": "2026-11-07T06:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Direção de noroeste (NW).",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
@@ -790,11 +926,31 @@
       {
         "areaCode": "AOR",
         "areaLabel": "Vila do Porto",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste (NW).",
+        "startTime": "2026-11-08T15:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação, por vezes FORTE.",
-        "startTime": "2026-11-06T18:00:00",
+        "startTime": "2026-11-06T20:03:00",
         "endTime": "2026-11-07T06:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Direção de noroeste (NW).",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
@@ -802,11 +958,31 @@
       {
         "areaCode": "AOR",
         "areaLabel": "Vila do Porto",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste (NW).",
+        "startTime": "2026-11-08T15:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação, por vezes FORTE.",
-        "startTime": "2026-11-06T18:00:00",
+        "startTime": "2026-11-06T20:03:00",
         "endTime": "2026-11-07T06:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Direção de noroeste (NW).",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
@@ -814,11 +990,31 @@
       {
         "areaCode": "AOR",
         "areaLabel": "Vila do Porto",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste (NW).",
+        "startTime": "2026-11-08T15:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação, por vezes FORTE.",
-        "startTime": "2026-11-06T18:00:00",
+        "startTime": "2026-11-06T20:03:00",
         "endTime": "2026-11-07T06:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Direção de noroeste (NW).",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
@@ -826,11 +1022,31 @@
       {
         "areaCode": "AOR",
         "areaLabel": "Vila do Porto",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste (NW).",
+        "startTime": "2026-11-08T15:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação, por vezes FORTE.",
-        "startTime": "2026-11-06T18:00:00",
+        "startTime": "2026-11-06T20:03:00",
         "endTime": "2026-11-07T06:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Direção de noroeste (NW).",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
@@ -838,11 +1054,31 @@
       {
         "areaCode": "AOR",
         "areaLabel": "Vila do Porto",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste (NW).",
+        "startTime": "2026-11-08T15:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação, por vezes FORTE.",
-        "startTime": "2026-11-06T18:00:00",
+        "startTime": "2026-11-06T20:03:00",
         "endTime": "2026-11-07T06:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Direção de noroeste (NW).",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
@@ -850,11 +1086,31 @@
       {
         "areaCode": "AOR",
         "areaLabel": "Vila do Porto",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste (NW).",
+        "startTime": "2026-11-08T15:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação, por vezes FORTE.",
-        "startTime": "2026-11-06T18:00:00",
+        "startTime": "2026-11-06T20:03:00",
         "endTime": "2026-11-07T06:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Direção de noroeste (NW).",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
@@ -1052,7 +1308,7 @@
         "areaLabel": "Funchal",
         "type": "Agitação Marítima",
         "level": "yellow",
-        "text": "Ondas de sudoeste com 4 metros-",
+        "text": "Ondas de sudoeste com 4 a 4,5 metros.",
         "startTime": "2026-11-08T12:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
@@ -1146,7 +1402,7 @@
         "areaLabel": "Funchal",
         "type": "Agitação Marítima",
         "level": "yellow",
-        "text": "Ondas de sudoeste com 4 metros-",
+        "text": "Ondas de sudoeste com 4 a 4,5 metros.",
         "startTime": "2026-11-08T12:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
@@ -1222,7 +1478,7 @@
         "areaLabel": "Funchal",
         "type": "Agitação Marítima",
         "level": "yellow",
-        "text": "Ondas de sudoeste com 4 metros-",
+        "text": "Ondas de sudoeste com 4 a 4,5 metros.",
         "startTime": "2026-11-08T12:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
@@ -1378,11 +1634,31 @@
       {
         "areaCode": "AOR",
         "areaLabel": "Vila do Porto",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste (NW).",
+        "startTime": "2026-11-08T15:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação, por vezes FORTE.",
-        "startTime": "2026-11-06T18:00:00",
+        "startTime": "2026-11-06T20:03:00",
         "endTime": "2026-11-07T06:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Direção de noroeste (NW).",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
@@ -1390,11 +1666,31 @@
       {
         "areaCode": "AOR",
         "areaLabel": "Vila do Porto",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste (NW).",
+        "startTime": "2026-11-08T15:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação, por vezes FORTE.",
-        "startTime": "2026-11-06T18:00:00",
+        "startTime": "2026-11-06T20:03:00",
         "endTime": "2026-11-07T06:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Direção de noroeste (NW).",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
@@ -1402,11 +1698,97 @@
       {
         "areaCode": "AOR",
         "areaLabel": "Vila do Porto",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste (NW).",
+        "startTime": "2026-11-08T15:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação, por vezes FORTE.",
-        "startTime": "2026-11-06T18:00:00",
+        "startTime": "2026-11-06T20:03:00",
         "endTime": "2026-11-07T06:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Direção de noroeste (NW).",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      }
+    ],
+    "porto-martins": [
+      {
+        "areaCode": "ACE",
+        "areaLabel": "Angra do Heroísmo",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste (NW).",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-09T00:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "ACE",
+        "areaLabel": "Angra do Heroísmo",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Direção de noroeste (NW).",
+        "startTime": "2026-11-08T06:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      }
+    ],
+    "cachorro-pico": [
+      {
+        "areaCode": "ACE",
+        "areaLabel": "Angra do Heroísmo",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste (NW).",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-09T00:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "ACE",
+        "areaLabel": "Angra do Heroísmo",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Direção de noroeste (NW).",
+        "startTime": "2026-11-08T06:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      }
+    ],
+    "faja-cubres": [
+      {
+        "areaCode": "ACE",
+        "areaLabel": "Angra do Heroísmo",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste (NW).",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-09T00:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "ACE",
+        "areaLabel": "Angra do Heroísmo",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Direção de noroeste (NW).",
+        "startTime": "2026-11-08T06:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
