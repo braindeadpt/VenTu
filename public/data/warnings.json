@@ -1,3034 +1,3134 @@
 {
-  "source": "meteoalarm",
-  "fetchedAt": "2026-11-07T10:07:19.725Z",
+  "source": "ipma",
+  "fetchedAt": "2026-11-07T12:06:56.441Z",
   "warnings": [
     {
-      "areaCode": "Madeira - Costa Sul",
-      "areaLabel": "Madeira - Costa Sul",
-      "type": "Agitação Marítima",
-      "level": "yellow",
-      "text": "Ondas de sudoeste com 4 a 4,5 metros.",
-      "startTime": "2026-11-08T12:00:00.000Z",
-      "endTime": "2026-11-09T06:00:00.000Z",
+      "areaCode": "MRM",
+      "areaLabel": "Madeira — Regiões Montanhosas",
+      "type": "Precipitação",
+      "level": "orange",
+      "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
+      "startTime": "2026-11-07T18:00:00",
+      "endTime": "2026-11-08T03:00:00",
       "relevant": true
     },
     {
-      "areaCode": "Açores - Grupo Oriental",
-      "areaLabel": "Açores - Grupo Oriental",
+      "areaCode": "MCN",
+      "areaLabel": "Madeira — Costa Norte",
+      "type": "Precipitação",
+      "level": "orange",
+      "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
+      "startTime": "2026-11-07T18:00:00",
+      "endTime": "2026-11-08T03:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "MPS",
+      "areaLabel": "Porto Santo",
+      "type": "Precipitação",
+      "level": "orange",
+      "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
+      "startTime": "2026-11-07T18:00:00",
+      "endTime": "2026-11-08T03:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "MCS",
+      "areaLabel": "Funchal",
+      "type": "Precipitação",
+      "level": "orange",
+      "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
+      "startTime": "2026-11-07T18:00:00",
+      "endTime": "2026-11-08T03:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "MRM",
+      "areaLabel": "Madeira — Regiões Montanhosas",
+      "type": "Vento",
+      "level": "orange",
+      "text": "Rajadas até 130 km/h.",
+      "startTime": "2026-11-07T18:00:00",
+      "endTime": "2026-11-08T00:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "MCN",
+      "areaLabel": "Madeira — Costa Norte",
+      "type": "Vento",
+      "level": "orange",
+      "text": "Rajadas até 100 km/h.",
+      "startTime": "2026-11-07T18:00:00",
+      "endTime": "2026-11-08T00:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "MPS",
+      "areaLabel": "Porto Santo",
+      "type": "Vento",
+      "level": "orange",
+      "text": "Rajadas até 100 km/h.",
+      "startTime": "2026-11-07T18:00:00",
+      "endTime": "2026-11-08T00:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "MCS",
+      "areaLabel": "Funchal",
+      "type": "Vento",
+      "level": "orange",
+      "text": "Rajadas até 100 km/h.",
+      "startTime": "2026-11-07T18:00:00",
+      "endTime": "2026-11-08T00:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "ACE",
+      "areaLabel": "Angra do Heroísmo",
       "type": "Agitação Marítima",
       "level": "yellow",
       "text": "Ondas de noroeste (NW).",
-      "startTime": "2026-11-08T15:00:00.000Z",
-      "endTime": "2026-11-09T06:00:00.000Z",
+      "startTime": "2026-11-08T12:00:00",
+      "endTime": "2026-11-09T00:00:00",
       "relevant": true
     },
     {
-      "areaCode": "Açores - Grupo Ocidental",
-      "areaLabel": "Açores - Grupo Ocidental",
-      "type": "Vento",
-      "level": "yellow",
-      "text": "Direção de noroeste (NW).",
-      "startTime": "2026-11-08T06:00:00.000Z",
-      "endTime": "2026-11-08T21:00:00.000Z",
-      "relevant": true
-    },
-    {
-      "areaCode": "Açores - Grupo Oriental",
-      "areaLabel": "Açores - Grupo Oriental",
-      "type": "Vento",
-      "level": "yellow",
-      "text": "Direção de noroeste (NW).",
-      "startTime": "2026-11-08T12:00:00.000Z",
-      "endTime": "2026-11-09T06:00:00.000Z",
-      "relevant": true
-    },
-    {
-      "areaCode": "Açores - Grupo Central",
-      "areaLabel": "Açores - Grupo Central",
-      "type": "Vento",
-      "level": "yellow",
-      "text": "Direção de noroeste (NW).",
-      "startTime": "2026-11-08T06:00:00.000Z",
-      "endTime": "2026-11-09T06:00:00.000Z",
-      "relevant": true
-    },
-    {
-      "areaCode": "Açores - Grupo Central",
-      "areaLabel": "Açores - Grupo Central",
-      "type": "Agitação Marítima",
-      "level": "yellow",
-      "text": "Ondas de noroeste (NW).",
-      "startTime": "2026-11-08T12:00:00.000Z",
-      "endTime": "2026-11-09T00:00:00.000Z",
-      "relevant": true
-    },
-    {
-      "areaCode": "Madeira - Regiões Montanhosas",
-      "areaLabel": "Madeira - Regiões Montanhosas",
-      "type": "Vento",
-      "level": "yellow",
-      "text": "Rajadas até 110 km/h.",
-      "startTime": "2026-11-08T09:00:00.000Z",
-      "endTime": "2026-11-08T21:00:00.000Z",
-      "relevant": true
-    },
-    {
-      "areaCode": "Madeira - Regiões Montanhosas",
-      "areaLabel": "Madeira - Regiões Montanhosas",
-      "type": "Precipitação",
-      "level": "yellow",
-      "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
-      "startTime": "2026-11-08T12:00:00.000Z",
-      "endTime": "2026-11-08T18:00:00.000Z",
-      "relevant": true
-    },
-    {
-      "areaCode": "Madeira - Costa Norte",
-      "areaLabel": "Madeira - Costa Norte",
-      "type": "Agitação Marítima",
-      "level": "yellow",
-      "text": "Ondas de noroeste com 4 a 4,5 metros.",
-      "startTime": "2026-11-09T12:00:00.000Z",
-      "endTime": "2026-11-10T00:00:00.000Z",
-      "relevant": true
-    },
-    {
-      "areaCode": "Madeira - Costa Sul",
-      "areaLabel": "Madeira - Costa Sul",
-      "type": "Precipitação",
-      "level": "yellow",
-      "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
-      "startTime": "2026-11-08T12:00:00.000Z",
-      "endTime": "2026-11-08T18:00:00.000Z",
-      "relevant": true
-    },
-    {
-      "areaCode": "Madeira - Porto Santo",
-      "areaLabel": "Madeira - Porto Santo",
-      "type": "Precipitação",
-      "level": "yellow",
-      "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
-      "startTime": "2026-11-08T12:00:00.000Z",
-      "endTime": "2026-11-08T18:00:00.000Z",
-      "relevant": true
-    },
-    {
-      "areaCode": "Madeira - Costa Sul",
-      "areaLabel": "Madeira - Costa Sul",
-      "type": "Vento",
-      "level": "yellow",
-      "text": "Rajadas até 90 km/h.",
-      "startTime": "2026-11-08T09:00:00.000Z",
-      "endTime": "2026-11-08T21:00:00.000Z",
-      "relevant": true
-    },
-    {
-      "areaCode": "Madeira - Costa Norte",
-      "areaLabel": "Madeira - Costa Norte",
-      "type": "Precipitação",
-      "level": "yellow",
-      "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
-      "startTime": "2026-11-08T12:00:00.000Z",
-      "endTime": "2026-11-08T18:00:00.000Z",
-      "relevant": true
-    },
-    {
-      "areaCode": "Madeira - Costa Norte",
-      "areaLabel": "Madeira - Costa Norte",
-      "type": "Vento",
-      "level": "yellow",
-      "text": "Rajadas até 90 km/h.",
-      "startTime": "2026-11-08T09:00:00.000Z",
-      "endTime": "2026-11-08T21:00:00.000Z",
-      "relevant": true
-    },
-    {
-      "areaCode": "Madeira - Porto Santo",
-      "areaLabel": "Madeira - Porto Santo",
-      "type": "Vento",
-      "level": "yellow",
-      "text": "Rajadas até 90 km/h.",
-      "startTime": "2026-11-08T09:00:00.000Z",
-      "endTime": "2026-11-08T21:00:00.000Z",
-      "relevant": true
-    },
-    {
-      "areaCode": "Beja",
-      "areaLabel": "Beja",
-      "type": "Precipitação",
-      "level": "yellow",
-      "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-      "startTime": "2026-11-08T15:00:00.000Z",
-      "endTime": "2026-11-09T00:00:00.000Z",
-      "relevant": true
-    },
-    {
-      "areaCode": "Faro",
-      "areaLabel": "Faro",
-      "type": "Precipitação",
-      "level": "yellow",
-      "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-      "startTime": "2026-11-08T15:00:00.000Z",
-      "endTime": "2026-11-09T00:00:00.000Z",
-      "relevant": true
-    },
-    {
-      "areaCode": "Castelo Branco",
-      "areaLabel": "Castelo Branco",
-      "type": "Precipitação",
-      "level": "yellow",
-      "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-      "startTime": "2026-11-08T21:00:00.000Z",
-      "endTime": "2026-11-09T06:00:00.000Z",
-      "relevant": true
-    },
-    {
-      "areaCode": "Santarém",
-      "areaLabel": "Santarém",
-      "type": "Precipitação",
-      "level": "yellow",
-      "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-      "startTime": "2026-11-08T18:00:00.000Z",
-      "endTime": "2026-11-09T06:00:00.000Z",
-      "relevant": true
-    },
-    {
-      "areaCode": "Portalegre",
-      "areaLabel": "Portalegre",
-      "type": "Precipitação",
-      "level": "yellow",
-      "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-      "startTime": "2026-11-08T18:00:00.000Z",
-      "endTime": "2026-11-09T06:00:00.000Z",
-      "relevant": true
-    },
-    {
-      "areaCode": "Lisboa",
-      "areaLabel": "Lisboa",
-      "type": "Precipitação",
-      "level": "yellow",
-      "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-      "startTime": "2026-11-08T18:00:00.000Z",
-      "endTime": "2026-11-09T06:00:00.000Z",
-      "relevant": true
-    },
-    {
-      "areaCode": "Setúbal",
-      "areaLabel": "Setúbal",
-      "type": "Precipitação",
-      "level": "yellow",
-      "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-      "startTime": "2026-11-08T18:00:00.000Z",
-      "endTime": "2026-11-09T06:00:00.000Z",
-      "relevant": true
-    },
-    {
-      "areaCode": "Faro",
+      "areaCode": "FAR",
       "areaLabel": "Faro",
       "type": "Agitação Marítima",
       "level": "yellow",
       "text": "Na costa Sul, ondas de sueste com 2 metros.",
-      "startTime": "2026-11-08T12:00:00.000Z",
-      "endTime": "2026-11-08T21:00:00.000Z",
+      "startTime": "2026-11-08T12:00:00",
+      "endTime": "2026-11-08T21:00:00",
       "relevant": true
     },
     {
-      "areaCode": "Évora",
+      "areaCode": "AOR",
+      "areaLabel": "Vila do Porto",
+      "type": "Agitação Marítima",
+      "level": "yellow",
+      "text": "Ondas de noroeste (NW).",
+      "startTime": "2026-11-08T15:00:00",
+      "endTime": "2026-11-09T06:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "MCN",
+      "areaLabel": "Madeira — Costa Norte",
+      "type": "Agitação Marítima",
+      "level": "yellow",
+      "text": "Ondas de noroeste com 4 a 4,5 metros.",
+      "startTime": "2026-11-09T12:00:00",
+      "endTime": "2026-11-10T00:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "MCS",
+      "areaLabel": "Funchal",
+      "type": "Agitação Marítima",
+      "level": "yellow",
+      "text": "Ondas de sudoeste com 4 a 4,5 metros.",
+      "startTime": "2026-11-08T12:00:00",
+      "endTime": "2026-11-09T06:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "ACE",
+      "areaLabel": "Angra do Heroísmo",
+      "type": "Precipitação",
+      "level": "yellow",
+      "text": "Precipitação por vezes FORTE.",
+      "startTime": "2026-11-07T08:00:00",
+      "endTime": "2026-11-07T22:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "EVR",
       "areaLabel": "Évora",
       "type": "Precipitação",
       "level": "yellow",
       "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-      "startTime": "2026-11-08T18:00:00.000Z",
-      "endTime": "2026-11-09T06:00:00.000Z",
+      "startTime": "2026-11-08T18:00:00",
+      "endTime": "2026-11-09T06:00:00",
       "relevant": true
     },
     {
-      "areaCode": "Açores - Grupo Central",
-      "areaLabel": "Açores - Grupo Central",
+      "areaCode": "FAR",
+      "areaLabel": "Faro",
       "type": "Precipitação",
       "level": "yellow",
-      "text": "Precipitação por vezes FORTE.",
-      "startTime": "2026-11-07T08:00:00.000Z",
-      "endTime": "2026-11-07T22:00:00.000Z",
+      "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+      "startTime": "2026-11-08T15:00:00",
+      "endTime": "2026-11-09T00:00:00",
       "relevant": true
     },
     {
-      "areaCode": "Açores - Grupo Oriental",
-      "areaLabel": "Açores - Grupo Oriental",
+      "areaCode": "AOR",
+      "areaLabel": "Vila do Porto",
       "type": "Precipitação",
       "level": "yellow",
       "text": "Precipitação por vezes FORTE.",
-      "startTime": "2026-11-07T09:00:00.000Z",
-      "endTime": "2026-11-07T22:00:00.000Z",
+      "startTime": "2026-11-07T09:00:00",
+      "endTime": "2026-11-07T22:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "STB",
+      "areaLabel": "Setúbal",
+      "type": "Precipitação",
+      "level": "yellow",
+      "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+      "startTime": "2026-11-08T18:00:00",
+      "endTime": "2026-11-09T06:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "STM",
+      "areaLabel": "Santarém",
+      "type": "Precipitação",
+      "level": "yellow",
+      "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+      "startTime": "2026-11-08T18:00:00",
+      "endTime": "2026-11-09T06:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "MRM",
+      "areaLabel": "Madeira — Regiões Montanhosas",
+      "type": "Precipitação",
+      "level": "yellow",
+      "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
+      "startTime": "2026-11-07T10:47:00",
+      "endTime": "2026-11-08T18:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "LSB",
+      "areaLabel": "Lisboa",
+      "type": "Precipitação",
+      "level": "yellow",
+      "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+      "startTime": "2026-11-08T18:00:00",
+      "endTime": "2026-11-09T06:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "MCN",
+      "areaLabel": "Madeira — Costa Norte",
+      "type": "Precipitação",
+      "level": "yellow",
+      "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
+      "startTime": "2026-11-07T12:00:00",
+      "endTime": "2026-11-08T18:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "BJA",
+      "areaLabel": "Beja",
+      "type": "Precipitação",
+      "level": "yellow",
+      "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+      "startTime": "2026-11-08T15:00:00",
+      "endTime": "2026-11-09T00:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "CBO",
+      "areaLabel": "Castelo Branco",
+      "type": "Precipitação",
+      "level": "yellow",
+      "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+      "startTime": "2026-11-08T21:00:00",
+      "endTime": "2026-11-09T06:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "PTG",
+      "areaLabel": "Portalegre",
+      "type": "Precipitação",
+      "level": "yellow",
+      "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+      "startTime": "2026-11-08T18:00:00",
+      "endTime": "2026-11-09T06:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "MPS",
+      "areaLabel": "Porto Santo",
+      "type": "Precipitação",
+      "level": "yellow",
+      "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
+      "startTime": "2026-11-07T12:00:00",
+      "endTime": "2026-11-08T18:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "MCS",
+      "areaLabel": "Funchal",
+      "type": "Precipitação",
+      "level": "yellow",
+      "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
+      "startTime": "2026-11-07T10:47:00",
+      "endTime": "2026-11-08T18:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "ACE",
+      "areaLabel": "Angra do Heroísmo",
+      "type": "Vento",
+      "level": "yellow",
+      "text": "Direção de noroeste (NW).",
+      "startTime": "2026-11-08T06:00:00",
+      "endTime": "2026-11-09T06:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "AOC",
+      "areaLabel": "Santa Cruz das Flores",
+      "type": "Vento",
+      "level": "yellow",
+      "text": "Direção de noroeste (NW).",
+      "startTime": "2026-11-08T06:00:00",
+      "endTime": "2026-11-08T21:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "AOR",
+      "areaLabel": "Vila do Porto",
+      "type": "Vento",
+      "level": "yellow",
+      "text": "Direção de noroeste (NW).",
+      "startTime": "2026-11-08T12:00:00",
+      "endTime": "2026-11-09T06:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "MRM",
+      "areaLabel": "Madeira — Regiões Montanhosas",
+      "type": "Vento",
+      "level": "yellow",
+      "text": "Rajadas até 110 km/h.",
+      "startTime": "2026-11-07T12:00:00",
+      "endTime": "2026-11-08T21:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "MCN",
+      "areaLabel": "Madeira — Costa Norte",
+      "type": "Vento",
+      "level": "yellow",
+      "text": "Rajadas até 90 km/h.",
+      "startTime": "2026-11-07T12:00:00",
+      "endTime": "2026-11-08T21:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "MPS",
+      "areaLabel": "Porto Santo",
+      "type": "Vento",
+      "level": "yellow",
+      "text": "Rajadas até 90 km/h.",
+      "startTime": "2026-11-07T12:00:00",
+      "endTime": "2026-11-08T21:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "MCS",
+      "areaLabel": "Funchal",
+      "type": "Vento",
+      "level": "yellow",
+      "text": "Rajadas até 90 km/h.",
+      "startTime": "2026-11-07T12:00:00",
+      "endTime": "2026-11-08T21:00:00",
       "relevant": true
     }
   ],
   "spotWarnings": {
-    "castelo-bode": [
+    "foz-arelho": [
       {
-        "areaCode": "Santarém",
+        "areaCode": "STM",
         "areaLabel": "Santarém",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T18:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
-      },
+      }
+    ],
+    "foil-foz-arelho": [
       {
-        "areaCode": "Portalegre",
-        "areaLabel": "Portalegre",
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T18:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      }
+    ],
+    "obidos-lagoon": [
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      }
+    ],
+    "obidos-lagoon-sul": [
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      }
+    ],
+    "foz-arelho-beach": [
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      }
+    ],
+    "praia-del-rey": [
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      }
+    ],
+    "almagreira": [
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      }
+    ],
+    "lagide": [
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      }
+    ],
+    "baleal": [
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      }
+    ],
+    "baleal-sul": [
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      }
+    ],
+    "gamboa": [
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      }
+    ],
+    "supertubos": [
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      }
+    ],
+    "molhe-leste": [
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
     "foz-sizandro": [
       {
-        "areaCode": "Lisboa",
+        "areaCode": "LSB",
         "areaLabel": "Lisboa",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T18:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
     "coxos": [
       {
-        "areaCode": "Lisboa",
+        "areaCode": "LSB",
         "areaLabel": "Lisboa",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T18:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
     "ribeira-ilhas": [
       {
-        "areaCode": "Lisboa",
+        "areaCode": "LSB",
         "areaLabel": "Lisboa",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T18:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
     "empa": [
       {
-        "areaCode": "Lisboa",
+        "areaCode": "LSB",
         "areaLabel": "Lisboa",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T18:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
     "sao-lourenco": [
       {
-        "areaCode": "Lisboa",
+        "areaCode": "LSB",
         "areaLabel": "Lisboa",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T18:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
     "calada": [
       {
-        "areaCode": "Lisboa",
+        "areaCode": "LSB",
         "areaLabel": "Lisboa",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T18:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
     "pedra-branca": [
       {
-        "areaCode": "Lisboa",
+        "areaCode": "LSB",
         "areaLabel": "Lisboa",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T18:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
     "sao-sebastiao": [
       {
-        "areaCode": "Lisboa",
+        "areaCode": "LSB",
         "areaLabel": "Lisboa",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T18:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
     "praia-norte-ericeira": [
       {
-        "areaCode": "Lisboa",
+        "areaCode": "LSB",
         "areaLabel": "Lisboa",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T18:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
     "praia-sul-ericeira": [
       {
-        "areaCode": "Lisboa",
+        "areaCode": "LSB",
         "areaLabel": "Lisboa",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T18:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
     "foz-lizandro": [
       {
-        "areaCode": "Lisboa",
+        "areaCode": "LSB",
         "areaLabel": "Lisboa",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T18:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
     "sao-juliao": [
       {
-        "areaCode": "Lisboa",
+        "areaCode": "LSB",
         "areaLabel": "Lisboa",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T18:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
     "praia-grande-sintra": [
       {
-        "areaCode": "Lisboa",
+        "areaCode": "LSB",
         "areaLabel": "Lisboa",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T18:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
     "adraga": [
       {
-        "areaCode": "Lisboa",
+        "areaCode": "LSB",
         "areaLabel": "Lisboa",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T18:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
     "guincho": [
       {
-        "areaCode": "Lisboa",
+        "areaCode": "LSB",
         "areaLabel": "Lisboa",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T18:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
     "seixal-bay": [
       {
-        "areaCode": "Setúbal",
-        "areaLabel": "Setúbal",
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T18:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
     "praia-vitoria": [
       {
-        "areaCode": "Açores - Grupo Central",
-        "areaLabel": "Açores - Grupo Central",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "Direção de noroeste (NW).",
-        "startTime": "2026-11-08T06:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Açores - Grupo Central",
-        "areaLabel": "Açores - Grupo Central",
+        "areaCode": "ACE",
+        "areaLabel": "Angra do Heroísmo",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de noroeste (NW).",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-09T00:00:00.000Z",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-09T00:00:00",
         "relevant": true
       },
       {
-        "areaCode": "Açores - Grupo Central",
-        "areaLabel": "Açores - Grupo Central",
+        "areaCode": "ACE",
+        "areaLabel": "Angra do Heroísmo",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes FORTE.",
-        "startTime": "2026-11-07T08:00:00.000Z",
-        "endTime": "2026-11-07T22:00:00.000Z",
+        "startTime": "2026-11-07T08:00:00",
+        "endTime": "2026-11-07T22:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "ACE",
+        "areaLabel": "Angra do Heroísmo",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Direção de noroeste (NW).",
+        "startTime": "2026-11-08T06:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
     "santa-catarina-terceira": [
       {
-        "areaCode": "Açores - Grupo Central",
-        "areaLabel": "Açores - Grupo Central",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "Direção de noroeste (NW).",
-        "startTime": "2026-11-08T06:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Açores - Grupo Central",
-        "areaLabel": "Açores - Grupo Central",
+        "areaCode": "ACE",
+        "areaLabel": "Angra do Heroísmo",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de noroeste (NW).",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-09T00:00:00.000Z",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-09T00:00:00",
         "relevant": true
       },
       {
-        "areaCode": "Açores - Grupo Central",
-        "areaLabel": "Açores - Grupo Central",
+        "areaCode": "ACE",
+        "areaLabel": "Angra do Heroísmo",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes FORTE.",
-        "startTime": "2026-11-07T08:00:00.000Z",
-        "endTime": "2026-11-07T22:00:00.000Z",
+        "startTime": "2026-11-07T08:00:00",
+        "endTime": "2026-11-07T22:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "ACE",
+        "areaLabel": "Angra do Heroísmo",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Direção de noroeste (NW).",
+        "startTime": "2026-11-08T06:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
     "parede": [
       {
-        "areaCode": "Lisboa",
+        "areaCode": "LSB",
         "areaLabel": "Lisboa",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T18:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
     "carcavelos": [
       {
-        "areaCode": "Lisboa",
+        "areaCode": "LSB",
         "areaLabel": "Lisboa",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T18:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
     "nova-vaga": [
       {
-        "areaCode": "Setúbal",
-        "areaLabel": "Setúbal",
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T18:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
     "sao-joao-caparica": [
       {
-        "areaCode": "Setúbal",
-        "areaLabel": "Setúbal",
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T18:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
     "costa-caparica": [
       {
-        "areaCode": "Setúbal",
-        "areaLabel": "Setúbal",
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T18:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
     "fonte-telha": [
       {
-        "areaCode": "Setúbal",
-        "areaLabel": "Setúbal",
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T18:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
     "ponta-dos-corvos": [
       {
-        "areaCode": "Setúbal",
-        "areaLabel": "Setúbal",
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T18:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
     "trafaria": [
       {
-        "areaCode": "Setúbal",
-        "areaLabel": "Setúbal",
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T18:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      }
+    ],
+    "cova-do-vapor": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
     "praia-da-rainha": [
       {
-        "areaCode": "Setúbal",
-        "areaLabel": "Setúbal",
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T18:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
     "almoxarife": [
       {
-        "areaCode": "Açores - Grupo Central",
-        "areaLabel": "Açores - Grupo Central",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "Direção de noroeste (NW).",
-        "startTime": "2026-11-08T06:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Açores - Grupo Central",
-        "areaLabel": "Açores - Grupo Central",
+        "areaCode": "ACE",
+        "areaLabel": "Angra do Heroísmo",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de noroeste (NW).",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-09T00:00:00.000Z",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-09T00:00:00",
         "relevant": true
       },
       {
-        "areaCode": "Açores - Grupo Central",
-        "areaLabel": "Açores - Grupo Central",
+        "areaCode": "ACE",
+        "areaLabel": "Angra do Heroísmo",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes FORTE.",
-        "startTime": "2026-11-07T08:00:00.000Z",
-        "endTime": "2026-11-07T22:00:00.000Z",
+        "startTime": "2026-11-07T08:00:00",
+        "endTime": "2026-11-07T22:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "ACE",
+        "areaLabel": "Angra do Heroísmo",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Direção de noroeste (NW).",
+        "startTime": "2026-11-08T06:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
     "lagoa-albufeira": [
       {
-        "areaCode": "Setúbal",
-        "areaLabel": "Setúbal",
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T18:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
     "foil-lagoa-albufeira": [
       {
-        "areaCode": "Setúbal",
-        "areaLabel": "Setúbal",
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T18:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
     "praia-lagoa-albufeira": [
       {
-        "areaCode": "Setúbal",
-        "areaLabel": "Setúbal",
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T18:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
     "troia": [
       {
-        "areaCode": "Setúbal",
+        "areaCode": "STB",
         "areaLabel": "Setúbal",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T18:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
     "comporta": [
       {
-        "areaCode": "Setúbal",
+        "areaCode": "STB",
         "areaLabel": "Setúbal",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T18:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
     "carvalhal-comporta": [
       {
-        "areaCode": "Beja",
-        "areaLabel": "Beja",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T00:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Setúbal",
+        "areaCode": "STB",
         "areaLabel": "Setúbal",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T18:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
     "alqueva": [
       {
-        "areaCode": "Beja",
+        "areaCode": "BJA",
         "areaLabel": "Beja",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T00:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Évora",
-        "areaLabel": "Évora",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T18:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "startTime": "2026-11-08T15:00:00",
+        "endTime": "2026-11-09T00:00:00",
         "relevant": true
       }
     ],
     "melides": [
       {
-        "areaCode": "Beja",
-        "areaLabel": "Beja",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T00:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Setúbal",
+        "areaCode": "STB",
         "areaLabel": "Setúbal",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T18:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
     "sao-torpes": [
       {
-        "areaCode": "Beja",
-        "areaLabel": "Beja",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T00:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Setúbal",
+        "areaCode": "STB",
         "areaLabel": "Setúbal",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T18:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
     "vale-figueiros-sines": [
       {
-        "areaCode": "Beja",
-        "areaLabel": "Beja",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T00:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Setúbal",
+        "areaCode": "STB",
         "areaLabel": "Setúbal",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T18:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
     "mosteiros": [
       {
-        "areaCode": "Açores - Grupo Oriental",
-        "areaLabel": "Açores - Grupo Oriental",
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de noroeste (NW).",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "startTime": "2026-11-08T15:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       },
       {
-        "areaCode": "Açores - Grupo Oriental",
-        "areaLabel": "Açores - Grupo Oriental",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "Direção de noroeste (NW).",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Açores - Grupo Oriental",
-        "areaLabel": "Açores - Grupo Oriental",
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes FORTE.",
-        "startTime": "2026-11-07T09:00:00.000Z",
-        "endTime": "2026-11-07T22:00:00.000Z",
+        "startTime": "2026-11-07T09:00:00",
+        "endTime": "2026-11-07T22:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Direção de noroeste (NW).",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
     "porto-covo": [
       {
-        "areaCode": "Beja",
-        "areaLabel": "Beja",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T00:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Setúbal",
+        "areaCode": "STB",
         "areaLabel": "Setúbal",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T18:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
     "monte-verde": [
       {
-        "areaCode": "Açores - Grupo Oriental",
-        "areaLabel": "Açores - Grupo Oriental",
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de noroeste (NW).",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "startTime": "2026-11-08T15:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       },
       {
-        "areaCode": "Açores - Grupo Oriental",
-        "areaLabel": "Açores - Grupo Oriental",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "Direção de noroeste (NW).",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Açores - Grupo Oriental",
-        "areaLabel": "Açores - Grupo Oriental",
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes FORTE.",
-        "startTime": "2026-11-07T09:00:00.000Z",
-        "endTime": "2026-11-07T22:00:00.000Z",
+        "startTime": "2026-11-07T09:00:00",
+        "endTime": "2026-11-07T22:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Direção de noroeste (NW).",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
     "santa-barbara": [
       {
-        "areaCode": "Açores - Grupo Oriental",
-        "areaLabel": "Açores - Grupo Oriental",
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de noroeste (NW).",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "startTime": "2026-11-08T15:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       },
       {
-        "areaCode": "Açores - Grupo Oriental",
-        "areaLabel": "Açores - Grupo Oriental",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "Direção de noroeste (NW).",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Açores - Grupo Oriental",
-        "areaLabel": "Açores - Grupo Oriental",
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes FORTE.",
-        "startTime": "2026-11-07T09:00:00.000Z",
-        "endTime": "2026-11-07T22:00:00.000Z",
+        "startTime": "2026-11-07T09:00:00",
+        "endTime": "2026-11-07T22:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Direção de noroeste (NW).",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
     "malhao": [
       {
-        "areaCode": "Beja",
-        "areaLabel": "Beja",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T00:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Setúbal",
+        "areaCode": "STB",
         "areaLabel": "Setúbal",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T18:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
     "milicias": [
       {
-        "areaCode": "Açores - Grupo Oriental",
-        "areaLabel": "Açores - Grupo Oriental",
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de noroeste (NW).",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "startTime": "2026-11-08T15:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       },
       {
-        "areaCode": "Açores - Grupo Oriental",
-        "areaLabel": "Açores - Grupo Oriental",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "Direção de noroeste (NW).",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Açores - Grupo Oriental",
-        "areaLabel": "Açores - Grupo Oriental",
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes FORTE.",
-        "startTime": "2026-11-07T09:00:00.000Z",
-        "endTime": "2026-11-07T22:00:00.000Z",
+        "startTime": "2026-11-07T09:00:00",
+        "endTime": "2026-11-07T22:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Direção de noroeste (NW).",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
     "vila-nova-milfontes": [
       {
-        "areaCode": "Beja",
-        "areaLabel": "Beja",
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T00:00:00.000Z",
+        "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
     "alteirinhos": [
       {
-        "areaCode": "Beja",
-        "areaLabel": "Beja",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T00:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Faro",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T00:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Na costa Sul, ondas de sueste com 2 metros.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-08T21:00:00.000Z",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-08T21:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-08T15:00:00",
+        "endTime": "2026-11-09T00:00:00",
         "relevant": true
       }
     ],
     "agua-alto": [
       {
-        "areaCode": "Açores - Grupo Oriental",
-        "areaLabel": "Açores - Grupo Oriental",
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de noroeste (NW).",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "startTime": "2026-11-08T15:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       },
       {
-        "areaCode": "Açores - Grupo Oriental",
-        "areaLabel": "Açores - Grupo Oriental",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "Direção de noroeste (NW).",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Açores - Grupo Oriental",
-        "areaLabel": "Açores - Grupo Oriental",
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes FORTE.",
-        "startTime": "2026-11-07T09:00:00.000Z",
-        "endTime": "2026-11-07T22:00:00.000Z",
+        "startTime": "2026-11-07T09:00:00",
+        "endTime": "2026-11-07T22:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Direção de noroeste (NW).",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
     "zambujeira": [
       {
-        "areaCode": "Beja",
-        "areaLabel": "Beja",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T00:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Faro",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T00:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Na costa Sul, ondas de sueste com 2 metros.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-08T21:00:00.000Z",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-08T21:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-08T15:00:00",
+        "endTime": "2026-11-09T00:00:00",
         "relevant": true
       }
     ],
     "carvalhal": [
       {
-        "areaCode": "Beja",
-        "areaLabel": "Beja",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T00:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Faro",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T00:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Na costa Sul, ondas de sueste com 2 metros.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-08T21:00:00.000Z",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-08T21:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-08T15:00:00",
+        "endTime": "2026-11-09T00:00:00",
         "relevant": true
       }
     ],
     "odeceixe": [
       {
-        "areaCode": "Beja",
-        "areaLabel": "Beja",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T00:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Faro",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T00:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Na costa Sul, ondas de sueste com 2 metros.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-08T21:00:00.000Z",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-08T21:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-08T15:00:00",
+        "endTime": "2026-11-09T00:00:00",
         "relevant": true
       }
     ],
     "amoreira": [
       {
-        "areaCode": "Faro",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T00:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Na costa Sul, ondas de sueste com 2 metros.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-08T21:00:00.000Z",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-08T21:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-08T15:00:00",
+        "endTime": "2026-11-09T00:00:00",
         "relevant": true
       }
     ],
     "monte-clerigo": [
       {
-        "areaCode": "Faro",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T00:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Na costa Sul, ondas de sueste com 2 metros.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-08T21:00:00.000Z",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-08T21:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-08T15:00:00",
+        "endTime": "2026-11-09T00:00:00",
         "relevant": true
       }
     ],
     "arrifana": [
       {
-        "areaCode": "Faro",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T00:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Na costa Sul, ondas de sueste com 2 metros.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-08T21:00:00.000Z",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-08T21:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-08T15:00:00",
+        "endTime": "2026-11-09T00:00:00",
         "relevant": true
       }
     ],
     "vale-figueiras": [
       {
-        "areaCode": "Faro",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T00:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Na costa Sul, ondas de sueste com 2 metros.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-08T21:00:00.000Z",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-08T21:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-08T15:00:00",
+        "endTime": "2026-11-09T00:00:00",
         "relevant": true
       }
     ],
     "bordeira": [
       {
-        "areaCode": "Faro",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T00:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Na costa Sul, ondas de sueste com 2 metros.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-08T21:00:00.000Z",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-08T21:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-08T15:00:00",
+        "endTime": "2026-11-09T00:00:00",
         "relevant": true
       }
     ],
     "amado": [
       {
-        "areaCode": "Faro",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T00:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Na costa Sul, ondas de sueste com 2 metros.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-08T21:00:00.000Z",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-08T21:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-08T15:00:00",
+        "endTime": "2026-11-09T00:00:00",
         "relevant": true
       }
     ],
     "barriga": [
       {
-        "areaCode": "Faro",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T00:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Na costa Sul, ondas de sueste com 2 metros.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-08T21:00:00.000Z",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-08T21:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-08T15:00:00",
+        "endTime": "2026-11-09T00:00:00",
         "relevant": true
       }
     ],
     "castelejo": [
       {
-        "areaCode": "Faro",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T00:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Na costa Sul, ondas de sueste com 2 metros.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-08T21:00:00.000Z",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-08T21:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-08T15:00:00",
+        "endTime": "2026-11-09T00:00:00",
         "relevant": true
       }
     ],
     "luz": [
       {
-        "areaCode": "Faro",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T00:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Na costa Sul, ondas de sueste com 2 metros.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-08T21:00:00.000Z",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-08T21:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-08T15:00:00",
+        "endTime": "2026-11-09T00:00:00",
         "relevant": true
       }
     ],
     "burgau": [
       {
-        "areaCode": "Faro",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T00:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Na costa Sul, ondas de sueste com 2 metros.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-08T21:00:00.000Z",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-08T21:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-08T15:00:00",
+        "endTime": "2026-11-09T00:00:00",
         "relevant": true
       }
     ],
     "salema": [
       {
-        "areaCode": "Faro",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T00:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Na costa Sul, ondas de sueste com 2 metros.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-08T21:00:00.000Z",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-08T21:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-08T15:00:00",
+        "endTime": "2026-11-09T00:00:00",
         "relevant": true
       }
     ],
     "cordoama": [
       {
-        "areaCode": "Faro",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T00:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Na costa Sul, ondas de sueste com 2 metros.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-08T21:00:00.000Z",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-08T21:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-08T15:00:00",
+        "endTime": "2026-11-09T00:00:00",
         "relevant": true
       }
     ],
     "ferragudo": [
       {
-        "areaCode": "Faro",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T00:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Na costa Sul, ondas de sueste com 2 metros.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-08T21:00:00.000Z",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-08T21:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-08T15:00:00",
+        "endTime": "2026-11-09T00:00:00",
         "relevant": true
       }
     ],
     "vila-real-santo-antonio": [
       {
-        "areaCode": "Faro",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T00:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Na costa Sul, ondas de sueste com 2 metros.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-08T21:00:00.000Z",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-08T21:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-08T15:00:00",
+        "endTime": "2026-11-09T00:00:00",
         "relevant": true
       }
     ],
     "monte-gordo": [
       {
-        "areaCode": "Faro",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T00:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Na costa Sul, ondas de sueste com 2 metros.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-08T21:00:00.000Z",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-08T21:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-08T15:00:00",
+        "endTime": "2026-11-09T00:00:00",
         "relevant": true
       }
     ],
     "praia-verde": [
       {
-        "areaCode": "Faro",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T00:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Na costa Sul, ondas de sueste com 2 metros.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-08T21:00:00.000Z",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-08T21:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-08T15:00:00",
+        "endTime": "2026-11-09T00:00:00",
         "relevant": true
       }
     ],
     "altura": [
       {
-        "areaCode": "Faro",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T00:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Na costa Sul, ondas de sueste com 2 metros.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-08T21:00:00.000Z",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-08T21:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-08T15:00:00",
+        "endTime": "2026-11-09T00:00:00",
         "relevant": true
       }
     ],
     "praia-rocha": [
       {
-        "areaCode": "Faro",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T00:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Na costa Sul, ondas de sueste com 2 metros.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-08T21:00:00.000Z",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-08T21:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-08T15:00:00",
+        "endTime": "2026-11-09T00:00:00",
         "relevant": true
       }
     ],
     "alvor": [
       {
-        "areaCode": "Faro",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T00:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Na costa Sul, ondas de sueste com 2 metros.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-08T21:00:00.000Z",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-08T21:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-08T15:00:00",
+        "endTime": "2026-11-09T00:00:00",
         "relevant": true
       }
     ],
     "foil-alvor": [
       {
-        "areaCode": "Faro",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T00:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Na costa Sul, ondas de sueste com 2 metros.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-08T21:00:00.000Z",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-08T21:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-08T15:00:00",
+        "endTime": "2026-11-09T00:00:00",
         "relevant": true
       }
     ],
     "lagos": [
       {
-        "areaCode": "Faro",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T00:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Na costa Sul, ondas de sueste com 2 metros.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-08T21:00:00.000Z",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-08T21:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-08T15:00:00",
+        "endTime": "2026-11-09T00:00:00",
         "relevant": true
       }
     ],
     "lagos-wakepark": [
       {
-        "areaCode": "Faro",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T00:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Na costa Sul, ondas de sueste com 2 metros.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-08T21:00:00.000Z",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-08T21:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-08T15:00:00",
+        "endTime": "2026-11-09T00:00:00",
         "relevant": true
       }
     ],
     "beliche": [
       {
-        "areaCode": "Faro",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T00:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Na costa Sul, ondas de sueste com 2 metros.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-08T21:00:00.000Z",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-08T21:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-08T15:00:00",
+        "endTime": "2026-11-09T00:00:00",
         "relevant": true
       }
     ],
     "martinhal": [
       {
-        "areaCode": "Faro",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T00:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Na costa Sul, ondas de sueste com 2 metros.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-08T21:00:00.000Z",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-08T21:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-08T15:00:00",
+        "endTime": "2026-11-09T00:00:00",
         "relevant": true
       }
     ],
     "barrinha-faro": [
       {
-        "areaCode": "Faro",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T00:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Na costa Sul, ondas de sueste com 2 metros.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-08T21:00:00.000Z",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-08T21:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-08T15:00:00",
+        "endTime": "2026-11-09T00:00:00",
         "relevant": true
       }
     ],
     "fuseta": [
       {
-        "areaCode": "Faro",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T00:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Na costa Sul, ondas de sueste com 2 metros.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-08T21:00:00.000Z",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-08T21:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-08T15:00:00",
+        "endTime": "2026-11-09T00:00:00",
         "relevant": true
       }
     ],
     "ilha-faro": [
       {
-        "areaCode": "Faro",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T00:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Na costa Sul, ondas de sueste com 2 metros.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-08T21:00:00.000Z",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-08T21:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-08T15:00:00",
+        "endTime": "2026-11-09T00:00:00",
         "relevant": true
       }
     ],
     "faro-mar": [
       {
-        "areaCode": "Faro",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T00:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Na costa Sul, ondas de sueste com 2 metros.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-08T21:00:00.000Z",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-08T21:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-08T15:00:00",
+        "endTime": "2026-11-09T00:00:00",
         "relevant": true
       }
     ],
     "culatra": [
       {
-        "areaCode": "Faro",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T00:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Na costa Sul, ondas de sueste com 2 metros.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-08T21:00:00.000Z",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-08T21:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-08T15:00:00",
+        "endTime": "2026-11-09T00:00:00",
         "relevant": true
       }
     ],
     "armona": [
       {
-        "areaCode": "Faro",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T00:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Na costa Sul, ondas de sueste com 2 metros.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-08T21:00:00.000Z",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-08T21:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-08T15:00:00",
+        "endTime": "2026-11-09T00:00:00",
         "relevant": true
       }
     ],
     "ilha-tavira": [
       {
-        "areaCode": "Faro",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T00:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Na costa Sul, ondas de sueste com 2 metros.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-08T21:00:00.000Z",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-08T21:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-08T15:00:00",
+        "endTime": "2026-11-09T00:00:00",
         "relevant": true
       }
     ],
     "cabanas-tavira": [
       {
-        "areaCode": "Faro",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T00:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Na costa Sul, ondas de sueste com 2 metros.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-08T21:00:00.000Z",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-08T21:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-08T15:00:00",
+        "endTime": "2026-11-09T00:00:00",
         "relevant": true
       }
     ],
     "cacela-velha": [
       {
-        "areaCode": "Faro",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T00:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Na costa Sul, ondas de sueste com 2 metros.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-08T21:00:00.000Z",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-08T21:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-08T15:00:00",
+        "endTime": "2026-11-09T00:00:00",
         "relevant": true
       }
     ],
     "zavial": [
       {
-        "areaCode": "Faro",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T00:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Na costa Sul, ondas de sueste com 2 metros.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-08T21:00:00.000Z",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-08T21:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-08T15:00:00",
+        "endTime": "2026-11-09T00:00:00",
         "relevant": true
       }
     ],
     "tonel": [
       {
-        "areaCode": "Faro",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T00:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Na costa Sul, ondas de sueste com 2 metros.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-08T21:00:00.000Z",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-08T21:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-08T15:00:00",
+        "endTime": "2026-11-09T00:00:00",
         "relevant": true
       }
     ],
     "anjos": [
       {
-        "areaCode": "Açores - Grupo Oriental",
-        "areaLabel": "Açores - Grupo Oriental",
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de noroeste (NW).",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "startTime": "2026-11-08T15:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       },
       {
-        "areaCode": "Açores - Grupo Oriental",
-        "areaLabel": "Açores - Grupo Oriental",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "Direção de noroeste (NW).",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Açores - Grupo Oriental",
-        "areaLabel": "Açores - Grupo Oriental",
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes FORTE.",
-        "startTime": "2026-11-07T09:00:00.000Z",
-        "endTime": "2026-11-07T22:00:00.000Z",
+        "startTime": "2026-11-07T09:00:00",
+        "endTime": "2026-11-07T22:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Direção de noroeste (NW).",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
     "ponta-delgada": [
       {
-        "areaCode": "Açores - Grupo Oriental",
-        "areaLabel": "Açores - Grupo Oriental",
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de noroeste (NW).",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "startTime": "2026-11-08T15:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       },
       {
-        "areaCode": "Açores - Grupo Oriental",
-        "areaLabel": "Açores - Grupo Oriental",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "Direção de noroeste (NW).",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Açores - Grupo Oriental",
-        "areaLabel": "Açores - Grupo Oriental",
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes FORTE.",
-        "startTime": "2026-11-07T09:00:00.000Z",
-        "endTime": "2026-11-07T22:00:00.000Z",
+        "startTime": "2026-11-07T09:00:00",
+        "endTime": "2026-11-07T22:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Direção de noroeste (NW).",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
     "sao-vicente-madeira": [
       {
-        "areaCode": "Madeira - Costa Sul",
-        "areaLabel": "Madeira - Costa Sul",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 4,5 metros.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Regiões Montanhosas",
-        "areaLabel": "Madeira - Regiões Montanhosas",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "Rajadas até 110 km/h.",
-        "startTime": "2026-11-08T09:00:00.000Z",
-        "endTime": "2026-11-08T21:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Regiões Montanhosas",
-        "areaLabel": "Madeira - Regiões Montanhosas",
+        "areaCode": "MCN",
+        "areaLabel": "Madeira — Costa Norte",
         "type": "Precipitação",
-        "level": "yellow",
+        "level": "orange",
         "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-08T18:00:00.000Z",
+        "startTime": "2026-11-07T18:00:00",
+        "endTime": "2026-11-08T03:00:00",
         "relevant": true
       },
       {
-        "areaCode": "Madeira - Costa Norte",
-        "areaLabel": "Madeira - Costa Norte",
+        "areaCode": "MCN",
+        "areaLabel": "Madeira — Costa Norte",
+        "type": "Vento",
+        "level": "orange",
+        "text": "Rajadas até 100 km/h.",
+        "startTime": "2026-11-07T18:00:00",
+        "endTime": "2026-11-08T00:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "MCN",
+        "areaLabel": "Madeira — Costa Norte",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de noroeste com 4 a 4,5 metros.",
-        "startTime": "2026-11-09T12:00:00.000Z",
-        "endTime": "2026-11-10T00:00:00.000Z",
+        "startTime": "2026-11-09T12:00:00",
+        "endTime": "2026-11-10T00:00:00",
         "relevant": true
       },
       {
-        "areaCode": "Madeira - Costa Sul",
-        "areaLabel": "Madeira - Costa Sul",
+        "areaCode": "MCN",
+        "areaLabel": "Madeira — Costa Norte",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-08T18:00:00.000Z",
+        "startTime": "2026-11-07T12:00:00",
+        "endTime": "2026-11-08T18:00:00",
         "relevant": true
       },
       {
-        "areaCode": "Madeira - Costa Sul",
-        "areaLabel": "Madeira - Costa Sul",
+        "areaCode": "MCN",
+        "areaLabel": "Madeira — Costa Norte",
         "type": "Vento",
         "level": "yellow",
         "text": "Rajadas até 90 km/h.",
-        "startTime": "2026-11-08T09:00:00.000Z",
-        "endTime": "2026-11-08T21:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Costa Norte",
-        "areaLabel": "Madeira - Costa Norte",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-08T18:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Costa Norte",
-        "areaLabel": "Madeira - Costa Norte",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "Rajadas até 90 km/h.",
-        "startTime": "2026-11-08T09:00:00.000Z",
-        "endTime": "2026-11-08T21:00:00.000Z",
+        "startTime": "2026-11-07T12:00:00",
+        "endTime": "2026-11-08T21:00:00",
         "relevant": true
       }
     ],
     "porto-da-cruz": [
       {
-        "areaCode": "Madeira - Costa Sul",
-        "areaLabel": "Madeira - Costa Sul",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 4,5 metros.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "areaCode": "MRM",
+        "areaLabel": "Madeira — Regiões Montanhosas",
+        "type": "Precipitação",
+        "level": "orange",
+        "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
+        "startTime": "2026-11-07T18:00:00",
+        "endTime": "2026-11-08T03:00:00",
         "relevant": true
       },
       {
-        "areaCode": "Madeira - Costa Norte",
-        "areaLabel": "Madeira - Costa Norte",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas de noroeste com 4 a 4,5 metros.",
-        "startTime": "2026-11-09T12:00:00.000Z",
-        "endTime": "2026-11-10T00:00:00.000Z",
+        "areaCode": "MRM",
+        "areaLabel": "Madeira — Regiões Montanhosas",
+        "type": "Vento",
+        "level": "orange",
+        "text": "Rajadas até 130 km/h.",
+        "startTime": "2026-11-07T18:00:00",
+        "endTime": "2026-11-08T00:00:00",
         "relevant": true
       },
       {
-        "areaCode": "Madeira - Costa Sul",
-        "areaLabel": "Madeira - Costa Sul",
+        "areaCode": "MRM",
+        "areaLabel": "Madeira — Regiões Montanhosas",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-08T18:00:00.000Z",
+        "startTime": "2026-11-07T10:47:00",
+        "endTime": "2026-11-08T18:00:00",
         "relevant": true
       },
       {
-        "areaCode": "Madeira - Costa Sul",
-        "areaLabel": "Madeira - Costa Sul",
+        "areaCode": "MRM",
+        "areaLabel": "Madeira — Regiões Montanhosas",
         "type": "Vento",
         "level": "yellow",
-        "text": "Rajadas até 90 km/h.",
-        "startTime": "2026-11-08T09:00:00.000Z",
-        "endTime": "2026-11-08T21:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Costa Norte",
-        "areaLabel": "Madeira - Costa Norte",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-08T18:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Costa Norte",
-        "areaLabel": "Madeira - Costa Norte",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "Rajadas até 90 km/h.",
-        "startTime": "2026-11-08T09:00:00.000Z",
-        "endTime": "2026-11-08T21:00:00.000Z",
+        "text": "Rajadas até 110 km/h.",
+        "startTime": "2026-11-07T12:00:00",
+        "endTime": "2026-11-08T21:00:00",
         "relevant": true
       }
     ],
     "paul-mar": [
       {
-        "areaCode": "Madeira - Costa Sul",
-        "areaLabel": "Madeira - Costa Sul",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 4,5 metros.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "areaCode": "MCN",
+        "areaLabel": "Madeira — Costa Norte",
+        "type": "Precipitação",
+        "level": "orange",
+        "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
+        "startTime": "2026-11-07T18:00:00",
+        "endTime": "2026-11-08T03:00:00",
         "relevant": true
       },
       {
-        "areaCode": "Madeira - Costa Norte",
-        "areaLabel": "Madeira - Costa Norte",
+        "areaCode": "MCN",
+        "areaLabel": "Madeira — Costa Norte",
+        "type": "Vento",
+        "level": "orange",
+        "text": "Rajadas até 100 km/h.",
+        "startTime": "2026-11-07T18:00:00",
+        "endTime": "2026-11-08T00:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "MCN",
+        "areaLabel": "Madeira — Costa Norte",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de noroeste com 4 a 4,5 metros.",
-        "startTime": "2026-11-09T12:00:00.000Z",
-        "endTime": "2026-11-10T00:00:00.000Z",
+        "startTime": "2026-11-09T12:00:00",
+        "endTime": "2026-11-10T00:00:00",
         "relevant": true
       },
       {
-        "areaCode": "Madeira - Costa Sul",
-        "areaLabel": "Madeira - Costa Sul",
+        "areaCode": "MCN",
+        "areaLabel": "Madeira — Costa Norte",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-08T18:00:00.000Z",
+        "startTime": "2026-11-07T12:00:00",
+        "endTime": "2026-11-08T18:00:00",
         "relevant": true
       },
       {
-        "areaCode": "Madeira - Costa Sul",
-        "areaLabel": "Madeira - Costa Sul",
+        "areaCode": "MCN",
+        "areaLabel": "Madeira — Costa Norte",
         "type": "Vento",
         "level": "yellow",
         "text": "Rajadas até 90 km/h.",
-        "startTime": "2026-11-08T09:00:00.000Z",
-        "endTime": "2026-11-08T21:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Costa Norte",
-        "areaLabel": "Madeira - Costa Norte",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-08T18:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Costa Norte",
-        "areaLabel": "Madeira - Costa Norte",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "Rajadas até 90 km/h.",
-        "startTime": "2026-11-08T09:00:00.000Z",
-        "endTime": "2026-11-08T21:00:00.000Z",
+        "startTime": "2026-11-07T12:00:00",
+        "endTime": "2026-11-08T21:00:00",
         "relevant": true
       }
     ],
     "jardim-mar": [
       {
-        "areaCode": "Madeira - Costa Sul",
-        "areaLabel": "Madeira - Costa Sul",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 4,5 metros.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Regiões Montanhosas",
-        "areaLabel": "Madeira - Regiões Montanhosas",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "Rajadas até 110 km/h.",
-        "startTime": "2026-11-08T09:00:00.000Z",
-        "endTime": "2026-11-08T21:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Regiões Montanhosas",
-        "areaLabel": "Madeira - Regiões Montanhosas",
+        "areaCode": "MCN",
+        "areaLabel": "Madeira — Costa Norte",
         "type": "Precipitação",
-        "level": "yellow",
+        "level": "orange",
         "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-08T18:00:00.000Z",
+        "startTime": "2026-11-07T18:00:00",
+        "endTime": "2026-11-08T03:00:00",
         "relevant": true
       },
       {
-        "areaCode": "Madeira - Costa Norte",
-        "areaLabel": "Madeira - Costa Norte",
+        "areaCode": "MCN",
+        "areaLabel": "Madeira — Costa Norte",
+        "type": "Vento",
+        "level": "orange",
+        "text": "Rajadas até 100 km/h.",
+        "startTime": "2026-11-07T18:00:00",
+        "endTime": "2026-11-08T00:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "MCN",
+        "areaLabel": "Madeira — Costa Norte",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de noroeste com 4 a 4,5 metros.",
-        "startTime": "2026-11-09T12:00:00.000Z",
-        "endTime": "2026-11-10T00:00:00.000Z",
+        "startTime": "2026-11-09T12:00:00",
+        "endTime": "2026-11-10T00:00:00",
         "relevant": true
       },
       {
-        "areaCode": "Madeira - Costa Sul",
-        "areaLabel": "Madeira - Costa Sul",
+        "areaCode": "MCN",
+        "areaLabel": "Madeira — Costa Norte",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-08T18:00:00.000Z",
+        "startTime": "2026-11-07T12:00:00",
+        "endTime": "2026-11-08T18:00:00",
         "relevant": true
       },
       {
-        "areaCode": "Madeira - Costa Sul",
-        "areaLabel": "Madeira - Costa Sul",
+        "areaCode": "MCN",
+        "areaLabel": "Madeira — Costa Norte",
         "type": "Vento",
         "level": "yellow",
         "text": "Rajadas até 90 km/h.",
-        "startTime": "2026-11-08T09:00:00.000Z",
-        "endTime": "2026-11-08T21:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Costa Norte",
-        "areaLabel": "Madeira - Costa Norte",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-08T18:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Costa Norte",
-        "areaLabel": "Madeira - Costa Norte",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "Rajadas até 90 km/h.",
-        "startTime": "2026-11-08T09:00:00.000Z",
-        "endTime": "2026-11-08T21:00:00.000Z",
+        "startTime": "2026-11-07T12:00:00",
+        "endTime": "2026-11-08T21:00:00",
         "relevant": true
       }
     ],
     "ponta-sao-lourenco": [
       {
-        "areaCode": "Madeira - Costa Sul",
-        "areaLabel": "Madeira - Costa Sul",
+        "areaCode": "MCS",
+        "areaLabel": "Funchal",
+        "type": "Precipitação",
+        "level": "orange",
+        "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
+        "startTime": "2026-11-07T18:00:00",
+        "endTime": "2026-11-08T03:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "MCS",
+        "areaLabel": "Funchal",
+        "type": "Vento",
+        "level": "orange",
+        "text": "Rajadas até 100 km/h.",
+        "startTime": "2026-11-07T18:00:00",
+        "endTime": "2026-11-08T00:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "MCS",
+        "areaLabel": "Funchal",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 4,5 metros.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       },
       {
-        "areaCode": "Madeira - Costa Sul",
-        "areaLabel": "Madeira - Costa Sul",
+        "areaCode": "MCS",
+        "areaLabel": "Funchal",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-08T18:00:00.000Z",
+        "startTime": "2026-11-07T10:47:00",
+        "endTime": "2026-11-08T18:00:00",
         "relevant": true
       },
       {
-        "areaCode": "Madeira - Costa Sul",
-        "areaLabel": "Madeira - Costa Sul",
+        "areaCode": "MCS",
+        "areaLabel": "Funchal",
         "type": "Vento",
         "level": "yellow",
         "text": "Rajadas até 90 km/h.",
-        "startTime": "2026-11-08T09:00:00.000Z",
-        "endTime": "2026-11-08T21:00:00.000Z",
+        "startTime": "2026-11-07T12:00:00",
+        "endTime": "2026-11-08T21:00:00",
         "relevant": true
       }
     ],
     "ribeira-brava": [
       {
-        "areaCode": "Madeira - Costa Sul",
-        "areaLabel": "Madeira - Costa Sul",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 4,5 metros.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "areaCode": "MRM",
+        "areaLabel": "Madeira — Regiões Montanhosas",
+        "type": "Precipitação",
+        "level": "orange",
+        "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
+        "startTime": "2026-11-07T18:00:00",
+        "endTime": "2026-11-08T03:00:00",
         "relevant": true
       },
       {
-        "areaCode": "Madeira - Costa Sul",
-        "areaLabel": "Madeira - Costa Sul",
+        "areaCode": "MRM",
+        "areaLabel": "Madeira — Regiões Montanhosas",
+        "type": "Vento",
+        "level": "orange",
+        "text": "Rajadas até 130 km/h.",
+        "startTime": "2026-11-07T18:00:00",
+        "endTime": "2026-11-08T00:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "MRM",
+        "areaLabel": "Madeira — Regiões Montanhosas",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-08T18:00:00.000Z",
+        "startTime": "2026-11-07T10:47:00",
+        "endTime": "2026-11-08T18:00:00",
         "relevant": true
       },
       {
-        "areaCode": "Madeira - Costa Sul",
-        "areaLabel": "Madeira - Costa Sul",
+        "areaCode": "MRM",
+        "areaLabel": "Madeira — Regiões Montanhosas",
         "type": "Vento",
         "level": "yellow",
-        "text": "Rajadas até 90 km/h.",
-        "startTime": "2026-11-08T09:00:00.000Z",
-        "endTime": "2026-11-08T21:00:00.000Z",
+        "text": "Rajadas até 110 km/h.",
+        "startTime": "2026-11-07T12:00:00",
+        "endTime": "2026-11-08T21:00:00",
         "relevant": true
       }
     ],
     "funchal": [
       {
-        "areaCode": "Madeira - Costa Sul",
-        "areaLabel": "Madeira - Costa Sul",
+        "areaCode": "MCS",
+        "areaLabel": "Funchal",
+        "type": "Precipitação",
+        "level": "orange",
+        "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
+        "startTime": "2026-11-07T18:00:00",
+        "endTime": "2026-11-08T03:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "MCS",
+        "areaLabel": "Funchal",
+        "type": "Vento",
+        "level": "orange",
+        "text": "Rajadas até 100 km/h.",
+        "startTime": "2026-11-07T18:00:00",
+        "endTime": "2026-11-08T00:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "MCS",
+        "areaLabel": "Funchal",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 4,5 metros.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       },
       {
-        "areaCode": "Madeira - Costa Sul",
-        "areaLabel": "Madeira - Costa Sul",
+        "areaCode": "MCS",
+        "areaLabel": "Funchal",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-08T18:00:00.000Z",
+        "startTime": "2026-11-07T10:47:00",
+        "endTime": "2026-11-08T18:00:00",
         "relevant": true
       },
       {
-        "areaCode": "Madeira - Costa Sul",
-        "areaLabel": "Madeira - Costa Sul",
+        "areaCode": "MCS",
+        "areaLabel": "Funchal",
         "type": "Vento",
         "level": "yellow",
         "text": "Rajadas até 90 km/h.",
-        "startTime": "2026-11-08T09:00:00.000Z",
-        "endTime": "2026-11-08T21:00:00.000Z",
+        "startTime": "2026-11-07T12:00:00",
+        "endTime": "2026-11-08T21:00:00",
         "relevant": true
       }
     ],
     "porto-novo": [
       {
-        "areaCode": "Lisboa",
+        "areaCode": "LSB",
         "areaLabel": "Lisboa",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T18:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
     "santa-cruz": [
       {
-        "areaCode": "Lisboa",
+        "areaCode": "LSB",
         "areaLabel": "Lisboa",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T18:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      }
+    ],
+    "consolacao": [
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
     "areia-branca": [
       {
-        "areaCode": "Lisboa",
-        "areaLabel": "Lisboa",
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T18:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
     "cave-ericeira": [
       {
-        "areaCode": "Lisboa",
+        "areaCode": "LSB",
         "areaLabel": "Lisboa",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T18:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
     "pescadores-ericeira": [
       {
-        "areaCode": "Lisboa",
+        "areaCode": "LSB",
         "areaLabel": "Lisboa",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T18:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
     "crazy-left": [
       {
-        "areaCode": "Lisboa",
+        "areaCode": "LSB",
         "areaLabel": "Lisboa",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T18:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
     "meco": [
       {
-        "areaCode": "Setúbal",
-        "areaLabel": "Setúbal",
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T18:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
     "lagoa-santo-andre": [
       {
-        "areaCode": "Beja",
-        "areaLabel": "Beja",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T00:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Setúbal",
+        "areaCode": "STB",
         "areaLabel": "Setúbal",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T18:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
     "lagoa-sancha": [
       {
-        "areaCode": "Beja",
-        "areaLabel": "Beja",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T00:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Setúbal",
+        "areaCode": "STB",
         "areaLabel": "Setúbal",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T18:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
     "pessegueiro": [
       {
-        "areaCode": "Beja",
-        "areaLabel": "Beja",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T00:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Setúbal",
+        "areaCode": "STB",
         "areaLabel": "Setúbal",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T18:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
     "falesia": [
       {
-        "areaCode": "Faro",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T00:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Na costa Sul, ondas de sueste com 2 metros.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-08T21:00:00.000Z",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-08T21:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-08T15:00:00",
+        "endTime": "2026-11-09T00:00:00",
         "relevant": true
       }
     ],
     "tres-irmaos": [
       {
-        "areaCode": "Faro",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T00:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Na costa Sul, ondas de sueste com 2 metros.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-08T21:00:00.000Z",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-08T21:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-08T15:00:00",
+        "endTime": "2026-11-09T00:00:00",
         "relevant": true
       }
     ],
     "canavial": [
       {
-        "areaCode": "Faro",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T00:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Na costa Sul, ondas de sueste com 2 metros.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-08T21:00:00.000Z",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-08T21:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-08T15:00:00",
+        "endTime": "2026-11-09T00:00:00",
         "relevant": true
       }
     ],
     "armacao-pera": [
       {
-        "areaCode": "Faro",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T00:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Na costa Sul, ondas de sueste com 2 metros.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-08T21:00:00.000Z",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-08T21:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-08T15:00:00",
+        "endTime": "2026-11-09T00:00:00",
         "relevant": true
       }
     ],
     "mareta": [
       {
-        "areaCode": "Faro",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T00:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Faro",
+        "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Na costa Sul, ondas de sueste com 2 metros.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-08T21:00:00.000Z",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-08T21:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-08T15:00:00",
+        "endTime": "2026-11-09T00:00:00",
         "relevant": true
       }
     ],
     "machico": [
       {
-        "areaCode": "Madeira - Costa Sul",
-        "areaLabel": "Madeira - Costa Sul",
+        "areaCode": "MCS",
+        "areaLabel": "Funchal",
+        "type": "Precipitação",
+        "level": "orange",
+        "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
+        "startTime": "2026-11-07T18:00:00",
+        "endTime": "2026-11-08T03:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "MCS",
+        "areaLabel": "Funchal",
+        "type": "Vento",
+        "level": "orange",
+        "text": "Rajadas até 100 km/h.",
+        "startTime": "2026-11-07T18:00:00",
+        "endTime": "2026-11-08T00:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "MCS",
+        "areaLabel": "Funchal",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 4,5 metros.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       },
       {
-        "areaCode": "Madeira - Costa Norte",
-        "areaLabel": "Madeira - Costa Norte",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas de noroeste com 4 a 4,5 metros.",
-        "startTime": "2026-11-09T12:00:00.000Z",
-        "endTime": "2026-11-10T00:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Costa Sul",
-        "areaLabel": "Madeira - Costa Sul",
+        "areaCode": "MCS",
+        "areaLabel": "Funchal",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-08T18:00:00.000Z",
+        "startTime": "2026-11-07T10:47:00",
+        "endTime": "2026-11-08T18:00:00",
         "relevant": true
       },
       {
-        "areaCode": "Madeira - Costa Sul",
-        "areaLabel": "Madeira - Costa Sul",
+        "areaCode": "MCS",
+        "areaLabel": "Funchal",
         "type": "Vento",
         "level": "yellow",
         "text": "Rajadas até 90 km/h.",
-        "startTime": "2026-11-08T09:00:00.000Z",
-        "endTime": "2026-11-08T21:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Costa Norte",
-        "areaLabel": "Madeira - Costa Norte",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-08T18:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Costa Norte",
-        "areaLabel": "Madeira - Costa Norte",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "Rajadas até 90 km/h.",
-        "startTime": "2026-11-08T09:00:00.000Z",
-        "endTime": "2026-11-08T21:00:00.000Z",
+        "startTime": "2026-11-07T12:00:00",
+        "endTime": "2026-11-08T21:00:00",
         "relevant": true
       }
     ],
     "seixal-madeira": [
       {
-        "areaCode": "Madeira - Regiões Montanhosas",
-        "areaLabel": "Madeira - Regiões Montanhosas",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "Rajadas até 110 km/h.",
-        "startTime": "2026-11-08T09:00:00.000Z",
-        "endTime": "2026-11-08T21:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Regiões Montanhosas",
-        "areaLabel": "Madeira - Regiões Montanhosas",
+        "areaCode": "MCN",
+        "areaLabel": "Madeira — Costa Norte",
         "type": "Precipitação",
-        "level": "yellow",
+        "level": "orange",
         "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-08T18:00:00.000Z",
+        "startTime": "2026-11-07T18:00:00",
+        "endTime": "2026-11-08T03:00:00",
         "relevant": true
       },
       {
-        "areaCode": "Madeira - Costa Norte",
-        "areaLabel": "Madeira - Costa Norte",
+        "areaCode": "MCN",
+        "areaLabel": "Madeira — Costa Norte",
+        "type": "Vento",
+        "level": "orange",
+        "text": "Rajadas até 100 km/h.",
+        "startTime": "2026-11-07T18:00:00",
+        "endTime": "2026-11-08T00:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "MCN",
+        "areaLabel": "Madeira — Costa Norte",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de noroeste com 4 a 4,5 metros.",
-        "startTime": "2026-11-09T12:00:00.000Z",
-        "endTime": "2026-11-10T00:00:00.000Z",
+        "startTime": "2026-11-09T12:00:00",
+        "endTime": "2026-11-10T00:00:00",
         "relevant": true
       },
       {
-        "areaCode": "Madeira - Costa Norte",
-        "areaLabel": "Madeira - Costa Norte",
+        "areaCode": "MCN",
+        "areaLabel": "Madeira — Costa Norte",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-08T18:00:00.000Z",
+        "startTime": "2026-11-07T12:00:00",
+        "endTime": "2026-11-08T18:00:00",
         "relevant": true
       },
       {
-        "areaCode": "Madeira - Costa Norte",
-        "areaLabel": "Madeira - Costa Norte",
+        "areaCode": "MCN",
+        "areaLabel": "Madeira — Costa Norte",
         "type": "Vento",
         "level": "yellow",
         "text": "Rajadas até 90 km/h.",
-        "startTime": "2026-11-08T09:00:00.000Z",
-        "endTime": "2026-11-08T21:00:00.000Z",
+        "startTime": "2026-11-07T12:00:00",
+        "endTime": "2026-11-08T21:00:00",
+        "relevant": true
+      }
+    ],
+    "ponta-pargo": [
+      {
+        "areaCode": "MCN",
+        "areaLabel": "Madeira — Costa Norte",
+        "type": "Precipitação",
+        "level": "orange",
+        "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
+        "startTime": "2026-11-07T18:00:00",
+        "endTime": "2026-11-08T03:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "MCN",
+        "areaLabel": "Madeira — Costa Norte",
+        "type": "Vento",
+        "level": "orange",
+        "text": "Rajadas até 100 km/h.",
+        "startTime": "2026-11-07T18:00:00",
+        "endTime": "2026-11-08T00:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "MCN",
+        "areaLabel": "Madeira — Costa Norte",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de noroeste com 4 a 4,5 metros.",
+        "startTime": "2026-11-09T12:00:00",
+        "endTime": "2026-11-10T00:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "MCN",
+        "areaLabel": "Madeira — Costa Norte",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
+        "startTime": "2026-11-07T12:00:00",
+        "endTime": "2026-11-08T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "MCN",
+        "areaLabel": "Madeira — Costa Norte",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Rajadas até 90 km/h.",
+        "startTime": "2026-11-07T12:00:00",
+        "endTime": "2026-11-08T21:00:00",
         "relevant": true
       }
     ],
     "madalena-mar": [
       {
-        "areaCode": "Madeira - Costa Sul",
-        "areaLabel": "Madeira - Costa Sul",
+        "areaCode": "MCN",
+        "areaLabel": "Madeira — Costa Norte",
+        "type": "Precipitação",
+        "level": "orange",
+        "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
+        "startTime": "2026-11-07T18:00:00",
+        "endTime": "2026-11-08T03:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "MCN",
+        "areaLabel": "Madeira — Costa Norte",
+        "type": "Vento",
+        "level": "orange",
+        "text": "Rajadas até 100 km/h.",
+        "startTime": "2026-11-07T18:00:00",
+        "endTime": "2026-11-08T00:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "MCN",
+        "areaLabel": "Madeira — Costa Norte",
         "type": "Agitação Marítima",
         "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 4,5 metros.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "text": "Ondas de noroeste com 4 a 4,5 metros.",
+        "startTime": "2026-11-09T12:00:00",
+        "endTime": "2026-11-10T00:00:00",
         "relevant": true
       },
       {
-        "areaCode": "Madeira - Regiões Montanhosas",
-        "areaLabel": "Madeira - Regiões Montanhosas",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "Rajadas até 110 km/h.",
-        "startTime": "2026-11-08T09:00:00.000Z",
-        "endTime": "2026-11-08T21:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Regiões Montanhosas",
-        "areaLabel": "Madeira - Regiões Montanhosas",
+        "areaCode": "MCN",
+        "areaLabel": "Madeira — Costa Norte",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-08T18:00:00.000Z",
+        "startTime": "2026-11-07T12:00:00",
+        "endTime": "2026-11-08T18:00:00",
         "relevant": true
       },
       {
-        "areaCode": "Madeira - Costa Sul",
-        "areaLabel": "Madeira - Costa Sul",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-08T18:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Madeira - Costa Sul",
-        "areaLabel": "Madeira - Costa Sul",
+        "areaCode": "MCN",
+        "areaLabel": "Madeira — Costa Norte",
         "type": "Vento",
         "level": "yellow",
         "text": "Rajadas até 90 km/h.",
-        "startTime": "2026-11-08T09:00:00.000Z",
-        "endTime": "2026-11-08T21:00:00.000Z",
+        "startTime": "2026-11-07T12:00:00",
+        "endTime": "2026-11-08T21:00:00",
         "relevant": true
       }
     ],
     "calhetas": [
       {
-        "areaCode": "Açores - Grupo Oriental",
-        "areaLabel": "Açores - Grupo Oriental",
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de noroeste (NW).",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "startTime": "2026-11-08T15:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       },
       {
-        "areaCode": "Açores - Grupo Oriental",
-        "areaLabel": "Açores - Grupo Oriental",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "Direção de noroeste (NW).",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Açores - Grupo Oriental",
-        "areaLabel": "Açores - Grupo Oriental",
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes FORTE.",
-        "startTime": "2026-11-07T09:00:00.000Z",
-        "endTime": "2026-11-07T22:00:00.000Z",
+        "startTime": "2026-11-07T09:00:00",
+        "endTime": "2026-11-07T22:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Direção de noroeste (NW).",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
     "ribeira-quente": [
       {
-        "areaCode": "Açores - Grupo Oriental",
-        "areaLabel": "Açores - Grupo Oriental",
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de noroeste (NW).",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "startTime": "2026-11-08T15:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       },
       {
-        "areaCode": "Açores - Grupo Oriental",
-        "areaLabel": "Açores - Grupo Oriental",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "Direção de noroeste (NW).",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Açores - Grupo Oriental",
-        "areaLabel": "Açores - Grupo Oriental",
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes FORTE.",
-        "startTime": "2026-11-07T09:00:00.000Z",
-        "endTime": "2026-11-07T22:00:00.000Z",
+        "startTime": "2026-11-07T09:00:00",
+        "endTime": "2026-11-07T22:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Direção de noroeste (NW).",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
     "formosa-santa-maria": [
       {
-        "areaCode": "Açores - Grupo Oriental",
-        "areaLabel": "Açores - Grupo Oriental",
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de noroeste (NW).",
-        "startTime": "2026-11-08T15:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
+        "startTime": "2026-11-08T15:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       },
       {
-        "areaCode": "Açores - Grupo Oriental",
-        "areaLabel": "Açores - Grupo Oriental",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "Direção de noroeste (NW).",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Açores - Grupo Oriental",
-        "areaLabel": "Açores - Grupo Oriental",
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes FORTE.",
-        "startTime": "2026-11-07T09:00:00.000Z",
-        "endTime": "2026-11-07T22:00:00.000Z",
+        "startTime": "2026-11-07T09:00:00",
+        "endTime": "2026-11-07T22:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "AOR",
+        "areaLabel": "Vila do Porto",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Direção de noroeste (NW).",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
     "porto-martins": [
       {
-        "areaCode": "Açores - Grupo Central",
-        "areaLabel": "Açores - Grupo Central",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "Direção de noroeste (NW).",
-        "startTime": "2026-11-08T06:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Açores - Grupo Central",
-        "areaLabel": "Açores - Grupo Central",
+        "areaCode": "ACE",
+        "areaLabel": "Angra do Heroísmo",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de noroeste (NW).",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-09T00:00:00.000Z",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-09T00:00:00",
         "relevant": true
       },
       {
-        "areaCode": "Açores - Grupo Central",
-        "areaLabel": "Açores - Grupo Central",
+        "areaCode": "ACE",
+        "areaLabel": "Angra do Heroísmo",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes FORTE.",
-        "startTime": "2026-11-07T08:00:00.000Z",
-        "endTime": "2026-11-07T22:00:00.000Z",
+        "startTime": "2026-11-07T08:00:00",
+        "endTime": "2026-11-07T22:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "ACE",
+        "areaLabel": "Angra do Heroísmo",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Direção de noroeste (NW).",
+        "startTime": "2026-11-08T06:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
     "cachorro-pico": [
       {
-        "areaCode": "Açores - Grupo Central",
-        "areaLabel": "Açores - Grupo Central",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "Direção de noroeste (NW).",
-        "startTime": "2026-11-08T06:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Açores - Grupo Central",
-        "areaLabel": "Açores - Grupo Central",
+        "areaCode": "ACE",
+        "areaLabel": "Angra do Heroísmo",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de noroeste (NW).",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-09T00:00:00.000Z",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-09T00:00:00",
         "relevant": true
       },
       {
-        "areaCode": "Açores - Grupo Central",
-        "areaLabel": "Açores - Grupo Central",
+        "areaCode": "ACE",
+        "areaLabel": "Angra do Heroísmo",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes FORTE.",
-        "startTime": "2026-11-07T08:00:00.000Z",
-        "endTime": "2026-11-07T22:00:00.000Z",
+        "startTime": "2026-11-07T08:00:00",
+        "endTime": "2026-11-07T22:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "ACE",
+        "areaLabel": "Angra do Heroísmo",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Direção de noroeste (NW).",
+        "startTime": "2026-11-08T06:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
     "faja-cubres": [
       {
-        "areaCode": "Açores - Grupo Central",
-        "areaLabel": "Açores - Grupo Central",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "Direção de noroeste (NW).",
-        "startTime": "2026-11-08T06:00:00.000Z",
-        "endTime": "2026-11-09T06:00:00.000Z",
-        "relevant": true
-      },
-      {
-        "areaCode": "Açores - Grupo Central",
-        "areaLabel": "Açores - Grupo Central",
+        "areaCode": "ACE",
+        "areaLabel": "Angra do Heroísmo",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de noroeste (NW).",
-        "startTime": "2026-11-08T12:00:00.000Z",
-        "endTime": "2026-11-09T00:00:00.000Z",
+        "startTime": "2026-11-08T12:00:00",
+        "endTime": "2026-11-09T00:00:00",
         "relevant": true
       },
       {
-        "areaCode": "Açores - Grupo Central",
-        "areaLabel": "Açores - Grupo Central",
+        "areaCode": "ACE",
+        "areaLabel": "Angra do Heroísmo",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes FORTE.",
-        "startTime": "2026-11-07T08:00:00.000Z",
-        "endTime": "2026-11-07T22:00:00.000Z",
+        "startTime": "2026-11-07T08:00:00",
+        "endTime": "2026-11-07T22:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "ACE",
+        "areaLabel": "Angra do Heroísmo",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Direção de noroeste (NW).",
+        "startTime": "2026-11-08T06:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ]
