@@ -1,11 +1,11 @@
 {
   "day": "20261107",
-  "fetchedAt": "2026-11-07T19:39:33.308Z",
+  "fetchedAt": "2026-11-07T20:06:22.795Z",
   "minPairs": 3,
   "minAccumulatedPairs": 10,
   "archive": {
     "windowDays": 30,
-    "pairHourCount": 525,
+    "pairHourCount": 526,
     "path": "buoy-coherence-archive.json"
   },
   "daily": {
@@ -728,7 +728,7 @@
       "suboptimal": []
     },
     "Alentejo": {
-      "spotCount": 11,
+      "spotCount": 13,
       "withObservedWave": 9,
       "bySource": {
         "ih-buoy": 9
@@ -888,7 +888,7 @@
       "suboptimal": []
     },
     "Carrapateira": {
-      "spotCount": 1,
+      "spotCount": 2,
       "withObservedWave": 0,
       "bySource": {},
       "audited": 0,
@@ -1277,7 +1277,7 @@
       "suboptimal": []
     }
   },
-  "regionsAuditedAt": "2026-11-07T19:39:48.912Z",
+  "regionsAuditedAt": "2026-11-07T20:09:00.646Z",
   "pairs": [
     {
       "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
@@ -1287,14 +1287,14 @@
       ],
       "distanceKm": 285.3,
       "ptSource": "wmo",
-      "n": 519,
+      "n": 520,
       "meanDeltaM": -0.4,
       "meanAbsDeltaM": 0.5,
       "maxAbsDeltaM": 2.8,
       "corr": 0.78,
       "verdict": "coherent",
       "firstHour": "2026-10-09T00",
-      "lastHour": "2026-11-07T17",
+      "lastHour": "2026-11-07T18",
       "hours": [
         {
           "6200084": 2.2300000190734863,
@@ -1355,6 +1355,11 @@
           "6200084": 1.409999966621399,
           "6200199": 0.673829972743988,
           "hour": "2026-11-07T17"
+        },
+        {
+          "6200084": 1.409999966621399,
+          "6200199": 0.6005899906158447,
+          "hour": "2026-11-07T18"
         }
       ]
     }
