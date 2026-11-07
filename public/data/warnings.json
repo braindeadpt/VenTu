@@ -1,6 +1,6 @@
 {
   "source": "ipma",
-  "fetchedAt": "2026-11-07T18:06:54.016Z",
+  "fetchedAt": "2026-11-07T19:39:34.141Z",
   "warnings": [
     {
       "areaCode": "MRM",
@@ -93,6 +93,16 @@
       "relevant": true
     },
     {
+      "areaCode": "PTO",
+      "areaLabel": "Porto",
+      "type": "Agitação Marítima",
+      "level": "yellow",
+      "text": "Ondas de sudoeste com 4 a 5 metros.",
+      "startTime": "2026-11-09T21:00:00",
+      "endTime": "2026-11-10T15:00:00",
+      "relevant": true
+    },
+    {
       "areaCode": "FAR",
       "areaLabel": "Faro",
       "type": "Agitação Marítima",
@@ -113,6 +123,16 @@
       "relevant": true
     },
     {
+      "areaCode": "VCT",
+      "areaLabel": "Viana do Castelo",
+      "type": "Agitação Marítima",
+      "level": "yellow",
+      "text": "Ondas de sudoeste com 4 a 5 metros.",
+      "startTime": "2026-11-09T21:00:00",
+      "endTime": "2026-11-10T15:00:00",
+      "relevant": true
+    },
+    {
       "areaCode": "MCN",
       "areaLabel": "Madeira — Costa Norte",
       "type": "Agitação Marítima",
@@ -120,6 +140,36 @@
       "text": "Ondas de noroeste com 4 a 4,5 metros.",
       "startTime": "2026-11-09T12:00:00",
       "endTime": "2026-11-10T00:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "AVR",
+      "areaLabel": "Aveiro",
+      "type": "Agitação Marítima",
+      "level": "yellow",
+      "text": "Ondas de sudoeste com 4 a 5 metros.",
+      "startTime": "2026-11-09T21:00:00",
+      "endTime": "2026-11-10T15:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "CBR",
+      "areaLabel": "Coimbra",
+      "type": "Agitação Marítima",
+      "level": "yellow",
+      "text": "Ondas de sudoeste com 4 a 5 metros.",
+      "startTime": "2026-11-09T21:00:00",
+      "endTime": "2026-11-10T15:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "BRG",
+      "areaLabel": "Braga",
+      "type": "Agitação Marítima",
+      "level": "yellow",
+      "text": "Ondas de sudoeste com 4 a 5 metros.",
+      "startTime": "2026-11-09T21:00:00",
+      "endTime": "2026-11-10T15:00:00",
       "relevant": true
     },
     {
@@ -198,7 +248,7 @@
       "type": "Precipitação",
       "level": "yellow",
       "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
-      "startTime": "2026-11-07T10:47:00",
+      "startTime": "2026-11-08T12:00:00",
       "endTime": "2026-11-08T18:00:00",
       "relevant": true
     },
@@ -213,12 +263,22 @@
       "relevant": true
     },
     {
+      "areaCode": "LRA",
+      "areaLabel": "Leiria",
+      "type": "Precipitação",
+      "level": "yellow",
+      "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+      "startTime": "2026-11-09T00:00:00",
+      "endTime": "2026-11-09T06:00:00",
+      "relevant": true
+    },
+    {
       "areaCode": "MCN",
       "areaLabel": "Madeira — Costa Norte",
       "type": "Precipitação",
       "level": "yellow",
       "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
-      "startTime": "2026-11-07T12:00:00",
+      "startTime": "2026-11-08T12:00:00",
       "endTime": "2026-11-08T18:00:00",
       "relevant": true
     },
@@ -243,6 +303,16 @@
       "relevant": true
     },
     {
+      "areaCode": "CBR",
+      "areaLabel": "Coimbra",
+      "type": "Precipitação",
+      "level": "yellow",
+      "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+      "startTime": "2026-11-09T00:00:00",
+      "endTime": "2026-11-09T06:00:00",
+      "relevant": true
+    },
+    {
       "areaCode": "PTG",
       "areaLabel": "Portalegre",
       "type": "Precipitação",
@@ -258,7 +328,7 @@
       "type": "Precipitação",
       "level": "yellow",
       "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
-      "startTime": "2026-11-07T12:00:00",
+      "startTime": "2026-11-08T12:00:00",
       "endTime": "2026-11-08T18:00:00",
       "relevant": true
     },
@@ -268,7 +338,7 @@
       "type": "Precipitação",
       "level": "yellow",
       "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
-      "startTime": "2026-11-07T10:47:00",
+      "startTime": "2026-11-08T12:00:00",
       "endTime": "2026-11-08T18:00:00",
       "relevant": true
     },
@@ -293,6 +363,16 @@
       "relevant": true
     },
     {
+      "areaCode": "FAR",
+      "areaLabel": "Faro",
+      "type": "Vento",
+      "level": "yellow",
+      "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
+      "startTime": "2026-11-08T21:00:00",
+      "endTime": "2026-11-09T06:00:00",
+      "relevant": true
+    },
+    {
       "areaCode": "AOR",
       "areaLabel": "Vila do Porto",
       "type": "Vento",
@@ -303,13 +383,43 @@
       "relevant": true
     },
     {
+      "areaCode": "STB",
+      "areaLabel": "Setúbal",
+      "type": "Vento",
+      "level": "yellow",
+      "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
+      "startTime": "2026-11-08T21:00:00",
+      "endTime": "2026-11-09T06:00:00",
+      "relevant": true
+    },
+    {
       "areaCode": "MRM",
       "areaLabel": "Madeira — Regiões Montanhosas",
       "type": "Vento",
       "level": "yellow",
       "text": "Rajadas até 110 km/h.",
-      "startTime": "2026-11-07T12:00:00",
+      "startTime": "2026-11-08T00:00:00",
       "endTime": "2026-11-08T21:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "LSB",
+      "areaLabel": "Lisboa",
+      "type": "Vento",
+      "level": "yellow",
+      "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
+      "startTime": "2026-11-08T21:00:00",
+      "endTime": "2026-11-09T06:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "LRA",
+      "areaLabel": "Leiria",
+      "type": "Vento",
+      "level": "yellow",
+      "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
+      "startTime": "2026-11-08T21:00:00",
+      "endTime": "2026-11-09T06:00:00",
       "relevant": true
     },
     {
@@ -318,8 +428,18 @@
       "type": "Vento",
       "level": "yellow",
       "text": "Rajadas até 90 km/h.",
-      "startTime": "2026-11-07T12:00:00",
+      "startTime": "2026-11-08T00:00:00",
       "endTime": "2026-11-08T21:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "BJA",
+      "areaLabel": "Beja",
+      "type": "Vento",
+      "level": "yellow",
+      "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
+      "startTime": "2026-11-08T21:00:00",
+      "endTime": "2026-11-09T06:00:00",
       "relevant": true
     },
     {
@@ -328,7 +448,7 @@
       "type": "Vento",
       "level": "yellow",
       "text": "Rajadas até 90 km/h.",
-      "startTime": "2026-11-07T12:00:00",
+      "startTime": "2026-11-08T00:00:00",
       "endTime": "2026-11-08T21:00:00",
       "relevant": true
     },
@@ -338,12 +458,690 @@
       "type": "Vento",
       "level": "yellow",
       "text": "Rajadas até 90 km/h.",
-      "startTime": "2026-11-07T12:00:00",
+      "startTime": "2026-11-08T00:00:00",
       "endTime": "2026-11-08T21:00:00",
       "relevant": true
     }
   ],
   "spotWarnings": {
+    "moledo": [
+      {
+        "areaCode": "VCT",
+        "areaLabel": "Viana do Castelo",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-09T21:00:00",
+        "endTime": "2026-11-10T15:00:00",
+        "relevant": true
+      }
+    ],
+    "vila-praia-ancora": [
+      {
+        "areaCode": "VCT",
+        "areaLabel": "Viana do Castelo",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-09T21:00:00",
+        "endTime": "2026-11-10T15:00:00",
+        "relevant": true
+      }
+    ],
+    "afife": [
+      {
+        "areaCode": "VCT",
+        "areaLabel": "Viana do Castelo",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-09T21:00:00",
+        "endTime": "2026-11-10T15:00:00",
+        "relevant": true
+      }
+    ],
+    "amorosa": [
+      {
+        "areaCode": "VCT",
+        "areaLabel": "Viana do Castelo",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-09T21:00:00",
+        "endTime": "2026-11-10T15:00:00",
+        "relevant": true
+      }
+    ],
+    "cabedelo": [
+      {
+        "areaCode": "VCT",
+        "areaLabel": "Viana do Castelo",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-09T21:00:00",
+        "endTime": "2026-11-10T15:00:00",
+        "relevant": true
+      }
+    ],
+    "foil-cabedelo": [
+      {
+        "areaCode": "VCT",
+        "areaLabel": "Viana do Castelo",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-09T21:00:00",
+        "endTime": "2026-11-10T15:00:00",
+        "relevant": true
+      }
+    ],
+    "cabedelo-wakepark": [
+      {
+        "areaCode": "VCT",
+        "areaLabel": "Viana do Castelo",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-09T21:00:00",
+        "endTime": "2026-11-10T15:00:00",
+        "relevant": true
+      }
+    ],
+    "rodanho": [
+      {
+        "areaCode": "VCT",
+        "areaLabel": "Viana do Castelo",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-09T21:00:00",
+        "endTime": "2026-11-10T15:00:00",
+        "relevant": true
+      }
+    ],
+    "esposende": [
+      {
+        "areaCode": "VCT",
+        "areaLabel": "Viana do Castelo",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-09T21:00:00",
+        "endTime": "2026-11-10T15:00:00",
+        "relevant": true
+      }
+    ],
+    "esposende-praia": [
+      {
+        "areaCode": "VCT",
+        "areaLabel": "Viana do Castelo",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-09T21:00:00",
+        "endTime": "2026-11-10T15:00:00",
+        "relevant": true
+      }
+    ],
+    "fao": [
+      {
+        "areaCode": "VCT",
+        "areaLabel": "Viana do Castelo",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-09T21:00:00",
+        "endTime": "2026-11-10T15:00:00",
+        "relevant": true
+      }
+    ],
+    "apulia": [
+      {
+        "areaCode": "VCT",
+        "areaLabel": "Viana do Castelo",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-09T21:00:00",
+        "endTime": "2026-11-10T15:00:00",
+        "relevant": true
+      }
+    ],
+    "azurara": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-09T21:00:00",
+        "endTime": "2026-11-10T15:00:00",
+        "relevant": true
+      }
+    ],
+    "arvore": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-09T21:00:00",
+        "endTime": "2026-11-10T15:00:00",
+        "relevant": true
+      }
+    ],
+    "leca-palmeira": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-09T21:00:00",
+        "endTime": "2026-11-10T15:00:00",
+        "relevant": true
+      }
+    ],
+    "matosinhos": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-09T21:00:00",
+        "endTime": "2026-11-10T15:00:00",
+        "relevant": true
+      }
+    ],
+    "cabedelo-douro": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-09T21:00:00",
+        "endTime": "2026-11-10T15:00:00",
+        "relevant": true
+      }
+    ],
+    "marina-afurada-foil": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-09T21:00:00",
+        "endTime": "2026-11-10T15:00:00",
+        "relevant": true
+      }
+    ],
+    "praia-da-lomba": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-09T21:00:00",
+        "endTime": "2026-11-10T15:00:00",
+        "relevant": true
+      }
+    ],
+    "salgueiros": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-09T21:00:00",
+        "endTime": "2026-11-10T15:00:00",
+        "relevant": true
+      }
+    ],
+    "sereia-costa-verde": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-09T21:00:00",
+        "endTime": "2026-11-10T15:00:00",
+        "relevant": true
+      }
+    ],
+    "canide-sul": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-09T21:00:00",
+        "endTime": "2026-11-10T15:00:00",
+        "relevant": true
+      }
+    ],
+    "aguda": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-09T21:00:00",
+        "endTime": "2026-11-10T15:00:00",
+        "relevant": true
+      }
+    ],
+    "espinho": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-09T21:00:00",
+        "endTime": "2026-11-10T15:00:00",
+        "relevant": true
+      }
+    ],
+    "praia-37": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-09T21:00:00",
+        "endTime": "2026-11-10T15:00:00",
+        "relevant": true
+      }
+    ],
+    "bairro-piscatorio": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-09T21:00:00",
+        "endTime": "2026-11-10T15:00:00",
+        "relevant": true
+      }
+    ],
+    "paramos": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-09T21:00:00",
+        "endTime": "2026-11-10T15:00:00",
+        "relevant": true
+      }
+    ],
+    "barrinha-esmoriz": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-09T21:00:00",
+        "endTime": "2026-11-10T15:00:00",
+        "relevant": true
+      }
+    ],
+    "esmoriz": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-09T21:00:00",
+        "endTime": "2026-11-10T15:00:00",
+        "relevant": true
+      }
+    ],
+    "cortegaca": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-09T21:00:00",
+        "endTime": "2026-11-10T15:00:00",
+        "relevant": true
+      }
+    ],
+    "cortegaca-sul": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-09T21:00:00",
+        "endTime": "2026-11-10T15:00:00",
+        "relevant": true
+      }
+    ],
+    "maceda": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-09T21:00:00",
+        "endTime": "2026-11-10T15:00:00",
+        "relevant": true
+      }
+    ],
+    "murtosa": [
+      {
+        "areaCode": "AVR",
+        "areaLabel": "Aveiro",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-09T21:00:00",
+        "endTime": "2026-11-10T15:00:00",
+        "relevant": true
+      }
+    ],
+    "ria-torreira": [
+      {
+        "areaCode": "AVR",
+        "areaLabel": "Aveiro",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-09T21:00:00",
+        "endTime": "2026-11-10T15:00:00",
+        "relevant": true
+      }
+    ],
+    "praia-torreira": [
+      {
+        "areaCode": "AVR",
+        "areaLabel": "Aveiro",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-09T21:00:00",
+        "endTime": "2026-11-10T15:00:00",
+        "relevant": true
+      }
+    ],
+    "muranzel": [
+      {
+        "areaCode": "AVR",
+        "areaLabel": "Aveiro",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-09T21:00:00",
+        "endTime": "2026-11-10T15:00:00",
+        "relevant": true
+      }
+    ],
+    "furadouro": [
+      {
+        "areaCode": "AVR",
+        "areaLabel": "Aveiro",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-09T21:00:00",
+        "endTime": "2026-11-10T15:00:00",
+        "relevant": true
+      }
+    ],
+    "sao-jacinto": [
+      {
+        "areaCode": "AVR",
+        "areaLabel": "Aveiro",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-09T21:00:00",
+        "endTime": "2026-11-10T15:00:00",
+        "relevant": true
+      }
+    ],
+    "costa-nova": [
+      {
+        "areaCode": "AVR",
+        "areaLabel": "Aveiro",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-09T21:00:00",
+        "endTime": "2026-11-10T15:00:00",
+        "relevant": true
+      }
+    ],
+    "tocha": [
+      {
+        "areaCode": "AVR",
+        "areaLabel": "Aveiro",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-09T21:00:00",
+        "endTime": "2026-11-10T15:00:00",
+        "relevant": true
+      }
+    ],
+    "quiaios": [
+      {
+        "areaCode": "CBR",
+        "areaLabel": "Coimbra",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-09T21:00:00",
+        "endTime": "2026-11-10T15:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "CBR",
+        "areaLabel": "Coimbra",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-09T00:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      }
+    ],
+    "buarcos": [
+      {
+        "areaCode": "CBR",
+        "areaLabel": "Coimbra",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-09T21:00:00",
+        "endTime": "2026-11-10T15:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "CBR",
+        "areaLabel": "Coimbra",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-09T00:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      }
+    ],
+    "figueira-foz": [
+      {
+        "areaCode": "CBR",
+        "areaLabel": "Coimbra",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-09T21:00:00",
+        "endTime": "2026-11-10T15:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "CBR",
+        "areaLabel": "Coimbra",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-09T00:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      }
+    ],
+    "cova-gala-sul": [
+      {
+        "areaCode": "CBR",
+        "areaLabel": "Coimbra",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-09T21:00:00",
+        "endTime": "2026-11-10T15:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "CBR",
+        "areaLabel": "Coimbra",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-09T00:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      }
+    ],
+    "leirosa": [
+      {
+        "areaCode": "LRA",
+        "areaLabel": "Leiria",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-09T00:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LRA",
+        "areaLabel": "Leiria",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      }
+    ],
+    "praia-da-vieira": [
+      {
+        "areaCode": "LRA",
+        "areaLabel": "Leiria",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-09T00:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LRA",
+        "areaLabel": "Leiria",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      }
+    ],
+    "sao-pedro-moel": [
+      {
+        "areaCode": "LRA",
+        "areaLabel": "Leiria",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-09T00:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LRA",
+        "areaLabel": "Leiria",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      }
+    ],
+    "castelo-bode": [
+      {
+        "areaCode": "LRA",
+        "areaLabel": "Leiria",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-09T00:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LRA",
+        "areaLabel": "Leiria",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      }
+    ],
+    "nazare": [
+      {
+        "areaCode": "LRA",
+        "areaLabel": "Leiria",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-09T00:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LRA",
+        "areaLabel": "Leiria",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      }
+    ],
     "foz-arelho": [
       {
         "areaCode": "STM",
@@ -510,6 +1308,16 @@
         "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
       }
     ],
     "coxos": [
@@ -520,6 +1328,16 @@
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
         "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
+        "startTime": "2026-11-08T21:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -534,6 +1352,16 @@
         "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
       }
     ],
     "empa": [
@@ -544,6 +1372,16 @@
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
         "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
+        "startTime": "2026-11-08T21:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -558,6 +1396,16 @@
         "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
       }
     ],
     "calada": [
@@ -568,6 +1416,16 @@
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
         "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
+        "startTime": "2026-11-08T21:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -582,6 +1440,16 @@
         "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
       }
     ],
     "sao-sebastiao": [
@@ -592,6 +1460,16 @@
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
         "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
+        "startTime": "2026-11-08T21:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -606,6 +1484,16 @@
         "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
       }
     ],
     "praia-sul-ericeira": [
@@ -616,6 +1504,16 @@
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
         "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
+        "startTime": "2026-11-08T21:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -630,6 +1528,16 @@
         "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
       }
     ],
     "sao-juliao": [
@@ -640,6 +1548,16 @@
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
         "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
+        "startTime": "2026-11-08T21:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -654,6 +1572,16 @@
         "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
       }
     ],
     "adraga": [
@@ -664,6 +1592,16 @@
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
         "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
+        "startTime": "2026-11-08T21:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -678,6 +1616,16 @@
         "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
       }
     ],
     "seixal-bay": [
@@ -688,6 +1636,16 @@
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
         "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
+        "startTime": "2026-11-08T21:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -766,6 +1724,16 @@
         "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
       }
     ],
     "carcavelos": [
@@ -776,6 +1744,16 @@
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
         "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
+        "startTime": "2026-11-08T21:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -790,6 +1768,16 @@
         "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
       }
     ],
     "sao-joao-caparica": [
@@ -800,6 +1788,16 @@
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
         "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
+        "startTime": "2026-11-08T21:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -814,6 +1812,16 @@
         "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
       }
     ],
     "fonte-telha": [
@@ -824,6 +1832,16 @@
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
         "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
+        "startTime": "2026-11-08T21:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -838,6 +1856,16 @@
         "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
       }
     ],
     "trafaria": [
@@ -848,6 +1876,16 @@
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
         "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
+        "startTime": "2026-11-08T21:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -862,6 +1900,16 @@
         "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
       }
     ],
     "praia-da-rainha": [
@@ -872,6 +1920,16 @@
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
         "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
+        "startTime": "2026-11-08T21:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -918,6 +1976,16 @@
         "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
       }
     ],
     "foil-lagoa-albufeira": [
@@ -928,6 +1996,16 @@
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
         "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
+        "startTime": "2026-11-08T21:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -942,6 +2020,16 @@
         "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
       }
     ],
     "troia": [
@@ -952,6 +2040,16 @@
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
         "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
+        "startTime": "2026-11-08T21:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -966,6 +2064,16 @@
         "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
+      },
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
       }
     ],
     "carvalhal-comporta": [
@@ -976,6 +2084,16 @@
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
         "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
+        "startTime": "2026-11-08T21:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -990,6 +2108,28 @@
         "startTime": "2026-11-08T15:00:00",
         "endTime": "2026-11-09T00:00:00",
         "relevant": true
+      },
+      {
+        "areaCode": "BJA",
+        "areaLabel": "Beja",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      }
+    ],
+    "ilha-do-ermal": [
+      {
+        "areaCode": "BRG",
+        "areaLabel": "Braga",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-09T21:00:00",
+        "endTime": "2026-11-10T15:00:00",
+        "relevant": true
       }
     ],
     "melides": [
@@ -1000,6 +2140,16 @@
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
         "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
+        "startTime": "2026-11-08T21:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -1014,6 +2164,16 @@
         "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
+      },
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
       }
     ],
     "vale-figueiros-sines": [
@@ -1024,6 +2184,16 @@
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
         "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
+        "startTime": "2026-11-08T21:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -1068,6 +2238,16 @@
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
         "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
+        "startTime": "2026-11-08T21:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -1146,6 +2326,16 @@
         "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
+      },
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
       }
     ],
     "milicias": [
@@ -1190,6 +2380,16 @@
         "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
+      },
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
       }
     ],
     "alteirinhos": [
@@ -1211,6 +2411,16 @@
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
         "startTime": "2026-11-08T15:00:00",
         "endTime": "2026-11-09T00:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
@@ -1266,6 +2476,16 @@
         "startTime": "2026-11-08T15:00:00",
         "endTime": "2026-11-09T00:00:00",
         "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
       }
     ],
     "carvalhal": [
@@ -1287,6 +2507,16 @@
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
         "startTime": "2026-11-08T15:00:00",
         "endTime": "2026-11-09T00:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
@@ -1310,6 +2540,16 @@
         "startTime": "2026-11-08T15:00:00",
         "endTime": "2026-11-09T00:00:00",
         "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
       }
     ],
     "amoreira": [
@@ -1331,6 +2571,16 @@
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
         "startTime": "2026-11-08T15:00:00",
         "endTime": "2026-11-09T00:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
@@ -1354,6 +2604,16 @@
         "startTime": "2026-11-08T15:00:00",
         "endTime": "2026-11-09T00:00:00",
         "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
       }
     ],
     "arrifana": [
@@ -1375,6 +2635,16 @@
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
         "startTime": "2026-11-08T15:00:00",
         "endTime": "2026-11-09T00:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
@@ -1398,6 +2668,16 @@
         "startTime": "2026-11-08T15:00:00",
         "endTime": "2026-11-09T00:00:00",
         "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
       }
     ],
     "bordeira": [
@@ -1419,6 +2699,16 @@
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
         "startTime": "2026-11-08T15:00:00",
         "endTime": "2026-11-09T00:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
@@ -1442,6 +2732,16 @@
         "startTime": "2026-11-08T15:00:00",
         "endTime": "2026-11-09T00:00:00",
         "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
       }
     ],
     "barriga": [
@@ -1463,6 +2763,16 @@
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
         "startTime": "2026-11-08T15:00:00",
         "endTime": "2026-11-09T00:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
@@ -1486,6 +2796,16 @@
         "startTime": "2026-11-08T15:00:00",
         "endTime": "2026-11-09T00:00:00",
         "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
       }
     ],
     "luz": [
@@ -1507,6 +2827,16 @@
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
         "startTime": "2026-11-08T15:00:00",
         "endTime": "2026-11-09T00:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
@@ -1530,6 +2860,16 @@
         "startTime": "2026-11-08T15:00:00",
         "endTime": "2026-11-09T00:00:00",
         "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
       }
     ],
     "salema": [
@@ -1551,6 +2891,16 @@
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
         "startTime": "2026-11-08T15:00:00",
         "endTime": "2026-11-09T00:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
@@ -1574,6 +2924,16 @@
         "startTime": "2026-11-08T15:00:00",
         "endTime": "2026-11-09T00:00:00",
         "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
       }
     ],
     "ferragudo": [
@@ -1595,6 +2955,16 @@
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
         "startTime": "2026-11-08T15:00:00",
         "endTime": "2026-11-09T00:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
@@ -1618,6 +2988,16 @@
         "startTime": "2026-11-08T15:00:00",
         "endTime": "2026-11-09T00:00:00",
         "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
       }
     ],
     "monte-gordo": [
@@ -1639,6 +3019,16 @@
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
         "startTime": "2026-11-08T15:00:00",
         "endTime": "2026-11-09T00:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
@@ -1662,6 +3052,16 @@
         "startTime": "2026-11-08T15:00:00",
         "endTime": "2026-11-09T00:00:00",
         "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
       }
     ],
     "altura": [
@@ -1683,6 +3083,16 @@
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
         "startTime": "2026-11-08T15:00:00",
         "endTime": "2026-11-09T00:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
@@ -1706,6 +3116,16 @@
         "startTime": "2026-11-08T15:00:00",
         "endTime": "2026-11-09T00:00:00",
         "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
       }
     ],
     "alvor": [
@@ -1727,6 +3147,16 @@
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
         "startTime": "2026-11-08T15:00:00",
         "endTime": "2026-11-09T00:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
@@ -1750,6 +3180,16 @@
         "startTime": "2026-11-08T15:00:00",
         "endTime": "2026-11-09T00:00:00",
         "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
       }
     ],
     "lagos": [
@@ -1771,6 +3211,16 @@
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
         "startTime": "2026-11-08T15:00:00",
         "endTime": "2026-11-09T00:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
@@ -1794,6 +3244,16 @@
         "startTime": "2026-11-08T15:00:00",
         "endTime": "2026-11-09T00:00:00",
         "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
       }
     ],
     "beliche": [
@@ -1815,6 +3275,16 @@
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
         "startTime": "2026-11-08T15:00:00",
         "endTime": "2026-11-09T00:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
@@ -1838,6 +3308,16 @@
         "startTime": "2026-11-08T15:00:00",
         "endTime": "2026-11-09T00:00:00",
         "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
       }
     ],
     "barrinha-faro": [
@@ -1859,6 +3339,16 @@
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
         "startTime": "2026-11-08T15:00:00",
         "endTime": "2026-11-09T00:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
@@ -1882,6 +3372,16 @@
         "startTime": "2026-11-08T15:00:00",
         "endTime": "2026-11-09T00:00:00",
         "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
       }
     ],
     "ilha-faro": [
@@ -1903,6 +3403,16 @@
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
         "startTime": "2026-11-08T15:00:00",
         "endTime": "2026-11-09T00:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
@@ -1926,6 +3436,16 @@
         "startTime": "2026-11-08T15:00:00",
         "endTime": "2026-11-09T00:00:00",
         "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
       }
     ],
     "culatra": [
@@ -1947,6 +3467,16 @@
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
         "startTime": "2026-11-08T15:00:00",
         "endTime": "2026-11-09T00:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
@@ -1970,6 +3500,16 @@
         "startTime": "2026-11-08T15:00:00",
         "endTime": "2026-11-09T00:00:00",
         "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
       }
     ],
     "ilha-tavira": [
@@ -1991,6 +3531,16 @@
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
         "startTime": "2026-11-08T15:00:00",
         "endTime": "2026-11-09T00:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
@@ -2014,6 +3564,16 @@
         "startTime": "2026-11-08T15:00:00",
         "endTime": "2026-11-09T00:00:00",
         "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
       }
     ],
     "cacela-velha": [
@@ -2035,6 +3595,16 @@
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
         "startTime": "2026-11-08T15:00:00",
         "endTime": "2026-11-09T00:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
@@ -2058,6 +3628,16 @@
         "startTime": "2026-11-08T15:00:00",
         "endTime": "2026-11-09T00:00:00",
         "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
       }
     ],
     "tonel": [
@@ -2079,6 +3659,16 @@
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
         "startTime": "2026-11-08T15:00:00",
         "endTime": "2026-11-09T00:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
@@ -2183,7 +3773,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
-        "startTime": "2026-11-07T12:00:00",
+        "startTime": "2026-11-08T12:00:00",
         "endTime": "2026-11-08T18:00:00",
         "relevant": true
       },
@@ -2193,7 +3783,7 @@
         "type": "Vento",
         "level": "yellow",
         "text": "Rajadas até 90 km/h.",
-        "startTime": "2026-11-07T12:00:00",
+        "startTime": "2026-11-08T00:00:00",
         "endTime": "2026-11-08T21:00:00",
         "relevant": true
       }
@@ -2225,7 +3815,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
-        "startTime": "2026-11-07T10:47:00",
+        "startTime": "2026-11-08T12:00:00",
         "endTime": "2026-11-08T18:00:00",
         "relevant": true
       },
@@ -2235,7 +3825,7 @@
         "type": "Vento",
         "level": "yellow",
         "text": "Rajadas até 110 km/h.",
-        "startTime": "2026-11-07T12:00:00",
+        "startTime": "2026-11-08T00:00:00",
         "endTime": "2026-11-08T21:00:00",
         "relevant": true
       }
@@ -2277,7 +3867,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
-        "startTime": "2026-11-07T12:00:00",
+        "startTime": "2026-11-08T12:00:00",
         "endTime": "2026-11-08T18:00:00",
         "relevant": true
       },
@@ -2287,7 +3877,7 @@
         "type": "Vento",
         "level": "yellow",
         "text": "Rajadas até 90 km/h.",
-        "startTime": "2026-11-07T12:00:00",
+        "startTime": "2026-11-08T00:00:00",
         "endTime": "2026-11-08T21:00:00",
         "relevant": true
       }
@@ -2329,7 +3919,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
-        "startTime": "2026-11-07T12:00:00",
+        "startTime": "2026-11-08T12:00:00",
         "endTime": "2026-11-08T18:00:00",
         "relevant": true
       },
@@ -2339,7 +3929,7 @@
         "type": "Vento",
         "level": "yellow",
         "text": "Rajadas até 90 km/h.",
-        "startTime": "2026-11-07T12:00:00",
+        "startTime": "2026-11-08T00:00:00",
         "endTime": "2026-11-08T21:00:00",
         "relevant": true
       }
@@ -2381,7 +3971,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
-        "startTime": "2026-11-07T10:47:00",
+        "startTime": "2026-11-08T12:00:00",
         "endTime": "2026-11-08T18:00:00",
         "relevant": true
       },
@@ -2391,7 +3981,7 @@
         "type": "Vento",
         "level": "yellow",
         "text": "Rajadas até 90 km/h.",
-        "startTime": "2026-11-07T12:00:00",
+        "startTime": "2026-11-08T00:00:00",
         "endTime": "2026-11-08T21:00:00",
         "relevant": true
       }
@@ -2423,7 +4013,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
-        "startTime": "2026-11-07T10:47:00",
+        "startTime": "2026-11-08T12:00:00",
         "endTime": "2026-11-08T18:00:00",
         "relevant": true
       },
@@ -2433,7 +4023,7 @@
         "type": "Vento",
         "level": "yellow",
         "text": "Rajadas até 110 km/h.",
-        "startTime": "2026-11-07T12:00:00",
+        "startTime": "2026-11-08T00:00:00",
         "endTime": "2026-11-08T21:00:00",
         "relevant": true
       }
@@ -2475,7 +4065,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
-        "startTime": "2026-11-07T10:47:00",
+        "startTime": "2026-11-08T12:00:00",
         "endTime": "2026-11-08T18:00:00",
         "relevant": true
       },
@@ -2485,8 +4075,32 @@
         "type": "Vento",
         "level": "yellow",
         "text": "Rajadas até 90 km/h.",
-        "startTime": "2026-11-07T12:00:00",
+        "startTime": "2026-11-08T00:00:00",
         "endTime": "2026-11-08T21:00:00",
+        "relevant": true
+      }
+    ],
+    "barra-aveiro": [
+      {
+        "areaCode": "AVR",
+        "areaLabel": "Aveiro",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-09T21:00:00",
+        "endTime": "2026-11-10T15:00:00",
+        "relevant": true
+      }
+    ],
+    "vila-cha": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-09T21:00:00",
+        "endTime": "2026-11-10T15:00:00",
         "relevant": true
       }
     ],
@@ -2500,6 +4114,16 @@
         "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
       }
     ],
     "santa-cruz": [
@@ -2510,6 +4134,16 @@
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
         "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
+        "startTime": "2026-11-08T21:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -2538,6 +4172,28 @@
         "relevant": true
       }
     ],
+    "sao-martinho-porto": [
+      {
+        "areaCode": "LRA",
+        "areaLabel": "Leiria",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
+        "startTime": "2026-11-09T00:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LRA",
+        "areaLabel": "Leiria",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      }
+    ],
     "cave-ericeira": [
       {
         "areaCode": "LSB",
@@ -2546,6 +4202,16 @@
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
         "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
+        "startTime": "2026-11-08T21:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -2560,6 +4226,16 @@
         "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
       }
     ],
     "crazy-left": [
@@ -2570,6 +4246,16 @@
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
         "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
+        "startTime": "2026-11-08T21:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -2584,6 +4270,16 @@
         "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
       }
     ],
     "lagoa-santo-andre": [
@@ -2594,6 +4290,16 @@
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
         "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
+        "startTime": "2026-11-08T21:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -2608,6 +4314,16 @@
         "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
+      },
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
       }
     ],
     "pessegueiro": [
@@ -2618,6 +4334,16 @@
         "level": "yellow",
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
         "startTime": "2026-11-08T18:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
+        "startTime": "2026-11-08T21:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -2642,6 +4368,16 @@
         "startTime": "2026-11-08T15:00:00",
         "endTime": "2026-11-09T00:00:00",
         "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
       }
     ],
     "tres-irmaos": [
@@ -2663,6 +4399,16 @@
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
         "startTime": "2026-11-08T15:00:00",
         "endTime": "2026-11-09T00:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
@@ -2686,6 +4432,16 @@
         "startTime": "2026-11-08T15:00:00",
         "endTime": "2026-11-09T00:00:00",
         "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
       }
     ],
     "armacao-pera": [
@@ -2708,6 +4464,16 @@
         "startTime": "2026-11-08T15:00:00",
         "endTime": "2026-11-09T00:00:00",
         "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
+        "relevant": true
       }
     ],
     "mareta": [
@@ -2729,6 +4495,16 @@
         "text": "Períodos de chuva, por vezes fortes e acompanhados de trovoada.",
         "startTime": "2026-11-08T15:00:00",
         "endTime": "2026-11-09T00:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
+        "startTime": "2026-11-08T21:00:00",
+        "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
@@ -2769,7 +4545,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
-        "startTime": "2026-11-07T10:47:00",
+        "startTime": "2026-11-08T12:00:00",
         "endTime": "2026-11-08T18:00:00",
         "relevant": true
       },
@@ -2779,7 +4555,7 @@
         "type": "Vento",
         "level": "yellow",
         "text": "Rajadas até 90 km/h.",
-        "startTime": "2026-11-07T12:00:00",
+        "startTime": "2026-11-08T00:00:00",
         "endTime": "2026-11-08T21:00:00",
         "relevant": true
       }
@@ -2821,7 +4597,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
-        "startTime": "2026-11-07T12:00:00",
+        "startTime": "2026-11-08T12:00:00",
         "endTime": "2026-11-08T18:00:00",
         "relevant": true
       },
@@ -2831,7 +4607,7 @@
         "type": "Vento",
         "level": "yellow",
         "text": "Rajadas até 90 km/h.",
-        "startTime": "2026-11-07T12:00:00",
+        "startTime": "2026-11-08T00:00:00",
         "endTime": "2026-11-08T21:00:00",
         "relevant": true
       }
@@ -2873,7 +4649,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
-        "startTime": "2026-11-07T12:00:00",
+        "startTime": "2026-11-08T12:00:00",
         "endTime": "2026-11-08T18:00:00",
         "relevant": true
       },
@@ -2883,7 +4659,7 @@
         "type": "Vento",
         "level": "yellow",
         "text": "Rajadas até 90 km/h.",
-        "startTime": "2026-11-07T12:00:00",
+        "startTime": "2026-11-08T00:00:00",
         "endTime": "2026-11-08T21:00:00",
         "relevant": true
       }
@@ -2925,7 +4701,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
-        "startTime": "2026-11-07T12:00:00",
+        "startTime": "2026-11-08T12:00:00",
         "endTime": "2026-11-08T18:00:00",
         "relevant": true
       },
@@ -2935,7 +4711,7 @@
         "type": "Vento",
         "level": "yellow",
         "text": "Rajadas até 90 km/h.",
-        "startTime": "2026-11-07T12:00:00",
+        "startTime": "2026-11-08T00:00:00",
         "endTime": "2026-11-08T21:00:00",
         "relevant": true
       }
@@ -3129,6 +4905,30 @@
         "text": "Direção de noroeste (NW).",
         "startTime": "2026-11-08T06:00:00",
         "endTime": "2026-11-09T06:00:00",
+        "relevant": true
+      }
+    ],
+    "mindelo": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-09T21:00:00",
+        "endTime": "2026-11-10T15:00:00",
+        "relevant": true
+      }
+    ],
+    "aterro": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-09T21:00:00",
+        "endTime": "2026-11-10T15:00:00",
         "relevant": true
       }
     ]
