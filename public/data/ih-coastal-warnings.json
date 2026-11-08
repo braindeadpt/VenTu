@@ -6735,38 +6735,6 @@
       ]
     },
     {
-      "id": 1010774,
-      "ref": "ANAV NR 19/26",
-      "category": "BARRA DO DOURO ABERTA",
-      "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=f0207e74-3687-447a-8695-e7d9bc605305",
-      "source": "ih",
-      "collection": "nav_warning_local",
-      "polygons": [
-        [
-          [
-            -8.690287,
-            41.130832
-          ],
-          [
-            -8.690287,
-            41.147897
-          ],
-          [
-            -8.653046,
-            41.147897
-          ],
-          [
-            -8.653046,
-            41.130832
-          ],
-          [
-            -8.690287,
-            41.130832
-          ]
-        ]
-      ]
-    },
-    {
       "id": 1010786,
       "ref": "ANAV NR 3/26",
       "category": "BOIA AQ1 (LL 741.1) RETIRADA",
@@ -7834,7 +7802,6 @@
       1000201,
       1000202,
       1000709,
-      1010774,
       2018383
     ],
     "marina-afurada-foil": [
@@ -8493,7 +8460,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-11-08T14:06:59.241Z",
+  "fetchedAt": "2026-11-08T16:07:02.537Z",
   "sourceCollection": "nav_warning_coastal+nav_warning_local+orca_anavnet_point",
   "sourceUrl": "https://ogcapi.hidrografico.pt/collections/nav_warning_coastal"
 }
