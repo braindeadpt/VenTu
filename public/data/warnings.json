@@ -1,87 +1,7 @@
 {
   "source": "ipma",
-  "fetchedAt": "2026-11-08T00:06:31.009Z",
+  "fetchedAt": "2026-11-08T04:06:53.195Z",
   "warnings": [
-    {
-      "areaCode": "MRM",
-      "areaLabel": "Madeira — Regiões Montanhosas",
-      "type": "Precipitação",
-      "level": "orange",
-      "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
-      "startTime": "2026-11-07T18:00:00",
-      "endTime": "2026-11-08T03:00:00",
-      "relevant": true
-    },
-    {
-      "areaCode": "MCN",
-      "areaLabel": "Madeira — Costa Norte",
-      "type": "Precipitação",
-      "level": "orange",
-      "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
-      "startTime": "2026-11-07T18:00:00",
-      "endTime": "2026-11-08T03:00:00",
-      "relevant": true
-    },
-    {
-      "areaCode": "MPS",
-      "areaLabel": "Porto Santo",
-      "type": "Precipitação",
-      "level": "orange",
-      "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
-      "startTime": "2026-11-07T18:00:00",
-      "endTime": "2026-11-08T03:00:00",
-      "relevant": true
-    },
-    {
-      "areaCode": "MCS",
-      "areaLabel": "Funchal",
-      "type": "Precipitação",
-      "level": "orange",
-      "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
-      "startTime": "2026-11-07T18:00:00",
-      "endTime": "2026-11-08T03:00:00",
-      "relevant": true
-    },
-    {
-      "areaCode": "MRM",
-      "areaLabel": "Madeira — Regiões Montanhosas",
-      "type": "Vento",
-      "level": "orange",
-      "text": "Rajadas até 130 km/h.",
-      "startTime": "2026-11-07T18:00:00",
-      "endTime": "2026-11-08T00:00:00",
-      "relevant": true
-    },
-    {
-      "areaCode": "MCN",
-      "areaLabel": "Madeira — Costa Norte",
-      "type": "Vento",
-      "level": "orange",
-      "text": "Rajadas até 100 km/h.",
-      "startTime": "2026-11-07T18:00:00",
-      "endTime": "2026-11-08T00:00:00",
-      "relevant": true
-    },
-    {
-      "areaCode": "MPS",
-      "areaLabel": "Porto Santo",
-      "type": "Vento",
-      "level": "orange",
-      "text": "Rajadas até 100 km/h.",
-      "startTime": "2026-11-07T18:00:00",
-      "endTime": "2026-11-08T00:00:00",
-      "relevant": true
-    },
-    {
-      "areaCode": "MCS",
-      "areaLabel": "Funchal",
-      "type": "Vento",
-      "level": "orange",
-      "text": "Rajadas até 100 km/h.",
-      "startTime": "2026-11-07T18:00:00",
-      "endTime": "2026-11-08T00:00:00",
-      "relevant": true
-    },
     {
       "areaCode": "ACE",
       "areaLabel": "Angra do Heroísmo",
@@ -347,8 +267,8 @@
       "areaLabel": "Faro",
       "type": "Vento",
       "level": "yellow",
-      "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
-      "startTime": "2026-11-08T21:00:00",
+      "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+      "startTime": "2026-11-08T18:00:00",
       "endTime": "2026-11-09T06:00:00",
       "relevant": true
     },
@@ -367,8 +287,8 @@
       "areaLabel": "Setúbal",
       "type": "Vento",
       "level": "yellow",
-      "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
-      "startTime": "2026-11-08T21:00:00",
+      "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+      "startTime": "2026-11-08T18:00:00",
       "endTime": "2026-11-09T06:00:00",
       "relevant": true
     },
@@ -378,7 +298,7 @@
       "type": "Vento",
       "level": "yellow",
       "text": "Rajadas até 110 km/h.",
-      "startTime": "2026-11-08T00:00:00",
+      "startTime": "2026-11-08T09:00:00",
       "endTime": "2026-11-08T21:00:00",
       "relevant": true
     },
@@ -387,8 +307,8 @@
       "areaLabel": "Lisboa",
       "type": "Vento",
       "level": "yellow",
-      "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
-      "startTime": "2026-11-08T21:00:00",
+      "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+      "startTime": "2026-11-08T18:00:00",
       "endTime": "2026-11-09T06:00:00",
       "relevant": true
     },
@@ -397,8 +317,8 @@
       "areaLabel": "Leiria",
       "type": "Vento",
       "level": "yellow",
-      "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
-      "startTime": "2026-11-08T21:00:00",
+      "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+      "startTime": "2026-11-08T18:00:00",
       "endTime": "2026-11-09T06:00:00",
       "relevant": true
     },
@@ -408,7 +328,7 @@
       "type": "Vento",
       "level": "yellow",
       "text": "Rajadas até 90 km/h.",
-      "startTime": "2026-11-08T00:00:00",
+      "startTime": "2026-11-08T09:00:00",
       "endTime": "2026-11-08T21:00:00",
       "relevant": true
     },
@@ -417,8 +337,8 @@
       "areaLabel": "Beja",
       "type": "Vento",
       "level": "yellow",
-      "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
-      "startTime": "2026-11-08T21:00:00",
+      "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+      "startTime": "2026-11-08T18:00:00",
       "endTime": "2026-11-09T06:00:00",
       "relevant": true
     },
@@ -428,7 +348,7 @@
       "type": "Vento",
       "level": "yellow",
       "text": "Rajadas até 90 km/h.",
-      "startTime": "2026-11-08T00:00:00",
+      "startTime": "2026-11-08T09:00:00",
       "endTime": "2026-11-08T21:00:00",
       "relevant": true
     },
@@ -438,7 +358,7 @@
       "type": "Vento",
       "level": "yellow",
       "text": "Rajadas até 90 km/h.",
-      "startTime": "2026-11-08T00:00:00",
+      "startTime": "2026-11-08T09:00:00",
       "endTime": "2026-11-08T21:00:00",
       "relevant": true
     }
@@ -1028,8 +948,8 @@
         "areaLabel": "Leiria",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -1050,8 +970,8 @@
         "areaLabel": "Leiria",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -1072,8 +992,8 @@
         "areaLabel": "Leiria",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -1094,8 +1014,8 @@
         "areaLabel": "Leiria",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -1116,8 +1036,8 @@
         "areaLabel": "Leiria",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -1294,8 +1214,8 @@
         "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -1316,8 +1236,8 @@
         "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -1338,8 +1258,8 @@
         "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -1360,8 +1280,8 @@
         "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -1382,8 +1302,8 @@
         "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -1404,8 +1324,8 @@
         "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -1426,8 +1346,8 @@
         "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -1448,8 +1368,8 @@
         "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -1470,8 +1390,8 @@
         "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -1492,8 +1412,8 @@
         "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -1514,8 +1434,8 @@
         "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -1536,8 +1456,8 @@
         "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -1558,8 +1478,8 @@
         "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -1580,8 +1500,8 @@
         "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -1602,8 +1522,8 @@
         "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -1624,8 +1544,8 @@
         "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -1690,8 +1610,8 @@
         "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -1712,8 +1632,8 @@
         "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -1734,8 +1654,8 @@
         "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -1756,8 +1676,8 @@
         "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -1778,8 +1698,8 @@
         "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -1800,8 +1720,8 @@
         "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -1822,8 +1742,8 @@
         "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -1844,8 +1764,8 @@
         "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -1866,8 +1786,8 @@
         "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -1888,8 +1808,8 @@
         "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -1932,8 +1852,8 @@
         "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -1954,8 +1874,8 @@
         "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -1976,8 +1896,8 @@
         "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -1998,8 +1918,8 @@
         "areaLabel": "Setúbal",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -2020,8 +1940,8 @@
         "areaLabel": "Setúbal",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -2042,8 +1962,8 @@
         "areaLabel": "Setúbal",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -2064,8 +1984,8 @@
         "areaLabel": "Beja",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -2098,8 +2018,8 @@
         "areaLabel": "Setúbal",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -2120,8 +2040,8 @@
         "areaLabel": "Setúbal",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -2142,8 +2062,8 @@
         "areaLabel": "Setúbal",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -2186,8 +2106,8 @@
         "areaLabel": "Setúbal",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -2252,8 +2172,8 @@
         "areaLabel": "Setúbal",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -2296,8 +2216,8 @@
         "areaLabel": "Setúbal",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -2328,8 +2248,8 @@
         "areaLabel": "Faro",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -2382,8 +2302,8 @@
         "areaLabel": "Faro",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -2414,8 +2334,8 @@
         "areaLabel": "Faro",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -2446,8 +2366,8 @@
         "areaLabel": "Faro",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -2478,8 +2398,8 @@
         "areaLabel": "Faro",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -2510,8 +2430,8 @@
         "areaLabel": "Faro",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -2542,8 +2462,8 @@
         "areaLabel": "Faro",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -2574,8 +2494,8 @@
         "areaLabel": "Faro",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -2606,8 +2526,8 @@
         "areaLabel": "Faro",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -2638,8 +2558,8 @@
         "areaLabel": "Faro",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -2670,8 +2590,8 @@
         "areaLabel": "Faro",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -2702,8 +2622,8 @@
         "areaLabel": "Faro",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -2734,8 +2654,8 @@
         "areaLabel": "Faro",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -2766,8 +2686,8 @@
         "areaLabel": "Faro",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -2798,8 +2718,8 @@
         "areaLabel": "Faro",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -2830,8 +2750,8 @@
         "areaLabel": "Faro",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -2862,8 +2782,8 @@
         "areaLabel": "Faro",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -2894,8 +2814,8 @@
         "areaLabel": "Faro",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -2926,8 +2846,8 @@
         "areaLabel": "Faro",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -2958,8 +2878,8 @@
         "areaLabel": "Faro",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -2990,8 +2910,8 @@
         "areaLabel": "Faro",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -3022,8 +2942,8 @@
         "areaLabel": "Faro",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -3054,8 +2974,8 @@
         "areaLabel": "Faro",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -3086,8 +3006,8 @@
         "areaLabel": "Faro",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -3118,8 +3038,8 @@
         "areaLabel": "Faro",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -3150,8 +3070,8 @@
         "areaLabel": "Faro",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -3182,8 +3102,8 @@
         "areaLabel": "Faro",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -3214,8 +3134,8 @@
         "areaLabel": "Faro",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -3246,8 +3166,8 @@
         "areaLabel": "Faro",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -3278,8 +3198,8 @@
         "areaLabel": "Faro",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -3310,8 +3230,8 @@
         "areaLabel": "Faro",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -3342,8 +3262,8 @@
         "areaLabel": "Faro",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -3374,8 +3294,8 @@
         "areaLabel": "Faro",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -3406,8 +3326,8 @@
         "areaLabel": "Faro",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -3438,8 +3358,8 @@
         "areaLabel": "Faro",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -3470,8 +3390,8 @@
         "areaLabel": "Faro",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -3502,8 +3422,8 @@
         "areaLabel": "Faro",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -3534,8 +3454,8 @@
         "areaLabel": "Faro",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -3566,8 +3486,8 @@
         "areaLabel": "Faro",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -3620,26 +3540,6 @@
       {
         "areaCode": "MCN",
         "areaLabel": "Madeira — Costa Norte",
-        "type": "Precipitação",
-        "level": "orange",
-        "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
-        "startTime": "2026-11-07T18:00:00",
-        "endTime": "2026-11-08T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "MCN",
-        "areaLabel": "Madeira — Costa Norte",
-        "type": "Vento",
-        "level": "orange",
-        "text": "Rajadas até 100 km/h.",
-        "startTime": "2026-11-07T18:00:00",
-        "endTime": "2026-11-08T00:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "MCN",
-        "areaLabel": "Madeira — Costa Norte",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de noroeste com 4 a 4,5 metros.",
@@ -3663,7 +3563,7 @@
         "type": "Vento",
         "level": "yellow",
         "text": "Rajadas até 90 km/h.",
-        "startTime": "2026-11-08T00:00:00",
+        "startTime": "2026-11-08T09:00:00",
         "endTime": "2026-11-08T21:00:00",
         "relevant": true
       }
@@ -3673,26 +3573,6 @@
         "areaCode": "MRM",
         "areaLabel": "Madeira — Regiões Montanhosas",
         "type": "Precipitação",
-        "level": "orange",
-        "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
-        "startTime": "2026-11-07T18:00:00",
-        "endTime": "2026-11-08T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "MRM",
-        "areaLabel": "Madeira — Regiões Montanhosas",
-        "type": "Vento",
-        "level": "orange",
-        "text": "Rajadas até 130 km/h.",
-        "startTime": "2026-11-07T18:00:00",
-        "endTime": "2026-11-08T00:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "MRM",
-        "areaLabel": "Madeira — Regiões Montanhosas",
-        "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
         "startTime": "2026-11-08T12:00:00",
@@ -3705,7 +3585,7 @@
         "type": "Vento",
         "level": "yellow",
         "text": "Rajadas até 110 km/h.",
-        "startTime": "2026-11-08T00:00:00",
+        "startTime": "2026-11-08T09:00:00",
         "endTime": "2026-11-08T21:00:00",
         "relevant": true
       }
@@ -3714,26 +3594,6 @@
       {
         "areaCode": "MCN",
         "areaLabel": "Madeira — Costa Norte",
-        "type": "Precipitação",
-        "level": "orange",
-        "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
-        "startTime": "2026-11-07T18:00:00",
-        "endTime": "2026-11-08T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "MCN",
-        "areaLabel": "Madeira — Costa Norte",
-        "type": "Vento",
-        "level": "orange",
-        "text": "Rajadas até 100 km/h.",
-        "startTime": "2026-11-07T18:00:00",
-        "endTime": "2026-11-08T00:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "MCN",
-        "areaLabel": "Madeira — Costa Norte",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de noroeste com 4 a 4,5 metros.",
@@ -3757,7 +3617,7 @@
         "type": "Vento",
         "level": "yellow",
         "text": "Rajadas até 90 km/h.",
-        "startTime": "2026-11-08T00:00:00",
+        "startTime": "2026-11-08T09:00:00",
         "endTime": "2026-11-08T21:00:00",
         "relevant": true
       }
@@ -3766,26 +3626,6 @@
       {
         "areaCode": "MCN",
         "areaLabel": "Madeira — Costa Norte",
-        "type": "Precipitação",
-        "level": "orange",
-        "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
-        "startTime": "2026-11-07T18:00:00",
-        "endTime": "2026-11-08T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "MCN",
-        "areaLabel": "Madeira — Costa Norte",
-        "type": "Vento",
-        "level": "orange",
-        "text": "Rajadas até 100 km/h.",
-        "startTime": "2026-11-07T18:00:00",
-        "endTime": "2026-11-08T00:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "MCN",
-        "areaLabel": "Madeira — Costa Norte",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de noroeste com 4 a 4,5 metros.",
@@ -3809,32 +3649,12 @@
         "type": "Vento",
         "level": "yellow",
         "text": "Rajadas até 90 km/h.",
-        "startTime": "2026-11-08T00:00:00",
+        "startTime": "2026-11-08T09:00:00",
         "endTime": "2026-11-08T21:00:00",
         "relevant": true
       }
     ],
     "ponta-sao-lourenco": [
-      {
-        "areaCode": "MCS",
-        "areaLabel": "Funchal",
-        "type": "Precipitação",
-        "level": "orange",
-        "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
-        "startTime": "2026-11-07T18:00:00",
-        "endTime": "2026-11-08T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "MCS",
-        "areaLabel": "Funchal",
-        "type": "Vento",
-        "level": "orange",
-        "text": "Rajadas até 100 km/h.",
-        "startTime": "2026-11-07T18:00:00",
-        "endTime": "2026-11-08T00:00:00",
-        "relevant": true
-      },
       {
         "areaCode": "MCS",
         "areaLabel": "Funchal",
@@ -3861,7 +3681,7 @@
         "type": "Vento",
         "level": "yellow",
         "text": "Rajadas até 90 km/h.",
-        "startTime": "2026-11-08T00:00:00",
+        "startTime": "2026-11-08T09:00:00",
         "endTime": "2026-11-08T21:00:00",
         "relevant": true
       }
@@ -3871,26 +3691,6 @@
         "areaCode": "MRM",
         "areaLabel": "Madeira — Regiões Montanhosas",
         "type": "Precipitação",
-        "level": "orange",
-        "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
-        "startTime": "2026-11-07T18:00:00",
-        "endTime": "2026-11-08T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "MRM",
-        "areaLabel": "Madeira — Regiões Montanhosas",
-        "type": "Vento",
-        "level": "orange",
-        "text": "Rajadas até 130 km/h.",
-        "startTime": "2026-11-07T18:00:00",
-        "endTime": "2026-11-08T00:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "MRM",
-        "areaLabel": "Madeira — Regiões Montanhosas",
-        "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
         "startTime": "2026-11-08T12:00:00",
@@ -3903,32 +3703,12 @@
         "type": "Vento",
         "level": "yellow",
         "text": "Rajadas até 110 km/h.",
-        "startTime": "2026-11-08T00:00:00",
+        "startTime": "2026-11-08T09:00:00",
         "endTime": "2026-11-08T21:00:00",
         "relevant": true
       }
     ],
     "funchal": [
-      {
-        "areaCode": "MCS",
-        "areaLabel": "Funchal",
-        "type": "Precipitação",
-        "level": "orange",
-        "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
-        "startTime": "2026-11-07T18:00:00",
-        "endTime": "2026-11-08T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "MCS",
-        "areaLabel": "Funchal",
-        "type": "Vento",
-        "level": "orange",
-        "text": "Rajadas até 100 km/h.",
-        "startTime": "2026-11-07T18:00:00",
-        "endTime": "2026-11-08T00:00:00",
-        "relevant": true
-      },
       {
         "areaCode": "MCS",
         "areaLabel": "Funchal",
@@ -3955,7 +3735,7 @@
         "type": "Vento",
         "level": "yellow",
         "text": "Rajadas até 90 km/h.",
-        "startTime": "2026-11-08T00:00:00",
+        "startTime": "2026-11-08T09:00:00",
         "endTime": "2026-11-08T21:00:00",
         "relevant": true
       }
@@ -4000,8 +3780,8 @@
         "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -4022,8 +3802,8 @@
         "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -4068,8 +3848,8 @@
         "areaLabel": "Leiria",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -4090,8 +3870,8 @@
         "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -4112,8 +3892,8 @@
         "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -4134,8 +3914,8 @@
         "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -4156,8 +3936,8 @@
         "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -4178,8 +3958,8 @@
         "areaLabel": "Setúbal",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -4200,8 +3980,8 @@
         "areaLabel": "Setúbal",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -4222,8 +4002,8 @@
         "areaLabel": "Setúbal",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -4254,8 +4034,8 @@
         "areaLabel": "Faro",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -4286,8 +4066,8 @@
         "areaLabel": "Faro",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -4318,8 +4098,8 @@
         "areaLabel": "Faro",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -4350,8 +4130,8 @@
         "areaLabel": "Faro",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
@@ -4382,33 +4162,13 @@
         "areaLabel": "Faro",
         "type": "Vento",
         "level": "yellow",
-        "text": "Vento do quadrante sul moderado a forte, por vezes com rajadas da ordem de 70 km/h, em especial no litoral.",
-        "startTime": "2026-11-08T21:00:00",
+        "text": "Vento do quadrante sul com rajadas até 75 km/h.",
+        "startTime": "2026-11-08T18:00:00",
         "endTime": "2026-11-09T06:00:00",
         "relevant": true
       }
     ],
     "machico": [
-      {
-        "areaCode": "MCS",
-        "areaLabel": "Funchal",
-        "type": "Precipitação",
-        "level": "orange",
-        "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
-        "startTime": "2026-11-07T18:00:00",
-        "endTime": "2026-11-08T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "MCS",
-        "areaLabel": "Funchal",
-        "type": "Vento",
-        "level": "orange",
-        "text": "Rajadas até 100 km/h.",
-        "startTime": "2026-11-07T18:00:00",
-        "endTime": "2026-11-08T00:00:00",
-        "relevant": true
-      },
       {
         "areaCode": "MCS",
         "areaLabel": "Funchal",
@@ -4435,7 +4195,7 @@
         "type": "Vento",
         "level": "yellow",
         "text": "Rajadas até 90 km/h.",
-        "startTime": "2026-11-08T00:00:00",
+        "startTime": "2026-11-08T09:00:00",
         "endTime": "2026-11-08T21:00:00",
         "relevant": true
       }
@@ -4444,26 +4204,6 @@
       {
         "areaCode": "MCN",
         "areaLabel": "Madeira — Costa Norte",
-        "type": "Precipitação",
-        "level": "orange",
-        "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
-        "startTime": "2026-11-07T18:00:00",
-        "endTime": "2026-11-08T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "MCN",
-        "areaLabel": "Madeira — Costa Norte",
-        "type": "Vento",
-        "level": "orange",
-        "text": "Rajadas até 100 km/h.",
-        "startTime": "2026-11-07T18:00:00",
-        "endTime": "2026-11-08T00:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "MCN",
-        "areaLabel": "Madeira — Costa Norte",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de noroeste com 4 a 4,5 metros.",
@@ -4487,7 +4227,7 @@
         "type": "Vento",
         "level": "yellow",
         "text": "Rajadas até 90 km/h.",
-        "startTime": "2026-11-08T00:00:00",
+        "startTime": "2026-11-08T09:00:00",
         "endTime": "2026-11-08T21:00:00",
         "relevant": true
       }
@@ -4496,26 +4236,6 @@
       {
         "areaCode": "MCN",
         "areaLabel": "Madeira — Costa Norte",
-        "type": "Precipitação",
-        "level": "orange",
-        "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
-        "startTime": "2026-11-07T18:00:00",
-        "endTime": "2026-11-08T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "MCN",
-        "areaLabel": "Madeira — Costa Norte",
-        "type": "Vento",
-        "level": "orange",
-        "text": "Rajadas até 100 km/h.",
-        "startTime": "2026-11-07T18:00:00",
-        "endTime": "2026-11-08T00:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "MCN",
-        "areaLabel": "Madeira — Costa Norte",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de noroeste com 4 a 4,5 metros.",
@@ -4539,7 +4259,7 @@
         "type": "Vento",
         "level": "yellow",
         "text": "Rajadas até 90 km/h.",
-        "startTime": "2026-11-08T00:00:00",
+        "startTime": "2026-11-08T09:00:00",
         "endTime": "2026-11-08T21:00:00",
         "relevant": true
       }
@@ -4548,26 +4268,6 @@
       {
         "areaCode": "MCN",
         "areaLabel": "Madeira — Costa Norte",
-        "type": "Precipitação",
-        "level": "orange",
-        "text": "Precipitação, por vezes forte, persistente e acompanhada de trovoada.",
-        "startTime": "2026-11-07T18:00:00",
-        "endTime": "2026-11-08T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "MCN",
-        "areaLabel": "Madeira — Costa Norte",
-        "type": "Vento",
-        "level": "orange",
-        "text": "Rajadas até 100 km/h.",
-        "startTime": "2026-11-07T18:00:00",
-        "endTime": "2026-11-08T00:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "MCN",
-        "areaLabel": "Madeira — Costa Norte",
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de noroeste com 4 a 4,5 metros.",
@@ -4591,7 +4291,7 @@
         "type": "Vento",
         "level": "yellow",
         "text": "Rajadas até 90 km/h.",
-        "startTime": "2026-11-08T00:00:00",
+        "startTime": "2026-11-08T09:00:00",
         "endTime": "2026-11-08T21:00:00",
         "relevant": true
       }
