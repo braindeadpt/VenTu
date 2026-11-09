@@ -1,6 +1,6 @@
 {
   "source": "forecast-skill-regression",
-  "checkedAt": "2026-11-09T00:06:49.098Z",
+  "checkedAt": "2026-11-09T04:06:56.150Z",
   "windowDays": 60,
   "recentDays": 7,
   "baselineDays": 21,
@@ -22,9 +22,9 @@
       "origin": "ih",
       "recent": {
         "snapshots": 8,
-        "rmse": 0.74,
+        "rmse": 0.74125,
         "me": 0.555,
-        "n": 616.375
+        "n": 615.625
       },
       "baseline": {
         "snapshots": 21,
@@ -41,9 +41,9 @@
       "origin": "ih",
       "recent": {
         "snapshots": 8,
-        "rmse": 0.26625,
-        "me": 0.14,
-        "n": 619
+        "rmse": 0.2675,
+        "me": 0.14125,
+        "n": 618.75
       },
       "baseline": {
         "snapshots": 21,
@@ -62,7 +62,7 @@
         "snapshots": 8,
         "rmse": 0.21875,
         "me": 0.11625,
-        "n": 277.875
+        "n": 278.25
       },
       "baseline": {
         "snapshots": 14,
@@ -79,9 +79,9 @@
       "origin": "ih",
       "recent": {
         "snapshots": 8,
-        "rmse": 0.41750000000000004,
+        "rmse": 0.41875,
         "me": -0.3225,
-        "n": 622.625
+        "n": 622.375
       },
       "baseline": {
         "snapshots": 21,
@@ -98,9 +98,9 @@
       "origin": "ih",
       "recent": {
         "snapshots": 8,
-        "rmse": 0.8674999999999999,
-        "me": 0.6637500000000001,
-        "n": 612.25
+        "rmse": 0.8687499999999999,
+        "me": 0.66625,
+        "n": 612
       },
       "baseline": {
         "snapshots": 21,
@@ -117,9 +117,9 @@
       "origin": "wmo-es",
       "recent": {
         "snapshots": 8,
-        "rmse": 0.8799999999999999,
-        "me": 0.7499999999999999,
-        "n": 556.5
+        "rmse": 0.8812499999999999,
+        "me": 0.75125,
+        "n": 556.375
       },
       "baseline": {
         "snapshots": 21,
@@ -138,7 +138,7 @@
         "snapshots": 8,
         "rmse": 0.51,
         "me": 0.455,
-        "n": 557.25
+        "n": 557.125
       },
       "baseline": {
         "snapshots": 21,
@@ -155,7 +155,7 @@
       "recent": {
         "snapshots": 8,
         "rmse": 0.30874999999999997,
-        "me": 0.10249999999999998,
+        "me": 0.10374999999999998,
         "n": 492.375
       },
       "baseline": {
@@ -176,8 +176,8 @@
       "name": "IH (Datawell)",
       "recent": {
         "days": 8,
-        "n": 2748.13,
-        "me": 0.2429447350466227
+        "n": 2747,
+        "me": 0.243704040771751
       },
       "baseline": {
         "days": 21,
@@ -194,8 +194,8 @@
       "name": "WMO-ES (Copernicus)",
       "recent": {
         "days": 8,
-        "n": 1606.13,
-        "me": 0.4491236672114562
+        "n": 1605.88,
+        "me": 0.4499081497625905
       },
       "baseline": {
         "days": 21,
