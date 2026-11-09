@@ -1,11 +1,11 @@
 {
   "day": "20261109",
-  "fetchedAt": "2026-11-09T14:06:51.948Z",
+  "fetchedAt": "2026-11-09T16:06:40.622Z",
   "minPairs": 3,
   "minAccumulatedPairs": 10,
   "archive": {
     "windowDays": 30,
-    "pairHourCount": 519,
+    "pairHourCount": 520,
     "path": "buoy-coherence-archive.json"
   },
   "daily": {
@@ -14,12 +14,12 @@
     "trend": {
       "6200084|6200199": {
         "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
-        "coherent": 29,
+        "coherent": 28,
         "review": 6,
         "incoherent": 1,
-        "insufficient": 29,
+        "insufficient": 30,
         "days": 65,
-        "incoherentRatio": 0.028
+        "incoherentRatio": 0.029
       },
       "6200083|6201079": {
         "pair": "Villano-Sisargas × Datawell ao largo de Faro",
@@ -1146,7 +1146,7 @@
       "suboptimal": []
     }
   },
-  "regionsAuditedAt": "2026-11-09T14:09:47.792Z",
+  "regionsAuditedAt": "2026-11-09T16:09:29.389Z",
   "pairs": [
     {
       "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
@@ -1156,14 +1156,14 @@
       ],
       "distanceKm": 285.3,
       "ptSource": "wmo",
-      "n": 515,
+      "n": 516,
       "meanDeltaM": -0.4,
       "meanAbsDeltaM": 0.5,
       "maxAbsDeltaM": 2.8,
       "corr": 0.79,
       "verdict": "coherent",
-      "firstHour": "2026-10-10T15",
-      "lastHour": "2026-11-09T12",
+      "firstHour": "2026-10-10T17",
+      "lastHour": "2026-11-09T14",
       "hours": [
         {
           "6200084": 3.2799999713897705,
@@ -1216,6 +1216,11 @@
           "hour": "2026-11-09T09"
         },
         {
+          "6200084": 3.1600000858306885,
+          "6200199": 2.34375,
+          "hour": "2026-11-09T10"
+        },
+        {
           "6200084": 3.630000114440918,
           "6200199": 2.3290998935699463,
           "hour": "2026-11-09T11"
@@ -1224,6 +1229,16 @@
           "6200084": 3.630000114440918,
           "6200199": 2.973629951477051,
           "hour": "2026-11-09T12"
+        },
+        {
+          "6200084": 4.340000152587891,
+          "6200199": 2.7246100902557373,
+          "hour": "2026-11-09T13"
+        },
+        {
+          "6200084": 3.9800000190734863,
+          "6200199": 2.7978498935699463,
+          "hour": "2026-11-09T14"
         }
       ]
     }
