@@ -409,6 +409,38 @@
       ]
     },
     {
+      "id": 19073,
+      "ref": "ANAV NR 2475/26",
+      "category": "Requisitos de segurança maritima",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=3101c130-36f7-43c5-8d75-d1a44b9915e0",
+      "source": "ih",
+      "collection": "nav_warning_coastal",
+      "polygons": [
+        [
+          [
+            -8.684069,
+            41.138977
+          ],
+          [
+            -8.684069,
+            41.147897
+          ],
+          [
+            -8.664504,
+            41.147897
+          ],
+          [
+            -8.664504,
+            41.138977
+          ],
+          [
+            -8.684069,
+            41.138977
+          ]
+        ]
+      ]
+    },
+    {
       "id": 1000182,
       "ref": "ANAV NR 121/21",
       "category": "SEGURANÇA DA NAVEGAÇÃO - AVISO À NAVEGAÇÃO LOCAL",
@@ -7582,6 +7614,7 @@
       2018801
     ],
     "cabedelo-douro": [
+      19073,
       1000201,
       1000202,
       1000709,
@@ -8239,7 +8272,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-11-09T06:06:55.469Z",
+  "fetchedAt": "2026-11-09T07:15:18.152Z",
   "sourceCollection": "nav_warning_coastal+nav_warning_local+orca_anavnet_point",
   "sourceUrl": "https://ogcapi.hidrografico.pt/collections/nav_warning_coastal"
 }
