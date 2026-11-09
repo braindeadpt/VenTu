@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-11-09T10:07:03.326Z",
+  "fetchedAt": "2026-11-09T12:07:14.268Z",
   "windowDays": 90,
   "dayCount": 69,
   "days": [
@@ -79615,13 +79615,6 @@
           "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=09757503-c4ff-4013-a681-7e41d56016cc"
         },
         {
-          "id": 1010838,
-          "ref": "ANAV NR 51/26",
-          "category": "ESTADO DA BARRA",
-          "source": "ih",
-          "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=d3b923e7-4ece-4b6e-820a-b08f25675f2e"
-        },
-        {
           "id": 1010897,
           "ref": "ANAV NR 40/26",
           "category": "SEGURANÇA À NAVEGAÇÃO",
@@ -79655,6 +79648,13 @@
           "category": "SEGURANÇA DA NAVEGAÇÃO - OBJECTOS FLUTUANTES",
           "source": "ih",
           "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=004d425c-eebf-4b47-8bcf-c9da7e5b4914"
+        },
+        {
+          "id": 1011003,
+          "ref": "ANAV NR 38/26",
+          "category": "BOIA Nº 19 (LL 523)",
+          "source": "ih",
+          "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=d7a34c5e-9fd4-4286-beef-18fdcd050d36"
         },
         {
           "id": 2017775,
@@ -87310,6 +87310,18 @@
       "nDays": 59
     },
     {
+      "ref": "ANAV NR 38/26",
+      "category": "BOIA Nº 19 (LL 523)",
+      "source": "ih",
+      "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=d7a34c5e-9fd4-4286-beef-18fdcd050d36",
+      "firstSeen": "2026-11-09",
+      "lastSeen": "2026-11-09",
+      "daysInForce": [
+        "2026-11-09"
+      ],
+      "nDays": 1
+    },
+    {
       "ref": "ANAV NR 39/23",
       "category": "CAIS DA PENHA D'ÁGUIA DANIFICADO",
       "source": "ih",
@@ -88517,25 +88529,6 @@
         "2026-11-09"
       ],
       "nDays": 59
-    },
-    {
-      "ref": "ANAV NR 51/26",
-      "category": "ESTADO DA BARRA",
-      "source": "ih",
-      "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=d3b923e7-4ece-4b6e-820a-b08f25675f2e",
-      "firstSeen": "2026-11-02",
-      "lastSeen": "2026-11-09",
-      "daysInForce": [
-        "2026-11-02",
-        "2026-11-03",
-        "2026-11-04",
-        "2026-11-05",
-        "2026-11-06",
-        "2026-11-07",
-        "2026-11-08",
-        "2026-11-09"
-      ],
-      "nDays": 8
     },
     {
       "ref": "ANAV NR 54/23",
@@ -90698,6 +90691,24 @@
         "2026-11-08"
       ],
       "nDays": 1
+    },
+    {
+      "ref": "ANAV NR 51/26",
+      "category": "ESTADO DA BARRA",
+      "source": "ih",
+      "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=d3b923e7-4ece-4b6e-820a-b08f25675f2e",
+      "firstSeen": "2026-11-02",
+      "lastSeen": "2026-11-08",
+      "daysInForce": [
+        "2026-11-02",
+        "2026-11-03",
+        "2026-11-04",
+        "2026-11-05",
+        "2026-11-06",
+        "2026-11-07",
+        "2026-11-08"
+      ],
+      "nDays": 7
     },
     {
       "ref": "ANAV NR 19/26",

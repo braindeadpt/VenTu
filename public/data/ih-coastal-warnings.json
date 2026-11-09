@@ -6675,38 +6675,6 @@
       ]
     },
     {
-      "id": 1010838,
-      "ref": "ANAV NR 51/26",
-      "category": "ESTADO DA BARRA",
-      "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=d3b923e7-4ece-4b6e-820a-b08f25675f2e",
-      "source": "ih",
-      "collection": "nav_warning_local",
-      "polygons": [
-        [
-          [
-            -8.750556,
-            41.336027
-          ],
-          [
-            -8.750556,
-            41.338927
-          ],
-          [
-            -8.746652,
-            41.338927
-          ],
-          [
-            -8.746652,
-            41.336027
-          ],
-          [
-            -8.750556,
-            41.336027
-          ]
-        ]
-      ]
-    },
-    {
       "id": 1010897,
       "ref": "ANAV NR 40/26",
       "category": "SEGURANÇA À NAVEGAÇÃO",
@@ -7034,6 +7002,38 @@
           [
             -8.797959,
             38.447674
+          ]
+        ]
+      ]
+    },
+    {
+      "id": 1011003,
+      "ref": "ANAV NR 38/26",
+      "category": "BOIA Nº 19 (LL 523)",
+      "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=d7a34c5e-9fd4-4286-beef-18fdcd050d36",
+      "source": "ih",
+      "collection": "nav_warning_local",
+      "polygons": [
+        [
+          [
+            -7.933691,
+            36.997943
+          ],
+          [
+            -7.933691,
+            36.999091
+          ],
+          [
+            -7.932103,
+            36.999091
+          ],
+          [
+            -7.932103,
+            36.997943
+          ],
+          [
+            -7.933691,
+            36.997943
           ]
         ]
       ]
@@ -8272,7 +8272,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-11-09T10:07:03.291Z",
+  "fetchedAt": "2026-11-09T12:07:14.231Z",
   "sourceCollection": "nav_warning_coastal+nav_warning_local+orca_anavnet_point",
   "sourceUrl": "https://ogcapi.hidrografico.pt/collections/nav_warning_coastal"
 }
