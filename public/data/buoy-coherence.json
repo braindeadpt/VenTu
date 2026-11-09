@@ -1,6 +1,6 @@
 {
   "day": "20261109",
-  "fetchedAt": "2026-11-09T07:15:16.100Z",
+  "fetchedAt": "2026-11-09T08:06:50.118Z",
   "minPairs": 3,
   "minAccumulatedPairs": 10,
   "archive": {
@@ -784,6 +784,20 @@
       "suboptimalRefs": 0,
       "suboptimal": []
     },
+    "Lagos": {
+      "spotCount": 2,
+      "withObservedWave": 0,
+      "bySource": {},
+      "audited": 0,
+      "attachedIsClosest": 0,
+      "attachedNotClosest": 0,
+      "onlySource": 0,
+      "notClosest": [],
+      "calibrated": 0,
+      "calibrationRefs": {},
+      "suboptimalRefs": 0,
+      "suboptimal": []
+    },
     "Lagoa": {
       "spotCount": 1,
       "withObservedWave": 0,
@@ -799,20 +813,6 @@
       "suboptimal": []
     },
     "Portimão": {
-      "spotCount": 1,
-      "withObservedWave": 0,
-      "bySource": {},
-      "audited": 0,
-      "attachedIsClosest": 0,
-      "attachedNotClosest": 0,
-      "onlySource": 0,
-      "notClosest": [],
-      "calibrated": 0,
-      "calibrationRefs": {},
-      "suboptimalRefs": 0,
-      "suboptimal": []
-    },
-    "Lagos": {
       "spotCount": 1,
       "withObservedWave": 0,
       "bySource": {},
@@ -1146,7 +1146,7 @@
       "suboptimal": []
     }
   },
-  "regionsAuditedAt": "2026-11-09T07:15:30.645Z",
+  "regionsAuditedAt": "2026-11-09T08:10:31.023Z",
   "pairs": [
     {
       "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
@@ -1162,8 +1162,8 @@
       "maxAbsDeltaM": 2.8,
       "corr": 0.79,
       "verdict": "coherent",
-      "firstHour": "2026-10-10T08",
-      "lastHour": "2026-11-09T05",
+      "firstHour": "2026-10-10T09",
+      "lastHour": "2026-11-09T06",
       "hours": [
         {
           "6200084": 3.2799999713897705,
@@ -1194,6 +1194,11 @@
           "6200084": 3.2799999713897705,
           "6200199": 2.1679699420928955,
           "hour": "2026-11-09T05"
+        },
+        {
+          "6200084": 3.4000000953674316,
+          "6200199": 2.065429925918579,
+          "hour": "2026-11-09T06"
         }
       ]
     }
