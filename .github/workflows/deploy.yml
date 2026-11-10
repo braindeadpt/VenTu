@@ -205,6 +205,7 @@ jobs:
           DEPLOY_FINGERPRINT: ${{ steps.source.outputs.fingerprint }}
           CODE_SHA: ${{ steps.source.outputs.code_sha }}
           DATA_SHA: ${{ steps.source.outputs.data_sha }}
+          STALE_DATA_ONLY_DAYS: ${{ steps.source.outputs.stale_data_only_days }}
         run: node scripts/resolve-deploy-source.js --write-manifest out/deploy-source.json
 
       # Smoke sobre a combinação que passa a existir e que o CI nunca testa:

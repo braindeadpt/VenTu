@@ -65,6 +65,9 @@ function isAcceptableGreenRun(run, opts = {}) {
   const maxAgeDays = opts.maxAgeDays ?? GREEN_RUN_MAX_AGE_DAYS_DEFAULT;
   const createdMs = new Date(run.created_at).getTime();
   if (!Number.isFinite(createdMs)) return false;
+  // ignoreMaxAge: a procura de verdes tem de alcançar além da janela — a
+  // decisão de aceitar um verde velho (diff só de dados) é do evaluator.
+  if (opts.ignoreMaxAge) return true;
   return nowMs - createdMs <= maxAgeDays * DAY_MS;
 }
 
@@ -141,6 +144,13 @@ function pickGreenRunWithRetries(fetchRuns, opts = {}) {
  *   greenCommitAt?: string|null;
  *   lagWarnCommits?: number;
  *   lagWarnHours?: number;
+ *   // Verde fora da janela: só é aceite quando o caller prova (git diff
+ *   // --name-only <verde>..<main>) que TODOS os ficheiros alterados vivem
+ *   // em public/data/ — código não testado nunca é publicado.
+ *   greenAgeDays?: number;
+ *   staleGreenDataOnly?: boolean;
+ *   staleNonDataPath?: string|null;
+ *   maxAgeDays?: number;
  * }} input
  * @returns {{
  *   status: 'ok' | 'fail' | 'manual';
@@ -164,6 +174,9 @@ function evaluateDeploySource(input) {
     lagHours = null,
     lagWarnCommits = LAG_WARN_COMMITS_DEFAULT,
     lagWarnHours = LAG_WARN_HOURS_DEFAULT,
+    greenAgeDays = null,
+    staleGreenDataOnly = false,
+    staleNonDataPath = null,
   } = input;
 
   // Manual dispatch = explicit human decision, no gate (unchanged behaviour):
@@ -208,6 +221,36 @@ function evaluateDeploySource(input) {
       lagHours: null,
       warn: false,
       warnReason: null,
+      staleDataOnly: false,
+      staleAgeDays: null,
+    };
+  }
+
+  // Janela expirada: o CI não corre em commits só de dados (paths-ignore),
+  // por isso um verde velho continua válido quando main só avançou em
+  // public/data/. Se o diff sair de public/data/ (ou não puder ser provado),
+  // recusa-se — nunca se publica código sem CI.
+  const maxAgeDays = input.maxAgeDays ?? GREEN_RUN_MAX_AGE_DAYS_DEFAULT;
+  const stale = Number.isFinite(greenAgeDays) && greenAgeDays > maxAgeDays;
+  if (stale && !staleGreenDataOnly) {
+    return {
+      status: 'fail',
+      reason:
+        `run verde ${String(greenRun.head_sha).slice(0, 9)} fora da janela ` +
+        `(${greenAgeDays.toFixed(1)} dias > ${maxAgeDays}) e o diff até main ` +
+        (staleNonDataPath
+          ? `sai de public/data/ (ex.: ${staleNonDataPath})`
+          : `não é só de public/data/`) +
+        ' — recusar publicar código sem CI',
+      codeSha: null,
+      dataSha: mainSha,
+      overlayPaths: [],
+      lagCommits: null,
+      lagHours: null,
+      warn: false,
+      warnReason: null,
+      staleDataOnly: false,
+      staleAgeDays: greenAgeDays,
     };
   }
 
@@ -221,7 +264,11 @@ function evaluateDeploySource(input) {
 
   return {
     status: 'ok',
-    reason: `código do CI verde ${String(greenRun.head_sha).slice(0, 9)} + dados de main`,
+    reason:
+      `código do CI verde ${String(greenRun.head_sha).slice(0, 9)} + dados de main` +
+      (stale
+        ? ` — verde fora da janela (${greenAgeDays.toFixed(1)} dias > ${maxAgeDays}) aceite porque o diff até main é só public/data/`
+        : ''),
     codeSha: greenRun.head_sha,
     dataSha: mainSha,
     overlayPaths: [...OVERLAY_PATHS],
@@ -232,6 +279,8 @@ function evaluateDeploySource(input) {
       reasons.length > 0
         ? `código atrás de main há ${reasons.join(' / ')} — CI vermelho prolongado?`
         : null,
+    staleDataOnly: stale && staleGreenDataOnly === true,
+    staleAgeDays: stale ? greenAgeDays : null,
   };
 }
 
@@ -267,6 +316,13 @@ function formatDeploySummary(res, ctx = {}) {
     `- **sobreposição:** ${res.overlayPaths.length ? res.overlayPaths.map((p) => `\`${p}\``).join(', ') : 'nenhuma'}`,
     `- **razão:** ${res.reason}`,
   ];
+  if (res.staleDataOnly) {
+    lines.push(
+      `- **janela:** run verde aceite fora da janela (${
+        res.staleAgeDays === null ? '—' : `${res.staleAgeDays.toFixed(1)} dias`
+      }) — o diff até main só tem \`public/data/\``,
+    );
+  }
   if (res.warn && res.warnReason) {
     lines.push('', `> ⚠️ ${res.warnReason}`);
   }
@@ -357,6 +413,9 @@ function formatDeploySourceManifest(m) {
       codeSha: m.codeSha,
       dataSha: m.dataSha,
       generatedAt: m.generatedAt || new Date().toISOString(),
+      // Quando o verde foi aceite fora da janela por diff só de dados:
+      // a idade do run em dias (ausente nos casos normais).
+      ...(m.staleDataOnlyDays != null ? { staleDataOnlyDays: m.staleDataOnlyDays } : {}),
     },
     null,
     2,
