@@ -1,7 +1,37 @@
 {
   "source": "ipma",
-  "fetchedAt": "2026-11-10T06:07:06.380Z",
+  "fetchedAt": "2026-11-10T08:06:59.175Z",
   "warnings": [
+    {
+      "areaCode": "MRM",
+      "areaLabel": "Madeira — Regiões Montanhosas",
+      "type": "Precipitação",
+      "level": "red",
+      "text": "Chuva, por vezes forte e persistente.",
+      "startTime": "2026-11-10T21:00:00",
+      "endTime": "2026-11-11T06:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "MCS",
+      "areaLabel": "Funchal",
+      "type": "Precipitação",
+      "level": "red",
+      "text": "Chuva, por vezes forte e persistente.",
+      "startTime": "2026-11-10T21:00:00",
+      "endTime": "2026-11-11T06:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "MRM",
+      "areaLabel": "Madeira — Regiões Montanhosas",
+      "type": "Vento",
+      "level": "red",
+      "text": "Rajadas até 140 km/h.",
+      "startTime": "2026-11-11T00:00:00",
+      "endTime": "2026-11-11T06:00:00",
+      "relevant": true
+    },
     {
       "areaCode": "FAR",
       "areaLabel": "Faro",
@@ -78,8 +108,8 @@
       "type": "Precipitação",
       "level": "orange",
       "text": "Chuva, por vezes forte e persistente.",
-      "startTime": "2026-11-10T21:00:00",
-      "endTime": "2026-11-11T12:00:00",
+      "startTime": "2026-11-11T06:00:00",
+      "endTime": "2026-11-11T09:00:00",
       "relevant": true
     },
     {
@@ -99,7 +129,7 @@
       "level": "orange",
       "text": "Chuva, por vezes forte e persistente.",
       "startTime": "2026-11-10T21:00:00",
-      "endTime": "2026-11-11T12:00:00",
+      "endTime": "2026-11-11T09:00:00",
       "relevant": true
     },
     {
@@ -128,8 +158,8 @@
       "type": "Precipitação",
       "level": "orange",
       "text": "Chuva, por vezes forte e persistente.",
-      "startTime": "2026-11-10T21:00:00",
-      "endTime": "2026-11-11T12:00:00",
+      "startTime": "2026-11-11T06:00:00",
+      "endTime": "2026-11-11T09:00:00",
       "relevant": true
     },
     {
@@ -190,6 +220,16 @@
       "text": "Vento sudoeste com rajadas da ordem de 100 a 120 km/h.",
       "startTime": "2026-11-11T12:00:00",
       "endTime": "2026-11-11T21:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "MCN",
+      "areaLabel": "Madeira — Costa Norte",
+      "type": "Vento",
+      "level": "orange",
+      "text": "Rajadas até 100 km/h, em esepcial nos extremos leste e oeste.",
+      "startTime": "2026-11-10T21:00:00",
+      "endTime": "2026-11-11T12:00:00",
       "relevant": true
     },
     {
@@ -283,6 +323,16 @@
       "relevant": true
     },
     {
+      "areaCode": "MCN",
+      "areaLabel": "Madeira — Costa Norte",
+      "type": "Agitação Marítima",
+      "level": "yellow",
+      "text": "Ondas de oeste com 4 a 4,5 metros, passando a ondas de noroeste.",
+      "startTime": "2026-11-11T09:00:00",
+      "endTime": "2026-11-11T21:00:00",
+      "relevant": true
+    },
+    {
       "areaCode": "BJA",
       "areaLabel": "Beja",
       "type": "Agitação Marítima",
@@ -313,6 +363,16 @@
       "relevant": true
     },
     {
+      "areaCode": "MPS",
+      "areaLabel": "Porto Santo",
+      "type": "Agitação Marítima",
+      "level": "yellow",
+      "text": "Ondas de oeste com 4 a 4,5 metros, passando a ondas de noroeste.",
+      "startTime": "2026-11-11T09:00:00",
+      "endTime": "2026-11-11T21:00:00",
+      "relevant": true
+    },
+    {
       "areaCode": "BRG",
       "areaLabel": "Braga",
       "type": "Agitação Marítima",
@@ -327,7 +387,7 @@
       "areaLabel": "Funchal",
       "type": "Agitação Marítima",
       "level": "yellow",
-      "text": "Ondas de oeste/sudoeste com 4 a 4,5 metros.",
+      "text": "Ondas de oeste/sudoeste com 4 a 5 metros.",
       "startTime": "2026-11-11T06:00:00",
       "endTime": "2026-11-11T21:00:00",
       "relevant": true
@@ -509,7 +569,7 @@
       "level": "yellow",
       "text": "Chuva, por vezes forte e persistente.",
       "startTime": "2026-11-10T21:00:00",
-      "endTime": "2026-11-11T12:00:00",
+      "endTime": "2026-11-11T09:00:00",
       "relevant": true
     },
     {
@@ -670,16 +730,6 @@
       "text": "Vento sudoeste com rajadas até 90 km/h.",
       "startTime": "2026-11-11T12:00:00",
       "endTime": "2026-11-11T21:00:00",
-      "relevant": true
-    },
-    {
-      "areaCode": "MCN",
-      "areaLabel": "Madeira — Costa Norte",
-      "type": "Vento",
-      "level": "yellow",
-      "text": "Rajadas até 90 km/h.",
-      "startTime": "2026-11-10T21:00:00",
-      "endTime": "2026-11-11T12:00:00",
       "relevant": true
     },
     {
@@ -7084,17 +7134,27 @@
         "level": "orange",
         "text": "Chuva, por vezes forte e persistente.",
         "startTime": "2026-11-10T21:00:00",
-        "endTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T09:00:00",
         "relevant": true
       },
       {
         "areaCode": "MCN",
         "areaLabel": "Madeira — Costa Norte",
         "type": "Vento",
-        "level": "yellow",
-        "text": "Rajadas até 90 km/h.",
+        "level": "orange",
+        "text": "Rajadas até 100 km/h, em esepcial nos extremos leste e oeste.",
         "startTime": "2026-11-10T21:00:00",
         "endTime": "2026-11-11T12:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "MCN",
+        "areaLabel": "Madeira — Costa Norte",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de oeste com 4 a 4,5 metros, passando a ondas de noroeste.",
+        "startTime": "2026-11-11T09:00:00",
+        "endTime": "2026-11-11T21:00:00",
         "relevant": true
       }
     ],
@@ -7103,10 +7163,30 @@
         "areaCode": "MRM",
         "areaLabel": "Madeira — Regiões Montanhosas",
         "type": "Precipitação",
-        "level": "orange",
+        "level": "red",
         "text": "Chuva, por vezes forte e persistente.",
         "startTime": "2026-11-10T21:00:00",
-        "endTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T06:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "MRM",
+        "areaLabel": "Madeira — Regiões Montanhosas",
+        "type": "Vento",
+        "level": "red",
+        "text": "Rajadas até 140 km/h.",
+        "startTime": "2026-11-11T00:00:00",
+        "endTime": "2026-11-11T06:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "MRM",
+        "areaLabel": "Madeira — Regiões Montanhosas",
+        "type": "Precipitação",
+        "level": "orange",
+        "text": "Chuva, por vezes forte e persistente.",
+        "startTime": "2026-11-11T06:00:00",
+        "endTime": "2026-11-11T09:00:00",
         "relevant": true
       },
       {
@@ -7128,17 +7208,27 @@
         "level": "orange",
         "text": "Chuva, por vezes forte e persistente.",
         "startTime": "2026-11-10T21:00:00",
-        "endTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T09:00:00",
         "relevant": true
       },
       {
         "areaCode": "MCN",
         "areaLabel": "Madeira — Costa Norte",
         "type": "Vento",
-        "level": "yellow",
-        "text": "Rajadas até 90 km/h.",
+        "level": "orange",
+        "text": "Rajadas até 100 km/h, em esepcial nos extremos leste e oeste.",
         "startTime": "2026-11-10T21:00:00",
         "endTime": "2026-11-11T12:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "MCN",
+        "areaLabel": "Madeira — Costa Norte",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de oeste com 4 a 4,5 metros, passando a ondas de noroeste.",
+        "startTime": "2026-11-11T09:00:00",
+        "endTime": "2026-11-11T21:00:00",
         "relevant": true
       }
     ],
@@ -7150,17 +7240,27 @@
         "level": "orange",
         "text": "Chuva, por vezes forte e persistente.",
         "startTime": "2026-11-10T21:00:00",
-        "endTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T09:00:00",
         "relevant": true
       },
       {
         "areaCode": "MCN",
         "areaLabel": "Madeira — Costa Norte",
         "type": "Vento",
-        "level": "yellow",
-        "text": "Rajadas até 90 km/h.",
+        "level": "orange",
+        "text": "Rajadas até 100 km/h, em esepcial nos extremos leste e oeste.",
         "startTime": "2026-11-10T21:00:00",
         "endTime": "2026-11-11T12:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "MCN",
+        "areaLabel": "Madeira — Costa Norte",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de oeste com 4 a 4,5 metros, passando a ondas de noroeste.",
+        "startTime": "2026-11-11T09:00:00",
+        "endTime": "2026-11-11T21:00:00",
         "relevant": true
       }
     ],
@@ -7169,10 +7269,20 @@
         "areaCode": "MCS",
         "areaLabel": "Funchal",
         "type": "Precipitação",
-        "level": "orange",
+        "level": "red",
         "text": "Chuva, por vezes forte e persistente.",
         "startTime": "2026-11-10T21:00:00",
-        "endTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T06:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "MCS",
+        "areaLabel": "Funchal",
+        "type": "Precipitação",
+        "level": "orange",
+        "text": "Chuva, por vezes forte e persistente.",
+        "startTime": "2026-11-11T06:00:00",
+        "endTime": "2026-11-11T09:00:00",
         "relevant": true
       },
       {
@@ -7190,7 +7300,7 @@
         "areaLabel": "Funchal",
         "type": "Agitação Marítima",
         "level": "yellow",
-        "text": "Ondas de oeste/sudoeste com 4 a 4,5 metros.",
+        "text": "Ondas de oeste/sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T06:00:00",
         "endTime": "2026-11-11T21:00:00",
         "relevant": true
@@ -7201,10 +7311,30 @@
         "areaCode": "MRM",
         "areaLabel": "Madeira — Regiões Montanhosas",
         "type": "Precipitação",
-        "level": "orange",
+        "level": "red",
         "text": "Chuva, por vezes forte e persistente.",
         "startTime": "2026-11-10T21:00:00",
-        "endTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T06:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "MRM",
+        "areaLabel": "Madeira — Regiões Montanhosas",
+        "type": "Vento",
+        "level": "red",
+        "text": "Rajadas até 140 km/h.",
+        "startTime": "2026-11-11T00:00:00",
+        "endTime": "2026-11-11T06:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "MRM",
+        "areaLabel": "Madeira — Regiões Montanhosas",
+        "type": "Precipitação",
+        "level": "orange",
+        "text": "Chuva, por vezes forte e persistente.",
+        "startTime": "2026-11-11T06:00:00",
+        "endTime": "2026-11-11T09:00:00",
         "relevant": true
       },
       {
@@ -7223,10 +7353,20 @@
         "areaCode": "MCS",
         "areaLabel": "Funchal",
         "type": "Precipitação",
-        "level": "orange",
+        "level": "red",
         "text": "Chuva, por vezes forte e persistente.",
         "startTime": "2026-11-10T21:00:00",
-        "endTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T06:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "MCS",
+        "areaLabel": "Funchal",
+        "type": "Precipitação",
+        "level": "orange",
+        "text": "Chuva, por vezes forte e persistente.",
+        "startTime": "2026-11-11T06:00:00",
+        "endTime": "2026-11-11T09:00:00",
         "relevant": true
       },
       {
@@ -7244,7 +7384,7 @@
         "areaLabel": "Funchal",
         "type": "Agitação Marítima",
         "level": "yellow",
-        "text": "Ondas de oeste/sudoeste com 4 a 4,5 metros.",
+        "text": "Ondas de oeste/sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T06:00:00",
         "endTime": "2026-11-11T21:00:00",
         "relevant": true
@@ -8223,10 +8363,20 @@
         "areaCode": "MCS",
         "areaLabel": "Funchal",
         "type": "Precipitação",
-        "level": "orange",
+        "level": "red",
         "text": "Chuva, por vezes forte e persistente.",
         "startTime": "2026-11-10T21:00:00",
-        "endTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T06:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "MCS",
+        "areaLabel": "Funchal",
+        "type": "Precipitação",
+        "level": "orange",
+        "text": "Chuva, por vezes forte e persistente.",
+        "startTime": "2026-11-11T06:00:00",
+        "endTime": "2026-11-11T09:00:00",
         "relevant": true
       },
       {
@@ -8244,7 +8394,7 @@
         "areaLabel": "Funchal",
         "type": "Agitação Marítima",
         "level": "yellow",
-        "text": "Ondas de oeste/sudoeste com 4 a 4,5 metros.",
+        "text": "Ondas de oeste/sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T06:00:00",
         "endTime": "2026-11-11T21:00:00",
         "relevant": true
@@ -8258,17 +8408,27 @@
         "level": "orange",
         "text": "Chuva, por vezes forte e persistente.",
         "startTime": "2026-11-10T21:00:00",
-        "endTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T09:00:00",
         "relevant": true
       },
       {
         "areaCode": "MCN",
         "areaLabel": "Madeira — Costa Norte",
         "type": "Vento",
-        "level": "yellow",
-        "text": "Rajadas até 90 km/h.",
+        "level": "orange",
+        "text": "Rajadas até 100 km/h, em esepcial nos extremos leste e oeste.",
         "startTime": "2026-11-10T21:00:00",
         "endTime": "2026-11-11T12:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "MCN",
+        "areaLabel": "Madeira — Costa Norte",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de oeste com 4 a 4,5 metros, passando a ondas de noroeste.",
+        "startTime": "2026-11-11T09:00:00",
+        "endTime": "2026-11-11T21:00:00",
         "relevant": true
       }
     ],
@@ -8280,17 +8440,27 @@
         "level": "orange",
         "text": "Chuva, por vezes forte e persistente.",
         "startTime": "2026-11-10T21:00:00",
-        "endTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T09:00:00",
         "relevant": true
       },
       {
         "areaCode": "MCN",
         "areaLabel": "Madeira — Costa Norte",
         "type": "Vento",
-        "level": "yellow",
-        "text": "Rajadas até 90 km/h.",
+        "level": "orange",
+        "text": "Rajadas até 100 km/h, em esepcial nos extremos leste e oeste.",
         "startTime": "2026-11-10T21:00:00",
         "endTime": "2026-11-11T12:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "MCN",
+        "areaLabel": "Madeira — Costa Norte",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de oeste com 4 a 4,5 metros, passando a ondas de noroeste.",
+        "startTime": "2026-11-11T09:00:00",
+        "endTime": "2026-11-11T21:00:00",
         "relevant": true
       }
     ],
@@ -8302,17 +8472,27 @@
         "level": "orange",
         "text": "Chuva, por vezes forte e persistente.",
         "startTime": "2026-11-10T21:00:00",
-        "endTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T09:00:00",
         "relevant": true
       },
       {
         "areaCode": "MCN",
         "areaLabel": "Madeira — Costa Norte",
         "type": "Vento",
-        "level": "yellow",
-        "text": "Rajadas até 90 km/h.",
+        "level": "orange",
+        "text": "Rajadas até 100 km/h, em esepcial nos extremos leste e oeste.",
         "startTime": "2026-11-10T21:00:00",
         "endTime": "2026-11-11T12:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "MCN",
+        "areaLabel": "Madeira — Costa Norte",
+        "type": "Agitação Marítima",
+        "level": "yellow",
+        "text": "Ondas de oeste com 4 a 4,5 metros, passando a ondas de noroeste.",
+        "startTime": "2026-11-11T09:00:00",
+        "endTime": "2026-11-11T21:00:00",
         "relevant": true
       }
     ],
