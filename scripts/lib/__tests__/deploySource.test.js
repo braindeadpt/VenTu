@@ -316,6 +316,80 @@ describe('deploy.yml — salto e Dawn Patrol', () => {
     expect(wf).toMatch(/--write-manifest out\/deploy-source\.json/);
     expect(wf).toMatch(/skip: \$\{\{ steps\.source\.outputs\.skip \}\}/);
     expect(wf).toMatch(/needs\.build\.outputs\.skip != 'true'/);
-    expect(wf).toMatch(/- name: Build\n\s+if: steps\.source\.outputs\.skip != 'true'/);
+    // \r?\n: o checkout Windows tem CRLF — o gate lógico é o mesmo.
+    expect(wf).toMatch(/- name: Build\r?\n\s+if: steps\.source\.outputs\.skip != 'true'/);
+  });
+});
+
+describe('deploySource — verde fora da janela com diff só de dados', () => {
+  const staleRun = run({ created_at: hoursAgo(24 * 20) }); // 20 dias
+  const staleBase = {
+    mode: 'workflow_run',
+    mainSha: 'main999',
+    greenRun: staleRun,
+    greenIsAncestor: true,
+    greenAgeDays: 20,
+    maxAgeDays: 7,
+  };
+
+  it('verde fora da janela + diff só public/data/ → aceite, com idade marcada', () => {
+    const r = evaluateDeploySource({ ...staleBase, staleGreenDataOnly: true });
+    expect(r.status).toBe('ok');
+    expect(r.codeSha).toBe(staleRun.head_sha);
+    expect(r.dataSha).toBe('main999');
+    expect(r.staleDataOnly).toBe(true);
+    expect(r.staleAgeDays).toBe(20);
+    expect(r.reason).toContain('public/data/');
+  });
+
+  it('verde fora da janela + um ficheiro de código → recusado', () => {
+    const r = evaluateDeploySource({
+      ...staleBase,
+      staleGreenDataOnly: false,
+      staleNonDataPath: 'src/lib/x.ts',
+    });
+    expect(r.status).toBe('fail');
+    expect(r.codeSha).toBeNull();
+    expect(r.reason).toContain('src/lib/x.ts');
+    expect(r.staleDataOnly).toBe(false);
+  });
+
+  it('verde fora da janela sem prova de diff → recusado (fail-safe)', () => {
+    const r = evaluateDeploySource({ ...staleBase, staleGreenDataOnly: false });
+    expect(r.status).toBe('fail');
+    expect(r.reason).toContain('fora da janela');
+  });
+
+  it('verde dentro da janela sem alterações → comportamento actual', () => {
+    const r = evaluateDeploySource({
+      mode: 'workflow_run',
+      mainSha: 'main999',
+      greenRun: staleRun,
+      greenIsAncestor: true,
+      greenAgeDays: 2,
+      maxAgeDays: 7,
+    });
+    expect(r.status).toBe('ok');
+    expect(r.staleDataOnly).toBe(false);
+    expect(r.staleAgeDays).toBeNull();
+  });
+
+  it('nenhum run verde → recusado como hoje', () => {
+    const r = evaluateDeploySource({ mode: 'workflow_run', mainSha: 'm', greenRun: null });
+    expect(r.status).toBe('fail');
+    expect(r.reason).toContain('nenhum run verde');
+  });
+
+  it('verde velho mas aceite: resumo e manifesto mostram a idade em dias', () => {
+    const r = evaluateDeploySource({ ...staleBase, staleGreenDataOnly: true });
+    const md = formatDeploySummary(r, { greenRun: staleRun, generatedAt: 'G' });
+    expect(md).toContain('fora da janela');
+    expect(md).toContain('20.0 dias');
+    const m = JSON.parse(
+      formatDeploySourceManifest({ fingerprint: 'f', codeSha: 'c', dataSha: 'd', staleDataOnlyDays: r.staleAgeDays }),
+    );
+    expect(m.staleDataOnlyDays).toBe(20);
+    const m2 = JSON.parse(formatDeploySourceManifest({ fingerprint: 'f', codeSha: 'c', dataSha: 'd' }));
+    expect('staleDataOnlyDays' in m2).toBe(false);
   });
 });

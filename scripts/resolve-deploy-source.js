@@ -137,7 +137,7 @@ function fetchCiRuns() {
   const jq =
     '[.workflow_runs[] | {conclusion, event, head_sha, created_at, html_url, run_number}]';
   const raw = ghApi(
-    `repos/${REPO}/actions/workflows/${CI_WORKFLOW_FILE}/runs?branch=main&status=completed&per_page=50`,
+    `repos/${REPO}/actions/workflows/${CI_WORKFLOW_FILE}/runs?branch=main&status=success&per_page=50`,
     jq,
   );
   if (!raw) return null;
@@ -220,6 +220,8 @@ function finish(res, greenRun, sk = { fingerprint: null, skip: false, reason: ''
     warn: res.warn ? 'true' : 'false',
     fingerprint: sk.fingerprint || '',
     skip: sk.skip ? 'true' : 'false',
+    stale_data_only_days:
+      res.staleDataOnly && res.staleAgeDays !== null ? res.staleAgeDays.toFixed(1) : '',
   });
 
   console.log(md);
@@ -247,8 +249,18 @@ function writeManifest(file) {
     console.log('::warning::DEPLOY_FINGERPRINT vazio — deploy-source.json não escrito (o próximo deploy publica sempre)');
     return;
   }
+  const staleRaw = process.env.STALE_DATA_ONLY_DAYS;
+  const staleDays = staleRaw != null && staleRaw !== '' ? Number(staleRaw) : null;
   fs.mkdirSync(require('path').dirname(file), { recursive: true });
-  fs.writeFileSync(file, formatDeploySourceManifest({ fingerprint, codeSha, dataSha }));
+  fs.writeFileSync(
+    file,
+    formatDeploySourceManifest({
+      fingerprint,
+      codeSha,
+      dataSha,
+      staleDataOnlyDays: Number.isFinite(staleDays) ? staleDays : null,
+    }),
+  );
   console.log(`deploy-source.json → ${file} (${fingerprint.slice(0, 12)})`);
 }
 
@@ -278,9 +290,11 @@ async function main() {
 
   // A página de runs vem de um índice eventualmente consistente — um snapshot
   // sem verdes não prova CI vermelho. Re-tenta antes de recusar o deploy.
+  // ignoreMaxAge: precisa de ver verdes para lá da janela — a aceitação de
+  // um verde velho (diff só de dados) é decidida abaixo, não aqui.
   const { greenRun, runs, attemptsUsed } = pickGreenRunWithRetries(fetchCiRuns, {
     nowMs,
-    maxAgeDays,
+    ignoreMaxAge: true,
     attempts: retryAttempts,
     delayMs: retryDelayMs,
     onRetry: ({ attempt, attempts, runs: page }) =>
@@ -306,6 +320,24 @@ async function main() {
     }
   }
 
+  // Verde fora da janela: só é aceite quando TODOS os ficheiros entre o SHA
+  // verde e main vivem em public/data/ — se o git falhar, recusa (fail-safe).
+  let greenAgeDays = null;
+  let staleGreenDataOnly = false;
+  let staleNonDataPath = null;
+  if (greenRun && greenIsAncestor) {
+    const createdMs = new Date(greenRun.created_at).getTime();
+    if (Number.isFinite(createdMs)) greenAgeDays = (nowMs - createdMs) / 86400000;
+    if (greenAgeDays !== null && greenAgeDays > maxAgeDays) {
+      const diff = gitTry('diff', '--name-only', `${greenRun.head_sha}..${mainSha}`);
+      if (diff !== null) {
+        const files = diff.split('\n').map((l) => l.trim()).filter(Boolean);
+        staleGreenDataOnly = files.every((f) => f.startsWith('public/data/'));
+        staleNonDataPath = files.find((f) => !f.startsWith('public/data/')) ?? null;
+      }
+    }
+  }
+
   const res = evaluateDeploySource({
     mode: 'workflow_run',
     mainSha,
@@ -315,6 +347,10 @@ async function main() {
     lagHours,
     lagWarnCommits,
     lagWarnHours,
+    greenAgeDays,
+    staleGreenDataOnly,
+    staleNonDataPath,
+    maxAgeDays,
   });
 
   console.log(
