@@ -1,7 +1,27 @@
 {
   "source": "ipma",
-  "fetchedAt": "2026-11-10T17:20:12.551Z",
+  "fetchedAt": "2026-11-10T18:06:42.180Z",
   "warnings": [
+    {
+      "areaCode": "STB",
+      "areaLabel": "Setúbal",
+      "type": "Precipitação",
+      "level": "red",
+      "text": "Precipitação forte e persistente.",
+      "startTime": "2026-11-11T12:00:00",
+      "endTime": "2026-11-11T18:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "STM",
+      "areaLabel": "Santarém",
+      "type": "Precipitação",
+      "level": "red",
+      "text": "Precipitação forte e persistente.",
+      "startTime": "2026-11-11T12:00:00",
+      "endTime": "2026-11-11T18:00:00",
+      "relevant": true
+    },
     {
       "areaCode": "MRM",
       "areaLabel": "Madeira — Regiões Montanhosas",
@@ -10,6 +30,46 @@
       "text": "Chuva, por vezes forte e persistente.",
       "startTime": "2026-11-10T21:00:00",
       "endTime": "2026-11-11T06:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "LSB",
+      "areaLabel": "Lisboa",
+      "type": "Precipitação",
+      "level": "red",
+      "text": "Precipitação forte e persistente.",
+      "startTime": "2026-11-11T12:00:00",
+      "endTime": "2026-11-11T18:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "LRA",
+      "areaLabel": "Leiria",
+      "type": "Precipitação",
+      "level": "red",
+      "text": "Precipitação forte e persistente.",
+      "startTime": "2026-11-11T12:00:00",
+      "endTime": "2026-11-11T18:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "CBO",
+      "areaLabel": "Castelo Branco",
+      "type": "Precipitação",
+      "level": "red",
+      "text": "Precipitação forte e persistente.",
+      "startTime": "2026-11-11T12:00:00",
+      "endTime": "2026-11-11T18:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "PTG",
+      "areaLabel": "Portalegre",
+      "type": "Precipitação",
+      "level": "red",
+      "text": "Precipitação forte e persistente.",
+      "startTime": "2026-11-11T12:00:00",
+      "endTime": "2026-11-11T18:00:00",
       "relevant": true
     },
     {
@@ -229,7 +289,7 @@
       "level": "orange",
       "text": "Precipitação por vezes forte e persistente.",
       "startTime": "2026-11-11T05:00:00",
-      "endTime": "2026-11-11T18:00:00",
+      "endTime": "2026-11-11T12:00:00",
       "relevant": true
     },
     {
@@ -239,7 +299,7 @@
       "level": "orange",
       "text": "Precipitação por vezes forte e persistente.",
       "startTime": "2026-11-11T05:00:00",
-      "endTime": "2026-11-11T18:00:00",
+      "endTime": "2026-11-11T12:00:00",
       "relevant": true
     },
     {
@@ -269,7 +329,7 @@
       "level": "orange",
       "text": "Precipitação por vezes forte e persistente.",
       "startTime": "2026-11-11T05:00:00",
-      "endTime": "2026-11-11T18:00:00",
+      "endTime": "2026-11-11T12:00:00",
       "relevant": true
     },
     {
@@ -279,7 +339,7 @@
       "level": "orange",
       "text": "Precipitação por vezes forte e persistente.",
       "startTime": "2026-11-11T05:00:00",
-      "endTime": "2026-11-11T18:00:00",
+      "endTime": "2026-11-11T12:00:00",
       "relevant": true
     },
     {
@@ -309,7 +369,7 @@
       "level": "orange",
       "text": "Precipitação por vezes forte e persistente.",
       "startTime": "2026-11-11T05:00:00",
-      "endTime": "2026-11-11T18:00:00",
+      "endTime": "2026-11-11T12:00:00",
       "relevant": true
     },
     {
@@ -339,7 +399,7 @@
       "level": "orange",
       "text": "Precipitação por vezes forte e persistente.",
       "startTime": "2026-11-11T05:00:00",
-      "endTime": "2026-11-11T18:00:00",
+      "endTime": "2026-11-11T12:00:00",
       "relevant": true
     },
     {
@@ -438,7 +498,7 @@
       "type": "Agitação Marítima",
       "level": "yellow",
       "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-      "startTime": "2026-11-10T12:10:00",
+      "startTime": "2026-11-10T16:31:00",
       "endTime": "2026-11-11T06:00:00",
       "relevant": true
     },
@@ -448,7 +508,7 @@
       "type": "Agitação Marítima",
       "level": "yellow",
       "text": "Ondas do quadrante oeste com 4 a 5 metros na costa ocidental, sendo ondas de sudoeste com 4 metros na costa sul do barlavento.",
-      "startTime": "2026-11-10T12:10:00",
+      "startTime": "2026-11-10T16:31:00",
       "endTime": "2026-11-12T03:00:00",
       "relevant": true
     },
@@ -458,7 +518,7 @@
       "type": "Agitação Marítima",
       "level": "yellow",
       "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-      "startTime": "2026-11-10T12:10:00",
+      "startTime": "2026-11-10T16:31:00",
       "endTime": "2026-11-12T03:00:00",
       "relevant": true
     },
@@ -468,7 +528,7 @@
       "type": "Agitação Marítima",
       "level": "yellow",
       "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-      "startTime": "2026-11-10T12:10:00",
+      "startTime": "2026-11-10T16:31:00",
       "endTime": "2026-11-11T06:00:00",
       "relevant": true
     },
@@ -478,7 +538,7 @@
       "type": "Agitação Marítima",
       "level": "yellow",
       "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-      "startTime": "2026-11-10T12:10:00",
+      "startTime": "2026-11-10T16:31:00",
       "endTime": "2026-11-12T03:00:00",
       "relevant": true
     },
@@ -488,7 +548,7 @@
       "type": "Agitação Marítima",
       "level": "yellow",
       "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-      "startTime": "2026-11-10T12:10:00",
+      "startTime": "2026-11-10T16:31:00",
       "endTime": "2026-11-11T06:00:00",
       "relevant": true
     },
@@ -508,7 +568,7 @@
       "type": "Agitação Marítima",
       "level": "yellow",
       "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-      "startTime": "2026-11-10T12:10:00",
+      "startTime": "2026-11-10T16:31:00",
       "endTime": "2026-11-12T03:00:00",
       "relevant": true
     },
@@ -518,7 +578,7 @@
       "type": "Agitação Marítima",
       "level": "yellow",
       "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-      "startTime": "2026-11-10T12:10:00",
+      "startTime": "2026-11-10T16:31:00",
       "endTime": "2026-11-11T06:00:00",
       "relevant": true
     },
@@ -528,7 +588,7 @@
       "type": "Agitação Marítima",
       "level": "yellow",
       "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-      "startTime": "2026-11-10T12:10:00",
+      "startTime": "2026-11-10T16:31:00",
       "endTime": "2026-11-11T06:00:00",
       "relevant": true
     },
@@ -548,7 +608,7 @@
       "type": "Agitação Marítima",
       "level": "yellow",
       "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-      "startTime": "2026-11-10T12:10:00",
+      "startTime": "2026-11-10T16:31:00",
       "endTime": "2026-11-11T06:00:00",
       "relevant": true
     },
@@ -568,7 +628,7 @@
       "type": "Precipitação",
       "level": "yellow",
       "text": "Precipitação persistente, por vezes forte.",
-      "startTime": "2026-11-10T12:10:00",
+      "startTime": "2026-11-10T16:31:00",
       "endTime": "2026-11-11T00:00:00",
       "relevant": true
     },
@@ -578,7 +638,7 @@
       "type": "Precipitação",
       "level": "yellow",
       "text": "Períodos de chuva ou aguaceiros por vezes fortes.",
-      "startTime": "2026-11-10T12:10:00",
+      "startTime": "2026-11-10T16:31:00",
       "endTime": "2026-11-10T18:00:00",
       "relevant": true
     },
@@ -588,7 +648,7 @@
       "type": "Precipitação",
       "level": "yellow",
       "text": "Precipitação por vezes forte, em esepcial nas zonas de serra, e acompanhada de trovoada.",
-      "startTime": "2026-11-10T12:10:00",
+      "startTime": "2026-11-10T16:31:00",
       "endTime": "2026-11-10T18:00:00",
       "relevant": true
     },
@@ -598,7 +658,7 @@
       "type": "Precipitação",
       "level": "yellow",
       "text": "Precipitação por vezes forte e acompanhada de trovoada.",
-      "startTime": "2026-11-10T12:10:00",
+      "startTime": "2026-11-10T16:31:00",
       "endTime": "2026-11-10T18:00:00",
       "relevant": true
     },
@@ -608,7 +668,7 @@
       "type": "Precipitação",
       "level": "yellow",
       "text": "Precipitação persistente, por vezes forte.",
-      "startTime": "2026-11-10T12:10:00",
+      "startTime": "2026-11-10T16:31:00",
       "endTime": "2026-11-11T00:00:00",
       "relevant": true
     },
@@ -618,7 +678,7 @@
       "type": "Precipitação",
       "level": "yellow",
       "text": "Precipitação por vezes forte e acompanhada de trovoada.",
-      "startTime": "2026-11-10T12:10:00",
+      "startTime": "2026-11-10T16:31:00",
       "endTime": "2026-11-10T18:00:00",
       "relevant": true
     },
@@ -628,7 +688,7 @@
       "type": "Precipitação",
       "level": "yellow",
       "text": "Períodos de chuva ou aguaceiros por vezes fortes.",
-      "startTime": "2026-11-10T12:10:00",
+      "startTime": "2026-11-10T16:31:00",
       "endTime": "2026-11-10T18:00:00",
       "relevant": true
     },
@@ -638,7 +698,7 @@
       "type": "Precipitação",
       "level": "yellow",
       "text": "Precipitação por vezes forte e acompanhada de trovoada.",
-      "startTime": "2026-11-10T12:10:00",
+      "startTime": "2026-11-10T16:31:00",
       "endTime": "2026-11-10T18:00:00",
       "relevant": true
     },
@@ -648,7 +708,7 @@
       "type": "Precipitação",
       "level": "yellow",
       "text": "Precipitação persistente, por vezes forte.",
-      "startTime": "2026-11-10T12:10:00",
+      "startTime": "2026-11-10T16:31:00",
       "endTime": "2026-11-11T00:00:00",
       "relevant": true
     },
@@ -658,7 +718,7 @@
       "type": "Precipitação",
       "level": "yellow",
       "text": "Precipitação persistente, por vezes forte.",
-      "startTime": "2026-11-10T12:10:00",
+      "startTime": "2026-11-10T16:31:00",
       "endTime": "2026-11-11T00:00:00",
       "relevant": true
     },
@@ -678,7 +738,7 @@
       "type": "Trovoada",
       "level": "yellow",
       "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; rajadas entre 70 e 90 km/h.",
-      "startTime": "2026-11-10T12:10:00",
+      "startTime": "2026-11-10T16:31:00",
       "endTime": "2026-11-10T18:00:00",
       "relevant": true
     },
@@ -688,7 +748,7 @@
       "type": "Trovoada",
       "level": "yellow",
       "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; rajadas entre 70 e 90 km/h.",
-      "startTime": "2026-11-10T12:10:00",
+      "startTime": "2026-11-10T16:31:00",
       "endTime": "2026-11-10T18:00:00",
       "relevant": true
     },
@@ -731,7 +791,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T06:00:00",
         "relevant": true
       }
@@ -753,7 +813,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T06:00:00",
         "relevant": true
       }
@@ -775,7 +835,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T06:00:00",
         "relevant": true
       }
@@ -797,7 +857,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T06:00:00",
         "relevant": true
       }
@@ -819,7 +879,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T06:00:00",
         "relevant": true
       }
@@ -841,7 +901,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T06:00:00",
         "relevant": true
       }
@@ -863,7 +923,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T06:00:00",
         "relevant": true
       }
@@ -885,7 +945,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T06:00:00",
         "relevant": true
       }
@@ -907,7 +967,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T06:00:00",
         "relevant": true
       }
@@ -929,7 +989,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T06:00:00",
         "relevant": true
       }
@@ -951,7 +1011,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T06:00:00",
         "relevant": true
       }
@@ -973,7 +1033,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T06:00:00",
         "relevant": true
       }
@@ -995,7 +1055,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T06:00:00",
         "relevant": true
       }
@@ -1017,7 +1077,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T06:00:00",
         "relevant": true
       }
@@ -1039,7 +1099,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T06:00:00",
         "relevant": true
       }
@@ -1061,7 +1121,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T06:00:00",
         "relevant": true
       }
@@ -1083,7 +1143,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T06:00:00",
         "relevant": true
       }
@@ -1105,7 +1165,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T06:00:00",
         "relevant": true
       }
@@ -1127,7 +1187,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T06:00:00",
         "relevant": true
       }
@@ -1149,7 +1209,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T06:00:00",
         "relevant": true
       }
@@ -1171,7 +1231,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T06:00:00",
         "relevant": true
       }
@@ -1193,7 +1253,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T06:00:00",
         "relevant": true
       }
@@ -1215,7 +1275,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T06:00:00",
         "relevant": true
       }
@@ -1237,7 +1297,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T06:00:00",
         "relevant": true
       }
@@ -1259,7 +1319,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T06:00:00",
         "relevant": true
       }
@@ -1281,7 +1341,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T06:00:00",
         "relevant": true
       }
@@ -1303,7 +1363,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T06:00:00",
         "relevant": true
       }
@@ -1325,7 +1385,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T06:00:00",
         "relevant": true
       }
@@ -1347,7 +1407,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T06:00:00",
         "relevant": true
       }
@@ -1369,7 +1429,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T06:00:00",
         "relevant": true
       }
@@ -1391,7 +1451,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T06:00:00",
         "relevant": true
       }
@@ -1413,7 +1473,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T06:00:00",
         "relevant": true
       }
@@ -1435,7 +1495,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T06:00:00",
         "relevant": true
       },
@@ -1467,7 +1527,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T06:00:00",
         "relevant": true
       },
@@ -1499,7 +1559,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T06:00:00",
         "relevant": true
       },
@@ -1531,7 +1591,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T06:00:00",
         "relevant": true
       },
@@ -1563,7 +1623,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T06:00:00",
         "relevant": true
       },
@@ -1595,7 +1655,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T06:00:00",
         "relevant": true
       },
@@ -1627,7 +1687,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T06:00:00",
         "relevant": true
       },
@@ -1659,7 +1719,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T06:00:00",
         "relevant": true
       },
@@ -1701,7 +1761,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T06:00:00",
         "relevant": true
       }
@@ -1733,7 +1793,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T06:00:00",
         "relevant": true
       }
@@ -1765,7 +1825,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T06:00:00",
         "relevant": true
       }
@@ -1797,7 +1857,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T06:00:00",
         "relevant": true
       }
@@ -1806,6 +1866,16 @@
       {
         "areaCode": "LRA",
         "areaLabel": "Leiria",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LRA",
+        "areaLabel": "Leiria",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -1820,7 +1890,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -1829,7 +1899,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T06:00:00",
         "relevant": true
       },
@@ -1839,7 +1909,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva ou aguaceiros por vezes fortes.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -1848,6 +1918,16 @@
       {
         "areaCode": "LRA",
         "areaLabel": "Leiria",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LRA",
+        "areaLabel": "Leiria",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -1862,7 +1942,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -1871,7 +1951,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T06:00:00",
         "relevant": true
       },
@@ -1881,7 +1961,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva ou aguaceiros por vezes fortes.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -1890,6 +1970,16 @@
       {
         "areaCode": "LRA",
         "areaLabel": "Leiria",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LRA",
+        "areaLabel": "Leiria",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -1904,7 +1994,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -1913,7 +2003,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T06:00:00",
         "relevant": true
       },
@@ -1923,7 +2013,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva ou aguaceiros por vezes fortes.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -1932,6 +2022,16 @@
       {
         "areaCode": "LRA",
         "areaLabel": "Leiria",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LRA",
+        "areaLabel": "Leiria",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -1946,7 +2046,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -1955,7 +2055,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T06:00:00",
         "relevant": true
       },
@@ -1965,7 +2065,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva ou aguaceiros por vezes fortes.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -1974,6 +2074,16 @@
       {
         "areaCode": "LRA",
         "areaLabel": "Leiria",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LRA",
+        "areaLabel": "Leiria",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -1988,7 +2098,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -1997,7 +2107,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T06:00:00",
         "relevant": true
       },
@@ -2007,7 +2117,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva ou aguaceiros por vezes fortes.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -2016,6 +2126,16 @@
       {
         "areaCode": "STM",
         "areaLabel": "Santarém",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -2030,7 +2150,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -2039,7 +2159,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação persistente, por vezes forte.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T00:00:00",
         "relevant": true
       }
@@ -2048,6 +2168,16 @@
       {
         "areaCode": "STM",
         "areaLabel": "Santarém",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -2062,7 +2192,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -2071,7 +2201,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação persistente, por vezes forte.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T00:00:00",
         "relevant": true
       }
@@ -2080,6 +2210,16 @@
       {
         "areaCode": "STM",
         "areaLabel": "Santarém",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -2094,7 +2234,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -2103,7 +2243,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação persistente, por vezes forte.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T00:00:00",
         "relevant": true
       }
@@ -2112,6 +2252,16 @@
       {
         "areaCode": "STM",
         "areaLabel": "Santarém",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -2126,7 +2276,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -2135,7 +2285,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação persistente, por vezes forte.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T00:00:00",
         "relevant": true
       }
@@ -2144,6 +2294,16 @@
       {
         "areaCode": "STM",
         "areaLabel": "Santarém",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -2158,7 +2318,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -2167,7 +2327,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação persistente, por vezes forte.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T00:00:00",
         "relevant": true
       }
@@ -2176,6 +2336,16 @@
       {
         "areaCode": "STM",
         "areaLabel": "Santarém",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -2190,7 +2360,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -2199,7 +2369,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação persistente, por vezes forte.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T00:00:00",
         "relevant": true
       }
@@ -2208,6 +2378,16 @@
       {
         "areaCode": "STM",
         "areaLabel": "Santarém",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -2222,7 +2402,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -2231,7 +2411,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação persistente, por vezes forte.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T00:00:00",
         "relevant": true
       }
@@ -2240,6 +2420,16 @@
       {
         "areaCode": "STM",
         "areaLabel": "Santarém",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -2254,7 +2444,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -2263,7 +2453,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação persistente, por vezes forte.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T00:00:00",
         "relevant": true
       }
@@ -2272,6 +2462,16 @@
       {
         "areaCode": "STM",
         "areaLabel": "Santarém",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -2286,7 +2486,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -2295,7 +2495,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação persistente, por vezes forte.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T00:00:00",
         "relevant": true
       }
@@ -2304,6 +2504,16 @@
       {
         "areaCode": "STM",
         "areaLabel": "Santarém",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -2318,7 +2528,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -2327,7 +2537,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação persistente, por vezes forte.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T00:00:00",
         "relevant": true
       }
@@ -2336,6 +2546,16 @@
       {
         "areaCode": "STM",
         "areaLabel": "Santarém",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -2350,7 +2570,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -2359,7 +2579,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação persistente, por vezes forte.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T00:00:00",
         "relevant": true
       }
@@ -2368,6 +2588,16 @@
       {
         "areaCode": "STM",
         "areaLabel": "Santarém",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -2382,7 +2612,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -2391,7 +2621,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação persistente, por vezes forte.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T00:00:00",
         "relevant": true
       }
@@ -2400,6 +2630,16 @@
       {
         "areaCode": "STM",
         "areaLabel": "Santarém",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -2414,7 +2654,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -2423,7 +2663,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação persistente, por vezes forte.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T00:00:00",
         "relevant": true
       }
@@ -2432,6 +2672,16 @@
       {
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -2456,7 +2706,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -2465,7 +2715,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -2475,7 +2725,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -2484,6 +2734,16 @@
       {
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -2508,7 +2768,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -2517,7 +2777,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -2527,7 +2787,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -2536,6 +2796,16 @@
       {
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -2560,7 +2830,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -2569,7 +2839,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -2579,7 +2849,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -2588,6 +2858,16 @@
       {
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -2612,7 +2892,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -2621,7 +2901,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -2631,7 +2911,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -2640,6 +2920,16 @@
       {
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -2664,7 +2954,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -2673,7 +2963,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -2683,7 +2973,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -2692,6 +2982,16 @@
       {
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -2716,7 +3016,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -2725,7 +3025,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -2735,7 +3035,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -2744,6 +3044,16 @@
       {
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -2768,7 +3078,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -2777,7 +3087,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -2787,7 +3097,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -2796,6 +3106,16 @@
       {
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -2820,7 +3140,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -2829,7 +3149,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -2839,7 +3159,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -2848,6 +3168,16 @@
       {
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -2872,7 +3202,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -2881,7 +3211,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -2891,7 +3221,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -2900,6 +3230,16 @@
       {
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -2924,7 +3264,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -2933,7 +3273,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -2943,7 +3283,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -2952,6 +3292,16 @@
       {
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -2976,7 +3326,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -2985,7 +3335,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -2995,7 +3345,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -3004,6 +3354,16 @@
       {
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -3028,7 +3388,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -3037,7 +3397,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -3047,7 +3407,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -3056,6 +3416,16 @@
       {
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -3080,7 +3450,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -3089,7 +3459,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -3099,7 +3469,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -3108,6 +3478,16 @@
       {
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -3132,7 +3512,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -3141,7 +3521,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -3151,7 +3531,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -3160,6 +3540,16 @@
       {
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -3184,7 +3574,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -3193,7 +3583,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -3203,7 +3593,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -3212,6 +3602,16 @@
       {
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -3236,7 +3636,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -3245,7 +3645,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -3255,7 +3655,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -3264,6 +3664,16 @@
       {
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -3288,7 +3698,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -3297,7 +3707,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -3307,7 +3717,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -3316,6 +3726,16 @@
       {
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -3340,7 +3760,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -3349,7 +3769,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -3359,7 +3779,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -3368,6 +3788,16 @@
       {
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -3392,7 +3822,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -3401,7 +3831,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -3411,7 +3841,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -3420,6 +3850,16 @@
       {
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -3444,7 +3884,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -3453,7 +3893,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -3463,7 +3903,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -3472,6 +3912,16 @@
       {
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -3496,7 +3946,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -3505,7 +3955,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -3515,7 +3965,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -3524,6 +3974,16 @@
       {
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -3548,7 +4008,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -3557,7 +4017,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -3567,7 +4027,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -3576,6 +4036,16 @@
       {
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -3600,7 +4070,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -3609,7 +4079,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -3619,7 +4089,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -3628,6 +4098,16 @@
       {
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -3652,7 +4132,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -3661,7 +4141,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -3671,7 +4151,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -3680,6 +4160,16 @@
       {
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -3704,7 +4194,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -3713,7 +4203,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -3723,7 +4213,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -3732,6 +4222,16 @@
       {
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -3756,7 +4256,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -3765,7 +4265,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -3775,7 +4275,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -3784,6 +4284,16 @@
       {
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -3808,7 +4318,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -3817,7 +4327,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -3827,7 +4337,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -3836,6 +4346,16 @@
       {
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -3860,7 +4380,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -3869,7 +4389,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -3879,7 +4399,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -3888,6 +4408,16 @@
       {
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -3912,7 +4442,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -3921,7 +4451,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -3931,7 +4461,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -3940,6 +4470,16 @@
       {
         "areaCode": "STB",
         "areaLabel": "Setúbal",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -3964,7 +4504,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -3973,7 +4513,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -3983,7 +4523,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -3992,6 +4532,16 @@
       {
         "areaCode": "STB",
         "areaLabel": "Setúbal",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -4016,7 +4566,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -4025,7 +4575,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -4035,7 +4585,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -4044,6 +4594,16 @@
       {
         "areaCode": "STB",
         "areaLabel": "Setúbal",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -4068,7 +4628,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -4077,7 +4637,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -4087,7 +4647,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -4129,7 +4689,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -4139,7 +4699,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -4161,7 +4721,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T06:00:00",
         "relevant": true
       }
@@ -4170,6 +4730,16 @@
       {
         "areaCode": "STB",
         "areaLabel": "Setúbal",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -4194,7 +4764,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -4203,7 +4773,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -4213,7 +4783,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -4222,6 +4792,16 @@
       {
         "areaCode": "STB",
         "areaLabel": "Setúbal",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -4246,7 +4826,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -4255,7 +4835,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -4265,7 +4845,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -4274,6 +4854,16 @@
       {
         "areaCode": "STB",
         "areaLabel": "Setúbal",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -4298,7 +4888,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -4307,7 +4897,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -4317,7 +4907,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -4326,6 +4916,16 @@
       {
         "areaCode": "STB",
         "areaLabel": "Setúbal",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -4350,7 +4950,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -4359,7 +4959,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -4369,7 +4969,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -4378,6 +4978,16 @@
       {
         "areaCode": "STB",
         "areaLabel": "Setúbal",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -4402,7 +5012,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -4411,7 +5021,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -4421,7 +5031,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -4430,6 +5040,16 @@
       {
         "areaCode": "STB",
         "areaLabel": "Setúbal",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -4454,7 +5074,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -4463,7 +5083,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -4473,7 +5093,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -4515,7 +5135,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros na costa ocidental, sendo ondas de sudoeste com 4 metros na costa sul do barlavento.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -4525,7 +5145,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte, em esepcial nas zonas de serra, e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -4567,7 +5187,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros na costa ocidental, sendo ondas de sudoeste com 4 metros na costa sul do barlavento.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -4577,7 +5197,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte, em esepcial nas zonas de serra, e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -4619,7 +5239,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros na costa ocidental, sendo ondas de sudoeste com 4 metros na costa sul do barlavento.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -4629,7 +5249,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte, em esepcial nas zonas de serra, e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -4671,7 +5291,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros na costa ocidental, sendo ondas de sudoeste com 4 metros na costa sul do barlavento.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -4681,7 +5301,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte, em esepcial nas zonas de serra, e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -4723,7 +5343,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros na costa ocidental, sendo ondas de sudoeste com 4 metros na costa sul do barlavento.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -4733,7 +5353,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte, em esepcial nas zonas de serra, e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -4775,7 +5395,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros na costa ocidental, sendo ondas de sudoeste com 4 metros na costa sul do barlavento.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -4785,7 +5405,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte, em esepcial nas zonas de serra, e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -4827,7 +5447,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros na costa ocidental, sendo ondas de sudoeste com 4 metros na costa sul do barlavento.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -4837,7 +5457,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte, em esepcial nas zonas de serra, e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -4879,7 +5499,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros na costa ocidental, sendo ondas de sudoeste com 4 metros na costa sul do barlavento.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -4889,7 +5509,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte, em esepcial nas zonas de serra, e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -4931,7 +5551,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros na costa ocidental, sendo ondas de sudoeste com 4 metros na costa sul do barlavento.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -4941,7 +5561,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte, em esepcial nas zonas de serra, e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -4983,7 +5603,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros na costa ocidental, sendo ondas de sudoeste com 4 metros na costa sul do barlavento.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -4993,7 +5613,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte, em esepcial nas zonas de serra, e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -5035,7 +5655,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros na costa ocidental, sendo ondas de sudoeste com 4 metros na costa sul do barlavento.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -5045,7 +5665,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte, em esepcial nas zonas de serra, e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -5087,7 +5707,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros na costa ocidental, sendo ondas de sudoeste com 4 metros na costa sul do barlavento.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -5097,7 +5717,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte, em esepcial nas zonas de serra, e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -5139,7 +5759,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros na costa ocidental, sendo ondas de sudoeste com 4 metros na costa sul do barlavento.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -5149,7 +5769,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte, em esepcial nas zonas de serra, e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -5191,7 +5811,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros na costa ocidental, sendo ondas de sudoeste com 4 metros na costa sul do barlavento.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -5201,7 +5821,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte, em esepcial nas zonas de serra, e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -5243,7 +5863,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros na costa ocidental, sendo ondas de sudoeste com 4 metros na costa sul do barlavento.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -5253,7 +5873,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte, em esepcial nas zonas de serra, e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -5295,7 +5915,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros na costa ocidental, sendo ondas de sudoeste com 4 metros na costa sul do barlavento.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -5305,7 +5925,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte, em esepcial nas zonas de serra, e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -5347,7 +5967,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros na costa ocidental, sendo ondas de sudoeste com 4 metros na costa sul do barlavento.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -5357,7 +5977,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte, em esepcial nas zonas de serra, e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -5399,7 +6019,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros na costa ocidental, sendo ondas de sudoeste com 4 metros na costa sul do barlavento.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -5409,7 +6029,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte, em esepcial nas zonas de serra, e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -5451,7 +6071,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros na costa ocidental, sendo ondas de sudoeste com 4 metros na costa sul do barlavento.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -5461,7 +6081,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte, em esepcial nas zonas de serra, e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -5503,7 +6123,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros na costa ocidental, sendo ondas de sudoeste com 4 metros na costa sul do barlavento.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -5513,7 +6133,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte, em esepcial nas zonas de serra, e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -5555,7 +6175,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros na costa ocidental, sendo ondas de sudoeste com 4 metros na costa sul do barlavento.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -5565,7 +6185,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte, em esepcial nas zonas de serra, e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -5607,7 +6227,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros na costa ocidental, sendo ondas de sudoeste com 4 metros na costa sul do barlavento.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -5617,7 +6237,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte, em esepcial nas zonas de serra, e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -5659,7 +6279,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros na costa ocidental, sendo ondas de sudoeste com 4 metros na costa sul do barlavento.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -5669,7 +6289,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte, em esepcial nas zonas de serra, e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -5711,7 +6331,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros na costa ocidental, sendo ondas de sudoeste com 4 metros na costa sul do barlavento.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -5721,7 +6341,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte, em esepcial nas zonas de serra, e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -5763,7 +6383,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros na costa ocidental, sendo ondas de sudoeste com 4 metros na costa sul do barlavento.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -5773,7 +6393,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte, em esepcial nas zonas de serra, e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -5815,7 +6435,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros na costa ocidental, sendo ondas de sudoeste com 4 metros na costa sul do barlavento.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -5825,7 +6445,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte, em esepcial nas zonas de serra, e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -5867,7 +6487,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros na costa ocidental, sendo ondas de sudoeste com 4 metros na costa sul do barlavento.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -5877,7 +6497,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte, em esepcial nas zonas de serra, e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -5919,7 +6539,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros na costa ocidental, sendo ondas de sudoeste com 4 metros na costa sul do barlavento.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -5929,7 +6549,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte, em esepcial nas zonas de serra, e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -5971,7 +6591,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros na costa ocidental, sendo ondas de sudoeste com 4 metros na costa sul do barlavento.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -5981,7 +6601,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte, em esepcial nas zonas de serra, e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -6023,7 +6643,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros na costa ocidental, sendo ondas de sudoeste com 4 metros na costa sul do barlavento.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -6033,7 +6653,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte, em esepcial nas zonas de serra, e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -6075,7 +6695,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros na costa ocidental, sendo ondas de sudoeste com 4 metros na costa sul do barlavento.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -6085,7 +6705,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte, em esepcial nas zonas de serra, e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -6127,7 +6747,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros na costa ocidental, sendo ondas de sudoeste com 4 metros na costa sul do barlavento.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -6137,7 +6757,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte, em esepcial nas zonas de serra, e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -6179,7 +6799,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros na costa ocidental, sendo ondas de sudoeste com 4 metros na costa sul do barlavento.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -6189,7 +6809,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte, em esepcial nas zonas de serra, e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -6231,7 +6851,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros na costa ocidental, sendo ondas de sudoeste com 4 metros na costa sul do barlavento.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -6241,7 +6861,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte, em esepcial nas zonas de serra, e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -6283,7 +6903,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros na costa ocidental, sendo ondas de sudoeste com 4 metros na costa sul do barlavento.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -6293,7 +6913,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte, em esepcial nas zonas de serra, e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -6335,7 +6955,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros na costa ocidental, sendo ondas de sudoeste com 4 metros na costa sul do barlavento.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -6345,7 +6965,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte, em esepcial nas zonas de serra, e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -6387,7 +7007,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros na costa ocidental, sendo ondas de sudoeste com 4 metros na costa sul do barlavento.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -6397,7 +7017,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte, em esepcial nas zonas de serra, e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -6439,7 +7059,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros na costa ocidental, sendo ondas de sudoeste com 4 metros na costa sul do barlavento.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -6449,7 +7069,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte, em esepcial nas zonas de serra, e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -6491,7 +7111,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros na costa ocidental, sendo ondas de sudoeste com 4 metros na costa sul do barlavento.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -6501,7 +7121,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte, em esepcial nas zonas de serra, e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -6787,7 +7407,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T06:00:00",
         "relevant": true
       },
@@ -6819,7 +7439,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T06:00:00",
         "relevant": true
       }
@@ -6828,6 +7448,16 @@
       {
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -6852,7 +7482,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -6861,7 +7491,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -6871,7 +7501,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -6880,6 +7510,16 @@
       {
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -6904,7 +7544,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -6913,7 +7553,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -6923,7 +7563,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -6932,6 +7572,16 @@
       {
         "areaCode": "STM",
         "areaLabel": "Santarém",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -6946,7 +7596,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -6955,7 +7605,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação persistente, por vezes forte.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T00:00:00",
         "relevant": true
       }
@@ -6964,6 +7614,16 @@
       {
         "areaCode": "STM",
         "areaLabel": "Santarém",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -6978,7 +7638,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -6987,12 +7647,22 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação persistente, por vezes forte.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T00:00:00",
         "relevant": true
       }
     ],
     "sao-martinho-porto": [
+      {
+        "areaCode": "LRA",
+        "areaLabel": "Leiria",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
       {
         "areaCode": "LRA",
         "areaLabel": "Leiria",
@@ -7010,7 +7680,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -7019,7 +7689,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T06:00:00",
         "relevant": true
       },
@@ -7029,7 +7699,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva ou aguaceiros por vezes fortes.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -7038,6 +7708,16 @@
       {
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -7062,7 +7742,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -7071,7 +7751,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -7081,7 +7761,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -7090,6 +7770,16 @@
       {
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -7114,7 +7804,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -7123,7 +7813,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -7133,7 +7823,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -7142,6 +7832,16 @@
       {
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -7166,7 +7866,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -7175,7 +7875,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -7185,7 +7885,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -7194,6 +7894,16 @@
       {
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -7218,7 +7928,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -7227,7 +7937,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -7237,7 +7947,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -7246,6 +7956,16 @@
       {
         "areaCode": "STB",
         "areaLabel": "Setúbal",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -7270,7 +7990,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -7279,7 +7999,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -7289,7 +8009,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -7298,6 +8018,16 @@
       {
         "areaCode": "STB",
         "areaLabel": "Setúbal",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -7322,7 +8052,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -7331,7 +8061,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -7341,7 +8071,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -7350,6 +8080,16 @@
       {
         "areaCode": "STB",
         "areaLabel": "Setúbal",
+        "type": "Precipitação",
+        "level": "red",
+        "text": "Precipitação forte e persistente.",
+        "startTime": "2026-11-11T12:00:00",
+        "endTime": "2026-11-11T18:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
         "type": "Vento",
         "level": "red",
         "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
@@ -7374,7 +8114,7 @@
         "level": "orange",
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T05:00:00",
-        "endTime": "2026-11-11T18:00:00",
+        "endTime": "2026-11-11T12:00:00",
         "relevant": true
       },
       {
@@ -7383,7 +8123,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -7393,7 +8133,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -7435,7 +8175,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros na costa ocidental, sendo ondas de sudoeste com 4 metros na costa sul do barlavento.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -7445,7 +8185,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte, em esepcial nas zonas de serra, e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -7487,7 +8227,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros na costa ocidental, sendo ondas de sudoeste com 4 metros na costa sul do barlavento.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -7497,7 +8237,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte, em esepcial nas zonas de serra, e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -7539,7 +8279,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros na costa ocidental, sendo ondas de sudoeste com 4 metros na costa sul do barlavento.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -7549,7 +8289,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte, em esepcial nas zonas de serra, e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -7591,7 +8331,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros na costa ocidental, sendo ondas de sudoeste com 4 metros na costa sul do barlavento.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -7601,7 +8341,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte, em esepcial nas zonas de serra, e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -7643,7 +8383,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros na costa ocidental, sendo ondas de sudoeste com 4 metros na costa sul do barlavento.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       },
@@ -7653,7 +8393,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes forte, em esepcial nas zonas de serra, e acompanhada de trovoada.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-10T18:00:00",
         "relevant": true
       }
@@ -7813,7 +8553,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T06:00:00",
         "relevant": true
       }
@@ -7835,7 +8575,7 @@
         "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T12:10:00",
+        "startTime": "2026-11-10T16:31:00",
         "endTime": "2026-11-11T06:00:00",
         "relevant": true
       }
