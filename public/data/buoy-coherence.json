@@ -1,6 +1,6 @@
 {
   "day": "20261110",
-  "fetchedAt": "2026-11-10T12:06:44.678Z",
+  "fetchedAt": "2026-11-10T14:06:27.391Z",
   "minPairs": 3,
   "minAccumulatedPairs": 10,
   "archive": {
@@ -85,7 +85,7 @@
       "suboptimal": []
     },
     "Viana do Castelo": {
-      "spotCount": 4,
+      "spotCount": 7,
       "withObservedWave": 1,
       "bySource": {
         "ih-buoy": 1
@@ -192,7 +192,7 @@
       "suboptimal": []
     },
     "Porto": {
-      "spotCount": 10,
+      "spotCount": 11,
       "withObservedWave": 9,
       "bySource": {
         "ih-buoy": 9
@@ -286,7 +286,7 @@
       "suboptimal": []
     },
     "Espinho": {
-      "spotCount": 2,
+      "spotCount": 3,
       "withObservedWave": 0,
       "bySource": {},
       "audited": 0,
@@ -300,7 +300,7 @@
       "suboptimal": []
     },
     "Ovar": {
-      "spotCount": 5,
+      "spotCount": 6,
       "withObservedWave": 0,
       "bySource": {},
       "audited": 0,
@@ -1277,7 +1277,7 @@
       "suboptimal": []
     }
   },
-  "regionsAuditedAt": "2026-11-10T12:19:22.371Z",
+  "regionsAuditedAt": "2026-11-10T14:11:18.540Z",
   "pairs": [
     {
       "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
@@ -1288,13 +1288,13 @@
       "distanceKm": 285.3,
       "ptSource": "wmo",
       "n": 517,
-      "meanDeltaM": -0.4,
+      "meanDeltaM": -0.5,
       "meanAbsDeltaM": 0.5,
       "maxAbsDeltaM": 2.8,
-      "corr": 0.81,
+      "corr": 0.82,
       "verdict": "coherent",
-      "firstHour": "2026-10-11T13",
-      "lastHour": "2026-11-10T10",
+      "firstHour": "2026-10-11T15",
+      "lastHour": "2026-11-10T12",
       "hours": [
         {
           "6200084": 4.690000057220459,
@@ -1350,6 +1350,16 @@
           "6200084": 4.690000057220459,
           "6200199": 3.6474599838256836,
           "hour": "2026-11-10T10"
+        },
+        {
+          "6200084": 4.570000171661377,
+          "6200199": 3.28125,
+          "hour": "2026-11-10T11"
+        },
+        {
+          "6200084": 4.449999809265137,
+          "6200199": 3.2959001064300537,
+          "hour": "2026-11-10T12"
         }
       ]
     }
