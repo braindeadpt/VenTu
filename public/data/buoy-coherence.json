@@ -1,6 +1,6 @@
 {
   "day": "20261110",
-  "fetchedAt": "2026-11-10T18:06:30.295Z",
+  "fetchedAt": "2026-11-10T20:06:36.187Z",
   "minPairs": 3,
   "minAccumulatedPairs": 10,
   "archive": {
@@ -14,12 +14,12 @@
     "trend": {
       "6200084|6200199": {
         "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
-        "coherent": 29,
+        "coherent": 28,
         "review": 6,
         "incoherent": 1,
-        "insufficient": 30,
+        "insufficient": 31,
         "days": 66,
-        "incoherentRatio": 0.028
+        "incoherentRatio": 0.029
       },
       "6200083|6201079": {
         "pair": "Villano-Sisargas × Datawell ao largo de Faro",
@@ -85,7 +85,7 @@
       "suboptimal": []
     },
     "Viana do Castelo": {
-      "spotCount": 6,
+      "spotCount": 7,
       "withObservedWave": 0,
       "bySource": {},
       "audited": 0,
@@ -1146,7 +1146,7 @@
       "suboptimal": []
     }
   },
-  "regionsAuditedAt": "2026-11-10T18:12:04.280Z",
+  "regionsAuditedAt": "2026-11-10T20:08:56.540Z",
   "pairs": [
     {
       "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
@@ -1162,8 +1162,8 @@
       "maxAbsDeltaM": 2.8,
       "corr": 0.82,
       "verdict": "coherent",
-      "firstHour": "2026-10-11T19",
-      "lastHour": "2026-11-10T16",
+      "firstHour": "2026-10-11T21",
+      "lastHour": "2026-11-10T18",
       "hours": [
         {
           "6200084": 4.690000057220459,
@@ -1249,6 +1249,16 @@
           "6200084": 4.449999809265137,
           "6200199": 3.603519916534424,
           "hour": "2026-11-10T16"
+        },
+        {
+          "6200084": 4.570000171661377,
+          "6200199": 4.013669967651367,
+          "hour": "2026-11-10T17"
+        },
+        {
+          "6200084": 3.5199999809265137,
+          "6200199": 3.544919967651367,
+          "hour": "2026-11-10T18"
         }
       ]
     }
