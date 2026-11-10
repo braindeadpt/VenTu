@@ -33,38 +33,6 @@
       ]
     },
     {
-      "id": 18683,
-      "ref": "ANAV NR 2182/26",
-      "category": "Comunicações",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=b47853b4-da63-4743-a9ea-3d49a4277e91",
-      "source": "ih",
-      "collection": "nav_warning_coastal",
-      "polygons": [
-        [
-          [
-            -33.925781,
-            34.957995
-          ],
-          [
-            -33.925781,
-            41.836828
-          ],
-          [
-            -21.181641,
-            41.836828
-          ],
-          [
-            -21.181641,
-            34.957995
-          ],
-          [
-            -33.925781,
-            34.957995
-          ]
-        ]
-      ]
-    },
-    {
       "id": 18923,
       "ref": "ANAV NR 2399/26",
       "category": "Requisitos de segurança maritima",
@@ -214,38 +182,6 @@
           [
             -8.903046,
             38.206893
-          ]
-        ]
-      ]
-    },
-    {
-      "id": 19071,
-      "ref": "ANAV NR 2474/26",
-      "category": "Requisitos de segurança maritima",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=cc58e3b1-a2e2-49f8-8823-d237fd98b3d5",
-      "source": "ih",
-      "collection": "nav_warning_coastal",
-      "polygons": [
-        [
-          [
-            -8.777706,
-            40.605612
-          ],
-          [
-            -8.777706,
-            40.670483
-          ],
-          [
-            -8.681608,
-            40.670483
-          ],
-          [
-            -8.681608,
-            40.605612
-          ],
-          [
-            -8.777706,
-            40.605612
           ]
         ]
       ]
@@ -7511,11 +7447,9 @@
       1000708
     ],
     "sao-jacinto": [
-      19071,
       1000711
     ],
     "costa-nova": [
-      19071,
       1000711
     ],
     "figueira-foz": [
@@ -7634,12 +7568,6 @@
       2018289,
       2018749
     ],
-    "praia-vitoria": [
-      18683
-    ],
-    "santa-catarina-terceira": [
-      18683
-    ],
     "parede": [
       1000782,
       2017877
@@ -7689,7 +7617,6 @@
       2018749
     ],
     "almoxarife": [
-      18683,
       1000441,
       1009371
     ],
@@ -7736,21 +7663,6 @@
     "carvalhal-comporta": [
       19049,
       2017849
-    ],
-    "mosteiros": [
-      18683
-    ],
-    "monte-verde": [
-      18683
-    ],
-    "santa-barbara": [
-      18683
-    ],
-    "milicias": [
-      18683
-    ],
-    "agua-alto": [
-      18683
     ],
     "amoreira": [
       2017815
@@ -7955,12 +7867,6 @@
       2017807,
       2018247
     ],
-    "anjos": [
-      18683
-    ],
-    "ponta-delgada": [
-      18683
-    ],
     "sao-vicente-madeira": [
       1000459
     ],
@@ -7983,7 +7889,6 @@
       1000459
     ],
     "barra-aveiro": [
-      19071,
       1000711
     ],
     "vila-cha": [
@@ -8068,29 +7973,17 @@
     "madalena-mar": [
       1000459
     ],
-    "calhetas": [
-      18683
-    ],
-    "ribeira-quente": [
-      18683
-    ],
-    "formosa-santa-maria": [
-      18683
-    ],
     "porto-martins": [
-      18683,
       1010786,
       1010787,
       1010788,
       1010789
     ],
     "cachorro-pico": [
-      18683,
       1000441,
       1009371
     ],
     "faja-cubres": [
-      18683,
       1000441,
       1009371
     ],
@@ -8111,7 +8004,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-11-10T00:06:47.161Z",
+  "fetchedAt": "2026-11-10T04:06:48.728Z",
   "sourceCollection": "nav_warning_coastal+nav_warning_local+orca_anavnet_point",
   "sourceUrl": "https://ogcapi.hidrografico.pt/collections/nav_warning_coastal"
 }
