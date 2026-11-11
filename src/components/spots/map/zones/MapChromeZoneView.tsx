@@ -11,6 +11,7 @@
  */
 
 import { useEffect, useState, type ComponentProps } from 'react';
+import type { MapPele } from '@/lib/mapPele';
 import { usePathname } from 'next/navigation';
 import MapControls from '../components/MapControls';
 import MapControlStack from '../components/MapControlStack';
@@ -56,6 +57,8 @@ interface MapChromeZoneProps {
   /** Selector «Vento | Ondulação | Nenhum» (só /mapa fullscreen). */
   seaMode?: MapSeaMode;
   onSeaModeChange?: (mode: MapSeaMode) => void;
+  /** Pele v6 da fase B (`?pele=v6`) — só a régua de 48 h a lê (B3). */
+  pele?: MapPele | null;
 }
 
 export default function MapChromeZone({
@@ -75,6 +78,7 @@ export default function MapChromeZone({
   windButtonRef,
   seaMode,
   onSeaModeChange,
+  pele = null,
 }: MapChromeZoneProps) {
   const {
     locate, locating, handleShareView,
@@ -212,6 +216,7 @@ export default function MapChromeZone({
           onToggleScrub={toggleScrub}
           onSizeChange={state.setScrubH}
           timeTrackChips={state.timeTrackChips}
+          pele={pele}
         />
       )}
 

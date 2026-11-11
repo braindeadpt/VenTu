@@ -856,6 +856,7 @@ export default function SpotMapInteractive({
               windButtonRef={windButtonRef}
               seaMode={seaMode}
               onSeaModeChange={setSeaMode}
+              pele={mapHud?.pele ?? null}
             />
 
             <MapLayersZone
