@@ -214,9 +214,17 @@ async function scrollToSettledBottom(page: import('@playwright/test').Page) {
 async function scrollToPinnedRegua(page: import('@playwright/test').Page) {
   const desktop = (page.viewportSize()?.width ?? 1280) >= 1024;
   if (desktop) {
+    // Passa a posição natural da régua, não um deslocamento fixo: faixas
+    // condicionais entre o hero e a régua (.seguranca, avisos) empurram-na para
+    // baixo consoante os dados do dia (a mesma correcção da #437).
     await page.evaluate(() => {
       const h = document.querySelector('#agora') as HTMLElement;
-      window.scrollTo(0, h.getBoundingClientRect().bottom + window.scrollY + 80);
+      const regua = document.querySelector('[data-testid="regua-48h"]') as HTMLElement;
+      const alvo = Math.max(
+        h.getBoundingClientRect().bottom + window.scrollY + 80,
+        regua.getBoundingClientRect().top + window.scrollY + 2,
+      );
+      window.scrollTo(0, alvo);
     });
   } else {
     await scrollToSettledBottom(page);
