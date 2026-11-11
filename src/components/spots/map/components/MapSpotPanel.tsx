@@ -82,8 +82,13 @@ export default function MapSpotPanel({
   onDifficultyChange,
   difficultyGroupLabel,
   locale,
+  pele,
 }: MapSpotPanelProps) {
   const t = getTranslation(locale);
+  // Pele v6 (B2): a contagem do cabeçalho diz o tecto — «38 spots nesta vista · até intermédio».
+  const nivelTecto = pele === 'v6' && selectedDifficulty !== 'all'
+    ? difficulties.find((d) => d.id === selectedDifficulty)?.label.toLocaleLowerCase(locale)
+    : undefined;
   // A animação de entrada só corre a partir do primeiro TOGGLE — nunca no
   // primeiro render (o painel já nasce na posição; deslizar era ruído).
   const [didToggle, setDidToggle] = useState(false);
@@ -125,6 +130,7 @@ export default function MapSpotPanel({
           onClick={() => toggle(false)}
           aria-expanded={false}
           aria-label={t.spotsMap.openSpotsList}
+          data-mx="recolher"
           className="flex h-9 w-9 items-center justify-center rounded-input text-fg-muted hover:bg-surface-2/[0.08] hover:text-fg"
         >
           <ChevronRight className="h-4 w-4" aria-hidden />
@@ -147,18 +153,20 @@ export default function MapSpotPanel({
       data-map-panel="open"
       className={`absolute bottom-2 left-2 top-2 z-[1100] flex w-[360px] max-w-[calc(100vw-1rem)] flex-col rounded-card border border-divider-strong bg-bg-elevated/95 shadow-card backdrop-blur-md ${didToggle ? 'motion-safe:[animation:map-panel-in_240ms_cubic-bezier(.16,1,.3,1)_both]' : ''}`}
     >
-      <div className="flex items-baseline gap-2 px-3 pb-1 pt-3">
-        <span className="font-display text-body font-semibold text-fg">
+      <div data-mx="cab" className="flex items-baseline gap-2 px-3 pb-1 pt-3">
+        <span data-mx="titulo" className="font-display text-body font-semibold text-fg">
           {t.mapUiExplore.title}
         </span>
-        <span className="font-mono tabular-nums text-meta-sm text-fg-subtle">
+        <span data-mx="contagem" className="font-mono tabular-nums text-meta-sm text-fg-subtle">
           {t.mapUiExplore.spotsInViewCount.replace('{count}', String(rows.length))}
+          {nivelTecto && <span data-mx="nivel"> · {nivelTecto}</span>}
         </span>
         <button
           type="button"
           onClick={() => toggle(true)}
           aria-expanded={true}
           aria-label={t.spotsMap.collapsePanel}
+          data-mx="recolher"
           className="-my-1 ml-auto flex h-9 w-9 shrink-0 items-center justify-center self-center rounded-input text-fg-muted hover:bg-surface-2/[0.08] hover:text-fg"
         >
           <ChevronLeft className="h-4 w-4" aria-hidden />

@@ -27,6 +27,11 @@ export const mapUiExplore = {
     emptyView: 'Nenhum spot nesta vista com estes filtros.',
     /** Acção curta na linha neutra das boias — «Dispensar». */
     dismiss: 'Dispensar',
+    /** Pele v6 (fase B, B2): o «Nível» lido como tecto — «Até intermédio». */
+    levelCeilingAll: 'Sem filtro',
+    levelCeilingBeginner: 'Só iniciante',
+    levelCeilingIntermediate: 'Até intermédio',
+    levelCeilingAdvanced: 'Todos (avançado)',
   },
   en: {
     title: 'Explore',
@@ -42,6 +47,10 @@ export const mapUiExplore = {
     bestAt: 'Best {time}',
     emptyView: 'No spots in view with these filters.',
     dismiss: 'Dismiss',
+    levelCeilingAll: 'No filter',
+    levelCeilingBeginner: 'Beginner only',
+    levelCeilingIntermediate: 'Up to intermediate',
+    levelCeilingAdvanced: 'All (advanced)',
   },
   es: {
     title: 'Explorar',
@@ -57,6 +66,10 @@ export const mapUiExplore = {
     bestAt: 'Mejor {time}',
     emptyView: 'Ningún spot en esta vista con estos filtros.',
     dismiss: 'Descartar',
+    levelCeilingAll: 'Sin filtro',
+    levelCeilingBeginner: 'Solo principiante',
+    levelCeilingIntermediate: 'Hasta intermedio',
+    levelCeilingAdvanced: 'Todos (avanzado)',
   },
   de: {
     title: 'Entdecken',
@@ -72,6 +85,10 @@ export const mapUiExplore = {
     bestAt: 'Bester {time}',
     emptyView: 'Keine Spots in dieser Ansicht mit diesen Filtern.',
     dismiss: 'Verwerfen',
+    levelCeilingAll: 'Kein Filter',
+    levelCeilingBeginner: 'Nur Anfänger',
+    levelCeilingIntermediate: 'Bis Mittelstufe',
+    levelCeilingAdvanced: 'Alle (Fortgeschritten)',
   },
   fr: {
     title: 'Explorer',
@@ -87,6 +104,10 @@ export const mapUiExplore = {
     bestAt: 'Meilleur {time}',
     emptyView: 'Aucun spot dans cette vue avec ces filtres.',
     dismiss: 'Ignorer',
+    levelCeilingAll: 'Sans filtre',
+    levelCeilingBeginner: 'Débutant uniquement',
+    levelCeilingIntermediate: 'Jusqu’à intermédiaire',
+    levelCeilingAdvanced: 'Tous (avancé)',
   },
 } as const;
 

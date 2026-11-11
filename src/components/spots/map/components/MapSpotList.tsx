@@ -240,10 +240,10 @@ const MapSpotList = memo(function MapSpotList({
     <div className="flex min-h-0 flex-1 flex-col">
       {/* M6#3 (CORRECCOES-24SET): «Nesta vista · n spots» nunca quebra —
           os chips de ilha caem para a linha de baixo quando faltar largura. */}
-      <div className="flex flex-wrap items-center gap-x-2 gap-y-1 border-t border-divider px-1 pb-1.5 pt-2.5">
+      <div data-mx="vista" className="flex flex-wrap items-center gap-x-2 gap-y-1 border-t border-divider px-1 pb-1.5 pt-2.5">
         <span className="flex items-center gap-2 whitespace-nowrap">
-          <span className="font-display font-bold text-body-sm text-fg">{title}</span>
-          <span className="font-mono tabular-nums text-meta-sm text-fg-subtle">{countLabel}</span>
+          <span data-mx="vista-t" className="font-display font-bold text-body-sm text-fg">{title}</span>
+          <span data-mx="vista-n" className="font-mono tabular-nums text-meta-sm text-fg-subtle">{countLabel}</span>
         </span>
         {jumps && jumps.length > 0 && (
           <div className="ml-auto flex flex-wrap items-center gap-1" role="group" aria-label={jumpLabel}>
@@ -266,7 +266,7 @@ const MapSpotList = memo(function MapSpotList({
           </div>
         )}
       </div>
-      <p className="px-1 pb-1.5 text-meta-sm text-fg-subtle">{noteLabel}</p>
+      <p data-mx="ordem" className="px-1 pb-1.5 text-meta-sm text-fg-subtle">{noteLabel}</p>
       {rows.length === 0 ? (
         <p className="px-1 py-6 text-center text-meta-sm text-fg-muted">{emptyLabel}</p>
       ) : (
@@ -314,6 +314,8 @@ const MapSpotList = memo(function MapSpotList({
                   <MapNightTile night={row.night} className="h-11 w-11" />
                 ) : (
                   <span
+                    data-mx="nota"
+                    data-tier={tok.tier}
                     className={`grid h-11 w-11 shrink-0 place-items-center rounded-[10px] font-mono text-base font-semibold tabular-nums ${tok.bg} ${tok.text}`}
                   >
                     {scoreToNota(row.score)}
@@ -321,8 +323,8 @@ const MapSpotList = memo(function MapSpotList({
                 )}
                 <span className="min-w-0">
                   {/* Nome até duas linhas, sem reticências (maquete). */}
-                  <span className="block text-body-sm font-medium leading-snug text-fg">{row.name}</span>
-                  <span className="block truncate text-meta-sm text-fg-muted">{row.region}</span>
+                  <span data-mx="nome" className="block text-body-sm font-medium leading-snug text-fg">{row.name}</span>
+                  <span data-mx="regiao" className="block truncate text-meta-sm text-fg-muted">{row.region}</span>
                   <span
                     className="mt-0.5 flex flex-wrap items-center gap-x-2.5 gap-y-0.5 text-meta-sm text-fg-muted"
                     data-score-factors={row.factors.map((f) => f.label).join(' · ')}

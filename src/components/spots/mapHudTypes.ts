@@ -1,5 +1,6 @@
 import type { GridSportFilter } from '@/lib/sportRatings';
 import type { MapDifficultyFilter } from '@/lib/mapDifficulty';
+import type { MapPele } from '@/lib/mapPele';
 
 export interface MapHudSportOption {
   id: GridSportFilter;
@@ -29,4 +30,6 @@ export interface MapFullscreenHudProps {
   difficultyGroupLabel: string;
   /** Rótulo «Camadas» — usado por superfícies que agrupam as camadas de dados. */
   layersLabel?: string;
+  /** Pele v6 da fase B (`?pele=v6`): só copy/atributos; `null`/ausente = o /mapa de hoje. */
+  pele?: MapPele | null;
 }
