@@ -787,6 +787,7 @@ function SpotCardContentV6({
             aria-label={t.mapUiMarkers.nightAria}
           >
             <LuaV6 />
+            <small aria-hidden="true">{t.mapUiMarkers.night}</small>
           </span>
         ) : (
           <span data-ms="nota" data-tier={tier} data-card-score={score} role="img" aria-label={`${nota}/10 · ${tierLabel}`}>
