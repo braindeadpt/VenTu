@@ -48,9 +48,17 @@ async function probe(page: Page) {
 
 async function scrollPastHero(page: Page) {
   // Logo a seguir ao hero: no desktop a régua só é sticky dentro da página v6.
+  // O scroll passa a posição natural da régua, não um deslocamento fixo — entre
+  // o hero e a régua podem aparecer faixas condicionais (.seguranca, avisos)
+  // que a empurram para baixo consoante os dados do dia.
   await page.evaluate(() => {
     const h = document.querySelector('#agora') as HTMLElement;
-    window.scrollTo(0, h.getBoundingClientRect().bottom + window.scrollY + 80);
+    const regua = document.querySelector('[data-testid="regua-48h"]') as HTMLElement;
+    const alvo = Math.max(
+      h.getBoundingClientRect().bottom + window.scrollY + 80,
+      regua.getBoundingClientRect().top + window.scrollY + 2,
+    );
+    window.scrollTo(0, alvo);
   });
   await expect
     .poll(async () => page.evaluate(() => (document.querySelector('#agora') as HTMLElement).getBoundingClientRect().bottom < 0), {
