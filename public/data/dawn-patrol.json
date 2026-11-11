@@ -1,103 +1,103 @@
 {
   "date": "2026-11-11",
+  "generatedAt": "2026-11-11T04:36:48.689Z",
   "topSpot": "Nazaré",
   "topSpotSlug": "nazare",
   "pt": {
-    "headline": "Nazaré oferece ondas potentes e vento leve hoje!",
-    "advice": "Ondas de 3,2 m a cada 11 s e vento de 6 kt criam condições excelentes. Atenção ao alerta amarelo de agitação marítima – surfe com cautela. Use fato 3/2 mm e chegue cedo para evitar a maioria da gente.",
-    "bestTime": "10:00",
+    "headline": "Hoje é dia de Nazaré! 🌊",
+    "advice": "Melhor janela: 11:00h. Ondas de 3.2m com 6 nós de vento. ⚠️ Mar perigoso — agitação marítima (amarelo)",
+    "bestTime": "11:00",
     "wetsuit": "3/2mm",
-    "crowdTip": "Chegue antes das 09:30 para pegar as melhores ondas com menos gente.",
+    "crowdTip": "Chega cedo para evitar crowd!",
     "moonTideLine": "Lua nova · Transição · baixa-mar 09:00"
   },
   "en": {
-    "headline": "Nazaré serves powerful waves with light wind today!",
-    "advice": "3.2 m waves every 11 s and 6 kt wind create excellent conditions. Watch the yellow sea‑agitation alert – surf with caution. Wear a 3/2 mm wetsuit and arrive early to beat the crowd.",
-    "bestTime": "10:00",
+    "headline": "Today is Nazaré day! 🌊",
+    "advice": "Best window: 11:00. 3.2m waves with 6 knot wind. ⚠️ Dangerous sea — sea state warning (yellow)",
+    "bestTime": "11:00",
     "wetsuit": "3/2mm",
-    "crowdTip": "Get there before 09:30 to catch the best waves with fewer people.",
+    "crowdTip": "Get there early to beat the crowd!",
     "moonTideLine": "New moon · Transition · low tide 09:00"
   },
   "spots": [
     {
-      "name": "Supertubos",
-      "slug": "supertubos",
-      "score": 60,
-      "verdict": "maybe",
-      "ptReason": "Ondas decentes, mas vento forte e avisos costeiros; pode ficar lotado.",
-      "enReason": "Decent waves, but strong wind and coastal warnings; may be crowded.",
-      "scoreForecast": 60,
-      "scoreSource": "previsão",
-      "scoreMeta": null
-    },
-    {
-      "name": "Guincho",
-      "slug": "guincho",
-      "score": 40,
-      "verdict": "skip",
-      "ptReason": "Mar perigoso (laranja) e ondas fracas; não recomendado.",
-      "enReason": "Orange dangerous sea state and weak waves; not recommended.",
-      "scoreForecast": 40,
-      "scoreSource": "previsão",
-      "scoreMeta": null
-    },
-    {
       "name": "Nazaré",
       "slug": "nazare",
       "score": 80,
-      "verdict": "maybe",
-      "ptReason": "Ondas potentes e vento leve, porém alerta amarelo de agitação; surf com cautela.",
-      "enReason": "Powerful waves and light wind, but yellow sea‑agitation alert; surf with caution.",
       "scoreForecast": 80,
       "scoreSource": "previsão",
-      "scoreMeta": null
-    },
-    {
-      "name": "Ribeira d'Ilhas",
-      "slug": "ribeira-ilhas",
-      "score": 50,
-      "verdict": "skip",
-      "ptReason": "Mar perigoso (laranja) e ondas medianas; melhor evitar.",
-      "enReason": "Orange dangerous sea state and moderate waves; better avoid.",
-      "scoreForecast": 50,
-      "scoreSource": "previsão",
-      "scoreMeta": null
+      "scoreMeta": null,
+      "verdict": "go",
+      "ptReason": "Condições excelentes",
+      "enReason": "Excellent conditions"
     },
     {
       "name": "Coxos",
       "slug": "coxos",
       "score": 70,
-      "verdict": "skip",
-      "ptReason": "Mar perigoso (laranja) apesar de boas ondas; recomenda‑se não surf.",
-      "enReason": "Orange dangerous sea state despite good waves; recommended not to surf.",
       "scoreForecast": 70,
       "scoreSource": "previsão",
-      "scoreMeta": null
+      "scoreMeta": null,
+      "verdict": "go",
+      "ptReason": "Condições excelentes",
+      "enReason": "Excellent conditions"
     },
     {
       "name": "Arrifana",
       "slug": "arrifana",
       "score": 70,
-      "verdict": "skip",
-      "ptReason": "Mar perigoso (laranja) e vento moderado; evitar surf.",
-      "enReason": "Orange dangerous sea state and moderate wind; avoid surfing.",
       "scoreForecast": 70,
       "scoreSource": "previsão",
-      "scoreMeta": null
+      "scoreMeta": null,
+      "verdict": "go",
+      "ptReason": "Condições excelentes",
+      "enReason": "Excellent conditions"
+    },
+    {
+      "name": "Supertubos",
+      "slug": "supertubos",
+      "score": 60,
+      "scoreForecast": 60,
+      "scoreSource": "previsão",
+      "scoreMeta": null,
+      "verdict": "maybe",
+      "ptReason": "Condições razoáveis",
+      "enReason": "Fair conditions"
+    },
+    {
+      "name": "Ribeira d'Ilhas",
+      "slug": "ribeira-ilhas",
+      "score": 50,
+      "scoreForecast": 50,
+      "scoreSource": "previsão",
+      "scoreMeta": null,
+      "verdict": "maybe",
+      "ptReason": "Condições razoáveis",
+      "enReason": "Fair conditions"
+    },
+    {
+      "name": "Guincho",
+      "slug": "guincho",
+      "score": 40,
+      "scoreForecast": 40,
+      "scoreSource": "previsão",
+      "scoreMeta": null,
+      "verdict": "skip",
+      "ptReason": "Não vale a pena",
+      "enReason": "Not worth it"
     },
     {
       "name": "Carcavelos",
       "slug": "carcavelos",
       "score": 40,
-      "verdict": "skip",
-      "ptReason": "Mar perigoso (laranja) e ondas medianas; não surf.",
-      "enReason": "Orange dangerous sea state and medium waves; do not surf.",
       "scoreForecast": 40,
       "scoreSource": "previsão",
-      "scoreMeta": null
+      "scoreMeta": null,
+      "verdict": "skip",
+      "ptReason": "Não vale a pena",
+      "enReason": "Not worth it"
     }
   ],
-  "generatedAt": "2026-11-11T04:23:44.712Z",
   "topScore": 80,
   "topScoreForecast": 80,
   "topScoreSource": "previsão",
