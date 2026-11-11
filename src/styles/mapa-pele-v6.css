@@ -204,3 +204,61 @@
 [data-pele='v6'] [data-mx='filtros-bt'] svg{width:18px;height:18px;color:var(--espuma)}
 [data-pele='v6'] [data-mx='q']{display:inline-block;min-width:20px;height:20px;padding:0 5px;border-radius:999px;background:var(--sol);color:var(--ink);font:800 12px/20px var(--txt);text-align:center}
 [data-pele='v6'] [data-sheet-count]{letter-spacing:0;font:600 14px/1.2 var(--txt);color:var(--nevoa)}
+/* ── B3 · régua de 48 h (maquete da fase B: `.regua48`, `.r-c`, `.hora-p`, `.pl-noite`) ──
+   Ganchos `data-mr=…` no MapTimeChrome, só presentes com a pele (sem a flag, a régua de hoje
+   sem um atributo a mais). As células são as mesmas 16 barras com o mesmo `<input type=range>`
+   invisível por cima: a altura passa a cheia, o fill à banda v6 e o texto à nota /10. Os `null`
+   do motor são noite: «–» em #56677B (sai a janela fixa 20–07). Contraste: o mesmo par
+   fill/texto das bandas da B2 (≥ 4,5:1); branco sobre a noite 5,9:1. */
+[data-pele='v6'] [data-mr='hora-p']{
+  border-color:transparent;background:rgba(3,14,24,.9);
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  box-shadow:inset 0 0 0 1.5px rgba(243,248,251,.12),0 18px 40px -18px rgba(0,0,0,.75);
+  font:600 15px/1 var(--txt);color:var(--espuma);letter-spacing:0;
+}
+[data-pele='v6'] [data-mr='hora-p'] .font-mono{font-family:var(--txt);font-weight:800}
+[data-pele='v6'] [data-mr='pl-noite']{
+  display:inline-flex;align-items:center;gap:6px;padding:4px 9px 4px 7px;border-radius:999px;
+  background:var(--b-noite);color:var(--b-noite-t);font:800 14px/1 var(--txt);
+}
+[data-pele='v6'] [data-mr='pl-noite'] svg{width:16px;height:16px}
+[data-pele='v6'] [data-mr='regua']{
+  border-color:transparent;border-radius:16px;background:rgba(3,14,24,.9);
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  box-shadow:inset 0 0 0 1.5px rgba(243,248,251,.12),0 18px 40px -18px rgba(0,0,0,.75);
+  padding:12px 14px 10px;
+}
+[data-pele='v6'] [data-mr='regua'][data-compacto]{padding:10px 10px 9px}
+/* «48 H · QUI 23H · MELHOR DA VISTA» em t-mini (Barlow 800, caixa alta) */
+[data-pele='v6'] [data-mr='r-tit']{font:800 12px/1.25 var(--txt);letter-spacing:.14em;text-transform:uppercase;color:var(--nevoa)}
+[data-pele='v6'] [data-mr='r-tit'] b{font-weight:800;color:var(--espuma)}
+[data-pele='v6'] [data-mr='r-tit'] span{font-size:inherit;color:inherit}
+/* play em sol (44 × 44), «Agora» secundário com alvo de 44 px */
+[data-pele='v6'] [data-mr='regua'] [data-map-hours-play]{width:44px;height:44px;border-radius:50%;background:var(--sol);color:var(--ink)}
+[data-pele='v6'] [data-mr='regua'] [data-map-hours-play]:hover{background:var(--sol);filter:brightness(1.06)}
+[data-pele='v6'] [data-mr='regua'] [data-map-hours-now]{
+  min-height:44px;padding:0 10px;border-radius:12px;background:rgba(243,248,251,.08);
+  font:800 12px/1 var(--txt);letter-spacing:.06em;text-transform:uppercase;color:var(--espuma);
+}
+[data-pele='v6'] [data-mr='regua'] [data-map-hours-now]:hover{background:rgba(243,248,251,.14);color:var(--espuma)}
+/* células: altura cheia, fill da banda, nota /10 em Barlow Condensed 900 */
+[data-pele='v6'] [data-mr='r-cels']{height:44px;gap:4px}
+[data-pele='v6'] [data-mr='regua'][data-compacto] [data-mr='r-cels']{height:36px;gap:3px}
+[data-pele='v6'] [data-mr='r-c']{background:none}
+[data-pele='v6'] [data-mr='r-c']>i{display:none}
+[data-pele='v6'] [data-mr='r-bar']{
+  top:0;height:auto!important;opacity:1!important;border-radius:9px!important;
+  display:flex;align-items:center;justify-content:center;
+  font:900 22px/1 var(--disp);font-variant-numeric:tabular-nums;letter-spacing:-.01em;
+}
+[data-pele='v6'] [data-mr='r-bar'][data-tier='closed']{background:var(--b-nao)!important;color:var(--b-nao-t)}
+[data-pele='v6'] [data-mr='r-bar'][data-tier='poor']{background:var(--b-fraco)!important;color:var(--b-fraco-t)}
+[data-pele='v6'] [data-mr='r-bar'][data-tier='fair']{background:var(--b-da)!important;color:var(--b-da-t)}
+[data-pele='v6'] [data-mr='r-bar'][data-tier='good']{background:var(--b-bom)!important;color:var(--b-bom-t)}
+[data-pele='v6'] [data-mr='r-bar'][data-tier='epic']{background:var(--b-mb)!important;color:var(--b-mb-t)}
+[data-pele='v6'] [data-mr='r-bar'][data-noite]{background:var(--b-noite)!important;color:var(--b-noite-t)}
+[data-pele='v6'] [data-mr='regua'][data-compacto] [data-mr='r-bar']{border-radius:6px!important;font-size:15px;letter-spacing:-.04em}
+/* passo seleccionado: anel abismo + espuma (a maquete); as outras células ficam opacas */
+[data-pele='v6'] [data-mr='r-c'][data-on] [data-mr='r-bar']{box-shadow:0 0 0 3px var(--abismo),0 0 0 6px var(--espuma)}
+[data-pele='v6'] [data-mr='regua'][data-compacto] [data-mr='r-c'][data-on] [data-mr='r-bar']{box-shadow:0 0 0 2px var(--abismo),0 0 0 4px var(--espuma)}
+[data-pele='v6'] [data-mr='r-eixo']{margin-top:8px;font-family:var(--txt);font-weight:700;color:var(--nevoa)}

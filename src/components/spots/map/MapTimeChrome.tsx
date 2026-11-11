@@ -1,13 +1,15 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode, type RefObject } from 'react';
-import { ChevronDown, Pause, Play } from 'lucide-react';
+import { ChevronDown, Moon, Pause, Play } from 'lucide-react';
 import type L from 'leaflet';
 import type { MapHoursFile } from '@/lib/mapHours';
 import { scoreAtHour } from '@/lib/mapHours';
 import { formatHourLabel, formatHourLong, formatWeekday } from '@/lib/verdict/formatHourLabel';
 import { pickRailAxisLabelsPx, railAxisCandidates } from '@/lib/verdict/railAxisLabels';
-import { getScoreCssVar } from '@/lib/scoreThresholds';
+import { getScoreCssVar, getScoreTier } from '@/lib/scoreThresholds';
+import type { MapPele } from '@/lib/mapPele';
+import { scoreToNota } from '@/lib/nota';
 import { wallHourOf } from '@/lib/openMeteoTime';
 import type { getTranslation } from '@/lib/i18n';
 import { useMapUiData } from './MapUiContext';
@@ -46,6 +48,15 @@ interface MapTimeChromeProps {
   onSizeChange?: (height: number) => void;
   /** Chips de maré/térmica junto ao cabeçalho (mesmo papel do HUD antigo). */
   timeTrackChips?: ReactNode;
+  /** Pele v6 da fase B (`?pele=v6`, PR B3): células /10, «–» de noite e pill
+   *  «Noite · …». `null`/ausente = a régua de hoje, sem um atributo a mais. */
+  pele?: MapPele | null;
+}
+
+/** Nota /10 de uma célula da régua: o `map-hours` vem ×10 (60 = 6/10). Passa pela
+ *  escala única (`scoreToNota`), por isso o número e a banda nunca discordam. */
+export function notaReguaV6(v: number | null): string {
+  return v == null ? '–' : String(scoreToNota(v));
 }
 
 /**
@@ -85,7 +96,9 @@ export default function MapTimeChrome({
   onToggleScrub,
   onSizeChange,
   timeTrackChips,
+  pele = null,
 }: MapTimeChromeProps) {
+  const v6 = pele === 'v6';
   const { visibleSpots, sport, region } = useMapUiData();
   const scrubRef = useRef<HTMLElement | null>(null);
 
@@ -102,15 +115,15 @@ export default function MapTimeChrome({
      de enquadramento da lista e dos marcadores (includeSpotInViewportBounds):
      antes, com as ilhas no ecrã mas fora do filtro, a lista dizia «0 spots»
      e o valuetext ainda anunciava «melhor score na vista 55». */
-  const computeBest = useCallback((): (number | null)[] => {
-    if (!hoursFile || !n) return [];
+  const computeBest = useCallback((): { best: (number | null)[]; inView: number } => {
+    if (!hoursFile || !n) return { best: [], inView: 0 };
     const bounds = mapInstanceRef.current?.getBounds();
     const inView = visibleSpots.filter(
       (s) =>
         includeSpotInViewportBounds(s.spot, region) &&
         (!bounds || bounds.contains([s.spot.lat, s.spot.lon])),
     );
-    return Array.from({ length: n }, (_, i) => {
+    const best = Array.from({ length: n }, (_, i) => {
       let b: number | null = null;
       for (const s of inView) {
         const v = scoreAtHour(hoursFile, s.spot.id, sport, i);
@@ -118,14 +131,22 @@ export default function MapTimeChrome({
       }
       return b;
     });
+    return { best, inView: inView.length };
   }, [hoursFile, n, visibleSpots, sport, region, mapInstanceRef]);
 
   /* `best` em estado: a leitura dos bounds do Leaflet é um ref — não pode
      correr no render (react-hooks/refs). Recalcula quando os dados mudam
      E no moveend — as barras seguem o «melhor score na vista» da maquete. */
   const [best, setBest] = useState<(number | null)[]>([]);
+  /* B3: há spots na vista? Com spots e sem nota nenhuma nesse passo é noite
+     (o motor devolve `null` de noite); sem spots é só «–», nunca «Noite». */
+  const [inViewN, setInViewN] = useState(0);
   useEffect(() => {
-    const update = () => setBest(computeBest());
+    const update = () => {
+      const r = computeBest();
+      setBest(r.best);
+      setInViewN(r.inView);
+    };
     update();
     const map = mapInstanceRef.current;
     map?.on('moveend', update);
@@ -210,6 +231,9 @@ export default function MapTimeChrome({
      escalão do melhor score desse passo; camada off → «Agora». O cabeçalho
      do scrubber mostra «agora»/«qui 17:00» (mesmo formato da maquete). */
   const frameBest = best[frame] ?? null;
+  /* B3: pill «Noite · qui 23h» com a lua quando o passo é de noite na vista. */
+  const frameNight = v6 && hoursOn && n > 0 && inViewN > 0 && frameBest == null;
+  const nightWord = t.mapUiMarkers.night.charAt(0).toUpperCase() + t.mapUiMarkers.night.slice(1);
   const pillStyle: CSSProperties | undefined =
     hoursOn && !live && frameBest != null
       ? ({ '--verdict': getScoreCssVar(frameBest) } as CSSProperties)
@@ -231,10 +255,22 @@ export default function MapTimeChrome({
         aria-controls="map-hours-scrubber-card"
         onClick={onToggleScrub}
         style={pillStyle}
+        data-mr={v6 ? 'hora-p' : undefined}
         className="absolute top-[60px] left-1/2 z-[1150] inline-flex h-11 -translate-x-1/2 items-center gap-1.5 rounded-pill border border-divider bg-bg-elevated px-3.5 text-[13px] text-fg shadow-card transition-colors hover:border-divider-strong"
       >
         {!hoursOn || n === 0 ? (
           <span className="font-medium">{timeNow}</span>
+        ) : frameNight ? (
+          <>
+            <span data-mr="pl-noite">
+              <Moon aria-hidden className="h-4 w-4 fill-current" />
+              {nightWord}
+            </span>
+            <span className="text-fg-muted"> · </span>
+            <span className="font-mono font-semibold tabular-nums">
+              {live ? formatHourLabel(frameTime, locale) : stepLabel}
+            </span>
+          </>
         ) : live ? (
           <>
             <span className="text-fg-muted">{timeNow} · </span>
@@ -264,6 +300,8 @@ export default function MapTimeChrome({
             ref={scrubRef}
             data-map-hours-scrubber
             data-map-time-track-mode="hours"
+            data-mr={v6 ? 'regua' : undefined}
+            data-compacto={v6 && isMobile ? '' : undefined}
             aria-label={timeScrubLabel}
             className="pointer-events-auto w-[min(560px,100%)] rounded-surface border border-divider bg-bg-elevated px-3.5 pb-2 pt-2.5 shadow-card"
           >
@@ -293,6 +331,7 @@ export default function MapTimeChrome({
                   nunca reticências. No desktop mantém o truncate de uma
                   linha (o texto lá cabe). */}
               <span
+                data-mr={v6 ? 'r-tit' : undefined}
                 className={`min-w-0 text-meta text-fg-muted ${isMobile ? 'leading-snug' : 'truncate'}`}
               >
                 <b className="font-semibold text-fg">{stepLabel}</b>
@@ -314,26 +353,40 @@ export default function MapTimeChrome({
 
             {/* Barras + range invisível por cima (pointer/keyboard/E2E). */}
             <div className="map-scrub-bars relative">
-              <div className="grid h-14 items-end gap-[3px]" style={{ gridTemplateColumns: `repeat(${n}, 1fr)` }} aria-hidden>
+              <div
+                data-mr={v6 ? 'r-cels' : undefined}
+                className="grid h-14 items-end gap-[3px]"
+                style={{ gridTemplateColumns: `repeat(${n}, 1fr)` }}
+                aria-hidden
+              >
                 {times.map((iso, i) => {
                   const v = best[i] ?? 0;
                   const on = i === frame;
+                  // B3: a pele lê o `null` do motor («–» de noite), não a janela fixa 20–07.
+                  const raw = best[i] ?? null;
                   return (
                     <div
                       key={iso}
-                      className={`relative h-full rounded-[3px] ${night[i] ? 'bg-[rgb(var(--fg)/0.05)]' : ''}`}
+                      data-mr={v6 ? 'r-c' : undefined}
+                      data-on={v6 && on ? '' : undefined}
+                      className={`relative h-full rounded-[3px] ${!v6 && night[i] ? 'bg-[rgb(var(--fg)/0.05)]' : ''}`}
                     >
                       {i === 0 && (
                         <i className="absolute -top-1 bottom-0 left-1/2 border-l border-dashed border-fg-subtle/70" />
                       )}
                       <div
+                        data-mr={v6 ? 'r-bar' : undefined}
+                        data-tier={v6 && raw != null ? getScoreTier(raw) : undefined}
+                        data-noite={v6 && raw == null ? '' : undefined}
                         className="absolute bottom-0 left-0 right-0 rounded-[3px_3px_1px_1px]"
                         style={{
                           height: `${Math.max(8, v)}%`,
                           background: `rgb(var(${getScoreCssVar(v)}))`,
                           opacity: on ? 1 : 0.32,
                         }}
-                      />
+                      >
+                        {v6 ? notaReguaV6(raw) : null}
+                      </div>
                     </div>
                   );
                 })}
@@ -347,7 +400,12 @@ export default function MapTimeChrome({
                 aria-label={timeScrubLabel}
                 aria-valuetext={scrubValueText
                   .replace('{time}', formatHourLong(frameTime, locale))
-                  .replace('{score}', frameBest == null ? '—' : String(frameBest))}
+                  .replace(
+                    '{score}',
+                    !v6
+                      ? frameBest == null ? '—' : String(frameBest)
+                      : frameNight ? t.mapUiMarkers.nightAria : notaReguaV6(frameBest),
+                  )}
                 onChange={(e) => {
                   // Maquete: qualquer interacção pára o autoplay.
                   onUserPausedChange(true);
@@ -367,6 +425,7 @@ export default function MapTimeChrome({
             {/* Ticks canónicos anti-colisão — prioridade à mudança de dia. */}
             <div
               ref={axisRef}
+              data-mr={v6 ? 'r-eixo' : undefined}
               className="relative mt-1 h-4 font-mono text-[10px] tabular-nums text-fg-subtle"
               aria-hidden
             >
