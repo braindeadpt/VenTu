@@ -1,6 +1,6 @@
 {
   "source": "ipma",
-  "fetchedAt": "2026-11-11T06:06:50.099Z",
+  "fetchedAt": "2026-11-11T08:07:07.030Z",
   "warnings": [
     {
       "areaCode": "FAR",
@@ -33,16 +33,6 @@
       "relevant": true
     },
     {
-      "areaCode": "MRM",
-      "areaLabel": "Madeira — Regiões Montanhosas",
-      "type": "Precipitação",
-      "level": "red",
-      "text": "Chuva, por vezes forte e persistente.",
-      "startTime": "2026-11-10T21:00:00",
-      "endTime": "2026-11-11T06:00:00",
-      "relevant": true
-    },
-    {
       "areaCode": "LSB",
       "areaLabel": "Lisboa",
       "type": "Precipitação",
@@ -60,16 +50,6 @@
       "text": "Precipitação forte e persistente.",
       "startTime": "2026-11-11T12:00:00",
       "endTime": "2026-11-11T18:00:00",
-      "relevant": true
-    },
-    {
-      "areaCode": "MCN",
-      "areaLabel": "Madeira — Costa Norte",
-      "type": "Precipitação",
-      "level": "red",
-      "text": "Chuva, por vezes forte e persistente.",
-      "startTime": "2026-11-10T21:00:00",
-      "endTime": "2026-11-11T06:00:00",
       "relevant": true
     },
     {
@@ -100,16 +80,6 @@
       "text": "Precipitação forte e persistente.",
       "startTime": "2026-11-11T12:00:00",
       "endTime": "2026-11-11T18:00:00",
-      "relevant": true
-    },
-    {
-      "areaCode": "MCS",
-      "areaLabel": "Funchal",
-      "type": "Precipitação",
-      "level": "red",
-      "text": "Chuva, por vezes forte e persistente.",
-      "startTime": "2026-11-10T21:00:00",
-      "endTime": "2026-11-11T06:00:00",
       "relevant": true
     },
     {
@@ -150,16 +120,6 @@
       "text": "Rajadas até 120 km/h, podendo atingir 140 km/h nos locais mais expostos.",
       "startTime": "2026-11-11T12:00:00",
       "endTime": "2026-11-11T21:00:00",
-      "relevant": true
-    },
-    {
-      "areaCode": "MRM",
-      "areaLabel": "Madeira — Regiões Montanhosas",
-      "type": "Vento",
-      "level": "red",
-      "text": "Rajadas até 140 km/h.",
-      "startTime": "2026-11-11T00:00:00",
-      "endTime": "2026-11-11T06:00:00",
       "relevant": true
     },
     {
@@ -533,16 +493,6 @@
       "relevant": true
     },
     {
-      "areaCode": "PTO",
-      "areaLabel": "Porto",
-      "type": "Agitação Marítima",
-      "level": "yellow",
-      "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-      "startTime": "2026-11-10T21:24:00",
-      "endTime": "2026-11-11T06:00:00",
-      "relevant": true
-    },
-    {
       "areaCode": "FAR",
       "areaLabel": "Faro",
       "type": "Agitação Marítima",
@@ -563,33 +513,13 @@
       "relevant": true
     },
     {
-      "areaCode": "VCT",
-      "areaLabel": "Viana do Castelo",
-      "type": "Agitação Marítima",
-      "level": "yellow",
-      "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-      "startTime": "2026-11-10T21:24:00",
-      "endTime": "2026-11-11T06:00:00",
-      "relevant": true
-    },
-    {
       "areaCode": "LSB",
       "areaLabel": "Lisboa",
       "type": "Agitação Marítima",
       "level": "yellow",
-      "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-      "startTime": "2026-11-10T21:24:00",
+      "text": "Ondas de sudoeste com 4 a 5 metros.",
+      "startTime": "2026-11-11T21:00:00",
       "endTime": "2026-11-12T03:00:00",
-      "relevant": true
-    },
-    {
-      "areaCode": "LRA",
-      "areaLabel": "Leiria",
-      "type": "Agitação Marítima",
-      "level": "yellow",
-      "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-      "startTime": "2026-11-10T21:24:00",
-      "endTime": "2026-11-11T06:00:00",
       "relevant": true
     },
     {
@@ -613,26 +543,6 @@
       "relevant": true
     },
     {
-      "areaCode": "AVR",
-      "areaLabel": "Aveiro",
-      "type": "Agitação Marítima",
-      "level": "yellow",
-      "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-      "startTime": "2026-11-10T21:24:00",
-      "endTime": "2026-11-11T06:00:00",
-      "relevant": true
-    },
-    {
-      "areaCode": "CBR",
-      "areaLabel": "Coimbra",
-      "type": "Agitação Marítima",
-      "level": "yellow",
-      "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-      "startTime": "2026-11-10T21:24:00",
-      "endTime": "2026-11-11T06:00:00",
-      "relevant": true
-    },
-    {
       "areaCode": "MPS",
       "areaLabel": "Porto Santo",
       "type": "Agitação Marítima",
@@ -640,16 +550,6 @@
       "text": "Ondas de oeste com 4 a 4,5 metros, passando a ondas de noroeste.",
       "startTime": "2026-11-11T09:00:00",
       "endTime": "2026-11-11T21:00:00",
-      "relevant": true
-    },
-    {
-      "areaCode": "BRG",
-      "areaLabel": "Braga",
-      "type": "Agitação Marítima",
-      "level": "yellow",
-      "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-      "startTime": "2026-11-10T21:24:00",
-      "endTime": "2026-11-11T06:00:00",
       "relevant": true
     },
     {
@@ -694,16 +594,6 @@
         "startTime": "2026-11-11T03:00:00",
         "endTime": "2026-11-11T21:00:00",
         "relevant": true
-      },
-      {
-        "areaCode": "VCT",
-        "areaLabel": "Viana do Castelo",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
-        "endTime": "2026-11-11T06:00:00",
-        "relevant": true
       }
     ],
     "vila-praia-ancora": [
@@ -715,16 +605,6 @@
         "text": "Precipitação persistente, por vezes forte.",
         "startTime": "2026-11-11T03:00:00",
         "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "VCT",
-        "areaLabel": "Viana do Castelo",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
-        "endTime": "2026-11-11T06:00:00",
         "relevant": true
       }
     ],
@@ -738,16 +618,6 @@
         "startTime": "2026-11-11T03:00:00",
         "endTime": "2026-11-11T21:00:00",
         "relevant": true
-      },
-      {
-        "areaCode": "VCT",
-        "areaLabel": "Viana do Castelo",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
-        "endTime": "2026-11-11T06:00:00",
-        "relevant": true
       }
     ],
     "amorosa": [
@@ -759,16 +629,6 @@
         "text": "Precipitação persistente, por vezes forte.",
         "startTime": "2026-11-11T03:00:00",
         "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "VCT",
-        "areaLabel": "Viana do Castelo",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
-        "endTime": "2026-11-11T06:00:00",
         "relevant": true
       }
     ],
@@ -782,16 +642,6 @@
         "startTime": "2026-11-11T03:00:00",
         "endTime": "2026-11-11T21:00:00",
         "relevant": true
-      },
-      {
-        "areaCode": "VCT",
-        "areaLabel": "Viana do Castelo",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
-        "endTime": "2026-11-11T06:00:00",
-        "relevant": true
       }
     ],
     "foil-cabedelo": [
@@ -803,16 +653,6 @@
         "text": "Precipitação persistente, por vezes forte.",
         "startTime": "2026-11-11T03:00:00",
         "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "VCT",
-        "areaLabel": "Viana do Castelo",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
-        "endTime": "2026-11-11T06:00:00",
         "relevant": true
       }
     ],
@@ -826,16 +666,6 @@
         "startTime": "2026-11-11T03:00:00",
         "endTime": "2026-11-11T21:00:00",
         "relevant": true
-      },
-      {
-        "areaCode": "VCT",
-        "areaLabel": "Viana do Castelo",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
-        "endTime": "2026-11-11T06:00:00",
-        "relevant": true
       }
     ],
     "rodanho": [
@@ -847,16 +677,6 @@
         "text": "Precipitação persistente, por vezes forte.",
         "startTime": "2026-11-11T03:00:00",
         "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "VCT",
-        "areaLabel": "Viana do Castelo",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
-        "endTime": "2026-11-11T06:00:00",
         "relevant": true
       }
     ],
@@ -870,16 +690,6 @@
         "startTime": "2026-11-11T03:00:00",
         "endTime": "2026-11-11T21:00:00",
         "relevant": true
-      },
-      {
-        "areaCode": "VCT",
-        "areaLabel": "Viana do Castelo",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
-        "endTime": "2026-11-11T06:00:00",
-        "relevant": true
       }
     ],
     "esposende-praia": [
@@ -891,16 +701,6 @@
         "text": "Precipitação persistente, por vezes forte.",
         "startTime": "2026-11-11T03:00:00",
         "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "VCT",
-        "areaLabel": "Viana do Castelo",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
-        "endTime": "2026-11-11T06:00:00",
         "relevant": true
       }
     ],
@@ -914,16 +714,6 @@
         "startTime": "2026-11-11T03:00:00",
         "endTime": "2026-11-11T21:00:00",
         "relevant": true
-      },
-      {
-        "areaCode": "VCT",
-        "areaLabel": "Viana do Castelo",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
-        "endTime": "2026-11-11T06:00:00",
-        "relevant": true
       }
     ],
     "apulia": [
@@ -935,16 +725,6 @@
         "text": "Precipitação persistente, por vezes forte.",
         "startTime": "2026-11-11T03:00:00",
         "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "VCT",
-        "areaLabel": "Viana do Castelo",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
-        "endTime": "2026-11-11T06:00:00",
         "relevant": true
       }
     ],
@@ -958,16 +738,6 @@
         "startTime": "2026-11-11T03:00:00",
         "endTime": "2026-11-11T21:00:00",
         "relevant": true
-      },
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
-        "endTime": "2026-11-11T06:00:00",
-        "relevant": true
       }
     ],
     "arvore": [
@@ -979,16 +749,6 @@
         "text": "Precipitação persistente, por vezes forte.",
         "startTime": "2026-11-11T03:00:00",
         "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
-        "endTime": "2026-11-11T06:00:00",
         "relevant": true
       }
     ],
@@ -1002,16 +762,6 @@
         "startTime": "2026-11-11T03:00:00",
         "endTime": "2026-11-11T21:00:00",
         "relevant": true
-      },
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
-        "endTime": "2026-11-11T06:00:00",
-        "relevant": true
       }
     ],
     "matosinhos": [
@@ -1023,16 +773,6 @@
         "text": "Precipitação persistente, por vezes forte.",
         "startTime": "2026-11-11T03:00:00",
         "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
-        "endTime": "2026-11-11T06:00:00",
         "relevant": true
       }
     ],
@@ -1046,16 +786,6 @@
         "startTime": "2026-11-11T03:00:00",
         "endTime": "2026-11-11T21:00:00",
         "relevant": true
-      },
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
-        "endTime": "2026-11-11T06:00:00",
-        "relevant": true
       }
     ],
     "marina-afurada-foil": [
@@ -1067,16 +797,6 @@
         "text": "Precipitação persistente, por vezes forte.",
         "startTime": "2026-11-11T03:00:00",
         "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
-        "endTime": "2026-11-11T06:00:00",
         "relevant": true
       }
     ],
@@ -1090,16 +810,6 @@
         "startTime": "2026-11-11T03:00:00",
         "endTime": "2026-11-11T21:00:00",
         "relevant": true
-      },
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
-        "endTime": "2026-11-11T06:00:00",
-        "relevant": true
       }
     ],
     "salgueiros": [
@@ -1111,16 +821,6 @@
         "text": "Precipitação persistente, por vezes forte.",
         "startTime": "2026-11-11T03:00:00",
         "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
-        "endTime": "2026-11-11T06:00:00",
         "relevant": true
       }
     ],
@@ -1134,16 +834,6 @@
         "startTime": "2026-11-11T03:00:00",
         "endTime": "2026-11-11T21:00:00",
         "relevant": true
-      },
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
-        "endTime": "2026-11-11T06:00:00",
-        "relevant": true
       }
     ],
     "canide-sul": [
@@ -1155,16 +845,6 @@
         "text": "Precipitação persistente, por vezes forte.",
         "startTime": "2026-11-11T03:00:00",
         "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
-        "endTime": "2026-11-11T06:00:00",
         "relevant": true
       }
     ],
@@ -1178,16 +858,6 @@
         "startTime": "2026-11-11T03:00:00",
         "endTime": "2026-11-11T21:00:00",
         "relevant": true
-      },
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
-        "endTime": "2026-11-11T06:00:00",
-        "relevant": true
       }
     ],
     "espinho": [
@@ -1199,16 +869,6 @@
         "text": "Precipitação persistente, por vezes forte.",
         "startTime": "2026-11-11T03:00:00",
         "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
-        "endTime": "2026-11-11T06:00:00",
         "relevant": true
       }
     ],
@@ -1222,16 +882,6 @@
         "startTime": "2026-11-11T03:00:00",
         "endTime": "2026-11-11T21:00:00",
         "relevant": true
-      },
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
-        "endTime": "2026-11-11T06:00:00",
-        "relevant": true
       }
     ],
     "bairro-piscatorio": [
@@ -1243,16 +893,6 @@
         "text": "Precipitação persistente, por vezes forte.",
         "startTime": "2026-11-11T03:00:00",
         "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
-        "endTime": "2026-11-11T06:00:00",
         "relevant": true
       }
     ],
@@ -1266,16 +906,6 @@
         "startTime": "2026-11-11T03:00:00",
         "endTime": "2026-11-11T21:00:00",
         "relevant": true
-      },
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
-        "endTime": "2026-11-11T06:00:00",
-        "relevant": true
       }
     ],
     "barrinha-esmoriz": [
@@ -1287,16 +917,6 @@
         "text": "Precipitação persistente, por vezes forte.",
         "startTime": "2026-11-11T03:00:00",
         "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
-        "endTime": "2026-11-11T06:00:00",
         "relevant": true
       }
     ],
@@ -1310,16 +930,6 @@
         "startTime": "2026-11-11T03:00:00",
         "endTime": "2026-11-11T21:00:00",
         "relevant": true
-      },
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
-        "endTime": "2026-11-11T06:00:00",
-        "relevant": true
       }
     ],
     "cortegaca": [
@@ -1331,16 +941,6 @@
         "text": "Precipitação persistente, por vezes forte.",
         "startTime": "2026-11-11T03:00:00",
         "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
-        "endTime": "2026-11-11T06:00:00",
         "relevant": true
       }
     ],
@@ -1354,16 +954,6 @@
         "startTime": "2026-11-11T03:00:00",
         "endTime": "2026-11-11T21:00:00",
         "relevant": true
-      },
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
-        "endTime": "2026-11-11T06:00:00",
-        "relevant": true
       }
     ],
     "maceda": [
@@ -1376,16 +966,6 @@
         "startTime": "2026-11-11T03:00:00",
         "endTime": "2026-11-11T21:00:00",
         "relevant": true
-      },
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
-        "endTime": "2026-11-11T06:00:00",
-        "relevant": true
       }
     ],
     "murtosa": [
@@ -1397,16 +977,6 @@
         "text": "Precipitação persistente, por vezes forte.",
         "startTime": "2026-11-11T03:00:00",
         "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "AVR",
-        "areaLabel": "Aveiro",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
-        "endTime": "2026-11-11T06:00:00",
         "relevant": true
       },
       {
@@ -1434,16 +1004,6 @@
       {
         "areaCode": "AVR",
         "areaLabel": "Aveiro",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
-        "endTime": "2026-11-11T06:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "AVR",
-        "areaLabel": "Aveiro",
         "type": "Vento",
         "level": "yellow",
         "text": "Vento sudoeste com rajadas até 90 km/h.",
@@ -1461,16 +1021,6 @@
         "text": "Precipitação persistente, por vezes forte.",
         "startTime": "2026-11-11T03:00:00",
         "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "AVR",
-        "areaLabel": "Aveiro",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
-        "endTime": "2026-11-11T06:00:00",
         "relevant": true
       },
       {
@@ -1498,16 +1048,6 @@
       {
         "areaCode": "AVR",
         "areaLabel": "Aveiro",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
-        "endTime": "2026-11-11T06:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "AVR",
-        "areaLabel": "Aveiro",
         "type": "Vento",
         "level": "yellow",
         "text": "Vento sudoeste com rajadas até 90 km/h.",
@@ -1525,16 +1065,6 @@
         "text": "Precipitação persistente, por vezes forte.",
         "startTime": "2026-11-11T03:00:00",
         "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "AVR",
-        "areaLabel": "Aveiro",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
-        "endTime": "2026-11-11T06:00:00",
         "relevant": true
       },
       {
@@ -1562,16 +1092,6 @@
       {
         "areaCode": "AVR",
         "areaLabel": "Aveiro",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
-        "endTime": "2026-11-11T06:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "AVR",
-        "areaLabel": "Aveiro",
         "type": "Vento",
         "level": "yellow",
         "text": "Vento sudoeste com rajadas até 90 km/h.",
@@ -1594,16 +1114,6 @@
       {
         "areaCode": "AVR",
         "areaLabel": "Aveiro",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
-        "endTime": "2026-11-11T06:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "AVR",
-        "areaLabel": "Aveiro",
         "type": "Vento",
         "level": "yellow",
         "text": "Vento sudoeste com rajadas até 90 km/h.",
@@ -1621,16 +1131,6 @@
         "text": "Precipitação persistente, por vezes forte.",
         "startTime": "2026-11-11T03:00:00",
         "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "AVR",
-        "areaLabel": "Aveiro",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
-        "endTime": "2026-11-11T06:00:00",
         "relevant": true
       },
       {
@@ -1664,16 +1164,6 @@
         "startTime": "2026-11-11T12:00:00",
         "endTime": "2026-11-11T21:00:00",
         "relevant": true
-      },
-      {
-        "areaCode": "CBR",
-        "areaLabel": "Coimbra",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
-        "endTime": "2026-11-11T06:00:00",
-        "relevant": true
       }
     ],
     "buarcos": [
@@ -1695,16 +1185,6 @@
         "text": "Rajadas até 120 km/h.",
         "startTime": "2026-11-11T12:00:00",
         "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "CBR",
-        "areaLabel": "Coimbra",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
-        "endTime": "2026-11-11T06:00:00",
         "relevant": true
       }
     ],
@@ -1728,16 +1208,6 @@
         "startTime": "2026-11-11T12:00:00",
         "endTime": "2026-11-11T21:00:00",
         "relevant": true
-      },
-      {
-        "areaCode": "CBR",
-        "areaLabel": "Coimbra",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
-        "endTime": "2026-11-11T06:00:00",
-        "relevant": true
       }
     ],
     "cova-gala-sul": [
@@ -1759,16 +1229,6 @@
         "text": "Rajadas até 120 km/h.",
         "startTime": "2026-11-11T12:00:00",
         "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "CBR",
-        "areaLabel": "Coimbra",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
-        "endTime": "2026-11-11T06:00:00",
         "relevant": true
       }
     ],
@@ -1802,16 +1262,6 @@
         "startTime": "2026-11-11T03:00:00",
         "endTime": "2026-11-11T12:00:00",
         "relevant": true
-      },
-      {
-        "areaCode": "LRA",
-        "areaLabel": "Leiria",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
-        "endTime": "2026-11-11T06:00:00",
-        "relevant": true
       }
     ],
     "praia-da-vieira": [
@@ -1843,16 +1293,6 @@
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T03:00:00",
         "endTime": "2026-11-11T12:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LRA",
-        "areaLabel": "Leiria",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
-        "endTime": "2026-11-11T06:00:00",
         "relevant": true
       }
     ],
@@ -1886,16 +1326,6 @@
         "startTime": "2026-11-11T03:00:00",
         "endTime": "2026-11-11T12:00:00",
         "relevant": true
-      },
-      {
-        "areaCode": "LRA",
-        "areaLabel": "Leiria",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
-        "endTime": "2026-11-11T06:00:00",
-        "relevant": true
       }
     ],
     "castelo-bode": [
@@ -1928,16 +1358,6 @@
         "startTime": "2026-11-11T03:00:00",
         "endTime": "2026-11-11T12:00:00",
         "relevant": true
-      },
-      {
-        "areaCode": "LRA",
-        "areaLabel": "Leiria",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
-        "endTime": "2026-11-11T06:00:00",
-        "relevant": true
       }
     ],
     "nazare": [
@@ -1969,16 +1389,6 @@
         "text": "Precipitação por vezes forte e persistente.",
         "startTime": "2026-11-11T03:00:00",
         "endTime": "2026-11-11T12:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LRA",
-        "areaLabel": "Leiria",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
-        "endTime": "2026-11-11T06:00:00",
         "relevant": true
       }
     ],
@@ -2444,8 +1854,8 @@
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
         "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       }
@@ -2496,8 +1906,8 @@
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
         "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       }
@@ -2548,8 +1958,8 @@
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
         "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       }
@@ -2600,8 +2010,8 @@
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
         "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       }
@@ -2652,8 +2062,8 @@
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
         "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       }
@@ -2704,8 +2114,8 @@
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
         "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       }
@@ -2756,8 +2166,8 @@
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
         "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       }
@@ -2808,8 +2218,8 @@
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
         "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       }
@@ -2860,8 +2270,8 @@
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
         "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       }
@@ -2912,8 +2322,8 @@
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
         "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       }
@@ -2964,8 +2374,8 @@
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
         "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       }
@@ -3016,8 +2426,8 @@
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
         "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       }
@@ -3068,8 +2478,8 @@
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
         "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       }
@@ -3120,8 +2530,8 @@
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
         "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       }
@@ -3172,8 +2582,8 @@
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
         "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       }
@@ -3224,8 +2634,8 @@
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
         "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       }
@@ -3276,8 +2686,8 @@
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
         "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       }
@@ -3328,8 +2738,8 @@
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
         "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       }
@@ -3380,8 +2790,8 @@
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
         "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       }
@@ -3432,8 +2842,8 @@
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
         "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       }
@@ -3484,8 +2894,8 @@
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
         "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       }
@@ -3536,8 +2946,8 @@
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
         "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       }
@@ -3588,8 +2998,8 @@
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
         "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       }
@@ -3640,8 +3050,8 @@
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
         "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       }
@@ -3692,8 +3102,8 @@
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
         "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       }
@@ -3744,8 +3154,8 @@
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
         "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       }
@@ -3796,8 +3206,8 @@
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
         "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       }
@@ -3848,8 +3258,8 @@
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
         "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       }
@@ -3900,8 +3310,8 @@
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
         "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       }
@@ -4123,16 +3533,6 @@
         "text": "Precipitação persistente, por vezes forte.",
         "startTime": "2026-11-11T03:00:00",
         "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "BRG",
-        "areaLabel": "Braga",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
-        "endTime": "2026-11-11T06:00:00",
         "relevant": true
       }
     ],
@@ -6481,16 +5881,6 @@
         "areaCode": "MCN",
         "areaLabel": "Madeira — Costa Norte",
         "type": "Precipitação",
-        "level": "red",
-        "text": "Chuva, por vezes forte e persistente.",
-        "startTime": "2026-11-10T21:00:00",
-        "endTime": "2026-11-11T06:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "MCN",
-        "areaLabel": "Madeira — Costa Norte",
-        "type": "Precipitação",
         "level": "orange",
         "text": "Aguaceiros, por vezes fortes",
         "startTime": "2026-11-11T06:00:00",
@@ -6523,26 +5913,6 @@
         "areaCode": "MRM",
         "areaLabel": "Madeira — Regiões Montanhosas",
         "type": "Precipitação",
-        "level": "red",
-        "text": "Chuva, por vezes forte e persistente.",
-        "startTime": "2026-11-10T21:00:00",
-        "endTime": "2026-11-11T06:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "MRM",
-        "areaLabel": "Madeira — Regiões Montanhosas",
-        "type": "Vento",
-        "level": "red",
-        "text": "Rajadas até 140 km/h.",
-        "startTime": "2026-11-11T00:00:00",
-        "endTime": "2026-11-11T06:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "MRM",
-        "areaLabel": "Madeira — Regiões Montanhosas",
-        "type": "Precipitação",
         "level": "orange",
         "text": "Chuva, por vezes forte e persistente.",
         "startTime": "2026-11-11T06:00:00",
@@ -6561,16 +5931,6 @@
       }
     ],
     "paul-mar": [
-      {
-        "areaCode": "MCN",
-        "areaLabel": "Madeira — Costa Norte",
-        "type": "Precipitação",
-        "level": "red",
-        "text": "Chuva, por vezes forte e persistente.",
-        "startTime": "2026-11-10T21:00:00",
-        "endTime": "2026-11-11T06:00:00",
-        "relevant": true
-      },
       {
         "areaCode": "MCN",
         "areaLabel": "Madeira — Costa Norte",
@@ -6607,16 +5967,6 @@
         "areaCode": "MCN",
         "areaLabel": "Madeira — Costa Norte",
         "type": "Precipitação",
-        "level": "red",
-        "text": "Chuva, por vezes forte e persistente.",
-        "startTime": "2026-11-10T21:00:00",
-        "endTime": "2026-11-11T06:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "MCN",
-        "areaLabel": "Madeira — Costa Norte",
-        "type": "Precipitação",
         "level": "orange",
         "text": "Aguaceiros, por vezes fortes",
         "startTime": "2026-11-11T06:00:00",
@@ -6645,16 +5995,6 @@
       }
     ],
     "ponta-sao-lourenco": [
-      {
-        "areaCode": "MCS",
-        "areaLabel": "Funchal",
-        "type": "Precipitação",
-        "level": "red",
-        "text": "Chuva, por vezes forte e persistente.",
-        "startTime": "2026-11-10T21:00:00",
-        "endTime": "2026-11-11T06:00:00",
-        "relevant": true
-      },
       {
         "areaCode": "MCS",
         "areaLabel": "Funchal",
@@ -6691,26 +6031,6 @@
         "areaCode": "MRM",
         "areaLabel": "Madeira — Regiões Montanhosas",
         "type": "Precipitação",
-        "level": "red",
-        "text": "Chuva, por vezes forte e persistente.",
-        "startTime": "2026-11-10T21:00:00",
-        "endTime": "2026-11-11T06:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "MRM",
-        "areaLabel": "Madeira — Regiões Montanhosas",
-        "type": "Vento",
-        "level": "red",
-        "text": "Rajadas até 140 km/h.",
-        "startTime": "2026-11-11T00:00:00",
-        "endTime": "2026-11-11T06:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "MRM",
-        "areaLabel": "Madeira — Regiões Montanhosas",
-        "type": "Precipitação",
         "level": "orange",
         "text": "Chuva, por vezes forte e persistente.",
         "startTime": "2026-11-11T06:00:00",
@@ -6729,16 +6049,6 @@
       }
     ],
     "funchal": [
-      {
-        "areaCode": "MCS",
-        "areaLabel": "Funchal",
-        "type": "Precipitação",
-        "level": "red",
-        "text": "Chuva, por vezes forte e persistente.",
-        "startTime": "2026-11-10T21:00:00",
-        "endTime": "2026-11-11T06:00:00",
-        "relevant": true
-      },
       {
         "areaCode": "MCS",
         "areaLabel": "Funchal",
@@ -6784,16 +6094,6 @@
       {
         "areaCode": "AVR",
         "areaLabel": "Aveiro",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
-        "endTime": "2026-11-11T06:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "AVR",
-        "areaLabel": "Aveiro",
         "type": "Vento",
         "level": "yellow",
         "text": "Vento sudoeste com rajadas até 90 km/h.",
@@ -6811,16 +6111,6 @@
         "text": "Precipitação persistente, por vezes forte.",
         "startTime": "2026-11-11T03:00:00",
         "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
-        "endTime": "2026-11-11T06:00:00",
         "relevant": true
       }
     ],
@@ -6870,8 +6160,8 @@
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
         "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       }
@@ -6922,8 +6212,8 @@
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
         "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       }
@@ -7022,16 +6312,6 @@
         "startTime": "2026-11-11T03:00:00",
         "endTime": "2026-11-11T12:00:00",
         "relevant": true
-      },
-      {
-        "areaCode": "LRA",
-        "areaLabel": "Leiria",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
-        "endTime": "2026-11-11T06:00:00",
-        "relevant": true
       }
     ],
     "cave-ericeira": [
@@ -7080,8 +6360,8 @@
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
         "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       }
@@ -7132,8 +6412,8 @@
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
         "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       }
@@ -7184,8 +6464,8 @@
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
         "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       }
@@ -7236,8 +6516,8 @@
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
         "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
+        "text": "Ondas de sudoeste com 4 a 5 metros.",
+        "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
         "relevant": true
       }
@@ -7663,16 +6943,6 @@
         "areaCode": "MCS",
         "areaLabel": "Funchal",
         "type": "Precipitação",
-        "level": "red",
-        "text": "Chuva, por vezes forte e persistente.",
-        "startTime": "2026-11-10T21:00:00",
-        "endTime": "2026-11-11T06:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "MCS",
-        "areaLabel": "Funchal",
-        "type": "Precipitação",
         "level": "orange",
         "text": "Chuva, por vezes forte e persistente.",
         "startTime": "2026-11-11T06:00:00",
@@ -7701,16 +6971,6 @@
       }
     ],
     "seixal-madeira": [
-      {
-        "areaCode": "MCN",
-        "areaLabel": "Madeira — Costa Norte",
-        "type": "Precipitação",
-        "level": "red",
-        "text": "Chuva, por vezes forte e persistente.",
-        "startTime": "2026-11-10T21:00:00",
-        "endTime": "2026-11-11T06:00:00",
-        "relevant": true
-      },
       {
         "areaCode": "MCN",
         "areaLabel": "Madeira — Costa Norte",
@@ -7747,16 +7007,6 @@
         "areaCode": "MCN",
         "areaLabel": "Madeira — Costa Norte",
         "type": "Precipitação",
-        "level": "red",
-        "text": "Chuva, por vezes forte e persistente.",
-        "startTime": "2026-11-10T21:00:00",
-        "endTime": "2026-11-11T06:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "MCN",
-        "areaLabel": "Madeira — Costa Norte",
-        "type": "Precipitação",
         "level": "orange",
         "text": "Aguaceiros, por vezes fortes",
         "startTime": "2026-11-11T06:00:00",
@@ -7785,16 +7035,6 @@
       }
     ],
     "madalena-mar": [
-      {
-        "areaCode": "MCN",
-        "areaLabel": "Madeira — Costa Norte",
-        "type": "Precipitação",
-        "level": "red",
-        "text": "Chuva, por vezes forte e persistente.",
-        "startTime": "2026-11-10T21:00:00",
-        "endTime": "2026-11-11T06:00:00",
-        "relevant": true
-      },
       {
         "areaCode": "MCN",
         "areaLabel": "Madeira — Costa Norte",
@@ -7836,16 +7076,6 @@
         "startTime": "2026-11-11T03:00:00",
         "endTime": "2026-11-11T21:00:00",
         "relevant": true
-      },
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
-        "endTime": "2026-11-11T06:00:00",
-        "relevant": true
       }
     ],
     "aterro": [
@@ -7857,16 +7087,6 @@
         "text": "Precipitação persistente, por vezes forte.",
         "startTime": "2026-11-11T03:00:00",
         "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas do quadrante oeste com 4 a 5 metros.",
-        "startTime": "2026-11-10T21:24:00",
-        "endTime": "2026-11-11T06:00:00",
         "relevant": true
       }
     ]
