@@ -30,6 +30,7 @@ export default function MapMarkersZone() {
     hoursFrame,
     hoursLive,
     hoursTimes,
+    pele,
   } = useMapUiData();
   const { closeSpotSheet, selectSpot, openExploreSheet } = useMapUiActions();
   const t = getTranslation(locale);
@@ -61,6 +62,7 @@ export default function MapMarkersZone() {
         hoursFrame={hoursLive ? hoursFrame : 0}
         hourLabel={hourLabel}
         onViewSpot={selectSpot}
+        pele={pele}
       />
     );
   }
@@ -76,6 +78,7 @@ export default function MapMarkersZone() {
       hourLabel={hourLabel}
       onClose={closeSpotSheet}
       onViewSpot={() => selectSpot(sheetSpot.spot.id)}
+      pele={pele}
     />
   );
 }

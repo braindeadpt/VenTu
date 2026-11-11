@@ -9,6 +9,7 @@ import {
   SpotCardContent,
   type MapSpotPreviewData,
 } from '@/components/spots/MapSpotPreview';
+import type { MapPele } from '@/lib/mapPele';
 
 export type MapSpotSheetData = MapSpotPreviewData;
 
@@ -25,6 +26,8 @@ interface MapSpotSheetProps {
   hoursFrame?: number;
   hourLabel?: string;
   onViewSpot?: (spotId: string) => void;
+  /** Pele v6 da fase B (`?pele=v6`, PR B4): folha v6. */
+  pele?: MapPele | null;
 }
 
 export default function MapSpotSheet({
@@ -37,6 +40,7 @@ export default function MapSpotSheet({
   hoursFrame,
   hourLabel,
   onViewSpot,
+  pele = null,
 }: MapSpotSheetProps) {
   const closeRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -112,6 +116,7 @@ export default function MapSpotSheet({
       aria-modal="true"
       aria-labelledby="map-spot-sheet-title"
       data-testid="map-spot-sheet"
+      data-ms={pele === 'v6' ? 'folha' : undefined}
       className="absolute inset-x-0 bottom-0 z-[1201] max-h-[min(85dvh,640px)] overflow-y-auto rounded-t-2xl border-t border-divider bg-bg-elevated shadow-modal pb-[max(1rem,env(safe-area-inset-bottom))] motion-reduce:transition-none transition-transform duration-200 ease-out"
     >
       <div
@@ -162,6 +167,7 @@ export default function MapSpotSheet({
           hoursFrame={hoursFrame}
           hourLabel={hourLabel}
           onViewSpot={() => onViewSpot?.(data.spot.id)}
+          pele={pele}
         />
       </div>
     </div>

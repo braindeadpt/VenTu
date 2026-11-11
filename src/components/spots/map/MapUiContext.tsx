@@ -4,6 +4,7 @@ import { createContext, useContext, type ReactNode } from 'react';
 import type { GridSportFilter } from '@/lib/sportRatings';
 import type { MapSpotData } from '../mapSpotData';
 import type { MapSpotSheetData } from '../MapSpotSheet';
+import type { MapPele } from '@/lib/mapPele';
 
 /**
  * Estado partilhado do mapa (docs/design/MAP-ZONES.md): os filtros do
@@ -40,6 +41,8 @@ export interface MapUiData {
   focusSpotId?: string;
   /** Spot aberto na pré-visualização mobile (sheet de detalhe). */
   sheetSpot: MapSpotSheetData | null;
+  /** Pele v6 da fase B (`?pele=v6`): o cartão e a folha do spot a lêem (B4). */
+  pele?: MapPele | null;
 }
 
 export interface MapUiActions {

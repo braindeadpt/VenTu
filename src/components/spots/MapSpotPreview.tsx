@@ -24,7 +24,8 @@ import { getMapSpotNarrative } from '@/lib/mapSpotNarrative';
 import { getExplainedWindSafety, getSpotScoreFactors, scoreFactorClass } from '@/lib/spotScoreFactors';
 import { getMapTideLine } from '@/lib/spotTideRelevance';
 import { fetchMapHours, type MapHoursFile } from '@/lib/mapHours';
-import { MAP_NIGHT_FILL, MAP_NIGHT_INK } from '@/lib/mapNight';
+import { MAP_NIGHT_FILL, MAP_NIGHT_INK, MAP_NIGHT_MOON_PATH } from '@/lib/mapNight';
+import type { MapPele } from '@/lib/mapPele';
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 import SpotImage from '@/components/ui/SpotImage';
 import ScoreBadge from '@/components/ui/ScoreBadge';
@@ -260,6 +261,8 @@ export interface SpotCardContentProps {
   /** Rótulo temporal já localizado («agora» ou a hora escolhida). */
   hourLabel?: string;
   onViewSpot?: () => void;
+  /** Pele v6 da fase B (`?pele=v6`, PR B4). Sem ela, o cartão de hoje sem mudança. */
+  pele?: MapPele | null;
 }
 
 /** Chave da série de score por spot no ficheiro map-hours (48 h). */
@@ -390,7 +393,21 @@ export function SpotCardContent({
   hoursFrame = 0,
   hourLabel,
   onViewSpot,
+  pele = null,
 }: SpotCardContentProps) {
+  if (pele === 'v6') {
+    return (
+      <SpotCardContentV6
+        data={data}
+        locale={locale}
+        highlightSport={highlightSport}
+        scoreOverride={scoreOverride}
+        hoursFrame={hoursFrame}
+        hourLabel={hourLabel}
+        onViewSpot={onViewSpot}
+      />
+    );
+  }
   const { spot, conditions, allScores, warning } = data;
   const t = getTranslation(locale);
   // Nível mostrado = nível do desporto activo (o mesmo que o filtro usa).
@@ -565,6 +582,351 @@ export function SpotCardContent({
   );
 }
 
+/* ════════════════════════════════════════════════════════════════════════
+ * Fase B do /mapa, PR B4 — cartão e folha do spot na pele v6 (maquete
+ * `.spot`, `spotHTML`). Só se monta com `pele === 'v6'`: sem a flag o
+ * SpotCardContent de cima fica exactamente igual. Os contratos de teste do
+ * cartão (data-card-score, data-card-night, data-score-factors) mantêm-se.
+ * Ganchos de estilo `data-ms=…` (src/styles/mapa-pele-v6.css, bloco B4).
+ * ════════════════════════════════════════════════════════════════════════ */
+
+/** Nota mínima de uma janela (regra aprovada: janelas com nota ≥ 7). */
+const JANELA_NOTA_MIN = 7;
+
+/** «qui 08h» — os times do map-hours são naive em hora de Lisboa. */
+function diaHoraLabel(time: string, locale: string): string {
+  const day = new Date(`${time.slice(0, 10)}T12:00:00Z`);
+  const wd = new Intl.DateTimeFormat(locale === 'pt' ? 'pt-PT' : locale, {
+    weekday: 'short',
+    timeZone: 'UTC',
+  })
+    .format(day)
+    .replace('.', '');
+  return `${wd} ${time.slice(11, 13)}h`;
+}
+
+/** Dia da semana curto de um time naive do map-hours («seg»). */
+function diaLabel(time: string, locale: string): string {
+  const day = new Date(`${time.slice(0, 10)}T12:00:00Z`);
+  return new Intl.DateTimeFormat(locale === 'pt' ? 'pt-PT' : locale, { weekday: 'short', timeZone: 'UTC' })
+    .format(day)
+    .replace('.', '');
+}
+
+export interface ProximaJanelaMapa {
+  /** Índice do passo nas 48 h. */
+  i: number;
+  /** Nota inteira /10 (escala única, scoreToNota). */
+  nota: number;
+}
+
+/**
+ * Próxima janela do spot nas 48 h do map-hours, depois do passo `desde`:
+ * o primeiro passo com nota ≥ 7 (a mesma regra das janelas da #358). Os
+ * `null` (noite do motor) e as notas abaixo de 7 não contam. `null` = sem
+ * janela boa até ao fim da série.
+ */
+export function proximaJanelaMapa(
+  series: ReadonlyArray<number | null> | undefined,
+  desde: number,
+): ProximaJanelaMapa | null {
+  if (!series) return null;
+  for (let i = Math.max(0, desde + 1); i < series.length; i++) {
+    const v = series[i];
+    if (typeof v !== 'number' || !Number.isFinite(v)) continue;
+    const nota = scoreToNota(v);
+    if (nota >= JANELA_NOTA_MIN) return { i, nota };
+  }
+  return null;
+}
+
+/** Série das 48 h do spot (map-hours memoizado; a mesma da sparkline). */
+function useMapHoursFile(): MapHoursFile | null {
+  const [file, setFile] = useState<MapHoursFile | null>(null);
+  useEffect(() => {
+    let alive = true;
+    fetchMapHours().then((f) => {
+      if (alive) setFile(f);
+    });
+    return () => {
+      alive = false;
+    };
+  }, []);
+  return file;
+}
+
+function LuaV6({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
+      <path d={MAP_NIGHT_MOON_PATH} fill="currentColor" />
+    </svg>
+  );
+}
+
+/** Barras das 48 h do passo actual até ao fim (maquete `.mini48`): linha no 7. */
+function Mini48V6({
+  series,
+  times,
+  cur,
+  locale,
+}: {
+  series: ReadonlyArray<number | null>;
+  times: readonly string[];
+  cur: number;
+  locale: string;
+}) {
+  const t = getTranslation(locale);
+  const desde = Math.max(0, Math.min(series.length - 1, cur));
+  const prox = series.slice(desde);
+  if (prox.length < 2) return null;
+  const marcas: Array<{ k: number; d: string }> = [];
+  for (let k = 1; k < prox.length; k++) {
+    const a = times[desde + k - 1];
+    const b = times[desde + k];
+    if (a && b && a.slice(0, 10) !== b.slice(0, 10)) marcas.push({ k, d: diaLabel(b, locale) });
+  }
+  const fim = times[desde + prox.length - 1];
+  const tierLimite = getScoreTierLabel(getScoreTier(JANELA_NOTA_MIN * 10), locale);
+  return (
+    <div data-ms="m48-bloco">
+      <p data-ms="t-mini">
+        <span>
+          {t.mapUiMarkers.sparkNext48h}
+          {fim ? ` · ${diaHoraLabel(fim, locale)}` : ''}
+        </span>
+        <span>{`— ${JANELA_NOTA_MIN} (${tierLimite})`}</span>
+      </p>
+      <div data-ms="m48" aria-hidden="true">
+        <span data-ms="m48-lim" style={{ bottom: `${(JANELA_NOTA_MIN / 10) * 100}%` }} />
+        {prox.map((v, k) => {
+          const ok = typeof v === 'number' && Number.isFinite(v);
+          const nota = ok ? scoreToNota(v as number) : null;
+          return (
+            <i
+              key={k}
+              data-tier={ok ? getScoreTier(v as number) : undefined}
+              data-noite={ok ? undefined : ''}
+              data-agora={k === 0 ? '' : undefined}
+              style={{ height: ok ? `${Math.max(8, (nota ?? 0) * 10)}%` : '12%' }}
+            />
+          );
+        })}
+      </div>
+      <div data-ms="m48-l" aria-hidden="true">
+        <span style={{ left: 0 }}>{times[desde] ? mapHoursClockLocal(times[desde]) : ''}</span>
+        {marcas.map((m) => (
+          <span key={m.k} style={{ left: `${((m.k / prox.length) * 100).toFixed(1)}%` }}>
+            {m.d}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function mapHoursClockLocal(time: string): string {
+  return `${time.slice(11, 13)}h`;
+}
+
+/** Corpo do cartão v6 (desktop e folha 390): a mesma superfície nas duas formas. */
+/** «1,8» em PT (a vírgula da língua), «1.8» em EN. */
+function decimal1(v: number, locale: string): string {
+  return new Intl.NumberFormat(locale === 'pt' ? 'pt-PT' : locale, {
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 1,
+  }).format(v);
+}
+
+function SpotCardContentV6({
+  data,
+  locale,
+  highlightSport = 'all',
+  scoreOverride,
+  hoursFrame = 0,
+  hourLabel,
+  onViewSpot,
+}: SpotCardContentProps) {
+  const { spot, conditions, allScores, warning } = data;
+  const t = getTranslation(locale);
+  const file = useMapHoursFile();
+  const nivelSport = highlightSport !== 'all' && highlightSport !== 'big-wave' ? highlightSport : undefined;
+  const night = scoreOverride === null;
+  const score = Math.max(0, Math.min(100, Math.round(bestScore(data, highlightSport, scoreOverride))));
+  const tier = getScoreTier(score);
+  const tierLabel = getScoreTierLabel(tier, locale);
+  const nota = scoreToNota(score);
+  const windKt = Math.round(conditions.windSpeed * MS_TO_KNOTS);
+  const swellH = conditions.swellHeight ?? conditions.waveHeight;
+  const swellT = conditions.swellPeriod ?? conditions.wavePeriod;
+  const directionsUrl = getGoogleMapsDirectionsUrl(spot.lat, spot.lon);
+  const detailHref = getSpotDetailHref(locale, spot.slug, nivelSport);
+  const scoreFactors = getSpotScoreFactors({ spot, conditions, allScores, sport: highlightSport, locale });
+  const windSafety = hoursFrame === 0 ? getExplainedWindSafety(spot, allScores, highlightSport) : null;
+  const sportLabel =
+    highlightSport === 'all' ? t.mapUiMarkers.bestModality : getSportLabel(highlightSport, locale);
+  const when = hourLabel ?? t.mapUiMarkers.now;
+  const coast = orientacaoVento(spot);
+  const windRelation = coast !== undefined ? (relacaoAnelVento(conditions.windDirection, coast) ?? undefined) : undefined;
+  const windRelationMeta = windRelation != null ? getWindRelationLabel(windRelation, locale) : undefined;
+  const series = file?.spots[spot.id]?.[mapHoursSportKey(highlightSport)];
+  const times = file?.times ?? [];
+  const janela = night ? proximaJanelaMapa(series, hoursFrame) : null;
+  const noiteRotulo = t.noite.rotulo;
+  const nomeNivel = getDifficultyLabel(nivelDoSpot(spot, nivelSport), locale);
+  const nivelChip = `${t.spotsMap.level}: ${nomeNivel.toLocaleLowerCase(locale)}`;
+
+  return (
+    <div data-ms="corpo">
+      <div data-ms="cab">
+        {night ? (
+          <span
+            data-ms="nota"
+            data-noite=""
+            data-card-night="true"
+            role="img"
+            aria-label={t.mapUiMarkers.nightAria}
+          >
+            <LuaV6 />
+          </span>
+        ) : (
+          <span data-ms="nota" data-tier={tier} data-card-score={score} role="img" aria-label={`${nota}/10 · ${tierLabel}`}>
+            <span aria-hidden="true">{nota}</span>
+            <small aria-hidden="true">/10</small>
+          </span>
+        )}
+        <span data-ms="tit">
+          <h3 data-ms="nome">{localizedSpotDisplayName(spot, locale)}</h3>
+          <span data-ms="sub">
+            {localizedSpotRegion(spot, locale)}
+            <span aria-hidden> · </span>
+            {sportLabel.toLocaleLowerCase(locale)}
+            <span aria-hidden> · </span>
+            {when}
+          </span>
+        </span>
+      </div>
+
+      {night ? (
+        <>
+          <p data-ms="f1">
+            <em data-ms="chip-banda" data-noite="">{noiteRotulo}</em>
+            <span>{` ${t.noite.luaAria.replace(/^[^:]*:\s*/, '')}`}</span>
+          </p>
+          <p data-ms="f2" data-janela={janela ? times[janela.i] : undefined}>
+            {janela && times[janela.i] ? (
+              <>
+                {t.noite.proximaJanela}{' '}
+                <b>
+                  {diaHoraLabel(times[janela.i], locale)}: {janela.nota}/10
+                </b>
+              </>
+            ) : series ? (
+              t.noite.semJanela
+            ) : null}
+          </p>
+        </>
+      ) : (
+        <p data-ms="f1">
+          <em data-ms="chip-banda" data-tier={tier}>{tierLabel}</em>
+          <span>{` ${sportLabel} · ${when}`}</span>
+        </p>
+      )}
+
+      {scoreFactors.length > 0 && (
+        <p
+          data-ms="f2"
+          data-score-factors={scoreFactors.map((f) => f.label).join(' · ')}
+          data-score-factors-sport={highlightSport}
+        >
+          {scoreFactors.map((f, i) => (
+            <span key={i}>
+              {i > 0 && <span aria-hidden> · </span>}
+              <span className={scoreFactorClass(f.kind)}>{f.label}</span>
+            </span>
+          ))}
+        </p>
+      )}
+
+      {warning ? (
+        <div className="mt-2">
+          <WarningPill warning={warning} locale={locale} variant="default" />
+        </div>
+      ) : null}
+      {windSafety && <WindSafetyNote level={windSafety} locale={locale} className="mt-2" />}
+
+      <div data-ms="metr">
+        <div>
+          <span>{t.mapUiMarkers.metricWave}</span>
+          <b>
+            {decimal1(swellH, locale)}
+            <small>m</small>
+          </b>
+        </div>
+        <div>
+          <span>{t.mapUiMarkers.metricPeriod}</span>
+          <b>
+            {Math.round(swellT)}
+            <small>s</small>
+          </b>
+        </div>
+        <div>
+          <span>{t.mapUiMarkers.metricWind}</span>
+          <b>
+            {windKt}
+            <small>kt {getCardinalLabel(conditions.windDirection)}</small>
+          </b>
+        </div>
+      </div>
+
+      {series && series.length > 1 ? (
+        <Mini48V6 series={series} times={times} cur={hoursFrame} locale={locale} />
+      ) : null}
+
+      <div data-ms="meta">
+        <span data-ms="chip">{nivelChip}</span>
+        {windRelationMeta ? (
+          <span data-ms="chip" data-rel={windRelation}>
+            {windRelationMeta.label}
+          </span>
+        ) : null}
+        <ConfidenceBadge
+          confidence={conditions.confidence}
+          detail={conditions.confidenceDetail}
+          locale={locale}
+          size="sm"
+        />
+      </div>
+
+      <div data-ms="acc">
+        <Button
+          href={detailHref}
+          variant="primary"
+          size="lg"
+          className="flex-1 whitespace-nowrap"
+          locale={locale}
+          onClick={onViewSpot}
+          data-ms="b-sol"
+        >
+          {t.spotsMap.viewSpot}
+          <ArrowRight className="w-5 h-5 ml-1" aria-hidden />
+        </Button>
+        <Button
+          href={directionsUrl}
+          variant="secondary"
+          size="lg"
+          className="whitespace-nowrap"
+          locale={locale}
+          target="_blank"
+          rel="noopener noreferrer"
+          data-ms="b-sec"
+        >
+          {t.spotsUi.getDirections}
+        </Button>
+      </div>
+    </div>
+  );
+}
+
 function bestScore(
   data: MapSpotPreviewData,
   sport: GridSportFilter,
@@ -594,7 +956,9 @@ export function MapSpotCard({
   hourLabel,
   onClose,
   onViewSpot,
+  pele = null,
 }: MapSpotCardProps) {
+  const v6 = pele === 'v6';
   const cardRef = useRef<HTMLElement>(null);
   const [entered, setEntered] = useState(false);
   const reducedMotion = usePrefersReducedMotion();
@@ -658,6 +1022,13 @@ export function MapSpotCard({
         top = Math.max(60, Math.min(cr.height - ch - 12, top));
         card.style.left = `${Math.round(left)}px`;
         card.style.top = `${Math.round(top)}px`;
+        if (v6) {
+          // B4: seta da maquete (`.spot::before`) virada para o marcador e à altura dele.
+          const cx = mr.left - cr.left + mr.width / 2;
+          card.dataset.lado = cx < left ? 'esq' : 'dir';
+          const ay = mr.top - cr.top + mr.height / 2 - top - 9;
+          card.style.setProperty('--ay', `${Math.round(Math.max(14, Math.min(ch - 32, ay)))}px`);
+        }
       }
       raf = requestAnimationFrame(tick);
     };
@@ -682,11 +1053,12 @@ export function MapSpotCard({
         dotEl.style.boxShadow = '';
       }
     };
-  }, [data.spot.id]);
+  }, [data.spot.id, v6]);
 
   return (
     <section
       ref={cardRef}
+      data-ms={v6 ? 'cartao' : undefined}
       role="dialog"
       aria-modal="false"
       aria-live="polite"
@@ -707,6 +1079,7 @@ export function MapSpotCard({
         type="button"
         onClick={onClose}
         aria-label={t.homepage.close}
+        data-ms={v6 ? 'fecha' : undefined}
         className="absolute right-2 top-2 min-h-[44px] min-w-[44px] flex items-center justify-center rounded-input text-fg-muted hover:text-fg hover:bg-surface-1/[0.04] transition-colors duration-150"
       >
         <X className="w-4 h-4" aria-hidden />
@@ -719,6 +1092,7 @@ export function MapSpotCard({
         hoursFrame={hoursFrame}
         hourLabel={hourLabel}
         onViewSpot={onViewSpot}
+        pele={pele}
       />
     </section>
   );
