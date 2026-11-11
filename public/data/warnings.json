@@ -1,61 +1,11 @@
 {
   "source": "ipma",
-  "fetchedAt": "2026-11-11T18:05:41.308Z",
+  "fetchedAt": "2026-11-11T23:07:06.067Z",
   "warnings": [
     {
       "areaCode": "FAR",
       "areaLabel": "Faro",
       "type": "Agitação Marítima",
-      "level": "orange",
-      "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-      "startTime": "2026-11-11T15:56:00",
-      "endTime": "2026-11-11T21:00:00",
-      "relevant": true
-    },
-    {
-      "areaCode": "STB",
-      "areaLabel": "Setúbal",
-      "type": "Agitação Marítima",
-      "level": "orange",
-      "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-      "startTime": "2026-11-11T15:56:00",
-      "endTime": "2026-11-11T21:00:00",
-      "relevant": true
-    },
-    {
-      "areaCode": "LSB",
-      "areaLabel": "Lisboa",
-      "type": "Agitação Marítima",
-      "level": "orange",
-      "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-      "startTime": "2026-11-11T15:56:00",
-      "endTime": "2026-11-11T21:00:00",
-      "relevant": true
-    },
-    {
-      "areaCode": "BJA",
-      "areaLabel": "Beja",
-      "type": "Agitação Marítima",
-      "level": "orange",
-      "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-      "startTime": "2026-11-11T15:56:00",
-      "endTime": "2026-11-11T21:00:00",
-      "relevant": true
-    },
-    {
-      "areaCode": "FAR",
-      "areaLabel": "Faro",
-      "type": "Vento",
-      "level": "orange",
-      "text": "Rajadas até 90 km/h, podendo atingir 110 km/h nos locais mais expostos.",
-      "startTime": "2026-11-11T15:56:00",
-      "endTime": "2026-11-11T18:00:00",
-      "relevant": true
-    },
-    {
-      "areaCode": "FAR",
-      "areaLabel": "Faro",
-      "type": "Agitação Marítima",
       "level": "yellow",
       "text": "Ondas de sudoeste com 4 a 5 metros.",
       "startTime": "2026-11-11T21:00:00",
@@ -83,16 +33,6 @@
       "relevant": true
     },
     {
-      "areaCode": "MCN",
-      "areaLabel": "Madeira — Costa Norte",
-      "type": "Agitação Marítima",
-      "level": "yellow",
-      "text": "Ondas de oeste com 4 a 4,5 metros, passando a ondas de noroeste.",
-      "startTime": "2026-11-11T12:17:00",
-      "endTime": "2026-11-11T21:00:00",
-      "relevant": true
-    },
-    {
       "areaCode": "BJA",
       "areaLabel": "Beja",
       "type": "Agitação Marítima",
@@ -100,975 +40,11 @@
       "text": "Ondas de sudoeste com 4 a 5 metros.",
       "startTime": "2026-11-11T21:00:00",
       "endTime": "2026-11-12T03:00:00",
-      "relevant": true
-    },
-    {
-      "areaCode": "MPS",
-      "areaLabel": "Porto Santo",
-      "type": "Agitação Marítima",
-      "level": "yellow",
-      "text": "Ondas de oeste com 4 a 4,5 metros, passando a ondas de noroeste.",
-      "startTime": "2026-11-11T12:17:00",
-      "endTime": "2026-11-11T21:00:00",
-      "relevant": true
-    },
-    {
-      "areaCode": "MCS",
-      "areaLabel": "Funchal",
-      "type": "Agitação Marítima",
-      "level": "yellow",
-      "text": "Ondas de oeste/sudoeste com 4 a 5 metros.",
-      "startTime": "2026-11-11T12:17:00",
-      "endTime": "2026-11-11T21:00:00",
-      "relevant": true
-    },
-    {
-      "areaCode": "BGC",
-      "areaLabel": "Bragança",
-      "type": "Precipitação",
-      "level": "yellow",
-      "text": "Precipitação persistente, por vezes forte.",
-      "startTime": "2026-11-11T15:56:00",
-      "endTime": "2026-11-11T21:00:00",
-      "relevant": true
-    },
-    {
-      "areaCode": "VIS",
-      "areaLabel": "Viseu",
-      "type": "Precipitação",
-      "level": "yellow",
-      "text": "Precipitação persistente, por vezes forte.",
-      "startTime": "2026-11-11T15:56:00",
-      "endTime": "2026-11-11T18:00:00",
-      "relevant": true
-    },
-    {
-      "areaCode": "EVR",
-      "areaLabel": "Évora",
-      "type": "Precipitação",
-      "level": "yellow",
-      "text": "Precipitação por vezes forte e persistente.",
-      "startTime": "2026-11-11T15:56:00",
-      "endTime": "2026-11-11T18:00:00",
-      "relevant": true
-    },
-    {
-      "areaCode": "PTO",
-      "areaLabel": "Porto",
-      "type": "Precipitação",
-      "level": "yellow",
-      "text": "Precipitação persistente, por vezes forte.",
-      "startTime": "2026-11-11T15:56:00",
-      "endTime": "2026-11-11T18:00:00",
-      "relevant": true
-    },
-    {
-      "areaCode": "GDA",
-      "areaLabel": "Guarda",
-      "type": "Precipitação",
-      "level": "yellow",
-      "text": "Precipitação persistente, por vezes forte.",
-      "startTime": "2026-11-11T15:56:00",
-      "endTime": "2026-11-11T21:00:00",
-      "relevant": true
-    },
-    {
-      "areaCode": "FAR",
-      "areaLabel": "Faro",
-      "type": "Precipitação",
-      "level": "yellow",
-      "text": "Precipitação por vezes forte e persistente, em especial nas serras.",
-      "startTime": "2026-11-11T15:56:00",
-      "endTime": "2026-11-11T18:00:00",
-      "relevant": true
-    },
-    {
-      "areaCode": "VRL",
-      "areaLabel": "Vila Real",
-      "type": "Precipitação",
-      "level": "yellow",
-      "text": "Precipitação persistente, por vezes forte.",
-      "startTime": "2026-11-11T15:56:00",
-      "endTime": "2026-11-11T21:00:00",
-      "relevant": true
-    },
-    {
-      "areaCode": "STB",
-      "areaLabel": "Setúbal",
-      "type": "Precipitação",
-      "level": "yellow",
-      "text": "Precipitação por vezes forte.",
-      "startTime": "2026-11-11T15:56:00",
-      "endTime": "2026-11-11T18:00:00",
-      "relevant": true
-    },
-    {
-      "areaCode": "STM",
-      "areaLabel": "Santarém",
-      "type": "Precipitação",
-      "level": "yellow",
-      "text": "Precipitação forte e persistente.",
-      "startTime": "2026-11-11T15:56:00",
-      "endTime": "2026-11-11T18:00:00",
-      "relevant": true
-    },
-    {
-      "areaCode": "VCT",
-      "areaLabel": "Viana do Castelo",
-      "type": "Precipitação",
-      "level": "yellow",
-      "text": "Precipitação persistente, por vezes forte.",
-      "startTime": "2026-11-11T15:56:00",
-      "endTime": "2026-11-11T18:00:00",
-      "relevant": true
-    },
-    {
-      "areaCode": "LSB",
-      "areaLabel": "Lisboa",
-      "type": "Precipitação",
-      "level": "yellow",
-      "text": "Precipitação por vezes forte.",
-      "startTime": "2026-11-11T15:56:00",
-      "endTime": "2026-11-11T18:00:00",
-      "relevant": true
-    },
-    {
-      "areaCode": "LRA",
-      "areaLabel": "Leiria",
-      "type": "Precipitação",
-      "level": "yellow",
-      "text": "Precipitação forte e persistente.",
-      "startTime": "2026-11-11T15:56:00",
-      "endTime": "2026-11-11T18:00:00",
-      "relevant": true
-    },
-    {
-      "areaCode": "BJA",
-      "areaLabel": "Beja",
-      "type": "Precipitação",
-      "level": "yellow",
-      "text": "Precipitação por vezes forte e persistente.",
-      "startTime": "2026-11-11T15:56:00",
-      "endTime": "2026-11-11T18:00:00",
-      "relevant": true
-    },
-    {
-      "areaCode": "CBO",
-      "areaLabel": "Castelo Branco",
-      "type": "Precipitação",
-      "level": "yellow",
-      "text": "Precipitação forte e persistente.",
-      "startTime": "2026-11-11T15:56:00",
-      "endTime": "2026-11-11T18:00:00",
-      "relevant": true
-    },
-    {
-      "areaCode": "AVR",
-      "areaLabel": "Aveiro",
-      "type": "Precipitação",
-      "level": "yellow",
-      "text": "Precipitação persistente, por vezes forte.",
-      "startTime": "2026-11-11T15:56:00",
-      "endTime": "2026-11-11T18:00:00",
-      "relevant": true
-    },
-    {
-      "areaCode": "CBR",
-      "areaLabel": "Coimbra",
-      "type": "Precipitação",
-      "level": "yellow",
-      "text": "Precipitação persistente, por vezes forte.",
-      "startTime": "2026-11-11T15:56:00",
-      "endTime": "2026-11-11T18:00:00",
-      "relevant": true
-    },
-    {
-      "areaCode": "PTG",
-      "areaLabel": "Portalegre",
-      "type": "Precipitação",
-      "level": "yellow",
-      "text": "Precipitação forte e persistente.",
-      "startTime": "2026-11-11T15:56:00",
-      "endTime": "2026-11-11T18:00:00",
-      "relevant": true
-    },
-    {
-      "areaCode": "BRG",
-      "areaLabel": "Braga",
-      "type": "Precipitação",
-      "level": "yellow",
-      "text": "Precipitação persistente, por vezes forte.",
-      "startTime": "2026-11-11T15:56:00",
-      "endTime": "2026-11-11T18:00:00",
-      "relevant": true
-    },
-    {
-      "areaCode": "FAR",
-      "areaLabel": "Faro",
-      "type": "Trovoada",
-      "level": "yellow",
-      "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-      "startTime": "2026-11-11T15:56:00",
-      "endTime": "2026-11-11T18:00:00",
       "relevant": true
     }
   ],
   "spotWarnings": {
-    "moledo": [
-      {
-        "areaCode": "VCT",
-        "areaLabel": "Viana do Castelo",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação persistente, por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "vila-praia-ancora": [
-      {
-        "areaCode": "VCT",
-        "areaLabel": "Viana do Castelo",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação persistente, por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "afife": [
-      {
-        "areaCode": "VCT",
-        "areaLabel": "Viana do Castelo",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação persistente, por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "amorosa": [
-      {
-        "areaCode": "VCT",
-        "areaLabel": "Viana do Castelo",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação persistente, por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "cabedelo": [
-      {
-        "areaCode": "VCT",
-        "areaLabel": "Viana do Castelo",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação persistente, por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "foil-cabedelo": [
-      {
-        "areaCode": "VCT",
-        "areaLabel": "Viana do Castelo",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação persistente, por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "cabedelo-wakepark": [
-      {
-        "areaCode": "VCT",
-        "areaLabel": "Viana do Castelo",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação persistente, por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "rodanho": [
-      {
-        "areaCode": "VCT",
-        "areaLabel": "Viana do Castelo",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação persistente, por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "esposende": [
-      {
-        "areaCode": "VCT",
-        "areaLabel": "Viana do Castelo",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação persistente, por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "esposende-praia": [
-      {
-        "areaCode": "VCT",
-        "areaLabel": "Viana do Castelo",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação persistente, por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "fao": [
-      {
-        "areaCode": "VCT",
-        "areaLabel": "Viana do Castelo",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação persistente, por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "apulia": [
-      {
-        "areaCode": "VCT",
-        "areaLabel": "Viana do Castelo",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação persistente, por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "azurara": [
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação persistente, por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "arvore": [
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação persistente, por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "leca-palmeira": [
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação persistente, por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "matosinhos": [
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação persistente, por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "cabedelo-douro": [
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação persistente, por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "marina-afurada-foil": [
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação persistente, por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "praia-da-lomba": [
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação persistente, por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "salgueiros": [
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação persistente, por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "sereia-costa-verde": [
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação persistente, por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "canide-sul": [
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação persistente, por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "aguda": [
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação persistente, por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "espinho": [
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação persistente, por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "praia-37": [
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação persistente, por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "bairro-piscatorio": [
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação persistente, por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "paramos": [
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação persistente, por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "barrinha-esmoriz": [
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação persistente, por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "esmoriz": [
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação persistente, por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "cortegaca": [
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação persistente, por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "cortegaca-sul": [
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação persistente, por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "maceda": [
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação persistente, por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "murtosa": [
-      {
-        "areaCode": "AVR",
-        "areaLabel": "Aveiro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação persistente, por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "ria-torreira": [
-      {
-        "areaCode": "AVR",
-        "areaLabel": "Aveiro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação persistente, por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "praia-torreira": [
-      {
-        "areaCode": "AVR",
-        "areaLabel": "Aveiro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação persistente, por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "muranzel": [
-      {
-        "areaCode": "AVR",
-        "areaLabel": "Aveiro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação persistente, por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "furadouro": [
-      {
-        "areaCode": "AVR",
-        "areaLabel": "Aveiro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação persistente, por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "sao-jacinto": [
-      {
-        "areaCode": "AVR",
-        "areaLabel": "Aveiro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação persistente, por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "costa-nova": [
-      {
-        "areaCode": "AVR",
-        "areaLabel": "Aveiro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação persistente, por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "tocha": [
-      {
-        "areaCode": "AVR",
-        "areaLabel": "Aveiro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação persistente, por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "quiaios": [
-      {
-        "areaCode": "CBR",
-        "areaLabel": "Coimbra",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação persistente, por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "buarcos": [
-      {
-        "areaCode": "CBR",
-        "areaLabel": "Coimbra",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação persistente, por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "figueira-foz": [
-      {
-        "areaCode": "CBR",
-        "areaLabel": "Coimbra",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação persistente, por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "cova-gala-sul": [
-      {
-        "areaCode": "CBR",
-        "areaLabel": "Coimbra",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação persistente, por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "leirosa": [
-      {
-        "areaCode": "LRA",
-        "areaLabel": "Leiria",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação forte e persistente.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "praia-da-vieira": [
-      {
-        "areaCode": "LRA",
-        "areaLabel": "Leiria",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação forte e persistente.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "sao-pedro-moel": [
-      {
-        "areaCode": "LRA",
-        "areaLabel": "Leiria",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação forte e persistente.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "castelo-bode": [
-      {
-        "areaCode": "LRA",
-        "areaLabel": "Leiria",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação forte e persistente.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "nazare": [
-      {
-        "areaCode": "LRA",
-        "areaLabel": "Leiria",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação forte e persistente.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "foz-arelho": [
-      {
-        "areaCode": "STM",
-        "areaLabel": "Santarém",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação forte e persistente.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "foil-foz-arelho": [
-      {
-        "areaCode": "STM",
-        "areaLabel": "Santarém",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação forte e persistente.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "obidos-lagoon": [
-      {
-        "areaCode": "STM",
-        "areaLabel": "Santarém",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação forte e persistente.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "obidos-lagoon-sul": [
-      {
-        "areaCode": "STM",
-        "areaLabel": "Santarém",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação forte e persistente.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "foz-arelho-beach": [
-      {
-        "areaCode": "STM",
-        "areaLabel": "Santarém",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação forte e persistente.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "praia-del-rey": [
-      {
-        "areaCode": "STM",
-        "areaLabel": "Santarém",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação forte e persistente.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "almagreira": [
-      {
-        "areaCode": "STM",
-        "areaLabel": "Santarém",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação forte e persistente.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "lagide": [
-      {
-        "areaCode": "STM",
-        "areaLabel": "Santarém",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação forte e persistente.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "baleal": [
-      {
-        "areaCode": "STM",
-        "areaLabel": "Santarém",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação forte e persistente.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "baleal-sul": [
-      {
-        "areaCode": "STM",
-        "areaLabel": "Santarém",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação forte e persistente.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "gamboa": [
-      {
-        "areaCode": "STM",
-        "areaLabel": "Santarém",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação forte e persistente.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "supertubos": [
-      {
-        "areaCode": "STM",
-        "areaLabel": "Santarém",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação forte e persistente.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "molhe-leste": [
-      {
-        "areaCode": "STM",
-        "areaLabel": "Santarém",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação forte e persistente.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
     "foz-sizandro": [
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
       {
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
@@ -1077,16 +53,6 @@
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -1095,30 +61,10 @@
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -1127,30 +73,10 @@
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -1159,30 +85,10 @@
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -1191,30 +97,10 @@
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -1223,30 +109,10 @@
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -1255,30 +121,10 @@
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -1287,30 +133,10 @@
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -1319,30 +145,10 @@
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -1351,30 +157,10 @@
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -1383,30 +169,10 @@
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -1415,30 +181,10 @@
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -1447,30 +193,10 @@
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -1479,30 +205,10 @@
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -1511,30 +217,10 @@
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -1543,30 +229,10 @@
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -1575,30 +241,10 @@
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -1607,30 +253,10 @@
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -1639,30 +265,10 @@
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -1671,30 +277,10 @@
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -1703,30 +289,10 @@
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -1735,30 +301,10 @@
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -1767,30 +313,10 @@
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -1799,30 +325,10 @@
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -1831,30 +337,10 @@
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -1863,30 +349,10 @@
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -1895,30 +361,10 @@
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -1927,30 +373,10 @@
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -1959,30 +385,10 @@
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -1991,30 +397,10 @@
         "areaCode": "STB",
         "areaLabel": "Setúbal",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "STB",
-        "areaLabel": "Setúbal",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "STB",
-        "areaLabel": "Setúbal",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -2023,30 +409,10 @@
         "areaCode": "STB",
         "areaLabel": "Setúbal",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "STB",
-        "areaLabel": "Setúbal",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "STB",
-        "areaLabel": "Setúbal",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -2055,30 +421,10 @@
         "areaCode": "STB",
         "areaLabel": "Setúbal",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "STB",
-        "areaLabel": "Setúbal",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "STB",
-        "areaLabel": "Setúbal",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -2087,42 +433,10 @@
         "areaCode": "BJA",
         "areaLabel": "Beja",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "BJA",
-        "areaLabel": "Beja",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "BJA",
-        "areaLabel": "Beja",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte e persistente.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "ilha-do-ermal": [
-      {
-        "areaCode": "BRG",
-        "areaLabel": "Braga",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação persistente, por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -2131,30 +445,10 @@
         "areaCode": "STB",
         "areaLabel": "Setúbal",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "STB",
-        "areaLabel": "Setúbal",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "STB",
-        "areaLabel": "Setúbal",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -2163,30 +457,10 @@
         "areaCode": "STB",
         "areaLabel": "Setúbal",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "STB",
-        "areaLabel": "Setúbal",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "STB",
-        "areaLabel": "Setúbal",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -2195,30 +469,10 @@
         "areaCode": "STB",
         "areaLabel": "Setúbal",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "STB",
-        "areaLabel": "Setúbal",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "STB",
-        "areaLabel": "Setúbal",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -2227,30 +481,10 @@
         "areaCode": "STB",
         "areaLabel": "Setúbal",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "STB",
-        "areaLabel": "Setúbal",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "STB",
-        "areaLabel": "Setúbal",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -2259,30 +493,10 @@
         "areaCode": "STB",
         "areaLabel": "Setúbal",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "STB",
-        "areaLabel": "Setúbal",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "STB",
-        "areaLabel": "Setúbal",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -2291,30 +505,10 @@
         "areaCode": "STB",
         "areaLabel": "Setúbal",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "STB",
-        "areaLabel": "Setúbal",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "STB",
-        "areaLabel": "Setúbal",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -2323,50 +517,10 @@
         "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Vento",
-        "level": "orange",
-        "text": "Rajadas até 90 km/h, podendo atingir 110 km/h nos locais mais expostos.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte e persistente, em especial nas serras.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -2375,50 +529,10 @@
         "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Vento",
-        "level": "orange",
-        "text": "Rajadas até 90 km/h, podendo atingir 110 km/h nos locais mais expostos.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte e persistente, em especial nas serras.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -2427,50 +541,10 @@
         "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Vento",
-        "level": "orange",
-        "text": "Rajadas até 90 km/h, podendo atingir 110 km/h nos locais mais expostos.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte e persistente, em especial nas serras.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -2479,50 +553,10 @@
         "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Vento",
-        "level": "orange",
-        "text": "Rajadas até 90 km/h, podendo atingir 110 km/h nos locais mais expostos.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte e persistente, em especial nas serras.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -2531,50 +565,10 @@
         "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Vento",
-        "level": "orange",
-        "text": "Rajadas até 90 km/h, podendo atingir 110 km/h nos locais mais expostos.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte e persistente, em especial nas serras.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -2583,50 +577,10 @@
         "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Vento",
-        "level": "orange",
-        "text": "Rajadas até 90 km/h, podendo atingir 110 km/h nos locais mais expostos.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte e persistente, em especial nas serras.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -2635,50 +589,10 @@
         "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Vento",
-        "level": "orange",
-        "text": "Rajadas até 90 km/h, podendo atingir 110 km/h nos locais mais expostos.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte e persistente, em especial nas serras.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -2687,50 +601,10 @@
         "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Vento",
-        "level": "orange",
-        "text": "Rajadas até 90 km/h, podendo atingir 110 km/h nos locais mais expostos.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte e persistente, em especial nas serras.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -2739,50 +613,10 @@
         "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Vento",
-        "level": "orange",
-        "text": "Rajadas até 90 km/h, podendo atingir 110 km/h nos locais mais expostos.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte e persistente, em especial nas serras.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -2791,50 +625,10 @@
         "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Vento",
-        "level": "orange",
-        "text": "Rajadas até 90 km/h, podendo atingir 110 km/h nos locais mais expostos.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte e persistente, em especial nas serras.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -2843,50 +637,10 @@
         "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Vento",
-        "level": "orange",
-        "text": "Rajadas até 90 km/h, podendo atingir 110 km/h nos locais mais expostos.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte e persistente, em especial nas serras.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -2895,50 +649,10 @@
         "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Vento",
-        "level": "orange",
-        "text": "Rajadas até 90 km/h, podendo atingir 110 km/h nos locais mais expostos.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte e persistente, em especial nas serras.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -2947,50 +661,10 @@
         "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Vento",
-        "level": "orange",
-        "text": "Rajadas até 90 km/h, podendo atingir 110 km/h nos locais mais expostos.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte e persistente, em especial nas serras.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -2999,50 +673,10 @@
         "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Vento",
-        "level": "orange",
-        "text": "Rajadas até 90 km/h, podendo atingir 110 km/h nos locais mais expostos.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte e persistente, em especial nas serras.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -3051,50 +685,10 @@
         "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Vento",
-        "level": "orange",
-        "text": "Rajadas até 90 km/h, podendo atingir 110 km/h nos locais mais expostos.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte e persistente, em especial nas serras.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -3103,50 +697,10 @@
         "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Vento",
-        "level": "orange",
-        "text": "Rajadas até 90 km/h, podendo atingir 110 km/h nos locais mais expostos.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte e persistente, em especial nas serras.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -3155,50 +709,10 @@
         "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Vento",
-        "level": "orange",
-        "text": "Rajadas até 90 km/h, podendo atingir 110 km/h nos locais mais expostos.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte e persistente, em especial nas serras.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -3207,50 +721,10 @@
         "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Vento",
-        "level": "orange",
-        "text": "Rajadas até 90 km/h, podendo atingir 110 km/h nos locais mais expostos.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte e persistente, em especial nas serras.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -3259,50 +733,10 @@
         "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Vento",
-        "level": "orange",
-        "text": "Rajadas até 90 km/h, podendo atingir 110 km/h nos locais mais expostos.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte e persistente, em especial nas serras.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -3311,50 +745,10 @@
         "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Vento",
-        "level": "orange",
-        "text": "Rajadas até 90 km/h, podendo atingir 110 km/h nos locais mais expostos.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte e persistente, em especial nas serras.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -3363,50 +757,10 @@
         "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Vento",
-        "level": "orange",
-        "text": "Rajadas até 90 km/h, podendo atingir 110 km/h nos locais mais expostos.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte e persistente, em especial nas serras.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -3415,50 +769,10 @@
         "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Vento",
-        "level": "orange",
-        "text": "Rajadas até 90 km/h, podendo atingir 110 km/h nos locais mais expostos.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte e persistente, em especial nas serras.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -3467,50 +781,10 @@
         "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Vento",
-        "level": "orange",
-        "text": "Rajadas até 90 km/h, podendo atingir 110 km/h nos locais mais expostos.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte e persistente, em especial nas serras.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -3519,50 +793,10 @@
         "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Vento",
-        "level": "orange",
-        "text": "Rajadas até 90 km/h, podendo atingir 110 km/h nos locais mais expostos.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte e persistente, em especial nas serras.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -3571,50 +805,10 @@
         "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Vento",
-        "level": "orange",
-        "text": "Rajadas até 90 km/h, podendo atingir 110 km/h nos locais mais expostos.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte e persistente, em especial nas serras.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -3623,50 +817,10 @@
         "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Vento",
-        "level": "orange",
-        "text": "Rajadas até 90 km/h, podendo atingir 110 km/h nos locais mais expostos.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte e persistente, em especial nas serras.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -3675,50 +829,10 @@
         "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Vento",
-        "level": "orange",
-        "text": "Rajadas até 90 km/h, podendo atingir 110 km/h nos locais mais expostos.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte e persistente, em especial nas serras.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -3727,50 +841,10 @@
         "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Vento",
-        "level": "orange",
-        "text": "Rajadas até 90 km/h, podendo atingir 110 km/h nos locais mais expostos.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte e persistente, em especial nas serras.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -3779,50 +853,10 @@
         "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Vento",
-        "level": "orange",
-        "text": "Rajadas até 90 km/h, podendo atingir 110 km/h nos locais mais expostos.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte e persistente, em especial nas serras.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -3831,50 +865,10 @@
         "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Vento",
-        "level": "orange",
-        "text": "Rajadas até 90 km/h, podendo atingir 110 km/h nos locais mais expostos.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte e persistente, em especial nas serras.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -3883,50 +877,10 @@
         "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Vento",
-        "level": "orange",
-        "text": "Rajadas até 90 km/h, podendo atingir 110 km/h nos locais mais expostos.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte e persistente, em especial nas serras.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -3935,50 +889,10 @@
         "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Vento",
-        "level": "orange",
-        "text": "Rajadas até 90 km/h, podendo atingir 110 km/h nos locais mais expostos.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte e persistente, em especial nas serras.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -3987,50 +901,10 @@
         "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Vento",
-        "level": "orange",
-        "text": "Rajadas até 90 km/h, podendo atingir 110 km/h nos locais mais expostos.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte e persistente, em especial nas serras.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -4039,50 +913,10 @@
         "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Vento",
-        "level": "orange",
-        "text": "Rajadas até 90 km/h, podendo atingir 110 km/h nos locais mais expostos.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte e persistente, em especial nas serras.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -4091,50 +925,10 @@
         "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Vento",
-        "level": "orange",
-        "text": "Rajadas até 90 km/h, podendo atingir 110 km/h nos locais mais expostos.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte e persistente, em especial nas serras.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -4143,50 +937,10 @@
         "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Vento",
-        "level": "orange",
-        "text": "Rajadas até 90 km/h, podendo atingir 110 km/h nos locais mais expostos.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte e persistente, em especial nas serras.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -4195,50 +949,10 @@
         "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Vento",
-        "level": "orange",
-        "text": "Rajadas até 90 km/h, podendo atingir 110 km/h nos locais mais expostos.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte e persistente, em especial nas serras.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -4247,50 +961,10 @@
         "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Vento",
-        "level": "orange",
-        "text": "Rajadas até 90 km/h, podendo atingir 110 km/h nos locais mais expostos.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte e persistente, em especial nas serras.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -4299,134 +973,10 @@
         "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Vento",
-        "level": "orange",
-        "text": "Rajadas até 90 km/h, podendo atingir 110 km/h nos locais mais expostos.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte e persistente, em especial nas serras.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "sao-vicente-madeira": [
-      {
-        "areaCode": "MCN",
-        "areaLabel": "Madeira — Costa Norte",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas de oeste com 4 a 4,5 metros, passando a ondas de noroeste.",
-        "startTime": "2026-11-11T12:17:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      }
-    ],
-    "paul-mar": [
-      {
-        "areaCode": "MCN",
-        "areaLabel": "Madeira — Costa Norte",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas de oeste com 4 a 4,5 metros, passando a ondas de noroeste.",
-        "startTime": "2026-11-11T12:17:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      }
-    ],
-    "jardim-mar": [
-      {
-        "areaCode": "MCN",
-        "areaLabel": "Madeira — Costa Norte",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas de oeste com 4 a 4,5 metros, passando a ondas de noroeste.",
-        "startTime": "2026-11-11T12:17:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      }
-    ],
-    "ponta-sao-lourenco": [
-      {
-        "areaCode": "MCS",
-        "areaLabel": "Funchal",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas de oeste/sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T12:17:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      }
-    ],
-    "funchal": [
-      {
-        "areaCode": "MCS",
-        "areaLabel": "Funchal",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas de oeste/sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T12:17:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      }
-    ],
-    "barra-aveiro": [
-      {
-        "areaCode": "AVR",
-        "areaLabel": "Aveiro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação persistente, por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "vila-cha": [
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação persistente, por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -4435,30 +985,10 @@
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -4467,66 +997,10 @@
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "consolacao": [
-      {
-        "areaCode": "STM",
-        "areaLabel": "Santarém",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação forte e persistente.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "areia-branca": [
-      {
-        "areaCode": "STM",
-        "areaLabel": "Santarém",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação forte e persistente.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "sao-martinho-porto": [
-      {
-        "areaCode": "LRA",
-        "areaLabel": "Leiria",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação forte e persistente.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -4535,30 +1009,10 @@
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -4567,30 +1021,10 @@
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -4599,30 +1033,10 @@
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -4631,30 +1045,10 @@
         "areaCode": "LSB",
         "areaLabel": "Lisboa",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -4663,30 +1057,10 @@
         "areaCode": "STB",
         "areaLabel": "Setúbal",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "STB",
-        "areaLabel": "Setúbal",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "STB",
-        "areaLabel": "Setúbal",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -4695,30 +1069,10 @@
         "areaCode": "STB",
         "areaLabel": "Setúbal",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "STB",
-        "areaLabel": "Setúbal",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "STB",
-        "areaLabel": "Setúbal",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -4727,30 +1081,10 @@
         "areaCode": "STB",
         "areaLabel": "Setúbal",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "STB",
-        "areaLabel": "Setúbal",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "STB",
-        "areaLabel": "Setúbal",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -4759,50 +1093,10 @@
         "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Vento",
-        "level": "orange",
-        "text": "Rajadas até 90 km/h, podendo atingir 110 km/h nos locais mais expostos.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte e persistente, em especial nas serras.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -4811,50 +1105,10 @@
         "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Vento",
-        "level": "orange",
-        "text": "Rajadas até 90 km/h, podendo atingir 110 km/h nos locais mais expostos.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte e persistente, em especial nas serras.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -4863,50 +1117,10 @@
         "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Vento",
-        "level": "orange",
-        "text": "Rajadas até 90 km/h, podendo atingir 110 km/h nos locais mais expostos.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte e persistente, em especial nas serras.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -4915,50 +1129,10 @@
         "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Vento",
-        "level": "orange",
-        "text": "Rajadas até 90 km/h, podendo atingir 110 km/h nos locais mais expostos.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte e persistente, em especial nas serras.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ],
@@ -4967,122 +1141,10 @@
         "areaCode": "FAR",
         "areaLabel": "Faro",
         "type": "Agitação Marítima",
-        "level": "orange",
-        "text": "Ondas de sudoeste com 5 a 7 metros e que poderão atingir até 13 metros de altura máxima.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Vento",
-        "level": "orange",
-        "text": "Rajadas até 90 km/h, podendo atingir 110 km/h nos locais mais expostos.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
         "level": "yellow",
         "text": "Ondas de sudoeste com 4 a 5 metros.",
         "startTime": "2026-11-11T21:00:00",
         "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação por vezes forte e persistente, em especial nas serras.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "machico": [
-      {
-        "areaCode": "MCS",
-        "areaLabel": "Funchal",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas de oeste/sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T12:17:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      }
-    ],
-    "seixal-madeira": [
-      {
-        "areaCode": "MCN",
-        "areaLabel": "Madeira — Costa Norte",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas de oeste com 4 a 4,5 metros, passando a ondas de noroeste.",
-        "startTime": "2026-11-11T12:17:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      }
-    ],
-    "ponta-pargo": [
-      {
-        "areaCode": "MCN",
-        "areaLabel": "Madeira — Costa Norte",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas de oeste com 4 a 4,5 metros, passando a ondas de noroeste.",
-        "startTime": "2026-11-11T12:17:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      }
-    ],
-    "madalena-mar": [
-      {
-        "areaCode": "MCN",
-        "areaLabel": "Madeira — Costa Norte",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas de oeste com 4 a 4,5 metros, passando a ondas de noroeste.",
-        "startTime": "2026-11-11T12:17:00",
-        "endTime": "2026-11-11T21:00:00",
-        "relevant": true
-      }
-    ],
-    "mindelo": [
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação persistente, por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
-        "relevant": true
-      }
-    ],
-    "aterro": [
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Precipitação persistente, por vezes forte.",
-        "startTime": "2026-11-11T15:56:00",
-        "endTime": "2026-11-11T18:00:00",
         "relevant": true
       }
     ]
