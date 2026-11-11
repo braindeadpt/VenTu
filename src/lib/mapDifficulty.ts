@@ -17,6 +17,19 @@ export const MAP_DIFFICULTY_OPTIONS: {
   { id: 'advanced', labelPt: 'Avançado', labelEn: 'Advanced' },
 ];
 
+/**
+ * Pele v6 do /mapa (fase B, PR B2): o mesmo filtro, lido como tecto. Só muda o
+ * rótulo («Até intermédio» em vez de «Intermédio»); o valor, a regra de tecto
+ * (`spotDentroDoNivel`) e a contagem de filtros ficam iguais. Chaves em
+ * `t.mapUiExplore`.
+ */
+export const MAP_DIFFICULTY_CEILING_KEY = {
+  all: 'levelCeilingAll',
+  beginner: 'levelCeilingBeginner',
+  intermediate: 'levelCeilingIntermediate',
+  advanced: 'levelCeilingAdvanced',
+} as const satisfies Record<MapDifficultyFilter, string>;
+
 export function readMapDifficultyFromStorage(): MapDifficultyFilter {
   if (typeof window === 'undefined') return 'all';
   try {

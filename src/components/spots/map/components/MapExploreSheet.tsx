@@ -104,6 +104,9 @@ interface MapExploreSheetProps extends MapFullscreenHudProps {
 }
 
 const GRABBER_H = 26;
+/** Pele v6 (B2): a fila da pega cresce para 44 px, para o «Sair do ecrã inteiro» e o
+ *  «Ocultar filtros» terem alvos de 44 px sem tapar o peek. Os snaps do peek sobem o mesmo. */
+const GRABBER_H_V6 = 44;
 /** Snap «meio» como fração da altura aberta: a maquete usa half = 0.56·vh
  *  e open = 0.88·vh → 0.56/0.88 ≈ 0.636. */
 const HALF_RATIO = 0.6364;
@@ -206,8 +209,15 @@ export default function MapExploreSheet({
   onDifficultyChange,
   difficultyGroupLabel,
   locale,
+  pele,
 }: MapExploreSheetProps) {
   const t = getTranslation(locale);
+  const v6 = pele === 'v6';
+  const grabberH = v6 ? GRABBER_H_V6 : GRABBER_H;
+  // Pele v6 (B2): «114 spots nesta vista · até intermédio» no topo do meio.
+  const nivelTecto = v6 && selectedDifficulty !== 'all'
+    ? difficulties.find((d) => d.id === selectedDifficulty)?.label.toLocaleLowerCase(locale)
+    : undefined;
   const reduced = typeof window !== 'undefined'
     && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 
@@ -225,15 +235,16 @@ export default function MapExploreSheet({
   useEffect(() => {
     const el = peekContentRef.current;
     if (!el || state !== 'peek') return;
+    const extra = grabberH - GRABBER_H;
     const measure = () =>
       setPeekH(
-        Math.min(136, Math.max(132, GRABBER_H + Math.ceil(el.getBoundingClientRect().height))),
+        Math.min(136 + extra, Math.max(132 + extra, grabberH + Math.ceil(el.getBoundingClientRect().height))),
       );
     measure();
     const ro = new ResizeObserver(measure);
     ro.observe(el);
     return () => ro.disconnect();
-  }, [state]);
+  }, [state, grabberH]);
   const halfH = Math.round(openHeight * HALF_RATIO);
   const offsetFor = useCallback(
     (s: ExploreSheetState) =>
@@ -469,16 +480,16 @@ export default function MapExploreSheet({
               // Toda a vista de noite (#218 D3): o «melhor» também não tem nota.
               <MapNightTile night={best.night} className="h-10 w-10" />
             ) : (
-              <span className={`grid h-10 w-10 shrink-0 place-items-center rounded-[10px] font-mono text-sm font-semibold tabular-nums ${bestTok.bg} ${bestTok.text}`}>
+              <span data-mx="nota" data-tier={bestTok.tier} className={`grid h-10 w-10 shrink-0 place-items-center rounded-[10px] font-mono text-sm font-semibold tabular-nums ${bestTok.bg} ${bestTok.text}`}>
                 {scoreToNota(best.score)}
               </span>
             )}
             <span className="min-w-0">
-              <span className="block text-[10px] font-semibold uppercase tracking-wide text-fg-subtle">
+              <span data-mx="kicker" className="block text-[10px] font-semibold uppercase tracking-wide text-fg-subtle">
                 {bestLabel}
               </span>
               <span className="block text-body-sm leading-snug">
-                <span className="font-display font-semibold text-fg">{best.name}</span>
+                <span data-mx="nome" className="font-display font-semibold text-fg">{best.name}</span>
                 <span className="text-fg-muted"> · {best.region}</span>
               </span>
               {/* Métricas neutras (maquete .best .w — tudo fg-muted). */}
@@ -503,10 +514,18 @@ export default function MapExploreSheet({
             type="button"
             onClick={() => onStateChange('half')}
             aria-label={t.spotsMap.showFilters}
+            data-mx="filtros-bt"
+            {...(activeFilters > 0 ? { 'data-com-filtros': '' } : {})}
             className="inline-flex min-h-[40px] shrink-0 items-center gap-1.5 rounded-input border border-divider bg-surface-1/[0.04] px-2.5 text-meta-sm font-semibold text-fg transition-colors duration-150 hover:bg-surface-2/[0.08]"
           >
             <SlidersHorizontal className="h-3.5 w-3.5 text-fg-subtle" aria-hidden />
-            {activeFilters > 0
+            {activeFilters > 0 && v6 ? (
+              // Pele v6: «Filtros 2», a contagem num distintivo sol (a mesma contagem).
+              <>
+                {t.mapUiExplore.filters}
+                <span data-mx="q">{activeFilters}</span>
+              </>
+            ) : activeFilters > 0
               ? t.mapUiExplore.filtersWithCount.replace('{count}', String(activeFilters))
               : t.mapUiExplore.filters}
           </button>
@@ -548,7 +567,7 @@ export default function MapExploreSheet({
       // ficava inalcançável. A altura útil é a porção visível do «half».
       <div
         className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto overscroll-contain px-3 pb-2"
-        style={{ maxHeight: Math.max(160, halfH - GRABBER_H) }}
+        style={{ maxHeight: Math.max(160, halfH - grabberH) }}
         data-sheet-half
       >
         {!ghost && warningChip}
@@ -558,6 +577,7 @@ export default function MapExploreSheet({
             — mudou-se para aqui, como no cabeçalho do painel desktop. */}
         <p className="text-meta-sm text-fg-muted" data-sheet-count>
           {t.mapUiExplore.spotsInViewCount.replace('{count}', String(spotCount))}
+          {nivelTecto && <span data-mx="nivel"> · {nivelTecto}</span>}
         </p>
         {/* «Meio: os filtros como no painel» — mesmo bloco partilhado. */}
         <MapExploreFilters
@@ -685,7 +705,7 @@ export default function MapExploreSheet({
           percorre os estados. Em «half»/«open» o botão da direita volta ao
           peek («Ocultar filtros»); no peek a entrada é o «Filtros (n)» da
           2ª linha — um único «Mostrar filtros» por estado. */}
-      <div className="relative shrink-0" style={{ height: GRABBER_H }}>
+      <div className="relative shrink-0" style={{ height: grabberH }}>
         <button
           type="button"
           aria-label={t.spotsMap.mapPanelGrabber}
@@ -716,6 +736,7 @@ export default function MapExploreSheet({
             onClick={() => onStateChange('peek')}
             aria-expanded={true}
             aria-label={t.spotsMap.hideFilters}
+            data-mx="ocultar"
             className="absolute right-1.5 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full text-fg-muted hover:bg-surface-2/[0.08] hover:text-fg"
           >
             <ChevronDown className="h-4 w-4" aria-hidden />

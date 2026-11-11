@@ -42,7 +42,7 @@ export function countActiveExploreFilters(input: {
 
 function FieldLabel({ htmlFor, children }: { htmlFor?: string; children: React.ReactNode }) {
   return (
-    <p className="mb-1 text-meta-sm font-semibold uppercase tracking-wide text-fg-subtle">
+    <p data-mx="rotulo" className="mb-1 text-meta-sm font-semibold uppercase tracking-wide text-fg-subtle">
       {htmlFor ? <label htmlFor={htmlFor}>{children}</label> : children}
     </p>
   );
@@ -76,6 +76,8 @@ export function MapFilterSwitch({
       // Compacto + truncado: o title repõe o nome completo no hover (rato).
       title={hint ?? (compact ? label : undefined)}
       {...(toggleAttr ? { [toggleAttr]: true } : {})}
+      data-mx="switch"
+      {...(compact ? { 'data-compacto': '' } : {})}
       className={cn(
         'flex min-h-[44px] w-full items-center justify-between rounded-input px-1 text-left text-fg transition-colors duration-150 hover:text-fg',
         compact ? 'gap-1.5 text-meta-sm' : 'gap-2.5 text-body-sm',
@@ -84,6 +86,7 @@ export function MapFilterSwitch({
       <span className={compact ? 'min-w-0 flex-1 truncate' : undefined}>{label}</span>
       <span
         aria-hidden
+        data-mx="trilho"
         className={cn(
           'relative h-[22px] w-9 shrink-0 rounded-full border transition-colors duration-150',
           checked ? 'border-transparent bg-accent/90' : 'border-divider bg-surface-3/[0.12]',
@@ -107,21 +110,25 @@ function FieldSelect({
   value,
   options,
   onChange,
+  active,
 }: {
   id: string;
   label: string;
   value: string;
   options: readonly { id: string; label: string }[];
   onChange: (v: string) => void;
+  /** Valor diferente do «sem filtro» — gancho `data-activo` da pele v6 (B2). */
+  active?: boolean;
 }) {
   return (
-    <div className="min-w-0">
+    <div className="min-w-0" data-mx="sel">
       <FieldLabel htmlFor={id}>{label}</FieldLabel>
       <div className="relative">
         <select
           id={id}
           value={value}
           onChange={(e) => onChange(e.target.value)}
+          {...(active ? { 'data-activo': '' } : {})}
           className="min-h-[40px] w-full appearance-none rounded-input border border-divider bg-surface-2/[0.08] pl-3 pr-8 text-meta text-fg cursor-pointer focus-visible:outline-2 focus-visible:outline-accent"
         >
           {options.map((o) => (
@@ -226,7 +233,7 @@ export default function MapExploreFilters({
   };
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3" data-mx="filtros">
       {/* Modalidade — segmented com quebra de linha (nunca scroll/corta). */}
       <div>
         <FieldLabel>
@@ -235,6 +242,7 @@ export default function MapExploreFilters({
         <div
           role="group"
           aria-labelledby={sportLabelId}
+          data-mx="modalidades"
           className="flex flex-wrap items-center gap-1.5"
         >
           {sports.map((s) => (
@@ -259,6 +267,7 @@ export default function MapExploreFilters({
           value={selectedRegion}
           options={regions.map((r) => ({ id: r, label: regionLabel(r) }))}
           onChange={onRegionChange}
+          active={selectedRegion !== DEFAULT_REGION}
         />
         <FieldSelect
           id={`${idPrefix}-level-${uid}`}
@@ -266,6 +275,7 @@ export default function MapExploreFilters({
           value={selectedDifficulty}
           options={difficulties.map((d) => ({ id: d.id, label: d.label }))}
           onChange={(v) => onDifficultyChange(v as MapDifficultyFilter)}
+          active={selectedDifficulty !== 'all'}
         />
       </div>
 
@@ -294,6 +304,7 @@ export default function MapExploreFilters({
               type="button"
               onClick={c.clear}
               aria-label={t.mapUiExplore.removeFilter.replace('{label}', c.label)}
+              data-mx="chip"
               className="inline-flex min-h-[36px] items-center gap-1 rounded-pill bg-surface-2/[0.08] pl-2.5 pr-1.5 text-meta-sm font-medium text-fg transition-colors duration-150 hover:bg-surface-2/[0.14]"
             >
               {c.label}
@@ -304,6 +315,7 @@ export default function MapExploreFilters({
             <button
               type="button"
               onClick={clearAll}
+              data-mx="limpar"
               className="inline-flex min-h-[36px] items-center px-1.5 text-meta-sm font-semibold text-fg-muted underline-offset-2 transition-colors duration-150 hover:text-fg hover:underline"
             >
               {clearFiltersLabel}

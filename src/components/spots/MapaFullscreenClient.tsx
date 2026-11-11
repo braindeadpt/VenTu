@@ -11,6 +11,7 @@ import type { GridSportFilter } from '@/lib/sportRatings';
 import {
   MAP_DIFFICULTY_LS_KEY,
   MAP_DIFFICULTY_OPTIONS,
+  MAP_DIFFICULTY_CEILING_KEY,
   readMapDifficultyFromStorage,
   nivelFromUrlParam,
   spotMatchesDifficultyFilter,
@@ -357,13 +358,20 @@ export default function MapaFullscreenClient({
     onResetFilters: handleReset,
     clearFiltersLabel: t.hero.clearFilters,
     showClearFilters,
+    // Pele v6 (B2): o mesmo filtro com rótulos de tecto («Até intermédio») e o
+    // «Nível · surf» por modalidade. Sem a pele, os rótulos de hoje.
     difficulties: MAP_DIFFICULTY_OPTIONS.map((d) => ({
       id: d.id,
-      label: localizedText({ pt: d.labelPt, en: d.labelEn }, locale),
+      label: pele === 'v6'
+        ? t.mapUiExplore[MAP_DIFFICULTY_CEILING_KEY[d.id]]
+        : localizedText({ pt: d.labelPt, en: d.labelEn }, locale),
     })),
     selectedDifficulty: difficulty,
     onDifficultyChange: handleDifficultyChange,
-    difficultyGroupLabel: t.spotsMap.level,
+    difficultyGroupLabel: pele === 'v6' && sport !== 'all' && sport !== 'big-wave'
+      ? `${t.spotsMap.level} · ${getMapSportFilterLabel(sport, locale, HUD_SPORTS.find((h) => h.id === sport)?.label).toLocaleLowerCase(locale)}`
+      : t.spotsMap.level,
+    pele,
     layersLabel: t.map.layersMenu,
   };
 

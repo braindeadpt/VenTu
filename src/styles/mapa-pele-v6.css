@@ -86,3 +86,121 @@
   left:-5px!important;top:-31px!important;width:10px;height:10px;box-sizing:border-box;
   border:1.6px solid var(--abismo)!important;border-radius:50%;background:var(--rel);
 }
+
+/* ── B2 · Explorar e filtros (maquete da fase B: `.explorar`, `.pill`, `.sel`, `.fchip`, `.lst`, `.folha`) ──
+   Ganchos estáveis `data-mx=…` (só atributos, sem efeito visual fora da pele) nos componentes
+   MapExploreFilters, MapSpotList, MapSpotPanel e MapExploreSheet. Nenhuma regra muda a
+   lógica: os mesmos botões, os mesmos aria-*, a mesma contagem de filtros. Alvos ≥ 44 px em
+   todo o lado (sem a densidade de 36 px do rato fino: a pele não tem consultas de media). Contraste:
+   espuma/névoa/gelo sobre abismo ≥ 7:1; tinta #04131F sobre sol e sobre as bandas ≥ 4,5:1;
+   branco sobre o «Não dá» 6,2:1 e sobre a noite 5,9:1 (testado em mapPeleExplorar.test.ts). */
+/* painel desktop: vidro v6 */
+[data-pele='v6'] [data-map-panel='open'],[data-pele='v6'] [data-map-panel='rail']{
+  background:rgba(3,14,24,.92);border-color:transparent;border-radius:16px;
+  box-shadow:inset 0 0 0 1.5px rgba(243,248,251,.12),0 18px 40px -18px rgba(0,0,0,.75);
+}
+[data-pele='v6'] [data-mx='cab']{align-items:center;padding:14px 10px 6px 16px}
+[data-pele='v6'] [data-mx='titulo']{font:900 italic 30px/.95 var(--disp);text-transform:uppercase;letter-spacing:-.005em;color:var(--espuma)}
+[data-pele='v6'] [data-mx='contagem']{letter-spacing:0;margin-left:auto;font:600 14px/1.2 var(--txt);color:var(--nevoa);text-align:right}
+[data-pele='v6'] [data-mx='recolher']{
+  width:44px;height:44px;margin:0;border-radius:10px;background:rgba(243,248,251,.06);color:var(--espuma);
+}
+[data-pele='v6'] [data-mx='contagem']+[data-mx='recolher']{margin-left:8px}
+[data-pele='v6'] [data-mx='recolher']:hover{background:rgba(243,248,251,.12);color:var(--espuma)}
+/* rótulos «MODALIDADE», «REGIÃO», «NÍVEL · SURF» */
+[data-pele='v6'] [data-mx='rotulo']{margin-bottom:6px;font:800 12px/1 var(--txt);letter-spacing:.14em;text-transform:uppercase;color:var(--nevoa)}
+/* Modalidade: 9 pílulas em grelha de 3 (Barlow Condensed 800 itálico, sol quando activa) */
+[data-pele='v6'] [data-mx='modalidades']{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+[data-pele='v6'] [data-mx='modalidades'] .pill{
+  justify-content:center;gap:6px;min-height:44px;padding:0 6px;border:0;border-radius:999px;
+  background:rgba(243,248,251,.06);box-shadow:inset 0 0 0 1.5px rgba(243,248,251,.14);
+  font:800 italic 15px/1 var(--disp);text-transform:uppercase;letter-spacing:.02em;color:var(--espuma);
+}
+[data-pele='v6'] [data-mx='modalidades'] .pill:hover{background:rgba(243,248,251,.12);color:var(--espuma)}
+[data-pele='v6'] [data-mx='modalidades'] .pill svg{width:16px;height:16px;flex:none}
+[data-pele='v6'] [data-mx='modalidades'] .pill[aria-pressed='true']{background:var(--sol);color:var(--ink);box-shadow:none}
+/* Região e Nível: caixa v6 (linha #1E4361, Barlow 600); com valor activo em sol translúcido */
+[data-pele='v6'] [data-mx='sel'] select{letter-spacing:0;
+  min-height:44px;border:0;border-radius:10px;padding-left:12px;
+  background:rgba(7,27,44,.7);box-shadow:inset 0 0 0 1.5px var(--linha);
+  font:600 15px/1 var(--txt);color:var(--espuma);
+}
+[data-pele='v6'] [data-mx='sel'] select[data-activo]{background:rgba(255,201,60,.1);box-shadow:inset 0 0 0 1.5px rgba(255,201,60,.7);font-weight:700}
+[data-pele='v6'] [data-mx='sel'] select:focus-visible{outline:2px solid var(--gelo);outline-offset:2px}
+[data-pele='v6'] [data-mx='sel'] svg{width:16px;height:16px;color:var(--nevoa)}
+/* interruptores «Só a bombar» / «Agrupar spots» (track 40×24, sol ligado) */
+[data-pele='v6'] [data-mx='switch']{letter-spacing:0;min-height:44px;font:600 15px/1.1 var(--txt);color:var(--espuma)}
+/* no peek da folha 390 os dois interruptores são botões de estado (`.f-bt` da maquete): o
+   mesmo role="switch"/aria-checked, o estado lê-se no contorno sol em vez do trilho */
+[data-pele='v6'] [data-mx='switch'][data-compacto]{
+  justify-content:center;gap:0;padding:0 10px;border-radius:12px;font:700 13.5px/1 var(--txt);
+  background:rgba(243,248,251,.07);box-shadow:inset 0 0 0 1.5px rgba(243,248,251,.14);
+}
+[data-pele='v6'] [data-mx='switch'][data-compacto][aria-checked='true']{background:rgba(255,201,60,.12);box-shadow:inset 0 0 0 1.5px rgba(255,201,60,.6)}
+[data-pele='v6'] [data-mx='switch'][data-compacto] [data-mx='trilho']{display:none}
+[data-pele='v6'] [data-mx='switch'][data-compacto]>span:first-child{flex:0 1 auto;text-align:center}
+[data-pele='v6'] [data-mx='trilho']{width:40px;height:24px;border:0;background:rgba(243,248,251,.14);box-shadow:inset 0 0 0 1.5px rgba(243,248,251,.16)}
+[data-pele='v6'] [data-mx='trilho']>span{left:3px;top:3px;width:18px;height:18px;background:var(--nevoa);box-shadow:none}
+[data-pele='v6'] [data-mx='switch'][aria-checked='true'] [data-mx='trilho']{background:var(--sol);box-shadow:none}
+[data-pele='v6'] [data-mx='switch'][aria-checked='true'] [data-mx='trilho']>span{transform:translateX(16px);background:var(--ink)}
+/* chips dos filtros activos em sol translúcido + «Limpar» em gelo */
+[data-pele='v6'] [data-mx='chip']{letter-spacing:0;
+  min-height:44px;gap:6px;padding:0 6px 0 12px;border-radius:999px;
+  background:rgba(255,201,60,.14);box-shadow:inset 0 0 0 1.5px rgba(255,201,60,.5);
+  font:700 14px/1 var(--txt);color:var(--espuma);
+}
+[data-pele='v6'] [data-mx='chip']:hover{background:rgba(255,201,60,.22)}
+[data-pele='v6'] [data-mx='chip'] svg{box-sizing:content-box;width:12px;height:12px;padding:5px;border-radius:50%;background:rgba(243,248,251,.1);color:var(--espuma)}
+[data-pele='v6'] [data-mx='limpar']{letter-spacing:0;min-height:44px;padding:0 6px;font:700 14px/1 var(--txt);color:var(--gelo);text-decoration:underline;text-underline-offset:3px}
+[data-pele='v6'] [data-mx='limpar']:hover{color:var(--espuma)}
+/* «Nesta vista · n» + «Saltar para» (Continente · Açores · Madeira) */
+[data-pele='v6'] [data-mx='vista']{border-top:1px solid var(--linha);padding-top:12px}
+[data-pele='v6'] [data-mx='vista-t']{font:800 12px/1 var(--txt);letter-spacing:.14em;text-transform:uppercase;color:var(--nevoa)}
+[data-pele='v6'] [data-mx='vista-n']{font:900 16px/1 var(--disp);font-variant-numeric:tabular-nums;letter-spacing:.02em;color:var(--espuma)}
+[data-pele='v6'] [data-map-jump]{letter-spacing:0;
+  min-height:44px;padding:0 10px;border:0;border-radius:999px;background:none;box-shadow:inset 0 0 0 1.5px var(--linha);
+  font:700 13px/1 var(--txt);color:var(--nevoa);
+}
+[data-pele='v6'] [data-map-jump]:hover{background:rgba(243,248,251,.08);color:var(--espuma)}
+[data-pele='v6'] [data-map-jump][aria-pressed='true']{background:var(--espuma);color:var(--ink);box-shadow:none}
+[data-pele='v6'] [data-mx='ordem']{letter-spacing:0;font:600 13px/1.25 var(--txt);color:var(--nevoa)}
+/* lista: mosaico da nota no fill da banda (Barlow Condensed 900), nome em caixa alta itálico */
+[data-pele='v6'] [role='listbox'] [role='option']{border-radius:12px;gap:12px}
+[data-pele='v6'] [role='listbox'] [role='option']+[role='option']{box-shadow:0 -1px 0 rgba(30,67,97,.7)}
+[data-pele='v6'] [role='listbox'] [role='option']:hover,[data-pele='v6'] [role='listbox'] [role='option'][data-marker-hover]{background:rgba(243,248,251,.06)}
+[data-pele='v6'] [role='listbox'] [role='option'][aria-selected='true']:focus-visible{outline:2px solid var(--gelo);outline-offset:-2px}
+[data-pele='v6'] [data-mx='nota']{border-radius:9px;font:900 30px/1 var(--disp);font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+[data-pele='v6'] [data-mx='nota'][data-tier='closed']{background:var(--b-nao);color:var(--b-nao-t)}
+[data-pele='v6'] [data-mx='nota'][data-tier='poor']{background:var(--b-fraco);color:var(--b-fraco-t)}
+[data-pele='v6'] [data-mx='nota'][data-tier='fair']{background:var(--b-da);color:var(--b-da-t)}
+[data-pele='v6'] [data-mx='nota'][data-tier='good']{background:var(--b-bom);color:var(--b-bom-t)}
+[data-pele='v6'] [data-mx='nota'][data-tier='epic']{background:var(--b-mb);color:var(--b-mb-t)}
+[data-pele='v6'] [data-row-night]{border-radius:9px;font:800 10.5px/1 var(--txt)!important;letter-spacing:.08em;text-transform:uppercase}
+[data-pele='v6'] [data-mx='nome']{font:900 italic 20px/.98 var(--disp);text-transform:uppercase;letter-spacing:-.003em;color:var(--espuma)}
+[data-pele='v6'] [role='option']:has([data-row-night]) [data-mx='nome']{color:var(--nevoa)}
+[data-pele='v6'] [data-mx='regiao']{letter-spacing:0;margin-top:3px;font:600 13px/1.2 var(--txt);color:var(--nevoa)}
+[data-pele='v6'] [role='option'] [data-score-factors]{letter-spacing:0;font:500 13.5px/1.3 var(--txt);color:var(--nevoa)}
+[data-pele='v6'] [data-score-factors] .font-mono{font-family:var(--txt);font-weight:700;color:var(--espuma)}
+[data-pele='v6'] [role='option']>svg:last-child{width:20px;height:20px;color:var(--nevoa)}
+/* folha 390 (MapExploreSheet): fundo abismo, pega 44×5, alvos de 44 px */
+[data-pele='v6'] [data-explore-sheet]{
+  border:0;border-radius:20px 20px 0 0;background:var(--abismo);
+  box-shadow:0 -1px 0 var(--linha),0 -18px 40px -18px rgba(0,0,0,.8);
+}
+[data-pele='v6'] [data-sheet-grabber]>span{width:44px;height:5px;background:rgba(243,248,251,.3)}
+[data-pele='v6'] [data-map-exit-fullscreen],[data-pele='v6'] [data-mx='ocultar']{width:44px;height:44px;border-radius:12px;color:var(--espuma)}
+[data-pele='v6'] [data-sheet-best]{min-height:56px;grid-template-columns:48px minmax(0,1fr);gap:12px;border:0;background:none;padding:2px 2px 6px}
+[data-pele='v6'] [data-sheet-best] [data-mx='nota'],[data-pele='v6'] [data-sheet-best] [data-row-night]{width:48px;height:48px}
+[data-pele='v6'] [data-sheet-best] [data-mx='nota']{font-size:32px}
+[data-pele='v6'] [data-mx='kicker']{font:800 11.5px/1.1 var(--txt);letter-spacing:.14em;text-transform:uppercase;color:var(--nevoa)}
+[data-pele='v6'] [data-sheet-best] [data-mx='nome']{font-size:21px}
+[data-pele='v6'] [data-sheet-best] [data-score-factors]{letter-spacing:0;font:500 13px/1.3 var(--txt);color:var(--nevoa)}
+[data-pele='v6'] [data-mx='filtros-bt']{letter-spacing:0;
+  min-height:44px;gap:6px;padding:0 10px;border:0;border-radius:12px;
+  background:rgba(243,248,251,.07);box-shadow:inset 0 0 0 1.5px rgba(243,248,251,.14);
+  font:700 14px/1 var(--txt);color:var(--espuma);
+}
+[data-pele='v6'] [data-mx='filtros-bt'][data-com-filtros]{background:rgba(255,201,60,.12);box-shadow:inset 0 0 0 1.5px rgba(255,201,60,.6)}
+[data-pele='v6'] [data-mx='filtros-bt'] svg{width:18px;height:18px;color:var(--espuma)}
+[data-pele='v6'] [data-mx='q']{display:inline-block;min-width:20px;height:20px;padding:0 5px;border-radius:999px;background:var(--sol);color:var(--ink);font:800 12px/20px var(--txt);text-align:center}
+[data-pele='v6'] [data-sheet-count]{letter-spacing:0;font:600 14px/1.2 var(--txt);color:var(--nevoa)}
