@@ -380,3 +380,85 @@
 }
 [data-pele='v6'] [data-ms='meta'] [data-provenance-axis='confidence'] svg{width:14px;height:14px;color:var(--gelo)}
 [data-pele='v6'] [data-ms='meta'] [data-provenance-axis='confidence'][data-provenance-tier='adjusted'] svg{color:var(--nevoa)}
+
+/* ── B5 · pilha de controlos, menu Camadas, base e legenda (maquete da fase B: `.pilha`,
+   `.cb`, `.grupo`, `.camadas`, `.cm-l`, `.cm-base`, `.legenda`, `.bandas`, `.leg-noite`) ──
+   A pilha e a legenda vivem dentro do contentor [data-pele]; o popover das Camadas é
+   portalizado para o body e leva ele próprio `data-pele='v6'` (só com a flag). */
+/* pilha: botões em vidro v6, raio 14, ícone 21 px; «ligado» em espuma; Camadas aberto = aro sol */
+[data-pele='v6'] [data-map-control-stack] .map-cb>button:not([aria-pressed='true']){
+  background:rgba(3,14,24,.9);border-color:transparent;color:var(--espuma);
+  box-shadow:inset 0 0 0 1.5px rgba(243,248,251,.12),0 18px 40px -18px rgba(0,0,0,.75);
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+}
+[data-pele='v6'] [data-map-control-stack] button{border-radius:14px}
+[data-pele='v6'] [data-map-control-stack] button svg{width:21px;height:21px}
+[data-pele='v6'] [data-map-control-stack] button[aria-pressed='true']{background:var(--espuma);color:var(--ink);border-color:transparent;box-shadow:none}
+[data-pele='v6'] [data-map-control-stack] [data-map-layers-menu][aria-expanded='true']{background:rgba(3,14,24,.9);color:var(--espuma);box-shadow:0 0 0 2px var(--sol)}
+[data-pele='v6'] [data-map-control-stack] [data-mc='badge']{background:var(--sol);color:var(--ink);font:800 11px/1 var(--txt);box-shadow:0 0 0 2px var(--abismo)}
+/* grupo de zoom: um só vidro, divisória em linha */
+[data-pele='v6'] [data-map-control-stack] .map-zoom-group{border:0;border-radius:14px;overflow:hidden;background:rgba(3,14,24,.9);box-shadow:inset 0 0 0 1.5px rgba(243,248,251,.12),0 18px 40px -18px rgba(0,0,0,.75);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+[data-pele='v6'] [data-map-control-stack] .map-zoom-group .map-cb>button:not([aria-pressed='true']){background:transparent;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;border-radius:0}
+[data-pele='v6'] [data-map-control-stack] .map-zoom-group>.map-cb+.map-cb>button{border-top:1px solid var(--linha)}
+/* tooltip: espuma sobre tinta, Barlow 700 */
+[data-pele='v6'] .map-cb .map-cb-lbl{background:var(--espuma);color:var(--ink);border-radius:8px;font:700 13px/1.2 var(--txt);padding:4px 9px}
+
+/* menu Camadas (popover portalizado): vidro, título v6, linhas com ícone em caixa e interruptor sol */
+[data-pele='v6'][data-map-layers-popover]{
+  width:min(350px,calc(100vw - 2rem));padding:14px 8px 10px;border:0;border-radius:16px;
+  background:rgba(3,14,24,.92);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  box-shadow:inset 0 0 0 1.5px rgba(243,248,251,.12),0 18px 40px -18px rgba(0,0,0,.75);
+  color:var(--espuma);font-family:var(--txt);
+}
+[data-pele='v6'][data-map-layers-popover] [data-mc='titulo']{margin:0 8px 6px;font:900 italic 26px/.95 var(--disp);text-transform:uppercase;letter-spacing:-.005em;color:var(--espuma)}
+[data-pele='v6'][data-map-layers-popover] [data-mc='g']{margin:10px 8px 4px;padding:0;font:800 12px/1 var(--txt);letter-spacing:.14em;text-transform:uppercase;color:var(--nevoa)}
+[data-pele='v6'][data-map-layers-popover] button[aria-pressed]{grid-template-columns:34px 1fr auto;column-gap:10px;padding:7px 8px;border-radius:12px}
+[data-pele='v6'][data-map-layers-popover] button[aria-pressed='true']{background:rgba(255,201,60,.08)}
+[data-pele='v6'][data-map-layers-popover] button[aria-pressed]:hover{background:rgba(243,248,251,.06)}
+[data-pele='v6'][data-map-layers-popover] button:focus-visible{outline:2px solid var(--gelo);outline-offset:-2px}
+[data-pele='v6'][data-map-layers-popover] [data-mc='ic']{width:34px;height:34px;border-radius:10px;background:rgba(243,248,251,.07);color:var(--nevoa)}
+[data-pele='v6'][data-map-layers-popover] [data-mc='ic']>svg{width:19px;height:19px}
+[data-pele='v6'][data-map-layers-popover] button[aria-pressed='true'] [data-mc='ic']{background:var(--sol);color:var(--ink)}
+[data-pele='v6'][data-map-layers-popover] [data-mc='n']{font:700 15px/1.2 var(--txt);color:var(--espuma)}
+[data-pele='v6'][data-map-layers-popover] [data-mc='d']{margin-top:2px;font:500 12.5px/1.3 var(--txt);color:var(--nevoa)}
+[data-pele='v6'][data-map-layers-popover] [data-mc='sw']{width:40px;height:24px;background:rgba(243,248,251,.14);box-shadow:inset 0 0 0 1.5px rgba(243,248,251,.16)}
+[data-pele='v6'][data-map-layers-popover] [data-mc='sw']>span{left:3px;top:3px;width:18px;height:18px;background:var(--nevoa);box-shadow:none;transform:translateX(0)}
+[data-pele='v6'][data-map-layers-popover] button[aria-pressed='true'] [data-mc='sw']{background:var(--sol);box-shadow:none}
+[data-pele='v6'][data-map-layers-popover] button[aria-pressed='true'] [data-mc='sw']>span{transform:translateX(16px);background:var(--ink)}
+[data-pele='v6'][data-map-layers-popover] [data-mc='rep']{width:44px;height:44px;border-radius:10px;background:rgba(243,248,251,.08);color:var(--espuma)}
+/* «Base»: dois mosaicos lado a lado com miniatura; o escolhido com aro sol */
+[data-pele='v6'][data-map-layers-popover] [data-mc='base']{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 8px}
+[data-pele='v6'][data-map-layers-popover] [data-mc='base'] [role='radio']{grid-template-columns:40px 1fr;column-gap:9px;padding:6px;border-radius:12px;box-shadow:inset 0 0 0 1.5px var(--linha)}
+[data-pele='v6'][data-map-layers-popover] [data-mc='base'] [role='radio'][aria-checked='true']{box-shadow:inset 0 0 0 2px var(--sol)}
+[data-pele='v6'][data-map-layers-popover] [data-mc='th']{width:40px;height:40px;border-radius:8px;color:var(--espuma);background:linear-gradient(135deg,#0C3454 50%,#15263A 50%)}
+[data-pele='v6'][data-map-layers-popover] [data-map-basemap-radio='satellite'] [data-mc='th']{background:radial-gradient(circle at 70% 30%,#4f6b3a,#253a2a 45%,#0c2a42 46%)}
+[data-pele='v6'][data-map-layers-popover] [data-mc='base'] [role='radio']>span:nth-child(2)>span:first-child{font:700 14px/1.15 var(--txt);color:var(--espuma)}
+[data-pele='v6'][data-map-layers-popover] [data-mc='base'] [data-mc='d']{font-size:11.5px;line-height:1.2}
+[data-pele='v6'][data-map-layers-popover] [data-mc='rd']{display:none}
+
+/* base na folha 390 («Ver também»): segmentado em pílula, activo em sol */
+[data-pele='v6'] [data-mc='seg']{padding:4px;gap:4px;border:0;border-radius:999px;background:rgba(243,248,251,.07)}
+[data-pele='v6'] [data-mc='seg'] [role='radio']{border-radius:999px;background:transparent;color:var(--espuma);font:800 italic 17px/1 var(--disp);text-transform:uppercase;letter-spacing:.02em}
+[data-pele='v6'] [data-mc='seg'] [role='radio'][aria-checked='true']{background:var(--sol);color:var(--ink)}
+
+/* legenda: vidro 254 px, mosaicos das bandas na cor da banda, noite com lua */
+[data-pele='v6'] [data-map-legend-card]{width:254px;padding:12px 14px 10px;border:0;border-radius:16px;background:rgba(3,14,24,.9);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:inset 0 0 0 1.5px rgba(243,248,251,.12),0 18px 40px -18px rgba(0,0,0,.75)}
+[data-pele='v6'] [data-mc='leg-t']{margin:0 0 8px;font:800 12px/1 var(--txt);letter-spacing:.14em;text-transform:uppercase;color:var(--nevoa)}
+[data-pele='v6'] [data-mc='bandas']{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:3px;margin:0;padding:0;list-style:none}
+[data-pele='v6'] [data-mc='bandas']>li{display:flex;flex-direction:column;align-items:center;justify-content:center;height:40px;border-radius:7px}
+[data-pele='v6'] [data-mc='bandas']>li>b{font:900 17px/1 var(--disp);font-variant-numeric:tabular-nums}
+[data-pele='v6'] [data-mc='bandas']>li>small{margin-top:2px;font:700 9.5px/1 var(--txt);letter-spacing:.02em;white-space:nowrap}
+[data-pele='v6'] [data-mc='bandas']>li[data-tier='closed']{background:var(--b-nao);color:var(--b-nao-t)}
+[data-pele='v6'] [data-mc='bandas']>li[data-tier='poor']{background:var(--b-fraco);color:var(--b-fraco-t)}
+[data-pele='v6'] [data-mc='bandas']>li[data-tier='fair']{background:var(--b-da);color:var(--b-da-t)}
+[data-pele='v6'] [data-mc='bandas']>li[data-tier='good']{background:var(--b-bom);color:var(--b-bom-t)}
+[data-pele='v6'] [data-mc='bandas']>li[data-tier='epic']{background:var(--b-mb);color:var(--b-mb-t)}
+[data-pele='v6'] [data-mc='leg-noite']{display:flex;align-items:center;gap:8px;margin:8px 0 0;font:600 12.5px/1.3 var(--txt);color:var(--nevoa)}
+[data-pele='v6'] [data-mc='dn']{display:inline-flex;align-items:center;justify-content:center;flex:none;width:22px;height:22px;border-radius:50%;background:var(--b-noite);color:var(--b-noite-t)}
+[data-pele='v6'] [data-mc='dn'] svg{width:13px;height:13px}
+[data-pele='v6'] [data-mc='leg-ant']{margin:8px 0 0;font:500 12.5px/1.35 var(--txt);color:var(--nevoa)}
+[data-pele='v6'] [data-map-legend-card]>div{border-top-color:var(--linha)}
+
+/* chip de maré do cartão (só no passo 0): ícone em gelo */
+[data-pele='v6'] [data-ms='chip'][data-mare]{gap:6px}
+[data-pele='v6'] [data-ms='chip'][data-mare] svg{width:14px;height:14px;color:var(--gelo)}

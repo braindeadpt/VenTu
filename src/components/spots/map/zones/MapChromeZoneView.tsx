@@ -16,6 +16,9 @@ import { usePathname } from 'next/navigation';
 import MapControls from '../components/MapControls';
 import MapControlStack from '../components/MapControlStack';
 import MapLegend from '../../MapLegend';
+import { mapNightAppliesTo } from '@/lib/mapNight';
+import { getSportLabel } from '@/lib/homepageSport';
+import { useMapUiData } from '../MapUiContext';
 import WindRingLegend from '../../WindRingLegend';
 import MapTimeChrome from '../MapTimeChrome';
 import MapSeaModeSwitch, { type MapSeaMode } from '../components/MapSeaModeSwitch';
@@ -80,6 +83,7 @@ export default function MapChromeZone({
   onSeaModeChange,
   pele = null,
 }: MapChromeZoneProps) {
+  const { sport } = useMapUiData();
   const {
     locate, locating, handleShareView,
     windLegendOpen, openWindLegend, closeWindLegend,
@@ -249,6 +253,9 @@ export default function MapChromeZone({
             mobile: isMobile,
             bottomOffset: legendBottom,
             maxHeight: isMobile ? legendCap : undefined,
+            v6: pele === 'v6'
+              ? { noite: mapNightAppliesTo(sport), sportLabel: getSportLabel(sport, locale) }
+              : null,
           }}
           {...legendLayerProps}
         />

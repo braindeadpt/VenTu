@@ -9,6 +9,7 @@ import { NOTA_MAX, scoreToNota } from '@/lib/nota';
 import { getScoreTier, SCORE_THRESHOLD_STEPS } from '@/lib/scoreThresholds';
 import { ChevronDown } from 'lucide-react';
 import IsobathLegend from './IsobathLegend';
+import { MAP_NIGHT_MOON_PATH } from '@/lib/mapNight';
 
 interface MapLegendProps {
   locale: string;
@@ -38,6 +39,14 @@ interface MapLegendProps {
     /** Teto de altura (px) no mobile — a zona mede o espaço livre acima
      *  do scrubber/sheet para o cartão nunca colidir (scroll interno). */
     maxHeight?: number;
+    /** Pele v6 da fase B (B5): bandas em mosaico /10 + linha da noite (ou da
+     *  escala antiga em SUP/wakeboard). Sem ela o cartão não muda. */
+    v6?: {
+      /** A modalidade tem estado «noite» (todas menos SUP e wakeboard). */
+      noite: boolean;
+      /** Nome da modalidade para a linha da escala antiga. */
+      sportLabel: string;
+    } | null;
   };
   /** Rampa de precipitação do radar IPMA quando a camada está activa. */
   radarTitle?: string;
@@ -69,6 +78,46 @@ interface MapLegendProps {
   warningsVisible?: boolean;
   warningsZoneLabel?: string;
   warningsOrcaLabel?: string;
+}
+
+/**
+ * B5 · legenda v6: cinco mosaicos (Não dá → Muito bom) com o intervalo /10 e o
+ * nome, como a `.bandas` da maquete; por baixo, a noite (lua no fill #56677B) ou,
+ * em SUP/wakeboard, a linha «escala antiga, a rever» (estudo §3.4).
+ */
+function ScoreScaleV6({ locale, noite, sportLabel }: { locale: string; noite: boolean; sportLabel: string }) {
+  const t = getTranslation(locale);
+  const passos = SCORE_THRESHOLD_STEPS.map((step, i) => ({
+    step,
+    tier: getScoreTier(step.min) as ScoreTier,
+    lo: scoreToNota(step.min),
+    hi: i === 0 ? NOTA_MAX : scoreToNota(SCORE_THRESHOLD_STEPS[i - 1].min) - 1,
+  })).reverse();
+  return (
+    <>
+      <p data-mc="leg-t">{t.mapUiChrome.legendNotaV6}</p>
+      <ul data-mc="bandas">
+        {passos.map(({ step, tier, lo, hi }) => (
+          <li key={step.cssVar} data-tier={tier}>
+            <b>{lo === hi ? lo : `${lo}–${hi}`}</b>
+            <small>{getScoreTierLabel(tier, locale)}</small>
+          </li>
+        ))}
+      </ul>
+      {noite ? (
+        <p data-mc="leg-noite">
+          <span data-mc="dn" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d={MAP_NIGHT_MOON_PATH} />
+            </svg>
+          </span>
+          {t.mapUiChrome.legendNightV6}
+        </p>
+      ) : (
+        <p data-mc="leg-ant">{t.mapUiChrome.legendLegacyV6.replace('{sport}', sportLabel)}</p>
+      )}
+    </>
+  );
 }
 
 /**
@@ -417,7 +466,11 @@ export default function MapLegend({
             : { bottom: chrome.bottomOffset }
         }
       >
-        <ScoreScale locale={locale} title={scoreTitle} />
+        {chrome.v6 ? (
+          <ScoreScaleV6 locale={locale} noite={chrome.v6.noite} sportLabel={chrome.v6.sportLabel} />
+        ) : (
+          <ScoreScale locale={locale} title={scoreTitle} />
+        )}
         {layerSections}
       </div>
     );
