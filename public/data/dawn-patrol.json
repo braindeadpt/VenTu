@@ -1,50 +1,28 @@
 {
-  "date": "2026-11-11",
-  "generatedAt": "2026-11-11T04:36:48.689Z",
-  "topSpot": "Nazaré",
-  "topSpotSlug": "nazare",
+  "date": "2026-11-12",
+  "generatedAt": "2026-11-12T04:22:41.696Z",
+  "topSpot": "Coxos",
+  "topSpotSlug": "coxos",
   "pt": {
-    "headline": "Hoje é dia de Nazaré! 🌊",
-    "advice": "Melhor janela: 11:00h. Ondas de 3.2m com 6 nós de vento. ⚠️ Mar perigoso — agitação marítima (amarelo)",
-    "bestTime": "11:00",
+    "headline": "Hoje é dia de Coxos! 🌊",
+    "advice": "Melhor janela: 8:00h. Ondas de 3.3m com 8 nós de vento. ⚓ Avisos à Navegação Costeiros (IH): ANAV NR 1727/26 — Animais Marinhos - Avistamento",
+    "bestTime": "8:00",
     "wetsuit": "3/2mm",
     "crowdTip": "Chega cedo para evitar crowd!",
-    "moonTideLine": "Lua nova · Transição · baixa-mar 09:00"
+    "moonTideLine": "Lua crescente · Marés vivas · baixa-mar 09:00"
   },
   "en": {
-    "headline": "Today is Nazaré day! 🌊",
-    "advice": "Best window: 11:00. 3.2m waves with 6 knot wind. ⚠️ Dangerous sea — sea state warning (yellow)",
-    "bestTime": "11:00",
+    "headline": "Today is Coxos day! 🌊",
+    "advice": "Best window: 8:00. 3.3m waves with 8 knot wind. ⚓ Coastal navigation warnings (IH): ANAV NR 1727/26 — Animais Marinhos - Avistamento",
+    "bestTime": "8:00",
     "wetsuit": "3/2mm",
     "crowdTip": "Get there early to beat the crowd!",
-    "moonTideLine": "New moon · Transition · low tide 09:00"
+    "moonTideLine": "Waxing crescent · Spring tides · low tide 09:00"
   },
   "spots": [
     {
-      "name": "Nazaré",
-      "slug": "nazare",
-      "score": 80,
-      "scoreForecast": 80,
-      "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
-    },
-    {
       "name": "Coxos",
       "slug": "coxos",
-      "score": 70,
-      "scoreForecast": 70,
-      "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
-    },
-    {
-      "name": "Arrifana",
-      "slug": "arrifana",
       "score": 70,
       "scoreForecast": 70,
       "scoreSource": "previsão",
@@ -65,6 +43,17 @@
       "enReason": "Fair conditions"
     },
     {
+      "name": "Nazaré",
+      "slug": "nazare",
+      "score": 50,
+      "scoreForecast": 50,
+      "scoreSource": "previsão",
+      "scoreMeta": null,
+      "verdict": "maybe",
+      "ptReason": "Condições razoáveis",
+      "enReason": "Fair conditions"
+    },
+    {
       "name": "Ribeira d'Ilhas",
       "slug": "ribeira-ilhas",
       "score": 50,
@@ -76,21 +65,32 @@
       "enReason": "Fair conditions"
     },
     {
-      "name": "Guincho",
-      "slug": "guincho",
-      "score": 40,
-      "scoreForecast": 40,
+      "name": "Arrifana",
+      "slug": "arrifana",
+      "score": 50,
+      "scoreForecast": 50,
       "scoreSource": "previsão",
       "scoreMeta": null,
-      "verdict": "skip",
-      "ptReason": "Não vale a pena",
-      "enReason": "Not worth it"
+      "verdict": "maybe",
+      "ptReason": "Condições razoáveis",
+      "enReason": "Fair conditions"
     },
     {
       "name": "Carcavelos",
       "slug": "carcavelos",
-      "score": 40,
-      "scoreForecast": 40,
+      "score": 50,
+      "scoreForecast": 50,
+      "scoreSource": "previsão",
+      "scoreMeta": null,
+      "verdict": "maybe",
+      "ptReason": "Condições razoáveis",
+      "enReason": "Fair conditions"
+    },
+    {
+      "name": "Guincho",
+      "slug": "guincho",
+      "score": 20,
+      "scoreForecast": 20,
       "scoreSource": "previsão",
       "scoreMeta": null,
       "verdict": "skip",
@@ -98,8 +98,8 @@
       "enReason": "Not worth it"
     }
   ],
-  "topScore": 80,
-  "topScoreForecast": 80,
+  "topScore": 70,
+  "topScoreForecast": 70,
   "topScoreSource": "previsão",
   "topScoreMeta": null
 }
