@@ -1,6 +1,6 @@
 {
   "day": "20261112",
-  "fetchedAt": "2026-11-12T18:06:44.252Z",
+  "fetchedAt": "2026-11-12T20:06:23.173Z",
   "minPairs": 3,
   "minAccumulatedPairs": 10,
   "archive": {
@@ -14,12 +14,12 @@
     "trend": {
       "6200084|6200199": {
         "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
-        "coherent": 30,
+        "coherent": 29,
         "review": 6,
         "incoherent": 1,
-        "insufficient": 31,
+        "insufficient": 32,
         "days": 68,
-        "incoherentRatio": 0.027
+        "incoherentRatio": 0.028
       },
       "6200083|6201079": {
         "pair": "Villano-Sisargas × Datawell ao largo de Faro",
@@ -734,13 +734,23 @@
     },
     "Algarve": {
       "spotCount": 11,
-      "withObservedWave": 0,
-      "bySource": {},
-      "audited": 0,
+      "withObservedWave": 1,
+      "bySource": {
+        "ih-buoy": 1
+      },
+      "audited": 1,
       "attachedIsClosest": 0,
-      "attachedNotClosest": 0,
+      "attachedNotClosest": 1,
       "onlySource": 0,
-      "notClosest": [],
+      "notClosest": [
+        {
+          "spot": "barrinha-faro",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 11,
+          "altKm": 0
+        }
+      ],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -832,13 +842,23 @@
     },
     "Olhão": {
       "spotCount": 1,
-      "withObservedWave": 0,
-      "bySource": {},
-      "audited": 0,
+      "withObservedWave": 1,
+      "bySource": {
+        "ih-buoy": 1
+      },
+      "audited": 1,
       "attachedIsClosest": 0,
-      "attachedNotClosest": 0,
+      "attachedNotClosest": 1,
       "onlySource": 0,
-      "notClosest": [],
+      "notClosest": [
+        {
+          "spot": "fuseta",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 22,
+          "altKm": 0
+        }
+      ],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -846,13 +866,44 @@
     },
     "Faro": {
       "spotCount": 4,
-      "withObservedWave": 0,
-      "bySource": {},
-      "audited": 0,
+      "withObservedWave": 4,
+      "bySource": {
+        "ih-buoy": 4
+      },
+      "audited": 4,
       "attachedIsClosest": 0,
-      "attachedNotClosest": 0,
+      "attachedNotClosest": 4,
       "onlySource": 0,
-      "notClosest": [],
+      "notClosest": [
+        {
+          "spot": "ilha-faro",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 13,
+          "altKm": 0
+        },
+        {
+          "spot": "faro-mar",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 14,
+          "altKm": 0
+        },
+        {
+          "spot": "culatra",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 11,
+          "altKm": 0
+        },
+        {
+          "spot": "armona",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 15,
+          "altKm": 0
+        }
+      ],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -860,13 +911,30 @@
     },
     "Tavira": {
       "spotCount": 2,
-      "withObservedWave": 0,
-      "bySource": {},
-      "audited": 0,
+      "withObservedWave": 2,
+      "bySource": {
+        "ih-buoy": 2
+      },
+      "audited": 2,
       "attachedIsClosest": 0,
-      "attachedNotClosest": 0,
+      "attachedNotClosest": 2,
       "onlySource": 0,
-      "notClosest": [],
+      "notClosest": [
+        {
+          "spot": "ilha-tavira",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 34,
+          "altKm": 0
+        },
+        {
+          "spot": "cabanas-tavira",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 37,
+          "altKm": 0
+        }
+      ],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -1013,13 +1081,23 @@
     },
     "Albufeira": {
       "spotCount": 1,
-      "withObservedWave": 0,
-      "bySource": {},
-      "audited": 0,
+      "withObservedWave": 1,
+      "bySource": {
+        "ih-buoy": 1
+      },
+      "audited": 1,
       "attachedIsClosest": 0,
-      "attachedNotClosest": 0,
+      "attachedNotClosest": 1,
       "onlySource": 0,
-      "notClosest": [],
+      "notClosest": [
+        {
+          "spot": "falesia",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 28,
+          "altKm": 0
+        }
+      ],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -1068,7 +1146,7 @@
       "suboptimal": []
     }
   },
-  "regionsAuditedAt": "2026-11-12T18:10:38.045Z",
+  "regionsAuditedAt": "2026-11-12T20:08:45.398Z",
   "pairs": [
     {
       "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
@@ -1084,8 +1162,8 @@
       "maxAbsDeltaM": 2.8,
       "corr": 0.82,
       "verdict": "coherent",
-      "firstHour": "2026-10-13T19",
-      "lastHour": "2026-11-12T16",
+      "firstHour": "2026-10-13T21",
+      "lastHour": "2026-11-12T18",
       "hours": [
         {
           "6200084": 2.5799999237060547,
@@ -1166,6 +1244,16 @@
           "6200084": 2.700000047683716,
           "6200199": 2.9003899097442627,
           "hour": "2026-11-12T16"
+        },
+        {
+          "6200084": 2.5799999237060547,
+          "6200199": 2.5634799003601074,
+          "hour": "2026-11-12T17"
+        },
+        {
+          "6200084": 2.809999942779541,
+          "6200199": 2.739259958267212,
+          "hour": "2026-11-12T18"
         }
       ]
     }
