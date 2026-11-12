@@ -364,9 +364,10 @@ test.describe('Explorar /mapa — garantias consolidadas (sheet mobile + painel 
 
         const box = await surf.boundingBox();
         expect(box, 'chip de modalidade deveria ter caixa mensurável').not.toBeNull();
-        // Densidade preservada no desktop de rato (decisão V3′ 2026-09): 36px.
+        // Densidade preservada no desktop de rato (decisão V3′ 2026-09): 36px; a pele v6
+        // (por defeito desde a B9) usa os 38 px da maquete aprovada.
         expect(box!.height, 'altura visual (rato)').toBeGreaterThanOrEqual(34);
-        expect(box!.height, 'altura visual (rato)').toBeLessThanOrEqual(37);
+        expect(box!.height, 'altura visual (rato)').toBeLessThanOrEqual(38);
       });
 
       test('toque em desktop (any-pointer: coarse): pills sobem ao piso de 44px', async ({ browser }) => {

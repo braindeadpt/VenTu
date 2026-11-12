@@ -39,6 +39,7 @@ import { MapPeleBaseFilter } from '@/components/spots/map/components/MapPeleBase
 import '@/styles/v6-fontes.css';
 import '@/styles/mapa-pele-v6.css';
 import '@/styles/mapa-pele-cabecalho.css';
+import '@/styles/mapa-pele-ponteiro.css';
 import { useMapPeleCabecalho } from '@/lib/mapPeleCabecalho';
 
 const SpotMapInteractive = dynamic(() => import('@/components/spots/SpotMapInteractive'), {

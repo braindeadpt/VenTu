@@ -211,7 +211,8 @@ test.describe('Lista sincronizada do /mapa — sheet mobile', () => {
     await page.locator('[data-sheet-grabber]').click(); // open
     await expect(sheet).toHaveAttribute('data-explore-sheet', 'open');
     const firstRow = page.getByRole('option').first();
-    await expect(firstRow).toContainText(bestName);
+    // A pele v6 (por defeito desde a B9) mostra o «Melhor agora» em maiúsculas (CSS).
+    await expect(firstRow).toContainText(bestName, { ignoreCase: true });
     expect(await rowScore(firstRow)).toBe(bestScore);
   });
 
