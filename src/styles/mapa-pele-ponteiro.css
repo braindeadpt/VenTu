@@ -1,0 +1,10 @@
+/* VenTu /mapa — pele v6, correcção pós-B9: piso de 44 px nas pílulas de modalidade do painel.
+   A B3.5 pôs as pílulas do painel a 38 px (a densidade da maquete, pensada para rato).
+   Com a pele por defeito, isso tirava o piso de 44 px aos tablets (768 px, toque) e aos
+   portáteis tácteis, que o /mapa anterior garantia (globals.css, decisão V3′: só o desktop
+   de rato puro, ≥1024 px + any-pointer: fine, fica mais denso).
+   Este ficheiro existe à parte porque mapa-pele-v6.css não admite @media (os testes partem
+   os seletores por vírgula). Importado depois dele, a mesma especificidade ganha pela ordem. */
+@media (max-width: 1023.98px), (any-pointer: coarse) {
+  [data-pele='v6'] [data-map-panel] [data-mx='modalidades'] .pill{min-height:44px}
+}

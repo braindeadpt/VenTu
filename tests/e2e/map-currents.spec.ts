@@ -74,6 +74,8 @@ test.describe('Map currents field', () => {
   });
 
   test('campo estático repinta ao mudar de tema', async ({ page }) => {
+    // Comportamento do /mapa anterior (cor por tema). A pele v6 tem uma só paleta.
+    await page.addInitScript(() => localStorage.setItem('ventu:map:pele', 'off'));
     await openMapCurrents(page);
     const canvas = page.locator('.ventu-current-canvas');
     await expect(canvas).toHaveCount(1);

@@ -154,6 +154,9 @@ test.describe('Map wind field — animado (sem reduced-motion)', () => {
   });
 
   test('a cor do campo segue a mudança de tema', async ({ page }) => {
+    // Comportamento do /mapa anterior (cor por tema). A pele v6 desenha traços na sua
+    // própria paleta, coberta por map-pele-vento.
+    await page.addInitScript(() => localStorage.setItem('ventu:map:pele', 'off'));
     await openMap(page);
     const map = page.locator('.leaflet-container');
     await expect(map).toHaveAttribute('data-map-windfield', 'true', { timeout: 15_000 });

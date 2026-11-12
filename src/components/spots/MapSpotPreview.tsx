@@ -1044,7 +1044,20 @@ export function MapSpotCard({
         // Nunca nascer por baixo do painel de exploração nem fora do mapa.
         const panel = root.querySelector<HTMLElement>('[data-map-panel]');
         const panelRight = panel ? panel.getBoundingClientRect().right - cr.left : 0;
-        left = Math.max(panelRight + 8, Math.min(cr.width - cw - 8, left));
+        let rightLimit = cr.width - 8;
+        if (v6) {
+          // Pós-B9: o cartão v6 (356 px) não pode tapar a coluna de controlos (tablet 768).
+          // Encolhe até caber entre o painel e a coluna; o /mapa anterior fica como estava.
+          let ctrlLeft = cr.width;
+          root.querySelectorAll<HTMLElement>('[data-map-controls]').forEach((el) => {
+            const r = el.getBoundingClientRect();
+            if (r.width > 0 && r.height > 0) ctrlLeft = Math.min(ctrlLeft, r.left - cr.left);
+          });
+          rightLimit = Math.min(rightLimit, ctrlLeft - 8);
+          const caber = Math.max(280, Math.floor(rightLimit - panelRight - 8));
+          card.style.maxWidth = caber < 356 ? `${caber}px` : '';
+        }
+        left = Math.max(panelRight + 8, Math.min(rightLimit - cw, left));
         top = Math.max(60, Math.min(cr.height - ch - 12, top));
         card.style.left = `${Math.round(left)}px`;
         card.style.top = `${Math.round(top)}px`;
