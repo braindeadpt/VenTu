@@ -462,3 +462,8 @@
 /* chip de maré do cartão (só no passo 0): ícone em gelo */
 [data-pele='v6'] [data-ms='chip'][data-mare]{gap:6px}
 [data-pele='v6'] [data-ms='chip'][data-mare] svg{width:14px;height:14px;color:var(--gelo)}
+
+/* B6 (D1): recolor da base «Mapa» com o filtro SVG #v6base (MapPeleBaseFilter), atrás da
+   flag própria ?pelebase=v6. Só a camada `ventu-base-v6` (Esri Dark Gray), só no modo mapa
+   escuro; o Satélite nunca leva filtro. */
+[data-pele='v6'][data-pele-base='v6'] .leaflet-container[data-basemap='map'][data-map-theme='dark'] .ventu-base-v6{filter:url(#v6base)}
