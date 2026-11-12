@@ -38,6 +38,8 @@ import { useMapPele, useMapPeleBase } from '@/lib/mapPele';
 import { MapPeleBaseFilter } from '@/components/spots/map/components/MapPeleBaseFilter';
 import '@/styles/v6-fontes.css';
 import '@/styles/mapa-pele-v6.css';
+import '@/styles/mapa-pele-cabecalho.css';
+import { useMapPeleCabecalho } from '@/lib/mapPeleCabecalho';
 
 const SpotMapInteractive = dynamic(() => import('@/components/spots/SpotMapInteractive'), {
   ssr: false,
@@ -182,6 +184,8 @@ export default function MapaFullscreenClient({
   const pele = useMapPele();
   // B6 (D1): recolor da base «Mapa» atrás de ?pelebase=v6, só com a pele.
   const peleBase = useMapPeleBase(pele);
+  // B8: o cabeçalho do site (fora deste contentor) veste os tokens v6 só com a pele.
+  useMapPeleCabecalho(pele);
 
   const [sport, setSport] = useState<GridSportFilter>(DEFAULT_SPORT);
   const [region, setRegion] = useState<string>(DEFAULT_REGION);

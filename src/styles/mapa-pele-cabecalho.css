@@ -1,0 +1,21 @@
+/* VenTu /mapa — pele v6 «Atlântico», fase B, PR B8: cabeçalho do site + atribuição.
+   O cabeçalho (`Header.tsx`) vive fora do contentor `[data-pele=v6]` do /mapa, por isso não
+   pode herdar os tokens desse âmbito, e um segundo `data-pele` partiria os e2e que contam um só.
+   O MapaFullscreenClient põe `data-pele-cabecalho=v6` no `.site-header` enquanto a pele está
+   ligada e tira-o ao desligar ou ao sair do /mapa. Sem o atributo nenhuma regra daqui se aplica.
+   Os tokens são os do cabeçalho da home v6 (`.site-header[data-v6=home]`, v6-home.css,
+   docs/pr-183/cabecalho.md). A altura não muda: 48 px (h-12), a mesma do /mapa de hoje. */
+.site-header[data-pele-cabecalho='v6']{
+  --bg-base:3 14 24;--bg-elevated:7 27 44;--surface-1:243 248 251;--surface-2:243 248 251;--surface-3:12 42 66;
+  --divider:30 67 97;--divider-strong:30 67 97;--fg:243 248 251;--fg-muted:169 194 212;--fg-subtle:169 194 212;
+  --accent:127 231 255;--accent-hover:255 201 60;--accent-active:255 201 60;
+  color-scheme:dark;font-family:'Barlow',system-ui,sans-serif;
+  background:rgba(3,14,24,.92)!important;border-bottom:1px solid #1E4361!important;
+}
+/* logótipo compacto da maquete (`.site.compacto .marca`, 24 px), «Tu» em sol */
+.site-header[data-pele-cabecalho='v6'] .site-logo-txt{font:900 italic 24px/1 'Barlow Condensed','Arial Narrow',sans-serif;letter-spacing:-.02em;text-transform:uppercase;color:#F3F8FB}
+.site-header[data-pele-cabecalho='v6'] .site-logo-txt span{color:#FFC93C}
+/* «Mapa da costa»: a etiqueta `.onde` da maquete (névoa, Barlow 600) */
+.site-header[data-pele-cabecalho='v6'] [data-cabecalho-onde]{font:600 14px/1 'Barlow',system-ui,sans-serif;color:#A9C2D4;letter-spacing:.01em}
+.site-header[data-pele-cabecalho='v6'] button,.site-header[data-pele-cabecalho='v6'] a{font-weight:600}
+.site-header[data-pele-cabecalho='v6'] :focus-visible{outline:3px solid #FFC93C;outline-offset:2px;border-radius:6px}
