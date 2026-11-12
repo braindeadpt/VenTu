@@ -65,7 +65,8 @@ test.describe('/mapa pele v6 — Explorar e filtros (B2), desktop', () => {
     });
     expect(estilo.bg).toBe(SOL_RGB);
     expect(estilo.font).toContain('Barlow Condensed');
-    expect(estilo.h).toBeGreaterThanOrEqual(44);
+    // B3.5: no painel desktop as pílulas têm os 38 px da maquete (na folha 390 ficam 44 px).
+    expect(Math.round(estilo.h)).toBe(38);
   });
 
   test('«Nível» com tecto: o mesmo valor e o mesmo número de chips/spots, com e sem a pele', async ({ page }) => {
@@ -147,6 +148,20 @@ test.describe('/mapa pele v6 — folha a 390 px (B2)', () => {
     expect(sem).toBe(2);
     expect(com).toBe(sem);
     await expect(page.locator('[data-sheet-peek] [data-mx="q"]')).toHaveText('2');
+  });
+
+  test('B3.5: o peek mostra o nível e a contagem; o «×» tira só o nível', async ({ page }) => {
+    await abrir(page, '/pt/mapa/?pele=v6&sport=surf');
+    await expect(page.locator('[data-pele="v6"]')).toBeAttached({ timeout: 15_000 });
+    const linha = page.locator('[data-sheet-peek] [data-mx="f-chips"]');
+    await expect(linha).toBeVisible({ timeout: 20_000 });
+    await expect(linha.locator('[data-mx="chip"]')).toHaveText(/até intermédio/i);
+    await expect(linha.locator('[data-mx="f-cont"]')).toHaveText(/\d+ spots nesta vista · até intermédio/);
+    // A linha cabe no peek: o botão «Filtros» continua visível por cima da dobra.
+    await expect(page.locator('[data-sheet-peek] [data-mx="filtros-bt"]')).toBeInViewport();
+    await linha.locator('[data-mx="chip"]').click();
+    await expect(page.locator('[data-sheet-peek] [data-mx="f-chips"]')).toHaveCount(0);
+    await expect(page.locator('[data-sheet-peek] [data-mx="q"]')).toHaveText('1');
   });
 
   test('alvos ≥ 44 px no peek, no meio (filtros) e na lista aberta', async ({ page }) => {

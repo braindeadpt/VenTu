@@ -48,7 +48,14 @@ describe('pele v6 do /mapa — Explorar e filtros (B2): CSS', () => {
 
   it('alvos ≥ 44 px: nenhuma altura mínima abaixo de 44 nas regras B2', () => {
     let vistas = 0;
+    // B3.5 (ok do Pedro, 12/11): a única excepção são as pílulas do painel desktop, a 38 px
+    // como a maquete (rato). A folha 390 continua a 44 px (regra genérica, verificada abaixo).
+    const PILULA_DESKTOP = "[data-pele='v6'] [data-map-panel] [data-mx='modalidades'] .pill";
     for (const r of regrasB2) {
+      if (r.seletor === PILULA_DESKTOP) {
+        expect(px(r.corpo, 'min-height')).toBe(38);
+        continue;
+      }
       const mh = px(r.corpo, 'min-height');
       if (mh !== null) {
         vistas++;

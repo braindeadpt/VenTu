@@ -75,6 +75,13 @@ test.describe('/mapa pele v6 — cartão do spot (B4), desktop', () => {
     const sol = card.locator('[data-ms="b-sol"]');
     expect((await sol.boundingBox())?.height ?? 0).toBeGreaterThanOrEqual(44);
     await expect(card.locator('[data-ms="m48"] > i')).toHaveCount(16, { timeout: 15_000 });
+    // B3.5: a frase da maquete — «[Dá] para kitesurf agora» / «… às 14h».
+    await expect(card.locator('[data-ms="f1"]')).toHaveText(/para kitesurf (agora|às \d{2}h)/i);
+    // B3.5: o selo de confiança em chip v6 (Barlow), quando o spot o tem.
+    const selo = card.locator('[data-ms="meta"] [data-provenance-axis="confidence"]');
+    if (await selo.count()) {
+      expect(await selo.evaluate((el) => getComputedStyle(el).fontFamily)).toContain('Barlow');
+    }
   });
 
   test('de noite: lua em #56677B e a próxima janela ≥ 7', async ({ page }) => {

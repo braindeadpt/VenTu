@@ -342,3 +342,41 @@
   box-shadow:inset 0 0 0 1.5px rgba(243,248,251,.3);font:700 15px/1 var(--txt);
 }
 [data-pele='v6'] [data-ms='b-sec']:hover{background:rgba(243,248,251,.07);color:var(--espuma)}
+/* ── B3.5 · acabamentos da B2–B4 (lacunas face à maquete da fase B) ──
+   B2: no painel desktop as pílulas têm 38 px, como a maquete (rato; a folha 390 mantém
+   44 px de alvo). O peek ganha a linha «nível + contagem» (`.f-chips`/`.f-cont`). */
+[data-pele='v6'] [data-map-panel] [data-mx='modalidades'] .pill{min-height:38px}
+[data-pele='v6'] [data-mx='f-chips']{margin:2px 0 2px}
+[data-pele='v6'] [data-mx='f-cont']{letter-spacing:0;font:600 14px/1.2 var(--txt);color:var(--nevoa)}
+[data-pele='v6'] [data-mx='f-cont'] b{font:900 18px/1 var(--disp);font-variant-numeric:tabular-nums;color:var(--espuma)}
+/* B3: os passos agrupados por dia («HOJE · AMANHÃ · SÁB», `.r-dn`) com um filete entre dias,
+   e o triângulo espuma sobre o passo seleccionado (só no desktop, como a maquete). */
+[data-pele='v6'] [data-mr='r-dias']{gap:4px;margin:0 0 13px}
+[data-pele='v6'] [data-mr='regua'][data-compacto] [data-mr='r-dias']{gap:3px;margin:0 0 7px}
+[data-pele='v6'] [data-mr='r-dn']{
+  min-width:0;padding-left:2px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;
+  font:800 12px/1 var(--txt);letter-spacing:.14em;text-transform:uppercase;color:var(--nevoa);
+}
+[data-pele='v6'] [data-mr='regua'][data-compacto] [data-mr='r-dn']{font-size:11.5px;letter-spacing:.1em}
+[data-pele='v6'] [data-mr='r-dn']+[data-mr='r-dn']{padding-left:6px;box-shadow:inset 1.5px 0 0 var(--linha)}
+[data-pele='v6'] [data-mr='r-c'][data-dia-ini]::after{content:'';position:absolute;left:-3px;top:-4px;bottom:-4px;border-left:1.5px solid var(--linha);pointer-events:none}
+[data-pele='v6'] [data-mr='r-c'][data-on]::before{
+  content:'';position:absolute;left:50%;top:-9px;margin-left:-7px;z-index:1;
+  border:7px solid transparent;border-top-color:var(--espuma);border-bottom:0;pointer-events:none;
+}
+[data-pele='v6'] [data-mr='regua'][data-compacto] [data-mr='r-c'][data-on]::before{display:none}
+/* B3: chips de maré e brisa no cabeçalho da régua (desktop) em r-chip v6: Barlow 700, ícone gelo */
+[data-pele='v6'] [data-mr='regua'] [data-map-tide-chip],[data-pele='v6'] [data-mr='regua'] [data-map-thermal-chip]{
+  min-height:28px;gap:6px;padding:0 10px;border:0;border-radius:999px;background:rgba(243,248,251,.07);
+  font:700 13px/1 var(--txt);letter-spacing:0;color:var(--espuma);
+}
+[data-pele='v6'] [data-mr='regua'] [data-map-tide-chip] svg,[data-pele='v6'] [data-mr='regua'] [data-map-thermal-chip] svg{width:16px;height:16px;color:var(--gelo)}
+[data-pele='v6'] [data-mr='regua'] [data-map-tide-chip] .font-mono,[data-pele='v6'] [data-mr='regua'] [data-map-thermal-chip] .font-mono{font-family:var(--txt);font-weight:800}
+[data-pele='v6'] [data-mr='regua'] [data-map-tide-chip] .text-fg-muted,[data-pele='v6'] [data-mr='regua'] [data-map-thermal-chip] .text-fg-muted{color:var(--nevoa)}
+/* B4: o selo de confiança no cartão em chip v6 (o mesmo r-chip), escudo gelo; «média/baixa» em névoa */
+[data-pele='v6'] [data-ms='meta'] [data-provenance-axis='confidence']{
+  min-height:28px;gap:6px;padding:0 10px;border:0;border-radius:999px;background:rgba(243,248,251,.07);
+  font:700 13px/1 var(--txt);letter-spacing:0;color:var(--espuma);
+}
+[data-pele='v6'] [data-ms='meta'] [data-provenance-axis='confidence'] svg{width:14px;height:14px;color:var(--gelo)}
+[data-pele='v6'] [data-ms='meta'] [data-provenance-axis='confidence'][data-provenance-tier='adjusted'] svg{color:var(--nevoa)}

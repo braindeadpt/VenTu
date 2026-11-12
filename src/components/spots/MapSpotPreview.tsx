@@ -737,6 +737,22 @@ function decimal1(v: number, locale: string): string {
   }).format(v);
 }
 
+/** Pele v6 (B3.5): o resto da frase do cartão depois do chip da banda, como na maquete:
+ *  «[Bom] para surf às 14h» · «[Bom] para surf agora» · «[Bom] às 14h» (todas as modalidades).
+ *  A modalidade vai em minúsculas, excepto em alemão (substantivos). */
+export function fraseCartaoV6(
+  locale: string,
+  sport: GridSportFilter,
+  sportLabel: string,
+  when: string,
+): string {
+  const m = getTranslation(locale).mapUiMarkers;
+  const quando = when === m.now ? when : m.cardAtHour.replace('{hora}', when);
+  if (sport === 'all') return quando;
+  const nome = locale === 'de' ? sportLabel : sportLabel.toLocaleLowerCase(locale);
+  return `${m.cardForSport.replace('{sport}', nome)} ${quando}`;
+}
+
 function SpotCardContentV6({
   data,
   locale,
@@ -829,7 +845,7 @@ function SpotCardContentV6({
       ) : (
         <p data-ms="f1">
           <em data-ms="chip-banda" data-tier={tier}>{tierLabel}</em>
-          <span>{` ${sportLabel} · ${when}`}</span>
+          <span>{` ${fraseCartaoV6(locale, highlightSport, sportLabel, when)}`}</span>
         </p>
       )}
 

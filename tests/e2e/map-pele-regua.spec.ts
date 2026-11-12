@@ -115,3 +115,41 @@ for (const vp of [
     });
   });
 }
+
+/* B3.5 — os passos agrupados por dia («HOJE · AMANHÃ · …»), com o 1.º grupo no passo 0, e o
+   triângulo espuma sobre o passo seleccionado (só desktop). Sem a pele, nenhum dos dois. */
+for (const vp of [
+  { nome: 'desktop', viewport: { width: 1440, height: 900 }, triangulo: true },
+  { nome: '390', viewport: { width: 390, height: 844 }, triangulo: false },
+]) {
+  test.describe(`/mapa pele v6 — régua por dia (B3.5), ${vp.nome}`, () => {
+    test.describe.configure({ timeout: 90_000 });
+    test.use({ viewport: vp.viewport, serviceWorkers: 'block', reducedMotion: 'reduce' });
+
+    test('rótulos de dia por cima das células e triângulo no passo', async ({ page }) => {
+      await abre(page, true);
+      await expect(barras(page)).toHaveCount(16, { timeout: 15_000 });
+      const dias = page.locator('[data-map-hours-scrubber] [data-mr="r-dn"]');
+      const nDias = new Set(TIMES_48H.map((x) => x.slice(0, 10))).size;
+      await expect(dias).toHaveCount(nDias);
+      await expect(dias.nth(0)).toHaveText(/hoje/i);
+      if (nDias > 1) await expect(dias.nth(1)).toHaveText(/amanhã/i);
+      // Cada rótulo começa por cima da 1.ª célula do seu dia (mesma grelha de 16 colunas).
+      const cel = page.locator('[data-map-hours-scrubber] [data-mr="r-c"]');
+      const x0 = (await dias.nth(0).boundingBox())!.x;
+      const c0 = (await cel.nth(0).boundingBox())!.x;
+      expect(Math.abs(x0 - c0)).toBeLessThanOrEqual(2);
+      const tri = await page
+        .locator('[data-map-hours-scrubber] [data-mr="r-c"][data-on]')
+        .evaluate((el) => getComputedStyle(el, '::before').display);
+      if (vp.triangulo) expect(tri).not.toBe('none');
+      else expect(tri).toBe('none');
+    });
+
+    test('sem a pele: sem rótulos de dia', async ({ page }) => {
+      await abre(page, false);
+      await expect(page.locator('[data-map-hours-scrubber]')).toBeVisible({ timeout: 15_000 });
+      await expect(page.locator('[data-mr="r-dn"]')).toHaveCount(0);
+    });
+  });
+}
