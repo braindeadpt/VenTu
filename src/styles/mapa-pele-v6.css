@@ -262,3 +262,83 @@
 [data-pele='v6'] [data-mr='r-c'][data-on] [data-mr='r-bar']{box-shadow:0 0 0 3px var(--abismo),0 0 0 6px var(--espuma)}
 [data-pele='v6'] [data-mr='regua'][data-compacto] [data-mr='r-c'][data-on] [data-mr='r-bar']{box-shadow:0 0 0 2px var(--abismo),0 0 0 4px var(--espuma)}
 [data-pele='v6'] [data-mr='r-eixo']{margin-top:8px;font-family:var(--txt);font-weight:700;color:var(--nevoa)}
+/* ── B4 · cartão e folha do spot (maquete da fase B: `.spot`, `spotHTML`, `.folha`) ──
+   Ganchos `data-ms=…` no SpotCardContentV6 (MapSpotPreview.tsx), que só se monta com a pele;
+   o cartão de hoje fica sem um atributo a mais. Nota /10 no tile da banda (o mesmo par
+   fill/texto da B2/B3, ≥ 4,5:1), noite com a lua em #56677B, próxima janela ≥ 7 das 48 h. */
+[data-pele='v6'] [data-ms='cartao']{
+  width:356px;padding:16px 16px 14px;border:0;border-radius:16px;background:rgba(3,14,24,.94);
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  box-shadow:inset 0 0 0 1.5px rgba(243,248,251,.12),0 18px 40px -18px rgba(0,0,0,.75);color:var(--espuma);
+}
+[data-pele='v6'] [data-ms='cartao']::before{
+  content:'';position:absolute;top:var(--ay,60px);width:18px;height:18px;background:rgba(3,14,24,.94);transform:rotate(45deg);pointer-events:none;
+}
+[data-pele='v6'] [data-ms='cartao'][data-lado='esq']::before{left:-9px;box-shadow:-1.5px 1.5px 0 rgba(243,248,251,.12)}
+[data-pele='v6'] [data-ms='cartao'][data-lado='dir']::before{right:-9px;box-shadow:1.5px -1.5px 0 rgba(243,248,251,.12)}
+[data-pele='v6'] [data-ms='fecha']{right:8px;top:8px;border-radius:10px;background:rgba(243,248,251,.07);color:var(--espuma)}
+[data-pele='v6'] [data-ms='fecha']:hover{background:rgba(243,248,251,.14);color:var(--espuma)}
+[data-pele='v6'] [data-ms='fecha'] svg{width:18px;height:18px}
+[data-pele='v6'] [data-ms='folha']{
+  border:0;border-radius:20px 20px 0 0;background:rgba(3,14,24,.96);
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  box-shadow:0 -1px 0 var(--linha),0 -18px 40px -18px rgba(0,0,0,.8);color:var(--espuma);
+}
+[data-pele='v6'] [data-ms='folha']>div:first-child{background:transparent}
+[data-pele='v6'] [data-ms='folha']>div:first-child>div{width:44px;height:5px;background:rgba(243,248,251,.3)}
+[data-pele='v6'] [data-ms='corpo']{font-family:var(--txt);color:var(--espuma)}
+[data-pele='v6'] [data-ms='cab']{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center;padding-right:40px}
+[data-pele='v6'] [data-ms='nota']{
+  display:inline-flex;align-items:baseline;justify-content:center;min-width:72px;padding:6px 9px 4px;border-radius:12px;
+  font:900 58px/1 var(--disp);font-variant-numeric:tabular-nums;
+}
+[data-pele='v6'] [data-ms='nota'] small{font-size:22px;font-weight:800;opacity:.85;margin-left:2px}
+[data-pele='v6'] [data-ms='nota'][data-tier='closed'],[data-pele='v6'] [data-ms='chip-banda'][data-tier='closed']{background:var(--b-nao);color:var(--b-nao-t)}
+[data-pele='v6'] [data-ms='nota'][data-tier='poor'],[data-pele='v6'] [data-ms='chip-banda'][data-tier='poor']{background:var(--b-fraco);color:var(--b-fraco-t)}
+[data-pele='v6'] [data-ms='nota'][data-tier='fair'],[data-pele='v6'] [data-ms='chip-banda'][data-tier='fair']{background:var(--b-da);color:var(--b-da-t)}
+[data-pele='v6'] [data-ms='nota'][data-tier='good'],[data-pele='v6'] [data-ms='chip-banda'][data-tier='good']{background:var(--b-bom);color:var(--b-bom-t)}
+[data-pele='v6'] [data-ms='nota'][data-tier='epic'],[data-pele='v6'] [data-ms='chip-banda'][data-tier='epic']{background:var(--b-mb);color:var(--b-mb-t)}
+[data-pele='v6'] [data-ms='nota'][data-noite]{width:72px;height:72px;align-items:center;padding:0;border-radius:14px;background:var(--b-noite);color:var(--b-noite-t)}
+[data-pele='v6'] [data-ms='nota'][data-noite] svg{width:30px;height:30px}
+[data-pele='v6'] [data-ms='tit']{min-width:0}
+[data-pele='v6'] [data-ms='nome']{margin:0;font:italic 900 32px/.92 var(--disp);text-transform:uppercase;letter-spacing:0;color:var(--espuma);overflow-wrap:anywhere}
+[data-pele='v6'] [data-ms='sub']{display:block;margin-top:5px;font:600 14px/1.2 var(--txt);color:var(--nevoa)}
+[data-pele='v6'] [data-ms='f1']{margin:12px 0 0;font:800 17px/1.3 var(--txt);color:var(--espuma)}
+[data-pele='v6'] [data-ms='chip-banda']{display:inline-flex;align-items:center;padding:1px 7px 2px;border-radius:6px;font-style:normal;font-weight:800}
+[data-pele='v6'] [data-ms='chip-banda'][data-noite]{background:var(--b-noite);color:var(--b-noite-t)}
+[data-pele='v6'] [data-ms='f2']{margin:3px 0 0;font:500 15px/1.35 var(--txt);color:var(--nevoa)}
+[data-pele='v6'] [data-ms='f2'] b{font-weight:700;color:var(--espuma)}
+[data-pele='v6'] [data-ms='metr']{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:12px 0 0}
+[data-pele='v6'] [data-ms='metr']>div{padding:8px 10px;border-radius:10px;background:rgba(243,248,251,.06)}
+[data-pele='v6'] [data-ms='metr'] span{display:block;font:800 11px/1 var(--txt);letter-spacing:.12em;text-transform:uppercase;color:var(--nevoa)}
+[data-pele='v6'] [data-ms='metr'] b{display:block;margin-top:5px;font:900 24px/1 var(--disp);font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--espuma)}
+[data-pele='v6'] [data-ms='metr'] small{margin-left:3px;font:700 13px/1 var(--txt);color:var(--nevoa)}
+[data-pele='v6'] [data-ms='m48-bloco']{margin:12px 0 0}
+[data-pele='v6'] [data-ms='t-mini']{display:flex;justify-content:space-between;gap:8px;margin:0 0 6px;font:800 12px/1 var(--txt);letter-spacing:.14em;text-transform:uppercase;color:var(--nevoa)}
+[data-pele='v6'] [data-ms='m48']{position:relative;display:flex;align-items:flex-end;gap:1.5px;height:46px}
+[data-pele='v6'] [data-ms='m48']>i{flex:1 1 0;min-height:3px;border-radius:2px 2px 0 0;background:var(--b-noite)}
+[data-pele='v6'] [data-ms='m48']>i[data-tier='closed']{background:var(--b-nao)}
+[data-pele='v6'] [data-ms='m48']>i[data-tier='poor']{background:var(--b-fraco)}
+[data-pele='v6'] [data-ms='m48']>i[data-tier='fair']{background:var(--b-da)}
+[data-pele='v6'] [data-ms='m48']>i[data-tier='good']{background:var(--b-bom)}
+[data-pele='v6'] [data-ms='m48']>i[data-tier='epic']{background:var(--b-mb)}
+[data-pele='v6'] [data-ms='m48']>i[data-agora]{box-shadow:0 0 0 1.5px var(--espuma)}
+[data-pele='v6'] [data-ms='m48-lim']{position:absolute;left:0;right:0;border-top:1.5px dashed rgba(243,248,251,.55);pointer-events:none}
+[data-pele='v6'] [data-ms='m48-l']{position:relative;height:12px;margin-top:5px;font:700 11.5px/1 var(--txt);color:var(--nevoa)}
+[data-pele='v6'] [data-ms='m48-l']>span{position:absolute;top:0;white-space:nowrap}
+[data-pele='v6'] [data-ms='meta']{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:10px}
+[data-pele='v6'] [data-ms='chip']{display:inline-flex;align-items:center;min-height:28px;padding:0 10px;border-radius:999px;background:rgba(243,248,251,.07);font:700 13px/1 var(--txt);white-space:nowrap;color:var(--espuma)}
+[data-pele='v6'] [data-ms='chip'][data-rel='offshore']{color:var(--gelo)}
+[data-pele='v6'] [data-ms='chip'][data-rel='cross']{color:var(--nevoa)}
+[data-pele='v6'] [data-ms='chip'][data-rel='onshore']{color:#FF9D94}
+[data-pele='v6'] [data-ms='acc']{display:flex;gap:8px;margin-top:14px}
+[data-pele='v6'] [data-ms='b-sol']{
+  min-height:46px;border:0;border-radius:999px;background:var(--sol);color:var(--ink);
+  font:italic 900 20px/1 var(--disp);letter-spacing:.02em;text-transform:uppercase;box-shadow:none;
+}
+[data-pele='v6'] [data-ms='b-sol']:hover{background:var(--sol);color:var(--ink);filter:brightness(1.06)}
+[data-pele='v6'] [data-ms='b-sec']{
+  min-height:46px;padding:0 14px;border:0;border-radius:999px;background:transparent;color:var(--espuma);
+  box-shadow:inset 0 0 0 1.5px rgba(243,248,251,.3);font:700 15px/1 var(--txt);
+}
+[data-pele='v6'] [data-ms='b-sec']:hover{background:rgba(243,248,251,.07);color:var(--espuma)}

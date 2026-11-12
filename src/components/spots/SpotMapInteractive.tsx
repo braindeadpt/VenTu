@@ -662,11 +662,12 @@ export default function SpotMapInteractive({
     visibleSpots,
     focusSpotId,
     sheetSpot,
+    pele: mapHud?.pele ?? null,
   }), [
     selectedSport, selectedRegion, locale, isPt,
     isReady, clusterReady, isMobile, isFullscreen, isHeroEmbed,
     hoursLive, hoursTimes, hoursFrame, hourScores, visibleSpots,
-    focusSpotId, sheetSpot,
+    focusSpotId, sheetSpot, mapHud?.pele,
   ]);
   // M6: «voltar à lista» do sheet de spot — acção do contexto (antes o
   // evento partilhado `ventu:open-explore-sheet`).
