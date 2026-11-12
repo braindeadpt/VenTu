@@ -27,7 +27,7 @@ async function abre(page: Page, flags: { pele: boolean; base: boolean }, basemap
   await page.addInitScript(
     ({ kp, kb, f, basemap }) => {
       if (f.pele) localStorage.setItem(kp, 'v6');
-      else localStorage.removeItem(kp);
+      else localStorage.setItem(kp, 'off');
       if (f.base) localStorage.setItem(kb, 'v6');
       else localStorage.removeItem(kb);
       localStorage.setItem('ventu.map.basemap', basemap);

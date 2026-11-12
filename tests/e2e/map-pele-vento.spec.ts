@@ -22,7 +22,7 @@ async function abre(page: Page, pele: boolean, viewport?: { width: number; heigh
   await page.addInitScript(
     ({ kp, pele }) => {
       if (pele) localStorage.setItem(kp, 'v6');
-      else localStorage.removeItem(kp);
+      else localStorage.setItem(kp, 'off');
       localStorage.setItem('ventu.map.cluster', '0');
       localStorage.setItem('ventu.map.wind', '1');
       // Observador de long tasks desde o arranque (lido no teste de desempenho).

@@ -1,30 +1,30 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { MAP_PELE_LS_KEY, MAP_PELE_PARAM, resolveMapPele } from '@/lib/mapPele';
+import { MAP_PELE_LS_KEY, MAP_PELE_OFF, MAP_PELE_PARAM, resolveMapPele } from '@/lib/mapPele';
 import { V6_BANDAS, V6_UI } from '@/lib/v6Tokens';
 
 /** Fase B, PR B0: flag da pele v6 do /mapa e tokens no âmbito [data-pele=v6]. */
-describe('resolveMapPele (flag ?pele=v6 + localStorage)', () => {
+describe('resolveMapPele (B9: pele por defeito; ?pele=0 grava off)', () => {
   it('chaves estáveis', () => {
     expect(MAP_PELE_PARAM).toBe('pele');
     expect(MAP_PELE_LS_KEY).toBe('ventu:map:pele');
+    expect(MAP_PELE_OFF).toBe('off');
   });
-  it('sem parâmetro e sem nada gravado: o /mapa de hoje, sem mexer na preferência', () => {
-    expect(resolveMapPele(null, null)).toEqual({ pele: null, gravar: null });
+  it('sem parâmetro nem preferência: a pele (o /mapa por defeito)', () => {
+    expect(resolveMapPele(null, null)).toEqual({ pele: 'v6', gravar: null });
   });
-  it('?pele=v6 liga e grava (maiúsculas e espaços tolerados)', () => {
-    expect(resolveMapPele('v6', null)).toEqual({ pele: 'v6', gravar: 'v6' });
+  it('?pele=v6 liga e grava (maiúsculas e espaços tolerados), mesmo com off gravado', () => {
+    expect(resolveMapPele('v6', 'off')).toEqual({ pele: 'v6', gravar: 'v6' });
     expect(resolveMapPele(' V6 ', null)).toEqual({ pele: 'v6', gravar: 'v6' });
   });
-  it('sem parâmetro, vale o gravado (só o valor exacto v6)', () => {
-    expect(resolveMapPele(null, 'v6')).toEqual({ pele: 'v6', gravar: null });
-    expect(resolveMapPele(null, 'v5')).toEqual({ pele: null, gravar: null });
-    expect(resolveMapPele(null, '')).toEqual({ pele: null, gravar: null });
+  it('sem parâmetro, só off gravado desliga; v6 antigo ou lixo ficam na pele', () => {
+    expect(resolveMapPele(null, 'off')).toEqual({ pele: null, gravar: null });
+    for (const g of ['v6', 'v5', '']) expect(resolveMapPele(null, g), g).toEqual({ pele: 'v6', gravar: null });
   });
-  it('qualquer outro ?pele= desliga e apaga a preferência, mesmo com v6 gravado', () => {
+  it('qualquer outro ?pele= mostra o /mapa anterior e grava off', () => {
     for (const p of ['0', 'actual', 'off', '', 'v7']) {
-      expect(resolveMapPele(p, 'v6'), p).toEqual({ pele: null, gravar: 'apagar' });
+      expect(resolveMapPele(p, 'v6'), p).toEqual({ pele: null, gravar: 'off' });
     }
   });
 });
