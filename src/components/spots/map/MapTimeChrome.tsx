@@ -5,7 +5,7 @@ import { ChevronDown, Moon, Pause, Play } from 'lucide-react';
 import type L from 'leaflet';
 import type { MapHoursFile } from '@/lib/mapHours';
 import { scoreAtHour } from '@/lib/mapHours';
-import { formatHourLabel, formatHourLong, formatWeekday } from '@/lib/verdict/formatHourLabel';
+import { formatDayShort, formatHourLabel, formatHourLong, formatWeekday } from '@/lib/verdict/formatHourLabel';
 import { pickRailAxisLabelsPx, railAxisCandidates } from '@/lib/verdict/railAxisLabels';
 import { getScoreCssVar, getScoreTier } from '@/lib/scoreThresholds';
 import type { MapPele } from '@/lib/mapPele';
@@ -192,6 +192,26 @@ export default function MapTimeChrome({
     );
   }, [axisCandidates, n, axisW, isMobile]);
 
+  /* B3.5 (pele v6): a régua agrupa os passos por dia, como a maquete («HOJE · AMANHÃ · SÁB»).
+     O dia vem da própria etiqueta (`formatDayShort`), nunca do relógio: o 1.º grupo é o do
+     passo 0 («agora»), o 2.º o seguinte. Só existe com a pele. */
+  const diasV6 = useMemo(() => {
+    if (!v6 || n <= 1) return [];
+    const grupos: { chave: string; ini: number; len: number; rotulo: string }[] = [];
+    times.forEach((iso, i) => {
+      const chave = formatDayShort(iso, locale);
+      const ult = grupos[grupos.length - 1];
+      if (ult && ult.chave === chave) ult.len += 1;
+      else {
+        const k = grupos.length;
+        const rotulo = k === 0 ? t.common.today : k === 1 ? t.common.tomorrow : formatWeekday(iso, locale);
+        grupos.push({ chave, ini: i, len: 1, rotulo });
+      }
+    });
+    return grupos;
+  }, [v6, n, times, locale, t.common.today, t.common.tomorrow]);
+  const inicioDia = useMemo(() => new Set(diasV6.slice(1).map((g) => g.ini)), [diasV6]);
+
   /* Mede o scrubber → a zona levanta a legenda por cima dele. */
   useEffect(() => {
     const el = scrubRef.current;
@@ -352,6 +372,24 @@ export default function MapTimeChrome({
             </div>
 
             {/* Barras + range invisível por cima (pointer/keyboard/E2E). */}
+            {diasV6.length > 0 && (
+              <div
+                data-mr={v6 ? 'r-dias' : undefined}
+                className="grid"
+                style={{ gridTemplateColumns: `repeat(${n}, 1fr)` }}
+                aria-hidden
+              >
+                {diasV6.map((g) => (
+                  <span
+                    key={g.chave}
+                    data-mr={v6 ? 'r-dn' : undefined}
+                    style={{ gridColumn: `${g.ini + 1} / span ${g.len}` }}
+                  >
+                    {g.rotulo}
+                  </span>
+                ))}
+              </div>
+            )}
             <div className="map-scrub-bars relative">
               <div
                 data-mr={v6 ? 'r-cels' : undefined}
@@ -369,6 +407,7 @@ export default function MapTimeChrome({
                       key={iso}
                       data-mr={v6 ? 'r-c' : undefined}
                       data-on={v6 && on ? '' : undefined}
+                      data-dia-ini={v6 && inicioDia.has(i) ? '' : undefined}
                       className={`relative h-full rounded-[3px] ${!v6 && night[i] ? 'bg-[rgb(var(--fg)/0.05)]' : ''}`}
                     >
                       {i === 0 && (

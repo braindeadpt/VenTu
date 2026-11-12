@@ -25,6 +25,9 @@ export const mapUiMarkers = {
     night: 'noite',
     /** Nome acessível do marcador/chip de noite. */
     nightAria: 'noite, sem nota',
+    /** Pele v6 (B3.5): frase do cartão «Bom para surf às 14h» — `{sport}` em minúsculas (excepto DE), `{hora}` a hora do passo. */
+    cardForSport: 'para {sport}',
+    cardAtHour: 'às {hora}',
   },
   en: {
     backToList: 'Back to list',
@@ -40,6 +43,8 @@ export const mapUiMarkers = {
     now: 'now',
     night: 'night',
     nightAria: 'night, no score',
+    cardForSport: 'for {sport}',
+    cardAtHour: 'at {hora}',
   },
   es: {
     backToList: 'Volver a la lista',
@@ -55,6 +60,8 @@ export const mapUiMarkers = {
     now: 'ahora',
     night: 'noche',
     nightAria: 'noche, sin nota',
+    cardForSport: 'para el {sport}',
+    cardAtHour: 'a las {hora}',
   },
   de: {
     backToList: 'Zurück zur Liste',
@@ -70,6 +77,8 @@ export const mapUiMarkers = {
     now: 'jetzt',
     night: 'Nacht',
     nightAria: 'Nacht, keine Note',
+    cardForSport: 'für {sport}',
+    cardAtHour: 'um {hora}',
   },
   fr: {
     backToList: 'Retour à la liste',
@@ -85,6 +94,8 @@ export const mapUiMarkers = {
     now: 'maintenant',
     night: 'nuit',
     nightAria: 'nuit, pas de note',
+    cardForSport: 'pour {sport}',
+    cardAtHour: 'à {hora}',
   },
 } as const;
 

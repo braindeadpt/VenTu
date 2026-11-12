@@ -3,7 +3,7 @@
 import { scoreToNota } from '@/lib/nota';
 import { getTranslation } from '@/lib/i18n';
 import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
-import { ChevronDown, Minimize2, SlidersHorizontal } from 'lucide-react';
+import { ChevronDown, Minimize2, SlidersHorizontal, X } from 'lucide-react';
 import MapSpotList, { MapNightTile, type MapListJump, type MapSpotListRow } from './MapSpotList';
 import MapExploreFilters, {
   MapFilterSwitch,
@@ -215,9 +215,14 @@ export default function MapExploreSheet({
   const v6 = pele === 'v6';
   const grabberH = v6 ? GRABBER_H_V6 : GRABBER_H;
   // Pele v6 (B2): «114 spots nesta vista · até intermédio» no topo do meio.
-  const nivelTecto = v6 && selectedDifficulty !== 'all'
-    ? difficulties.find((d) => d.id === selectedDifficulty)?.label.toLocaleLowerCase(locale)
+  const nivelRotulo = v6 && selectedDifficulty !== 'all'
+    ? difficulties.find((d) => d.id === selectedDifficulty)?.label
     : undefined;
+  const nivelTecto = nivelRotulo?.toLocaleLowerCase(locale);
+  /** B3.5: com um tecto de nível, o peek ganha a linha da maquete (chip do nível + contagem).
+   *  O chip tem 44 px + 4 px de gap: os snaps do peek sobem o mesmo. */
+  const linhaNivelH = nivelRotulo ? 48 : 0;
+  const [contAntes, contDepois = ''] = t.mapUiExplore.spotsInViewCount.split('{count}');
   const reduced = typeof window !== 'undefined'
     && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 
@@ -235,7 +240,7 @@ export default function MapExploreSheet({
   useEffect(() => {
     const el = peekContentRef.current;
     if (!el || state !== 'peek') return;
-    const extra = grabberH - GRABBER_H;
+    const extra = grabberH - GRABBER_H + linhaNivelH;
     const measure = () =>
       setPeekH(
         Math.min(136 + extra, Math.max(132 + extra, grabberH + Math.ceil(el.getBoundingClientRect().height))),
@@ -244,7 +249,7 @@ export default function MapExploreSheet({
     const ro = new ResizeObserver(measure);
     ro.observe(el);
     return () => ro.disconnect();
-  }, [state, grabberH]);
+  }, [state, grabberH, linhaNivelH]);
   const halfH = Math.round(openHeight * HALF_RATIO);
   const offsetFor = useCallback(
     (s: ExploreSheetState) =>
@@ -508,6 +513,23 @@ export default function MapExploreSheet({
           </button>
         ) : (
           <p className="px-1 py-2 text-meta-sm text-fg-muted">{t.mapUiExplore.emptyView}</p>
+        )}
+        {nivelRotulo && (
+          <div data-mx="f-chips" className="flex min-w-0 items-center gap-2.5">
+            <button
+              type="button"
+              onClick={() => onDifficultyChange('all')}
+              aria-label={t.mapUiExplore.removeFilter.replace('{label}', nivelRotulo)}
+              data-mx="chip"
+              className="inline-flex min-h-[44px] shrink-0 items-center"
+            >
+              {nivelRotulo}
+              <X className="h-3 w-3" aria-hidden />
+            </button>
+            <span data-mx="f-cont" className="min-w-0 truncate">
+              {contAntes}<b>{spotCount}</b>{contDepois} · {nivelTecto}
+            </span>
+          </div>
         )}
         <div className="flex items-center gap-1.5" data-sheet-peek-filters>
           <button
