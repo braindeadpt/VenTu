@@ -467,3 +467,13 @@
    flag própria ?pelebase=v6. Só a camada `ventu-base-v6` (Esri Dark Gray), só no modo mapa
    escuro; o Satélite nunca leva filtro. */
 [data-pele='v6'][data-pele-base='v6'] .leaflet-container[data-basemap='map'][data-map-theme='dark'] .ventu-base-v6{filter:url(#v6base)}
+
+/* ── B8 · atribuição (maquete `.atrib` / `.credito-mapa`) ──
+   O mesmo controlo Leaflet e o mesmo texto (Esri, OSM, CARTO, Open-Meteo e camadas: obrigação de
+   licença, issue #181). Só muda a roupa: abismo translúcido, Barlow 500 10,5 px, texto espuma a
+   80 % (≥ 7:1 sobre o abismo a 82 %) e ligações em gelo sublinhadas (≥ 12:1). O `a[href]` sobe a especificidade acima de
+   `.theme-ocean .leaflet-control-attribution a` (globals.css), que também usa !important. No telemóvel o
+   espelho dentro da folha (`useMapAttribution`) já está no âmbito e herda a cor do texto. */
+[data-pele='v6'] .leaflet-control-attribution{background:rgba(3,14,24,.82)!important;color:rgba(243,248,251,.8)!important;font:500 10.5px/1.3 var(--txt)!important;padding:2px 8px!important;border-top:1px solid var(--linha);border-left:1px solid var(--linha);border-radius:6px 0 0 0!important}
+[data-pele='v6'] .leaflet-control-attribution a[href]{color:var(--gelo)!important;text-decoration:underline;text-underline-offset:2px}
+[data-pele='v6'] .leaflet-control-attribution a[href]:hover{color:var(--sol)!important}

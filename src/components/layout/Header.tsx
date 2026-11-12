@@ -285,7 +285,7 @@ export default function Header({ locale }: HeaderProps) {
               {/* #273: abaixo de sm o ícone «Mapa da costa» (aria-current) já diz onde se está;
                   com ícone + lupa + tema + menu o texto não cabia a 390 («Mapa…») */}
               {isMapPage && (
-                <span className="hidden sm:inline text-sm font-medium text-fg-muted truncate">
+                <span className="hidden sm:inline text-sm font-medium text-fg-muted truncate" data-cabecalho-onde="">
                   {navLabel.mapaCosta}
                 </span>
               )}
