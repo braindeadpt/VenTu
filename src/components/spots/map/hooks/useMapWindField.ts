@@ -14,6 +14,7 @@ import {
   drawWindParticlesByKt,
   spawnWindParticle,
   windBinRgb,
+  windCellAnywhere,
   windCellKt,
   windKtBin,
   windParticleTarget,
@@ -32,6 +33,8 @@ import {
 } from '@/lib/landClip';
 import { pointOnLand } from '@/lib/landMask';
 import { toScreen, type ScreenView } from '@/lib/seaFieldPaint';
+import { WIND_V6_TAIL, WIND_V6_TAIL_MOBILE, drawWindV6, drawWindV6Static } from '@/lib/mapWindV6';
+import type { MapPele } from '@/lib/mapPele';
 import { mapClipBounds, mapScreenView } from './mapScreenView';
 
 interface UseMapWindFieldOptions {
@@ -49,6 +52,8 @@ interface UseMapWindFieldOptions {
   /** Grelha de modelo (sea-grid.json) — quando cobre a hora pedida substitui o IDW dos spots. */
   seaGrid?: SeaGrid | null;
   seaFrame?: SeaGridFrame | null;
+  /** Pele v6 (PR B7): o mesmo campo desenhado em traços com cauda (`mapWindV6.ts`). */
+  pele?: MapPele | null;
 }
 
 function isZoomAnimating(map: L.Map): boolean {
@@ -100,7 +105,9 @@ export function useMapWindField({
   spots,
   seaGrid = null,
   seaFrame = null,
+  pele = null,
 }: UseMapWindFieldOptions) {
+  const v6 = pele === 'v6';
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const rafRef = useRef(0);
   const particlesRef = useRef<WindParticle[]>([]);
@@ -339,6 +346,25 @@ export function useMapWindField({
       const { size, dpr } = sizeCanvas();
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, size.x, size.y);
+      if (v6) {
+        // Pele v6: grelha de traços com cabeça (maquete `estatico()`).
+        Leaflet.DomUtil.setPosition(canvas, map.containerPointToLayerPoint([0, 0]));
+        if (!clipReady()) return;
+        drawWindV6Static(
+          ctx,
+          size.x,
+          size.y,
+          (x, y) => {
+            const ll = map.containerPointToLatLng([x, y]);
+            if (onLand(ll.lat, ll.lng)) return null;
+            const hit = windCellAnywhere(gridsRef.current, ll.lat, ll.lng);
+            if (!hit || hit.cell.falloff < 0.08) return null;
+            return { u: hit.cell.u, v: hit.cell.v, kt: windCellKt(hit.cell) };
+          },
+          isMobile,
+        );
+        return;
+      }
       respawnAll();
       const origin = map.containerPointToLayerPoint([0, 0]);
       const project = (lat: number, lon: number) => {
@@ -437,11 +463,13 @@ export function useMapWindField({
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       const origin = map.containerPointToLayerPoint([0, 0]);
       Leaflet.DomUtil.setPosition(canvas, origin);
-      // fade dos trails
-      ctx.globalCompositeOperation = 'destination-in';
-      ctx.fillStyle = `rgba(0,0,0,${MAP_WIND_FADE})`;
-      ctx.fillRect(0, 0, size.x, size.y);
-      ctx.globalCompositeOperation = 'source-over';
+      // fade dos trails (a pele v6 limpa e redesenha as caudas em drawWindV6)
+      if (!v6) {
+        ctx.globalCompositeOperation = 'destination-in';
+        ctx.fillStyle = `rgba(0,0,0,${MAP_WIND_FADE})`;
+        ctx.fillRect(0, 0, size.x, size.y);
+        ctx.globalCompositeOperation = 'source-over';
+      }
 
       const view = spawnView();
       const zoom = map.getZoom();
@@ -469,18 +497,18 @@ export function useMapWindField({
             // fora do campo nesta vista — volta a tentar com vida curta
             p.life = 30;
           }
+          p.tail = undefined;
         }
       }
-      drawWindParticlesByKt(
-        ctx,
-        particles,
-        (lat, lon) => {
-          const p = map.latLngToLayerPoint([lat, lon]);
-          return { x: p.x - origin.x, y: p.y - origin.y };
-        },
-        isMobile ? 0.85 : 1,
-        { width: size.x, height: size.y },
-      );
+      const projectLayer = (lat: number, lon: number) => {
+        const p = map.latLngToLayerPoint([lat, lon]);
+        return { x: p.x - origin.x, y: p.y - origin.y };
+      };
+      if (v6) {
+        drawWindV6(ctx, particles, projectLayer, { width: size.x, height: size.y }, isMobile ? WIND_V6_TAIL_MOBILE : WIND_V6_TAIL, isMobile);
+      } else {
+        drawWindParticlesByKt(ctx, particles, projectLayer, isMobile ? 0.85 : 1, { width: size.x, height: size.y });
+      }
       // Congela depois de desenhar este frame — o rasto fica visível.
       // O contador expõe o ritmo real de pintura (debug + e2e).
       framesDrawn += 1;
@@ -614,6 +642,9 @@ export function useMapWindField({
     el.setAttribute('data-map-windfield-paused', 'false');
     el.setAttribute('data-map-windfield-color', colorRef.current);
     el.setAttribute('data-map-windfield-target', String(particleTarget()));
+    // Hook de teste/depuração da pele v6 — só existe com a pele.
+    if (v6) el.setAttribute('data-map-windfield-estilo', 'v6');
+    else el.removeAttribute('data-map-windfield-estilo');
 
     return () => {
       clipState.disposed = true;
@@ -647,9 +678,10 @@ export function useMapWindField({
         el2.removeAttribute('data-map-windfield-color');
         el2.removeAttribute('data-map-windfield-visible');
         el2.removeAttribute('data-map-windfield-target');
+        el2.removeAttribute('data-map-windfield-estilo');
       }
     };
-  }, [windOn, isReady, hasGrids, isMobile, reducedMotion, mapInstanceRef, LRef]);
+  }, [windOn, isReady, hasGrids, isMobile, reducedMotion, v6, mapInstanceRef, LRef]);
 
   return {
     windFieldOn: windOn,
