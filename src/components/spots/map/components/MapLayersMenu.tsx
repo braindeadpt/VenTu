@@ -319,8 +319,11 @@ export default function MapLayersMenu({
   const activeCount = items.filter((i) => i.pressed).length;
   // O menu vive sempre dentro do MapUiProvider (montado pela MapControls);
   // o locale alimenta os cabeçalhos/nomes/descrições localizados do §8.
-  const { locale } = useMapUiData();
+  const { locale, pele } = useMapUiData();
   const t = getTranslation(locale);
+  /** Pele v6 (B5): ganchos `data-mc` só existem com a flag — sem ela o DOM não muda. */
+  const v6 = pele === 'v6';
+  const mc = (v: string) => (v6 ? v : undefined);
   const layerNames = t.mapUiLayers;
 
   /** Itens navegáveis do popover (radios + toggles + resets), na ordem visual. */
@@ -500,6 +503,7 @@ export default function MapLayersMenu({
   const badge = activeCount > 0 && (
     <span
       aria-hidden
+      data-mc={mc('badge')}
       className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-fg px-0.5 font-mono text-[10px] font-semibold leading-none text-bg-base"
     >
       {activeCount}
@@ -532,6 +536,7 @@ export default function MapLayersMenu({
             )}
           >
             <span
+              data-mc={mc('ic')}
               className={cn(
                 'flex w-4 h-4 shrink-0 items-center justify-center [&>svg]:w-4 [&>svg]:h-4',
                 item.pressed ? (item.iconClass ?? 'text-fg') : 'text-fg-subtle',
@@ -543,6 +548,7 @@ export default function MapLayersMenu({
                 própria e descrição completa que pode ir até duas linhas. */}
             <span className="min-w-0">
               <span
+                data-mc={mc('n')}
                 className={cn(
                   'block text-meta-sm font-medium leading-tight',
                   item.pressed ? 'text-fg' : 'text-fg-muted',
@@ -551,7 +557,7 @@ export default function MapLayersMenu({
                 {name}
               </span>
               {desc && (
-                <span className="block text-[11px] leading-snug text-fg-subtle">
+                <span data-mc={mc('d')} className="block text-[11px] leading-snug text-fg-subtle">
                   {desc}
                 </span>
               )}
@@ -559,6 +565,7 @@ export default function MapLayersMenu({
             {/* Switch — estado visual da linha (aria-pressed no botão). */}
             <span
               aria-hidden
+              data-mc={mc('sw')}
               className={cn(
                 'relative w-8 h-[18px] rounded-full transition-colors duration-150',
                 item.pressed ? 'bg-fg' : 'bg-divider-strong',
@@ -582,6 +589,7 @@ export default function MapLayersMenu({
           <button
             type="button"
             onClick={item.onReset}
+            data-mc={mc('rep')}
             aria-label={item.resetLabel}
             title={item.resetLabel}
             className="flex h-11 w-11 shrink-0 items-center justify-center rounded-input text-fg-subtle hover:text-fg hover:bg-surface-2/[0.08] transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-accent"
@@ -596,6 +604,7 @@ export default function MapLayersMenu({
   const groupHeader = (g: MapLayerGroup) => (
     <p
       key={`h-${g}`}
+      data-mc={mc('g')}
       className="px-2.5 pt-2 pb-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-fg-subtle"
     >
       {layerNames[GROUP_LABEL_KEY[g]]}
@@ -655,6 +664,7 @@ export default function MapLayersMenu({
             role="group"
             aria-label={label}
             data-map-layers-popover="true"
+            data-pele={v6 ? 'v6' : undefined}
             onKeyDown={onPopoverKeyDown}
             style={pos}
             className={cn(
@@ -666,10 +676,18 @@ export default function MapLayersMenu({
           >
             {/* §8 — «Base»: Mapa/Satélite (rádio). O estado vive em useMapCore;
                 lê-se do data-basemap do container e escreve-se por evento. */}
-            <p className="px-2.5 pt-1 pb-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-fg-subtle">
+            {v6 ? (
+              <h2 data-mc="titulo" aria-hidden="true">
+                {label}
+              </h2>
+            ) : null}
+            <p
+              data-mc={mc('g')}
+              className="px-2.5 pt-1 pb-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-fg-subtle"
+            >
               {layerNames.groupBase}
             </p>
-            <BasemapSection rootRef={rootRef} open={open} t={t} />
+            <BasemapSection rootRef={rootRef} open={open} t={t} v6={v6} />
 
             {GROUP_ORDER.map((g) =>
               grouped[g].length === 0 ? null : (
@@ -691,10 +709,13 @@ function BasemapSection({
   rootRef,
   open,
   t,
+  v6 = false,
 }: {
   rootRef: React.RefObject<HTMLElement | null>;
   open: boolean;
   t: Translation;
+  /** Pele v6 (B5): mosaicos «Mapa | Satélite» lado a lado, como a maquete. */
+  v6?: boolean;
 }) {
   const mode = useThisMapBasemap(rootRef, open);
   const rows: Array<{ mode: BasemapMode; icon: React.ReactNode; name: string; desc: string }> = [
@@ -702,7 +723,7 @@ function BasemapSection({
     { mode: 'satellite', icon: <Satellite className="w-4 h-4" aria-hidden />, name: t.spotsMap.satellite, desc: t.mapUiLayers.basemapSatelliteDesc },
   ];
   return (
-    <div role="radiogroup" aria-label={t.spotsMap.basemap} className="flex flex-col">
+    <div role="radiogroup" aria-label={t.spotsMap.basemap} data-mc={v6 ? 'base' : undefined} className="flex flex-col">
       {rows.map((r) => {
         const checked = mode === r.mode;
         return (
@@ -716,17 +737,18 @@ function BasemapSection({
             data-map-basemap-radio={r.mode}
             className="grid grid-cols-[20px_1fr_auto] items-center gap-x-2.5 gap-y-0 min-h-[44px] px-2.5 py-1.5 rounded-input text-left transition-colors duration-150 hover:bg-surface-2/[0.08] focus-visible:outline-2 focus-visible:outline-accent"
           >
-            <span className={cn('flex w-4 h-4 items-center justify-center', checked ? 'text-fg' : 'text-fg-subtle')}>
+            <span data-mc={v6 ? 'th' : undefined} className={cn('flex w-4 h-4 items-center justify-center', checked ? 'text-fg' : 'text-fg-subtle')}>
               {r.icon}
             </span>
             <span className="min-w-0">
               <span className={cn('block text-meta-sm font-medium leading-tight', checked ? 'text-fg' : 'text-fg-muted')}>
                 {r.name}
               </span>
-              <span className="block text-[11px] leading-snug text-fg-subtle">{r.desc}</span>
+              <span data-mc={v6 ? 'd' : undefined} className="block text-[11px] leading-snug text-fg-subtle">{r.desc}</span>
             </span>
             <span
               aria-hidden
+              data-mc={v6 ? 'rd' : undefined}
               className={cn(
                 'w-4 h-4 rounded-full border-2 grid place-items-center transition-colors duration-150',
                 checked ? 'border-fg' : 'border-divider-strong',

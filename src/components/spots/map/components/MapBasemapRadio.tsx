@@ -13,10 +13,13 @@ export default function MapBasemapRadio({
   value,
   onChange,
   locale,
+  v6 = false,
 }: {
   value: BasemapMode;
   onChange: (mode: BasemapMode) => void;
   locale: string;
+  /** Pele v6 (B5): segmentado em pílula, activo em sol. Sem a flag o DOM não muda. */
+  v6?: boolean;
 }) {
   const t = getTranslation(locale);
   const labels: Record<BasemapMode, string> = {
@@ -28,6 +31,7 @@ export default function MapBasemapRadio({
       className="flex rounded-input overflow-hidden border border-divider"
       role="radiogroup"
       aria-label={t.spotsMap.basemap}
+      data-mc={v6 ? 'seg' : undefined}
     >
       {(['map', 'satellite'] as const).map((mode) => {
         const active = value === mode;

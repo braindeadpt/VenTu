@@ -634,7 +634,7 @@ export default function MapExploreSheet({
           <span className="text-[10px] font-semibold uppercase tracking-[0.08em] text-fg-subtle">
             {t.mapUiLayers.groupBase}
           </span>
-          <MapBasemapRadio value={basemapMode} onChange={onBasemapChange} locale={locale} />
+          <MapBasemapRadio value={basemapMode} onChange={onBasemapChange} locale={locale} v6={v6} />
           {/* CORRECCOES-24SET (M5/M6): mobile = 1 coluna com o nome
               completo da camada — duas colunas truncavam «Altura
               significativa (Hs)», «Sinalização náutica»… */}

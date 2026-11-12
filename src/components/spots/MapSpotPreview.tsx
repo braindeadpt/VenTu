@@ -790,6 +790,9 @@ function SpotCardContentV6({
   const noiteRotulo = t.noite.rotulo;
   const nomeNivel = getDifficultyLabel(nivelDoSpot(spot, nivelSport), locale);
   const nivelChip = `${t.spotsMap.level}: ${nomeNivel.toLocaleLowerCase(locale)}`;
+  // B5 · chip de maré (maquete `.sp-meta`): a maré é a de agora, por isso só no passo 0 —
+  // noutra hora o cartão não mostra um dado de outra hora (regra de ouro).
+  const tideChip = hoursFrame === 0 ? getMapTideLine(spot, conditions, locale) : null;
 
   return (
     <div data-ms="corpo">
@@ -900,6 +903,12 @@ function SpotCardContentV6({
       ) : null}
 
       <div data-ms="meta">
+        {tideChip ? (
+          <span data-ms="chip" data-mare="">
+            <Waves aria-hidden="true" />
+            {tideChip}
+          </span>
+        ) : null}
         <span data-ms="chip">{nivelChip}</span>
         {windRelationMeta ? (
           <span data-ms="chip" data-rel={windRelation}>

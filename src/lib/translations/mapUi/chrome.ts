@@ -20,6 +20,10 @@ export const mapUiChrome = {
     scrubValueText: '{time} — melhor score na vista {score}',
     /** Título «Score» do cartão da legenda. */
     legendScoreTitle: 'Score',
+    /** B5 · legenda v6: título, linha da noite e linha da escala antiga (SUP/wakeboard). */
+    legendNotaV6: 'Nota · 0–10',
+    legendNightV6: 'Noite: sem nota até ao nascer do sol',
+    legendLegacyV6: '{sport}: escala antiga, a rever',
   },
   en: {
     controlsLabel: 'Map controls',
@@ -30,6 +34,9 @@ export const mapUiChrome = {
     scrubBestHintShort: 'best in view, 3-hourly',
     scrubValueText: '{time} — best score in view {score}',
     legendScoreTitle: 'Score',
+    legendNotaV6: 'Score · 0–10',
+    legendNightV6: 'Night: no score until sunrise',
+    legendLegacyV6: '{sport}: old scale, under review',
   },
   es: {
     controlsLabel: 'Controles del mapa',
@@ -40,6 +47,9 @@ export const mapUiChrome = {
     scrubBestHintShort: 'mejor en vista, cada 3 h',
     scrubValueText: '{time} — mejor puntuación en vista {score}',
     legendScoreTitle: 'Score',
+    legendNotaV6: 'Puntuación · 0–10',
+    legendNightV6: 'Noche: sin nota hasta el amanecer',
+    legendLegacyV6: '{sport}: escala antigua, en revisión',
   },
   de: {
     controlsLabel: 'Kartensteuerung',
@@ -50,6 +60,9 @@ export const mapUiChrome = {
     scrubBestHintShort: 'bester im Blick, alle 3 h',
     scrubValueText: '{time} — bester Score in der Ansicht {score}',
     legendScoreTitle: 'Score',
+    legendNotaV6: 'Note · 0–10',
+    legendNightV6: 'Nacht: keine Note bis Sonnenaufgang',
+    legendLegacyV6: '{sport}: alte Skala, wird überarbeitet',
   },
   fr: {
     controlsLabel: 'Contrôles de la carte',
@@ -60,6 +73,9 @@ export const mapUiChrome = {
     scrubBestHintShort: 'meilleur en vue, toutes les 3 h',
     scrubValueText: '{time} — meilleur score en vue {score}',
     legendScoreTitle: 'Score',
+    legendNotaV6: 'Note · 0–10',
+    legendNightV6: 'Nuit : pas de note avant le lever du soleil',
+    legendLegacyV6: '{sport} : ancienne échelle, en révision',
   },
 } as const;
 
