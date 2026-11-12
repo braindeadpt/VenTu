@@ -11,8 +11,16 @@
       "lat": 41.3155555555556,
       "lon": -8.9825,
       "lastPos": "2026-11-07T07:26:41+00:00",
-      "lastSea": "2026-11-10T11:26:38+00:00",
-      "family": "datawell"
+      "lastSea": "2026-11-12T09:26:42+00:00",
+      "family": "datawell",
+      "latest": {
+        "date": "2026-11-12T09:26:42.000Z",
+        "hm0": 2.37,
+        "tp": 11.1,
+        "thtp": 243,
+        "hmax": 3.99,
+        "temp": 17.1
+      }
     },
     "19": {
       "idEst": 19,
@@ -24,15 +32,15 @@
       "nrt": "near-real-time data available",
       "lat": 37.921111111111095,
       "lon": -8.92861111111111,
-      "lastPos": "2026-11-12T08:26:44+00:00",
-      "lastSea": "2026-11-12T08:26:44+00:00",
+      "lastPos": "2026-11-12T08:56:44+00:00",
+      "lastSea": "2026-11-12T09:26:44+00:00",
       "family": "datawell",
       "latest": {
-        "date": "2026-11-12T08:26:44.000Z",
-        "hm0": 3.96,
-        "tp": 11.8,
-        "thtp": 226,
-        "hmax": 5.4,
+        "date": "2026-11-12T09:26:44.000Z",
+        "hm0": 4.6,
+        "tp": 10.5,
+        "thtp": 248,
+        "hmax": 6.45,
         "temp": 18.9
       }
     },
@@ -82,15 +90,15 @@
       "nrt": "near-real-time data available",
       "lat": 32.727777777777796,
       "lon": -16.723888888888897,
-      "lastPos": "2026-11-12T08:29:57+00:00",
-      "lastSea": "2026-11-12T08:29:57+00:00",
+      "lastPos": "2026-11-12T09:29:57+00:00",
+      "lastSea": "2026-11-12T09:29:57+00:00",
       "family": "datawell",
       "latest": {
-        "date": "2026-11-12T08:29:57.000Z",
-        "hm0": 1.38,
-        "tp": 10.5,
-        "thtp": 210,
-        "hmax": 1.99,
+        "date": "2026-11-12T09:29:57.000Z",
+        "hm0": 1.3,
+        "tp": 10,
+        "thtp": 201,
+        "hmax": 2.24,
         "temp": 22.2
       }
     },
@@ -160,15 +168,15 @@
       "nrt": "near-real-time data available",
       "lat": 39.08,
       "lon": -27.9633333333333,
-      "lastPos": "2026-11-12T08:49:05+00:00",
-      "lastSea": "2026-11-12T07:49:05+00:00",
+      "lastPos": "2026-11-12T09:49:05+00:00",
+      "lastSea": "2026-11-12T09:19:05+00:00",
       "family": "datawell",
       "latest": {
-        "date": "2026-11-12T07:49:05.000Z",
-        "hm0": 1.95,
-        "tp": 10.5,
-        "thtp": 148,
-        "hmax": 3.45,
+        "date": "2026-11-12T09:19:05.000Z",
+        "hm0": 1.94,
+        "tp": 10,
+        "thtp": 41,
+        "hmax": 2.74,
         "temp": 19.1
       }
     },
@@ -1336,11 +1344,11 @@
       "distanceKm": 25.3
     }
   },
-  "fetchedAt": "2026-11-12T10:06:10.313Z",
+  "fetchedAt": "2026-11-12T11:06:48.689Z",
   "sourceCollections": [
     "buoys_datawell"
   ],
   "apiKeyConfigured": true,
   "hasWaveData": true,
-  "waveFetchStatus": "partial"
+  "waveFetchStatus": "ok"
 }
