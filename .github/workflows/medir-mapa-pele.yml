@@ -1,0 +1,53 @@
+name: Medir pele v6 do /mapa (D1/D2)
+
+# Só corre em ramos medir/* (nunca na main nem em PR). Mede, não bloqueia nada.
+on:
+  push:
+    branches: ['medir/**']
+
+permissions:
+  contents: read
+
+jobs:
+  medir:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        with:
+          node-version: '22'
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run sitemap:generate && npm run spots:index && npm run spots:lite
+      - name: Build
+        env:
+          NODE_OPTIONS: '--max-old-space-size=4096'
+          NEXT_PUBLIC_BASE_PATH: ''
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          NEXT_PUBLIC_OBS_WORKER_URL: ${{ vars.NEXT_PUBLIC_OBS_WORKER_URL || 'https://ventu-observations.busntech-net.workers.dev' }}
+          NEXT_PUBLIC_CARTO_API_KEY: ${{ secrets.NEXT_PUBLIC_CARTO_API_KEY }}
+        run: npm run build
+      - run: npx playwright install --with-deps chromium
+      - name: e2e de medição (p95 do pan com o filtro; long tasks do vento a 390 px)
+        continue-on-error: true
+        env:
+          CI: true
+          PLAYWRIGHT_JSON_OUTPUT_NAME: pw-medir.json
+        run: npx playwright test map-pele-base map-pele-vento --project=chromium --repeat-each=3 --retries=0 --reporter=list,json
+      - name: Resumo das medições e2e
+        if: always()
+        run: node scripts/medir/anotacoes.cjs pw-medir.json || true
+      - name: Lighthouse /mapa (3 variantes, móvel e desktop)
+        if: always()
+        env:
+          RUNS: '3'
+        run: node scripts/medir/medir-mapa-pele.cjs
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: medicoes
+          path: |
+            pw-medir.json
+            medir-lighthouse.md
