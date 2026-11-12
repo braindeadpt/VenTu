@@ -61,6 +61,13 @@ interface UseMapCoreOptions {
    * preferência persistida (que só se grava na mudança manual).
    */
   initialBasemap?: BasemapMode;
+  /**
+   * Pele v6, PR B6 (D1): recolor da base «Mapa» atrás de `?pele=v6&pelebase=v6`.
+   * Com ela, a base escura vem do Esri Dark Gray (os cinzentos que o filtro
+   * `#v6base` recolore; o CARTO dark tem o mar mais claro do que a terra) e leva
+   * a classe `ventu-base-v6`. Nunca no Satélite. Falso = a base de hoje.
+   */
+  recolorV6?: boolean;
 }
 
 interface UseMapCoreReturn {
@@ -102,9 +109,13 @@ function readIsDark(): boolean {
   return !document.documentElement.classList.contains('theme-ocean');
 }
 
-function tileSignature(mode: BasemapMode, dark: boolean): string {
-  return mode === 'satellite' ? 'satellite' : `map:${dark ? 'dark' : 'light'}`;
+function tileSignature(mode: BasemapMode, dark: boolean, recolor = false): string {
+  if (mode === 'satellite') return 'satellite';
+  return `map:${dark ? 'dark' : 'light'}${recolor && dark ? ':v6' : ''}`;
 }
+
+/** B6: a classe do mosaico recolorido (`#v6base` em mapa-pele-v6.css). */
+export const MAP_BASE_V6_CLASS = 'ventu-base-v6';
 
 /**
  * M7-F: cede a main thread entre as peças do init — cada segmento fica
@@ -157,6 +168,7 @@ function attachBasemap(
   auxLayersRef: React.MutableRefObject<L.LayerGroup | null>,
   fallbackCleanupRef: React.MutableRefObject<(() => void) | null>,
   onTileState: (state: BasemapLoadState) => void,
+  recolor = false,
 ): void {
   fallbackCleanupRef.current?.();
   fallbackCleanupRef.current = null;
@@ -250,6 +262,24 @@ function attachBasemap(
     return;
   }
 
+  if (recolor && dark) {
+    // B6: Esri Dark Gray directo (sem o CARTO primário) e a classe que o filtro
+    // `#v6base` pinta. Uma falha definitiva é o estado final ('failed'), como no
+    // caminho sem key; o watchdog e o auto-recover são os mesmos.
+    const esri = getEsriRasterBasemap(true);
+    const layer = Leaflet.tileLayer(esri.url, {
+      attribution: esri.attribution,
+      maxZoom: MAX_ZOOM,
+      className: MAP_BASE_V6_CLASS,
+      ...tilePerf,
+    });
+    tileLayerRef.current = layer;
+    watch(layer, () => onTileState('failed'));
+    layer.addTo(map);
+    attachAuxStack();
+    return;
+  }
+
   const { url, ...opts } = rasterTileLayerOptions(dark);
   const rasterLayer = Leaflet.tileLayer(url, { ...opts, ...tilePerf });
   const swapToEsri = () => {
@@ -284,7 +314,7 @@ function attachBasemap(
   attachAuxStack();
 }
 
-export function useMapCore({ containerRef, isHeroEmbed, locale = 'pt', initialViewBounds = null, exploreChrome, initialBasemap }: UseMapCoreOptions): UseMapCoreReturn {
+export function useMapCore({ containerRef, isHeroEmbed, locale = 'pt', initialViewBounds = null, exploreChrome, initialBasemap, recolorV6 = false }: UseMapCoreOptions): UseMapCoreReturn {
   const mapInstanceRef = useRef<L.Map | null>(null);
   const LRef = useRef<typeof L | null>(null);
   const tileLayerRef = useRef<L.TileLayer | null>(null);
@@ -314,9 +344,11 @@ export function useMapCore({ containerRef, isHeroEmbed, locale = 'pt', initialVi
   // usam sempre o modo/tema mais recentes sem se re-criarem.
   const basemapModeRef = useRef<BasemapMode>(basemapMode);
   const isDarkRef = useRef(isDark);
+  const recolorRef = useRef(recolorV6);
   useEffect(() => {
     basemapModeRef.current = basemapMode;
     isDarkRef.current = isDark;
+    recolorRef.current = recolorV6;
   });
 
   // Recuperação automática do basemap. O watchdog declara 'failed' quando
@@ -357,8 +389,8 @@ export function useMapCore({ containerRef, isHeroEmbed, locale = 'pt', initialVi
           setAutoRecoverTick((t) => t + 1); // nova tentativa limitada
         }
       };
-      attachBasemap(Leaflet, map, basemapModeRef.current, isDarkRef.current, tileLayerRef, auxLayersRef, tileFallbackCleanupRef, onSilent);
-      tileSignatureRef.current = tileSignature(basemapModeRef.current, isDarkRef.current);
+      attachBasemap(Leaflet, map, basemapModeRef.current, isDarkRef.current, tileLayerRef, auxLayersRef, tileFallbackCleanupRef, onSilent, recolorRef.current);
+      tileSignatureRef.current = tileSignature(basemapModeRef.current, isDarkRef.current, recolorRef.current);
     }, exhausted ? AUTO_RECOVER_SLOW_MS : AUTO_RECOVER_INTERVAL_MS);
     return () => clearTimeout(timer);
   }, [tileState, autoRecoverTick, tileLayerRef, tileFallbackCleanupRef]);
@@ -572,8 +604,8 @@ export function useMapCore({ containerRef, isHeroEmbed, locale = 'pt', initialVi
           );
         }
 
-        attachBasemap(Leaflet, created, initialBasemap, initialDark, tileLayerRef, auxLayersRef, tileFallbackCleanupRef, handleTileState);
-        tileSignatureRef.current = tileSignature(initialBasemap, initialDark);
+        attachBasemap(Leaflet, created, initialBasemap, initialDark, tileLayerRef, auxLayersRef, tileFallbackCleanupRef, handleTileState, recolorRef.current);
+        tileSignatureRef.current = tileSignature(initialBasemap, initialDark, recolorRef.current);
 
         // Top-left, NOT bottom-right: the /mapa explore HUD (and the spots
         // page's bottom chrome) covers the bottom corners, which left the zoom
@@ -677,13 +709,13 @@ export function useMapCore({ containerRef, isHeroEmbed, locale = 'pt', initialVi
     const Leaflet = LRef.current;
     if (!Leaflet) return;
     const map = mapInstanceRef.current;
-    const next = tileSignature(basemapMode, isDark);
+    const next = tileSignature(basemapMode, isDark, recolorV6);
     if (tileSignatureRef.current === next && tileLayerRef.current) return;
 
     stopAutoRecover();
-    attachBasemap(Leaflet, map, basemapMode, isDark, tileLayerRef, auxLayersRef, tileFallbackCleanupRef, handleTileState);
+    attachBasemap(Leaflet, map, basemapMode, isDark, tileLayerRef, auxLayersRef, tileFallbackCleanupRef, handleTileState, recolorV6);
     tileSignatureRef.current = next;
-  }, [basemapMode, isDark, isReady, handleTileState, stopAutoRecover]);
+  }, [basemapMode, isDark, recolorV6, isReady, handleTileState, stopAutoRecover]);
 
   // Handle basemap toggle
   const handleBasemapChange = useCallback((mode: BasemapMode) => {
@@ -701,9 +733,9 @@ export function useMapCore({ containerRef, isHeroEmbed, locale = 'pt', initialVi
     const map = mapInstanceRef.current;
     if (!Leaflet || !map) return;
     stopAutoRecover();
-    attachBasemap(Leaflet, map, basemapMode, isDark, tileLayerRef, auxLayersRef, tileFallbackCleanupRef, handleTileState);
-    tileSignatureRef.current = tileSignature(basemapMode, isDark);
-  }, [basemapMode, isDark, mapInstanceRef, LRef, tileLayerRef, tileFallbackCleanupRef, handleTileState, stopAutoRecover]);
+    attachBasemap(Leaflet, map, basemapMode, isDark, tileLayerRef, auxLayersRef, tileFallbackCleanupRef, handleTileState, recolorV6);
+    tileSignatureRef.current = tileSignature(basemapMode, isDark, recolorV6);
+  }, [basemapMode, isDark, recolorV6, mapInstanceRef, LRef, tileLayerRef, tileFallbackCleanupRef, handleTileState, stopAutoRecover]);
 
   // Ownership M5 (map-v3): ponte de eventos das camadas — docs/design/MAP-ZONES.md.
   //

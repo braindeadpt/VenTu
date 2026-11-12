@@ -59,3 +59,45 @@ export function useMapPele(): MapPele | null {
   }, []);
   return pele;
 }
+
+/**
+ * PR B6 (D1): o recolor da base «Mapa» tem uma flag própria, por cima da pele.
+ * `?pelebase=v6` liga-a e grava-a em `localStorage['ventu:map:pele-base']`;
+ * qualquer outro valor desliga-a e apaga a chave (a mesma regra da pele). Só vale
+ * com a pele ligada: sem `?pele=v6` o /mapa fica exactamente como hoje.
+ */
+export const MAP_PELE_BASE_PARAM = 'pelebase';
+export const MAP_PELE_BASE_LS_KEY = 'ventu:map:pele-base';
+
+/** Decisão pura (testada): a flag da base só conta com a pele activa. */
+export function resolveMapPeleBase(
+  pele: MapPele | null,
+  param: string | null,
+  gravado: string | null,
+): { activa: boolean; gravar: 'v6' | 'apagar' | null } {
+  const d = resolveMapPele(param, gravado);
+  return { activa: pele === 'v6' && d.pele === 'v6', gravar: d.gravar };
+}
+
+/** Hook do contentor do /mapa: `true` só com a pele e a flag da base ligadas. */
+export function useMapPeleBase(pele: MapPele | null): boolean {
+  const [activa, setActiva] = useState(false);
+  useEffect(() => {
+    let gravado: string | null = null;
+    try {
+      gravado = localStorage.getItem(MAP_PELE_BASE_LS_KEY);
+    } catch {
+      /* modo privado / quota */
+    }
+    const param = new URLSearchParams(window.location.search).get(MAP_PELE_BASE_PARAM);
+    const d = resolveMapPeleBase(pele, param, gravado);
+    try {
+      if (d.gravar === 'v6') localStorage.setItem(MAP_PELE_BASE_LS_KEY, 'v6');
+      else if (d.gravar === 'apagar') localStorage.removeItem(MAP_PELE_BASE_LS_KEY);
+    } catch {
+      /* noop */
+    }
+    setActiva(d.activa);
+  }, [pele]);
+  return activa;
+}

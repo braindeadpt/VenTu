@@ -186,6 +186,8 @@ export default function SpotMapInteractive({
         ),
     // O painel nasce aberto (panelCollapsed=false) — o fit inicial reserva-o.
     exploreChrome: { enabled: Boolean(mapHud) && initialFullscreen, panelCollapsed: false },
+    // B6: recolor v6 da base «Mapa» (só com a pele e a flag própria).
+    recolorV6: mapHud?.pele === 'v6' && mapHud.peleBase === true,
   });
   const {
     mapInstanceRef, LRef, isReady, clusterReady, basemapMode, isMobile,

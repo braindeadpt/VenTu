@@ -34,7 +34,8 @@ import { useLiveGridSpotData } from '@/hooks/useLiveGridSpotData';
 import { parseDayParam, parseHourOfDayParam } from '@/lib/mapHours';
 import { parseSpotListings } from '@/lib/spotListingsJson';
 // Fase B (pele v6 «Atlântico»), PR B0: flag ?pele=v6 + tokens/fontes no âmbito [data-pele=v6].
-import { useMapPele } from '@/lib/mapPele';
+import { useMapPele, useMapPeleBase } from '@/lib/mapPele';
+import { MapPeleBaseFilter } from '@/components/spots/map/components/MapPeleBaseFilter';
 import '@/styles/v6-fontes.css';
 import '@/styles/mapa-pele-v6.css';
 
@@ -179,6 +180,8 @@ export default function MapaFullscreenClient({
   const liveSpotsData = useLiveGridSpotData(spotsData, { deferRefreshMs: 5000 });
   // Pele v6 (fase B): lida depois de montar; desligada = o /mapa de hoje, sem render extra.
   const pele = useMapPele();
+  // B6 (D1): recolor da base «Mapa» atrás de ?pelebase=v6, só com a pele.
+  const peleBase = useMapPeleBase(pele);
 
   const [sport, setSport] = useState<GridSportFilter>(DEFAULT_SPORT);
   const [region, setRegion] = useState<string>(DEFAULT_REGION);
@@ -372,6 +375,7 @@ export default function MapaFullscreenClient({
       ? `${t.spotsMap.level} · ${getMapSportFilterLabel(sport, locale, HUD_SPORTS.find((h) => h.id === sport)?.label).toLocaleLowerCase(locale)}`
       : t.spotsMap.level,
     pele,
+    peleBase,
     layersLabel: t.map.layersMenu,
   };
 
@@ -380,7 +384,9 @@ export default function MapaFullscreenClient({
       className="relative h-[calc(100dvh-4rem)] w-full"
       aria-label={t.spotsMap.fullscreenMap}
       data-pele={pele ?? undefined}
+      data-pele-base={peleBase ? 'v6' : undefined}
     >
+      {peleBase ? <MapPeleBaseFilter /> : null}
       <h1 className="sr-only">{getTranslation(locale).pages.mapMetaTitle}</h1>
       {paramsReady ? (
       <SpotMapInteractive

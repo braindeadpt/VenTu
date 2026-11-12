@@ -32,4 +32,6 @@ export interface MapFullscreenHudProps {
   layersLabel?: string;
   /** Pele v6 da fase B (`?pele=v6`): só copy/atributos; `null`/ausente = o /mapa de hoje. */
   pele?: MapPele | null;
+  /** B6: recolor da base «Mapa» (`?pele=v6&pelebase=v6`); só conta com a pele. */
+  peleBase?: boolean;
 }
