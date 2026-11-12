@@ -479,6 +479,7 @@ export default function SpotMapInteractive({
     hsSpots,
     windEnabled,
     setWindOn,
+    pele: mapHud?.pele ?? null,
     t,
   });
   const {

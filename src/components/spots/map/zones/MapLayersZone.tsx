@@ -35,6 +35,7 @@ import { useSeaDomainBounds, useSeaGrid, useSeaGridFrame } from '../hooks/useSea
 import { setMapSeaModeUrlParams } from '@/lib/mapShareUrl';
 import type { MapSeaMode } from '../components/MapSeaModeSwitch';
 import type { FieldSpot } from '@/lib/mapHsField';
+import type { MapPele } from '@/lib/mapPele';
 
 type MapTranslation = ReturnType<typeof getTranslation>;
 
@@ -225,6 +226,8 @@ interface UseMapLayersFieldsParams {
   windEnabled: boolean;
   /** Liga/desliga o vento (com pref) — o selector «Vento | Ondulação | Nenhum». */
   setWindOn?: (on: boolean) => void;
+  /** Pele v6 (PR B7): o vento em traços. Sem a pele, o campo de hoje. */
+  pele?: MapPele | null;
   t: MapTranslation;
 }
 
@@ -245,6 +248,7 @@ export function useMapLayersFields({
   hsSpots,
   windEnabled,
   setWindOn,
+  pele = null,
   t,
 }: UseMapLayersFieldsParams) {
   const {
@@ -322,6 +326,7 @@ export function useMapLayersFields({
     spots: hsSpots,
     seaGrid,
     seaFrame,
+    pele,
   });
 
   const { swellOn, swellUnavailable, swellRange } = useMapSwellField({

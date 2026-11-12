@@ -92,6 +92,8 @@ export interface WindParticle {
   kt: number;
   /** per-particle speed factor — breaks the laser-parallel look */
   jit: number;
+  /** Pele v6 (B7): cauda no ecrã [x, y, …]; limpa ao renascer. */
+  tail?: number[];
 }
 
 /** Célula mínima partilhada por qualquer campo de fluxo (vento, correntes…). */
