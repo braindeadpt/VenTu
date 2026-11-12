@@ -17,7 +17,7 @@ async function abre(page: Page, pele: boolean, w = 1440, q = ''): Promise<void> 
   await page.addInitScript(
     ({ k, on }) => {
       if (on) localStorage.setItem(k, 'v6');
-      else localStorage.removeItem(k);
+      else localStorage.setItem(k, 'off');
     },
     { k: MAP_PELE_LS_KEY, on: pele },
   );

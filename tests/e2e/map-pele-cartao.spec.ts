@@ -45,7 +45,7 @@ async function abre(page: Page, on: boolean, frame = 0): Promise<void> {
   await page.addInitScript(
     ({ key, on, frame }) => {
       if (on) localStorage.setItem(key, 'v6');
-      else localStorage.removeItem(key);
+      else localStorage.setItem(key, 'off');
       localStorage.setItem('ventu.map.cluster', '0');
       localStorage.setItem('ventu.map.hours', JSON.stringify({ paused: true, frame }));
     },

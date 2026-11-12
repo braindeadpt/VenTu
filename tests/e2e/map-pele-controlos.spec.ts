@@ -15,7 +15,7 @@ async function abre(page: Page, on: boolean): Promise<void> {
   await page.addInitScript(
     ({ key, on }) => {
       if (on) localStorage.setItem(key, 'v6');
-      else localStorage.removeItem(key);
+      else localStorage.setItem(key, 'off');
       localStorage.setItem('ventu.map.cluster', '0');
     },
     { key: MAP_PELE_LS_KEY, on },

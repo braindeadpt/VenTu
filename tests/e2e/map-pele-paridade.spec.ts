@@ -105,7 +105,7 @@ async function abre(page: Page, pele: Pele, query = '', opts: AbreOpts = {}): Pr
     ({ key, on, cluster, nivel }) => {
       try {
         if (on) localStorage.setItem(key, 'v6');
-        else localStorage.removeItem(key);
+        else localStorage.setItem(key, 'off');
         // As preferências semeiam-se só na 1.ª carga: o init script corre em cada
         // navegação e não pode repor o nível/agrupar que o próprio teste muda.
         if (sessionStorage.getItem('pele-harness-semeado')) return;
@@ -592,7 +592,7 @@ test.describe('/mapa — flag da pele v6 (B0)', () => {
     expect(erros).toEqual([]);
   });
 
-  test('?pele=v6 liga, grava e aplica tokens + Barlow só no /mapa; ?pele=0 desliga e apaga', async ({ page }) => {
+  test('?pele=v6 liga, grava e aplica tokens + Barlow só no /mapa; ?pele=0 desliga e grava off', async ({ page }) => {
     const erros = vigiaHidratacao(page);
     await preseedWindRingLegend(page);
     await page.goto('/pt/mapa/?pele=v6&sport=all', { waitUntil: 'domcontentloaded', timeout: 60_000 });
@@ -627,20 +627,32 @@ test.describe('/mapa — flag da pele v6 (B0)', () => {
       .toBe(true);
     const shellFont = await page.locator('[data-map-fullscreen="true"]').evaluate((el) => getComputedStyle(el).fontFamily);
     expect(shellFont).toMatch(/Barlow/);
-    // o cabeçalho do site fica fora do âmbito (B8)
+    // B8: o cabeçalho do site veste a pele pelo seu próprio atributo (não por um 2.º data-pele)
+    await expect(page.locator('header.site-header')).toHaveAttribute('data-pele-cabecalho', 'v6');
     const headerFont = await page.locator('header.site-header').evaluate((el) => getComputedStyle(el).fontFamily);
-    expect(headerFont).not.toMatch(/Barlow/);
+    expect(headerFont).toMatch(/Barlow/);
 
     // sem parâmetro: lembra-se
     await page.goto('/pt/mapa/?sport=all', { waitUntil: 'domcontentloaded' });
     await waitHydrated(page);
     await expect(page.locator('[data-pele="v6"]')).toHaveCount(1, { timeout: 10_000 });
 
-    // ?pele=0: desliga e apaga
+    // ?pele=0: o /mapa anterior, gravado como off
     await page.goto('/pt/mapa/?pele=0&sport=all', { waitUntil: 'domcontentloaded' });
     await waitHydrated(page);
     await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
     await expect(page.locator('[data-pele]')).toHaveCount(0);
+    expect(await page.evaluate((k) => localStorage.getItem(k), MAP_PELE_LS_KEY)).toBe('off');
+    expect(erros).toEqual([]);
+  });
+
+  test('B9: sem parâmetro nem preferência, a pele é o /mapa por defeito (sem erro de hidratação)', async ({ page }) => {
+    const erros = vigiaHidratacao(page);
+    await preseedWindRingLegend(page);
+    await page.goto('/pt/mapa/?sport=all', { waitUntil: 'domcontentloaded', timeout: 60_000 });
+    await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
+    await waitHydrated(page);
+    await expect(page.locator('[data-pele="v6"]')).toHaveCount(1, { timeout: 10_000 });
     expect(await page.evaluate((k) => localStorage.getItem(k), MAP_PELE_LS_KEY)).toBeNull();
     expect(erros).toEqual([]);
   });
