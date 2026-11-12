@@ -1,1150 +1,606 @@
 {
   "source": "ipma",
-  "fetchedAt": "2026-11-11T23:07:06.067Z",
+  "fetchedAt": "2026-11-12T04:06:58.320Z",
   "warnings": [
     {
-      "areaCode": "FAR",
-      "areaLabel": "Faro",
-      "type": "Agitação Marítima",
+      "areaCode": "VIS",
+      "areaLabel": "Viseu",
+      "type": "Precipitação",
       "level": "yellow",
-      "text": "Ondas de sudoeste com 4 a 5 metros.",
-      "startTime": "2026-11-11T21:00:00",
-      "endTime": "2026-11-12T03:00:00",
+      "text": "Períodos de chuva, por vezes forte.",
+      "startTime": "2026-11-12T15:00:00",
+      "endTime": "2026-11-13T06:00:00",
       "relevant": true
     },
     {
-      "areaCode": "STB",
-      "areaLabel": "Setúbal",
-      "type": "Agitação Marítima",
+      "areaCode": "PTO",
+      "areaLabel": "Porto",
+      "type": "Precipitação",
       "level": "yellow",
-      "text": "Ondas de sudoeste com 4 a 5 metros.",
-      "startTime": "2026-11-11T21:00:00",
-      "endTime": "2026-11-12T03:00:00",
+      "text": "Períodos de chuva, por vezes forte.",
+      "startTime": "2026-11-12T03:00:00",
+      "endTime": "2026-11-13T06:00:00",
       "relevant": true
     },
     {
-      "areaCode": "LSB",
-      "areaLabel": "Lisboa",
-      "type": "Agitação Marítima",
+      "areaCode": "VRL",
+      "areaLabel": "Vila Real",
+      "type": "Precipitação",
       "level": "yellow",
-      "text": "Ondas de sudoeste com 4 a 5 metros.",
-      "startTime": "2026-11-11T21:00:00",
-      "endTime": "2026-11-12T03:00:00",
+      "text": "Períodos de chuva, por vezes forte.",
+      "startTime": "2026-11-12T15:00:00",
+      "endTime": "2026-11-13T06:00:00",
       "relevant": true
     },
     {
-      "areaCode": "BJA",
-      "areaLabel": "Beja",
-      "type": "Agitação Marítima",
+      "areaCode": "VCT",
+      "areaLabel": "Viana do Castelo",
+      "type": "Precipitação",
       "level": "yellow",
-      "text": "Ondas de sudoeste com 4 a 5 metros.",
-      "startTime": "2026-11-11T21:00:00",
-      "endTime": "2026-11-12T03:00:00",
+      "text": "Períodos de chuva, por vezes forte.",
+      "startTime": "2026-11-12T03:00:00",
+      "endTime": "2026-11-13T06:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "AVR",
+      "areaLabel": "Aveiro",
+      "type": "Precipitação",
+      "level": "yellow",
+      "text": "Períodos de chuva, por vezes forte.",
+      "startTime": "2026-11-12T15:00:00",
+      "endTime": "2026-11-13T06:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "BRG",
+      "areaLabel": "Braga",
+      "type": "Precipitação",
+      "level": "yellow",
+      "text": "Períodos de chuva, por vezes forte.",
+      "startTime": "2026-11-12T03:00:00",
+      "endTime": "2026-11-13T06:00:00",
       "relevant": true
     }
   ],
   "spotWarnings": {
-    "foz-sizandro": [
+    "moledo": [
       {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
+        "areaCode": "VCT",
+        "areaLabel": "Viana do Castelo",
+        "type": "Precipitação",
         "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-11-12T03:00:00",
+        "endTime": "2026-11-13T06:00:00",
         "relevant": true
       }
     ],
-    "coxos": [
+    "vila-praia-ancora": [
       {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
+        "areaCode": "VCT",
+        "areaLabel": "Viana do Castelo",
+        "type": "Precipitação",
         "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-11-12T03:00:00",
+        "endTime": "2026-11-13T06:00:00",
         "relevant": true
       }
     ],
-    "ribeira-ilhas": [
+    "afife": [
       {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
+        "areaCode": "VCT",
+        "areaLabel": "Viana do Castelo",
+        "type": "Precipitação",
         "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-11-12T03:00:00",
+        "endTime": "2026-11-13T06:00:00",
         "relevant": true
       }
     ],
-    "empa": [
+    "amorosa": [
       {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
+        "areaCode": "VCT",
+        "areaLabel": "Viana do Castelo",
+        "type": "Precipitação",
         "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-11-12T03:00:00",
+        "endTime": "2026-11-13T06:00:00",
         "relevant": true
       }
     ],
-    "sao-lourenco": [
+    "cabedelo": [
       {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
+        "areaCode": "VCT",
+        "areaLabel": "Viana do Castelo",
+        "type": "Precipitação",
         "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-11-12T03:00:00",
+        "endTime": "2026-11-13T06:00:00",
         "relevant": true
       }
     ],
-    "calada": [
+    "foil-cabedelo": [
       {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
+        "areaCode": "VCT",
+        "areaLabel": "Viana do Castelo",
+        "type": "Precipitação",
         "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-11-12T03:00:00",
+        "endTime": "2026-11-13T06:00:00",
         "relevant": true
       }
     ],
-    "pedra-branca": [
+    "cabedelo-wakepark": [
       {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
+        "areaCode": "VCT",
+        "areaLabel": "Viana do Castelo",
+        "type": "Precipitação",
         "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-11-12T03:00:00",
+        "endTime": "2026-11-13T06:00:00",
         "relevant": true
       }
     ],
-    "sao-sebastiao": [
+    "rodanho": [
       {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
+        "areaCode": "VCT",
+        "areaLabel": "Viana do Castelo",
+        "type": "Precipitação",
         "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-11-12T03:00:00",
+        "endTime": "2026-11-13T06:00:00",
         "relevant": true
       }
     ],
-    "praia-norte-ericeira": [
+    "esposende": [
       {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
+        "areaCode": "VCT",
+        "areaLabel": "Viana do Castelo",
+        "type": "Precipitação",
         "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-11-12T03:00:00",
+        "endTime": "2026-11-13T06:00:00",
         "relevant": true
       }
     ],
-    "praia-sul-ericeira": [
+    "esposende-praia": [
       {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
+        "areaCode": "VCT",
+        "areaLabel": "Viana do Castelo",
+        "type": "Precipitação",
         "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-11-12T03:00:00",
+        "endTime": "2026-11-13T06:00:00",
         "relevant": true
       }
     ],
-    "foz-lizandro": [
+    "fao": [
       {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
+        "areaCode": "VCT",
+        "areaLabel": "Viana do Castelo",
+        "type": "Precipitação",
         "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-11-12T03:00:00",
+        "endTime": "2026-11-13T06:00:00",
         "relevant": true
       }
     ],
-    "sao-juliao": [
+    "apulia": [
       {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
+        "areaCode": "VCT",
+        "areaLabel": "Viana do Castelo",
+        "type": "Precipitação",
         "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-11-12T03:00:00",
+        "endTime": "2026-11-13T06:00:00",
         "relevant": true
       }
     ],
-    "praia-grande-sintra": [
+    "azurara": [
       {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Precipitação",
         "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-11-12T03:00:00",
+        "endTime": "2026-11-13T06:00:00",
         "relevant": true
       }
     ],
-    "adraga": [
+    "arvore": [
       {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Precipitação",
         "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-11-12T03:00:00",
+        "endTime": "2026-11-13T06:00:00",
         "relevant": true
       }
     ],
-    "guincho": [
+    "leca-palmeira": [
       {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Precipitação",
         "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-11-12T03:00:00",
+        "endTime": "2026-11-13T06:00:00",
         "relevant": true
       }
     ],
-    "seixal-bay": [
+    "matosinhos": [
       {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Precipitação",
         "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-11-12T03:00:00",
+        "endTime": "2026-11-13T06:00:00",
         "relevant": true
       }
     ],
-    "parede": [
+    "cabedelo-douro": [
       {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Precipitação",
         "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-11-12T03:00:00",
+        "endTime": "2026-11-13T06:00:00",
         "relevant": true
       }
     ],
-    "carcavelos": [
+    "marina-afurada-foil": [
       {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Precipitação",
         "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-11-12T03:00:00",
+        "endTime": "2026-11-13T06:00:00",
         "relevant": true
       }
     ],
-    "nova-vaga": [
+    "praia-da-lomba": [
       {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Precipitação",
         "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-11-12T03:00:00",
+        "endTime": "2026-11-13T06:00:00",
         "relevant": true
       }
     ],
-    "sao-joao-caparica": [
+    "salgueiros": [
       {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Precipitação",
         "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-11-12T03:00:00",
+        "endTime": "2026-11-13T06:00:00",
         "relevant": true
       }
     ],
-    "costa-caparica": [
+    "sereia-costa-verde": [
       {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Precipitação",
         "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-11-12T03:00:00",
+        "endTime": "2026-11-13T06:00:00",
         "relevant": true
       }
     ],
-    "fonte-telha": [
+    "canide-sul": [
       {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Precipitação",
         "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-11-12T03:00:00",
+        "endTime": "2026-11-13T06:00:00",
         "relevant": true
       }
     ],
-    "ponta-dos-corvos": [
+    "aguda": [
       {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Precipitação",
         "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-11-12T03:00:00",
+        "endTime": "2026-11-13T06:00:00",
         "relevant": true
       }
     ],
-    "trafaria": [
+    "espinho": [
       {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Precipitação",
         "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-11-12T03:00:00",
+        "endTime": "2026-11-13T06:00:00",
         "relevant": true
       }
     ],
-    "cova-do-vapor": [
+    "praia-37": [
       {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Precipitação",
         "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-11-12T03:00:00",
+        "endTime": "2026-11-13T06:00:00",
         "relevant": true
       }
     ],
-    "praia-da-rainha": [
+    "bairro-piscatorio": [
       {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Precipitação",
         "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-11-12T03:00:00",
+        "endTime": "2026-11-13T06:00:00",
         "relevant": true
       }
     ],
-    "lagoa-albufeira": [
+    "paramos": [
       {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Precipitação",
         "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-11-12T03:00:00",
+        "endTime": "2026-11-13T06:00:00",
         "relevant": true
       }
     ],
-    "foil-lagoa-albufeira": [
+    "barrinha-esmoriz": [
       {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Precipitação",
         "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-11-12T03:00:00",
+        "endTime": "2026-11-13T06:00:00",
         "relevant": true
       }
     ],
-    "praia-lagoa-albufeira": [
+    "esmoriz": [
       {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Precipitação",
         "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-11-12T03:00:00",
+        "endTime": "2026-11-13T06:00:00",
         "relevant": true
       }
     ],
-    "troia": [
+    "cortegaca": [
       {
-        "areaCode": "STB",
-        "areaLabel": "Setúbal",
-        "type": "Agitação Marítima",
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Precipitação",
         "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-11-12T03:00:00",
+        "endTime": "2026-11-13T06:00:00",
         "relevant": true
       }
     ],
-    "comporta": [
+    "cortegaca-sul": [
       {
-        "areaCode": "STB",
-        "areaLabel": "Setúbal",
-        "type": "Agitação Marítima",
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Precipitação",
         "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-11-12T03:00:00",
+        "endTime": "2026-11-13T06:00:00",
         "relevant": true
       }
     ],
-    "carvalhal-comporta": [
+    "maceda": [
       {
-        "areaCode": "STB",
-        "areaLabel": "Setúbal",
-        "type": "Agitação Marítima",
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Precipitação",
         "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-11-12T03:00:00",
+        "endTime": "2026-11-13T06:00:00",
         "relevant": true
       }
     ],
-    "alqueva": [
+    "murtosa": [
       {
-        "areaCode": "BJA",
-        "areaLabel": "Beja",
-        "type": "Agitação Marítima",
+        "areaCode": "AVR",
+        "areaLabel": "Aveiro",
+        "type": "Precipitação",
         "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-11-12T15:00:00",
+        "endTime": "2026-11-13T06:00:00",
         "relevant": true
       }
     ],
-    "melides": [
+    "ria-torreira": [
       {
-        "areaCode": "STB",
-        "areaLabel": "Setúbal",
-        "type": "Agitação Marítima",
+        "areaCode": "AVR",
+        "areaLabel": "Aveiro",
+        "type": "Precipitação",
         "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-11-12T15:00:00",
+        "endTime": "2026-11-13T06:00:00",
         "relevant": true
       }
     ],
-    "sao-torpes": [
+    "praia-torreira": [
       {
-        "areaCode": "STB",
-        "areaLabel": "Setúbal",
-        "type": "Agitação Marítima",
+        "areaCode": "AVR",
+        "areaLabel": "Aveiro",
+        "type": "Precipitação",
         "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-11-12T15:00:00",
+        "endTime": "2026-11-13T06:00:00",
         "relevant": true
       }
     ],
-    "vale-figueiros-sines": [
+    "muranzel": [
       {
-        "areaCode": "STB",
-        "areaLabel": "Setúbal",
-        "type": "Agitação Marítima",
+        "areaCode": "AVR",
+        "areaLabel": "Aveiro",
+        "type": "Precipitação",
         "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-11-12T15:00:00",
+        "endTime": "2026-11-13T06:00:00",
         "relevant": true
       }
     ],
-    "porto-covo": [
+    "furadouro": [
       {
-        "areaCode": "STB",
-        "areaLabel": "Setúbal",
-        "type": "Agitação Marítima",
+        "areaCode": "AVR",
+        "areaLabel": "Aveiro",
+        "type": "Precipitação",
         "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-11-12T15:00:00",
+        "endTime": "2026-11-13T06:00:00",
         "relevant": true
       }
     ],
-    "malhao": [
+    "sao-jacinto": [
       {
-        "areaCode": "STB",
-        "areaLabel": "Setúbal",
-        "type": "Agitação Marítima",
+        "areaCode": "AVR",
+        "areaLabel": "Aveiro",
+        "type": "Precipitação",
         "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-11-12T15:00:00",
+        "endTime": "2026-11-13T06:00:00",
         "relevant": true
       }
     ],
-    "vila-nova-milfontes": [
+    "costa-nova": [
       {
-        "areaCode": "STB",
-        "areaLabel": "Setúbal",
-        "type": "Agitação Marítima",
+        "areaCode": "AVR",
+        "areaLabel": "Aveiro",
+        "type": "Precipitação",
         "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-11-12T15:00:00",
+        "endTime": "2026-11-13T06:00:00",
         "relevant": true
       }
     ],
-    "alteirinhos": [
+    "tocha": [
       {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
+        "areaCode": "AVR",
+        "areaLabel": "Aveiro",
+        "type": "Precipitação",
         "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-11-12T15:00:00",
+        "endTime": "2026-11-13T06:00:00",
         "relevant": true
       }
     ],
-    "zambujeira": [
+    "ilha-do-ermal": [
       {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
+        "areaCode": "BRG",
+        "areaLabel": "Braga",
+        "type": "Precipitação",
         "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-11-12T03:00:00",
+        "endTime": "2026-11-13T06:00:00",
         "relevant": true
       }
     ],
-    "carvalhal": [
+    "barra-aveiro": [
       {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
+        "areaCode": "AVR",
+        "areaLabel": "Aveiro",
+        "type": "Precipitação",
         "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-11-12T15:00:00",
+        "endTime": "2026-11-13T06:00:00",
         "relevant": true
       }
     ],
-    "odeceixe": [
+    "vila-cha": [
       {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Precipitação",
         "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-11-12T03:00:00",
+        "endTime": "2026-11-13T06:00:00",
         "relevant": true
       }
     ],
-    "amoreira": [
+    "mindelo": [
       {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Precipitação",
         "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-11-12T03:00:00",
+        "endTime": "2026-11-13T06:00:00",
         "relevant": true
       }
     ],
-    "monte-clerigo": [
+    "aterro": [
       {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Precipitação",
         "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      }
-    ],
-    "arrifana": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      }
-    ],
-    "vale-figueiras": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      }
-    ],
-    "bordeira": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      }
-    ],
-    "amado": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      }
-    ],
-    "barriga": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      }
-    ],
-    "castelejo": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      }
-    ],
-    "luz": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      }
-    ],
-    "burgau": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      }
-    ],
-    "salema": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      }
-    ],
-    "cordoama": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      }
-    ],
-    "ferragudo": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      }
-    ],
-    "vila-real-santo-antonio": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      }
-    ],
-    "monte-gordo": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      }
-    ],
-    "praia-verde": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      }
-    ],
-    "altura": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      }
-    ],
-    "praia-rocha": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      }
-    ],
-    "alvor": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      }
-    ],
-    "foil-alvor": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      }
-    ],
-    "lagos": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      }
-    ],
-    "lagos-wakepark": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      }
-    ],
-    "beliche": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      }
-    ],
-    "martinhal": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      }
-    ],
-    "barrinha-faro": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      }
-    ],
-    "fuseta": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      }
-    ],
-    "ilha-faro": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      }
-    ],
-    "faro-mar": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      }
-    ],
-    "culatra": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      }
-    ],
-    "armona": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      }
-    ],
-    "ilha-tavira": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      }
-    ],
-    "cabanas-tavira": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      }
-    ],
-    "cacela-velha": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      }
-    ],
-    "zavial": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      }
-    ],
-    "tonel": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      }
-    ],
-    "porto-novo": [
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      }
-    ],
-    "santa-cruz": [
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      }
-    ],
-    "cave-ericeira": [
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      }
-    ],
-    "pescadores-ericeira": [
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      }
-    ],
-    "crazy-left": [
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      }
-    ],
-    "meco": [
-      {
-        "areaCode": "LSB",
-        "areaLabel": "Lisboa",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      }
-    ],
-    "lagoa-santo-andre": [
-      {
-        "areaCode": "STB",
-        "areaLabel": "Setúbal",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      }
-    ],
-    "lagoa-sancha": [
-      {
-        "areaCode": "STB",
-        "areaLabel": "Setúbal",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      }
-    ],
-    "pessegueiro": [
-      {
-        "areaCode": "STB",
-        "areaLabel": "Setúbal",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      }
-    ],
-    "falesia": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      }
-    ],
-    "tres-irmaos": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      }
-    ],
-    "canavial": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      }
-    ],
-    "armacao-pera": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
-        "relevant": true
-      }
-    ],
-    "mareta": [
-      {
-        "areaCode": "FAR",
-        "areaLabel": "Faro",
-        "type": "Agitação Marítima",
-        "level": "yellow",
-        "text": "Ondas de sudoeste com 4 a 5 metros.",
-        "startTime": "2026-11-11T21:00:00",
-        "endTime": "2026-11-12T03:00:00",
+        "text": "Períodos de chuva, por vezes forte.",
+        "startTime": "2026-11-12T03:00:00",
+        "endTime": "2026-11-13T06:00:00",
         "relevant": true
       }
     ]
