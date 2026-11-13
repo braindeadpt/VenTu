@@ -131,8 +131,11 @@ BEGIN
 END;
 $$;
 
+-- anon AND authenticated: a signed-in user hits the same RPC (FeedbackForm),
+-- and the old anon-only grant left them with "permission denied" (#454).
 REVOKE ALL ON FUNCTION public.submit_contribution(TEXT, TEXT, TEXT, TEXT, TEXT, TEXT, TEXT) FROM PUBLIC;
-GRANT EXECUTE ON FUNCTION public.submit_contribution(TEXT, TEXT, TEXT, TEXT, TEXT, TEXT, TEXT) TO anon;
+GRANT EXECUTE ON FUNCTION public.submit_contribution(TEXT, TEXT, TEXT, TEXT, TEXT, TEXT, TEXT)
+  TO anon, authenticated;
 
 -- ── 5. submit_score_feedback ──
 -- Required params first (see note above). The old signature had a different
@@ -222,9 +225,10 @@ END;
 $$;
 
 REVOKE ALL ON FUNCTION public.submit_score_feedback(TEXT, TEXT, INTEGER, TEXT, TEXT, JSONB, TEXT) FROM PUBLIC;
-GRANT EXECUTE ON FUNCTION public.submit_score_feedback(TEXT, TEXT, INTEGER, TEXT, TEXT, JSONB, TEXT) TO anon;
+GRANT EXECUTE ON FUNCTION public.submit_score_feedback(TEXT, TEXT, INTEGER, TEXT, TEXT, JSONB, TEXT)
+  TO anon, authenticated;
 
 -- ── 6. Sanity checks (keep) ──
 --   Admin policies on contributions (select/update/delete, is_ventu_admin) — untouched.
---   "Allow authenticated select score feedback" — untouched.
+--   score_feedback SELECT policy — now admin-only (supabase-score-feedback.sql).
 --   apply-contributions.js reads via service-role/admin — unaffected.

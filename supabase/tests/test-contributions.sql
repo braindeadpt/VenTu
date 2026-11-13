@@ -189,4 +189,25 @@ BEGIN
 END $$;
 RESET ROLE;
 
+-- ── 7. A signed-in user can submit (the grant was anon-only, #454) ──
+SELECT set_config(
+  'request.jwt.claims',
+  '{"sub":"11111111-1111-1111-1111-111111111111","app_metadata":{"role":"user"}}',
+  false
+);
+SET ROLE authenticated;
+SELECT test_set_ip('203.0.113.61');
+DO $$
+DECLARE r jsonb;
+BEGIN
+  r := public.submit_contribution(
+    p_type => 'bug', p_message => 'signed-in tip', p_client_id => 'client-auth-1'
+  )::jsonb;
+  IF (r ->> 'ok') <> 'true' THEN
+    RAISE EXCEPTION '7: authenticated submit_contribution failed: %', r;
+  END IF;
+END $$;
+RESET ROLE;
+SELECT set_config('request.jwt.claims', '', false);
+
 DO $$ BEGIN RAISE NOTICE 'ALL CONTRIBUTIONS INTEGRATION TESTS PASSED'; END $$;

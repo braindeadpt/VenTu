@@ -180,6 +180,12 @@ BEGIN
 END;
 $$;
 
+-- anon AND authenticated: the confirm link opens with the user's session when
+-- they are signed in; the anon-only grant in supabase-alerts-e1c.sql denied
+-- them (#454).
+REVOKE ALL ON FUNCTION public.verify_user_alerts(TEXT) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION public.verify_user_alerts(TEXT) TO anon, authenticated;
+
 CREATE OR REPLACE FUNCTION public.unsubscribe_user_alerts(p_token TEXT)
 RETURNS BOOLEAN
 LANGUAGE plpgsql
@@ -199,6 +205,9 @@ BEGIN
   RETURN FOUND;
 END;
 $$;
+
+REVOKE ALL ON FUNCTION public.unsubscribe_user_alerts(TEXT) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION public.unsubscribe_user_alerts(TEXT) TO anon, authenticated;
 
 -- ── 4. deactivate_user_alerts (authenticated): per-IP rate limit ──
 CREATE OR REPLACE FUNCTION public.deactivate_user_alerts()
