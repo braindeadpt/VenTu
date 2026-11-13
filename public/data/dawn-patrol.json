@@ -1,105 +1,105 @@
 {
-  "date": "2026-11-12",
-  "generatedAt": "2026-11-12T04:36:34.648Z",
-  "topSpot": "Coxos",
-  "topSpotSlug": "coxos",
+  "date": "2026-11-13",
+  "topSpot": "Arrifana",
+  "topSpotSlug": "arrifana",
   "pt": {
-    "headline": "Hoje é dia de Coxos! 🌊",
-    "advice": "Melhor janela: 8:00h. Ondas de 3.3m com 8 nós de vento. ⚓ Avisos à Navegação Costeiros (IH): ANAV NR 1727/26 — Animais Marinhos - Avistamento",
-    "bestTime": "8:00",
+    "headline": "Arrifana oferece ondas perfeitas e vento suave",
+    "advice": "Hoje Arrifana tem ondas de 3.1 m a 9 s, vento leve de 6 kt e água a 18.2 °C. Use fato 3/2 mm e fique atento ao Aviso à navegação costeira ANAV NR 2/22 em vigor na zona. Aproveite o swell antes que a praia encha.",
+    "bestTime": "08:30",
     "wetsuit": "3/2mm",
-    "crowdTip": "Chega cedo para evitar crowd!",
-    "moonTideLine": "Lua crescente · Marés vivas · baixa-mar 09:00"
+    "crowdTip": "Chegue cedo para garantir seu pico antes da multidão.",
+    "moonTideLine": "Lua crescente · Marés vivas · baixa-mar 10:00"
   },
   "en": {
-    "headline": "Today is Coxos day! 🌊",
-    "advice": "Best window: 8:00. 3.3m waves with 8 knot wind. ⚓ Coastal navigation warnings (IH): ANAV NR 1727/26 — Animais Marinhos - Avistamento",
-    "bestTime": "8:00",
+    "headline": "Arrifana serves clean waves with light wind",
+    "advice": "This morning Arrifana offers 3.1 m waves at 9 s, a light 6‑kt wind and water at 18.2 °C. Wear a 3/2 mm wetsuit and note the coastal navigation warning ANAV NR 2/22 in effect. Grab the swell early before the beach gets crowded.",
+    "bestTime": "08:30",
     "wetsuit": "3/2mm",
-    "crowdTip": "Get there early to beat the crowd!",
-    "moonTideLine": "Waxing crescent · Spring tides · low tide 09:00"
+    "crowdTip": "Get there early to claim the best line before the crowd builds.",
+    "moonTideLine": "Waxing crescent · Spring tides · low tide 10:00"
   },
   "spots": [
-    {
-      "name": "Coxos",
-      "slug": "coxos",
-      "score": 70,
-      "scoreForecast": 70,
-      "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
-    },
     {
       "name": "Supertubos",
       "slug": "supertubos",
       "score": 60,
+      "verdict": "maybe",
+      "ptReason": "Ondas boas, mas vento forte de 10 kt e avisos de interação com animais marinhos; pode ficar lotado.",
+      "enReason": "Decent waves, but a strong 10‑kt wind and marine‑animal interaction warnings; crowd may be high.",
       "scoreForecast": 60,
       "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "maybe",
-      "ptReason": "Condições razoáveis",
-      "enReason": "Fair conditions"
-    },
-    {
-      "name": "Nazaré",
-      "slug": "nazare",
-      "score": 50,
-      "scoreForecast": 50,
-      "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "maybe",
-      "ptReason": "Condições razoáveis",
-      "enReason": "Fair conditions"
-    },
-    {
-      "name": "Ribeira d'Ilhas",
-      "slug": "ribeira-ilhas",
-      "score": 50,
-      "scoreForecast": 50,
-      "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "maybe",
-      "ptReason": "Condições razoáveis",
-      "enReason": "Fair conditions"
-    },
-    {
-      "name": "Arrifana",
-      "slug": "arrifana",
-      "score": 50,
-      "scoreForecast": 50,
-      "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "maybe",
-      "ptReason": "Condições razoáveis",
-      "enReason": "Fair conditions"
-    },
-    {
-      "name": "Carcavelos",
-      "slug": "carcavelos",
-      "score": 50,
-      "scoreForecast": 50,
-      "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "maybe",
-      "ptReason": "Condições razoáveis",
-      "enReason": "Fair conditions"
+      "scoreMeta": null
     },
     {
       "name": "Guincho",
       "slug": "guincho",
-      "score": 20,
-      "scoreForecast": 20,
-      "scoreSource": "previsão",
-      "scoreMeta": null,
+      "score": 50,
       "verdict": "skip",
-      "ptReason": "Não vale a pena",
-      "enReason": "Not worth it"
+      "ptReason": "Ondas medianas, vento quase forte e nota baixa; melhor escolher outro spot.",
+      "enReason": "Mediocre waves, near‑strong wind and low rating; better to pick another spot.",
+      "scoreForecast": 50,
+      "scoreSource": "previsão",
+      "scoreMeta": null
+    },
+    {
+      "name": "Nazaré",
+      "slug": "nazare",
+      "score": 70,
+      "verdict": "go",
+      "ptReason": "Ondas consistentes e boa temperatura, porém vento de 9 kt pode atrapalhar; ainda vale a pena.",
+      "enReason": "Consistent waves and good water temperature, though a 9‑kt wind may be a factor; still worth surfing.",
+      "scoreForecast": 70,
+      "scoreSource": "previsão",
+      "scoreMeta": null
+    },
+    {
+      "name": "Ribeira d'Ilhas",
+      "slug": "ribeira-ilhas",
+      "score": 70,
+      "verdict": "go",
+      "ptReason": "Ondas ótimas, vento leve, aviso de avistamento de animais; bom para todos os níveis.",
+      "enReason": "Great waves, light wind, marine‑animal sighting warning; suitable for all levels.",
+      "scoreForecast": 70,
+      "scoreSource": "previsão",
+      "scoreMeta": null
+    },
+    {
+      "name": "Coxos",
+      "slug": "coxos",
+      "score": 70,
+      "verdict": "go",
+      "ptReason": "Ondas excelentes, vento leve, aviso de avistamento de animais; ideal para manobras.",
+      "enReason": "Excellent waves, light wind, marine‑animal sighting warning; ideal for maneuvers.",
+      "scoreForecast": 70,
+      "scoreSource": "previsão",
+      "scoreMeta": null
+    },
+    {
+      "name": "Arrifana",
+      "slug": "arrifana",
+      "score": 80,
+      "verdict": "go",
+      "ptReason": "Melhor nota, vento suave, água mais quente; aviso de salvamento marítimo, mas seguro.",
+      "enReason": "Highest rating, gentle wind, warmer water; maritime rescue warning present but conditions are safe.",
+      "scoreForecast": 80,
+      "scoreSource": "previsão",
+      "scoreMeta": null
+    },
+    {
+      "name": "Carcavelos",
+      "slug": "carcavelos",
+      "score": 60,
+      "verdict": "maybe",
+      "ptReason": "Ondas boas, vento moderado e múltiplos avisos de interação; pode ficar cheio.",
+      "enReason": "Good waves, moderate wind and several interaction warnings; crowd may be high.",
+      "scoreForecast": 60,
+      "scoreSource": "previsão",
+      "scoreMeta": null
     }
   ],
-  "topScore": 70,
-  "topScoreForecast": 70,
+  "generatedAt": "2026-11-13T04:26:16.090Z",
+  "topScore": 80,
+  "topScoreForecast": 80,
   "topScoreSource": "previsão",
   "topScoreMeta": null
 }
