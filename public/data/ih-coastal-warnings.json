@@ -487,6 +487,38 @@
       ]
     },
     {
+      "id": 19161,
+      "ref": "ANAV NR 2520/26",
+      "category": "Alterações relativas a Ajudas à Navegação",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=4ed29371-35c9-4e28-a777-6b2e2283cab6",
+      "source": "ih",
+      "collection": "nav_warning_coastal",
+      "polygons": [
+        [
+          [
+            -8.888745,
+            37.934484
+          ],
+          [
+            -8.888745,
+            37.935905
+          ],
+          [
+            -8.886085,
+            37.935905
+          ],
+          [
+            -8.886085,
+            37.934484
+          ],
+          [
+            -8.888745,
+            37.934484
+          ]
+        ]
+      ]
+    },
+    {
       "id": 1000182,
       "ref": "ANAV NR 121/21",
       "category": "SEGURANÇA DA NAVEGAÇÃO - AVISO À NAVEGAÇÃO LOCAL",
@@ -8273,7 +8305,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-11-13T08:12:21.122Z",
+  "fetchedAt": "2026-11-13T10:07:10.172Z",
   "sourceCollection": "nav_warning_coastal+nav_warning_local+orca_anavnet_point",
   "sourceUrl": "https://ogcapi.hidrografico.pt/collections/nav_warning_coastal"
 }
