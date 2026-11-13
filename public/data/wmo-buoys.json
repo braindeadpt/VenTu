@@ -8,12 +8,12 @@
       "lat": 43.63999938964844,
       "lon": -3.0399999618530273,
       "latest": {
-        "date": "2026-11-13T08:00:00.000Z",
+        "date": "2026-11-13T13:00:00.000Z",
         "hs": 1.5199999809265137,
-        "tp": 6.050000190734863,
-        "dir": 12,
-        "hmax": 2,
-        "sst": 17.270000457763672
+        "tp": 6.639999866485596,
+        "dir": 24,
+        "hmax": 2.690000057220459,
+        "sst": 17.239999771118164
       }
     },
     "6200025": {
@@ -24,11 +24,11 @@
       "lat": 43.75,
       "lon": -6.179999828338623,
       "latest": {
-        "date": "2026-11-13T06:00:00.000Z",
-        "hs": 1.409999966621399,
-        "tp": 9.180000305175781,
-        "dir": 42,
-        "sst": 17.190000534057617
+        "date": "2026-11-13T13:00:00.000Z",
+        "hs": 2.4600000381469727,
+        "tp": 7.619999885559082,
+        "dir": 50,
+        "sst": 17.09000015258789
       }
     },
     "6200083": {
@@ -39,12 +39,12 @@
       "lat": 43.5,
       "lon": -9.210000038146973,
       "latest": {
-        "date": "2026-11-13T04:00:00.000Z",
-        "hs": 2.3399999141693115,
-        "tp": 10.550000190734863,
-        "dir": 238,
-        "hmax": 3.6600000858306885,
-        "sst": 16.549999237060547
+        "date": "2026-11-13T14:00:00.000Z",
+        "hs": 3.4000000953674316,
+        "tp": 8.979999542236328,
+        "dir": 10,
+        "hmax": 5.46999979019165,
+        "sst": 16.219999313354492
       }
     },
     "6200084": {
@@ -55,11 +55,11 @@
       "lat": 42.119998931884766,
       "lon": -9.430000305175781,
       "latest": {
-        "date": "2026-11-13T03:00:00.000Z",
-        "hs": 3.75,
+        "date": "2026-11-13T10:00:00.000Z",
+        "hs": 2.700000047683716,
         "tp": 11.720000267028809,
-        "dir": 232,
-        "sst": 16.670000076293945
+        "dir": 243,
+        "sst": 16.520000457763672
       }
     },
     "6200085": {
@@ -70,12 +70,12 @@
       "lat": 36.4900016784668,
       "lon": -6.960000038146973,
       "latest": {
-        "date": "2026-11-13T11:00:00.000Z",
-        "hs": 2.700000047683716,
-        "tp": 11.720000267028809,
-        "dir": 252,
-        "hmax": 4.090000152587891,
-        "sst": 20.940000534057617
+        "date": "2026-11-13T13:00:00.000Z",
+        "hs": 2.809999942779541,
+        "tp": 11.329999923706055,
+        "dir": 248,
+        "hmax": 3.940000057220459,
+        "sst": 20.899999618530273
       }
     },
     "6200199": {
@@ -86,62 +86,74 @@
       "lat": 39.560001373291016,
       "lon": -9.210000038146973,
       "latest": {
-        "date": "2026-11-13T12:00:00.000Z",
-        "hs": 2.958980083465576,
-        "tp": 10.429699897766113,
-        "hmax": 4.072269916534424,
-        "sst": 18.049320220947266
+        "date": "2026-11-13T14:00:00.000Z",
+        "hs": 2.226560115814209,
+        "tp": 11.484399795532227,
+        "hmax": 3.28125,
+        "sst": 18.093259811401367
       }
     }
   },
   "spotMapping": {
+    "moledo": {
+      "code": "6200083",
+      "stationTitle": "Villano-Sisargas",
+      "area": "Galiza",
+      "distanceKm": 185.9
+    },
+    "vila-praia-ancora": {
+      "code": "6200083",
+      "stationTitle": "Villano-Sisargas",
+      "area": "Galiza",
+      "distanceKm": 189.7
+    },
     "afife": {
-      "code": "6200199",
-      "stationTitle": "Nazaré Costeira (WMO)",
-      "area": "Nazaré",
-      "distanceKm": 248.3
+      "code": "6200083",
+      "stationTitle": "Villano-Sisargas",
+      "area": "Galiza",
+      "distanceKm": 193.5
     },
     "amorosa": {
-      "code": "6200199",
-      "stationTitle": "Nazaré Costeira (WMO)",
-      "area": "Nazaré",
-      "distanceKm": 234.2
+      "code": "6200083",
+      "stationTitle": "Villano-Sisargas",
+      "area": "Galiza",
+      "distanceKm": 208.6
     },
     "cabedelo": {
-      "code": "6200199",
-      "stationTitle": "Nazaré Costeira (WMO)",
-      "area": "Nazaré",
-      "distanceKm": 237.8
+      "code": "6200083",
+      "stationTitle": "Villano-Sisargas",
+      "area": "Galiza",
+      "distanceKm": 204.8
     },
     "foil-cabedelo": {
-      "code": "6200199",
-      "stationTitle": "Nazaré Costeira (WMO)",
-      "area": "Nazaré",
-      "distanceKm": 237.8
+      "code": "6200083",
+      "stationTitle": "Villano-Sisargas",
+      "area": "Galiza",
+      "distanceKm": 204.8
     },
     "cabedelo-wakepark": {
-      "code": "6200199",
-      "stationTitle": "Nazaré Costeira (WMO)",
-      "area": "Nazaré",
-      "distanceKm": 239.2
+      "code": "6200083",
+      "stationTitle": "Villano-Sisargas",
+      "area": "Galiza",
+      "distanceKm": 203.4
     },
     "rodanho": {
-      "code": "6200199",
-      "stationTitle": "Nazaré Costeira (WMO)",
-      "area": "Nazaré",
-      "distanceKm": 236.6
+      "code": "6200083",
+      "stationTitle": "Villano-Sisargas",
+      "area": "Galiza",
+      "distanceKm": 206.2
     },
     "esposende": {
-      "code": "6200199",
-      "stationTitle": "Nazaré Costeira (WMO)",
-      "area": "Nazaré",
-      "distanceKm": 222.3
+      "code": "6200083",
+      "stationTitle": "Villano-Sisargas",
+      "area": "Galiza",
+      "distanceKm": 221.4
     },
     "esposende-praia": {
-      "code": "6200199",
-      "stationTitle": "Nazaré Costeira (WMO)",
-      "area": "Nazaré",
-      "distanceKm": 223.3
+      "code": "6200083",
+      "stationTitle": "Villano-Sisargas",
+      "area": "Galiza",
+      "distanceKm": 220.3
     },
     "fao": {
       "code": "6200199",
@@ -654,10 +666,10 @@
       "distanceKm": 196
     },
     "ilha-do-ermal": {
-      "code": "6200199",
-      "stationTitle": "Nazaré Costeira (WMO)",
-      "area": "Nazaré",
-      "distanceKm": 243.9
+      "code": "6200083",
+      "stationTitle": "Villano-Sisargas",
+      "area": "Galiza",
+      "distanceKm": 229.7
     },
     "melides": {
       "code": "6200199",
@@ -1057,7 +1069,7 @@
     }
   },
   "day": "20261113",
-  "fetchedAt": "2026-11-13T14:06:34.381Z",
+  "fetchedAt": "2026-11-13T16:06:40.325Z",
   "hasWaveData": true,
   "note": "Fallback independente para o observedWave do IH (via WMO/GTS → Copernicus, sem key)."
 }
