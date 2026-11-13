@@ -97,6 +97,10 @@ describe('Drawer — abrir/fechar (regressão #455)', () => {
     expect(classes).toContain('min-w-[44px]');
     expect(classes).toContain('min-h-[44px]');
     expect(btn!.querySelector('svg')?.getAttribute('class')).toBe('w-5 h-5');
+
+    // -6 px em cima e em baixo devolvem os 12 px que o alvo (44) acrescenta
+    // aos 32 px desenhados: o cabeçalho fica com a altura de antes (e2e mede-a).
+    expect(classes).toContain('-my-1.5');
   });
 
   it('Escape chama onClose', () => {

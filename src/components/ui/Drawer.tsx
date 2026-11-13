@@ -213,7 +213,11 @@ export default function Drawer({
             data-drawer-close
             type="button"
             onClick={onClose}
-            className="min-w-[44px] min-h-[44px] inline-flex items-center justify-center p-1.5 rounded-lg hover:bg-surface-1/[0.04] text-fg-subtle hover:text-fg transition-colors"
+            // Alvo de 44 px sem crescer o cabeçalho: o botão desenhado mede
+            // 32 px (p-1.5 + ícone de 20), por isso cada margem negativa
+            // devolve metade dos 12 px a mais (mesma receita do ✕ do
+            // PartialLocaleNotice). O ícone fica nos 20 px.
+            className="min-w-[44px] min-h-[44px] -my-1.5 inline-flex items-center justify-center p-1.5 rounded-lg hover:bg-surface-1/[0.04] text-fg-subtle hover:text-fg transition-colors"
             aria-label={
               locale === 'en'
                 ? 'Close'

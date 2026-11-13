@@ -48,6 +48,12 @@ test.describe('Drawer do grid de spots (#455)', () => {
     expect(closeBox.width, 'largura do ✕').toBeGreaterThanOrEqual(44);
     expect(closeBox.height, 'altura do ✕').toBeGreaterThanOrEqual(44);
 
+    // …e sem crescer o cabeçalho: a linha mede 57 px (32 do conteúdo + 24 do
+    // py-3 + 1 da border-b). Sem a margem negativa do ✕ seriam 69 px.
+    const header = drawer.locator('div:has(> h2#drawer-title)');
+    const headerBox = (await header.boundingBox())!;
+    expect(headerBox.height, 'altura do cabeçalho').toBeLessThan(60);
+
     // O `onKeyDown` do painel só vê o Escape com o foco lá dentro: o Drawer
     // move-o para o ✕ no frame de abertura. Esperar por esse contrato evita
     // uma corrida com o rAF (o teste passava ou falhava conforme o timing).
