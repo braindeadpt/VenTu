@@ -98,17 +98,19 @@ BEGIN
 END $$;
 RESET ROLE;
 
--- ── 4. Comma-separated XFF: first hop is the client ──
+-- ── 4. Comma-separated XFF: the LAST hop is the client ──
+-- The first hop is client-controlled (the old bypass, #454); only the hop
+-- appended by our proxy can be trusted.
 SET ROLE anon;
-SELECT test_set_ip('203.0.113.77, 9.9.9.9');
+SELECT test_set_ip('203.0.113.77, 198.51.100.77');
 SELECT test_expect(
   (public.subscribe_alert('xff@example.com', 'spot-xff', 'surf', 70, 'client-xff-1')::jsonb ->> 'ok') = 'true',
   '4a: subscribe with comma-separated XFF ok'
 );
 RESET ROLE;
 SELECT test_expect(
-  (SELECT client_ip = '203.0.113.77' FROM alert_subscriptions WHERE email = 'xff@example.com'),
-  '4b: first hop recorded as client_ip'
+  (SELECT client_ip = '198.51.100.77' FROM alert_subscriptions WHERE email = 'xff@example.com'),
+  '4b: last hop recorded as client_ip (not the forged first hop)'
 );
 
 -- ── 5. Malformed XFF must not break the RPC (TEXT storage) ──
@@ -124,8 +126,8 @@ BEGIN
 END $$;
 RESET ROLE;
 SELECT test_expect(
-  (SELECT client_ip IS NULL FROM alert_subscriptions WHERE email = 'malformed@example.com'),
-  '5b: malformed XFF stored as NULL (per-IP limit skipped)'
+  (SELECT client_ip = 'unknown-http' FROM alert_subscriptions WHERE email = 'malformed@example.com'),
+  '5b: malformed XFF stored as the shared unknown-http bucket (limit still applies)'
 );
 
 -- ── 6. Dedup: one ACTIVE row per (email, spot_slug, sport) ──
