@@ -33,11 +33,9 @@ test.describe('Drawer do grid de spots (#455)', () => {
 
     const drawer = page.locator('[role="dialog"]');
     await expect(drawer).toBeVisible({ timeout: 10_000 });
-    // `toBeVisible` não distingue a gaveta montada fora do ecrã
-    // (translateX(-100%)) — a posição é que prova que ela entrou.
-    await expect
-      .poll(async () => (await drawer.boundingBox())?.x ?? -1, { timeout: 10_000 })
-      .toBeGreaterThanOrEqual(0);
+    // `toBeVisible` não distingue a gaveta montada fora do ecrã: o contrato é
+    // terminar em translateX(0) (o matrix identidade do Chromium).
+    await expect(drawer).toHaveCSS('transform', 'matrix(1, 0, 0, 1, 0, 0)', { timeout: 10_000 });
     const close = page.locator('[data-drawer-close]');
     await expect(close).toBeVisible();
     expect(await page.evaluate(() => document.body.style.overflow)).toBe('hidden');
@@ -50,8 +48,7 @@ test.describe('Drawer do grid de spots (#455)', () => {
 
     // …e sem crescer o cabeçalho: a linha mede 57 px (32 do conteúdo + 24 do
     // py-3 + 1 da border-b). Sem a margem negativa do ✕ seriam 69 px.
-    const header = drawer.locator('div:has(> h2#drawer-title)');
-    const headerBox = (await header.boundingBox())!;
+    const headerBox = (await drawer.locator('[data-drawer-header]').boundingBox())!;
     expect(headerBox.height, 'altura do cabeçalho').toBeLessThan(60);
 
     // O `onKeyDown` do painel só vê o Escape com o foco lá dentro: o Drawer

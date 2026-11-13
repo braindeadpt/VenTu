@@ -200,8 +200,12 @@ export default function Drawer({
           </div>
         )}
 
-        {/* Title + close */}
-        <div className="flex items-center justify-between px-4 py-3 border-b border-divider">
+        {/* Title + close. `data-drawer-header` é o hook estável do e2e para
+            medir a altura desta linha (não depende de onde vive o título). */}
+        <div
+          data-drawer-header
+          className="flex items-center justify-between px-4 py-3 border-b border-divider"
+        >
           {title ? (
             <h2 id="drawer-title" className="text-sm font-bold text-fg truncate">
               {title}
@@ -209,14 +213,14 @@ export default function Drawer({
           ) : (
             <span />
           )}
+          {/* Alvo de 44 px sem crescer o cabeçalho: o botão desenhado mede
+              32 px (p-1.5 + ícone de 20), por isso cada margem negativa
+              devolve metade dos 12 px a mais (receita do ✕ do
+              PartialLocaleNotice). O ícone fica nos 20 px. */}
           <button
             data-drawer-close
             type="button"
             onClick={onClose}
-            // Alvo de 44 px sem crescer o cabeçalho: o botão desenhado mede
-            // 32 px (p-1.5 + ícone de 20), por isso cada margem negativa
-            // devolve metade dos 12 px a mais (mesma receita do ✕ do
-            // PartialLocaleNotice). O ícone fica nos 20 px.
             className="min-w-[44px] min-h-[44px] -my-1.5 inline-flex items-center justify-center p-1.5 rounded-lg hover:bg-surface-1/[0.04] text-fg-subtle hover:text-fg transition-colors"
             aria-label={
               locale === 'en'
