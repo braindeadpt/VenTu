@@ -110,6 +110,61 @@ function parseCrons(yaml) {
 }
 
 /**
+ * Jobs de um workflow que correm numa máquina (`runs-on:`) mas não declaram
+ * `timeout-minutes:` — a secção D do `scripts/ops-audit.js`.
+ *
+ * Porquê: o default do GitHub são 360 minutos por job. Um passo pendurado
+ * (fetch sem timeout, `npm ci` à espera de rede) fica a queimar quota até 6 h
+ * e ocupa o runner; o `timeout-minutes` é o único travão que o próprio
+ * workflow impõe. Jobs que só chamam outro workflow (`uses:`) não correm numa
+ * máquina própria — não se aplicam.
+ *
+ * O `timeout-minutes` tem de ser IRMÃO do `runs-on` (mesma indentação): os
+ * passos também aceitam `timeout-minutes`, mas o desse passo não limita o job.
+ * Comentários são mascarados primeiro, senão um `# timeout-minutes:` comentado
+ * dava o job por coberto.
+ *
+ * @param {string} yaml
+ * @returns {number[]} linhas (1-based) da chave de cada job sem timeout
+ */
+function jobsWithoutTimeout(yaml) {
+  if (typeof yaml !== 'string') return [];
+  const lines = maskYamlComments(yaml).split('\n');
+  const jobsStart = lines.findIndex((l) => /^jobs:\s*$/.test(l));
+  if (jobsStart === -1) return [];
+
+  const out = [];
+  let i = jobsStart + 1;
+  while (i < lines.length) {
+    const line = lines[i];
+    if (!line.trim()) {
+      i += 1;
+      continue;
+    }
+    // Fora de `jobs:` (outra chave de topo) — acabaram os jobs.
+    if (/^\S/.test(line)) break;
+    // Só uma chave a 2 espaços abre um job; o resto é corpo do anterior.
+    if (!/^ {2}[A-Za-z0-9_][A-Za-z0-9_-]*:\s*$/.test(line)) {
+      i += 1;
+      continue;
+    }
+
+    let end = i + 1;
+    while (end < lines.length && !/^ {2}\S/.test(lines[end]) && !/^\S/.test(lines[end])) end += 1;
+    const block = lines.slice(i + 1, end);
+    const runsOn = block.find((l) => /^\s+runs-on:/.test(l));
+    if (runsOn) {
+      const indent = /^(\s+)runs-on:/.exec(runsOn)[1];
+      if (indent.length > 2 && !block.some((l) => l.startsWith(`${indent}timeout-minutes:`))) {
+        out.push(i + 1); // 1-based, para a mensagem do audit
+      }
+    }
+    i = end;
+  }
+  return out;
+}
+
+/**
  * Expande um campo cron (`*`, `a`, `a,b`, `a-b`, e passos com `/n` nas duas
  * formas). Nota: não escrever o passo de «qualquer» com barra dentro de um
  * comentário de bloco — fecha-o.)
@@ -296,6 +351,7 @@ module.exports = {
   BELOW_HALF_RATIO,
   maskYamlComments,
   parseCrons,
+  jobsWithoutTimeout,
   expandField,
   cronFields,
   matchesMinute,
