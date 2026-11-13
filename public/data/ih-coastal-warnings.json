@@ -199,38 +199,6 @@
       ]
     },
     {
-      "id": 19119,
-      "ref": "ANAV NR 2498/26",
-      "category": "Requisitos de segurança maritima",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=6e9dc54c-c7a0-420f-b2c8-f49660fb5543",
-      "source": "ih",
-      "collection": "nav_warning_coastal",
-      "polygons": [
-        [
-          [
-            -17.174539,
-            32.719602
-          ],
-          [
-            -17.168104,
-            32.716786
-          ],
-          [
-            -17.169262,
-            32.712236
-          ],
-          [
-            -17.178958,
-            32.716966
-          ],
-          [
-            -17.174539,
-            32.719602
-          ]
-        ]
-      ]
-    },
-    {
       "id": 19121,
       "ref": "ANAV NR 2499/26",
       "category": "Requisitos de segurança maritima",
@@ -258,38 +226,6 @@
           [
             -16.918401,
             32.646169
-          ]
-        ]
-      ]
-    },
-    {
-      "id": 19145,
-      "ref": "ANAV NR 2512/26",
-      "category": "Requisitos de segurança maritima",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=3a9eace1-9733-4cb2-bc77-468778f98384",
-      "source": "ih",
-      "collection": "nav_warning_coastal",
-      "polygons": [
-        [
-          [
-            -8.684381,
-            41.14111
-          ],
-          [
-            -8.684381,
-            41.147444
-          ],
-          [
-            -8.665245,
-            41.147444
-          ],
-          [
-            -8.665245,
-            41.14111
-          ],
-          [
-            -8.684381,
-            41.14111
           ]
         ]
       ]
@@ -8337,7 +8273,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-11-13T18:06:55.496Z",
+  "fetchedAt": "2026-11-13T20:06:51.343Z",
   "sourceCollection": "nav_warning_coastal+nav_warning_local+orca_anavnet_point",
   "sourceUrl": "https://ogcapi.hidrografico.pt/collections/nav_warning_coastal"
 }
