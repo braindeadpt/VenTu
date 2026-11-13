@@ -4,7 +4,7 @@ Run these files once in the [Supabase SQL Editor](https://supabase.com/dashboard
 
 | File | Purpose |
 |------|---------|
-| [`supabase-rate-limit-common.sql`](supabase-rate-limit-common.sql) | **Shared** per-IP rate-limit primitives (`request_client_ip()` + `check_rate_limit()` + `rate_limit_events` ledger) — single source of truth; apply **FIRST**, before every `*-harden-*.sql` |
+| [`supabase-rate-limit-common.sql`](supabase-rate-limit-common.sql) | **Shared** per-IP rate-limit primitives (`request_client_ip()` + `check_rate_limit()` + `rate_limit_events` ledger) — single source of truth; apply **FIRST**, before every `*-harden-*.sql`. The IP comes from `cf-connecting-ip`, else the **last** `x-forwarded-for` hop (the first is client-controlled); an HTTP request with no usable IP lands in the shared `unknown-http` bucket. Both functions are **internal** (`EXECUTE` revoked from `anon`/`authenticated`), so any caller must be `SECURITY DEFINER` |
 | [`supabase-admin-helpers.sql`](supabase-admin-helpers.sql) | **Shared** `is_ventu_admin()` (single source of truth) — apply **FIRST**, before `supabase-contributions.sql`, `supabase-directory.sql` and `supabase-contributions-admin-rls.sql`; these files raise a clear error if applied out of order. Duplicated verbatim in all three before the LOW8 audit fix; `scripts/check-sql-function-drift.js` fails CI if it reappears in another file |
 | [`supabase-alerts.sql`](supabase-alerts.sql) | Email alert subscriptions (E1 legacy) |
 | [`supabase-alerts-harden-legacy.sql`](supabase-alerts-harden-legacy.sql) | Harden E1 legacy subscribe RPC (server token, IP rate limit, dedup) — run after `supabase-alerts.sql` + `supabase-rate-limit-common.sql` |
@@ -14,7 +14,7 @@ Run these files once in the [Supabase SQL Editor](https://supabase.com/dashboard
 | [`supabase-auth-profiles.sql`](supabase-auth-profiles.sql) | User accounts + synced favorites (F1) |
 | [`supabase-contributions.sql`](supabase-contributions.sql) | Community contributions form |
 | [`supabase-contributions-migration-c3.sql`](supabase-contributions-migration-c3.sql) | Migration for contributions schema |
-| [`supabase-contributions-harden-rpc.sql`](supabase-contributions-harden-rpc.sql) | Harden anon writes (per-IP rate limit via RPC; direct INSERT revoked) — run after contributions + score-feedback files + `supabase-rate-limit-common.sql` |
-| [`supabase-score-feedback.sql`](supabase-score-feedback.sql) | Score calibration feedback |
+| [`supabase-contributions-harden-rpc.sql`](supabase-contributions-harden-rpc.sql) | Harden anon writes (per-IP rate limit via RPC; direct INSERT revoked) — run after contributions + score-feedback files + `supabase-rate-limit-common.sql`. Its RPCs are granted to `anon` **and** `authenticated` |
+| [`supabase-score-feedback.sql`](supabase-score-feedback.sql) | Score calibration feedback — `SELECT` is **admin-only** (`is_ventu_admin()`; the rows carry `client_ip`), so run it after `supabase-admin-helpers.sql` |
 
 Setup details: [docs/ALERTS.md](../docs/ALERTS.md), [docs/GITHUB-SETUP.md](../docs/GITHUB-SETUP.md).
