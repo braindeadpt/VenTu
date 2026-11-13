@@ -48,12 +48,22 @@ export default function Drawer({
   useEffect(() => {
     if (isOpen) {
       previousFocusRef.current = document.activeElement as HTMLElement;
+      // Montar e animar: `mounted` autoriza o render (o `return null` abaixo
+      // depende dele) e `visible` é o que traz o painel para o ecrã no frame
+      // seguinte. Sem estes dois, o `lockBodyScroll()` trancava a página com a
+      // gaveta inexistente (regressão P0 da #455).
+      setMounted(true);
+      const raf = requestAnimationFrame(() => setVisible(true));
       // Bloqueio PARTILHADO (scrollLock): a gaveta não pode destrancar o scroll
       // de outro overlay aberto por cima, nem perder o seu bloqueio para quem
       // escreva `''` a seguir.
       // (O release acontece no cleanup deste efeito, quando `isOpen` volta a
       //  false ou o componente desmonta.)
-      return lockBodyScroll();
+      const release = lockBodyScroll();
+      return () => {
+        cancelAnimationFrame(raf);
+        release();
+      };
     }
     setVisible(false);
     const timer = setTimeout(() => {
@@ -203,7 +213,7 @@ export default function Drawer({
             data-drawer-close
             type="button"
             onClick={onClose}
-            className="p-1.5 rounded-lg hover:bg-surface-1/[0.04] text-fg-subtle hover:text-fg transition-colors"
+            className="min-w-[44px] min-h-[44px] inline-flex items-center justify-center p-1.5 rounded-lg hover:bg-surface-1/[0.04] text-fg-subtle hover:text-fg transition-colors"
             aria-label={
               locale === 'en'
                 ? 'Close'
