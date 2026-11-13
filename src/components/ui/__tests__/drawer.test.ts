@@ -47,6 +47,10 @@ function dialog(): HTMLElement | null {
   return container.querySelector<HTMLElement>('[role="dialog"]');
 }
 
+function closeButton(): HTMLElement | null {
+  return container.querySelector<HTMLElement>('[data-drawer-close]');
+}
+
 beforeEach(() => {
   vi.useFakeTimers();
   container = document.createElement('div');
@@ -75,6 +79,24 @@ describe('Drawer — abrir/fechar (regressão #455)', () => {
       vi.advanceTimersByTime(FRAME_MS);
     });
     expect(dialog()!.style.transform).toBe('translateX(0)');
+  });
+
+  it('o botão fechar mantém o alvo de toque de 44x44 px (ícone nos 20 px)', () => {
+    renderDrawer(true);
+    act(() => {
+      vi.advanceTimersByTime(FRAME_MS);
+    });
+
+    const btn = closeButton();
+    expect(btn, 'botão fechar montado').not.toBeNull();
+    // O jsdom não aplica Tailwind: o contrato mede-se nas utilitárias, o mesmo
+    // padrão do filterPill.test.ts. `min-w/min-h` vencem o `p-1.5` + ícone de
+    // 20 px em qualquer viewport — a área de toque real é ≥44×44 (medida no
+    // e2e drawer-spots), sem mexer no tamanho do ícone.
+    const classes = btn!.className.split(/\s+/);
+    expect(classes).toContain('min-w-[44px]');
+    expect(classes).toContain('min-h-[44px]');
+    expect(btn!.querySelector('svg')?.getAttribute('class')).toBe('w-5 h-5');
   });
 
   it('Escape chama onClose', () => {

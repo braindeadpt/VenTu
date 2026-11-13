@@ -38,9 +38,20 @@ test.describe('Drawer do grid de spots (#455)', () => {
     await expect
       .poll(async () => (await drawer.boundingBox())?.x ?? -1, { timeout: 10_000 })
       .toBeGreaterThanOrEqual(0);
-    await expect(page.locator('[data-drawer-close]')).toBeVisible();
+    const close = page.locator('[data-drawer-close]');
+    await expect(close).toBeVisible();
     expect(await page.evaluate(() => document.body.style.overflow)).toBe('hidden');
 
+    // Alvo de toque: o botão media 32×32 antes do fix (#455). Mede-se a caixa
+    // real, não as classes.
+    const closeBox = (await close.boundingBox())!;
+    expect(closeBox.width, 'largura do ✕').toBeGreaterThanOrEqual(44);
+    expect(closeBox.height, 'altura do ✕').toBeGreaterThanOrEqual(44);
+
+    // O `onKeyDown` do painel só vê o Escape com o foco lá dentro: o Drawer
+    // move-o para o ✕ no frame de abertura. Esperar por esse contrato evita
+    // uma corrida com o rAF (o teste passava ou falhava conforme o timing).
+    await expect(close).toBeFocused({ timeout: 10_000 });
     await page.keyboard.press('Escape');
 
     await expect(drawer).toHaveCount(0, { timeout: 5_000 });
