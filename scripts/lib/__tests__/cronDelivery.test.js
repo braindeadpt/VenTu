@@ -10,6 +10,7 @@ const {
   WINDOW_HOURS_SLOW,
   BELOW_HALF_RATIO,
   parseCrons,
+  jobsWithoutTimeout,
   expandField,
   cronFields,
   expectedRuns,
@@ -199,5 +200,79 @@ describe('cronDelivery — workflows reais', () => {
     expect(d.expected).toBe(288);
     expect(d.ratio).toBeLessThan(0.05);
     expect(d.belowHalf).toBe(true);
+  });
+});
+
+describe('cronDelivery — jobs sem timeout-minutes (secção D do ops-audit)', () => {
+  const sample = (lines) => lines.join('\n');
+
+  it('devolve a linha do job que corre numa máquina e não declara timeout', () => {
+    const yml = sample([
+      'name: X',
+      'on:',
+      '  push:',
+      'jobs:',
+      '  sem-timeout:',
+      '    runs-on: ubuntu-latest',
+      '    steps:',
+      '      - run: echo oi',
+      '  com-timeout:',
+      '    runs-on: ubuntu-latest',
+      '    timeout-minutes: 10',
+      '    steps:',
+      '      - run: echo oi',
+    ]);
+    expect(jobsWithoutTimeout(yml)).toEqual([5]);
+  });
+
+  it('timeout de um PASSO não cobre o job, e um timeout comentado também não', () => {
+    const yml = sample([
+      'jobs:',
+      '  so-no-passo:',
+      '    runs-on: ubuntu-latest',
+      '    steps:',
+      '      - run: echo oi',
+      '        timeout-minutes: 3',
+      '  comentado:',
+      '    runs-on: ubuntu-latest',
+      '    # timeout-minutes: 10',
+      '    steps:',
+      '      - run: echo oi',
+      '  coberto:',
+      '    runs-on: ubuntu-latest',
+      '    timeout-minutes: 5',
+    ]);
+    expect(jobsWithoutTimeout(yml)).toEqual([2, 7]);
+  });
+
+  it('jobs que só chamam outro workflow (uses:) não correm numa máquina — ignorados', () => {
+    const yml = sample([
+      'jobs:',
+      '  chama-outro:',
+      '    uses: ./.github/workflows/outro.yml',
+      '    with:',
+      '      a: 1',
+    ]);
+    expect(jobsWithoutTimeout(yml)).toEqual([]);
+  });
+
+  it('sem `jobs:` (ou sem YAML) → sem findings, e tolera CRLF', () => {
+    expect(jobsWithoutTimeout('name: X\non:\n  push:\n')).toEqual([]);
+    expect(jobsWithoutTimeout(null)).toEqual([]);
+    expect(jobsWithoutTimeout('jobs:\r\n  a:\r\n    runs-on: x\r\n    timeout-minutes: 5\r\n')).toEqual(
+      [],
+    );
+    expect(jobsWithoutTimeout('jobs:\r\n  b:\r\n    runs-on: x\r\n')).toEqual([2]);
+  });
+
+  it('nos workflows reais, as linhas devolvidas apontam para chaves de job', () => {
+    const workflows = fs.readdirSync(WF).filter((f) => /\.ya?ml$/.test(f));
+    for (const f of workflows) {
+      const yaml = fs.readFileSync(path.join(WF, f), 'utf-8');
+      const lines = yaml.split('\n');
+      for (const line of jobsWithoutTimeout(yaml)) {
+        expect(lines[line - 1], `${f}:${line}`).toMatch(/^ {2}[A-Za-z0-9_][A-Za-z0-9_-]*:\s*$/);
+      }
+    }
   });
 });
