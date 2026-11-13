@@ -1,11 +1,11 @@
 {
   "day": "20261113",
-  "fetchedAt": "2026-11-13T07:57:55.004Z",
+  "fetchedAt": "2026-11-13T08:12:04.358Z",
   "minPairs": 3,
   "minAccumulatedPairs": 10,
   "archive": {
     "windowDays": 30,
-    "pairHourCount": 508,
+    "pairHourCount": 507,
     "path": "buoy-coherence-archive.json"
   },
   "daily": {
@@ -70,62 +70,17 @@
     "path": "buoy-coherence-daily.json"
   },
   "regions": {
-    "Caminha": {
-      "spotCount": 1,
-      "withObservedWave": 0,
-      "bySource": {},
-      "audited": 0,
-      "attachedIsClosest": 0,
-      "attachedNotClosest": 0,
-      "onlySource": 0,
-      "notClosest": [],
-      "calibrated": 0,
-      "calibrationRefs": {},
-      "suboptimalRefs": 0,
-      "suboptimal": []
-    },
-    "Viana do Castelo": {
-      "spotCount": 6,
-      "withObservedWave": 1,
-      "bySource": {
-        "ih-buoy": 1
-      },
-      "audited": 1,
-      "attachedIsClosest": 0,
-      "attachedNotClosest": 1,
-      "onlySource": 0,
-      "notClosest": [
-        {
-          "spot": "amorosa",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 39,
-          "altKm": 0
-        }
-      ],
-      "calibrated": 0,
-      "calibrationRefs": {},
-      "suboptimalRefs": 0,
-      "suboptimal": []
-    },
     "Esposende": {
-      "spotCount": 4,
-      "withObservedWave": 4,
+      "spotCount": 3,
+      "withObservedWave": 3,
       "bySource": {
-        "ih-buoy": 4
+        "ih-buoy": 3
       },
-      "audited": 4,
+      "audited": 3,
       "attachedIsClosest": 0,
-      "attachedNotClosest": 4,
+      "attachedNotClosest": 3,
       "onlySource": 0,
       "notClosest": [
-        {
-          "spot": "esposende",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 29,
-          "altKm": 0
-        },
         {
           "spot": "esposende-praia",
           "winner": "ih-buoy",
@@ -1277,7 +1232,7 @@
       "suboptimal": []
     }
   },
-  "regionsAuditedAt": "2026-11-13T07:58:08.680Z",
+  "regionsAuditedAt": "2026-11-13T08:21:59.876Z",
   "pairs": [
     {
       "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
@@ -1287,13 +1242,13 @@
       ],
       "distanceKm": 285.3,
       "ptSource": "wmo",
-      "n": 508,
+      "n": 507,
       "meanDeltaM": -0.4,
       "meanAbsDeltaM": 0.5,
       "maxAbsDeltaM": 2.8,
       "corr": 0.82,
       "verdict": "coherent",
-      "firstHour": "2026-10-14T08",
+      "firstHour": "2026-10-14T09",
       "lastHour": "2026-11-13T03",
       "hours": [
         {
