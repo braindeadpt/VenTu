@@ -263,38 +263,6 @@
       ]
     },
     {
-      "id": 19123,
-      "ref": "ANAV NR 2500/26",
-      "category": "Requisitos de segurança maritima",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=f21beb2d-2f95-4abe-a485-e55a4a06df7a",
-      "source": "ih",
-      "collection": "nav_warning_coastal",
-      "polygons": [
-        [
-          [
-            -8.777971,
-            40.606394
-          ],
-          [
-            -8.777971,
-            40.670744
-          ],
-          [
-            -8.69628,
-            40.670744
-          ],
-          [
-            -8.69628,
-            40.606394
-          ],
-          [
-            -8.777971,
-            40.606394
-          ]
-        ]
-      ]
-    },
-    {
       "id": 19125,
       "ref": "ANAV NR 2502/26",
       "category": "Requisitos de segurança maritima",
@@ -578,6 +546,38 @@
           [
             -8.684381,
             41.14111
+          ]
+        ]
+      ]
+    },
+    {
+      "id": 19149,
+      "ref": "ANAV NR 2514/26",
+      "category": "Requisitos de segurança maritima",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=1e1080f6-bc93-4fef-aa49-e8a60ed4ed81",
+      "source": "ih",
+      "collection": "nav_warning_coastal",
+      "polygons": [
+        [
+          [
+            -9.423072,
+            38.96061
+          ],
+          [
+            -9.423072,
+            38.96328
+          ],
+          [
+            -9.419468,
+            38.96328
+          ],
+          [
+            -9.419468,
+            38.96061
+          ],
+          [
+            -9.423072,
+            38.96061
           ]
         ]
       ]
@@ -7812,11 +7812,9 @@
       1000708
     ],
     "sao-jacinto": [
-      19123,
       1000711
     ],
     "costa-nova": [
-      19123,
       1000711
     ],
     "figueira-foz": [
@@ -8256,7 +8254,6 @@
       1000459
     ],
     "barra-aveiro": [
-      19123,
       1000711
     ],
     "vila-cha": [
@@ -8372,7 +8369,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-11-12T20:06:38.737Z",
+  "fetchedAt": "2026-11-13T00:06:49.958Z",
   "sourceCollection": "nav_warning_coastal+nav_warning_local+orca_anavnet_point",
   "sourceUrl": "https://ogcapi.hidrografico.pt/collections/nav_warning_coastal"
 }
