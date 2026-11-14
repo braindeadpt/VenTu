@@ -214,7 +214,9 @@ BEGIN
 END;
 $$;
 
-GRANT EXECUTE ON FUNCTION verify_alert_token(TEXT) TO anon;
+-- anon AND authenticated (the link is opened from an email, with or without
+-- a session) — see the e1c harden file for the per-IP guard.
+GRANT EXECUTE ON FUNCTION verify_alert_token(TEXT) TO anon, authenticated;
 
 CREATE OR REPLACE FUNCTION unsubscribe_alert_token(p_token TEXT)
 RETURNS BOOLEAN
@@ -236,4 +238,4 @@ BEGIN
 END;
 $$;
 
-GRANT EXECUTE ON FUNCTION unsubscribe_alert_token(TEXT) TO anon;
+GRANT EXECUTE ON FUNCTION unsubscribe_alert_token(TEXT) TO anon, authenticated;

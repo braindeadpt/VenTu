@@ -145,8 +145,11 @@ BEGIN
 END;
 $$;
 
+-- anon AND authenticated: the alerts form runs with the user's session when
+-- they are signed in, and the anon-only grant returned "permission denied".
 REVOKE ALL ON FUNCTION public.subscribe_alert(TEXT, TEXT, TEXT, INTEGER, TEXT, TEXT) FROM PUBLIC;
-GRANT EXECUTE ON FUNCTION public.subscribe_alert(TEXT, TEXT, TEXT, INTEGER, TEXT, TEXT) TO anon;
+GRANT EXECUTE ON FUNCTION public.subscribe_alert(TEXT, TEXT, TEXT, INTEGER, TEXT, TEXT)
+  TO anon, authenticated;
 
 -- ── 6. Token-guarded legacy RPCs (recreated defensively; server tokens now) ──
 CREATE OR REPLACE FUNCTION public.verify_alert_subscription(p_token TEXT)

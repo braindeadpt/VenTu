@@ -44,3 +44,9 @@ STABLE
 AS $$
   SELECT (NULLIF(current_setting('request.jwt.claims', true), '')::jsonb ->> 'sub')::uuid
 $$;
+
+-- Supabase grants EXECUTE on new public functions to anon/authenticated through
+-- its own ALTER DEFAULT PRIVILEGES. Model that posture here: without it a
+-- REVOKE from those roles would be a no-op and the grant tests would pass for
+-- the wrong reason.
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT EXECUTE ON FUNCTIONS TO anon, authenticated;
