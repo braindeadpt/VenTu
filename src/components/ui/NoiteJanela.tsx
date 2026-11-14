@@ -29,6 +29,7 @@ export function LuaNoite({
   decorativa?: boolean;
 }) {
   const t = getTranslation(locale).noite;
+  // hook próprio da lua: `data-noite` fica no cartão/linha que a envolve (um só por cartão)
   return (
     <span
       className={cn('inline-grid place-items-center shrink-0', className)}
@@ -39,7 +40,7 @@ export function LuaNoite({
         background: V6_BANDAS.noite.c,
         color: V6_BANDAS.noite.t,
       }}
-      data-noite=""
+      data-lua-noite=""
       {...(decorativa ? { 'aria-hidden': true } : { role: 'img', 'aria-label': t.luaAria })}
     >
       <svg viewBox="0 0 24 24" aria-hidden="true" style={{ width: '58%', height: '58%' }}>
