@@ -9,6 +9,7 @@ import { dispatchSportChange, LS_SPORT_KEY, readSportFromStorage } from '@/lib/h
 import {
   DEFAULT_REGION,
   DEFAULT_SPORT,
+  SPOTS_DEFAULT_SPORT,
   readGridFiltersFromWindow,
   syncGridFiltersToUrl,
 } from '@/lib/gridFilters';
@@ -35,7 +36,7 @@ function resolveInitialFilters(
 ) {
   const fromUrl = typeof window !== 'undefined'
     ? readGridFiltersFromWindow(regions)
-    : { sport: DEFAULT_SPORT as GridSportFilter, region: DEFAULT_REGION };
+    : { sport: SPOTS_DEFAULT_SPORT, region: DEFAULT_REGION };
 
   const lsSport = typeof window !== 'undefined' ? readSportFromStorage() : null;
   const lsRegion = typeof window !== 'undefined' ? localStorage.getItem(LS_REGION_KEY) : null;
@@ -45,7 +46,7 @@ function resolveInitialFilters(
 
   let sport = fromUrl.sport;
   if (!hasUrlSport) {
-    const candidate = (initialSport || lsSport || DEFAULT_SPORT) as GridSportFilter;
+    const candidate = (initialSport || lsSport || SPOTS_DEFAULT_SPORT) as GridSportFilter;
     if (SPORT_IDS.includes(candidate)) sport = candidate;
   }
 
@@ -76,7 +77,9 @@ export function useSpotGridFilters({
   nowMs?: number | null;
 }) {
   const skipUrlSync = useRef(false);
-  const [selectedSport, setSelectedSport] = useState<GridSportFilter>(DEFAULT_SPORT);
+  // O primeiro render (e o HTML exportado) usa o mesmo filtro que o efeito resolve sem
+  // `?sport=` nem storage; com `DEFAULT_SPORT` o SSR trazia o «Todos» e a hidratação cortava (#476).
+  const [selectedSport, setSelectedSport] = useState<GridSportFilter>(SPOTS_DEFAULT_SPORT);
   const [selectedRegion, setSelectedRegion] = useState<string>(DEFAULT_REGION);
   const [sortBy, setSortBy] = useState<SortOption>('score');
   const [mounted, setMounted] = useState(false);
