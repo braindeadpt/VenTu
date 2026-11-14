@@ -1,6 +1,6 @@
 {
   "day": "20261114",
-  "fetchedAt": "2026-11-14T06:06:52.902Z",
+  "fetchedAt": "2026-11-14T07:04:30.023Z",
   "minPairs": 3,
   "minAccumulatedPairs": 10,
   "archive": {
@@ -1277,7 +1277,7 @@
       "suboptimal": []
     }
   },
-  "regionsAuditedAt": "2026-11-14T06:09:59.115Z",
+  "regionsAuditedAt": "2026-11-14T07:04:42.646Z",
   "pairs": [
     {
       "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
@@ -1293,8 +1293,8 @@
       "maxAbsDeltaM": 2.8,
       "corr": 0.81,
       "verdict": "coherent",
-      "firstHour": "2026-10-15T07",
-      "lastHour": "2026-11-14T04",
+      "firstHour": "2026-10-15T08",
+      "lastHour": "2026-11-14T05",
       "hours": [
         {
           "6200084": 2.2300000190734863,
@@ -1320,6 +1320,11 @@
           "6200084": 2.109999895095825,
           "6200199": 2.138669967651367,
           "hour": "2026-11-14T04"
+        },
+        {
+          "6200084": 1.9900000095367432,
+          "6200199": 2.1240200996398926,
+          "hour": "2026-11-14T05"
         }
       ]
     }
