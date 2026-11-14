@@ -1,6 +1,6 @@
 {
   "day": "20261114",
-  "fetchedAt": "2026-11-14T17:07:40.779Z",
+  "fetchedAt": "2026-11-14T18:06:47.127Z",
   "minPairs": 3,
   "minAccumulatedPairs": 10,
   "archive": {
@@ -70,8 +70,22 @@
     "path": "buoy-coherence-daily.json"
   },
   "regions": {
+    "Caminha": {
+      "spotCount": 1,
+      "withObservedWave": 0,
+      "bySource": {},
+      "audited": 0,
+      "attachedIsClosest": 0,
+      "attachedNotClosest": 0,
+      "onlySource": 0,
+      "notClosest": [],
+      "calibrated": 0,
+      "calibrationRefs": {},
+      "suboptimalRefs": 0,
+      "suboptimal": []
+    },
     "Viana do Castelo": {
-      "spotCount": 6,
+      "spotCount": 7,
       "withObservedWave": 1,
       "bySource": {
         "ih-buoy": 1
@@ -1263,7 +1277,7 @@
       "suboptimal": []
     }
   },
-  "regionsAuditedAt": "2026-11-14T17:08:03.886Z",
+  "regionsAuditedAt": "2026-11-14T18:09:23.276Z",
   "pairs": [
     {
       "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
@@ -1279,8 +1293,8 @@
       "maxAbsDeltaM": 2.8,
       "corr": 0.81,
       "verdict": "coherent",
-      "firstHour": "2026-10-15T18",
-      "lastHour": "2026-11-14T15",
+      "firstHour": "2026-10-15T19",
+      "lastHour": "2026-11-14T16",
       "hours": [
         {
           "6200084": 2.2300000190734863,
@@ -1361,6 +1375,11 @@
           "6200084": 1.6399999856948853,
           "6200199": 1.6699199676513672,
           "hour": "2026-11-14T15"
+        },
+        {
+          "6200084": 1.6399999856948853,
+          "6200199": 1.4941400289535522,
+          "hour": "2026-11-14T16"
         }
       ]
     }
