@@ -8,32 +8,89 @@
  * hora de parede do spot com desvio (pedidos em UTC, auditoria M1); etiquetas
  * antigas sem desvio são hora de parede de Lisboa e `instanteLisboa()` converte
  * as duas no instante UTC.
+ *
+ * O nascer/pôr do sol é devolvido na hora de parede do spot, não em Lisboa:
+ * os Açores estão 1 h atrás e o texto «até ao pôr do sol (HHhMM)» tem de bater
+ * com a régua (#456). `fusoDoSpot()` usa a mesma regra do pipeline
+ * (`scripts/lib/openMeteoUtc.js`).
  */
 
 const RAD = Math.PI / 180;
 const DEG = 180 / Math.PI;
 
+const TZ_LISBOA = 'Europe/Lisbon';
+const TZ_ACORES = 'Atlantic/Azores';
+
 /**
- * Um só `Intl.DateTimeFormat` por módulo: construí-lo é caro (~0,1 ms cada) e a home v6 chama
+ * Um só `Intl.DateTimeFormat` por fuso: construí-lo é caro (~0,1 ms cada) e a home v6 chama
  * `desvioLisboaMin` milhares de vezes ao montar a costa (19 spots × 72 h × 2 passagens + sol);
  * criado em cada chamada eram ~0,8 s de main thread no carregamento (Lighthouse, run 38819063476).
  */
-let fmtLisboa: Intl.DateTimeFormat | null = null;
+const fmtPorZona = new Map<string, Intl.DateTimeFormat>();
+
+function fmtDaZona(timeZone: string): Intl.DateTimeFormat {
+  let f = fmtPorZona.get(timeZone);
+  if (!f) {
+    f = new Intl.DateTimeFormat('en-GB', {
+      timeZone,
+      hourCycle: 'h23',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+    fmtPorZona.set(timeZone, f);
+  }
+  return f;
+}
+
+/** Desvio de `timeZone` face a UTC (minutos) no instante `ms`. */
+export function desvioFusoMin(ms: number, timeZone: string): number {
+  const p = Object.fromEntries(fmtDaZona(timeZone).formatToParts(new Date(ms)).map((x) => [x.type, x.value]));
+  const wall = Date.UTC(+p.year, +p.month - 1, +p.day, +p.hour, +p.minute);
+  return Math.round((wall - Math.floor(ms / 60000) * 60000) / 60000);
+}
 
 /** Desvio de Lisboa face a UTC (minutos) no instante `ms`. */
 export function desvioLisboaMin(ms: number): number {
-  fmtLisboa ??= new Intl.DateTimeFormat('en-GB', {
-    timeZone: 'Europe/Lisbon',
-    hourCycle: 'h23',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
-  const p = Object.fromEntries(fmtLisboa.formatToParts(new Date(ms)).map((x) => [x.type, x.value]));
-  const wall = Date.UTC(+p.year, +p.month - 1, +p.day, +p.hour, +p.minute);
-  return Math.round((wall - Math.floor(ms / 60000) * 60000) / 60000);
+  return desvioFusoMin(ms, TZ_LISBOA);
+}
+
+/**
+ * Limiar de longitude dos Açores, em graus — a mesma caixa de
+ * `spotTimeZone()` em `scripts/lib/openMeteoUtc.js` (Açores: lon ≤ −24,4°).
+ */
+export const LON_ACORES = -24.4;
+
+/**
+ * Fuso de parede do spot: Açores a oeste de −24,4°, tudo o resto em Lisboa
+ * (a Madeira tem `Atlantic/Madeira` no pipeline, mas os desvios são iguais aos
+ * de Lisboa em todas as datas — é a mesma hora de parede).
+ */
+export function fusoDoSpot(lon: number): string {
+  return Number.isFinite(lon) && lon <= LON_ACORES ? TZ_ACORES : TZ_LISBOA;
+}
+
+/** Instante (ms) de uma hora de parede `YYYY-MM-DDTHH:mm` na zona `timeZone`. */
+export function instanteDaParede(parede: string, timeZone: string): number {
+  const wall = Date.UTC(
+    +parede.slice(0, 4),
+    +parede.slice(5, 7) - 1,
+    +parede.slice(8, 10),
+    +parede.slice(11, 13) || 0,
+    +parede.slice(14, 16) || 0,
+  );
+  // duas passagens chegam para as mudanças de hora
+  let off = desvioFusoMin(wall, timeZone);
+  off = desvioFusoMin(wall - off * 60000, timeZone);
+  return wall - off * 60000;
+}
+
+/** Instante (ms) → `YYYY-MM-DDTHH:mm` na hora de parede de `timeZone`. */
+export function paredeNaZona(ms: number, timeZone: string): string {
+  const off = desvioFusoMin(ms, timeZone);
+  return new Date(ms + off * 60000).toISOString().slice(0, 16);
 }
 
 /**
@@ -43,22 +100,12 @@ export function desvioLisboaMin(ms: number): number {
  */
 export function instanteLisboa(t: string): number {
   if (/(?:[zZ]|[+-]\d{2}:?\d{2})$/.test(t)) return Date.parse(t);
-  const y = +t.slice(0, 4);
-  const mo = +t.slice(5, 7);
-  const d = +t.slice(8, 10);
-  const h = +t.slice(11, 13) || 0;
-  const mi = +t.slice(14, 16) || 0;
-  const wall = Date.UTC(y, mo - 1, d, h, mi);
-  // duas passagens chegam para as mudanças de hora
-  let off = desvioLisboaMin(wall);
-  off = desvioLisboaMin(wall - off * 60000);
-  return wall - off * 60000;
+  return instanteDaParede(t, TZ_LISBOA);
 }
 
 /** Instante (ms) → `YYYY-MM-DDTHH:mm` em Lisboa. */
 export function paredeLisboa(ms: number): string {
-  const off = desvioLisboaMin(ms);
-  return new Date(ms + off * 60000).toISOString().slice(0, 16);
+  return paredeNaZona(ms, TZ_LISBOA);
 }
 
 function sec(jc: number) {
@@ -126,10 +173,14 @@ export function posicaoSol(ms: number, lat: number, lon: number): { el: number; 
   return { el: Math.round((elev + refr) * 10) / 10, az: Math.round(az) };
 }
 
-/** Nascer e pôr do sol (hora de parede em Lisboa, `HH:mm`) de um dia `YYYY-MM-DD`. */
+/**
+ * Nascer e pôr do sol (`HH:mm`) de um dia `YYYY-MM-DD`, na **hora de parede do
+ * spot** (`fusoDoSpot(lon)`): nos Açores a hora é a de lá, não a de Lisboa.
+ */
 export function nascerPor(dia: string, lat: number, lon: number): { nascer: string; por: string } | null {
   // procura por minuto à volta da elevação −0,833° (bordo superior + refracção)
-  const meiaNoite = instanteLisboa(`${dia}T00:00`);
+  const fuso = fusoDoSpot(lon);
+  const meiaNoite = instanteDaParede(`${dia}T00:00`, fuso);
   const alvo = -0.833;
   const el = (ms: number) => {
     const jd = ms / 86400000 + 2440587.5;
@@ -155,5 +206,5 @@ export function nascerPor(dia: string, lat: number, lon: number): { nascer: stri
     prev = cur;
   }
   if (nascer == null || por == null) return null;
-  return { nascer: paredeLisboa(nascer).slice(11, 16), por: paredeLisboa(por).slice(11, 16) };
+  return { nascer: paredeNaZona(nascer, fuso).slice(11, 16), por: paredeNaZona(por, fuso).slice(11, 16) };
 }
