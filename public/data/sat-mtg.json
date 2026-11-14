@@ -1,6 +1,6 @@
 {
   "source": "eumetsat-mtg-fci",
-  "fetchedAt": "2026-11-14T04:18:58.000Z",
+  "fetchedAt": "2026-11-14T06:19:35.000Z",
   "cadenceMin": 10,
   "bounds": {
     "south": 28.0,
@@ -11,28 +11,33 @@
   "attribution": "EUMETSAT",
   "frames": [
     {
-      "frameTime": "2026-11-14T03:50:07.000Z",
-      "imagePath": "sat-mtg/frames/ir-2026-11-14T0350.webp",
+      "frameTime": "2026-11-14T05:50:07.000Z",
+      "imagePath": "sat-mtg/frames/ir-2026-11-14T0550.webp",
       "kind": "ir"
     },
     {
-      "frameTime": "2026-11-14T03:40:07.000Z",
-      "imagePath": "sat-mtg/frames/ir-2026-11-14T0340.webp",
+      "frameTime": "2026-11-14T05:40:07.000Z",
+      "imagePath": "sat-mtg/frames/ir-2026-11-14T0540.webp",
       "kind": "ir"
     },
     {
-      "frameTime": "2026-11-14T03:30:07.000Z",
-      "imagePath": "sat-mtg/frames/ir-2026-11-14T0330.webp",
+      "frameTime": "2026-11-14T05:30:07.000Z",
+      "imagePath": "sat-mtg/frames/ir-2026-11-14T0530.webp",
       "kind": "ir"
     },
     {
-      "frameTime": "2026-11-14T03:10:07.000Z",
-      "imagePath": "sat-mtg/frames/ir-2026-11-14T0310.webp",
+      "frameTime": "2026-11-14T05:20:07.000Z",
+      "imagePath": "sat-mtg/frames/ir-2026-11-14T0520.webp",
       "kind": "ir"
     },
     {
-      "frameTime": "2026-11-14T03:00:07.000Z",
-      "imagePath": "sat-mtg/frames/ir-2026-11-14T0300.webp",
+      "frameTime": "2026-11-14T05:00:07.000Z",
+      "imagePath": "sat-mtg/frames/ir-2026-11-14T0500.webp",
+      "kind": "ir"
+    },
+    {
+      "frameTime": "2026-11-14T04:50:07.000Z",
+      "imagePath": "sat-mtg/frames/ir-2026-11-14T0450.webp",
       "kind": "ir"
     }
   ]
