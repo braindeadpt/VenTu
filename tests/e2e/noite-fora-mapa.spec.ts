@@ -40,7 +40,7 @@ test.describe('Noite fora do /mapa', () => {
     expect(n).toBeGreaterThan(0);
     await expect(tabela.locator('tbody tr[data-noite]')).toHaveCount(n);
     // coluna Score: a lua em todas as linhas, nenhum numeral
-    await expect(tabela.locator('tbody tr td:nth-child(2) [data-lua-noite]')).toHaveCount(n);
+    await expect(tabela.locator('tbody tr td:nth-child(2) [role="img"]')).toHaveCount(n);
     await expect(tabela.locator('tbody tr td:nth-child(2) .font-mono')).toHaveCount(0);
     const { com, sem } = await ordemJanelas(rows);
     expect(com.length + sem.length).toBe(n);
