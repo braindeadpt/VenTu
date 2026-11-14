@@ -1,6 +1,6 @@
 {
   "day": "20261114",
-  "fetchedAt": "2026-11-14T14:06:40.628Z",
+  "fetchedAt": "2026-11-14T16:06:45.849Z",
   "minPairs": 3,
   "minAccumulatedPairs": 10,
   "archive": {
@@ -70,22 +70,8 @@
     "path": "buoy-coherence-daily.json"
   },
   "regions": {
-    "Caminha": {
-      "spotCount": 1,
-      "withObservedWave": 0,
-      "bySource": {},
-      "audited": 0,
-      "attachedIsClosest": 0,
-      "attachedNotClosest": 0,
-      "onlySource": 0,
-      "notClosest": [],
-      "calibrated": 0,
-      "calibrationRefs": {},
-      "suboptimalRefs": 0,
-      "suboptimal": []
-    },
     "Viana do Castelo": {
-      "spotCount": 7,
+      "spotCount": 6,
       "withObservedWave": 1,
       "bySource": {
         "ih-buoy": 1
@@ -1115,13 +1101,72 @@
     },
     "Madeira": {
       "spotCount": 11,
-      "withObservedWave": 0,
-      "bySource": {},
-      "audited": 0,
+      "withObservedWave": 8,
+      "bySource": {
+        "ih-buoy": 8
+      },
+      "audited": 8,
       "attachedIsClosest": 0,
-      "attachedNotClosest": 0,
+      "attachedNotClosest": 8,
       "onlySource": 0,
-      "notClosest": [],
+      "notClosest": [
+        {
+          "spot": "sao-vicente-madeira",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 32,
+          "altKm": 0
+        },
+        {
+          "spot": "porto-da-cruz",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 11,
+          "altKm": 0
+        },
+        {
+          "spot": "ponta-sao-lourenco",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 3,
+          "altKm": 0
+        },
+        {
+          "spot": "ribeira-brava",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 33,
+          "altKm": 0
+        },
+        {
+          "spot": "funchal",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 23,
+          "altKm": 0
+        },
+        {
+          "spot": "machico",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 4,
+          "altKm": 0
+        },
+        {
+          "spot": "seixal-madeira",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 37,
+          "altKm": 0
+        },
+        {
+          "spot": "madalena-mar",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 38,
+          "altKm": 0
+        }
+      ],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -1218,7 +1263,7 @@
       "suboptimal": []
     }
   },
-  "regionsAuditedAt": "2026-11-14T14:09:04.093Z",
+  "regionsAuditedAt": "2026-11-14T16:10:48.927Z",
   "pairs": [
     {
       "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
@@ -1234,8 +1279,8 @@
       "maxAbsDeltaM": 2.8,
       "corr": 0.81,
       "verdict": "coherent",
-      "firstHour": "2026-10-15T15",
-      "lastHour": "2026-11-14T12",
+      "firstHour": "2026-10-15T17",
+      "lastHour": "2026-11-14T14",
       "hours": [
         {
           "6200084": 2.2300000190734863,
@@ -1301,6 +1346,16 @@
           "6200084": 1.6399999856948853,
           "6200199": 1.6992199420928955,
           "hour": "2026-11-14T12"
+        },
+        {
+          "6200084": 1.6399999856948853,
+          "6200199": 1.7285200357437134,
+          "hour": "2026-11-14T13"
+        },
+        {
+          "6200084": 1.6399999856948853,
+          "6200199": 1.5527299642562866,
+          "hour": "2026-11-14T14"
         }
       ]
     }
