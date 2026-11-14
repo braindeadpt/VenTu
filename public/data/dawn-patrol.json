@@ -1,47 +1,25 @@
 {
-  "date": "2026-11-13",
-  "generatedAt": "2026-11-13T04:36:29.498Z",
-  "topSpot": "Arrifana",
-  "topSpotSlug": "arrifana",
+  "date": "2026-11-14",
+  "generatedAt": "2026-11-14T04:22:32.797Z",
+  "topSpot": "Ribeira d'Ilhas",
+  "topSpotSlug": "ribeira-ilhas",
   "pt": {
-    "headline": "Hoje é dia de Arrifana! 🌊",
-    "advice": "Melhor janela: 8:00h. Ondas de 3.1m com 6 nós de vento. ⚓ Avisos à Navegação Costeiros (IH): ANAV NR 2/22 — Plano de Salvamento Marítimo Lagos",
-    "bestTime": "8:00",
-    "wetsuit": "2mm shorty",
+    "headline": "Hoje é dia de Ribeira d'Ilhas! 🌊",
+    "advice": "Melhor janela: 10:00h. Ondas de 2.1m com 6 nós de vento. ⚓ Avisos à Navegação Costeiros (IH): ANAV NR 1727/26 — Animais Marinhos - Avistamento",
+    "bestTime": "10:00",
+    "wetsuit": "3/2mm",
     "crowdTip": "Chega cedo para evitar crowd!",
-    "moonTideLine": "Lua crescente · Marés vivas · baixa-mar 10:00"
+    "moonTideLine": "Lua crescente · Transição · baixa-mar 11:00"
   },
   "en": {
-    "headline": "Today is Arrifana day! 🌊",
-    "advice": "Best window: 8:00. 3.1m waves with 6 knot wind. ⚓ Coastal navigation warnings (IH): ANAV NR 2/22 — Plano de Salvamento Marítimo Lagos",
-    "bestTime": "8:00",
-    "wetsuit": "2mm shorty",
+    "headline": "Today is Ribeira d'Ilhas day! 🌊",
+    "advice": "Best window: 10:00. 2.1m waves with 6 knot wind. ⚓ Coastal navigation warnings (IH): ANAV NR 1727/26 — Animais Marinhos - Avistamento",
+    "bestTime": "10:00",
+    "wetsuit": "3/2mm",
     "crowdTip": "Get there early to beat the crowd!",
-    "moonTideLine": "Waxing crescent · Spring tides · low tide 10:00"
+    "moonTideLine": "Waxing crescent · Transition · low tide 11:00"
   },
   "spots": [
-    {
-      "name": "Arrifana",
-      "slug": "arrifana",
-      "score": 80,
-      "scoreForecast": 80,
-      "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
-    },
-    {
-      "name": "Nazaré",
-      "slug": "nazare",
-      "score": 70,
-      "scoreForecast": 70,
-      "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
-    },
     {
       "name": "Ribeira d'Ilhas",
       "slug": "ribeira-ilhas",
@@ -76,8 +54,8 @@
       "enReason": "Fair conditions"
     },
     {
-      "name": "Carcavelos",
-      "slug": "carcavelos",
+      "name": "Guincho",
+      "slug": "guincho",
       "score": 60,
       "scoreForecast": 60,
       "scoreSource": "previsão",
@@ -87,8 +65,30 @@
       "enReason": "Fair conditions"
     },
     {
-      "name": "Guincho",
-      "slug": "guincho",
+      "name": "Nazaré",
+      "slug": "nazare",
+      "score": 60,
+      "scoreForecast": 60,
+      "scoreSource": "previsão",
+      "scoreMeta": null,
+      "verdict": "maybe",
+      "ptReason": "Condições razoáveis",
+      "enReason": "Fair conditions"
+    },
+    {
+      "name": "Arrifana",
+      "slug": "arrifana",
+      "score": 60,
+      "scoreForecast": 60,
+      "scoreSource": "previsão",
+      "scoreMeta": null,
+      "verdict": "maybe",
+      "ptReason": "Condições razoáveis",
+      "enReason": "Fair conditions"
+    },
+    {
+      "name": "Carcavelos",
+      "slug": "carcavelos",
       "score": 50,
       "scoreForecast": 50,
       "scoreSource": "previsão",
@@ -98,8 +98,8 @@
       "enReason": "Fair conditions"
     }
   ],
-  "topScore": 80,
-  "topScoreForecast": 80,
+  "topScore": 70,
+  "topScoreForecast": 70,
   "topScoreSource": "previsão",
   "topScoreMeta": null
 }
