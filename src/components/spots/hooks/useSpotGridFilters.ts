@@ -8,7 +8,6 @@ import { useGeolocation, calculateDistance } from '@/lib/geolocation';
 import { dispatchSportChange, LS_SPORT_KEY, readSportFromStorage } from '@/lib/homepageSport';
 import {
   DEFAULT_REGION,
-  DEFAULT_SPORT,
   SPOTS_DEFAULT_SPORT,
   readGridFiltersFromWindow,
   syncGridFiltersToUrl,
@@ -78,7 +77,8 @@ export function useSpotGridFilters({
 }) {
   const skipUrlSync = useRef(false);
   // O primeiro render (e o HTML exportado) usa o mesmo filtro que o efeito resolve sem
-  // `?sport=` nem storage; com `DEFAULT_SPORT` o SSR trazia o «Todos» e a hidratação cortava (#476).
+  // `?sport=` nem storage; com o `DEFAULT_SPORT` («Todos») o SSR trazia 189 linhas e a
+  // hidratação cortava para 147 (#476).
   const [selectedSport, setSelectedSport] = useState<GridSportFilter>(SPOTS_DEFAULT_SPORT);
   const [selectedRegion, setSelectedRegion] = useState<string>(DEFAULT_REGION);
   const [sortBy, setSortBy] = useState<SortOption>('score');
@@ -160,7 +160,7 @@ export function useSpotGridFilters({
   const handleSportChange = (sport: GridSportFilter) => setSelectedSport(sport);
   const handleRegionChange = (region: string) => setSelectedRegion(region);
   const handleReset = () => {
-    setSelectedSport(DEFAULT_SPORT);
+    setSelectedSport(SPOTS_DEFAULT_SPORT);
     setSelectedRegion(DEFAULT_REGION);
   };
 

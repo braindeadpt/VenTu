@@ -2,11 +2,12 @@ import type { GridSportFilter } from '@/lib/sportRatings';
 
 export const DEFAULT_SPORT: GridSportFilter = 'all';
 /**
- * Filtro do /spots sem `?sport=` e sem preferência guardada: `surf`, o mesmo que
- * `parseSportFilter(null)` devolve e que a hidratação aplica (`useSpotGridFilters`).
- * O SSR tem de desenhar já este filtro — antes desenhava o `DEFAULT_SPORT` («Todos»,
+ * Filtro do /spots sem `?sport=` e sem preferência guardada — e o fallback de
+ * `parseSportFilter` (`lib/homepageSport`), que daqui o lê para não haver dois «surf».
+ * O SSR tem de desenhar já este filtro: antes desenhava o `DEFAULT_SPORT` («Todos»,
  * 189 linhas) e a hidratação cortava para 147, mudando a lista e os links no mount (#476).
- * Não confundir com `DEFAULT_SPORT`, o estado neutro do /mapa e do «Limpar filtros».
+ * É também o estado para onde volta o «Limpar filtros» do /spots.
+ * Não confundir com `DEFAULT_SPORT`, o estado neutro do /mapa.
  */
 export const SPOTS_DEFAULT_SPORT: GridSportFilter = 'surf';
 export const DEFAULT_REGION = 'Todos';

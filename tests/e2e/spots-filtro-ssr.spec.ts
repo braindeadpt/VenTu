@@ -27,4 +27,24 @@ test.describe('/spots — SSR e cliente com o mesmo filtro', () => {
       .not.toBeNull();
     await expect(rows).toHaveCount(linhas);
   });
+
+  test('«Limpar filtros» ausente num estado limpo e sai ao limpar', async ({ page }) => {
+    await page.goto('/pt/spots/');
+    const kitesurf = page.getByRole('button', { name: 'Kitesurf', exact: true }).first();
+    await expect(kitesurf).toBeVisible({ timeout: 20_000 });
+    const limpar = page.locator('[data-limpar-filtros]');
+    // o estado inicial do /spots é o filtro por omissão: nada para limpar
+    await expect(limpar).toHaveCount(0);
+
+    await kitesurf.click();
+    await expect(limpar).toBeVisible();
+    await limpar.click();
+
+    // «Limpar filtros» volta ao estado inicial (surf), não ao «Todos»
+    await expect(limpar).toHaveCount(0);
+    await expect(page.getByRole('button', { name: 'Surf', exact: true }).first()).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+  });
 });

@@ -287,6 +287,7 @@ export function SpotGridClient({
                   onClick={handleReset}
                   leftIcon={<RotateCcw className="w-3.5 h-3.5" aria-hidden />}
                   aria-label={t.hero.clearFilters}
+                  data-limpar-filtros=""
                   locale={locale as Locale}
                 >
                   <span className="hidden sm:inline">{t.hero.clearFilters}</span>
