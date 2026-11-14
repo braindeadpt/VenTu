@@ -1,14 +1,24 @@
 {
   "source": "ipma",
-  "fetchedAt": "2026-11-13T20:06:50.253Z",
+  "fetchedAt": "2026-11-14T00:06:32.778Z",
   "warnings": [
+    {
+      "areaCode": "ACE",
+      "areaLabel": "Angra do Heroísmo",
+      "type": "Precipitação",
+      "level": "yellow",
+      "text": "Precipitação por vezes FORTE.",
+      "startTime": "2026-11-14T09:00:00",
+      "endTime": "2026-11-14T21:00:00",
+      "relevant": true
+    },
     {
       "areaCode": "VIS",
       "areaLabel": "Viseu",
       "type": "Precipitação",
       "level": "yellow",
-      "text": "Períodos de chuva persistente e por vezes forte.",
-      "startTime": "2026-11-13T18:40:00",
+      "text": "Precipitação persistente e por vezes forte.",
+      "startTime": "2026-11-15T06:00:00",
       "endTime": "2026-11-15T15:00:00",
       "relevant": true
     },
@@ -20,6 +30,16 @@
       "text": "Precipitação persistente e por vezes forte.",
       "startTime": "2026-11-15T06:00:00",
       "endTime": "2026-11-15T15:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "AOC",
+      "areaLabel": "Santa Cruz das Flores",
+      "type": "Precipitação",
+      "level": "yellow",
+      "text": "Precipitação por vezes FORTE.",
+      "startTime": "2026-11-14T06:00:00",
+      "endTime": "2026-11-14T18:00:00",
       "relevant": true
     },
     {
@@ -47,19 +67,9 @@
       "areaLabel": "Aveiro",
       "type": "Precipitação",
       "level": "yellow",
-      "text": "Períodos de chuva persistente e por vezes forte.",
-      "startTime": "2026-11-13T18:40:00",
+      "text": "Precipitação persistente e por vezes forte.",
+      "startTime": "2026-11-15T06:00:00",
       "endTime": "2026-11-15T15:00:00",
-      "relevant": true
-    },
-    {
-      "areaCode": "CBR",
-      "areaLabel": "Coimbra",
-      "type": "Precipitação",
-      "level": "yellow",
-      "text": "Períodos de chuva persistente e por vezes forte.",
-      "startTime": "2026-11-13T18:40:00",
-      "endTime": "2026-11-13T21:00:00",
       "relevant": true
     },
     {
@@ -464,8 +474,8 @@
         "areaLabel": "Aveiro",
         "type": "Precipitação",
         "level": "yellow",
-        "text": "Períodos de chuva persistente e por vezes forte.",
-        "startTime": "2026-11-13T18:40:00",
+        "text": "Precipitação persistente e por vezes forte.",
+        "startTime": "2026-11-15T06:00:00",
         "endTime": "2026-11-15T15:00:00",
         "relevant": true
       }
@@ -476,8 +486,8 @@
         "areaLabel": "Aveiro",
         "type": "Precipitação",
         "level": "yellow",
-        "text": "Períodos de chuva persistente e por vezes forte.",
-        "startTime": "2026-11-13T18:40:00",
+        "text": "Precipitação persistente e por vezes forte.",
+        "startTime": "2026-11-15T06:00:00",
         "endTime": "2026-11-15T15:00:00",
         "relevant": true
       }
@@ -488,8 +498,8 @@
         "areaLabel": "Aveiro",
         "type": "Precipitação",
         "level": "yellow",
-        "text": "Períodos de chuva persistente e por vezes forte.",
-        "startTime": "2026-11-13T18:40:00",
+        "text": "Precipitação persistente e por vezes forte.",
+        "startTime": "2026-11-15T06:00:00",
         "endTime": "2026-11-15T15:00:00",
         "relevant": true
       }
@@ -500,8 +510,8 @@
         "areaLabel": "Aveiro",
         "type": "Precipitação",
         "level": "yellow",
-        "text": "Períodos de chuva persistente e por vezes forte.",
-        "startTime": "2026-11-13T18:40:00",
+        "text": "Precipitação persistente e por vezes forte.",
+        "startTime": "2026-11-15T06:00:00",
         "endTime": "2026-11-15T15:00:00",
         "relevant": true
       }
@@ -512,8 +522,8 @@
         "areaLabel": "Aveiro",
         "type": "Precipitação",
         "level": "yellow",
-        "text": "Períodos de chuva persistente e por vezes forte.",
-        "startTime": "2026-11-13T18:40:00",
+        "text": "Precipitação persistente e por vezes forte.",
+        "startTime": "2026-11-15T06:00:00",
         "endTime": "2026-11-15T15:00:00",
         "relevant": true
       }
@@ -524,8 +534,8 @@
         "areaLabel": "Aveiro",
         "type": "Precipitação",
         "level": "yellow",
-        "text": "Períodos de chuva persistente e por vezes forte.",
-        "startTime": "2026-11-13T18:40:00",
+        "text": "Precipitação persistente e por vezes forte.",
+        "startTime": "2026-11-15T06:00:00",
         "endTime": "2026-11-15T15:00:00",
         "relevant": true
       }
@@ -536,8 +546,8 @@
         "areaLabel": "Aveiro",
         "type": "Precipitação",
         "level": "yellow",
-        "text": "Períodos de chuva persistente e por vezes forte.",
-        "startTime": "2026-11-13T18:40:00",
+        "text": "Precipitação persistente e por vezes forte.",
+        "startTime": "2026-11-15T06:00:00",
         "endTime": "2026-11-15T15:00:00",
         "relevant": true
       }
@@ -548,57 +558,45 @@
         "areaLabel": "Aveiro",
         "type": "Precipitação",
         "level": "yellow",
-        "text": "Períodos de chuva persistente e por vezes forte.",
-        "startTime": "2026-11-13T18:40:00",
+        "text": "Precipitação persistente e por vezes forte.",
+        "startTime": "2026-11-15T06:00:00",
         "endTime": "2026-11-15T15:00:00",
         "relevant": true
       }
     ],
-    "quiaios": [
+    "praia-vitoria": [
       {
-        "areaCode": "CBR",
-        "areaLabel": "Coimbra",
+        "areaCode": "ACE",
+        "areaLabel": "Angra do Heroísmo",
         "type": "Precipitação",
         "level": "yellow",
-        "text": "Períodos de chuva persistente e por vezes forte.",
-        "startTime": "2026-11-13T18:40:00",
-        "endTime": "2026-11-13T21:00:00",
+        "text": "Precipitação por vezes FORTE.",
+        "startTime": "2026-11-14T09:00:00",
+        "endTime": "2026-11-14T21:00:00",
         "relevant": true
       }
     ],
-    "buarcos": [
+    "santa-catarina-terceira": [
       {
-        "areaCode": "CBR",
-        "areaLabel": "Coimbra",
+        "areaCode": "ACE",
+        "areaLabel": "Angra do Heroísmo",
         "type": "Precipitação",
         "level": "yellow",
-        "text": "Períodos de chuva persistente e por vezes forte.",
-        "startTime": "2026-11-13T18:40:00",
-        "endTime": "2026-11-13T21:00:00",
+        "text": "Precipitação por vezes FORTE.",
+        "startTime": "2026-11-14T09:00:00",
+        "endTime": "2026-11-14T21:00:00",
         "relevant": true
       }
     ],
-    "figueira-foz": [
+    "almoxarife": [
       {
-        "areaCode": "CBR",
-        "areaLabel": "Coimbra",
+        "areaCode": "ACE",
+        "areaLabel": "Angra do Heroísmo",
         "type": "Precipitação",
         "level": "yellow",
-        "text": "Períodos de chuva persistente e por vezes forte.",
-        "startTime": "2026-11-13T18:40:00",
-        "endTime": "2026-11-13T21:00:00",
-        "relevant": true
-      }
-    ],
-    "cova-gala-sul": [
-      {
-        "areaCode": "CBR",
-        "areaLabel": "Coimbra",
-        "type": "Precipitação",
-        "level": "yellow",
-        "text": "Períodos de chuva persistente e por vezes forte.",
-        "startTime": "2026-11-13T18:40:00",
-        "endTime": "2026-11-13T21:00:00",
+        "text": "Precipitação por vezes FORTE.",
+        "startTime": "2026-11-14T09:00:00",
+        "endTime": "2026-11-14T21:00:00",
         "relevant": true
       }
     ],
@@ -620,8 +618,8 @@
         "areaLabel": "Aveiro",
         "type": "Precipitação",
         "level": "yellow",
-        "text": "Períodos de chuva persistente e por vezes forte.",
-        "startTime": "2026-11-13T18:40:00",
+        "text": "Precipitação persistente e por vezes forte.",
+        "startTime": "2026-11-15T06:00:00",
         "endTime": "2026-11-15T15:00:00",
         "relevant": true
       }
@@ -635,6 +633,42 @@
         "text": "Precipitação persistente e por vezes forte.",
         "startTime": "2026-11-15T06:00:00",
         "endTime": "2026-11-15T15:00:00",
+        "relevant": true
+      }
+    ],
+    "porto-martins": [
+      {
+        "areaCode": "ACE",
+        "areaLabel": "Angra do Heroísmo",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Precipitação por vezes FORTE.",
+        "startTime": "2026-11-14T09:00:00",
+        "endTime": "2026-11-14T21:00:00",
+        "relevant": true
+      }
+    ],
+    "cachorro-pico": [
+      {
+        "areaCode": "ACE",
+        "areaLabel": "Angra do Heroísmo",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Precipitação por vezes FORTE.",
+        "startTime": "2026-11-14T09:00:00",
+        "endTime": "2026-11-14T21:00:00",
+        "relevant": true
+      }
+    ],
+    "faja-cubres": [
+      {
+        "areaCode": "ACE",
+        "areaLabel": "Angra do Heroísmo",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Precipitação por vezes FORTE.",
+        "startTime": "2026-11-14T09:00:00",
+        "endTime": "2026-11-14T21:00:00",
         "relevant": true
       }
     ],
