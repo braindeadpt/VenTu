@@ -17,6 +17,7 @@ const { inferCategoryFromText, hasSpecificCategory } = require('./news/category-
 const { categoriseItem, ensureBilingual, synthesiseEvent } = require('./news/llm-tasks');
 const { mergeAndPersist, loadExisting } = require('./news/merge-persist');
 const { reportFeedHealth } = require('./news/feed-health');
+const { reportSourceHealth } = require('./news/source-health');
 const { callLLM } = require('./llm-fallback');
 
 async function updateNews() {
@@ -45,6 +46,12 @@ async function updateNews() {
           semItensNovos.map((r) => `${r.source} [${r.status}]`).join(', '),
       );
     }
+    // Saúde por fonte: guarda o `lastSeen` de cada uma (sobrevive à TTL e a um
+    // feed temporariamente em baixo) e avisa quando passa `staleAfterDays` sem
+    // entregar nada novo. É o aviso que faltou em 2026-11-15: a ANS parou a
+    // 02/11, as Notícias do Mar a 06/11 e o feed pt só deu sinal quando a TTL
+    // de 7 dias já tinha apagado tudo.
+    await reportSourceHealth({ reports });
   } catch (e) {
     console.error('❌ Etapa 1 failed:', e.message);
     errors.push(`RSS: ${e.message}`);
