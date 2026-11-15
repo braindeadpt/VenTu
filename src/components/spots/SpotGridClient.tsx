@@ -22,7 +22,7 @@ import { useLiveGridSpotData } from '@/hooks/useLiveGridSpotData';
 import { useRelogioNoite } from '@/hooks/useRelogioNoite';
 import {
   DEFAULT_REGION,
-  DEFAULT_SPORT,
+  SPOTS_DEFAULT_SPORT,
 } from '@/lib/gridFilters';
 import {
   MAP_DIFFICULTY_LS_KEY,
@@ -259,7 +259,7 @@ export function SpotGridClient({
 
               <span className="text-meta-sm text-fg-muted">
                 <span className="font-mono tabular-nums text-fg">{sorted.length}</span>
-                {(selectedSport !== DEFAULT_SPORT || selectedRegion !== DEFAULT_REGION) && (
+                {(selectedSport !== SPOTS_DEFAULT_SPORT || selectedRegion !== DEFAULT_REGION) && (
                   <span className="text-fg-subtle">
                     {' '}{t.spotsUi.ofWord}{' '}
                     <span className="font-mono tabular-nums">{liveSpotsData.length}</span>
@@ -280,13 +280,14 @@ export function SpotGridClient({
                 )}
               </span>
 
-              {(selectedSport !== DEFAULT_SPORT || selectedRegion !== DEFAULT_REGION) && (
+              {(selectedSport !== SPOTS_DEFAULT_SPORT || selectedRegion !== DEFAULT_REGION) && (
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={handleReset}
                   leftIcon={<RotateCcw className="w-3.5 h-3.5" aria-hidden />}
                   aria-label={t.hero.clearFilters}
+                  data-limpar-filtros=""
                   locale={locale as Locale}
                 >
                   <span className="hidden sm:inline">{t.hero.clearFilters}</span>
@@ -341,7 +342,7 @@ export function SpotGridClient({
             onResetFilters: handleMapReset,
             clearFiltersLabel: t.hero.clearFilters,
             showClearFilters:
-              selectedSport !== DEFAULT_SPORT ||
+              selectedSport !== SPOTS_DEFAULT_SPORT ||
               selectedRegion !== DEFAULT_REGION ||
               mapDifficulty !== 'all',
             difficulties: MAP_DIFFICULTY_OPTIONS.map((d) => ({

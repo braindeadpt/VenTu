@@ -1,9 +1,11 @@
 import { describe, it, expect } from 'vitest';
 import {
   getTopSpotForSport,
+  parseSportFilter,
   TOP_NOW_MIN_SCORE,
   type HomepageSpotData,
 } from '@/lib/homepageSport';
+import { SPOTS_DEFAULT_SPORT } from '@/lib/gridFilters';
 import type { SportScore } from '@/lib/sportScore';
 import type { Spot } from '@/types';
 
@@ -70,5 +72,18 @@ describe('getTopSpotForSport «A bombar» threshold', () => {
     const data = [row('x', { surf: 56 }, ['surf'])];
     expect(getTopSpotForSport(data, 'surf')).toBeNull();
     expect(getTopSpotForSport(data, 'surf', 56)?.spot.slug).toBe('x');
+  });
+});
+
+describe('parseSportFilter — fallback partilhado com o /spots (#476)', () => {
+  it('sem valor devolve o default do /spots, não um «surf» hardcoded', () => {
+    expect(parseSportFilter(null)).toBe(SPOTS_DEFAULT_SPORT);
+    expect(parseSportFilter('')).toBe(SPOTS_DEFAULT_SPORT);
+    expect(parseSportFilter('nada')).toBe(SPOTS_DEFAULT_SPORT);
+  });
+
+  it('valores válidos passam intactos (incl. «todos»)', () => {
+    expect(parseSportFilter('kitesurf')).toBe('kitesurf');
+    expect(parseSportFilter('all')).toBe('all');
   });
 });
