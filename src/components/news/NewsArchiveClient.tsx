@@ -288,10 +288,13 @@ export default function NewsArchiveClient({
                 : t.news.emptyNoMatch}
             </p>
             <p className="text-fg-subtle/80 text-sm">{t.news.emptyHint}</p>
+            {/* 44 px: alvo de toque mínimo da guarda `a11y-touch-targets`; sem
+                isto o botão mede 38 px e só existe neste estado vazio — um
+                caminho que só é exercido quando não há notícia da região. */}
             {(category !== 'all' || region !== 'all' || period !== 'all' || debouncedQuery) && (
               <button
                 onClick={handleClear}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-surface-2/[0.08] border border-divider text-sm text-fg hover:bg-surface-3/[0.12] transition-colors"
+                className="inline-flex items-center gap-1.5 min-h-[44px] px-4 py-2 rounded-lg bg-surface-2/[0.08] border border-divider text-sm text-fg hover:bg-surface-3/[0.12] transition-colors"
               >
                 {t.news.clearAllFilters}
               </button>
