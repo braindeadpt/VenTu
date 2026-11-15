@@ -6,8 +6,12 @@ on:
     - cron: '0 6 */2 * *'
   workflow_dispatch:
 
+# `issues: write` — o pipeline abre/comenta a issue «Notícias: feed sem itens pt»
+# (scripts/news/feed-health.js) quando o feed fica sem nenhum item pt. É a única
+# permissão extra que este workflow precisa.
 permissions:
   contents: write
+  issues: write
 
 concurrency:
   group: update-ventu-news
@@ -34,6 +38,7 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GROQ_API_KEY: ${{ secrets.GROQ }}
           CEREBRAS_API_KEY: ${{ secrets.CEREBRAS }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: node scripts/update-news.js
 
       - name: Validate data files (UTF-8 + JSON + http(s) URLs)
