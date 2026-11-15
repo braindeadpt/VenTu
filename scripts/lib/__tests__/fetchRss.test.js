@@ -3,6 +3,7 @@ import { createRequire } from 'module';
 
 const require = createRequire(import.meta.url);
 const { fetchAllFeeds, extractField, FEEDS } = require('../../news/fetch-rss.js');
+const ACTIVE_FEEDS = FEEDS.filter((f) => f.active !== false);
 const { fetchFeed } = require('../../news/fetch-rss.js');
 const {
   regionCounts,
@@ -60,9 +61,9 @@ describe('fetch-rss URL discard (S3) with mocked fetch', () => {
     const items = await fetchAllFeeds();
 
     // Every configured feed returns the same synthetic feed.
-    expect(fetch).toHaveBeenCalledTimes(FEEDS.length);
+    expect(fetch).toHaveBeenCalledTimes(ACTIVE_FEEDS.length);
     // 2 good items × 10 feeds — the 4 bad ones were discarded by canDiscard.
-    expect(items).toHaveLength(FEEDS.length * 2);
+    expect(items).toHaveLength(ACTIVE_FEEDS.length * 2);
 
     const urls = items.map((i) => i.url);
     for (const url of urls) {
@@ -71,8 +72,8 @@ describe('fetch-rss URL discard (S3) with mocked fetch', () => {
     expect(urls).not.toContain(BAD_JS);
     expect(urls).not.toContain(BAD_DATA);
     expect(urls).not.toContain(BAD_VB);
-    expect(urls.filter((u) => u === GOOD_HTTPS)).toHaveLength(FEEDS.length);
-    expect(urls.filter((u) => u === GOOD_HTTP)).toHaveLength(FEEDS.length);
+    expect(urls.filter((u) => u === GOOD_HTTPS)).toHaveLength(ACTIVE_FEEDS.length);
+    expect(urls.filter((u) => u === GOOD_HTTP)).toHaveLength(ACTIVE_FEEDS.length);
   });
 
   it('returns nothing when every item has a bad or missing URL', async () => {
@@ -333,5 +334,44 @@ describe('feed health — abrir, comentar ou não fazer nada', () => {
     const res = await reportFeedHealth({ items: intlItems(1), token: '', repo: '', fetchImpl, log: silent });
     expect(res.skipped).toBe(true);
     expect(fetchImpl).not.toHaveBeenCalled();
+  });
+});
+
+// ─── Fontes inactivas ──────────────────────────────────────────────────────
+// ANS, FPS e Notícias do Mar deixaram de publicar (última publicação 02/11,
+// 12/10 e 06/11/2026). Ficam registadas — para se ver quando voltam — mas
+// `active: false` tira-as do fetch: não gastam pedido nem fingem saúde.
+describe('fontes inactivas', () => {
+  it('as três fontes paradas ficam registadas com active: false', () => {
+    for (const source of ['ANS', 'FPS', 'Notícias do Mar']) {
+      const feed = FEEDS.find((f) => f.source === source);
+      expect(feed, `${source} devia continuar em FEEDS`).toBeTruthy();
+      expect(feed.active).toBe(false);
+    }
+  });
+
+  it('não são pedidas: o fetch só toca nas activas', async () => {
+    const xml = `<?xml version="1.0"?><rss version="2.0"><channel><title>T</title>${item('Nova', GOOD_HTTPS)}</channel></rss>`;
+    const calls = [];
+    vi.stubGlobal('fetch', vi.fn(async (url) => {
+      calls.push(String(url));
+      return new Response(xml, { status: 200 });
+    }));
+
+    const items = await fetchAllFeeds();
+
+    const inactiveUrls = FEEDS.filter((f) => f.active === false).map((f) => f.url);
+    expect(calls).toHaveLength(ACTIVE_FEEDS.length);
+    for (const url of inactiveUrls) {
+      expect(calls).not.toContain(url);
+    }
+    expect(items).toHaveLength(ACTIVE_FEEDS.length);
+  });
+
+  it('uma fonte activa nova (Surftotal) continua a ser pedida', async () => {
+    const surftotal = FEEDS.find((f) => f.source === 'Surftotal');
+    expect(surftotal).toBeTruthy();
+    expect(surftotal.sourceRegion).toBe('pt');
+    expect(surftotal.active).not.toBe(false);
   });
 });
