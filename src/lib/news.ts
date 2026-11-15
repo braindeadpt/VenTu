@@ -30,9 +30,22 @@ export const DEFAULT_FILTERS: NewsFiltersState = {
   page: 1,
 };
 
-/** PT locale: default to Cena PT when URL has no region param. */
-export function getDefaultNewsRegion(locale: string): RegionFilter {
-  return locale === 'pt' ? 'pt' : 'all';
+/**
+ * PT locale: default to Cena PT **only when the feed actually has PT items**.
+ *
+ * Devolver `pt` sobre um feed sem nenhum item `sourceRegion: 'pt'` punha o
+ * /pt/news/ no estado vazio (filtro `pt` sobre zero itens) com dezenas de
+ * notícias disponíveis — foi o que aconteceu em 2026-11-15, com o feed a 50
+ * itens todos `intl`. A decisão é feita com os itens que aquele render vai
+ * usar (`bakedNews` no cliente), para o HTML do build e o primeiro render do
+ * cliente escolherem a mesma região — sem erro de hidratação.
+ */
+export function getDefaultNewsRegion(
+  locale: string,
+  news: readonly Pick<NewsItem, 'sourceRegion'>[],
+): RegionFilter {
+  if (locale !== 'pt') return 'all';
+  return news.some((item) => (item.sourceRegion ?? 'intl') === 'pt') ? 'pt' : 'all';
 }
 
 // Stable deterministic slug: strip diacritics → lowercase → collapse non-alphanumeric → truncate
