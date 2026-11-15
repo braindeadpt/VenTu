@@ -171,13 +171,51 @@ BEGIN
 END $$;
 RESET ROLE;
 
--- ── 7. Authenticated can read calibration data (existing policy, no PII) ──
-SELECT set_config('request.jwt.claims', '{"app_metadata":{"role":"user"}}', false);
+-- ── 7. Only VenTu admins may read calibration rows (they carry client_ip) ──
+SELECT set_config(
+  'request.jwt.claims',
+  '{"sub":"11111111-1111-1111-1111-111111111111","app_metadata":{"role":"user"}}',
+  false
+);
+SET ROLE authenticated;
+SELECT test_expect(
+  (SELECT count(*) FROM score_feedback WHERE client_ip IS NOT NULL) = 0,
+  '7a: a non-admin authenticated user sees no calibration rows (client_ip hidden)'
+);
+RESET ROLE;
+
+SELECT set_config(
+  'request.jwt.claims',
+  '{"sub":"22222222-2222-2222-2222-222222222222","app_metadata":{"role":"admin"}}',
+  false
+);
 SET ROLE authenticated;
 SELECT test_expect(
   (SELECT count(*) FROM score_feedback) >= 1,
-  '7: authenticated sees calibration rows (existing SELECT policy)'
+  '7b: an admin still reads calibration rows'
 );
+RESET ROLE;
+SELECT set_config('request.jwt.claims', '', false);
+
+-- ── 8. A signed-in user can submit (the grant was anon-only, #454) ──
+SELECT set_config(
+  'request.jwt.claims',
+  '{"sub":"11111111-1111-1111-1111-111111111111","app_metadata":{"role":"user"}}',
+  false
+);
+SET ROLE authenticated;
+SELECT test_set_ip('198.51.100.70');
+DO $$
+DECLARE r jsonb;
+BEGIN
+  r := public.submit_score_feedback(
+    p_spot_slug => 'auth-spot', p_sport => 'surf', p_predicted_score => 60,
+    p_verdict => 'same', p_client_id => 'client-sf-auth'
+  )::jsonb;
+  IF (r ->> 'ok') <> 'true' THEN
+    RAISE EXCEPTION '8a: authenticated submit_score_feedback failed: %', r;
+  END IF;
+END $$;
 RESET ROLE;
 SELECT set_config('request.jwt.claims', '', false);
 

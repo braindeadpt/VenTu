@@ -1,74 +1,85 @@
 {
-  "date": "2026-11-13",
-  "generatedAt": "2026-11-13T04:36:29.498Z",
-  "topSpot": "Arrifana",
-  "topSpotSlug": "arrifana",
+  "date": "2026-11-15",
+  "generatedAt": "2026-11-15T04:36:35.475Z",
+  "topSpot": "Guincho",
+  "topSpotSlug": "guincho",
   "pt": {
-    "headline": "Hoje é dia de Arrifana! 🌊",
-    "advice": "Melhor janela: 8:00h. Ondas de 3.1m com 6 nós de vento. ⚓ Avisos à Navegação Costeiros (IH): ANAV NR 2/22 — Plano de Salvamento Marítimo Lagos",
-    "bestTime": "8:00",
-    "wetsuit": "2mm shorty",
+    "headline": "Hoje é dia de Guincho! 🌊",
+    "advice": "Melhor janela: 9:00h. Ondas de 1.6m com 5 nós de vento. ⚓ Avisos à Navegação Costeiros (IH): ANAV NR 1445/26 — Animais Marinhos - Interação · ANAV NR 1727/26 — Animais Marinhos - Avistamento",
+    "bestTime": "9:00",
+    "wetsuit": "3/2mm",
     "crowdTip": "Chega cedo para evitar crowd!",
-    "moonTideLine": "Lua crescente · Marés vivas · baixa-mar 10:00"
+    "moonTideLine": "Lua crescente · Transição · baixa-mar 01:00"
   },
   "en": {
-    "headline": "Today is Arrifana day! 🌊",
-    "advice": "Best window: 8:00. 3.1m waves with 6 knot wind. ⚓ Coastal navigation warnings (IH): ANAV NR 2/22 — Plano de Salvamento Marítimo Lagos",
-    "bestTime": "8:00",
-    "wetsuit": "2mm shorty",
+    "headline": "Today is Guincho day! 🌊",
+    "advice": "Best window: 9:00. 1.6m waves with 5 knot wind. ⚓ Coastal navigation warnings (IH): ANAV NR 1445/26 — Animais Marinhos - Interação · ANAV NR 1727/26 — Animais Marinhos - Avistamento",
+    "bestTime": "9:00",
+    "wetsuit": "3/2mm",
     "crowdTip": "Get there early to beat the crowd!",
-    "moonTideLine": "Waxing crescent · Spring tides · low tide 10:00"
+    "moonTideLine": "Waxing crescent · Transition · low tide 01:00"
   },
   "spots": [
     {
-      "name": "Arrifana",
-      "slug": "arrifana",
-      "score": 80,
-      "scoreForecast": 80,
+      "name": "Guincho",
+      "slug": "guincho",
+      "score": 60,
+      "scoreForecast": 60,
       "scoreSource": "previsão",
       "scoreMeta": null,
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
+      "verdict": "maybe",
+      "ptReason": "Condições razoáveis",
+      "enReason": "Fair conditions"
     },
     {
       "name": "Nazaré",
       "slug": "nazare",
-      "score": 70,
-      "scoreForecast": 70,
+      "score": 60,
+      "scoreForecast": 60,
       "scoreSource": "previsão",
       "scoreMeta": null,
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
+      "verdict": "maybe",
+      "ptReason": "Condições razoáveis",
+      "enReason": "Fair conditions"
     },
     {
       "name": "Ribeira d'Ilhas",
       "slug": "ribeira-ilhas",
-      "score": 70,
-      "scoreForecast": 70,
+      "score": 60,
+      "scoreForecast": 60,
       "scoreSource": "previsão",
       "scoreMeta": null,
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
+      "verdict": "maybe",
+      "ptReason": "Condições razoáveis",
+      "enReason": "Fair conditions"
     },
     {
       "name": "Coxos",
       "slug": "coxos",
-      "score": 70,
-      "scoreForecast": 70,
+      "score": 60,
+      "scoreForecast": 60,
       "scoreSource": "previsão",
       "scoreMeta": null,
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
+      "verdict": "maybe",
+      "ptReason": "Condições razoáveis",
+      "enReason": "Fair conditions"
     },
     {
       "name": "Supertubos",
       "slug": "supertubos",
-      "score": 60,
-      "scoreForecast": 60,
+      "score": 50,
+      "scoreForecast": 50,
+      "scoreSource": "previsão",
+      "scoreMeta": null,
+      "verdict": "maybe",
+      "ptReason": "Condições razoáveis",
+      "enReason": "Fair conditions"
+    },
+    {
+      "name": "Arrifana",
+      "slug": "arrifana",
+      "score": 50,
+      "scoreForecast": 50,
       "scoreSource": "previsão",
       "scoreMeta": null,
       "verdict": "maybe",
@@ -78,28 +89,17 @@
     {
       "name": "Carcavelos",
       "slug": "carcavelos",
-      "score": 60,
-      "scoreForecast": 60,
+      "score": 40,
+      "scoreForecast": 40,
       "scoreSource": "previsão",
       "scoreMeta": null,
-      "verdict": "maybe",
-      "ptReason": "Condições razoáveis",
-      "enReason": "Fair conditions"
-    },
-    {
-      "name": "Guincho",
-      "slug": "guincho",
-      "score": 50,
-      "scoreForecast": 50,
-      "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "maybe",
-      "ptReason": "Condições razoáveis",
-      "enReason": "Fair conditions"
+      "verdict": "skip",
+      "ptReason": "Não vale a pena",
+      "enReason": "Not worth it"
     }
   ],
-  "topScore": 80,
-  "topScoreForecast": 80,
+  "topScore": 60,
+  "topScoreForecast": 60,
   "topScoreSource": "previsão",
   "topScoreMeta": null
 }

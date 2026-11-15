@@ -83,4 +83,7 @@ run_sql supabase/tests/test-e1c.sql
 echo "==> running E1c token-chain (combined verify/unsubscribe) behavior assertions"
 run_sql supabase/tests/test-e1c-token-chain.sql
 
+echo "==> running rate-limit IP / internal-helper grant assertions"
+run_sql supabase/tests/test-rate-limit-ip.sql
+
 echo "OK — supabase integration tests passed"

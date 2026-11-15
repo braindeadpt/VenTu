@@ -39,7 +39,6 @@ export function LuaNoite({
         background: V6_BANDAS.noite.c,
         color: V6_BANDAS.noite.t,
       }}
-      data-noite=""
       {...(decorativa ? { 'aria-hidden': true } : { role: 'img', 'aria-label': t.luaAria })}
     >
       <svg viewBox="0 0 24 24" aria-hidden="true" style={{ width: '58%', height: '58%' }}>

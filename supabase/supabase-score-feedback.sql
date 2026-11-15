@@ -1,6 +1,7 @@
 -- ============================================================
 -- VenTu — Score calibration feedback (Phase C4)
 -- Execute in Supabase SQL Editor
+-- Prerequisite: supabase-admin-helpers.sql (public.is_ventu_admin()).
 -- ============================================================
 
 CREATE TABLE IF NOT EXISTS score_feedback (
@@ -23,6 +24,19 @@ CREATE INDEX IF NOT EXISTS idx_score_feedback_client_created
 
 ALTER TABLE score_feedback ENABLE ROW LEVEL SECURITY;
 
+-- ── 0. Prerequisite guard (fail at apply time, not on first read) ──
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_proc
+    WHERE proname = 'is_ventu_admin'
+      AND pronamespace = 'public'::regnamespace
+  ) THEN
+    RAISE EXCEPTION 'prerequisite missing: apply supabase-admin-helpers.sql first';
+  END IF;
+END
+$$;
+
 DROP POLICY IF EXISTS "Allow anonymous score feedback insert" ON score_feedback;
 CREATE POLICY "Allow anonymous score feedback insert" ON score_feedback
   FOR INSERT TO anon
@@ -40,7 +54,11 @@ CREATE POLICY "Allow anonymous score feedback insert" ON score_feedback
     )
   );
 
+-- Calibration rows carry client_ip: only VenTu admins may read them (#454).
+-- The old permissive name is dropped too, so re-running can never leave a
+-- USING (true) policy behind.
 DROP POLICY IF EXISTS "Allow authenticated select score feedback" ON score_feedback;
-CREATE POLICY "Allow authenticated select score feedback" ON score_feedback
+DROP POLICY IF EXISTS "Allow admin select score feedback" ON score_feedback;
+CREATE POLICY "Allow admin select score feedback" ON score_feedback
   FOR SELECT TO authenticated
-  USING (true);
+  USING (public.is_ventu_admin());

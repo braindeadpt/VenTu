@@ -29,7 +29,9 @@ test.describe('Noite fora do /mapa', () => {
 
   test('/spots tabela: lua no lugar do «0», faixa de noite, próxima janela; sem janela no fim', async ({ page }) => {
     await interceptConditions(page, { base: 'fixture', all: notaV6DeNoite });
-    await page.goto('/pt/spots/');
+    // `?sport=all`: sem ele o HTML estático traz as 189 linhas do «Todos» e a
+    // hidratação aplica o filtro por omissão (surf, 147) — a contagem mudava a meio.
+    await page.goto('/pt/spots/?sport=all');
     const tabela = page.getByRole('region', { name: 'Ranking de spots', exact: true });
     await expect(tabela.locator('[data-faixa-noite]')).toBeVisible({ timeout: 20_000 });
     await expect(tabela.getByText('Noite · pela próxima janela boa')).toBeVisible();
@@ -38,7 +40,7 @@ test.describe('Noite fora do /mapa', () => {
     expect(n).toBeGreaterThan(0);
     await expect(tabela.locator('tbody tr[data-noite]')).toHaveCount(n);
     // coluna Score: a lua em todas as linhas, nenhum numeral
-    await expect(tabela.locator('tbody tr td:nth-child(2) [data-noite]')).toHaveCount(n);
+    await expect(tabela.locator('tbody tr td:nth-child(2) [role="img"]')).toHaveCount(n);
     await expect(tabela.locator('tbody tr td:nth-child(2) .font-mono')).toHaveCount(0);
     const { com, sem } = await ordemJanelas(rows);
     expect(com.length + sem.length).toBe(n);

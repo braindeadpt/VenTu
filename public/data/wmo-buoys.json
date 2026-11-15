@@ -8,12 +8,12 @@
       "lat": 43.63999938964844,
       "lon": -3.0399999618530273,
       "latest": {
-        "date": "2026-11-13T18:00:00.000Z",
-        "hs": 1.2899999618530273,
-        "tp": 7.03000020980835,
-        "dir": 24,
-        "hmax": 2.190000057220459,
-        "sst": 17.100000381469727
+        "date": "2026-11-15T12:00:00.000Z",
+        "hs": 1.5199999809265137,
+        "tp": 4.489999771118164,
+        "dir": 235,
+        "hmax": 2.2799999713897705,
+        "sst": 17
       }
     },
     "6200025": {
@@ -24,11 +24,11 @@
       "lat": 43.75,
       "lon": -6.179999828338623,
       "latest": {
-        "date": "2026-11-13T18:00:00.000Z",
-        "hs": 2.109999895095825,
+        "date": "2026-11-15T12:00:00.000Z",
+        "hs": 2.3399999141693115,
         "tp": 7.619999885559082,
-        "dir": 47,
-        "sst": 17.020000457763672
+        "dir": 277,
+        "sst": 15.880000114440918
       }
     },
     "6200083": {
@@ -39,12 +39,12 @@
       "lat": 43.5,
       "lon": -9.210000038146973,
       "latest": {
-        "date": "2026-11-13T18:00:00.000Z",
-        "hs": 3.049999952316284,
-        "tp": 8.59000015258789,
-        "dir": 33,
-        "hmax": 5.25,
-        "sst": 16.15999984741211
+        "date": "2026-11-15T12:00:00.000Z",
+        "hs": 2.5799999237060547,
+        "tp": 8.010000228881836,
+        "dir": 254,
+        "hmax": 4,
+        "sst": 16.559999465942383
       }
     },
     "6200084": {
@@ -55,11 +55,11 @@
       "lat": 42.119998931884766,
       "lon": -9.430000305175781,
       "latest": {
-        "date": "2026-11-13T18:00:00.000Z",
-        "hs": 2.809999942779541,
-        "tp": 9.960000038146973,
-        "dir": 274,
-        "sst": 16.979999542236328
+        "date": "2026-11-15T12:00:00.000Z",
+        "hs": 2.5799999237060547,
+        "tp": 7.619999885559082,
+        "dir": 260,
+        "sst": 17.40999984741211
       }
     },
     "6200085": {
@@ -70,12 +70,12 @@
       "lat": 36.4900016784668,
       "lon": -6.960000038146973,
       "latest": {
-        "date": "2026-11-13T18:00:00.000Z",
-        "hs": 2.109999895095825,
-        "tp": 11.90999984741211,
-        "dir": 249,
-        "hmax": 4.380000114440918,
-        "sst": 20.969999313354492
+        "date": "2026-11-15T07:00:00.000Z",
+        "hs": 1.0499999523162842,
+        "tp": 10.350000381469727,
+        "dir": 258,
+        "hmax": 1.5299999713897705,
+        "sst": 20.90999984741211
       }
     },
     "6200199": {
@@ -86,11 +86,11 @@
       "lat": 39.560001373291016,
       "lon": -9.210000038146973,
       "latest": {
-        "date": "2026-11-13T18:00:00.000Z",
-        "hs": 2.270509958267212,
-        "tp": 7.617199897766113,
-        "hmax": 3.354490041732788,
-        "sst": 18.232419967651367
+        "date": "2026-11-15T12:00:00.000Z",
+        "hs": 1.6845699548721313,
+        "tp": 7.206999778747559,
+        "hmax": 2.2851600646972656,
+        "sst": 18.151859283447266
       }
     }
   },
@@ -660,10 +660,10 @@
       "distanceKm": 149.2
     },
     "alqueva": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 196
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 211.6
     },
     "ilha-do-ermal": {
       "code": "6200084",
@@ -708,238 +708,40 @@
       "distanceKm": 207.6
     },
     "alteirinhos": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 198.6
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 229.9
     },
     "zambujeira": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 198.8
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 229.5
     },
     "carvalhal": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 197.7
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 231.9
     },
     "odeceixe": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 194.5
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 238.2
     },
     "amoreira": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 192.9
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 247.8
     },
     "monte-clerigo": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 193.1
-    },
-    "arrifana": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 191.4
-    },
-    "vale-figueiras": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 189.5
-    },
-    "bordeira": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 189.6
-    },
-    "amado": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 188.7
-    },
-    "barriga": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 188.9
-    },
-    "castelejo": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 189.4
-    },
-    "luz": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 171.1
-    },
-    "burgau": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 174.4
-    },
-    "salema": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 177.9
-    },
-    "cordoama": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 189.1
-    },
-    "ferragudo": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 155.5
-    },
-    "vila-real-santo-antonio": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 85.9
-    },
-    "monte-gordo": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 88.5
-    },
-    "praia-verde": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 89
-    },
-    "altura": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 89.5
-    },
-    "praia-rocha": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 156.4
-    },
-    "alvor": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 163.5
-    },
-    "foil-alvor": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 163.5
-    },
-    "lagos": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 166
-    },
-    "lagos-wakepark": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 166.7
-    },
-    "beliche": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 188.2
-    },
-    "martinhal": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 184.8
-    },
-    "barrinha-faro": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 105.2
-    },
-    "fuseta": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 92.9
-    },
-    "ilha-faro": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 107.8
-    },
-    "faro-mar": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 108.9
-    },
-    "culatra": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 95.6
-    },
-    "armona": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 94.4
-    },
-    "ilha-tavira": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 90.6
-    },
-    "cabanas-tavira": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 91
-    },
-    "cacela-velha": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 90.2
-    },
-    "zavial": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 180.8
-    },
-    "tonel": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 186.2
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 248.7
     },
     "barra-aveiro": {
       "code": "6200199",
@@ -1025,36 +827,6 @@
       "area": "Nazaré",
       "distanceKm": 195.8
     },
-    "falesia": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 123.2
-    },
-    "tres-irmaos": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 160.4
-    },
-    "canavial": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 166.7
-    },
-    "armacao-pera": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 141.5
-    },
-    "mareta": {
-      "code": "6200085",
-      "stationTitle": "Golfo de Cádiz",
-      "area": "Andaluzia",
-      "distanceKm": 185.5
-    },
     "mindelo": {
       "code": "6200084",
       "stationTitle": "Cabo Silleiro",
@@ -1068,8 +840,8 @@
       "distanceKm": 117.5
     }
   },
-  "day": "20261113",
-  "fetchedAt": "2026-11-13T20:06:30.408Z",
+  "day": "20261115",
+  "fetchedAt": "2026-11-15T14:06:28.113Z",
   "hasWaveData": true,
   "note": "Fallback independente para o observedWave do IH (via WMO/GTS → Copernicus, sem key)."
 }

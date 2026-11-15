@@ -26,10 +26,16 @@ const cartao = (props: Record<string, unknown>) =>
     }),
   );
 
+/**
+ * Nós com `[data-noite]` no HTML do cartão: exatamente um, o contentor da lua. O #358
+ * punha também um no ícone da lua e a duplicação só aparecia no e2e, em modo estrito.
+ */
+const nosDeNoite = (html: string) => html.split('data-noite=""').length - 1;
+
 describe('SpotListCard de noite (prop noite, paralela a semNota)', () => {
   it('lua + «Noite» + próxima janela «Amanhã 07–11h [8]», sem o «0» nem a banda', () => {
     const html = cartao({ noite: { janela: JAN }, statusLine: 'N/A' });
-    expect(html).toContain('data-noite=""');
+    expect(nosDeNoite(html)).toBe(1);
     expect(html).toContain('Noite');
     expect(html).toContain('Próxima janela');
     expect(html).toContain('Amanhã');
@@ -42,6 +48,7 @@ describe('SpotListCard de noite (prop noite, paralela a semNota)', () => {
 
   it('sem janela: «Sem janela boa nas próximas horas»', () => {
     const html = cartao({ noite: { janela: null } });
+    expect(nosDeNoite(html)).toBe(1);
     expect(html).toContain('Sem janela boa nas próximas horas');
     expect(html).not.toContain('data-nota-janela');
   });

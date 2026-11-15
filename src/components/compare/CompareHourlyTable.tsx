@@ -10,8 +10,18 @@ import { notasHorariasCompare } from '@/lib/compareHourlyScores';
 import { loadForecastForSpot } from '@/lib/spotDataCache';
 import { getConditionsDataId } from '@/lib/spotConditionsSource';
 import { getTranslation, validateLocale } from '@/lib/i18n';
+import { seriesTimeMs } from '@/lib/openMeteoTime';
 import Skeleton from '@/components/ui/Skeleton';
 import { cn } from '@/lib/cn';
+
+const HOUR_MS = 3_600_000;
+
+/**
+ * Hora real (bucket de instante UTC) de uma etiqueta. O eixo vem do primeiro
+ * spot com mais horas e cada série pode estar noutro fuso (Açores), por isso
+ * a linha casa pelo instante e não pela string (#456).
+ */
+const horaSlot = (t: string): number => Math.floor(seriesTimeMs(t) / HOUR_MS);
 
 export interface CompareHourlyEntry {
   spot: Spot;
@@ -110,7 +120,11 @@ export default function CompareHourlyTable({
 
     const columns = entries.map((e) => {
       const rows = forecasts[getConditionsDataId(e.spot)] ?? [];
-      const byTime = new Map(rows.map((r) => [String(r.time ?? ''), r]));
+      const bySlot = new Map<number, Record<string, unknown>>();
+      for (const r of rows) {
+        const k = horaSlot(String(r.time ?? ''));
+        if (Number.isFinite(k) && !bySlot.has(k)) bySlot.set(k, r);
+      }
       // kitesurf/surf: motor v6 hora a hora (#218 PR 4), a mesma nota da régua
       // do spot; noite → null («—»). Outras modalidades: motor antigo (D5).
       const scores = notasHorariasCompare(
@@ -121,7 +135,9 @@ export default function CompareHourlyTable({
         e.conditions,
       );
       const hourly = axis.map((h) => {
-        const r = byTime.get(h.time) as { waveHeight?: number; windSpeed?: number } | undefined;
+        const r = bySlot.get(horaSlot(h.time)) as
+          | { waveHeight?: number; windSpeed?: number }
+          | undefined;
         return {
           waveHeight: r?.waveHeight ?? 0,
           windSpeed: r?.windSpeed ?? 0,

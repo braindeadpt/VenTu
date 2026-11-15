@@ -5,10 +5,21 @@
 -- supabase-alerts-e1c-harden.sql) depends on these.
 --
 -- Single source of truth for the per-IP rate-limit pattern:
---   * request_client_ip()  — client IP from the first X-Forwarded-For hop
---     (official Supabase pattern: current_setting('request.headers')).
+--   * request_client_ip()  — client IP, in order of trust:
+--       1. cf-connecting-ip (set by Cloudflare at the edge);
+--       2. the LAST hop of x-forwarded-for (appended by our proxy — the FIRST
+--          hop is client-controlled and was the #454 rate-limit bypass);
+--     validated as IPv4/IPv6. An HTTP request without a usable IP gets the
+--     shared 'unknown-http' bucket, never NULL (NULL used to fail open).
+--     NULL is returned only when there is no request context at all
+--     (SQL Editor / psql), where the caller has no IP to be limited by.
 --   * check_rate_limit()   — ledger-based limit (true = allowed, records the
 --     event; false = blocked). Ledger never exposed through the API.
+--
+-- Both helpers are internal: EXECUTE is revoked from PUBLIC, anon and
+-- authenticated (they are not PostgREST endpoints). Callers keep working
+-- because every caller is SECURITY DEFINER and therefore executes them as the
+-- owner — a new caller must be SECURITY DEFINER too.
 --
 -- Idempotent: safe to re-run.
 -- ============================================================
@@ -28,35 +39,60 @@ ALTER TABLE rate_limit_events ENABLE ROW LEVEL SECURITY; -- no policies: API can
 REVOKE ALL ON rate_limit_events FROM anon, authenticated;
 REVOKE ALL ON SEQUENCE rate_limit_events_id_seq FROM anon, authenticated;
 
--- ── 2. Client IP helper (first X-Forwarded-For hop) ──
+-- ── 2. Client IP helper (edge-set headers only) ──
 CREATE OR REPLACE FUNCTION public.request_client_ip()
 RETURNS TEXT
 LANGUAGE plpgsql
 STABLE
 AS $$
-DECLARE v_ip TEXT;
+DECLARE
+  v_headers TEXT;
+  v_raw TEXT;
 BEGIN
+  v_headers := current_setting('request.headers', true);
+
+  -- No request context at all (SQL Editor / psql): keep NULL so backfills and
+  -- manual work are not blocked. An HTTP request always lands further down.
+  IF v_headers IS NULL OR btrim(v_headers) = '' THEN
+    RETURN NULL;
+  END IF;
+
   BEGIN
-    v_ip := NULLIF(
-      split_part(
-        current_setting('request.headers', true)::json->>'x-forwarded-for',
-        ',', 1
-      ),
-      ''
-    );
-    -- Keep only plausible IP-ish strings; never trust the value for anything else.
-    IF v_ip IS NOT NULL AND (length(v_ip) > 64 OR v_ip !~ '^[0-9A-Fa-f:.]+$') THEN
-      v_ip := NULL;
+    -- Cloudflare overwrites cf-connecting-ip at the edge. The x-forwarded-for
+    -- list is append-only, so only its LAST element was written by our proxy;
+    -- the first is whatever the client sent (the old bypass, #454).
+    v_raw := NULLIF(btrim(COALESCE(v_headers::json ->> 'cf-connecting-ip', '')), '');
+    IF v_raw IS NULL THEN
+      v_raw := NULLIF(
+        btrim(split_part(COALESCE(v_headers::json ->> 'x-forwarded-for', ''), ',', -1)),
+        ''
+      );
     END IF;
   EXCEPTION WHEN OTHERS THEN
-    v_ip := NULL;
+    v_raw := NULL;
   END;
-  RETURN v_ip;
+
+  -- Garbage, a CIDR or an over-long value: one shared bucket, never a fresh
+  -- key per request and never NULL (either would hand back the fail-open).
+  IF v_raw IS NULL
+     OR length(v_raw) > 64
+     OR position('/' IN v_raw) > 0
+     OR v_raw !~ '^[0-9A-Fa-f:.]+$' THEN
+    RETURN 'unknown-http';
+  END IF;
+
+  -- Real IPv4/IPv6 validation (inet rejects anything else); host() drops any
+  -- mask and normalises IPv4-mapped IPv6.
+  BEGIN
+    RETURN host(v_raw::inet);
+  EXCEPTION WHEN OTHERS THEN
+    RETURN 'unknown-http';
+  END;
 END;
 $$;
 
-REVOKE ALL ON FUNCTION public.request_client_ip() FROM PUBLIC;
-GRANT EXECUTE ON FUNCTION public.request_client_ip() TO anon, authenticated;
+-- Internal helper: not callable through PostgREST (/rpc/request_client_ip).
+REVOKE ALL ON FUNCTION public.request_client_ip() FROM PUBLIC, anon, authenticated;
 
 -- ── 3. Rate-limit helper: true = allowed (records the event); false = blocked ──
 CREATE OR REPLACE FUNCTION public.check_rate_limit(
@@ -93,5 +129,8 @@ BEGIN
 END;
 $$;
 
-REVOKE ALL ON FUNCTION public.check_rate_limit(TEXT, TEXT, INTEGER, INTERVAL) FROM PUBLIC;
-GRANT EXECUTE ON FUNCTION public.check_rate_limit(TEXT, TEXT, INTEGER, INTERVAL) TO anon, authenticated;
+-- Internal helper: not callable through PostgREST (/rpc/check_rate_limit).
+-- Granting it to anon would let anyone burn another IP's bucket or fill the
+-- ledger; every caller is SECURITY DEFINER (see the header).
+REVOKE ALL ON FUNCTION public.check_rate_limit(TEXT, TEXT, INTEGER, INTERVAL)
+  FROM PUBLIC, anon, authenticated;
