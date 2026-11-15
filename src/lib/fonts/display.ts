@@ -15,7 +15,11 @@ import localFont from 'next/font/local';
  */
 export const spaceGrotesk = localFont({
   src: './space-grotesk/SpaceGrotesk-wght.woff2',
-  weight: '300 700',
+  // 500–700 é a gama que o `next/font/google` declarava antes (três faces
+  // discretas). Abrir até 300 mudava o desenho: texto com `font-display` sem
+  // peso explícito passava a resolver para 400 em vez de 500, e o gate de
+  // píxeis acusou-o em `/news`, `/diretorio` e nas calculadoras.
+  weight: '500 700',
   style: 'normal',
   variable: '--font-display',
   display: 'swap',
