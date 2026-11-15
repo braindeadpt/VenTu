@@ -1,6 +1,7 @@
 import { test, expect, type Page } from '@playwright/test';
 import { installSupabaseMock } from './helpers/supabase-mock';
 import { waitHydrated } from './helpers/hydration';
+import { interceptData } from './helpers/conditions';
 
 /**
  * Guarda dos ALVOS DE TOQUE (achado A4 da mega audit de 2026-09-26).
@@ -127,5 +128,108 @@ test.describe('Alvos de toque ≥44 px (390 px, touch)', () => {
 
     await close.click();
     await expect(notice).toHaveCount(0);
+  });
+});
+
+/**
+ * ESTADOS VAZIOS — o caminho onde o botão de 38 px viveu meses.
+ *
+ * «Limpar todos os filtros» só existe quando a lista de notícias fica vazia, e
+ * nenhuma rota da guarda normal chega lá com filtros activos. O botão media
+ * 38 px (corrigido no #484, `min-h-[44px]`) e nada o media, porque os dois
+ * caminhos que o mostram — `?region=pt` sem itens pt e uma pesquisa sem
+ * resultados — não estavam na lista.
+ *
+ * O feed é fixado com `interceptData` para o estado vazio não depender do que o
+ * `news.json` do build tiver nesse dia: com o Surftotal a publicar, `?region=pt`
+ * deixou de ser vazio por si só e o teste passaria sem medir nada.
+ */
+const NOTICIAS_SO_INTL = [
+  {
+    id: 'a11y-vazio-1',
+    title: 'Swell de noroeste a caminho da Europa',
+    titleEn: 'Northwest swell heading for Europe',
+    summary: 'Resumo de teste, sem cobertura nacional.',
+    summaryEn: 'Test summary, no national coverage.',
+    category: 'surf',
+    source: 'Stab Mag',
+    sourceType: 'rss',
+    sourceRegion: 'intl',
+    url: 'https://example.com/news/a11y-vazio-1',
+    publishedAt: '2026-11-14T10:00:00.000Z',
+    tags: [],
+  },
+  {
+    id: 'a11y-vazio-2',
+    title: 'Kite mundial decide-se este fim de semana',
+    titleEn: 'Kite world title decided this weekend',
+    summary: 'Resumo de teste, sem cobertura nacional.',
+    summaryEn: 'Test summary, no national coverage.',
+    category: 'kitesurf',
+    source: 'IKSURF Mag',
+    sourceType: 'rss',
+    sourceRegion: 'intl',
+    url: 'https://example.com/news/a11y-vazio-2',
+    publishedAt: '2026-11-13T09:00:00.000Z',
+    tags: [],
+  },
+];
+
+test.describe('Estados vazios das notícias — alvos de toque', () => {
+  test.use({
+    viewport: { width: 390, height: 844 },
+    hasTouch: true,
+    reducedMotion: 'reduce',
+    // O SW serve /data/* do cache e burla o page.route (ver helpers/conditions.ts).
+    serviceWorkers: 'block',
+  });
+
+  const limpar = (page: Page) => page.getByRole('button', { name: 'Limpar todos os filtros' });
+
+  async function abrirEstadoVazio(page: Page, url: string, aviso: string) {
+    await interceptData(page, 'news.json', NOTICIAS_SO_INTL);
+    await installSupabaseMock(page);
+    await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 45_000 });
+    await waitHydrated(page);
+    await page.evaluate(() => document.fonts.ready);
+    // Os filtros vêm da URL num efeito de mount: o estado vazio só existe depois.
+    await expect(page.getByText(aviso)).toBeVisible({ timeout: 15_000 });
+    await page.waitForTimeout(200);
+  }
+
+  test('?region=pt sem itens pt — nenhum controlo abaixo de 44 px', async ({ page }) => {
+    test.setTimeout(60_000);
+    await abrirEstadoVazio(page, '/pt/news/?region=pt', 'Nenhuma notícia com este filtro.');
+
+    const found = await offenders(page);
+    expect(found, `?region=pt\n${found.join('\n')}`).toEqual([]);
+
+    const box = (await limpar(page).boundingBox())!;
+    expect(box.height, 'altura de «Limpar todos os filtros»').toBeGreaterThanOrEqual(44);
+  });
+
+  test('pesquisa sem resultados — nenhum controlo abaixo de 44 px', async ({ page }) => {
+    test.setTimeout(60_000);
+    await abrirEstadoVazio(
+      page,
+      '/pt/news/?q=zzzz-sem-resultados',
+      'Nenhuma notícia encontrada para "zzzz-sem-resultados"',
+    );
+
+    const found = await offenders(page);
+    expect(found, `?q= sem resultados\n${found.join('\n')}`).toEqual([]);
+
+    const box = (await limpar(page).boundingBox())!;
+    expect(box.height, 'altura de «Limpar todos os filtros»').toBeGreaterThanOrEqual(44);
+  });
+
+  test('o botão do estado vazio limpa os filtros e devolve a lista', async ({ page }) => {
+    test.setTimeout(60_000);
+    await abrirEstadoVazio(page, '/pt/news/?region=pt', 'Nenhuma notícia com este filtro.');
+
+    await limpar(page).click();
+    // Alvo de toque que não faz nada não serve de nada: a lista volta.
+    await expect(page.locator('[data-hydration-gate="news"] article').first()).toBeVisible({ timeout: 15_000 });
+    await expect(limpar(page)).toHaveCount(0);
   });
 });
