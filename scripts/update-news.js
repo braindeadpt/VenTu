@@ -11,11 +11,12 @@
  * Logging by stage for debugging.
  */
 
-const { fetchAllFeeds } = require('./news/fetch-rss');
+const { fetchAllFeedsDetailed } = require('./news/fetch-rss');
 const { detectEvents } = require('./news/detect-events');
 const { inferCategoryFromText, hasSpecificCategory } = require('./news/category-keywords');
 const { categoriseItem, ensureBilingual, synthesiseEvent } = require('./news/llm-tasks');
 const { mergeAndPersist, loadExisting } = require('./news/merge-persist');
+const { reportFeedHealth } = require('./news/feed-health');
 const { callLLM } = require('./llm-fallback');
 
 async function updateNews() {
@@ -32,8 +33,18 @@ async function updateNews() {
   // ─── Etapa 1: RSS Fetch ─────────────────────────────────
   let rssItems = [];
   try {
-    rssItems = await fetchAllFeeds();
+    const { items, reports } = await fetchAllFeedsDetailed();
+    rssItems = items;
     console.log(`   → RSS items to process: ${rssItems.length}`);
+    // Fontes que responderam mas não entregaram nada novo: o log de cada uma
+    // já diz o motivo (fetch falhou / feed sem itens / 0 depois dos filtros).
+    const semItensNovos = reports.filter((r) => r.status !== 'ok');
+    if (semItensNovos.length > 0) {
+      console.log(
+        `   ⚠️ ${semItensNovos.length}/${reports.length} fontes sem itens novos: ` +
+          semItensNovos.map((r) => `${r.source} [${r.status}]`).join(', '),
+      );
+    }
   } catch (e) {
     console.error('❌ Etapa 1 failed:', e.message);
     errors.push(`RSS: ${e.message}`);
@@ -166,6 +177,10 @@ async function updateNews() {
     if (finalNews.length > 10) {
       console.log(`     … and ${finalNews.length - 10} more`);
     }
+
+    // Saúde por região: conta pt/intl, emite ::warning:: se pt = 0 e mantém a
+    // issue única «Notícias: feed sem itens pt» (nunca falha o job).
+    await reportFeedHealth({ items: finalNews });
 
     if (errors.length > 0) {
       console.log('\n⚠️  Warnings/errors during this run:');

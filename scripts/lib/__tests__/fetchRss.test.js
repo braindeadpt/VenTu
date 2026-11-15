@@ -3,6 +3,13 @@ import { createRequire } from 'module';
 
 const require = createRequire(import.meta.url);
 const { fetchAllFeeds, extractField, FEEDS } = require('../../news/fetch-rss.js');
+const { fetchFeed } = require('../../news/fetch-rss.js');
+const {
+  regionCounts,
+  decideFeedHealthAction,
+  reportFeedHealth,
+  ISSUE_TITLE,
+} = require('../../news/feed-health.js');
 
 // S3 guarantee: the RSS pipeline must never let a non-http(s) URL through,
 // even if a compromised/malicious feed serves one. This test mocks fetch and
@@ -129,5 +136,202 @@ describe('fetch-rss field extraction never yields markup (H1)', () => {
       expect(i.title).not.toMatch(/[<>]/);
       expect(i.summary).not.toMatch(/[<>]/);
     }
+  });
+});
+
+// ─── Saúde do pipeline: classificação de cada fonte ────────────────────────
+// Antes, uma fonte com o feed vazio, um pedido falhado ou todos os itens
+// descartados imprimiam o mesmo «✓ <url>: 0 items». São três estados
+// diferentes e o log (e a issue de saúde) têm de os distinguir.
+describe('fetchFeed — classificação de fontes', () => {
+  const feed = {
+    url: 'https://example.com/feed',
+    source: 'Teste',
+    defaultCategory: 'surf',
+    sourceRegion: 'pt',
+  };
+  const rss = (items) =>
+    `<?xml version="1.0"?><rss version="2.0"><channel><title>T</title>${items}</channel></rss>`;
+  const item = ({ title = 'Notícia de teste', link = 'https://example.com/a', date = new Date() } = {}) =>
+    `<item><title><![CDATA[${title}]]></title><link>${link}</link>` +
+    `<description><![CDATA[resumo de teste]]></description>` +
+    `<pubDate>${new Date(date).toUTCString()}</pubDate></item>`;
+
+  it('fetch falhou (HTTP não 2xx) não é «feed sem itens»', async () => {
+    vi.stubGlobal('fetch', vi.fn(async () => new Response('nope', { status: 503 })));
+    const { items, report } = await fetchFeed(feed);
+    expect(items).toHaveLength(0);
+    expect(report.status).toBe('fetch_failed');
+    expect(report.detail).toContain('HTTP 503');
+  });
+
+  it('feed sem itens: resposta 200 com zero <item>', async () => {
+    vi.stubGlobal('fetch', vi.fn(async () => new Response(rss(''), { status: 200 })));
+    const { items, report } = await fetchFeed(feed);
+    expect(items).toHaveLength(0);
+    expect(report.status).toBe('empty_feed');
+    expect(report.inFeed).toBe(0);
+  });
+
+  it('N no feed, 0 depois dos filtros — motivo idade', async () => {
+    const old = Date.now() - 30 * 24 * 60 * 60 * 1000;
+    const xml = rss(item({ date: old }) + item({ date: old, link: 'https://example.com/b' }));
+    vi.stubGlobal('fetch', vi.fn(async () => new Response(xml, { status: 200 })));
+    const { items, report } = await fetchFeed(feed);
+    expect(items).toHaveLength(0);
+    expect(report.status).toBe('filtered_out');
+    expect(report.inFeed).toBe(2);
+    expect(report.dropped.idade).toBe(2);
+    expect(report.detail).toContain('2 no feed, 0 depois dos filtros');
+    expect(report.detail).toContain('idade');
+  });
+
+  it('N no feed, 0 depois dos filtros — motivo spam', async () => {
+    const xml = rss(item({ title: 'Big discount on wetsuits' }));
+    vi.stubGlobal('fetch', vi.fn(async () => new Response(xml, { status: 200 })));
+    const { report } = await fetchFeed(feed);
+    expect(report.status).toBe('filtered_out');
+    expect(report.dropped.spam).toBe(1);
+    expect(report.detail).toContain('spam');
+  });
+
+  it('conta duplicados dentro do feed (URL repetido, barra final normalizada)', async () => {
+    const xml = rss(
+      item({ link: 'https://example.com/mesma' }) +
+        item({ title: 'Outra', link: 'https://example.com/mesma/' }),
+    );
+    vi.stubGlobal('fetch', vi.fn(async () => new Response(xml, { status: 200 })));
+    const { items, report } = await fetchFeed(feed);
+    expect(items).toHaveLength(1);
+    expect(report.passed).toBe(1);
+    expect(report.dropped.duplicados).toBe(1);
+  });
+
+  it('fonte saudável continua a marcar ok e a contar os que passaram', async () => {
+    const xml = rss(item() + item({ link: 'https://example.com/b' }) + item({ title: 'Velha', link: 'https://example.com/c', date: Date.now() - 40 * 24 * 60 * 60 * 1000 }));
+    vi.stubGlobal('fetch', vi.fn(async () => new Response(xml, { status: 200 })));
+    const { items, report } = await fetchFeed(feed);
+    expect(report.status).toBe('ok');
+    expect(report.inFeed).toBe(3);
+    expect(report.passed).toBe(2);
+    expect(items).toHaveLength(2);
+    expect(report.dropped.idade).toBe(1);
+  });
+});
+
+describe('regionCounts — contagem do feed final por sourceRegion', () => {
+  it('conta pt e intl, com a ausência a contar como intl', () => {
+    expect(
+      regionCounts([
+        { sourceRegion: 'pt' },
+        { sourceRegion: 'pt' },
+        { sourceRegion: 'intl' },
+        {},
+        null,
+      ]),
+    ).toEqual({ pt: 2, intl: 3 });
+  });
+
+  it('feed vazio dá zero em ambas', () => {
+    expect(regionCounts([])).toEqual({ pt: 0, intl: 0 });
+  });
+});
+
+describe('feed health — abrir, comentar ou não fazer nada', () => {
+  it('decide a acção a partir de pt e da existência de issue', () => {
+    expect(decideFeedHealthAction({ ptCount: 0, issueNumber: null })).toBe('open');
+    expect(decideFeedHealthAction({ ptCount: 0, issueNumber: 42 })).toBe('comment-empty');
+    expect(decideFeedHealthAction({ ptCount: 3, issueNumber: 42 })).toBe('comment-recovered');
+    expect(decideFeedHealthAction({ ptCount: 3, issueNumber: null })).toBe('none');
+  });
+
+  const silent = () => {};
+  const ptItems = (n) => Array.from({ length: n }, () => ({ sourceRegion: 'pt' }));
+  const intlItems = (n) => Array.from({ length: n }, () => ({ sourceRegion: 'intl' }));
+
+  function mockApi({ openIssueNumber = null } = {}) {
+    const calls = [];
+    const fetchImpl = vi.fn(async (url, init = {}) => {
+      const method = init.method || 'GET';
+      calls.push({ url, method, body: init.body ? JSON.parse(init.body) : undefined });
+      if (method === 'GET') {
+        const issues = openIssueNumber ? [{ number: openIssueNumber, title: ISSUE_TITLE }] : [];
+        return new Response(JSON.stringify(issues), { status: 200 });
+      }
+      if (method === 'POST' && /\/issues$/.test(url)) {
+        return new Response(JSON.stringify({ number: 101 }), { status: 201 });
+      }
+      return new Response(JSON.stringify({ id: 1 }), { status: 201 });
+    });
+    return { fetchImpl, calls };
+  }
+
+  it('pt = 0 e sem issue: abre uma issue com o título fixo', async () => {
+    const { fetchImpl, calls } = mockApi();
+    const res = await reportFeedHealth({
+      items: intlItems(5),
+      token: 't',
+      repo: 'org/repo',
+      fetchImpl,
+      log: silent,
+    });
+    expect(res.action).toBe('open');
+    expect(res.counts).toEqual({ pt: 0, intl: 5 });
+    const created = calls.filter((c) => c.method === 'POST' && /\/issues$/.test(c.url));
+    expect(created).toHaveLength(1);
+    expect(created[0].body.title).toBe(ISSUE_TITLE);
+  });
+
+  it('pt = 0 e issue já aberta: comenta, nunca duplica', async () => {
+    const { fetchImpl, calls } = mockApi({ openIssueNumber: 42 });
+    const res = await reportFeedHealth({
+      items: intlItems(2),
+      token: 't',
+      repo: 'org/repo',
+      fetchImpl,
+      log: silent,
+    });
+    expect(res.action).toBe('comment-empty');
+    expect(res.issueNumber).toBe(42);
+    expect(calls.filter((c) => c.method === 'POST' && /\/issues$/.test(c.url))).toHaveLength(0);
+    const comments = calls.filter((c) => c.method === 'POST' && /\/issues\/42\/comments$/.test(c.url));
+    expect(comments).toHaveLength(1);
+    expect(comments[0].body.body).toContain('Continua sem itens pt');
+  });
+
+  it('pt volta a > 0 com a issue aberta: comenta que recuperou e não a fecha', async () => {
+    const { fetchImpl, calls } = mockApi({ openIssueNumber: 42 });
+    const res = await reportFeedHealth({
+      items: [...ptItems(2), ...intlItems(3)],
+      token: 't',
+      repo: 'org/repo',
+      fetchImpl,
+      log: silent,
+    });
+    expect(res.action).toBe('comment-recovered');
+    const comments = calls.filter((c) => c.method === 'POST' && /\/comments$/.test(c.url));
+    expect(comments).toHaveLength(1);
+    expect(comments[0].body.body).toContain('voltou a ter itens pt');
+    expect(calls.some((c) => c.method === 'PATCH')).toBe(false);
+  });
+
+  it('pt > 0 sem issue aberta: não faz nenhum pedido de escrita', async () => {
+    const { fetchImpl, calls } = mockApi();
+    const res = await reportFeedHealth({
+      items: ptItems(1),
+      token: 't',
+      repo: 'org/repo',
+      fetchImpl,
+      log: silent,
+    });
+    expect(res.action).toBe('none');
+    expect(calls.filter((c) => c.method !== 'GET')).toHaveLength(0);
+  });
+
+  it('sem token/repo (corrida local): não chama a API', async () => {
+    const fetchImpl = vi.fn();
+    const res = await reportFeedHealth({ items: intlItems(1), token: '', repo: '', fetchImpl, log: silent });
+    expect(res.skipped).toBe(true);
+    expect(fetchImpl).not.toHaveBeenCalled();
   });
 });

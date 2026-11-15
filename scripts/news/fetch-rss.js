@@ -7,7 +7,7 @@
  * No LLM here — pure deterministic fetch + parse + filter.
  */
 
-const { canDiscard } = require('./spam-filter');
+const { canDiscard, isSafeHttpUrl } = require('./spam-filter');
 const { applyCategoryKeywords } = require('./category-keywords');
 // Sanitização partilhada (descodificação numa só passagem + garantia «sem
 // `<`/`>`») — ver scripts/lib/sanitizeText.js e o porquê em cada alerta do
@@ -22,6 +22,11 @@ const FEEDS = [
   { url: 'https://www.ansurfistas.com/feed/',           source: 'ANS',              defaultCategory: 'surf',       sourceRegion: 'pt' },
   { url: 'https://www.noticiasdomar.pt/feed/',          source: 'Notícias do Mar',  defaultCategory: 'general',  sourceRegion: 'pt' },
   { url: 'https://www.fps.pt/feed/',                    source: 'FPS',              defaultCategory: 'surf',       sourceRegion: 'pt' },
+  // Surftotal: a /feed e a /rss do WordPress dão 404; o feed do arquivo de
+  // notícias é este (?format=feed). Imprensa nacional, por isso a fonte toda
+  // é `pt` — o feed mistura peças internacionais, mas isso é da linha
+  // editorial do jornal, não uma classificação nossa por item.
+  { url: 'https://www.surftotal.com/noticias?format=feed', source: 'Surftotal',     defaultCategory: 'surf',       sourceRegion: 'pt' },
   // ── Internacional ──
   { url: 'https://stabmag.com/feed/',             source: 'Stab Mag',    defaultCategory: 'surf',       sourceRegion: 'intl' },
   { url: 'https://stabmag.com/category/news/feed/', source: 'Stab Mag',    defaultCategory: 'surf',       sourceRegion: 'intl' },
@@ -81,27 +86,67 @@ function isTooOld(pubDate) {
   return d.getTime() < weekAgo;
 }
 
+/** Razões possíveis para um item do feed não entrar na fila. */
+const DROP_REASONS = ['invalidos', 'spam', 'idade', 'duplicados'];
+
+/** «2 idade, 1 spam» — para o log e para o detalhe do relatório. */
+function summariseDrops(dropped) {
+  return DROP_REASONS.filter((k) => dropped[k] > 0)
+    .map((k) => `${dropped[k]} ${k}`)
+    .join(', ');
+}
+
+/** A razão que mais pesou (ou null se nada foi descartado). */
+function dominantReason(dropped) {
+  const sorted = DROP_REASONS.map((k) => [k, dropped[k] || 0]).sort((a, b) => b[1] - a[1]);
+  return sorted[0] && sorted[0][1] > 0 ? sorted[0][0] : null;
+}
+
 /**
  * Fetch and parse a single RSS feed.
- * @param {{ url: string; source: string; defaultCategory: string }} feed
- * @returns {Promise<Array<{ title: string; titleEn: string; summary: string; summaryEn: string; url: string; publishedAt: string; source: string; defaultCategory: string; sourceType: string }>>}
+ *
+ * Devolve sempre um relatório (nunca lança) e distingue os três estados que
+ * antes apareciam todos como «✓ 0 items»: o pedido falhou (`fetch_failed`), o
+ * feed respondeu mas não trazia itens (`empty_feed`) e o feed trazia itens que
+ * foram todos descartados (`filtered_out`, com o motivo principal — idade,
+ * spam, inválidos ou duplicados dentro do próprio feed).
+ *
+ * @param {{ url: string; source: string; defaultCategory: string; sourceRegion?: string }} feed
+ * @returns {Promise<{ items: Array<object>, report: object }>}
  */
 async function fetchFeed(feed) {
+  const dropped = { invalidos: 0, spam: 0, idade: 0, duplicados: 0 };
+  const report = {
+    url: feed.url,
+    source: feed.source,
+    sourceRegion: feed.sourceRegion || 'intl',
+    // ok | fetch_failed | empty_feed | filtered_out
+    status: 'ok',
+    inFeed: 0,
+    passed: 0,
+    dropped,
+    detail: '',
+  };
+
   try {
     const res = await fetch(feed.url, {
       headers: { 'User-Agent': USER_AGENT, Accept: 'application/rss+xml, application/xml, text/xml, */*' },
       signal: AbortSignal.timeout(15000),
     });
     if (!res.ok) {
-      console.warn(`  ⚠️ RSS ${res.status}: ${feed.url}`);
-      return [];
+      report.status = 'fetch_failed';
+      report.detail = `HTTP ${res.status}`;
+      console.warn(`  ⚠️ fetch falhou (${report.detail}): ${feed.url}`);
+      return { items: [], report };
     }
     const xml = await res.text();
     const items = [];
+    const seenUrls = new Set();
     const itemRegex = /<item[\s\S]*?<\/item>/g;
     let match;
 
     while ((match = itemRegex.exec(xml)) !== null) {
+      report.inFeed += 1;
       const raw = match[0];
       const title = extractField(raw, 'title');
       const description = extractField(raw, 'description').replace(/\s*The\s+post\s+.*?appeared\s+first\s+on\s+.*?\.\s*/gi, '').trim();
@@ -122,23 +167,70 @@ async function fetchFeed(feed) {
         tags: feed.sourceRegion === 'pt' ? ['cena-pt'] : [],
       };
 
-      // Apply filters
-      if (canDiscard(stub)) continue;
-      if (isTooOld(stub.publishedAt)) continue;
+      // Filtros, por ordem, com a razão registada: título/URL inválidos →
+      // spam (`canDiscard` é a mesma guarda de sempre, só depois do caso de
+      // URL inválida) → idade → repetido dentro do próprio feed.
+      if (!stub.title || !stub.url || !isSafeHttpUrl(stub.url)) {
+        dropped.invalidos += 1;
+        continue;
+      }
+      if (canDiscard(stub)) {
+        dropped.spam += 1;
+        continue;
+      }
+      if (isTooOld(stub.publishedAt)) {
+        dropped.idade += 1;
+        continue;
+      }
+      const urlKey = stub.url.replace(/\/+$/, '');
+      if (seenUrls.has(urlKey)) {
+        dropped.duplicados += 1;
+        continue;
+      }
+      seenUrls.add(urlKey);
 
       items.push(applyCategoryKeywords(stub));
     }
 
-    console.log(`  ✓ ${feed.url}: ${items.length} items`);
-    return items;
-  } catch (e) {
-    if (e.name === 'TimeoutError' || e.name === 'AbortError') {
-      console.warn(`  ⏰ Timeout: ${feed.url}`);
+    report.passed = items.length;
+    if (report.inFeed === 0) {
+      report.status = 'empty_feed';
+      report.detail = 'feed sem itens';
+      console.warn(`  ⚠️ feed sem itens: ${feed.url}`);
+    } else if (items.length === 0) {
+      report.status = 'filtered_out';
+      report.detail = `${report.inFeed} no feed, 0 depois dos filtros (${summariseDrops(dropped)})`;
+      console.warn(`  ⚠️ ${report.detail}: ${feed.url}`);
     } else {
-      console.warn(`  ✗ Error: ${feed.url} — ${e.message}`);
+      const discarded = report.inFeed - items.length;
+      const extra = discarded > 0 ? ` — ${discarded} descartados (${summariseDrops(dropped)})` : '';
+      console.log(`  ✓ ${feed.url}: ${items.length} itens${extra}`);
     }
-    return [];
+
+    return { items, report };
+  } catch (e) {
+    report.status = 'fetch_failed';
+    report.detail = e.name === 'TimeoutError' || e.name === 'AbortError' ? 'timeout' : e.message;
+    console.warn(`  ⚠️ fetch falhou (${report.detail}): ${feed.url}`);
+    return { items: [], report };
   }
+}
+
+/**
+ * Fetch all configured feeds and keep each feed's report.
+ * @returns {Promise<{ items: Array<object>, reports: Array<object> }>}
+ */
+async function fetchAllFeedsDetailed() {
+  console.log('\n📡  Etapa 1 — Fetch RSS feeds...');
+  const results = await Promise.all(FEEDS.map(fetchFeed));
+  const items = results.flatMap((r) => r.items);
+  const reports = results.map((r) => r.report);
+  const unhealthy = reports.filter((r) => r.status !== 'ok');
+  console.log(
+    `   → Total: ${FEEDS.length} feeds, ${items.length} itens passaram os filtros` +
+      (unhealthy.length > 0 ? ` (${unhealthy.length} fonte(s) sem itens novos)` : ''),
+  );
+  return { items, reports };
 }
 
 /**
@@ -146,11 +238,8 @@ async function fetchFeed(feed) {
  * @returns {Promise<Array>} Flat array of raw NewsItem stubs
  */
 async function fetchAllFeeds() {
-  console.log('\n📡  Etapa 1 — Fetch RSS feeds...');
-  const results = await Promise.all(FEEDS.map(fetchFeed));
-  const flat = results.flat();
-  console.log(`   → Total: ${FEEDS.length} feeds, ${flat.length} items passed filters`);
-  return flat;
+  const { items } = await fetchAllFeedsDetailed();
+  return items;
 }
 
-module.exports = { fetchAllFeeds, extractField, FEEDS };
+module.exports = { fetchAllFeeds, fetchAllFeedsDetailed, fetchFeed, extractField, FEEDS, dominantReason };
