@@ -1,6 +1,6 @@
 {
   "source": "forecast-skill-regression",
-  "checkedAt": "2026-11-15T16:06:50.587Z",
+  "checkedAt": "2026-11-15T18:07:00.242Z",
   "windowDays": 60,
   "recentDays": 7,
   "baselineDays": 21,
@@ -24,7 +24,7 @@
         "snapshots": 7,
         "rmse": 0.6714285714285715,
         "me": 0.5057142857142858,
-        "n": 574.7142857142857
+        "n": 574.5714285714286
       },
       "baseline": {
         "snapshots": 21,
@@ -62,7 +62,7 @@
         "snapshots": 7,
         "rmse": 0.33,
         "me": 0.18285714285714283,
-        "n": 436.42857142857144
+        "n": 436.57142857142856
       },
       "baseline": {
         "snapshots": 14,
@@ -177,7 +177,7 @@
       "recent": {
         "days": 7,
         "n": 2863.86,
-        "me": 0.28536539133037364
+        "me": 0.28535192298099465
       },
       "baseline": {
         "days": 21,
