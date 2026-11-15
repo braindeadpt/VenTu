@@ -80,6 +80,8 @@ export default function WarningPill({
     <span
       className={`inline-flex items-center gap-1.5 rounded-pill border ${VARIANT_CLASS[variant]} ${chipClass} ${className}`.trim()}
       title={warningPillTitle(warning, locale)}
+      // Gancho da pele v6 do /mapa: o «Laranja» deixa de herdar o azul da banda «Fraco» (#458).
+      data-ipma-nivel={warning.level}
       {...(dataAttr ? { 'data-map-warning': dataAttr } : {})}
     >
       <Icon className={`${ICON_CLASS[variant]} shrink-0`} aria-hidden />

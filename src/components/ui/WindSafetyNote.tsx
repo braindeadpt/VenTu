@@ -45,6 +45,9 @@ export default function WindSafetyNote({
     <p
       role="note"
       data-wind-safety={level}
+      // A pele v6 do /mapa remapeia `--score-poor` para o azul da banda «Fraco»; o gancho
+      // devolve aos avisos de perigo uma cor de alerta própria (mapa-pele-v6.css, #458).
+      data-alerta={level === 'side-offshore' ? undefined : 'perigo'}
       className={cn(
         'inline-flex items-start gap-1.5 rounded-input border font-semibold leading-snug',
         LEVEL_CLASS[level],

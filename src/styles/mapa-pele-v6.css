@@ -477,3 +477,12 @@
 [data-pele='v6'] .leaflet-control-attribution{background:rgba(3,14,24,.82)!important;color:rgba(243,248,251,.8)!important;font:500 10.5px/1.3 var(--txt)!important;padding:2px 8px!important;border-top:1px solid var(--linha);border-left:1px solid var(--linha);border-radius:6px 0 0 0!important}
 [data-pele='v6'] .leaflet-control-attribution a[href]{color:var(--gelo)!important;text-decoration:underline;text-underline-offset:2px}
 [data-pele='v6'] .leaflet-control-attribution a[href]:hover{color:var(--sol)!important}
+/* #458 (P0): alertas fora de --score-poor. Na pele, --score-poor é o azul da banda «Fraco»
+   (#4479EE), e os avisos de perigo e o IPMA «Laranja» herdavam-no: azul calmo e 4,34:1 em
+   texto de 11–13 px. O token passa a outra cor só no próprio elemento do aviso (o resto do
+   /mapa continua com as bandas). Perigo (offshore, «Só profissionais») e as camadas de
+   tempestades e avisos ficam em coral, o mesmo do onshore no anel do vento: 7,5:1 sobre
+   #071B2C. IPMA «Laranja» fica no laranja do selo do marcador (#F97316, mapWindArrow.ts):
+   6,3:1. Espelho testado em src/lib/__tests__/mapPeleAlertas.test.ts. */
+[data-pele='v6'] [data-alerta='perigo'],[data-pele='v6'] [data-map-storms-toggle],[data-pele='v6'] [data-map-warn-areas-toggle],[data-pele='v6'] [data-map-coastal-warnings-toggle]{--score-poor:255 138 128}
+[data-pele='v6'] [data-ipma-nivel='orange']{--score-poor:249 115 22}
