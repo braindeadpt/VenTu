@@ -437,18 +437,28 @@ export async function updateDirectoryProfile(
 }
 
 /** Seed JSON first; live submissions override; then sort by tier. */
+/** Pode deslocar uma entrada curada: só uma listagem aprovada/claimed.
+ *  Uma «submitted» não verificada NUNCA substitui a escola real — por id
+ *  nem por slug (squatting). A política INSERT já exige id «sub-…» +
+ *  sufixo; esta regra protege linhas antigas e é defesa em profundidade. */
+const canDisplaceCurated = (e: DirectoryEntry) => e.verified || e.source === 'claimed';
+
 export function mergeDirectoryEntries(
   seed: DirectoryEntry[],
   live: DirectoryEntry[],
 ): DirectoryEntry[] {
   const byId = new Map<string, DirectoryEntry>();
   for (const e of seed) byId.set(e.id, { ...e, tier: e.tier ?? 'free' });
-  for (const e of live) byId.set(e.id, { ...e, tier: e.tier ?? 'free' });
+  for (const e of live) {
+    const prev = byId.get(e.id);
+    if (prev && prev.source === 'curated' && !canDisplaceCurated(e)) continue;
+    byId.set(e.id, { ...e, tier: e.tier ?? 'free' });
+  }
 
   const bySlug = new Map<string, DirectoryEntry>();
   for (const e of byId.values()) {
     const prev = bySlug.get(e.slug);
-    if (!prev || e.source === 'submitted' || e.verified || tierBeats(e, prev)) {
+    if (!prev || canDisplaceCurated(e) || tierBeats(e, prev)) {
       bySlug.set(e.slug, e);
     }
   }

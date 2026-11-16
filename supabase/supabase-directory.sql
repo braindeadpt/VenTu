@@ -167,6 +167,11 @@ CREATE POLICY "directory_listings_insert_own" ON directory_listings
     AND verified = false
     AND source = 'submitted'
     AND tier = 'free'
+    -- Squatting de entradas curadas: o id é gerado pelo cliente no formato
+    -- «sub-<uuid>» e o slug termina no sufixo desse id («nome-abcdef12»),
+    -- por isso nunca colide com id/slug curados («aesp-…»).
+    AND id LIKE 'sub-%'
+    AND slug LIKE '%-' || substring(id from 5 for 8)
   );
 
 -- Owner can edit after verify; trigger locks admin-only columns
@@ -211,6 +216,39 @@ CREATE TRIGGER trg_directory_listings_protect
   BEFORE UPDATE ON directory_listings
   FOR EACH ROW
   EXECUTE FUNCTION public.directory_listings_protect_admin_fields();
+
+-- INSERT: os campos de estado são decididos pelo servidor, não pelo browser.
+-- Sem isto, um INSERT directo na API podia escrever verified_at/verified_by/
+-- created_at/tier/source arbitrários (o trigger acima só corria em UPDATE).
+CREATE OR REPLACE FUNCTION public.directory_listings_protect_insert_fields()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+BEGIN
+  IF public.is_ventu_admin() THEN
+    RETURN NEW;
+  END IF;
+  NEW.source := 'submitted';
+  NEW.verified := false;
+  NEW.verified_at := NULL;
+  NEW.verified_by := NULL;
+  NEW.tier := 'free';
+  NEW.created_at := now();
+  NEW.updated_at := now();
+  RETURN NEW;
+END;
+$$;
+
+DROP TRIGGER IF EXISTS trg_directory_listings_protect_insert ON directory_listings;
+CREATE TRIGGER trg_directory_listings_protect_insert
+  BEFORE INSERT ON directory_listings
+  FOR EACH ROW
+  EXECUTE FUNCTION public.directory_listings_protect_insert_fields();
+
+-- Linhas antigas fora do formato «sub-…» (rever/apagar após auditoria):
+--   SELECT id, slug, owner_user_id FROM directory_listings WHERE id NOT LIKE 'sub-%';
 
 GRANT SELECT ON directory_listings TO anon, authenticated;
 GRANT INSERT, UPDATE ON directory_listings TO authenticated;
