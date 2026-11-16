@@ -289,16 +289,52 @@ function evaluateDeploySource(input) {
  * never invisible — the failure mode of option B is production staying green
  * and fresh while the CODE silently stalls on an old commit.
  *
+ * O resumo nomeia também o run que DISPAROU o deploy (`trigger`). Num
+ * workflow_run o SHA que o Actions mostra no run é a ponta da main no momento
+ * do gatilho, não o run que disparou: um deploy skipped por um CI cancelado
+ * ficava etiquetado com o commit de outro run (visto em 2026-11-16 — um
+ * skipped apareceu com o SHA do merge seguinte). O head_sha/run_id/conclusion
+ * do gatilho vêm do payload do evento e são a fonte honesta.
+ *
  * @param {ReturnType<typeof evaluateDeploySource>} res
- * @param {{ greenRun?: object|null; mainSha?: string; dryRun?: boolean; generatedAt?: string }} [ctx]
+ * @param {{ greenRun?: object|null; mainSha?: string; dryRun?: boolean;
+ *   trigger?: { workflow?: string|null; runNumber?: number|null; runId?: number|null;
+ *     conclusion?: string|null; event?: string|null; headSha?: string|null;
+ *     url?: string|null } | null;
+ *   generatedAt?: string }} [ctx]
  * @returns {string}
  */
 function formatDeploySummary(res, ctx = {}) {
-  const { greenRun = null, dryRun = false, generatedAt = new Date().toISOString() } = ctx;
+  const {
+    greenRun = null,
+    dryRun = false,
+    trigger = null,
+    generatedAt = new Date().toISOString(),
+  } = ctx;
   const short = (sha) => (sha ? String(sha).slice(0, 9) : '—');
   const lines = [
     '## Deploy source (código verde + dados frescos)',
     '',
+  ];
+  if (trigger) {
+    lines.push(
+      `- **disparado por:** ${trigger.workflow || 'workflow'}${
+        trigger.runNumber != null ? ` #${trigger.runNumber}` : ''
+      }${trigger.event ? ` (${trigger.event})` : ''} · run \`${trigger.runId ?? '—'}\` · conclusão **${
+        trigger.conclusion || '—'
+      }** · head_sha \`${short(trigger.headSha)}\`${
+        trigger.url ? ` · [ver run](${trigger.url})` : ''
+      }`,
+    );
+    if (trigger.headSha && res.dataSha && trigger.headSha !== res.dataSha) {
+      lines.push(
+        `- **main no gatilho:** \`${short(res.dataSha)}\` — o SHA que o Actions mostra neste run é a ponta da main, não o head_sha acima`,
+      );
+    }
+  } else {
+    lines.push('- **disparado por:** manual (workflow_dispatch)');
+  }
+  lines.push(
     `- **estado:** ${res.status}${dryRun ? ' (dry_run — não publica)' : ''}`,
     `- **código:** \`${short(res.codeSha)}\`${
       greenRun
@@ -315,7 +351,7 @@ function formatDeploySummary(res, ctx = {}) {
     }`,
     `- **sobreposição:** ${res.overlayPaths.length ? res.overlayPaths.map((p) => `\`${p}\``).join(', ') : 'nenhuma'}`,
     `- **razão:** ${res.reason}`,
-  ];
+  );
   if (res.staleDataOnly) {
     lines.push(
       `- **janela:** run verde aceite fora da janela (${

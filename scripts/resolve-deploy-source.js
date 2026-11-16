@@ -203,8 +203,37 @@ async function skipDecision(res, mainSha, nowMs) {
   return { fingerprint, ...d };
 }
 
-function finish(res, greenRun, sk = { fingerprint: null, skip: false, reason: '' }) {
-  let md = formatDeploySummary(res, { greenRun, dryRun: DRY_RUN });
+/**
+ * Contexto do run que DISPAROU este deploy, lido do payload do evento
+ * (workflow_run). É a fonte honesta do gatilho: em workflow_run, o SHA que o
+ * Actions mostra no run é a ponta da main no momento do gatilho, não o run que
+ * disparou — um deploy skipped (CI cancelado, por exemplo) aparecia etiquetado
+ * com o commit de outro run e parecia um deploy daquele código.
+ */
+function readTrigger() {
+  const path = process.env.GITHUB_EVENT_PATH;
+  if (!path) return null;
+  try {
+    const payload = JSON.parse(fs.readFileSync(path, 'utf-8'));
+    const wr = payload && payload.workflow_run;
+    if (!wr || typeof wr !== 'object') return null;
+    return {
+      workflow: wr.name || null,
+      runNumber: wr.run_number ?? null,
+      runId: wr.id ?? null,
+      conclusion: wr.conclusion || null,
+      event: wr.event || null,
+      headSha: wr.head_sha || null,
+      url: wr.html_url || null,
+    };
+  } catch (e) {
+    console.error(`⚠️ event payload ilegível: ${e.message || e}`);
+    return null;
+  }
+}
+
+function finish(res, greenRun, sk = { fingerprint: null, skip: false, reason: '' }, trigger = null) {
+  let md = formatDeploySummary(res, { greenRun, dryRun: DRY_RUN, trigger });
   if (sk.reason) {
     md += `\n\n- **impressão digital:** \`${sk.fingerprint ? sk.fingerprint.slice(0, 12) : '—'}\` · **salto:** ${sk.skip ? 'sim' : 'não'} — ${sk.reason}`;
   }
@@ -271,6 +300,7 @@ async function main() {
     return;
   }
   const nowMs = Date.now();
+  const trigger = EVENT === 'workflow_run' ? readTrigger() : null;
   const mainSha = gitTry('rev-parse', 'HEAD');
   if (!mainSha) {
     console.log('::error::não foi possível resolver o HEAD do checkout');
@@ -284,7 +314,7 @@ async function main() {
       lagWarnCommits,
       lagWarnHours,
     });
-    finish(res, null, await skipDecision(res, mainSha, nowMs));
+    finish(res, null, await skipDecision(res, mainSha, nowMs), trigger);
     return;
   }
 
@@ -359,7 +389,7 @@ async function main() {
     )} (${greenRun ? greenRun.created_at : '—'}) · main: ${short(mainSha)}`,
   );
 
-  finish(res, greenRun, await skipDecision(res, mainSha, nowMs));
+  finish(res, greenRun, await skipDecision(res, mainSha, nowMs), trigger);
 }
 
 main().catch((e) => {

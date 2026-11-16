@@ -233,6 +233,36 @@ describe('deploySource — resumo', () => {
     const res = evaluateDeploySource({ mode: 'workflow_dispatch', mainSha: 'main123' });
     expect(formatDeploySummary(res, { dryRun: true })).toMatch(/dry_run/);
   });
+
+  it('nomeia o run que disparou o deploy e distingue-o da ponta da main', () => {
+    const res = evaluateDeploySource({
+      mode: 'workflow_run',
+      mainSha: 'b'.repeat(40),
+      greenRun: run({ head_sha: 'c'.repeat(40) }),
+      greenIsAncestor: true,
+      lagCommits: 0,
+      lagHours: 0,
+    });
+    const md = formatDeploySummary(res, {
+      greenRun: run({ head_sha: 'c'.repeat(40) }),
+      trigger: {
+        workflow: 'CI',
+        runNumber: 134,
+        runId: 43778874742,
+        conclusion: 'cancelled',
+        event: 'push',
+        headSha: 'd'.repeat(40),
+        url: 'https://github.com/braindeadpt/VenTu/actions/runs/43778874742',
+      },
+    });
+    expect(md).toContain('**disparado por:** CI #134 (push)');
+    expect(md).toContain('43778874742');
+    expect(md).toContain('cancelled');
+    expect(md).toContain(`\`${'d'.repeat(9)}\``);
+    expect(md).toContain('ponta da main');
+    // Sem gatilho (dispatch manual) o resumo continua explícito.
+    expect(formatDeploySummary(res, {})).toContain('manual (workflow_dispatch)');
+  });
 });
 
 describe('deploySource — saltar deploy sem mudanças', () => {
@@ -310,6 +340,13 @@ describe('deploy.yml — salto e Dawn Patrol', () => {
   it('já não gera o Dawn Patrol no deploy (vem do dawn-patrol.yml pelo overlay)', () => {
     expect(wf).not.toMatch(/name: Generate Dawn Patrol/);
     expect(wf).not.toMatch(/node scripts\/dawn-patrol\.js/);
+  });
+
+  it('o título do run nomeia o gatilho — um skipped não herda o SHA da ponta da main', () => {
+    const line = wf.split('\n').find((l) => l.startsWith('run-name:')) || '';
+    expect(line).toMatch(/workflow_run\.head_sha/);
+    expect(line).toMatch(/workflow_run\.conclusion/);
+    expect(line).toMatch(/workflow_run\.run_number/);
   });
 
   it('o build escreve out/deploy-source.json e o deploy respeita o skip', () => {
