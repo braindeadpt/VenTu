@@ -41,20 +41,70 @@ describe('directory geo', () => {
 });
 
 describe('mergeDirectoryEntries', () => {
-  it('prefers live submitted over seed same slug', () => {
-    const seed = [base({ id: 'seed-1', slug: 'escola-x', name: 'Old' })];
+  it('unverified submitted nunca desloca entrada curada — por slug (squatting)', () => {
+    const seed = [base({ id: 'aesp-escola-x', slug: 'escola-x', name: 'Onda Azul' })];
     const live = [
       base({
-        id: 'sub-1',
+        id: 'sub-abc12345',
         slug: 'escola-x',
-        name: 'New Submitted',
+        name: 'Escola Falsa',
+        source: 'submitted',
+        verified: false,
+        website: 'https://phishing.example',
+      }),
+    ];
+    const merged = mergeDirectoryEntries(seed, live);
+    expect(merged).toHaveLength(1);
+    expect(merged[0].name).toBe('Onda Azul');
+    expect(merged[0].website).toBeUndefined();
+  });
+
+  it('unverified submitted nunca desloca entrada curada — por id (squatting)', () => {
+    const seed = [base({ id: 'aesp-escola-x', slug: 'escola-x', name: 'Onda Azul' })];
+    const live = [
+      base({
+        id: 'aesp-escola-x',
+        slug: 'outra-coisa-abc12345',
+        name: 'Escola Falsa',
         source: 'submitted',
         verified: false,
       }),
     ];
     const merged = mergeDirectoryEntries(seed, live);
     expect(merged).toHaveLength(1);
-    expect(merged[0].name).toBe('New Submitted');
+    expect(merged[0].name).toBe('Onda Azul');
+  });
+
+  it('listagem verificada/claimed substitui a seed (fluxo de claim legítimo)', () => {
+    const seed = [base({ id: 'aesp-escola-x', slug: 'escola-x', name: 'Old' })];
+    const live = [
+      base({
+        id: 'aesp-escola-x',
+        slug: 'escola-x',
+        name: 'New Claimed',
+        source: 'claimed',
+        verified: true,
+      }),
+    ];
+    const merged = mergeDirectoryEntries(seed, live);
+    expect(merged).toHaveLength(1);
+    expect(merged[0].name).toBe('New Claimed');
+  });
+
+  it('submissão legítima com slug próprio aparece ao lado da curada', () => {
+    const seed = [base({ id: 'aesp-escola-x', slug: 'escola-x', name: 'Onda Azul' })];
+    const live = [
+      base({
+        id: 'sub-def67890',
+        slug: 'escola-nova-def67890',
+        name: 'Escola Nova',
+        source: 'submitted',
+        verified: false,
+      }),
+    ];
+    const merged = mergeDirectoryEntries(seed, live);
+    expect(merged).toHaveLength(2);
+    expect(merged.map((e) => e.slug).sort()).toEqual(['escola-nova-def67890', 'escola-x']);
   });
 
   it('sorts pro/featured before free', () => {
