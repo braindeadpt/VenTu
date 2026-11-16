@@ -79,10 +79,8 @@ describe('#458 · legenda do sheet mobile', () => {
 });
 
 describe('#458 · cartão de 48 h no «half» e paisagem', () => {
-  it('o cartão flutuante sai com o sheet a meio (o trilho vive no sheet)', () => {
-    const c = corpo(globais, "[data-map-fullscreen='true']:has([data-explore-sheet='half']) .map-scrub-wrap");
-    expect(c).toMatch(/visibility:\s*hidden/);
-    expect(c).toMatch(/pointer-events:\s*none/);
+  it('o cartão flutuante de 48 h continua visível com o sheet a meio (é o trilho do half)', () => {
+    expect(corpo(globais, "[data-map-fullscreen='true']:has([data-explore-sheet='half']) .map-scrub-wrap")).toBeNull();
   });
   it('em ecrãs baixos o painel rola e a lista guarda altura', () => {
     const src = ler('src/components/spots/map/components/MapSpotPanel.tsx');
