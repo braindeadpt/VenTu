@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useMemo, useCallback } from 'react';
+import { useEffect, useRef, useState, useMemo, useCallback } from 'react';
 import type { NewsItem } from '@/types';
 import type { VentuEvent } from '@/types/events';
 import {
@@ -92,7 +92,14 @@ export default function NewsArchiveClient({
   const events = fetchedEvents ?? bakedEvents;
 
   const [category, setCategory] = useState<NewsCategory>('all');
-  const [region, setRegion] = useState<RegionFilter>(() => getDefaultNewsRegion(locale));
+  // Estado inicial a partir do feed do build: SSR e primeiro render do cliente
+  // calculam a mesma região (nada de Date.now() nem de fetch no render).
+  const [region, setRegion] = useState<RegionFilter>(() => getDefaultNewsRegion(locale, bakedNews));
+  // Região «presa» por quem está a ler: veio de `?region=` no mount ou foi
+  // escolhida nas pílulas. Só a omissão pode passar a «Todas» quando o feed ao
+  // vivo não tiver itens `pt` — e a URL actual não serve para a distinguir,
+  // porque o `syncUrl` escreve `?region=pt` quando a região é a de omissão.
+  const regionPinnedRef = useRef(false);
   const [period, setPeriod] = useState<DateFilter>('all');
   const [page, setPage] = useState(1);
   const [searchInput, setSearchInput] = useState('');
@@ -116,7 +123,11 @@ export default function NewsArchiveClient({
       const pn = params.get('page');
 
       if (cat && (CATEGORIES as readonly string[]).includes(cat)) setCategory(cat as NewsCategory);
-      if (reg && (REGION_FILTERS as readonly string[]).includes(reg)) setRegion(reg as RegionFilter);
+      if (reg && (REGION_FILTERS as readonly string[]).includes(reg)) {
+        // `?region=pt` explícito é a escolha de quem abriu o link: fica.
+        regionPinnedRef.current = true;
+        setRegion(reg as RegionFilter);
+      }
       if (p && (DATE_FILTERS as readonly string[]).includes(p)) setPeriod(p as DateFilter);
       if (q) {
         setSearchInput(q);
@@ -132,6 +143,16 @@ export default function NewsArchiveClient({
     setNowMs(Date.now());
     setHydrated(true);
   }, []);
+
+  // Feed ao vivo sem nenhuma notícia `pt` (2026-11-15: 50 itens, todos `intl`):
+  // se a região ainda for a de omissão, abre em «Todas» em vez do estado vazio.
+  // Com `?region=pt` ou uma escolha explícita, o estado vazio mantém-se.
+  useEffect(() => {
+    if (!fetchedNews || regionPinnedRef.current) return;
+    if (region === 'all') return;
+    if (fetchedNews.some((item) => (item.sourceRegion ?? 'intl') === 'pt')) return;
+    setRegion('all');
+  }, [fetchedNews, region]);
 
   // Debounce search
   useEffect(() => {
@@ -172,6 +193,7 @@ export default function NewsArchiveClient({
   }, []);
 
   const handleRegionChange = useCallback((r: RegionFilter) => {
+    regionPinnedRef.current = true;
     setRegion(r);
     setPage(1);
   }, []);

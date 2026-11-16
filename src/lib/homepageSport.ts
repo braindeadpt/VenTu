@@ -6,6 +6,7 @@ import type { SportType, GridSportFilter } from '@/lib/sportRatings'
 import { getCompatibleSports, SPORT_LABELS } from '@/lib/sportRatings'
 import type { Spot } from '@/types'
 import type { MarineConditionsFields } from '@/lib/marineConditions'
+import { SPOTS_DEFAULT_SPORT } from '@/lib/gridFilters'
 
 export const LS_SPORT_KEY = 'ventu:sport'
 
@@ -72,14 +73,14 @@ export function parseSportFilter(value?: string | null): GridSportFilter {
   if (value && VALID_FILTERS.includes(value as GridSportFilter)) {
     return value as GridSportFilter
   }
-  return 'surf'
+  return SPOTS_DEFAULT_SPORT
 }
 
 const LEGACY_SPORT_KEY = 'windspot:sport'
 
 /** Read persisted grid sport; migrates legacy `windspot:sport` → `ventu:sport`. */
 export function readSportFromStorage(): GridSportFilter {
-  if (typeof window === 'undefined') return 'surf'
+  if (typeof window === 'undefined') return SPOTS_DEFAULT_SPORT
   try {
     const v = localStorage.getItem(LS_SPORT_KEY) ?? localStorage.getItem(LEGACY_SPORT_KEY)
     if (localStorage.getItem(LEGACY_SPORT_KEY) && !localStorage.getItem(LS_SPORT_KEY) && v) {
@@ -88,7 +89,7 @@ export function readSportFromStorage(): GridSportFilter {
     }
     return parseSportFilter(v)
   } catch {
-    return 'surf'
+    return SPOTS_DEFAULT_SPORT
   }
 }
 

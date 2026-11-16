@@ -515,7 +515,9 @@ for (const pele of PELES) {
           for (const t of ['radar', 'currents']) await ligado(t);
         });
         await test.step('a pele mantém-se em todas as navegações', async () => {
-          if (pele.on) await expect(page.locator('[data-pele="v6"]')).toHaveCount(1);
+          // B5: o popover Camadas (portalizado, aqui aberto) leva o seu próprio data-pele —
+          // conta-se só o contentor do /mapa.
+          if (pele.on) await expect(page.locator('[data-pele="v6"]:not([data-map-layers-popover])')).toHaveCount(1);
           else await expect(page.locator('[data-pele]')).toHaveCount(0);
         });
       });
@@ -574,21 +576,27 @@ test.describe('/mapa — flag da pele v6 (B0)', () => {
   test.describe.configure({ timeout: 120_000 });
   test.use({ viewport: { width: 1440, height: 900 }, serviceWorkers: 'block', reducedMotion: 'reduce' });
 
-  test('desligada por omissão: sem atributo, sem tokens, sem fontes Barlow, sem #418', async ({ page }) => {
-    const fontes: string[] = [];
-    page.on('request', (r) => {
-      if (/\/fonts\/barlow\//.test(r.url())) fontes.push(r.url());
-    });
+  // B9: o HTML estático sai com a pele e quem optou por sair troca depois de montar, por isso
+  // as woff2 da Barlow podem ser pedidas no 1.º paint (decisão aceite na B9). O que conta é o
+  // estado depois da troca: sem atributo, sem tokens, sem Barlow aplicada, sem #418.
+  test('desligada (off gravado): sem atributo, sem tokens, sem Barlow aplicada, sem #418', async ({ page }) => {
     const erros = await abre(page, { nome: 'desligada', on: false }, '?sport=all');
     await page.waitForLoadState('networkidle', { timeout: 20_000 }).catch(() => {});
+    await expect(page.locator('[data-pele]')).toHaveCount(0);
+    await expect(page.locator('[data-pele-cabecalho]')).toHaveCount(0);
     const t = await page.evaluate(() => {
       const el = document.querySelector('[data-map-fullscreen="true"]') as HTMLElement | null;
       const cs = el ? getComputedStyle(el) : null;
-      return { abismo: cs?.getPropertyValue('--abismo').trim() ?? '', font: cs?.fontFamily ?? '' };
+      const h = document.querySelector('header.site-header') as HTMLElement | null;
+      return {
+        abismo: cs?.getPropertyValue('--abismo').trim() ?? '',
+        font: cs?.fontFamily ?? '',
+        cabecalho: h ? getComputedStyle(h).fontFamily : '',
+      };
     });
     expect(t.abismo).toBe('');
     expect(t.font).not.toMatch(/Barlow/);
-    expect(fontes, 'nenhuma fonte Barlow com a pele desligada').toEqual([]);
+    expect(t.cabecalho).not.toMatch(/Barlow/);
     expect(erros).toEqual([]);
   });
 
