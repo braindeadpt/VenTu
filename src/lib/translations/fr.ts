@@ -276,6 +276,8 @@ export const translationsFr = {
       colors: 'Vert offshore · rouge onshore · gris cross',
       length: 'Longueur de l\'arc = force (court <8kt · moyen 8–18 · long >18)',
       rule: 'Arc vert côté mer = bonne journée.',
+      colorsV6: 'Glace offshore · corail onshore · brume cross',
+      ruleV6: 'Arc glace côté mer = vent de terre (offshore).',
       dismiss: 'Compris',
       help: 'Comment lire le vent sur la carte',
       offshore: 'offshore',

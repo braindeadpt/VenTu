@@ -15,7 +15,11 @@ import type { Locale } from '@/lib/i18n';
 import {
   buildWindRingMarkerHtml,
   WIND_RING_LEGEND_SAMPLE,
+  windBlowsToDegrees,
 } from '@/lib/mapWindArrow';
+import { relacaoAnelVento } from '@/lib/ventoRelAnel';
+import { usePelePortal } from '@/lib/pelePortal';
+import { buildV3MarkerHtml } from './mapMarkers';
 import { getScoreRgb } from '@/lib/map-constants';
 import { markWindRingLegendSeen } from '@/lib/windRingLegend';
 import Button from '@/components/ui/Button';
@@ -41,6 +45,10 @@ export default function WindRingLegend({
   const [isMobile, setIsMobile] = useState(false);
   const [anchorPos, setAnchorPos] = useState<{ top: number; left: number } | null>(null);
   const [mounted, setMounted] = useState(false);
+  // Pele v6 (#458 §3): a legenda sai por portal para o body; herda a pele do
+  // botão do vento e passa a ensinar o marcador que o /mapa v6 desenha.
+  const pele = usePelePortal(anchorRef, open);
+  const v6 = pele === 'v6';
 
   useEffect(() => {
     setMounted(true);
@@ -53,6 +61,16 @@ export default function WindRingLegend({
 
   const sampleHtml = (() => {
     const { score, fromDeg, speedKt, coastOrientation } = WIND_RING_LEGEND_SAMPLE;
+    if (v6) {
+      // O mesmo `.v3mk` + `.v3tick` do mapa: arco de 60° no aro na cor do
+      // ventoRel e ponta em ponto (regras em mapa-pele-v6.css).
+      return buildV3MarkerHtml({
+        spotId: 'legenda-vento',
+        score,
+        windBlowsToDeg: windBlowsToDegrees(fromDeg),
+        windRel: relacaoAnelVento(fromDeg, coastOrientation),
+      });
+    }
     return buildWindRingMarkerHtml(
       score,
       getScoreRgb(score),
@@ -148,11 +166,14 @@ export default function WindRingLegend({
 
   if (!mounted || !open) return null;
 
+  // Na pele v6 o arco tem comprimento fixo (60°) — a força lê-se nos traços
+  // do mar (ponto 1), por isso o ponto do comprimento sai.
+  const colorsText = v6 ? copy.colorsV6 : copy.colors;
   const annotations = [
     { id: 'field', text: copy.field },
     { id: 'position', text: copy.position },
-    { id: 'colors', text: copy.colors, swatches: true },
-    { id: 'length', text: copy.length },
+    { id: 'colors', text: colorsText, swatches: true },
+    ...(v6 ? [] : [{ id: 'length', text: copy.length }]),
   ] as const;
 
   const panel = (
@@ -167,6 +188,8 @@ export default function WindRingLegend({
 
       <div
         ref={dialogRef}
+        data-pele={pele}
+        data-wind-ring-legend="true"
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
@@ -199,7 +222,13 @@ export default function WindRingLegend({
         </h2>
 
         <div
-          className="flex justify-center py-3 mb-3 rounded-lg bg-surface-1/[0.04] border border-divider [&_.ventu-wind-ring-marker-wrap]:scale-[2] [&_.ventu-wind-ring-marker-wrap]:origin-center"
+          className={cn(
+            'flex justify-center py-3 mb-3 rounded-lg bg-surface-1/[0.04] border border-divider',
+            v6
+              ? 'h-[148px] items-center [&_.v3mk]:scale-[2] [&_.v3mk]:origin-center'
+              : '[&_.ventu-wind-ring-marker-wrap]:scale-[2] [&_.ventu-wind-ring-marker-wrap]:origin-center',
+          )}
+          data-wind-legend-sample={v6 ? 'v6' : 'v2'}
           aria-hidden
           dangerouslySetInnerHTML={{ __html: sampleHtml }}
         />
@@ -209,7 +238,7 @@ export default function WindRingLegend({
             <li
               key={item.id}
               className="flex gap-2 text-meta-sm text-fg-muted leading-snug"
-              aria-label={'swatches' in item && item.swatches ? copy.colors : item.text}
+              aria-label={'swatches' in item && item.swatches ? colorsText : item.text}
             >
               <span className="font-mono tabular-nums text-fg-subtle shrink-0 w-4 text-right">
                 {index + 1}.
@@ -242,7 +271,7 @@ export default function WindRingLegend({
           ))}
         </ol>
 
-        <p className="text-meta-sm font-medium text-fg mb-4 leading-snug">{copy.rule}</p>
+        <p className="text-meta-sm font-medium text-fg mb-4 leading-snug">{v6 ? copy.ruleV6 : copy.rule}</p>
 
         <Button
           type="button"

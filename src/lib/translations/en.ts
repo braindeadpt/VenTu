@@ -217,6 +217,8 @@ export const translationsEn = {
       colors: 'Green offshore · red onshore · grey cross-shore',
       length: 'Arc length = strength (short <8kt · medium 8–18 · long >18)',
       rule: 'Green arc on the sea side = good day.',
+      colorsV6: 'Ice offshore · coral onshore · mist cross-shore',
+      ruleV6: 'Ice arc on the sea side = land wind (offshore).',
       dismiss: 'Got it',
       help: 'How to read wind on the map',
       offshore: 'offshore',

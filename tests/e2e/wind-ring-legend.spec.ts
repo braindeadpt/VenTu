@@ -44,6 +44,11 @@ test.describe('wind ring legend', () => {
     // fade-up entrance animation keeps Playwright's stability check busy).
     await hint.getByRole('button', { name: /Como ler o vento no mapa/i }).click({ force: true });
     await expect(dialog).toBeVisible();
+    // #458 §3: no /mapa (pele v6 por defeito) a legenda sai por portal mas
+    // herda a pele e ensina o marcador v6 (arco gelo offshore do .v3tick).
+    await expect(dialog).toHaveAttribute('data-pele', 'v6');
+    await expect(dialog.locator('[data-wind-legend-sample="v6"] .v3tick[data-vento-rel="offshore"]')).toHaveCount(1);
+    await expect(dialog).toContainText('Arco gelo do lado do mar');
     await dialog.getByRole('button', { name: 'Percebi', exact: true }).click();
     await expect(dialog).toBeHidden();
 
@@ -97,6 +102,9 @@ test.describe('wind ring legend', () => {
     const help = page.getByRole('button', { name: /Como ler o vento no mapa/i });
     await help.click({ force: true });
     await expect(dialog).toBeVisible({ timeout: 5_000 });
+    // Fora do /mapa não há pele v6: o portal fica sem atributo e mostra o anel.
+    await expect(dialog).not.toHaveAttribute('data-pele', /.+/);
+    await expect(dialog.locator('[data-wind-legend-sample="v2"]')).toHaveCount(1);
     await dialog.getByRole('button', { name: 'Percebi', exact: true }).click();
     await expect(dialog).toBeHidden();
   });

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { AlertTriangle, X } from 'lucide-react';
 import { cn } from '@/lib/cn';
+import { usePelePortal } from '@/lib/pelePortal';
 import { buoyLayerCopy, useBuoyLayerNotice } from '@/lib/buoyLayerNotice';
 import type { BuoyLayerStatus } from '@/lib/buoyLayerHealth';
 import { dispatchEnableMapBuoys } from '@/lib/mapBuoyDots';
@@ -26,6 +27,8 @@ export default function BuoyLayerChip({ locale }: { locale: string }) {
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
   const popoverRef = useRef<HTMLDivElement>(null);
+  // O popover sai do `[data-pele='v6']` do /mapa por portal: leva a pele da âncora (#458 §3).
+  const pele = usePelePortal(rootRef, open);
   // Posição fixa calculada ao abrir — o popover sai por portal para o body
   // porque dentro do sheet (overflow-hidden) o `bottom-full` era cortado.
   const [anchor, setAnchor] = useState<{ left: number; bottom: number } | null>(null);
@@ -109,6 +112,7 @@ export default function BuoyLayerChip({ locale }: { locale: string }) {
         <div
           ref={popoverRef}
           data-buoy-chip-popover="true"
+          data-pele={pele}
           style={{ position: 'fixed', left: anchor.left, bottom: anchor.bottom }}
           className="w-[min(320px,calc(100vw-2rem))] z-[1250] rounded-card border border-divider bg-bg-elevated/95 backdrop-blur-md shadow-card p-3 pr-8 text-meta-sm"
         >
