@@ -1817,13 +1817,6 @@ body:has(header[data-header-compact='true']) [data-map-fullscreen='true'].top-16
     visibility: hidden;
     pointer-events: none;
   }
-  /* #458 · no «half» o trilho de 48 h já vive dentro do sheet (MapTimeTrack): o cartão
-     flutuante duplicava-o e, com o sheet a meio, subia até à faixa do cabeçalho. Só o
-     cartão sai; o selector e a pill ficam. */
-  [data-map-fullscreen='true']:has([data-explore-sheet='half']) .map-scrub-wrap {
-    visibility: hidden;
-    pointer-events: none;
-  }
 }
 
 /* §11 — popovers do cromo (legenda, scrubber 48 h, menu «Camadas»):
