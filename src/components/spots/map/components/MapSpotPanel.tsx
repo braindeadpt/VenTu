@@ -151,7 +151,7 @@ export default function MapSpotPanel({
       role="complementary"
       aria-label={t.mapUiExplore.title}
       data-map-panel="open"
-      className={`absolute bottom-2 left-2 top-2 z-[1100] flex w-[360px] max-w-[calc(100vw-1rem)] flex-col rounded-card border border-divider-strong bg-bg-elevated/95 shadow-card backdrop-blur-md ${didToggle ? 'motion-safe:[animation:map-panel-in_240ms_cubic-bezier(.16,1,.3,1)_both]' : ''}`}
+      className={`absolute bottom-2 left-2 top-2 z-[1100] flex w-[360px] max-w-[calc(100vw-1rem)] flex-col [@media(max-height:520px)]:overflow-y-auto [@media(max-height:520px)]:overscroll-contain rounded-card border border-divider-strong bg-bg-elevated/95 shadow-card backdrop-blur-md ${didToggle ? 'motion-safe:[animation:map-panel-in_240ms_cubic-bezier(.16,1,.3,1)_both]' : ''}`}
     >
       <div data-mx="cab" className="flex items-baseline gap-2 px-3 pb-1 pt-3">
         <span data-mx="titulo" className="font-display text-body font-semibold text-fg">
@@ -201,7 +201,12 @@ export default function MapSpotPanel({
         {/* Basemap saiu para o menu Camadas (CORRECCOES-24SET, «Para a M5»). */}
       </div>
 
-      <div className="mt-1 flex min-h-0 flex-1 flex-col px-3">
+      {/* #458 §4 · paisagem baixa (844×390): os filtros e o trilho comiam a altura toda e a
+          lista ficava a 0 px. Abaixo de 520 px de altura o painel rola e a lista guarda 240 px. */}
+      <div
+        data-map-panel-lista
+        className="mt-1 flex min-h-0 flex-1 flex-col px-3 [@media(max-height:520px)]:min-h-[240px] [@media(max-height:520px)]:flex-none"
+      >
         <MapSpotList
           rows={rows}
           title={t.spotsMap.inView}

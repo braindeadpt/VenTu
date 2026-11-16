@@ -232,3 +232,20 @@ export function drawWindV6Static(
   }
   return arrows.length;
 }
+
+/**
+ * #458 · rampa da legenda «Vento» na pele v6: a cor e o alfa do traço (`windV6Rgb`,
+ * `windV6Alpha`) compostos sobre o abismo do cartão (#030E18), nos mesmos nós da escala
+ * antiga. Vento fraco lê-se gelo ténue e a nortada quase espuma, como no mapa, em vez
+ * do arco-íris que as partículas v6 já não usam.
+ */
+export function windV6LegendStops(top: number): ReadonlyArray<readonly [number, readonly [number, number, number]]> {
+  const abismo = [3, 14, 24];
+  const kts = [0, 5, 10, 15, 20, 25, 30, 40].filter((k) => k <= top);
+  return kts.map((kt) => {
+    const rgb = windV6Rgb(kt).split(' ').map(Number);
+    const a = windV6Alpha(kt);
+    const c = rgb.map((v, i) => Math.round(abismo[i] + (v - abismo[i]) * a)) as [number, number, number];
+    return [kt, c] as const;
+  });
+}

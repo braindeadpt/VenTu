@@ -493,3 +493,14 @@
    6,3:1. Espelho testado em src/lib/__tests__/mapPeleAlertas.test.ts. */
 [data-pele='v6'] [data-alerta='perigo'],[data-pele='v6'] [data-map-storms-toggle],[data-pele='v6'] [data-map-warn-areas-toggle],[data-pele='v6'] [data-map-coastal-warnings-toggle]{--score-poor:255 138 128}
 [data-pele='v6'] [data-ipma-nivel='orange']{--score-poor:249 115 22}
+/* #458 · selector «Vento | Ondulação | Nenhum» (item 13 da maquete, `.seg.vidro`): vidro v6,
+   Barlow Condensed 800 itálico em caixa alta, opção activa no sol com texto abismo (13,9:1).
+   A altura e a pseudo-área de toque de 44 px ficam as do componente. 17 px é o tamanho do
+   telemóvel na maquete; sem @media aqui, fica o mesmo no desktop (cabe a 390 px). */
+[data-pele='v6'] [data-map-sea-mode]{border:0;background:rgba(3,14,24,.9);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:inset 0 0 0 1.5px rgba(243,248,251,.12),0 18px 40px -18px rgba(0,0,0,.75)}
+[data-pele='v6'] [data-map-sea-mode-option]{padding:0 13px;font:800 italic 17px/1 var(--disp);text-transform:uppercase;letter-spacing:.02em;color:var(--espuma)}
+[data-pele='v6'] [data-map-sea-mode-option][aria-checked='true']{background:var(--sol);color:var(--abismo)}
+[data-pele='v6'] [data-map-sea-mode-option][aria-checked='false']:hover{background:rgba(243,248,251,.08);color:var(--sol)}
+/* #458 §4 · cartão com scroll interno em ecrãs baixos (MapSpotPreview põe `data-rolar`): sem a
+   seta, que o overflow cortaria. */
+[data-pele='v6'] [data-ms='cartao'][data-rolar]::before{display:none}
