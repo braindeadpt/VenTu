@@ -26,7 +26,10 @@ const FEEDS = [
   // 2026-11-15: ANS 02/11 · Notícias do Mar 06/11 · FPS 12/10.
   { url: 'https://www.ansurfistas.com/feed/',           source: 'ANS',              defaultCategory: 'surf',       sourceRegion: 'pt', active: false },
   { url: 'https://www.noticiasdomar.pt/feed/',          source: 'Notícias do Mar',  defaultCategory: 'general',  sourceRegion: 'pt', active: false },
-  { url: 'https://www.fps.pt/feed/',                    source: 'FPS',              defaultCategory: 'surf',       sourceRegion: 'pt', active: false },
+  // FPS publica uma vez por mês (o último item antes do silêncio de 2026-10 era
+  // de Julho): com o prazo por omissão de 5 d estaria em aviso permanente, por
+  // isso o limite é 30 d — fica guardado para quando a federação voltar.
+  { url: 'https://www.fps.pt/feed/',                    source: 'FPS',              defaultCategory: 'surf',       sourceRegion: 'pt', staleAfterDays: 30, active: false },
   // Surftotal: a /feed e a /rss do WordPress dão 404; o feed do arquivo de
   // notícias é este (?format=feed). Imprensa nacional, por isso a fonte toda
   // é `pt` — o feed mistura peças internacionais, mas isso é da linha
@@ -131,6 +134,13 @@ async function fetchFeed(feed) {
     passed: 0,
     dropped,
     detail: '',
+    // Data do item mais recente que o feed traz, ANTES dos filtros: é o
+    // `lastSeen` da fonte (scripts/news/source-health.js). Sem isto, uma fonte
+    // que pára só se distingue de uma fonte que não responde depois de a TTL
+    // de 7 dias já ter apagado os itens dela.
+    lastSeen: null,
+    // Prazo de silêncio configurado no FEEDS (fonte que publica devagar).
+    staleAfterDays: feed.staleAfterDays,
   };
 
   try {
@@ -147,6 +157,7 @@ async function fetchFeed(feed) {
     const xml = await res.text();
     const items = [];
     const seenUrls = new Set();
+    const seenDates = [];
     const itemRegex = /<item[\s\S]*?<\/item>/g;
     let match;
 
@@ -157,6 +168,8 @@ async function fetchFeed(feed) {
       const description = extractField(raw, 'description').replace(/\s*The\s+post\s+.*?appeared\s+first\s+on\s+.*?\.\s*/gi, '').trim();
       const link = extractField(raw, 'link');
       const pubDate = extractField(raw, 'pubDate');
+      const publishedIso = normaliseDate(pubDate);
+      if (publishedIso) seenDates.push(publishedIso);
 
       const stub = {
         title,
@@ -164,7 +177,7 @@ async function fetchFeed(feed) {
         summary: description ? description.substring(0, 400) : '',
         summaryEn: description ? description.substring(0, 400) : '',
         url: link,
-        publishedAt: normaliseDate(pubDate) || new Date().toISOString(),
+        publishedAt: publishedIso || new Date().toISOString(),
         source: feed.source,
         defaultCategory: feed.defaultCategory,
         sourceType: 'rss',
@@ -198,6 +211,8 @@ async function fetchFeed(feed) {
     }
 
     report.passed = items.length;
+    // ISO em UTC ordena-se lexicograficamente.
+    report.lastSeen = seenDates.length > 0 ? seenDates.sort()[seenDates.length - 1] : null;
     if (report.inFeed === 0) {
       report.status = 'empty_feed';
       report.detail = 'feed sem itens';

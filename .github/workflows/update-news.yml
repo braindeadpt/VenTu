@@ -57,18 +57,23 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -f public/data/news.json
+          # news-sources.json é o estado de saúde por fonte (lastSeen de cada
+          # fonte, ver scripts/news/source-health.js). É commitado mesmo quando
+          # o feed não muda: é esse registo que sobrevive à TTL de 7 dias e
+          # permite avisar antes de a fonte desaparecer do feed.
+          git add -f public/data/news.json public/data/news-sources.json
           if git diff --staged --quiet; then
             echo "No news changes to commit"
             exit 0
           fi
-          # News changed → regenera o sitemap (as URLs de notícias entram nele)
-          # e os feeds RSS, e commita os três juntos. Só aqui: sem news diffs,
-          # os ficheiros existentes já estão correctos (só lastmod envelhece,
-          # que é ignorado; o RSS nem lastmod usa — é determinístico).
-          node scripts/generate-sitemap.js
-          node scripts/generate-rss.js
-          git add -f public/sitemap.xml public/rss.xml public/rss-en.xml
+          # Sitemap/RSS só quando o FEED mudou (as URLs das notícias entram no
+          # sitemap). O estado por fonte muda em todas as corridas e não tem
+          # nada que ver com o sitemap.
+          if ! git diff --staged --quiet -- public/data/news.json; then
+            node scripts/generate-sitemap.js
+            node scripts/generate-rss.js
+            git add -f public/sitemap.xml public/rss.xml public/rss-en.xml
+          fi
           git commit -m "auto: update news feed + sitemap + rss [$(date +'%Y-%m-%d %H:%M')]"
           for attempt in 1 2 3 4 5; do
             git pull --rebase origin main && git push origin HEAD:main && exit 0
