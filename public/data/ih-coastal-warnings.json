@@ -2343,70 +2343,6 @@
       ]
     },
     {
-      "id": 1003037,
-      "ref": "ANAV NR 118/23",
-      "category": "Assinalamento marítimo.",
-      "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=1a9f4c40-b00a-4624-b5c8-571f22e7a44d",
-      "source": "ih",
-      "collection": "nav_warning_local",
-      "polygons": [
-        [
-          [
-            -9.31558,
-            38.657767
-          ],
-          [
-            -9.31558,
-            38.661386
-          ],
-          [
-            -9.310346,
-            38.661386
-          ],
-          [
-            -9.310346,
-            38.657767
-          ],
-          [
-            -9.31558,
-            38.657767
-          ]
-        ]
-      ]
-    },
-    {
-      "id": 1003038,
-      "ref": "ANAV NR 119/23",
-      "category": "Assinalamento marítimo.",
-      "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=e31d36b8-9bc3-440a-8c7e-59e57a26e2e3",
-      "source": "ih",
-      "collection": "nav_warning_local",
-      "polygons": [
-        [
-          [
-            -9.298712,
-            38.673181
-          ],
-          [
-            -9.298712,
-            38.676464
-          ],
-          [
-            -9.293563,
-            38.676464
-          ],
-          [
-            -9.293563,
-            38.673181
-          ],
-          [
-            -9.298712,
-            38.673181
-          ]
-        ]
-      ]
-    },
-    {
       "id": 1003280,
       "ref": "ANAV NR 54/23",
       "category": "EDITAL 653/2023 DA CAPITANIA DO PORTO DE CAMINHA",
@@ -5063,38 +4999,6 @@
       ]
     },
     {
-      "id": 1008410,
-      "ref": "ANAV NR 116/25",
-      "category": "Assoreamento da Barra",
-      "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=d7f69924-f44a-4d22-adac-695121fd1837",
-      "source": "ih",
-      "collection": "nav_warning_local",
-      "polygons": [
-        [
-          [
-            -9.301662,
-            38.67176
-          ],
-          [
-            -9.301662,
-            38.67625
-          ],
-          [
-            -9.295056,
-            38.67625
-          ],
-          [
-            -9.295056,
-            38.67176
-          ],
-          [
-            -9.301662,
-            38.67176
-          ]
-        ]
-      ]
-    },
-    {
       "id": 1008486,
       "ref": "ANAV NR 80/25",
       "category": "FAROLIM - APAGADO",
@@ -6797,6 +6701,98 @@
       ]
     },
     {
+      "id": 1011044,
+      "ref": "ANAV NR 100/26",
+      "category": "BALIZA EB EMPENADA",
+      "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=21c696ae-0051-4539-8848-6f944da98454",
+      "source": "ih",
+      "collection": "nav_warning_local",
+      "polygons": [
+        [
+          [
+            -8.688819,
+            40.707622
+          ],
+          [
+            -8.688819,
+            40.728049
+          ],
+          [
+            -8.654657,
+            40.728049
+          ],
+          [
+            -8.654657,
+            40.707622
+          ],
+          [
+            -8.688819,
+            40.707622
+          ]
+        ]
+      ]
+    },
+    {
+      "id": 1011066,
+      "ref": "ANAV NR 63/26",
+      "category": "Equipamento HT-C submerso",
+      "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=9b0fdeff-6701-447c-8855-c218ec4fc8e9",
+      "source": "ih",
+      "collection": "nav_warning_local",
+      "polygons": [
+        [
+          [
+            -9.421736,
+            38.964064
+          ],
+          [
+            -9.422487,
+            38.963096
+          ],
+          [
+            -9.421522,
+            38.963513
+          ],
+          [
+            -9.421736,
+            38.964064
+          ]
+        ]
+      ]
+    },
+    {
+      "id": 1011096,
+      "ref": "ANAV NR 25/26",
+      "category": "Ajudas à navegação – Assinalamento noturno Terminal XXI LESTE Porto de Sines",
+      "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=4abede9c-1cec-4f93-a9d4-1b6424db6c7c",
+      "source": "ih",
+      "collection": "nav_warning_local",
+      "polygons": [
+        [
+          [
+            -8.840233,
+            37.928408
+          ],
+          [
+            -8.838002,
+            37.930253
+          ],
+          [
+            -8.83678,
+            37.928763
+          ],
+          [
+            -8.838775,
+            37.927291
+          ],
+          [
+            -8.840233,
+            37.928408
+          ]
+        ]
+      ]
+    },
+    {
       "id": 2017775,
       "ref": "ANAV NR 1361/26",
       "category": "Animais Marinhos - Avistamento",
@@ -7982,7 +7978,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-11-16T10:06:59.839Z",
+  "fetchedAt": "2026-11-16T12:29:18.537Z",
   "sourceCollection": "nav_warning_coastal+nav_warning_local+orca_anavnet_point",
   "sourceUrl": "https://ogcapi.hidrografico.pt/collections/nav_warning_coastal"
 }
