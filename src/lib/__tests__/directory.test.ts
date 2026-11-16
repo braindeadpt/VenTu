@@ -1,6 +1,14 @@
 import { describe, expect, it } from 'vitest';
+import type { SupabaseClient } from '@supabase/supabase-js';
 import { distanceKm, entriesNearSpot } from '../directory';
-import { applyDirectoryProfiles, mergeDirectoryEntries } from '../directoryListings';
+import {
+  applyDirectoryProfiles,
+  fetchDirectoryListings,
+  isDirectorySlug,
+  listingToEntry,
+  mergeDirectoryEntries,
+  type DirectoryListingRow,
+} from '../directoryListings';
 import type { DirectoryEntry } from '@/types/directory';
 
 const base = (over: Partial<DirectoryEntry>): DirectoryEntry => ({
@@ -84,5 +92,74 @@ describe('applyDirectoryProfiles', () => {
     expect(out.verified).toBe(true);
     expect(out.tier).toBe('featured');
     expect(out.source).toBe('claimed');
+  });
+});
+
+describe('directory slug — XSS armazenado (finding)', () => {
+  it('isDirectorySlug aceita slugs curados e rejeita payloads', () => {
+    for (const s of ['escola-abc', 'a', 'surf-camp-2026', 'x'.repeat(64)]) {
+      expect(isDirectorySlug(s)).toBe(true);
+    }
+    for (const s of [
+      'x"><img src=x onerror=alert(1)>',
+      'x" onmouseover="alert(1)',
+      'Escola',
+      'esc ola',
+      'javascript:alert(1)',
+      'x'.repeat(65),
+      '',
+      null,
+      undefined,
+    ]) {
+      expect(isDirectorySlug(s as string)).toBe(false);
+    }
+  });
+
+  const row = (over: Partial<DirectoryListingRow>): DirectoryListingRow => ({
+    id: 't1',
+    slug: 'escola-ok',
+    name: 'Escola Teste',
+    kind: 'surf_school',
+    sports: ['surf'],
+    lat: 38.7,
+    lon: -9.4,
+    region: null,
+    region_en: null,
+    spot_ids: null,
+    website: null,
+    phone: null,
+    email: null,
+    address: null,
+    source: 'submitted',
+    verified: false,
+    verified_at: null,
+    tier: 'free',
+    owner_user_id: 'u1',
+    created_at: '2026-11-16T00:00:00Z',
+    ...over,
+  });
+
+  it('fetchDirectoryListings descarta linhas com slug malformado', async () => {
+    const rows = [
+      row({ slug: 'escola-ok' }),
+      row({ slug: 'x"><img src=x onerror=alert(1)>' }),
+      row({ slug: 'x" onmouseover="alert(1)' }),
+    ];
+    const sb = {
+      from: () => ({
+        select: () => ({ order: async () => ({ data: rows, error: null }) }),
+      }),
+    } as unknown as SupabaseClient;
+    const entries = await fetchDirectoryListings(sb);
+    expect(entries.map((e) => e.slug)).toEqual(['escola-ok']);
+  });
+
+  it('listingToEntry nunca propaga um slug malicioso', () => {
+    const e = listingToEntry(
+      row({ slug: 'x"><img src=x onerror=alert(1)>', id: 'abc12345' }),
+    );
+    expect(isDirectorySlug(e.slug)).toBe(true);
+    expect(e.slug).not.toContain('"');
+    expect(e.slug).not.toContain('<');
   });
 });

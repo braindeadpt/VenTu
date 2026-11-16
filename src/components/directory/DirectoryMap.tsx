@@ -194,7 +194,7 @@ export default function DirectoryMap({ entries, locale, className }: Props) {
         `<div class="directory-map-popup">
           <p class="directory-map-popup__kind">${kind}</p>
           <p class="directory-map-popup__name">${escapeHtml(name)}</p>
-          <a class="directory-map-popup__link" href="${href}">${linkLabel}</a>
+          <a class="directory-map-popup__link" href="${escapeHtml(href)}">${linkLabel}</a>
         </div>`,
         { className: 'directory-popup', maxWidth: 240 },
       );

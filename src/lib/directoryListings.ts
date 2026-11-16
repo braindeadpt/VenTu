@@ -59,10 +59,25 @@ function parseTier(raw: string | null | undefined): DirectoryTier {
   return 'free';
 }
 
+/** Alfabeto fechado dos slugs de listagem (o mesmo da CHECK na BD e do
+ *  slugify do formulário). Um slug fora disto é dado malformado — antes
+ *  do escape/validação era um vector de XSS armazenado no popup do mapa. */
+export function isDirectorySlug(s: string | null | undefined): boolean {
+  return typeof s === 'string' && /^[a-z0-9-]{1,64}$/.test(s);
+}
+
+/** Slug seguro para render: válido ou, em último recurso, derivado do id
+ *  com os caracteres perigosos removidos (nunca propaga aspas/HTML). */
+function safeSlug(row: DirectoryListingRow): string {
+  if (isDirectorySlug(row.slug)) return row.slug;
+  const fromId = (row.id || '').replace(/[^a-z0-9-]/gi, '').toLowerCase().slice(0, 40);
+  return `l-${fromId || 'x'}`;
+}
+
 export function listingToEntry(row: DirectoryListingRow): DirectoryEntry {
   return {
     id: row.id,
-    slug: row.slug,
+    slug: safeSlug(row),
     name: row.name,
     kind: row.kind,
     sports: (row.sports || []) as DirectorySport[],
@@ -95,7 +110,11 @@ export async function fetchDirectoryListings(
     }
     throw error;
   }
-  return ((data as DirectoryListingRow[]) || []).map(listingToEntry);
+  // Linhas com slug malformado não chegam ao mapa — a CHECK na BD bloqueia
+  // escritas novas, este filtro protege leituras de dados antigos.
+  return ((data as DirectoryListingRow[]) || [])
+    .filter((r) => isDirectorySlug(r.slug))
+    .map(listingToEntry);
 }
 
 function profileRowToOverlay(row: DirectoryProfileRow): DirectoryProfileOverlay {

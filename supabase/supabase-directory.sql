@@ -20,7 +20,7 @@ END $$;
 -- Listagens submetidas (aparecem logo; verified = false até admin)
 CREATE TABLE IF NOT EXISTS directory_listings (
   id TEXT PRIMARY KEY,
-  slug TEXT NOT NULL UNIQUE,
+  slug TEXT NOT NULL UNIQUE CHECK (slug ~ '^[a-z0-9-]{1,64}$'),
   name TEXT NOT NULL CHECK (length(name) >= 2 AND length(name) <= 120),
   kind TEXT NOT NULL CHECK (kind IN (
     'surf_school', 'kite_center', 'windsurf', 'shop', 'club', 'rental', 'other'
@@ -94,6 +94,23 @@ BEGIN
     ALTER TABLE directory_listings
       ADD CONSTRAINT directory_listings_website_http_check
       CHECK (website IS NULL OR website ~* '^https?://');
+  END IF;
+END $$;
+
+-- Slug: alfabeto fechado — bloqueia XSS armazenado via slug arbitrário no
+-- popup do mapa do diretório (aspas fecham o href="..." e injectam HTML).
+-- Corre isolado no SQL Editor se a tabela já existir:
+--   ALTER TABLE directory_listings DROP CONSTRAINT IF EXISTS directory_listings_slug_format_check;
+--   ALTER TABLE directory_listings ADD CONSTRAINT directory_listings_slug_format_check
+--     CHECK (slug ~ '^[a-z0-9-]{1,64}$');
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint WHERE conname = 'directory_listings_slug_format_check'
+  ) THEN
+    ALTER TABLE directory_listings
+      ADD CONSTRAINT directory_listings_slug_format_check
+      CHECK (slug ~ '^[a-z0-9-]{1,64}$');
   END IF;
 END $$;
 
