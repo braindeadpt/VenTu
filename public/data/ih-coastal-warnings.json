@@ -231,6 +231,110 @@
       ]
     },
     {
+      "id": 19183,
+      "ref": "ANAV NR 2535/26",
+      "category": "Requisitos de segurança maritima",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=ce4ab238-0020-4d22-8870-33ec98b32329",
+      "source": "ih",
+      "collection": "nav_warning_coastal",
+      "polygons": [
+        [
+          [
+            -8.892529,
+            41.845013
+          ],
+          [
+            -8.892529,
+            41.872373
+          ],
+          [
+            -8.8534,
+            41.872373
+          ],
+          [
+            -8.8534,
+            41.845013
+          ],
+          [
+            -8.892529,
+            41.845013
+          ]
+        ]
+      ]
+    },
+    {
+      "id": 19185,
+      "ref": "ANAV NR 2536/26",
+      "category": "Requisitos de segurança maritima",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=0a37306d-fd0e-4a25-a586-f516b861190e",
+      "source": "ih",
+      "collection": "nav_warning_coastal",
+      "polygons": [
+        [
+          [
+            -8.893908,
+            41.796528
+          ],
+          [
+            -8.893908,
+            41.824421
+          ],
+          [
+            -8.842937,
+            41.824421
+          ],
+          [
+            -8.842937,
+            41.796528
+          ],
+          [
+            -8.893908,
+            41.796528
+          ]
+        ]
+      ]
+    },
+    {
+      "id": 19187,
+      "ref": "ANAV NR 2537/26",
+      "category": "Requisitos de segurança maritima",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=7b14e0f3-6656-4878-bd96-c783aa4c57fc",
+      "source": "ih",
+      "collection": "nav_warning_coastal",
+      "polygons": [
+        [
+          [
+            -16.681052,
+            32.721443
+          ],
+          [
+            -16.478331,
+            32.375322
+          ],
+          [
+            -17.302103,
+            32.3846
+          ],
+          [
+            -17.291119,
+            32.79651
+          ],
+          [
+            -17.054972,
+            32.648626
+          ],
+          [
+            -16.86825,
+            32.606989
+          ],
+          [
+            -16.681052,
+            32.721443
+          ]
+        ]
+      ]
+    },
+    {
       "id": 1000182,
       "ref": "ANAV NR 121/21",
       "category": "SEGURANÇA DA NAVEGAÇÃO - AVISO À NAVEGAÇÃO LOCAL",
@@ -7307,10 +7411,12 @@
   ],
   "coverage": {
     "moledo": [
+      19183,
       1003280,
       1003281
     ],
     "vila-praia-ancora": [
+      19185,
       1003280,
       1003281
     ],
@@ -7884,6 +7990,7 @@
       1000459
     ],
     "jardim-mar": [
+      19187,
       1000459
     ],
     "ponta-sao-lourenco": [
@@ -8011,7 +8118,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-11-16T16:06:48.878Z",
+  "fetchedAt": "2026-11-16T18:07:33.308Z",
   "sourceCollection": "nav_warning_coastal+nav_warning_local+orca_anavnet_point",
   "sourceUrl": "https://ogcapi.hidrografico.pt/collections/nav_warning_coastal"
 }
