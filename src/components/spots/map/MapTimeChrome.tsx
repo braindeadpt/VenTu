@@ -297,7 +297,11 @@ export default function MapTimeChrome({
             <span className="font-mono font-semibold tabular-nums">{formatHourLabel(frameTime, locale)}</span>
           </>
         ) : (
-          <span className="font-mono font-semibold tabular-nums" style={{ color: 'rgb(var(--verdict))' }}>
+          <span
+            className="font-mono font-semibold tabular-nums"
+            // Na pele v6 o texto fica em espuma (`--fg`): «Não dá» (#A8464A) dava 3,2:1 a 15 px (#458).
+            style={{ color: v6 ? 'rgb(var(--fg))' : 'rgb(var(--verdict))' }}
+          >
             {stepLabel}
           </span>
         )}
