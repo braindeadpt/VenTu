@@ -219,6 +219,8 @@ export const translationsPt = {
       colors: 'Verde offshore · vermelho onshore · cinza cross',
       length: 'Comprimento do arco = força (curto <8kt · médio 8–18 · longo >18)',
       rule: 'Arco verde do lado do mar = dia bom.',
+      colorsV6: 'Gelo offshore · coral onshore · névoa cross',
+      ruleV6: 'Arco gelo do lado do mar = vento de terra (offshore).',
       dismiss: 'Percebi',
       help: 'Como ler o vento no mapa',
       offshore: 'offshore',

@@ -13,6 +13,7 @@ import {
   type ProvenanceTier,
 } from '@/lib/provenance';
 import { cn } from '@/lib/cn';
+import { usePelePortal } from '@/lib/pelePortal';
 
 /** Glifo por eixo — o mesmo símbolo diz sempre a mesma grandeza. */
 const AXIS_ICON: Record<ProvenanceAxis, typeof Waves> = {
@@ -91,6 +92,8 @@ export default function ProvenanceChip({
   const buttonRef = useRef<HTMLButtonElement>(null);
   const popoverRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
+  // Dentro do /mapa v6 o popover leva a pele da âncora (#458 §3).
+  const pele = usePelePortal(buttonRef, open);
   const [pos, setPos] = useState<{ top: number; left: number } | null>(null);
   const id = useId();
 
@@ -228,6 +231,7 @@ export default function ProvenanceChip({
             id={`${id}-popover`}
             role="tooltip"
             data-provenance-popover="true"
+            data-pele={pele}
             {...popoverAttrs}
             className="fixed z-[5000] w-max max-w-[min(320px,calc(100vw-16px))] rounded-lg border border-divider bg-bg-elevated px-3 py-2 text-xs leading-relaxed text-fg shadow-card"
             style={{ top: pos.top, left: pos.left }}

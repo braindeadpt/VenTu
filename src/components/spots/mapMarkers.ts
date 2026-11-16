@@ -593,6 +593,20 @@ function nightMoonSvg(px: number): string {
  * mono 13 px, anel de 2 px bg-base, badge «+N» e tique de vento opcional.
  */
 export function buildV3MarkerIcon(Leaflet: typeof L, opts: V3MarkerIconOptions): L.DivIcon {
+  return Leaflet.divIcon({
+    className: 'spot-marker v3mk-root',
+    html: buildV3MarkerHtml(opts),
+    iconSize: [V3_MARKER_SIZE, V3_MARKER_SIZE],
+    iconAnchor: [V3_MARKER_SIZE / 2, V3_MARKER_SIZE / 2],
+  });
+}
+
+/**
+ * HTML do marcador completo (o mesmo do mapa), sem Leaflet — a legenda do
+ * vento da pele v6 desenha com ele a amostra (#458 §3), para ensinar o
+ * marcador que o mapa mostra de facto.
+ */
+export function buildV3MarkerHtml(opts: V3MarkerIconOptions): string {
   const { spotId, score } = opts;
   const members = opts.memberIds ?? [spotId];
   const hasMore = members.length > 1;
@@ -621,12 +635,7 @@ export function buildV3MarkerIcon(Leaflet: typeof L, opts: V3MarkerIconOptions):
     `<span class="v3in" style="display:grid;place-items:center;width:100%;height:100%;border-radius:50%;background:${tierBg};color:${ink};font:600 13px/1 var(--font-geist-mono,ui-monospace,monospace);font-variant-numeric:tabular-nums;box-shadow:0 0 0 2px rgb(var(--bg-base)),0 2px 6px rgba(0,0,0,.25);transition:transform .12s ease-out,box-shadow .16s ease-out">${
       night ? nightMoonSvg(15) : scoreToNota(score)
     }</span>${tick}${badge}</div>`;
-  return Leaflet.divIcon({
-    className: 'spot-marker v3mk-root',
-    html,
-    iconSize: [V3_MARKER_SIZE, V3_MARKER_SIZE],
-    iconAnchor: [V3_MARKER_SIZE / 2, V3_MARKER_SIZE / 2],
-  });
+  return html;
 }
 
 /**

@@ -276,6 +276,8 @@ export const translationsDe = {
       colors: 'Grün offshore · rot onshore · grau cross',
       length: 'Bogenlänge = Stärke (kurz <8kt · mittel 8–18 · lang >18)',
       rule: 'Grüner Bogen zur Seeseite = guter Tag.',
+      colorsV6: 'Eisblau offshore · koralle onshore · nebelgrau cross',
+      ruleV6: 'Eisblauer Bogen zur Seeseite = ablandiger Wind (offshore).',
       dismiss: 'Verstanden',
       help: 'Wind auf der Karte lesen',
       offshore: 'offshore',
