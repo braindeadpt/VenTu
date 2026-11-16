@@ -1812,7 +1812,8 @@ body:has(header[data-header-compact='true']) [data-map-fullscreen='true'].top-16
      open→peek ficava preso. Com a lista aberta o mapa está tapado: o cromo
      do topo sai (sem foco nem toque) e volta no half/peek. */
   [data-map-fullscreen='true']:has([data-explore-sheet='open']) [data-map-time-pill],
-  [data-map-fullscreen='true']:has([data-explore-sheet='open']) [data-map-sea-mode-switch] {
+  [data-map-fullscreen='true']:has([data-explore-sheet='open']) [data-map-sea-mode-switch],
+  [data-map-fullscreen='true']:has([data-explore-sheet='open']) .map-scrub-wrap {
     visibility: hidden;
     pointer-events: none;
   }

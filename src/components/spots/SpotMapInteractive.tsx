@@ -473,6 +473,9 @@ export default function SpotMapInteractive({
     initialSstEnabled,
     initialCurrentsEnabled,
     initialSwellEnabled,
+    // ?wind=1 / ?wind=0 explícitos vencem a pref gravada da «Ondulação»
+    // (o ?swell=1 continua a ganhar — initialSwellEnabled vem primeiro).
+    initialSwellDisabled: initialWindEnabled || initialWindDisabled,
     swellSpots,
     locale,
     base: layersBase,
