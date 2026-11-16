@@ -1035,7 +1035,29 @@ export function MapSpotCard({
         const mr = markerInner.getBoundingClientRect();
         const cr = root.getBoundingClientRect();
         const cw = card.offsetWidth || 320;
-        const ch = card.offsetHeight || 380;
+        // #458 §4 · ecrãs baixos (paisagem 844×390): o cartão não cabe entre o topo (60) e o fundo
+        // (12) e os CTAs ficavam cortados. Só nesse caso ganha teto e scroll interno; a seta v6
+        // (::before fora da caixa) sai com `data-rolar`, senão o overflow cortava-a. Fora disso
+        // nada muda (o estilo só é escrito quando o estado vira).
+        const avail = Math.max(160, Math.floor(cr.height - 72));
+        const natural = card.scrollHeight || card.offsetHeight || 380;
+        const rolar = natural > avail;
+        if (rolar !== (card.dataset.rolar === '1')) {
+          if (rolar) {
+            card.dataset.rolar = '1';
+            card.style.maxHeight = `${avail}px`;
+            card.style.overflowY = 'auto';
+            card.style.overscrollBehavior = 'contain';
+          } else {
+            delete card.dataset.rolar;
+            card.style.maxHeight = '';
+            card.style.overflowY = '';
+            card.style.overscrollBehavior = '';
+          }
+        } else if (rolar && card.style.maxHeight !== `${avail}px`) {
+          card.style.maxHeight = `${avail}px`;
+        }
+        const ch = rolar ? avail : card.offsetHeight || 380;
         let left = mr.left - cr.left + mr.width / 2 + 30;
         let top = mr.top - cr.top + mr.height / 2 - ch / 2;
         if (left + cw > cr.width - 70) {

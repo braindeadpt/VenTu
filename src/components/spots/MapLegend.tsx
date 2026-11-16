@@ -25,6 +25,12 @@ interface MapLegendProps {
   /** Renderiza em fluxo (sem posição absoluta nem cartão) — usado dentro do
    *  <details> «Legenda» do bottom sheet mobile. */
   embedded?: boolean;
+  /** #458 · pele v6 na legenda `embedded` do sheet mobile: a mesma escala em mosaico do
+   *  cartão flutuante (`chrome.v6`). Sem ela o sheet mantém a escala antiga. */
+  v6?: {
+    noite: boolean;
+    sportLabel: string;
+  } | null;
   /**
    * UX v3 §4 — modo controlado do /mapa fullscreen: o cartão flutuante só
    * existe quando `open`, a posição é a da maquete (bottom-right no
@@ -166,6 +172,7 @@ export default function MapLegend({
   hudLift = 0,
   placement = 'map',
   embedded = false,
+  v6 = null,
   chrome,
   radarTitle,
   radarVisible = false,
@@ -197,6 +204,8 @@ export default function MapLegend({
   const isPt = locale === 'pt';
   const t = getTranslation(locale);
   const [collapsed, setCollapsed] = useState(true);
+  // Pele v6: no cartão flutuante chega por `chrome.v6`; no sheet (`embedded`) por `v6`.
+  const peleV6 = chrome?.v6 ?? (embedded ? v6 : null);
 
   // Auto-expand when a data layer activates — except the homepage hero:
   // there the expanded box (≈156px tall) lands on the sport filter chips and
@@ -343,7 +352,7 @@ export default function MapLegend({
           {/* Escala em nós da maquete — a cor das partículas segue-a. Sem
               grelha nem intervalo, ficam as amostras de espessura antigas. */}
           {seaLegendCopy && windRange ? (
-            <WindKtLegend range={windRange} copy={seaLegendCopy} />
+            <WindKtLegend range={windRange} copy={seaLegendCopy} v6={peleV6 != null} />
           ) : (
           <div className="grid grid-cols-3 gap-1.5 text-center text-[11px] text-fg-muted">
             {[
@@ -514,14 +523,18 @@ export default function MapLegend({
             />
           </button>
         )}
-        {embedded && (
+        {embedded && !peleV6 && (
           <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-fg-muted">
             {scoreTitle}
           </p>
         )}
 
         <div className={embedded ? 'block' : `${collapsed ? 'hidden' : 'block'} lg:block`}>
-          <ScoreScale locale={locale} title={scoreTitle} />
+          {peleV6 ? (
+            <ScoreScaleV6 locale={locale} noite={peleV6.noite} sportLabel={peleV6.sportLabel} />
+          ) : (
+            <ScoreScale locale={locale} title={scoreTitle} />
+          )}
           {layerSections}
         </div>
       </div>

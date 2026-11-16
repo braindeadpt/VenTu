@@ -12,6 +12,8 @@
 import { useCallback } from 'react';
 import { getTranslation } from '@/lib/i18n';
 import { mapHoursClock } from '@/lib/mapHours';
+import { mapNightAppliesTo } from '@/lib/mapNight';
+import { getSportLabel } from '@/lib/homepageSport';
 import type { MapFullscreenHudProps } from '../../mapHudTypes';
 import type { BasemapMode } from '../../MapLayerToggle';
 import MapLegend from '../../MapLegend';
@@ -60,7 +62,7 @@ export default function MapExploreZone({
   timeTrack,
   attributionHtml,
 }: MapExploreZoneProps) {
-  const { isPt, locale, focusSpotId, hoursLive, hoursTimes, hoursFrame } = useMapUiData();
+  const { isPt, locale, focusSpotId, hoursLive, hoursTimes, hoursFrame, pele, sport } = useMapUiData();
   const { focusSpot } = useMapUiActions();
   const t = getTranslation(locale);
   // Estável — mantém o memo de MapSpotList efectivo entre commits do
@@ -158,7 +160,14 @@ export default function MapExploreZone({
           jumps={jumps}
           onJump={jumpTo}
           warningChip={<BuoyLayerChip locale={locale} />}
-          legendNode={<MapLegend locale={locale} embedded {...legendLayerProps} />}
+          legendNode={
+            <MapLegend
+              locale={locale}
+              embedded
+              v6={pele === 'v6' ? { noite: mapNightAppliesTo(sport), sportLabel: getSportLabel(sport, locale) } : null}
+              {...legendLayerProps}
+            />
+          }
           timeTrack={timeTrack}
           attributionHtml={attributionHtml}
           openHeight={openHeight}

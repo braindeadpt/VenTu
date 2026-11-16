@@ -9,6 +9,7 @@ import {
   windLegendTop,
 } from '@/lib/mapSwellField';
 import type { mapUiLayersDict } from '@/lib/translations/mapUi/layers';
+import { windV6LegendStops } from '@/lib/mapWindV6';
 
 /**
  * Legendas das camadas de vento (escala em nós) e «Ondulação» (Hs) — mesma
@@ -57,13 +58,15 @@ function NowRange({ template, value }: { template: string; value: string }) {
   );
 }
 
-export function WindKtLegend({ range, copy }: { range: Range; copy: mapUiLayersDict }) {
+export function WindKtLegend({ range, copy, v6 = false }: { range: Range; copy: mapUiLayersDict; v6?: boolean }) {
   const top = windLegendTop(range?.max ?? 0);
+  // Pele v6 (B7): os traços vão do gelo à espuma; a barra segue-os (#458).
+  const stops = v6 ? windV6LegendStops(top) : WIND_KT_STOPS;
   const ticks = top === 40 ? ['0', '10', '20', '30', '40'] : ['0', '10', '20', '30'];
   const now = range ? `${Math.round(range.min)}–${Math.round(range.max)} kn` : null;
   return (
-    <div data-map-wind-scale>
-      <RangeBar stops={WIND_KT_STOPS} top={top} range={range} ticks={ticks} />
+    <div data-map-wind-scale data-rampa={v6 ? 'v6' : undefined}>
+      <RangeBar stops={stops} top={top} range={range} ticks={ticks} />
       <p className="mt-1 text-[10px] leading-snug text-fg-muted">
         {now && <NowRange template={copy.legendNowRange} value={now} />}
         {copy.windLegendNote}
