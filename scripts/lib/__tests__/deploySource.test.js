@@ -245,6 +245,8 @@ describe('deploySource — resumo', () => {
     });
     const md = formatDeploySummary(res, {
       greenRun: run({ head_sha: 'c'.repeat(40) }),
+      // GITHUB_SHA: a ponta da main no gatilho — o SHA que o Actions mostra.
+      actionsSha: 'e'.repeat(40),
       trigger: {
         workflow: 'CI',
         runNumber: 134,
@@ -259,9 +261,46 @@ describe('deploySource — resumo', () => {
     expect(md).toContain('43778874742');
     expect(md).toContain('cancelled');
     expect(md).toContain(`\`${'d'.repeat(9)}\``);
+    // A etiqueta do run é GITHUB_SHA (ponta da main no gatilho), não o
+    // head_sha do gatilho nem o main do checkout.
+    expect(md).toContain(`**etiqueta do run:** \`${'e'.repeat(9)}\``);
     expect(md).toContain('ponta da main');
     // Sem gatilho (dispatch manual) o resumo continua explícito.
     expect(formatDeploySummary(res, {})).toContain('manual (workflow_dispatch)');
+  });
+
+  it('distingue o main do checkout quando avançou depois do gatilho (fila pages)', () => {
+    // Gatilho com main em A, etiqueta Actions em A, checkout já em B:
+    // o resumo não pode chamar «main no gatilho» ao commit B.
+    const res = evaluateDeploySource({
+      mode: 'workflow_run',
+      mainSha: 'b'.repeat(40),
+      greenRun: run({ head_sha: 'c'.repeat(40) }),
+      greenIsAncestor: true,
+      lagCommits: 0,
+      lagHours: 0,
+    });
+    const trigger = {
+      workflow: 'CI',
+      runNumber: 135,
+      runId: 43778874743,
+      conclusion: 'success',
+      event: 'push',
+      headSha: 'a'.repeat(40),
+      url: null,
+    };
+    const md = formatDeploySummary(res, { trigger, actionsSha: 'a'.repeat(40) });
+    expect(md).not.toContain('etiqueta do run');
+    expect(md).toContain(`**main no checkout:** \`${'b'.repeat(9)}\``);
+    expect(md).not.toContain('main no gatilho');
+
+    // Etiqueta e checkout no mesmo commit: nenhuma linha extra.
+    const md2 = formatDeploySummary(res, {
+      trigger: { ...trigger, headSha: 'b'.repeat(40) },
+      actionsSha: 'b'.repeat(40),
+    });
+    expect(md2).not.toContain('etiqueta do run');
+    expect(md2).not.toContain('main no checkout');
   });
 });
 

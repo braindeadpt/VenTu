@@ -232,8 +232,8 @@ function readTrigger() {
   }
 }
 
-function finish(res, greenRun, sk = { fingerprint: null, skip: false, reason: '' }, trigger = null) {
-  let md = formatDeploySummary(res, { greenRun, dryRun: DRY_RUN, trigger });
+function finish(res, greenRun, sk = { fingerprint: null, skip: false, reason: '' }, trigger = null, actionsSha = null) {
+  let md = formatDeploySummary(res, { greenRun, dryRun: DRY_RUN, trigger, actionsSha });
   if (sk.reason) {
     md += `\n\n- **impressão digital:** \`${sk.fingerprint ? sk.fingerprint.slice(0, 12) : '—'}\` · **salto:** ${sk.skip ? 'sim' : 'não'} — ${sk.reason}`;
   }
@@ -301,6 +301,11 @@ async function main() {
   }
   const nowMs = Date.now();
   const trigger = EVENT === 'workflow_run' ? readTrigger() : null;
+  // GITHUB_SHA é a etiqueta que o Actions dá a este run: num workflow_run é a
+  // ponta da main NO GATILHO — distinta tanto do head_sha do run que disparou
+  // como do mainSha abaixo (a ponta da main NO CHECKOUT, que pode ter avançado
+  // enquanto o deploy esperava na fila `pages`).
+  const actionsSha = process.env.GITHUB_SHA || null;
   const mainSha = gitTry('rev-parse', 'HEAD');
   if (!mainSha) {
     console.log('::error::não foi possível resolver o HEAD do checkout');
@@ -314,7 +319,7 @@ async function main() {
       lagWarnCommits,
       lagWarnHours,
     });
-    finish(res, null, await skipDecision(res, mainSha, nowMs), trigger);
+    finish(res, null, await skipDecision(res, mainSha, nowMs), trigger, actionsSha);
     return;
   }
 
@@ -389,7 +394,7 @@ async function main() {
     )} (${greenRun ? greenRun.created_at : '—'}) · main: ${short(mainSha)}`,
   );
 
-  finish(res, greenRun, await skipDecision(res, mainSha, nowMs), trigger);
+  finish(res, greenRun, await skipDecision(res, mainSha, nowMs), trigger, actionsSha);
 }
 
 main().catch((e) => {
