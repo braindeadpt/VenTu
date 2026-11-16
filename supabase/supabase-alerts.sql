@@ -27,20 +27,12 @@ CREATE INDEX IF NOT EXISTS idx_alert_subs_email
 
 ALTER TABLE alert_subscriptions ENABLE ROW LEVEL SECURITY;
 
+-- No direct anonymous INSERT: table writes only via SECURITY DEFINER RPCs
+-- (subscribe_alert / verify / unsubscribe). The old client_id-throttled
+-- policy let any anonymous client pick verify_token and spam third-party
+-- emails whenever INSERT was (re)granted — removed so the base file never
+-- re-opens that path.
 DROP POLICY IF EXISTS "Allow anonymous alert insert" ON alert_subscriptions;
-CREATE POLICY "Allow anonymous alert insert" ON alert_subscriptions
-  FOR INSERT TO anon
-  WITH CHECK (
-    length(client_id) >= 8
-    AND length(email) >= 5
-    AND (
-      NOT EXISTS (
-        SELECT 1 FROM alert_subscriptions a
-        WHERE a.client_id = alert_subscriptions.client_id
-        AND a.created_at > NOW() - INTERVAL '30 seconds'
-      )
-    )
-  );
 
 -- Unsubscribe ONLY via SECURITY DEFINER RPCs (token). No broad anon UPDATE.
 DROP POLICY IF EXISTS "Allow anonymous alert unsubscribe" ON alert_subscriptions;
