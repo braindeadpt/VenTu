@@ -215,6 +215,8 @@ interface UseMapLayersFieldsParams {
   initialCurrentsEnabled: boolean;
   /** Deep link `?swell=1` — camada «Ondulação». */
   initialSwellEnabled?: boolean;
+  /** Deep link `?wind=1|0` explícito — a pref gravada da «Ondulação» não o anula. */
+  initialSwellDisabled?: boolean;
   /** Spots com símbolo de ondulação (os visíveis no mapa, já filtrados). */
   swellSpots?: FieldSpot[];
   locale?: string;
@@ -242,6 +244,7 @@ export function useMapLayersFields({
   initialSstEnabled,
   initialCurrentsEnabled,
   initialSwellEnabled = false,
+  initialSwellDisabled = false,
   swellSpots,
   locale = 'pt',
   base,
@@ -305,6 +308,7 @@ export function useMapLayersFields({
   // «Ondulação» — só pedida quando uma das duas está ligada no fullscreen.
   const { swellWanted, toggleSwell: toggleSwellRaw, disableSwell, setSwell } = useSwellToggle({
     initialEnabled: initialSwellEnabled,
+    initialDisabled: initialSwellDisabled,
   });
   const fieldsSurface = isFullscreen && !isHeroEmbed;
   const seaGrid = useSeaGrid(fieldsSurface && (windEnabled || swellWanted));

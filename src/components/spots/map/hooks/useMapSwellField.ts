@@ -54,6 +54,21 @@ export interface SwellTooltipLabels {
 
 interface UseSwellToggleOptions {
   initialEnabled: boolean;
+  /** Deep link `?wind=1`/`?wind=0` explícito: a pref gravada da «Ondulação»
+   *  não pode anular o modo pedido no link (porta do mapa da Home v6). */
+  initialDisabled?: boolean;
+}
+
+/** Estado inicial do toggle: deep link `?swell=1` liga; `?wind=1|0` vence a
+ *  pref gravada (sem a reescrever); sem link, vale a pref. */
+export function initialSwellState(
+  initialEnabled: boolean,
+  initialDisabled: boolean,
+  storedPref: string | null,
+): boolean {
+  if (initialEnabled) return true;
+  if (initialDisabled) return false;
+  return storedPref === '1';
 }
 
 /**
@@ -61,15 +76,16 @@ interface UseSwellToggleOptions {
  * grelha (useSeaGrid) só quando vento ou ondulação estão ligados.
  * Deep link (`?swell=1`) liga sem gravar a pref; o toggle grava.
  */
-export function useSwellToggle({ initialEnabled }: UseSwellToggleOptions) {
+export function useSwellToggle({ initialEnabled, initialDisabled = false }: UseSwellToggleOptions) {
   const [enabled, setEnabled] = useState<boolean>(() => {
-    if (initialEnabled) return true;
-    if (typeof window === 'undefined') return false;
+    if (typeof window === 'undefined') return initialEnabled;
+    let stored: string | null = null;
     try {
-      return localStorage.getItem(MAP_SWELL_LS_KEY) === '1';
+      stored = localStorage.getItem(MAP_SWELL_LS_KEY);
     } catch {
-      return false;
+      stored = null;
     }
+    return initialSwellState(initialEnabled, initialDisabled, stored);
   });
   useEffect(() => {
     if (initialEnabled) setEnabled(true);
@@ -289,6 +305,8 @@ export function useMapSwellField({
     // Recorte atrasado (> LAND_CLIP_WAIT_MS): desenha já com a máscara raster
     // e repinta com o corte vectorial quando os mosaicos chegarem.
     let clipSlow = false;
+    let slowTimer: number | null = null;
+    let disposed = false;
     const isLandPx = (x: number, y: number) => (landMask ? screenMaskAt(landMask, x, y) : false);
 
     /** Recorte pronto para a vista? Senão pede-o e repinta quando chegar. */
@@ -303,15 +321,23 @@ export function useMapSwellField({
       if (clipMissing) return true; // sem índice: desenha sem recorte (raster abaixo)
       if (!clipPending) {
         clipPending = true;
-        const slowTimer = window.setTimeout(() => {
-          if (!clipPending || clipSlow) return;
+        clipSlow = false;
+        if (slowTimer != null) window.clearTimeout(slowTimer);
+        slowTimer = window.setTimeout(() => {
+          slowTimer = null;
+          if (disposed || !clipPending || clipSlow) return;
           clipSlow = true;
           repaintRef.current?.();
         }, LAND_CLIP_WAIT_MS);
         prepareLandClip(bounds, view.zoom).then((lv) => {
-          window.clearTimeout(slowTimer);
+          if (slowTimer != null) window.clearTimeout(slowTimer);
+          slowTimer = null;
           clipPending = false;
+          // O corte vectorial chegou: o próximo pedido volta a esperar
+          // LAND_CLIP_WAIT_MS antes de cair na máscara raster.
+          clipSlow = false;
           if (!lv) clipMissing = true;
+          if (disposed) return;
           repaintRef.current?.();
         });
       }
@@ -671,6 +697,9 @@ export function useMapSwellField({
     if (!reducedMotion) rafRef.current = requestAnimationFrame(tick);
 
     return () => {
+      disposed = true;
+      if (slowTimer != null) window.clearTimeout(slowTimer);
+      slowTimer = null;
       repaintRef.current = null;
       if (repaintRaf) cancelAnimationFrame(repaintRaf);
       if (tipRaf) cancelAnimationFrame(tipRaf);

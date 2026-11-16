@@ -46,7 +46,8 @@ const SpotMapInteractive = dynamic(() => import('@/components/spots/SpotMapInter
   ssr: false,
   loading: () => (
     <div className="flex h-full min-h-[320px] items-center justify-center bg-surface-1/[0.04]">
-      <div className="w-8 h-8 rounded-full border-2 border-data-waves/30 border-t-data-waves animate-spin" />
+      {/* #458: sem spinner (proibido nas regras da casa) — placeholder estático. */}
+      <div className="h-8 w-8 rounded-full border-2 border-data-waves/30" aria-hidden />
     </div>
   ),
 });
@@ -429,7 +430,8 @@ export default function MapaFullscreenClient({
       />
       ) : (
         <div className="flex h-full min-h-[320px] items-center justify-center bg-surface-1/[0.04]">
-          <div className="w-8 h-8 rounded-full border-2 border-data-waves/30 border-t-data-waves animate-spin" />
+          {/* #458: sem spinner (proibido nas regras da casa) — placeholder estático. */}
+          <div className="h-8 w-8 rounded-full border-2 border-data-waves/30" aria-hidden />
         </div>
       )}
     </div>

@@ -387,16 +387,63 @@ export function useMapLayers({
     // medida em vez de desistir à primeira — antes o lift ficava a 0 para
     // sempre. Os carrosséis de radar/IR já não dependem disto no mobile
     // (posicionam-se por `--sheet-lift`); a legenda continua a usar o lift.
+    //
+    // Sem polling permanente (#458 §4): mede por evento — mutação do
+    // `style`/estado do sheet (drag e snap mudam o translateY inline), fim da
+    // transição e resize. Enquanto o sheet ainda não montou (ou se foi
+    // desmontado) procura-o a cada 250 ms, só com `querySelector` — sem
+    // `getBoundingClientRect` — e pára assim que o encontra.
+    let hud: Element | null = null;
+    let mo: MutationObserver | null = null;
+    let searchIv: number | null = null;
+    let raf = 0;
     const measure = () => {
-      const hud = document.querySelector('[data-map-hud-collapsed]');
+      raf = 0;
       setRadarLift(
-        hud ? Math.max(0, Math.round(window.innerHeight - hud.getBoundingClientRect().top)) : 0,
+        hud && hud.isConnected
+          ? Math.max(0, Math.round(window.innerHeight - hud.getBoundingClientRect().top))
+          : 0,
       );
     };
-    measure();
-    const iv = window.setInterval(measure, 250);
+    const schedule = () => {
+      if (!raf) raf = requestAnimationFrame(measure);
+    };
+    const detach = () => {
+      mo?.disconnect();
+      mo = null;
+      hud?.removeEventListener('transitionend', schedule);
+      hud = null;
+    };
+    const attach = (el: Element) => {
+      detach();
+      hud = el;
+      mo = new MutationObserver(schedule);
+      mo.observe(el, {
+        attributes: true,
+        attributeFilter: ['style', 'data-explore-sheet', 'data-map-hud-collapsed'],
+      });
+      el.addEventListener('transitionend', schedule);
+      measure();
+    };
+    const search = () => {
+      if (hud && hud.isConnected) return;
+      const el = document.querySelector('[data-map-hud-collapsed]');
+      if (el) attach(el);
+      else if (hud) {
+        detach();
+        measure();
+      }
+    };
+    search();
+    if (!hud) measure();
+    // Procura leve (sem layout): apanha o sheet montado tarde ou trocado.
+    searchIv = window.setInterval(search, 250);
+    window.addEventListener('resize', schedule);
     return () => {
-      window.clearInterval(iv);
+      if (searchIv != null) window.clearInterval(searchIv);
+      window.removeEventListener('resize', schedule);
+      if (raf) cancelAnimationFrame(raf);
+      detach();
     };
   }, [isFullscreen, isReady]);
 

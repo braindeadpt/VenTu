@@ -244,6 +244,9 @@
 /* células: altura cheia, fill da banda, nota /10 em Barlow Condensed 900 */
 [data-pele='v6'] [data-mr='r-cels']{height:44px;gap:4px}
 [data-pele='v6'] [data-mr='regua'][data-compacto] [data-mr='r-cels']{height:36px;gap:3px}
+/* #458 §4: as células compactas ficam a 36 px, mas o range invisível que as
+   cobre estica 4 px para cima e para baixo — área de toque de 44 px. */
+[data-pele='v6'] [data-mr='regua'][data-compacto] .map-scrub-bars>input[type='range']{top:-4px;height:calc(100% + 8px)}
 [data-pele='v6'] [data-mr='r-c']{background:none}
 [data-pele='v6'] [data-mr='r-c']>i{display:none}
 [data-pele='v6'] [data-mr='r-bar']{
@@ -330,6 +333,10 @@
 [data-pele='v6'] [data-ms='chip']{display:inline-flex;align-items:center;min-height:28px;padding:0 10px;border-radius:999px;background:rgba(243,248,251,.07);font:700 13px/1 var(--txt);white-space:nowrap;color:var(--espuma)}
 [data-pele='v6'] [data-ms='chip'][data-rel='offshore']{color:var(--gelo)}
 [data-pele='v6'] [data-ms='chip'][data-rel='cross']{color:var(--nevoa)}
+/* #458 §4: o badge de confiança do cartão é um botão de 28 px — a área de
+   toque estende-se 8 px acima e abaixo (44 px) sem mudar o desenho. */
+[data-pele='v6'] [data-ms='meta'] button[data-provenance-axis]{position:relative}
+[data-pele='v6'] [data-ms='meta'] button[data-provenance-axis]::after{content:'';position:absolute;left:-2px;right:-2px;top:-8px;bottom:-8px}
 [data-pele='v6'] [data-ms='chip'][data-rel='onshore']{color:#FF9D94}
 [data-pele='v6'] [data-ms='acc']{display:flex;gap:8px;margin-top:14px}
 [data-pele='v6'] [data-ms='b-sol']{
