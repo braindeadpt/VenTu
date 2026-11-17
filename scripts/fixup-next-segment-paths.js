@@ -87,27 +87,43 @@ async function main() {
 
 /**
  * The root layout hardcodes <html lang="pt-PT"> (a shared static root cannot
- * know the locale at build time). Fix the baked HTML per locale directory so
- * the lang attribute is correct server-side — no client-side SetHtmlLang
- * dependency for crawlers or no-JS users.
+ * know the locale at build time). Rewrite the lang attribute in every baked
+ * page under each locale directory — not just the locale index — so it is
+ * correct server-side for crawlers and no-JS users (issue #457).
  */
-function fixHtmlLangPerLocale() {
-  const LANG_BY_LOCALE = { pt: 'pt-PT', en: 'en', es: 'es', de: 'de', fr: 'fr' };
+const LANG_BY_LOCALE = { pt: 'pt-PT', en: 'en', es: 'es', de: 'de', fr: 'fr' };
+
+/**
+ * Rewrite the lang attribute of the first <html ...> tag to `lang`, touching
+ * nothing else in the file. Whitespace is required before `lang`, so an
+ * xml:lang attribute can never be rewritten by mistake, and the replacement
+ * keeps the tag byte-identical apart from the attribute value. Returns the
+ * input unchanged when the tag already carries the right lang (or has none).
+ */
+function fixHtmlLang(html, lang) {
+  // No "already correct" fast-path on the raw file: a body containing
+  // lang="<target>" (e.g. a hreflang alternate link) must not skip a page
+  // whose <html> tag still says pt-PT. The regex is idempotent — a correct
+  // tag rewrites to the identical string and the caller skips the write.
+  return html.replace(/<html([^>]*?\s)lang="[^"]*"/, `<html$1lang="${lang}"`);
+}
+
+function fixHtmlLangPerLocale(outDir = OUT_DIR) {
   let fixed = 0;
   for (const locale of Object.keys(LANG_BY_LOCALE)) {
-    const indexHtml = path.join(OUT_DIR, locale, 'index.html');
-    if (!fs.existsSync(indexHtml)) continue;
-    const html = fs.readFileSync(indexHtml, 'utf8');
-    const target = `lang="${LANG_BY_LOCALE[locale]}"`;
-    if (html.includes(target)) continue;
-    // First <html ...> tag only; lang may appear anywhere in it.
-    const fixedHtml = html.replace(/<html([^>]*)\blang="[^"]*"([^>]*)>/, `<html$1 ${target}$2>`);
-    if (fixedHtml !== html) {
-      fs.writeFileSync(indexHtml, fixedHtml);
-      fixed += 1;
+    const localeDir = path.join(outDir, locale);
+    if (!fs.existsSync(localeDir)) continue;
+    for (const file of walkFiles(localeDir)) {
+      if (!file.endsWith('.html')) continue;
+      const html = fs.readFileSync(file, 'utf8');
+      const fixedHtml = fixHtmlLang(html, LANG_BY_LOCALE[locale]);
+      if (fixedHtml !== html) {
+        fs.writeFileSync(file, fixedHtml);
+        fixed += 1;
+      }
     }
   }
-  console.log(`fixup-next-segment-paths: set <html lang> for ${fixed} locale root(s)`);
+  console.log(`fixup-next-segment-paths: set <html lang> in ${fixed} baked page(s)`);
 }
 
 function* walkFiles(dir) {
@@ -118,7 +134,11 @@ function* walkFiles(dir) {
   }
 }
 
-main().catch((err) => {
-  console.error('fixup-next-segment-paths failed:', err);
-  process.exit(1);
-});
+if (require.main === module) {
+  main().catch((err) => {
+    console.error('fixup-next-segment-paths failed:', err);
+    process.exit(1);
+  });
+}
+
+module.exports = { fixHtmlLang, fixHtmlLangPerLocale, LANG_BY_LOCALE };

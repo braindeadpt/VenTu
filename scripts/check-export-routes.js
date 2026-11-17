@@ -32,6 +32,11 @@
  *                  the noindex allowlist: one half of the forecasts.
  *                  splitFiles incident class (run 34417997202) — a generator
  *                  writing an orphan the index never references.
+ *   5. LANG      — every baked index.html carries its own locale's <html
+ *                  lang>: the shared static root layout hardcodes pt-PT and
+ *                  fixup-next-segment-paths rewrites it per locale, so a page
+ *                  still advertising the wrong lang means the fixup did not
+ *                  reach it (issue #457).
  *
  * Modes:
  *   --mode=full    all four checks (default). Used in CI after Build.
@@ -77,6 +82,14 @@ const NOT_FOUND_MARKERS = [
 
 /** Diagnostics cap — a systemic failure must not dump 2300 lines. */
 const REPORT_LIMIT = 20;
+
+/** The <html lang> each locale must bake — the shared static root layout
+ * hardcodes pt-PT and fixup-next-segment-paths rewrites it per locale. */
+const LANG_BY_LOCALE = { pt: 'pt-PT', en: 'en', es: 'es', de: 'de', fr: 'fr' };
+
+/** First <html> tag's lang attribute (whitespace before `lang` is required,
+ * so an xml:lang attribute can never match). */
+const HTML_LANG_RE = /<html[^>]*?\slang="([^"]*)"/;
 
 /**
  * Parse the sitemap <loc> URLs into filesystem-relative route paths
@@ -137,12 +150,18 @@ function findBakedRoutes(outDir) {
   return baked;
 }
 
-/** An index.html that baked the not-found page ('not-found') or a near-empty
- * shell ('size'); null when the page looks healthy. */
-function classifyBakedPage(htmlPath, bytes) {
+/** An index.html that baked the not-found page ('not-found'), a near-empty
+ * shell ('size'), or a missing/wrong locale <html lang> ('bad-lang'); null
+ * when the page looks healthy. `expectedLang` is optional so callers without
+ * a locale keep the old size/not-found-only behaviour. */
+function classifyBakedPage(htmlPath, bytes, expectedLang) {
   if (bytes < MIN_HTML_BYTES) return 'size';
   const html = fs.readFileSync(htmlPath);
   if (NOT_FOUND_MARKERS.some((marker) => html.indexOf(marker) !== -1)) return 'not-found';
+  if (expectedLang) {
+    const m = HTML_LANG_RE.exec(html.toString('utf8'));
+    if (!m || m[1] !== expectedLang) return 'bad-lang';
+  }
   return null;
 }
 
@@ -152,7 +171,7 @@ function classifyBakedPage(htmlPath, bytes) {
  * @param {{
  *   expected: string[],
  *   baked: string[],
- *   bakedBad?: Map<string, 'not-found'|'size'>,
+ *   bakedBad?: Map<string, 'not-found'|'size'|'bad-lang'>,
  * }} p
  */
 function checkExportRoutes({ expected, baked, bakedBad = new Map() }) {
@@ -163,8 +182,9 @@ function checkExportRoutes({ expected, baked, bakedBad = new Map() }) {
   const extra = baked.filter((r) => !expectedSet.has(r));
   const notFound = baked.filter((r) => bakedBad.get(r) === 'not-found');
   const size = baked.filter((r) => bakedBad.get(r) === 'size');
+  const badLang = baked.filter((r) => bakedBad.get(r) === 'bad-lang');
 
-  return { missing, extra, notFound, size };
+  return { missing, extra, notFound, size, badLang };
 }
 
 /** Parse sitemap <loc> entries from an XML string (pure, for tests). */
@@ -224,11 +244,15 @@ function main() {
   const bakedBad = new Map();
   for (const r of baked) {
     const full = path.join(outDir, r);
-    const verdict = classifyBakedPage(full, fs.statSync(full).size);
+    const verdict = classifyBakedPage(
+      full,
+      fs.statSync(full).size,
+      LANG_BY_LOCALE[r.split('/')[0]],
+    );
     if (verdict) bakedBad.set(r, verdict);
   }
 
-  const { missing, extra, notFound, size } = checkExportRoutes({
+  const { missing, extra, notFound, size, badLang } = checkExportRoutes({
     expected,
     baked,
     bakedBad,
@@ -239,6 +263,9 @@ function main() {
     lines.push(...fmt(missing, 'missing routes (indexed or allowlisted, not baked)'));
     lines.push(...fmt(notFound, 'baked not-found pages (generateStaticParams silently dropped them)'));
     lines.push(...fmt(size, `near-empty pages (< ${MIN_HTML_BYTES} bytes)`));
+    lines.push(
+      ...fmt(badLang, 'pages with missing/wrong <html lang> (fixup-next-segment-paths did not run?)'),
+    );
   }
   if (mode !== 'missing') {
     lines.push(...fmt(extra, 'extra route dirs (baked, but unknown to sitemap and allowlist)'));
@@ -266,5 +293,6 @@ module.exports = {
   classifyBakedPage,
   NOINDEX_ROUTE_PATHS,
   LOCALES,
+  LANG_BY_LOCALE,
   MIN_HTML_BYTES,
 };
