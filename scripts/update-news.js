@@ -11,7 +11,7 @@
  * Logging by stage for debugging.
  */
 
-const { fetchAllFeedsDetailed } = require('./news/fetch-rss');
+const { fetchAllFeedsDetailed, FEEDS } = require('./news/fetch-rss');
 const { detectEvents } = require('./news/detect-events');
 const { inferCategoryFromText, hasSpecificCategory } = require('./news/category-keywords');
 const { categoriseItem, ensureBilingual, synthesiseEvent } = require('./news/llm-tasks');
@@ -51,7 +51,12 @@ async function updateNews() {
     // entregar nada novo. É o aviso que faltou em 2026-11-15: a ANS parou a
     // 02/11, as Notícias do Mar a 06/11 e o feed pt só deu sinal quando a TTL
     // de 7 dias já tinha apagado tudo.
-    await reportSourceHealth({ reports });
+    // Fontes desligadas (`active: false`) não são pedidas: sem isto o estado
+    // delas ficaria congelado e o aviso de silêncio disparava para sempre.
+    await reportSourceHealth({
+      reports,
+      inactiveSources: FEEDS.filter((f) => f.active === false).map((f) => f.source),
+    });
   } catch (e) {
     console.error('❌ Etapa 1 failed:', e.message);
     errors.push(`RSS: ${e.message}`);

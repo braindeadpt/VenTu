@@ -19,12 +19,17 @@ const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36
 /** Feed configuration: source → category hint + region */
 const FEEDS = [
   // ── Portugal (Cena PT) ──
-  { url: 'https://www.ansurfistas.com/feed/',           source: 'ANS',              defaultCategory: 'surf',       sourceRegion: 'pt' },
-  { url: 'https://www.noticiasdomar.pt/feed/',          source: 'Notícias do Mar',  defaultCategory: 'general',  sourceRegion: 'pt' },
+  // As três fontes abaixo deixaram de publicar e ficam `active: false`: não
+  // gastam pedido por corrida nem fingem saúde. Continuam registadas (e o
+  // `probe-feeds.js` continua a sondá-las) para se ver quando voltam a
+  // publicar — aí basta tirar o `active: false`. Última publicação em
+  // 2026-11-15: ANS 02/11 · Notícias do Mar 06/11 · FPS 12/10.
+  { url: 'https://www.ansurfistas.com/feed/',           source: 'ANS',              defaultCategory: 'surf',       sourceRegion: 'pt', active: false },
+  { url: 'https://www.noticiasdomar.pt/feed/',          source: 'Notícias do Mar',  defaultCategory: 'general',  sourceRegion: 'pt', active: false },
   // FPS publica uma vez por mês (o último item antes do silêncio de 2026-10 era
   // de Julho): com o prazo por omissão de 5 d estaria em aviso permanente, por
-  // isso o limite é 30 d. O que se quer saber aqui é se a federação morreu.
-  { url: 'https://www.fps.pt/feed/',                    source: 'FPS',              defaultCategory: 'surf',       sourceRegion: 'pt', staleAfterDays: 30 },
+  // isso o limite é 30 d — fica guardado para quando a federação voltar.
+  { url: 'https://www.fps.pt/feed/',                    source: 'FPS',              defaultCategory: 'surf',       sourceRegion: 'pt', staleAfterDays: 30, active: false },
   // Surftotal: a /feed e a /rss do WordPress dão 404; o feed do arquivo de
   // notícias é este (?format=feed). Imprensa nacional, por isso a fonte toda
   // é `pt` — o feed mistura peças internacionais, mas isso é da linha
@@ -237,12 +242,19 @@ async function fetchFeed(feed) {
  */
 async function fetchAllFeedsDetailed() {
   console.log('\n📡  Etapa 1 — Fetch RSS feeds...');
-  const results = await Promise.all(FEEDS.map(fetchFeed));
+  const active = FEEDS.filter((f) => f.active !== false);
+  const inactive = FEEDS.filter((f) => f.active === false);
+  if (inactive.length > 0) {
+    console.log(
+      `   ⏸️ ${inactive.length} fonte(s) inactivas (sem fetch): ${inactive.map((f) => f.source).join(', ')}`,
+    );
+  }
+  const results = await Promise.all(active.map(fetchFeed));
   const items = results.flatMap((r) => r.items);
   const reports = results.map((r) => r.report);
   const unhealthy = reports.filter((r) => r.status !== 'ok');
   console.log(
-    `   → Total: ${FEEDS.length} feeds, ${items.length} itens passaram os filtros` +
+    `   → Total: ${active.length} feeds activos, ${items.length} itens passaram os filtros` +
       (unhealthy.length > 0 ? ` (${unhealthy.length} fonte(s) sem itens novos)` : ''),
   );
   return { items, reports };

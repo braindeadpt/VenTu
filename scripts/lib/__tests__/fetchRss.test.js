@@ -7,6 +7,9 @@ import { join } from 'node:path';
 const require = createRequire(import.meta.url);
 const { fetchAllFeeds, extractField, FEEDS } = require('../../news/fetch-rss.js');
 const { fetchFeed } = require('../../news/fetch-rss.js');
+// A invariante é sobre as fontes que são mesmo pedidas: as inactivas
+// (`active: false`) já não geram pedido nem itens.
+const ACTIVE_FEEDS = FEEDS.filter((f) => f.active !== false);
 const {
   regionCounts,
   decideFeedHealthAction,
@@ -69,10 +72,10 @@ describe('fetch-rss URL discard (S3) with mocked fetch', () => {
 
     const items = await fetchAllFeeds();
 
-    // Every configured feed returns the same synthetic feed.
-    expect(fetch).toHaveBeenCalledTimes(FEEDS.length);
-    // 2 good items × 10 feeds — the 4 bad ones were discarded by canDiscard.
-    expect(items).toHaveLength(FEEDS.length * 2);
+    // Every configured ACTIVE feed returns the same synthetic feed.
+    expect(fetch).toHaveBeenCalledTimes(ACTIVE_FEEDS.length);
+    // 2 good items × cada fonte activa — os 4 maus caem no canDiscard.
+    expect(items).toHaveLength(ACTIVE_FEEDS.length * 2);
 
     const urls = items.map((i) => i.url);
     for (const url of urls) {
@@ -81,8 +84,8 @@ describe('fetch-rss URL discard (S3) with mocked fetch', () => {
     expect(urls).not.toContain(BAD_JS);
     expect(urls).not.toContain(BAD_DATA);
     expect(urls).not.toContain(BAD_VB);
-    expect(urls.filter((u) => u === GOOD_HTTPS)).toHaveLength(FEEDS.length);
-    expect(urls.filter((u) => u === GOOD_HTTP)).toHaveLength(FEEDS.length);
+    expect(urls.filter((u) => u === GOOD_HTTPS)).toHaveLength(ACTIVE_FEEDS.length);
+    expect(urls.filter((u) => u === GOOD_HTTP)).toHaveLength(ACTIVE_FEEDS.length);
   });
 
   it('returns nothing when every item has a bad or missing URL', async () => {
@@ -475,6 +478,23 @@ describe('source-health — lastSeen monotónico e aviso de silêncio', () => {
     expect(stale).toEqual([]);
   });
 
+  it('fontes desligadas no FEEDS não são acusadas de silêncio para sempre', () => {
+    // A ANS passa a `active: false`: deixa de aparecer nos relatórios, o
+    // lastSeen dela congela e, sem o flag no estado, o aviso dispararia em
+    // todas as corridas seguintes.
+    const previous = {
+      sources: { ANS: { lastSeen: haDias(40), staleAfterDays: 5, lastStatus: 'ok' } },
+    };
+    const { state } = buildSourceHealth({
+      reports: [report('Surftotal', haDias(1))],
+      previous,
+      now: agora,
+      inactiveSources: ['ANS'],
+    });
+    expect(state.sources.ANS.active).toBe(false);
+    expect(staleSources({ state, now: agora })).toEqual([]);
+  });
+
   it('escreve o estado e emite ::warning:: por fonte silenciosa', () => {
     const dir = mkdtempSync(join(tmpdir(), 'ventu-source-health-'));
     const statePath = join(dir, 'news-sources.json');
@@ -513,5 +533,47 @@ describe('source-health — lastSeen monotónico e aviso de silêncio', () => {
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }
+  });
+});
+
+// ─── Fontes inactivas ──────────────────────────────────────────────────────
+// ANS, FPS e Notícias do Mar deixaram de publicar (última publicação 02/11,
+// 12/10 e 06/11/2026). Ficam registadas — para se ver quando voltam — mas
+// `active: false` tira-as do fetch: não gastam pedido nem fingem saúde.
+describe('fontes inactivas', () => {
+  it('as três fontes paradas ficam registadas com active: false', () => {
+    for (const source of ['ANS', 'FPS', 'Notícias do Mar']) {
+      const feed = FEEDS.find((f) => f.source === source);
+      expect(feed, `${source} devia continuar em FEEDS`).toBeTruthy();
+      expect(feed.active).toBe(false);
+    }
+  });
+
+  it('não são pedidas: o fetch só toca nas activas', async () => {
+    const xml = `<?xml version="1.0"?><rss version="2.0"><channel><title>T</title>${item('Nova', GOOD_HTTPS)}</channel></rss>`;
+    const calls = [];
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async (url) => {
+        calls.push(String(url));
+        return new Response(xml, { status: 200 });
+      }),
+    );
+
+    const items = await fetchAllFeeds();
+
+    const inactiveUrls = FEEDS.filter((f) => f.active === false).map((f) => f.url);
+    expect(calls).toHaveLength(ACTIVE_FEEDS.length);
+    for (const url of inactiveUrls) {
+      expect(calls).not.toContain(url);
+    }
+    expect(items).toHaveLength(ACTIVE_FEEDS.length);
+  });
+
+  it('uma fonte activa nova (Surftotal) continua a ser pedida', () => {
+    const surftotal = FEEDS.find((f) => f.source === 'Surftotal');
+    expect(surftotal).toBeTruthy();
+    expect(surftotal.sourceRegion).toBe('pt');
+    expect(surftotal.active).not.toBe(false);
   });
 });

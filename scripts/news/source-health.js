@@ -67,11 +67,17 @@ function loadSourceHealth(statePath = STATE_PATH) {
  * Várias URLs podem alimentar a mesma fonte (Stab Mag tem 2, IKSURF tem 3): o
  * que interessa é quando a fonte falou pela última vez, não o feed.
  *
+ * Fontes desligadas no `FEEDS` (`active: false`) não são pedidas, logo nunca
+ * voltam a aparecer nos relatórios e o `lastSeen` delas nunca avança: marcam-se
+ * no estado (`active: false`) para o `staleSources` não as acusar para sempre.
+ * O flag cai sozinho na primeira corrida em que voltem a ser pedidas.
+ *
  * @param {{
  *   reports?: Array<{ source: string, url?: string, status?: string, lastSeen?: string|null, staleAfterDays?: number }>,
  *   previous?: { sources?: Record<string, object> },
  *   now?: Date|string,
  *   defaultStaleAfterDays?: number,
+ *   inactiveSources?: string[],
  * }} input
  * @returns {{ state: { updatedAt: string, sources: Record<string, object> } }}
  */
@@ -80,9 +86,11 @@ function buildSourceHealth({
   previous = { sources: {} },
   now = new Date(),
   defaultStaleAfterDays = DEFAULT_STALE_AFTER_DAYS,
+  inactiveSources = [],
 } = {}) {
   const ref = toDate(now) || new Date();
   const sources = { ...(previous.sources || {}) };
+  const inactiveSet = new Set(inactiveSources);
 
   const bySource = new Map();
   for (const report of reports || []) {
@@ -119,7 +127,13 @@ function buildSourceHealth({
         prior.staleAfterDays ??
         defaultStaleAfterDays,
       urls: [...new Set(group.map((r) => r.url).filter(Boolean))],
+      // Uma fonte que voltou a ser pedida deixa de estar marcada como inactiva.
+      ...(inactiveSet.has(source) ? { active: false } : {}),
     };
+  }
+
+  for (const source of inactiveSet) {
+    if (sources[source]) sources[source] = { ...sources[source], active: false };
   }
 
   return { state: { updatedAt: ref.toISOString(), sources } };
@@ -138,6 +152,9 @@ function staleSources({ state = { sources: {} }, now = new Date() } = {}) {
 
   for (const [source, info] of Object.entries(state.sources || {})) {
     if (!info || !info.lastSeen) continue;
+    // Desligada no FEEDS (`active: false`): o silêncio é intencional, não é
+    // sinal de fonte morta — o `probe-feeds.js` é que vigia o regresso.
+    if (info.active === false) continue;
     const days = daysBetween(info.lastSeen, ref);
     if (days === null) continue;
     const limit = Number.isFinite(info.staleAfterDays) ? info.staleAfterDays : DEFAULT_STALE_AFTER_DAYS;
@@ -181,6 +198,7 @@ function formatSourceHealth(state, now = new Date()) {
  *   now?: Date|string,
  *   log?: (...args: unknown[]) => void,
  *   defaultStaleAfterDays?: number,
+ *   inactiveSources?: string[],
  * }} input
  * @returns {{ state: object, stale: Array<object>, written: boolean, path: string }}
  */
@@ -190,6 +208,7 @@ function reportSourceHealth({
   now = new Date(),
   log = console.log,
   defaultStaleAfterDays = DEFAULT_STALE_AFTER_DAYS,
+  inactiveSources = [],
 } = {}) {
   const previous = loadSourceHealth(statePath);
 
@@ -200,7 +219,13 @@ function reportSourceHealth({
     return { state: previous, stale: staleSources({ state: previous, now }), written: false, path: statePath };
   }
 
-  const { state } = buildSourceHealth({ reports, previous, now, defaultStaleAfterDays });
+  const { state } = buildSourceHealth({
+    reports,
+    previous,
+    now,
+    defaultStaleAfterDays,
+    inactiveSources,
+  });
   const stale = staleSources({ state, now });
 
   for (const line of formatSourceHealth(state, now)) log(`   ${line}`);

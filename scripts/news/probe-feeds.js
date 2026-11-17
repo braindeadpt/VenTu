@@ -38,7 +38,10 @@ async function main() {
   console.log('VenTu — RSS feed probe\n');
   console.log('── Configured (fetch-rss.js) ──');
   for (const f of FEEDS) {
-    await probe(`${f.source} [${f.sourceRegion}]`, f.url);
+    // As inactivas continuam a ser sondadas: é assim que se vê quando voltam a
+    // publicar (aí basta remover o `active: false` em fetch-rss.js).
+    const label = `${f.source} [${f.sourceRegion}]${f.active === false ? ' (inactiva)' : ''}`;
+    await probe(label, f.url);
   }
   console.log('\n── Candidates (not in pipeline) ──');
   for (const c of EXTRA_CANDIDATES) {
