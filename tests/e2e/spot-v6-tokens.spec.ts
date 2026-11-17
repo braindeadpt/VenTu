@@ -1,5 +1,6 @@
 import { test, expect, type Page } from '@playwright/test';
 import { interceptWarnings, readRealConditions } from './helpers/conditions';
+import { installSupabaseSignedIn } from './helpers/supabase-mock';
 
 /**
  * #459 V1 — a página de spot v6 é sempre escura: com o tema claro do site
@@ -89,11 +90,46 @@ test.describe('Spot v6 em tema claro (#459 V1)', () => {
     await acoes.scrollIntoViewIfNeeded();
     expect(await contrasteDe(page, '.v6 .acoes .acao-mais button[aria-haspopup]')).toBeGreaterThanOrEqual(4.5);
 
+    // pill compacta «Laranja» na régua: texto AA — o fill da banda fica para fills
+    const pilula = page.locator('.v6 [data-map-warning=compact]');
+    await expect(pilula).toBeVisible();
+    await expect(pilula).toHaveAttribute('data-ipma-nivel', 'orange');
+    expect(await contrasteDe(page, '.v6 [data-map-warning=compact]')).toBeGreaterThanOrEqual(4.5);
+
     const num = await page.locator('.v6 .r-cab output').first().evaluate((el) => getComputedStyle(el).fontVariantNumeric);
     expect(num).toContain('tabular-nums');
 
     const rodape = page.locator('[data-site-footer]');
     const fundoRodape = await rodape.evaluate((el) => getComputedStyle(el).backgroundColor);
     expect(fundoRodape).toBe('rgb(3, 14, 24)');
+  });
+
+  test('popovers das acções abrem e ficam legíveis (estilos renderizados)', async ({ page }) => {
+    await temaClaro(page);
+    await installSupabaseSignedIn(page);
+    await page.goto('/pt/spots/nazare/');
+    const acoes = page.getByTestId('spot-acoes');
+    await acoes.scrollIntoViewIfNeeded();
+
+    // «Mais»: partilhar + check-in dentro do popover sólido
+    await page.locator('.v6 .acoes .acao-mais button[aria-haspopup]').click();
+    const mais = page.locator('.v6 .acoes .acao-mais [role=group]');
+    await expect(mais).toBeVisible();
+    expect(await mais.evaluate((el) => getComputedStyle(el).backgroundColor)).toBe('rgb(7, 27, 44)');
+    expect(await contrasteDe(page, '.v6 .acoes .acao-mais [role=group] .text-fg')).toBeGreaterThanOrEqual(4.5);
+    await page.keyboard.press('Escape');
+    await expect(mais).toBeHidden();
+
+    // «Alerta-me»: o diálogo abre com sessão; o erro de gravação renderiza a tinta AA
+    await page.locator('.v6 .acoes .acao-alerta > div > button').click();
+    const alerta = page.locator('.v6 .acoes .acao-alerta [role=dialog]');
+    await expect(alerta).toBeVisible();
+    expect(await alerta.evaluate((el) => getComputedStyle(el).backgroundColor)).toBe('rgb(7, 27, 44)');
+    expect(await contrasteDe(page, '.v6 .acoes .acao-alerta [role=dialog] p')).toBeGreaterThanOrEqual(4.5);
+    // o stub de teste não implementa rpc — gravar falha e o erro real aparece
+    await alerta.getByRole('button').last().click();
+    const erro = alerta.locator('p.text-score-poor');
+    await expect(erro).toBeVisible();
+    expect(await contrasteDe(page, '.v6 .acoes .acao-alerta [role=dialog] p.text-score-poor')).toBeGreaterThanOrEqual(4.5);
   });
 });

@@ -124,4 +124,25 @@ describe('spot v6 — tokens na raiz (#459 V1)', () => {
   it('popovers das acções com fundo sólido', () => {
     expect(decl(regra('.v6 .acoes .absolute.z-50'), 'background')).toBe('var(--fundo)');
   });
+
+  it('aviso «Laranja» compacto: tinta AA sem mexer no fill da banda', () => {
+    // a raiz continua a mapear --score-poor para a banda «Não dá» (#A8464A)
+    let raiz: Rule | undefined;
+    root.walkRules((x) => {
+      if (x.selectors.includes('.v6') && decl(x, '--fg')) raiz = x;
+    });
+    expect(decl(raiz!, '--score-poor')).toBe('168 70 74');
+    // e cores.md: «Não dá» como texto só ≥ 24 px — o pill ganha tinta AA própria
+    expect(decl(regra(".v6 [data-ipma-nivel='orange']"), '--score-poor')).toBe('242 140 40');
+    // #F28C28 sobre o --abismo e sobre a sua tinta bg-score-poor/15
+    const tinta = mistura(hex('#F28C28'), 0.15, ABISMO);
+    expect(contraste(hex('#F28C28'), ABISMO)).toBeGreaterThanOrEqual(4.5);
+    expect(contraste(hex('#F28C28'), tinta)).toBeGreaterThanOrEqual(4.5);
+  });
+
+  it('erro do popover «Alerta-me»: vermelho AA do tema escuro', () => {
+    expect(decl(regra('.v6 .acao-alerta'), '--score-poor')).toBe('248 113 113');
+    // #F87171 sobre o --fundo sólido do popover
+    expect(contraste(hex('#F87171'), FUNDO)).toBeGreaterThanOrEqual(4.5);
+  });
 });
