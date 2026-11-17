@@ -14,6 +14,7 @@ import {
   classifyBakedPage,
   NOINDEX_ROUTE_PATHS,
   LOCALES,
+  LANG_BY_LOCALE,
   MIN_HTML_BYTES,
 } from '../../check-export-routes';
 
@@ -61,7 +62,7 @@ describe('checkExportRoutes', () => {
 
   it('reports nothing when the export matches expectations', () => {
     const r = checkExportRoutes({ expected, baked: expected });
-    expect(r).toEqual({ missing: [], extra: [], notFound: [], size: [] });
+    expect(r).toEqual({ missing: [], extra: [], notFound: [], size: [], badLang: [] });
   });
 
   it('names missing routes in expectation order', () => {
@@ -89,6 +90,13 @@ describe('checkExportRoutes', () => {
     const r = checkExportRoutes({ expected, baked, bakedBad });
     expect(r.notFound).toEqual(['pt/dropped/index.html']);
     expect(r.size).toEqual(['pt/tiny/index.html']);
+  });
+
+  it('names pages whose <html lang> is wrong for their locale', () => {
+    const baked = [...expected, 'en/spots/nazare/index.html'];
+    const bakedBad = new Map([['en/spots/nazare/index.html', 'bad-lang']]);
+    const r = checkExportRoutes({ expected, baked, bakedBad });
+    expect(r.badLang).toEqual(['en/spots/nazare/index.html']);
   });
 });
 
@@ -134,6 +142,45 @@ describe('classifyBakedPage', () => {
     );
     const file = withFile(html);
     expect(classifyBakedPage(file, html.length)).toBeNull();
+  });
+
+  it('flags a nested page whose <html lang> belongs to another locale', () => {
+    // Issue #457: out/en/spots/nazare/index.html baked lang="pt-PT".
+    const html = Buffer.from(
+      `<html lang="pt-PT"><body>${'x'.repeat(MIN_HTML_BYTES + 10)}</body></html>`,
+      'utf8',
+    );
+    const file = withFile(html);
+    expect(classifyBakedPage(file, html.length, 'en')).toBe('bad-lang');
+  });
+
+  it('flags a page with no <html lang> at all', () => {
+    const html = Buffer.from(
+      `<html><body>${'x'.repeat(MIN_HTML_BYTES + 10)}</body></html>`,
+      'utf8',
+    );
+    const file = withFile(html);
+    expect(classifyBakedPage(file, html.length, 'fr')).toBe('bad-lang');
+  });
+
+  it('never matches an xml:lang attribute as the page lang', () => {
+    const html = Buffer.from(
+      `<html xml:lang="en" lang="fr"><body>${'x'.repeat(MIN_HTML_BYTES + 10)}</body></html>`,
+      'utf8',
+    );
+    const file = withFile(html);
+    expect(classifyBakedPage(file, html.length, 'fr')).toBeNull();
+  });
+
+  it('passes every locale on a page carrying its own lang', () => {
+    for (const [locale, lang] of Object.entries(LANG_BY_LOCALE)) {
+      const html = Buffer.from(
+        `<html lang="${lang}"><body>${'x'.repeat(MIN_HTML_BYTES + 10)}</body></html>`,
+        'utf8',
+      );
+      const file = withFile(html);
+      expect(classifyBakedPage(file, html.length, lang), locale).toBeNull();
+    }
   });
 });
 
