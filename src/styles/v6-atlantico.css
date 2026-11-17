@@ -471,10 +471,10 @@
 .v6 .acoes .absolute.z-50{background:var(--fundo);border:0;box-shadow:inset 0 0 0 1.5px var(--linha),0 18px 40px rgba(0,0,0,.55);color:var(--espuma);font-family:var(--txt);font-variant-numeric:tabular-nums lining-nums;backdrop-filter:none}
 /* texto pequeno com a cor de banda viola AA — cores.md só a permite como fill ou em texto
    ≥ 24 px («Não dá» = 3,0–3,4:1). O --score-poor na raiz continua a ser o fill da banda;
-   a tinta fica AA: o pill «Laranja» passa a ler-se na laranja do selo da faixa
-   (#F28C28 — 7,7:1 sobre o --abismo, 6,4:1 sobre a sua tinta /15) e o erro do
+   a tinta fica AA: o pill «Laranja» passa a ler-se no laranja dos avisos do site, o mesmo do selo da faixa
+   (#F97316, o laranja dos avisos no /mapa — 6,9:1 sobre o --abismo, 5,9:1 sobre a sua tinta /15) e o erro do
    «Alerta-me» no vermelho AA do tema escuro do site (#F87171 — 6,4:1 sobre o --fundo). */
-.v6 [data-ipma-nivel='orange']{--score-poor:242 140 40}
+.v6 [data-ipma-nivel='orange']{--score-poor:249 115 22}
 .v6 .acao-alerta{--score-poor:248 113 113}
 @media (max-width:639px){
   .v6 .acao .rot{display:none}
@@ -495,7 +495,7 @@
 .v6 [data-faixa=perigo] [data-faixa-t] svg{width:24px;height:24px;color:#FF8A8E}
 .v6 [data-faixa=perigo][data-nivel=yellow] [data-faixa-t] svg{color:var(--sol)}
 .v6 [data-faixa] [data-faixa-meta]{font:500 13.5px/1.4 var(--txt);font-variant-numeric:tabular-nums lining-nums;color:#E7EEF3}
-.v6 [data-faixa] [data-faixa-nivel]{display:inline-block;padding:1px 6px;border-radius:5px;background:#F28C28;color:var(--ink);font:800 11.5px/1.4 var(--txt);font-variant-numeric:tabular-nums lining-nums;letter-spacing:.08em;text-transform:uppercase}
+.v6 [data-faixa] [data-faixa-nivel]{display:inline-block;padding:1px 6px;border-radius:5px;background:#F97316;color:var(--ink);font:800 11.5px/1.4 var(--txt);font-variant-numeric:tabular-nums lining-nums;letter-spacing:.08em;text-transform:uppercase}
 .v6 [data-faixa][data-nivel=yellow] [data-faixa-nivel]{background:var(--sol)}
 .v6 [data-faixa][data-nivel=red] [data-faixa-nivel]{background:#E0656A}
 .v6 [data-faixa=ih]{background:var(--fundo);box-shadow:inset 0 0 0 1px var(--linha),inset 4px 0 0 var(--b-nao)}

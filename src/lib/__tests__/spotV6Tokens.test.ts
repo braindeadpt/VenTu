@@ -113,7 +113,7 @@ describe('spot v6 — tokens na raiz (#459 V1)', () => {
     expect(contraste(hex('#FF8A8E'), perigo)).toBeGreaterThanOrEqual(3);
     const amarelo = mistura(hex('#C99E2A'), 0.16, ABISMO);
     expect(contraste(hex('#E7EEF3'), amarelo)).toBeGreaterThanOrEqual(4.5);
-    for (const pilula of ['#F28C28', '#FFC93C', '#E0656A']) {
+    for (const pilula of ['#F97316', '#FFC93C', '#E0656A']) {
       expect(contraste(hex('#04131F'), hex(pilula)), pilula).toBeGreaterThanOrEqual(4.5);
     }
     expect(decl(regra('.v6 [data-faixa=perigo] [data-faixa-t]'), 'color')).toBe('#fff');
@@ -132,12 +132,13 @@ describe('spot v6 — tokens na raiz (#459 V1)', () => {
       if (x.selectors.includes('.v6') && decl(x, '--fg')) raiz = x;
     });
     expect(decl(raiz!, '--score-poor')).toBe('168 70 74');
-    // e cores.md: «Não dá» como texto só ≥ 24 px — o pill ganha tinta AA própria
-    expect(decl(regra(".v6 [data-ipma-nivel='orange']"), '--score-poor')).toBe('242 140 40');
-    // #F28C28 sobre o --abismo e sobre a sua tinta bg-score-poor/15
-    const tinta = mistura(hex('#F28C28'), 0.15, ABISMO);
-    expect(contraste(hex('#F28C28'), ABISMO)).toBeGreaterThanOrEqual(4.5);
-    expect(contraste(hex('#F28C28'), tinta)).toBeGreaterThanOrEqual(4.5);
+    // e cores.md: «Não dá» como texto só ≥ 24 px — o pill ganha tinta AA própria,
+    // o mesmo laranja dos avisos no /mapa (WARNING_BADGE_COLORS.orange)
+    expect(decl(regra(".v6 [data-ipma-nivel='orange']"), '--score-poor')).toBe('249 115 22');
+    // #F97316 sobre o --abismo e sobre a sua tinta bg-score-poor/15
+    const tinta = mistura(hex('#F97316'), 0.15, ABISMO);
+    expect(contraste(hex('#F97316'), ABISMO)).toBeGreaterThanOrEqual(4.5);
+    expect(contraste(hex('#F97316'), tinta)).toBeGreaterThanOrEqual(4.5);
   });
 
   it('erro do popover «Alerta-me»: vermelho AA do tema escuro', () => {
