@@ -62,6 +62,8 @@ export default function SeaStateSafetyBanner({
   return (
     <div
       role="alert"
+      data-faixa="perigo"
+      data-nivel={level}
       className={cn(
         'relative z-[5] border-b backdrop-blur-sm',
         bannerTone,
@@ -69,6 +71,7 @@ export default function SeaStateSafetyBanner({
     >
       <div className="max-w-6xl mx-auto px-4 py-2.5 flex flex-wrap items-center gap-x-3 gap-y-1">
         <span
+          data-faixa-t
           className={cn(
             'inline-flex items-center gap-1.5 font-display font-bold text-sm sm:text-base',
             headlineTone,
@@ -77,10 +80,10 @@ export default function SeaStateSafetyBanner({
           <Waves className="w-5 h-5 shrink-0" aria-hidden />
           {getTranslation(locale).spotsUi.dangerousSeaNoSurf}
         </span>
-        <span className="text-meta-sm text-fg-muted flex flex-wrap items-center gap-x-2 gap-y-0.5">
+        <span data-faixa-meta className="text-meta-sm text-fg-muted flex flex-wrap items-center gap-x-2 gap-y-0.5">
           <span className="inline-flex items-center gap-1 font-medium">
             <AlertTriangle className="w-3.5 h-3.5 shrink-0" aria-hidden />
-            {warningTypeLabel(warning.type, locale)} · {levelLabel}
+            {warningTypeLabel(warning.type, locale)} · <span data-faixa-nivel>{levelLabel}</span>
           </span>
           {warning.endTime && (
             <span>
