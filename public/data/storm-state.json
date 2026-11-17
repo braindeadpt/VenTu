@@ -1,9 +1,9 @@
 {
   "source": "ventu-storm-state",
-  "fetchedAt": "2026-11-17T13:25:54.877Z",
+  "fetchedAt": "2026-11-17T14:07:23.683Z",
   "radar": {
-    "frameTime": "2026-11-17T13:15:00.000Z",
-    "compareFrameTime": "2026-11-17T13:00:00.000Z",
+    "frameTime": "2026-11-17T13:55:00.000Z",
+    "compareFrameTime": "2026-11-17T13:40:00.000Z",
     "bounds": {
       "south": 34.011513,
       "west": -12.454795,
@@ -16,12 +16,12 @@
       "radar": {
         "state": "over",
         "distKm": 0,
-        "dirDeg": 217,
+        "dirDeg": 153,
         "intensity": "heavy",
         "approach": {
           "state": "approaching",
-          "deg": 164,
-          "kmh": 37
+          "deg": 45,
+          "kmh": 33
         }
       },
       "warnLevel": "orange",
@@ -31,12 +31,12 @@
       "radar": {
         "state": "over",
         "distKm": 0,
-        "dirDeg": 221,
+        "dirDeg": 159,
         "intensity": "heavy",
         "approach": {
           "state": "approaching",
-          "deg": 166,
-          "kmh": 38
+          "deg": 53,
+          "kmh": 30
         }
       },
       "warnLevel": "orange",
@@ -46,12 +46,12 @@
       "radar": {
         "state": "over",
         "distKm": 0,
-        "dirDeg": 225,
+        "dirDeg": 163,
         "intensity": "heavy",
         "approach": {
           "state": "approaching",
-          "deg": 167,
-          "kmh": 40
+          "deg": 59,
+          "kmh": 29
         }
       },
       "warnLevel": "orange",
@@ -61,11 +61,11 @@
       "radar": {
         "state": "over",
         "distKm": 1,
-        "dirDeg": 250,
+        "dirDeg": 205,
         "intensity": "heavy",
         "approach": {
           "state": "approaching",
-          "deg": 167,
+          "deg": 86,
           "kmh": 34
         }
       },
@@ -75,13 +75,13 @@
     "cabedelo": {
       "radar": {
         "state": "over",
-        "distKm": 1,
-        "dirDeg": 244,
+        "distKm": 0,
+        "dirDeg": 196,
         "intensity": "heavy",
         "approach": {
           "state": "approaching",
-          "deg": 166,
-          "kmh": 37
+          "deg": 78,
+          "kmh": 32
         }
       },
       "warnLevel": "orange",
@@ -90,13 +90,13 @@
     "foil-cabedelo": {
       "radar": {
         "state": "over",
-        "distKm": 1,
-        "dirDeg": 244,
+        "distKm": 0,
+        "dirDeg": 196,
         "intensity": "heavy",
         "approach": {
           "state": "approaching",
-          "deg": 166,
-          "kmh": 37
+          "deg": 78,
+          "kmh": 32
         }
       },
       "warnLevel": "orange",
@@ -106,12 +106,12 @@
       "radar": {
         "state": "over",
         "distKm": 0,
-        "dirDeg": 241,
+        "dirDeg": 194,
         "intensity": "heavy",
         "approach": {
           "state": "approaching",
-          "deg": 167,
-          "kmh": 38
+          "deg": 75,
+          "kmh": 31
         }
       },
       "warnLevel": "orange",
@@ -121,12 +121,12 @@
       "radar": {
         "state": "over",
         "distKm": 0,
-        "dirDeg": 247,
+        "dirDeg": 201,
         "intensity": "heavy",
         "approach": {
           "state": "approaching",
-          "deg": 167,
-          "kmh": 36
+          "deg": 81,
+          "kmh": 33
         }
       },
       "warnLevel": "orange",
@@ -136,12 +136,12 @@
       "radar": {
         "state": "over",
         "distKm": 0,
-        "dirDeg": 269,
+        "dirDeg": 265,
         "intensity": "heavy",
         "approach": {
           "state": "approaching",
-          "deg": 174,
-          "kmh": 29
+          "deg": 100,
+          "kmh": 38
         }
       },
       "warnLevel": "orange",
@@ -151,12 +151,12 @@
       "radar": {
         "state": "over",
         "distKm": 0,
-        "dirDeg": 267,
+        "dirDeg": 260,
         "intensity": "heavy",
         "approach": {
           "state": "approaching",
-          "deg": 173,
-          "kmh": 29
+          "deg": 100,
+          "kmh": 38
         }
       },
       "warnLevel": "orange",
@@ -166,12 +166,12 @@
       "radar": {
         "state": "over",
         "distKm": 0,
-        "dirDeg": 270,
+        "dirDeg": 269,
         "intensity": "heavy",
         "approach": {
           "state": "approaching",
-          "deg": 173,
-          "kmh": 28
+          "deg": 101,
+          "kmh": 38
         }
       },
       "warnLevel": "orange",
@@ -180,13 +180,13 @@
     "apulia": {
       "radar": {
         "state": "over",
-        "distKm": 4,
-        "dirDeg": 275,
+        "distKm": 0,
+        "dirDeg": 284,
         "intensity": "moderate",
         "approach": {
           "state": "approaching",
-          "deg": 175,
-          "kmh": 24
+          "deg": 102,
+          "kmh": 40
         }
       },
       "warnLevel": "orange",
@@ -196,9 +196,13 @@
       "radar": {
         "state": "over",
         "distKm": 0,
-        "dirDeg": 290,
+        "dirDeg": 306,
         "intensity": "moderate",
-        "approach": null
+        "approach": {
+          "state": "approaching",
+          "deg": 108,
+          "kmh": 36
+        }
       },
       "warnLevel": "orange",
       "inStormCone": false
@@ -207,9 +211,13 @@
       "radar": {
         "state": "over",
         "distKm": 0,
-        "dirDeg": 291,
+        "dirDeg": 306,
         "intensity": "moderate",
-        "approach": null
+        "approach": {
+          "state": "approaching",
+          "deg": 109,
+          "kmh": 35
+        }
       },
       "warnLevel": "orange",
       "inStormCone": false
@@ -218,9 +226,13 @@
       "radar": {
         "state": "over",
         "distKm": 0,
-        "dirDeg": 300,
+        "dirDeg": 312,
         "intensity": "moderate",
-        "approach": null
+        "approach": {
+          "state": "approaching",
+          "deg": 118,
+          "kmh": 35
+        }
       },
       "warnLevel": "orange",
       "inStormCone": false
@@ -229,9 +241,13 @@
       "radar": {
         "state": "over",
         "distKm": 0,
-        "dirDeg": 301,
+        "dirDeg": 313,
         "intensity": "heavy",
-        "approach": null
+        "approach": {
+          "state": "approaching",
+          "deg": 119,
+          "kmh": 36
+        }
       },
       "warnLevel": "orange",
       "inStormCone": false
@@ -239,10 +255,14 @@
     "cabedelo-douro": {
       "radar": {
         "state": "over",
-        "distKm": 3,
-        "dirDeg": 303,
+        "distKm": 0,
+        "dirDeg": 314,
         "intensity": "heavy",
-        "approach": null
+        "approach": {
+          "state": "approaching",
+          "deg": 124,
+          "kmh": 37
+        }
       },
       "warnLevel": "orange",
       "inStormCone": false
@@ -250,10 +270,14 @@
     "marina-afurada-foil": {
       "radar": {
         "state": "over",
-        "distKm": 3,
-        "dirDeg": 302,
+        "distKm": 0,
+        "dirDeg": 313,
         "intensity": "heavy",
-        "approach": null
+        "approach": {
+          "state": "approaching",
+          "deg": 123,
+          "kmh": 38
+        }
       },
       "warnLevel": "orange",
       "inStormCone": false
@@ -262,12 +286,12 @@
       "radar": {
         "state": "over",
         "distKm": 0,
-        "dirDeg": 302,
+        "dirDeg": 312,
         "intensity": "heavy",
         "approach": {
-          "state": "receding",
-          "deg": 299,
-          "kmh": 14
+          "state": "approaching",
+          "deg": 118,
+          "kmh": 42
         }
       },
       "warnLevel": "orange",
@@ -276,10 +300,14 @@
     "salgueiros": {
       "radar": {
         "state": "over",
-        "distKm": 3,
-        "dirDeg": 304,
+        "distKm": 0,
+        "dirDeg": 314,
         "intensity": "heavy",
-        "approach": null
+        "approach": {
+          "state": "approaching",
+          "deg": 127,
+          "kmh": 38
+        }
       },
       "warnLevel": "orange",
       "inStormCone": false
@@ -287,10 +315,14 @@
     "sereia-costa-verde": {
       "radar": {
         "state": "over",
-        "distKm": 3,
-        "dirDeg": 304,
+        "distKm": 0,
+        "dirDeg": 314,
         "intensity": "heavy",
-        "approach": null
+        "approach": {
+          "state": "approaching",
+          "deg": 127,
+          "kmh": 38
+        }
       },
       "warnLevel": "orange",
       "inStormCone": false
@@ -298,10 +330,14 @@
     "canide-sul": {
       "radar": {
         "state": "over",
-        "distKm": 2,
-        "dirDeg": 305,
+        "distKm": 0,
+        "dirDeg": 314,
         "intensity": "heavy",
-        "approach": null
+        "approach": {
+          "state": "approaching",
+          "deg": 128,
+          "kmh": 38
+        }
       },
       "warnLevel": "orange",
       "inStormCone": false
@@ -310,9 +346,13 @@
       "radar": {
         "state": "over",
         "distKm": 0,
-        "dirDeg": 308,
+        "dirDeg": 315,
         "intensity": "heavy",
-        "approach": null
+        "approach": {
+          "state": "approaching",
+          "deg": 137,
+          "kmh": 40
+        }
       },
       "warnLevel": "orange",
       "inStormCone": false
@@ -321,12 +361,12 @@
       "radar": {
         "state": "over",
         "distKm": 0,
-        "dirDeg": 310,
+        "dirDeg": 315,
         "intensity": "heavy",
         "approach": {
-          "state": "receding",
-          "deg": 324,
-          "kmh": 11
+          "state": "approaching",
+          "deg": 141,
+          "kmh": 40
         }
       },
       "warnLevel": "orange",
@@ -336,12 +376,12 @@
       "radar": {
         "state": "over",
         "distKm": 0,
-        "dirDeg": 311,
+        "dirDeg": 315,
         "intensity": "heavy",
         "approach": {
-          "state": "receding",
-          "deg": 324,
-          "kmh": 11
+          "state": "approaching",
+          "deg": 141,
+          "kmh": 40
         }
       },
       "warnLevel": "orange",
@@ -351,12 +391,12 @@
       "radar": {
         "state": "over",
         "distKm": 0,
-        "dirDeg": 311,
+        "dirDeg": 315,
         "intensity": "heavy",
         "approach": {
-          "state": "receding",
-          "deg": 324,
-          "kmh": 11
+          "state": "approaching",
+          "deg": 142,
+          "kmh": 40
         }
       },
       "warnLevel": "orange",
@@ -366,12 +406,12 @@
       "radar": {
         "state": "over",
         "distKm": 0,
-        "dirDeg": 312,
+        "dirDeg": 316,
         "intensity": "heavy",
         "approach": {
-          "state": "receding",
-          "deg": 325,
-          "kmh": 12
+          "state": "approaching",
+          "deg": 143,
+          "kmh": 39
         }
       },
       "warnLevel": "orange",
@@ -381,12 +421,12 @@
       "radar": {
         "state": "over",
         "distKm": 0,
-        "dirDeg": 312,
+        "dirDeg": 316,
         "intensity": "heavy",
         "approach": {
-          "state": "receding",
-          "deg": 325,
-          "kmh": 12
+          "state": "approaching",
+          "deg": 144,
+          "kmh": 39
         }
       },
       "warnLevel": "orange",
@@ -396,12 +436,12 @@
       "radar": {
         "state": "over",
         "distKm": 0,
-        "dirDeg": 312,
+        "dirDeg": 316,
         "intensity": "heavy",
         "approach": {
-          "state": "receding",
-          "deg": 324,
-          "kmh": 12
+          "state": "approaching",
+          "deg": 144,
+          "kmh": 39
         }
       },
       "warnLevel": "orange",
@@ -411,12 +451,12 @@
       "radar": {
         "state": "over",
         "distKm": 0,
-        "dirDeg": 313,
+        "dirDeg": 316,
         "intensity": "heavy",
         "approach": {
-          "state": "receding",
-          "deg": 325,
-          "kmh": 13
+          "state": "approaching",
+          "deg": 145,
+          "kmh": 38
         }
       },
       "warnLevel": "orange",
@@ -426,12 +466,12 @@
       "radar": {
         "state": "over",
         "distKm": 0,
-        "dirDeg": 313,
+        "dirDeg": 316,
         "intensity": "heavy",
         "approach": {
-          "state": "receding",
-          "deg": 325,
-          "kmh": 13
+          "state": "approaching",
+          "deg": 145,
+          "kmh": 38
         }
       },
       "warnLevel": "orange",
@@ -441,12 +481,12 @@
       "radar": {
         "state": "over",
         "distKm": 0,
-        "dirDeg": 314,
+        "dirDeg": 317,
         "intensity": "heavy",
         "approach": {
-          "state": "receding",
-          "deg": 326,
-          "kmh": 14
+          "state": "approaching",
+          "deg": 146,
+          "kmh": 37
         }
       },
       "warnLevel": "orange",
@@ -456,12 +496,12 @@
       "radar": {
         "state": "over",
         "distKm": 0,
-        "dirDeg": 320,
+        "dirDeg": 319,
         "intensity": "heavy",
         "approach": {
-          "state": "receding",
-          "deg": 330,
-          "kmh": 20
+          "state": "approaching",
+          "deg": 145,
+          "kmh": 32
         }
       },
       "warnLevel": "orange",
@@ -471,12 +511,12 @@
       "radar": {
         "state": "over",
         "distKm": 0,
-        "dirDeg": 320,
+        "dirDeg": 319,
         "intensity": "heavy",
         "approach": {
-          "state": "receding",
-          "deg": 330,
-          "kmh": 19
+          "state": "approaching",
+          "deg": 143,
+          "kmh": 33
         }
       },
       "warnLevel": "orange",
@@ -486,12 +526,12 @@
       "radar": {
         "state": "over",
         "distKm": 0,
-        "dirDeg": 321,
+        "dirDeg": 320,
         "intensity": "heavy",
         "approach": {
-          "state": "receding",
-          "deg": 328,
-          "kmh": 19
+          "state": "approaching",
+          "deg": 138,
+          "kmh": 36
         }
       },
       "warnLevel": "orange",
@@ -501,12 +541,12 @@
       "radar": {
         "state": "over",
         "distKm": 0,
-        "dirDeg": 322,
+        "dirDeg": 320,
         "intensity": "heavy",
         "approach": {
-          "state": "receding",
-          "deg": 330,
-          "kmh": 20
+          "state": "approaching",
+          "deg": 136,
+          "kmh": 36
         }
       },
       "warnLevel": "orange",
@@ -516,12 +556,12 @@
       "radar": {
         "state": "over",
         "distKm": 0,
-        "dirDeg": 315,
+        "dirDeg": 317,
         "intensity": "heavy",
         "approach": {
-          "state": "receding",
-          "deg": 328,
-          "kmh": 15
+          "state": "approaching",
+          "deg": 146,
+          "kmh": 36
         }
       },
       "warnLevel": "orange",
@@ -531,12 +571,12 @@
       "radar": {
         "state": "over",
         "distKm": 0,
-        "dirDeg": 324,
+        "dirDeg": 321,
         "intensity": "heavy",
         "approach": {
-          "state": "receding",
-          "deg": 324,
-          "kmh": 20
+          "state": "approaching",
+          "deg": 136,
+          "kmh": 37
         }
       },
       "warnLevel": "orange",
@@ -545,13 +585,13 @@
     "costa-nova": {
       "radar": {
         "state": "over",
-        "distKm": 1,
-        "dirDeg": 325,
+        "distKm": 0,
+        "dirDeg": 321,
         "intensity": "heavy",
         "approach": {
-          "state": "receding",
-          "deg": 313,
-          "kmh": 20
+          "state": "approaching",
+          "deg": 135,
+          "kmh": 36
         }
       },
       "warnLevel": "orange",
@@ -559,14 +599,14 @@
     },
     "tocha": {
       "radar": {
-        "state": "near",
-        "distKm": 13,
-        "dirDeg": 331,
-        "intensity": "moderate",
+        "state": "over",
+        "distKm": 1,
+        "dirDeg": 326,
+        "intensity": "heavy",
         "approach": {
-          "state": "receding",
-          "deg": 272,
-          "kmh": 38
+          "state": "approaching",
+          "deg": 142,
+          "kmh": 43
         }
       },
       "warnLevel": "orange",
@@ -576,12 +616,12 @@
       "radar": {
         "state": "over",
         "distKm": 6,
-        "dirDeg": 333,
+        "dirDeg": 326,
         "intensity": "moderate",
         "approach": {
-          "state": "receding",
-          "deg": 261,
-          "kmh": 43
+          "state": "approaching",
+          "deg": 153,
+          "kmh": 42
         }
       },
       "warnLevel": "orange",
@@ -591,12 +631,12 @@
       "radar": {
         "state": "over",
         "distKm": 6,
-        "dirDeg": 333,
+        "dirDeg": 326,
         "intensity": "moderate",
         "approach": {
-          "state": "receding",
-          "deg": 256,
-          "kmh": 42
+          "state": "approaching",
+          "deg": 155,
+          "kmh": 44
         }
       },
       "warnLevel": "orange",
@@ -606,12 +646,12 @@
       "radar": {
         "state": "over",
         "distKm": 7,
-        "dirDeg": 333,
+        "dirDeg": 325,
         "intensity": "moderate",
         "approach": {
-          "state": "receding",
-          "deg": 256,
-          "kmh": 41
+          "state": "approaching",
+          "deg": 155,
+          "kmh": 46
         }
       },
       "warnLevel": "orange",
@@ -619,14 +659,14 @@
     },
     "cova-gala-sul": {
       "radar": {
-        "state": "over",
-        "distKm": 7,
-        "dirDeg": 333,
+        "state": "near",
+        "distKm": 9,
+        "dirDeg": 325,
         "intensity": "moderate",
         "approach": {
-          "state": "receding",
-          "deg": 255,
-          "kmh": 40
+          "state": "approaching",
+          "deg": 156,
+          "kmh": 47
         }
       },
       "warnLevel": "orange",
@@ -634,14 +674,14 @@
     },
     "leirosa": {
       "radar": {
-        "state": "over",
-        "distKm": 8,
-        "dirDeg": 332,
+        "state": "near",
+        "distKm": 13,
+        "dirDeg": 324,
         "intensity": "moderate",
         "approach": {
-          "state": "receding",
-          "deg": 256,
-          "kmh": 40
+          "state": "approaching",
+          "deg": 160,
+          "kmh": 47
         }
       },
       "warnLevel": "orange",
@@ -649,14 +689,14 @@
     },
     "praia-da-vieira": {
       "radar": {
-        "state": "over",
-        "distKm": 6,
-        "dirDeg": 328,
+        "state": "near",
+        "distKm": 13,
+        "dirDeg": 317,
         "intensity": "moderate",
         "approach": {
           "state": "approaching",
-          "deg": 238,
-          "kmh": 48
+          "deg": 148,
+          "kmh": 40
         }
       },
       "warnLevel": "orange",
@@ -665,13 +705,13 @@
     "sao-pedro-moel": {
       "radar": {
         "state": "near",
-        "distKm": 12,
-        "dirDeg": 322,
+        "distKm": 15,
+        "dirDeg": 313,
         "intensity": "moderate",
         "approach": {
           "state": "approaching",
-          "deg": 232,
-          "kmh": 62
+          "deg": 125,
+          "kmh": 39
         }
       },
       "warnLevel": "orange",
@@ -681,12 +721,12 @@
       "radar": {
         "state": "near",
         "distKm": 10,
-        "dirDeg": 295,
-        "intensity": "moderate",
+        "dirDeg": 299,
+        "intensity": "heavy",
         "approach": {
-          "state": "receding",
-          "deg": 268,
-          "kmh": 59
+          "state": "approaching",
+          "deg": 196,
+          "kmh": 36
         }
       },
       "warnLevel": "orange",
@@ -695,13 +735,13 @@
     "nazare": {
       "radar": {
         "state": "near",
-        "distKm": 12,
-        "dirDeg": 311,
+        "distKm": 13,
+        "dirDeg": 310,
         "intensity": "moderate",
         "approach": {
-          "state": "receding",
-          "deg": 245,
-          "kmh": 81
+          "state": "approaching",
+          "deg": 113,
+          "kmh": 43
         }
       },
       "warnLevel": "orange",
@@ -710,13 +750,13 @@
     "foz-arelho": {
       "radar": {
         "state": "near",
-        "distKm": 12,
-        "dirDeg": 294,
+        "distKm": 9,
+        "dirDeg": 310,
         "intensity": "moderate",
         "approach": {
-          "state": "receding",
-          "deg": 254,
-          "kmh": 87
+          "state": "approaching",
+          "deg": 112,
+          "kmh": 43
         }
       },
       "warnLevel": "yellow",
@@ -725,13 +765,13 @@
     "foil-foz-arelho": {
       "radar": {
         "state": "near",
-        "distKm": 11,
-        "dirDeg": 292,
+        "distKm": 9,
+        "dirDeg": 310,
         "intensity": "moderate",
         "approach": {
-          "state": "receding",
-          "deg": 257,
-          "kmh": 90
+          "state": "approaching",
+          "deg": 111,
+          "kmh": 45
         }
       },
       "warnLevel": "yellow",
@@ -739,14 +779,14 @@
     },
     "obidos-lagoon": {
       "radar": {
-        "state": "near",
-        "distKm": 13,
-        "dirDeg": 292,
+        "state": "over",
+        "distKm": 8,
+        "dirDeg": 311,
         "intensity": "moderate",
         "approach": {
-          "state": "receding",
-          "deg": 257,
-          "kmh": 89
+          "state": "approaching",
+          "deg": 111,
+          "kmh": 45
         }
       },
       "warnLevel": "yellow",
@@ -754,14 +794,14 @@
     },
     "obidos-lagoon-sul": {
       "radar": {
-        "state": "near",
-        "distKm": 13,
-        "dirDeg": 294,
+        "state": "over",
+        "distKm": 8,
+        "dirDeg": 311,
         "intensity": "moderate",
         "approach": {
-          "state": "receding",
-          "deg": 254,
-          "kmh": 86
+          "state": "approaching",
+          "deg": 112,
+          "kmh": 42
         }
       },
       "warnLevel": "yellow",
@@ -769,14 +809,14 @@
     },
     "foz-arelho-beach": {
       "radar": {
-        "state": "near",
-        "distKm": 13,
-        "dirDeg": 295,
+        "state": "over",
+        "distKm": 8,
+        "dirDeg": 311,
         "intensity": "moderate",
         "approach": {
-          "state": "receding",
-          "deg": 253,
-          "kmh": 85
+          "state": "approaching",
+          "deg": 113,
+          "kmh": 41
         }
       },
       "warnLevel": "yellow",
@@ -784,14 +824,14 @@
     },
     "praia-del-rey": {
       "radar": {
-        "state": "near",
-        "distKm": 19,
-        "dirDeg": 294,
+        "state": "over",
+        "distKm": 2,
+        "dirDeg": 312,
         "intensity": "moderate",
         "approach": {
-          "state": "receding",
-          "deg": 256,
-          "kmh": 75
+          "state": "approaching",
+          "deg": 114,
+          "kmh": 39
         }
       },
       "warnLevel": "yellow",
@@ -799,14 +839,14 @@
     },
     "almagreira": {
       "radar": {
-        "state": "near",
-        "distKm": 19,
-        "dirDeg": 295,
+        "state": "over",
+        "distKm": 0,
+        "dirDeg": 313,
         "intensity": "moderate",
         "approach": {
-          "state": "receding",
-          "deg": 257,
-          "kmh": 69
+          "state": "approaching",
+          "deg": 116,
+          "kmh": 37
         }
       },
       "warnLevel": "yellow",
@@ -814,14 +854,14 @@
     },
     "lagide": {
       "radar": {
-        "state": "near",
-        "distKm": 19,
-        "dirDeg": 296,
+        "state": "over",
+        "distKm": 0,
+        "dirDeg": 313,
         "intensity": "moderate",
         "approach": {
-          "state": "receding",
-          "deg": 257,
-          "kmh": 64
+          "state": "approaching",
+          "deg": 117,
+          "kmh": 35
         }
       },
       "warnLevel": "yellow",
@@ -829,14 +869,14 @@
     },
     "baleal": {
       "radar": {
-        "state": "near",
-        "distKm": 19,
-        "dirDeg": 296,
+        "state": "over",
+        "distKm": 1,
+        "dirDeg": 313,
         "intensity": "moderate",
         "approach": {
-          "state": "receding",
-          "deg": 257,
-          "kmh": 63
+          "state": "approaching",
+          "deg": 117,
+          "kmh": 35
         }
       },
       "warnLevel": "yellow",
@@ -844,14 +884,14 @@
     },
     "baleal-sul": {
       "radar": {
-        "state": "near",
-        "distKm": 19,
-        "dirDeg": 296,
+        "state": "over",
+        "distKm": 0,
+        "dirDeg": 313,
         "intensity": "moderate",
         "approach": {
-          "state": "receding",
-          "deg": 257,
-          "kmh": 61
+          "state": "approaching",
+          "deg": 117,
+          "kmh": 35
         }
       },
       "warnLevel": "yellow",
@@ -859,14 +899,14 @@
     },
     "gamboa": {
       "radar": {
-        "state": "near",
-        "distKm": 19,
-        "dirDeg": 297,
+        "state": "over",
+        "distKm": 1,
+        "dirDeg": 314,
         "intensity": "moderate",
         "approach": {
-          "state": "receding",
-          "deg": 257,
-          "kmh": 58
+          "state": "approaching",
+          "deg": 118,
+          "kmh": 34
         }
       },
       "warnLevel": "yellow",
@@ -874,14 +914,14 @@
     },
     "supertubos": {
       "radar": {
-        "state": "near",
-        "distKm": 17,
-        "dirDeg": 296,
+        "state": "over",
+        "distKm": 0,
+        "dirDeg": 314,
         "intensity": "moderate",
         "approach": {
-          "state": "receding",
-          "deg": 259,
-          "kmh": 60
+          "state": "approaching",
+          "deg": 117,
+          "kmh": 35
         }
       },
       "warnLevel": "yellow",
@@ -889,14 +929,14 @@
     },
     "molhe-leste": {
       "radar": {
-        "state": "near",
-        "distKm": 18,
-        "dirDeg": 297,
+        "state": "over",
+        "distKm": 0,
+        "dirDeg": 314,
         "intensity": "moderate",
         "approach": {
-          "state": "receding",
-          "deg": 259,
-          "kmh": 59
+          "state": "approaching",
+          "deg": 117,
+          "kmh": 34
         }
       },
       "warnLevel": "yellow",
@@ -906,12 +946,12 @@
       "radar": {
         "state": "over",
         "distKm": 0,
-        "dirDeg": 294,
+        "dirDeg": 322,
         "intensity": "moderate",
         "approach": {
-          "state": "receding",
-          "deg": 282,
-          "kmh": 73
+          "state": "approaching",
+          "deg": 76,
+          "kmh": 32
         }
       },
       "warnLevel": "yellow",
@@ -920,13 +960,13 @@
     "coxos": {
       "radar": {
         "state": "over",
-        "distKm": 2,
-        "dirDeg": 298,
+        "distKm": 4,
+        "dirDeg": 326,
         "intensity": "moderate",
         "approach": {
-          "state": "receding",
-          "deg": 292,
-          "kmh": 86
+          "state": "approaching",
+          "deg": 61,
+          "kmh": 30
         }
       },
       "warnLevel": "yellow",
@@ -936,12 +976,12 @@
       "radar": {
         "state": "over",
         "distKm": 3,
-        "dirDeg": 299,
+        "dirDeg": 326,
         "intensity": "moderate",
         "approach": {
-          "state": "receding",
-          "deg": 293,
-          "kmh": 91
+          "state": "approaching",
+          "deg": 58,
+          "kmh": 30
         }
       },
       "warnLevel": "yellow",
@@ -950,13 +990,13 @@
     "empa": {
       "radar": {
         "state": "over",
-        "distKm": 3,
-        "dirDeg": 299,
+        "distKm": 2,
+        "dirDeg": 327,
         "intensity": "moderate",
         "approach": {
-          "state": "receding",
-          "deg": 293,
-          "kmh": 91
+          "state": "approaching",
+          "deg": 57,
+          "kmh": 30
         }
       },
       "warnLevel": "yellow",
@@ -965,13 +1005,13 @@
     "sao-lourenco": {
       "radar": {
         "state": "over",
-        "distKm": 2,
-        "dirDeg": 298,
+        "distKm": 3,
+        "dirDeg": 325,
         "intensity": "moderate",
         "approach": {
-          "state": "receding",
-          "deg": 290,
-          "kmh": 85
+          "state": "approaching",
+          "deg": 63,
+          "kmh": 30
         }
       },
       "warnLevel": "yellow",
@@ -981,12 +1021,12 @@
       "radar": {
         "state": "over",
         "distKm": 1,
-        "dirDeg": 296,
+        "dirDeg": 324,
         "intensity": "moderate",
         "approach": {
-          "state": "receding",
-          "deg": 288,
-          "kmh": 80
+          "state": "approaching",
+          "deg": 65,
+          "kmh": 30
         }
       },
       "warnLevel": "yellow",
@@ -995,13 +1035,13 @@
     "pedra-branca": {
       "radar": {
         "state": "over",
-        "distKm": 3,
-        "dirDeg": 299,
+        "distKm": 2,
+        "dirDeg": 327,
         "intensity": "moderate",
         "approach": {
-          "state": "receding",
-          "deg": 293,
-          "kmh": 91
+          "state": "approaching",
+          "deg": 57,
+          "kmh": 30
         }
       },
       "warnLevel": "yellow",
@@ -1010,13 +1050,13 @@
     "sao-sebastiao": {
       "radar": {
         "state": "over",
-        "distKm": 3,
-        "dirDeg": 299,
+        "distKm": 2,
+        "dirDeg": 327,
         "intensity": "moderate",
         "approach": {
-          "state": "receding",
-          "deg": 293,
-          "kmh": 92
+          "state": "approaching",
+          "deg": 57,
+          "kmh": 31
         }
       },
       "warnLevel": "yellow",
@@ -1025,13 +1065,13 @@
     "praia-norte-ericeira": {
       "radar": {
         "state": "over",
-        "distKm": 3,
-        "dirDeg": 299,
+        "distKm": 1,
+        "dirDeg": 327,
         "intensity": "moderate",
         "approach": {
-          "state": "receding",
-          "deg": 293,
-          "kmh": 93
+          "state": "approaching",
+          "deg": 56,
+          "kmh": 31
         }
       },
       "warnLevel": "yellow",
@@ -1040,13 +1080,13 @@
     "praia-sul-ericeira": {
       "radar": {
         "state": "over",
-        "distKm": 2,
-        "dirDeg": 299,
+        "distKm": 1,
+        "dirDeg": 328,
         "intensity": "moderate",
         "approach": {
-          "state": "receding",
-          "deg": 292,
-          "kmh": 94
+          "state": "approaching",
+          "deg": 55,
+          "kmh": 32
         }
       },
       "warnLevel": "yellow",
@@ -1055,13 +1095,13 @@
     "foz-lizandro": {
       "radar": {
         "state": "over",
-        "distKm": 1,
-        "dirDeg": 299,
+        "distKm": 0,
+        "dirDeg": 329,
         "intensity": "moderate",
         "approach": {
-          "state": "receding",
-          "deg": 292,
-          "kmh": 95
+          "state": "approaching",
+          "deg": 55,
+          "kmh": 32
         }
       },
       "warnLevel": "yellow",
@@ -1070,13 +1110,13 @@
     "sao-juliao": {
       "radar": {
         "state": "over",
-        "distKm": 0,
-        "dirDeg": 300,
+        "distKm": 1,
+        "dirDeg": 329,
         "intensity": "moderate",
         "approach": {
-          "state": "receding",
-          "deg": 292,
-          "kmh": 95
+          "state": "approaching",
+          "deg": 55,
+          "kmh": 32
         }
       },
       "warnLevel": "yellow",
@@ -1084,14 +1124,14 @@
     },
     "praia-grande-sintra": {
       "radar": {
-        "state": "near",
-        "distKm": 12,
-        "dirDeg": 313,
+        "state": "over",
+        "distKm": 2,
+        "dirDeg": 340,
         "intensity": "moderate",
         "approach": {
           "state": "receding",
-          "deg": 297,
-          "kmh": 90
+          "deg": 52,
+          "kmh": 32
         }
       },
       "warnLevel": "yellow",
@@ -1099,14 +1139,14 @@
     },
     "adraga": {
       "radar": {
-        "state": "near",
-        "distKm": 13,
-        "dirDeg": 315,
+        "state": "over",
+        "distKm": 2,
+        "dirDeg": 341,
         "intensity": "moderate",
         "approach": {
           "state": "receding",
-          "deg": 297,
-          "kmh": 89
+          "deg": 52,
+          "kmh": 32
         }
       },
       "warnLevel": "yellow",
@@ -1115,13 +1155,13 @@
     "guincho": {
       "radar": {
         "state": "over",
-        "distKm": 6,
-        "dirDeg": 327,
+        "distKm": 1,
+        "dirDeg": 347,
         "intensity": "moderate",
         "approach": {
-          "state": "approaching",
-          "deg": 300,
-          "kmh": 104
+          "state": "receding",
+          "deg": 52,
+          "kmh": 33
         }
       },
       "warnLevel": "yellow",
@@ -1130,13 +1170,13 @@
     "seixal-bay": {
       "radar": {
         "state": "over",
-        "distKm": 2,
-        "dirDeg": 334,
+        "distKm": 6,
+        "dirDeg": 359,
         "intensity": "moderate",
         "approach": {
           "state": "approaching",
-          "deg": 292,
-          "kmh": 126
+          "deg": 84,
+          "kmh": 69
         }
       },
       "warnLevel": "yellow",
@@ -1155,13 +1195,13 @@
     "parede": {
       "radar": {
         "state": "over",
-        "distKm": 2,
-        "dirDeg": 325,
+        "distKm": 6,
+        "dirDeg": 353,
         "intensity": "moderate",
         "approach": {
           "state": "approaching",
-          "deg": 298,
-          "kmh": 147
+          "deg": 76,
+          "kmh": 43
         }
       },
       "warnLevel": "yellow",
@@ -1170,13 +1210,13 @@
     "carcavelos": {
       "radar": {
         "state": "over",
-        "distKm": 0,
-        "dirDeg": 325,
+        "distKm": 6,
+        "dirDeg": 354,
         "intensity": "moderate",
         "approach": {
           "state": "approaching",
-          "deg": 297,
-          "kmh": 147
+          "deg": 77,
+          "kmh": 45
         }
       },
       "warnLevel": "yellow",
@@ -1186,12 +1226,12 @@
       "radar": {
         "state": "over",
         "distKm": 6,
-        "dirDeg": 341,
+        "dirDeg": 5,
         "intensity": "moderate",
         "approach": {
           "state": "approaching",
-          "deg": 293,
-          "kmh": 134
+          "deg": 83,
+          "kmh": 67
         }
       },
       "warnLevel": "yellow",
@@ -1200,13 +1240,13 @@
     "sao-joao-caparica": {
       "radar": {
         "state": "over",
-        "distKm": 0,
-        "dirDeg": 325,
+        "distKm": 3,
+        "dirDeg": 357,
         "intensity": "moderate",
         "approach": {
           "state": "approaching",
-          "deg": 296,
-          "kmh": 149
+          "deg": 84,
+          "kmh": 58
         }
       },
       "warnLevel": "yellow",
@@ -1215,13 +1255,13 @@
     "costa-caparica": {
       "radar": {
         "state": "over",
-        "distKm": 1,
-        "dirDeg": 328,
+        "distKm": 4,
+        "dirDeg": 359,
         "intensity": "moderate",
         "approach": {
           "state": "approaching",
-          "deg": 296,
-          "kmh": 147
+          "deg": 86,
+          "kmh": 62
         }
       },
       "warnLevel": "yellow",
@@ -1230,13 +1270,13 @@
     "fonte-telha": {
       "radar": {
         "state": "over",
-        "distKm": 7,
-        "dirDeg": 348,
+        "distKm": 4,
+        "dirDeg": 6,
         "intensity": "moderate",
         "approach": {
           "state": "approaching",
-          "deg": 292,
-          "kmh": 131
+          "deg": 80,
+          "kmh": 66
         }
       },
       "warnLevel": "yellow",
@@ -1245,13 +1285,13 @@
     "ponta-dos-corvos": {
       "radar": {
         "state": "over",
-        "distKm": 1,
-        "dirDeg": 330,
+        "distKm": 4,
+        "dirDeg": 357,
         "intensity": "moderate",
         "approach": {
           "state": "approaching",
-          "deg": 292,
-          "kmh": 127
+          "deg": 85,
+          "kmh": 70
         }
       },
       "warnLevel": "yellow",
@@ -1260,13 +1300,13 @@
     "trafaria": {
       "radar": {
         "state": "over",
-        "distKm": 0,
-        "dirDeg": 322,
+        "distKm": 1,
+        "dirDeg": 356,
         "intensity": "moderate",
         "approach": {
           "state": "approaching",
-          "deg": 296,
-          "kmh": 150
+          "deg": 85,
+          "kmh": 58
         }
       },
       "warnLevel": "yellow",
@@ -1275,13 +1315,13 @@
     "cova-do-vapor": {
       "radar": {
         "state": "over",
-        "distKm": 0,
-        "dirDeg": 324,
+        "distKm": 3,
+        "dirDeg": 356,
         "intensity": "moderate",
         "approach": {
           "state": "approaching",
-          "deg": 296,
-          "kmh": 149
+          "deg": 83,
+          "kmh": 54
         }
       },
       "warnLevel": "yellow",
@@ -1290,13 +1330,13 @@
     "praia-da-rainha": {
       "radar": {
         "state": "over",
-        "distKm": 4,
-        "dirDeg": 335,
+        "distKm": 8,
+        "dirDeg": 3,
         "intensity": "moderate",
         "approach": {
           "state": "approaching",
-          "deg": 294,
-          "kmh": 139
+          "deg": 86,
+          "kmh": 66
         }
       },
       "warnLevel": "yellow",
@@ -1310,13 +1350,13 @@
     "lagoa-albufeira": {
       "radar": {
         "state": "over",
-        "distKm": 0,
-        "dirDeg": 16,
+        "distKm": 1,
+        "dirDeg": 11,
         "intensity": "moderate",
         "approach": {
-          "state": "approaching",
-          "deg": 293,
-          "kmh": 121
+          "state": "receding",
+          "deg": 68,
+          "kmh": 64
         }
       },
       "warnLevel": "yellow",
@@ -1325,13 +1365,13 @@
     "foil-lagoa-albufeira": {
       "radar": {
         "state": "over",
-        "distKm": 0,
-        "dirDeg": 16,
+        "distKm": 1,
+        "dirDeg": 11,
         "intensity": "moderate",
         "approach": {
-          "state": "approaching",
-          "deg": 293,
-          "kmh": 121
+          "state": "receding",
+          "deg": 68,
+          "kmh": 64
         }
       },
       "warnLevel": "yellow",
@@ -1340,13 +1380,13 @@
     "praia-lagoa-albufeira": {
       "radar": {
         "state": "over",
-        "distKm": 0,
-        "dirDeg": 15,
+        "distKm": 1,
+        "dirDeg": 11,
         "intensity": "moderate",
         "approach": {
-          "state": "approaching",
-          "deg": 293,
-          "kmh": 122
+          "state": "receding",
+          "deg": 69,
+          "kmh": 64
         }
       },
       "warnLevel": "yellow",
@@ -1356,12 +1396,12 @@
       "radar": {
         "state": "over",
         "distKm": 0,
-        "dirDeg": 87,
+        "dirDeg": 5,
         "intensity": "moderate",
         "approach": {
-          "state": "approaching",
-          "deg": 292,
-          "kmh": 94
+          "state": "receding",
+          "deg": 345,
+          "kmh": 74
         }
       },
       "warnLevel": "yellow",
@@ -1370,13 +1410,13 @@
     "comporta": {
       "radar": {
         "state": "over",
-        "distKm": 0,
-        "dirDeg": 99,
+        "distKm": 6,
+        "dirDeg": 34,
         "intensity": "moderate",
         "approach": {
           "state": "approaching",
-          "deg": 289,
-          "kmh": 80
+          "deg": 336,
+          "kmh": 88
         }
       },
       "warnLevel": "yellow",
@@ -1385,13 +1425,13 @@
     "carvalhal-comporta": {
       "radar": {
         "state": "over",
-        "distKm": 3,
-        "dirDeg": 93,
+        "distKm": 1,
+        "dirDeg": 55,
         "intensity": "moderate",
         "approach": {
           "state": "approaching",
-          "deg": 286,
-          "kmh": 44
+          "deg": 333,
+          "kmh": 77
         }
       },
       "warnLevel": "yellow",
@@ -1400,10 +1440,14 @@
     "alqueva": {
       "radar": {
         "state": "over",
-        "distKm": 3,
-        "dirDeg": 158,
+        "distKm": 0,
+        "dirDeg": 193,
         "intensity": "moderate",
-        "approach": null
+        "approach": {
+          "state": "approaching",
+          "deg": 310,
+          "kmh": 50
+        }
       },
       "warnLevel": "yellow",
       "inStormCone": false
@@ -1412,12 +1456,12 @@
       "radar": {
         "state": "over",
         "distKm": 0,
-        "dirDeg": 283,
+        "dirDeg": 288,
         "intensity": "heavy",
         "approach": {
-          "state": "receding",
-          "deg": 240,
-          "kmh": 40
+          "state": "approaching",
+          "deg": 86,
+          "kmh": 49
         }
       },
       "warnLevel": "orange",
@@ -1425,14 +1469,14 @@
     },
     "melides": {
       "radar": {
-        "state": "over",
-        "distKm": 2,
-        "dirDeg": 85,
+        "state": "near",
+        "distKm": 11,
+        "dirDeg": 60,
         "intensity": "moderate",
         "approach": {
           "state": "approaching",
-          "deg": 277,
-          "kmh": 17
+          "deg": 334,
+          "kmh": 61
         }
       },
       "warnLevel": "yellow",
@@ -1442,9 +1486,13 @@
       "radar": {
         "state": "near",
         "distKm": 10,
-        "dirDeg": 79,
+        "dirDeg": 71,
         "intensity": "moderate",
-        "approach": null
+        "approach": {
+          "state": "approaching",
+          "deg": 323,
+          "kmh": 56
+        }
       },
       "warnLevel": "yellow",
       "inStormCone": false
@@ -1453,12 +1501,12 @@
       "radar": {
         "state": "over",
         "distKm": 8,
-        "dirDeg": 78,
+        "dirDeg": 72,
         "intensity": "moderate",
         "approach": {
-          "state": "receding",
-          "deg": 104,
-          "kmh": 8
+          "state": "approaching",
+          "deg": 319,
+          "kmh": 55
         }
       },
       "warnLevel": "yellow",
@@ -1472,13 +1520,13 @@
     "porto-covo": {
       "radar": {
         "state": "over",
-        "distKm": 4,
-        "dirDeg": 77,
+        "distKm": 7,
+        "dirDeg": 73,
         "intensity": "moderate",
         "approach": {
-          "state": "receding",
-          "deg": 102,
-          "kmh": 12
+          "state": "approaching",
+          "deg": 314,
+          "kmh": 54
         }
       },
       "warnLevel": "yellow",
@@ -1497,13 +1545,13 @@
     "malhao": {
       "radar": {
         "state": "over",
-        "distKm": 1,
-        "dirDeg": 76,
+        "distKm": 0,
+        "dirDeg": 72,
         "intensity": "moderate",
         "approach": {
-          "state": "receding",
-          "deg": 114,
-          "kmh": 15
+          "state": "approaching",
+          "deg": 308,
+          "kmh": 53
         }
       },
       "warnLevel": "yellow",
@@ -1517,13 +1565,13 @@
     "vila-nova-milfontes": {
       "radar": {
         "state": "over",
-        "distKm": 7,
-        "dirDeg": 75,
+        "distKm": 5,
+        "dirDeg": 70,
         "intensity": "moderate",
         "approach": {
-          "state": "receding",
-          "deg": 101,
-          "kmh": 11
+          "state": "approaching",
+          "deg": 309,
+          "kmh": 56
         }
       },
       "warnLevel": "yellow",
@@ -1531,14 +1579,14 @@
     },
     "alteirinhos": {
       "radar": {
-        "state": "over",
-        "distKm": 2,
-        "dirDeg": 70,
+        "state": "near",
+        "distKm": 16,
+        "dirDeg": 71,
         "intensity": "heavy",
         "approach": {
           "state": "approaching",
-          "deg": 337,
-          "kmh": 16
+          "deg": 310,
+          "kmh": 31
         }
       },
       "warnLevel": "yellow",
@@ -1551,14 +1599,14 @@
     },
     "zambujeira": {
       "radar": {
-        "state": "over",
-        "distKm": 2,
-        "dirDeg": 70,
+        "state": "near",
+        "distKm": 16,
+        "dirDeg": 71,
         "intensity": "heavy",
         "approach": {
           "state": "approaching",
-          "deg": 337,
-          "kmh": 15
+          "deg": 309,
+          "kmh": 32
         }
       },
       "warnLevel": "yellow",
@@ -1566,14 +1614,14 @@
     },
     "carvalhal": {
       "radar": {
-        "state": "over",
-        "distKm": 3,
-        "dirDeg": 70,
+        "state": "near",
+        "distKm": 17,
+        "dirDeg": 71,
         "intensity": "heavy",
         "approach": {
           "state": "approaching",
-          "deg": 335,
-          "kmh": 19
+          "deg": 313,
+          "kmh": 27
         }
       },
       "warnLevel": "yellow",
@@ -1581,15 +1629,11 @@
     },
     "odeceixe": {
       "radar": {
-        "state": "over",
-        "distKm": 6,
-        "dirDeg": 69,
+        "state": "near",
+        "distKm": 19,
+        "dirDeg": 73,
         "intensity": "heavy",
-        "approach": {
-          "state": "approaching",
-          "deg": 333,
-          "kmh": 29
-        }
+        "approach": null
       },
       "warnLevel": "yellow",
       "inStormCone": false
@@ -1597,13 +1641,13 @@
     "amoreira": {
       "radar": {
         "state": "near",
-        "distKm": 16,
-        "dirDeg": 67,
+        "distKm": 19,
+        "dirDeg": 75,
         "intensity": "heavy",
         "approach": {
-          "state": "approaching",
-          "deg": 335,
-          "kmh": 25
+          "state": "receding",
+          "deg": 139,
+          "kmh": 11
         }
       },
       "warnLevel": "yellow",
@@ -1612,13 +1656,13 @@
     "monte-clerigo": {
       "radar": {
         "state": "near",
-        "distKm": 17,
-        "dirDeg": 67,
+        "distKm": 19,
+        "dirDeg": 75,
         "intensity": "heavy",
         "approach": {
-          "state": "approaching",
-          "deg": 336,
-          "kmh": 24
+          "state": "receding",
+          "deg": 135,
+          "kmh": 12
         }
       },
       "warnLevel": "yellow",
@@ -1627,13 +1671,13 @@
     "arrifana": {
       "radar": {
         "state": "near",
-        "distKm": 20,
-        "dirDeg": 67,
+        "distKm": 16,
+        "dirDeg": 75,
         "intensity": "heavy",
         "approach": {
-          "state": "approaching",
-          "deg": 335,
-          "kmh": 22
+          "state": "receding",
+          "deg": 133,
+          "kmh": 14
         }
       },
       "warnLevel": "yellow",
@@ -1642,12 +1686,12 @@
     "vale-figueiras": {
       "radar": {
         "state": "near",
-        "distKm": 18,
-        "dirDeg": 67,
+        "distKm": 13,
+        "dirDeg": 74,
         "intensity": "heavy",
         "approach": {
-          "state": "approaching",
-          "deg": 328,
+          "state": "receding",
+          "deg": 144,
           "kmh": 17
         }
       },
@@ -1658,12 +1702,12 @@
       "radar": {
         "state": "near",
         "distKm": 14,
-        "dirDeg": 69,
+        "dirDeg": 75,
         "intensity": "heavy",
         "approach": {
-          "state": "approaching",
-          "deg": 327,
-          "kmh": 17
+          "state": "receding",
+          "deg": 156,
+          "kmh": 18
         }
       },
       "warnLevel": "yellow",
@@ -1673,11 +1717,11 @@
       "radar": {
         "state": "near",
         "distKm": 12,
-        "dirDeg": 69,
+        "dirDeg": 75,
         "intensity": "heavy",
         "approach": {
-          "state": "approaching",
-          "deg": 330,
+          "state": "receding",
+          "deg": 154,
           "kmh": 19
         }
       },
@@ -1688,12 +1732,12 @@
       "radar": {
         "state": "near",
         "distKm": 11,
-        "dirDeg": 70,
+        "dirDeg": 76,
         "intensity": "heavy",
         "approach": {
-          "state": "approaching",
-          "deg": 338,
-          "kmh": 17
+          "state": "receding",
+          "deg": 148,
+          "kmh": 15
         }
       },
       "warnLevel": "yellow",
@@ -1703,12 +1747,12 @@
       "radar": {
         "state": "near",
         "distKm": 11,
-        "dirDeg": 71,
+        "dirDeg": 76,
         "intensity": "heavy",
         "approach": {
-          "state": "approaching",
-          "deg": 340,
-          "kmh": 16
+          "state": "receding",
+          "deg": 146,
+          "kmh": 13
         }
       },
       "warnLevel": "yellow",
@@ -1718,12 +1762,12 @@
       "radar": {
         "state": "over",
         "distKm": 0,
-        "dirDeg": 69,
+        "dirDeg": 68,
         "intensity": "heavy",
         "approach": {
           "state": "approaching",
-          "deg": 326,
-          "kmh": 12
+          "deg": 177,
+          "kmh": 8
         }
       },
       "warnLevel": "yellow",
@@ -1735,11 +1779,7 @@
         "distKm": 0,
         "dirDeg": 69,
         "intensity": "heavy",
-        "approach": {
-          "state": "approaching",
-          "deg": 321,
-          "kmh": 17
-        }
+        "approach": null
       },
       "warnLevel": "yellow",
       "inStormCone": false
@@ -1748,12 +1788,12 @@
       "radar": {
         "state": "over",
         "distKm": 1,
-        "dirDeg": 69,
+        "dirDeg": 70,
         "intensity": "heavy",
         "approach": {
-          "state": "approaching",
-          "deg": 325,
-          "kmh": 18
+          "state": "receding",
+          "deg": 156,
+          "kmh": 8
         }
       },
       "warnLevel": "yellow",
@@ -1763,12 +1803,12 @@
       "radar": {
         "state": "near",
         "distKm": 11,
-        "dirDeg": 70,
+        "dirDeg": 76,
         "intensity": "heavy",
         "approach": {
-          "state": "approaching",
-          "deg": 339,
-          "kmh": 16
+          "state": "receding",
+          "deg": 148,
+          "kmh": 14
         }
       },
       "warnLevel": "yellow",
@@ -1778,7 +1818,7 @@
       "radar": {
         "state": "over",
         "distKm": 2,
-        "dirDeg": 68,
+        "dirDeg": 64,
         "intensity": "heavy",
         "approach": null
       },
@@ -1788,10 +1828,14 @@
     "vila-real-santo-antonio": {
       "radar": {
         "state": "over",
-        "distKm": 1,
-        "dirDeg": 36,
+        "distKm": 5,
+        "dirDeg": 22,
         "intensity": "moderate",
-        "approach": null
+        "approach": {
+          "state": "approaching",
+          "deg": 286,
+          "kmh": 16
+        }
       },
       "warnLevel": "yellow",
       "inStormCone": false
@@ -1799,10 +1843,14 @@
     "monte-gordo": {
       "radar": {
         "state": "over",
-        "distKm": 2,
-        "dirDeg": 40,
+        "distKm": 4,
+        "dirDeg": 27,
         "intensity": "moderate",
-        "approach": null
+        "approach": {
+          "state": "approaching",
+          "deg": 283,
+          "kmh": 14
+        }
       },
       "warnLevel": "yellow",
       "inStormCone": false
@@ -1810,10 +1858,14 @@
     "praia-verde": {
       "radar": {
         "state": "over",
-        "distKm": 4,
-        "dirDeg": 42,
+        "distKm": 7,
+        "dirDeg": 30,
         "intensity": "moderate",
-        "approach": null
+        "approach": {
+          "state": "approaching",
+          "deg": 283,
+          "kmh": 14
+        }
       },
       "warnLevel": "yellow",
       "inStormCone": false
@@ -1821,10 +1873,14 @@
     "altura": {
       "radar": {
         "state": "over",
-        "distKm": 6,
-        "dirDeg": 43,
+        "distKm": 7,
+        "dirDeg": 32,
         "intensity": "moderate",
-        "approach": null
+        "approach": {
+          "state": "approaching",
+          "deg": 283,
+          "kmh": 14
+        }
       },
       "warnLevel": "yellow",
       "inStormCone": false
@@ -1833,7 +1889,7 @@
       "radar": {
         "state": "over",
         "distKm": 1,
-        "dirDeg": 68,
+        "dirDeg": 64,
         "intensity": "heavy",
         "approach": null
       },
@@ -1844,13 +1900,9 @@
       "radar": {
         "state": "over",
         "distKm": 0,
-        "dirDeg": 69,
+        "dirDeg": 66,
         "intensity": "heavy",
-        "approach": {
-          "state": "receding",
-          "deg": 341,
-          "kmh": 9
-        }
+        "approach": null
       },
       "warnLevel": "yellow",
       "inStormCone": false
@@ -1859,13 +1911,9 @@
       "radar": {
         "state": "over",
         "distKm": 0,
-        "dirDeg": 69,
+        "dirDeg": 66,
         "intensity": "heavy",
-        "approach": {
-          "state": "receding",
-          "deg": 341,
-          "kmh": 9
-        }
+        "approach": null
       },
       "warnLevel": "yellow",
       "inStormCone": false
@@ -1873,14 +1921,10 @@
     "lagos": {
       "radar": {
         "state": "over",
-        "distKm": 2,
-        "dirDeg": 69,
+        "distKm": 0,
+        "dirDeg": 67,
         "intensity": "heavy",
-        "approach": {
-          "state": "receding",
-          "deg": 342,
-          "kmh": 10
-        }
+        "approach": null
       },
       "warnLevel": "yellow",
       "inStormCone": false
@@ -1888,13 +1932,13 @@
     "lagos-wakepark": {
       "radar": {
         "state": "over",
-        "distKm": 3,
-        "dirDeg": 69,
+        "distKm": 0,
+        "dirDeg": 67,
         "intensity": "heavy",
         "approach": {
           "state": "approaching",
-          "deg": 340,
-          "kmh": 10
+          "deg": 181,
+          "kmh": 9
         }
       },
       "warnLevel": "yellow",
@@ -1904,12 +1948,12 @@
       "radar": {
         "state": "over",
         "distKm": 7,
-        "dirDeg": 71,
+        "dirDeg": 74,
         "intensity": "heavy",
         "approach": {
-          "state": "approaching",
-          "deg": 321,
-          "kmh": 14
+          "state": "receding",
+          "deg": 133,
+          "kmh": 12
         }
       },
       "warnLevel": "yellow",
@@ -1919,12 +1963,12 @@
       "radar": {
         "state": "over",
         "distKm": 4,
-        "dirDeg": 70,
+        "dirDeg": 72,
         "intensity": "heavy",
         "approach": {
-          "state": "approaching",
-          "deg": 321,
-          "kmh": 17
+          "state": "receding",
+          "deg": 142,
+          "kmh": 12
         }
       },
       "warnLevel": "yellow",
@@ -1934,9 +1978,13 @@
       "radar": {
         "state": "over",
         "distKm": 2,
-        "dirDeg": 54,
+        "dirDeg": 48,
         "intensity": "moderate",
-        "approach": null
+        "approach": {
+          "state": "approaching",
+          "deg": 263,
+          "kmh": 11
+        }
       },
       "warnLevel": "yellow",
       "inStormCone": false
@@ -1944,10 +1992,14 @@
     "fuseta": {
       "radar": {
         "state": "over",
-        "distKm": 1,
-        "dirDeg": 50,
+        "distKm": 4,
+        "dirDeg": 39,
         "intensity": "moderate",
-        "approach": null
+        "approach": {
+          "state": "approaching",
+          "deg": 272,
+          "kmh": 22
+        }
       },
       "warnLevel": "yellow",
       "inStormCone": false
@@ -1955,10 +2007,14 @@
     "ilha-faro": {
       "radar": {
         "state": "over",
-        "distKm": 5,
-        "dirDeg": 55,
+        "distKm": 2,
+        "dirDeg": 49,
         "intensity": "moderate",
-        "approach": null
+        "approach": {
+          "state": "approaching",
+          "deg": 262,
+          "kmh": 10
+        }
       },
       "warnLevel": "yellow",
       "inStormCone": false
@@ -1966,10 +2022,14 @@
     "faro-mar": {
       "radar": {
         "state": "over",
-        "distKm": 5,
-        "dirDeg": 56,
+        "distKm": 3,
+        "dirDeg": 50,
         "intensity": "moderate",
-        "approach": null
+        "approach": {
+          "state": "approaching",
+          "deg": 261,
+          "kmh": 9
+        }
       },
       "warnLevel": "yellow",
       "inStormCone": false
@@ -1977,10 +2037,14 @@
     "culatra": {
       "radar": {
         "state": "over",
-        "distKm": 0,
-        "dirDeg": 50,
+        "distKm": 2,
+        "dirDeg": 41,
         "intensity": "moderate",
-        "approach": null
+        "approach": {
+          "state": "approaching",
+          "deg": 271,
+          "kmh": 19
+        }
       },
       "warnLevel": "yellow",
       "inStormCone": false
@@ -1988,10 +2052,14 @@
     "armona": {
       "radar": {
         "state": "over",
-        "distKm": 1,
-        "dirDeg": 50,
+        "distKm": 3,
+        "dirDeg": 40,
         "intensity": "moderate",
-        "approach": null
+        "approach": {
+          "state": "approaching",
+          "deg": 270,
+          "kmh": 21
+        }
       },
       "warnLevel": "yellow",
       "inStormCone": false
@@ -1999,10 +2067,14 @@
     "ilha-tavira": {
       "radar": {
         "state": "over",
-        "distKm": 8,
-        "dirDeg": 48,
+        "distKm": 5,
+        "dirDeg": 36,
         "intensity": "moderate",
-        "approach": null
+        "approach": {
+          "state": "approaching",
+          "deg": 285,
+          "kmh": 18
+        }
       },
       "warnLevel": "yellow",
       "inStormCone": false
@@ -2011,9 +2083,13 @@
       "radar": {
         "state": "over",
         "distKm": 8,
-        "dirDeg": 48,
+        "dirDeg": 36,
         "intensity": "moderate",
-        "approach": null
+        "approach": {
+          "state": "approaching",
+          "deg": 290,
+          "kmh": 16
+        }
       },
       "warnLevel": "yellow",
       "inStormCone": false
@@ -2022,9 +2098,13 @@
       "radar": {
         "state": "near",
         "distKm": 9,
-        "dirDeg": 46,
+        "dirDeg": 34,
         "intensity": "moderate",
-        "approach": null
+        "approach": {
+          "state": "approaching",
+          "deg": 288,
+          "kmh": 15
+        }
       },
       "warnLevel": "yellow",
       "inStormCone": false
@@ -2033,12 +2113,12 @@
       "radar": {
         "state": "over",
         "distKm": 5,
-        "dirDeg": 70,
+        "dirDeg": 71,
         "intensity": "heavy",
         "approach": {
-          "state": "approaching",
-          "deg": 325,
-          "kmh": 19
+          "state": "receding",
+          "deg": 157,
+          "kmh": 12
         }
       },
       "warnLevel": "yellow",
@@ -2048,12 +2128,12 @@
       "radar": {
         "state": "over",
         "distKm": 5,
-        "dirDeg": 70,
+        "dirDeg": 72,
         "intensity": "heavy",
         "approach": {
-          "state": "approaching",
-          "deg": 323,
-          "kmh": 19
+          "state": "receding",
+          "deg": 125,
+          "kmh": 10
         }
       },
       "warnLevel": "yellow",
@@ -2108,12 +2188,12 @@
       "radar": {
         "state": "over",
         "distKm": 0,
-        "dirDeg": 325,
+        "dirDeg": 321,
         "intensity": "heavy",
         "approach": {
-          "state": "receding",
-          "deg": 318,
-          "kmh": 20
+          "state": "approaching",
+          "deg": 135,
+          "kmh": 36
         }
       },
       "warnLevel": "orange",
@@ -2123,9 +2203,13 @@
       "radar": {
         "state": "over",
         "distKm": 0,
-        "dirDeg": 294,
+        "dirDeg": 308,
         "intensity": "moderate",
-        "approach": null
+        "approach": {
+          "state": "approaching",
+          "deg": 112,
+          "kmh": 35
+        }
       },
       "warnLevel": "orange",
       "inStormCone": false
@@ -2134,12 +2218,12 @@
       "radar": {
         "state": "over",
         "distKm": 1,
-        "dirDeg": 291,
+        "dirDeg": 317,
         "intensity": "moderate",
         "approach": {
-          "state": "receding",
-          "deg": 276,
-          "kmh": 76
+          "state": "approaching",
+          "deg": 95,
+          "kmh": 35
         }
       },
       "warnLevel": "yellow",
@@ -2149,12 +2233,12 @@
       "radar": {
         "state": "over",
         "distKm": 0,
-        "dirDeg": 293,
+        "dirDeg": 320,
         "intensity": "moderate",
         "approach": {
-          "state": "receding",
-          "deg": 280,
-          "kmh": 75
+          "state": "approaching",
+          "deg": 84,
+          "kmh": 34
         }
       },
       "warnLevel": "yellow",
@@ -2162,14 +2246,14 @@
     },
     "consolacao": {
       "radar": {
-        "state": "near",
-        "distKm": 15,
-        "dirDeg": 295,
+        "state": "over",
+        "distKm": 0,
+        "dirDeg": 314,
         "intensity": "moderate",
         "approach": {
-          "state": "receding",
-          "deg": 262,
-          "kmh": 62
+          "state": "approaching",
+          "deg": 116,
+          "kmh": 36
         }
       },
       "warnLevel": "yellow",
@@ -2178,13 +2262,13 @@
     "areia-branca": {
       "radar": {
         "state": "over",
-        "distKm": 8,
-        "dirDeg": 291,
+        "distKm": 0,
+        "dirDeg": 314,
         "intensity": "moderate",
         "approach": {
-          "state": "receding",
-          "deg": 268,
-          "kmh": 73
+          "state": "approaching",
+          "deg": 106,
+          "kmh": 36
         }
       },
       "warnLevel": "yellow",
@@ -2194,12 +2278,12 @@
       "radar": {
         "state": "over",
         "distKm": 5,
-        "dirDeg": 301,
+        "dirDeg": 309,
         "intensity": "moderate",
         "approach": {
-          "state": "receding",
-          "deg": 251,
-          "kmh": 88
+          "state": "approaching",
+          "deg": 114,
+          "kmh": 43
         }
       },
       "warnLevel": "orange",
@@ -2208,13 +2292,13 @@
     "cave-ericeira": {
       "radar": {
         "state": "over",
-        "distKm": 2,
-        "dirDeg": 299,
+        "distKm": 4,
+        "dirDeg": 326,
         "intensity": "moderate",
         "approach": {
-          "state": "receding",
-          "deg": 292,
-          "kmh": 88
+          "state": "approaching",
+          "deg": 60,
+          "kmh": 30
         }
       },
       "warnLevel": "yellow",
@@ -2223,13 +2307,13 @@
     "pescadores-ericeira": {
       "radar": {
         "state": "over",
-        "distKm": 3,
-        "dirDeg": 299,
+        "distKm": 1,
+        "dirDeg": 327,
         "intensity": "moderate",
         "approach": {
-          "state": "receding",
-          "deg": 293,
-          "kmh": 93
+          "state": "approaching",
+          "deg": 56,
+          "kmh": 31
         }
       },
       "warnLevel": "yellow",
@@ -2238,13 +2322,13 @@
     "crazy-left": {
       "radar": {
         "state": "over",
-        "distKm": 2,
-        "dirDeg": 299,
+        "distKm": 4,
+        "dirDeg": 326,
         "intensity": "moderate",
         "approach": {
-          "state": "receding",
-          "deg": 292,
-          "kmh": 87
+          "state": "approaching",
+          "deg": 61,
+          "kmh": 30
         }
       },
       "warnLevel": "yellow",
@@ -2253,13 +2337,13 @@
     "meco": {
       "radar": {
         "state": "over",
-        "distKm": 0,
-        "dirDeg": 25,
+        "distKm": 4,
+        "dirDeg": 14,
         "intensity": "moderate",
         "approach": {
-          "state": "approaching",
-          "deg": 293,
-          "kmh": 113
+          "state": "receding",
+          "deg": 60,
+          "kmh": 63
         }
       },
       "warnLevel": "yellow",
@@ -2267,14 +2351,14 @@
     },
     "lagoa-santo-andre": {
       "radar": {
-        "state": "over",
-        "distKm": 3,
-        "dirDeg": 85,
+        "state": "near",
+        "distKm": 12,
+        "dirDeg": 61,
         "intensity": "moderate",
         "approach": {
           "state": "approaching",
-          "deg": 278,
-          "kmh": 14
+          "deg": 335,
+          "kmh": 60
         }
       },
       "warnLevel": "yellow",
@@ -2282,11 +2366,15 @@
     },
     "lagoa-sancha": {
       "radar": {
-        "state": "over",
-        "distKm": 5,
-        "dirDeg": 83,
+        "state": "near",
+        "distKm": 10,
+        "dirDeg": 67,
         "intensity": "moderate",
-        "approach": null
+        "approach": {
+          "state": "approaching",
+          "deg": 335,
+          "kmh": 56
+        }
       },
       "warnLevel": "yellow",
       "inStormCone": false
@@ -2294,13 +2382,13 @@
     "pessegueiro": {
       "radar": {
         "state": "over",
-        "distKm": 1,
-        "dirDeg": 76,
+        "distKm": 4,
+        "dirDeg": 73,
         "intensity": "moderate",
         "approach": {
-          "state": "receding",
-          "deg": 104,
-          "kmh": 14
+          "state": "approaching",
+          "deg": 311,
+          "kmh": 54
         }
       },
       "warnLevel": "yellow",
@@ -2309,8 +2397,8 @@
     "falesia": {
       "radar": {
         "state": "over",
-        "distKm": 0,
-        "dirDeg": 62,
+        "distKm": 4,
+        "dirDeg": 58,
         "intensity": "heavy",
         "approach": null
       },
@@ -2320,14 +2408,10 @@
     "tres-irmaos": {
       "radar": {
         "state": "over",
-        "distKm": 1,
-        "dirDeg": 68,
+        "distKm": 0,
+        "dirDeg": 65,
         "intensity": "heavy",
-        "approach": {
-          "state": "approaching",
-          "deg": 338,
-          "kmh": 8
-        }
+        "approach": null
       },
       "warnLevel": "yellow",
       "inStormCone": false
@@ -2335,14 +2419,10 @@
     "canavial": {
       "radar": {
         "state": "over",
-        "distKm": 2,
-        "dirDeg": 69,
+        "distKm": 1,
+        "dirDeg": 67,
         "intensity": "heavy",
-        "approach": {
-          "state": "approaching",
-          "deg": 339,
-          "kmh": 10
-        }
+        "approach": null
       },
       "warnLevel": "yellow",
       "inStormCone": false
@@ -2351,13 +2431,9 @@
       "radar": {
         "state": "over",
         "distKm": 8,
-        "dirDeg": 65,
+        "dirDeg": 63,
         "intensity": "heavy",
-        "approach": {
-          "state": "approaching",
-          "deg": 305,
-          "kmh": 10
-        }
+        "approach": null
       },
       "warnLevel": "yellow",
       "inStormCone": false
@@ -2366,12 +2442,12 @@
       "radar": {
         "state": "over",
         "distKm": 4,
-        "dirDeg": 70,
+        "dirDeg": 72,
         "intensity": "heavy",
         "approach": {
-          "state": "approaching",
-          "deg": 322,
-          "kmh": 19
+          "state": "receding",
+          "deg": 128,
+          "kmh": 10
         }
       },
       "warnLevel": "yellow",
@@ -2431,9 +2507,13 @@
       "radar": {
         "state": "over",
         "distKm": 0,
-        "dirDeg": 293,
+        "dirDeg": 308,
         "intensity": "moderate",
-        "approach": null
+        "approach": {
+          "state": "approaching",
+          "deg": 111,
+          "kmh": 35
+        }
       },
       "warnLevel": "orange",
       "inStormCone": false
@@ -2442,9 +2522,13 @@
       "radar": {
         "state": "over",
         "distKm": 0,
-        "dirDeg": 299,
+        "dirDeg": 312,
         "intensity": "moderate",
-        "approach": null
+        "approach": {
+          "state": "approaching",
+          "deg": 116,
+          "kmh": 35
+        }
       },
       "warnLevel": "orange",
       "inStormCone": false
