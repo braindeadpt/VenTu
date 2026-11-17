@@ -58,6 +58,7 @@ export default function SpotSafetyCoastalWarnings({
       role="group"
       aria-label={label}
       data-testid="spot-safety-coastal"
+      data-faixa="ih"
       className="border-b border-score-poor/25 bg-score-poor/[0.06]"
     >
       <div className="max-w-6xl mx-auto px-4 py-2">
