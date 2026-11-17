@@ -1,5 +1,14 @@
 name: Deploy to GitHub Pages
 
+# Etiqueta honesta do run. O SHA que o Actions mostra no run vem de GITHUB_SHA
+# e, num workflow_run, é a ponta da main no momento do gatilho — não o run que
+# disparou. Um deploy skipped (CI cancelado, por exemplo) ficava então com o
+# SHA do merge seguinte e parecia ter publicado aquele código. O run-name põe
+# o gatilho no título, skipped incluído — nesses runs o job `build` não corre e
+# portanto não existe job summary (é scripts/resolve-deploy-source.js que o
+# escreve, e só quando o job arranca).
+run-name: "${{ github.event_name == 'workflow_run' && format('Deploy · {0} #{1} ({2}) · head {3}', github.event.workflow_run.name, github.event.workflow_run.run_number, github.event.workflow_run.conclusion, github.event.workflow_run.head_sha) || 'Deploy · manual' }}"
+
 # Publicação em duas fontes (opção B — separar código de dados).
 #
 # Contexto: os workflows de dados correm a cada ~30 min e NÃO disparam o CI
