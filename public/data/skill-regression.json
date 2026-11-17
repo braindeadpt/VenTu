@@ -1,6 +1,6 @@
 {
   "source": "forecast-skill-regression",
-  "checkedAt": "2026-11-17T00:06:51.615Z",
+  "checkedAt": "2026-11-17T04:07:02.786Z",
   "windowDays": 60,
   "recentDays": 7,
   "baselineDays": 21,
@@ -24,7 +24,7 @@
         "snapshots": 8,
         "rmse": 0.6650000000000001,
         "me": 0.49125,
-        "n": 574.375
+        "n": 574.125
       },
       "baseline": {
         "snapshots": 21,
@@ -43,7 +43,7 @@
         "snapshots": 8,
         "rmse": 0.3325,
         "me": 0.14375000000000004,
-        "n": 618.625
+        "n": 618.5
       },
       "baseline": {
         "snapshots": 21,
@@ -62,7 +62,7 @@
         "snapshots": 8,
         "rmse": 0.32875,
         "me": 0.18374999999999997,
-        "n": 470.375
+        "n": 471
       },
       "baseline": {
         "snapshots": 14,
@@ -81,7 +81,7 @@
         "snapshots": 8,
         "rmse": 0.40750000000000003,
         "me": -0.275,
-        "n": 616.625
+        "n": 616.5
       },
       "baseline": {
         "snapshots": 21,
@@ -98,9 +98,9 @@
       "origin": "ih",
       "recent": {
         "snapshots": 8,
-        "rmse": 1.07875,
+        "rmse": 1.0775000000000001,
         "me": 0.855,
-        "n": 616.125
+        "n": 615.875
       },
       "baseline": {
         "snapshots": 21,
@@ -119,7 +119,7 @@
         "snapshots": 8,
         "rmse": 0.8912500000000001,
         "me": 0.77,
-        "n": 535.875
+        "n": 535.75
       },
       "baseline": {
         "snapshots": 21,
@@ -138,7 +138,7 @@
         "snapshots": 8,
         "rmse": 0.7774999999999999,
         "me": 0.63625,
-        "n": 537.125
+        "n": 537
       },
       "baseline": {
         "snapshots": 21,
@@ -154,9 +154,9 @@
       "name": "Nazaré Costeira (WMO)",
       "recent": {
         "snapshots": 8,
-        "rmse": 0.32,
-        "me": 0.04749999999999999,
-        "n": 478.25
+        "rmse": 0.32125000000000004,
+        "me": 0.04874999999999999,
+        "n": 478.125
       },
       "baseline": {
         "snapshots": 21,
@@ -165,7 +165,7 @@
         "n": 519.2857142857143
       },
       "rmseDelta": -0.02,
-      "meAbsDelta": -0.1,
+      "meAbsDelta": -0.09,
       "verdict": "ok"
     }
   },
@@ -176,8 +176,8 @@
       "name": "IH (Datawell)",
       "recent": {
         "days": 8,
-        "n": 2896.13,
-        "me": 0.28126246277353356
+        "n": 2896,
+        "me": 0.28120985842541435
       },
       "baseline": {
         "days": 21,
@@ -194,8 +194,8 @@
       "name": "WMO-ES (Copernicus)",
       "recent": {
         "days": 8,
-        "n": 1551.25,
-        "me": 0.5008726833199033
+        "n": 1550.88,
+        "me": 0.5012525187394213
       },
       "baseline": {
         "days": 21,
