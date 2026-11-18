@@ -163,6 +163,70 @@
       ]
     },
     {
+      "id": 19195,
+      "ref": "ANAV NR 2541/26",
+      "category": "Requisitos de segurança maritima",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=74a6a708-1ada-4639-8046-80e8f6310463",
+      "source": "ih",
+      "collection": "nav_warning_coastal",
+      "polygons": [
+        [
+          [
+            -8.778157,
+            40.605351
+          ],
+          [
+            -8.778157,
+            40.671525
+          ],
+          [
+            -8.689219,
+            40.671525
+          ],
+          [
+            -8.689219,
+            40.605351
+          ],
+          [
+            -8.778157,
+            40.605351
+          ]
+        ]
+      ]
+    },
+    {
+      "id": 19197,
+      "ref": "ANAV NR 2542/26",
+      "category": "Requisitos de segurança maritima",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=db516621-a56b-4378-ab2d-54e300ff6293",
+      "source": "ih",
+      "collection": "nav_warning_coastal",
+      "polygons": [
+        [
+          [
+            -8.881612,
+            41.641618
+          ],
+          [
+            -8.881612,
+            41.708804
+          ],
+          [
+            -8.793743,
+            41.708804
+          ],
+          [
+            -8.793743,
+            41.641618
+          ],
+          [
+            -8.881612,
+            41.641618
+          ]
+        ]
+      ]
+    },
+    {
       "id": 1000182,
       "ref": "ANAV NR 121/21",
       "category": "SEGURANÇA DA NAVEGAÇÃO - AVISO À NAVEGAÇÃO LOCAL",
@@ -7247,10 +7311,12 @@
       1003281
     ],
     "amorosa": [
+      19197,
       1009684,
       2018401
     ],
     "cabedelo": [
+      19197,
       1000655,
       1000656,
       1005679,
@@ -7261,6 +7327,7 @@
       2018401
     ],
     "foil-cabedelo": [
+      19197,
       1000655,
       1000656,
       1005679,
@@ -7271,12 +7338,14 @@
       2018401
     ],
     "cabedelo-wakepark": [
+      19197,
       1000655,
       1005679,
       1007416,
       2018401
     ],
     "rodanho": [
+      19197,
       1007416,
       1009684,
       2018401
@@ -7386,9 +7455,11 @@
       1000708
     ],
     "sao-jacinto": [
+      19195,
       1000711
     ],
     "costa-nova": [
+      19195,
       1000711
     ],
     "figueira-foz": [
@@ -7828,6 +7899,7 @@
       1000459
     ],
     "barra-aveiro": [
+      19195,
       1000711
     ],
     "vila-cha": [
@@ -7943,7 +8015,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-11-17T20:07:00.211Z",
+  "fetchedAt": "2026-11-18T00:06:54.930Z",
   "sourceCollection": "nav_warning_coastal+nav_warning_local+orca_anavnet_point",
   "sourceUrl": "https://ogcapi.hidrografico.pt/collections/nav_warning_coastal"
 }
