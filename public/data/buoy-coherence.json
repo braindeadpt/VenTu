@@ -1,6 +1,6 @@
 {
   "day": "20261118",
-  "fetchedAt": "2026-11-18T12:06:52.639Z",
+  "fetchedAt": "2026-11-18T13:30:24.352Z",
   "minPairs": 3,
   "minAccumulatedPairs": 10,
   "archive": {
@@ -1277,7 +1277,7 @@
       "suboptimal": []
     }
   },
-  "regionsAuditedAt": "2026-11-18T12:18:40.588Z",
+  "regionsAuditedAt": "2026-11-18T13:30:39.430Z",
   "pairs": [
     {
       "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
@@ -1288,13 +1288,13 @@
       "distanceKm": 285.3,
       "ptSource": "wmo",
       "n": 494,
-      "meanDeltaM": -0.5,
-      "meanAbsDeltaM": 0.6,
+      "meanDeltaM": -0.6,
+      "meanAbsDeltaM": 0.7,
       "maxAbsDeltaM": 2.8,
       "corr": 0.81,
       "verdict": "coherent",
-      "firstHour": "2026-10-19T13",
-      "lastHour": "2026-11-18T10",
+      "firstHour": "2026-10-19T14",
+      "lastHour": "2026-11-18T11",
       "hours": [
         {
           "6200084": 4.570000171661377,
@@ -1350,6 +1350,11 @@
           "6200084": 6.679999828338623,
           "6200199": 4.160160064697266,
           "hour": "2026-11-18T10"
+        },
+        {
+          "6200084": 6.449999809265137,
+          "6200199": 4.541019916534424,
+          "hour": "2026-11-18T11"
         }
       ]
     }
