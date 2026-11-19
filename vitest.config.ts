@@ -56,6 +56,7 @@ export default defineConfig({
       'scripts/lib/__tests__/updateConditionsPerSpot.test.js',
       'scripts/lib/__tests__/updateConditionsArtifacts.test.js',
       'scripts/lib/__tests__/updateConditionsCarryover.test.js',
+      'scripts/lib/__tests__/updateConditionsRetryPass.test.js',
       'scripts/lib/__tests__/buoyCoherence.test.js',
       'scripts/lib/__tests__/observedWaveMerge.test.js',
       'scripts/lib/__tests__/wmoBiasArchive.test.js',

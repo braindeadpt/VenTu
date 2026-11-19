@@ -138,6 +138,11 @@ export interface SpotListingConditions {
   /** Fase da maré — coluna Maré da tabela densa de /spots (auditoria C1). */
   tideStatus?: 'high' | 'low' | 'rising' | 'falling'
   tideLabel?: string
+  /** Carry-over da pipeline: o fetch Open-Meteo falhou na run — a entrada e o
+   *  forecasts/<id>.json são do run anterior; `updatedAt` é o instante desse
+   *  fetch original (os dados não são frescos). */
+  carriedOver?: boolean
+  carriedFromFetchedAt?: string
 }
 
 /** Full conditions — what the spot page bakes into its static HTML. */
@@ -288,6 +293,8 @@ function buildSpotData(
       (biasPatch?.waveBias ?? raw?.waveBias) as SpotListingConditions['waveBias'],
     tideStatus: raw?.tideStatus as SpotListingConditions['tideStatus'],
     tideLabel: raw?.tideLabel as string | undefined,
+    carriedOver: raw?.carriedOver as boolean | undefined,
+    carriedFromFetchedAt: (raw?.carriedFromFetchedAt as string) || undefined,
   }
 
   const dataId = spot.conditionsSource ?? spot.id

@@ -1,7 +1,7 @@
 /**
  * Carry-over de previsão (incidente 2026-11-19, run update-data 44426138146):
  * quando o Open-Meteo falha para um spot que AINDA existe no catálogo, o run
- * anterior pode substituí-lo — desde que fresco (fetch ≤12h) e a previsão
+ * anterior pode substituí-lo — desde que fresco (fetch ≤3h) e a previsão
  * ainda cubra horas futuras. Sem isto, um outage de algumas horas apagava o
  * forecasts/<id>.json do spot (bloco «espelha o directório ao índice») e um
  * deploy no intervalo publicava-o sem previsão.
@@ -13,7 +13,7 @@
  */
 
 /** Idade máxima do fetch anterior reutilizável (horas). */
-const MAX_CARRYOVER_AGE_HOURS = 12;
+const MAX_CARRYOVER_AGE_HOURS = 3;
 
 /**
  * Decide se os artefactos do run anterior podem substituir um fetch falhado.

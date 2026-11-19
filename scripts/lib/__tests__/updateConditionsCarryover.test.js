@@ -23,8 +23,8 @@ const previousEntry = (ageHours) => ({
 });
 
 describe('carryOverForecast', () => {
-  it('reaproveita fetch anterior ≤12h com previsão ainda a cobrir o futuro', () => {
-    const prev = previousEntry(4);
+  it('reaproveita fetch anterior ≤3h com previsão ainda a cobrir o futuro', () => {
+    const prev = previousEntry(2);
     const forecast = forecastCovering('2026-11-25T00:00:00Z');
     const carried = carryOverForecast({ previousConditionsEntry: prev, forecastJson: forecast, nowMs: NOW });
     expect(carried.carriedFromFetchedAt).toBe(prev.updatedAt);
@@ -35,7 +35,25 @@ describe('carryOverForecast', () => {
     expect(carried.forecast).toBe(forecast);
   });
 
-  it('recusa fetch anterior mais velho que 12h', () => {
+  it('aceita fetch anterior com 2h59 (limite: ≤3h)', () => {
+    const carried = carryOverForecast({
+      previousConditionsEntry: previousEntry(2 + 59 / 60),
+      forecastJson: forecastCovering('2026-11-25T00:00:00Z'),
+      nowMs: NOW,
+    });
+    expect(carried).not.toBeNull();
+  });
+
+  it('recusa fetch anterior com 3h01 (limite: ≤3h)', () => {
+    const carried = carryOverForecast({
+      previousConditionsEntry: previousEntry(3 + 1 / 60),
+      forecastJson: forecastCovering('2026-11-25T00:00:00Z'),
+      nowMs: NOW,
+    });
+    expect(carried).toBeNull();
+  });
+
+  it('recusa fetch anterior mais velho que o limite', () => {
     const carried = carryOverForecast({
       previousConditionsEntry: previousEntry(MAX_CARRYOVER_AGE_HOURS + 0.1),
       forecastJson: forecastCovering('2026-11-25T00:00:00Z'),
@@ -52,7 +70,7 @@ describe('carryOverForecast', () => {
 
   it('recusa previsão que já não cobre horas futuras', () => {
     const carried = carryOverForecast({
-      previousConditionsEntry: previousEntry(4),
+      previousConditionsEntry: previousEntry(2),
       forecastJson: forecastCovering('2026-11-19T10:00:00Z'),
       nowMs: NOW,
     });
@@ -60,7 +78,7 @@ describe('carryOverForecast', () => {
   });
 
   it('recusa ficheiro vazio ou não-array', () => {
-    const prev = previousEntry(4);
+    const prev = previousEntry(2);
     expect(carryOverForecast({ previousConditionsEntry: prev, forecastJson: [], nowMs: NOW })).toBeNull();
     expect(carryOverForecast({ previousConditionsEntry: prev, forecastJson: null, nowMs: NOW })).toBeNull();
   });
@@ -72,7 +90,7 @@ describe('applyCarryOver', () => {
   it('spot no catálogo com fetch falhado e anterior recente → entra nos dois índices, marcado', () => {
     const spots = [{ id: 'moledo' }];
     const prevForecast = forecastCovering('2026-11-25T00:00:00Z');
-    const previousConditions = { moledo: previousEntry(4) };
+    const previousConditions = { moledo: previousEntry(2) };
     const allConditions = {};
     const allForecasts = {};
     const log = { warn: vi.fn() };
@@ -93,9 +111,9 @@ describe('applyCarryOver', () => {
     expect(log.warn.mock.calls.some(([m]) => m.includes('carry-over'))).toBe(true);
   });
 
-  it('spot com anterior >12h → não reaproveita (o espelho apaga o ficheiro depois)', () => {
+  it('spot com anterior >3h → não reaproveita (o espelho apaga o ficheiro depois)', () => {
     const spots = [{ id: 'afife' }];
-    const previousConditions = { afife: previousEntry(13) };
+    const previousConditions = { afife: previousEntry(4) };
     const allConditions = {};
     const allForecasts = {};
     const carriedIds = applyCarryOver({
@@ -143,7 +161,7 @@ describe('applyCarryOver', () => {
     // Run anterior já tinha reaproveitado: carriedFromFetchedAt = updatedAt =
     // instante do fetch original. Um segundo carry não pode «refrescar» a
     // idade dos dados — tem de continuar a apontar para o fetch real.
-    const original = previousEntry(8);
+    const original = previousEntry(2);
     const previousConditions = {
       moledo: { ...original, carriedOver: true, carriedFromFetchedAt: original.updatedAt },
     };
@@ -165,7 +183,7 @@ describe('applyCarryOver', () => {
     const prevForecast = forecastCovering('2026-11-25T00:00:00Z');
     const carriedIds = applyCarryOver({
       spots, allConditions, allForecasts,
-      previousConditions: { moledo: previousEntry(4), afife: previousEntry(20) },
+      previousConditions: { moledo: previousEntry(2), afife: previousEntry(20) },
       readForecast: readMap({ moledo: prevForecast, afife: prevForecast }),
       nowMs: NOW, log: { warn: vi.fn() },
     });
