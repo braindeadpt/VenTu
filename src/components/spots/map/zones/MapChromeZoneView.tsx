@@ -141,6 +141,22 @@ export default function MapChromeZone({
   const legendVisible =
     legendOpen && (!isMobile || legendCap == null || legendCap >= 120);
 
+  // Auditoria Android 19/11: no telemóvel o cartão (220 px a top-28) tapa
+  // uma faixa do mapa. Ao começar a arrastar o mapa ele recolhe sozinho —
+  // fechado é o default no mobile e o toggle da pilha volta a abri-lo.
+  // pointer-events:none não serve: o cartão tem scroll próprio.
+  const { mapInstanceRef, setLegendPref } = state;
+  useEffect(() => {
+    if (!isMobile || !legendVisible) return;
+    const map = mapInstanceRef.current;
+    if (!map) return;
+    const collapse = () => setLegendPref(false);
+    map.once('dragstart', collapse);
+    return () => {
+      map.off('dragstart', collapse);
+    };
+  }, [isMobile, legendVisible, mapInstanceRef, setLegendPref]);
+
   // Pill temporal: liga a camada «48 h» se ainda estiver desligada e
   // abre/fecha o scrubber (maquete: o toggle da camada é o interruptor
   // principal, a pill é a vista).

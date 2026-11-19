@@ -97,6 +97,7 @@ import {
   planHeavyRasterEnable,
   type MapHeavyRasterKey,
 } from '@/lib/mapLayerBus';
+import { nextSeamarksTally, seamarksDown, type SeamarksEvent, type SeamarksTally } from '@/lib/seamarksStatus';
 
 interface UseMapLayersOptions {
   mapInstanceRef: React.MutableRefObject<L.Map | null>;
@@ -155,6 +156,8 @@ interface UseMapLayersReturn {
   // Carta náutica — isóbatas IH + batimetria EMODnet + seamarks OpenSeaMap
   // ligam-se em conjunto (toggle único, Fase 3).
   nauticalChartEnabled: boolean;
+  /** Tiles OpenSeaMap em baixo (erros seguidos, nenhum tile bom). */
+  seamarksUnavailable: boolean;
   isobathsData: IsobathContoursFile | null | undefined;
   toggleNauticalChart: () => void;
   // Satélite IR GOES-East (carrossel 10 min — B5)
@@ -680,6 +683,12 @@ export function useMapLayers({
   }, [nauticalChartEnabled, isHeroEmbed, isReady, mapInstanceRef, LRef]);
 
   // ── Seamarks (OpenSeaMap tiles) ──
+  // Disponibilidade: o servidor devolve PNG transparente onde não há sinais,
+  // logo erros seguidos sem nenhum tile bom = serviço em baixo. A linha
+  // «Carta náutica» das Camadas diz isso (as isóbatas e a batimetria locais
+  // continuam a pintar).
+  const [seamarksUnavailable, setSeamarksUnavailable] = useState(false);
+
   // Sinalização náutica (balizas, faróis, rochas, perigos, fundeadouros) —
   // contexto cartográfico para os avisos IH e as zonas de orca. Raster
   // transparente por cima dos fields, por baixo dos markers. Também fora
@@ -702,10 +711,24 @@ export function useMapLayers({
       className: 'ventu-seamarks',
       maxZoom: 18,
     });
+    let tally: SeamarksTally = { loads: 0, errors: 0 };
+    const onTile = (ev: SeamarksEvent) => () => {
+      tally = nextSeamarksTally(tally, ev);
+      const down = seamarksDown(tally);
+      if (mountedRef.current) setSeamarksUnavailable((prev) => (prev === down ? prev : down));
+    };
+    const onLoad = onTile('load');
+    const onError = onTile('error');
+    layer.on('tileload', onLoad);
+    layer.on('tileerror', onError);
     layer.addTo(map);
 
     return () => {
+      layer.off('tileload', onLoad);
+      layer.off('tileerror', onError);
       if (map.hasLayer(layer)) map.removeLayer(layer);
+      // Desligar a carta limpa o aviso; voltar a ligar volta a medir.
+      if (mountedRef.current) setSeamarksUnavailable(false);
     };
   }, [nauticalChartEnabled, isHeroEmbed, isReady, mapInstanceRef, LRef]);
 
@@ -1453,7 +1476,7 @@ export function useMapLayers({
     toggleRadar, handleRadarFrameChange, handleRadarUserPausedChange,
     handleResetRadar, handleRadarImmersionOpen,
     radarFrameList, radarLabel, radarHint, radarUnavailable, radarAttributionLabel,
-    nauticalChartEnabled, isobathsData, toggleNauticalChart,
+    nauticalChartEnabled, isobathsData, toggleNauticalChart, seamarksUnavailable,
     goesIrEnabled, toggleGoesIr,
     goesIrFrameList, goesIrFrameIndex, goesIrUserPaused, goesIrSource,
     handleGoesIrFrameChange, handleGoesIrUserPausedChange,

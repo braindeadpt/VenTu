@@ -161,7 +161,16 @@ function LayerToggle({ item }: { item: MapLayersMenuItem }) {
       </span>
       <span className={cn('shrink-0', item.iconClass)}>{item.icon}</span>
       {/* CORRECCOES-24SET (M5/M6): nome completo, nunca truncado. */}
-      <span className="min-w-0 text-left leading-snug">{item.label}</span>
+      <span className="min-w-0 text-left leading-snug">
+        {item.label}
+        {/* Estado da fonte (ex.: OpenSeaMap em baixo) — no telemóvel não há
+            hover, por isso o aviso tem de estar escrito. */}
+        {item.description && (
+          <span data-layer-status className="block text-[11px] font-normal leading-tight text-fg-subtle">
+            {item.description}
+          </span>
+        )}
+      </span>
     </button>
   );
 }

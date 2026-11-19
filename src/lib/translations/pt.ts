@@ -1583,7 +1583,7 @@ export const translationsPt = {
   },
   seoLandings: {
     inPortugal: '{sport} em Portugal',
-    inRegion: '{sport} no {region}',
+    inRegion: '{sport} {em} {region}',
     description: '{title} — {count} spots com condições {schedule}, scores e previsões no VenTu.',
   },
   tiers: {

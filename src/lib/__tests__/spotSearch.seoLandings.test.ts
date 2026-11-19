@@ -47,6 +47,28 @@ describe('seoLandings', () => {
     expect(getSeoLanding('not-a-real-slug')).toBeUndefined()
   })
 
+  it('landingTitle usa a preposição certa em PT para cada região', () => {
+    const esperado: Record<string, string> = {
+      Norte: 'no Norte',
+      Centro: 'no Centro',
+      Lisboa: 'em Lisboa',
+      Alentejo: 'no Alentejo',
+      Algarve: 'no Algarve',
+      Açores: 'nos Açores',
+      Madeira: 'na Madeira',
+    }
+    const comRegiao = SEO_LANDINGS.filter((l) => l.region)
+    expect(comRegiao.length).toBeGreaterThan(0)
+    for (const l of comRegiao) {
+      const titulo = landingTitle(l, 'pt')
+      expect(titulo).toContain(esperado[l.region as string])
+      expect(titulo).not.toMatch(/\{|\}/)
+    }
+    for (const loc of ['en', 'es', 'fr', 'de']) {
+      for (const l of comRegiao) expect(landingTitle(l, loc)).not.toMatch(/\{|\}/)
+    }
+  })
+
   it('landingTitle includes region when set', () => {
     const landing = getSeoLanding('surf-algarve')
     expect(landing).toBeDefined()
