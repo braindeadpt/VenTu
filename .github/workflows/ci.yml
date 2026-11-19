@@ -55,6 +55,9 @@ jobs:
         #   GHSA-vfj7-8cjw-p6xm — braces ≤3.0.3 stack-exhaustion DoS. No patched
         #   release exists (micromatch/braces#70). Dev-only transitive dep
         #   (chokidar/fast-glob globs); unreachable in the static-export site.
+        #   GHSA-fc5q-39xc-vjpf — picomatch ≤4.0.7 ReDoS (repeated extglobs). No
+        #   patched release yet. Every copy in the lockfile is dev-only (vite,
+        #   vitest, tinyglobby, chokidar); it never ships in the static export.
         run: |
           npm install -g npm@11 >/dev/null 2>&1 || true
           for i in 1 2 3 4 5; do
@@ -63,7 +66,7 @@ jobs:
               printf '%s\n' "$out" | node -e '
                 let d = "";
                 process.stdin.on("data", (c) => (d += c)).on("end", () => {
-                  const allow = new Set(["GHSA-vfj7-8cjw-p6xm"]);
+                  const allow = new Set(["GHSA-vfj7-8cjw-p6xm", "GHSA-fc5q-39xc-vjpf"]);
                   const bad = [];
                   for (const [name, v] of Object.entries(
                     JSON.parse(d).vulnerabilities || {},
