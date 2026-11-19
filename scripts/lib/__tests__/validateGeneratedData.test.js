@@ -773,3 +773,45 @@ describe('validate-generated-data — banda ensemble P10/P50/P90 (ens)', () => {
     expect(out).not.toMatch(/forecasts ensemble/);
   });
 });
+
+describe('validate-generated-data — carry-over de forecasts (incidente 2026-11-19)', () => {
+  const series = () =>
+    Array.from({ length: 24 }, () => ({ time: new Date(Date.now() + 3_600_000).toISOString(), waveHeight: 1.2, windSpeed: 10 }));
+
+  it('spot reaproveitado (carriedOver) com ficheiro → splitFiles consistente, exit 0', () => {
+    const dir = makeDataDir();
+    const prev = new Date(Date.now() - 4 * 3_600_000).toISOString();
+    const c = JSON.parse(fs.readFileSync(path.join(dir, 'conditions.json'), 'utf8'));
+    c['moledo'] = {
+      waveHeight: 1.4,
+      updatedAt: prev, // os dados são mesmo do run anterior
+      carriedOver: true,
+      carriedFromFetchedAt: prev,
+    };
+    fs.writeFileSync(path.join(dir, 'conditions.json'), JSON.stringify(c));
+    fs.writeFileSync(path.join(dir, 'forecasts', 'moledo.json'), JSON.stringify(series()));
+    const { code, out } = runValidator(dir);
+    expect(code).toBe(0);
+    expect(out).not.toMatch(/forecasts\.splitFiles/);
+  });
+
+  it('spot apagado (anterior >12h ou fora do catálogo) sem chave nem ficheiro → exit 0', () => {
+    // Estado final idêntico nos dois casos: o spot nem entra em
+    // conditions.json nem tem forecasts/<id>.json — o índice e a pasta
+    // continuam a espelhar-se.
+    const dir = makeDataDir();
+    const { code, out } = runValidator(dir);
+    expect(code).toBe(0);
+    expect(out).not.toMatch(/forecasts\.splitFiles/);
+  });
+
+  it('spot reaproveitado mas SEM ficheiro → splitFiles falha (chave sem ficheiro)', () => {
+    const dir = makeDataDir();
+    const c = JSON.parse(fs.readFileSync(path.join(dir, 'conditions.json'), 'utf8'));
+    c['moledo'] = { waveHeight: 1.4, carriedOver: true, carriedFromFetchedAt: new Date(Date.now() - 3_600_000).toISOString() };
+    fs.writeFileSync(path.join(dir, 'conditions.json'), JSON.stringify(c));
+    const { code, out } = runValidator(dir);
+    expect(code).toBe(1);
+    expect(out).toMatch(/1 conditions key\(s\) without file: moledo/);
+  });
+});

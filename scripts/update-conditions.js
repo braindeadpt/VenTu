@@ -43,6 +43,7 @@ const {
 const { readJsonIfExists, atomicWriteJson, ensureParentDir } = require('./lib/updateConditionsArtifacts');
 const { createUpdateConditionsFetcher } = require('./lib/updateConditionsFetch');
 const { validateCoverage, assertCoverage, buildPipelineLayers } = require('./lib/updateConditionsHealth');
+const { applyCarryOver } = require('./lib/updateConditionsCarryover');
 const { processSpot } = require('./lib/updateConditionsPerSpot');
 
 function resolveUseMultiModel() {
@@ -225,6 +226,20 @@ async function updateConditions() {
       console.error(`  ✗ ${spot.id} failed:`, error.message);
     }
   }
+  // Carry-over (incidente 2026-11-19): um spot do catálogo cujo fetch falhou
+  // reaproveita o forecasts/<id>.json + a entrada de conditions.json do run
+  // anterior — mas só se fresco (≤12h) e ainda a cobrir horas futuras. Antes
+  // de applyAliasSpots para os aliases herdarem a entrada; antes das escritas
+  // para o validador forecasts.splitFiles (chaves ⇔ ficheiros) ficar
+  // consistente. O gate de coverage conta-os como falha, não como sucesso.
+  const perSpotDir = path.join(__dirname, '../public/data/forecasts');
+  const carriedIds = applyCarryOver({
+    spots,
+    allConditions,
+    allForecasts,
+    previousConditions,
+    readForecast: (id) => readJsonIfExists(path.join(perSpotDir, `${id}.json`), null),
+  });
   applyAliasSpots(aliasSpots, allConditions, allForecasts);
   // European AQI (fetch-air-quality.js → air-quality.json): camada suave —
   // merge só quando o ficheiro é fresco (<8h); um outage AQ nunca bloqueia.
@@ -311,7 +326,7 @@ async function updateConditions() {
   const biasApplied = Object.values(allConditions).filter((condition) => condition.waveBias).length;
   if (waveBiasEnabled && biasApplied > 0) console.log(`📏 Bias correction applied on ${biasApplied} spots (n≥${MIN_BIAS_N}, |ME|≥${MIN_BIAS_M} m)`);
   ensureParentDir(outputPath);
-  const coverage = validateCoverage(spots, allConditions);
+  const coverage = validateCoverage(spots, allConditions, console, { carriedIds });
   assertCoverage(coverage);
   atomicWriteJson(outputPath, allConditions);
   // Só os ficheiros por spot (forecasts/<id>.json). O agregado forecasts.json
@@ -324,7 +339,6 @@ async function updateConditions() {
     fs.unlinkSync(legacyForecastsPath);
     console.log('  🗑 Removed legacy public/data/forecasts.json (aggregate no longer published)');
   }
-  const perSpotDir = path.join(__dirname, '../public/data/forecasts');
   fs.mkdirSync(perSpotDir, { recursive: true });
   let perSpotCount = 0;
   for (const [dataId, forecast] of Object.entries(allForecasts)) {
