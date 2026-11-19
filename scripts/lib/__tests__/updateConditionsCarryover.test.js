@@ -137,6 +137,27 @@ describe('applyCarryOver', () => {
     expect(allConditions.b).toBeUndefined(); // alias resolvido por applyAliasSpots, nunca por carry-over
   });
 
+  it('um segundo carry-over consecutivo mantém carriedFromFetchedAt = updatedAt original', () => {
+    const spots = [{ id: 'moledo' }];
+    const prevForecast = forecastCovering('2026-11-25T00:00:00Z');
+    // Run anterior já tinha reaproveitado: carriedFromFetchedAt = updatedAt =
+    // instante do fetch original. Um segundo carry não pode «refrescar» a
+    // idade dos dados — tem de continuar a apontar para o fetch real.
+    const original = previousEntry(8);
+    const previousConditions = {
+      moledo: { ...original, carriedOver: true, carriedFromFetchedAt: original.updatedAt },
+    };
+    const allConditions = {};
+    const allForecasts = {};
+    const carriedIds = applyCarryOver({
+      spots, allConditions, allForecasts, previousConditions,
+      readForecast: readMap({ moledo: prevForecast }), nowMs: NOW, log: { warn: vi.fn() },
+    });
+    expect(carriedIds.has('moledo')).toBe(true);
+    expect(allConditions.moledo.updatedAt).toBe(original.updatedAt);
+    expect(allConditions.moledo.carriedFromFetchedAt).toBe(original.updatedAt);
+  });
+
   it('o gate de coverage conta o carry-over como falha do fetch', () => {
     const spots = [{ id: 'ok' }, { id: 'moledo' }, { id: 'afife' }];
     const allConditions = { ok: { waveHeight: 2 } };

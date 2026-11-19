@@ -238,7 +238,11 @@ async function updateConditions() {
     allConditions,
     allForecasts,
     previousConditions,
-    readForecast: (id) => readJsonIfExists(path.join(perSpotDir, `${id}.json`), null),
+    readForecast: (id) => readJsonIfExists(
+      path.join(perSpotDir, `${id}.json`),
+      null,
+      () => console.warn(`⚠️ Could not parse forecasts/${id}.json — spot not carried over`),
+    ),
   });
   applyAliasSpots(aliasSpots, allConditions, allForecasts);
   // European AQI (fetch-air-quality.js → air-quality.json): camada suave —
