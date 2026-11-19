@@ -228,7 +228,7 @@ async function updateConditions() {
     try {
       await processPrimarySpot(spot);
     } catch (error) {
-      console.error(`  ✗ ${spot.id} failed:`, error.message);
+      console.error(`  ✗ ${spot.id} failed:`, error?.message ?? error);
       failedSpotIds.push(spot.id);
     }
   }
@@ -243,8 +243,15 @@ async function updateConditions() {
     const spotById = new Map(spots.map((spot) => [spot.id, spot]));
     const stillFailing = await retryFailedSpots({
       ids: failedSpotIds,
-      run: (id) => processPrimarySpot(spotById.get(id)),
+      run: (id) => {
+        const spot = spotById.get(id);
+        // Invariante: failedSpotIds só recebe ids de `spots` — se falhar,
+        // a culpa é do wiring, não do provider.
+        if (!spot) return Promise.reject(new Error(`spot desconhecido na repetição: ${id}`));
+        return processPrimarySpot(spot);
+      },
       sleep,
+      maxPasses: MAX_RETRY_PASSES,
     });
     if (stillFailing.length > 0) {
       console.warn(`⚠️ ${stillFailing.length} spot(s) em falha após ${MAX_RETRY_PASSES} repetições — o carry-over/coverage tratam deles`);

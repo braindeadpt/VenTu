@@ -39,11 +39,11 @@
  *                  reach it (issue #457).
  *
  * Modes:
- *   --mode=full    all four checks (default). Used in CI after Build.
+ *   --mode=full    all five checks (default). Used in CI after Build.
  *   --mode=extra   only the EXTRA check. Used by the daily full browser
  *                  audit: its flat route list goes stale between runs, so it
  *                  must not red-flag legitimately new routes.
- *   --mode=missing checks 1+2+3 (no extra scan).
+ *   --mode=missing checks 1+2+3+5 (no extra scan).
  *
  * Usage:
  *   node scripts/check-export-routes.js [--out-dir <dir>] [--mode=full|extra|missing]
@@ -52,6 +52,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { LANG_BY_LOCALE, HTML_LANG_RE } = require('./lib/htmlLang');
 
 const LOCALES = ['pt', 'en', 'es', 'de', 'fr'];
 
@@ -82,14 +83,6 @@ const NOT_FOUND_MARKERS = [
 
 /** Diagnostics cap — a systemic failure must not dump 2300 lines. */
 const REPORT_LIMIT = 20;
-
-/** The <html lang> each locale must bake — the shared static root layout
- * hardcodes pt-PT and fixup-next-segment-paths rewrites it per locale. */
-const LANG_BY_LOCALE = { pt: 'pt-PT', en: 'en', es: 'es', de: 'de', fr: 'fr' };
-
-/** First <html> tag's lang attribute (whitespace before `lang` is required,
- * so an xml:lang attribute can never match). */
-const HTML_LANG_RE = /<html[^>]*?\slang="([^"]*)"/;
 
 /**
  * Parse the sitemap <loc> URLs into filesystem-relative route paths
@@ -160,7 +153,7 @@ function classifyBakedPage(htmlPath, bytes, expectedLang) {
   if (NOT_FOUND_MARKERS.some((marker) => html.indexOf(marker) !== -1)) return 'not-found';
   if (expectedLang) {
     const m = HTML_LANG_RE.exec(html.toString('utf8'));
-    if (!m || m[1] !== expectedLang) return 'bad-lang';
+    if (!m || m[2] !== expectedLang) return 'bad-lang';
   }
   return null;
 }
@@ -210,10 +203,18 @@ function fmt(problems, label) {
 function main() {
   const arg = (name, def) => {
     const i = process.argv.indexOf(name);
-    return i >= 0 ? process.argv[i + 1] : def;
+    if (i >= 0) return process.argv[i + 1];
+    // Também a forma documentada `--name=value` (o full-route-audit invoca
+    // `--mode=extra` — sem este ramo corria sempre o modo default).
+    const eq = process.argv.find((a) => a.startsWith(`${name}=`));
+    return eq ? eq.slice(name.length + 1) : def;
   };
   const outDir = path.resolve(arg('--out-dir', path.join(__dirname, '..', 'out')));
   const mode = arg('--mode', 'full');
+  if (!['full', 'extra', 'missing'].includes(mode)) {
+    console.error(`❌ --mode inválido: ${mode} (use full|extra|missing)`);
+    process.exit(1);
+  }
 
   const srcRoot = path.join(__dirname, '..');
   const sitemapPath = path.join(srcRoot, 'public', 'sitemap.xml');

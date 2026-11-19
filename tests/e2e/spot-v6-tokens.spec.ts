@@ -107,6 +107,15 @@ test.describe('Spot v6 em tema claro (#459 V1)', () => {
   test('popovers das acções abrem e ficam legíveis (estilos renderizados)', async ({ page }) => {
     await temaClaro(page);
     await installSupabaseSignedIn(page);
+    // Força a gravação do alerta a falhar de forma explícita — o stub
+    // partilhado não implementa rpc; em vez de depender do TypeError da
+    // ausência, instala-se um rpc que devolve erro determinístico.
+    await page.addInitScript(() => {
+      const client = (
+        window as unknown as { __VENTU_TEST_SUPABASE_CLIENT__?: { rpc?: unknown } }
+      ).__VENTU_TEST_SUPABASE_CLIENT__;
+      if (client) client.rpc = async () => ({ data: null, error: { message: 'e2e rpc stub' } });
+    });
     await page.goto('/pt/spots/nazare/');
     const acoes = page.getByTestId('spot-acoes');
     await acoes.scrollIntoViewIfNeeded();
@@ -126,7 +135,7 @@ test.describe('Spot v6 em tema claro (#459 V1)', () => {
     await expect(alerta).toBeVisible();
     expect(await alerta.evaluate((el) => getComputedStyle(el).backgroundColor)).toBe('rgb(7, 27, 44)');
     expect(await contrasteDe(page, '.v6 .acoes .acao-alerta [role=dialog] p')).toBeGreaterThanOrEqual(4.5);
-    // o stub de teste não implementa rpc — gravar falha e o erro real aparece
+    // o rpc do stub devolve erro — gravar falha e a tinta de erro real aparece
     await alerta.getByRole('button').last().click();
     const erro = alerta.locator('p.text-score-poor');
     await expect(erro).toBeVisible();

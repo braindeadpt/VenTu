@@ -36,7 +36,8 @@ async function retryFailedSpots({ ids, run, sleep, delayMs = RETRY_PASS_DELAY_MS
         await run(id);
         recovered.add(id);
       } catch (error) {
-        log.warn(`  ✗ repetição ${pass} — ${id} falhou: ${error.message}`);
+        // `run` pode lançar strings ou erros externos — nunca assumir .message.
+        log.warn(`  ✗ repetição ${pass} — ${id} falhou: ${error?.message ?? error}`);
       }
     }
     log.log(`🔁 Repetição ${pass}/${maxPasses}: ${remaining.length} spot(s) em falha — recuperados ${recovered.size}`);
