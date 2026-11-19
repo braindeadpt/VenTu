@@ -74,7 +74,9 @@ describe('pele v6: alertas fora do azul de «Fraco» (#458)', () => {
   });
 
   it('os componentes expõem os ganchos', () => {
-    const ler = (p: string) => fs.readFileSync(path.resolve(p), 'utf8');
+    // Normaliza CRLF→LF: num checkout Windows (autocrlf) o source tem \r\n
+    // e os asserts com \n literal falham sem a conversão.
+    const ler = (p: string) => fs.readFileSync(path.resolve(p), 'utf8').replace(/\r\n/g, '\n');
     const nota = ler('src/components/ui/WindSafetyNote.tsx');
     expect(nota).toMatch(/data-alerta=\{level === 'side-offshore' \? undefined : 'perigo'\}/);
     expect(ler('src/components/ui/WarningPill.tsx')).toMatch(/data-ipma-nivel=\{warning\.level\}/);

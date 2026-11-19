@@ -16,7 +16,9 @@ const css = readFileSync(join(raiz, 'src/styles/mapa-pele-v6.css'), 'utf-8');
 const semComentarios = css.replace(/\/\*[\s\S]*?\*\//g, '');
 const regras = [...semComentarios.matchAll(/([^{}]+)\{([^{}]*)\}/g)].map((m) => ({ seletor: m[1].trim(), corpo: m[2] }));
 const regra = (s: string) => regras.find((r) => r.seletor === s);
-const ler = (f: string) => readFileSync(join(raiz, f), 'utf-8');
+// Normaliza CRLF→LF: num checkout Windows (autocrlf) o source tem \r\n e os
+// asserts com \n literal falham sem a conversão.
+const ler = (f: string) => readFileSync(join(raiz, f), 'utf-8').replace(/\r\n/g, '\n');
 
 describe('B3.5 · CSS', () => {
   it('cada regra nova está dentro da pele', () => {

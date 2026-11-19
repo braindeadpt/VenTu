@@ -9,7 +9,9 @@ import { MAP_PELE_BASE_LS_KEY, MAP_PELE_BASE_PARAM, resolveMapPeleBase } from '@
  * `?pele=v6&pelebase=v6`. Nunca no Satélite; sem a flag o /mapa não muda.
  */
 const raiz = process.cwd();
-const ler = (f: string) => readFileSync(join(raiz, f), 'utf-8');
+// Normaliza CRLF→LF: num checkout Windows (autocrlf) o source tem \r\n e os
+// asserts com \n literal falham sem a conversão.
+const ler = (f: string) => readFileSync(join(raiz, f), 'utf-8').replace(/\r\n/g, '\n');
 const hex = (c: number[]) => '#' + c.map((v) => v.toString(16).padStart(2, '0').toUpperCase()).join('');
 
 describe('B6 · tabela do filtro', () => {

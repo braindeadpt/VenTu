@@ -208,7 +208,9 @@ describe('#218 PR 5 — bake (loadSpotListings) = janelas v6, todos os spots', (
   beforeAll(() => {
     tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'pr5-janelas-'));
     fs.mkdirSync(path.join(tmp, 'public'));
-    fs.symlinkSync(FIX, path.join(tmp, 'public', 'data'), 'dir');
+    // 'junction': symlink 'dir' exige elevação no Windows; junction cobre
+    // targets absolutos sem privilégios e o tipo é ignorado em POSIX.
+    fs.symlinkSync(FIX, path.join(tmp, 'public', 'data'), 'junction');
     const cwd = vi.spyOn(process, 'cwd').mockReturnValue(tmp);
     const agora = vi.spyOn(Date, 'now').mockReturnValue(NOW);
     try {

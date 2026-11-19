@@ -7,7 +7,9 @@ import { windV6Alpha, windV6LegendStops } from '@/lib/mapWindV6';
  * #458 · fecho visual do /mapa na pele v6: selector «Vento | Ondulação | Nenhum», rampa da
  * legenda do vento, legenda do sheet mobile, cartão de 48 h no «half» e paisagem 844×390.
  */
-const ler = (f: string) => fs.readFileSync(path.resolve(f), 'utf8');
+// Normaliza CRLF→LF: num checkout Windows (autocrlf) o source tem \r\n e os
+// asserts com \n literal falham sem a conversão.
+const ler = (f: string) => fs.readFileSync(path.resolve(f), 'utf8').replace(/\r\n/g, '\n');
 const semComentarios = (s: string) => s.replace(/\/\*[\s\S]*?\*\//g, '');
 const pele = semComentarios(ler('src/styles/mapa-pele-v6.css'));
 const globais = semComentarios(ler('src/app/globals.css'));
