@@ -13,6 +13,24 @@ describe('updateConditionsHealth', () => {
     expect(coverage.spotCount).toBe(2);
   });
 
+  it('conta carry-over como falha do fetch e nomeia reaproveitados/apagados', () => {
+    const spots = [{ id: 'a' }, { id: 'b' }, { id: 'c' }];
+    const log = { warn: vi.fn() };
+    const coverage = validateCoverage(
+      spots,
+      { a: {}, b: { carriedOver: true, carriedFromFetchedAt: '2026-11-19T09:00:00Z' } },
+      log,
+      { carriedIds: new Set(['b']) },
+    );
+    expect(coverage.failedPrimary).toEqual(['b', 'c']);
+    expect(coverage.carriedPrimary).toEqual(['b']);
+    expect(coverage.droppedPrimary).toEqual(['c']);
+    expect(coverage.okPrimary).toBe(1); // b não conta como sucesso
+    expect(coverage.spotCount).toBe(2); // mas a entrada fica em conditions.json
+    expect(log.warn).toHaveBeenCalledWith(expect.stringContaining('1 reaproveitado(s)'));
+    expect(log.warn).toHaveBeenCalledWith(expect.stringContaining('1 apagado(s)'));
+  });
+
   it('asserts empty or insufficient coverage without writing', () => {
     const exit = vi.fn();
     const log = { error: vi.fn() };
