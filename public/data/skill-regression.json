@@ -1,6 +1,6 @@
 {
   "source": "forecast-skill-regression",
-  "checkedAt": "2026-11-20T06:07:20.899Z",
+  "checkedAt": "2026-11-20T08:07:05.479Z",
   "windowDays": 60,
   "recentDays": 7,
   "baselineDays": 21,
@@ -22,7 +22,7 @@
       "origin": "ih",
       "recent": {
         "snapshots": 8,
-        "rmse": 0.65625,
+        "rmse": 0.655,
         "me": 0.46125000000000005,
         "n": 578.875
       },
@@ -62,7 +62,7 @@
         "snapshots": 8,
         "rmse": 0.32375000000000004,
         "me": 0.1725,
-        "n": 543
+        "n": 543.25
       },
       "baseline": {
         "snapshots": 17,
@@ -98,8 +98,8 @@
       "origin": "ih",
       "recent": {
         "snapshots": 8,
-        "rmse": 1.07125,
-        "me": 0.8199999999999998,
+        "rmse": 1.0725,
+        "me": 0.8212499999999998,
         "n": 616.5
       },
       "baseline": {
@@ -154,7 +154,7 @@
       "name": "Nazaré Costeira (WMO)",
       "recent": {
         "snapshots": 8,
-        "rmse": 0.34,
+        "rmse": 0.34125,
         "me": 0.0375,
         "n": 473.25
       },
@@ -164,7 +164,7 @@
         "me": 0.1304761904761904,
         "n": 505.1904761904762
       },
-      "rmseDelta": 0,
+      "rmseDelta": 0.01,
       "meAbsDelta": -0.09,
       "verdict": "ok"
     }
@@ -200,8 +200,8 @@
       "name": "IH (Datawell)",
       "recent": {
         "days": 8,
-        "n": 2971.75,
-        "me": 0.26757255825691934
+        "n": 2972,
+        "me": 0.2678209118438762
       },
       "baseline": {
         "days": 21,
