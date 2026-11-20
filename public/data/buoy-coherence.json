@@ -1,6 +1,6 @@
 {
   "day": "20261120",
-  "fetchedAt": "2026-11-20T12:07:07.042Z",
+  "fetchedAt": "2026-11-20T14:06:43.330Z",
   "minPairs": 3,
   "minAccumulatedPairs": 10,
   "archive": {
@@ -15,11 +15,11 @@
       "6200084|6200199": {
         "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
         "coherent": 26,
-        "review": 8,
-        "incoherent": 3,
+        "review": 9,
+        "incoherent": 2,
         "insufficient": 39,
         "days": 76,
-        "incoherentRatio": 0.081
+        "incoherentRatio": 0.054
       },
       "6200083|6201079": {
         "pair": "Villano-Sisargas × Datawell ao largo de Faro",
@@ -476,6 +476,30 @@
       "suboptimalRefs": 0,
       "suboptimal": []
     },
+    "Caldas da Rainha": {
+      "spotCount": 1,
+      "withObservedWave": 1,
+      "bySource": {
+        "wmo-buoy": 1
+      },
+      "audited": 1,
+      "attachedIsClosest": 0,
+      "attachedNotClosest": 1,
+      "onlySource": 0,
+      "notClosest": [
+        {
+          "spot": "foz-arelho-beach",
+          "winner": "wmo-buoy",
+          "reason": "wmo-only",
+          "attachedKm": 15,
+          "altKm": 0
+        }
+      ],
+      "calibrated": 0,
+      "calibrationRefs": {},
+      "suboptimalRefs": 0,
+      "suboptimal": []
+    },
     "Peniche": {
       "spotCount": 8,
       "withObservedWave": 8,
@@ -488,6 +512,13 @@
       "onlySource": 0,
       "notClosest": [
         {
+          "spot": "almagreira",
+          "winner": "wmo-buoy",
+          "reason": "wmo-only",
+          "attachedKm": 22,
+          "altKm": 0
+        },
+        {
           "spot": "lagide",
           "winner": "wmo-buoy",
           "reason": "wmo-only",
@@ -499,6 +530,13 @@
           "winner": "wmo-buoy",
           "reason": "wmo-only",
           "attachedKm": 24,
+          "altKm": 0
+        },
+        {
+          "spot": "baleal-sul",
+          "winner": "wmo-buoy",
+          "reason": "wmo-only",
+          "attachedKm": 25,
           "altKm": 0
         },
         {
@@ -528,22 +566,22 @@
           "reason": "wmo-only",
           "attachedKm": 29,
           "altKm": 0
-        },
-        {
-          "spot": "almagreira",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 22,
-          "altKm": 0
-        },
-        {
-          "spot": "baleal-sul",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 25,
-          "altKm": 0
         }
       ],
+      "calibrated": 0,
+      "calibrationRefs": {},
+      "suboptimalRefs": 0,
+      "suboptimal": []
+    },
+    "Torres Vedras": {
+      "spotCount": 3,
+      "withObservedWave": 0,
+      "bySource": {},
+      "audited": 0,
+      "attachedIsClosest": 0,
+      "attachedNotClosest": 0,
+      "onlySource": 0,
+      "notClosest": [],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -1148,20 +1186,6 @@
       "suboptimalRefs": 0,
       "suboptimal": []
     },
-    "Torres Vedras": {
-      "spotCount": 3,
-      "withObservedWave": 0,
-      "bySource": {},
-      "audited": 0,
-      "attachedIsClosest": 0,
-      "attachedNotClosest": 0,
-      "onlySource": 0,
-      "notClosest": [],
-      "calibrated": 0,
-      "calibrationRefs": {},
-      "suboptimalRefs": 0,
-      "suboptimal": []
-    },
     "Lourinhã": {
       "spotCount": 1,
       "withObservedWave": 1,
@@ -1251,33 +1275,9 @@
       "calibrationRefs": {},
       "suboptimalRefs": 0,
       "suboptimal": []
-    },
-    "Caldas da Rainha": {
-      "spotCount": 1,
-      "withObservedWave": 1,
-      "bySource": {
-        "wmo-buoy": 1
-      },
-      "audited": 1,
-      "attachedIsClosest": 0,
-      "attachedNotClosest": 1,
-      "onlySource": 0,
-      "notClosest": [
-        {
-          "spot": "foz-arelho-beach",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 15,
-          "altKm": 0
-        }
-      ],
-      "calibrated": 0,
-      "calibrationRefs": {},
-      "suboptimalRefs": 0,
-      "suboptimal": []
     }
   },
-  "regionsAuditedAt": "2026-11-20T12:27:07.553Z",
+  "regionsAuditedAt": "2026-11-20T14:09:38.408Z",
   "pairs": [
     {
       "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
@@ -1293,8 +1293,8 @@
       "maxAbsDeltaM": 2.8,
       "corr": 0.89,
       "verdict": "coherent",
-      "firstHour": "2026-10-21T13",
-      "lastHour": "2026-11-20T10",
+      "firstHour": "2026-10-21T15",
+      "lastHour": "2026-11-20T12",
       "hours": [
         {
           "6200084": 5.630000114440918,
@@ -1350,6 +1350,16 @@
           "6200084": 3.869999885559082,
           "6200199": 3.676759958267212,
           "hour": "2026-11-20T10"
+        },
+        {
+          "6200084": 4.449999809265137,
+          "6200199": 3.75,
+          "hour": "2026-11-20T11"
+        },
+        {
+          "6200084": 3.9800000190734863,
+          "6200199": 4.160160064697266,
+          "hour": "2026-11-20T12"
         }
       ]
     }
