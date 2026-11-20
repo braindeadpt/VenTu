@@ -1,30 +1,74 @@
 {
-  "date": "2026-11-19",
-  "generatedAt": "2026-11-19T04:37:31.358Z",
-  "topSpot": "Nazaré",
-  "topSpotSlug": "nazare",
+  "date": "2026-11-20",
+  "generatedAt": "2026-11-20T04:36:58.961Z",
+  "topSpot": "Guincho",
+  "topSpotSlug": "guincho",
   "pt": {
-    "headline": "Hoje é dia de Nazaré! 🌊",
-    "advice": "Melhor janela: 8:00h. Ondas de 5.6m com 9 nós de vento. ⚠️ Mar perigoso — agitação marítima (laranja)",
-    "bestTime": "8:00",
+    "headline": "Hoje é dia de Guincho! 🌊",
+    "advice": "Melhor janela: 11:00h. Ondas de 3.5m com 5 nós de vento. ⚓ Avisos à Navegação Costeiros (IH): ANAV NR 1445/26 — Animais Marinhos - Interação · ANAV NR 1727/26 — Animais Marinhos - Avistamento ⚠️ Mar perigoso — agitação marítima (amarelo)",
+    "bestTime": "11:00",
     "wetsuit": "3/2mm",
     "crowdTip": "Chega cedo para evitar crowd!",
-    "moonTideLine": "Gibosa crescente · Marés mortas · baixa-mar 16:00"
+    "moonTideLine": "Gibosa crescente · Marés mortas · baixa-mar 17:00"
   },
   "en": {
-    "headline": "Today is Nazaré day! 🌊",
-    "advice": "Best window: 8:00. 5.6m waves with 9 knot wind. ⚠️ Dangerous sea — sea state warning (orange)",
-    "bestTime": "8:00",
+    "headline": "Today is Guincho day! 🌊",
+    "advice": "Best window: 11:00. 3.5m waves with 5 knot wind. ⚓ Coastal navigation warnings (IH): ANAV NR 1445/26 — Animais Marinhos - Interação · ANAV NR 1727/26 — Animais Marinhos - Avistamento ⚠️ Dangerous sea — sea state warning (yellow)",
+    "bestTime": "11:00",
     "wetsuit": "3/2mm",
     "crowdTip": "Get there early to beat the crowd!",
-    "moonTideLine": "Waxing gibbous · Neap tides · low tide 16:00"
+    "moonTideLine": "Waxing gibbous · Neap tides · low tide 17:00"
   },
   "spots": [
     {
+      "name": "Guincho",
+      "slug": "guincho",
+      "score": 80,
+      "scoreForecast": 80,
+      "scoreSource": "previsão",
+      "scoreMeta": null,
+      "verdict": "go",
+      "ptReason": "Condições excelentes",
+      "enReason": "Excellent conditions"
+    },
+    {
+      "name": "Carcavelos",
+      "slug": "carcavelos",
+      "score": 70,
+      "scoreForecast": 70,
+      "scoreSource": "previsão",
+      "scoreMeta": null,
+      "verdict": "go",
+      "ptReason": "Condições excelentes",
+      "enReason": "Excellent conditions"
+    },
+    {
+      "name": "Supertubos",
+      "slug": "supertubos",
+      "score": 60,
+      "scoreForecast": 60,
+      "scoreSource": "previsão",
+      "scoreMeta": null,
+      "verdict": "maybe",
+      "ptReason": "Condições razoáveis",
+      "enReason": "Fair conditions"
+    },
+    {
       "name": "Nazaré",
       "slug": "nazare",
-      "score": 50,
-      "scoreForecast": 50,
+      "score": 60,
+      "scoreForecast": 60,
+      "scoreSource": "previsão",
+      "scoreMeta": null,
+      "verdict": "maybe",
+      "ptReason": "Condições razoáveis",
+      "enReason": "Fair conditions"
+    },
+    {
+      "name": "Ribeira d'Ilhas",
+      "slug": "ribeira-ilhas",
+      "score": 60,
+      "scoreForecast": 60,
       "scoreSource": "previsão",
       "scoreMeta": null,
       "verdict": "maybe",
@@ -34,8 +78,8 @@
     {
       "name": "Arrifana",
       "slug": "arrifana",
-      "score": 50,
-      "scoreForecast": 50,
+      "score": 60,
+      "scoreForecast": 60,
       "scoreSource": "previsão",
       "scoreMeta": null,
       "verdict": "maybe",
@@ -43,54 +87,10 @@
       "enReason": "Fair conditions"
     },
     {
-      "name": "Guincho",
-      "slug": "guincho",
-      "score": 40,
-      "scoreForecast": 40,
-      "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "skip",
-      "ptReason": "Não vale a pena",
-      "enReason": "Not worth it"
-    },
-    {
-      "name": "Ribeira d'Ilhas",
-      "slug": "ribeira-ilhas",
-      "score": 40,
-      "scoreForecast": 40,
-      "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "skip",
-      "ptReason": "Não vale a pena",
-      "enReason": "Not worth it"
-    },
-    {
-      "name": "Carcavelos",
-      "slug": "carcavelos",
-      "score": 30,
-      "scoreForecast": 30,
-      "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "skip",
-      "ptReason": "Não vale a pena",
-      "enReason": "Not worth it"
-    },
-    {
-      "name": "Supertubos",
-      "slug": "supertubos",
-      "score": 20,
-      "scoreForecast": 20,
-      "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "skip",
-      "ptReason": "Não vale a pena",
-      "enReason": "Not worth it"
-    },
-    {
       "name": "Coxos",
       "slug": "coxos",
-      "score": 20,
-      "scoreForecast": 20,
+      "score": 40,
+      "scoreForecast": 40,
       "scoreSource": "previsão",
       "scoreMeta": null,
       "verdict": "skip",
@@ -98,8 +98,8 @@
       "enReason": "Not worth it"
     }
   ],
-  "topScore": 50,
-  "topScoreForecast": 50,
+  "topScore": 80,
+  "topScoreForecast": 80,
   "topScoreSource": "previsão",
   "topScoreMeta": null
 }

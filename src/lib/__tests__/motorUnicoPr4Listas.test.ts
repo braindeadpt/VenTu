@@ -59,7 +59,9 @@ let bake: SpotListingData[] = [];
 beforeAll(() => {
   tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'pr4-listas-'));
   fs.mkdirSync(path.join(tmp, 'public'));
-  fs.symlinkSync(FIX, path.join(tmp, 'public', 'data'), 'dir');
+  // 'junction': symlink 'dir' exige elevação no Windows; junction cobre
+  // targets absolutos sem privilégios e o tipo é ignorado em POSIX.
+  fs.symlinkSync(FIX, path.join(tmp, 'public', 'data'), 'junction');
   const cwd = vi.spyOn(process, 'cwd').mockReturnValue(tmp);
   try {
     bake = loadSpotListings();

@@ -11,7 +11,9 @@ import { initialSwellState } from '@/components/spots/map/hooks/useMapSwellField
  * (4) scrubber escondido com o sheet «open» no mobile; alvos de 44 px; sem spinner.
  */
 const raiz = process.cwd();
-const ler = (p: string) => readFileSync(join(raiz, p), 'utf-8');
+// Normaliza CRLF→LF: num checkout Windows (autocrlf) o source tem \r\n e os
+// asserts com \n literal falham sem a conversão.
+const ler = (p: string) => readFileSync(join(raiz, p), 'utf-8').replace(/\r\n/g, '\n');
 
 describe('#458 — deep link ?wind contra a pref da «Ondulação»', () => {
   it('?swell=1 liga sempre', () => {

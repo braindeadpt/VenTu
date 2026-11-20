@@ -82,7 +82,9 @@ beforeAll(() => {
   // o bake lê public/data do cwd: aponta-o para a fixture
   tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'agora-v6-'));
   fs.mkdirSync(path.join(tmp, 'public'));
-  fs.symlinkSync(FIX, path.join(tmp, 'public', 'data'), 'dir');
+  // 'junction': symlink 'dir' exige elevação no Windows; junction cobre
+  // targets absolutos sem privilégios e o tipo é ignorado em POSIX.
+  fs.symlinkSync(FIX, path.join(tmp, 'public', 'data'), 'junction');
   const bias = loadWaveBiasRegionsBuild(null, path.join(FIX, 'wave-bias.json'));
   const cwd = vi.spyOn(process, 'cwd').mockReturnValue(tmp);
   try {
