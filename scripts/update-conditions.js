@@ -238,11 +238,15 @@ async function updateConditions() {
   // concluía sucesso e o ciclo de tentativas do workflow nunca corria. Aqui
   // espera-se RETRY_PASS_DELAY_MS e repete-se SÓ os falhados (mesmos args,
   // mesmo `usage`, mesmo intervalo), máx. 2 passagens. O que ficar por
-  // recuperar cai no carry-over/coverage como antes.
+  // recuperar cai no carry-over/coverage como antes. Acima de
+  // MAX_RETRY_FAILED_SHARE dos primários é falha generalizada — a repetição
+  // salta-se e deixa o ciclo de tentativas do workflow tratar dela.
   if (failedSpotIds.length > 0) {
     const spotById = new Map(spots.map((spot) => [spot.id, spot]));
+    const totalPrimarios = spots.filter((spot) => !spot.conditionsSource).length;
     const stillFailing = await retryFailedSpots({
       ids: failedSpotIds,
+      totalPrimarios,
       run: (id) => {
         const spot = spotById.get(id);
         // Invariante: failedSpotIds só recebe ids de `spots` — se falhar,
