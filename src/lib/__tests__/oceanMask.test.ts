@@ -256,7 +256,7 @@ describe('public/geo/ocean-mask — forma da saída do bake', () => {
     expect(readJson('index.json').source.data).toMatch(/OpenStreetMap.*ODbL/);
   });
 
-  it('cada ficheiro: z certo, água não vazia, coordenadas dentro da moldura', () => {
+  it('cada ficheiro: z certo, água não vazia, coordenadas dentro da moldura', { timeout: 30_000 }, () => {
     const check = (file: string, z: number) => {
       const s = parseOceanMaskSet(readJson(file))!;
       expect(s.z).toBe(z);

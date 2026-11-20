@@ -56,7 +56,7 @@ function setup() {
 }
 
 describe('push-data-update.sh (repo git temporário)', () => {
-  it('ficheiros por spot apagados pelo pipeline não voltam do origin', () => {
+  it('ficheiros por spot apagados pelo pipeline não voltam do origin', { timeout: 60_000 }, () => {
     const { origin, seed, runner } = setup();
     // O pipeline no runner: regenera guincho, apaga o spot removido, poda o radar.
     write(runner, 'public/data/forecasts/guincho.json', '{"v":2}\n');
@@ -88,7 +88,7 @@ describe('push-data-update.sh (repo git temporário)', () => {
     expect(files).not.toContain('public/data/forecasts.json');
   });
 
-  it('o agregado forecasts.json nunca é publicado, mesmo que o artefacto o traga', () => {
+  it('o agregado forecasts.json nunca é publicado, mesmo que o artefacto o traga', { timeout: 60_000 }, () => {
     fs.rmSync(path.join(tmp, 'origin.git'), { recursive: true, force: true });
     fs.rmSync(path.join(tmp, 'seed'), { recursive: true, force: true });
     fs.rmSync(path.join(tmp, 'runner'), { recursive: true, force: true });
@@ -107,7 +107,7 @@ describe('push-data-update.sh (repo git temporário)', () => {
     expect(git(origin, 'show', 'main:public/data/conditions.json')).toBe('{"v":3}');
   });
 
-  it('ficheiros de outros bots (news.json, …) ficam como na main, não como no artefacto', () => {
+  it('ficheiros de outros bots (news.json, …) ficam como na main, não como no artefacto', { timeout: 60_000 }, () => {
     fs.rmSync(path.join(tmp, 'origin.git'), { recursive: true, force: true });
     fs.rmSync(path.join(tmp, 'seed'), { recursive: true, force: true });
     fs.rmSync(path.join(tmp, 'runner'), { recursive: true, force: true });

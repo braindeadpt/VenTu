@@ -5,7 +5,9 @@ import { MAP_PELE_CABECALHO_ATTR, marcarCabecalho } from '@/lib/mapPeleCabecalho
 import { V6_UI } from '@/lib/v6Tokens';
 
 /** Fase B do /mapa, B8: cabeçalho do site em tokens v6 + atribuição, só com `?pele=v6`. */
-const ler = (f: string) => readFileSync(join(process.cwd(), f), 'utf-8');
+// Normaliza CRLF→LF: num checkout Windows (autocrlf) o source tem \r\n e os
+// asserts com \n literal falham sem a conversão.
+const ler = (f: string) => readFileSync(join(process.cwd(), f), 'utf-8').replace(/\r\n/g, '\n');
 
 function fakeDoc(temCabecalho = true) {
   const attrs = new Map<string, string>();

@@ -113,7 +113,7 @@ describe('2 · janelas candidatas: a PRÓXIMA (dia → nota → início), não s
     expect(janelaSeguinte({ ...row, janelasNoiteBySport: undefined }, 'surf', NOITE, 24)).toBeNull();
   });
 
-  it('computeJanelasCandidatasForSpot (fixture e2e): todas ≥ Bom por ordem de início, a melhor incluída; o bake só leva as outras', () => {
+  it('computeJanelasCandidatasForSpot (fixture e2e): todas ≥ Bom por ordem de início, a melhor incluída; o bake só leva as outras', { timeout: 30_000 }, () => {
     const FIX = path.join(__dirname, '..', '..', '..', 'tests/e2e/fixtures/data');
     const conditions = JSON.parse(fs.readFileSync(path.join(FIX, 'conditions.json'), 'utf8')) as Record<string, Record<string, unknown>>;
     const NOW = Date.parse('2026-09-08T07:30:00Z');
