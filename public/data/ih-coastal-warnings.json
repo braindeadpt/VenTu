@@ -131,38 +131,6 @@
       ]
     },
     {
-      "id": 19205,
-      "ref": "ANAV NR 2546/26",
-      "category": "Requisitos de segurança maritima",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=5b099d80-e825-490f-9810-31252b40de18",
-      "source": "ih",
-      "collection": "nav_warning_coastal",
-      "polygons": [
-        [
-          [
-            -9.118629,
-            37.444335
-          ],
-          [
-            -8.751641,
-            37.444335
-          ],
-          [
-            -8.751641,
-            38.175862
-          ],
-          [
-            -9.118629,
-            38.175862
-          ],
-          [
-            -9.118629,
-            37.444335
-          ]
-        ]
-      ]
-    },
-    {
       "id": 19223,
       "ref": "ANAV NR 2555/26",
       "category": "Exercicios navais ou exercicios de tiro",
@@ -7708,33 +7676,6 @@
     "carvalhal-comporta": [
       2017849
     ],
-    "melides": [
-      19205
-    ],
-    "sao-torpes": [
-      19205
-    ],
-    "vale-figueiros-sines": [
-      19205
-    ],
-    "porto-covo": [
-      19205
-    ],
-    "malhao": [
-      19205
-    ],
-    "vila-nova-milfontes": [
-      19205
-    ],
-    "alteirinhos": [
-      19205
-    ],
-    "zambujeira": [
-      19205
-    ],
-    "carvalhal": [
-      19205
-    ],
     "amoreira": [
       2017815
     ],
@@ -8003,15 +7944,6 @@
       2018749,
       2018769
     ],
-    "lagoa-santo-andre": [
-      19205
-    ],
-    "lagoa-sancha": [
-      19205
-    ],
-    "pessegueiro": [
-      19205
-    ],
     "falesia": [
       2018203,
       2018205
@@ -8086,7 +8018,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-11-20T08:07:07.089Z",
+  "fetchedAt": "2026-11-20T10:07:17.480Z",
   "sourceCollection": "nav_warning_coastal+nav_warning_local+orca_anavnet_point",
   "sourceUrl": "https://ogcapi.hidrografico.pt/collections/nav_warning_coastal"
 }
