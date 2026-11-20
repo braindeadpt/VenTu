@@ -50,6 +50,10 @@ export interface MarineConditionsFields {
   /** Regional bias meta — baked pela pipeline (VENTU_WAVE_BIAS_CORRECTION=1)
    *  ou aplicado em runtime pelo fallback client-side (`fallback: true`). */
   waveBias?: { region: string; me: number; n: number; deltaM: number; fallback?: boolean };
+  /** Carry-over da pipeline: o fetch da run falhou — dados reaproveitados do
+   *  run anterior; `updatedAt` é o instante do fetch original. */
+  carriedOver?: boolean;
+  carriedFromFetchedAt?: string;
 }
 
 const MARINE_DISPLAY_KEYS = [

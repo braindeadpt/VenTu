@@ -28,6 +28,10 @@ export interface PrecomputedConditions {
     currentMeasuredNetwork?: string;
     waterQuality?: WaterQualityLive;
     updatedAt: string;
+    /** Carry-over da pipeline: o fetch desta run falhou — entrada reaproveitada do run anterior. */
+    carriedOver?: boolean;
+    /** Instante do fetch original reaproveitado (= `updatedAt` quando carriedOver). */
+    carriedFromFetchedAt?: string;
     confidence?: 'alta' | 'média' | 'baixa';
     confidenceDetail?: {
       waveSpread: number;

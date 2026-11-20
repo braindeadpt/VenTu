@@ -101,4 +101,20 @@ describe('fixHtmlLangPerLocale', () => {
 
     expect(readOut(out, 'fr/index.html')).toBe(correct);
   });
+
+  it('never descends into Next internals (__next.* payload dirs, _next assets)', () => {
+    const html = (lang) => `<html lang="${lang}"><body>x</body></html>`;
+    const out = makeOut({
+      'en/_next/static/chunks/page.html': html('pt-PT'),
+      'en/mapa/__next.$d$locale/index.html': html('pt-PT'),
+      'en/mapa/index.html': html('pt-PT'),
+    });
+
+    fixHtmlLangPerLocale(out);
+
+    expect(readOut(out, 'en/mapa/index.html')).toBe(html('en'));
+    // Payload/asset trees are not pages: untouched even if they contain .html.
+    expect(readOut(out, 'en/_next/static/chunks/page.html')).toBe(html('pt-PT'));
+    expect(readOut(out, 'en/mapa/__next.$d$locale/index.html')).toBe(html('pt-PT'));
+  });
 });

@@ -44,6 +44,7 @@ const { readJsonIfExists, atomicWriteJson, ensureParentDir } = require('./lib/up
 const { createUpdateConditionsFetcher } = require('./lib/updateConditionsFetch');
 const { validateCoverage, assertCoverage, buildPipelineLayers } = require('./lib/updateConditionsHealth');
 const { applyCarryOver } = require('./lib/updateConditionsCarryover');
+const { retryFailedSpots, MAX_RETRY_PASSES } = require('./lib/updateConditionsRetryPass');
 const { processSpot } = require('./lib/updateConditionsPerSpot');
 
 function resolveUseMultiModel() {
@@ -203,32 +204,66 @@ async function updateConditions() {
   if (waveBiasEnabled && waveBias) console.log(`📏 Wave bias loaded (${Object.keys(waveBias.regions ?? {}).length} regions)\n`);
   const aliasSpots = spots.filter((spot) => spot.conditionsSource);
   const usage = createUsageCounter();
+  const processPrimarySpot = async (spot) => {
+    const result = await processSpot(spot, {
+      useMultiModel, previousConditions, ihTides, tideBaseline, waveBias, waveBiasEnabled, usage,
+      fetchers: { fetchMarineData, fetchWeatherData, fetchMarineWaveModels, fetchWindModels },
+      findCurrentHourIndex, confidenceAtIndex, confidenceByDay, blendWindAtIndex, readModelMap,
+      applyWindBlendToHours, waveModels: WAVE_MODELS, windModels: WIND_MODELS, isFreshIhObservation,
+      getCurrentConditions, onStaleIhTide: () => { ihSkippedStale += 1; },
+      modelHealthRun, modelHealth: { mergeCounts, countModelSlots, HEALTH_FAMILIES },
+    });
+    allConditions[spot.id] = result.conditions;
+    allForecasts[spot.id] = result.forecast;
+    if (result.ensembleHours > 0) {
+      ensembleRun.spots += 1;
+      ensembleRun.hours += result.ensembleHours;
+    }
+    usage.spotsFetched += 1;
+    await sleep(MIN_REQUEST_INTERVAL);
+  };
+  const failedSpotIds = [];
   for (const spot of spots) {
     if (spot.conditionsSource) continue;
     try {
-      const result = await processSpot(spot, {
-        useMultiModel, previousConditions, ihTides, tideBaseline, waveBias, waveBiasEnabled, usage,
-        fetchers: { fetchMarineData, fetchWeatherData, fetchMarineWaveModels, fetchWindModels },
-        findCurrentHourIndex, confidenceAtIndex, confidenceByDay, blendWindAtIndex, readModelMap,
-        applyWindBlendToHours, waveModels: WAVE_MODELS, windModels: WIND_MODELS, isFreshIhObservation,
-        getCurrentConditions, onStaleIhTide: () => { ihSkippedStale += 1; },
-        modelHealthRun, modelHealth: { mergeCounts, countModelSlots, HEALTH_FAMILIES },
-      });
-      allConditions[spot.id] = result.conditions;
-      allForecasts[spot.id] = result.forecast;
-      if (result.ensembleHours > 0) {
-        ensembleRun.spots += 1;
-        ensembleRun.hours += result.ensembleHours;
-      }
-      usage.spotsFetched += 1;
-      await sleep(MIN_REQUEST_INTERVAL);
+      await processPrimarySpot(spot);
     } catch (error) {
-      console.error(`  ✗ ${spot.id} failed:`, error.message);
+      console.error(`  ✗ ${spot.id} failed:`, error?.message ?? error);
+      failedSpotIds.push(spot.id);
+    }
+  }
+  // Repetição de fim de run (incidente 2026-11-19): um outage de rede de
+  // ~4 minutos ultrapassa o fetchWithRetry (~4 s por pedido) e derrubava um
+  // bloco contíguo do catálogo — 8/189 ficava abaixo do gate de 5 %, a run
+  // concluía sucesso e o ciclo de tentativas do workflow nunca corria. Aqui
+  // espera-se RETRY_PASS_DELAY_MS e repete-se SÓ os falhados (mesmos args,
+  // mesmo `usage`, mesmo intervalo), máx. 2 passagens. O que ficar por
+  // recuperar cai no carry-over/coverage como antes. Acima de
+  // MAX_RETRY_FAILED_SHARE dos primários é falha generalizada — a repetição
+  // salta-se e deixa o ciclo de tentativas do workflow tratar dela.
+  if (failedSpotIds.length > 0) {
+    const spotById = new Map(spots.map((spot) => [spot.id, spot]));
+    const totalPrimarios = spots.filter((spot) => !spot.conditionsSource).length;
+    const stillFailing = await retryFailedSpots({
+      ids: failedSpotIds,
+      totalPrimarios,
+      run: (id) => {
+        const spot = spotById.get(id);
+        // Invariante: failedSpotIds só recebe ids de `spots` — se falhar,
+        // a culpa é do wiring, não do provider.
+        if (!spot) return Promise.reject(new Error(`spot desconhecido na repetição: ${id}`));
+        return processPrimarySpot(spot);
+      },
+      sleep,
+      maxPasses: MAX_RETRY_PASSES,
+    });
+    if (stillFailing.length > 0) {
+      console.warn(`⚠️ ${stillFailing.length} spot(s) em falha após ${MAX_RETRY_PASSES} repetições — o carry-over/coverage tratam deles`);
     }
   }
   // Carry-over (incidente 2026-11-19): um spot do catálogo cujo fetch falhou
   // reaproveita o forecasts/<id>.json + a entrada de conditions.json do run
-  // anterior — mas só se fresco (≤12h) e ainda a cobrir horas futuras. Antes
+  // anterior — mas só se fresco (≤3h) e ainda a cobrir horas futuras. Antes
   // de applyAliasSpots para os aliases herdarem a entrada; antes das escritas
   // para o validador forecasts.splitFiles (chaves ⇔ ficheiros) ficar
   // consistente. O gate de coverage conta-os como falha, não como sucesso.

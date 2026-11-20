@@ -24,6 +24,7 @@
  */
 const fs = require('fs');
 const path = require('path');
+const { LANG_BY_LOCALE, fixHtmlLang } = require('./lib/htmlLang');
 
 const OUT_DIR = path.join(__dirname, '..', 'out');
 
@@ -91,29 +92,12 @@ async function main() {
  * page under each locale directory — not just the locale index — so it is
  * correct server-side for crawlers and no-JS users (issue #457).
  */
-const LANG_BY_LOCALE = { pt: 'pt-PT', en: 'en', es: 'es', de: 'de', fr: 'fr' };
-
-/**
- * Rewrite the lang attribute of the first <html ...> tag to `lang`, touching
- * nothing else in the file. Whitespace is required before `lang`, so an
- * xml:lang attribute can never be rewritten by mistake, and the replacement
- * keeps the tag byte-identical apart from the attribute value. Returns the
- * input unchanged when the tag already carries the right lang (or has none).
- */
-function fixHtmlLang(html, lang) {
-  // No "already correct" fast-path on the raw file: a body containing
-  // lang="<target>" (e.g. a hreflang alternate link) must not skip a page
-  // whose <html> tag still says pt-PT. The regex is idempotent — a correct
-  // tag rewrites to the identical string and the caller skips the write.
-  return html.replace(/<html([^>]*?\s)lang="[^"]*"/, `<html$1lang="${lang}"`);
-}
-
 function fixHtmlLangPerLocale(outDir = OUT_DIR) {
   let fixed = 0;
   for (const locale of Object.keys(LANG_BY_LOCALE)) {
     const localeDir = path.join(outDir, locale);
     if (!fs.existsSync(localeDir)) continue;
-    for (const file of walkFiles(localeDir)) {
+    for (const file of walkFiles(localeDir, isInternalDir)) {
       if (!file.endsWith('.html')) continue;
       const html = fs.readFileSync(file, 'utf8');
       const fixedHtml = fixHtmlLang(html, LANG_BY_LOCALE[locale]);
@@ -126,11 +110,17 @@ function fixHtmlLangPerLocale(outDir = OUT_DIR) {
   console.log(`fixup-next-segment-paths: set <html lang> in ${fixed} baked page(s)`);
 }
 
-function* walkFiles(dir) {
+/** Next internals inside a route dir: payload dirs (__next.*) and chunk
+ * assets (_next). Neither can hold a baked page — skip them on walks that
+ * are only interested in *.html. */
+const isInternalDir = (name) => name.startsWith('__next.') || name.startsWith('_next');
+
+function* walkFiles(dir, skipDir = () => false) {
   for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
     const full = path.join(dir, e.name);
-    if (e.isDirectory()) yield* walkFiles(full);
-    else yield full;
+    if (e.isDirectory()) {
+      if (!skipDir(e.name)) yield* walkFiles(full, skipDir);
+    } else yield full;
   }
 }
 
