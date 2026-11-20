@@ -120,6 +120,20 @@ export function parseLandingSlug(slug: string): { sport: GridSportFilter; region
   return { sport: landing.sport, region: landing.region }
 }
 
+/**
+ * Preposição + artigo PT por região: «no Algarve», «nos Açores», «na Madeira»,
+ * «em Lisboa». O modelo PT tem `{em}`; os outros locales não o usam.
+ */
+export const PT_REGION_EM: Record<Exclude<MacroRegion, 'Todos'>, string> = {
+  Norte: 'no',
+  Centro: 'no',
+  Lisboa: 'em',
+  Alentejo: 'no',
+  Algarve: 'no',
+  Açores: 'nos',
+  Madeira: 'na',
+}
+
 export function landingTitle(landing: SeoLanding, locale: string): string {
   const t = getTranslation(locale).seoLandings
   const sport = localizedText(SPORT_LABELS[landing.sport], locale)
@@ -127,7 +141,8 @@ export function landingTitle(landing: SeoLanding, locale: string): string {
     return t.inPortugal.replace('{sport}', sport)
   }
   const region = regionLabel(landing.region, locale)
-  return t.inRegion.replace('{sport}', sport).replace('{region}', region)
+  const em = landing.region === 'Todos' ? 'em' : PT_REGION_EM[landing.region]
+  return t.inRegion.replace('{sport}', sport).replace('{em}', em).replace('{region}', region)
 }
 
 export function landingDescription(landing: SeoLanding, locale: string): string {

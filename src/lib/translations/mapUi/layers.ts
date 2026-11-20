@@ -33,6 +33,8 @@ export const mapUiLayers = {
     rasterCapToast: '{layer} — camada desligada para manter o mapa fluido',
     // Sufixo de estado nas descrições (camada sem dados)
     unavailable: 'indisponível',
+    // Carta náutica com os tiles OpenSeaMap em baixo (isóbatas/batimetria continuam)
+    seamarksDown: 'Sinalização náutica indisponível de momento',
     // Chips de salto de área (acção exposta pela M5; UI da M3)
     areaContinent: 'Continente',
     areaAzores: 'Açores',
@@ -79,6 +81,7 @@ export const mapUiLayers = {
     basemapSatelliteDesc: 'Satellite imagery — Esri',
     rasterCapToast: '{layer} — layer turned off to keep the map fluid',
     unavailable: 'unavailable',
+    seamarksDown: 'Nautical marks temporarily unavailable',
     areaContinent: 'Mainland',
     areaAzores: 'Azores',
     areaMadeira: 'Madeira',
@@ -123,6 +126,7 @@ export const mapUiLayers = {
     basemapSatelliteDesc: 'Imágenes de satélite — Esri',
     rasterCapToast: '{layer} — capa desactivada para mantener el mapa fluido',
     unavailable: 'no disponible',
+    seamarksDown: 'Señalización náutica no disponible por ahora',
     areaContinent: 'Continente',
     areaAzores: 'Azores',
     areaMadeira: 'Madeira',
@@ -167,6 +171,7 @@ export const mapUiLayers = {
     basemapSatelliteDesc: 'Satellitenbilder — Esri',
     rasterCapToast: '{layer} — Ebene deaktiviert, damit die Karte flüssig bleibt',
     unavailable: 'nicht verfügbar',
+    seamarksDown: 'Seezeichen vorübergehend nicht verfügbar',
     areaContinent: 'Festland',
     areaAzores: 'Azoren',
     areaMadeira: 'Madeira',
@@ -211,6 +216,7 @@ export const mapUiLayers = {
     basemapSatelliteDesc: 'Images satellite — Esri',
     rasterCapToast: '{layer} — couche désactivée pour garder la carte fluide',
     unavailable: 'indisponible',
+    seamarksDown: 'Balisage nautique momentanément indisponible',
     areaContinent: 'Continent',
     areaAzores: 'Açores',
     areaMadeira: 'Madère',

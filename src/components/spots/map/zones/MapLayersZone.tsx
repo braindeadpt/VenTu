@@ -258,7 +258,7 @@ export function useMapLayersFields({
     radarEnabled, radarLabel, radarHint, radarUnavailable, toggleRadar,
     hoursFile, hoursLive, hoursFrame, hoursOn, hoursUnavailable, toggleHours,
     buoysEnabled, toggleBuoys,
-    nauticalChartEnabled, isobathsData, toggleNauticalChart,
+    nauticalChartEnabled, isobathsData, toggleNauticalChart, seamarksUnavailable,
     goesIrEnabled, toggleGoesIr,
     stormsEnabled, stormsUnavailable, toggleStorms,
     warnAreasEnabled, warnAreasUnavailable, toggleWarnAreas,
@@ -569,7 +569,12 @@ export function useMapLayersFields({
       key: 'nauticalChart',
       group: 'nav',
       label: lyr.layerNauticalChart,
-      hint: layerCopy.nauticalChartHint,
+      hint: nauticalChartEnabled && seamarksUnavailable
+        ? `${layerCopy.nauticalChartHint} — ${lyr.seamarksDown}`
+        : layerCopy.nauticalChartHint,
+      // OpenSeaMap em baixo: a linha diz-o (as isóbatas e a batimetria
+      // locais continuam a pintar, por isso a camada não fica desactivada).
+      ...(nauticalChartEnabled && seamarksUnavailable ? { description: lyr.seamarksDown } : {}),
       icon: <Sailboat className="w-4 h-4" aria-hidden />,
       pressed: nauticalChartEnabled,
       onToggle: toggleNauticalChart,
@@ -595,7 +600,7 @@ export function useMapLayersFields({
     sstUnavailable, sstEnabled, toggleSst,
     currentsUnavailable, currentsEnabled, toggleCurrents,
     buoysEnabled, toggleBuoys,
-    nauticalChartEnabled, toggleNauticalChart,
+    nauticalChartEnabled, toggleNauticalChart, seamarksUnavailable,
     stormsEnabled, stormsUnavailable, toggleStorms,
     warnAreasEnabled, warnAreasUnavailable, toggleWarnAreas,
     coastalWarningsEnabled, toggleCoastalWarnings,
@@ -626,7 +631,8 @@ export function useMapLayersFields({
     bathymetryVisible: nauticalChartEnabled && !isHeroEmbed,
     bathymetryContoursLabel: t.map.bathymetryContours,
     seamarksTitle: t.map.seamarksLegend,
-    seamarksVisible: nauticalChartEnabled && !isHeroEmbed,
+    // Sem tiles OpenSeaMap a legenda dos sinais não descreve nada no mapa.
+    seamarksVisible: nauticalChartEnabled && !isHeroEmbed && !seamarksUnavailable,
     seamarksMarksLabel: t.map.seamarksLegendMarks,
     warningsTitle: t.map.coastalWarningsLegend,
     warningsVisible: isFullscreen && !isHeroEmbed && coastalWarningsEnabled,
