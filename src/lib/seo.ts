@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import { existsSync } from 'fs';
 import path from 'path';
 import { spots } from '@/lib/spots';
+import { getSpotTypeLabel } from '@/lib/mapDifficulty';
+import type { Spot } from '@/types';
 import { pipelineSchedule } from '@/lib/dataPipelineSchedule';
 import {
   getTranslation,
@@ -342,7 +344,7 @@ export function buildSpotJsonLd(input: {
   description?: string;
   lat?: number;
   lon?: number;
-  spotType?: string;
+  spotType?: Spot['type'];
 }) {
   const loc = validateLocale(input.locale);
   const spotUrl = absoluteUrl(`/${loc}/spots/${input.slug}/`);
@@ -382,7 +384,8 @@ export function buildSpotJsonLd(input: {
                 de: 'Sportart',
                 fr: 'sport',
               }),
-              value: input.spotType,
+              // Rótulo traduzido do catálogo (ex.: 'multisport' → 'Multidesporto').
+              value: getSpotTypeLabel(input.spotType, loc),
             },
           ],
         }
