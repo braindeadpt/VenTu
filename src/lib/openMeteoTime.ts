@@ -9,6 +9,8 @@
  * parede de Lisboa.
  */
 
+import { lisbonUtcOffsetMs, lisbonWallToMs } from '@/lib/lisbonTime';
+
 const LISBON_TZ = 'Europe/Lisbon';
 const HOUR_MS = 3_600_000;
 
@@ -56,24 +58,19 @@ export function hasOffset(t: string): boolean {
 }
 
 function desvioLisboaMin(ms: number): number {
-  const p = partsLisboa(new Date(ms));
-  const wall = Date.UTC(+p.year, +p.month - 1, +p.day, +p.hour, +p.minute);
-  return Math.round((wall - Math.floor(ms / 60000) * 60000) / 60000);
+  // Delega na util partilhada (mesma via Intl); arredonda ao minuto — o
+  // desvio de Lisboa é sempre em minutos inteiros e os callers constroem
+  // strings com ele.
+  return Math.round(lisbonUtcOffsetMs(ms) / 60000);
 }
 
 /**
  * Instante (ms UTC) de uma etiqueta da série: com desvio → `Date.parse`;
- * sem desvio → hora de parede de Lisboa (duas passagens para a mudança de hora).
+ * sem desvio → hora de parede de Lisboa (duas passagens para a mudança de
+ * hora). Implementação partilhada em `lisbonTime.ts`.
  */
 export function seriesTimeMs(t: string): number {
-  const s = String(t ?? '').trim();
-  if (hasOffset(s)) return Date.parse(s);
-  const m = /^(\d{4})-(\d{2})-(\d{2})T(\d{2})(?::(\d{2}))?/.exec(s);
-  if (!m) return NaN;
-  const wall = Date.UTC(+m[1], +m[2] - 1, +m[3], +m[4], +(m[5] ?? 0));
-  let off = desvioLisboaMin(wall);
-  off = desvioLisboaMin(wall - off * 60000);
-  return wall - off * 60000;
+  return lisbonWallToMs(String(t ?? '').trim());
 }
 
 /** Instante (ms) → `YYYY-MM-DDTHH:MM±hh:mm` na hora de parede de Lisboa (desvio real dessa hora). */

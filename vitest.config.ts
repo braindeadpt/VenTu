@@ -6,6 +6,8 @@ export default defineConfig({
     environment: 'node',
     include: [
       'src/**/*.test.ts',
+      'worker/src/**/*.test.ts',
+      'scripts/lib/__tests__/assetPaths.test.js',
       'scripts/lib/__tests__/ecowitt.normalize.test.js',
       'scripts/lib/__tests__/metar.test.js',
       'scripts/lib/__tests__/windBlend.test.js',
@@ -47,6 +49,7 @@ export default defineConfig({
       'scripts/lib/__tests__/contributionsPrivacy.test.js',
       'scripts/lib/__tests__/terraformExpressions.test.js',
       'scripts/lib/__tests__/forecastSkill.test.js',
+      'scripts/lib/__tests__/spotsCatalog.test.js',
       'scripts/lib/__tests__/updateConditions.test.js',
       'scripts/lib/__tests__/updateConditionsFetch.test.js',
       'scripts/lib/__tests__/openMeteoUtc.test.js',

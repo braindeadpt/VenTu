@@ -17,6 +17,9 @@ Dashboard → **Authentication** → **URL Configuration**:
 | Site URL | `https://ventu.surf` |
 | Redirect URLs | `https://ventu.surf/pt/auth/callback/` |
 | | `https://ventu.surf/en/auth/callback/` |
+| | `https://ventu.surf/es/auth/callback/` |
+| | `https://ventu.surf/de/auth/callback/` |
+| | `https://ventu.surf/fr/auth/callback/` |
 | | `http://localhost:3000/pt/auth/callback/` (dev) |
 
 ### 3. Email de login (recomendado: Resend)

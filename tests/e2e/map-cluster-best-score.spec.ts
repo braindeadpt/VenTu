@@ -94,7 +94,7 @@ function expectGroupMatchesMembers(groups: GroupProbe[]) {
   }
 }
 
-test.describe('Grupos «+N» do mapa v3 — melhor score da zona', () => {
+test.describe('Grupos «+N» do mapa v3 — melhor score da zona', { tag: '@core' }, () => {
   test.describe.configure({ timeout: 90_000 });
   test.use({ serviceWorkers: 'block', reducedMotion: 'reduce' });
 
@@ -150,7 +150,7 @@ async function probeClusters(page: Page): Promise<ClusterProbe[]> {
   });
 }
 
-test.describe('Clusters clássicos — embeds fora do modo Explorar', () => {
+test.describe('Clusters clássicos — embeds fora do modo Explorar', { tag: '@core' }, () => {
   test.describe.configure({ timeout: 90_000 });
   test.use({ serviceWorkers: 'block', reducedMotion: 'reduce' });
 

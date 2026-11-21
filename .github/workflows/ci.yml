@@ -104,6 +104,9 @@ jobs:
       - name: Validate spots
         run: node scripts/validate-spots.js
 
+      - name: Spots catalog in sync (spots.ts regenerated from spots.json)
+        run: npm run spots:catalog:check
+
       - name: Validate page slugs (explorar/modalidades URL segments)
         run: node scripts/validate-page-slugs.js
 
@@ -212,6 +215,7 @@ jobs:
         env:
           NODE_OPTIONS: '--max-old-space-size=4096'
           NEXT_PUBLIC_BASE_PATH: ''
+          NEXT_PUBLIC_SITE_URL: 'https://ventu.surf'
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
           NEXT_PUBLIC_OBS_WORKER_URL: ${{ vars.NEXT_PUBLIC_OBS_WORKER_URL || 'https://ventu-observations.busntech-net.workers.dev' }}
@@ -309,6 +313,7 @@ jobs:
         env:
           NODE_OPTIONS: '--max-old-space-size=4096'
           NEXT_PUBLIC_BASE_PATH: ''
+          NEXT_PUBLIC_SITE_URL: 'https://ventu.surf'
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
           NEXT_PUBLIC_OBS_WORKER_URL: ${{ vars.NEXT_PUBLIC_OBS_WORKER_URL || 'https://ventu-observations.busntech-net.workers.dev' }}

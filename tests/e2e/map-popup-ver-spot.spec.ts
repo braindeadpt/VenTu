@@ -78,7 +78,7 @@ async function waitForCardSettled(page: import('@playwright/test').Page): Promis
     .toBe('stable');
 }
 
-test.describe('Map card Ver spot (v3)', () => {
+test.describe('Map card Ver spot (v3)', { tag: '@core' }, () => {
   test.describe.configure({ timeout: 90_000 });
   test.beforeEach(async ({ page }) => {
     await preseedWindRingLegend(page);
@@ -159,7 +159,7 @@ test.describe('Map card Ver spot (v3)', () => {
   });
 });
 
-test.describe('Map card tablet — folga da coluna de controlos', () => {
+test.describe('Map card tablet — folga da coluna de controlos', { tag: '@core' }, () => {
   test.describe.configure({ timeout: 90_000 });
   test.use({
     viewport: { width: 768, height: 1024 },

@@ -1,3 +1,4 @@
+import { getAssetPath } from '@/lib/paths';
 import type { Spot } from '@/types';
 
 export interface CommunityTipEntry {
@@ -18,7 +19,7 @@ let cache: Record<string, CommunityTipEntry> | null = null;
 export async function loadCommunityTips(): Promise<Record<string, CommunityTipEntry>> {
   if (cache) return cache;
   try {
-    const res = await fetch('/data/community-tips.json');
+    const res = await fetch(getAssetPath('/data/community-tips.json'));
     if (!res.ok) return {};
     cache = await res.json();
     return cache ?? {};

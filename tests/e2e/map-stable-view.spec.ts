@@ -59,7 +59,7 @@ async function triggerRefresh(page: Page) {
   await req;
 }
 
-test.describe('Map stable view', () => {
+test.describe('Map stable view', { tag: '@core' }, () => {
   test.use({ serviceWorkers: 'block', reducedMotion: 'reduce' });
   test.describe.configure({ timeout: 60_000 });
 
@@ -198,7 +198,7 @@ test.describe('Map stable view', () => {
 });
 
 // Segunda descrição com viewport mobile para o teste do sheet.
-test.describe('Map stable view — mobile 390×844', () => {
+test.describe('Map stable view — mobile 390×844', { tag: '@core' }, () => {
   test.use({ serviceWorkers: 'block', reducedMotion: 'reduce', viewport: { width: 390, height: 844 } });
   test.describe.configure({ timeout: 60_000 });
 

@@ -40,7 +40,7 @@ async function focusInsideDialog(page: Page): Promise<boolean> {
   });
 }
 
-test.describe('LoginModal — contrato de modal (aria-modal deixa de mentir)', () => {
+test.describe('LoginModal — contrato de modal (aria-modal deixa de mentir)', { tag: '@core' }, () => {
   test.use({ viewport: { width: 390, height: 844 } });
 
   test('ao abrir, o foco entra no diálogo (primeiro campo)', async ({ page }) => {

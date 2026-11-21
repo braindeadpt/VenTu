@@ -50,7 +50,7 @@ async function openMap(page: import('@playwright/test').Page) {
   await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
 }
 
-test.describe('Map wind field', () => {
+test.describe('Map wind field', { tag: '@core' }, () => {
   test.use({ serviceWorkers: 'block', reducedMotion: 'reduce' });
   test.describe.configure({ timeout: 60_000 });
 
@@ -93,7 +93,7 @@ test.describe('Map wind field', () => {
   });
 });
 
-test.describe('Map wind field — animado (sem reduced-motion)', () => {
+test.describe('Map wind field — animado (sem reduced-motion)', { tag: '@core' }, () => {
   test.use({ serviceWorkers: 'block', reducedMotion: 'no-preference' });
   test.describe.configure({ timeout: 90_000 });
 

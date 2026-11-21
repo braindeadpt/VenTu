@@ -22,7 +22,7 @@ const EMPTY_CONDITIONS = {};
 
 test.use({ serviceWorkers: 'block' });
 
-test.describe('kite calculator', () => {
+test.describe('kite calculator', { tag: '@core' }, () => {
   test.beforeEach(async ({ page }) => {
     await interceptData(page, 'conditions.json', EMPTY_CONDITIONS);
   });
@@ -93,7 +93,7 @@ test.describe('kite calculator', () => {
   });
 });
 
-test.describe('wetsuit calculator', () => {
+test.describe('wetsuit calculator', { tag: '@core' }, () => {
   test.beforeEach(async ({ page }) => {
     await interceptData(page, 'conditions.json', EMPTY_CONDITIONS);
   });
@@ -159,7 +159,7 @@ test.describe('wetsuit calculator', () => {
   });
 });
 
-test.describe('tools locale parity (pt/en)', () => {
+test.describe('tools locale parity (pt/en)', { tag: '@core' }, () => {
   test.beforeEach(async ({ page }) => {
     await interceptData(page, 'conditions.json', EMPTY_CONDITIONS);
   });

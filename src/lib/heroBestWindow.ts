@@ -2,6 +2,7 @@ import type { BestWindowToday, UpcomingWindow } from '@/lib/bestWindowToday';
 import { getScoreForFilter, type HomepageSpotData } from '@/lib/homepageSport';
 import { MAP_AREA_BOUNDS, type MapAreaBounds, type MapAreaKey } from '@/lib/mapLayerBus';
 import { getCompatibleSports, type GridSportFilter, type SportType } from '@/lib/sportRatings';
+import { lisbonWallToMs } from '@/lib/lisbonTime';
 
 /**
  * Banner «Melhor janela» do hero da home.
@@ -68,8 +69,10 @@ function upcomingAsToday(
   nowMs: number,
 ): BestWindowToday | null {
   if (!w) return null;
-  const start = new Date(w.startIso).getTime();
-  const end = new Date(w.endIso).getTime();
+  // startIso/endIso são wall-time de Lisboa — parsear no fuso do browser
+  // deslocava a janela horas para viewers fora de Europe/Lisbon.
+  const start = lisbonWallToMs(w.startIso);
+  const end = lisbonWallToMs(w.endIso);
   if (!Number.isFinite(start) || !Number.isFinite(end)) return null;
   if (end < nowMs || start - nowMs > DAY_MS) return null;
   const startsToday = w.startIso.slice(0, 10) === lisbonDayFmt.format(new Date(nowMs));

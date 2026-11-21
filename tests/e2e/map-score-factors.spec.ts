@@ -52,7 +52,7 @@ async function pickClickableMarker(page: Page): Promise<number> {
   return index;
 }
 
-test.describe('Factores do score — gramática partilhada (desktop)', () => {
+test.describe('Factores do score — gramática partilhada (desktop)', { tag: '@core' }, () => {
   test.describe.configure({ timeout: 90_000 });
   test.use({
     viewport: { width: 1440, height: 900 },
@@ -98,7 +98,7 @@ test.describe('Factores do score — gramática partilhada (desktop)', () => {
   });
 });
 
-test.describe('Factores do score — gramática partilhada (mobile)', () => {
+test.describe('Factores do score — gramática partilhada (mobile)', { tag: '@core' }, () => {
   test.describe.configure({ timeout: 90_000 });
   test.use({
     viewport: { width: 390, height: 844 },

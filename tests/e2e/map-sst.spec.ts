@@ -62,7 +62,7 @@ async function openMapSst(page: import('@playwright/test').Page, query = 'hours=
   await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
 }
 
-test.describe('Map SST field', () => {
+test.describe('Map SST field', { tag: '@core' }, () => {
   test.use({ serviceWorkers: 'block', reducedMotion: 'reduce' });
   test.describe.configure({ timeout: 60_000 });
 

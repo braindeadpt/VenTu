@@ -16,7 +16,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 |---|---|
 | App | Next.js, `src/app/[locale]`, PT-PT first, EN second |
 | Data | `scripts/` + `public/data/` + Actions (~3h); Open-Meteo, IH, IPMA, Ecowitt |
-| Product | scores in `src/lib`, spots in `src/lib/spots.ts`, livecams in `src/lib/spotLivecams.ts` |
+| Product | scores in `src/lib`, spots catalog in `src/lib/spots.json` (`src/lib/spots.ts` is generated — `npm run spots:catalog`), livecams in `src/lib/spotLivecams.ts` |
 | Account | Supabase (favorites, alerts, feedback), magic link, RLS |
 | Quality | Vitest + Playwright, hermetic `build:e2e` |
 | Deploy | static export on GitHub Pages — no server runtime |

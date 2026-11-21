@@ -254,7 +254,7 @@ async function gotoSpot(
   });
 }
 
-test.describe('Leitura da boia no conditions.json: página de spot v6 e comparador', () => {
+test.describe('Leitura da boia no conditions.json: página de spot v6 e comparador', { tag: '@core' }, () => {
   // O site regista um service worker (public/sw.js) que serve /data/* do cache
   // e BURLA o page.route — as injecções de conditions.json tornam-se
   // intermitentes quando o SW activa antes do fetch. Bloquear o SW garante
@@ -624,7 +624,7 @@ test.describe('Leitura da boia no conditions.json: página de spot v6 e comparad
 
 });
 
-test.describe('Leitura da boia no «Estudar o spot» v6 (boia X a Y km)', () => {
+test.describe('Leitura da boia no «Estudar o spot» v6 (boia X a Y km)', { tag: '@core' }, () => {
   // O SW serve /data/* do cache e burla o page.route (ver helpers/conditions.ts).
   test.use({ serviceWorkers: 'block' });
   test.beforeEach(async ({ page }) => {
@@ -1116,7 +1116,7 @@ test.describe('Leitura da boia no «Estudar o spot» v6 (boia X a Y km)', () => 
  * mede-se cada elemento visível da página contra a largura do ecrã. As fontes ficam bloqueadas
  * (o pior caso, o da primeira visita). Na cena 3D, o rótulo do spot fica no centro do enquadramento.
  */
-test.describe('spot v6 a 390 (iPhone): abre centrada', () => {
+test.describe('spot v6 a 390 (iPhone): abre centrada', { tag: '@core' }, () => {
   test.use({
     viewport: { width: 390, height: 844 },
     deviceScaleFactor: 3,

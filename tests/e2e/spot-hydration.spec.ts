@@ -33,7 +33,7 @@ const TIMEZONES = ['Pacific/Auckland', 'Europe/Lisbon'] as const;
 for (const locale of LOCALES) {
   for (const vp of VIEWPORTS) {
     for (const timezoneId of TIMEZONES) {
-      test.describe(`spot hydration — ${locale} ${vp.name} ${timezoneId}`, () => {
+      test.describe(`spot hydration — ${locale} ${vp.name} ${timezoneId}`, { tag: '@core' }, () => {
         test.use({
           serviceWorkers: 'block',
           timezoneId,

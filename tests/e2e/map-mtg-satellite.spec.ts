@@ -68,7 +68,7 @@ async function enableSatellite(page: Page) {
   await expect(toggle).toHaveAttribute('aria-pressed', 'true');
 }
 
-test.describe('Satélite IR — MTG-I1 (pipeline EUMETSAT)', () => {
+test.describe('Satélite IR — MTG-I1 (pipeline EUMETSAT)', { tag: '@core' }, () => {
   test.use({ viewport: { width: 1440, height: 900 }, serviceWorkers: 'block' });
   test.describe.configure({ timeout: 90_000 });
 

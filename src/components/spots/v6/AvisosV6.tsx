@@ -13,6 +13,7 @@ import { CloudLightning, CloudRain, ExternalLink } from 'lucide-react';
 import { getAssetPath } from '@/lib/paths';
 import { getTranslation } from '@/lib/i18n';
 import { DATE_LOCALE } from '@/lib/dataFreshness';
+import { formatLisbonWall } from '@/lib/lisbonTime';
 import {
   ipmaRadarUrl,
   relevantWarningsForSpot,
@@ -28,15 +29,13 @@ import CoastalNavWarnings from '@/components/spots/CoastalNavWarnings';
 
 function ate(iso: string | undefined, locale: string): string {
   if (!iso) return '';
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return '';
-  return d.toLocaleDateString(DATE_LOCALE[locale] ?? 'en-GB', {
+  // `endTime` é wall-time de Lisboa — parse + render sempre em Lisboa.
+  return formatLisbonWall(iso, DATE_LOCALE[locale] ?? 'en-GB', {
     weekday: 'short',
     day: 'numeric',
     month: 'short',
     hour: '2-digit',
     minute: '2-digit',
-    timeZone: 'Europe/Lisbon',
   });
 }
 
