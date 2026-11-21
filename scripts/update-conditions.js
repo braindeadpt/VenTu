@@ -54,44 +54,18 @@ function resolveUseMultiModel() {
   return scheduleIsMultiModelEnabled();
 }
 
-function parseSpotsFromFile() {
-  const spotsPath = path.join(__dirname, '../src/lib/spots.ts');
-  const content = fs.readFileSync(spotsPath, 'utf-8');
-  const spots = [];
-  const blockRegex = /\{\s*\n\s*id:\s*['"]([^'"]+)['"]([\s\S]*?)\n\s*\},/g;
-  let match;
-  while ((match = blockRegex.exec(content)) !== null) {
-    const body = match[2];
-    const latMatch = body.match(/lat:\s*([0-9.\-]+)/);
-    const lonMatch = body.match(/lon:\s*([0-9.\-]+)/);
-    if (!latMatch || !lonMatch) continue;
-    const srcMatch = body.match(/conditionsSource:\s*['"]([^'"]+)['"]/);
-    const regionMatch = body.match(/region:\s*['"]([^'"]+)['"]/);
-    spots.push({
-      id: match[1],
-      lat: parseFloat(latMatch[1]),
-      lon: parseFloat(lonMatch[1]),
-      conditionsSource: srcMatch ? srcMatch[1] : undefined,
-      region: regionMatch ? regionMatch[1] : undefined,
-    });
-  }
-  const seen = new Set();
-  return spots.filter((spot) => {
-    if (seen.has(spot.id)) return false;
-    seen.add(spot.id);
-    return true;
-  });
-}
+const { loadConditionsSpots } = require('./lib/spotsCatalog');
 
-const spots = parseSpotsFromFile();
+// Catálogo partilhado (audit 2026-11-21): src/lib/spots.json é a fonte única;
+// src/lib/spots.ts é gerado dele (npm run spots:catalog). Sem regex sobre TS.
+const spots = loadConditionsSpots();
 const MIN_SPOTS = 50;
 if (spots.length < MIN_SPOTS) {
-  console.error(`\n❌ ERROR: Only ${spots.length} spots parsed from spots.ts (expected at least ${MIN_SPOTS}).`);
-  console.error('   The regex parser may have failed due to a format change in spots.ts.');
-  console.error('   Please check that spots.ts still contains id/lat/lon in the expected format.\n');
+  console.error(`\n❌ ERROR: Only ${spots.length} spots in src/lib/spots.json (expected at least ${MIN_SPOTS}).`);
+  console.error('   The shared catalog may be truncated or malformed.\n');
   process.exit(1);
 }
-console.log(`📋 Parsed ${spots.length} spots from src/lib/spots.ts\n`);
+console.log(`📋 Loaded ${spots.length} spots from src/lib/spots.json\n`);
 
 const { sleep, createUsageCounter, fetchWithRetry } = require('./lib/updateConditionsIo');
 const sourceFetcher = createUpdateConditionsFetcher({ marineApi: MARINE_API, weatherApi: WEATHER_API, fetchWithRetry });
@@ -480,4 +454,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { parseSpotsFromFile, applyWaveBiasToRow, applyAliasSpots, resolveUseMultiModel, confidenceFromPrevious, createUsageCounter, fetchWithRetry, spots, MIN_SPOTS };
+module.exports = { loadConditionsSpots, applyWaveBiasToRow, applyAliasSpots, resolveUseMultiModel, confidenceFromPrevious, createUsageCounter, fetchWithRetry, spots, MIN_SPOTS };

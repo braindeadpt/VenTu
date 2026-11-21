@@ -5,7 +5,9 @@ export function readCheckinsFromStorage(): string[] {
   if (typeof window === 'undefined') return [];
   try {
     const stored = localStorage.getItem(CHECKINS_STORAGE_KEY);
-    return stored ? JSON.parse(stored) : [];
+    if (!stored) return [];
+    const parsed: unknown = JSON.parse(stored);
+    return Array.isArray(parsed) ? parsed.filter((x): x is string => typeof x === 'string') : [];
   } catch {
     return [];
   }

@@ -77,4 +77,17 @@ describe('checkinsStorage', () => {
     localStorage.setItem(CHECKINS_STORAGE_KEY, 'not-json');
     expect(readCheckinsFromStorage()).toEqual([]);
   });
+
+  it.each(['"moledo"', '{"a":1}', '42', 'true', 'null'])(
+    'returns [] when stored value parses to non-array (%s)',
+    (raw) => {
+      localStorage.setItem(CHECKINS_STORAGE_KEY, raw);
+      expect(readCheckinsFromStorage()).toEqual([]);
+    },
+  );
+
+  it('drops non-string entries from a stored array', () => {
+    localStorage.setItem(CHECKINS_STORAGE_KEY, JSON.stringify(['moledo', 42, null, 'cabedelo']));
+    expect(readCheckinsFromStorage()).toEqual(['moledo', 'cabedelo']);
+  });
 });

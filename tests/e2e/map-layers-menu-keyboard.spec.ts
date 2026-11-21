@@ -28,7 +28,7 @@ const popover = (page: Page) => page.locator('[data-map-layers-popover]');
 const items = (page: Page) =>
   popover(page).locator('button:not([disabled])');
 
-test.describe('Menu Camadas — teclado (desktop)', () => {
+test.describe('Menu Camadas — teclado (desktop)', { tag: '@core' }, () => {
   test.describe.configure({ timeout: 90_000 });
   test.use({
     viewport: { width: 1440, height: 900 },
@@ -164,7 +164,7 @@ test.describe('Menu Camadas — teclado (desktop)', () => {
   });
 });
 
-test.describe('Menu Camadas — teclado (mobile 390)', () => {
+test.describe('Menu Camadas — teclado (mobile 390)', { tag: '@core' }, () => {
   test.describe.configure({ timeout: 90_000 });
   test.use({
     viewport: { width: 390, height: 844 },

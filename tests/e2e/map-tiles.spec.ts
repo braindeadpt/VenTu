@@ -8,7 +8,7 @@ import { preseedWindRingLegend } from './helpers/map-setup';
  * re-attach the basemap and reach `data-map-tiles="ok"` once providers
  * answer again.
  */
-test.describe('map basemap resilience', () => {
+test.describe('map basemap resilience', { tag: '@core' }, () => {
   test.use({ serviceWorkers: 'block', reducedMotion: 'reduce' });
   test.describe.configure({ timeout: 60_000 });
 

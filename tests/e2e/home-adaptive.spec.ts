@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import { preseedWindRingLegend } from './helpers/map-setup';
 import { waitHydrated } from './helpers/hydration';
 
-test.describe('Home adaptive layout', () => {
+test.describe('Home adaptive layout', { tag: '@core' }, () => {
   test.beforeEach(async ({ page }) => {
     // O /pt/ serve o embed map-first (SpotMapInteractive não-hero, desktop) —
     // a legend coach de primeira visita pode abrir sobre o mapa.

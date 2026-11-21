@@ -6,7 +6,8 @@
  * normal virada para o MAR, ver `scripts/lib/coastOrientation.mjs`) a partir da
  * linha de costa do OpenStreetMap, e escreve o ficheiro de revisão
  * `data/coast-orientation-review.json` (antes → depois, evidência e motivos de
- * revisão). Com `--apply`, aplica a coluna `final` a `src/lib/spots.ts`.
+ * revisão). Com `--apply`, aplica a coluna `final` ao catálogo
+ * `src/lib/spots.json` e regenera `src/lib/spots.ts` (spots:catalog).
  *
  * Corre offline, à mão (não faz parte do pipeline nem do build; o browser não
  * faz nenhum pedido a terceiros). Documentação: docs/COAST-ORIENTATION.md.
@@ -14,7 +15,7 @@
  * Uso:
  *   node scripts/compute-coast-orientation.mjs --fetch      # descarrega o que falta para .cache/coast-orientation/
  *   node scripts/compute-coast-orientation.mjs              # recalcula a revisão a partir da cache (idempotente)
- *   node scripts/compute-coast-orientation.mjs --apply      # recalcula e aplica a src/lib/spots.ts
+ *   node scripts/compute-coast-orientation.mjs --apply      # recalcula e aplica a src/lib/spots.json
  *   opções: --raio=2000 (m, pedido Overpass)  --max-s=100 (tempo máx. de --fetch)
  *
  * Regras do valor final (`origem`):
@@ -22,7 +23,7 @@
  *    `praiaVirada` revisto à mão, para o motor antigo e o v6 dizerem o mesmo;
  *  - `osm`: o valor calculado (arredondado a 5°), quando a geometria é limpa;
  *  - `manual`: valor fixado à mão (`VALOR_MANUAL`, spots da lista de revisão manual);
- *  - `agua-interior`: spots com `aguaInterior: true` em `src/lib/spots.ts` (albufeiras,
+ *  - `agua-interior`: spots com `aguaInterior: true` no catálogo (albufeiras,
  *    lagoas e rios interiores, cable parks): o vento não se classifica em
  *    onshore/offshore; o valor fica como está e não se usa para o vento;
  *  - `mantido`: estuários, lagoas, rios e albufeiras (lista explícita abaixo),
@@ -32,10 +33,11 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { execFileSync } from 'node:child_process';
 import { orientacaoCosta, viasDeOverpass, difAng, n360 } from './lib/coastOrientation.mjs';
 
 const raiz = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const SPOTS_TS = path.join(raiz, 'src/lib/spots.ts');
+const SPOTS_JSON = path.join(raiz, 'src/lib/spots.json');
 const EDITORIAL = path.join(raiz, 'src/lib/spotEditorial.json');
 const CACHE = path.join(raiz, '.cache', 'coast-orientation');
 const OUT = path.join(raiz, 'data', 'coast-orientation-review.json');
@@ -206,22 +208,14 @@ const DIST_BLOQUEIA = 1500;
 /** corda de 1 km aceite como 2.º nível quando corda/arco ≥ 0,85 */
 const RETIDAO_1KM = 0.85;
 
-/** Divide spots.ts em blocos, um por spot (do `id:` ao `id:` seguinte). */
-function blocos(src) {
-  const ini = [...src.matchAll(/^\s*id: '([^']+)'/gm)];
-  return ini.map((m, i) => ({ id: m[1], a: m.index, b: i + 1 < ini.length ? ini[i + 1].index : src.length }));
-}
-
+/** Lê o catálogo partilhado src/lib/spots.json (fonte única; spots.ts é gerado). */
 function lerSpots() {
-  const src = fs.readFileSync(SPOTS_TS, 'utf8');
-  return blocos(src).map(({ id, a, b }) => {
-    const t = src.slice(a, b);
-    const nome = t.match(/\bname: (['"])((?:\\.|(?!\1).)*)\1/);
-    const ll = t.match(/\blat: (-?[\d.]+), lon: (-?[\d.]+)/);
-    const co = t.match(/\bcoastOrientation: (\d+)/);
-    if (!ll || !co) throw new Error(`spot ${id} sem lat/lon/coastOrientation`);
-    const interior = /\baguaInterior: true\b/.test(t);
-    return { id, nome: nome ? nome[2].replace(/\\'/g, "'") : id, lat: +ll[1], lon: +ll[2], atual: +co[1], interior };
+  const catalog = JSON.parse(fs.readFileSync(SPOTS_JSON, 'utf8'));
+  return catalog.spots.map((s) => {
+    if (typeof s.lat !== 'number' || typeof s.lon !== 'number' || typeof s.coastOrientation !== 'number') {
+      throw new Error(`spot ${s.id} sem lat/lon/coastOrientation`);
+    }
+    return { id: s.id, nome: s.name || s.id, lat: s.lat, lon: s.lon, atual: s.coastOrientation, interior: s.aguaInterior === true };
   });
 }
 
@@ -415,22 +409,20 @@ function rever(spots) {
 }
 
 function aplicar(linhas) {
-  const src = fs.readFileSync(SPOTS_TS, 'utf8');
+  const catalog = JSON.parse(fs.readFileSync(SPOTS_JSON, 'utf8'));
   const porId = new Map(linhas.map((l) => [l.id, l]));
-  let out = src.slice(0, blocos(src)[0].a);
   let n = 0;
-  for (const { id, a, b } of blocos(src)) {
-    let t = src.slice(a, b);
-    const l = porId.get(id);
-    const m = t.match(/\bcoastOrientation: (\d+)/);
-    if (l && m && +m[1] !== l.final) {
-      t = t.replace(/\bcoastOrientation: \d+/, `coastOrientation: ${l.final}`);
+  for (const s of catalog.spots) {
+    const l = porId.get(s.id);
+    if (l && s.coastOrientation !== l.final) {
+      s.coastOrientation = l.final;
       n++;
     }
-    out += t;
   }
-  fs.writeFileSync(SPOTS_TS, out);
-  console.log(`spots.ts: ${n} coastOrientation alterados`);
+  fs.writeFileSync(SPOTS_JSON, JSON.stringify(catalog, null, 2) + '\n');
+  // spots.ts é gerado — regenera para o site ficar em sincronia.
+  execFileSync('node', [path.join(raiz, 'scripts/build-spots-catalog.js')]);
+  console.log(`spots.json: ${n} coastOrientation alterados`);
 }
 
 /**

@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { WifiOff } from 'lucide-react';
 import { getTranslation } from '@/lib/i18n';
+import { getAssetPath } from '@/lib/paths';
 
 const LAST_UPDATE_KEY = 'ventu:last-data-update';
 
@@ -50,7 +51,7 @@ export default function OfflineBanner() {
   useEffect(() => {
     if (!offline || typeof window === 'undefined') return;
 
-    fetch('/data/conditions.json', { cache: 'force-cache' })
+    fetch(getAssetPath('/data/conditions.json'), { cache: 'force-cache' })
       .then((res) => {
         const cachedAt = res.headers.get('x-ventu-cached-at');
         if (cachedAt) {

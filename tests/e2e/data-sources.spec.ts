@@ -13,7 +13,7 @@ const SITE_URL = 'https://ventu.surf';
 
 /** Os 5 locais servidos (pt/en/es/de/fr) — o mesmo conjunto de src/lib/i18n. */
 const HREFLANG_LOCALES = ['pt', 'en', 'es', 'de', 'fr'] as const;
-test.describe('Fontes de dados (data sources)', () => {
+test.describe('Fontes de dados (data sources)', { tag: '@core' }, () => {
   test('lista todas as fontes obrigatórias com atribuição', async ({ page }) => {
     await page.goto('/pt/fontes/');
 

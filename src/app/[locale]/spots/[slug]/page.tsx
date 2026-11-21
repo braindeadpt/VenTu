@@ -3,7 +3,8 @@ import { type ComponentProps } from 'react'
 import { notFound } from 'next/navigation'
 import { getSpotBySlug, spots } from '@/lib/spots'
 import { locales, validateLocale, pickLocale } from '@/lib/i18n'
-import { buildSpotMetadata } from '@/lib/seo'
+import { buildSpotMetadata, buildSpotJsonLd } from '@/lib/seo'
+import { jsonLdHtml } from '@/lib/jsonLd'
 import { loadEvents } from '@/lib/load-events'
 import { loadSpotData } from '@/lib/load-spot-data'
 import { buildNowMs } from '@/lib/buildClock'
@@ -112,8 +113,26 @@ export default async function SpotDetailPage({ params }: { params: Promise<{ loc
         }) ?? null,
   }
 
+  const spotJsonLd = buildSpotJsonLd({
+    locale: validateLocale(locale),
+    slug,
+    spotName: v6.nome,
+    regionName: v6.local,
+    description: pickLocale(locale, {
+      pt: spot.description,
+      en: spot.descriptionEn ?? spot.description,
+    }) ?? spot.description,
+    lat: spot.lat,
+    lon: spot.lon,
+    spotType: spot.type,
+  })
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLdHtml(spotJsonLd) }}
+      />
       <SpotDetailClient
         v6={v6}
         spot={spot}

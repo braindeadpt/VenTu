@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 const SPOT_SLUG = 'guincho';
 
-test.describe('Spot detail dashboard', () => {
+test.describe('Spot detail dashboard', { tag: '@core' }, () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(`/pt/spots/${SPOT_SLUG}/`);
     await expect(page.getByRole('heading', { level: 1, name: /Guincho/i })).toBeVisible({

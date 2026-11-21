@@ -44,10 +44,10 @@ async function openMapa(
   await waitHydrated(page);
 }
 
-test.describe('Mapa — alvos de toque ≥44px', () => {
+test.describe('Mapa — alvos de toque ≥44px', { tag: '@core' }, () => {
   test.describe.configure({ timeout: 60_000 });
 
-  test.describe('mobile /pt/mapa/', () => {
+  test.describe('mobile /pt/mapa/', { tag: '@core' }, () => {
     test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, serviceWorkers: 'block', reducedMotion: 'reduce' });
 
     test('legenda do sheet: <summary> ≥44px e expande ao toque', async ({ page }) => {
@@ -70,7 +70,7 @@ test.describe('Mapa — alvos de toque ≥44px', () => {
     });
   });
 
-  test.describe('tablet 768px (touch — layout sm+)', () => {
+  test.describe('tablet 768px (touch — layout sm+)', { tag: '@core' }, () => {
     test.use({ viewport: { width: 768, height: 1024 }, hasTouch: true, serviceWorkers: 'block', reducedMotion: 'reduce' });
 
     test('toggle da legenda ≥44px na pilha de controlos (UX v3 §2/§4)', async ({ page }) => {
@@ -91,7 +91,7 @@ test.describe('Mapa — alvos de toque ≥44px', () => {
     });
   });
 
-  test.describe('desktop /pt/spots/ — rótulo i18n do fullscreen', () => {
+  test.describe('desktop /pt/spots/ — rótulo i18n do fullscreen', { tag: '@core' }, () => {
     test.use({ viewport: { width: 1440, height: 900 }, serviceWorkers: 'block', reducedMotion: 'reduce' });
 
     test('PT mostra "Explorar mapa", EN mostra "Explore map"', async ({ page }) => {
@@ -109,7 +109,7 @@ test.describe('Mapa — alvos de toque ≥44px', () => {
     });
   });
 
-  test.describe('mobile — chips radar/carta náutica e controlos do mapa da home', () => {
+  test.describe('mobile — chips radar/carta náutica e controlos do mapa da home', { tag: '@core' }, () => {
     test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, serviceWorkers: 'block', reducedMotion: 'reduce' });
 
     test('botões radar e carta náutica ≥44×44 (camadas partilhadas, /mapa)', async ({ page }) => {

@@ -25,7 +25,7 @@ async function openMapa(page: import('@playwright/test').Page) {
   await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
 }
 
-test.describe('Map bathymetry (EMODnet WMS)', () => {
+test.describe('Map bathymetry (EMODnet WMS)', { tag: '@core' }, () => {
   test.use({ serviceWorkers: 'block', reducedMotion: 'reduce' });
   test.describe.configure({ timeout: 60_000 });
 
