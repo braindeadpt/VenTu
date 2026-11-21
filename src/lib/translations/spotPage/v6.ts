@@ -554,7 +554,8 @@ export const spotPageV6 = {
     meses: ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'],
     agora: 'jetzt',
     agoraCap: 'Jetzt',
-    hora: '{h} Uhr',
+    /** NBSP: o veredicto divide «amanhã 10h» no último espaço («um {h}»). */
+    hora: '{h} Uhr',
     amanha: 'morgen',
     notaAria: 'Note {n} von 10, {banda}',
     noiteAria: 'Nacht: keine Note',
@@ -729,7 +730,8 @@ export const spotPageV6 = {
     meses: ['jan', 'fév', 'mar', 'avr', 'mai', 'jun', 'jul', 'aoû', 'sep', 'oct', 'nov', 'déc'],
     agora: 'maintenant',
     agoraCap: 'Maintenant',
-    hora: '{h} h',
+    /** NBSP: o veredicto divide «amanhã 10h» no último espaço («à {h}»). */
+    hora: '{h} h',
     amanha: 'demain',
     notaAria: 'Note {n} sur 10, {banda}',
     noiteAria: 'Nuit : pas de note',
@@ -902,7 +904,8 @@ export type SpotPageV6Copy = (typeof spotPageV6)['pt'];
  * (en → pt). Sem importar o i18n: os bundles da home/spot não o carregam.
  */
 export function spotV6Copy(locale: string): SpotPageV6Copy {
-  return (spotPageV6 as Record<string, SpotPageV6Copy>)[locale] ?? spotPageV6.en;
+  const map = spotPageV6 as Record<string, SpotPageV6Copy>;
+  return Object.hasOwn(map, locale) ? map[locale] : spotPageV6.en;
 }
 
 /** Substitui `{chave}` pelos valores. */

@@ -478,7 +478,7 @@ const de: HomeV6Copy = {
   aApertar: 'zunehmend',
   aCair: 'nachlassend',
   diaMornoKite: (nm: string, oA: string, q: string) => `Ein milder Tag für ${nm}. Der Beste ist ${oA}: <em>geht</em> ${q}.`,
-  frenteKite: (nm: string) => `Eine Front mit Regen und Böen: ${nm} <em>geht</em> nirgends.`,
+  frenteKite: (nm: string) => `Eine Front mit Regen und Böen: ${nm} <em>geht nirgends</em>.`,
   poucoVentoCosta: (nm: string) => `Wenig Wind an der Küste: ${nm} <em>geht nicht</em>.`,
   ventoTorto: (nm: string, b: string) => `Verkehrter Wind für ${nm}: <em>${b}</em> an der ganzen Küste.`,
   ondulacaoDe: (r: string) => `Swell aus ${r}`,
@@ -486,9 +486,9 @@ const de: HomeV6Copy = {
   limpa: (s: string) => `Sauberer ${s.charAt(0).toLowerCase() + s.slice(1)}; `,
   soASul: 'nur im Süden, ',
   marMexido: (nm: string, oA: string, q: string) => `Unruhiges Meer für ${nm}. Der Beste ist ${oA}: <em>geht</em> ${q}.`,
-  frenteSurf: (nm: string) => `Eine Front mit Regen und Onshore-Wind: ${nm} <em>geht</em> nirgends.`,
+  frenteSurf: (nm: string) => `Eine Front mit Regen und Onshore-Wind: ${nm} <em>geht nirgends</em>.`,
   marGrande: (nm: string, b: string) => `Zu großes Meer für ${nm}: <em>${b}</em> an der ganzen Küste.`,
-  ventoEstragaNaoDa: (nm: string) => `Wind versaut das Meer: ${nm} <em>geht</em> nirgends.`,
+  ventoEstragaNaoDa: (nm: string) => `Wind versaut das Meer: ${nm} <em>geht nirgends</em>.`,
   ventoEstragaFraco: (nm: string) => `Wind versaut das Meer: ${nm} <em>schwach</em> an der ganzen Küste.`,
 
   modalidadeAria: 'Sportart',
@@ -591,7 +591,7 @@ const fr: HomeV6Copy = {
   aApertar: 'en renforcement',
   aCair: 'en baisse',
   diaMornoKite: (nm: string, oA: string, q: string) => `Journée douce pour ${nm}. Le meilleur, c’est ${oA} : <em>ça marche</em> ${q}.`,
-  frenteKite: (nm: string) => `Un front avec pluie et rafales : ${nm} <em>ne marche</em> nulle part.`,
+  frenteKite: (nm: string) => `Un front avec pluie et rafales : ${nm} <em>ne marche nulle part</em>.`,
   poucoVentoCosta: (nm: string) => `Peu de vent sur la côte : ${nm} <em>ne marche pas</em>.`,
   ventoTorto: (nm: string, b: string) => `Vent de travers pour ${nm} : <em>${b}</em> sur toute la côte.`,
   ondulacaoDe: (r: string) => `houle de ${r}`,
@@ -599,9 +599,9 @@ const fr: HomeV6Copy = {
   limpa: (s: string) => `${s} propre ; `,
   soASul: 'seulement au sud, ',
   marMexido: (nm: string, oA: string, q: string) => `Mer agitée pour ${nm}. Le meilleur, c’est ${oA} : <em>ça marche</em> ${q}.`,
-  frenteSurf: (nm: string) => `Un front avec pluie et vent de mer : ${nm} <em>ne marche</em> nulle part.`,
+  frenteSurf: (nm: string) => `Un front avec pluie et vent de mer : ${nm} <em>ne marche nulle part</em>.`,
   marGrande: (nm: string, b: string) => `Mer trop grosse pour ${nm} : <em>${b}</em> sur toute la côte.`,
-  ventoEstragaNaoDa: (nm: string) => `Le vent abîme la mer : ${nm} <em>ne marche</em> nulle part.`,
+  ventoEstragaNaoDa: (nm: string) => `Le vent abîme la mer : ${nm} <em>ne marche nulle part</em>.`,
   ventoEstragaFraco: (nm: string) => `Le vent abîme la mer : ${nm} <em>faible</em> sur toute la côte.`,
 
   modalidadeAria: 'Discipline',
@@ -666,5 +666,6 @@ const HOME_V6_COPY = { pt, en, es, de, fr } as const;
  * (en → pt). Sem importar o i18n: o bundle da home não o carrega.
  */
 export function homeV6Copy(locale: string): HomeV6Copy {
-  return (HOME_V6_COPY as Record<string, HomeV6Copy>)[locale] ?? en;
+  const map = HOME_V6_COPY as Record<string, HomeV6Copy>;
+  return Object.hasOwn(map, locale) ? map[locale] : en;
 }

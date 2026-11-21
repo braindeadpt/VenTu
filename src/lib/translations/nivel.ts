@@ -362,5 +362,6 @@ export function nivelCopy(locale: string): NivelCopy {
  * (`homeV6Copy`/`spotV6Copy` servem as cinco línguas com fallback en → pt).
  */
 export function nivelCopyV6(locale: string): NivelCopy {
-  return (NIVEL_COPY as Record<string, NivelCopy>)[locale] ?? en;
+  const map = NIVEL_COPY as Record<string, NivelCopy>;
+  return Object.hasOwn(map, locale) ? map[locale] : en;
 }
