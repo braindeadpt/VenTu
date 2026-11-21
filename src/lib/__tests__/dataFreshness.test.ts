@@ -1,7 +1,9 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import {
+  formatForecastUpdatedAt,
   formatForecastUpdatedParts,
   getDataFreshness,
+  isDawnPatrolStale,
   staleThresholdHours,
 } from '@/lib/dataFreshness';
 
@@ -57,5 +59,63 @@ describe('formatForecastUpdatedParts', () => {
     const parts = formatForecastUpdatedParts(ts, 'en');
 
     expect(parts.prefix).toBe('Updated');
+  });
+});
+
+describe('formatForecastUpdatedAt — "hoje" é o dia de Lisboa', () => {
+  // 2026-08-15T22:30Z é 23:30 em Lisboa (dia 15) mas dia 16 em Auckland.
+  const ts = new Date('2026-08-15T22:30:00Z').getTime();
+  const nextLisbonDay = new Date('2026-08-15T23:30:00Z').getTime(); // 00:30 LIS dia 16
+  const lisbonDay15Now = new Date('2026-08-15T12:00:00Z').getTime(); // 13:00 LIS dia 15
+
+  it('viewer em Auckland: updatedAt e now no mesmo dia de Lisboa → "às"', () => {
+    const prevTz = process.env.TZ;
+    try {
+      process.env.TZ = 'Pacific/Auckland';
+      // Em Auckland o ts já é dia 16 local; antes do fix isToday comparava
+      // no fuso local e dizia «dia» em vez de «às», e podia divergir do
+      // HTML baked (React #418).
+      const out = formatForecastUpdatedAt(ts, 'pt', lisbonDay15Now);
+      // Mesmo dia de Lisboa → só a hora, sem o dia ("Actualizado 23:30").
+      expect(out).toContain('23:30');
+      expect(out).not.toMatch(/\bago\b| de /);
+    } finally {
+      if (prevTz === undefined) delete process.env.TZ;
+      else process.env.TZ = prevTz;
+    }
+  });
+
+  it('dia de Lisboa diferente → label com dia', () => {
+    const prevTz = process.env.TZ;
+    try {
+      process.env.TZ = 'Pacific/Auckland';
+      const out = formatForecastUpdatedAt(ts, 'pt', nextLisbonDay);
+      // 15T23:30 LIS vs now=16T00:30 LIS: outro dia de Lisboa → "15 ago, 23:30".
+      expect(out).toMatch(/15/);
+    } finally {
+      if (prevTz === undefined) delete process.env.TZ;
+      else process.env.TZ = prevTz;
+    }
+  });
+});
+
+describe('isDawnPatrolStale', () => {
+  it('mede a data de Lisboa, independente do fuso do browser', () => {
+    const prevTz = process.env.TZ;
+    try {
+      process.env.TZ = 'Pacific/Auckland';
+      // Mock de "agora": 2026-08-16T20:00Z. O DP de 2026-08-16 (meio-dia
+      // Lisboa = 11:00Z) tem ~9h → fresco, em qualquer fuso.
+      vi.useFakeTimers();
+      vi.setSystemTime(new Date('2026-08-16T20:00:00Z'));
+      expect(isDawnPatrolStale('2026-08-16')).toBe(false);
+      expect(isDawnPatrolStale('2026-08-15')).toBe(true);
+      // Antes do fix, em Auckland (UTC+12) o mesmo input media a data no
+      // fuso local e podia ficar stale horas mais cedo.
+    } finally {
+      vi.useRealTimers();
+      if (prevTz === undefined) delete process.env.TZ;
+      else process.env.TZ = prevTz;
+    }
   });
 });
