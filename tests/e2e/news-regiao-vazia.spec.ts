@@ -42,7 +42,7 @@ const SEM_ITENS_PT = [
   },
 ];
 
-test.describe('News — região por omissão sem itens pt', () => {
+test.describe('News — região por omissão sem itens pt', { tag: '@core' }, () => {
   // O SW serve /data/* do cache e burla o page.route (ver helpers/conditions.ts).
   test.use({ serviceWorkers: 'block' });
 

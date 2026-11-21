@@ -25,7 +25,7 @@ const ARCHIVE = {
   ],
 };
 
-test.describe('About — tendência de coerência ES×PT', () => {
+test.describe('About — tendência de coerência ES×PT', { tag: '@core' }, () => {
   test.use({ serviceWorkers: 'block' });
 
   test('mostra a barra empilhada por par com veredictos diários', async ({ page }) => {

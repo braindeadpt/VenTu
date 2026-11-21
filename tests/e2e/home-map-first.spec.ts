@@ -6,7 +6,7 @@ import { test, expect } from '@playwright/test';
  * Kite · Surf. #273 (v7 «Porta do mapa»): o cartão inteiro é a porta do /mapa («Explorar o
  * mapa da costa →», com o contexto da home no URL); sem diálogo de ecrã inteiro.
  */
-test.describe('Home map-first', () => {
+test.describe('Home map-first', { tag: '@core' }, () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/pt/');
   });
@@ -40,7 +40,7 @@ test.describe('Home map-first', () => {
   });
 });
 
-test.describe('Home map-first (mobile)', () => {
+test.describe('Home map-first (mobile)', { tag: '@core' }, () => {
   test.use({ viewport: { width: 390, height: 844 } });
 
   test('featured hero map strip is not covered and leads to /mapa', async ({ page }) => {
@@ -66,7 +66,7 @@ test.describe('Home map-first (mobile)', () => {
   });
 });
 
-test.describe('Home map-first: arranque diferido do 3D (desktop)', () => {
+test.describe('Home map-first: arranque diferido do 3D (desktop)', { tag: '@core' }, () => {
   test.use({ viewport: { width: 1440, height: 900 } });
 
   // Lighthouse (run 38819063476): com o MapLibre + relevo a arrancar no load, o 1.º ecrã do

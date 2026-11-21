@@ -15,7 +15,7 @@ import { test, expect } from '@playwright/test';
 const SPOTS = ['guincho', 'nazare', 'supertubos'];
 
 for (const slug of SPOTS) {
-  test(`/pt/spots/${slug}/: H1 antes do rodapé e <main> sem boundary pendente`, async ({ request }) => {
+  test(`/pt/spots/${slug}/ @core: H1 antes do rodapé e <main> sem boundary pendente`, async ({ request }) => {
     const res = await request.get(`/pt/spots/${slug}/`);
     expect(res.ok()).toBe(true);
     const html = await res.text();

@@ -77,7 +77,7 @@ const WMO_OK = {
   day: '20260815',
 };
 
-test.describe('Aviso de boias na página de spot v6 («Estudar o spot»)', () => {
+test.describe('Aviso de boias na página de spot v6 («Estudar o spot»)', { tag: '@core' }, () => {
   // O SW serve /data/* do cache e burla o page.route — ver helpers/conditions.ts.
   test.use({ serviceWorkers: 'block' });
 
@@ -219,7 +219,7 @@ test.describe('Aviso de boias na página de spot v6 («Estudar o spot»)', () =>
 });
 
 
-test.describe('Aviso de boias na homepage (BuoyLayerNotice scope=home)', () => {
+test.describe('Aviso de boias na homepage (BuoyLayerNotice scope=home)', { tag: '@core' }, () => {
   test.use({ serviceWorkers: 'block' });
 
   /** Homepage com ih-buoys.json + wmo-buoys.json interceptados (estado por teste). */
@@ -280,7 +280,7 @@ test.describe('Aviso de boias na homepage (BuoyLayerNotice scope=home)', () => {
   });
 });
 
-test.describe('Aviso de boias no mapa interactivo (chip do HUD — auditoria C4)', () => {
+test.describe('Aviso de boias no mapa interactivo (chip do HUD — auditoria C4)', { tag: '@core' }, () => {
   test.use({ serviceWorkers: 'block' });
 
   // C4 (2026-09-16): o banner toast sobre o mapa saiu — chrome+toast cobriam
@@ -351,7 +351,7 @@ test.describe('Aviso de boias no mapa interactivo (chip do HUD — auditoria C4)
   });
 });
 
-test.describe('Chip de diagnóstico no ticker (pipeline-meta.json → HeroTicker)', () => {
+test.describe('Chip de diagnóstico no ticker (pipeline-meta.json → HeroTicker)', { tag: '@core' }, () => {
   test.use({ serviceWorkers: 'block' });
 
   // O chip vem do pipeline-meta.json (SSG, server-rendered) — o rótulo depende
@@ -423,7 +423,7 @@ test.describe('Chip de diagnóstico no ticker (pipeline-meta.json → HeroTicker
   });
 });
 
-test.describe('Aviso de boias — dispensa (localStorage)', () => {
+test.describe('Aviso de boias — dispensa (localStorage)', { tag: '@core' }, () => {
   // Cada teste faz goto + reload em networkidle — sob paralelismo do CI o
   // default de 30 s não chega (flake observado, ~27 s isolado).
   test.describe.configure({ timeout: 90_000 });

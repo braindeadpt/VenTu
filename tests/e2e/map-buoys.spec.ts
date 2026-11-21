@@ -121,7 +121,7 @@ async function openBuoyPopup(page: import('@playwright/test').Page, id: string) 
   return popup;
 }
 
-test.describe('Map buoy dots', () => {
+test.describe('Map buoy dots', { tag: '@core' }, () => {
   test.use({ serviceWorkers: 'block' });
   test.describe.configure({ timeout: 60_000 });
 
@@ -166,7 +166,7 @@ test.describe('Map buoy dots', () => {
   });
 });
 
-test.describe('Map buoy dots: prefers-reduced-motion', () => {
+test.describe('Map buoy dots: prefers-reduced-motion', { tag: '@core' }, () => {
   test.use({ serviceWorkers: 'block', reducedMotion: 'reduce' });
   test.describe.configure({ timeout: 60_000 });
 

@@ -236,10 +236,10 @@ async function openInViewportMarker(page: Page): Promise<Locator> {
   return marker;
 }
 
-test.describe('Mapa — dismiss dos overlays é hit-testável (desktop + mobile)', () => {
+test.describe('Mapa — dismiss dos overlays é hit-testável (desktop + mobile)', { tag: '@core' }, () => {
   test.describe.configure({ timeout: 60_000 });
 
-  test.describe('desktop (1280×720)', () => {
+  test.describe('desktop (1280×720)', { tag: '@core' }, () => {
     test.use({
       viewport: { width: 1280, height: 720 },
       serviceWorkers: 'block',
@@ -332,7 +332,7 @@ test.describe('Mapa — dismiss dos overlays é hit-testável (desktop + mobile)
     });
   });
 
-  test.describe('mobile (390×844, touch)', () => {
+  test.describe('mobile (390×844, touch)', { tag: '@core' }, () => {
     test.use({
       viewport: { width: 390, height: 844 },
       hasTouch: true,

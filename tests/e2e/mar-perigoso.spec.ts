@@ -60,7 +60,7 @@ async function openSpotSheet(page: import('@playwright/test').Page) {
 }
 
 
-test.describe('Mar perigoso — Dawn Patrol', () => {
+test.describe('Mar perigoso — Dawn Patrol', { tag: '@core' }, () => {
   test.use({ serviceWorkers: 'block' });
 
   // O Dawn Patrol só renderiza na janela matinal (05–12h Lisboa) — congelar o
@@ -91,7 +91,7 @@ test.describe('Mar perigoso — Dawn Patrol', () => {
   });
 });
 
-test.describe('Mar perigoso — card do spot no mapa', () => {
+test.describe('Mar perigoso — card do spot no mapa', { tag: '@core' }, () => {
   // Viewport móvel (≤767px) → o mapa abre o sheet do spot (MapSpotSheet).
   test.use({ serviceWorkers: 'block', viewport: { width: 390, height: 844 }, hasTouch: true });
 
@@ -125,7 +125,7 @@ test.describe('Mar perigoso — card do spot no mapa', () => {
   });
 });
 
-test.describe('Mar perigoso — tooltip do chip nos cards', () => {
+test.describe('Mar perigoso — tooltip do chip nos cards', { tag: '@core' }, () => {
   test.use({ serviceWorkers: 'block' });
 
   test('TopNow: o chip do SpotListCard tem o nível localizado no tooltip', async ({ page }) => {

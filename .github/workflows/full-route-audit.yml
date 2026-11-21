@@ -60,6 +60,7 @@ jobs:
         env:
           NODE_OPTIONS: '--max-old-space-size=4096'
           NEXT_PUBLIC_BASE_PATH: ''
+          NEXT_PUBLIC_SITE_URL: 'https://ventu.surf'
         run: npm run build
 
       - name: Export-route check (extra-mode orphan scan)

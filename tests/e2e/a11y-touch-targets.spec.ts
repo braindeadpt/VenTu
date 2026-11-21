@@ -84,7 +84,7 @@ async function offenders(page: Page): Promise<string[]> {
   return page.evaluate(measure);
 }
 
-test.describe('Alvos de toque ≥44 px (390 px, touch)', () => {
+test.describe('Alvos de toque ≥44 px (390 px, touch)', { tag: '@core' }, () => {
   test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, reducedMotion: 'reduce' });
 
   for (const route of [...new Set(ROUTES)]) {
@@ -175,7 +175,7 @@ const NOTICIAS_SO_INTL = [
   },
 ];
 
-test.describe('Estados vazios das notícias — alvos de toque', () => {
+test.describe('Estados vazios das notícias — alvos de toque', { tag: '@core' }, () => {
   test.use({
     viewport: { width: 390, height: 844 },
     hasTouch: true,
