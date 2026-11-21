@@ -4,6 +4,7 @@ import path from 'path';
 import { spots } from '@/lib/spots';
 import { pipelineSchedule } from '@/lib/dataPipelineSchedule';
 import {
+  getTranslation,
   locales,
   localePathPattern,
   LOCALE_OG,
@@ -366,9 +367,29 @@ export function buildSpotJsonLd(input: {
       addressCountry: 'PT',
     },
     containedInPlace: { '@type': 'AdministrativeArea', name: input.regionName },
-    ...(input.spotType ? { activityType: input.spotType } : {}),
-    isAccessibleForFree: true,
+    // `activityType` não existe no vocabulário Schema.org — o desporto vai
+    // como propriedade extra. Sem isAccessibleForFree: o catálogo não
+    // confirma condições de acesso (ex.: cable park é pago).
+    ...(input.spotType
+      ? {
+          additionalProperty: [
+            {
+              '@type': 'PropertyValue',
+              name: pickLocale(loc, {
+                pt: 'modalidade',
+                en: 'sport',
+                es: 'deporte',
+                de: 'Sportart',
+                fr: 'sport',
+              }),
+              value: input.spotType,
+            },
+          ],
+        }
+      : {}),
   };
+
+  const nav = getTranslation(loc).nav;
 
   const breadcrumb = {
     '@type': 'BreadcrumbList',
@@ -376,13 +397,13 @@ export function buildSpotJsonLd(input: {
       {
         '@type': 'ListItem',
         position: 1,
-        name: pickLocale(loc, { pt: 'Início', en: 'Home', es: 'Inicio', de: 'Start', fr: 'Accueil' }),
+        name: nav.home,
         item: absoluteUrl(`/${loc}/`),
       },
       {
         '@type': 'ListItem',
         position: 2,
-        name: 'Spots',
+        name: nav.spots,
         item: absoluteUrl(`/${loc}/spots/`),
       },
       {
