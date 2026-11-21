@@ -10,7 +10,7 @@ import FilterPill from '@/components/ui/FilterPill';
 import EmptyState from '@/components/ui/EmptyState';
 import { GraduationCap, List, Map as MapIcon } from 'lucide-react';
 import { getSupabaseClient } from '@/lib/supabase';
-import { getTranslation } from '@/lib/i18n';
+import { getTranslation, pickLocale } from '@/lib/i18n';
 import {
   fetchDirectoryListings,
   fetchDirectoryProfiles,
@@ -47,9 +47,8 @@ const KINDS: Array<DirectoryKind | 'all'> = [
 ];
 
 export default function DirectoryClient({ locale, entries: seedEntries, generatedAt }: Props) {
-  const isPt = locale === 'pt';
-  const nav = getTranslation(isPt ? 'pt' : 'en').nav;
-  const d = getTranslation(isPt ? 'pt' : 'en').directory;
+  const nav = getTranslation(locale).nav;
+  const d = getTranslation(locale).directory;
   const [live, setLive] = useState<DirectoryEntry[]>([]);
   const [profiles, setProfiles] = useState<Map<string, DirectoryProfileOverlay>>(new Map());
   const [kind, setKind] = useState<DirectoryKind | 'all'>('all');
@@ -84,23 +83,23 @@ export default function DirectoryClient({ locale, entries: seedEntries, generate
   const regions = useMemo(() => {
     const set = new Set<string>();
     for (const e of entries) {
-      const r = isPt ? e.region : e.regionEn || e.region;
+      const r = pickLocale(locale, { pt: e.region, en: e.regionEn || e.region });
       if (r) set.add(r);
     }
     return [...set].sort((a, b) => a.localeCompare(b, locale));
-  }, [entries, isPt, locale]);
+  }, [entries, locale]);
 
   const filtered = useMemo(() => {
     const query = q.trim().toLowerCase();
     return entries.filter((e) => {
       if (kind !== 'all' && e.kind !== kind) return false;
-      const r = isPt ? e.region : e.regionEn || e.region;
+      const r = pickLocale(locale, { pt: e.region, en: e.regionEn || e.region });
       if (region !== 'all' && r !== region) return false;
       if (!query) return true;
       const blob = `${e.name} ${e.nameEn || ''} ${e.address || ''} ${e.region || ''}`.toLowerCase();
       return blob.includes(query);
     });
-  }, [entries, kind, region, q, isPt]);
+  }, [entries, kind, region, q, locale]);
 
   return (
     <div className="space-y-6">

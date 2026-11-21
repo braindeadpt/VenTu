@@ -11,7 +11,7 @@ import {
   mergeDirectoryEntries,
 } from '@/lib/directoryListings';
 import { getSupabaseClient } from '@/lib/supabase';
-import { getTranslation } from '@/lib/i18n';
+import { getTranslation, pickLocale } from '@/lib/i18n';
 import { spots } from '@/lib/spots';
 import DirectoryClaimButton from '@/components/directory/DirectoryClaimButton';
 import Card from '@/components/ui/Card';
@@ -23,8 +23,7 @@ type Props = {
 };
 
 export default function DirectoryDetailClient({ locale, entry: seed }: Props) {
-  const isPt = locale === 'pt';
-  const d = getTranslation(isPt ? 'pt' : 'en').directory;
+  const d = getTranslation(locale).directory;
   const [entry, setEntry] = useState(seed);
 
   useEffect(() => {
@@ -50,7 +49,7 @@ export default function DirectoryDetailClient({ locale, entry: seed }: Props) {
     };
   }, [seed]);
 
-  const name = isPt ? entry.name : entry.nameEn || entry.name;
+  const name = pickLocale(locale, { pt: entry.name, en: entry.nameEn || entry.name });
   const nearbySpots = entry.spotIds
     .map((id) => spots.find((s) => s.id === id))
     .filter(Boolean);
@@ -87,7 +86,7 @@ export default function DirectoryDetailClient({ locale, entry: seed }: Props) {
         <h1 className="font-display text-display text-fg">{name}</h1>
         {(entry.region || entry.address) && (
           <p className="text-body text-fg-muted">
-            {[isPt ? entry.region : entry.regionEn || entry.region, entry.address]
+            {[pickLocale(locale, { pt: entry.region, en: entry.regionEn || entry.region }), entry.address]
               .filter(Boolean)
               .join(' · ')}
           </p>
@@ -138,7 +137,7 @@ export default function DirectoryDetailClient({ locale, entry: seed }: Props) {
                     href={`/${locale}/spots/${s.slug}/`}
                     className="text-body text-fg-muted hover:text-fg underline-offset-2 hover:underline"
                   >
-                    {isPt ? s.name : s.nameEn}
+                    {pickLocale(locale, { pt: s.name, en: s.nameEn || s.name })}
                   </Link>
                 </li>
               ) : null,
