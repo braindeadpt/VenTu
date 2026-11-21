@@ -2,6 +2,7 @@
 
 import { ATTRIBUTIONS, waveSourceAttributionId } from '@/lib/dataSources';
 import { cn } from '@/lib/cn';
+import { pickLocale } from '@/lib/i18n';
 
 interface WaveSourceAttributionNoteProps {
   /** Tipo da leitura observada ('wmo-buoy' → nota Copernicus; 'ih-buoy' → IH). */
@@ -36,8 +37,14 @@ export default function WaveSourceAttributionNote({
   bare = false,
 }: WaveSourceAttributionNoteProps) {
   const id = waveSourceAttributionId(source);
-  const note = locale === 'pt' ? ATTRIBUTIONS[id].notePt : ATTRIBUTIONS[id].noteEn;
-  const title = locale === 'pt' ? ATTRIBUTIONS[id].titlePt : ATTRIBUTIONS[id].titleEn;
+  const note = pickLocale(locale, {
+    pt: ATTRIBUTIONS[id].notePt,
+    en: ATTRIBUTIONS[id].noteEn,
+  });
+  const title = pickLocale(locale, {
+    pt: ATTRIBUTIONS[id].titlePt,
+    en: ATTRIBUTIONS[id].titleEn,
+  });
   return (
     <span
       className={cn('text-meta-xs text-fg-subtle leading-snug', className)}

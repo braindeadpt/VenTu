@@ -10,7 +10,7 @@ import {
   KITE_WIND_KT_MAX,
   type KiteDiscipline,
 } from '@/lib/gearCalc';
-import { getTranslation } from '@/lib/i18n';
+import { getTranslation, pickLocale } from '@/lib/i18n';
 import { TOOL_SPOT_OPTIONS, useSpotConditions } from './useSpotConditions';
 
 const DISCIPLINES: { id: KiteDiscipline; label: string }[] = [
@@ -20,7 +20,6 @@ const DISCIPLINES: { id: KiteDiscipline; label: string }[] = [
 ];
 
 export default function KiteCalculatorClient({ locale }: { locale: string }) {
-  const isPt = locale === 'pt';
   const t = getTranslation(locale);
   const [weightKg, setWeightKg] = useState(75);
   const [windKt, setWindKt] = useState(18);
@@ -91,7 +90,7 @@ export default function KiteCalculatorClient({ locale }: { locale: string }) {
             <option value="">{t.tools.liveWindLabel}</option>
             {TOOL_SPOT_OPTIONS.map((s) => (
               <option key={s.id} value={s.id}>
-                {isPt ? s.name : s.nameEn}
+                {pickLocale(locale, { pt: s.name, en: s.nameEn })}
               </option>
             ))}
           </select>
