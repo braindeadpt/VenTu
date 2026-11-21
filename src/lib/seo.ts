@@ -384,7 +384,7 @@ export function buildSpotJsonLd(input: {
                 de: 'Sportart',
                 fr: 'sport',
               }),
-              // Rótulo traduzido do catálogo (ex.: 'multisport' → 'Multidesporto').
+              // Rótulo traduzido do catálogo (ex.: 'multisport' → 'Multisport').
               value: getSpotTypeLabel(input.spotType, loc),
             },
           ],
