@@ -25,6 +25,19 @@ describe('getAuthCallbackUrl', () => {
   );
 });
 
+describe('getAuthCallbackUrl (sem window)', () => {
+  afterEach(() => {
+    delete process.env.NEXT_PUBLIC_SITE_URL;
+  });
+
+  it('usa NEXT_PUBLIC_SITE_URL quando não há browser', () => {
+    process.env.NEXT_PUBLIC_SITE_URL = 'https://staging.ventu.surf';
+    expect(getAuthCallbackUrl('pt')).toBe(
+      'https://staging.ventu.surf/pt/auth/callback/',
+    );
+  });
+});
+
 describe('getSiteOrigin', () => {
   afterEach(() => {
     delete process.env.NEXT_PUBLIC_SITE_URL;
