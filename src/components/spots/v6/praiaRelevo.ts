@@ -5,6 +5,7 @@
  * e a geografia ficam em cache por spot (o mapa e a vista plana não os pedem
  * duas vezes; o browser reutiliza os PNG que o MapLibre já pediu).
  */
+import { getAssetPath } from '@/lib/paths';
 import { construirGeo, geoDeEstatico, type Amostrador, type GeoEstatico, type GeoPraia } from '@/lib/praiaGeo';
 
 export const URL_TERRARIUM = (z: number, x: number, y: number) =>
@@ -110,7 +111,7 @@ export function geoDaPraia(ll: [number, number], idEstatico?: string): Promise<G
   const k = ll.join(',');
   let p = geos.get(k);
   if (!p && idEstatico) {
-    p = fetch(`/geo/praia/${encodeURIComponent(idEstatico)}.json`)
+    p = fetch(getAssetPath(`/geo/praia/${encodeURIComponent(idEstatico)}.json`))
       .then((r) => (r.ok ? (r.json() as Promise<GeoEstatico>) : null))
       .then((j) => (j ? geoDeEstatico(j) : null))
       .catch(() => null)

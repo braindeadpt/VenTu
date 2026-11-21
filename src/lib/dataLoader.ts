@@ -123,7 +123,7 @@ export function checkConditionsStale(
   maxAgeMinutes = 30,
   now = Date.now(),
 ): boolean {
-  for (const spot of spots.slice(0, 3)) {
+  for (const spot of spots) {
     const cond = conditions[getConditionsDataId(spot)] || conditions[spot.id];
     if (!cond?.updatedAt) return true;
 

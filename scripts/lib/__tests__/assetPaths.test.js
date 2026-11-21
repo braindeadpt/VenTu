@@ -3,6 +3,9 @@
  * paths.ts forbids it (breaks under NEXT_PUBLIC_BASE_PATH); getAssetPath() is
  * required. Regression test for the 2026-11-21 audit finding.
  */
+import { describe, it, expect } from 'vitest';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
 const fs = require('fs');
 const path = require('path');
 
