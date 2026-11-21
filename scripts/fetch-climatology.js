@@ -18,9 +18,9 @@
 
 const path = require('path');
 const { atomicWriteJson } = require('./lib/atomicWriteJson.js');
-// Same parser the conditions pipeline uses — spots.ts stays the single
-// source of truth (id/lat/lon). Requiring the module also prints its
-// spot-count log line; it performs no fetches on import.
+// Same catalog the conditions pipeline uses — src/lib/spots.json is the
+// single source of truth (spots.ts is generated from it). Requiring the
+// module also prints its spot-count log line; it performs no fetches on import.
 const { spots } = require('./update-conditions.js');
 
 const POWER_API = 'https://power.larc.nasa.gov/api/temporal/climatology/point';

@@ -37,7 +37,7 @@ O modo mais fácil de contribuir é adicionar spots que conheces!
 
 #### Para adicionar:
 1. Faz fork do repositório
-2. Edita `src/lib/spots.ts`
+2. Edita `src/lib/spots.json` (o catálogo; `spots.ts` é gerado — corre `npm run spots:catalog`)
 3. Adiciona o spot na secção correta (Norte, Centro, Lisboa, Oeste, Algarve, Alentejo, Açores, Madeira)
 4. Abre um Pull Request com `[Spot] Nome do Spot — Região`
 
