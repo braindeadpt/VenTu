@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthProvider';
 import { getSupabaseClient } from '@/lib/supabase';
-import { getTranslation } from '@/lib/i18n';
+import { getTranslation, pickLocale } from '@/lib/i18n';
 import { kindLabel } from '@/lib/directoryClient';
 import {
   fetchMyDirectoryListings,
@@ -50,9 +50,8 @@ type OwnedProfile = DirectoryProfileRow & {
 };
 
 export default function DirectoryManageClient({ locale, seedById }: Props) {
-  const isPt = locale === 'pt';
-  const nav = getTranslation(isPt ? 'pt' : 'en').nav;
-  const d = getTranslation(isPt ? 'pt' : 'en').directory;
+  const nav = getTranslation(locale).nav;
+  const d = getTranslation(locale).directory;
   const { session, authLoading, requestLogin, isSupabaseReady } = useAuth();
   const [listings, setListings] = useState<DirectoryEntry[]>([]);
   const [profiles, setProfiles] = useState<OwnedProfile[]>([]);
@@ -303,8 +302,7 @@ function ListingEditor({
   busy: boolean;
   onSave: (f: FormFields) => Promise<void>;
 }) {
-  const isPt = locale === 'pt';
-  const d = getTranslation(isPt ? 'pt' : 'en').directory;
+  const d = getTranslation(locale).directory;
   const [name, setName] = useState(entry.name);
   const [kind, setKind] = useState(entry.kind);
   const [sports, setSports] = useState(entry.sports);
@@ -402,8 +400,7 @@ function ProfileEditor({
   busy: boolean;
   onSave: (f: FormFields) => Promise<void>;
 }) {
-  const isPt = locale === 'pt';
-  const d = getTranslation(isPt ? 'pt' : 'en').directory;
+  const d = getTranslation(locale).directory;
   const label = row.display_name || seed?.name || row.entry_id;
   const [name, setName] = useState(row.display_name || seed?.name || '');
   const [sports, setSports] = useState<DirectorySport[]>(
@@ -548,8 +545,7 @@ function OwnerFormFields({
   setBio: (v: string) => void;
   setSpotId: (v: string) => void;
 }) {
-  const isPt = locale === 'pt';
-  const d = getTranslation(isPt ? 'pt' : 'en').directory;
+  const d = getTranslation(locale).directory;
   return (
     <div className="space-y-3">
       <label className="block">
@@ -612,7 +608,7 @@ function OwnerFormFields({
         >
           {spotList.map((s) => (
             <option key={s.id} value={s.id}>
-              {isPt ? s.name : s.nameEn} · {isPt ? s.region : s.regionEn}
+              {pickLocale(locale, { pt: s.name, en: s.nameEn || s.name })} · {pickLocale(locale, { pt: s.region, en: s.regionEn || s.region })}
             </option>
           ))}
         </select>
