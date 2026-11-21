@@ -80,6 +80,9 @@ const MIGRATED_GLOBS = [
 // Apanha `isPt ? 'copy' : 'copy'` (strings literais OU templates) quando NENHUM
 // dos ramos é um código de língua (pt/en/pt-PT/en-GB…). Os selectors de língua
 // legítimos (getTranslation, SPORT_LABELS, locales de datas) não matcheiam.
+// A dívida total (ternários de qualquer tipo, incl. `locale === 'pt'` e
+// pares de campos pt/en) é medida pelo ratchet em scripts/lib/i18nDebt.js —
+// alargar esta regra aqui partia o lint nos globs migrados com dívida.
 const IS_PT_COPY_TERNARY_SELECTOR =
   "ConditionalExpression[test.name='isPt']" +
   ":matches([consequent.type='Literal'][alternate.type='Literal']," +
