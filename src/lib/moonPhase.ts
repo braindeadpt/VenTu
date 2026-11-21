@@ -3,6 +3,9 @@
  * Synodic month + known new-moon epoch; spring/neap windows lag syzygy/quarter.
  */
 
+import { pickLocale } from '@/lib/i18n';
+import { libMoonPhases, libTideRegimeMeanings, libTideRegimes } from '@/lib/translations/lib';
+
 export const SYNODIC_MONTH_DAYS = 29.530588853;
 
 /** Reference new moon: 2000-01-06 18:14 UTC (NASA) */
@@ -113,61 +116,14 @@ export function getTideRegimeForLisbonDay(year: number, month: number, day: numb
   return getTideRegime(getMoonAgeDays(noon));
 }
 
-export function getMoonPhaseLabels(locale: 'pt' | 'en'): Record<MoonPhaseName, string> {
-  if (locale === 'pt') {
-    return {
-      nova: 'Lua nova',
-      crescente: 'Lua crescente',
-      'quarto-crescente': 'Quarto crescente',
-      'gibosa-crescente': 'Gibosa crescente',
-      cheia: 'Lua cheia',
-      'gibosa-minguante': 'Gibosa minguante',
-      'quarto-minguante': 'Quarto minguante',
-      minguante: 'Lua minguante',
-    };
-  }
-  return {
-    nova: 'New moon',
-    crescente: 'Waxing crescent',
-    'quarto-crescente': 'First quarter',
-    'gibosa-crescente': 'Waxing gibbous',
-    cheia: 'Full moon',
-    'gibosa-minguante': 'Waning gibbous',
-    'quarto-minguante': 'Last quarter',
-    minguante: 'Waning crescent',
-  };
+export function getMoonPhaseLabels(locale: string): Record<MoonPhaseName, string> {
+  return pickLocale(locale, libMoonPhases);
 }
 
-export function getTideRegimeLabels(locale: 'pt' | 'en'): Record<TideRegime, string> {
-  if (locale === 'pt') {
-    return {
-      vivas: 'Marés vivas',
-      mortas: 'Marés mortas',
-      'transição': 'Transição',
-    };
-  }
-  return {
-    vivas: 'Spring tides',
-    mortas: 'Neap tides',
-    'transição': 'Transition',
-  };
+export function getTideRegimeLabels(locale: string): Record<TideRegime, string> {
+  return pickLocale(locale, libTideRegimes);
 }
 
-export function getTideRegimeMeaning(regime: TideRegime, locale: 'pt' | 'en'): string {
-  if (locale === 'pt') {
-    if (regime === 'vivas') {
-      return 'A maré enche e vaza mais — baixa-mar expõe mais fundo; correntes mais fortes.';
-    }
-    if (regime === 'mortas') {
-      return 'A maré enche e vaza menos — marés estáveis; menos exposição do fundo.';
-    }
-    return 'Entre vivas e mortas — condições intermédias.';
-  }
-  if (regime === 'vivas') {
-    return 'Larger range — low tide exposes more bottom; stronger currents.';
-  }
-  if (regime === 'mortas') {
-    return 'Smaller range — steadier tides; less bottom exposure.';
-  }
-  return 'Between spring and neap — intermediate conditions.';
+export function getTideRegimeMeaning(regime: TideRegime, locale: string): string {
+  return pickLocale(locale, libTideRegimeMeanings)[regime];
 }

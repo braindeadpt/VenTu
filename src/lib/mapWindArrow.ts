@@ -11,6 +11,8 @@ import { scoreToNota } from '@/lib/nota';
 import { getCardinalLabel, getWindRelationLabel, type WindRelation } from '@/lib/wind';
 import { relacaoAnelVento } from '@/lib/ventoRelAnel';
 import { warningLevelLabel } from '@/lib/ipmaWarnings';
+import { pickLocale } from '@/lib/i18n';
+import { libIpmaWarningTitle, libWindRingTitle } from '@/lib/translations/lib';
 import { MAP_NIGHT_FILL, MAP_NIGHT_INK, MAP_NIGHT_MOON_PATH, type MapNightCopy } from '@/lib/mapNight';
 
 // Square viewBox, pin dead-centred — no tail. At map density (many spots a
@@ -188,14 +190,12 @@ export function buildMapWindRingTitle(
     relation != null
       ? getWindRelationLabel(relation, locale).label
       : null;
-  if (locale === 'pt') {
-    return relLabel
-      ? `${kt} kt de ${card} · ${relLabel} · arco = para onde sopra`
-      : `${kt} kt de ${card} · arco = para onde sopra`;
-  }
-  return relLabel
-    ? `${kt} kt from ${card} · ${relLabel} · arc = flow direction`
-    : `${kt} kt from ${card} · arc = flow direction`;
+  const t = pickLocale(locale, libWindRingTitle);
+  const tpl = relLabel ? t.withRel : t.noRel;
+  return tpl
+    .replace('{kt}', String(kt))
+    .replace('{card}', card)
+    .replace('{rel}', relLabel ?? '');
 }
 
 export function buildWindRingSvg(
@@ -299,9 +299,9 @@ export function buildWindRingMarkerHtml(
     ? buildMapWindRingTitle(fromDeg, speedKt, coastOrientation, locale)
     : '';
   const warningTitle = warning
-    ? (locale === 'pt'
-        ? `Aviso IPMA: ${warning.label} (${warningLevelLabel(warning.level, locale)})`
-        : `IPMA warning: ${warning.label} (${warningLevelLabel(warning.level, locale)})`)
+    ? pickLocale(locale, libIpmaWarningTitle)
+        .replace('{label}', warning.label)
+        .replace('{level}', warningLevelLabel(warning.level, locale))
     : '';
   const title = escapeHtmlAttr([night?.aria ?? '', windTitle, warningTitle].filter(Boolean).join(' · '));
   const svg = buildWindRingMarkerSvg(score, scoreRgb, fromDeg, speedKt, showWind, coastOrientation, night);
