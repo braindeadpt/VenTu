@@ -55,12 +55,12 @@ const { construirGeo, alisa, aneisGrelha, desfoca, areaAnel } = geoMod;
 
 /* ---------- spots curados e coordenadas ---------- */
 const editorial = JSON.parse(fs.readFileSync(path.join(raiz, 'src/lib/spotEditorial.json'), 'utf8')).spots;
-const spotsTs = fs.readFileSync(path.join(raiz, 'src/lib/spots.ts'), 'utf8');
+const spotsJson = JSON.parse(fs.readFileSync(path.join(raiz, 'src/lib/spots.json'), 'utf8')).spots;
+const coordsPorId = new Map(spotsJson.map((s) => [s.id, [s.lon, s.lat]]));
 function coordsDe(id) {
-  const re = new RegExp(`id: '${id}'[\\s\\S]{0,400}?lat: (-?[\\d.]+), lon: (-?[\\d.]+)`);
-  const m = spotsTs.match(re);
-  if (!m) throw new Error(`sem coordenadas para ${id}`);
-  return [Number(m[2]), Number(m[1])];
+  const ll = coordsPorId.get(id);
+  if (!ll) throw new Error(`sem coordenadas para ${id}`);
+  return ll;
 }
 const pedidos = process.argv.slice(2);
 const ids = (pedidos.length ? pedidos : Object.keys(editorial)).filter((id) => editorial[id]);
