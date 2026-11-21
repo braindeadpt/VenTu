@@ -110,6 +110,9 @@ describe('cópia do nível nas 5 línguas', () => {
     for (const lg of ['en', 'es', 'de', 'fr']) {
       expect(nivelCopyV6(lg), lg).toBe(NIVEL_COPY[lg as keyof typeof NIVEL_COPY]);
     }
+    for (const lg of ['es', 'de', 'fr']) {
+      expect(homeV6Copy(lg), lg).not.toBe(homeV6Copy('en'));
+    }
     expect(nivelCopyV6('xx')).toBe(NIVEL_COPY.en);
     expect(homeV6Copy('xx')).toBe(homeV6Copy('en'));
   });

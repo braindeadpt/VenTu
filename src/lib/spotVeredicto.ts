@@ -73,7 +73,7 @@ export const diaCurto = (c: SpotPageV6Copy, t: string) => `${c.dias[diaSemana(t)
 export function hmTxt(c: SpotPageV6Copy, t: string, locale: string): string {
   const hh = +t.slice(11, 13);
   const mm = t.slice(14, 16);
-  if (locale === 'pt') return mm === '00' ? `${hh}h` : `${hh}h${mm}`;
+  if (locale === 'pt' || locale === 'fr') return mm === '00' ? `${hh}h` : `${hh}h${mm}`;
   return `${hh}:${mm}`;
 }
 
@@ -190,7 +190,7 @@ export function construirFrase(ctx: ContextoVeredicto) {
       const s = sol[h.t.slice(0, 10)];
       const ate =
         acabaNoite && s
-          ? fmtCopy(c.ateAoPor, { por: locale === 'pt' ? s.por.replace(':', 'h') : s.por })
+          ? fmtCopy(c.ateAoPor, { por: locale === 'pt' || locale === 'fr' ? s.por.replace(':', 'h') : s.por })
           : fmtCopy(c.ateAs, { fim: fimHora(jn.z) });
       l1 = `${fmtCopy(c.bandaPara, { banda: bandaNome(b), d: nomeD })} ${ate}`;
       if (P.logica === 'vento') {

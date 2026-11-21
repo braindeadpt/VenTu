@@ -8,12 +8,10 @@
  * versões de ICU («qui.» vs «quinta») e a régua precisa de largura estável.
  */
 
-const ISO_HOUR = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/;
+import { pickLocale } from '@/lib/i18n';
+import { libMonths, libWeekdays } from '@/lib/translations/lib';
 
-const WEEKDAYS_PT = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sáb'];
-const WEEKDAYS_EN = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-const MONTHS_PT = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
-const MONTHS_EN = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
+const ISO_HOUR = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/;
 
 function parseHourParts(hour: string) {
   const m = ISO_HOUR.exec(hour);
@@ -32,7 +30,7 @@ export function formatWeekday(hour: string, locale: string): string {
   const p = parseHourParts(hour);
   if (!p) return '';
   const dow = new Date(Date.UTC(p.y, p.mo - 1, p.d, 12)).getUTCDay();
-  return (locale === 'pt' ? WEEKDAYS_PT : WEEKDAYS_EN)[dow];
+  return pickLocale(locale, libWeekdays)[dow];
 }
 
 /** 'qui 17' — marcador de dia na régua de 48 h. */
@@ -49,8 +47,7 @@ export function formatHourLong(hour: string, locale: string): string {
   // A data é wall-time local do spot; o weekday vem do dia civil em UTC —
   // determinístico em qualquer máquina.
   const dow = new Date(Date.UTC(p.y, p.mo - 1, p.d, 12)).getUTCDay();
-  const isPt = locale === 'pt';
-  const wd = (isPt ? WEEKDAYS_PT : WEEKDAYS_EN)[dow];
-  const mo = (isPt ? MONTHS_PT : MONTHS_EN)[p.mo - 1];
+  const wd = pickLocale(locale, libWeekdays)[dow];
+  const mo = pickLocale(locale, libMonths)[p.mo - 1];
   return `${wd} ${p.d} ${mo}, ${p.hh}:${p.mm}`;
 }

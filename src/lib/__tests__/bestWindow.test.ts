@@ -10,8 +10,8 @@ describe('formatBestWindowHours', () => {
   it('janela overnight (end < start) leva sufixo amanhã/tomorrow', () => {
     expect(formatBestWindowHours({ start: 23, end: 7 }, 'pt')).toBe('23h–07h (amanhã)');
     expect(formatBestWindowHours({ start: 23, end: 7 }, 'en')).toBe('23h–07h (tomorrow)');
-    // Locale desconhecido → fallback EN (consistente com o resto do produto).
-    expect(formatBestWindowHours({ start: 22, end: 5 }, 'de')).toBe('22h–05h (tomorrow)');
+    // de tem sufixo próprio; locale desconhecido → fallback EN.
+    expect(formatBestWindowHours({ start: 22, end: 5 }, 'de')).toBe('22h–05h (morgen)');
   });
 
   it('janela degenerada (end == start) não diz amanhã', () => {

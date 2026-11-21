@@ -71,7 +71,6 @@ export default function SpotDrawer({
   gridSport = 'all',
   nowMs = null,
 }: SpotDrawerProps) {
-  const isPt = locale === 'pt';
   const t = getTranslation(locale);
   const [selectedSport, setSelectedSport] = useState<SportType>('surf');
 
@@ -196,14 +195,14 @@ export default function SpotDrawer({
               href={detailHref}
               size="md"
               className="flex-1"
-              locale={isPt ? 'pt' : 'en'}
+              locale={locale}
               rightIcon={<ArrowRight className="w-4 h-4" aria-hidden />}
             >
               {t.spotsUi.viewFullPage}
             </Button>
             <FavoriteButton
               spotId={spot.id}
-              spotName={isPt ? spot.name : spot.nameEn}
+              spotName={localizedSpotName(spot, locale)}
               size="md"
               locale={locale}
             />

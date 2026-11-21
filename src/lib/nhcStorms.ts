@@ -8,6 +8,8 @@
  */
 
 import { getAssetPath } from '@/lib/paths';
+import { pickLocale } from '@/lib/i18n';
+import { libStormCardinals } from '@/lib/translations/lib';
 
 export const MAP_STORMS_LS_KEY = 'ventu.map.storms';
 
@@ -108,10 +110,13 @@ export function mphToKmh(mph: number): number {
   return Math.round(mph * 1.60934);
 }
 
-/** Direcção do movimento NHC: graus para onde a tempestade VAI (não «de onde»). */
-export function movementCardinal(deg: number | null, isPt: boolean): string | null {
+/**
+ * Direcção do movimento NHC: graus para onde a tempestade VAI (não «de onde»).
+ * Aceita `locale` ou o `isPt` legado dos call sites ainda não migrados
+ * (true → 'pt', false → 'en'); es/de/fr têm rosa própria em `libStormCardinals`.
+ */
+export function movementCardinal(deg: number | null, locale: string | boolean): string | null {
   if (deg == null || !Number.isFinite(deg)) return null;
-  const pt = ['N', 'NE', 'E', 'SE', 'S', 'SO', 'O', 'NO'];
-  const en = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
-  return (isPt ? pt : en)[Math.round((((deg % 360) + 360) % 360) / 45) % 8];
+  const loc = typeof locale === 'boolean' ? (locale ? 'pt' : 'en') : locale;
+  return pickLocale(loc, libStormCardinals)[Math.round((((deg % 360) + 360) % 360) / 45) % 8];
 }

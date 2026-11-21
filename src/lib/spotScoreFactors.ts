@@ -19,7 +19,7 @@ import { classifyWind, isWindDirectionSport, windSportDirectionSafety } from '@/
 import type { MarineConditionsFields } from '@/lib/marineConditions';
 import { MS_TO_KNOTS } from '@/lib/waveEnergy';
 import { getCardinalLabel } from '@/lib/wind';
-import { getTranslation } from '@/lib/i18n';
+import { getTranslation, pickLocale } from '@/lib/i18n';
 
 export type ScoreFactorKind =
   | 'wind'
@@ -142,7 +142,6 @@ export function getSpotScoreFactors(input: SpotScoreFactorsInput): ScoreFactorSe
   const { spot, conditions, allScores, sport, locale, max = 3 } = input;
   const loc = factorLocale(locale);
   const w = FACTOR_WORDS[loc];
-  const isPt = loc === 'pt';
   const explained = resolveExplainedSport(spot, allScores, sport);
   const score = explained ? allScores[explained] : undefined;
 
@@ -215,7 +214,7 @@ export function getSpotScoreFactors(input: SpotScoreFactorsInput): ScoreFactorSe
       push(renderers.wind());
     } else if (kind === 'other') {
       // Factores qualitativos do scorer (infra wake, etc.) mantêm o texto dele.
-      const text = isPt ? (factorsPt[i] ?? f) : f;
+      const text = pickLocale(locale, { pt: factorsPt[i] ?? f, en: f });
       push({ kind: 'other', label: text, short: text });
     } else {
       push(renderers[kind]());
