@@ -28,7 +28,6 @@ export const dynamicParams = false;
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params;
   const entry = loadDirectoryEntries().find((e) => e.slug === slug);
-  const isPt = locale === 'pt';
   const dv = getTranslation(locale).directory;
   if (!entry) {
     return { title: dv.profile };

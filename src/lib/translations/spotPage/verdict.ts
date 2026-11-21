@@ -59,6 +59,12 @@ export const spotPageVerdict = {
     confidenceInline: 'confiança {tier}',
     /** §1 — «actualizado há 12h» ({age} = «há 12h» de formatStaleAge). */
     updatedAgo: 'actualizado {age}',
+    /** §0 — título da faixa de avisos à navegação costeira (IH). */
+    safetyCoastalTitle: 'Avisos à navegação costeira',
+    /** §0 — link da faixa que abre o mapa fullscreen centrado no spot. */
+    viewOnMap: 'Ver no mapa',
+    /** §0 — link «detalhe» por aviso (abre a fonte externa). */
+    detailsLink: 'detalhe',
   },
   en: {
     sectionTitle: 'Verdict',
@@ -95,6 +101,9 @@ export const spotPageVerdict = {
     windObserved: 'observed wind',
     confidenceInline: '{tier} confidence',
     updatedAgo: 'updated {age}',
+    safetyCoastalTitle: 'Coastal navigation warnings',
+    viewOnMap: 'View on map',
+    detailsLink: 'details',
   },
   es: {
     sectionTitle: 'Veredicto',
@@ -131,6 +140,9 @@ export const spotPageVerdict = {
     windObserved: 'viento observado',
     confidenceInline: 'confianza {tier}',
     updatedAgo: 'actualizado {age}',
+    safetyCoastalTitle: 'Avisos a la navegación costera',
+    viewOnMap: 'Ver en el mapa',
+    detailsLink: 'detalle',
   },
   de: {
     sectionTitle: 'Fazit',
@@ -167,6 +179,9 @@ export const spotPageVerdict = {
     windObserved: 'beobachteter Wind',
     confidenceInline: 'Konfidenz {tier}',
     updatedAgo: 'aktualisiert {age}',
+    safetyCoastalTitle: 'Warnungen für die Küstennavigation',
+    viewOnMap: 'Auf der Karte ansehen',
+    detailsLink: 'Details',
   },
   fr: {
     sectionTitle: 'Verdict',
@@ -203,5 +218,8 @@ export const spotPageVerdict = {
     windObserved: 'vent observé',
     confidenceInline: 'confiance {tier}',
     updatedAgo: 'actualisé {age}',
+    safetyCoastalTitle: 'Avertissements à la navigation côtière',
+    viewOnMap: 'Voir sur la carte',
+    detailsLink: 'détails',
   },
 } as const;

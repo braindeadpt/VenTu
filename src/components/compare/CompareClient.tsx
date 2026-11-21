@@ -16,7 +16,7 @@ import { JanelaNoite, LuaNoite } from '@/components/ui/NoiteJanela';
 import type { SportType } from '@/lib/sportRatings';
 import { SPORT_LABELS } from '@/lib/sportRatings';
 import { getAssetPath } from '@/lib/paths';
-import { validateLocale, localePathPattern } from '@/lib/i18n';
+import { validateLocale, localePathPattern, pickLocale } from '@/lib/i18n';
 import Link from 'next/link';
 import DataSourceBadge from '@/components/ui/DataSourceBadge';
 import FilterPill from '@/components/ui/FilterPill';
@@ -228,7 +228,6 @@ export default function CompareClient() {
     setPicking(urlSlugs.length === 0);
   }, []);
 
-  const isPt = locale === 'pt';
   const cmp = getTranslation(validateLocale(locale)).compare;
   const semDadosTxt = getTranslation(validateLocale(locale)).map.noData;
   const warningsData = useIpmaWarnings();
@@ -418,7 +417,7 @@ export default function CompareClient() {
           {selected && <Check className="w-3 h-3 text-bg-base" />}
         </span>
         <span className="min-w-0">
-          <span className="block text-sm font-medium truncate">{isPt ? spot.name : spot.nameEn}</span>
+          <span className="block text-sm font-medium truncate">{pickLocale(locale, { pt: spot.name, en: spot.nameEn })}</span>
           <span className="block text-xs text-fg-subtle">{spot.region}</span>
         </span>
         {/* Sem aria-hidden: o score é a razão do picker e tem de entrar no
@@ -472,7 +471,7 @@ export default function CompareClient() {
                 active={selectedSport === sport}
                 onClick={() => setSelectedSport(sport)}
               >
-                {SPORT_LABELS[sport][isPt ? 'pt' : 'en']}
+                {pickLocale(locale, SPORT_LABELS[sport])}
               </FilterPill>
             ))}
           </div>
@@ -598,7 +597,8 @@ export default function CompareClient() {
   // no desporto escolhido, a ordem é a da próxima janela (dia, nota, início) e
   // ganha quem tem a melhor janela nas próximas 24 h («Amanhã ganha …»).
   const tn = getTranslation(validateLocale(locale)).noite;
-  const nomeDe = (d: SpotBattleData) => (isPt ? d.spot.name : d.spot.nameEn);
+  const nomeDe = (d: SpotBattleData) =>
+    pickLocale(locale, { pt: d.spot.name, en: d.spot.nameEn });
   const linhaJanelas = (d: SpotBattleData) => ({ spot: d.spot, janelasNoiteBySport: janelas?.porSpot[d.spot.id] });
   const janelaDe = (d: SpotBattleData): JanelaSeguinte | null =>
     janelas ? janelaSeguinte(linhaJanelas(d), selectedSport, janelas.nowMs) : null;
@@ -666,7 +666,7 @@ export default function CompareClient() {
               active={selectedSport === sport}
               onClick={() => setSelectedSport(sport)}
             >
-              {SPORT_LABELS[sport][isPt ? 'pt' : 'en']}
+              {pickLocale(locale, SPORT_LABELS[sport])}
             </FilterPill>
           ))}
         </div>
@@ -684,13 +684,14 @@ export default function CompareClient() {
           <p className={`text-meta-sm font-bold uppercase tracking-wide ${winnerTokens.text} mb-2`}>
             {cmp.winner}
           </p>
-          <h2 className="text-h2 text-fg">{isPt ? winner.spot.name : winner.spot.nameEn}</h2>
+          <h2 className="text-h2 text-fg">{pickLocale(locale, { pt: winner.spot.name, en: winner.spot.nameEn })}</h2>
           <p className="text-fg-muted mt-1">
             {winnerSemDados
               ? semDadosTxt
-              : isPt
-                ? winner.allScores[selectedSport]?.rating
-                : winner.allScores[selectedSport]?.ratingEn}
+              : pickLocale(locale, {
+                  pt: winner.allScores[selectedSport]?.rating,
+                  en: winner.allScores[selectedSport]?.ratingEn,
+                })}
           </p>
           <div className={`text-display-lg font-mono tabular-nums ${winnerTokens.text} mt-4`}>
             {winnerSemDados ? '—' : `${scoreToNota(winnerScore)}/10`}
@@ -728,7 +729,7 @@ export default function CompareClient() {
                   <span className={`text-h2 font-mono tabular-nums ${cardNoite ? 'text-fg-muted' : tokens.text}`}>#{i + 1}</span>
                 </div>
 
-                <h3 className="text-h3 text-fg">{isPt ? data.spot.name : data.spot.nameEn}</h3>
+                <h3 className="text-h3 text-fg">{pickLocale(locale, { pt: data.spot.name, en: data.spot.nameEn })}</h3>
                 <p className="text-meta text-fg-muted">{data.spot.region}</p>
 
                 {warning && (
@@ -783,7 +784,7 @@ export default function CompareClient() {
                             calibration: data.observedWaveCalibration,
                             waveHeight: data.conditions.waveHeight,
                           }}
-                          locale={isPt ? 'pt' : 'en'}
+                          locale={locale}
                         />
                       )}
                     </dd>
@@ -809,7 +810,7 @@ export default function CompareClient() {
                 {data.waveSource === 'observed' && data.observedWaveSource === 'wmo-buoy' ? (
                   <WaveSourceAttributionNote
                     source="wmo-buoy"
-                    locale={isPt ? 'pt' : 'en'}
+                    locale={locale}
                     className="mt-2 block"
                   />
                 ) : null}

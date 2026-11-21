@@ -16,7 +16,7 @@ import {
 } from 'lucide-react';
 import type { VentuEvent, EventSport } from '@/types/events';
 import { safeExternalUrl } from '@/lib/safeUrl';
-import { getTranslation } from '@/lib/i18n';
+import { getTranslation, pickLocale } from '@/lib/i18n';
 
 const sportClass: Record<EventSport, string> = {
   surf: 'bg-data-waves/12 text-data-waves border border-data-waves/25',
@@ -71,9 +71,8 @@ type Props = {
 
 export default function EventCard({ event, locale, compact = false }: Props) {
   const t = getTranslation(locale);
-  const isPt = locale === 'pt';
-  const title = isPt ? event.title : event.titleEn;
-  const summary = isPt ? event.summary : event.summaryEn;
+  const title = pickLocale(locale, { pt: event.title, en: event.titleEn });
+  const summary = pickLocale(locale, { pt: event.summary, en: event.summaryEn });
   const { day, month } = formatDayMonth(event.startDate, locale);
   const href = event.url ? safeExternalUrl(event.url) : null;
   const [imgFailed, setImgFailed] = useState(false);

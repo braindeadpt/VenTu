@@ -1,4 +1,5 @@
 import type { DayGroup } from '@/lib/news';
+import { pickLocale } from '@/lib/i18n';
 import NewsCard from './NewsCard';
 
 interface NewsListGroupedProps {
@@ -7,14 +8,13 @@ interface NewsListGroupedProps {
 }
 
 export default function NewsListGrouped({ groups, locale }: NewsListGroupedProps) {
-  const isPt = locale === 'pt';
 
   return (
     <div className="space-y-10">
       {groups.map(group => (
         <section key={group.date}>
           <h2 className="text-sm font-semibold text-fg-muted uppercase tracking-wide mb-4">
-            {isPt ? group.label : group.labelEn}
+            {pickLocale(locale, { pt: group.label, en: group.labelEn })}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {group.items.map(item => (

@@ -1,3 +1,4 @@
+import { pickLocale } from '@/lib/i18n';
 import type { Spot } from '@/types';
 
 /**
@@ -11,8 +12,7 @@ export function localizedSpotName(
   spot: Pick<Spot, 'name'> & { nameEn?: string | null },
   locale: string,
 ): string {
-  if (locale === 'pt') return spot.name;
-  return spot.nameEn || spot.name;
+  return pickLocale(locale, { pt: spot.name, en: spot.nameEn || spot.name });
 }
 
 function foldDiacritics(s: string): string {
@@ -41,6 +41,5 @@ export function localizedSpotRegion(
   spot: Pick<Spot, 'region'> & { regionEn?: string | null },
   locale: string,
 ): string {
-  if (locale === 'pt') return spot.region;
-  return spot.regionEn || spot.region;
+  return pickLocale(locale, { pt: spot.region, en: spot.regionEn || spot.region });
 }

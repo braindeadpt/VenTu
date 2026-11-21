@@ -1,7 +1,7 @@
 import { getNewsBySlug, newsSlug, getRelatedNews } from '@/lib/news'
 import type { NewsItem } from '@/types'
 import { loadNews } from '@/lib/load-news'
-import { locales, getTranslation, validateLocale } from '@/lib/i18n'
+import { locales, getTranslation, validateLocale, pickLocale } from '@/lib/i18n'
 import { safeExternalUrl } from '@/lib/safeUrl'
 import { jsonLdHtml } from '@/lib/jsonLd'
 import NewsDetailHeader from '@/components/news/NewsDetailHeader'
@@ -35,14 +35,13 @@ export const dynamicParams = false
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params
-  const isPt = locale === 'pt'
   const allNews = await loadNews()
   const news = getNewsBySlug(allNews, slug)
 
   if (!news) return {}
 
-  const title = isPt ? news.title : news.titleEn
-  const description = isPt ? news.summary : news.summaryEn
+  const title = pickLocale(locale, { pt: news.title, en: news.titleEn })
+  const description = pickLocale(locale, { pt: news.summary, en: news.summaryEn })
 
   return {
     title: `${title} — VenTu`,
@@ -79,7 +78,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function NewsDetailPage({ params }: Props) {
   const { locale, slug } = await params
-  const isPt = locale === 'pt'
   const allNews = await loadNews()
   const news = getNewsBySlug(allNews, slug)
 
@@ -91,8 +89,8 @@ export default async function NewsDetailPage({ params }: Props) {
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Article',
-    headline: isPt ? news.title : news.titleEn,
-    description: isPt ? news.summary : news.summaryEn,
+    headline: pickLocale(locale, { pt: news.title, en: news.titleEn }),
+    description: pickLocale(locale, { pt: news.summary, en: news.summaryEn }),
     datePublished: news.publishedAt,
     author: { '@type': 'Organization', name: news.source },
     publisher: { '@type': 'Organization', name: 'VenTu' },
@@ -123,7 +121,7 @@ export default async function NewsDetailPage({ params }: Props) {
       {/* Content */}
       <div className="mt-8 prose prose-sm max-w-none text-fg">
         <p className="text-body-lg leading-relaxed">
-          {isPt ? news.summary : news.summaryEn}
+          {pickLocale(locale, { pt: news.summary, en: news.summaryEn })}
         </p>
       </div>
 

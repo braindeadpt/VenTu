@@ -17,7 +17,6 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale: raw } = await params;
   const locale = validateLocale(raw);
-  const isPt = locale === 'pt';
   return buildPageMetadata({
     locale,
     title: getTranslation(locale).pages.directoryMetaTitle,

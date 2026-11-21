@@ -13,12 +13,21 @@ const path = require('path');
 
 const ROOT = path.join(__dirname, '..', '..');
 
-const SELECTOR =
-  "ConditionalExpression[test.name='isPt']" +
-  ":matches([consequent.type='Literal'][alternate.type='Literal']," +
-  "[consequent.type='TemplateLiteral'][alternate.type='TemplateLiteral'])" +
-  ":not([consequent.value=/^(pt|en|es|de|fr)(-[A-Z]{2})?$/])" +
-  ":not([alternate.value=/^(pt|en|es|de|fr)(-[A-Z]{2})?$/])";
+const LOCALE_CODE = '^(pt|en|es|de|fr)(-[A-Z]{2})?$';
+
+// Qualquer ternário `isPt ? … : …` ou `locale === 'pt' ? … : …` em que nenhum
+// dos ramos é um código de língua — literais, templates, JSX, campos pt/en,
+// chamadas. O selector antigo só media literais/templates e deixava de fora
+// os pares `isPt ? x.pt : x.en` e os blocos JSX bilingues.
+const SELECTORS = [
+  `ConditionalExpression[test.name='isPt']` +
+    `:not([consequent.value=/${LOCALE_CODE}/])` +
+    `:not([alternate.value=/${LOCALE_CODE}/])`,
+  `ConditionalExpression[test.type='BinaryExpression'][test.operator='===']` +
+    `[test.left.name='locale'][test.right.value='pt']` +
+    `:not([consequent.value=/${LOCALE_CODE}/])` +
+    `:not([alternate.value=/${LOCALE_CODE}/])`,
+];
 
 /**
  * @returns {Promise<{files:number, ternaries:number, bySurface:Record<string,number>,
@@ -34,7 +43,10 @@ async function countI18nDebt() {
       {
         files: ['src/**/*.{ts,tsx}'],
         rules: {
-          'no-restricted-syntax': ['error', { selector: SELECTOR, message: 'i18n-debt' }],
+          'no-restricted-syntax': [
+            'error',
+            ...SELECTORS.map((selector) => ({ selector, message: 'i18n-debt' })),
+          ],
         },
       },
     ],
@@ -59,4 +71,4 @@ async function countI18nDebt() {
   return { files: rows.length, ternaries, bySurface, rows, cleanFiles: results.length - rows.length };
 }
 
-module.exports = { countI18nDebt, DEBT_SELECTOR: SELECTOR };
+module.exports = { countI18nDebt, DEBT_SELECTOR: SELECTORS };

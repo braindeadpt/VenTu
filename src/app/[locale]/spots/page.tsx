@@ -12,20 +12,18 @@ import type { Metadata } from 'next'
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
-  const isPt = locale === 'pt'
   const loc = validateLocale(locale)
 
   const title = getTranslation(locale).pages.allSpotsMetaTitle
   const description = getTranslation(locale).pages.spotsMetaDescription
     .replace('{count}', String(SPOT_COUNT))
-    .replace('{schedule}', pipelineSchedule(isPt ? 'pt' : 'en'))
+    .replace('{schedule}', pipelineSchedule(locale))
 
   return buildPageMetadata({ title, description, locale: loc, path: `/${loc}/spots/` })
 }
 
 export default async function SpotsPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params
-  const isPt = locale === 'pt'
   const spotsData = loadSpotListings()
 
   return (

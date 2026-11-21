@@ -173,9 +173,7 @@ export function strongestSpotWarning(
 }
 
 export function ipmaRadarUrl(locale: string): string {
-  return locale === 'pt'
-    ? 'https://www.ipma.pt/pt/otempo/obs.radar/'
-    : 'https://www.ipma.pt/en/otempo/obs.radar/';
+  return pickLocale(locale, libIpmaRadarUrl);
 }
 
 export function warningTypeLabel(type: string, locale: string): string {
@@ -209,5 +207,8 @@ export function relevantWarningsForSpot(
   const list = data?.spotWarnings?.[spotId];
   if (!Array.isArray(list)) return [];
   return list.filter((w) => RELEVANT_WARNING_TYPES.has(w.type));
-}import { getTranslation } from '@/lib/i18n';
+}
+
+import { getTranslation, pickLocale } from '@/lib/i18n';
+import { libIpmaRadarUrl } from '@/lib/translations/lib';
 

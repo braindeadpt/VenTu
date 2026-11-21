@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import type { Spot } from '@/types';
 import { cn } from '@/lib/cn';
+import { pickLocale } from '@/lib/i18n';
 import { getRegionGradientCss, getSpotImage, getSpotImageAlt } from '@/lib/spotImage';
 
 export type SpotImageAspect = 'video' | 'square' | 'hero' | 'band';
@@ -86,7 +87,7 @@ export default function SpotImage({
       {useGradient && (
         <span className="absolute inset-x-0 bottom-0 p-3 pt-8 pointer-events-none">
           <span className="font-display text-body-sm font-semibold text-fg truncate block drop-shadow-sm">
-            {locale === 'pt' ? spot.name : spot.nameEn || spot.name}
+            {pickLocale(locale, { pt: spot.name, en: spot.nameEn || spot.name })}
           </span>
         </span>
       )}

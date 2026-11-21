@@ -7,11 +7,10 @@ import {
   WETSUIT_TEMP_C_MIN,
   WETSUIT_TEMP_C_MAX,
 } from '@/lib/gearCalc';
-import { getTranslation } from '@/lib/i18n';
+import { getTranslation, pickLocale } from '@/lib/i18n';
 import { TOOL_SPOT_OPTIONS, useSpotConditions } from './useSpotConditions';
 
 export default function WetsuitCalculatorClient({ locale }: { locale: string }) {
-  const isPt = locale === 'pt';
   const t = getTranslation(locale);
   const [tempC, setTempC] = useState(17);
   const [windy, setWindy] = useState(false);
@@ -68,7 +67,7 @@ export default function WetsuitCalculatorClient({ locale }: { locale: string }) 
             <option value="">{t.tools.liveWaterLabel}</option>
             {TOOL_SPOT_OPTIONS.map((s) => (
               <option key={s.id} value={s.id}>
-                {isPt ? s.name : s.nameEn}
+                {pickLocale(locale, { pt: s.name, en: s.nameEn })}
               </option>
             ))}
           </select>

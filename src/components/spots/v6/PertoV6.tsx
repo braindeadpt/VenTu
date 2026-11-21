@@ -10,7 +10,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { ExternalLink } from 'lucide-react';
-import { getTranslation } from '@/lib/i18n';
+import { getTranslation, pickLocale } from '@/lib/i18n';
 import { getAssetPath } from '@/lib/paths';
 import { spots } from '@/lib/spots';
 import { fetchMapHours, type MapHoursFile } from '@/lib/mapHours';
@@ -94,7 +94,6 @@ export default function PertoV6({ spot, locale, copy: c, t, sport, nivel = null 
   const tr = getTranslation(locale);
   const tc = tr.spotPageContext;
   const dir = tr.directory;
-  const isPt = locale === 'pt';
   const raiz = useRef<HTMLDivElement>(null);
   const [file, setFile] = useState<MapHoursFile | null>(null);
   const [carregado, setCarregado] = useState(false);
@@ -156,7 +155,7 @@ export default function PertoV6({ spot, locale, copy: c, t, sport, nivel = null 
                 <li key={v.spot.id}>
                   <a href={`/${locale}/spots/${v.spot.slug}/?d=${mod}`} data-spot={v.spot.id}>
                     <span className="nm">
-                      <b>{isPt ? v.spot.name : v.spot.nameEn || v.spot.name}</b>
+                      <b>{pickLocale(locale, { pt: v.spot.name, en: v.spot.nameEn || v.spot.name })}</b>
                       <span className="km">{cn.pertoKm(decimalV6(formatDistance(v.distanceKm, locale), locale), v.nivel)}</span>
                     </span>
                     {typeof v.nota === 'number' && v.score != null ? (
@@ -226,9 +225,9 @@ export default function PertoV6({ spot, locale, copy: c, t, sport, nivel = null 
                         </span>
                       )}
                       <span className="pt-nome">
-                        <b data-nearby-name={s.id}>{isPt ? s.name : s.nameEn}</b>
+                        <b data-nearby-name={s.id}>{pickLocale(locale, { pt: s.name, en: s.nameEn })}</b>
                         <small>
-                          {isPt ? s.region : s.regionEn} · {decimalV6(formatDistance(e.distanceKm, locale), locale)}
+                          {pickLocale(locale, { pt: s.region, en: s.regionEn })} · {decimalV6(formatDistance(e.distanceKm, locale), locale)}
                         </small>
                       </span>
                     </a>
@@ -255,10 +254,10 @@ export default function PertoV6({ spot, locale, copy: c, t, sport, nivel = null 
                 <li key={e.id} className="pt-dir" data-directory-entry={e.id}>
                   {e.source !== 'submitted' ? (
                     <Link href={`/${locale}/diretorio/${e.slug}/`} className="pt-dir-n">
-                      {isPt ? e.name : e.nameEn || e.name}
+                      {pickLocale(locale, { pt: e.name, en: e.nameEn || e.name })}
                     </Link>
                   ) : (
-                    <b className="pt-dir-n">{isPt ? e.name : e.nameEn || e.name}</b>
+                    <b className="pt-dir-n">{pickLocale(locale, { pt: e.name, en: e.nameEn || e.name })}</b>
                   )}
                   <small>
                     {kindLabel(e.kind, locale)} · {decimalV6(formatDistance(e.distanceKm, locale), locale)}
