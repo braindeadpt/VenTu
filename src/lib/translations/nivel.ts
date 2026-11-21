@@ -358,10 +358,9 @@ export function nivelCopy(locale: string): NivelCopy {
 }
 
 /**
- * A cópia do nível na home e no spot v6: a mesma língua que a v6 desenha. A v6 só tem PT e
- * EN (`homeV6Copy`/`spotV6Copy` caem para EN em es/de/fr), por isso o nível também: numa
- * página /es/ a palavra, a frase e o aviso saem em inglês, como o resto do hero.
+ * A cópia do nível na home e no spot v6: a mesma língua que a v6 desenha
+ * (`homeV6Copy`/`spotV6Copy` servem as cinco línguas com fallback en → pt).
  */
 export function nivelCopyV6(locale: string): NivelCopy {
-  return locale === 'pt' ? pt : en;
+  return (NIVEL_COPY as Record<string, NivelCopy>)[locale] ?? en;
 }

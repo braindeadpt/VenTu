@@ -105,12 +105,13 @@ describe('cópia do nível nas 5 línguas', () => {
     expect(nivelCopy('xx')).toBe(NIVEL_COPY.pt);
   });
 
-  it('na home/spot v6 a cópia segue a língua que a v6 desenha (PT ou EN; es/de/fr caem para EN como homeV6Copy)', () => {
+  it('na home/spot v6 a cópia segue a língua que a v6 desenha (as 5 línguas; desconhecida cai para EN)', () => {
     expect(nivelCopyV6('pt')).toBe(NIVEL_COPY.pt);
     for (const lg of ['en', 'es', 'de', 'fr']) {
-      expect(nivelCopyV6(lg), lg).toBe(NIVEL_COPY.en);
-      expect(homeV6Copy(lg), lg).toBe(homeV6Copy('en'));
+      expect(nivelCopyV6(lg), lg).toBe(NIVEL_COPY[lg as keyof typeof NIVEL_COPY]);
     }
+    expect(nivelCopyV6('xx')).toBe(NIVEL_COPY.en);
+    expect(homeV6Copy('xx')).toBe(homeV6Copy('en'));
   });
 
   it('PT: o porquê sai dos perigos da ficha, sem vermelho nem alarme', () => {
