@@ -11,7 +11,7 @@ import FavoriteButton from '@/components/FavoriteButton';
 import SpotAlertPopover from '@/components/spots/SpotAlertPopover';
 import SpotMoreMenu from '@/components/spots/verdict/SpotMoreMenu';
 import { getGoogleMapsDirectionsUrl } from '@/lib/mapSpotDetail';
-import { getTranslation } from '@/lib/i18n';
+import { getTranslation, pickLocale } from '@/lib/i18n';
 import type { SportType } from '@/lib/sportRatings';
 import type { Spot } from '@/types';
 
@@ -29,7 +29,8 @@ export default function SpotAcoesV6({
   livecamLabel?: string;
 }) {
   const tv = getTranslation(locale).spotPageVerdict;
-  const isPt = locale === 'pt';
+  const nome = pickLocale(locale, { pt: spot.name, en: spot.nameEn });
+  const regiao = pickLocale(locale, { pt: spot.region, en: spot.regionEn });
   return (
     <div className="acoes" data-testid="spot-acoes">
       <a className="acao primaria" href={getGoogleMapsDirectionsUrl(spot.lat, spot.lon)} target="_blank" rel="noopener noreferrer">
@@ -53,7 +54,7 @@ export default function SpotAcoesV6({
           label={tv.moreLabel}
           menuLabel={tv.moreMenuLabel}
           shareLabel={tv.shareLabel}
-          shareTitle={`${isPt ? spot.name : spot.nameEn} — ${isPt ? spot.region : spot.regionEn}`}
+          shareTitle={`${nome} — ${regiao}`}
           spotId={spot.id}
           spotName={spot.name}
           locale={locale}
