@@ -46,7 +46,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const spot = getSpotBySlug(slug)
   
   if (!spot) {
-    return { title: 'Spot Not Found' }
+    return { title: 'Spot Not Found — VenTu' }
   }
 
   const isPt = locale === 'pt'

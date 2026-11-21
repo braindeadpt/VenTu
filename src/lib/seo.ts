@@ -123,15 +123,13 @@ function defaultKeywords(locale: Locale): string[] {
 }
 
 /**
- * Strip a brand suffix/prefix already embedded in the title ("— VenTu",
- * "| VenTu", "VenTu — "): the root layout's title.template appends
- * `| VenTu` to every page title, so embedded branding renders doubled.
+ * Strip a leading embedded brand prefix ("VenTu — X"): the root layout's
+ * title.template already appends `| VenTu` in production, so the prefix
+ * renders as "VenTu — X | VenTu". Trailing embedded branding ("X — VenTu")
+ * stays: the e2e static build does not apply the template and needs it.
  */
 function normalizeTitle(title: string): string {
-  return title
-    .replace(/^\s*VenTu\s+[—–|-]\s+/i, '')
-    .replace(/\s+[—–|-]\s*VenTu\s*$/i, '')
-    .trim();
+  return title.replace(/^\s*VenTu\s+[—–|-]\s+/i, '').trim();
 }
 
 export function buildPageMetadata(input: PageSeoInput): Metadata {
