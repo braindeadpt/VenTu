@@ -2,7 +2,7 @@
 
 
 
-import { getTranslation } from '@/lib/i18n';
+import { getTranslation, pickLocale } from '@/lib/i18n';
 import { useEffect, useMemo, useState } from 'react';
 
 import dynamic from 'next/dynamic';
@@ -147,7 +147,6 @@ export default function HomepageMapHero({
   bakedAtMs,
 }: HomepageMapHeroProps) {
 
-  const isPt = locale === 'pt';
   const t = getTranslation(locale);
 
   const isFeatured = variant === 'featured';
@@ -487,7 +486,7 @@ export default function HomepageMapHero({
                 <BestWindowBanner
                   window={bestWindow}
                   spotSlug={heroPick.data.spot.slug}
-                  spotName={isPt ? heroPick.data.spot.name : heroPick.data.spot.nameEn}
+                  spotName={pickLocale(locale, { pt: heroPick.data.spot.name, en: heroPick.data.spot.nameEn })}
                   locale={locale}
                 />
               </div>
