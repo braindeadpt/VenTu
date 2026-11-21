@@ -15,11 +15,16 @@ import { VENTU_TIMEZONE } from '@/lib/timeOfDay';
 const HAS_OFFSET_RE = /(?:[zZ]|[+-]\d{2}:?\d{2})$/;
 const WALL_RE = /^(\d{4}-\d{2}-\d{2})(?:T(\d{2})(?::(\d{2}))?(?::(\d{2})(\.\d{1,9})?)?)?$/;
 
+/** Formatter partilhado — criar Intl.DateTimeFormat por chamada custava
+ *  ~125 ms num render com ~1000 datas (arquivo de avisos). */
+let fmtParts: Intl.DateTimeFormat | null = null;
+
 /** Offset (ms) de Europe/Lisbon para um instante UTC — verão +1h, inverno 0. */
 export function lisbonUtcOffsetMs(utcMs: number): number {
-  const parts = new Intl.DateTimeFormat('en-US', {
+  fmtParts ??= new Intl.DateTimeFormat('en-US', {
     timeZone: VENTU_TIMEZONE,
-    hour12: false,
+    // hourCycle explícito (h23): com hour12 alguns motores escolhem h24 e
+    // devolvem «24:05» para 00:05 — inválido na iteração seguinte.
     hourCycle: 'h23',
     year: 'numeric',
     month: '2-digit',
@@ -27,11 +32,15 @@ export function lisbonUtcOffsetMs(utcMs: number): number {
     hour: '2-digit',
     minute: '2-digit',
     second: '2-digit',
-  }).formatToParts(new Date(utcMs));
+  });
+  const parts = fmtParts.formatToParts(new Date(utcMs));
   const get = (type: string) => parts.find((p) => p.type === type)?.value;
+  const hour = get('hour') === '24' ? '00' : get('hour');
   // 'Z' torna o parse independente do fuso da máquina (CI corre em UTC).
-  const wall = `${get('year')}-${get('month')}-${get('day')}T${get('hour')}:${get('minute')}:${get('second')}`;
-  return new Date(wall + 'Z').getTime() - utcMs;
+  // O input pode ter ms fracionados; o desvio é sempre um inteiro de ms, por
+  // isso o instante é truncado ao segundo antes de subtrair.
+  const wall = `${get('year')}-${get('month')}-${get('day')}T${hour}:${get('minute')}:${get('second')}`;
+  return new Date(wall + 'Z').getTime() - Math.floor(utcMs / 1000) * 1000;
 }
 
 /**
@@ -77,6 +86,39 @@ export function lisbonDateKey(date: Date = new Date()): string {
 }
 
 /**
+ * Formatadores por (locale, opções) — o arquivo de avisos formata ~1000
+ * datas por render; sem cache cada label recriava um Intl.DateTimeFormat.
+ */
+const wallFormatters = new Map<string, Intl.DateTimeFormat>();
+
+function cachedFormatter(localeTag: string, options?: Intl.DateTimeFormatOptions): Intl.DateTimeFormat {
+  const key = options ? `${localeTag}:${JSON.stringify(options)}` : localeTag;
+  let fmt = wallFormatters.get(key);
+  if (!fmt) {
+    fmt = new Intl.DateTimeFormat(localeTag, {
+      timeZone: VENTU_TIMEZONE,
+      ...options,
+    });
+    wallFormatters.set(key, fmt);
+  }
+  return fmt;
+}
+
+/**
+ * Formata uma string wall-time de Lisboa (com hora) no locale pedido — o
+ * instante é Lisboa e a renderização é em Lisboa, certa em qualquer fuso.
+ */
+export function formatLisbonWall(
+  wall: string,
+  localeTag: string,
+  options?: Intl.DateTimeFormatOptions,
+): string {
+  const ms = lisbonWallToMs(wall);
+  if (!Number.isFinite(ms)) return '';
+  return cachedFormatter(localeTag, options).format(new Date(ms));
+}
+
+/**
  * Label de um dia do pipeline ("YYYY-MM-DD", data de Lisboa) no locale do
  * viewer — sempre o dia de Lisboa, independente do fuso do browser.
  * `localeTag` é um BCP-47 tag ('pt-PT', 'en-GB', …).
@@ -88,8 +130,5 @@ export function formatLisbonDay(
 ): string {
   const ms = lisbonWallToMs(`${dateStr}T12:00:00`);
   if (!Number.isFinite(ms)) return dateStr;
-  return new Intl.DateTimeFormat(localeTag, {
-    timeZone: VENTU_TIMEZONE,
-    ...options,
-  }).format(new Date(ms));
+  return cachedFormatter(localeTag, options).format(new Date(ms));
 }
