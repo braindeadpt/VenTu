@@ -1,6 +1,6 @@
 # VenTu
 
-> VenTu (https://ventu.surf) publishes water-sports conditions for Portugal: 189 spots with per-sport scores (surf, kitesurf, windsurf, foil, SUP, wakeboard, bodyboard, big wave), an interactive map, and forecasts refreshed every 2h (day) / 4h (night) from Open-Meteo, IH (Instituto Hidrográfico), IPMA and MeteoAlarm. Free and open source (MIT). Site in Portuguese (default), English, Spanish, German and French; every page has hreflang alternates.
+> VenTu (https://ventu.surf) publishes water-sports conditions for Portugal: 189 spots with per-sport scores (surf, kitesurf, windsurf, foil, SUP, wakeboard, bodyboard, big wave), an interactive map, and forecasts refreshed every 2h (day) / 4h (night) from Open-Meteo, IH (Instituto Hidrográfico), IPMA and MeteoAlarm. Free and open source (MIT). Site in Portuguese (default), English, Spanish, German and French; every page has hreflang alternates. Pages are prerendered static HTML (the interactive map itself renders client-side; spot data is in the JSON feeds below). Scores are 0-100 per sport (80+ epic, 60+ good). Admin, account and auth URLs are noindex.
 
 ## Site (per language: /pt/, /en/, /es/, /de/, /fr/)
 
@@ -37,8 +37,7 @@
 - [Directory (JSON)](https://ventu.surf/data/directory.json): schools and shops
 - [Coastal warnings (JSON)](https://ventu.surf/data/ih-coastal-warnings.json): IH navigation warnings
 
-## Notes for agents
+## Optional
 
-- Static site (GitHub Pages): every URL is prerendered HTML, no JS required to read it.
-- Admin, account and auth URLs are noindex; don't cite them.
-- Scores use a 0-100 scale (80+ epic, 60+ good) computed per sport from wave, wind and tide models.
+- [About the project and scoring method](https://ventu.surf/pt/about/)
+- [Data sources and licences](https://ventu.surf/pt/fontes/)
