@@ -181,8 +181,8 @@ describe('notas /10 e bandas da #210', () => {
       ['pt', 'amanhã', 'amanhã às 10h'],
       ['en', 'tomorrow', 'tomorrow at 10:00'],
       ['es', 'mañana', 'mañana a las 10h'],
-      ['de', 'morgen', 'morgen um 10 Uhr'],
-      ['fr', 'demain', 'demain à 10 h'],
+      ['de', 'morgen', 'morgen um 10 Uhr'],
+      ['fr', 'demain', 'demain à 10 h'],
     ] as const) {
       const c = spotPageV6[lg];
       const q = `${dia} ${c.hora.replace('{h}', '10')}`;
