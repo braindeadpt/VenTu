@@ -37,6 +37,7 @@ const MIGRATED_GLOBS = [
   'src/components/spots/SpotConditionsDashboard.tsx',
   'src/components/spots/TideScheduleStrip.tsx',
   'src/components/spots/MoonTideCard.tsx',
+  'src/components/spots/verdict/SpotSafetyCoastalWarnings.tsx',
   'src/components/layout/InstallPrompt.tsx',
   'src/components/layout/OfflineBanner.tsx',
   'src/components/layout/ThemeToggle.tsx',

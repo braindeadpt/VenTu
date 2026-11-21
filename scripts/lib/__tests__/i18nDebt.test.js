@@ -15,7 +15,7 @@ const { countI18nDebt } = require('../i18nDebt.js');
  * Baixar o `BASELINE` quando fechar dívida (é só subtrair); nunca subir sem
  * justificar no PR — é o ponto do ratchet.
  */
-const BASELINE = 4;
+const BASELINE = 0;
 
 // Uma medição só (o ESLint sobre `src/` leva ~10 s) — partilhada pelos testes.
 const DEBT = await countI18nDebt();
