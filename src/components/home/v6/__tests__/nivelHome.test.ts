@@ -105,10 +105,10 @@ describe('cópia do nível nas 5 línguas', () => {
     expect(nivelCopy('xx')).toBe(NIVEL_COPY.pt);
   });
 
-  it('na home/spot v6 a cópia segue a língua que a v6 desenha (PT ou EN; es/de/fr caem para EN como homeV6Copy)', () => {
+  it('na home/spot v6 a cópia segue a língua que a v6 desenha (PT/EN/ES/DE/FR; homeV6Copy ainda cai para EN)', () => {
     expect(nivelCopyV6('pt')).toBe(NIVEL_COPY.pt);
     for (const lg of ['en', 'es', 'de', 'fr']) {
-      expect(nivelCopyV6(lg), lg).toBe(NIVEL_COPY.en);
+      expect(nivelCopyV6(lg), lg).toBe(NIVEL_COPY[lg as keyof typeof NIVEL_COPY]);
       expect(homeV6Copy(lg), lg).toBe(homeV6Copy('en'));
     }
   });
