@@ -1,7 +1,7 @@
 import { NewsItem } from '@/types';
 import { safeExternalUrl } from '@/lib/safeUrl';
 import { newsCategoryLabel } from '@/lib/newsCategories';
-import { getTranslation } from '@/lib/i18n';
+import { getTranslation, pickLocale } from '@/lib/i18n';
 import { ExternalLink, Clock, Sparkles, Waves, Wind, Trophy, Shield, Newspaper, Mountain, Sailboat, Monitor, Triangle, Zap, AlertTriangle } from 'lucide-react';
 
 interface NewsCardProps {
@@ -43,6 +43,8 @@ const categoryIcons: Record<string, React.ReactNode> = {
 export default function NewsCard({ news, locale, variant = 'grid' }: NewsCardProps) {
   const isPt = locale === 'pt';
   const t = getTranslation(locale).news;
+  const title = pickLocale(locale, { pt: news.title, en: news.titleEn });
+  const summary = pickLocale(locale, { pt: news.summary, en: news.summaryEn });
   const catColor = categoryColors[news.category] || categoryColors.general;
   const catIcon = categoryIcons[news.category] || null;
   // Defense-in-depth: pipeline already drops non-http(s) URLs; never render a
@@ -57,7 +59,7 @@ export default function NewsCard({ news, locale, variant = 'grid' }: NewsCardPro
         </span>
         <div className="min-w-0 flex-1">
           <h4 className="text-sm font-medium text-fg line-clamp-1 leading-snug">
-            {isPt ? news.title : news.titleEn}
+            {title}
           </h4>
           <div className="flex items-center gap-2 mt-0.5">
             <span className="text-xs text-fg-subtle">
@@ -105,11 +107,11 @@ export default function NewsCard({ news, locale, variant = 'grid' }: NewsCardPro
         </div>
 
         <h3 className="text-lg font-semibold text-fg group-hover:text-fg transition-colors line-clamp-2">
-          {isPt ? news.title : news.titleEn}
+          {title}
         </h3>
 
         <p className="text-sm text-fg-muted line-clamp-3 leading-relaxed">
-          {isPt ? news.summary : news.summaryEn}
+          {summary}
         </p>
 
         <div className="flex items-center justify-between pt-2">
