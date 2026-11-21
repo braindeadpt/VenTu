@@ -35,4 +35,11 @@ describe('checkConditionsStale', () => {
     for (const spot of spots) file[spot.id] = fresh();
     expect(checkConditionsStale(file, 30, NOW)).toBe(false);
   });
+
+  it('detects a missing spot past the third index', () => {
+    const file = byAlias();
+    const missing = spots[4];
+    delete file[getConditionsDataId(missing)];
+    expect(checkConditionsStale(file, 30, NOW)).toBe(true);
+  });
 });

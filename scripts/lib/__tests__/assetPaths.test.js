@@ -25,10 +25,12 @@ describe('asset paths', () => {
   it('no absolute /data|/geo fetch() in src — use getAssetPath()', () => {
     const offenders = [];
     for (const file of walk(SRC)) {
-      const lines = fs.readFileSync(file, 'utf-8').split('\n');
-      lines.forEach((line, i) => {
-        if (ABS_FETCH.test(line)) offenders.push(`${path.relative(SRC, file)}:${i + 1}`);
-      });
+      const content = fs.readFileSync(file, 'utf-8');
+      // `\s` cobre `fetch(` e o path separados por newline; reporta a linha do fetch.
+      for (const m of content.matchAll(new RegExp(ABS_FETCH.source, 'g'))) {
+        const line = content.slice(0, m.index).split('\n').length;
+        offenders.push(`${path.relative(SRC, file)}:${line}`);
+      }
     }
     expect(offenders).toEqual([]);
   });
