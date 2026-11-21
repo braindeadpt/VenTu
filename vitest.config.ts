@@ -6,6 +6,8 @@ export default defineConfig({
     environment: 'node',
     include: [
       'src/**/*.test.ts',
+      'worker/src/**/*.test.ts',
+      'scripts/lib/__tests__/assetPaths.test.js',
       'scripts/lib/__tests__/ecowitt.normalize.test.js',
       'scripts/lib/__tests__/metar.test.js',
       'scripts/lib/__tests__/windBlend.test.js',

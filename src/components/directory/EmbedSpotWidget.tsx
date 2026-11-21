@@ -8,6 +8,7 @@ import { getScoreTokens } from '@/lib/sportScore';
 import { allScoresComV6, notaV6DoSpot } from '@/lib/notaV6Agora';
 import { rawToScoreInput } from '@/lib/scoreConditions';
 import { SITE_URL } from '@/lib/site';
+import { getAssetPath } from '@/lib/paths';
 import { getTranslation } from '@/lib/i18n';
 import { scoreTodos } from '@/lib/desportosV6';
 import { SPORT_LABELS } from '@/lib/sportRatings';
@@ -46,7 +47,7 @@ export default function EmbedSpotWidget({ slug }: { slug: string }) {
   useEffect(() => {
     if (!spot) return;
     let cancelled = false;
-    void fetch('/data/conditions.json')
+    void fetch(getAssetPath('/data/conditions.json'))
       .then((r) => (r.ok ? r.json() : null))
       .then((file: ConditionsFile | null) => {
         if (cancelled || !file) return;
