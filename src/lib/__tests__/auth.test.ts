@@ -39,6 +39,10 @@ describe('getAuthCallbackUrl (sem window)', () => {
 });
 
 describe('getSiteOrigin', () => {
+  beforeEach(() => {
+    delete process.env.CI;
+  });
+
   afterEach(() => {
     delete process.env.NEXT_PUBLIC_SITE_URL;
     delete process.env.CI;
