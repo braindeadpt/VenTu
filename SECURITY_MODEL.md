@@ -24,12 +24,12 @@ Fronteiras: internet → Cloudflare/Caddy → apps-01; LAN da loja → app Ofici
 | **Cloud** | `oficinaos-cloud` | Contas, pairing, entitlements Pro, relay WhatsApp (token Meta AES-GCM com `SECRETS_KEY`), portal público `/t/:token`, assinatura remota `/sign/:token`, webhook Meta HMAC. |
 | **Market** | `oficinaos-market` (`src/`, `web/`, `deploy/`) | Marketplace B2B público e multi-tenant: contas (email+NIF), propostas/contratos, RMA, MCP server `src/routes/mcp.ts`, CSRF por `Origin`. |
 | **Diag** | `oficinaos-diag` | App Windows (.NET) com ADB/USB; serve página de teste na rede local; envio opcional de relatórios à Cloud. |
-| **Public Sites** | `VenTu`, `aocentimo`, `oficinaos-website`, `pergunta-ao-ze` | Sem contas. VenTu: worker Cloudflare, Supabase (RLS, alertas por email), pipelines GitHub Actions com push automático, Terraform de headers. pergunta-ao-ze: `app/api/responder` chama LLM. website: formulário beta. |
+| **Public Sites** | `VenTu`, `aocentimo`, `oficinaos-website`, `pergunta-ao-ze` | VenTu tem contas Supabase (magic link, favoritos, check-ins, alertas por email; RLS), worker Cloudflare, pipelines GitHub Actions com push automático, Terraform de headers. Os outros três sites não têm contas. pergunta-ao-ze: `app/api/responder` chama LLM. website: formulário beta. |
 | **Infra** | `braindeadpt/infra` (contexto), `*/deploy/`, `docker-compose*.yml`, `VenTu/terraform/` | Hardening, Tailscale, Caddy, backups restic. |
 
 ## 3. Entradas e quem lhes chega
 
-- Internet anónima: Cloud (`/t/:token`, `/sign/:token`, `/webhooks/whatsapp`, `/pairing/redeem`), Market (registo, teaser público, API, MCP), sites públicos, `pergunta-ao-ze /api/responder`, worker VenTu e RPCs Supabase.
+- Internet anónima: Cloud (`/t/:token`, `/sign/:token`, `/webhooks/whatsapp`, `/pairing/redeem`), Market (registo, teaser público, API, MCP), sites públicos, demo pública do OficinaOS (`compose.demo.yaml` — qualquer um experimenta a Shop App), `pergunta-ao-ze /api/responder`, worker VenTu e RPCs Supabase.
 - Utilizadores autenticados: lojas na Cloud (token de loja), sellers no Market, staff na Shop App (RBAC Owner/Technician/Front Desk).
 - LAN da loja: Shop App inteira, `/setup` (loopback ou `SETUP_TOKEN`), página de teste do Diag.
 - Conteúdo lido por LLMs: canais Discord/Telegram (Meridian), dados da BD (AI Analyst), perguntas do público (Zé).
@@ -59,7 +59,7 @@ Fronteiras: internet → Cloudflare/Caddy → apps-01; LAN da loja → app Ofici
 
 ## 6. Controlos existentes
 
-Cloud/Market atrás de Cloudflare Tunnel + Caddy, zero portas publicadas, contentores `read_only`; webhook Meta com HMAC; tokens Meta cifrados AES-GCM e nunca devolvidos à app; documentos públicos redigidos (`publicDocumentView`); assinatura single-use com rate-limit; CSRF por `Origin` no Market; bots-01 sem portas públicas; vault Fernet/PBKDF2 no Trading-bot; Terraform de CSP/headers no VenTu; RLS no Supabase.
+Cloud/Market atrás de Cloudflare Tunnel + Caddy (o Caddy publica 80/443 — `docker-compose.prod.yml` do Market; `read_only` nos contentores não está confirmado no compose de prod); webhook Meta com HMAC; tokens Meta cifrados AES-GCM e nunca devolvidos à app; documentos públicos redigidos (`publicDocumentView`); assinatura single-use com rate-limit; CSRF por `Origin` no Market; bots-01 sem portas públicas; vault Fernet/PBKDF2 no Trading-bot; Terraform de CSP/headers no VenTu; RLS no Supabase.
 
 ## 7. Fora de âmbito / risco aceite
 
@@ -70,7 +70,7 @@ Cloud/Market atrás de Cloudflare Tunnel + Caddy, zero portas publicadas, conten
 
 ## 8. Questões em aberto
 
-- **[utilizador]** Um dashboard/HTTP dos bots **está exposto à internet** (contradiz `infra` README: bots-01 sem portas públicas). Qual e onde? Até lá, superfícies HTTP dos Bots contam como alcançáveis por A1.
+- **[utilizador]** Um dashboard/HTTP dos bots **está exposto à internet** (contradiz `infra` README: bots-01 sem portas públicas). Host e rota desconhecidos — não se sabe se bots-01 aceita tráfego da internet diretamente ou se há uma rota upstream (tunnel/proxy). Até lá, superfícies HTTP dos Bots contam como alcançáveis por A1.
 
 ## 9. Etiquetas dos findings
 
