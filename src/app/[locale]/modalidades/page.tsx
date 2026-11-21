@@ -42,7 +42,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function ModalidadesPage({ params }: Props) {
   const { locale } = await params
   const t = getTranslation(locale)
-  const isPt = locale === 'pt'
 
   return (
     <div className="min-h-screen bg-bg-base">

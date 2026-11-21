@@ -47,7 +47,6 @@ export const dynamicParams = false
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params
-  const isPt = locale === 'pt'
   const name = sportNames[slug]
   if (!name) return {}
   const tp = getTranslation(locale).pages
@@ -65,7 +64,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ModalidadePage({ params }: Props) {
   const { locale, slug } = await params
-  const isPt = locale === 'pt'
   const tp = getTranslation(locale).pages
   const name = sportNames[slug]
   if (!name) notFound()

@@ -18,7 +18,6 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params
-  const isPt = locale === 'pt'
   const tp = getTranslation(locale).pages
   const loc = validateLocale(locale)
   return buildPageMetadata({
@@ -70,7 +69,6 @@ const seasonData = [
 
 export default async function SazonalidadePage({ params }: Props) {
   const { locale } = await params
-  const isPt = locale === 'pt'
   const t = getTranslation(locale as Locale)
   const tp = getTranslation(locale).pages
 
