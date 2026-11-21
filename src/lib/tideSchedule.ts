@@ -4,6 +4,7 @@
  */
 
 import { DATE_LOCALE } from '@/lib/dataFreshness';
+import { lisbonWallToMs } from '@/lib/lisbonTime';
 import { getTranslation, type Locale } from '@/lib/i18n'
 
 export type TidePhase = 'high' | 'low' | 'rising' | 'falling';
@@ -17,9 +18,8 @@ export interface TideEvent {
   type: 'high' | 'low';
   at: Date;
   /** Hora de origem, tal como veio (ISO sem fuso, wall-time de Lisboa).
-   *  Chave para casar eventos com horas: `at` é um parse local e colide na
-   *  mudança de hora do fuso do browser (a hora que não existe salta para
-   *  a seguinte) — o texto não muda com o fuso. */
+   *  Chave para casar eventos com horas: o texto não muda com o fuso do
+   *  browser (e `at` já é o instante real de Lisboa via lisbonWallToMs). */
   time?: string;
 }
 
@@ -41,7 +41,12 @@ const EXTREMA_WINDOW = 2;
 const MIN_EXTREMA_DELTA = 0.06;
 
 function parseTime(iso: string): Date {
-  return new Date(iso);
+  // As horas da maré são wall-time de Lisboa (sem offset): `new Date(iso)`
+  // parseava no fuso do browser e «a próxima maré» saía deslocada — e nas
+  // mudanças de hora dois instantes colapsavam — para viewers fora de
+  // Europe/Lisbon. `lisbonWallToMs` devolve o instante real, DST-aware.
+  const ms = lisbonWallToMs(iso);
+  return Number.isFinite(ms) ? new Date(ms) : new Date(iso);
 }
 
 /** Local maxima/minima on hourly curve (MSL-relative metres). */

@@ -31,10 +31,12 @@ export default function CoastalDailyActiveChart({
         aria-label={t.dailyChartAria}
       >
         {dailyActive.map((d) => {
-          const dt = new Date(`${d.date}T12:00:00`);
+          // `d.date` é um dia de Lisboa — a label deve ser o dia do pipeline,
+          // não do fuso do browser.
+          const loc = DATE_LOCALE[locale] ?? 'en-GB';
           const hpx = d.count > 0 ? Math.max(8, Math.round((d.count / maxCount) * 72)) : 3;
-          const full = dt.toLocaleDateString(DATE_LOCALE[locale] ?? 'en-GB');
-          const short = dt.toLocaleDateString(DATE_LOCALE[locale] ?? 'en-GB', {
+          const full = formatLisbonDay(d.date, loc);
+          const short = formatLisbonDay(d.date, loc, {
             day: '2-digit',
             month: '2-digit',
           });
@@ -62,4 +64,5 @@ export default function CoastalDailyActiveChart({
   );
 }import { getTranslation } from '@/lib/i18n';
 import { DATE_LOCALE } from '@/lib/dataFreshness';
+import { formatLisbonDay } from '@/lib/lisbonTime';
 

@@ -1,6 +1,7 @@
 'use client';
 
 import { DATE_LOCALE } from '@/lib/dataFreshness';
+import { lisbonWallToDate, lisbonWallToMs } from '@/lib/lisbonTime';
 import { getTranslation } from '@/lib/i18n';
 import { startTransition, useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import type L from 'leaflet';
@@ -1380,7 +1381,7 @@ export function useMapLayers({
   const anyActiveWarning =
     ipmaWarnings == null
       ? null
-      : ipmaWarnings.warnings.some((w) => !w.endTime || Date.parse(w.endTime) > Date.now());
+      : ipmaWarnings.warnings.some((w) => !w.endTime || lisbonWallToMs(w.endTime) > Date.now());
   const warnAreasUnavailable =
     warnAreasData === null ||
     anyActiveWarning === false ||
@@ -1419,6 +1420,7 @@ export function useMapLayers({
       month: 'short',
       hour: '2-digit',
       minute: '2-digit',
+      timeZone: 'Europe/Lisbon',
     });
     const group = Leaflet.layerGroup();
     for (const hit of warnAreaHits) {
@@ -1427,7 +1429,7 @@ export function useMapLayers({
         .slice()
         .sort((a, b) => a.type.localeCompare(b.type))
         .map((w) => {
-          const until = w.endTime ? ` — ${hourFmt.format(new Date(w.endTime))}` : '';
+          const until = w.endTime ? ` — ${hourFmt.format(lisbonWallToDate(w.endTime))}` : '';
           return `${escapeHtml(warningTypeLabel(w.type, locale))} · ${escapeHtml(warningLevelLabel(w.level, locale))}${escapeHtml(until)}`;
         });
       const tooltipHtml = `<b>${escapeHtml(hit.group.label)}</b><br>${lines.join('<br>')}`;

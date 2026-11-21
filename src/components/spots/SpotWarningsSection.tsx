@@ -1,6 +1,7 @@
 'use client';
 
 import { DATE_LOCALE } from '@/lib/dataFreshness';
+import { formatLisbonWall } from '@/lib/lisbonTime';
 import { getTranslation } from '@/lib/i18n';
 import { useEffect, useState } from 'react';
 import { AlertTriangle, CloudRain, ExternalLink } from 'lucide-react';
@@ -18,9 +19,10 @@ import CoastalNavWarnings from '@/components/spots/CoastalNavWarnings';
 
 function formatEndDate(iso: string | undefined, locale: string): string {
   if (!iso) return '';
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return '';
-  return d.toLocaleDateString(DATE_LOCALE[locale] ?? 'en-GB', {
+  // `endTime` do IPMA é wall-time de Lisboa sem desvio — `new Date(iso)`
+  // parseava no fuso do browser e depois renderizava local: em Auckland
+  // «até 18:00» aparecia como «até 05:00».
+  return formatLisbonWall(iso, DATE_LOCALE[locale] ?? 'en-GB', {
     weekday: 'short',
     day: 'numeric',
     month: 'short',

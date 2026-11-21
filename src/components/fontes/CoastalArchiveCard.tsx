@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { Anchor } from 'lucide-react'
 import { getAssetPath } from '@/lib/paths'
 import { getTranslation } from '@/lib/i18n'
+import { formatLisbonDay } from '@/lib/lisbonTime'
 import {
   parseCoastalWarningsArchive,
   type CoastalWarningsArchiveData,
@@ -71,7 +72,7 @@ export default function CoastalArchiveCard({ locale, baked }: CoastalArchiveCard
   if (!archive?.hasData) return null
 
   const fmt = (d: string) =>
-    new Date(`${d}T12:00:00`).toLocaleDateString(isPt ? 'pt-PT' : 'en-GB')
+    formatLisbonDay(d, isPt ? 'pt-PT' : 'en-GB')
 
   return (
     <div className="card-1 p-6 space-y-4" data-coastal-archive-fontes>

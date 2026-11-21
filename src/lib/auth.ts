@@ -1,5 +1,7 @@
 /** Auth helpers — magic link (Supabase Auth) */
 
+import { locales } from './i18n';
+
 export function getSiteOrigin(): string {
   if (typeof window !== 'undefined') return window.location.origin;
   const env = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, '');
@@ -16,7 +18,7 @@ export function getSiteOrigin(): string {
 }
 
 export function getAuthCallbackUrl(locale: string): string {
-  const loc = locale === 'en' ? 'en' : 'pt';
+  const loc = (locales as readonly string[]).includes(locale) ? locale : 'pt';
   return `${getSiteOrigin()}/${loc}/auth/callback/`;
 }
 
