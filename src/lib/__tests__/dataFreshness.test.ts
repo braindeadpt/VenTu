@@ -66,7 +66,10 @@ describe('formatForecastUpdatedAt — "hoje" é o dia de Lisboa', () => {
   // 2026-08-15T22:30Z é 23:30 em Lisboa (dia 15) mas dia 16 em Auckland.
   const ts = new Date('2026-08-15T22:30:00Z').getTime();
   const nextLisbonDay = new Date('2026-08-15T23:30:00Z').getTime(); // 00:30 LIS dia 16
-  const lisbonDay15Now = new Date('2026-08-15T12:00:00Z').getTime(); // 13:00 LIS dia 15
+  // 11:00Z = 12:00 Lisboa dia 15, mas em Auckland ainda é dia 15
+  // (23:00) enquanto o ts já é dia 16 — a comparação no fuso local (o bug
+  // original) dizia «outro dia» e este teste falhava.
+  const lisbonDay15Now = new Date('2026-08-15T11:00:00Z').getTime();
 
   it('viewer em Auckland: updatedAt e now no mesmo dia de Lisboa → "às"', () => {
     const prevTz = process.env.TZ;
@@ -104,14 +107,14 @@ describe('isDawnPatrolStale', () => {
     const prevTz = process.env.TZ;
     try {
       process.env.TZ = 'Pacific/Auckland';
-      // Mock de "agora": 2026-08-16T20:00Z. O DP de 2026-08-16 (meio-dia
-      // Lisboa = 11:00Z) tem ~9h → fresco, em qualquer fuso.
+      // Mock de "agora": 2026-08-17T10:00Z. O DP de 2026-08-16 (meio-dia
+      // Lisboa = 11:00Z) tem 23h → fresco. Com o código antigo, em Auckland
+      // (UTC+12) meio-dia local era 2026-08-16T00:00Z → 34h → stale: este
+      // teste falhava antes do fix.
       vi.useFakeTimers();
-      vi.setSystemTime(new Date('2026-08-16T20:00:00Z'));
+      vi.setSystemTime(new Date('2026-08-17T10:00:00Z'));
       expect(isDawnPatrolStale('2026-08-16')).toBe(false);
       expect(isDawnPatrolStale('2026-08-15')).toBe(true);
-      // Antes do fix, em Auckland (UTC+12) o mesmo input media a data no
-      // fuso local e podia ficar stale horas mais cedo.
     } finally {
       vi.useRealTimers();
       if (prevTz === undefined) delete process.env.TZ;
