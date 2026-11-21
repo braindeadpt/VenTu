@@ -110,18 +110,18 @@ export function formatObservedClockTime(observedAt: string, locale: string): str
 /** Human-readable age since IPMA snapshot. */
 export function formatObservedAge(observedAt: string, locale: string): string {
   const ms = Date.now() - new Date(observedAt).getTime();
-  if (!Number.isFinite(ms) || ms < 0) return locale === 'pt' ? 'agora' : 'just now';
+  const t = pickLocale(locale, libObservedAge);
+  if (!Number.isFinite(ms) || ms < 0) return t.now;
 
   const mins = Math.floor(ms / 60_000);
   if (mins < 60) {
-    return locale === 'pt' ? `há ${mins} min` : `${mins} min ago`;
+    return t.mins.replace('{m}', String(mins));
   }
   const hours = Math.floor(mins / 60);
   const rem = mins % 60;
-  if (locale === 'pt') {
-    return rem > 0 ? `há ${hours}h${rem}m` : `há ${hours}h`;
-  }
-  return rem > 0 ? `${hours}h ${rem}m ago` : `${hours}h ago`;
+  return rem > 0
+    ? t.hoursMins.replace('{h}', String(hours)).replace('{m}', String(rem))
+    : t.hours.replace('{h}', String(hours));
 }
 
 export function forecastWindKtFromMs(windSpeedMs: number): number {
@@ -131,7 +131,7 @@ export function forecastWindKtFromMs(windSpeedMs: number): number {
 export function observedSourceLabel(source: ObservedSource, locale: string): string {
   if (source === 'ecowitt') return 'Ecowitt';
   if (source === 'metar') return 'METAR';
-  return locale === 'pt' ? 'IPMA' : 'IPMA';
+  return 'IPMA';
 }
 
 export function observedSectionTitle(
@@ -151,5 +151,6 @@ export function observedWindDisclaimer(source: ObservedSource, locale: string): 
   if (source === 'ecowitt') return t.disclaimerEcowitt;
   if (source === 'metar') return t.disclaimerMetar;
   return t.disclaimerIpmaLand;
-}import { getTranslation } from '@/lib/i18n';
+}import { getTranslation, pickLocale } from '@/lib/i18n';
+import { libObservedAge } from '@/lib/translations/lib';
 

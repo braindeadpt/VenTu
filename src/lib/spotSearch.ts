@@ -1,4 +1,5 @@
 import { spots } from '@/lib/spots'
+import { pickLocale } from '@/lib/i18n'
 import { getCompatibleSports, type SportType } from '@/lib/sportRatings'
 import type { Spot } from '@/types'
 
@@ -22,7 +23,6 @@ export function searchSpots({
   limit = 8,
   includeSport = true,
 }: SpotSearchOptions): Spot[] {
-  const isPt = locale === 'pt'
   const q = normalize(query.trim())
 
   if (!q) {
@@ -44,8 +44,8 @@ export function searchSpots({
 
   return spots
     .filter((spot) => {
-      const name = normalize(isPt ? spot.name : spot.nameEn)
-      const region = normalize(isPt ? spot.region : spot.regionEn)
+      const name = normalize(pickLocale(locale, { pt: spot.name, en: spot.nameEn || spot.name }))
+      const region = normalize(pickLocale(locale, { pt: spot.region, en: spot.regionEn || spot.region }))
       const slug = normalize(spot.slug)
 
       if (name.includes(q) || region.includes(q) || slug.includes(q)) {

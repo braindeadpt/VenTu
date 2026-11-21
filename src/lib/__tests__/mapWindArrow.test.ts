@@ -167,8 +167,8 @@ describe('wind ring marker', () => {
       level: 'orange',
       label: 'Mar perigoso',
     });
-    // Locales fora de pt usam o rótulo EN do nível (Orange), nunca a key crua.
-    expect(de).toContain('IPMA warning: Mar perigoso (Orange)');
+    // de tem prefixo próprio; o nível vem localizado (Orange), nunca a key crua.
+    expect(de).toContain('IPMA-Warnung: Mar perigoso (Orange)');
     expect(de).not.toContain('(orange)');
   });
 
