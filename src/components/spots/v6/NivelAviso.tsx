@@ -17,6 +17,7 @@ import Ondas, { ondasDe } from '@/components/v6/Ondas';
 import { bandaDe, type Modalidade } from '@/lib/modalidades';
 import { bandaVars } from '@/lib/v6Tokens';
 import { spotTagEn } from '@/lib/spotTagsEn';
+import { pickLocale } from '@/lib/i18n';
 import type { NivelUtilizador } from '@/lib/mapDifficulty';
 import type { NivelCopy } from '@/lib/translations/nivel';
 import type { VizinhoDoNivel } from '@/lib/vizinhosNivel';
@@ -64,7 +65,6 @@ export default function NivelAviso({ spot, d, nivel, nivelSpot, modo, vizinhos, 
     );
   }
   if (!nivel) return null;
-  const isPt = locale === 'pt';
   return (
     <div className="nv-av" data-testid="spot-nivel" data-estado="acima">
       <span className="nv-tag" role="note">
@@ -81,7 +81,7 @@ export default function NivelAviso({ spot, d, nivel, nivelSpot, modo, vizinhos, 
               <span>{cn.pertoChips}</span>
               {vizinhos.map((v) => (
                 <a key={v.spot.id} className="ch" href={`/${locale}/spots/${v.spot.slug}/?d=${d}`} data-spot={v.spot.id}>
-                  {isPt ? v.spot.name : v.spot.nameEn || v.spot.name}
+                  {pickLocale(locale, { pt: v.spot.name, en: v.spot.nameEn || v.spot.name })}
                   {typeof v.nota === 'number' ? (
                     <span className="nota" style={bandaVars(bandaDe(v.nota)) as CSSProperties}>
                       {v.nota}

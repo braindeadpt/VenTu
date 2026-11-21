@@ -17,7 +17,7 @@ import Link from 'next/link';
 import type { Spot } from '@/types';
 import type { VentuEvent } from '@/types/events';
 import type { SpotLocalTips } from '@/lib/spotTips';
-import { getTranslation } from '@/lib/i18n';
+import { getTranslation, pickLocale } from '@/lib/i18n';
 import { getSpotLivecam } from '@/lib/spotLivecams';
 import { getSpotWeatherlink, getWeatherlinkEmbedUrl, getWeatherlinkPageUrl } from '@/lib/spotWeatherlink';
 import { getDifficultyLabel, nivelDoSpot, type NivelUtilizador } from '@/lib/mapDifficulty';
@@ -31,6 +31,7 @@ import type { SportType } from '@/lib/sportRatings';
 import { spotV6Copy, type SpotPageV6Copy } from '@/lib/translations/spotPage/v6';
 import AvisosV6 from './AvisosV6';
 import PertoV6 from './PertoV6';
+import { LOCALE_TAGS } from './boiaFmt';
 
 export interface SpotContextoV6Props {
   spot: Spot;
@@ -70,25 +71,36 @@ export function nivelTexto(spot: Spot, sport: SportType, locale: string): string
   return getDifficultyLabel(lv, locale);
 }
 
+type FichaAguaMap = Partial<Record<'pt' | 'en' | 'es' | 'de' | 'fr', Record<string, string>>> & {
+  pt: Record<string, string>;
+  en: Record<string, string>;
+};
+
+/** Rótulos da ficha de qualidade da água (chaves = vocabulário pt e en dos dados). */
+const FICHA_AGUA: FichaAguaMap = {
+  pt: { excelente: 'Excelente', boa: 'Boa', razoavel: 'Razoável', 'má': 'Má', excellent: 'Excelente', good: 'Boa', fair: 'Razoável', poor: 'Má' },
+  en: { excelente: 'Excellent', boa: 'Good', razoavel: 'Fair', 'má': 'Poor', excellent: 'Excellent', good: 'Good', fair: 'Fair', poor: 'Poor' },
+  es: { excelente: 'Excelente', boa: 'Buena', razoavel: 'Aceptable', 'má': 'Mala', excellent: 'Excelente', good: 'Buena', fair: 'Aceptable', poor: 'Mala' },
+  de: { excelente: 'Ausgezeichnet', boa: 'Gut', razoavel: 'Ausreichend', 'má': 'Mangelhaft', excellent: 'Ausgezeichnet', good: 'Gut', fair: 'Ausreichend', poor: 'Mangelhaft' },
+  fr: { excelente: 'Excellente', boa: 'Bonne', razoavel: 'Acceptable', 'má': 'Mauvaise', excellent: 'Excellente', good: 'Bonne', fair: 'Acceptable', poor: 'Mauvaise' },
+};
+
 /** Qualidade da água balnear (APA InfoÁgua / Bandeira Azul / ficha do spot), em chips v6. */
 function Agua({ spot, locale, viva }: { spot: Spot; locale: string; viva?: WaterQualityLive }) {
-  const isPt = locale === 'pt';
   const t = getTranslation(locale).spotPageContext;
   const classes: Record<number, string> = { 1: t.wqClassExcellent, 2: t.wqClassGood, 3: t.wqClassSufficient, 4: t.wqClassPoor };
-  const ficha: Record<string, string> = {
-    excelente: 'Excelente', boa: 'Boa', razoavel: 'Razoável', 'má': 'Má',
-    excellent: 'Excellent', good: 'Good', fair: 'Fair', poor: 'Poor',
-  };
+  const ficha = pickLocale(locale, FICHA_AGUA);
   const classe = viva?.annualClass ? classes[viva.annualClass] : null;
-  const q = isPt ? spot.waterQuality : spot.waterQualityEn;
+  const q = pickLocale(locale, { pt: spot.waterQuality, en: spot.waterQualityEn });
   const qTxt = !classe && q ? ficha[q] : null;
   const epoca = viva ? waterQualityInSeason(viva, Date.now()) : false;
   const conselho = epoca && viva && (viva.advice === 1 || viva.advice === 2) ? viva.advice : null;
   const bandeira = viva?.blueFlag || (!viva && spot.blueFlag);
   const acessivel = spot.accessibleBeach || viva?.accessible;
   if (!bandeira && !classe && !qTxt && conselho == null && !(epoca && viva?.advice === 0) && !viva?.alerts?.length && !acessivel && !viva) return null;
-  const km = new Intl.NumberFormat(isPt ? 'pt-PT' : 'en-GB', { maximumFractionDigits: 1 });
-  const dia = new Intl.DateTimeFormat(isPt ? 'pt-PT' : 'en-GB', { day: 'numeric', month: 'short' });
+  const lang = LOCALE_TAGS[locale] ?? 'en-GB';
+  const km = new Intl.NumberFormat(lang, { maximumFractionDigits: 1 });
+  const dia = new Intl.DateTimeFormat(lang, { day: 'numeric', month: 'short' });
   return (
     <div className="ctx-item" data-ctx="agua">
       <h3 className="ctx-rot">{t.waterQuality}</h3>
@@ -112,8 +124,8 @@ function Agua({ spot, locale, viva }: { spot: Spot; locale: string; viva?: Water
           </span>
         ) : null}
         {viva?.alerts?.map((a, i) => (
-          <span key={i} className="ec-chip da" title={[isPt ? a.advicePt : a.adviceEn, a.date].filter(Boolean).join(' · ') || undefined} data-water-alert="true">
-            {isPt ? a.namePt : a.nameEn}
+          <span key={i} className="ec-chip da" title={[pickLocale(locale, { pt: a.advicePt, en: a.adviceEn }), a.date].filter(Boolean).join(' · ') || undefined} data-water-alert="true">
+            {pickLocale(locale, { pt: a.namePt, en: a.nameEn })}
           </span>
         ))}
         {acessivel ? <span className="ec-chip">{t.wqAccessible}</span> : null}
@@ -134,13 +146,12 @@ function Agua({ spot, locale, viva }: { spot: Spot; locale: string; viva?: Water
 function dataEvento(iso: string, locale: string) {
   const [y, m, d] = iso.split('-').map(Number);
   const dt = new Date(Date.UTC(y, m - 1, d, 12));
-  const f = (o: Intl.DateTimeFormatOptions) => new Intl.DateTimeFormat(locale === 'pt' ? 'pt-PT' : 'en-GB', { ...o, timeZone: 'UTC' }).format(dt);
+  const f = (o: Intl.DateTimeFormatOptions) => new Intl.DateTimeFormat(LOCALE_TAGS[locale] ?? 'en-GB', { ...o, timeZone: 'UTC' }).format(dt);
   return { dia: f({ day: '2-digit' }), mes: f({ month: 'short' }).replace('.', '') };
 }
 
 function Eventos({ lista, locale, c }: { lista: readonly VentuEvent[]; locale: string; c: SpotPageV6Copy }) {
   const t = getTranslation(locale);
-  const isPt = locale === 'pt';
   return (
     <div className="ctx-bloco ctx-eventos" role="group" aria-labelledby="spot-upcoming-events">
       <h2 className="ctx-t" id="spot-upcoming-events">
@@ -166,7 +177,7 @@ function Eventos({ lista, locale, c }: { lista: readonly VentuEvent[]; locale: s
                   </span>
                   {e.free === true ? <span>{c.eventoGratis}</span> : null}
                 </p>
-                <h3 className="ev-t">{isPt ? e.title : e.titleEn}</h3>
+                <h3 className="ev-t">{pickLocale(locale, { pt: e.title, en: e.titleEn })}</h3>
                 <p className="ctx-nota">{e.location}</p>
                 {href ? (
                   <a className="ctx-link" href={href} target="_blank" rel="noopener noreferrer">
@@ -191,14 +202,13 @@ function temTexto(v: string | undefined | null): v is string {
 
 export default function SpotContextoV6({ spot, locale, events, dicas, aguaViva, t: hora, sport, nivel = null }: SpotContextoV6Props) {
   const c6 = spotV6Copy(locale);
-  const isPt = locale === 'pt';
   const t = getTranslation(locale);
   const td = t.spotDetail;
   const tc = t.spotPageContext;
   const tl = t.localTips;
 
   const cam = getSpotLivecam(spot.slug);
-  const camTitulo = cam ? (isPt ? cam.labelPt : cam.labelEn) : '';
+  const camTitulo = cam ? pickLocale(locale, { pt: cam.labelPt, en: cam.labelEn }) : '';
   const camEmbed =
     cam?.kind === 'youtube' && cam.youtubeId
       ? `https://www.youtube-nocookie.com/embed/${cam.youtubeId}?rel=0&playsinline=1`
@@ -214,24 +224,32 @@ export default function SpotContextoV6({ spot, locale, events, dicas, aguaViva, 
         : t.layout.livecamGeneric.replace('{provider}', cam.provider);
 
   const est = getSpotWeatherlink(spot.slug);
-  const estTitulo = est ? (isPt ? est.labelPt : est.labelEn) : '';
+  const estTitulo = est ? pickLocale(locale, { pt: est.labelPt, en: est.labelEn }) : '';
 
   // Dicas locais: a melhor maré e os perigos já estão no «Estudar o spot»
   // (melhorMare / atencao): aqui só o que lá não está.
-  const estacionar = isPt
-    ? dicas?.parking || spot.localTips?.parking
-    : dicas?.parkingEn || dicas?.parking || spot.localTips?.parkingEn;
-  const comer = isPt ? dicas?.food || spot.localTips?.food : dicas?.foodEn || dicas?.food || spot.localTips?.foodEn;
-  const dormir = isPt
-    ? dicas?.accommodation ?? spot.localTips?.accommodation
-    : dicas?.accommodationEn ?? dicas?.accommodation ?? spot.localTips?.accommodationEn ?? spot.localTips?.accommodation;
-  const regra = isPt
-    ? dicas?.localRule ?? spot.localTips?.localRule
-    : dicas?.localRuleEn ?? dicas?.localRule ?? spot.localTips?.localRuleEn;
-  const instalacoes = spot.facilities?.length ? spot.facilities.map((f) => (isPt ? f : spotTagEn(f))).join(' · ') : null;
+  const estacionar = pickLocale(locale, {
+    pt: dicas?.parking || spot.localTips?.parking,
+    en: dicas?.parkingEn || dicas?.parking || spot.localTips?.parkingEn,
+  });
+  const comer = pickLocale(locale, {
+    pt: dicas?.food || spot.localTips?.food,
+    en: dicas?.foodEn || dicas?.food || spot.localTips?.foodEn,
+  });
+  const dormir = pickLocale(locale, {
+    pt: dicas?.accommodation ?? spot.localTips?.accommodation,
+    en: dicas?.accommodationEn ?? dicas?.accommodation ?? spot.localTips?.accommodationEn ?? spot.localTips?.accommodation,
+  });
+  const regra = pickLocale(locale, {
+    pt: dicas?.localRule ?? spot.localTips?.localRule,
+    en: dicas?.localRuleEn ?? dicas?.localRule ?? spot.localTips?.localRuleEn,
+  });
+  const instalacoes = spot.facilities?.length
+    ? spot.facilities.map((f) => pickLocale(locale, { pt: f, en: spotTagEn(f) })).join(' · ')
+    : null;
 
-  const regiao = isPt ? spot.region : spot.regionEn;
-  const sobre = isPt ? spot.description : spot.descriptionEn;
+  const regiao = pickLocale(locale, { pt: spot.region, en: spot.regionEn });
+  const sobre = pickLocale(locale, { pt: spot.description, en: spot.descriptionEn });
   const mapaUrl = `/${locale}/mapa/?lat=${spot.lat}&lon=${spot.lon}`;
   const proximos = eventsForSpot([...events], spot.id);
 

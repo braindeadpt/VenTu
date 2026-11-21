@@ -34,7 +34,7 @@ import {
   type ObservedWaveMeta,
 } from '@/lib/observedWave';
 import { ATTRIBUTIONS, waveSourceAttributionId } from '@/lib/dataSources';
-import { getTranslation } from '@/lib/i18n';
+import { getTranslation, pickLocale } from '@/lib/i18n';
 import { fmtNum } from '@/lib/spotVeredicto';
 import { spotV6Copy } from '@/lib/translations/spotPage/v6';
 import BoiaSkillV6 from './BoiaSkillV6';
@@ -80,7 +80,6 @@ export default function BoiaV6({ spotId, locale, c, agoraMs }: BoiaV6Props) {
   const tv = t.spotVerify;
   const tsu = t.spotsUi;
   const ms = t.spotMedeSabe;
-  const isPt = locale === 'pt';
   const agora = agoraMs ?? Date.now();
   const d = (s: string) => decimalV6(s, locale);
   const m1 = (x: number) => `${fmtNum(x, locale)} m`;
@@ -335,7 +334,7 @@ export default function BoiaV6({ spotId, locale, c, agoraMs }: BoiaV6Props) {
       <footer className="ec-fonte">
         <p data-data-source={fonteId}>
           <b>{tv.measurementSource}</b>
-          {isPt ? ATTRIBUTIONS[fonteId].notePt : ATTRIBUTIONS[fonteId].noteEn}
+          {pickLocale(locale, { pt: ATTRIBUTIONS[fonteId].notePt, en: ATTRIBUTIONS[fonteId].noteEn })}
         </p>
         <p title={observedWaveDisclaimer(locale, w.source)}>{w.source === 'wmo-buoy' ? ms.discWmo : ms.discIh}</p>
       </footer>
