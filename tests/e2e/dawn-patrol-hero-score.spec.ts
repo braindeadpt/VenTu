@@ -46,7 +46,7 @@ function dawnPatrolFixture(overrides: Record<string, unknown> = {}): Record<stri
   };
 }
 
-test.describe('Dawn Patrol — score recalibrado no hero', () => {
+test.describe('Dawn Patrol — score recalibrado no hero', { tag: '@core' }, () => {
   test.use({ serviceWorkers: 'block' });
 
   test.beforeEach(async ({ page }) => {

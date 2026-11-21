@@ -1,4 +1,11 @@
+/** Cloudflare Rate Limiting binding ([[unsafe.bindings]] type = "ratelimit"). */
+interface RateLimiterBinding {
+  limit(options: { key: string }): Promise<{ success: boolean }>;
+}
+
 export interface Env {
+  /** Global rate limiter binding; when absent, falls back to per-colo cache. */
+  RATE_LIMITER?: RateLimiterBinding;
   ECOWITT_APPLICATION_KEY: string;
   ECOWITT_API_KEY: string;
   ECOWITT_MAC: string;
@@ -382,12 +389,29 @@ function cors(origin: string | null, allowed: string): Record<string, string> {
 }
 
 /**
- * S6: fixed-window per-IP rate limit using caches.default (shared per colo).
- * Best-effort — a distributed limit (KV / rate-limiting rule) would be exact,
- * but this already stops casual abuse and hammering of upstream APIs.
+ * S6: fixed-window per-IP rate limit.
+ * With a RATE_LIMITER binding (Cloudflare Rate Limiting rule, wrangler.toml)
+ * the count is global; without it we fall back to caches.default, which is
+ * shared per colo — best-effort, but already stops casual abuse and
+ * hammering of upstream APIs. Audit 2026-11-21 (baixa): deixou de ser
+ * fail-open só por colo quando o binding existe.
  */
-async function isRateLimited(req: Request, ctx: ExecutionContext): Promise<boolean> {
+async function isRateLimited(
+  req: Request,
+  env: Env,
+  ctx: ExecutionContext,
+): Promise<boolean> {
   const ip = req.headers.get('CF-Connecting-IP') || 'unknown';
+
+  if (env.RATE_LIMITER) {
+    try {
+      const { success } = await env.RATE_LIMITER.limit({ key: ip });
+      return !success;
+    } catch {
+      // binding falhou — continua no cache por colo em vez de fail-open
+    }
+  }
+
   const windowStart = Math.floor(Date.now() / (RATE_LIMIT_WINDOW_S * 1000));
   const key = `rl:${ip}:${windowStart}`;
   const cache = caches.default;
@@ -494,7 +518,7 @@ export default {
     }
 
     // S6: per-IP rate limit (best-effort)
-    if (await isRateLimited(req, ctx)) {
+    if (await isRateLimited(req, env, ctx)) {
       return new Response(JSON.stringify({ error: 'rate limited' }), {
         status: 429,
         headers: { ...h, 'Retry-After': String(RATE_LIMIT_WINDOW_S) },

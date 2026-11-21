@@ -35,7 +35,7 @@ const locateBtn = (page: Page) => page.locator('[data-map-locate]');
 const shareBtn = (page: Page) => page.locator('[data-map-share]');
 const locateDot = (page: Page) => page.locator('.ventu-locate-dot');
 
-test.describe('«Perto de mim» e «Partilhar» — desktop', () => {
+test.describe('«Perto de mim» e «Partilhar» — desktop', { tag: '@core' }, () => {
   test.describe.configure({ timeout: 90_000 });
   test.use({
     viewport: { width: 1440, height: 900 },
@@ -174,7 +174,7 @@ test.describe('«Perto de mim» e «Partilhar» — desktop', () => {
   });
 });
 
-test.describe('«Perto de mim» e «Partilhar» — mobile 390', () => {
+test.describe('«Perto de mim» e «Partilhar» — mobile 390', { tag: '@core' }, () => {
   test.describe.configure({ timeout: 90_000 });
   test.use({
     viewport: { width: 390, height: 844 },

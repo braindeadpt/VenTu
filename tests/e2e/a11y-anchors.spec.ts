@@ -28,7 +28,7 @@ const LOCALES = ['pt', 'en', 'es', 'de', 'fr'];
 
 const stripScripts = (html: string) => html.replace(/<script[\s\S]*?<\/script>/g, '');
 
-test.describe('Âncora #alertas', () => {
+test.describe('Âncora #alertas', { tag: '@core' }, () => {
   for (const locale of LOCALES) {
     test(`/${locale}/favorites/ traz id="alertas" no HTML do build`, async ({ request }) => {
       const res = await request.get(`/${locale}/favorites/`);
@@ -117,7 +117,7 @@ function hashLinks(html: string, route: string): Array<{ target: string; id: str
   return out;
 }
 
-test('todos os links com âncora do build têm destino na rota alvo', async ({ request }) => {
+test('todos os links com âncora do build têm destino na rota alvo @core', async ({ request }) => {
   const cache = new Map<string, string>();
   const broken: string[] = [];
   let checked = 0;

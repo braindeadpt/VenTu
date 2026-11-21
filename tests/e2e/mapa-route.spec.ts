@@ -4,7 +4,7 @@ import { preseedWindRingLegend } from './helpers/map-setup';
 import { interceptMapHours } from './helpers/conditions';
 import { waitHydrated } from './helpers/hydration';
 
-test.describe('/pt/mapa fullscreen map', () => {
+test.describe('/pt/mapa fullscreen map', { tag: '@core' }, () => {
   test.use({
     viewport: { width: 390, height: 844 },
     hasTouch: true,
@@ -98,7 +98,7 @@ test.describe('/pt/mapa fullscreen map', () => {
   });
 });
 
-test.describe('/pt/mapa SEO', () => {
+test.describe('/pt/mapa SEO', { tag: '@core' }, () => {
   test('canonical link uses trailing slash', async ({ page }) => {
     await page.goto('/pt/mapa/');
     const canonical = page.locator('link[rel="canonical"]');
@@ -154,10 +154,10 @@ async function abreMapa(page: import('@playwright/test').Page, query: string) {
   await waitHydrated(page);
 }
 
-test.describe('#273 home → /mapa: ?dia= e ?de=home', () => {
+test.describe('#273 home → /mapa: ?dia= e ?de=home', { tag: '@core' }, () => {
   // o stub do map-hours tem de chegar à página: o SW serviria o ficheiro real (helpers/conditions.ts)
   test.use({ serviceWorkers: 'block' });
-  test.describe('desktop 1440', () => {
+  test.describe('desktop 1440', { tag: '@core' }, () => {
     test.use({ viewport: { width: 1440, height: 900 } });
 
     test('?t=10&dia=1 chega na frame de amanhã (11h), não na de hoje', async ({ page }) => {
@@ -195,7 +195,7 @@ test.describe('#273 home → /mapa: ?dia= e ?de=home', () => {
     });
   });
 
-  test.describe('telemóvel 390', () => {
+  test.describe('telemóvel 390', { tag: '@core' }, () => {
     test.use({ viewport: { width: 390, height: 844 }, hasTouch: true });
 
     test('?spot=guincho&de=home abre a sheet do spot', async ({ page }) => {
@@ -214,7 +214,7 @@ test.describe('#273 home → /mapa: ?dia= e ?de=home', () => {
   });
 });
 
-test.describe('/pt/mapa ?nivel= (link partilhado)', () => {
+test.describe('/pt/mapa ?nivel= (link partilhado)', { tag: '@core' }, () => {
   test.use({
     viewport: { width: 390, height: 844 },
     hasTouch: true,

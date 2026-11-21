@@ -45,7 +45,7 @@ const H1_ROUTES = [
 
 const stripScripts = (html: string) => html.replace(/<script[\s\S]*?<\/script>/g, '');
 
-test.describe('Um só <main> e um <h1> por página (HTML do build)', () => {
+test.describe('Um só <main> e um <h1> por página (HTML do build)', { tag: '@core' }, () => {
   for (const path of MAIN_ROUTES) {
     test(`${path} — exactamente um <main>`, async ({ request }) => {
       const res = await request.get(path);

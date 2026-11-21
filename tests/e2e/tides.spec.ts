@@ -25,7 +25,7 @@ async function abreEstudo(page: import('@playwright/test').Page) {
 
 const FASES = /Lua (nova|cheia|crescente|minguante)|Quarto (crescente|minguante)|Gibosa (crescente|minguante)/;
 
-test.describe('Marés (Porquê v6)', () => {
+test.describe('Marés (Porquê v6)', { tag: '@core' }, () => {
   // O SW serve /data/* do cache e burla o page.route — ver helpers/conditions.ts.
   test.use({ serviceWorkers: 'block' });
   test.beforeEach(async ({ page }) => {

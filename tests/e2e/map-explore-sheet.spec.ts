@@ -127,7 +127,7 @@ async function unclusterMarkers(page: Page): Promise<void> {
     .toBeGreaterThan(10);
 }
 
-test.describe('Lista sincronizada do /mapa — sheet mobile', () => {
+test.describe('Lista sincronizada do /mapa — sheet mobile', { tag: '@core' }, () => {
   test.describe.configure({ timeout: 90_000 });
   test.use({
     viewport: { width: 390, height: 844 },
@@ -470,7 +470,7 @@ test.describe('Lista sincronizada do /mapa — sheet mobile', () => {
   });
 });
 
-test.describe('Lista sincronizada do /mapa — painel desktop', () => {
+test.describe('Lista sincronizada do /mapa — painel desktop', { tag: '@core' }, () => {
   test.describe.configure({ timeout: 90_000 });
   test.use({
     viewport: { width: 1440, height: 900 },

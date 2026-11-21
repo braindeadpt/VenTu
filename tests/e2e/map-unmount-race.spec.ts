@@ -35,7 +35,7 @@ import { preseedWindRingLegend } from './helpers/map-setup';
 import { attachPageHealthCollectors, assertHealthyPage } from './helpers/audit-utils';
 import { waitHydrated } from './helpers/hydration';
 
-test.describe('Map unmount race (mobile)', () => {
+test.describe('Map unmount race (mobile)', { tag: '@core' }, () => {
   test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, serviceWorkers: 'block' });
   test.describe.configure({ timeout: 90_000 });
 
