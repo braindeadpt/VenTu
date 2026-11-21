@@ -3,7 +3,7 @@ import { createRequire } from 'module';
 
 const require = createRequire(import.meta.url);
 const {
-  parseSpotsFromFile,
+  loadConditionsSpots,
   applyWaveBiasToRow,
   applyAliasSpots,
   resolveUseMultiModel,
@@ -21,7 +21,7 @@ afterEach(() => {
   delete process.env.VENTU_MULTIMODEL_HOURS;
 });
 
-describe('parseSpotsFromFile (update-conditions)', () => {
+describe('loadConditionsSpots (update-conditions)', () => {
   it('extrai id/lat/lon/region de todos os spots (189, sem duplicados)', () => {
     expect(spots.length).toBeGreaterThanOrEqual(MIN_SPOTS);
     expect(spots.length).toBe(189);

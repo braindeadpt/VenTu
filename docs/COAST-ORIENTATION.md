@@ -1,6 +1,6 @@
 # Orientação da costa (`coastOrientation`, #178)
 
-`coastOrientation` (em `src/lib/spots.ts`) é a direcção para onde a praia está
+`coastOrientation` (no catálogo `src/lib/spots.json`, refletido em `src/lib/spots.ts`) é a direcção para onde a praia está
 virada: a normal da linha de costa que aponta para o **mar** (0 = N, 90 = E,
 180 = S, 270 = W). É também o `praiaVirada` dos spots v6 não curados
 (`src/lib/spotEditorial.ts`). Um vento que sopra *de* `coastOrientation` é
@@ -20,7 +20,7 @@ browser não faz pedidos a terceiros.
 NODE_USE_ENV_PROXY=1 node scripts/compute-coast-orientation.mjs --fetch
 # 2. recalcular a revisão a partir da cache (idempotente: a 2.ª corrida dá o mesmo ficheiro)
 node scripts/compute-coast-orientation.mjs
-# 3. aplicar a coluna `final` a src/lib/spots.ts
+# 3. aplicar a coluna `final` a `src/lib/spots.json` (regenera `spots.ts`)
 node scripts/compute-coast-orientation.mjs --apply
 ```
 
@@ -34,7 +34,7 @@ node scripts/compute-coast-orientation.mjs --apply
 - `atual` no ficheiro de revisão é o valor **antes** da #178; o script mantém-no
   depois do `--apply`, para a tabela continuar a mostrar antes → depois.
 - `public/data/spots-index.json` não vai no PR: o CI e o `update-data.yml`
-  regeneram-no (`npm run spots:index`) a partir de `spots.ts`.
+  regeneram-no (`npm run spots:index`) a partir de `spots.ts` (gerado do catálogo).
 
 ## Método
 
@@ -67,7 +67,7 @@ Implementação pura e testada em `scripts/lib/coastOrientation.mjs`:
 | OSM | geometria limpa | o calculado (500 m) |
 | OSM 1 km | 500 m ambíguo, mas a corda de 1 km é limpa (corda/arco ≥ 0,85) | o calculado a 1 km |
 | **manual** | spot da lista `REVISAO_MANUAL` com valor fixado à mão em `VALOR_MANUAL` (`beliche` 230° e `coxos` 280°; na passagem de Peniche, 24/10: `consolacao` 260°, `lagide` 345°, `baleal-sul` 345°, `molhe-leste` 250°, `sao-martinho-porto` 315° e `foil-foz-arelho` 300°; na passagem Nazaré – Figueira e Santa Cruz – Guincho, 25/10: `leirosa` 285°, `foz-sizandro` 300°, `sao-pedro-moel` 290° e `porto-novo` 275°; na revisão v2, 25/10, mais 32 (ver «Revisão v2»); todos aprovados pelo Pedro) | o valor fixado: o recálculo mantém-no |
-| água interior | `aguaInterior: true` em `src/lib/spots.ts` (11 spots: albufeiras, lagoas e rios interiores, cable parks) | fica o valor que está, mas **não se usa para o vento**: sem onshore/offshore (ver «Água interior») |
+| água interior | `aguaInterior: true` em `src/lib/spots.json` (11 spots: albufeiras, lagoas e rios interiores, cable parks) | fica o valor que está, mas **não se usa para o vento**: sem onshore/offshore (ver «Água interior») |
 | **mantido** | rio, albufeira, lagoa, ria, estuário (lista explícita `REVISAO_MANUAL`: Tejo, Seixal, Sado, Óbidos, Albufeira, Santo André, Sancha, Aveiro, Alvor, Ria Formosa, Cávado, Lima, Douro, Mira, S. Martinho); sem costa OSM a < 2 km; geometria ambígua; spot a > 1 km da costa, numa costa que não é recta | **não se adivinha**: fica o valor antigo, e o spot vai para revisão manual com o calculado ao lado |
 
 Revisão (⚠) também quando:
@@ -83,12 +83,12 @@ Revisão (⚠) também quando:
 2. Para corrigir um spot, há duas formas:
    - curá-lo em `src/lib/spotEditorial.json` (passa a `origem: curado`);
    - ou fixar o valor à mão: pô-lo em `REVISAO_MANUAL` e em `VALOR_MANUAL` (passa a `origem: manual`);
-   - ou corrigir as coordenadas em `spots.ts`, se o ponto não está na praia.
+   - ou corrigir as coordenadas em `spots.json`, se o ponto não está na praia.
 3. Correr outra vez os passos 2 e 3.
 
 O teste `src/lib/__tests__/coastOrientation.test.ts` falha se:
 - um spot ficar a 270° sem justificação;
-- `spots.ts` e a revisão divergirem;
+- `spots.json` e a revisão divergirem;
 - um curado divergir do `praiaVirada`.
 
 ## Correcção de coordenadas (22/10)
