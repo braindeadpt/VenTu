@@ -51,10 +51,6 @@ export interface PrecomputedConditions {
   };
 }
 
-let cachedConditions: PrecomputedConditions | null = null;
-let cacheTime = 0;
-const CACHE_TTL = 5 * 60 * 1000; // 5 minutes in-memory cache for SSR
-
 /**
  * Load pre-computed conditions from the JSON file.
  * This runs at BUILD TIME (server-side) for static generation.
@@ -115,15 +111,25 @@ export function getAllSpotConditions(): PrecomputedConditions {
  * Check if conditions are stale (older than max age).
  */
 export function areConditionsStale(maxAgeMinutes = 30): boolean {
-  const conditions = loadPrecomputedConditions();
-  
-  for (const spotId of spots.slice(0, 3).map(s => s.id)) {
-    const cond = conditions[spotId];
+  return checkConditionsStale(loadPrecomputedConditions(), maxAgeMinutes);
+}
+
+/**
+ * Pure staleness check over a conditions map — resolves each spot's
+ * conditionsSource alias via getConditionsDataId, same as getSpotConditions.
+ */
+export function checkConditionsStale(
+  conditions: PrecomputedConditions,
+  maxAgeMinutes = 30,
+  now = Date.now(),
+): boolean {
+  for (const spot of spots.slice(0, 3)) {
+    const cond = conditions[getConditionsDataId(spot)] || conditions[spot.id];
     if (!cond?.updatedAt) return true;
-    
-    const age = Date.now() - new Date(cond.updatedAt).getTime();
+
+    const age = now - new Date(cond.updatedAt).getTime();
     if (age > maxAgeMinutes * 60 * 1000) return true;
   }
-  
+
   return false;
 }

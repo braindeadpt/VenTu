@@ -11,6 +11,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { ExternalLink } from 'lucide-react';
 import { getTranslation } from '@/lib/i18n';
+import { getAssetPath } from '@/lib/paths';
 import { spots } from '@/lib/spots';
 import { fetchMapHours, type MapHoursFile } from '@/lib/mapHours';
 import { nearbySpotHour, nearestSpots, pickMapHourStep } from '@/lib/context/nearbySpots';
@@ -48,7 +49,7 @@ function useDiretorio(spotId: string, lat: number, lon: number): Perto[] {
     void (async () => {
       let base: DirectoryEntry[] = [];
       try {
-        const r = await fetch('/data/directory.json');
+        const r = await fetch(getAssetPath('/data/directory.json'));
         if (r.ok) base = ((await r.json()) as DirectoryFile).entries || [];
       } catch {
         /* sem diretório: o bloco não aparece */

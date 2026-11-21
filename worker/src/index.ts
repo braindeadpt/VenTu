@@ -236,7 +236,7 @@ async function ipmaObserved(
   return null;
 }
 
-async function ecowittObserved(
+export async function ecowittObserved(
   lat: number,
   lon: number,
   env: Env,
@@ -260,6 +260,8 @@ async function ecowittObserved(
   const w = j.data.wind;
   const ws = parseFloat(String(w.wind_speed?.value));
   const deg = parseFloat(String(w.wind_direction?.value));
+  // wind_speed is mandatory — a NaN would serialize as null in the JSON payload.
+  if (Number.isNaN(ws)) return null;
   const t = j.data.outdoor?.temperature?.value;
   const observedAt = new Date(
     (Number(j.time) || Math.floor(Date.now() / 1000)) * 1000,
