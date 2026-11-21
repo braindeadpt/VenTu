@@ -36,13 +36,12 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
-  const isPt = locale === 'pt';
   const loc = validateLocale(locale);
   const tp = getTranslation(locale).pages;
   const title = tp.exploreMetaTitle;
   const description = tp.exploreMetaDescription
     .replace('{count}', String(SEO_LANDINGS.length))
-    .replace('{schedule}', pipelineSchedule(isPt ? 'pt' : 'en'));
+    .replace('{schedule}', pipelineSchedule(locale));
   return buildPageMetadata({ title, description, locale: loc, path: `/${loc}/explorar/` });
 }
 
@@ -60,7 +59,6 @@ function groupLandings(landings: SeoLanding[]) {
 
 export default async function ExplorarIndexPage({ params }: Props) {
   const { locale } = await params;
-  const isPt = locale === 'pt';
   const tp = getTranslation(locale).pages;
   const groups = groupLandings(SEO_LANDINGS);
 
