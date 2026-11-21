@@ -105,10 +105,24 @@ Disallow: /fr/admin/
 # Google (AI Overviews / Gemini — Google-Extended controla o uso para treino)
 User-agent: Google-Extended
 Allow: /
+Disallow: /api/
+Disallow: /_next/
+Disallow: /pt/admin/
+Disallow: /en/admin/
+Disallow: /es/admin/
+Disallow: /de/admin/
+Disallow: /fr/admin/
 
 # Apple (Apple Intelligence training opt-in)
 User-agent: Applebot-Extended
 Allow: /
+Disallow: /api/
+Disallow: /_next/
+Disallow: /pt/admin/
+Disallow: /en/admin/
+Disallow: /es/admin/
+Disallow: /de/admin/
+Disallow: /fr/admin/
 
 # Meta
 User-agent: Meta-ExternalAgent
@@ -131,22 +145,64 @@ Disallow: /es/admin/
 Disallow: /de/admin/
 Disallow: /fr/admin/
 
-# Amazon / Common Crawl / Cohere / ByteDance
+# Amazon / Common Crawl / Cohere / ByteDance / Mistral / DuckAssist —
+# mesmas exclusões que o grupo genérico (o grupo específico substitui o `*`).
 User-agent: Amazonbot
 Allow: /
+Disallow: /api/
+Disallow: /_next/
+Disallow: /pt/admin/
+Disallow: /en/admin/
+Disallow: /es/admin/
+Disallow: /de/admin/
+Disallow: /fr/admin/
 
 User-agent: CCBot
 Allow: /
+Disallow: /api/
+Disallow: /_next/
+Disallow: /pt/admin/
+Disallow: /en/admin/
+Disallow: /es/admin/
+Disallow: /de/admin/
+Disallow: /fr/admin/
 
 User-agent: cohere-ai
 Allow: /
+Disallow: /api/
+Disallow: /_next/
+Disallow: /pt/admin/
+Disallow: /en/admin/
+Disallow: /es/admin/
+Disallow: /de/admin/
+Disallow: /fr/admin/
 
 User-agent: Bytespider
 Allow: /
+Disallow: /api/
+Disallow: /_next/
+Disallow: /pt/admin/
+Disallow: /en/admin/
+Disallow: /es/admin/
+Disallow: /de/admin/
+Disallow: /fr/admin/
 
-# Mistral / DuckAssist
 User-agent: MistralAI-User
 Allow: /
+Disallow: /api/
+Disallow: /_next/
+Disallow: /pt/admin/
+Disallow: /en/admin/
+Disallow: /es/admin/
+Disallow: /de/admin/
+Disallow: /fr/admin/
 
 User-agent: DuckAssistBot
 Allow: /
+Disallow: /api/
+Disallow: /_next/
+Disallow: /pt/admin/
+Disallow: /en/admin/
+Disallow: /es/admin/
+Disallow: /de/admin/
+Disallow: /fr/admin/
