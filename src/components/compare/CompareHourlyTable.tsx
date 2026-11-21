@@ -9,7 +9,7 @@ import { getScoreTokens, type Conditions } from '@/lib/sportScore';
 import { notasHorariasCompare } from '@/lib/compareHourlyScores';
 import { loadForecastForSpot } from '@/lib/spotDataCache';
 import { getConditionsDataId } from '@/lib/spotConditionsSource';
-import { getTranslation, validateLocale } from '@/lib/i18n';
+import { getTranslation, pickLocale, validateLocale } from '@/lib/i18n';
 import { seriesTimeMs } from '@/lib/openMeteoTime';
 import Skeleton from '@/components/ui/Skeleton';
 import { cn } from '@/lib/cn';
@@ -63,7 +63,6 @@ export default function CompareHourlyTable({
   sport,
   locale,
 }: CompareHourlyTableProps) {
-  const isPt = locale === 'pt';
   const cmp = getTranslation(validateLocale(locale)).compare;
   const [forecasts, setForecasts] = useState<Record<string, Record<string, unknown>[]> | null>(null);
 
@@ -193,7 +192,7 @@ export default function CompareHourlyTable({
                     href={`/${locale}/spots/${col.spot.slug}/?sport=${sport}`}
                     className="text-fg hover:text-accent transition-colors duration-150"
                   >
-                    {isPt ? col.spot.name : col.spot.nameEn}
+                    {pickLocale(locale, { pt: col.spot.name, en: col.spot.nameEn })}
                   </Link>
                 </th>
               ))}

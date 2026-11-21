@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Search, X, ArrowRight, Waves, MapPin, Newspaper, Tag } from 'lucide-react';
 import type { NewsItem } from '@/types';
-import { getTranslation } from '@/lib/i18n';
+import { getTranslation, pickLocale } from '@/lib/i18n';
 import { newsSlug } from '@/lib/news';
 import { getAssetPath } from '@/lib/paths';
 import { getMacroRegion } from '@/lib/regions';
@@ -63,7 +63,7 @@ export default function SearchPalette({ locale, onClose }: SearchPaletteProps) {
   const resultsRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const t = getTranslation(locale);
-  const isPt = locale === 'pt';
+
 
   // Load spots index once
   const [spotsCache, setSpotsCache] = useState<SpotLite[]>([]);
@@ -97,14 +97,14 @@ export default function SearchPalette({ locale, onClose }: SearchPaletteProps) {
 
     // Spots
     spotsCache.forEach((spot) => {
-      const name = isPt ? spot.name : spot.nameEn;
+      const name = pickLocale(locale, { pt: spot.name, en: spot.nameEn });
       const searchName = name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
       if (searchName.includes(q)) {
         results.push({
           type: 'spot',
           label: name,
           labelEn: spot.name,
-          meta: isPt ? spot.region : spot.regionEn,
+          meta: pickLocale(locale, { pt: spot.region, en: spot.regionEn }),
           href: `/${locale}/spots/${spot.slug}/`,
           icon: Waves,
         });
@@ -113,7 +113,7 @@ export default function SearchPalette({ locale, onClose }: SearchPaletteProps) {
 
     // Regions → homepage macro-region filter (?region=Norte, etc.)
     regions.forEach((r) => {
-      const name = isPt ? r.name : r.nameEn;
+      const name = pickLocale(locale, { pt: r.name, en: r.nameEn });
       const macro = getMacroRegion(r.name);
       if (!macro) return;
       const searchName = name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
@@ -145,7 +145,7 @@ export default function SearchPalette({ locale, onClose }: SearchPaletteProps) {
 
     // News
     newsCache.forEach((n) => {
-      const title = isPt ? n.title : n.titleEn;
+      const title = pickLocale(locale, { pt: n.title, en: n.titleEn });
       if (title.toLowerCase().includes(q)) {
         results.push({
           type: 'noticia',
@@ -160,7 +160,7 @@ export default function SearchPalette({ locale, onClose }: SearchPaletteProps) {
 
     setAllResults(results.slice(0, 12));
     setSelectedIndex(0);
-  }, [query, locale, isPt, regions, newsCache, spotsCache]);
+  }, [query, locale, regions, newsCache, spotsCache]);
 
   const getTabbable = useCallback(() => {
     if (!resultsRef.current) return [];
