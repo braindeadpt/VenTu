@@ -174,6 +174,23 @@ describe('notas /10 e bandas da #210', () => {
       H.forEach((_, i) => expect(`${f(i).l1} ${parteTxt(f(i).l2)}`).not.toMatch(/\/\s*100/));
     }
   });
+  it('«melhora {q}» junta dia e hora correctamente em de/fr (hora com NBSP)', () => {
+    // O veredicto divide «amanhã 10h» no último espaço normal: a hora tem de
+    // ser uma unidade inseparável («10 Uhr», «10 h») para não ficar «10 um Uhr».
+    for (const [lg, dia, esperado] of [
+      ['pt', 'amanhã', 'amanhã às 10h'],
+      ['en', 'tomorrow', 'tomorrow at 10:00'],
+      ['es', 'mañana', 'mañana a las 10h'],
+      ['de', 'morgen', 'morgen um 10 Uhr'],
+      ['fr', 'demain', 'demain à 10 h'],
+    ] as const) {
+      const c = spotPageV6[lg];
+      const q = `${dia} ${c.hora.replace('{h}', '10')}`;
+      const k = q.lastIndexOf(' ');
+      const qq = k < 0 ? c.melhoraAs.replace('{h}', q) : `${q.slice(0, k)} ${c.melhoraAs.replace('{h}', q.slice(k + 1))}`;
+      expect(qq, lg).toBe(esperado);
+    }
+  });
 });
 
 describe('ventu.modalidade no formato {d, v}', () => {
