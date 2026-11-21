@@ -2,8 +2,11 @@ import type { Metadata } from 'next';
 import { existsSync } from 'fs';
 import path from 'path';
 import { spots } from '@/lib/spots';
+import { getSpotTypeLabel } from '@/lib/mapDifficulty';
+import type { Spot } from '@/types';
 import { pipelineSchedule } from '@/lib/dataPipelineSchedule';
 import {
+  getTranslation,
   locales,
   localePathPattern,
   LOCALE_OG,
@@ -119,9 +122,19 @@ function defaultKeywords(locale: Locale): string[] {
   });
 }
 
+/**
+ * Strip a leading embedded brand prefix ("VenTu — X"): the root layout's
+ * title.template already appends `| VenTu` in production, so the prefix
+ * renders as "VenTu — X | VenTu". Trailing embedded branding ("X — VenTu")
+ * stays: the e2e static build does not apply the template and needs it.
+ */
+function normalizeTitle(title: string): string {
+  return title.replace(/^\s*VenTu\s+[—–|-]\s+/i, '').trim();
+}
+
 export function buildPageMetadata(input: PageSeoInput): Metadata {
   const {
-    title,
+    title: rawTitle,
     description,
     locale: rawLocale,
     path,
@@ -159,6 +172,8 @@ export function buildPageMetadata(input: PageSeoInput): Metadata {
       : 'image/png') as 'image/jpeg' | 'image/png',
     alt: imageAlt,
   };
+
+  const title = normalizeTitle(rawTitle);
 
   return {
     title,
@@ -313,4 +328,93 @@ export function buildOrganizationJsonLd() {
     logo: absoluteUrl('/og-image.png'),
     sameAs: ['https://github.com/braindeadpt/ventu'],
   };
+}
+
+/**
+ * Per-spot structured data: the place itself (SportsActivityLocation with
+ * geo + sport type) and the breadcrumb Home → Spots → spot.
+ */
+export function buildSpotJsonLd(input: {
+  locale: Locale;
+  slug: string;
+  spotName: string;
+  regionName: string;
+  description?: string;
+  lat?: number;
+  lon?: number;
+  spotType?: Spot['type'];
+}) {
+  const loc = validateLocale(input.locale);
+  const spotUrl = absoluteUrl(`/${loc}/spots/${input.slug}/`);
+
+  const place: Record<string, unknown> = {
+    '@type': 'SportsActivityLocation',
+    name: input.spotName,
+    url: spotUrl,
+    ...(input.description ? { description: input.description } : {}),
+    ...(input.lat != null && input.lon != null
+      ? {
+          geo: {
+            '@type': 'GeoCoordinates',
+            latitude: input.lat,
+            longitude: input.lon,
+          },
+        }
+      : {}),
+    address: {
+      '@type': 'PostalAddress',
+      addressRegion: input.regionName,
+      addressCountry: 'PT',
+    },
+    containedInPlace: { '@type': 'AdministrativeArea', name: input.regionName },
+    // `activityType` não existe no vocabulário Schema.org — o desporto vai
+    // como propriedade extra. Sem isAccessibleForFree: o catálogo não
+    // confirma condições de acesso (ex.: cable park é pago).
+    ...(input.spotType
+      ? {
+          additionalProperty: [
+            {
+              '@type': 'PropertyValue',
+              name: pickLocale(loc, {
+                pt: 'modalidade',
+                en: 'sport',
+                es: 'deporte',
+                de: 'Sportart',
+                fr: 'sport',
+              }),
+              // Rótulo traduzido do catálogo (ex.: 'multisport' → 'Multisport').
+              value: getSpotTypeLabel(input.spotType, loc),
+            },
+          ],
+        }
+      : {}),
+  };
+
+  const nav = getTranslation(loc).nav;
+
+  const breadcrumb = {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: nav.home,
+        item: absoluteUrl(`/${loc}/`),
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: nav.spots,
+        item: absoluteUrl(`/${loc}/spots/`),
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: input.spotName,
+        item: spotUrl,
+      },
+    ],
+  };
+
+  return { '@context': 'https://schema.org', '@graph': [place, breadcrumb] };
 }

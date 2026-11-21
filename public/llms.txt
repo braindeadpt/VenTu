@@ -1,0 +1,43 @@
+# VenTu
+
+> VenTu (https://ventu.surf) publishes water-sports conditions for Portugal: 189 spots with per-sport scores (surf, kitesurf, windsurf, foil, SUP, wakeboard, bodyboard, big wave), an interactive map, and forecasts refreshed every 2h (day) / 4h (night) from Open-Meteo, IH (Instituto Hidrográfico), IPMA and MeteoAlarm. Free and open source (MIT). Site in Portuguese (default), English, Spanish, German and French; every page has hreflang alternates. Pages are prerendered static HTML (the interactive map itself renders client-side; spot data is in the JSON feeds below). Scores are 0-100 per sport (80+ epic, 60+ good). Admin, account and auth URLs are noindex.
+
+## Site (per language: /pt/, /en/, /es/, /de/, /fr/)
+
+- [Home](https://ventu.surf/pt/): today's top spots, scores and Dawn Patrol briefing
+- [Map](https://ventu.surf/pt/mapa/): interactive map of every spot with live scores
+- [Spots catalog](https://ventu.surf/pt/spots/): all spots with conditions; each spot page is /{locale}/spots/{slug}/
+- [Explore](https://ventu.surf/pt/explorar/): spots by sport and region (SEO landings)
+- [Sports](https://ventu.surf/pt/modalidades/): per-sport guides and spot lists
+- [Seasonality](https://ventu.surf/pt/sazonalidade/): when each spot works best
+- [News & events](https://ventu.surf/pt/news/): nautical news and events (articles at /{locale}/news/{slug}/)
+- [Directory](https://ventu.surf/pt/diretorio/): schools and shops (/diretorio/{slug}/)
+- [Livecams](https://ventu.surf/pt/livecams/): curated live cameras at spots
+- [Tools](https://ventu.surf/pt/ferramentas/): kite-size and wetsuit calculators
+- [Data sources](https://ventu.surf/pt/fontes/): every source with licence and attribution
+- [About](https://ventu.surf/pt/about/): project, methodology and scoring
+
+## Languages
+
+- [Português (default)](https://ventu.surf/pt/)
+- [English](https://ventu.surf/en/)
+- [Español](https://ventu.surf/es/)
+- [Deutsch](https://ventu.surf/de/)
+- [Français](https://ventu.surf/fr/)
+
+## Machine-readable feeds
+
+- [Sitemap (hreflang)](https://ventu.surf/sitemap.xml): every indexable URL in all 5 languages
+- [RSS — Notícias (PT)](https://ventu.surf/rss.xml)
+- [RSS — News (EN)](https://ventu.surf/rss-en.xml)
+- [Conditions snapshot (JSON)](https://ventu.surf/data/conditions.json): latest baked conditions per spot
+- [Spots index (JSON)](https://ventu.surf/data/spots-index.json): spot catalog (slug, name, region, coordinates)
+- [Dawn Patrol (JSON)](https://ventu.surf/data/dawn-patrol.json): morning briefing per spot
+- [News (JSON)](https://ventu.surf/data/news.json): news items with slugs
+- [Directory (JSON)](https://ventu.surf/data/directory.json): schools and shops
+- [Coastal warnings (JSON)](https://ventu.surf/data/ih-coastal-warnings.json): IH navigation warnings
+
+## Optional
+
+- [About the project and scoring method](https://ventu.surf/pt/about/)
+- [Data sources and licences](https://ventu.surf/pt/fontes/)
