@@ -45,7 +45,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const description = isPt ? news.summary : news.summaryEn
 
   return {
-    title: `${title} — VenTu`,
+    // Sem sufixo de marca: a title.template do root layout já junta "| VenTu".
+    title,
     description,
     alternates: {
       canonical: `/${locale}/news/${slug}/`,

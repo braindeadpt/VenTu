@@ -119,9 +119,21 @@ function defaultKeywords(locale: Locale): string[] {
   });
 }
 
+/**
+ * Strip a brand suffix/prefix already embedded in the title ("— VenTu",
+ * "| VenTu", "VenTu — "): the root layout's title.template appends
+ * `| VenTu` to every page title, so embedded branding renders doubled.
+ */
+function normalizeTitle(title: string): string {
+  return title
+    .replace(/^\s*VenTu\s+[—–|-]\s+/i, '')
+    .replace(/\s+[—–|-]\s*VenTu\s*$/i, '')
+    .trim();
+}
+
 export function buildPageMetadata(input: PageSeoInput): Metadata {
   const {
-    title,
+    title: rawTitle,
     description,
     locale: rawLocale,
     path,
@@ -159,6 +171,8 @@ export function buildPageMetadata(input: PageSeoInput): Metadata {
       : 'image/png') as 'image/jpeg' | 'image/png',
     alt: imageAlt,
   };
+
+  const title = normalizeTitle(rawTitle);
 
   return {
     title,
@@ -313,4 +327,72 @@ export function buildOrganizationJsonLd() {
     logo: absoluteUrl('/og-image.png'),
     sameAs: ['https://github.com/braindeadpt/ventu'],
   };
+}
+
+/**
+ * Per-spot structured data: the place itself (SportsActivityLocation with
+ * geo + sport type) and the breadcrumb Home → Spots → spot.
+ */
+export function buildSpotJsonLd(input: {
+  locale: Locale;
+  slug: string;
+  spotName: string;
+  regionName: string;
+  description?: string;
+  lat?: number;
+  lon?: number;
+  spotType?: string;
+}) {
+  const loc = validateLocale(input.locale);
+  const spotUrl = absoluteUrl(`/${loc}/spots/${input.slug}/`);
+
+  const place: Record<string, unknown> = {
+    '@type': 'SportsActivityLocation',
+    name: input.spotName,
+    url: spotUrl,
+    ...(input.description ? { description: input.description } : {}),
+    ...(input.lat != null && input.lon != null
+      ? {
+          geo: {
+            '@type': 'GeoCoordinates',
+            latitude: input.lat,
+            longitude: input.lon,
+          },
+        }
+      : {}),
+    address: {
+      '@type': 'PostalAddress',
+      addressRegion: input.regionName,
+      addressCountry: 'PT',
+    },
+    containedInPlace: { '@type': 'AdministrativeArea', name: input.regionName },
+    ...(input.spotType ? { activityType: input.spotType } : {}),
+    isAccessibleForFree: true,
+  };
+
+  const breadcrumb = {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: pickLocale(loc, { pt: 'Início', en: 'Home', es: 'Inicio', de: 'Start', fr: 'Accueil' }),
+        item: absoluteUrl(`/${loc}/`),
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Spots',
+        item: absoluteUrl(`/${loc}/spots/`),
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: input.spotName,
+        item: spotUrl,
+      },
+    ],
+  };
+
+  return { '@context': 'https://schema.org', '@graph': [place, breadcrumb] };
 }

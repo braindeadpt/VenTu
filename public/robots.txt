@@ -12,3 +12,141 @@ Disallow: /en/admin/
 Disallow: /es/admin/
 Disallow: /de/admin/
 Disallow: /fr/admin/
+
+# ---------------------------------------------------------------------------
+# AI / LLM crawlers — o conteúdo público é aberto a agentes e motores de
+# resposta AI (cada grupo específico substitui o bloco `*`, por isso os
+# Disallow repetem-se). O índice legível por LLMs está em /llms.txt.
+# ---------------------------------------------------------------------------
+
+# OpenAI
+User-agent: GPTBot
+Allow: /
+Disallow: /api/
+Disallow: /_next/
+Disallow: /pt/admin/
+Disallow: /en/admin/
+Disallow: /es/admin/
+Disallow: /de/admin/
+Disallow: /fr/admin/
+
+User-agent: OAI-SearchBot
+Allow: /
+Disallow: /api/
+Disallow: /_next/
+Disallow: /pt/admin/
+Disallow: /en/admin/
+Disallow: /es/admin/
+Disallow: /de/admin/
+Disallow: /fr/admin/
+
+User-agent: ChatGPT-User
+Allow: /
+Disallow: /api/
+Disallow: /_next/
+Disallow: /pt/admin/
+Disallow: /en/admin/
+Disallow: /es/admin/
+Disallow: /de/admin/
+Disallow: /fr/admin/
+
+# Anthropic
+User-agent: ClaudeBot
+Allow: /
+Disallow: /api/
+Disallow: /_next/
+Disallow: /pt/admin/
+Disallow: /en/admin/
+Disallow: /es/admin/
+Disallow: /de/admin/
+Disallow: /fr/admin/
+
+User-agent: Claude-User
+Allow: /
+Disallow: /api/
+Disallow: /_next/
+Disallow: /pt/admin/
+Disallow: /en/admin/
+Disallow: /es/admin/
+Disallow: /de/admin/
+Disallow: /fr/admin/
+
+User-agent: anthropic-ai
+Allow: /
+Disallow: /api/
+Disallow: /_next/
+Disallow: /pt/admin/
+Disallow: /en/admin/
+Disallow: /es/admin/
+Disallow: /de/admin/
+Disallow: /fr/admin/
+
+# Perplexity
+User-agent: PerplexityBot
+Allow: /
+Disallow: /api/
+Disallow: /_next/
+Disallow: /pt/admin/
+Disallow: /en/admin/
+Disallow: /es/admin/
+Disallow: /de/admin/
+Disallow: /fr/admin/
+
+User-agent: Perplexity-User
+Allow: /
+Disallow: /api/
+Disallow: /_next/
+Disallow: /pt/admin/
+Disallow: /en/admin/
+Disallow: /es/admin/
+Disallow: /de/admin/
+Disallow: /fr/admin/
+
+# Google (AI Overviews / Gemini — Google-Extended controla o uso para treino)
+User-agent: Google-Extended
+Allow: /
+
+# Apple (Apple Intelligence training opt-in)
+User-agent: Applebot-Extended
+Allow: /
+
+# Meta
+User-agent: Meta-ExternalAgent
+Allow: /
+Disallow: /api/
+Disallow: /_next/
+Disallow: /pt/admin/
+Disallow: /en/admin/
+Disallow: /es/admin/
+Disallow: /de/admin/
+Disallow: /fr/admin/
+
+User-agent: FacebookBot
+Allow: /
+Disallow: /api/
+Disallow: /_next/
+Disallow: /pt/admin/
+Disallow: /en/admin/
+Disallow: /es/admin/
+Disallow: /de/admin/
+Disallow: /fr/admin/
+
+# Amazon / Common Crawl / Cohere / ByteDance
+User-agent: Amazonbot
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: cohere-ai
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+# Mistral / DuckAssist
+User-agent: MistralAI-User
+Allow: /
+
+User-agent: DuckAssistBot
+Allow: /
