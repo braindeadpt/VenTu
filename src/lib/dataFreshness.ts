@@ -1,4 +1,5 @@
 import { getTranslation } from '@/lib/i18n';
+import { lisbonDateKey, lisbonWallToMs } from '@/lib/lisbonTime';
 
 /**
  * Lisbon-hour stale thresholds, aligned with the pipeline schedule
@@ -94,7 +95,10 @@ export function formatForecastUpdatedAt(ts: number, locale: string, nowMs?: numb
   const loc = DATE_LOCALE[locale] ?? 'en-GB';
   // nowMs pin: the isToday check is baked at build — the client must
   // reproduce it on first paint (React #418 guard), then live after mount.
-  const isToday = date.toDateString() === new Date(nowMs ?? Date.now()).toDateString();
+  // "Hoje" é o dia de Lisboa: `toDateString()` comparava no fuso do viewer
+  // enquanto time/day renderizam em Europe/Lisbon — perto da meia-noite os
+  // dois desalinhavam e a hidratação podia divergir.
+  const isToday = lisbonDateKey(date) === lisbonDateKey(new Date(nowMs ?? Date.now()));
   // timeZone pinned: this label is baked at build time and re-rendered during
   // hydration — without it the clock differs per viewer tz and React throws #418.
   const time = new Intl.DateTimeFormat(loc, {
@@ -132,7 +136,9 @@ export function formatStaleAge(updatedAt: string, locale: string, nowMs?: number
 }
 
 export function isDawnPatrolStale(dateStr: string, maxAgeHours = 24): boolean {
-  const d = new Date(`${dateStr}T12:00:00`);
-  if (Number.isNaN(d.getTime())) return true;
-  return (Date.now() - d.getTime()) / 3600000 > maxAgeHours;
+  // A data do Dawn Patrol é um dia de Lisboa — parseava no fuso do browser
+  // e a staleness deslocava horas conforme o fuso do viewer.
+  const ms = lisbonWallToMs(`${dateStr}T12:00:00`);
+  if (Number.isNaN(ms)) return true;
+  return (Date.now() - ms) / 3600000 > maxAgeHours;
 }

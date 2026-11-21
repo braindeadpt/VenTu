@@ -36,6 +36,7 @@ import {
 } from '@/lib/buoyLayerDowntime'
 import CoastalDailyActiveChart from '@/components/CoastalDailyActiveChart'
 import { getTranslation } from '@/lib/i18n'
+import { formatLisbonDay } from '@/lib/lisbonTime'
 
 // pipeline-meta.json shapes needed for the live re-derivation. Deliberately
 // NOT imported from @/lib/pipelineMeta — that module reads fs at module scope,
@@ -753,10 +754,10 @@ function ArchiveCard({
                       </td>
                       <td className="py-1.5 pr-3 text-right tabular-nums">{r.nDays}</td>
                       <td className="py-1.5 pr-3 text-right tabular-nums text-fg-muted">
-                        {new Date(`${r.firstSeen}T12:00:00`).toLocaleDateString(isPt ? 'pt-PT' : 'en-GB')}
+                        {formatLisbonDay(r.firstSeen, isPt ? 'pt-PT' : 'en-GB')}
                       </td>
                       <td className="py-1.5 text-right tabular-nums text-fg-muted">
-                        {new Date(`${r.lastSeen}T12:00:00`).toLocaleDateString(isPt ? 'pt-PT' : 'en-GB')}
+                        {formatLisbonDay(r.lastSeen, isPt ? 'pt-PT' : 'en-GB')}
                       </td>
                     </tr>
                   ))}

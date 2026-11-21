@@ -11,6 +11,7 @@ import { getAssetPath } from '@/lib/paths';
 import { getTranslation } from '@/lib/i18n';
 import { spots } from '@/lib/spots';
 import { isDawnPatrolStale } from '@/lib/dataFreshness';
+import { lisbonWallToDate, formatLisbonDay } from '@/lib/lisbonTime';
 import {
   ipmaRadarUrl,
   warningBadgeLabel,
@@ -288,11 +289,14 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
     return null;
   })();
 
-  const moon = getMoonPhase(new Date(`${data.date}T12:00:00`));
-  const dateLabel = new Date(`${data.date}T12:00:00`).toLocaleDateString(
-    isPt ? 'pt-PT' : 'en-GB',
-    { weekday: 'short', day: 'numeric', month: 'short' },
-  );
+  // `data.date` é um dia de Lisboa — parsear no fuso do browser dava a fase
+  // lunar e a label do dia erradas para viewers fora de Europe/Lisbon.
+  const moon = getMoonPhase(lisbonWallToDate(`${data.date}T12:00:00`));
+  const dateLabel = formatLisbonDay(data.date, isPt ? 'pt-PT' : 'en-GB', {
+    weekday: 'short',
+    day: 'numeric',
+    month: 'short',
+  });
   const topSpotHref = resolveSpotHref(locale, data.topSpotSlug);
   const topSpotLinkValid = Boolean(data.topSpotSlug && VALID_SLUGS.has(data.topSpotSlug));
   const verdictColors = {

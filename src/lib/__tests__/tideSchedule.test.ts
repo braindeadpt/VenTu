@@ -102,3 +102,47 @@ describe('getTidePhasesForHours', () => {
     }
   });
 });
+
+describe('buildTideSchedule — next high/low independente do fuso', () => {
+  const hourly = [
+    { time: '2026-05-29T04:00', tideHeight: -0.5 },
+    { time: '2026-05-29T05:00', tideHeight: -0.9 },
+    { time: '2026-05-29T06:00', tideHeight: -1.1 },
+    { time: '2026-05-29T07:00', tideHeight: -0.8 },
+    { time: '2026-05-29T08:00', tideHeight: -0.2 },
+    { time: '2026-05-29T09:00', tideHeight: 0.4 },
+    { time: '2026-05-29T10:00', tideHeight: 0.7 },
+    { time: '2026-05-29T11:00', tideHeight: 0.5 },
+    { time: '2026-05-29T12:00', tideHeight: 0.1 },
+    { time: '2026-05-29T13:00', tideHeight: -0.4 },
+    { time: '2026-05-29T14:00', tideHeight: -0.85 },
+    { time: '2026-05-29T15:00', tideHeight: -1.05 },
+    { time: '2026-05-29T16:00', tideHeight: -0.75 },
+  ];
+  // «now» real: 08:30 Lisboa = 07:30 UTC (maio é WEST, UTC+1).
+  const now = new Date('2026-05-29T07:30:00Z');
+
+  it('o próximo baixo/alto é o instante de Lisboa, não do browser', () => {
+    const prevTz = process.env.TZ;
+    try {
+      process.env.TZ = 'Europe/Lisbon';
+      const lisbon = buildTideSchedule(hourly, { now })!;
+      process.env.TZ = 'Pacific/Auckland';
+      const auckland = buildTideSchedule(hourly, { now })!;
+
+      // Alta ~10:00 wall Lisboa = 09:00 UTC; baixa ~15:00 = 14:00 UTC.
+      expect(lisbon.nextHigh?.toISOString()).toBe('2026-05-29T09:00:00.000Z');
+      expect(lisbon.nextLow?.toISOString()).toBe('2026-05-29T14:00:00.000Z');
+      // Antes do fix: em Auckland os instantes deslocavam ~12h e a maré
+      // certa caía fora da janela ou era a que já tinha passado.
+      expect(auckland.nextHigh?.toISOString()).toBe(
+        lisbon.nextHigh?.toISOString(),
+      );
+      expect(auckland.nextLow?.toISOString()).toBe(lisbon.nextLow?.toISOString());
+      expect(auckland.phase).toBe(lisbon.phase);
+    } finally {
+      if (prevTz === undefined) delete process.env.TZ;
+      else process.env.TZ = prevTz;
+    }
+  });
+});

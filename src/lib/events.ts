@@ -1,19 +1,13 @@
 import type { EventKind, EventSport, VentuEvent } from '@/types/events';
 import { EVENT_KINDS, EVENT_SPORTS } from '@/types/events';
 import { safeExternalUrl, safeImageUrl } from '@/lib/safeUrl';
+import { lisbonDateKey } from '@/lib/lisbonTime';
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 const TIME_HM = /^\d{2}:\d{2}$/;
 
 /** Calendar YYYY-MM-DD in Europe/Lisbon (never UTC via toISOString). */
-export function lisbonDateKey(date: Date = new Date()): string {
-  return new Intl.DateTimeFormat('en-CA', {
-    timeZone: 'Europe/Lisbon',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  }).format(date);
-}
+export { lisbonDateKey };
 
 function isIsoDate(value: unknown): value is string {
   if (typeof value !== 'string' || !ISO_DATE.test(value)) return false;
