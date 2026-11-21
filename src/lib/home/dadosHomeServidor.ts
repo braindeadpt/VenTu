@@ -4,6 +4,7 @@
  * (praia do motor, série, fotos). Ver `dadosHome.ts`.
  */
 import type { LinhaForecast } from '@/lib/horaSpot';
+import { pickLocale } from '@/lib/i18n';
 import { editorialDe, spotModalidadeDe } from '@/lib/spotEditorial';
 import type { SportType } from '@/lib/sportRatings';
 import { spots as TODOS } from '@/lib/spots';
@@ -70,7 +71,7 @@ export type FotosCosta = Record<string, Record<Modalidade, FotoSpot | null>>;
 function fotoHome(f: FotoSpot | null, locale: string): FotoSpot | null {
   if (!f) return null;
   const { ficheiro: _a, card: _b, licUrl: _c, local: _d, altPt, altEn, ...resto } = f as FotoSpot & Record<string, unknown>;
-  return { ...resto, ...(locale === 'pt' ? { altPt } : { altEn }) } as unknown as FotoSpot;
+  return { ...resto, ...pickLocale(locale, { pt: { altPt }, en: { altEn } }) } as unknown as FotoSpot;
 }
 
 /** Foto de cada spot da costa por modalidade (a mesma regra da página de spot). */
