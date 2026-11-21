@@ -12,10 +12,11 @@ ALLOWED_ORIGINS = "https://ventu.surf"
 # Secrets (wrangler secret put — never commit):
 # ECOWITT_APPLICATION_KEY, ECOWITT_API_KEY, ECOWITT_MAC
 
-# Rate limiting global (não por colo): comentado porque criar a regra é uma
-# mudança de produção na Cloudflare — fazer no dashboard/WAF ou descomentar
-# antes do próximo `wrangler deploy`. Com o binding ativo, isRateLimited()
-# usa-o em vez do cache por colo.
+# Rate limiting gerido pela Cloudflare: comentado porque criar a regra é uma
+# mudança de produção — fazer no dashboard/WAF ou descomentar antes do próximo
+# `wrangler deploy`. NOTA: este binding conta por colo, como caches.default;
+# para um limite realmente global o caminho é um Durable Object (ou KV).
+# Com o binding ativo, isRateLimited() usa-o em vez do cache.
 # [[unsafe.bindings]]
 # name = "RATE_LIMITER"
 # type = "ratelimit"

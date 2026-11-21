@@ -390,11 +390,10 @@ function cors(origin: string | null, allowed: string): Record<string, string> {
 
 /**
  * S6: fixed-window per-IP rate limit.
- * With a RATE_LIMITER binding (Cloudflare Rate Limiting rule, wrangler.toml)
- * the count is global; without it we fall back to caches.default, which is
- * shared per colo — best-effort, but already stops casual abuse and
- * hammering of upstream APIs. Audit 2026-11-21 (baixa): deixou de ser
- * fail-open só por colo quando o binding existe.
+ * With a RATE_LIMITER binding (Cloudflare Rate Limiting, wrangler.toml) the
+ * counter is managed by Cloudflare — still per-colo like caches.default, but
+ * without the cache read/write races below. For a truly global counter a
+ * Durable Object / KV is the right tool (audit 2026-11-21, baixa).
  */
 async function isRateLimited(
   req: Request,
