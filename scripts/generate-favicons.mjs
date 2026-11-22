@@ -23,6 +23,9 @@ const targets = [
   { src: 'favicon.svg', out: 'favicon-16x16.png', size: 16 },
   { src: 'favicon.svg', out: 'favicon-32x32.png', size: 32 },
   { src: 'apple-touch-icon.svg', out: 'apple-touch-icon.png', size: 180 },
+  // Android/TWA + Play Store — PNGs reais (og-image.png é 1200×630, não serve)
+  { src: 'apple-touch-icon.svg', out: 'icon-192.png', size: 192 },
+  { src: 'apple-touch-icon.svg', out: 'icon-512.png', size: 512 },
 ];
 
 for (const t of targets) {
@@ -39,4 +42,27 @@ for (const t of targets) {
     .png({ compressionLevel: 9 })
     .toFile(path.join(publicDir, t.out));
   console.log(`✅ ${t.out} (${t.size}×${t.size})`);
+}
+
+// Ícone maskable (Android 8+): o sistema pode cortar a imagem em círculo/
+// squircle — o conteúdo tem de ficar dentro da «safe zone» central (~80%).
+// Fundo full-bleed na theme_color + marca a 62% centrada.
+const maskSrc = path.join(publicDir, 'apple-touch-icon.svg');
+if (fs.existsSync(maskSrc)) {
+  const inner = await sharp(fs.readFileSync(maskSrc), { density: 384 })
+    .resize(318, 318, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } })
+    .png()
+    .toBuffer();
+  await sharp({
+    create: {
+      width: 512,
+      height: 512,
+      channels: 4,
+      background: { r: 15, g: 23, b: 42, alpha: 1 },
+    },
+  })
+    .composite([{ input: inner, gravity: 'center' }])
+    .png({ compressionLevel: 9 })
+    .toFile(path.join(publicDir, 'icon-maskable-512.png'));
+  console.log('✅ icon-maskable-512.png (512×512, safe zone)');
 }
