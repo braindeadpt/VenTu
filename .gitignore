@@ -128,3 +128,7 @@ public/vendor/maplibre-gl-worker-*.mjs
 
 # Cache do gerador da geografia da praia (scripts/gen-praia-geo.mjs)
 .cache/
+# Ícones Android/TWA gerados no build (og:generate)
+public/icon-192.png
+public/icon-512.png
+public/icon-maskable-512.png
