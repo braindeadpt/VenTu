@@ -12,10 +12,9 @@ build:
                     # — o build estático precisa dela. Preferir git quando o
                     # checkout tem .git; fallback para tarball do GitHub
                     # (repo público — sem credenciais).
-                    - >-
-                      (git fetch origin ventu-data --depth=1
-                        && git checkout FETCH_HEAD -- public/data data-state public/sitemap.xml public/rss.xml public/rss-en.xml)
-                      || (curl -fsSL https://github.com/braindeadpt/VenTu/archive/refs/heads/ventu-data.tar.gz | tar -xz --strip-components=1)
+                    # linha única: o runner chama bash -c e o YAML folded com
+                    # indentação desigual mantém newlines literais (syntax error).
+                    - "(git fetch origin ventu-data --depth=1 && git checkout FETCH_HEAD -- public/data data-state public/sitemap.xml public/rss.xml public/rss-en.xml) || (curl -fsSL https://github.com/braindeadpt/VenTu/archive/refs/heads/ventu-data.tar.gz | tar -xz --strip-components=1)"
                     - npm ci
                 build_commands:
                     - npm run build
