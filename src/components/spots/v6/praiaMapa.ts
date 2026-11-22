@@ -15,6 +15,7 @@ import * as maplibregl from 'maplibre-gl';
 import { type Map as MLMap, type StyleSpecification, type ExpressionSpecification } from 'maplibre-gl';
 import { aplicarLuz, camara, corMar, COR, frentesOnda, luz, TERRA_COTAS, type Camara } from '@/lib/praiaCena';
 import { frentesGeo, multiPoligono, type GeoPraia } from '@/lib/praiaGeo';
+import { ISOBATH_DEPTH_STYLE } from '@/lib/isobaths';
 import type { BandaK } from '@/lib/modalidades';
 import { geoDaPraia } from './praiaRelevo';
 
@@ -270,7 +271,17 @@ export function criarMapa(o: OpcoesMapa): HandleMapa {
         source: 'isobatasG',
         layout: { visibility: 'none', 'line-cap': 'round', 'line-join': 'round' },
         paint: {
-          'line-color': ['match', ['get', 'depth'], 8, '#14B8A6', 16, '#F59E0B', 30, '#60A5FA', '#A9C2D4'],
+          'line-color': [
+            'match',
+            ['get', 'depth'],
+            8,
+            ISOBATH_DEPTH_STYLE[8].color,
+            16,
+            ISOBATH_DEPTH_STYLE[16].color,
+            30,
+            ISOBATH_DEPTH_STYLE[30].color,
+            '#A9C2D4',
+          ],
           'line-width': 1.7,
           'line-opacity': 0.88,
           'line-dasharray': [4, 3],
@@ -353,9 +364,9 @@ export function criarMapa(o: OpcoesMapa): HandleMapa {
     // tiles em falta (offline) não partem a cena; só se regista
     if (process.env.NODE_ENV !== 'production') console.warn('praiaMapa', e.error?.message ?? e);
   });
-  // Cache circular de 12 fases para o par (rumo, período, altura): após 1 ciclo (~1 s),
+  // Cache circular de 24 fases para o par (rumo, período, altura): após 1 ciclo,
   // cada frame da animação reutiliza o GeoJSON pronto sem recalcular marching squares nem encadeia.
-  const FRENTES_N = 12;
+  const FRENTES_N = 24;
   type GeoFrente = { type: 'Feature'; properties: Record<string, never>; geometry: { type: 'MultiLineString'; coordinates: Array<Array<[number, number]>> } };
   let cicloChave = '';
   let cicloSlots: Array<GeoFrente | null> = [];
@@ -374,7 +385,8 @@ export function criarMapa(o: OpcoesMapa): HandleMapa {
       return;
     }
     const escala = o.desktop ? ESCALA_FRENTES_DESK : 0.7;
-    const chave = `${Math.round(estado.sd / 10)}:${Math.round(estado.tp)}:${Math.round(estado.hs * 10)}:${geoOk ? 1 : 0}`;
+    const rumoChave = geoOk ? Math.round(estado.sd / 10) * 10 : Math.round(estado.sd);
+    const chave = `${rumoChave}:${Math.round(estado.tp)}:${Math.round(estado.hs * 10)}:${geoOk ? 1 : 0}`;
     if (chave !== cicloChave) {
       cicloChave = chave;
       cicloSlots = new Array<GeoFrente | null>(FRENTES_N).fill(null);
@@ -391,7 +403,7 @@ export function criarMapa(o: OpcoesMapa): HandleMapa {
       const tSlot = (idx / FRENTES_N) * periodoT;
       const segs = geoOk
         ? frentesGeo(geoOk.ondas, estado.sd, estado.tp, estado.hs, tSlot, o.desktop, 3200, escala, 10)
-        : frentesOnda(o.ll, o.praiaVirada, estado.sd, estado.tp, estado.hs, tSlot);
+        : frentesOnda(o.ll, o.praiaVirada, rumoChave, estado.tp, estado.hs, tSlot);
       feat = { type: 'Feature', properties: {}, geometry: { type: 'MultiLineString', coordinates: segs } };
       cicloSlots[idx] = feat;
     }

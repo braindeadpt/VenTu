@@ -203,13 +203,14 @@
 .v6 .cena-isob-btn{min-height:44px;display:inline-flex;align-items:center;gap:5px;padding:0 11px;border:0;border-radius:999px;background:rgba(3,14,24,.84);color:var(--espuma);box-shadow:inset 0 0 0 1.5px rgba(243,248,251,.18);font:700 13px/1 var(--txt);font-variant-numeric:tabular-nums lining-nums;cursor:pointer;white-space:nowrap}
 .v6 .cena-isob-btn svg{width:15px;height:15px;flex:none}
 .v6 .cena-isob-btn[aria-pressed=true]{box-shadow:inset 0 0 0 1.5px var(--sol);color:var(--sol)}
-.v6 .cena-isob-leg{position:absolute;z-index:4;left:10px;top:12px;display:inline-flex;flex-wrap:wrap;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;background:rgba(3,14,24,.84);box-shadow:inset 0 0 0 1.5px rgba(243,248,251,.16);font:700 12px/1 var(--txt);font-variant-numeric:tabular-nums lining-nums;color:var(--espuma)}
+.v6 .cena-isob-leg{position:absolute;z-index:4;left:12px;top:12px;display:inline-flex;flex-wrap:wrap;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;background:rgba(3,14,24,.84);box-shadow:inset 0 0 0 1.5px rgba(243,248,251,.16);font:700 12px/1 var(--txt);font-variant-numeric:tabular-nums lining-nums;color:var(--espuma);pointer-events:none}
+@media (max-width:639.98px){.v6 .cena-isob-leg{top:64px}}
 .v6 .cena-isob-leg .isob-t{color:var(--nevoa);font-weight:700}
 .v6 .cena-isob-leg .isob-item{display:inline-flex;align-items:center;gap:4px}
 .v6 .cena-isob-leg .isob-item i{display:inline-block;width:12px;height:2px;border-radius:2px;background:#A9C2D4}
 .v6 .cena-isob-leg .isob-item[data-prof='8'] i{background:#14B8A6}
 .v6 .cena-isob-leg .isob-item[data-prof='16'] i{background:#F59E0B}
-.v6 .cena-isob-leg .isob-item[data-prof='30'] i{background:#60A5FA}
+.v6 .cena-isob-leg .isob-item[data-prof='30'] i{background:#3B82F6}
 .v6 .cena-mapa-link{min-height:44px;display:inline-flex;align-items:center;gap:5px;padding:0 12px;border-radius:999px;background:rgba(3,14,24,.84);color:var(--espuma);box-shadow:inset 0 0 0 1.5px rgba(243,248,251,.18);font:700 13px/1 var(--txt);font-variant-numeric:tabular-nums lining-nums;text-decoration:none;white-space:nowrap}
 .v6 .cena-mapa-link svg{width:15px;height:15px;flex:none;color:var(--sol)}
 .v6 .cena-mapa-link:hover{box-shadow:inset 0 0 0 1.5px var(--sol);color:var(--sol)}

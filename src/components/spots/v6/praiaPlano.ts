@@ -10,6 +10,7 @@
  */
 import { aplicarLuz, COR, corMar, frentesOnda, luz, TERRA_COTAS } from '@/lib/praiaCena';
 import { frentesGeo, janelaFrentes } from '@/lib/praiaGeo';
+import { ISOBATH_DEPTH_STYLE } from '@/lib/isobaths';
 import type { Anel, GeoPraia } from '@/lib/praiaGeo';
 import { geoDaPraia } from './praiaRelevo';
 import type { EstadoCena, GrupoIsobata } from './praiaMapa';
@@ -73,7 +74,6 @@ export function criarPlano(
   let caminhos: { faixas: Path2D[]; terra: Path2D; areia: Path2D; aguaInterior: Path2D; relevo: Path2D[]; urbano: Path2D; pinhal: Path2D; rocha: Path2D; estradas: Path2D } | null = null;
   let isobVisivel = false;
   let isobGrupos: readonly GrupoIsobata[] = [];
-  const COR_ISOB: Record<number, string> = { 8: '#14B8A6', 16: '#F59E0B', 30: '#60A5FA' };
 
   const caminho = (aneis: Anel[]) => {
     const p = new Path2D();
@@ -120,7 +120,7 @@ export function criarPlano(
       ctx.lineJoin = 'round';
       ctx.setLineDash([5, 4]);
       for (const g of isobGrupos) {
-        ctx.strokeStyle = COR_ISOB[g.depth] ?? '#A9C2D4';
+        ctx.strokeStyle = ISOBATH_DEPTH_STYLE[g.depth]?.color ?? '#A9C2D4';
         ctx.beginPath();
         for (const linha of g.lines) {
           linha.forEach(([lon, lat], k) => {
