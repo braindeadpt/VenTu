@@ -117,9 +117,10 @@ jobs:
           # ficheiros mas NÃO apaga os que só existem no verde — sem isto, um
           # ficheiro removido pela pipeline sobrevivia no artefacto.
           rm -rf public/data
-          git checkout "$DATA_SHA" -- public/data
+          # Dados + sitemap/rss vivem na branch órfão ventu-data (DATA_SHA).
+          git checkout "$DATA_SHA" -- public/data public/sitemap.xml public/rss.xml public/rss-en.xml 2>/dev/null || git checkout "$DATA_SHA" -- public/data
           echo "código (CI verde): $(git rev-parse --short HEAD)"
-          echo "dados de main:     $DATA_SHA"
+          echo "dados (ventu-data): $DATA_SHA"
 
       # Validadores de dados que já existem (inclui a plausibilidade numérica
       # nova, scripts/lib/dataPlausibility.js ligado ao passo 5). Corre sobre a

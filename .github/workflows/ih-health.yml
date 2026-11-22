@@ -44,6 +44,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
 
+      - name: Hydrate public/data (ventu-data)
+        run: git fetch origin ventu-data --depth=1 && git checkout FETCH_HEAD -- public/data data-state || true
+
       # Gate do ping: no `schedule` (cadência do monitor) e no dispatch manual
       # sonda sempre; num ping do keep-alive externo só sonda quando o
       # pipeline está atrasado (pipeline-meta.json OU último commit de

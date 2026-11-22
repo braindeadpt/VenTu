@@ -75,6 +75,11 @@ jobs:
         with:
           fetch-depth: 1
 
+      # Carry-over/incremental lê public/data da ponta da branch ventu-data
+      # (os dados já não vivem na main — migração órfão ventu-data).
+      - name: Hydrate public/data (ventu-data)
+        run: git fetch origin ventu-data --depth=1 && git checkout FETCH_HEAD -- public/data data-state || true
+
       - name: Schedule gate (Europe/Lisbon)
         id: gate
         env:
@@ -426,6 +431,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+
+      - name: Hydrate public/data (ventu-data)
+        run: git fetch origin ventu-data --depth=1 && git checkout FETCH_HEAD -- public/data data-state || true
 
       - name: Setup Node.js
         uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5

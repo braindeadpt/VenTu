@@ -312,6 +312,10 @@ async function main() {
     process.exit(1);
   }
 
+  // Os dados vivem na branch órfão ventu-data (nunca na main) — o overlay do
+  // deploy sai da ponta dela. Fallback para main durante a transição.
+  const dataBranchSha = gitTry('rev-parse', 'origin/ventu-data') || mainSha;
+
   if (EVENT !== 'workflow_run') {
     const res = evaluateDeploySource({
       mode: 'workflow_dispatch',
@@ -319,6 +323,7 @@ async function main() {
       lagWarnCommits,
       lagWarnHours,
     });
+    res.dataSha = dataBranchSha;
     finish(res, null, await skipDecision(res, mainSha, nowMs), trigger, actionsSha);
     return;
   }
@@ -387,6 +392,7 @@ async function main() {
     staleNonDataPath,
     maxAgeDays,
   });
+  res.dataSha = dataBranchSha;
 
   console.log(
     `CI runs analisados: ${runs ? runs.length : 'indisponível'} (tentativa ${attemptsUsed}/${retryAttempts}) · verde escolhido: ${short(

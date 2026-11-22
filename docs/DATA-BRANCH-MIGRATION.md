@@ -1,7 +1,30 @@
 # Migração `public/data` → branch órfão `ventu-data`
 
-Estado: **plano revisto contra o código real** (2026-11-22). Implementação
-pendente — é um PR atómico (todos os pontos têm de entrar juntos).
+Estado: **implementado** (branch `feat/data-orphan-branch`; `ventu-data`
+seeded no remote — 1 commit raiz, 270 ficheiros). Notas de desvio ao plano
+original (o design final é MAIS seguro):
+
+- **Plumbing em vez de checkout**: `push-data-update.sh` e o novo
+  `scripts/push-data-file.sh` NÃO fazem `checkout`/`--orphan` na worktree
+  (isso destruiria `src/` numa branch só-de-dados). Usam um índice
+  temporário: `read-tree origin/ventu-data` → `add -f -A` da worktree
+  (captura remoções) → `write-tree` → `commit-tree` **raiz** (sem parente
+  → história = 1 commit para sempre) → `push --force-with-lease` com o
+  mesmo retry loop de 10 tentativas.
+- **Ficheiros de outros bots** (news, dawn-patrol, community-tips,
+  directory) ficam protegidos por pathspec excludes no `git add` — o
+  update-data nunca os reverte; os bots secundários usam
+  `push-data-file.sh` que só toca nos seus ficheiros.
+- **Regen sitemap/RSS** no `push-data-file.sh` compara o blob
+  `origin/ventu-data:<file>` com a worktree via `cmp` — `git diff` não
+  serve porque os ficheiros são untracked na main.
+- **Hydrate CI**: `git fetch origin ventu-data --depth=1 && git checkout
+  FETCH_HEAD -- public/data data-state || true` após cada checkout que
+  lê dados (ci.yml ×9, update-data ×2, bots, health monitors).
+- **`data:bootstrap`** no package.json faz o mesmo para dev local.
+- **Budget guard** (`check-data-history-budget.js`) torna-se o guard
+  anti-regressão de graça: 0 ficheiros trackeados = passa; dados
+  commitados de novo na main = o tecto rebenta.
 
 ## Porquê
 
