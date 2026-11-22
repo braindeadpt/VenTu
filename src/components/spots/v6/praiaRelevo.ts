@@ -6,7 +6,16 @@
  * duas vezes; o browser reutiliza os PNG que o MapLibre já pediu).
  */
 import { getAssetPath } from '@/lib/paths';
-import { construirGeo, geoDeEstatico, type Amostrador, type GeoEstatico, type GeoPraia } from '@/lib/praiaGeo';
+import {
+  amostradorDeGrade,
+  construirGeo,
+  geoDeEstatico,
+  type Amostrador,
+  type GeoEstatico,
+  type GeoPraia,
+  type GradeTiles,
+  type OpcoesGeo,
+} from '@/lib/praiaGeo';
 
 export const URL_TERRARIUM = (z: number, x: number, y: number) =>
   `https://s3.amazonaws.com/elevation-tiles-prod/terrarium/${z}/${x}/${y}.png`;
@@ -62,43 +71,85 @@ const mercY = (lat: number, n: number) => {
   return (0.5 - Math.log((1 + s) / (1 - s)) / (4 * Math.PI)) * n;
 };
 
-/** Amostrador bilinear do terrarium no zoom `z` para a área [W, S, E, N]; null se nenhum tile chegou. */
-export async function amostrador(z: number, bbox: [number, number, number, number]): Promise<Amostrador | null> {
+/** Grade serializável de tiles Terrarium no zoom `z` para a área [W, S, E, N]; null se nenhum tile chegou. */
+async function gradeTiles(z: number, bbox: [number, number, number, number]): Promise<GradeTiles | null> {
   const n = TILE * 2 ** z;
   const x0 = Math.floor(mercX(bbox[0], n) / TILE);
   const x1 = Math.floor(mercX(bbox[2], n) / TILE);
   const y0 = Math.floor(mercY(bbox[3], n) / TILE);
   const y1 = Math.floor(mercY(bbox[1], n) / TILE);
-  const mapa = new Map<string, Float32Array | null>();
+  const w = x1 - x0 + 1;
+  const h = y1 - y0 + 1;
+  const arr: Array<Float32Array | null> = new Array(w * h).fill(null);
   await Promise.all(
-    Array.from({ length: (x1 - x0 + 1) * (y1 - y0 + 1) }, (_, k) => {
-      const tx = x0 + (k % (x1 - x0 + 1));
-      const ty = y0 + Math.floor(k / (x1 - x0 + 1));
-      return tile(z, tx, ty).then((d) => mapa.set(`${tx}/${ty}`, d));
+    Array.from({ length: w * h }, (_, k) => {
+      const tx = x0 + (k % w);
+      const ty = y0 + Math.floor(k / w);
+      return tile(z, tx, ty).then((d) => {
+        arr[k] = d;
+      });
     }),
   );
-  if ([...mapa.values()].every((t) => !t)) return null;
-  const px = (gx: number, gy: number): number | null => {
-    const tx = Math.floor(gx / TILE);
-    const ty = Math.floor(gy / TILE);
-    const t = mapa.get(`${tx}/${ty}`);
-    if (!t) return null;
-    return t[(gy - ty * TILE) * TILE + (gx - tx * TILE)];
-  };
-  return (lon, lat) => {
-    const gx = mercX(lon, n) - 0.5;
-    const gy = mercY(lat, n) - 0.5;
-    const ix = Math.floor(gx);
-    const iy = Math.floor(gy);
-    const fx = gx - ix;
-    const fy = gy - iy;
-    const a = px(ix, iy);
-    const b = px(ix + 1, iy);
-    const c = px(ix, iy + 1);
-    const d = px(ix + 1, iy + 1);
-    if (a === null || b === null || c === null || d === null) return a ?? b ?? c ?? d;
-    return (a * (1 - fx) + b * fx) * (1 - fy) + (c * (1 - fx) + d * fx) * fy;
-  };
+  if (arr.every((t) => !t)) return null;
+  return { z, x0, y0, w, h, tiles: arr };
+}
+
+/** Amostrador bilinear do terrarium no zoom `z` para a área [W, S, E, N]; null se nenhum tile chegou. */
+export async function amostrador(z: number, bbox: [number, number, number, number]): Promise<Amostrador | null> {
+  const g = await gradeTiles(z, bbox);
+  return g ? amostradorDeGrade(g) : null;
+}
+
+/* ---------- Web Worker opcional para construirGeo fora da main thread ---------- */
+let geoWorker: Worker | null = null;
+let geoWorkerFalhou = false;
+let nextReqId = 1;
+const pendentes = new Map<number, { ok: (g: GeoPraia) => void; err: () => void }>();
+
+function obterWorker(): Worker | null {
+  if (geoWorkerFalhou || typeof Worker === 'undefined') return null;
+  if (!geoWorker) {
+    try {
+      geoWorker = new Worker(new URL('./praiaGeo.worker.ts', import.meta.url), { type: 'module' });
+      geoWorker.onmessage = (ev: MessageEvent<{ id: number; ok: boolean; geo?: Omit<GeoPraia, 'ondas'> & { ondas: Omit<GeoPraia['ondas'], 'campos'> } }>) => {
+        const p = pendentes.get(ev.data.id);
+        if (!p) return;
+        pendentes.delete(ev.data.id);
+        if (ev.data.ok && ev.data.geo) {
+          p.ok({ ...ev.data.geo, ondas: { ...ev.data.geo.ondas, campos: new Map() } });
+        } else {
+          p.err();
+        }
+      };
+      geoWorker.onerror = () => {
+        geoWorkerFalhou = true;
+        geoWorker?.terminate();
+        geoWorker = null;
+        for (const p of pendentes.values()) p.err();
+        pendentes.clear();
+      };
+    } catch {
+      geoWorkerFalhou = true;
+      return null;
+    }
+  }
+  return geoWorker;
+}
+
+function construirGeoForaMain(ll: [number, number], o: OpcoesGeo, fino: GradeTiles, largo: GradeTiles | null): Promise<GeoPraia> {
+  const w = obterWorker();
+  if (!w) return Promise.resolve(construirGeo(ll, o, amostradorDeGrade(fino), largo ? amostradorDeGrade(largo) : null));
+  return new Promise<GeoPraia>((resolve) => {
+    const id = nextReqId++;
+    const fallback = () => resolve(construirGeo(ll, o, amostradorDeGrade(fino), largo ? amostradorDeGrade(largo) : null));
+    pendentes.set(id, { ok: resolve, err: fallback });
+    try {
+      w.postMessage({ id, ll, o, fino, largo });
+    } catch {
+      pendentes.delete(id);
+      fallback();
+    }
+  });
 }
 
 /**
@@ -133,8 +184,8 @@ function geoDoRelevo(ll: [number, number]): Promise<GeoPraia | null> {
       ll[0] + AREA_GEO.meiaLon,
       ll[1] + AREA_GEO.meiaLat,
     ];
-    p = Promise.all([amostrador(12, bbox), amostrador(10, bbox)])
-      .then(([fino, largo]) => (fino ? construirGeo(ll, AREA_GEO, fino, largo) : null))
+    p = Promise.all([gradeTiles(12, bbox), gradeTiles(10, bbox)])
+      .then(([fino, largo]) => (fino ? construirGeoForaMain(ll, AREA_GEO, fino, largo) : null))
       .catch(() => null);
     geos.set(k + ':dem', p);
     geos.set(k, p);

@@ -5,7 +5,7 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { aneisGrelha, areaAnel, campoChegada, construirGeo, distancia, encadeia, frentesGeo, geoDeEstatico, janelaFrentes, JANELA_FRENTES, multiPoligono, type GeoEstatico } from '@/lib/praiaGeo';
+import { amostradorDeGrade, aneisGrelha, areaAnel, bandaPeriodo, campoChegada, construirGeo, distancia, encadeia, frentesGeo, geoDeEstatico, janelaFrentes, JANELA_FRENTES, multiPoligono, type GeoEstatico, type GradeTiles } from '@/lib/praiaGeo';
 import { PROF_FAIXAS } from '@/lib/praiaCena';
 
 const grelha = (nx: number, ny: number, f: (i: number, j: number) => number) => {
@@ -98,6 +98,46 @@ describe('praiaGeo · praia sintética', () => {
     expect(campoChegada(geo.ondas, 311)).toBe(campoChegada(geo.ondas, 310));
     expect(campoChegada(geo.ondas, 311)).not.toBe(campoChegada(geo.ondas, 320));
     expect(campoChegada(geo.ondas, 355, 20)).toBe(campoChegada(geo.ondas, 0));
+  });
+
+  it('campoChegada: períodos diferentes usam cache distinta e 16 s chega mais depressa do que 7 s', () => {
+    const t7 = campoChegada(geo.ondas, 280, 10, 7);
+    const t16 = campoChegada(geo.ondas, 280, 10, 16);
+    expect(t7).not.toBe(t16);
+
+    const maxFinito = (a: Float32Array) => {
+      let m = -Infinity;
+      for (let i = 0; i < a.length; i++) if (Number.isFinite(a[i]) && a[i] > m) m = a[i];
+      return m;
+    };
+    expect(maxFinito(t16)).toBeGreaterThan(0);
+    expect(maxFinito(t16)).toBeLessThan(maxFinito(t7));
+
+    // 15 s e 17 s caem ambos na banda 16 s → mesma entrada de cache
+    expect(campoChegada(geo.ondas, 280, 10, 15)).toBe(campoChegada(geo.ondas, 280, 10, 17));
+  });
+});
+
+describe('bandaPeriodo', () => {
+  it('quantiza o período em 3 bandas físicas (7 / 11 / 16 s)', () => {
+    expect(bandaPeriodo(6)).toBe(7);
+    expect(bandaPeriodo(8.9)).toBe(7);
+    expect(bandaPeriodo(9)).toBe(11);
+    expect(bandaPeriodo(11)).toBe(11);
+    expect(bandaPeriodo(13.9)).toBe(11);
+    expect(bandaPeriodo(14)).toBe(16);
+    expect(bandaPeriodo(17)).toBe(16);
+  });
+});
+
+describe('amostradorDeGrade', () => {
+  it('devolve a elevação constante dentro do tile e null fora', () => {
+    const tile = new Float32Array(256 * 256).fill(42);
+    // z = 4 (16×16 tiles): tile (8, 8) cobre lon ∈ [0, 22,5) e lat ∈ (~−21,94, 0]
+    const grade: GradeTiles = { z: 4, x0: 8, y0: 8, w: 1, h: 1, tiles: [tile] };
+    const amostrar = amostradorDeGrade(grade);
+    expect(amostrar(10, -10)).toBeCloseTo(42, 5);
+    expect(amostrar(-10, 10)).toBeNull();
   });
 });
 
@@ -279,6 +319,21 @@ describe('geografia estática de lagoas e albufeiras (public/geo/praia)', () => 
       expect(Array.isArray(g!.aguaInterior)).toBe(true);
       expect(g!.aguaInterior!.length).toBeGreaterThanOrEqual(1);
       expect(g!.aguaInterior!.some((anel) => anel.length >= 3)).toBe(true);
+    },
+  );
+});
+
+describe('geografia estática de novos spots icónicos OSM (public/geo/praia)', () => {
+  it.each(['jardim-mar.json', 'santa-barbara.json', 'coxos.json', 'beliche.json'])(
+    '%s carrega via geoDeEstatico com terra, pinhal não vazio e relevo vazio',
+    (ficheiro) => {
+      const j = JSON.parse(readFileSync(path.join(process.cwd(), 'public/geo/praia', ficheiro), 'utf8')) as GeoEstatico;
+      const g = geoDeEstatico(j);
+      expect(g).not.toBeNull();
+      expect(g!.terra.length).toBeGreaterThanOrEqual(1);
+      expect(g!.terra.some((anel) => anel.length >= 3)).toBe(true);
+      expect(g!.pinhal?.length).toBeGreaterThan(0);
+      expect(g!.relevo).toEqual([]);
     },
   );
 });

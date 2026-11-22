@@ -10,7 +10,7 @@
  * animação.
  */
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
-import { ArrowUpRight, RotateCcw } from 'lucide-react';
+import { ArrowUpRight, Layers, RotateCcw } from 'lucide-react';
 import LegendaBandas from '@/components/v6/LegendaBandas';
 import { criarVento, type MotorVento } from '@/lib/ventoParticulas';
 import { anguloSetaVento, camara, rotuloCurtoVizinho } from '@/lib/praiaCena';
@@ -20,7 +20,7 @@ import { fmtCopy, type SpotPageV6Copy } from '@/lib/translations/spotPage/v6';
 import type { BandaK, Modalidade } from '@/lib/modalidades';
 import type { HoraSpot } from '@/lib/horaSpot';
 import type { EditorialSpot } from '@/lib/spotEditorial';
-import type { EstadoCena, HandleMapa } from './praiaMapa';
+import type { EstadoCena, GrupoIsobata, HandleMapa } from './praiaMapa';
 import type { HandlePlano } from './praiaPlano';
 
 export interface Vizinho {
@@ -100,6 +100,8 @@ export default function PraiaCena3D({ spotId, locale, mapaSport, nome, ll, idEst
     return { bearing: c0.bearing, pitch: c0.pitch };
   });
   const [usouOSM, setUsouOSM] = useState(Boolean(idEstatico));
+  const [isobDados, setIsobDados] = useState<readonly GrupoIsobata[]>([]);
+  const [verIsob, setVerIsob] = useState(false);
   const [lbls, setLbls] = useState<LblItem[]>([]);
   /* rótulos da geografia estática (spots curados): o pico mais alto e as localidades do OSM */
   const extras = useRef<Array<{ t: string; ll: [number, number]; ele?: number }>>([]);
@@ -255,7 +257,7 @@ export default function PraiaCena3D({ spotId, locale, mapaSport, nome, ll, idEst
     const t0 = performance.now();
     let ultimo = 0;
     const anima = (now: number) => {
-      if (!document.hidden && visivel && now - ultimo > 50) {
+      if (!document.hidden && visivel && now - ultimo > 80) {
         ultimo = now;
         mapa.current?.frentes((now - t0) / 1000);
       }
@@ -279,8 +281,19 @@ export default function PraiaCena3D({ spotId, locale, mapaSport, nome, ll, idEst
       });
     };
     let criarPlano: typeof import('./praiaPlano').criarPlano;
+    let ativo = true;
     const iniciar = async () => {
       iniciado = true;
+      if (!semOndas) {
+        void import('@/lib/isobaths')
+          .then(async (m) => {
+            const f = await m.loadIsobathContours();
+            if (!ativo || !f) return;
+            const perto = m.contoursWithinRadius(f, ll[1], ll[0], 12);
+            if (perto.length) setIsobDados(perto);
+          })
+          .catch(() => undefined);
+      }
       const forcar = forcarRef.current || new URLSearchParams(window.location.search).get('webgl') === '0';
       if (forcar || !temWebGL2()) {
         criarPlano = (await import('./praiaPlano')).criarPlano;
@@ -359,6 +372,7 @@ export default function PraiaCena3D({ spotId, locale, mapaSport, nome, ll, idEst
     };
     window.addEventListener('resize', rs);
     return () => {
+      ativo = false;
       io.disconnect();
       window.removeEventListener('resize', rs);
       cancelAnimationFrame(raf);
@@ -382,6 +396,12 @@ export default function PraiaCena3D({ spotId, locale, mapaSport, nome, ll, idEst
     posLbls();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [h, banda, d]);
+
+  /* sincroniza a camada opcional de isóbatas IH (3D e vista plana) */
+  useEffect(() => {
+    mapa.current?.setIsob(verIsob, isobDados);
+    plano.current?.setIsob(verIsob, isobDados);
+  }, [verIsob, isobDados, modo]);
 
   const anguloChip = anguloSetaVento(h.wd, modo === '3d' ? camVista.bearing : 0, modo === '3d' ? camVista.pitch : 0);
   const sportQs = mapaSport ?? (d === 'kite' ? 'kitesurf' : 'surf');
@@ -483,6 +503,17 @@ export default function PraiaCena3D({ spotId, locale, mapaSport, nome, ll, idEst
           ) : null}
         </div>
         <p className="estatica">{c.vistaPlana}</p>
+        {verIsob && isobDados.length ? (
+          <div className="cena-isob-leg" data-testid="cena-isob-legenda" aria-label={c.isobatasLegenda}>
+            <span className="isob-t">{c.isobatasLegenda}</span>
+            {isobDados.map((g) => (
+              <span key={g.depth} className="isob-item" data-prof={g.depth}>
+                <i aria-hidden="true" />
+                {g.depth} m
+              </span>
+            ))}
+          </div>
+        ) : null}
         <p className="credito-mapa">
           {usouOSM ? (
             <>
@@ -492,11 +523,27 @@ export default function PraiaCena3D({ spotId, locale, mapaSport, nome, ll, idEst
           {relLbl}{' '}
           <a href="https://registry.opendata.aws/terrain-tiles/">AWS Terrain Tiles</a>
           {modo === '3d' ? ' ×1,5 · MapLibre' : null}
+          {verIsob && isobDados.length ? ` · ${c.atribuicaoIsob} © IH` : null}
         </p>
-        <a href={mapaHref} className="cena-mapa-link" data-testid="cena-abrir-mapa">
-          {c.abrirNoMapa}
-          <ArrowUpRight aria-hidden="true" />
-        </a>
+        <div className="cena-rodape-dir">
+          {isobDados.length ? (
+            <button
+              type="button"
+              className="cena-isob-btn"
+              data-testid="cena-isobatas"
+              aria-label={c.isobatasAria}
+              aria-pressed={verIsob}
+              onClick={() => setVerIsob((v) => !v)}
+            >
+              <Layers aria-hidden="true" />
+              {c.isobatas}
+            </button>
+          ) : null}
+          <a href={mapaHref} className="cena-mapa-link" data-testid="cena-abrir-mapa">
+            {c.abrirNoMapa}
+            <ArrowUpRight aria-hidden="true" />
+          </a>
+        </div>
       </figure>
       <LegendaBandas nomes={c.bandas} texto={legendaTxt} mostrarNoite={ehNoite} />
     </section>

@@ -125,16 +125,34 @@ export interface OpcoesMapa {
   onPerdido: () => void;
 }
 
+export interface GrupoIsobata {
+  depth: number;
+  lines: number[][][];
+}
+
 export interface HandleMapa {
   pinta(e: EstadoCena): void;
   recentrar(): void;
   topo(ativo: boolean): void;
+  setIsob(visivel: boolean, grupos?: readonly GrupoIsobata[]): void;
   bearing(): number;
   pitch(): number;
   proj(ll: [number, number]): { x: number; y: number } | null;
   unproj(p: [number, number]): [number, number] | null;
   frentes(t: number): void;
   destruir(): void;
+}
+
+/** Converte as isóbatas locais do IH num FeatureCollection GeoJSON pronto para MapLibre. */
+export function isobatasParaGeoJSON(grupos: readonly GrupoIsobata[]) {
+  return {
+    type: 'FeatureCollection' as const,
+    features: grupos.map((g) => ({
+      type: 'Feature' as const,
+      properties: { depth: g.depth },
+      geometry: { type: 'MultiLineString' as const, coordinates: g.lines },
+    })),
+  };
 }
 
 /** Cor de cada faixa de profundidade (propriedade `i` do GeoJSON). */
@@ -229,6 +247,7 @@ export function criarMapa(o: OpcoesMapa): HandleMapa {
       demH: { ...demClamp },
       demR: { type: 'raster-dem', tiles: [`https://${TILES}`], encoding: 'terrarium', tileSize: 256, maxzoom: 13 },
       frentes: { type: 'geojson', data: { type: 'FeatureCollection', features: [] } },
+      isobatasG: { type: 'geojson', data: VAZIO },
       faixas: { type: 'geojson', data: VAZIO },
       terraG: { type: 'geojson', data: VAZIO },
       areiaG: { type: 'geojson', data: VAZIO },
@@ -245,6 +264,18 @@ export function criarMapa(o: OpcoesMapa): HandleMapa {
     layers: [
       { id: 'bg', type: 'background', paint: { 'background-color': corMar(o.estado.banda, 7, L0) } },
       { id: 'mar', type: 'fill', source: 'faixas', paint: { 'fill-color': corFaixasExpr(o.estado.banda, L0), 'fill-antialias': false } },
+      {
+        id: 'isobatasG',
+        type: 'line',
+        source: 'isobatasG',
+        layout: { visibility: 'none', 'line-cap': 'round', 'line-join': 'round' },
+        paint: {
+          'line-color': ['match', ['get', 'depth'], 8, '#14B8A6', 16, '#F59E0B', 30, '#60A5FA', '#A9C2D4'],
+          'line-width': 1.7,
+          'line-opacity': 0.88,
+          'line-dasharray': [4, 3],
+        },
+      },
       {
         id: 'frentes',
         type: 'line',
@@ -322,22 +353,60 @@ export function criarMapa(o: OpcoesMapa): HandleMapa {
     // tiles em falta (offline) não partem a cena; só se regista
     if (process.env.NODE_ENV !== 'production') console.warn('praiaMapa', e.error?.message ?? e);
   });
+  // Cache circular de 12 fases para o par (rumo, período, altura): após 1 ciclo (~1 s),
+  // cada frame da animação reutiliza o GeoJSON pronto sem recalcular marching squares nem encadeia.
+  const FRENTES_N = 12;
+  type GeoFrente = { type: 'Feature'; properties: Record<string, never>; geometry: { type: 'MultiLineString'; coordinates: Array<Array<[number, number]>> } };
+  let cicloChave = '';
+  let cicloSlots: Array<GeoFrente | null> = [];
+  let ultimoSlot = -1;
+  let isobPend: { visivel: boolean; grupos?: readonly GrupoIsobata[] } | null = null;
   const frentes = (t: number) => {
     if (!ok) return;
     const src = m.getSource('frentes') as maplibregl.GeoJSONSource | undefined;
-    if (o.semOndas) {
-      src?.setData({ type: 'Feature', properties: {}, geometry: { type: 'MultiLineString', coordinates: [] } });
+    if (!src) return;
+    if (o.semOndas || !(estado.hs > 0.15) || !(estado.tp > 0)) {
+      if (cicloChave !== 'vazio') {
+        cicloChave = 'vazio';
+        ultimoSlot = -1;
+        src.setData({ type: 'Feature', properties: {}, geometry: { type: 'MultiLineString', coordinates: [] } });
+      }
       return;
     }
-    const segs = geoOk
-      ? // ×0,7 (telemóvel) / ×ESCALA_FRENTES_DESK no 3D: medido nas capturas (frentes que cruzam
-        // linhas horizontais da cena), é o que iguala a densidade da maquete em cada largura. A vista
-        // plana fica no espaçamento da maquete (escala 1), que já lhe era igual. Rumo arredondado a 20° (passoRumo), a mesma regra
-        // da maquete (campos de 280/300/320): para 311° usa o campo de 320°, como ela, e as frentes
-        // junto à costa ficam com a mesma orientação.
-        frentesGeo(geoOk.ondas, estado.sd, estado.tp, estado.hs, t, o.desktop, 3200, o.desktop ? ESCALA_FRENTES_DESK : 0.7, 20)
-      : frentesOnda(o.ll, o.praiaVirada, estado.sd, estado.tp, estado.hs, t);
-    src?.setData({ type: 'Feature', properties: {}, geometry: { type: 'MultiLineString', coordinates: segs } });
+    const escala = o.desktop ? ESCALA_FRENTES_DESK : 0.7;
+    const chave = `${Math.round(estado.sd / 10)}:${Math.round(estado.tp)}:${Math.round(estado.hs * 10)}:${geoOk ? 1 : 0}`;
+    if (chave !== cicloChave) {
+      cicloChave = chave;
+      cicloSlots = new Array<GeoFrente | null>(FRENTES_N).fill(null);
+      ultimoSlot = -1;
+    }
+    const periodoT = geoOk
+      ? (estado.tp * (o.desktop ? 2 : 3) * escala) / 8
+      : Math.max(0.25, Math.min(1.1, estado.tp * 0.055)) / 0.08;
+    const frac = (((t % periodoT) + periodoT) % periodoT) / periodoT;
+    const idx = Math.floor(frac * FRENTES_N) % FRENTES_N;
+    if (idx === ultimoSlot) return;
+    let feat = cicloSlots[idx];
+    if (!feat) {
+      const tSlot = (idx / FRENTES_N) * periodoT;
+      const segs = geoOk
+        ? frentesGeo(geoOk.ondas, estado.sd, estado.tp, estado.hs, tSlot, o.desktop, 3200, escala, 10)
+        : frentesOnda(o.ll, o.praiaVirada, estado.sd, estado.tp, estado.hs, tSlot);
+      feat = { type: 'Feature', properties: {}, geometry: { type: 'MultiLineString', coordinates: segs } };
+      cicloSlots[idx] = feat;
+    }
+    ultimoSlot = idx;
+    src.setData(feat);
+  };
+  const setIsob = (visivel: boolean, grupos?: readonly GrupoIsobata[]) => {
+    if (!ok) {
+      isobPend = { visivel, grupos };
+      return;
+    }
+    if (grupos) {
+      (m.getSource('isobatasG') as maplibregl.GeoJSONSource | undefined)?.setData(isobatasParaGeoJSON(grupos));
+    }
+    m.setLayoutProperty('isobatasG', 'visibility', visivel ? 'visible' : 'none');
   };
   const pinta = (e: EstadoCena) => {
     estado = e;
@@ -368,6 +437,10 @@ export function criarMapa(o: OpcoesMapa): HandleMapa {
     ok = true;
     pinta(estado);
     frentes(0);
+    if (isobPend) {
+      setIsob(isobPend.visivel, isobPend.grupos);
+      isobPend = null;
+    }
     void geo.then((g) => {
       if (!vivo) return;
       if (g) {
@@ -392,6 +465,7 @@ export function criarMapa(o: OpcoesMapa): HandleMapa {
   return {
     pinta,
     frentes,
+    setIsob,
     recentrar() {
       m.easeTo({ ...cam(), duration: o.reduz ? 0 : 800 });
     },
