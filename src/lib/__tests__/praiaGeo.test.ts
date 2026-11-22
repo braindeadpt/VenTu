@@ -188,6 +188,99 @@ describe('geoDeEstatico (ficheiro de public/geo/praia)', () => {
   it('ficheiros sem limites (gerados antes) dão uma lista vazia', () => {
     expect(geoDeEstatico(base())?.limites).toEqual([]);
   });
+
+  it('preserva aguaInterior quando presente e devolve [] quando ausente', () => {
+    const lago = [[[-9.22, 39.41], [-9.21, 39.41], [-9.21, 39.42], [-9.22, 39.42]]] as GeoEstatico['terra'];
+    expect(geoDeEstatico(base({ aguaInterior: lago }))?.aguaInterior).toEqual(lago);
+    expect(geoDeEstatico(base())?.aguaInterior).toEqual([]);
+  });
+});
+
+describe('praiaGeo · água interior (albufeira em altitude)', () => {
+  /** Regra even-odd (ray-casting) sobre todos os anéis (exteriores e buracos). */
+  function pontoEmPoligono(p: [number, number], aneis: Array<Array<[number, number]>>): boolean {
+    const [px, py] = p;
+    let dentro = false;
+    for (const anel of aneis) {
+      for (let i = 0, j = anel.length - 1; i < anel.length; j = i++) {
+        const [xi, yi] = anel[i];
+        const [xj, yj] = anel[j];
+        if ((yi > py) !== (yj > py) && px < ((xj - xi) * (py - yi)) / (yj - yi) + xi) {
+          dentro = !dentro;
+        }
+      }
+    }
+    return dentro;
+  }
+
+  it('construirGeo deteta aguaInterior não vazia num espelho plano a 150 m rodeado por encostas até 220 m', () => {
+    const ll: [number, number] = [-7.5, 38.2];
+    const fino = (lon: number, lat: number) => {
+      const r = Math.hypot(lon - ll[0], lat - ll[1]);
+      if (r <= 0.006) return 150;
+      return Math.min(220, 150 + (r - 0.006) * 5000);
+    };
+    const geo = construirGeo(ll, { meiaLon: 0.03, meiaLat: 0.025, res: 60 }, fino, null);
+    expect(geo.aguaInterior).toBeDefined();
+    expect(geo.aguaInterior!.length).toBeGreaterThanOrEqual(1);
+    expect(geo.aguaInterior![0].length).toBeGreaterThanOrEqual(3);
+    expect(pontoEmPoligono(ll, geo.aguaInterior!)).toBe(true);
+    const planalto: [number, number] = [-7.52, 38.22];
+    expect(fino(planalto[0], planalto[1])).toBe(220);
+    expect(pontoEmPoligono(planalto, geo.aguaInterior!)).toBe(false);
+  });
+
+  it('deteta albufeira na vizinhança mesmo quando o pin do catálogo está numa encosta/ilha acima da cota da água (Castelo de Bode / Ermal)', () => {
+    // Pin na encosta a 308 m; albufeira plana a 125 m centrada ~1 km a oeste do pin
+    const ll: [number, number] = [-8.3, 39.6];
+    const lago: [number, number] = [-8.312, 39.6];
+    const fino = (lon: number, lat: number) => {
+      const r = Math.hypot(lon - lago[0], lat - lago[1]);
+      if (r <= 0.008) return 125;
+      return Math.min(340, 125 + (r - 0.008) * 18000);
+    };
+    expect(fino(ll[0], ll[1])).toBeGreaterThan(190);
+    const geo = construirGeo(ll, { meiaLon: 0.04, meiaLat: 0.03, res: 60 }, fino, null);
+    expect(geo.aguaInterior).toBeDefined();
+    expect(geo.aguaInterior!.length).toBeGreaterThanOrEqual(1);
+    expect(geo.aguaInterior![0].length).toBeGreaterThanOrEqual(3);
+    expect(pontoEmPoligono(lago, geo.aguaInterior!)).toBe(true);
+    const planalto: [number, number] = [-8.27, 39.62];
+    expect(fino(planalto[0], planalto[1])).toBe(340);
+    expect(pontoEmPoligono(planalto, geo.aguaInterior!)).toBe(false);
+  });
+
+  it('deteta rio com declive junto à praia mesmo quando a jusante a cota desce (Praia da Lomba / Rio Douro)', () => {
+    const ll: [number, number] = [-8.413, 41.07];
+    const fino = (lon: number, lat: number) => {
+      const dLat = Math.abs(lat - ll[1]);
+      const cotaRio = lon < -8.425 ? 8 : 11;
+      if (dLat <= 0.002) return cotaRio;
+      return Math.min(120, cotaRio + (dLat - 0.002) * 15000);
+    };
+    const geo = construirGeo(ll, { meiaLon: 0.04, meiaLat: 0.03, res: 60 }, fino, null);
+    expect(geo.aguaInterior).toBeDefined();
+    expect(geo.aguaInterior!.length).toBeGreaterThanOrEqual(1);
+    expect(geo.aguaInterior![0].length).toBeGreaterThanOrEqual(3);
+    expect(pontoEmPoligono(ll, geo.aguaInterior!)).toBe(true);
+    const encosta: [number, number] = [-8.413, 41.09];
+    expect(fino(encosta[0], encosta[1])).toBe(120);
+    expect(pontoEmPoligono(encosta, geo.aguaInterior!)).toBe(false);
+  });
+});
+
+describe('geografia estática de lagoas e albufeiras (public/geo/praia)', () => {
+  it.each(['obidos-lagoon.json', 'lagoa-albufeira.json', 'alqueva.json', 'castelo-bode.json', 'ilha-do-ermal.json', 'praia-da-lomba.json'])(
+    '%s traz aguaInterior com pelo menos 1 anel não vazio',
+    (ficheiro) => {
+      const j = JSON.parse(readFileSync(path.join(process.cwd(), 'public/geo/praia', ficheiro), 'utf8')) as GeoEstatico;
+      const g = geoDeEstatico(j);
+      expect(g).not.toBeNull();
+      expect(Array.isArray(g!.aguaInterior)).toBe(true);
+      expect(g!.aguaInterior!.length).toBeGreaterThanOrEqual(1);
+      expect(g!.aguaInterior!.some((anel) => anel.length >= 3)).toBe(true);
+    },
+  );
 });
 
 describe('geografia estática do Guincho (public/geo/praia/guincho.json)', () => {

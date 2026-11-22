@@ -35,9 +35,35 @@ export function luz(sunEl: number, cloud: number | null | undefined): Luz {
 }
 export const aplicarLuz = (c: string, L: Luz, f = 1) => {
   let o = mix(c, '#F2A65A', L.gold * 0.2 * f);
-  o = mix(o, '#000814', (1 - L.day) * 0.6 * f);
+  o = mix(o, '#000814', (1 - L.day) * 0.42 * f);
   return o;
 };
+
+/**
+ * Ângulo CSS (graus) para a seta do chip do vento ficar alinhada com as
+ * partículas no ecrã, compensando tanto o `bearing` como o `pitch` da câmara.
+ */
+export function anguloSetaVento(wd: number, bearing = 0, pitch = 0): number {
+  const rad = ((wd - bearing) * Math.PI) / 180;
+  const vx = -Math.sin(rad);
+  const vy = Math.cos(rad) * Math.cos((pitch * Math.PI) / 180);
+  const ang = (Math.atan2(-vx, vy) * 180) / Math.PI;
+  return ((ang % 360) + 360) % 360;
+}
+
+/** Remove sufixo de região repetitivo entre parênteses num rótulo de vizinho (ex.: "Coxos (Ericeira)" → "Coxos"). */
+export function rotuloCurtoVizinho(nome: string): string {
+  const limpo = nome.replace(/\s*\([^)]+\)\s*$/, '').trim();
+  return limpo.length >= 3 ? limpo : nome;
+}
+
+/** Resolve o parâmetro `?sport=` do /mapa para o link «Abrir no mapa» nunca filtrar fora o próprio spot. */
+export function sportParaMapa(compativeis: readonly string[] | undefined, d: 'kite' | 'surf'): string {
+  const ativo = d === 'kite' ? 'kitesurf' : 'surf';
+  if (!compativeis?.length) return 'all';
+  if (compativeis.includes(ativo)) return ativo;
+  return compativeis[0] ?? 'all';
+}
 
 export const COR = {
   terra: '#1E3A3E',
@@ -90,7 +116,15 @@ export interface Camara {
  * rótulos editoriais) fica no centro do enquadramento: o desvio de 0,65 km ao
  * largo, a 28° do eixo da câmara, punha-o ~20 px ao lado e acima do centro a 390 px.
  */
-export function camara(ll: [number, number], praiaVirada: number, desktop: boolean, foco?: [number, number]): Camara {
+export function camara(ll: [number, number], praiaVirada: number, desktop: boolean, foco?: [number, number], aguaInterior = false): Camara {
+  if (aguaInterior) {
+    return {
+      center: foco ?? ll,
+      zoom: desktop ? 13.0 : 12.4,
+      pitch: 55,
+      bearing: 0,
+    };
+  }
   const bearing = (((praiaVirada + 152) % 360) + 360) % 360;
   return {
     center: desktop ? desloca(ll, praiaVirada, 0.75) : (foco ?? ll),
@@ -101,10 +135,10 @@ export function camara(ll: [number, number], praiaVirada: number, desktop: boole
 }
 
 /**
- * Frentes de onda (simplificação da refracção da maquete): linhas
- * perpendiculares à ondulação ao largo que rodam para ficar paralelas à praia
- * à medida que se aproximam; espaçadas pelo período e animadas pela fase `t`.
- * A terra tapa-as (a camada de terra fica por cima no mapa e no plano).
+ * Frentes de onda (fallback quando não há grelha de profundidade): linhas
+ * paralelas entre si (nunca se cruzam, mesmo com ondulação oblíqua) com
+ * curvatura suave de refracção junto à costa; espaçadas pelo período e
+ * animadas pela fase `t`. A terra tapa-as (fica por cima no mapa e no plano).
  */
 export function frentesOnda(
   ll: [number, number],
@@ -119,16 +153,18 @@ export function frentesOnda(
   alfa = clamp(alfa, -70, 70);
   const lam = clamp(tp * 0.055, 0.25, 1.1); // km entre frentes (exagerado para se ver)
   const fase = ((t * 0.08) % lam + lam) % lam;
-  const D0 = 3.5;
+  const dir = praiaVirada + 90 + alfa * 0.4;
   const out: Array<Array<[number, number]>> = [];
   for (let k = 0; k < 14; k++) {
     const dist = 0.12 + k * lam + (lam - fase);
     if (dist > 5.5) break;
-    const a = alfa * clamp(dist / D0, 0.2, 1);
-    const centro = desloca(ll, praiaVirada, dist);
-    const dir = praiaVirada + 90 + a;
     const linha: Array<[number, number]> = [];
-    for (let s = -4; s <= 4; s += 0.5) linha.push(desloca(centro, dir, s));
+    for (let s = -3.6; s <= 3.61; s += 0.45) {
+      // curvatura ligeira crescente para o largo mas idêntica em k → frentes sempre paralelas (dist(k+1) > dist(k))
+      const curva = 0.018 * s * s;
+      const base = desloca(ll, praiaVirada, dist + curva);
+      linha.push(desloca(base, dir, s));
+    }
     out.push(linha);
   }
   return out;

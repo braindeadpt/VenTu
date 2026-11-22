@@ -37,6 +37,8 @@ export interface GeoPraia {
   /** profundidade numa grelha grossa (para as frentes de onda), ver `frentesGeo` */
   ondas: GrelhaOndas;
   /** camadas OSM básicas (só nos spots com geografia estática, `public/geo/praia/<id>.json`) */
+  /** lagoas, rios, albufeiras e estuários (água interior em cima da terra) */
+  aguaInterior?: Anel[];
   pinhal?: Anel[];
   urbano?: Anel[];
   rocha?: Anel[];
@@ -55,6 +57,8 @@ export interface GeoEstatico {
   terra: Anel[];
   relevo: Anel[][];
   areia: Anel[];
+  /** opcional: lagoas, albufeiras e rios interiores (OSM `water` não-oceânico) */
+  aguaInterior?: Anel[];
   pinhal: Anel[];
   urbano: Anel[];
   rocha: Anel[];
@@ -93,6 +97,7 @@ export function geoDeEstatico(j: GeoEstatico): GeoPraia | null {
     terra: j.terra,
     areia: j.areia,
     relevo: j.relevo,
+    aguaInterior: Array.isArray(j.aguaInterior) ? j.aguaInterior : [],
     pinhal: j.pinhal,
     urbano: j.urbano,
     rocha: j.rocha,
@@ -343,6 +348,7 @@ export function construirGeo(ll: [number, number], o: OpcoesGeo, fino: Amostrado
   const ehMar = new Uint8Array(n);
   const bat = new Float32Array(n);
   let algumaTerra = false;
+  let marCount = 0;
   for (let j = 0; j < ny; j++) {
     const lat = N - j * dlat;
     for (let i = 0; i < nx; i++) {
@@ -353,7 +359,10 @@ export function construirGeo(ll: [number, number], o: OpcoesGeo, fino: Amostrado
       if (e > TERRA_MIN) {
         ehTerra[k] = 1;
         algumaTerra = true;
-      } else ehMar[k] = 1;
+      } else {
+        ehMar[k] = 1;
+        marCount++;
+      }
       const b = largo ? largo(lon, lat) : null;
       bat[k] = b === null ? 0 : Math.max(0, -b);
     }
@@ -397,6 +406,64 @@ export function construirGeo(ll: [number, number], o: OpcoesGeo, fino: Amostrado
     for (let k = 0; k < n; k++) campo[k] = elev[k] - lv;
     return aneis(campo);
   });
+  // Albufeiras e rios em altitude (sem mar ≤ 0,3 m): procura a cota plana dominante na
+  // vizinhança do spot (≤ 3,5 km), para funcionar mesmo quando o pin do catálogo marca
+  // o acesso, a margem ou uma ilha acima do espelho de água (ex.: Castelo de Bode, Ermal).
+  let aguaInterior: Anel[] = [];
+  if (marCount < n * 0.01) {
+    const cx = Math.round((ll[0] - W) / dlon);
+    const cy = Math.round((N - ll[1]) / dlat);
+    const raio = Math.max(10, Math.round(3500 / o.res));
+    const r2 = raio * raio;
+    const hist = new Map<number, number>();
+    const slopeDe = (i: number, j: number, k: number) => {
+      let s = 0;
+      if (i > 0) s = Math.max(s, Math.abs(elev[k] - elev[k - 1]));
+      if (i < nx - 1) s = Math.max(s, Math.abs(elev[k] - elev[k + 1]));
+      if (j > 0) s = Math.max(s, Math.abs(elev[k] - elev[k - nx]));
+      if (j < ny - 1) s = Math.max(s, Math.abs(elev[k] - elev[k + nx]));
+      return s;
+    };
+    const j0 = Math.max(0, cy - raio);
+    const j1 = Math.min(ny - 1, cy + raio);
+    const i0 = Math.max(0, cx - raio);
+    const i1 = Math.min(nx - 1, cx + raio);
+    for (let j = j0; j <= j1; j++)
+      for (let i = i0; i <= i1; i++) {
+        if ((i - cx) * (i - cx) + (j - cy) * (j - cy) > r2) continue;
+        const k = j * nx + i;
+        const e = elev[k];
+        if (e <= 2 || slopeDe(i, j, k) > 1.0) continue;
+        const b = Math.round(e);
+        hist.set(b, (hist.get(b) ?? 0) + 1);
+      }
+    // Se o próprio ponto do spot está num espelho plano (ex.: rio com declive suave como o Douro
+    // na Praia da Lomba), usa a cota local; caso contrário (pin na encosta ou numa ilha acima da
+    // albufeira), escolhe o plano significativo de menor altitude no vale (nunca um planalto seco).
+    let cotaAlvo: number | null = null;
+    const e0 = cx >= 0 && cx < nx && cy >= 0 && cy < ny ? elev[cy * nx + cx] : null;
+    if (e0 !== null && e0 > 2 && slopeDe(cx, cy, cy * nx + cx) <= 1.0) {
+      const b0 = Math.round(e0);
+      const t0 = (hist.get(b0) ?? 0) + (hist.get(b0 - 1) ?? 0) + (hist.get(b0 + 1) ?? 0);
+      if (t0 >= 15) cotaAlvo = b0;
+    }
+    if (cotaAlvo === null) {
+      for (const [b, cnt] of hist) {
+        const total = cnt + (hist.get(b - 1) ?? 0) + (hist.get(b + 1) ?? 0);
+        if (total >= 15 && (cotaAlvo === null || b < cotaAlvo)) {
+          cotaAlvo = b;
+        }
+      }
+    }
+    if (cotaAlvo !== null) {
+      for (let j = 0; j < ny; j++)
+        for (let i = 0; i < nx; i++) {
+          const k = j * nx + i;
+          campo[k] = Math.abs(elev[k] - cotaAlvo) <= 1.2 && slopeDe(i, j, k) <= 1.4 ? 0.5 : -0.5;
+        }
+      aguaInterior = aneis(campo);
+    }
+  }
   // grelha grossa (3 células) para o campo de chegada da ondulação
   const st = 3;
   const gx = Math.ceil(nx / st);
@@ -410,7 +477,7 @@ export function construirGeo(ll: [number, number], o: OpcoesGeo, fino: Amostrado
       gd[j * gx + i] = dMar[k];
     }
   const ondas: GrelhaOndas = { nx: gx, ny: gy, w: W, n: N, dlon: dlon * st, dlat: dlat * st, res: o.res * st, prof: gp, dist: gd, campos: new Map() };
-  return { bbox: [W, N - (ny - 1) * dlat, W + (nx - 1) * dlon, N], faixas, terra, areia, relevo, ondas };
+  return { bbox: [W, N - (ny - 1) * dlat, W + (nx - 1) * dlon, N], faixas, terra, areia, relevo, ...(aguaInterior.length ? { aguaInterior } : {}), ondas };
 }
 
 /**

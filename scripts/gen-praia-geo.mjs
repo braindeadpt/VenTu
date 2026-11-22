@@ -63,7 +63,7 @@ function coordsDe(id) {
   return ll;
 }
 const pedidos = process.argv.slice(2);
-const ids = (pedidos.length ? pedidos : Object.keys(editorial)).filter((id) => editorial[id]);
+const ids = pedidos.length ? pedidos.filter((id) => coordsPorId.has(id)) : Object.keys(editorial);
 
 /* ---------- tiles ---------- */
 function baixa(url, f) {
@@ -179,7 +179,7 @@ const ZV = 13;
 function osm(bbox) {
   const [x0, y0] = tileXY(bbox[0], bbox[3], ZV);
   const [x1, y1] = tileXY(bbox[2], bbox[1], ZV);
-  const out = { oceano: [], pinhal: [], urbano: [], areia: [], rocha: [], estradas: [], limites: [], lugares: [], picos: [] };
+  const out = { oceano: [], aguaInterior: [], pinhal: [], urbano: [], areia: [], rocha: [], estradas: [], limites: [], lugares: [], picos: [] };
   for (let x = x0; x <= x1; x++)
     for (let y = y0; y <= y1; y++) {
       const url = URL_VT.replace('{z}', ZV).replace('{x}', x).replace('{y}', y);
@@ -197,7 +197,9 @@ function osm(bbox) {
         if (l) for (let i = 0; i < l.length; i++) fn(l.feature(i));
       };
       cada('water', (f) => {
-        if (f.properties.class === 'ocean' && f.type === 3) out.oceano.push(conv(f));
+        if (f.type !== 3) return;
+        if (f.properties.class === 'ocean') out.oceano.push(conv(f));
+        else out.aguaInterior.push(conv(f));
       });
       cada('landcover', (f) => {
         if (f.type !== 3) return;
@@ -453,6 +455,7 @@ for (const id of ids) {
     terra: oceano ? terraOSM(o.oceano, grade, oceanoZ14(lim), lim) : g.terra.map(arred),
     relevo: g.relevo.map((f) => f.map(arred)),
     areia: o.areia.length ? camadaRaster(corta(o.areia), grade, 2, terraM) : g.areia.map(arred),
+    aguaInterior: o.aguaInterior.length ? camadaRaster(corta(o.aguaInterior), grade, 4, terraM) : [],
     pinhal: camadaRaster(corta(o.pinhal), grade, 8, terraM),
     urbano: camadaRaster(corta(o.urbano), grade, 8, terraM),
     rocha: camadaRaster(corta(o.rocha), grade, 4, terraM),
