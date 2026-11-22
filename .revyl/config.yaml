@@ -12,10 +12,9 @@ build:
                     # — o build estático precisa dela. Preferir git quando o
                     # checkout tem .git; fallback para tarball do GitHub
                     # (repo público — sem credenciais).
-                    - >-
-                      (git fetch origin ventu-data --depth=1
-                        && git checkout FETCH_HEAD -- public/data data-state public/sitemap.xml public/rss.xml public/rss-en.xml)
-                      || (curl -fsSL https://github.com/braindeadpt/VenTu/archive/refs/heads/ventu-data.tar.gz | tar -xz --strip-components=1)
+                    # linha única: o runner chama bash -c e o YAML folded com
+                    # indentação desigual mantém newlines literais (syntax error).
+                    - "(git fetch origin ventu-data --depth=1 && git checkout FETCH_HEAD -- public/data data-state public/sitemap.xml public/rss.xml public/rss-en.xml) || (curl -fsSL https://github.com/braindeadpt/VenTu/archive/refs/heads/ventu-data.tar.gz | tar -xz --strip-components=1)"
                     - npm ci
                 build_commands:
                     - npm run build
@@ -28,12 +27,8 @@ build:
                 secrets:
                     - NEXT_PUBLIC_CARTO_API_KEY
                     - NEXT_PUBLIC_SUPABASE_ANON_KEY
-pr_review:
-    enabled: true
-    build:
-        kind: revyl
-        profile: preview
-    proof_of_changes:
-        enabled: true
-        harness:
-            kind: revyl
+# pr_review desativado: o export estático (out/) tem ~1,7 GiB e o upload
+# de preview falha no limite de 1 GiB do plano Revyl
+# ("Web bundle exceeds its unpacked size limit of 1 GiB").
+# O site é testado em devices Revyl apontados ao live — mais fiel.
+# Reativar se a Revyl subir o limite do bundle.

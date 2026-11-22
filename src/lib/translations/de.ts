@@ -534,7 +534,7 @@ export const translationsDe = {
       'Welche Kitegröße mitnehmen? Gewicht + Wind + Disziplin, mit echtem Wind von jedem Spot.',
     kiteMetaTitle: 'Kitegrößen-Rechner — VenTu',
     kiteMetaDescription:
-      'Welche Kitegröße heute aufriggen? Berechne nach Gewicht, Wind in Knoten und Disziplin (Twintip, Strapless, Foil) — mit echtem Wind von 185 portugiesischen Spots.',
+      'Welche Kitegröße heute aufriggen? Berechne nach Gewicht, Wind in Knoten und Disziplin (Twintip, Strapless, Foil) — mit echtem Wind von {count} portugiesischen Spots.',
     kiteIntro:
       'Die richtige Größe hängt von deinem Gewicht, dem Wind und dem ab, was du fährst. Nutze Live-Wind von einem Spot oder stelle ihn manuell ein.',
     kiteHowWorks: 'So funktioniert es',
@@ -550,7 +550,7 @@ export const translationsDe = {
       'Welche Neoprenstärke? Echte Wassertemperatur jedes Spots, inklusive Windchill.',
     wetsuitMetaTitle: 'Neoprenstärken-Rechner — VenTu',
     wetsuitMetaDescription:
-      'Welchen Neoprenanzug anziehen? Empfohlene Stärke nach echter Wassertemperatur an 185 portugiesischen Spots, mit Stiefeln, Handschuhen und Kapuze wenn nötig.',
+      'Welchen Neoprenanzug anziehen? Empfohlene Stärke nach echter Wassertemperatur an {count} portugiesischen Spots, mit Stiefeln, Handschuhen und Kapuze wenn nötig.',
     wetsuitIntro:
       'Die richtige Stärke hängt vom Wasser ab, nicht von der Luft. Wähle einen Spot für die echte Temperatur oder stelle sie manuell ein.',
     wetsuitWaterTitle: 'Das Wasser in Portugal',
@@ -560,7 +560,7 @@ export const translationsDe = {
       'Wind stiehlt mehr Wärme als das Wasser: an einem windigen Tag zieh dich an, als wäre das Wasser 1–2°C kälter.',
     toolsHeading: 'Werkzeuge',
     toolsIntro:
-      'Schnelle Rechner zur Vorbereitung der Session — angebunden an echte Daten aller 185 Spots.',
+      'Schnelle Rechner zur Vorbereitung der Session — angebunden an echte Daten aller {count} Spots.',
     open: 'Öffnen',
     moreSoon: 'Weitere Tools in Kürze.',
   },

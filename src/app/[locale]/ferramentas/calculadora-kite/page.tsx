@@ -1,4 +1,5 @@
 import { locales, getTranslation, validateLocale } from '@/lib/i18n'
+import { spots } from '@/lib/spots'
 import type { Metadata } from 'next'
 import { buildPageMetadata } from '@/lib/seo'
 import Link from 'next/link'
@@ -19,7 +20,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const loc = validateLocale(locale)
   return buildPageMetadata({
     title: tt.kiteMetaTitle,
-    description: tt.kiteMetaDescription,
+    description: tt.kiteMetaDescription.replace('{count}', String(spots.length)),
     locale: loc,
     path: `/${loc}/ferramentas/calculadora-kite/`,
   })
