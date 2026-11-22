@@ -39,9 +39,16 @@ export const aplicarLuz = (c: string, L: Luz, f = 1) => {
   return o;
 };
 
-/** Ângulo CSS (graus) para a seta do chip do vento ficar alinhada com a câmara. */
-export function anguloSetaVento(wd: number, bearing = 0): number {
-  return (((wd - bearing) % 360) + 360) % 360;
+/**
+ * Ângulo CSS (graus) para a seta do chip do vento ficar alinhada com as
+ * partículas no ecrã, compensando tanto o `bearing` como o `pitch` da câmara.
+ */
+export function anguloSetaVento(wd: number, bearing = 0, pitch = 0): number {
+  const rad = ((wd - bearing) * Math.PI) / 180;
+  const vx = -Math.sin(rad);
+  const vy = Math.cos(rad) * Math.cos((pitch * Math.PI) / 180);
+  const ang = (Math.atan2(-vx, vy) * 180) / Math.PI;
+  return ((ang % 360) + 360) % 360;
 }
 
 /** Remove sufixo de região repetitivo entre parênteses num rótulo de vizinho (ex.: "Coxos (Ericeira)" → "Coxos"). */

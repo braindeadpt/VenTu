@@ -438,12 +438,11 @@ export function construirGeo(ll: [number, number], o: OpcoesGeo, fino: Amostrado
         hist.set(b, (hist.get(b) ?? 0) + 1);
       }
     let cotaAlvo: number | null = null;
-    let melhorCont = 14;
     for (const [b, cnt] of hist) {
-      // agrupa o bucket com os vizinhos ±1 m para absorver quantização do DEM
+      // agrupa o bucket com os vizinhos ±1 m para absorver quantização do DEM;
+      // a água acumula-se sempre no plano mais baixo do vale (nunca num planalto seco acima)
       const total = cnt + (hist.get(b - 1) ?? 0) + (hist.get(b + 1) ?? 0);
-      if (total > melhorCont) {
-        melhorCont = total;
+      if (total >= 15 && (cotaAlvo === null || b < cotaAlvo)) {
         cotaAlvo = b;
       }
     }

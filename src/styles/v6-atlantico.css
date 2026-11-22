@@ -205,7 +205,7 @@
 /* MapLibre: só o essencial do maplibre-gl.css (sem controlos) */
 .v6 .maplibregl-map{overflow:hidden;position:relative;-webkit-tap-highlight-color:rgba(0,0,0,0)}
 .v6 .maplibregl-canvas{position:absolute;left:0;top:0}
-@media (min-width:1024px){.v6 .maplibregl-canvas-container.maplibregl-interactive{cursor:grab}}
+@media (hover:hover) and (pointer:fine){.v6 .maplibregl-canvas-container.maplibregl-interactive{cursor:grab}}
 .v6 .maplibregl-ctrl-attrib,.v6 .maplibregl-ctrl-bottom-right,.v6 .maplibregl-ctrl-bottom-left{display:none}
 
 /* ---------- estudar ---------- */

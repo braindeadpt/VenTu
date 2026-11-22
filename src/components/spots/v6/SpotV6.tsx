@@ -247,6 +247,7 @@ export default function SpotV6({ spot, nome, local, locale, linhas, agoraMs, fot
           praiaVirada={ed.praiaVirada}
           aguaInterior={Boolean(ed.aguaInterior)}
           aguaPlana={ed.aguaPlana}
+          ehNoite={temNoite}
           vizinhos={vizinhos}
           h={h}
           banda={b}

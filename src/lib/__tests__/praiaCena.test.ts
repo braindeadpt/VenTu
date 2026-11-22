@@ -78,20 +78,33 @@ describe('camara', () => {
 
 describe('anguloSetaVento', () => {
   it('com bearing = 0, devolve wd normalizado em [0, 359]', () => {
-    expect(anguloSetaVento(0, 0)).toBe(0);
-    expect(anguloSetaVento(180, 0)).toBe(180);
-    expect(anguloSetaVento(359, 0)).toBe(359);
-    expect(anguloSetaVento(360, 0)).toBe(0);
-    expect(anguloSetaVento(450, 0)).toBe(90);
-    expect(anguloSetaVento(-10, 0)).toBe(350);
+    expect(anguloSetaVento(0, 0)).toBeCloseTo(0, 6);
+    expect(anguloSetaVento(180, 0)).toBeCloseTo(180, 6);
+    expect(anguloSetaVento(359, 0)).toBeCloseTo(359, 6);
+    expect(anguloSetaVento(360, 0)).toBeCloseTo(0, 6);
+    expect(anguloSetaVento(450, 0)).toBeCloseTo(90, 6);
+    expect(anguloSetaVento(-10, 0)).toBeCloseTo(350, 6);
   });
 
   it('no Guincho (bearing = 72, wd = 340 NNW) devolve 268', () => {
-    expect(anguloSetaVento(340, 72)).toBe(268);
+    expect(anguloSetaVento(340, 72)).toBeCloseTo(268, 6);
   });
 
   it('em wrap-around negativo (wd = 45, bearing = 72) devolve 333', () => {
-    expect(anguloSetaVento(45, 72)).toBe(333);
+    expect(anguloSetaVento(45, 72)).toBeCloseTo(333, 6);
+  });
+
+  it('em vista 3D inclinada (pitch = 60), comprime o eixo vertical por cos(pitch)', () => {
+    // vento direto no eixo da câmara → 0°
+    expect(anguloSetaVento(72, 72, 60)).toBeCloseTo(0, 6);
+    // vento transversal → 90°
+    expect(anguloSetaVento(162, 72, 60)).toBeCloseTo(90, 6);
+    // vento oblíquo a 45° do eixo da câmara: cos(60°) = 0.5 → atan2(sin(45°), cos(45°)*0.5) ≈ 63.435°
+    const obliquo = anguloSetaVento(117, 72, 60);
+    const esperado = (Math.atan2(Math.sin(Math.PI / 4), Math.cos(Math.PI / 4) * 0.5) * 180) / Math.PI;
+    expect(obliquo).toBeGreaterThan(45);
+    expect(obliquo).toBeCloseTo(esperado, 6);
+    expect(obliquo).toBeCloseTo(63.435, 3);
   });
 });
 

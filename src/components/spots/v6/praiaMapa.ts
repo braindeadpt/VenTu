@@ -31,7 +31,8 @@ function registarProtocolo() {
     let p = clampCache.get(url);
     if (!p) {
       p = (async () => {
-        const r = await fetch(url, { signal: ctl.signal });
+        // Sem ligar ctl.signal ao fetch partilhado: o abort de demT não pode cancelar demH.
+        const r = await fetch(url);
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
         const blob = await r.blob();
         if (typeof OffscreenCanvas === 'undefined' || typeof createImageBitmap === 'undefined')
@@ -57,6 +58,7 @@ function registarProtocolo() {
       void p.catch(() => clampCache.delete(url));
     }
     const buf = await p;
+    if (ctl.signal.aborted) throw new DOMException('Aborted', 'AbortError');
     return { data: buf.slice(0) };
   });
 }
@@ -82,11 +84,12 @@ export interface OpcoesMapa {
   aguaInterior?: boolean;
   semOndas?: boolean;
   desktop: boolean;
+  temRato: boolean;
   reduz: boolean;
   estado: EstadoCena;
   onPronto: () => void;
   onMexe: (inicio: boolean, porUtilizador: boolean) => void;
-  onBearing?: (bearing: number) => void;
+  onCamara?: (bearing: number, pitch: number) => void;
   onMoveFrame?: () => void;
   onPerdido: () => void;
 }
@@ -96,6 +99,7 @@ export interface HandleMapa {
   recentrar(): void;
   topo(ativo: boolean): void;
   bearing(): number;
+  pitch(): number;
   proj(ll: [number, number]): { x: number; y: number } | null;
   unproj(p: [number, number]): [number, number] | null;
   frentes(t: number): void;
@@ -254,9 +258,9 @@ export function criarMapa(o: OpcoesMapa): HandleMapa {
     maxPitch: 62,
     minZoom: c0.zoom - 0.8,
     maxZoom: 15,
-    // Desktop: arrastar com rato livre (scrollZoom=false preserva scroll da roda).
-    // Telemóvel: dragPan=false preserva o scroll vertical com 1 dedo; 2 dedos fazem zoom/rotação/pitch.
-    dragPan: o.desktop,
+    // Rato fino (hover+pointer fine): arrasto livre em qualquer largura de janela.
+    // Ecrã táctil: dragPan=false preserva o scroll vertical com 1 dedo; 2 dedos fazem zoom/rotação/pitch.
+    dragPan: o.temRato,
     scrollZoom: false,
     boxZoom: false,
     doubleClickZoom: false,
@@ -274,12 +278,12 @@ export function criarMapa(o: OpcoesMapa): HandleMapa {
   let estado = o.estado;
   let ok = false;
   m.on('move', () => {
-    o.onBearing?.(m.getBearing());
+    o.onCamara?.(m.getBearing(), m.getPitch());
     o.onMoveFrame?.();
   });
   m.on('movestart', (e) => o.onMexe(true, !!(e as { originalEvent?: unknown }).originalEvent));
   m.on('moveend', (e) => {
-    o.onBearing?.(m.getBearing());
+    o.onCamara?.(m.getBearing(), m.getPitch());
     o.onMexe(false, !!(e as { originalEvent?: unknown }).originalEvent);
   });
   m.on('webglcontextlost', () => o.onPerdido());
@@ -375,6 +379,9 @@ export function criarMapa(o: OpcoesMapa): HandleMapa {
     },
     bearing() {
       return m.getBearing();
+    },
+    pitch() {
+      return m.getPitch();
     },
     proj(ll) {
       const p = m.project(ll);

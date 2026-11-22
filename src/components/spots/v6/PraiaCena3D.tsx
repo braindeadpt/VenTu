@@ -39,6 +39,8 @@ export interface PraiaCena3DProps {
   praiaVirada: number;
   aguaInterior?: boolean;
   aguaPlana?: boolean;
+  /** true apenas quando a hora é realmente noite (distinto de semDados). */
+  ehNoite?: boolean;
   vizinhos: readonly Vizinho[];
   h: HoraSpot;
   banda: BandaK;
@@ -70,7 +72,7 @@ interface LblItem {
   ay?: number;
 }
 
-export default function PraiaCena3D({ spotId, locale, mapaSport, nome, ll, idEstatico, praiaVirada, aguaInterior = false, aguaPlana = false, vizinhos, h, banda, d, copy: c, forcarPlano, rotulos }: PraiaCena3DProps) {
+export default function PraiaCena3D({ spotId, locale, mapaSport, nome, ll, idEstatico, praiaVirada, aguaInterior = false, aguaPlana = false, ehNoite = false, vizinhos, h, banda, d, copy: c, forcarPlano, rotulos }: PraiaCena3DProps) {
   const semOndas = aguaInterior || aguaPlana;
   const fig = useRef<HTMLElement>(null);
   const mapaEl = useRef<HTMLDivElement>(null);
@@ -93,7 +95,10 @@ export default function PraiaCena3D({ spotId, locale, mapaSport, nome, ll, idEst
   }, [forcarPlano]);
   const [movido, setMovido] = useState(false);
   const [vistaTopo, setVistaTopo] = useState(false);
-  const [bearing, setBearing] = useState(() => camara(ll, praiaVirada, false, rotulos?.ll, aguaInterior).bearing);
+  const [camVista, setCamVista] = useState(() => {
+    const c0 = camara(ll, praiaVirada, false, rotulos?.ll, aguaInterior);
+    return { bearing: c0.bearing, pitch: c0.pitch };
+  });
   const [usouOSM, setUsouOSM] = useState(Boolean(idEstatico));
   const [lbls, setLbls] = useState<LblItem[]>([]);
   /* rótulos da geografia estática (spots curados): o pico mais alto e as localidades do OSM */
@@ -261,7 +266,7 @@ export default function PraiaCena3D({ spotId, locale, mapaSport, nome, ll, idEst
       mapa.current = null;
       modoRef.current = 'plano';
       setModo('plano');
-      setBearing(0);
+      setCamVista({ bearing: 0, pitch: 0 });
       setVistaTopo(false);
       requestAnimationFrame(() => {
         if (!planoEl.current) return;
@@ -287,6 +292,7 @@ export default function PraiaCena3D({ spotId, locale, mapaSport, nome, ll, idEst
         criarPlano = pl.criarPlano;
         if (!mapaEl.current) return;
         setModo('3d');
+        const temRato = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
         const hm = criarMapa({
           container: mapaEl.current,
           ll,
@@ -296,10 +302,11 @@ export default function PraiaCena3D({ spotId, locale, mapaSport, nome, ll, idEst
           aguaInterior,
           semOndas,
           desktop: desk.current,
+          temRato,
           reduz: reduz.current,
           estado: estadoRef.current,
           onPronto: () => {
-            setBearing(hm.bearing());
+            setCamVista({ bearing: hm.bearing(), pitch: hm.pitch() });
             posLbls();
             campoVento();
             if (!reduz.current) {
@@ -309,7 +316,7 @@ export default function PraiaCena3D({ spotId, locale, mapaSport, nome, ll, idEst
             }
             setTimeout(() => setPronto(true), 400);
           },
-          onBearing: (b) => setBearing(b),
+          onCamara: (b, p) => setCamVista({ bearing: b, pitch: p }),
           onMoveFrame: () => {
             if (moveRaf) return;
             moveRaf = requestAnimationFrame(() => {
@@ -329,7 +336,7 @@ export default function PraiaCena3D({ spotId, locale, mapaSport, nome, ll, idEst
         });
         mapa.current = hm;
         proj.current = hm;
-        setBearing(hm.bearing());
+        setCamVista({ bearing: hm.bearing(), pitch: hm.pitch() });
       } catch {
         if (!criarPlano) criarPlano = (await import('./praiaPlano')).criarPlano;
         usarPlano();
@@ -376,12 +383,13 @@ export default function PraiaCena3D({ spotId, locale, mapaSport, nome, ll, idEst
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [h, banda, d]);
 
-  const anguloChip = anguloSetaVento(h.wd, modo === '3d' ? bearing : 0);
+  const anguloChip = anguloSetaVento(h.wd, modo === '3d' ? camVista.bearing : 0, modo === '3d' ? camVista.pitch : 0);
   const sportQs = mapaSport ?? (d === 'kite' ? 'kitesurf' : 'surf');
   const mapaHref = getAssetPath(`/${locale}/mapa/?spot=${encodeURIComponent(spotId)}&sport=${encodeURIComponent(sportQs)}`);
   const sub = semOndas ? c.cenaSubInterior : d === 'kite' ? c.cenaSubKite : c.cenaSubSurf;
   const legendaTxt = semOndas ? c.legendaInterior : c.legenda;
   const relLbl = usouOSM ? c.atribuicaoRelevo : c.atribuicaoRelevo.charAt(0).toUpperCase() + c.atribuicaoRelevo.slice(1);
+  const figAria = semOndas || modo === 'plano' ? `${nome} — ${sub}` : fmtCopy(c.cenaAria, { spot: nome });
 
   return (
     <section className="cena-sec" aria-labelledby="cena-t" data-testid="praia-3d">
@@ -394,7 +402,7 @@ export default function PraiaCena3D({ spotId, locale, mapaSport, nome, ll, idEst
       <figure
         ref={fig}
         className={`cena${modo === 'plano' ? ' sem-webgl' : ''}`}
-        aria-label={fmtCopy(c.cenaAria, { spot: nome })}
+        aria-label={figAria}
         data-modo={modo}
         data-pronto={pronto ? '1' : '0'}
         data-banda={banda}
@@ -432,7 +440,7 @@ export default function PraiaCena3D({ spotId, locale, mapaSport, nome, ll, idEst
                 mapa.current?.topo(prox);
               }}
             >
-              <span className="bussola-rosa" style={{ transform: `rotate(${-bearing}deg)` }} aria-hidden="true">
+              <span className="bussola-rosa" style={{ transform: `rotate(${-camVista.bearing}deg)` }} aria-hidden="true">
                 <svg viewBox="0 0 24 24">
                   <path d="M12 3l3.2 8.2h-6.4z" fill="var(--sol)" />
                   <path d="M12 21l-3.2-8.2h6.4z" fill="rgba(243,248,251,.35)" />
@@ -490,7 +498,7 @@ export default function PraiaCena3D({ spotId, locale, mapaSport, nome, ll, idEst
           <ArrowUpRight aria-hidden="true" />
         </a>
       </figure>
-      <LegendaBandas nomes={c.bandas} texto={legendaTxt} mostrarNoite={banda === 'noite'} />
+      <LegendaBandas nomes={c.bandas} texto={legendaTxt} mostrarNoite={ehNoite} />
     </section>
   );
 }

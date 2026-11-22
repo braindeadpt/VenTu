@@ -197,6 +197,22 @@ describe('geoDeEstatico (ficheiro de public/geo/praia)', () => {
 });
 
 describe('praiaGeo · água interior (albufeira em altitude)', () => {
+  /** Regra even-odd (ray-casting) sobre todos os anéis (exteriores e buracos). */
+  function pontoEmPoligono(p: [number, number], aneis: Array<Array<[number, number]>>): boolean {
+    const [px, py] = p;
+    let dentro = false;
+    for (const anel of aneis) {
+      for (let i = 0, j = anel.length - 1; i < anel.length; j = i++) {
+        const [xi, yi] = anel[i];
+        const [xj, yj] = anel[j];
+        if ((yi > py) !== (yj > py) && px < ((xj - xi) * (py - yi)) / (yj - yi) + xi) {
+          dentro = !dentro;
+        }
+      }
+    }
+    return dentro;
+  }
+
   it('construirGeo deteta aguaInterior não vazia num espelho plano a 150 m rodeado por encostas até 220 m', () => {
     const ll: [number, number] = [-7.5, 38.2];
     const fino = (lon: number, lat: number) => {
@@ -208,6 +224,10 @@ describe('praiaGeo · água interior (albufeira em altitude)', () => {
     expect(geo.aguaInterior).toBeDefined();
     expect(geo.aguaInterior!.length).toBeGreaterThanOrEqual(1);
     expect(geo.aguaInterior![0].length).toBeGreaterThanOrEqual(3);
+    expect(pontoEmPoligono(ll, geo.aguaInterior!)).toBe(true);
+    const planalto: [number, number] = [-7.52, 38.22];
+    expect(fino(planalto[0], planalto[1])).toBe(220);
+    expect(pontoEmPoligono(planalto, geo.aguaInterior!)).toBe(false);
   });
 
   it('deteta albufeira na vizinhança mesmo quando o pin do catálogo está numa encosta/ilha acima da cota da água (Castelo de Bode / Ermal)', () => {
@@ -224,6 +244,10 @@ describe('praiaGeo · água interior (albufeira em altitude)', () => {
     expect(geo.aguaInterior).toBeDefined();
     expect(geo.aguaInterior!.length).toBeGreaterThanOrEqual(1);
     expect(geo.aguaInterior![0].length).toBeGreaterThanOrEqual(3);
+    expect(pontoEmPoligono(lago, geo.aguaInterior!)).toBe(true);
+    const planalto: [number, number] = [-8.27, 39.62];
+    expect(fino(planalto[0], planalto[1])).toBe(340);
+    expect(pontoEmPoligono(planalto, geo.aguaInterior!)).toBe(false);
   });
 });
 
