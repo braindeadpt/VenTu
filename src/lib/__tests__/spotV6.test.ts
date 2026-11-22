@@ -174,6 +174,51 @@ describe('notas /10 e bandas da #210', () => {
       H.forEach((_, i) => expect(`${f(i).l1} ${parteTxt(f(i).l2)}`).not.toMatch(/\/\s*100/));
     }
   });
+  it('«melhora {q}» junta dia e hora correctamente em de/fr (hora com NBSP)', () => {
+    // O veredicto divide «amanhã 10h» no último espaço normal: a hora tem de
+    // ser uma unidade inseparável («10 Uhr», «10 h») para não ficar «10 um Uhr».
+    for (const [lg, dia, esperado] of [
+      ['pt', 'amanhã', 'amanhã às 10h'],
+      ['en', 'tomorrow', 'tomorrow at 10:00'],
+      ['es', 'mañana', 'mañana a las 10h'],
+      ['de', 'morgen', 'morgen um 10 Uhr'],
+      ['fr', 'demain', 'demain à 10 h'],
+    ] as const) {
+      const c = spotPageV6[lg];
+      const q = `${dia} ${c.hora.replace('{h}', '10')}`;
+      const k = q.lastIndexOf(' ');
+      const qq = k < 0 ? c.melhoraAs.replace('{h}', q) : `${q.slice(0, k)} ${c.melhoraAs.replace('{h}', q.slice(k + 1))}`;
+      expect(qq, lg).toBe(esperado);
+    }
+    // E pelo veredicto real: horas fracas à tarde com janela boa na tarde seguinte.
+    const sp = spotModalidadeDe(editorialDe(getSpotBySlug('guincho')!));
+    const HH = Array.from({ length: 36 }, (_, k) => {
+      const d = new Date(Date.UTC(2026, 9, 14, 18) + k * 3600000);
+      return {
+        t: d.toISOString().slice(0, 16),
+        w: 20, g: 24, wd: 320, hs: 1.4, tp: 10, sd: 300,
+        tide: 1, tideUp: true, sunEl: 30, sunAz: 200,
+      };
+    });
+    const NS = HH.map((_, k) => ({
+      n: k < 20 ? 2.5 : 9, // Fraco → Muito bom na tarde seguinte
+      f: { vento: 0, onda: 0, mare: 0 },
+      nMotor: k < 20 ? 2.5 : 9,
+      seguranca: null,
+    }));
+    const melhora = { pt: /melhora/, en: /improves/, es: /mejora/, de: /bessert sich/, fr: /s’améliore/ };
+    const unidade = { pt: /\d+h/, en: /\d+:\d\d/, es: /\d+h/, de: /\d+ ?Uhr/, fr: /\d+ ?h/ };
+    for (const dd of MODALIDADES_VISIVEIS) {
+      for (const lg of ['pt', 'en', 'es', 'de', 'fr'] as const) {
+        const f = construirFrase({ sp, d: dd, H: HH, NS, sol: {}, copy: spotPageV6[lg], locale: lg });
+        const t = parteTxt(f(0).l2);
+        expect(t, `${lg}`).toMatch(melhora[lg]);
+        expect(t, `${lg}`).toMatch(unidade[lg]);
+        if (lg === 'de') expect(t, `${lg}`).not.toMatch(/um Uhr/);
+        if (lg === 'fr') expect(t, `${lg}`).not.toMatch(/à h/);
+      }
+    }
+  });
 });
 
 describe('ventu.modalidade no formato {d, v}', () => {
