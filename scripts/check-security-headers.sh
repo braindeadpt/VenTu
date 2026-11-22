@@ -114,9 +114,24 @@ check_cache_rule "C2 /data/news.json — HIT" "${BASE}/data/news.json" "HIT"
 # C3 — /sw.js (bypass edge): DYNAMIC ou sem header; HIT/MISS = regra não aplicada
 check_cache_rule "C3 /sw.js — DYNAMIC (bypass)" "${BASE}/sw.js" "DYNAMIC" 1
 
-if [ "$fail" -eq 0 ]; then
-  echo "OK — headers S7 + cache edge conforme docs/SECURITY-HEADERS.md"
+# ── Digital Asset Links (TWA Android — docs/ANDROID.md) ──
+# /.well-known/assetlinks.json tem de responder 200 com o package da app:
+# o upload-pages-artifact exclui dotfiles por defeito (include-hidden-files
+# no deploy.yml) e um 404 aqui faz a TWA abrir com barra de URL.
+echo "==> $BASE — Digital Asset Links (TWA)"
+al_code=$(curl -s -o /tmp/ventu-assetlinks.json -w '%{http_code}' "${BASE}/.well-known/assetlinks.json" || true)
+al_body=$(cat /tmp/ventu-assetlinks.json 2>/dev/null || true)
+rm -f /tmp/ventu-assetlinks.json
+if [ "$al_code" = "200" ] && printf '%s' "$al_body" | grep -q '"package_name": "surf.ventu.app"'; then
+  echo "  ok: assetlinks.json 200 com package surf.ventu.app"
 else
-  echo "FALHAS — rever docs/SECURITY-HEADERS.md (proxy Cloudflare + Transform/Cache Rules ainda não aplicados?)"
+  echo "  FAIL: assetlinks.json — HTTP ${al_code:-erro} (esperado 200 + package surf.ventu.app)"
+  fail=1
+fi
+
+if [ "$fail" -eq 0 ]; then
+  echo "OK — headers S7 + cache edge + assetlinks conforme docs/SECURITY-HEADERS.md e docs/ANDROID.md"
+else
+  echo "FALHAS — rever docs/SECURITY-HEADERS.md (proxy Cloudflare + Transform/Cache Rules) e docs/ANDROID.md (assetlinks no ar?)"
 fi
 exit "$fail"

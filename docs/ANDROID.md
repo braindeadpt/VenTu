@@ -88,6 +88,12 @@ keytool -list -v -keystore ventu-upload.keystore -alias ventu | grep SHA256
 > o certificado dela — depois do primeiro upload, copia o fingerprint de
 > *Play Console → Setup → App integrity* para o assetlinks (podem coexistir
 > os dois fingerprints no array). Sem isto a TWA mostra a barra de URL.
+>
+> ⚠️ **GitHub Pages + dotfiles:** o `upload-pages-artifact` (v4+) exclui
+> ficheiros pastas que começam por `.` por defeito — sem
+> `include-hidden-files: true` no `deploy.yml` o assetlinks fica no repo mas
+> responde 404 em produção e a TWA abre com barra de URL. O guard
+> `scripts/check-security-headers.sh` valida isto após cada deploy.
 
 ### 4. Build
 
