@@ -7,7 +7,7 @@ full-screen sem barra de browser, com ícone próprio e splash.
 
 | Decisão | Valor |
 |---|---|
-| Package ID | `surf.ventu.app` (imutável após publicar) |
+| Package ID | `surf.ventu.twa` (imutável após publicar) |
 | Host TWA | `ventu.surf` |
 | App name | `VenTu` |
 | Ícone | `https://ventu.surf/icon-512.png` |
@@ -49,7 +49,7 @@ bubblewrap doctor   # confirma JDK + SDK
 
 ```bash
 bubblewrap init --manifest https://ventu.surf/manifest.json
-# Package ID:   surf.ventu.app
+# Package ID:   surf.ventu.twa
 # App name:     VenTu
 # Host:         ventu.surf
 # Launch URL:   https://ventu.surf/pt/
@@ -78,7 +78,7 @@ keytool -list -v -keystore ventu-upload.keystore -alias ventu | grep SHA256
   "relation": ["delegate_permission/common.handle_all_urls"],
   "target": {
     "namespace": "android_app",
-    "package_name": "surf.ventu.app",
+    "package_name": "surf.ventu.twa",
     "sha256_cert_fingerprints": ["AA:BB:...:FF"]
   }
 }]
