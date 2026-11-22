@@ -47,10 +47,42 @@ check_value() { # label, header_name, expected_regex, headers
   fi
 }
 
+# check_csp_source: directive must contain exact source token (order-independent; rejects partial paths; first occurrence only per CSP spec)
+check_csp_source() { # label, directive, exact_source, headers
+  local label="$1" dir="$2" want="$3" hdrs="$4" val ok
+  val=$(printf '%s\n' "$hdrs" | grep -iE '^Content-Security-Policy:' | head -1 | tr -d '\r' | sed -E 's/^[^:]+:[[:space:]]*//')
+  ok=$(printf '%s\n' "$val" | awk -v d="$dir" -v w="$want" -F';' '
+    {
+      for (i = 1; i <= NF; i++) {
+        n = split($i, a, /[ \t]+/)
+        k = 1
+        while (k <= n && a[k] == "") k++
+        if (k <= n && tolower(a[k]) == tolower(d)) {
+          for (j = k + 1; j <= n; j++) {
+            if (a[j] == w) { print "1"; exit }
+          }
+          exit
+        }
+      }
+    }
+  ')
+  if [ "$ok" = "1" ]; then
+    echo "  ok: $label"
+  else
+    echo "  FAIL: $label — diretiva '${dir}' sem origem exata '${want}'"
+    fail=1
+  fi
+}
+
 echo "==> $BASE — catch-all (fora de /embed/*)"
 h=$(curl -sI "${BASE}/pt/" || true)
 check_header "Content-Security-Policy presente"        "Content-Security-Policy"  "$h"
 check_value  "frame-ancestors 'none'"                  "Content-Security-Policy"  "frame-ancestors 'none'" "$h"
+check_csp_source "CSP connect-src permite AWS Terrain Tiles" "connect-src" "https://s3.amazonaws.com" "$h"
+check_csp_source "CSP img-src permite EUMETView"             "img-src"     "https://view.eumetsat.int" "$h"
+check_csp_source "CSP img-src permite AWS Terrain Tiles"     "img-src"     "https://s3.amazonaws.com" "$h"
+check_csp_source "CSP worker-src permite 'self'"             "worker-src"  "'self'" "$h"
+check_csp_source "CSP worker-src permite blob:"              "worker-src"  "blob:" "$h"
 check_value  "X-Frame-Options: DENY"                   "X-Frame-Options"          "deny" "$h"
 check_value  "X-Content-Type-Options: nosniff"         "X-Content-Type-Options"   "nosniff" "$h"
 check_value  "Strict-Transport-Security"               "Strict-Transport-Security" "max-age=" "$h"
@@ -65,6 +97,11 @@ fi
 echo "==> $BASE — /embed/* (widget B2B deve continuar iframeable)"
 eh=$(curl -sI "${BASE}/embed/spot/moledo/" || true)
 check_value "frame-ancestors * em /embed/*" "Content-Security-Policy" "frame-ancestors \*" "$eh"
+check_csp_source "CSP connect-src permite AWS Terrain Tiles em /embed/*" "connect-src" "https://s3.amazonaws.com" "$eh"
+check_csp_source "CSP img-src permite EUMETView em /embed/*"             "img-src"     "https://view.eumetsat.int" "$eh"
+check_csp_source "CSP img-src permite AWS Terrain Tiles em /embed/*"     "img-src"     "https://s3.amazonaws.com" "$eh"
+check_csp_source "CSP worker-src permite 'self' em /embed/*"             "worker-src"  "'self'" "$eh"
+check_csp_source "CSP worker-src permite blob: em /embed/*"              "worker-src"  "blob:" "$eh"
 if printf '%s\n' "$eh" | grep -qi "^X-Frame-Options:"; then
   echo "  FAIL: X-Frame-Options presente em /embed/* — quebra o widget B2B"
   fail=1
