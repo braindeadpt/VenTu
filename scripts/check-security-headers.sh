@@ -159,10 +159,10 @@ echo "==> $BASE — Digital Asset Links (TWA)"
 al_code=$(curl -s -o /tmp/ventu-assetlinks.json -w '%{http_code}' "${BASE}/.well-known/assetlinks.json" || true)
 al_body=$(cat /tmp/ventu-assetlinks.json 2>/dev/null || true)
 rm -f /tmp/ventu-assetlinks.json
-if [ "$al_code" = "200" ] && printf '%s' "$al_body" | grep -q '"package_name": "surf.ventu.app"'; then
-  echo "  ok: assetlinks.json 200 com package surf.ventu.app"
+if [ "$al_code" = "200" ] && printf '%s' "$al_body" | grep -q '"package_name": "surf.ventu.twa"'; then
+  echo "  ok: assetlinks.json 200 com package surf.ventu.twa"
 else
-  echo "  FAIL: assetlinks.json — HTTP ${al_code:-erro} (esperado 200 + package surf.ventu.app)"
+  echo "  FAIL: assetlinks.json — HTTP ${al_code:-erro} (esperado 200 + package surf.ventu.twa)"
   fail=1
 fi
 
