@@ -30,6 +30,8 @@ const inv = (x: number, y: number, z: number): [number, number] => {
 };
 
 export interface HandlePlano {
+  largura: number;
+  altura: number;
   pinta(e: EstadoCena): void;
   setIsob(visivel: boolean, grupos?: readonly GrupoIsobata[]): void;
   proj(ll: [number, number]): { x: number; y: number } | null;
@@ -207,6 +209,8 @@ export function criarPlano(
     .then(usar)
     .finally(() => vivo && onPronto());
   return {
+    largura: W,
+    altura: H,
     pinta(e) {
       estado = e;
       desenha();

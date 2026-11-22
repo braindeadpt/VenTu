@@ -208,9 +208,6 @@
 .v6 .cena-isob-leg .isob-t{color:var(--nevoa);font-weight:700}
 .v6 .cena-isob-leg .isob-item{display:inline-flex;align-items:center;gap:4px}
 .v6 .cena-isob-leg .isob-item i{display:inline-block;width:12px;height:2px;border-radius:2px;background:#A9C2D4}
-.v6 .cena-isob-leg .isob-item[data-prof='8'] i{background:#14B8A6}
-.v6 .cena-isob-leg .isob-item[data-prof='16'] i{background:#F59E0B}
-.v6 .cena-isob-leg .isob-item[data-prof='30'] i{background:#3B82F6}
 .v6 .cena-mapa-link{min-height:44px;display:inline-flex;align-items:center;gap:5px;padding:0 12px;border-radius:999px;background:rgba(3,14,24,.84);color:var(--espuma);box-shadow:inset 0 0 0 1.5px rgba(243,248,251,.18);font:700 13px/1 var(--txt);font-variant-numeric:tabular-nums lining-nums;text-decoration:none;white-space:nowrap}
 .v6 .cena-mapa-link svg{width:15px;height:15px;flex:none;color:var(--sol)}
 .v6 .cena-mapa-link:hover{box-shadow:inset 0 0 0 1.5px var(--sol);color:var(--sol)}

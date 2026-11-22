@@ -14,6 +14,7 @@ import { ArrowUpRight, Layers, RotateCcw } from 'lucide-react';
 import LegendaBandas from '@/components/v6/LegendaBandas';
 import { criarVento, type MotorVento } from '@/lib/ventoParticulas';
 import { anguloSetaVento, camara, isobatasNoRectangulo, rotuloCurtoVizinho } from '@/lib/praiaCena';
+import { ISOBATH_DEPTH_STYLE } from '@/lib/isobaths';
 import { rumo } from '@/lib/spotVeredicto';
 import { getAssetPath } from '@/lib/paths';
 import { fmtCopy, type SpotPageV6Copy } from '@/lib/translations/spotPage/v6';
@@ -398,11 +399,11 @@ export default function PraiaCena3D({ spotId, locale, mapaSport, nome, ll, idEst
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [h, banda, d]);
 
-  /* filtra isóbatas visíveis na vista plana (escala fixa) e sincroniza 3D / plano */
+  /* filtra isóbatas visíveis na vista plana (escala fixa, usando as dimensões exactas da projecção do plano) e sincroniza 3D / plano */
   useEffect(() => {
     let visiveis = isobDados;
-    if (modo === 'plano' && plano.current && fig.current && isobDados.length) {
-      visiveis = isobatasNoRectangulo(isobDados, plano.current.proj, fig.current.clientWidth, fig.current.clientHeight);
+    if (modo === 'plano' && plano.current && isobDados.length) {
+      visiveis = isobatasNoRectangulo(isobDados, plano.current.proj, plano.current.largura, plano.current.altura);
     }
     setIsobVisiveis(visiveis);
     if (!visiveis.length && verIsob) setVerIsob(false);
@@ -515,7 +516,7 @@ export default function PraiaCena3D({ spotId, locale, mapaSport, nome, ll, idEst
             <span className="isob-t">{c.isobatasLegenda}</span>
             {isobVisiveis.map((g) => (
               <span key={g.depth} className="isob-item" data-prof={g.depth}>
-                <i aria-hidden="true" />
+                <i aria-hidden="true" style={{ background: ISOBATH_DEPTH_STYLE[g.depth]?.color }} />
                 {g.depth} m
               </span>
             ))}
