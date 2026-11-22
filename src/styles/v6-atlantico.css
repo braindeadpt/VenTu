@@ -182,16 +182,26 @@
 .v6 .top-lbl.grande{font:900 italic 20px/1 var(--disp);font-variant-numeric:tabular-nums lining-nums;letter-spacing:.02em;text-transform:uppercase;background:var(--band);color:var(--band-t);text-shadow:none;padding:5px 9px 4px;border-radius:8px}
 .v6 .top-lbl i{font-style:normal;color:var(--nevoa);font-weight:600}
 .v6 .lbl-abs{position:absolute;z-index:3;transform:translate(-50%,-50%);pointer-events:none}
+.v6 .spot-pin{position:absolute;z-index:3;width:9px;height:9px;border-radius:999px;background:var(--espuma);box-shadow:0 0 0 2.5px rgba(3,14,24,.9),0 0 8px rgba(0,0,0,.6);transform:translate(-50%,-50%);pointer-events:none}
+.v6 .bussola{width:44px;height:44px;padding:0;border:0;border-radius:999px;background:rgba(3,14,24,.84);color:var(--espuma);box-shadow:inset 0 0 0 1.5px rgba(243,248,251,.16);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;cursor:pointer;flex:none}
+.v6 .bussola.fixa{cursor:default;pointer-events:none}
+.v6 .bussola[aria-pressed=true]{box-shadow:inset 0 0 0 1.5px var(--sol)}
+.v6 .bussola-rosa{width:20px;height:20px;display:grid;place-items:center;transition:transform .12s linear}
+.v6 .bussola-rosa svg{width:20px;height:20px;display:block}
+.v6 .bussola-n{font:800 9px/1 var(--txt);font-variant-numeric:tabular-nums lining-nums;letter-spacing:.06em;color:var(--sol);margin-top:-2px}
 .v6 .cena-ferr{position:absolute;z-index:4;right:12px;top:12px;display:flex;gap:8px;align-items:center}
 .v6 .vento-chip{display:flex;align-items:center;gap:8px;background:rgba(3,14,24,.84);border-radius:999px;padding:8px 12px;font:700 14px/1 var(--txt);font-variant-numeric:tabular-nums lining-nums;box-shadow:inset 0 0 0 1.5px rgba(243,248,251,.16)}
-.v6 .vento-chip svg{width:20px;height:20px}
-.v6 .recentrar{width:44px;height:44px;border-radius:999px;border:0;background:rgba(3,14,24,.84);color:var(--espuma);display:grid;place-items:center;cursor:pointer}
+.v6 .vento-chip svg{width:20px;height:20px;transition:transform .12s linear}
+.v6 .recentrar{width:44px;height:44px;border-radius:999px;border:0;background:rgba(3,14,24,.84);color:var(--espuma);box-shadow:inset 0 0 0 1.5px rgba(243,248,251,.16);display:grid;place-items:center;cursor:pointer}
 .v6 .recentrar svg{width:20px;height:20px}
-.v6 .estatica{position:absolute;z-index:4;left:12px;right:12px;bottom:28px;margin:0;padding:8px 12px;border-radius:10px;background:rgba(3,14,24,.86);font:600 14px/1.35 var(--txt);font-variant-numeric:tabular-nums lining-nums;display:none;max-width:420px}
+.v6 .estatica{position:absolute;z-index:4;left:12px;right:12px;bottom:52px;margin:0;padding:8px 12px;border-radius:10px;background:rgba(3,14,24,.86);font:600 14px/1.35 var(--txt);font-variant-numeric:tabular-nums lining-nums;display:none;max-width:420px}
 .v6 .cena.sem-webgl .estatica{display:block}
 .v6 .cena-sec .leg{padding:12px 16px 0}
-.v6 .credito-mapa{position:absolute;z-index:4;left:8px;bottom:6px;font:500 10.5px/1.2 var(--txt);font-variant-numeric:tabular-nums lining-nums;color:rgba(243,248,251,.75);margin:0}
+.v6 .credito-mapa{position:absolute;z-index:4;left:8px;bottom:6px;max-width:calc(100% - 168px);font:500 10.5px/1.2 var(--txt);font-variant-numeric:tabular-nums lining-nums;color:rgba(243,248,251,.75);margin:0}
 .v6 .credito-mapa a{color:inherit;text-decoration:underline}
+.v6 .cena-mapa-link{position:absolute;z-index:4;right:10px;bottom:8px;min-height:44px;display:inline-flex;align-items:center;gap:5px;padding:0 12px;border-radius:999px;background:rgba(3,14,24,.84);color:var(--espuma);box-shadow:inset 0 0 0 1.5px rgba(243,248,251,.18);font:700 13px/1 var(--txt);font-variant-numeric:tabular-nums lining-nums;text-decoration:none;white-space:nowrap}
+.v6 .cena-mapa-link svg{width:15px;height:15px;flex:none;color:var(--sol)}
+.v6 .cena-mapa-link:hover{box-shadow:inset 0 0 0 1.5px var(--sol);color:var(--sol)}
 /* MapLibre: só o essencial do maplibre-gl.css (sem controlos) */
 .v6 .maplibregl-map{overflow:hidden;position:relative;-webkit-tap-highlight-color:rgba(0,0,0,0)}
 .v6 .maplibregl-canvas{position:absolute;left:0;top:0}
@@ -453,7 +463,7 @@
 /* ---------- movimento reduzido: sem Ken Burns, sem espuma, sem transições ---------- */
 @media (prefers-reduced-motion:reduce){
   .v6.vivo .foto.kb img,.v6.vivo .swell svg{animation:none}
-  .v6 .modo .pista,.v6 .agulha,.v6 .foto img,.v6 .estudo summary svg,.v6 .ec-det-b::before{transition:none}
+  .v6 .modo .pista,.v6 .agulha,.v6 .foto img,.v6 .estudo summary svg,.v6 .ec-det-b::before,.v6 .bussola-rosa,.v6 .vento-chip svg{transition:none}
 }
 
 /* ---------- acções do spot (como chegar, favorito, alerta, câmara, mais) ---------- */

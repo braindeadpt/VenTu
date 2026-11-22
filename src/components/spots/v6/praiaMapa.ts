@@ -21,30 +21,43 @@ import { geoDaPraia } from './praiaRelevo';
 const TILES = 's3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png';
 const PROTO = 'ventuclamp';
 let protocoloOk = false;
+const clampCache = new Map<string, Promise<ArrayBuffer>>();
 
 function registarProtocolo() {
   if (protocoloOk) return;
   protocoloOk = true;
   maplibregl.addProtocol(PROTO, async (params, ctl) => {
-    const r = await fetch(params.url.replace(`${PROTO}://`, 'https://'), { signal: ctl.signal });
-    const blob = await r.blob();
-    if (typeof OffscreenCanvas === 'undefined' || typeof createImageBitmap === 'undefined')
-      return { data: await blob.arrayBuffer() };
-    const bmp = await createImageBitmap(blob, { premultiplyAlpha: 'none', colorSpaceConversion: 'none' });
-    const c = new OffscreenCanvas(bmp.width, bmp.height);
-    const x = c.getContext('2d', { willReadFrequently: true }) as OffscreenCanvasRenderingContext2D;
-    x.drawImage(bmp, 0, 0);
-    const im = x.getImageData(0, 0, c.width, c.height);
-    const p = im.data;
-    // terrarium: elevação = R·256 + G + B/256 − 32768; R < 128 ⇒ abaixo de 0 m → 0 m
-    for (let k = 0; k < p.length; k += 4)
-      if (p[k] < 128) {
-        p[k] = 128;
-        p[k + 1] = 0;
-        p[k + 2] = 0;
-      }
-    x.putImageData(im, 0, 0);
-    return { data: await (await c.convertToBlob({ type: 'image/png' })).arrayBuffer() };
+    const url = params.url.replace(`${PROTO}://`, 'https://');
+    let p = clampCache.get(url);
+    if (!p) {
+      p = (async () => {
+        const r = await fetch(url, { signal: ctl.signal });
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        const blob = await r.blob();
+        if (typeof OffscreenCanvas === 'undefined' || typeof createImageBitmap === 'undefined')
+          return blob.arrayBuffer();
+        const bmp = await createImageBitmap(blob, { premultiplyAlpha: 'none', colorSpaceConversion: 'none' });
+        const c = new OffscreenCanvas(bmp.width, bmp.height);
+        const x = c.getContext('2d', { willReadFrequently: true }) as OffscreenCanvasRenderingContext2D;
+        x.drawImage(bmp, 0, 0);
+        const im = x.getImageData(0, 0, c.width, c.height);
+        const d = im.data;
+        // terrarium: elevação = R·256 + G + B/256 − 32768; R < 128 ⇒ abaixo de 0 m → 0 m
+        for (let k = 0; k < d.length; k += 4)
+          if (d[k] < 128) {
+            d[k] = 128;
+            d[k + 1] = 0;
+            d[k + 2] = 0;
+          }
+        x.putImageData(im, 0, 0);
+        return (await c.convertToBlob({ type: 'image/png' })).arrayBuffer();
+      })();
+      if (clampCache.size >= 120) clampCache.clear();
+      clampCache.set(url, p);
+      void p.catch(() => clampCache.delete(url));
+    }
+    const buf = await p;
+    return { data: buf.slice(0) };
   });
 }
 
@@ -66,17 +79,23 @@ export interface OpcoesMapa {
   praiaVirada: number;
   /** ponto que fica no centro do enquadramento no telemóvel (rótulo editorial do spot); por omissão `ll` */
   foco?: [number, number];
+  aguaInterior?: boolean;
+  semOndas?: boolean;
   desktop: boolean;
   reduz: boolean;
   estado: EstadoCena;
   onPronto: () => void;
   onMexe: (inicio: boolean, porUtilizador: boolean) => void;
+  onBearing?: (bearing: number) => void;
+  onMoveFrame?: () => void;
   onPerdido: () => void;
 }
 
 export interface HandleMapa {
   pinta(e: EstadoCena): void;
   recentrar(): void;
+  topo(ativo: boolean): void;
+  bearing(): number;
   proj(ll: [number, number]): { x: number; y: number } | null;
   unproj(p: [number, number]): [number, number] | null;
   frentes(t: number): void;
@@ -112,6 +131,7 @@ export function geojsonDaPraia(g: GeoPraia) {
     faixas: { type: 'FeatureCollection' as const, features: g.faixas.map((f, i) => fc(f, { i })).reverse() },
     terra: { type: 'FeatureCollection' as const, features: [fc(g.terra)] },
     areia: { type: 'FeatureCollection' as const, features: [fc(g.areia)] },
+    aguaInterior: { type: 'FeatureCollection' as const, features: g.aguaInterior?.length ? [fc(g.aguaInterior)] : [] },
     // com as camadas OSM (spots curados), como na maquete: sem as cotas
     relevo: { type: 'FeatureCollection' as const, features: g.pinhal ? [] : g.relevo.map((r, k) => fc(r, { k })) },
     pinhal: { type: 'FeatureCollection' as const, features: g.pinhal ? [fc(g.pinhal)] : [] },
@@ -177,6 +197,7 @@ export function criarMapa(o: OpcoesMapa): HandleMapa {
       faixas: { type: 'geojson', data: VAZIO },
       terraG: { type: 'geojson', data: VAZIO },
       areiaG: { type: 'geojson', data: VAZIO },
+      aguaInteriorG: { type: 'geojson', data: VAZIO },
       relevoG: { type: 'geojson', data: VAZIO },
       pinhalG: { type: 'geojson', data: VAZIO },
       urbanoG: { type: 'geojson', data: VAZIO },
@@ -203,6 +224,8 @@ export function criarMapa(o: OpcoesMapa): HandleMapa {
       { id: 'pinhalG', type: 'fill', source: 'pinhalG', paint: { 'fill-color': aplicarLuz(COR.pinhal, L0), 'fill-opacity': 0.8 } },
       { id: 'rochaG', type: 'fill', source: 'rochaG', paint: { 'fill-color': aplicarLuz(COR.rocha, L0), 'fill-opacity': 0.9 } },
       { id: 'areiaG', type: 'fill', source: 'areiaG', paint: { 'fill-color': aplicarLuz(COR.areia, L0) } },
+      { id: 'aguaInteriorG', type: 'fill', source: 'aguaInteriorG', paint: { 'fill-color': corMar(o.estado.banda, 0, L0), 'fill-antialias': true } },
+      { id: 'aguaInteriorBorda', type: 'line', source: 'aguaInteriorG', paint: { 'line-color': '#F3F8FB', 'line-width': 1.2, 'line-opacity': 0.55 } },
       { id: 'sombra', type: 'hillshade', source: 'demH', paint: hillPaint(o.estado, L0) },
       {
         id: 'estradasG',
@@ -222,41 +245,41 @@ export function criarMapa(o: OpcoesMapa): HandleMapa {
     ],
   } as StyleSpecification;
 
-  const cam = (): Camara => camara(o.ll, o.praiaVirada, o.desktop, o.foco);
+  const cam = (): Camara => camara(o.ll, o.praiaVirada, o.desktop, o.foco, !!o.aguaInterior);
   const c0 = cam();
   const m: MLMap = new maplibregl.Map({
     container: o.container,
     style,
     ...c0,
-    maxPitch: 60,
-    minZoom: c0.zoom - 0.6,
+    maxPitch: 62,
+    minZoom: c0.zoom - 0.8,
     maxZoom: 15,
-    dragPan: false,
+    dragPan: true,
     scrollZoom: false,
     boxZoom: false,
     doubleClickZoom: false,
     keyboard: false,
-    touchPitch: false,
-    pitchWithRotate: false,
+    touchPitch: true,
+    pitchWithRotate: true,
     attributionControl: false,
     fadeDuration: 0,
     canvasContextAttributes: { contextType: 'webgl2' },
     maxBounds: [
-      [o.ll[0] - 0.16, o.ll[1] - 0.12],
-      [o.ll[0] + 0.16, o.ll[1] + 0.12],
+      [o.ll[0] - 0.1, o.ll[1] - 0.08],
+      [o.ll[0] + 0.1, o.ll[1] + 0.08],
     ],
   } as maplibregl.MapOptions);
-  m.touchZoomRotate.disableRotation();
   let estado = o.estado;
   let ok = false;
-  const dif = (a: number, b: number) => ((((a - b) % 360) + 540) % 360) - 180;
-  m.on('rotate', () => {
-    const b0 = cam().bearing;
-    const b = m.getBearing();
-    if (Math.abs(dif(b, b0)) > 30) m.setBearing(b0 + Math.sign(dif(b, b0)) * 30);
+  m.on('move', () => {
+    o.onBearing?.(m.getBearing());
+    o.onMoveFrame?.();
   });
   m.on('movestart', (e) => o.onMexe(true, !!(e as { originalEvent?: unknown }).originalEvent));
-  m.on('moveend', (e) => o.onMexe(false, !!(e as { originalEvent?: unknown }).originalEvent));
+  m.on('moveend', (e) => {
+    o.onBearing?.(m.getBearing());
+    o.onMexe(false, !!(e as { originalEvent?: unknown }).originalEvent);
+  });
   m.on('webglcontextlost', () => o.onPerdido());
   m.on('error', (e) => {
     // tiles em falta (offline) não partem a cena; só se regista
@@ -264,6 +287,11 @@ export function criarMapa(o: OpcoesMapa): HandleMapa {
   });
   const frentes = (t: number) => {
     if (!ok) return;
+    const src = m.getSource('frentes') as maplibregl.GeoJSONSource | undefined;
+    if (o.semOndas) {
+      src?.setData({ type: 'Feature', properties: {}, geometry: { type: 'MultiLineString', coordinates: [] } });
+      return;
+    }
     const segs = geoOk
       ? // ×0,7 (telemóvel) / ×ESCALA_FRENTES_DESK no 3D: medido nas capturas (frentes que cruzam
         // linhas horizontais da cena), é o que iguala a densidade da maquete em cada largura. A vista
@@ -272,7 +300,6 @@ export function criarMapa(o: OpcoesMapa): HandleMapa {
         // junto à costa ficam com a mesma orientação.
         frentesGeo(geoOk.ondas, estado.sd, estado.tp, estado.hs, t, o.desktop, 3200, o.desktop ? ESCALA_FRENTES_DESK : 0.7, 20)
       : frentesOnda(o.ll, o.praiaVirada, estado.sd, estado.tp, estado.hs, t);
-    const src = m.getSource('frentes') as maplibregl.GeoJSONSource | undefined;
     src?.setData({ type: 'Feature', properties: {}, geometry: { type: 'MultiLineString', coordinates: segs } });
   };
   const pinta = (e: EstadoCena) => {
@@ -284,6 +311,7 @@ export function criarMapa(o: OpcoesMapa): HandleMapa {
     m.setPaintProperty('terra', 'color-relief-color', corTerraExpr(L));
     m.setPaintProperty('terraG', 'fill-color', aplicarLuz(COR.terra, L));
     m.setPaintProperty('areiaG', 'fill-color', aplicarLuz(COR.areia, L));
+    m.setPaintProperty('aguaInteriorG', 'fill-color', corMar(e.banda, 0, L));
     m.setPaintProperty('relevoG', 'fill-color', corRelevoExpr(L));
     m.setPaintProperty('urbanoG', 'fill-color', aplicarLuz(COR.urb, L));
     m.setPaintProperty('pinhalG', 'fill-color', aplicarLuz(COR.pinhal, L));
@@ -310,6 +338,7 @@ export function criarMapa(o: OpcoesMapa): HandleMapa {
         (m.getSource('faixas') as maplibregl.GeoJSONSource | undefined)?.setData(gj.faixas);
         (m.getSource('terraG') as maplibregl.GeoJSONSource | undefined)?.setData(gj.terra);
         (m.getSource('areiaG') as maplibregl.GeoJSONSource | undefined)?.setData(gj.areia);
+        (m.getSource('aguaInteriorG') as maplibregl.GeoJSONSource | undefined)?.setData(gj.aguaInterior);
         (m.getSource('relevoG') as maplibregl.GeoJSONSource | undefined)?.setData(gj.relevo);
         (m.getSource('pinhalG') as maplibregl.GeoJSONSource | undefined)?.setData(gj.pinhal);
         (m.getSource('urbanoG') as maplibregl.GeoJSONSource | undefined)?.setData(gj.urbano);
@@ -327,7 +356,23 @@ export function criarMapa(o: OpcoesMapa): HandleMapa {
     pinta,
     frentes,
     recentrar() {
-      m.easeTo({ ...cam(), duration: o.reduz ? 0 : 900 });
+      m.easeTo({ ...cam(), duration: o.reduz ? 0 : 800 });
+    },
+    topo(ativo) {
+      if (ativo) {
+        m.easeTo({
+          center: o.foco ?? o.ll,
+          zoom: o.desktop ? 12.6 : 12.0,
+          pitch: 0,
+          bearing: 0,
+          duration: o.reduz ? 0 : 700,
+        });
+      } else {
+        m.easeTo({ ...cam(), duration: o.reduz ? 0 : 700 });
+      }
+    },
+    bearing() {
+      return m.getBearing();
     },
     proj(ll) {
       const p = m.project(ll);

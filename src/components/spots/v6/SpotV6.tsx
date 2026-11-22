@@ -234,10 +234,14 @@ export default function SpotV6({ spot, nome, local, locale, linhas, agoraMs, fot
       <div className="corpo-d">
         <Porque h={h} r={r} d={d} sp={sp} mares={dados.mares} quando={porqueQ} copy={copy} locale={locale} />
         <PraiaCena3D
+          spotId={spot.id}
+          locale={locale}
           nome={nome}
           ll={[spot.lon, spot.lat]}
           idEstatico={ed.estimado ? undefined : spot.id}
           praiaVirada={ed.praiaVirada}
+          aguaInterior={Boolean(ed.aguaInterior)}
+          aguaPlana={ed.aguaPlana}
           vizinhos={vizinhos}
           h={h}
           banda={b}

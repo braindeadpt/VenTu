@@ -45,6 +45,7 @@ export function criarPlano(
   estado0: EstadoCena,
   onPronto: () => void,
   caixaFrentes?: [number, number, number, number],
+  semOndas = false,
 ): HandlePlano {
   const r = canvas.getBoundingClientRect();
   const W = Math.max(1, Math.round(r.width));
@@ -68,7 +69,7 @@ export function criarPlano(
   let estado = estado0;
   let vivo = true;
   let geo: GeoPraia | null = null;
-  let caminhos: { faixas: Path2D[]; terra: Path2D; areia: Path2D; relevo: Path2D[]; urbano: Path2D; pinhal: Path2D; rocha: Path2D; estradas: Path2D } | null = null;
+  let caminhos: { faixas: Path2D[]; terra: Path2D; areia: Path2D; aguaInterior: Path2D; relevo: Path2D[]; urbano: Path2D; pinhal: Path2D; rocha: Path2D; estradas: Path2D } | null = null;
 
   const caminho = (aneis: Anel[]) => {
     const p = new Path2D();
@@ -110,19 +111,21 @@ export function criarPlano(
     }
     // frentes de onda paradas (a vista plana é estática); a terra tapa-as. Rumo a 20°, como no 3D e na maquete.
     // Só dentro da caixa das frentes da maquete (até ~3,1 km para o largo do spot): antes iam até à borda da vista
-    const segs = geo ? frentesGeo(geo.ondas, e.sd, e.tp, e.hs, 3.2, desktop, 3200, 1, 20, janela) : frentesOnda(ll, praiaVirada, e.sd, e.tp, e.hs, 3.2);
-    ctx.strokeStyle = 'rgba(243,248,251,.7)';
-    ctx.lineWidth = 1 + e.hs * 0.6;
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
-    ctx.beginPath();
-    for (const s of segs)
-      s.forEach((p, k) => {
-        const q = proj(p);
-        if (k) ctx.lineTo(q.x, q.y);
-        else ctx.moveTo(q.x, q.y);
-      });
-    ctx.stroke();
+    if (!semOndas) {
+      const segs = geo ? frentesGeo(geo.ondas, e.sd, e.tp, e.hs, 3.2, desktop, 3200, 1, 20, janela) : frentesOnda(ll, praiaVirada, e.sd, e.tp, e.hs, 3.2);
+      ctx.strokeStyle = 'rgba(243,248,251,.7)';
+      ctx.lineWidth = 1 + e.hs * 0.6;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.beginPath();
+      for (const s of segs)
+        s.forEach((p, k) => {
+          const q = proj(p);
+          if (k) ctx.lineTo(q.x, q.y);
+          else ctx.moveTo(q.x, q.y);
+        });
+      ctx.stroke();
+    }
     if (caminhos) {
       ctx.fillStyle = aplicarLuz(TERRA_COTAS[0], L);
       ctx.fill(caminhos.terra, 'evenodd');
@@ -142,6 +145,11 @@ export function criarPlano(
       ctx.globalAlpha = 1;
       ctx.fillStyle = aplicarLuz(COR.areia, L);
       ctx.fill(caminhos.areia, 'evenodd');
+      ctx.fillStyle = corMar(e.banda, 0, L);
+      ctx.fill(caminhos.aguaInterior, 'evenodd');
+      ctx.strokeStyle = 'rgba(243,248,251,.55)';
+      ctx.lineWidth = 1.2;
+      ctx.stroke(caminhos.aguaInterior);
       ctx.strokeStyle = aplicarLuz(COR.estrada, L);
       ctx.globalAlpha = 0.6;
       ctx.lineWidth = 1;
@@ -160,6 +168,7 @@ export function criarPlano(
       faixas: g.faixas.map(caminho),
       terra: caminho(g.terra),
       areia: caminho(g.areia),
+      aguaInterior: caminho(g.aguaInterior ?? []),
       relevo: g.pinhal ? [] : g.relevo.map(caminho),
       urbano: caminho(g.urbano ?? []),
       pinhal: caminho(g.pinhal ?? []),

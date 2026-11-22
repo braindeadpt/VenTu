@@ -188,6 +188,38 @@ describe('geoDeEstatico (ficheiro de public/geo/praia)', () => {
   it('ficheiros sem limites (gerados antes) dão uma lista vazia', () => {
     expect(geoDeEstatico(base())?.limites).toEqual([]);
   });
+
+  it('preserva aguaInterior quando presente e devolve [] quando ausente', () => {
+    const lago = [[[-9.22, 39.41], [-9.21, 39.41], [-9.21, 39.42], [-9.22, 39.42]]] as GeoEstatico['terra'];
+    expect(geoDeEstatico(base({ aguaInterior: lago }))?.aguaInterior).toEqual(lago);
+    expect(geoDeEstatico(base())?.aguaInterior).toEqual([]);
+  });
+});
+
+describe('praiaGeo · água interior (albufeira em altitude)', () => {
+  it('construirGeo deteta aguaInterior não vazia num espelho plano a 150 m rodeado por encostas até 220 m', () => {
+    const ll: [number, number] = [-7.5, 38.2];
+    const fino = (lon: number, lat: number) => {
+      const r = Math.hypot(lon - ll[0], lat - ll[1]);
+      if (r <= 0.006) return 150;
+      return Math.min(220, 150 + (r - 0.006) * 5000);
+    };
+    const geo = construirGeo(ll, { meiaLon: 0.03, meiaLat: 0.025, res: 60 }, fino, null);
+    expect(geo.aguaInterior).toBeDefined();
+    expect(geo.aguaInterior!.length).toBeGreaterThanOrEqual(1);
+    expect(geo.aguaInterior![0].length).toBeGreaterThanOrEqual(3);
+  });
+});
+
+describe('geografia estática de lagoas (public/geo/praia)', () => {
+  it.each(['obidos-lagoon.json', 'lagoa-albufeira.json'])('%s traz aguaInterior com pelo menos 1 anel não vazio', (ficheiro) => {
+    const j = JSON.parse(readFileSync(path.join(process.cwd(), 'public/geo/praia', ficheiro), 'utf8')) as GeoEstatico;
+    const g = geoDeEstatico(j);
+    expect(g).not.toBeNull();
+    expect(Array.isArray(g!.aguaInterior)).toBe(true);
+    expect(g!.aguaInterior!.length).toBeGreaterThanOrEqual(1);
+    expect(g!.aguaInterior!.some((anel) => anel.length >= 3)).toBe(true);
+  });
 });
 
 describe('geografia estática do Guincho (public/geo/praia/guincho.json)', () => {

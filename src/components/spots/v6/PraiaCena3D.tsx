@@ -10,11 +10,12 @@
  * animação.
  */
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
-import { RotateCcw } from 'lucide-react';
+import { ArrowUpRight, RotateCcw } from 'lucide-react';
 import LegendaBandas from '@/components/v6/LegendaBandas';
 import { criarVento, type MotorVento } from '@/lib/ventoParticulas';
-import { camara } from '@/lib/praiaCena';
+import { anguloSetaVento, camara, rotuloCurtoVizinho } from '@/lib/praiaCena';
 import { rumo } from '@/lib/spotVeredicto';
+import { getAssetPath } from '@/lib/paths';
 import { fmtCopy, type SpotPageV6Copy } from '@/lib/translations/spotPage/v6';
 import type { BandaK, Modalidade } from '@/lib/modalidades';
 import type { HoraSpot } from '@/lib/horaSpot';
@@ -28,11 +29,15 @@ export interface Vizinho {
 }
 
 export interface PraiaCena3DProps {
+  spotId: string;
+  locale: string;
   nome: string;
   ll: [number, number];
   /** id do spot com geografia estática (spots curados: costa e camadas OSM) */
   idEstatico?: string;
   praiaVirada: number;
+  aguaInterior?: boolean;
+  aguaPlana?: boolean;
   vizinhos: readonly Vizinho[];
   h: HoraSpot;
   banda: BandaK;
@@ -54,8 +59,18 @@ export function temWebGL2(): boolean {
 
 type Modo = 'poster' | '3d' | 'plano';
 type Proj = { proj: (ll: [number, number]) => { x: number; y: number } | null; unproj: (p: [number, number]) => [number, number] | null };
+interface LblItem {
+  t: string;
+  x: number;
+  y: number;
+  grande: boolean;
+  ele?: number;
+  ax?: number;
+  ay?: number;
+}
 
-export default function PraiaCena3D({ nome, ll, idEstatico, praiaVirada, vizinhos, h, banda, d, copy: c, forcarPlano, rotulos }: PraiaCena3DProps) {
+export default function PraiaCena3D({ spotId, locale, nome, ll, idEstatico, praiaVirada, aguaInterior = false, aguaPlana = false, vizinhos, h, banda, d, copy: c, forcarPlano, rotulos }: PraiaCena3DProps) {
+  const semOndas = aguaInterior || aguaPlana;
   const fig = useRef<HTMLElement>(null);
   const mapaEl = useRef<HTMLDivElement>(null);
   const planoEl = useRef<HTMLCanvasElement>(null);
@@ -76,45 +91,64 @@ export default function PraiaCena3D({ nome, ll, idEstatico, praiaVirada, vizinho
     forcarRef.current = forcarPlano;
   }, [forcarPlano]);
   const [movido, setMovido] = useState(false);
-  const [lbls, setLbls] = useState<Array<{ t: string; x: number; y: number; grande: boolean; ele?: number }>>([]);
+  const [vistaTopo, setVistaTopo] = useState(false);
+  const [bearing, setBearing] = useState(() => camara(ll, praiaVirada, false, rotulos?.ll, aguaInterior).bearing);
+  const [usouOSM, setUsouOSM] = useState(Boolean(idEstatico));
+  const [lbls, setLbls] = useState<LblItem[]>([]);
   /* rótulos da geografia estática (spots curados): o pico mais alto e as localidades do OSM */
   const extras = useRef<Array<{ t: string; ll: [number, number]; ele?: number }>>([]);
   const [pronto, setPronto] = useState(false);
 
-
-  /* rótulos: o spot (grande, na cor da banda), o pico, os vizinhos e as localidades que caibam */
+  /* rótulos: o spot (grande, com pin-âncora e na cor da banda), o pico, os vizinhos e as localidades que caibam */
   const posLbls = () => {
     const p = proj.current;
     const f = fig.current;
     if (!p || !f) return;
     const W = f.clientWidth;
     const H = f.clientHeight;
-    const out: Array<{ t: string; x: number; y: number; grande: boolean; ele?: number }> = [];
+    const out: LblItem[] = [];
+    const caixas: Array<{ x: number; y: number; w: number; h: number }> = [];
     const ex = extras.current;
     type R = [string, [number, number], boolean, number | undefined];
     const todos: R[] = rotulos
       ? [[rotulos.praia, rotulos.ll, true, undefined], ...rotulos.lugares.map((l) => [l.n, l.ll, false, l.ele] as R)]
       : [
-      [nome, ll, true, undefined],
-      ...ex.filter((e) => e.ele !== undefined).map((e) => [e.t, e.ll, false, e.ele] as [string, [number, number], boolean, number | undefined]),
-      ...vizinhos.map((v) => [v.nome, v.ll, false, undefined] as [string, [number, number], boolean, number | undefined]),
-      ...ex.filter((e) => e.ele === undefined).map((e) => [e.t, e.ll, false, undefined] as [string, [number, number], boolean, number | undefined]),
-      ];
+          [nome, ll, true, undefined],
+          ...ex.filter((e) => e.ele !== undefined).map((e) => [e.t, e.ll, false, e.ele] as R),
+          ...vizinhos.map((v) => [rotuloCurtoVizinho(v.nome), v.ll, false, undefined] as R),
+          ...ex.filter((e) => e.ele === undefined).map((e) => [e.t, e.ll, false, undefined] as R),
+        ];
+    const clamp = (v: number, a: number, b: number) => Math.max(a, Math.min(b, v));
+    const colide = (cx: number, cy: number, cw: number, ch: number) =>
+      caixas.some((q) => Math.abs(q.x - cx) < (q.w + cw) / 2 + 10 && Math.abs(q.y - cy) < (q.h + ch) / 2 + 8);
     let nPeq = 0;
     for (const [t, q, g, ele] of todos) {
       if (!g && nPeq >= 3) break;
       if (out.some((o) => o.t === t)) continue;
       const s = p.proj(q);
-      // rótulos editoriais: posições escolhidas à mão (as da maquete), só se cortam os que saem do ecrã;
-      // os automáticos (nome, picos, vizinhos, localidades) não se podem sobrepor.
-      if (rotulos) {
-        if (!s || s.x < 50 || s.x > W - 50 || s.y < 60 || s.y > H - 30) continue;
-      } else {
-        if (!s || s.x < 60 || s.x > W - 60 || s.y < 70 || s.y > H - 40) continue;
-        if (!g && out.some((o) => Math.abs(o.x - s.x) < 130 && Math.abs(o.y - s.y) < 34)) continue;
+      if (!s) continue;
+      const cw = g ? t.length * 10.5 + 28 : t.length * 7.6 + (ele !== undefined ? 48 : 16);
+      const ch = g ? 34 : 20;
+      if (g) {
+        if (s.x < -40 || s.x > W + 40 || s.y < -40 || s.y > H + 40) continue;
+        const padX = Math.min(W / 2 - 8, Math.max(54, cw / 2 + 10));
+        const bx = Math.round(clamp(s.x, padX, W - padX));
+        const by = Math.round(clamp(s.y - 26, 62, H - 54));
+        const ax = Math.round(s.x);
+        const ay = Math.round(s.y);
+        const pinVisivel = ax >= 12 && ax <= W - 12 && ay >= 12 && ay <= H - 12 && Math.hypot(bx - ax, by - ay) <= 120;
+        out.push({ t, x: bx, y: by, grande: true, ele, ...(pinVisivel ? { ax, ay } : {}) });
+        caixas.push({ x: bx, y: by, w: cw, h: ch });
+        continue;
       }
-      out.push({ t, x: Math.round(s.x), y: Math.round(s.y - (g ? 22 : 0)), grande: g, ele });
-      if (!g) nPeq++;
+      // Evita cortar picos altos (ex.: Peninha 487 m com relevo 3D) mas protege a barra de ferramentas no canto superior direito.
+      const padX = rotulos ? 44 : 52;
+      if (s.x < padX || s.x > W - padX || s.y < 24 || s.y > H - 40) continue;
+      if (s.y < 68 && s.x + cw / 2 > W - 270) continue;
+      if (colide(s.x, s.y, cw, ch)) continue;
+      out.push({ t, x: Math.round(s.x), y: Math.round(s.y), grande: false, ele });
+      caixas.push({ x: s.x, y: s.y, w: cw, h: ch });
+      nPeq++;
     }
     setLbls(out);
   };
@@ -197,7 +231,11 @@ export default function PraiaCena3D({ nome, ll, idEstatico, praiaVirada, vizinho
       void import('./praiaRelevo')
         .then((m) => m.geoDaPraia(ll, idEstatico))
         .then((g) => {
-          if (!g) return;
+          if (!g) {
+            setUsouOSM(false);
+            return;
+          }
+          setUsouOSM(Boolean(g.pinhal));
           extras.current = [
             ...(g.picos ?? []).slice(0, 1).map((p) => ({ t: p.n, ll: p.ll, ele: p.ele })),
             ...(g.lugares ?? []).map((l) => ({ t: l.n, ll: l.ll })),
@@ -207,6 +245,7 @@ export default function PraiaCena3D({ nome, ll, idEstatico, praiaVirada, vizinho
     let iniciado = false;
     let visivel = false;
     let raf = 0;
+    let moveRaf = 0;
     const t0 = performance.now();
     let ultimo = 0;
     const anima = (now: number) => {
@@ -221,10 +260,12 @@ export default function PraiaCena3D({ nome, ll, idEstatico, praiaVirada, vizinho
       mapa.current = null;
       modoRef.current = 'plano';
       setModo('plano');
+      setBearing(0);
+      setVistaTopo(false);
       requestAnimationFrame(() => {
         if (!planoEl.current) return;
-        const cam = camara(ll, praiaVirada, desk.current, rotulos?.ll);
-        plano.current = criarPlano(planoEl.current, ll, idEstatico, rotulos?.centroPlano ?? cam.center, praiaVirada, desk.current, estadoRef.current, () => setPronto(true), rotulos?.caixaFrentes);
+        const cam = camara(ll, praiaVirada, desk.current, rotulos?.ll, aguaInterior);
+        plano.current = criarPlano(planoEl.current, ll, idEstatico, rotulos?.centroPlano ?? cam.center, praiaVirada, desk.current, estadoRef.current, () => setPronto(true), rotulos?.caixaFrentes, semOndas);
         proj.current = plano.current;
         vento.current?.tamanho();
         campoVento();
@@ -251,18 +292,29 @@ export default function PraiaCena3D({ nome, ll, idEstatico, praiaVirada, vizinho
           idEstatico,
           praiaVirada,
           foco: rotulos?.ll,
+          aguaInterior,
+          semOndas,
           desktop: desk.current,
           reduz: reduz.current,
           estado: estadoRef.current,
           onPronto: () => {
+            setBearing(hm.bearing());
             posLbls();
             campoVento();
             if (!reduz.current) {
               vento.current?.iniciar();
               campoVento();
-              raf = requestAnimationFrame(anima);
+              if (!semOndas) raf = requestAnimationFrame(anima);
             }
             setTimeout(() => setPronto(true), 400);
+          },
+          onBearing: (b) => setBearing(b),
+          onMoveFrame: () => {
+            if (moveRaf) return;
+            moveRaf = requestAnimationFrame(() => {
+              moveRaf = 0;
+              posLbls();
+            });
           },
           onMexe: (inicio, user) => {
             if (inicio) vento.current?.limpar();
@@ -276,6 +328,7 @@ export default function PraiaCena3D({ nome, ll, idEstatico, praiaVirada, vizinho
         });
         mapa.current = hm;
         proj.current = hm;
+        setBearing(hm.bearing());
       } catch {
         if (!criarPlano) criarPlano = (await import('./praiaPlano')).criarPlano;
         usarPlano();
@@ -301,6 +354,7 @@ export default function PraiaCena3D({ nome, ll, idEstatico, praiaVirada, vizinho
       io.disconnect();
       window.removeEventListener('resize', rs);
       cancelAnimationFrame(raf);
+      cancelAnimationFrame(moveRaf);
       vento.current?.parar();
       mapa.current?.destruir();
       plano.current?.destruir();
@@ -321,13 +375,19 @@ export default function PraiaCena3D({ nome, ll, idEstatico, praiaVirada, vizinho
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [h, banda, d]);
 
+  const anguloChip = anguloSetaVento(h.wd, modo === '3d' ? bearing : 0);
+  const mapaHref = getAssetPath(`/${locale}/mapa/?spot=${encodeURIComponent(spotId)}&sport=${d === 'kite' ? 'kitesurf' : 'surf'}`);
+  const sub = semOndas ? c.cenaSubInterior : d === 'kite' ? c.cenaSubKite : c.cenaSubSurf;
+  const legendaTxt = semOndas ? c.legendaInterior : c.legenda;
+  const relLbl = usouOSM ? c.atribuicaoRelevo : c.atribuicaoRelevo.charAt(0).toUpperCase() + c.atribuicaoRelevo.slice(1);
+
   return (
     <section className="cena-sec" aria-labelledby="cena-t" data-testid="praia-3d">
       <div className="cab">
         <h2 className="sec" id="cena-t">
           {c.praia3d}
         </h2>
-        <p className="sub">{d === 'kite' ? c.cenaSubKite : c.cenaSubSurf}</p>
+        <p className="sub">{sub}</p>
       </div>
       <figure
         ref={fig}
@@ -344,20 +404,60 @@ export default function PraiaCena3D({ nome, ll, idEstatico, praiaVirada, vizinho
         <canvas ref={ventoEl} className="vento" aria-hidden="true" />
         <div aria-hidden="true">
           {lbls.map((l) => (
-            <div key={l.t} className={`lbl-abs top-lbl${l.grande ? ' grande' : ''}`} style={{ left: l.x, top: l.y }}>
-              {l.t}
-              {l.ele !== undefined ? <i> {fmtCopy(c.altitude, { m: l.ele })}</i> : null}
+            <div key={l.t}>
+              {l.grande && l.ax !== undefined && l.ay !== undefined ? (
+                <span className="spot-pin" style={{ left: l.ax, top: l.ay }} />
+              ) : null}
+              <div className={`lbl-abs top-lbl${l.grande ? ' grande' : ''}`} style={{ left: l.x, top: l.y }}>
+                {l.t}
+                {l.ele !== undefined ? <i> {fmtCopy(c.altitude, { m: l.ele })}</i> : null}
+              </div>
             </div>
           ))}
         </div>
         <div className="cena-ferr">
+          {modo === '3d' ? (
+            <button
+              type="button"
+              className="bussola"
+              data-testid="cena-bussola"
+              aria-label={vistaTopo ? c.bussola3d : c.bussolaTopo}
+              aria-pressed={vistaTopo}
+              title={vistaTopo ? c.bussola3d : c.bussolaTopo}
+              onClick={() => {
+                const prox = !vistaTopo;
+                setVistaTopo(prox);
+                mapa.current?.topo(prox);
+              }}
+            >
+              <span className="bussola-rosa" style={{ transform: `rotate(${-bearing}deg)` }} aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <path d="M12 3l3.2 8.2h-6.4z" fill="var(--sol)" />
+                  <path d="M12 21l-3.2-8.2h6.4z" fill="rgba(243,248,251,.35)" />
+                </svg>
+              </span>
+              <span className="bussola-n" aria-hidden="true">
+                {c.norte}
+              </span>
+            </button>
+          ) : modo === 'plano' ? (
+            <span className="bussola fixa" aria-hidden="true">
+              <span className="bussola-rosa">
+                <svg viewBox="0 0 24 24">
+                  <path d="M12 3l3.2 8.2h-6.4z" fill="var(--sol)" />
+                  <path d="M12 21l-3.2-8.2h6.4z" fill="rgba(243,248,251,.35)" />
+                </svg>
+              </span>
+              <span className="bussola-n">{c.norte}</span>
+            </span>
+          ) : null}
           <span className="vento-chip" data-testid="vento-chip">
-            <svg viewBox="0 0 24 24" aria-hidden="true" style={{ transform: `rotate(${h.wd}deg)` }}>
+            <svg viewBox="0 0 24 24" aria-hidden="true" style={{ transform: `rotate(${anguloChip}deg)` }}>
               <path d="M12 3v18M6 15l6 6 6-6" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
             {fmtCopy(c.chipVento, { r: rumo(h.wd), w: h.w, g: h.g })}
           </span>
-          {movido && modo === '3d' ? (
+          {(movido || vistaTopo) && modo === '3d' ? (
             <button
               type="button"
               className="recentrar"
@@ -365,6 +465,7 @@ export default function PraiaCena3D({ nome, ll, idEstatico, praiaVirada, vizinho
               onClick={() => {
                 mapa.current?.recentrar();
                 setMovido(false);
+                setVistaTopo(false);
               }}
             >
               <RotateCcw aria-hidden="true" />
@@ -373,11 +474,21 @@ export default function PraiaCena3D({ nome, ll, idEstatico, praiaVirada, vizinho
         </div>
         <p className="estatica">{c.vistaPlana}</p>
         <p className="credito-mapa">
-          © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> · {c.atribuicaoRelevo}{' '}
-          <a href="https://registry.opendata.aws/terrain-tiles/">AWS Terrain Tiles</a> ×1,5 · MapLibre
+          {usouOSM ? (
+            <>
+              © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> ·{' '}
+            </>
+          ) : null}
+          {relLbl}{' '}
+          <a href="https://registry.opendata.aws/terrain-tiles/">AWS Terrain Tiles</a>
+          {modo === '3d' ? ' ×1,5 · MapLibre' : null}
         </p>
+        <a href={mapaHref} className="cena-mapa-link" data-testid="cena-abrir-mapa">
+          {c.abrirNoMapa}
+          <ArrowUpRight aria-hidden="true" />
+        </a>
       </figure>
-      <LegendaBandas nomes={c.bandas} texto={c.legenda} />
+      <LegendaBandas nomes={c.bandas} texto={legendaTxt} mostrarNoite={banda === 'noite'} />
     </section>
   );
 }
