@@ -16,7 +16,6 @@
  *   exit 0 = dentro do orçamento; exit 1 = excedido.
  */
 
-const fs = require('fs');
 const path = require('path');
 const { execFileSync } = require('node:child_process');
 
@@ -82,23 +81,36 @@ function evaluateDataBudget({ files, sizes }) {
   return { files: files.length, bytes: totalBytes, violations };
 }
 
+/**
+ * Ficheiros de dados NA HISTÓRIA (árvore do HEAD) — nunca o index nem a
+ * worktree. Desde a migração para a branch órfão ventu-data
+ * (docs/DATA-BRANCH-MIGRATION.md), os workflows hidratam public/data com
+ * `git checkout FETCH_HEAD -- public/data`, que stageia os ficheiros no
+ * index: `git ls-files` contaria a hidratação como "trackeado" e o guard
+ * falhava sempre. `ls-tree HEAD` mede o que realmente está commitado —
+ * zero ficheiros é o esperado; voltar a trackear dados na main rebenta o
+ * orçamento, que é exactamente o que este guard existe para detectar.
+ */
 function trackedDataFiles() {
-  const out = execFileSync('git', ['ls-files', '-z', 'public/data'], {
+  const out = execFileSync('git', ['ls-tree', '-r', '-l', '-z', 'HEAD', '--', 'public/data'], {
     cwd: ROOT,
     maxBuffer: 16 * 1024 * 1024,
   }).toString('utf-8');
-  return out.split('\0').filter(Boolean);
+  // Formato: "<mode> blob <sha> <size>\t<path>\0"
+  return out
+    .split('\0')
+    .filter(Boolean)
+    .map((line) => {
+      const tab = line.indexOf('\t');
+      const size = parseInt(line.slice(0, tab).trim().split(/\s+/).pop(), 10);
+      return { path: line.slice(tab + 1), size: Number.isFinite(size) ? size : 0 };
+    });
 }
 
 function main() {
-  const files = trackedDataFiles();
-  const sizes = files.map((f) => {
-    try {
-      return fs.statSync(path.join(ROOT, f)).size;
-    } catch {
-      return 0;
-    }
-  });
+  const entries = trackedDataFiles();
+  const files = entries.map((e) => e.path);
+  const sizes = entries.map((e) => e.size);
   const { files: count, bytes, violations } = evaluateDataBudget({ files, sizes });
   if (violations.length > 0) {
     console.error('❌ check-data-history-budget: public/data acima do orçamento\n');

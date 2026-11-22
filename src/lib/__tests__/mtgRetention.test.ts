@@ -123,13 +123,16 @@ describe('fetch-mtg-ir.py — todos os caminhos que escrevem o manifest podam', 
 describe('push-data-update.sh — frames podados não voltam do origin', () => {
   const sh = readFileSync(path.join(root, 'scripts/push-data-update.sh'), 'utf8');
 
-  it('esvazia radar/frames e sat-mtg/frames depois do checkout e antes do cp -a', () => {
-    const loop = sh.match(/for frames_dir in ([^;]+); do/);
-    expect(loop, 'loop das pastas de frames').not.toBeNull();
-    expect(loop![1].split(/\s+/)).toEqual(expect.arrayContaining(['radar/frames', 'sat-mtg/frames', 'forecasts']));
-    expect(sh.indexOf('for frames_dir in')).toBeLessThan(
-      sh.indexOf('cp -a "$DATA_BACKUP/public-data/." public/data/'),
-    );
-    expect(sh.indexOf('for frames_dir in')).toBeGreaterThan(sh.indexOf('git checkout -f -B main origin/main'));
+  it('publica por plumbing na ventu-data e `add -A` carrega as remoções (frames podados não voltam)', () => {
+    // Era assim que as frames órfãs regressavam: backup+cp -a restaurava o
+    // que o pipeline tinha podado. O modelo órfão publica a worktree com
+    // `git add -A` num índice temporário — remoções e adições entram e a
+    // worktree nunca é destruída por checkout/clean.
+    expect(sh).toMatch(/git add -f -A public\/data\//);
+    expect(sh).not.toMatch(/cp -a .*public-data/);
+    expect(sh).not.toMatch(/git checkout -f -B main/);
+    expect(sh).not.toMatch(/git clean -fdx/);
+    expect(sh).toMatch(/commit-tree/);
+    expect(sh).toMatch(/--force-with-lease/);
   });
 });

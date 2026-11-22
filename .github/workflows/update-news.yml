@@ -27,6 +27,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
 
+      - name: Hydrate public/data (ventu-data)
+        run: git fetch origin ventu-data --depth=1 && git checkout FETCH_HEAD -- public/data data-state || true
+
       - name: Setup Node.js
         uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
         with:
@@ -53,31 +56,13 @@ jobs:
       # logo regenerar sempre criaria um commit de ruído cada 2 dias (o guard
       # ignora lastmod, mas o repo não precisa do churn). O passo de commit
       # regera o sitemap DEPOIS de confirmar que há news diffs staged.
-      - name: Commit and Push (news + sitemap regenerated)
+      - name: Commit and Push (news + sitemap regenerated → ventu-data)
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          # news-sources.json é o estado de saúde por fonte (lastSeen de cada
-          # fonte, ver scripts/news/source-health.js). É commitado mesmo quando
-          # o feed não muda: é esse registo que sobrevive à TTL de 7 dias e
-          # permite avisar antes de a fonte desaparecer do feed.
-          git add -f public/data/news.json public/data/news-sources.json
-          if git diff --staged --quiet; then
-            echo "No news changes to commit"
-            exit 0
-          fi
-          # Sitemap/RSS só quando o FEED mudou (as URLs das notícias entram no
-          # sitemap). O estado por fonte muda em todas as corridas e não tem
-          # nada que ver com o sitemap.
-          if ! git diff --staged --quiet -- public/data/news.json; then
-            node scripts/generate-sitemap.js
-            node scripts/generate-rss.js
-            git add -f public/sitemap.xml public/rss.xml public/rss-en.xml
-          fi
-          git commit -m "auto: update news feed + sitemap + rss [$(date +'%Y-%m-%d %H:%M')]"
-          for attempt in 1 2 3 4 5; do
-            git pull --rebase origin main && git push origin HEAD:main && exit 0
-            echo "Push failed (attempt $attempt); retrying..."
-            sleep $((attempt * 4))
-          done
-          exit 1
+          # Publica na branch órfão ventu-data (nunca na main). O script faz
+          # plumbing puro (temp index + commit-tree + force-with-lease) e
+          # regena sitemap/RSS só quando news.json muda — o estado por fonte
+          # (news-sources.json) viaja sempre mas não dispara a regen.
+          REGEN_SITEMAP_RSS_ON=public/data/news.json \
+            bash scripts/push-data-file.sh \
+            "auto: update news feed + sitemap + rss [$(date +'%Y-%m-%d %H:%M')]" \
+            public/data/news.json public/data/news-sources.json

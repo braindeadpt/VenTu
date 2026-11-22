@@ -89,6 +89,7 @@
     "test:guard-counts": "node scripts/check-guard-test-counts.js",
     "guard:map-layer-names": "node scripts/check-map-layer-names.js",
     "data:validate": "node scripts/validate-data-files.js",
+    "data:bootstrap": "git fetch origin ventu-data --depth=1 && git checkout FETCH_HEAD -- public/data data-state",
     "scan:encoding": "node scripts/scan-history-encoding.js",
     "alerts:evaluate": "node scripts/evaluate-alerts.js",
     "alerts:preflight": "node scripts/alerts-preflight.js",

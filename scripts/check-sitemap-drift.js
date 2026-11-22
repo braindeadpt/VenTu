@@ -42,9 +42,12 @@ function committedSitemap() {
   try {
     // Working tree = freshly generated (CI runs the generator right before).
     // HEAD = what was committed. `git show` avoids checkout churn.
+    // SITEMAP_DRIFT_REF: os bots de dados comparam contra a versão na branch
+    // ventu-data — o HEAD do checkout deles é código, não o sitemap de dados.
+    const ref = process.env.SITEMAP_DRIFT_REF || 'HEAD';
     // maxBuffer: o sitemap tem ~1.2 MB — o default de 1 MB do execFileSync
     // estoura com ENOBUFS em Windows/CI.
-    return execFileSync('git', ['show', `HEAD:${SITEMAP_REL.replace(/\\/g, '/')}`], {
+    return execFileSync('git', ['show', `${ref}:${SITEMAP_REL.replace(/\\/g, '/')}`], {
       encoding: 'utf-8',
       maxBuffer: 16 * 1024 * 1024,
     });

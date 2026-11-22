@@ -1,18 +1,25 @@
 #!/usr/bin/env bash
-# Push public/data/ on top of latest main — avoids rebase conflicts when
-# other commits land while the pipeline is fetching Open-Meteo (~6 min).
+# Publish public/data/ to the orphan branch `ventu-data` — the branch always
+# holds a single commit (root commit-tree + force-with-lease push), so data
+# history never grows. Plumbing only: the working tree and any local branch
+# are never touched (the reset/clean/checkout machinery that needed the
+# GITHUB_ACTIONS guard below is gone).
 set -euo pipefail
 
-# Só corre na CI. Mais abaixo faz `git reset --hard` + `git clean` + `git checkout -f -B main`
-# para publicar os dados por cima da main mais recente: numa pasta local isso apagaria sem
-# aviso o trabalho por commitar e moveria o branch main de quem (pessoa ou agente) o corresse.
-# Os workflows (update-data.yml) correm sempre com GITHUB_ACTIONS=true.
+# Só corre na CI — os workflows (update-data.yml) correm sempre com
+# GITHUB_ACTIONS=true. O script já não destrói a worktree, mas manter o
+# guard evita pushes acidentais de dados de dev para a branch partilhada.
 if [ "${GITHUB_ACTIONS:-}" != "true" ]; then
   echo "push-data-update.sh: recusado fora do GitHub Actions (faz git reset --hard e moveria o branch main)." >&2
   exit 1
 fi
 
 COMMIT_MSG="${1:-auto: update conditions and spots index [$(date -u +'%Y-%m-%d %H:%M UTC')]}"
+
+# Destino: branch órfão `ventu-data` — public/data + data-state vivem lá,
+# nunca na main (história = 1 commit via --amend + force-with-lease; o .git
+# tinha 4.7 GB porque meses de dados voláteis ficavam em main).
+DATA_BRANCH="ventu-data"
 
 # Bot identity is passed per-commit with `git -c`, never written to
 # .git/config — a local run would otherwise poison the clone's identity
@@ -25,110 +32,83 @@ if [ ! -d public/data ]; then
   exit 1
 fi
 
-DATA_BACKUP="$(mktemp -d)"
-trap 'rm -rf "$DATA_BACKUP"' EXIT
-mkdir -p "$DATA_BACKUP/public-data"
-cp -a public/data/. "$DATA_BACKUP/public-data/"
-# Pipeline state that lives outside public/data (e.g. the wind-bias pairs
-# archive) travels in the same artifact and is committed with it.
-HAS_STATE=0
-if [ -d data-state ]; then
-  HAS_STATE=1
-  mkdir -p "$DATA_BACKUP/data-state"
-  cp -a data-state/. "$DATA_BACKUP/data-state/"
-fi
+
+
+# Publica via plumbing: índice temporário com a árvore de origin/ventu-data,
+# add dos ficheiros frescos, write-tree + commit-tree (commit raiz — a branch
+# fica sempre com 1 commit) + push --force-with-lease. A working tree NUNCA
+# muda — sem reset/clean/checkout — por isso o código do repo (needed pelo
+# generate-sitemap) fica intacto e nada pode ser apagado por engano.
+OWNED_EXCLUDES=(
+  ':(exclude)public/data/news.json'
+  ':(exclude)public/data/dawn-patrol.json'
+  ':(exclude)public/data/community-tips.json'
+  ':(exclude)public/data/directory.json'
+)
 
 for attempt in $(seq 1 10); do
   echo "=== Push attempt ${attempt}/10 ==="
-  git fetch origin main
-  # Discard anything local BEFORE the checkout: under `set -e`, a dirty tree
-  # (or an untracked file in the way) makes `git checkout -B` abort before the
-  # retry loop ever runs — the 2026-09-22 incident where commits landing
-  # mid-pipeline killed the next bot push. Working-tree data is safe: it was
-  # backed up to $DATA_BACKUP above and is re-copied right after the checkout.
-  # `clean` is scoped to the generated dirs so local scripts are untouched.
-  git reset --hard -q
-  git clean -fdq -- public/data data-state
-  git checkout -f -B main origin/main
-  # O cp -a abaixo só acrescenta e substitui: nunca apaga. As frames de radar
-  # que o pipeline podou (0f204022d) voltavam do origin a cada commit do bot e
-  # acumulavam (89 ficheiros em 24 set, CI parada no orçamento de public/data).
-  # A pasta de frames é só do passo de radar e vem inteira, já podada, no
-  # backup: esvaziá-la antes do cp deixa-a igual ao backup (as removidas
-  # entram como deleções no git add -f abaixo).
-  # O mesmo vale para os frames do satélite MTG (sat-mtg/frames): o
-  # fetch-mtg-ir.py poda as antigas e o commit-and-push troca a pasta por
-  # inteiro, mas o checkout de origin/main trazia-as de volta — 46 frames
-  # (36.6 MB) a 7 out com o manifest a usar 4, CI parada no orçamento.
-  # E os ficheiros por spot das previsões (forecasts/<slug>.json): o
-  # artefacto traz a pasta inteira (checkout + regenerados); um spot removido
-  # ou renomeado que o pipeline apagou voltava do origin como órfão a cada
-  # commit do bot (validate-generated-data nomeia-os). Trocar a pasta por
-  # inteiro faz a remoção chegar à main.
-  for frames_dir in radar/frames sat-mtg/frames forecasts; do
-    if [ -d "$DATA_BACKUP/public-data/$frames_dir" ]; then
-      rm -rf "public/data/$frames_dir"
-    fi
-  done
-  cp -a "$DATA_BACKUP/public-data/." public/data/
-  if [ "$HAS_STATE" = 1 ]; then
-    mkdir -p data-state
-    cp -a "$DATA_BACKUP/data-state/." data-state/
+  git fetch origin "$DATA_BRANCH" || true
+  TMP_INDEX="$(mktemp)"
+  if git rev-parse --verify "origin/$DATA_BRANCH" >/dev/null 2>&1; then
+    GIT_INDEX_FILE="$TMP_INDEX" git read-tree "origin/$DATA_BRANCH"
+  else
+    # Primeira corrida: seed da árvore com os dados actuais da main (só os
+    # dirs de dados — ficheiros de código nunca entram nesta branch).
+    GIT_INDEX_FILE="$TMP_INDEX" git read-tree --empty
+    # SEM -u: index-only — -u escreveria os dados commitados da main por cima
+    # dos ficheiros frescos gerados na worktree (o `git add` a seguir é quem
+    # apanha a worktree).
+    GIT_INDEX_FILE="$TMP_INDEX" git read-tree --prefix=public/data/ "origin/main:public/data" 2>/dev/null || true
+    git cat-file -e "origin/main:data-state" 2>/dev/null &&
+      GIT_INDEX_FILE="$TMP_INDEX" git read-tree --prefix=data-state/ "origin/main:data-state" || true
   fi
-  # Ficheiros de public/data que NÃO são deste pipeline: cada um tem o seu bot
-  # (update-news, dawn-patrol, apply-contributions) ou é editado à mão
-  # (directory.json). O artefacto traz a cópia do checkout do início do run
-  # (~20 min antes); o cp -a acima repunha-a por cima de um commit que entretanto
-  # aterrou na main. Visto a 31/10/2026: 8568e4bc (dados, 12:29) reverteu o
-  # news.json do 39d68a4f (notícias, 12:09) e deixou o sitemap (gerado do
-  # news.json) desfasado — drift guard do ci.yml vermelho e deploy parado.
-  # Ficam sempre como estão na origin/main (ou ausentes, se lá não existem).
-  for owned_elsewhere in news.json dawn-patrol.json community-tips.json directory.json; do
-    if git cat-file -e "origin/main:public/data/$owned_elsewhere" 2>/dev/null; then
-      git checkout -q origin/main -- "public/data/$owned_elsewhere"
-    else
-      rm -f "public/data/$owned_elsewhere"
-    fi
-  done
-  git add -f public/data/
-  git add data-state/ 2>/dev/null || true
-  # The -f above is required (public/data/ is gitignored) but it also
-  # overrides the *.backup rule — unstage the write-only sidecars so the
-  # ~15x/day bot commits never track them again (.gitignore line 36).
-  # `*.tmp` is the atomic-write sidecar (scripts/lib/atomicWriteJson.js);
-  # an orphan from a killed run must not be committed either.
-  git reset -q -- '*.backup' '*.tmp'
-  # O agregado public/data/forecasts.json (~11 MB, o mesmo conteúdo dos
-  # forecasts/<slug>.json indexado por spot) deixou de ser publicado a
-  # 25/10/2026: os leitores montam o índice da pasta
-  # (scripts/lib/forecastsIndex.js). `rm --cached` (e não `reset`) para que um
-  # agregado ainda trackeado na main — ou trazido por um artefacto de um run
-  # anterior à mudança — saia de vez em vez de ficar congelado.
-  git rm -q --cached --ignore-unmatch -- public/data/forecasts.json
+  # Stage da worktree (o job já lá pôs os dados frescos antes de chamar este
+  # script). `-A` captura ADIÇÕES e REMOÇÕES — frames de radar/sat podadas e
+  # forecasts de spots removidos saem da árvore (o bug das frames órfãs:
+  # 0f204022d, 46 frames a 7/out). Os ficheiros dos outros bots
+  # (news/dawn-patrol/contributions/directory) ficam excluídos — mantêm a
+  # versão que veio no read-tree da ponta do branch (o bug do revert
+  # news.json, 8568e4bc/31-10).
+  GIT_INDEX_FILE="$TMP_INDEX" git add -f -A public/data/ "${OWNED_EXCLUDES[@]}"
+  if [ -d data-state ]; then
+    GIT_INDEX_FILE="$TMP_INDEX" git add -f -A data-state/
+  fi
+  # Sidecars write-only nunca entram (.gitignore linha 36; órfãos de runs
+  # mortos — atomic-write *.tmp).
+  GIT_INDEX_FILE="$TMP_INDEX" git reset -q -- '*.backup' '*.tmp'
+  # forecasts.json agregado — nunca trackeado (leitores montam o índice da
+  # pasta, scripts/lib/forecastsIndex.js).
+  GIT_INDEX_FILE="$TMP_INDEX" git rm -q --cached --ignore-unmatch -- public/data/forecasts.json
 
-  # Rede de segurança do sitemap (gerado de news.json, directory.json e
-  # src/lib/spots.ts): se este commit mudar a estrutura dele, o sitemap vai no
-  # mesmo commit. Só lastmod diferente (data de hoje) não conta e é descartado,
-  # para não criar churn. Gerador e guard são node puro (sem npm ci).
+  # Sitemap: regenerado quando a estrutura muda com estes dados (news.json,
+  # directory.json, spots). Drift check compara com a versão na data-branch;
+  # só-lastmod restaura a versão base (zero churn extra).
   if [ -f scripts/generate-sitemap.js ] && [ -f scripts/check-sitemap-drift.js ]; then
     node scripts/generate-sitemap.js >/dev/null
-    if node scripts/check-sitemap-drift.js >/dev/null 2>&1; then
-      git checkout -q -- public/sitemap.xml
+    if git cat-file -e "origin/$DATA_BRANCH:public/sitemap.xml" 2>/dev/null \
+       && SITEMAP_DRIFT_REF="origin/$DATA_BRANCH" node scripts/check-sitemap-drift.js >/dev/null 2>&1; then
+      git show "origin/$DATA_BRANCH:public/sitemap.xml" > public/sitemap.xml
     else
-      echo "Sitemap: estrutura mudou com estes dados — regenerado no mesmo commit"
-      git add -f public/sitemap.xml
+      echo "Sitemap: regenerado para a data-branch"
+      GIT_INDEX_FILE="$TMP_INDEX" git add -f public/sitemap.xml
     fi
   fi
 
-  if git diff --staged --quiet; then
-    echo "Data already matches origin/main — nothing to publish"
+  TREE=$(GIT_INDEX_FILE="$TMP_INDEX" git write-tree)
+  BASE_TREE=$(git rev-parse -q --verify "origin/$DATA_BRANCH^{tree}" 2>/dev/null || echo none)
+  rm -f "$TMP_INDEX"
+  if [ "$TREE" = "$BASE_TREE" ]; then
+    echo "Data already matches origin/$DATA_BRANCH — nothing to publish"
     exit 0
   fi
 
-  git -c "user.name=$BOT_NAME" -c "user.email=$BOT_EMAIL" commit -m "$COMMIT_MSG"
+  # Commit raiz (sem parentes): cada push substitui a ponta — a branch fica
+  # sempre com 1 commit e a história de dados nunca cresce.
+  NEW_SHA=$(git -c "user.name=$BOT_NAME" -c "user.email=$BOT_EMAIL" commit-tree "$TREE" -m "$COMMIT_MSG")
 
-  if git push origin main; then
-    echo "✅ Data published to main"
+  if git push --force-with-lease origin "$NEW_SHA:refs/heads/$DATA_BRANCH"; then
+    echo "✅ Data published to $DATA_BRANCH"
     exit 0
   fi
 
