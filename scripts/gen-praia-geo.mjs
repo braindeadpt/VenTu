@@ -285,6 +285,7 @@ function rasterizaOceano(polis, grade) {
   return m;
 }
 
+const r4 = (v) => Math.round(v * 1e4) / 1e4;
 /* camada OSM por rasterização na grelha de 40 m e novo contorno: une os pedaços dos tiles e suaviza (como o buffer/union da maquete) */
 function camadaRaster(polis, grade, minCel = 6, so = null) {
   if (!polis.length) return [];
@@ -297,7 +298,7 @@ function camadaRaster(polis, grade, minCel = 6, so = null) {
     .filter((a) => Math.abs(areaAnel(a)) >= minCel)
     .map((a) => alisa(a, 0.6, 1))
     .filter((a) => a.length >= 3)
-    .map((a) => a.map(([x, y]) => [r5(grade.w + x * grade.dlon), r5(grade.n - y * grade.dlat)]));
+    .map((a) => a.map(([x, y]) => [r4(grade.w + x * grade.dlon), r4(grade.n - y * grade.dlat)]));
 }
 
 const r5 = (v) => Math.round(v * 1e5) / 1e5;
@@ -446,6 +447,7 @@ for (const id of ids) {
     .sort((a, b) => b.ele - a.ele)
     .slice(0, 2)
     .map((p) => ({ n: p.n, ll: arred([p.ll])[0], ele: p.ele }));
+  const pinhal = camadaRaster(corta(o.pinhal), grade, 8, terraM);
   const saida = {
     v: 1,
     id,
@@ -453,13 +455,14 @@ for (const id of ids) {
     bbox: g.bbox.map(r5),
     faixas: g.faixas.map((f) => f.map(arred)),
     terra: oceano ? terraOSM(o.oceano, grade, oceanoZ14(lim), lim) : g.terra.map(arred),
-    relevo: g.relevo.map((f) => f.map(arred)),
+    // relevo por cotas só se usa quando não há camadas OSM (pinhal) — omiti-lo poupa ~35 KB/spot
+    relevo: pinhal.length ? [] : g.relevo.map((f) => f.map(arred)),
     areia: o.areia.length ? camadaRaster(corta(o.areia), grade, 2, terraM) : g.areia.map(arred),
     aguaInterior: o.aguaInterior.length ? camadaRaster(corta(o.aguaInterior), grade, 4, terraM) : [],
-    pinhal: camadaRaster(corta(o.pinhal), grade, 8, terraM),
+    pinhal,
     urbano: camadaRaster(corta(o.urbano), grade, 8, terraM),
     rocha: camadaRaster(corta(o.rocha), grade, 4, terraM),
-    estradas: simplLinhas(o.estradas.filter((l) => l.some(dentro)), tol * 2.5),
+    estradas: simplLinhas(o.estradas.filter((l) => l.some(dentro)), tol * 3.5),
     limites: simplLinhas(o.limites.filter((l) => l.some(dentro)), tol),
     lugares,
     picos,

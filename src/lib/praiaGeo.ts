@@ -21,6 +21,50 @@ import { PROF_FAIXAS } from '@/lib/praiaCena';
 export type Amostrador = (lon: number, lat: number) => number | null;
 export type Anel = Array<[number, number]>;
 
+/** Bloco serializável de tiles Terrarium já descodificados (usado pelo Web Worker e pelo browser). */
+export interface GradeTiles {
+  z: number;
+  x0: number;
+  y0: number;
+  w: number;
+  h: number;
+  tiles: Array<Float32Array | null>;
+}
+
+const TILE_PX = 256;
+const mercX = (lon: number, n: number) => ((lon + 180) / 360) * n;
+const mercY = (lat: number, n: number) => {
+  const s = Math.sin((lat * Math.PI) / 180);
+  return (0.5 - Math.log((1 + s) / (1 - s)) / (4 * Math.PI)) * n;
+};
+
+/** Constrói um amostrador bilinear a partir de uma GradeTiles (puro, corre na main thread ou em Web Worker). */
+export function amostradorDeGrade(g: GradeTiles): Amostrador {
+  const n = TILE_PX * 2 ** g.z;
+  const px = (gx: number, gy: number): number | null => {
+    const tx = Math.floor(gx / TILE_PX) - g.x0;
+    const ty = Math.floor(gy / TILE_PX) - g.y0;
+    if (tx < 0 || ty < 0 || tx >= g.w || ty >= g.h) return null;
+    const t = g.tiles[ty * g.w + tx];
+    if (!t) return null;
+    return t[(gy - (ty + g.y0) * TILE_PX) * TILE_PX + (gx - (tx + g.x0) * TILE_PX)];
+  };
+  return (lon, lat) => {
+    const gx = mercX(lon, n) - 0.5;
+    const gy = mercY(lat, n) - 0.5;
+    const ix = Math.floor(gx);
+    const iy = Math.floor(gy);
+    const fx = gx - ix;
+    const fy = gy - iy;
+    const a = px(ix, iy);
+    const b = px(ix + 1, iy);
+    const c = px(ix, iy + 1);
+    const d = px(ix + 1, iy + 1);
+    if (a === null || b === null || c === null || d === null) return a ?? b ?? c ?? d;
+    return (a * (1 - fx) + b * fx) * (1 - fy) + (c * (1 - fx) + d * fx) * fy;
+  };
+}
+
 /** Cotas do relevo (m) usadas para dar textura à terra na vista plana. */
 export const RELEVO_NIVEIS = [60, 150, 300] as const;
 export const TERRA_MIN = 0.3;
@@ -480,22 +524,29 @@ export function construirGeo(ll: [number, number], o: OpcoesGeo, fino: Amostrado
   return { bbox: [W, N - (ny - 1) * dlat, W + (nx - 1) * dlon, N], faixas, terra, areia, relevo, ...(aguaInterior.length ? { aguaInterior } : {}), ondas };
 }
 
+/** Banda física de período (s) usada na dispersão de ondas: vaga curta (7 s), média (11 s), groundswell longo (16 s). */
+export function bandaPeriodo(tp: number): 7 | 11 | 16 {
+  if (tp < 9) return 7;
+  if (tp < 14) return 11;
+  return 16;
+}
+
 /**
- * Tempo de chegada (s) da ondulação vinda de `sd` (graus) a cada célula do
- * mar: refracção simples (Dijkstra com c = c0·√tanh(k·h), Tp de referência
- * 11 s), como o campo pré-calculado da maquete; parte das células fundas
- * como uma frente plana. O rumo é arredondado a `passo` graus (5 por omissão;
- * a cena 3D usa 20, os rumos pré-calculados da maquete: 280/300/320).
+ * Tempo de chegada (s) da ondulação vinda de `sd` (graus) com período `tp` (s)
+ * a cada célula do mar: refracção simples (Dijkstra com c = c0·√tanh(k·h)),
+ * partindo das células fundas como uma frente plana. O rumo é arredondado a
+ * `passo` graus e o período quantizado em 3 bandas físicas (7 / 11 / 16 s).
  */
-export function campoChegada(g: GrelhaOndas, sd: number, passo = 5): Float32Array {
-  const chave = (((Math.round(sd / passo) * passo) % 360) + 360) % 360;
+export function campoChegada(g: GrelhaOndas, sd: number, passo = 5, tp = 11): Float32Array {
+  const rumoCh = (((Math.round(sd / passo) * passo) % 360) + 360) % 360;
+  const Tp = bandaPeriodo(tp);
+  const chave = rumoCh * 100 + Tp;
   const c = g.campos.get(chave);
   if (c) return c;
   const { nx, ny, prof, res } = g;
-  const th = (chave * Math.PI) / 180;
+  const th = (rumoCh * Math.PI) / 180;
   const ux = -Math.sin(th);
   const uy = -Math.cos(th); // propagação (este, norte)
-  const Tp = 11;
   const L0 = (9.81 * Tp * Tp) / (2 * Math.PI);
   const c0 = (9.81 * Tp) / (2 * Math.PI);
   const vel = (h: number) => c0 * Math.sqrt(Math.tanh(((2 * Math.PI) / L0) * Math.max(h, 0.6) * 2.2));
@@ -642,7 +693,7 @@ export function frentesGeo(
   janela?: (lon: number, lat: number) => boolean,
 ): Array<Array<[number, number]>> {
   if (!(hs > 0.15) || !(tp > 0)) return [];
-  const T = campoChegada(g, sd, passoRumo);
+  const T = campoChegada(g, sd, passoRumo, tp);
   const { nx, ny } = g;
   const Lam = tp * (desktop ? 2 : 3) * escala;
   const ph = (((t * 8) % Lam) + Lam) % Lam;

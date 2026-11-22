@@ -4,7 +4,15 @@
  * no desktop continua centrada um pouco ao largo, como na maquete.
  */
 import { describe, expect, it } from 'vitest';
-import { anguloSetaVento, camara, desloca, frentesOnda, rotuloCurtoVizinho, sportParaMapa } from '../praiaCena';
+import {
+  anguloSetaVento,
+  camara,
+  desloca,
+  frentesOnda,
+  isobatasNoRectangulo,
+  rotuloCurtoVizinho,
+  sportParaMapa,
+} from '../praiaCena';
 
 const LL: [number, number] = [-9.4728, 38.7347];
 const ROTULO: [number, number] = [-9.4712, 38.733];
@@ -173,5 +181,80 @@ describe('frentesOnda', () => {
         expect(intersecoes).toBe(0);
       }
     }
+  });
+});
+
+describe('isobatasNoRectangulo', () => {
+  const proj = ([x, y]: [number, number]) => ({ x, y });
+
+  it('exclui linha totalmente fora do retângulo [0, 390] × [0, 420] (cenário Baía do Seixal)', () => {
+    const grupos = [
+      {
+        depth: 10,
+        lines: [
+          [
+            [-400, 100],
+            [-350, 200],
+          ],
+        ],
+      },
+    ];
+    expect(isobatasNoRectangulo(grupos, proj, 390, 420)).toEqual([]);
+  });
+
+  it('mantém linha que atravessa o retângulo com ambos os extremos fora', () => {
+    const grupos = [
+      {
+        depth: 15,
+        lines: [
+          [
+            [-50, 200],
+            [450, 210],
+          ],
+        ],
+      },
+    ];
+    expect(isobatasNoRectangulo(grupos, proj, 390, 420)).toEqual(grupos);
+  });
+
+  it('devolve [] quando o retângulo é vazio (w = 0 ou h = 0)', () => {
+    const grupos = [
+      {
+        depth: 8,
+        lines: [
+          [
+            [50, 50],
+            [150, 150],
+          ],
+        ],
+      },
+    ];
+    expect(isobatasNoRectangulo(grupos, proj, 0, 420)).toEqual([]);
+    expect(isobatasNoRectangulo(grupos, proj, 390, 0)).toEqual([]);
+    expect(isobatasNoRectangulo(grupos, proj, 0, 0)).toEqual([]);
+  });
+
+  it('filtra seletivamente mantendo apenas os grupos com segmentos no retângulo', () => {
+    const dentro = {
+      depth: 8,
+      lines: [
+        [
+          [100, 100],
+          [200, 180],
+        ],
+      ],
+    };
+    const fora = {
+      depth: 30,
+      lines: [
+        [
+          [-400, 100],
+          [-350, 200],
+        ],
+      ],
+    };
+    const resultado = isobatasNoRectangulo([dentro, fora], proj, 390, 420);
+    expect(resultado).toEqual([dentro]);
+    expect(resultado.map((g) => g.depth)).toEqual([8]);
   });
 });

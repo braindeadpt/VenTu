@@ -10,9 +10,10 @@
  */
 import { aplicarLuz, COR, corMar, frentesOnda, luz, TERRA_COTAS } from '@/lib/praiaCena';
 import { frentesGeo, janelaFrentes } from '@/lib/praiaGeo';
+import { ISOBATH_DEPTH_STYLE } from '@/lib/isobaths';
 import type { Anel, GeoPraia } from '@/lib/praiaGeo';
 import { geoDaPraia } from './praiaRelevo';
-import type { EstadoCena } from './praiaMapa';
+import type { EstadoCena, GrupoIsobata } from './praiaMapa';
 
 const TILE = 256;
 
@@ -29,7 +30,10 @@ const inv = (x: number, y: number, z: number): [number, number] => {
 };
 
 export interface HandlePlano {
+  largura: number;
+  altura: number;
   pinta(e: EstadoCena): void;
+  setIsob(visivel: boolean, grupos?: readonly GrupoIsobata[]): void;
   proj(ll: [number, number]): { x: number; y: number } | null;
   unproj(p: [number, number]): [number, number] | null;
   destruir(): void;
@@ -70,6 +74,8 @@ export function criarPlano(
   let vivo = true;
   let geo: GeoPraia | null = null;
   let caminhos: { faixas: Path2D[]; terra: Path2D; areia: Path2D; aguaInterior: Path2D; relevo: Path2D[]; urbano: Path2D; pinhal: Path2D; rocha: Path2D; estradas: Path2D } | null = null;
+  let isobVisivel = false;
+  let isobGrupos: readonly GrupoIsobata[] = [];
 
   const caminho = (aneis: Anel[]) => {
     const p = new Path2D();
@@ -108,6 +114,26 @@ export function criarPlano(
         ctx.fillStyle = corMar(e.banda, i, L);
         ctx.fill(caminhos.faixas[i], 'evenodd');
       }
+    }
+    if (isobVisivel && isobGrupos.length) {
+      ctx.save();
+      ctx.lineWidth = 1.6;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.setLineDash([5, 4]);
+      for (const g of isobGrupos) {
+        ctx.strokeStyle = ISOBATH_DEPTH_STYLE[g.depth]?.color ?? '#A9C2D4';
+        ctx.beginPath();
+        for (const linha of g.lines) {
+          linha.forEach(([lon, lat], k) => {
+            const q = proj([lon, lat]);
+            if (k) ctx.lineTo(q.x, q.y);
+            else ctx.moveTo(q.x, q.y);
+          });
+        }
+        ctx.stroke();
+      }
+      ctx.restore();
     }
     // frentes de onda paradas (a vista plana é estática); a terra tapa-as. Rumo a 20°, como no 3D e na maquete.
     // Só dentro da caixa das frentes da maquete (até ~3,1 km para o largo do spot): antes iam até à borda da vista
@@ -183,8 +209,15 @@ export function criarPlano(
     .then(usar)
     .finally(() => vivo && onPronto());
   return {
+    largura: W,
+    altura: H,
     pinta(e) {
       estado = e;
+      desenha();
+    },
+    setIsob(visivel, grupos) {
+      isobVisivel = visivel;
+      if (grupos) isobGrupos = grupos;
       desenha();
     },
     proj,

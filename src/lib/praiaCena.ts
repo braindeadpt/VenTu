@@ -65,6 +65,67 @@ export function sportParaMapa(compativeis: readonly string[] | undefined, d: 'ki
   return compativeis[0] ?? 'all';
 }
 
+/** Testa se o segmento 2D (x1,y1)-(x2,y2) intersecta o retângulo [0, w] × [0, h] (Cohen–Sutherland). */
+function segNoRect(x1: number, y1: number, x2: number, y2: number, w: number, h: number): boolean {
+  const code = (x: number, y: number) => (x < 0 ? 1 : x > w ? 2 : 0) | (y < 0 ? 4 : y > h ? 8 : 0);
+  let c1 = code(x1, y1);
+  let c2 = code(x2, y2);
+  let ax = x1;
+  let ay = y1;
+  let bx = x2;
+  let by = y2;
+  for (let it = 0; it < 8; it++) {
+    if ((c1 | c2) === 0) return true;
+    if ((c1 & c2) !== 0) return false;
+    const c = c1 || c2;
+    let x = 0;
+    let y = 0;
+    if (c & 8) {
+      x = ax + ((bx - ax) * (h - ay)) / (by - ay || 1e-12);
+      y = h;
+    } else if (c & 4) {
+      x = ax + ((bx - ax) * (0 - ay)) / (by - ay || 1e-12);
+      y = 0;
+    } else if (c & 2) {
+      y = ay + ((by - ay) * (w - ax)) / (bx - ax || 1e-12);
+      x = w;
+    } else {
+      y = ay + ((by - ay) * (0 - ax)) / (bx - ax || 1e-12);
+      x = 0;
+    }
+    if (c === c1) {
+      ax = x;
+      ay = y;
+      c1 = code(ax, ay);
+    } else {
+      bx = x;
+      by = y;
+      c2 = code(bx, by);
+    }
+  }
+  return false;
+}
+
+/** Mantém apenas os grupos de isóbatas com pelo menos um segmento que cruza o retângulo [0, w] × [0, h]. */
+export function isobatasNoRectangulo<T extends { depth: number; lines: number[][][] }>(
+  grupos: readonly T[],
+  proj: (ll: [number, number]) => { x: number; y: number } | null,
+  w: number,
+  h: number,
+): T[] {
+  if (w <= 0 || h <= 0) return [];
+  return grupos.filter((g) =>
+    g.lines.some((linha) => {
+      for (let i = 0; i < linha.length - 1; i++) {
+        const a = proj([linha[i][0], linha[i][1]]);
+        const b = proj([linha[i + 1][0], linha[i + 1][1]]);
+        if (a && b && segNoRect(a.x, a.y, b.x, b.y, w, h)) return true;
+      }
+      return false;
+    }),
+  );
+}
+
 export const COR = {
   terra: '#1E3A3E',
   pinhal: '#1C4A3A',
