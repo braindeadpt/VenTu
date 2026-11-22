@@ -14,7 +14,7 @@ import { ArrowUpRight, Layers, RotateCcw } from 'lucide-react';
 import LegendaBandas from '@/components/v6/LegendaBandas';
 import { criarVento, type MotorVento } from '@/lib/ventoParticulas';
 import { anguloSetaVento, camara, isobatasNoRectangulo, rotuloCurtoVizinho } from '@/lib/praiaCena';
-import { ISOBATH_DEPTH_STYLE } from '@/lib/isobaths';
+import { contoursWithinRadius, ISOBATH_DEPTH_STYLE, loadIsobathContours } from '@/lib/isobaths';
 import { rumo } from '@/lib/spotVeredicto';
 import { getAssetPath } from '@/lib/paths';
 import { fmtCopy, type SpotPageV6Copy } from '@/lib/translations/spotPage/v6';
@@ -287,11 +287,10 @@ export default function PraiaCena3D({ spotId, locale, mapaSport, nome, ll, idEst
     const iniciar = async () => {
       iniciado = true;
       if (!semOndas) {
-        void import('@/lib/isobaths')
-          .then(async (m) => {
-            const f = await m.loadIsobathContours();
+        void loadIsobathContours()
+          .then((f) => {
             if (!ativo || !f) return;
-            const perto = m.contoursWithinRadius(f, ll[1], ll[0], 12);
+            const perto = contoursWithinRadius(f, ll[1], ll[0], 12);
             if (perto.length) setIsobDados(perto);
           })
           .catch(() => undefined);
