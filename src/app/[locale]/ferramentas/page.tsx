@@ -36,13 +36,13 @@ export default async function FerramentasPage({ params }: Props) {
       href: `/${locale}/ferramentas/calculadora-kite/`,
       icon: Wind,
       title: tt.kiteTitle,
-      description: tt.kiteDesc.replace('{count}', spotCount),
+      description: tt.kiteDesc,
     },
     {
       href: `/${locale}/ferramentas/calculadora-fato/`,
       icon: Shirt,
       title: tt.wetsuitTitle,
-      description: tt.wetsuitDesc.replace('{count}', spotCount),
+      description: tt.wetsuitDesc,
     },
   ]
 
