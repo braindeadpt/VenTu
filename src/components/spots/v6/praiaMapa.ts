@@ -254,7 +254,9 @@ export function criarMapa(o: OpcoesMapa): HandleMapa {
     maxPitch: 62,
     minZoom: c0.zoom - 0.8,
     maxZoom: 15,
-    dragPan: true,
+    // Desktop: arrastar com rato livre (scrollZoom=false preserva scroll da roda).
+    // Telemóvel: dragPan=false preserva o scroll vertical com 1 dedo; 2 dedos fazem zoom/rotação/pitch.
+    dragPan: o.desktop,
     scrollZoom: false,
     boxZoom: false,
     doubleClickZoom: false,

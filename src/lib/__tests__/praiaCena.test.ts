@@ -4,7 +4,7 @@
  * no desktop continua centrada um pouco ao largo, como na maquete.
  */
 import { describe, expect, it } from 'vitest';
-import { anguloSetaVento, camara, desloca, frentesOnda, rotuloCurtoVizinho } from '../praiaCena';
+import { anguloSetaVento, camara, desloca, frentesOnda, rotuloCurtoVizinho, sportParaMapa } from '../praiaCena';
 
 const LL: [number, number] = [-9.4728, 38.7347];
 const ROTULO: [number, number] = [-9.4712, 38.733];
@@ -108,6 +108,25 @@ describe('rotuloCurtoVizinho', () => {
   it('mantém intacto se remover deixar menos de 3 caracteres', () => {
     expect(rotuloCurtoVizinho('A (B)')).toBe('A (B)');
     expect(rotuloCurtoVizinho('AB (C)')).toBe('AB (C)');
+  });
+});
+
+describe('sportParaMapa', () => {
+  it('mantém a modalidade ativa quando compatível com o spot', () => {
+    expect(sportParaMapa(['surf', 'kitesurf'], 'kite')).toBe('kitesurf');
+    expect(sportParaMapa(['surf', 'kitesurf'], 'surf')).toBe('surf');
+  });
+
+  it('usa a primeira modalidade compatível quando o spot não suporta surf nem kite (ex.: Alqueva, Castelo de Bode)', () => {
+    expect(sportParaMapa(['wakeboard'], 'surf')).toBe('wakeboard');
+    expect(sportParaMapa(['wakeboard'], 'kite')).toBe('wakeboard');
+    expect(sportParaMapa(['wakeboard', 'sup'], 'surf')).toBe('wakeboard');
+    expect(sportParaMapa(['foil'], 'surf')).toBe('foil');
+  });
+
+  it('cai para all quando não há lista de modalidades', () => {
+    expect(sportParaMapa(undefined, 'surf')).toBe('all');
+    expect(sportParaMapa([], 'kite')).toBe('all');
   });
 });
 

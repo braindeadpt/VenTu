@@ -209,17 +209,36 @@ describe('praiaGeo · água interior (albufeira em altitude)', () => {
     expect(geo.aguaInterior!.length).toBeGreaterThanOrEqual(1);
     expect(geo.aguaInterior![0].length).toBeGreaterThanOrEqual(3);
   });
+
+  it('deteta albufeira na vizinhança mesmo quando o pin do catálogo está numa encosta/ilha acima da cota da água (Castelo de Bode / Ermal)', () => {
+    // Pin na encosta a 308 m; albufeira plana a 125 m centrada ~1 km a oeste do pin
+    const ll: [number, number] = [-8.3, 39.6];
+    const lago: [number, number] = [-8.312, 39.6];
+    const fino = (lon: number, lat: number) => {
+      const r = Math.hypot(lon - lago[0], lat - lago[1]);
+      if (r <= 0.008) return 125;
+      return Math.min(340, 125 + (r - 0.008) * 18000);
+    };
+    expect(fino(ll[0], ll[1])).toBeGreaterThan(190);
+    const geo = construirGeo(ll, { meiaLon: 0.04, meiaLat: 0.03, res: 60 }, fino, null);
+    expect(geo.aguaInterior).toBeDefined();
+    expect(geo.aguaInterior!.length).toBeGreaterThanOrEqual(1);
+    expect(geo.aguaInterior![0].length).toBeGreaterThanOrEqual(3);
+  });
 });
 
-describe('geografia estática de lagoas (public/geo/praia)', () => {
-  it.each(['obidos-lagoon.json', 'lagoa-albufeira.json'])('%s traz aguaInterior com pelo menos 1 anel não vazio', (ficheiro) => {
-    const j = JSON.parse(readFileSync(path.join(process.cwd(), 'public/geo/praia', ficheiro), 'utf8')) as GeoEstatico;
-    const g = geoDeEstatico(j);
-    expect(g).not.toBeNull();
-    expect(Array.isArray(g!.aguaInterior)).toBe(true);
-    expect(g!.aguaInterior!.length).toBeGreaterThanOrEqual(1);
-    expect(g!.aguaInterior!.some((anel) => anel.length >= 3)).toBe(true);
-  });
+describe('geografia estática de lagoas e albufeiras (public/geo/praia)', () => {
+  it.each(['obidos-lagoon.json', 'lagoa-albufeira.json', 'alqueva.json', 'castelo-bode.json', 'ilha-do-ermal.json'])(
+    '%s traz aguaInterior com pelo menos 1 anel não vazio',
+    (ficheiro) => {
+      const j = JSON.parse(readFileSync(path.join(process.cwd(), 'public/geo/praia', ficheiro), 'utf8')) as GeoEstatico;
+      const g = geoDeEstatico(j);
+      expect(g).not.toBeNull();
+      expect(Array.isArray(g!.aguaInterior)).toBe(true);
+      expect(g!.aguaInterior!.length).toBeGreaterThanOrEqual(1);
+      expect(g!.aguaInterior!.some((anel) => anel.length >= 3)).toBe(true);
+    },
+  );
 });
 
 describe('geografia estática do Guincho (public/geo/praia/guincho.json)', () => {

@@ -406,21 +406,52 @@ export function construirGeo(ll: [number, number], o: OpcoesGeo, fino: Amostrado
     for (let k = 0; k < n; k++) campo[k] = elev[k] - lv;
     return aneis(campo);
   });
-  // Albufeiras e rios em altitude (sem mar ≤ 0,3 m): deteta o espelho plano à cota do spot.
+  // Albufeiras e rios em altitude (sem mar ≤ 0,3 m): procura a cota plana dominante na
+  // vizinhança do spot (≤ 3,5 km), para funcionar mesmo quando o pin do catálogo marca
+  // o acesso, a margem ou uma ilha acima do espelho de água (ex.: Castelo de Bode, Ermal).
   let aguaInterior: Anel[] = [];
   if (marCount < n * 0.01) {
-    const e0 = fino(ll[0], ll[1]);
-    if (e0 !== null && e0 > 2) {
+    const cx = Math.round((ll[0] - W) / dlon);
+    const cy = Math.round((N - ll[1]) / dlat);
+    const raio = Math.max(10, Math.round(3500 / o.res));
+    const r2 = raio * raio;
+    const hist = new Map<number, number>();
+    const slopeDe = (i: number, j: number, k: number) => {
+      let s = 0;
+      if (i > 0) s = Math.max(s, Math.abs(elev[k] - elev[k - 1]));
+      if (i < nx - 1) s = Math.max(s, Math.abs(elev[k] - elev[k + 1]));
+      if (j > 0) s = Math.max(s, Math.abs(elev[k] - elev[k - nx]));
+      if (j < ny - 1) s = Math.max(s, Math.abs(elev[k] - elev[k + nx]));
+      return s;
+    };
+    const j0 = Math.max(0, cy - raio);
+    const j1 = Math.min(ny - 1, cy + raio);
+    const i0 = Math.max(0, cx - raio);
+    const i1 = Math.min(nx - 1, cx + raio);
+    for (let j = j0; j <= j1; j++)
+      for (let i = i0; i <= i1; i++) {
+        if ((i - cx) * (i - cx) + (j - cy) * (j - cy) > r2) continue;
+        const k = j * nx + i;
+        const e = elev[k];
+        if (e <= 2 || slopeDe(i, j, k) > 1.0) continue;
+        const b = Math.round(e);
+        hist.set(b, (hist.get(b) ?? 0) + 1);
+      }
+    let cotaAlvo: number | null = null;
+    let melhorCont = 14;
+    for (const [b, cnt] of hist) {
+      // agrupa o bucket com os vizinhos ±1 m para absorver quantização do DEM
+      const total = cnt + (hist.get(b - 1) ?? 0) + (hist.get(b + 1) ?? 0);
+      if (total > melhorCont) {
+        melhorCont = total;
+        cotaAlvo = b;
+      }
+    }
+    if (cotaAlvo !== null) {
       for (let j = 0; j < ny; j++)
         for (let i = 0; i < nx; i++) {
           const k = j * nx + i;
-          const de = Math.abs(elev[k] - e0);
-          let slope = 0;
-          if (i > 0) slope = Math.max(slope, Math.abs(elev[k] - elev[k - 1]));
-          if (i < nx - 1) slope = Math.max(slope, Math.abs(elev[k] - elev[k + 1]));
-          if (j > 0) slope = Math.max(slope, Math.abs(elev[k] - elev[k - nx]));
-          if (j < ny - 1) slope = Math.max(slope, Math.abs(elev[k] - elev[k + nx]));
-          campo[k] = de <= 0.9 && slope <= 1.2 ? 0.5 : -0.5;
+          campo[k] = Math.abs(elev[k] - cotaAlvo) <= 1.2 && slopeDe(i, j, k) <= 1.4 ? 0.5 : -0.5;
         }
       aguaInterior = aneis(campo);
     }

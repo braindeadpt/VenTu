@@ -31,6 +31,7 @@ export interface Vizinho {
 export interface PraiaCena3DProps {
   spotId: string;
   locale: string;
+  mapaSport?: string;
   nome: string;
   ll: [number, number];
   /** id do spot com geografia estática (spots curados: costa e camadas OSM) */
@@ -69,7 +70,7 @@ interface LblItem {
   ay?: number;
 }
 
-export default function PraiaCena3D({ spotId, locale, nome, ll, idEstatico, praiaVirada, aguaInterior = false, aguaPlana = false, vizinhos, h, banda, d, copy: c, forcarPlano, rotulos }: PraiaCena3DProps) {
+export default function PraiaCena3D({ spotId, locale, mapaSport, nome, ll, idEstatico, praiaVirada, aguaInterior = false, aguaPlana = false, vizinhos, h, banda, d, copy: c, forcarPlano, rotulos }: PraiaCena3DProps) {
   const semOndas = aguaInterior || aguaPlana;
   const fig = useRef<HTMLElement>(null);
   const mapaEl = useRef<HTMLDivElement>(null);
@@ -376,7 +377,8 @@ export default function PraiaCena3D({ spotId, locale, nome, ll, idEstatico, prai
   }, [h, banda, d]);
 
   const anguloChip = anguloSetaVento(h.wd, modo === '3d' ? bearing : 0);
-  const mapaHref = getAssetPath(`/${locale}/mapa/?spot=${encodeURIComponent(spotId)}&sport=${d === 'kite' ? 'kitesurf' : 'surf'}`);
+  const sportQs = mapaSport ?? (d === 'kite' ? 'kitesurf' : 'surf');
+  const mapaHref = getAssetPath(`/${locale}/mapa/?spot=${encodeURIComponent(spotId)}&sport=${encodeURIComponent(sportQs)}`);
   const sub = semOndas ? c.cenaSubInterior : d === 'kite' ? c.cenaSubKite : c.cenaSubSurf;
   const legendaTxt = semOndas ? c.legendaInterior : c.legenda;
   const relLbl = usouOSM ? c.atribuicaoRelevo : c.atribuicaoRelevo.charAt(0).toUpperCase() + c.atribuicaoRelevo.slice(1);

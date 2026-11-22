@@ -50,6 +50,14 @@ export function rotuloCurtoVizinho(nome: string): string {
   return limpo.length >= 3 ? limpo : nome;
 }
 
+/** Resolve o parâmetro `?sport=` do /mapa para o link «Abrir no mapa» nunca filtrar fora o próprio spot. */
+export function sportParaMapa(compativeis: readonly string[] | undefined, d: 'kite' | 'surf'): string {
+  const ativo = d === 'kite' ? 'kitesurf' : 'surf';
+  if (!compativeis?.length) return 'all';
+  if (compativeis.includes(ativo)) return ativo;
+  return compativeis[0] ?? 'all';
+}
+
 export const COR = {
   terra: '#1E3A3E',
   pinhal: '#1C4A3A',

@@ -25,6 +25,8 @@ import { useVizinhosNivel } from './useVizinhosNivel';
 import { useNivel } from '@/lib/nivelPref';
 import { nivelCopyV6 } from '@/lib/translations/nivel';
 import { nivelDoSpot, spotDentroDoNivel, type NivelUtilizador } from '@/lib/mapDifficulty';
+import { getCompatibleSports } from '@/lib/sportRatings';
+import { sportParaMapa } from '@/lib/praiaCena';
 import { avaliaHoras, isModalidade, MODALIDADE_OMISSAO, type Modalidade } from '@/lib/modalidades';
 import { construirHoras, type LinhaForecast, type MareExtremo } from '@/lib/horaSpot';
 import { editorialDe, spotModalidadeDe } from '@/lib/spotEditorial';
@@ -75,6 +77,8 @@ export interface SpotV6Props {
 
 /** Fontes do primeiro ecrã (nome, nota, palavra, frase). */
 const PRELOAD = ['BarlowCondensed-900i-latin.woff2', 'BarlowCondensed-900-latin.woff2', 'Barlow-700-latin.woff2'];
+/** Albufeiras interiores fora de spotEditorial.json mas com geografia OSM pré-gerada em public/geo/praia/. */
+const GEO_ESTATICOS_EXTRAS = new Set(['alqueva', 'castelo-bode', 'ilha-do-ermal']);
 
 export default function SpotV6({ spot, nome, local, locale, linhas, agoraMs, fotos, vizinhos, atencao, melhorMare, onModalidade, seguranca, acoes, contexto, estudo }: SpotV6Props) {
   const copy = spotV6Copy(locale);
@@ -236,9 +240,10 @@ export default function SpotV6({ spot, nome, local, locale, linhas, agoraMs, fot
         <PraiaCena3D
           spotId={spot.id}
           locale={locale}
+          mapaSport={sportParaMapa(getCompatibleSports(spot), d)}
           nome={nome}
           ll={[spot.lon, spot.lat]}
-          idEstatico={ed.estimado ? undefined : spot.id}
+          idEstatico={!ed.estimado || GEO_ESTATICOS_EXTRAS.has(spot.id) ? spot.id : undefined}
           praiaVirada={ed.praiaVirada}
           aguaInterior={Boolean(ed.aguaInterior)}
           aguaPlana={ed.aguaPlana}
