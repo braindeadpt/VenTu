@@ -14,7 +14,7 @@
  */
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { ExternalLink } from 'lucide-react';
-import { getTranslation } from '@/lib/i18n';
+import { getTranslation, pickLocale } from '@/lib/i18n';
 import { getMoonPhase } from '@/lib/moonPhase';
 import { dailyTideAmplitudeMetres } from '@/lib/tideAmplitude';
 import type { TideHourPoint } from '@/lib/tideSchedule';
@@ -27,7 +27,7 @@ import { getCardinalLabel } from '@/lib/wind';
 import { diaCurto, fmtNum, hmTxt, horaDe, horaTxt } from '@/lib/spotVeredicto';
 import { fmtCopy, type SpotPageV6Copy } from '@/lib/translations/spotPage/v6';
 import BoiaV6, { type BoiaV6Condicoes } from './BoiaV6';
-import { decimalV6 } from './boiaFmt';
+import { decimalV6, LOCALE_TAGS } from './boiaFmt';
 import { useColunasEquilibradas } from './colunasEquilibradas';
 
 const MS_KT = 1.94384;
@@ -324,7 +324,7 @@ function Clima({ spotId, locale, copy: c, mes }: { spotId: string; locale: strin
   }, [spotId]);
   if (!clima?.wind) return null;
   const max = monthlyMax(clima.wind) || 1;
-  const fmtMes = new Intl.DateTimeFormat(locale === 'pt' ? 'pt-PT' : 'en-GB', { month: 'short' });
+  const fmtMes = new Intl.DateTimeFormat(LOCALE_TAGS[locale] ?? 'en-GB', { month: 'short' });
   const nomes = Array.from({ length: 12 }, (_, m) => fmtMes.format(new Date(2024, m, 1)).replace('.', ''));
   const kt = (v: number | null) => (v == null ? '–' : String(Math.round(v * MS_KT)));
   const tp = clima.temp?.[mes];
@@ -363,7 +363,7 @@ export default function MedeSabeV6({ spot, locale, copy: c, t, ehAgora, mares, c
   const mes = useMemo(() => new Date(dataMs).getMonth(), [dataMs]);
   const grelha = useRef<HTMLDivElement>(null);
   useColunasEquilibradas(grelha);
-  const windguru = getWindguruUrl(spot.slug, locale === 'pt' ? spot.name : spot.nameEn, spot.lat, spot.lon);
+  const windguru = getWindguruUrl(spot.slug, pickLocale(locale, { pt: spot.name, en: spot.nameEn }), spot.lat, spot.lon);
   return (
     <section className="medesabe" aria-labelledby="medesabe-t" data-testid="spot-mede-sabe">
       <h3 className="ec-sec" id="medesabe-t">

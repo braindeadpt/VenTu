@@ -103,7 +103,7 @@ function layerToggle(page: Page, l: Layer) {
   return layerScope(page, l).locator(`[${l.attr}]`);
 }
 
-test.describe('Mapa desktop — coluna de controlos: persistência e deep links', () => {
+test.describe('Mapa desktop — coluna de controlos: persistência e deep links', { tag: '@core' }, () => {
   test.use({
     viewport: { width: 1280, height: 800 },
     serviceWorkers: 'block',

@@ -10,6 +10,7 @@ import type { FotoSpot } from '@/lib/spotFotos';
 import type { BandaK } from '@/lib/modalidades';
 import type { Parte } from '@/lib/spotVeredicto';
 import type { SpotPageV6Copy } from '@/lib/translations/spotPage/v6';
+import { pickLocale } from '@/lib/i18n';
 
 export interface SpotHeroProps {
   nome: string;
@@ -47,7 +48,7 @@ export default function SpotHero({ nome, quando, n, banda, palavra, resto, apoio
             sizes="100vw"
             width={foto.w}
             height={foto.h}
-            alt={locale === 'pt' ? foto.altPt : foto.altEn}
+            alt={pickLocale(locale, { pt: foto.altPt, en: foto.altEn })}
             decoding="async"
             fetchPriority="high"
             style={{ objectPosition: foto.pos }}

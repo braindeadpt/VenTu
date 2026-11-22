@@ -1,5 +1,7 @@
 import type { SportType } from './sportRatings';
 import { getScoreCssVar, getScoreRgb, SCORE_THRESHOLD_STEPS } from '@/lib/scoreThresholds';
+import { pickLocale } from '@/lib/i18n';
+import { libLegendLabels } from '@/lib/translations/lib';
 
 export const TILE_URLS = {
   satellite: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
@@ -268,22 +270,15 @@ export function getSportRgb(sport: SportType): string {
   return `rgb(var(${SPORT_CSS_VARS[sport]}))`;
 }
 
-const LEGEND_SCALE_PT = [
-  { label: 'Fechado', color: 'rgb(var(--score-closed))' },
-  { label: 'Fraco', color: 'rgb(var(--score-poor))' },
-  { label: 'Razoável', color: 'rgb(var(--score-fair))' },
-  { label: 'Bom', color: 'rgb(var(--score-good))' },
-  { label: 'Épico', color: 'rgb(var(--score-epic))' },
-];
-
-const LEGEND_SCALE_EN = [
-  { label: 'Closed', color: 'rgb(var(--score-closed))' },
-  { label: 'Poor', color: 'rgb(var(--score-poor))' },
-  { label: 'Fair', color: 'rgb(var(--score-fair))' },
-  { label: 'Good', color: 'rgb(var(--score-good))' },
-  { label: 'Epic', color: 'rgb(var(--score-epic))' },
+const LEGEND_SCALE_COLORS = [
+  'rgb(var(--score-closed))',
+  'rgb(var(--score-poor))',
+  'rgb(var(--score-fair))',
+  'rgb(var(--score-good))',
+  'rgb(var(--score-epic))',
 ];
 
 export function getLegendLabels(locale: string): { label: string; color: string }[] {
-  return locale === 'pt' ? LEGEND_SCALE_PT : LEGEND_SCALE_EN;
+  const labels = pickLocale(locale, libLegendLabels);
+  return labels.map((label, i) => ({ label, color: LEGEND_SCALE_COLORS[i] }));
 }

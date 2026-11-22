@@ -4,6 +4,7 @@
  * nota em fill, nome numa linha (container query), chip + janela, apoio.
  */
 import type { CSSProperties } from 'react';
+import { pickLocale } from '@/lib/i18n';
 import FotoCredito from '@/components/v6/FotoCredito';
 import LinhaSpot from './LinhaSpot';
 import Ondas, { ondasDe } from '@/components/v6/Ondas';
@@ -58,7 +59,7 @@ export default function SpotCardV6({
             width={foto.wc}
             height={foto.hc}
             style={{ objectPosition: foto.pos || '50% 50%' }}
-            alt={`${r.sp.nome}: ${locale === 'pt' ? foto.altPt : foto.altEn}`}
+            alt={`${r.sp.nome}: ${pickLocale(locale, { pt: foto.altPt, en: foto.altEn })}`}
             loading="lazy"
             decoding="async"
           />

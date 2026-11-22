@@ -9,7 +9,7 @@ import { allScoresComV6, notaV6DoSpot } from '@/lib/notaV6Agora';
 import { rawToScoreInput } from '@/lib/scoreConditions';
 import { SITE_URL } from '@/lib/site';
 import { getAssetPath } from '@/lib/paths';
-import { getTranslation } from '@/lib/i18n';
+import { getTranslation, pickLocale, validateLocale } from '@/lib/i18n';
 import { scoreTodos } from '@/lib/desportosV6';
 import { SPORT_LABELS } from '@/lib/sportRatings';
 import { janelaSeguinte, linhaDeNoite, type JanelaSeguinte } from '@/lib/noiteListas';
@@ -33,9 +33,8 @@ type ConditionsFile = Record<
 export default function EmbedSpotWidget({ slug }: { slug: string }) {
   const search = useSearchParams();
   const school = search.get('school') || '';
-  const lang = search.get('lang') === 'en' ? 'en' : 'pt';
-  const isPt = lang === 'pt';
-  const d = getTranslation(isPt ? 'pt' : 'en').directory;
+  const lang = validateLocale(search.get('lang') ?? 'pt');
+  const d = getTranslation(lang).directory;
 
   const spot = useMemo(() => getSpotBySlug(slug) || spots.find((s) => s.id === slug), [slug]);
   const [score, setScore] = useState<number | null>(null);
@@ -93,7 +92,7 @@ export default function EmbedSpotWidget({ slug }: { slug: string }) {
 
   const tokens = score != null ? getScoreTokens(score) : null;
   const spotHref = `${SITE_URL}/${lang}/spots/${spot.slug}/`;
-  const name = school || (isPt ? spot.name : spot.nameEn);
+  const name = school || pickLocale(lang, { pt: spot.name, en: spot.nameEn || spot.name });
 
   return (
     <div data-embed-widget className="box-border bg-bg-base text-fg p-2 font-sans">
@@ -109,7 +108,7 @@ export default function EmbedSpotWidget({ slug }: { slug: string }) {
         <div className="flex items-center justify-between gap-3">
           <div className="min-w-0">
             <p className="font-display text-h3 text-fg truncate">
-              {isPt ? spot.name : spot.nameEn}
+              {pickLocale(lang, { pt: spot.name, en: spot.nameEn || spot.name })}
             </p>
             <p className="text-meta-sm text-fg-muted mt-0.5">
               {[wave, wind].filter(Boolean).join(' · ') || d.conditionsLabel}
@@ -137,7 +136,7 @@ export default function EmbedSpotWidget({ slug }: { slug: string }) {
               <span className="text-fg-muted">
                 {getTranslation(lang).noite.proximaJanelaDe.replace(
                   '{sport}',
-                  SPORT_LABELS[noite.janela.sport][lang],
+                  pickLocale(lang, SPORT_LABELS[noite.janela.sport]),
                 )}
               </span>
             ) : null}

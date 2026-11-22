@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { Bell, MapPin } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
-import { validateLocale, getTranslation } from '@/lib/i18n';
+import { validateLocale, getTranslation, pickLocale } from '@/lib/i18n';
 import { buildPageMetadata } from '@/lib/seo';
 import { loadSpotListings } from '@/lib/load-spot-data';
 import { getScoreTokens } from '@/lib/sportScore';
@@ -98,12 +98,12 @@ export default async function AlertsPage({
                 padding={false}
                 className="p-4 flex items-center justify-between gap-3"
               >
-                <span className="font-semibold text-fg">{locale === 'pt' ? spot.namePt : spot.nameEn}</span>
+                <span className="font-semibold text-fg">{pickLocale(locale, { pt: spot.namePt, en: spot.nameEn })}</span>
                 <span className="flex items-center gap-2.5 shrink-0">
                   {spot.bestScore !== null && spot.bestSport !== null && (
-                    <span className="flex items-baseline gap-1.5 font-mono tabular-nums" aria-label={SPORT_LABELS[spot.bestSport as keyof typeof SPORT_LABELS]?.[locale === 'pt' ? 'pt' : 'en'] ?? spot.bestSport}>
+                    <span className="flex items-baseline gap-1.5 font-mono tabular-nums" aria-label={pickLocale(locale, SPORT_LABELS[spot.bestSport as keyof typeof SPORT_LABELS] ?? { pt: spot.bestSport, en: spot.bestSport })}>
                       <span className="text-meta-sm text-fg-subtle font-sans">
-                        {SPORT_LABELS[spot.bestSport as keyof typeof SPORT_LABELS]?.[locale === 'pt' ? 'pt' : 'en'] ?? spot.bestSport}
+                        {pickLocale(locale, SPORT_LABELS[spot.bestSport as keyof typeof SPORT_LABELS] ?? { pt: spot.bestSport, en: spot.bestSport })}
                       </span>
                       <span className={`text-sm font-semibold ${getScoreTokens(spot.bestScore).text}`}>
                         {scoreToNota(spot.bestScore)}

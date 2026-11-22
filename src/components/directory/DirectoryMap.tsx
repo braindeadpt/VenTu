@@ -15,7 +15,7 @@ import {
 } from '@/lib/map-constants';
 import { clearLeafletContainer } from '@/lib/mapFullscreen';
 import { createClusterIconFunction } from '@/components/spots/MapClusterIcon';
-import { getTranslation } from '@/lib/i18n';
+import { getTranslation, pickLocale } from '@/lib/i18n';
 
 type Props = {
   entries: DirectoryEntry[];
@@ -33,8 +33,7 @@ function entryHref(entry: DirectoryEntry, locale: string): string {
 }
 
 export default function DirectoryMap({ entries, locale, className }: Props) {
-  const isPt = locale === 'pt';
-  const d = getTranslation(isPt ? 'pt' : 'en').directory;
+  const d = getTranslation(locale).directory;
   const viewProfileLabel = d.viewProfile;
   const onListLabel = d.inList;
   const mapAria = d.mapViewAria;
@@ -175,7 +174,7 @@ export default function DirectoryMap({ entries, locale, className }: Props) {
     const onList = onListLabel;
 
     for (const entry of pins) {
-      const name = isPt ? entry.name : entry.nameEn || entry.name;
+      const name = pickLocale(locale, { pt: entry.name, en: entry.nameEn || entry.name });
       const href = entryHref(entry, locale);
       const hasPage = entry.source !== 'submitted';
       const kind = kindLabel(entry.kind, locale);
@@ -217,7 +216,7 @@ export default function DirectoryMap({ entries, locale, className }: Props) {
     } else {
       map.fitBounds(bounds, { padding: [28, 28], maxZoom: 10 });
     }
-  }, [entries, locale, isPt, ready, router, viewProfileLabel, onListLabel]);
+  }, [entries, locale, ready, router, viewProfileLabel, onListLabel]);
 
   return (
     <section

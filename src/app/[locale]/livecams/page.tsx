@@ -19,7 +19,6 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
-  const isPt = locale === 'pt';
   const loc = validateLocale(locale);
   const count = getLivecamSpotCount();
   const title = getTranslation(locale).pages.livecamsMetaTitle.replace('{count}', String(count))
@@ -32,7 +31,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function LivecamsPage({ params }: Props) {
   const { locale } = await params;
-  const isPt = locale === 'pt';
   const t = getTranslation(locale as 'pt' | 'en');
   const livecams = listAllLivecams();
 

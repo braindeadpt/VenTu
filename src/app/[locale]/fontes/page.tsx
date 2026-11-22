@@ -6,7 +6,8 @@ import { ATTRIBUTIONS, type DataSourceId } from '@/lib/dataSources'
 import { loadCoastalWarningsArchive } from '@/lib/coastalWarningsArchive'
 import CoastalArchiveCard from '@/components/fontes/CoastalArchiveCard'
 import type { Metadata } from 'next'
-import { getTranslation, validateLocale } from '@/lib/i18n'
+import { getTranslation, validateLocale, pickLocale } from '@/lib/i18n'
+import { fontesExtra } from '@/lib/translations/fontesPage'
 
 /** Link externo pequeno (atribuição obrigatória). */
 function A({
@@ -44,7 +45,6 @@ type Source = {
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
-  const isPt = locale === 'pt'
   const loc = validateLocale(locale)
   const t = getTranslation(locale).fontesPage
 
@@ -58,7 +58,6 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 
 export default async function DataSourcesPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params
-  const isPt = locale === 'pt'
   const t = getTranslation(locale).fontesPage
 
   // Baked once at build time; the client card re-derives from the committed
@@ -280,12 +279,10 @@ export default async function DataSourcesPage({ params }: { params: Promise<{ lo
                   {getTranslation(locale).fontesSources[s.useKey]}
                 </td>
                 <td className="py-3 pr-4 text-fg-muted leading-snug whitespace-nowrap">
-                  {isPt ? s.license.pt : s.license.en}
+                  {pickLocale(locale, s.license)}
                 </td>
                 <td className="py-3 text-fg-muted leading-snug">
-                  {isPt
-                    ? ATTRIBUTIONS[s.attributionId].cellPt
-                    : ATTRIBUTIONS[s.attributionId].cellEn}
+                  {pickLocale(locale, { pt: ATTRIBUTIONS[s.attributionId].cellPt, en: ATTRIBUTIONS[s.attributionId].cellEn })}
                 </td>
               </tr>
             ))}
@@ -296,18 +293,7 @@ export default async function DataSourcesPage({ params }: { params: Promise<{ lo
       <CoastalArchiveCard locale={locale} baked={archive} />
 
       <p className="text-xs text-fg-subtle">
-        {isPt ? (
-          <>
-            Nota de honestidade: as cadeias de atribuição do IPMA, IH e MeteoAlarm seguem as indicações das
-            respectivas páginas oficiais e metadados; se uma entidade actualizar os termos, esta página e os
-            rótulos na UI devem ser actualizados no mesmo run.
-          </>
-        ) : (
-          <>
-            Honesty note: the IPMA, IH and MeteoAlarm attribution strings follow their official pages and
-            metadata; if an entity updates its terms, this page and the UI labels must be updated in the same run.
-          </>
-        )}
+        {pickLocale(locale, fontesExtra).honestyNote}
       </p>
     </div>
   )

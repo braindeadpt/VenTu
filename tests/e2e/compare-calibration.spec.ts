@@ -67,7 +67,7 @@ const CONDITIONS = {
   },
 };
 
-test.describe('Comparador — tag de calibração cross-border', () => {
+test.describe('Comparador — tag de calibração cross-border', { tag: '@core' }, () => {
   test.use({ serviceWorkers: 'block' });
 
   test('card do spot recalibrado mostra «ref. PT» junto da altura; o spot sem leitura não', async ({
@@ -109,7 +109,7 @@ test.describe('Comparador — tag de calibração cross-border', () => {
   });
 
   // Contexto touch explícito (hasTouch) para o tap simular toque real.
-  test.describe('mobile (hasTouch)', () => {
+  test.describe('mobile (hasTouch)', { tag: '@core' }, () => {
     test.use({
       hasTouch: true,
       viewport: { width: 390, height: 844 },

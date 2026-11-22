@@ -3,7 +3,7 @@
 import { useMemo, useState } from 'react';
 import { useAuth } from '@/contexts/AuthProvider';
 import { getSupabaseClient } from '@/lib/supabase';
-import { getTranslation } from '@/lib/i18n';
+import { getTranslation, pickLocale } from '@/lib/i18n';
 import { submitDirectoryListing } from '@/lib/directoryListings';
 import { kindLabel } from '@/lib/directoryClient';
 import { safeExternalUrl } from '@/lib/safeUrl';
@@ -39,8 +39,7 @@ type Props = {
 };
 
 export default function DirectoryRegisterForm({ locale, onCreated }: Props) {
-  const isPt = locale === 'pt';
-  const d = getTranslation(isPt ? 'pt' : 'en').directory;
+  const d = getTranslation(locale).directory;
   const { session, requestLogin, isSupabaseReady, authLoading } = useAuth();
 
   const regionSpots = useMemo(() => {
@@ -211,7 +210,7 @@ export default function DirectoryRegisterForm({ locale, onCreated }: Props) {
           >
             {regionSpots.map((s) => (
               <option key={s.id} value={s.id}>
-                {isPt ? s.name : s.nameEn} · {isPt ? s.region : s.regionEn}
+                {pickLocale(locale, { pt: s.name, en: s.nameEn || s.name })} · {pickLocale(locale, { pt: s.region, en: s.regionEn || s.region })}
               </option>
             ))}
           </select>

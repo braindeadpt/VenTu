@@ -8,7 +8,7 @@ import { getMoonPhase } from '@/lib/moonPhase';
 import Link from 'next/link';
 import Button from '@/components/ui/Button';
 import { getAssetPath } from '@/lib/paths';
-import { getTranslation } from '@/lib/i18n';
+import { getTranslation, pickLocale } from '@/lib/i18n';
 import { spots } from '@/lib/spots';
 import { isDawnPatrolStale } from '@/lib/dataFreshness';
 import { lisbonWallToDate, formatLisbonDay } from '@/lib/lisbonTime';
@@ -61,7 +61,7 @@ function dawnPatrolCopy(data: DawnPatrolData, locale: string): DawnPatrolCopy {
     const exact = extra[locale];
     if (exact?.headline) return exact;
   }
-  return locale === 'pt' ? data.pt : data.en;
+  return pickLocale(locale, { pt: data.pt, en: data.en });
 }
 
 interface DawnPatrolData {
@@ -381,7 +381,7 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
               href={topSpotHref}
               size="sm"
               className="hidden sm:inline-flex"
-              locale={isPt ? 'pt' : 'en'}
+              locale={locale}
               leftIcon={<Zap className="w-4 h-4" aria-hidden />}
               onClick={(e) => e.stopPropagation()}
             >
@@ -507,7 +507,7 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
                   <span className="font-medium text-fg group-hover:text-data-waves/80 transition-colors truncate">
                     {spot.name}
                   </span>
-                  <span className="text-xs text-fg-subtle truncate hidden sm:inline">{isPt ? spot.ptReason : spot.enReason}</span>
+                  <span className="text-xs text-fg-subtle truncate hidden sm:inline">{pickLocale(locale, { pt: spot.ptReason, en: spot.enReason })}</span>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
                   <div className="h-2 w-20 rounded-full bg-surface-2/[0.08] overflow-hidden" role="progressbar" aria-valuenow={scoreToNota(spot.score)} aria-valuemin={0} aria-valuemax={10}>
@@ -539,7 +539,7 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
             href={topSpotHref}
             size="lg"
             className="sm:hidden w-full mt-4"
-            locale={isPt ? 'pt' : 'en'}
+            locale={locale}
             leftIcon={<Zap className="w-4 h-4" aria-hidden />}
           >
             {topSpotLinkValid

@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import { WIND_RING_LEGEND_LS_KEY } from '../../src/lib/windRingLegend';
 import { waitHydrated } from './helpers/hydration';
 
-test.describe('wind ring legend', () => {
+test.describe('wind ring legend', { tag: '@core' }, () => {
   // O cenário tem esperas sequenciais reais (auto-hide de 12 s do hint) —
   // o default de 30 s rebenta sob paralelismo do CI.
   test.describe.configure({ timeout: 90_000 });

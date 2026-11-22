@@ -82,10 +82,10 @@ function assertComum(g: Awaited<ReturnType<typeof probe>>) {
   expect(g.tabsH).toBe('0px');
 }
 
-test.describe('Régua v6 — elemento fixo único (desktop + mobile)', () => {
+test.describe('Régua v6 — elemento fixo único (desktop + mobile)', { tag: '@core' }, () => {
   test.use({ serviceWorkers: 'block' });
 
-  test.describe('desktop (1440×900)', () => {
+  test.describe('desktop (1440×900)', { tag: '@core' }, () => {
     test.use({ viewport: { width: 1440, height: 900 } });
     test('sticky a 0 por baixo do hero; presa ao topo depois do scroll', async ({ page }) => {
       await openSpot(page);
@@ -101,7 +101,7 @@ test.describe('Régua v6 — elemento fixo único (desktop + mobile)', () => {
     });
   });
 
-  test.describe('mobile (390×844, com scroll)', () => {
+  test.describe('mobile (390×844, com scroll)', { tag: '@core' }, () => {
     test.use({ viewport: { width: 390, height: 844 }, hasTouch: true });
     test('a régua fica fixa em baixo e clicável em ecrã pequeno', async ({ page }) => {
       await openSpot(page);

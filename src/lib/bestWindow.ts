@@ -1,4 +1,6 @@
 import { getScoreTokens } from './sportScore';
+import { isValidLocale, pickLocale } from '@/lib/i18n';
+import { libTomorrowSuffix } from '@/lib/translations/lib';
 import type { SportType } from './sportRatings';
 import type { BestWindowToday } from './bestWindowToday';
 
@@ -25,7 +27,9 @@ export function formatBestWindowHours(
 ): string {
   const hours = `${String(window.start).padStart(2, '0')}h–${String(window.end).padStart(2, '0')}h`;
   if (window.end < window.start) {
-    return `${hours} (${locale === 'pt' ? 'amanhã' : 'tomorrow'})`;
+    // Undefined/unknown locales keep the previous English fallback.
+    const loc = locale && isValidLocale(locale) ? locale : 'en';
+    return `${hours} (${pickLocale(loc, libTomorrowSuffix)})`;
   }
   return hours;
 }

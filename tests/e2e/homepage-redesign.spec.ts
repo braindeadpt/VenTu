@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import { preseedWindRingLegend } from './helpers/map-setup';
 import { interceptConditions, notaV6DeNoite } from './helpers/conditions';
 
-test.describe('Homepage redesign', () => {
+test.describe('Homepage redesign', { tag: '@core' }, () => {
   test.beforeEach(async ({ page }) => {
     // O /pt/ serve o embed map-first (SpotMapInteractive não-hero, desktop) —
     // a legend coach de primeira visita pode abrir sobre o mapa.
@@ -55,7 +55,7 @@ test.describe('Homepage redesign', () => {
  * (notaV6 diurno → há cards) ou a mesma fixture com as 5 modalidades v6 de noite
  * (→ estado vazio, o comportamento correcto de madrugada).
  */
-test.describe('Homepage — A bombar agora (fixture, qualquer hora)', () => {
+test.describe('Homepage — A bombar agora (fixture, qualquer hora)', { tag: '@core' }, () => {
   // O SW serve /data/* do cache e burla o page.route — ver helpers/conditions.ts.
   test.use({ serviceWorkers: 'block' });
 

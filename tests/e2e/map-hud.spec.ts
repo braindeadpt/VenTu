@@ -222,13 +222,13 @@ async function expectNazareScore(page: Page, expected: string) {
   await expect(score).toHaveAttribute('data-spot-score', expected, { timeout: 15_000 });
 }
 
-test.describe('Explorar /mapa — garantias consolidadas (sheet mobile + painel desktop)', () => {
+test.describe('Explorar /mapa — garantias consolidadas (sheet mobile + painel desktop)', { tag: '@core' }, () => {
   test.describe.configure({ timeout: 60_000 });
 
   // ────────────────────────────────────────────────────────────────────────
   // 1. Painel desktop
   // ────────────────────────────────────────────────────────────────────────
-  test.describe('painel desktop', () => {
+  test.describe('painel desktop', { tag: '@core' }, () => {
     test.use({
       viewport: { width: 1440, height: 900 },
       serviceWorkers: 'block',
@@ -296,8 +296,8 @@ test.describe('Explorar /mapa — garantias consolidadas (sheet mobile + painel 
   // ────────────────────────────────────────────────────────────────────────
   // 2. Alvos de toque (WCAG 2.5.8)
   // ────────────────────────────────────────────────────────────────────────
-  test.describe('alvos de toque', () => {
-    test.describe('mobile 390px', () => {
+  test.describe('alvos de toque', { tag: '@core' }, () => {
+    test.describe('mobile 390px', { tag: '@core' }, () => {
       test.use({
         viewport: { width: 390, height: 844 },
         hasTouch: true,
@@ -331,7 +331,7 @@ test.describe('Explorar /mapa — garantias consolidadas (sheet mobile + painel 
       });
     });
 
-    test.describe('tablet 768px (touch — layout sm+)', () => {
+    test.describe('tablet 768px (touch — layout sm+)', { tag: '@core' }, () => {
       test.use({
         viewport: { width: 768, height: 1024 },
         hasTouch: true,
@@ -352,7 +352,7 @@ test.describe('Explorar /mapa — garantias consolidadas (sheet mobile + painel 
       });
     });
 
-    test.describe('desktop — densidade por modalidade de input (V3′)', () => {
+    test.describe('desktop — densidade por modalidade de input (V3′)', { tag: '@core' }, () => {
       test.use({ viewport: { width: 1280, height: 800 }, serviceWorkers: 'block', reducedMotion: 'reduce' });
 
       test('rato puro (any-pointer: fine): pills mantêm a densidade de 36px', async ({ page }) => {
@@ -390,8 +390,8 @@ test.describe('Explorar /mapa — garantias consolidadas (sheet mobile + painel 
   // ────────────────────────────────────────────────────────────────────────
   // 3. Overflow / scroll / hit-test
   // ────────────────────────────────────────────────────────────────────────
-  test.describe('overflow, scroll e hit-test', () => {
-    test.describe('mobile 360–390px', () => {
+  test.describe('overflow, scroll e hit-test', { tag: '@core' }, () => {
+    test.describe('mobile 360–390px', { tag: '@core' }, () => {
       test.use({
         viewport: { width: 360, height: 800 },
         hasTouch: true,
@@ -464,7 +464,7 @@ test.describe('Explorar /mapa — garantias consolidadas (sheet mobile + painel 
       });
     });
 
-    test.describe('mobile 390px — toggles de camadas', () => {
+    test.describe('mobile 390px — toggles de camadas', { tag: '@core' }, () => {
       test.use({
         viewport: { width: 390, height: 844 },
         hasTouch: true,
@@ -519,7 +519,7 @@ test.describe('Explorar /mapa — garantias consolidadas (sheet mobile + painel 
   // ────────────────────────────────────────────────────────────────────────
   // 4. Time track (scrub)
   // ────────────────────────────────────────────────────────────────────────
-  test.describe('time track — scrub das 48h (desktop 1280px)', () => {
+  test.describe('time track — scrub das 48h (desktop 1280px)', { tag: '@core' }, () => {
     // serviceWorkers: 'block' é OBRIGATÓRIO — o SW serve /data/* do cache e
     // contorna o page.route (causa histórica de flakes nesta suite).
     test.use({
@@ -590,7 +590,7 @@ test.describe('Explorar /mapa — garantias consolidadas (sheet mobile + painel 
     });
   });
 
-  test.describe('time track — mobile 390px', () => {
+  test.describe('time track — mobile 390px', { tag: '@core' }, () => {
     test.use({
       viewport: { width: 390, height: 844 },
       hasTouch: true,
@@ -626,7 +626,7 @@ test.describe('Explorar /mapa — garantias consolidadas (sheet mobile + painel 
   // ────────────────────────────────────────────────────────────────────────
   // 5. Chip de estado da camada de boias
   // ────────────────────────────────────────────────────────────────────────
-  test.describe('chip de estado da camada de boias', () => {
+  test.describe('chip de estado da camada de boias', { tag: '@core' }, () => {
     // O chip vive no painel (desktop) e no peek/half do sheet (mobile); sem
     // key IH a camada nasce em aviso.
     test.use({

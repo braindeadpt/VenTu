@@ -32,7 +32,7 @@ async function openMapa(page: Page) {
   await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
 }
 
-test.describe('Map attribution (Leaflet control)', () => {
+test.describe('Map attribution (Leaflet control)', { tag: '@core' }, () => {
   test.use({ serviceWorkers: 'block', reducedMotion: 'reduce' });
   test.describe.configure({ timeout: 60_000 });
 

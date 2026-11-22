@@ -2,12 +2,12 @@
 
 import { type ReactNode } from 'react';
 import { Waves, CalendarDays, Sparkles, BarChart3 } from 'lucide-react';
+import { pickLocale } from '@/lib/i18n';
+import { spotDrawerTabs, type SpotDrawerTabId } from '@/lib/translations/spotDrawer';
 
 interface TabDef {
-  id: string;
+  id: SpotDrawerTabId;
   icon: typeof Waves;
-  labelPt: string;
-  labelEn: string;
 }
 
 interface SpotDrawerTabsProps {
@@ -18,10 +18,10 @@ interface SpotDrawerTabsProps {
 }
 
 const TABS: TabDef[] = [
-  { id: 'now', icon: Waves, labelPt: 'Agora', labelEn: 'Now' },
-  { id: '7d', icon: CalendarDays, labelPt: '7 dias', labelEn: '7 days' },
-  { id: 'windows', icon: Sparkles, labelPt: 'Janelas', labelEn: 'Windows' },
-  { id: 'seasonality', icon: BarChart3, labelPt: 'Sazonalidade', labelEn: 'Seasonality' },
+  { id: 'now', icon: Waves },
+  { id: '7d', icon: CalendarDays },
+  { id: 'windows', icon: Sparkles },
+  { id: 'seasonality', icon: BarChart3 },
 ];
 
 export default function SpotDrawerTabs({
@@ -30,7 +30,7 @@ export default function SpotDrawerTabs({
   locale,
   children,
 }: SpotDrawerTabsProps) {
-  const isPt = locale === 'pt';
+  const labels = pickLocale(locale, spotDrawerTabs);
 
   return (
     <div>
@@ -53,7 +53,7 @@ export default function SpotDrawerTabs({
               ].join(' ')}
             >
               <Icon className="w-3.5 h-3.5" />
-              {isPt ? tab.labelPt : tab.labelEn}
+              {labels[tab.id]}
             </button>
           );
         })}

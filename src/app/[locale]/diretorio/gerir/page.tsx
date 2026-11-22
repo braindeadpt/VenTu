@@ -14,7 +14,6 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  const isPt = locale === 'pt';
   return {
     title: getTranslation(locale).directory.manageSchoolsTitle,
     robots: { index: false, follow: false },

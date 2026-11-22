@@ -6,6 +6,7 @@
  * (`LiderCard`). Palavra e frase saem no HTML estático (LCP).
  */
 import { useLayoutEffect, useRef, type CSSProperties } from 'react';
+import { pickLocale } from '@/lib/i18n';
 import FotoCredito from '@/components/v6/FotoCredito';
 import ModalidadeToggle from '@/components/v6/ModalidadeToggle';
 import NivelControl from '@/components/v6/NivelControl';
@@ -112,7 +113,7 @@ export default function HomeHero({
     if (q.parentElement) ro.observe(q.parentElement);
     return () => ro.disconnect();
   }, [quandoTxt, nivel]);
-  const alt = foto && top ? `${top.sp.nome}: ${locale === 'pt' ? foto.altPt : foto.altEn}` : '';
+  const alt = foto && top ? `${top.sp.nome}: ${pickLocale(locale, { pt: foto.altPt, en: foto.altEn })}` : '';
   return (
     <section className="hero" aria-label={c.heroAria} data-testid="home-hero">
       <div className={`foto kb${foto && (foto.up ?? 0) < 0 ? ' desce' : ''}${foto && (foto.fl ?? 0) > 0 ? ' lado' : ''}`} style={fotoVars(foto)}>
