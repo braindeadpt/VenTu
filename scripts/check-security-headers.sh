@@ -47,7 +47,7 @@ check_value() { # label, header_name, expected_regex, headers
   fi
 }
 
-# check_csp_source: directive must contain exact source token (order-independent; rejects partial paths)
+# check_csp_source: directive must contain exact source token (order-independent; rejects partial paths; first occurrence only per CSP spec)
 check_csp_source() { # label, directive, exact_source, headers
   local label="$1" dir="$2" want="$3" hdrs="$4" val ok
   val=$(printf '%s\n' "$hdrs" | grep -iE '^Content-Security-Policy:' | head -1 | tr -d '\r' | sed -E 's/^[^:]+:[[:space:]]*//')
@@ -61,6 +61,7 @@ check_csp_source() { # label, directive, exact_source, headers
           for (j = k + 1; j <= n; j++) {
             if (a[j] == w) { print "1"; exit }
           }
+          exit
         }
       }
     }
@@ -96,6 +97,11 @@ fi
 echo "==> $BASE — /embed/* (widget B2B deve continuar iframeable)"
 eh=$(curl -sI "${BASE}/embed/spot/moledo/" || true)
 check_value "frame-ancestors * em /embed/*" "Content-Security-Policy" "frame-ancestors \*" "$eh"
+check_csp_source "CSP connect-src permite AWS Terrain Tiles em /embed/*" "connect-src" "https://s3.amazonaws.com" "$eh"
+check_csp_source "CSP img-src permite EUMETView em /embed/*"             "img-src"     "https://view.eumetsat.int" "$eh"
+check_csp_source "CSP img-src permite AWS Terrain Tiles em /embed/*"     "img-src"     "https://s3.amazonaws.com" "$eh"
+check_csp_source "CSP worker-src permite 'self' em /embed/*"             "worker-src"  "'self'" "$eh"
+check_csp_source "CSP worker-src permite blob: em /embed/*"              "worker-src"  "blob:" "$eh"
 if printf '%s\n' "$eh" | grep -qi "^X-Frame-Options:"; then
   echo "  FAIL: X-Frame-Options presente em /embed/* — quebra o widget B2B"
   fail=1
