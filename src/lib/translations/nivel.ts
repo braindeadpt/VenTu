@@ -61,12 +61,15 @@ export interface NivelCopy {
   /** «Nível» no «Chegar e estar». */
   porConfirmar: string;
   nivelEm: (rotulo: string, d: Modalidade) => string;
-  /** Perigos traduzidos? (pt e en têm as etiquetas dos perigos; as outras línguas usam só a 2.ª parte) */
+  /** Etiquetas dos perigos: pt usa os originais; as outras línguas usam a tradução EN (`spotTagEn`), a única que existe. */
   comPerigos: 'pt' | 'en' | null;
 }
 
 const listaPt = (a: string[]) => (a.length < 2 ? a.join('') : a.slice(0, -1).join(', ') + ' e ' + a[a.length - 1]);
 const listaEn = (a: string[]) => (a.length < 2 ? a.join('') : a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1]);
+const listaEs = (a: string[]) => (a.length < 2 ? a.join('') : a.slice(0, -1).join(', ') + ' y ' + a[a.length - 1]);
+const listaDe = (a: string[]) => (a.length < 2 ? a.join('') : a.slice(0, -1).join(', ') + ' und ' + a[a.length - 1]);
+const listaFr = (a: string[]) => (a.length < 2 ? a.join('') : a.slice(0, -1).join(', ') + ' et ' + a[a.length - 1]);
 const cap = (s: string) => s.replace(/^./, (x) => x.toUpperCase());
 const perigosTxt = (p: string[], lista: (a: string[]) => string) => cap(lista(p.map((x, k) => (k ? x.charAt(0).toLowerCase() + x.slice(1) : x))));
 
@@ -221,7 +224,7 @@ const es: NivelCopy = {
   fraseUm: (nv, q, s, b) => `Para ${es.nomeFrase[nv]}, solo ${s} funciona ${q}${b ? `: <em>${b}</em>` : ''}.`,
   fraseDois: (nv, q, a, s, b) => `Para ${es.nomeFrase[nv]}, solo ${a} y ${s} funcionan ${q}${b ? `: <em>${b}</em> en el mejor` : ''}.`,
   legenda: 'atenuado: por encima de tu nivel',
-  porque: (_p, d) => `Aquí el ${d} pide experiencia.`,
+  porque: (p, d) => (p.length ? `${perigosTxt(p, listaEs)}: aquí el ${d} pide experiencia.` : `Aquí el ${d} pide experiencia.`),
   escolheste: (nv) => `Elegiste ${es.nomeFrase[nv]}.`,
   pertoChips: 'De tu nivel, cerca:',
   pertoLink: (n, nv) => `${n} ${n === 1 ? 'spot' : 'spots'} de ${es.nomeFrase[nv]} cerca`,
@@ -232,7 +235,7 @@ const es: NivelCopy = {
   pertoKm: (km, lv) => `${km} · ${ES_PARA[lv]}`,
   porConfirmar: 'por confirmar',
   nivelEm: (r, d) => `${r.toLowerCase()} en ${d}`,
-  comPerigos: null,
+  comPerigos: 'en',
 };
 
 const DE_FUER: Record<NivelSpot, string> = {
@@ -277,7 +280,7 @@ const de: NivelCopy = {
   fraseUm: (nv, q, s, b) => `Für ${de.nomeFrase[nv]} geht ${q} nur ${s}${b ? `: <em>${b}</em>` : ''}.`,
   fraseDois: (nv, q, a, s, b) => `Für ${de.nomeFrase[nv]} gehen ${q} nur ${a} und ${s}${b ? `: <em>${b}</em> im besten Fall` : ''}.`,
   legenda: 'blass: über deinem Niveau',
-  porque: (_p, d) => `${deSport(d)} verlangt hier Erfahrung.`,
+  porque: (p, d) => (p.length ? `${perigosTxt(p, listaDe)}: ${deSport(d)} verlangt hier Erfahrung.` : `${deSport(d)} verlangt hier Erfahrung.`),
   escolheste: (nv) => `Du hast ${de.nome[nv]} gewählt.`,
   pertoChips: 'Dein Niveau, in der Nähe:',
   pertoLink: (n, nv) => `${n} ${n === 1 ? 'Spot' : 'Spots'} (${de.nome[nv]}) in der Nähe`,
@@ -288,7 +291,7 @@ const de: NivelCopy = {
   pertoKm: (km, lv) => `${km} · ${DE_FUER[lv]}`,
   porConfirmar: 'noch offen',
   nivelEm: (r, d) => `${r} beim ${deSport(d)}`,
-  comPerigos: null,
+  comPerigos: 'en',
 };
 
 const FR_POUR: Record<NivelSpot, string> = {
@@ -332,7 +335,7 @@ const fr: NivelCopy = {
   fraseUm: (nv, q, s, b) => `Pour ${fr.nomeFrase[nv]}, seul ${s} marche ${q}${b ? ` : <em>${b}</em>` : ''}.`,
   fraseDois: (nv, q, a, s, b) => `Pour ${fr.nomeFrase[nv]}, seuls ${a} et ${s} marchent ${q}${b ? ` : <em>${b}</em> au mieux` : ''}.`,
   legenda: 'estompé : au-dessus de ton niveau',
-  porque: (_p, d) => `Ici, le ${d} demande de l’expérience.`,
+  porque: (p, d) => (p.length ? `${perigosTxt(p, listaFr)} : ici, le ${d} demande de l’expérience.` : `Ici, le ${d} demande de l’expérience.`),
   escolheste: (nv) => `Tu as choisi ${fr.nomeFrase[nv]}.`,
   pertoChips: 'De ton niveau, près d’ici :',
   pertoLink: (n, nv) => `${n} ${n === 1 ? 'spot' : 'spots'} ${nv === 'beginner' ? 'débutant' : fr.nomeFrase[nv]} près d’ici`,
@@ -343,7 +346,7 @@ const fr: NivelCopy = {
   pertoKm: (km, lv) => `${km} · ${FR_POUR[lv]}`,
   porConfirmar: 'à confirmer',
   nivelEm: (r, d) => `${r.toLowerCase()} en ${d}`,
-  comPerigos: null,
+  comPerigos: 'en',
 };
 
 export const NIVEL_COPY = { pt, en, es, de, fr } as const;
@@ -358,10 +361,10 @@ export function nivelCopy(locale: string): NivelCopy {
 }
 
 /**
- * A cópia do nível na home e no spot v6: a mesma língua que a v6 desenha. A v6 só tem PT e
- * EN (`homeV6Copy`/`spotV6Copy` caem para EN em es/de/fr), por isso o nível também: numa
- * página /es/ a palavra, a frase e o aviso saem em inglês, como o resto do hero.
+ * A cópia do nível na home e no spot v6: a mesma língua que a v6 desenha
+ * (`homeV6Copy`/`spotV6Copy` servem as cinco línguas com fallback en → pt).
  */
 export function nivelCopyV6(locale: string): NivelCopy {
-  return locale === 'pt' ? pt : en;
+  const map = NIVEL_COPY as Record<string, NivelCopy>;
+  return Object.hasOwn(map, locale) ? map[locale] : en;
 }

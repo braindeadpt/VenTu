@@ -46,7 +46,7 @@ async function interceptContours(page: import('@playwright/test').Page): Promise
  * 2026-10-15). Lê spot-isobaths.json no cliente; não aparece quando o spot não
  * tem contornos perto ou o ficheiro falta.
  */
-test.describe('Fundo perto da praia (isóbatas IH, «Estudar o spot» v6)', () => {
+test.describe('Fundo perto da praia (isóbatas IH, «Estudar o spot» v6)', { tag: '@core' }, () => {
   test.use({ serviceWorkers: 'block' });
 
   async function abreEstudo(page: import('@playwright/test').Page) {
@@ -116,7 +116,7 @@ test.describe('Fundo perto da praia (isóbatas IH, «Estudar o spot» v6)', () =
   });
 });
 
-test.describe('Isóbatas — camada no mapa interactivo (/mapa)', () => {
+test.describe('Isóbatas — camada no mapa interactivo (/mapa)', { tag: '@core' }, () => {
   test.use({ serviceWorkers: 'block' });
 
   test('toggle liga a camada e mostra a legenda de profundidade', async ({ page }) => {
@@ -161,7 +161,7 @@ test.describe('Isóbatas — camada no mapa interactivo (/mapa)', () => {
   });
 });
 
-test.describe('Carta náutica — preferência persistida e deep link (?isobaths=1 legado)', () => {
+test.describe('Carta náutica — preferência persistida e deep link (?isobaths=1 legado)', { tag: '@core' }, () => {
   test.use({ serviceWorkers: 'block' });
 
   const LS_KEY = 'ventu.map.nauticalChart';
@@ -219,7 +219,7 @@ test.describe('Carta náutica — preferência persistida e deep link (?isobaths
   });
 });
 
-test.describe('Carta náutica — camada partilhada ligada à entrada (antigo hero da homepage)', () => {
+test.describe('Carta náutica — camada partilhada ligada à entrada (antigo hero da homepage)', { tag: '@core' }, () => {
   // #183: o hero Leaflet da home (HomepageMapHero, carta ligada por omissão) saiu — a home v6
   // tem o mapa 3D da costa. A mesma camada partilhada do SpotMapInteractive, ligada à entrada,
   // vive no /mapa (deep link ?nauticalChart=1): o contrato «ligada → desliga → religa e desenha»

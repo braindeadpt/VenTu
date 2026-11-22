@@ -22,7 +22,6 @@ import type { Metadata } from 'next'
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
-  const isPt = locale === 'pt'
   const loc = validateLocale(locale)
   const t = getTranslation(locale).about
 
@@ -36,7 +35,6 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 
 export default async function AboutPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params
-  const isPt = locale === 'pt'
   const t = getTranslation(locale).about
 
   return (
@@ -58,7 +56,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
           <Database className="w-10 h-10 text-data-waves mx-auto" />
           <h3 className="text-lg font-semibold">{t.cardDataTitle}</h3>
           <p className="text-sm text-fg-muted">
-            {t.cardDataBody.replace('{schedule}', pipelineSchedule(isPt ? 'pt' : 'en'))}
+            {t.cardDataBody.replace('{schedule}', pipelineSchedule(locale))}
           </p>
         </div>
         <div className="card-1 p-6 text-center space-y-4">

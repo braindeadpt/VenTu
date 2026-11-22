@@ -3,7 +3,8 @@ import { loadNews } from '@/lib/load-news'
 import { loadEvents } from '@/lib/load-events'
 import { upcomingEvents } from '@/lib/events'
 import NewsArchiveClient from '@/components/news/NewsArchiveClient'
-import { getTranslation, validateLocale } from '@/lib/i18n'
+import { getTranslation, validateLocale, pickLocale } from '@/lib/i18n'
+import { newsExtra } from '@/lib/translations/newsPage'
 import { buildNowMs } from '@/lib/buildClock'
 import type { Metadata } from 'next'
 import { buildPageMetadata } from '@/lib/seo'
@@ -31,14 +32,10 @@ export default async function NewsPage({ params }: { params: Promise<{ locale: s
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="text-center py-16 space-y-4">
           <p className="text-fg-subtle text-lg">
-            {locale === 'pt'
-              ? 'Ainda não há notícias disponíveis. Volta mais tarde!'
-              : 'No news available yet. Check back later!'}
+{pickLocale(locale, newsExtra).emptyTitle}
           </p>
           <p className="text-fg-subtle/80 text-sm">
-            {locale === 'pt'
-              ? 'As notícias são actualizadas automaticamente via RSS.'
-              : 'News are updated automatically via RSS.'}
+{pickLocale(locale, newsExtra).emptyHint}
           </p>
         </div>
       </div>

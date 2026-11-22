@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import { openMapSpotSheet } from './helpers/map-sheet';
 import { preseedWindRingLegend } from './helpers/map-setup';
 
-test.describe('Forecast confidence badge', () => {
+test.describe('Forecast confidence badge', { tag: '@core' }, () => {
   test.beforeEach(async ({ page }) => {
     await preseedWindRingLegend(page);
   });

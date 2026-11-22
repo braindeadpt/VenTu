@@ -6,7 +6,19 @@
 >
 > Medição reproduzível: `node scripts/i18n-debt-report.js` (ou `--json`).
 
-## Estado (2026-09-23, após account + DawnPatrolBanner)
+## Estado (2026-11-21, selector alargado)
+
+| Métrica | Valor |
+|---|---:|
+| Ficheiros `src/**` com ternários `isPt`/`locale === 'pt'` | **57** |
+| Ternários de copy | **112** |
+
+> O ratchet mede agora **todos** os ternários bilingues — literais, templates,
+> JSX e pares de campos (`isPt ? x.pt : x.en`) — e não só `isPt ? 'pt' : 'EN'`
+> literal como na medição de 2026-09-23 (102 ficheiros / 554 ternários na altura).
+> `locale === 'pt'` em `if`/`switch` continua fora da medição.
+
+### Estado anterior (2026-09-23, após account + DawnPatrolBanner)
 
 | Métrica | Valor |
 |---|---:|

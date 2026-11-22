@@ -47,7 +47,7 @@ async function interceptCoastalWarnings(page: import('@playwright/test').Page): 
   });
 }
 
-test.describe('Avisos à navegação (IH) — camada no mapa fullscreen (/mapa)', () => {
+test.describe('Avisos à navegação (IH) — camada no mapa fullscreen (/mapa)', { tag: '@core' }, () => {
   // /mapa carrega ~158 marcadores + camadas — sob paralelismo do CI o default
   // de 30 s não chega para goto+menu+toggle (flakes observados).
   test.describe.configure({ timeout: 90_000 });
@@ -190,7 +190,7 @@ test.describe('Avisos à navegação (IH) — camada no mapa fullscreen (/mapa)'
   });
 });
 
-test.describe('Avisos à navegação — deep link ?spot= (de um spot com aviso activo)', () => {
+test.describe('Avisos à navegação — deep link ?spot= (de um spot com aviso activo)', { tag: '@core' }, () => {
   test.describe.configure({ timeout: 90_000 });
   test.use({ serviceWorkers: 'block' });
 

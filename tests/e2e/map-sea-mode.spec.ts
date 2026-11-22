@@ -72,7 +72,7 @@ for (const vp of [
   { label: 'desktop 1440', width: 1440, height: 900 },
   { label: 'mobile 390', width: 390, height: 844 },
 ]) {
-  test.describe(`Selector Vento | Ondulação | Nenhum — ${vp.label}`, () => {
+  test.describe(`Selector Vento | Ondulação | Nenhum — ${vp.label}`, { tag: '@core' }, () => {
     test.use({ serviceWorkers: 'block', reducedMotion: 'reduce', viewport: { width: vp.width, height: vp.height } });
     test.describe.configure({ timeout: 90_000 });
 
@@ -137,7 +137,7 @@ for (const vp of [
   });
 }
 
-test.describe('Selector — teclado, deep links e legenda', () => {
+test.describe('Selector — teclado, deep links e legenda', { tag: '@core' }, () => {
   test.use({ serviceWorkers: 'block', reducedMotion: 'reduce', viewport: { width: 1440, height: 900 } });
   test.describe.configure({ timeout: 90_000 });
 

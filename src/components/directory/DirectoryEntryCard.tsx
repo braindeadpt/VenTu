@@ -6,7 +6,7 @@ import type { DirectoryEntry } from '@/types/directory';
 import DirectoryClaimButton from '@/components/directory/DirectoryClaimButton';
 import { buildEmbedSnippet } from '@/lib/directoryListings';
 import { safeExternalUrl } from '@/lib/safeUrl';
-import { getTranslation } from '@/lib/i18n';
+import { getTranslation, pickLocale } from '@/lib/i18n';
 
 type Props = {
   entry: DirectoryEntry;
@@ -23,9 +23,8 @@ export default function DirectoryEntryCard({
   showClaim = false,
   compact = false,
 }: Props) {
-  const isPt = locale === 'pt';
-  const d = getTranslation(isPt ? 'pt' : 'en').directory;
-  const name = isPt ? entry.name : entry.nameEn || entry.name;
+  const d = getTranslation(locale).directory;
+  const name = pickLocale(locale, { pt: entry.name, en: entry.nameEn || entry.name });
   const hasStaticProfile = entry.source !== 'submitted';
   const href = hasStaticProfile ? `/${locale}/diretorio/${entry.slug}/` : undefined;
   const Icon = entry.kind === 'shop' || entry.kind === 'rental' ? Store : GraduationCap;
@@ -71,7 +70,7 @@ export default function DirectoryEntryCard({
           </div>
           <p className="text-meta-sm text-fg-muted">
             {kindLabel(entry.kind, locale)}
-            {entry.region ? ` · ${isPt ? entry.region : entry.regionEn || entry.region}` : ''}
+            {entry.region ? ` · ${pickLocale(locale, { pt: entry.region, en: entry.regionEn || entry.region })}` : ''}
             {distanceKm != null ? ` · ${distanceKm < 1 ? `${Math.round(distanceKm * 1000)} m` : `${distanceKm.toFixed(1)} km`}` : ''}
           </p>
           {entry.sports.length > 0 && (

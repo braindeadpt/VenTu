@@ -4,10 +4,12 @@ import {
   getMoonPhaseLabels,
   getTideRegimeLabels,
 } from '@/lib/moonPhase';
+import { pickLocale } from '@/lib/i18n';
+import { libDawnMoonLine } from '@/lib/translations/lib';
 
 /** One-line digest for Dawn Patrol (phase · regime · first low). */
 export function buildDawnPatrolMoonLine(
-  locale: 'pt' | 'en',
+  locale: string,
   date: Date,
   firstLow: Date | null,
 ): string {
@@ -17,9 +19,10 @@ export function buildDawnPatrolMoonLine(
 
   if (firstLow) {
     const time = formatTideTime(firstLow, locale);
-    return locale === 'pt'
-      ? `${phase} · ${regime} · baixa-mar ${time}`
-      : `${phase} · ${regime} · low tide ${time}`;
+    return pickLocale(locale, libDawnMoonLine)
+      .replace('{phase}', phase)
+      .replace('{regime}', regime)
+      .replace('{time}', time);
   }
 
   return `${phase} · ${regime}`;

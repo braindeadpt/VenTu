@@ -33,6 +33,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
 
+      - name: Hydrate public/data (ventu-data)
+        run: git fetch origin ventu-data --depth=1 && git checkout FETCH_HEAD -- public/data data-state || true
+
       - name: Setup Node.js
         uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
         with:
@@ -185,6 +188,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
 
+      - name: Hydrate public/data (ventu-data)
+        run: git fetch origin ventu-data --depth=1 && git checkout FETCH_HEAD -- public/data data-state || true
+
       - name: Setup Node.js
         uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
         with:
@@ -215,6 +221,7 @@ jobs:
         env:
           NODE_OPTIONS: '--max-old-space-size=4096'
           NEXT_PUBLIC_BASE_PATH: ''
+          NEXT_PUBLIC_SITE_URL: 'https://ventu.surf'
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
           NEXT_PUBLIC_OBS_WORKER_URL: ${{ vars.NEXT_PUBLIC_OBS_WORKER_URL || 'https://ventu-observations.busntech-net.workers.dev' }}
@@ -274,6 +281,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
 
+      - name: Hydrate public/data (ventu-data)
+        run: git fetch origin ventu-data --depth=1 && git checkout FETCH_HEAD -- public/data data-state || true
+
       # Visual regression (toHaveScreenshot, zero-diff). Baselines are
       # platform-bound: CI runs on ubuntu-latest, so baselines must be
       # recorded on Linux before this gate can run. With no Linux baselines
@@ -312,6 +322,7 @@ jobs:
         env:
           NODE_OPTIONS: '--max-old-space-size=4096'
           NEXT_PUBLIC_BASE_PATH: ''
+          NEXT_PUBLIC_SITE_URL: 'https://ventu.surf'
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
           NEXT_PUBLIC_OBS_WORKER_URL: ${{ vars.NEXT_PUBLIC_OBS_WORKER_URL || 'https://ventu-observations.busntech-net.workers.dev' }}
@@ -361,6 +372,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+
+      - name: Hydrate public/data (ventu-data)
+        run: git fetch origin ventu-data --depth=1 && git checkout FETCH_HEAD -- public/data data-state || true
 
       - name: Preparar export (out-live)
         uses: ./.github/actions/preparar-export
@@ -451,6 +465,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
 
+      - name: Hydrate public/data (ventu-data)
+        run: git fetch origin ventu-data --depth=1 && git checkout FETCH_HEAD -- public/data data-state || true
+
       - name: Preparar export (out-visual)
         uses: ./.github/actions/preparar-export
         with:
@@ -482,6 +499,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+
+      - name: Hydrate public/data (ventu-data)
+        run: git fetch origin ventu-data --depth=1 && git checkout FETCH_HEAD -- public/data data-state || true
 
       - name: Preparar export (out-live)
         uses: ./.github/actions/preparar-export
@@ -545,6 +565,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
 
+      - name: Hydrate public/data (ventu-data)
+        run: git fetch origin ventu-data --depth=1 && git checkout FETCH_HEAD -- public/data data-state || true
+
       - name: Install psql client
         # apt-get update pode sair 100 por um índice de terceiros inconsistente
         # (dl.google.com/chrome: "Hash Sum mismatch", flake 2026-09-09) — os
@@ -568,6 +591,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+
+      - name: Hydrate public/data (ventu-data)
+        run: git fetch origin ventu-data --depth=1 && git checkout FETCH_HEAD -- public/data data-state || true
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e # v4.0.1
@@ -601,6 +627,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+
+      - name: Hydrate public/data (ventu-data)
+        run: git fetch origin ventu-data --depth=1 && git checkout FETCH_HEAD -- public/data data-state || true
 
       - name: Install shellcheck
         # Mesmo tratamento do flake de índice de terceiros (ver job supabase-sql).

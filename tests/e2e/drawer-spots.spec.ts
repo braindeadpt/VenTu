@@ -12,7 +12,7 @@ import { waitHydrated } from './helpers/hydration';
  * No grid o caminho do utilizador é marcador → CTA «Ver spot» do popup
  * (`onSpotSelect` do `SpotGridClient` → `SpotDrawer`).
  */
-test.describe('Drawer do grid de spots (#455)', () => {
+test.describe('Drawer do grid de spots (#455)', { tag: '@core' }, () => {
   test.use({ viewport: { width: 1440, height: 900 }, serviceWorkers: 'block' });
 
   test('/pt/spots/: abrir a gaveta tranca o scroll e Escape devolve-o', async ({ page }) => {
@@ -77,7 +77,7 @@ test.describe('Drawer do grid de spots (#455)', () => {
  * de 44×44 e o cabeçalho a 57 px — o `-my-1.5` do alvo de toque é o mesmo
  * markup nos dois ramos, e aqui fica coberto o que o teste desktop não vê.
  */
-test.describe('Drawer do grid de spots — ramo mobile (#455)', () => {
+test.describe('Drawer do grid de spots — ramo mobile (#455)', { tag: '@core' }, () => {
   test.use({ viewport: { width: 1440, height: 900 }, hasTouch: true, serviceWorkers: 'block' });
 
   test('a 390 px a gaveta é a folha de 80vh e o ✕ mantém o alvo sem crescer o cabeçalho', async ({

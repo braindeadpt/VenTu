@@ -8,6 +8,7 @@ import {
   type CoastalNavWarning,
 } from '@/lib/ihCoastalWarnings';
 import { safetyNavWarnings } from '@/lib/verdict/navWarningSafety';
+import { getTranslation } from '@/lib/i18n';
 
 /**
  * Avisos à navegação costeira na faixa de segurança (secção 0) — versão
@@ -27,7 +28,7 @@ export default function SpotSafetyCoastalWarnings({
   spotId: string;
   locale: string;
 }) {
-  const isPt = locale === 'pt';
+  const tv = getTranslation(locale).spotPageVerdict;
   const [warnings, setWarnings] = useState<CoastalNavWarning[] | null | undefined>(
     undefined,
   );
@@ -51,7 +52,7 @@ export default function SpotSafetyCoastalWarnings({
 
   if (!warnings || warnings.length === 0) return null;
 
-  const label = isPt ? 'Avisos à navegação costeira' : 'Coastal navigation warnings';
+  const label = tv.safetyCoastalTitle;
 
   return (
     <div
@@ -72,7 +73,7 @@ export default function SpotSafetyCoastalWarnings({
             className="inline-flex items-center gap-1 text-meta-sm font-medium text-data-waves hover:text-data-waves/80 transition-colors shrink-0"
           >
             <Map className="w-3.5 h-3.5" aria-hidden />
-            {isPt ? 'Ver no mapa' : 'View on map'}
+            {tv.viewOnMap}
           </a>
         </div>
         <ul className="mt-1 space-y-0.5 list-none p-0 m-0">
@@ -90,7 +91,7 @@ export default function SpotSafetyCoastalWarnings({
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1 ml-1.5 text-data-waves hover:text-data-waves/80 transition-colors"
                 >
-                  {isPt ? 'detalhe' : 'details'}
+                  {tv.detailsLink}
                   <ExternalLink className="w-3 h-3" aria-hidden />
                 </a>
               ) : null}
@@ -98,7 +99,7 @@ export default function SpotSafetyCoastalWarnings({
           ))}
         </ul>
         <p className="text-meta-sm text-fg-subtle mt-1">
-          {isPt ? 'IH · IHM (CC-BY 4.0)' : 'IH · IHM (CC-BY 4.0)'}
+          IH · IHM (CC-BY 4.0)
         </p>
       </div>
     </div>

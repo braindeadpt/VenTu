@@ -2,8 +2,9 @@ import { localizedSpotName, localizedSpotRegion } from '@/lib/localizedSpotText'
 import { type ComponentProps } from 'react'
 import { notFound } from 'next/navigation'
 import { getSpotBySlug, spots } from '@/lib/spots'
-import { locales, validateLocale } from '@/lib/i18n'
-import { buildSpotMetadata } from '@/lib/seo'
+import { locales, validateLocale, pickLocale } from '@/lib/i18n'
+import { buildSpotMetadata, buildSpotJsonLd } from '@/lib/seo'
+import { jsonLdHtml } from '@/lib/jsonLd'
 import { loadEvents } from '@/lib/load-events'
 import { loadSpotData } from '@/lib/load-spot-data'
 import { buildNowMs } from '@/lib/buildClock'
@@ -48,7 +49,6 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     return { title: 'Spot Not Found — VenTu' }
   }
 
-  const isPt = locale === 'pt'
   const spotName = localizedSpotName(spot, locale)
   const regionName = localizedSpotRegion(spot, locale)
 
@@ -92,26 +92,47 @@ export default async function SpotDetailPage({ params }: { params: Promise<{ loc
 
   // Página v6 (#184): fotos (com substitutas marcadas), vizinhos e textos da praia
   // resolvidos no servidor — o cliente não carrega a lista de spots para isto.
-  const isPt = locale === 'pt'
   const ed = editorialDe(spot)
   const hazards = spot.hazards?.length
-    ? (isPt ? spot.hazards : spot.hazards.map(spotTagEn)).join('; ').toLowerCase()
+    ? pickLocale(locale, {
+        pt: spot.hazards.join('; '),
+        en: spot.hazards.map(spotTagEn).join('; '),
+      }).toLowerCase()
     : null
   const v6 = {
     nome: localizedSpotName(spot, locale),
     local: localizedSpotRegion(spot, locale),
     fotos: { kite: fotoDoSpot(spot, 'kite'), surf: fotoDoSpot(spot, 'surf') },
     vizinhos: vizinhosDe(spot, locale),
-    atencao: ed.atencao ? (isPt ? ed.atencao.pt : ed.atencao.en) : hazards,
+    atencao: ed.atencao ? pickLocale(locale, ed.atencao) : hazards,
     melhorMare: ed.melhorMare
-      ? isPt
-        ? ed.melhorMare.pt
-        : ed.melhorMare.en
-      : (isPt ? spot.localTips?.bestTide : spot.localTips?.bestTideEn ?? spot.localTips?.bestTide) ?? null,
+      ? pickLocale(locale, ed.melhorMare)
+      : pickLocale(locale, {
+          pt: spot.localTips?.bestTide,
+          en: spot.localTips?.bestTideEn ?? spot.localTips?.bestTide,
+        }) ?? null,
   }
+
+  const spotJsonLd = buildSpotJsonLd({
+    locale: validateLocale(locale),
+    slug,
+    spotName: v6.nome,
+    regionName: v6.local,
+    description: pickLocale(locale, {
+      pt: spot.description,
+      en: spot.descriptionEn ?? spot.description,
+    }) ?? spot.description,
+    lat: spot.lat,
+    lon: spot.lon,
+    spotType: spot.type,
+  })
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLdHtml(spotJsonLd) }}
+      />
       <SpotDetailClient
         v6={v6}
         spot={spot}

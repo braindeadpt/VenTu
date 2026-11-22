@@ -68,7 +68,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ExplorarPage({ params }: Props) {
   const { locale, slug } = await params
-  const isPt = locale === 'pt'
   const landing = getSeoLanding(slug)
   if (!landing) notFound()
 

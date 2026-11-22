@@ -32,7 +32,7 @@ async function waitHydrated(page: import('@playwright/test').Page) {
  * - The alerts surface is account-gated: the signed-out gate (magic-link
  *   prompt) IS the asserted behavior, not a defect.
  */
-test.describe('mobile playtest (390×844, touch)', () => {
+test.describe('mobile playtest (390×844, touch)', { tag: '@core' }, () => {
   test.describe.configure({ mode: 'serial' });
 
   test.use({ viewport: { width: 390, height: 844 }, hasTouch: true });

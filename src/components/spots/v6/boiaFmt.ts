@@ -5,7 +5,7 @@
  */
 import type { ObservedWaveMeta } from '@/lib/observedWave';
 import type { getTranslation } from '@/lib/i18n';
-import { spotPageV6 } from '@/lib/translations/spotPage/v6';
+import { spotV6Copy } from '@/lib/translations/spotPage/v6';
 
 /** Idade em horas, compacta: 1 → "1h", 0.3 → "0.3h", 5.2 → "5.2h". */
 export function fmtAgeHours(h: number | null | undefined): string {
@@ -25,8 +25,12 @@ export function fmtDistanceKm(km: number | null | undefined): string | null {
  * («medido 2,3 m»), como o resto da página. Só troca o ponto ENTRE dígitos
  * (nunca «E.U.» nem «CSA92/D»).
  */
+/** Tags BCP-47 das línguas da página, para Intl. */
+export const LOCALE_TAGS: Record<string, string> = { pt: 'pt-PT', en: 'en-GB', es: 'es-ES', de: 'de-DE', fr: 'fr-FR' };
+
 export function decimalV6(s: string, locale: string): string {
-  return locale === 'pt' ? s.replace(/(\d)\.(\d)/g, '$1,$2') : s;
+  // EN usa ponto decimal; pt/es/de/fr usam vírgula.
+  return locale === 'en' ? s : s.replace(/(\d)\.(\d)/g, '$1,$2');
 }
 
 type Tv = ReturnType<typeof getTranslation>['spotVerify'];
@@ -57,16 +61,15 @@ type Ms = ReturnType<typeof getTranslation>['spotMedeSabe'];
 
 const TZ = 'Europe/Lisbon';
 const SEMANA = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-const LANG: Record<string, string> = { en: 'en-GB', es: 'es-ES', de: 'de-DE', fr: 'fr-FR' };
 
-/** Dia da semana e mês curtos: PT pelos da v6 («seg», «out»), as outras línguas pelo Intl. */
+/** Dia da semana e mês curtos da língua da página (arrays da v6). */
 function diaMesCurtos(t: number, locale: string, weekday: string, month: number): { dia: string; mes: string } {
-  if (locale === 'pt') return { dia: spotPageV6.pt.dias[SEMANA.indexOf(weekday)] ?? weekday, mes: spotPageV6.pt.meses[month - 1] ?? '' };
-  const lang = LANG[locale] ?? 'en-GB';
+  const d = spotV6Copy(locale);
   const limpa = (x: string) => x.replace('.', '');
+  const lang = LOCALE_TAGS[locale] ?? 'en-GB';
   return {
-    dia: limpa(new Intl.DateTimeFormat(lang, { timeZone: TZ, weekday: 'short' }).format(new Date(t))),
-    mes: limpa(new Intl.DateTimeFormat(lang, { timeZone: TZ, month: 'short' }).format(new Date(t))),
+    dia: limpa(d.dias[SEMANA.indexOf(weekday)] ?? new Intl.DateTimeFormat(lang, { timeZone: TZ, weekday: 'short' }).format(new Date(t))),
+    mes: limpa(d.meses[month - 1] ?? new Intl.DateTimeFormat(lang, { timeZone: TZ, month: 'short' }).format(new Date(t))),
   };
 }
 
@@ -75,7 +78,7 @@ function diaLisboa(ms: number): string {
   return new Intl.DateTimeFormat('en-CA', { timeZone: TZ, year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date(ms));
 }
 
-/** Hora curta de Lisboa: PT «18h» / «18h05», as outras línguas «18:05». */
+/** Hora curta de Lisboa: PT «18h» / «18h05», FR «18h05», ES/DE/EN «18:05». */
 export function horaCurta(ms: number, locale: string): string {
   const p = new Intl.DateTimeFormat('en-GB', { timeZone: TZ, hour: '2-digit', minute: '2-digit', hourCycle: 'h23' })
     .formatToParts(new Date(ms))
@@ -83,6 +86,7 @@ export function horaCurta(ms: number, locale: string): string {
   const h = p.hour ?? '00';
   const m = p.minute ?? '00';
   if (locale === 'pt') return `${Number(h)}h${m === '00' ? '' : m}`;
+  if (locale === 'fr') return `${h}h${m}`;
   return `${h}:${m}`;
 }
 

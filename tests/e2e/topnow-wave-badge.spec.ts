@@ -33,7 +33,7 @@ import { MIN_BIAS_N, MIN_BIAS_M } from '../../scripts/lib/buoyBias.js';
  * 'fixture'`, notaV6 diurno) — de noite o build real não tem nenhum spot a bombar
  * nas modalidades v6 e a secção mostra o estado vazio (correcto), sem cards.
  */
-test.describe('TopNow — badge do score de onda', () => {
+test.describe('TopNow — badge do score de onda', { tag: '@core' }, () => {
   test.use({ serviceWorkers: 'block' });
 
   /** Secção «A bombar agora» (section[aria-labelledby="top-now-heading"] → region). */

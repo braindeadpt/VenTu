@@ -44,6 +44,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
 
+      - name: Hydrate public/data (ventu-data)
+        run: git fetch origin ventu-data --depth=1 && git checkout FETCH_HEAD -- public/data data-state || true
+
       - name: Setup Node.js
         uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
         with:
@@ -60,6 +63,7 @@ jobs:
         env:
           NODE_OPTIONS: '--max-old-space-size=4096'
           NEXT_PUBLIC_BASE_PATH: ''
+          NEXT_PUBLIC_SITE_URL: 'https://ventu.surf'
         run: npm run build
 
       - name: Export-route check (extra-mode orphan scan)

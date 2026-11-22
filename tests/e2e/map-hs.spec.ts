@@ -26,7 +26,7 @@ const MAP_HOURS_STUB = {
   hs: { nazare: TIMES.map(() => 1) },
 };
 
-test.describe('Hs legado → «Ondulação»', () => {
+test.describe('Hs legado → «Ondulação»', { tag: '@core' }, () => {
   test.use({ serviceWorkers: 'block', reducedMotion: 'reduce', viewport: { width: 1440, height: 900 } });
   test.describe.configure({ timeout: 60_000 });
 

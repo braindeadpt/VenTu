@@ -1,3 +1,5 @@
+import { pickLocale } from '@/lib/i18n';
+import { libRegionNames } from '@/lib/translations/lib';
 import type { MacroRegion } from '@/lib/regions';
 
 /** Slug for /public/images/regions/{slug}.jpg — lifestyle only, never on spot cards. */
@@ -45,16 +47,7 @@ export function getRegionOgPath(slug: RegionImageSlug): string {
 export const HOME_HERO_REGION_SLUG: RegionImageSlug = 'centro';
 
 export function getRegionLifestyleAlt(slug: RegionImageSlug, locale: string): string {
-  const names: Record<RegionImageSlug, { pt: string; en: string }> = {
-    norte: { pt: 'Costa norte de Portugal', en: 'Northern coast of Portugal' },
-    centro: { pt: 'Costa centro de Portugal', en: 'Central coast of Portugal' },
-    lisboa: { pt: 'Costa de Lisboa', en: 'Lisbon coast' },
-    alentejo: { pt: 'Costa alentejana', en: 'Alentejo coast' },
-    algarve: { pt: 'Costa do Algarve', en: 'Algarve coast' },
-    acores: { pt: 'Arquipélago dos Açores', en: 'Azores archipelago' },
-    madeira: { pt: 'Ilha da Madeira', en: 'Madeira island' },
-  };
-  return locale === 'pt' ? names[slug].pt : names[slug].en;
+  return pickLocale(locale, libRegionNames)[slug];
 }
 
 export function resolveRegionSlugFromMacro(macro: MacroRegion | string): RegionImageSlug {

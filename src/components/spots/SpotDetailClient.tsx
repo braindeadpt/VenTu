@@ -11,7 +11,8 @@ import { allScoresComV6, notaV6DoSpot } from '@/lib/notaV6Agora';
 import { desportoTodos } from '@/lib/desportosV6';
 import type { SportType } from '@/lib/sportRatings';
 import { SPORT_LABELS } from '@/lib/sportRatings';
-import { getTranslation } from '@/lib/i18n';
+import { getTranslation, pickLocale } from '@/lib/i18n';
+import { localizedSpotName } from '@/lib/localizedSpotText';
 import { getConditionsDataId } from '@/lib/spotConditionsSource';
 import SeoHead from '@/components/SeoHead';
 
@@ -176,7 +177,6 @@ export default function SpotDetailClient({
     }
   }, []);
 
-  const isPt = locale === 'pt';
   const t = getTranslation(locale);
   const td = t.spotDetail;
 
@@ -544,15 +544,15 @@ export default function SpotDetailClient({
   return (
     <>
       <SeoHead
-        title={`${isPt ? spot.name : spot.nameEn} - ${spot.region}, ${spot.regionEn}`}
-        description={isPt ? spot.description : spot.descriptionEn}
+        title={`${localizedSpotName(spot, locale)} - ${spot.region}, ${spot.regionEn}`}
+        description={pickLocale(locale, { pt: spot.description, en: spot.descriptionEn })}
         image="/og-image.png"
         type="article"
         jsonLd={{
           '@context': 'https://schema.org',
           '@type': 'Beach',
-          name: isPt ? spot.name : spot.nameEn,
-          description: isPt ? spot.description : spot.descriptionEn,
+          name: localizedSpotName(spot, locale),
+          description: pickLocale(locale, { pt: spot.description, en: spot.descriptionEn }),
           address: {
             '@type': 'PostalAddress',
             addressRegion: spot.region,
@@ -569,9 +569,10 @@ export default function SpotDetailClient({
             name:
               spot.compatibleSports?.[0] &&
               SPORT_LABELS[spot.compatibleSports[0] as keyof typeof SPORT_LABELS]
-                ? SPORT_LABELS[spot.compatibleSports[0] as keyof typeof SPORT_LABELS][
-                    isPt ? 'pt' : 'en'
-                  ]
+                ? pickLocale(
+                    locale,
+                    SPORT_LABELS[spot.compatibleSports[0] as keyof typeof SPORT_LABELS],
+                  )
                 : spot.type,
           },
         }}

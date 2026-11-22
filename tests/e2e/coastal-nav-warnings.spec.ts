@@ -71,7 +71,7 @@ const FILE_ALL_COVERED: Record<string, unknown> = (() => {
   return { ...FILE, coverage };
 })();
 
-test.describe('Dawn Patrol — linha de segurança (Avisos à Navegação Costeiros)', () => {
+test.describe('Dawn Patrol — linha de segurança (Avisos à Navegação Costeiros)', { tag: '@core' }, () => {
   test.use({ serviceWorkers: 'block' });
 
   // O Dawn Patrol só renderiza na janela matinal (05–12h Lisboa) — congelar o
@@ -109,7 +109,7 @@ test.describe('Dawn Patrol — linha de segurança (Avisos à Navegação Costei
   });
 });
 
-test.describe('Avisos à Navegação Costeiros (IH)', () => {
+test.describe('Avisos à Navegação Costeiros (IH)', { tag: '@core' }, () => {
   test.use({ serviceWorkers: 'block' });
 
   // Contrato v2 da página de spot (S2A-fix3 + S3): um aviso de PERIGO real

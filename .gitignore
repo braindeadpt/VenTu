@@ -85,24 +85,13 @@ public/favicon-16x16.png
 public/favicon-32x32.png
 public/apple-touch-icon.png
 
-# Auto-generated data files (updated by GitHub Actions)
-# Keep the directory structure but ignore contents
+# Auto-generated data files — live ONLY on the orphan `ventu-data` branch
+# (1-commit history via commit --amend + force-with-lease; see
+# docs/DATA-BRANCH-MIGRATION.md). Local clones hydrate with
+# `npm run data:bootstrap`. Nothing here is ever committed to main.
 public/data/
-# Exception: keep .gitkeep to preserve directory
-!public/data/.gitkeep
-# Community tips overlay (merged from approved contributions)
-!public/data/community-tips.json
-# Schools/shops directory seed (regenerate with npm run directory:fetch)
-!public/data/directory.json
-# Curated community events (hand-edited; see docs/EVENTS.md)
-!public/data/events.json
-# Precomputed scores index (regenerate with npm run spots:index)
-!public/data/spots-index.json
-# IPMA station nearest-spot map (regenerate with npm run obs:map)
-!public/data/ipma-station-map.json
-!public/data/ipma-station-map.meta.json
-# Land mask for the /mapa field layers (static; regenerate with scripts/bake-land-mask.mjs)
-!public/data/land-mask.json
+data-state/
+data-state/**
 
 # Terraform (S7 — Cloudflare ruleset; nunca commitar state/tfvars)
 terraform/.terraform/

@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { Wind, Github, Heart, ExternalLink, ChevronDown, Rss, Mail } from 'lucide-react';
 import FeedbackForm from '@/components/FeedbackForm';
 import DailyStreak from '@/components/layout/DailyStreak';
-import { getTranslation } from '@/lib/i18n';
+import { getTranslation, pickLocale } from '@/lib/i18n';
 import { getPopularLandings, landingTitle } from '@/lib/seoLandings';
 import { pipelineSchedule } from '@/lib/dataPipelineSchedule';
 
@@ -97,7 +97,7 @@ export default function Footer({ locale }: FooterProps) {
                 </Link>
               </li>
               <li>
-                <a href={locale === 'pt' ? '/rss.xml' : '/rss-en.xml'} className={linkClass}>
+                <a href={pickLocale(locale, { pt: '/rss.xml', en: '/rss-en.xml' })} className={linkClass}>
                   <Rss className="w-4 h-4 mr-1" aria-hidden />
                   {t.footer.rssFeed}
                 </a>
