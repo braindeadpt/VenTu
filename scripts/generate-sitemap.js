@@ -98,6 +98,7 @@ const staticPages = [
   { path: '/news/', priority: '0.8', changefreq: 'daily' },
   { path: '/about/', priority: '0.5', changefreq: 'monthly' },
   { path: '/fontes/', priority: '0.5', changefreq: 'monthly' },
+  { path: '/privacidade/', priority: '0.4', changefreq: 'yearly' },
   { path: '/sazonalidade/', priority: '0.6', changefreq: 'monthly' },
   { path: '/modalidades/', priority: '0.75', changefreq: 'weekly' },
   { path: '/ferramentas/', priority: '0.7', changefreq: 'monthly' },

@@ -142,6 +142,11 @@ export default function Footer({ locale }: FooterProps) {
                   {t.footer.fontes}
                 </Link>
               </li>
+              <li>
+                <Link href={`/${locale}/privacidade/`} className={linkClass}>
+                  {t.footer.privacidade}
+                </Link>
+              </li>
             </ul>
           </FooterSection>
 

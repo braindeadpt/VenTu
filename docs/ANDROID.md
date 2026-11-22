@@ -22,12 +22,16 @@ full-screen sem barra de browser, com ícone próprio e splash.
 - ✅ Ícones PNG reais gerados no build (`scripts/generate-favicons.mjs`):
   `icon-192.png`, `icon-512.png`, `icon-maskable-512.png` (safe zone 62%)
 - ✅ Screenshots Play Store reais: `tmp-device-test/revyl/*.png` (1080×2400)
-- ⬜ Keystore de assinatura
-- ⬜ `public/.well-known/assetlinks.json` (Digital Asset Links)
-- ⬜ Projeto `android/` via Bubblewrap
-- ⬜ **Página de política de privacidade** — obrigatória na Play Console e
-  não existe no site (criar `/pt/privacidade/` + `/en/privacy/` antes de submeter)
-- ⬜ Conta Google Play Console ($25, única vez)
+- ✅ Keystore de upload: `E:\ventu-android\ventu-upload.keystore` (alias `ventu`,
+  RSA 2048, password em `keystore-password.txt` ao lado — **backup offline dos dois**)
+- ✅ `public/.well-known/assetlinks.json` com o SHA256 do upload key
+  (se usares Play App Signing, junta o fingerprint de *App integrity*)
+- ✅ Página de privacidade: `/{pt,en,es,de,fr}/privacidade/` + link no footer
+- ✅ Conta Google Play Console criada
+- ✅ JDK 17 instalado (`C:\Program Files\Eclipse Adoptium\jdk-17.0.21.10002-hotspot`)
+- ⬜ Projeto `android/` — gerar com Bubblewrap **ou** PWABuilder.com
+  (o SDK ~1.5GB só é preciso para builds locais; o PWABuilder gera o pacote
+  online e assina com o keystore de E:)
 
 ## Pipeline
 
