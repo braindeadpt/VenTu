@@ -9,8 +9,13 @@ build:
                 app_id: 9aee13e8-7bb7-48a4-8133-972204a7a467
                 setup_commands:
                     # public/data vive na branch órfão ventu-data (docs/DATA-BRANCH-MIGRATION.md)
-                    # — o build estático precisa dela: overlay via tarball do branch.
-                    - curl -sL https://github.com/braindeadpt/VenTu/archive/refs/heads/ventu-data.tar.gz | tar -xz --strip-components=1
+                    # — o build estático precisa dela. Preferir git quando o
+                    # checkout tem .git; fallback para tarball do GitHub
+                    # (repo público — sem credenciais).
+                    - >-
+                      (git fetch origin ventu-data --depth=1
+                        && git checkout FETCH_HEAD -- public/data data-state public/sitemap.xml public/rss.xml public/rss-en.xml)
+                      || (curl -fsSL https://github.com/braindeadpt/VenTu/archive/refs/heads/ventu-data.tar.gz | tar -xz --strip-components=1)
                     - npm ci
                 build_commands:
                     - npm run build
