@@ -534,7 +534,7 @@ export const translationsEs = {
       '¿Qué tamaño de kite llevar? Peso + viento + modalidad, con el viento real de cualquier spot.',
     kiteMetaTitle: 'Calculadora de tamaño de kite — VenTu',
     kiteMetaDescription:
-      '¿Qué tamaño de kite llevar hoy? Calcula por tu peso, viento en nudos y modalidad (twintip, strapless, foil) — con el viento real de 185 spots portugueses.',
+      '¿Qué tamaño de kite llevar hoy? Calcula por tu peso, viento en nudos y modalidad (twintip, strapless, foil) — con el viento real de {count} spots portugueses.',
     kiteIntro:
       'El tamaño correcto depende de tu peso, del viento y de lo que vayas a hacer. Usa el viento real de un spot o defínelo a mano.',
     kiteHowWorks: 'Cómo funciona',
@@ -550,7 +550,7 @@ export const translationsEs = {
       '¿Qué grosor de neopreno? Temperatura real del agua de cada spot, con windchill.',
     wetsuitMetaTitle: 'Calculadora de neopreno — VenTu',
     wetsuitMetaDescription:
-      '¿Qué neopreno llevar? Grosor recomendado según la temperatura real del agua en 185 spots portugueses, con botas, guantes y capucha cuando haga falta.',
+      '¿Qué neopreno llevar? Grosor recomendado según la temperatura real del agua en {count} spots portugueses, con botas, guantes y capucha cuando haga falta.',
     wetsuitIntro:
       'El grosor correcto depende del agua, no del aire. Elige un spot para usar la temperatura real, o defínela a mano.',
     wetsuitWaterTitle: 'El agua en Portugal',
@@ -560,7 +560,7 @@ export const translationsEs = {
       'El viento roba más calor que el agua: en un día de norte, vístete como si el agua estuviera 1–2°C más fría.',
     toolsHeading: 'Herramientas',
     toolsIntro:
-      'Calculadoras rápidas para preparar la sesión — conectadas a los datos reales de los 185 spots.',
+      'Calculadoras rápidas para preparar la sesión — conectadas a los datos reales de los {count} spots.',
     open: 'Abrir',
     moreSoon: 'Más herramientas pronto.',
   },

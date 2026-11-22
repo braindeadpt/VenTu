@@ -534,7 +534,7 @@ export const translationsFr = {
       'Quelle taille de kite emporter ? Poids + vent + discipline, avec le vent réel de n’importe quel spot.',
     kiteMetaTitle: 'Calculateur de taille de kite — VenTu',
     kiteMetaDescription:
-      'Quelle taille de kite monter aujourd’hui ? Calcule selon ton poids, le vent en nœuds et la discipline (twintip, strapless, foil) — avec le vent réel de 185 spots portugais.',
+      'Quelle taille de kite monter aujourd’hui ? Calcule selon ton poids, le vent en nœuds et la discipline (twintip, strapless, foil) — avec le vent réel de {count} spots portugais.',
     kiteIntro:
       'La bonne taille dépend de ton poids, du vent et de ce que tu rides. Utilise le vent réel d’un spot ou règle-le manuellement.',
     kiteHowWorks: 'Comment ça marche',
@@ -550,7 +550,7 @@ export const translationsFr = {
       'Quelle épaisseur de combinaison ? Température réelle de l’eau de chaque spot, windchill inclus.',
     wetsuitMetaTitle: 'Calculateur d’épaisseur de combinaison — VenTu',
     wetsuitMetaDescription:
-      'Quelle combinaison porter ? Épaisseur recommandée selon la température réelle de l’eau sur 185 spots portugais, avec bottillons, gants et cagoule si besoin.',
+      'Quelle combinaison porter ? Épaisseur recommandée selon la température réelle de l’eau sur {count} spots portugais, avec bottillons, gants et cagoule si besoin.',
     wetsuitIntro:
       'La bonne épaisseur dépend de l’eau, pas de l’air. Choisis un spot pour utiliser la température réelle, ou règle-la manuellement.',
     wetsuitWaterTitle: 'L’eau au Portugal',
@@ -560,7 +560,7 @@ export const translationsFr = {
       'Le vent vole plus de chaleur que l’eau : par jour de vent, habille-toi comme si l’eau était 1–2°C plus froide.',
     toolsHeading: 'Outils',
     toolsIntro:
-      'Calculatrices rapides pour préparer ta session — reliées aux données réelles des 185 spots.',
+      'Calculatrices rapides pour préparer ta session — reliées aux données réelles des {count} spots.',
     open: 'Ouvrir',
     moreSoon: 'D’autres outils bientôt.',
   },

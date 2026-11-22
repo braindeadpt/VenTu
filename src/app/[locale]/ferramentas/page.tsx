@@ -1,4 +1,5 @@
 import { locales, getTranslation, validateLocale } from '@/lib/i18n'
+import { spots } from '@/lib/spots'
 import type { Metadata } from 'next'
 import { buildPageMetadata } from '@/lib/seo'
 import Link from 'next/link'
@@ -28,19 +29,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function FerramentasPage({ params }: Props) {
   const { locale } = await params
   const tt = getTranslation(locale).tools
+  const spotCount = String(spots.length)
 
   const tools = [
     {
       href: `/${locale}/ferramentas/calculadora-kite/`,
       icon: Wind,
       title: tt.kiteTitle,
-      description: tt.kiteDesc,
+      description: tt.kiteDesc.replace('{count}', spotCount),
     },
     {
       href: `/${locale}/ferramentas/calculadora-fato/`,
       icon: Shirt,
       title: tt.wetsuitTitle,
-      description: tt.wetsuitDesc,
+      description: tt.wetsuitDesc.replace('{count}', spotCount),
     },
   ]
 
@@ -51,7 +53,9 @@ export default async function FerramentasPage({ params }: Props) {
           <h1 className="font-display text-display-lg font-bold text-fg tracking-tight">
             {tt.toolsHeading}
           </h1>
-          <p className="text-fg-muted mt-2 max-w-2xl">{tt.toolsIntro}</p>
+          <p className="text-fg-muted mt-2 max-w-2xl">
+            {tt.toolsIntro.replace('{count}', spotCount)}
+          </p>
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2">

@@ -460,7 +460,7 @@ export const translationsEn = {
       'Which kite size to rig? Weight + wind + discipline, with live wind from any spot.',
     kiteMetaTitle: 'Kite size calculator — VenTu',
     kiteMetaDescription:
-      'Which kite size should you rig today? Calculate by weight, wind in knots and discipline (twintip, strapless, foil) — with live wind from 185 Portuguese spots.',
+      'Which kite size should you rig today? Calculate by weight, wind in knots and discipline (twintip, strapless, foil) — with live wind from {count} Portuguese spots.',
     kiteIntro:
       'The right size depends on your weight, the wind and what you ride. Use live wind from a spot or set it manually.',
     kiteHowWorks: 'How it works',
@@ -476,7 +476,7 @@ export const translationsEn = {
       'Which wetsuit thickness? Live water temperature per spot, wind chill included.',
     wetsuitMetaTitle: 'Wetsuit thickness calculator — VenTu',
     wetsuitMetaDescription:
-      'Which wetsuit should you wear? Recommended thickness from live water temperature at 185 Portuguese spots, with boots, gloves and hood when needed.',
+      'Which wetsuit should you wear? Recommended thickness from live water temperature at {count} Portuguese spots, with boots, gloves and hood when needed.',
     wetsuitIntro:
       'The right thickness depends on the water, not the air. Pick a spot to use the live temperature, or set it manually.',
     wetsuitWaterTitle: 'Portuguese water',
@@ -486,7 +486,7 @@ export const translationsEn = {
       'Wind steals more heat than the water does: on a windy day, dress as if the water were 1–2°C colder.',
     toolsHeading: 'Tools',
     toolsIntro:
-      'Quick calculators to prep your session — wired to live data from all 185 spots.',
+      'Quick calculators to prep your session — wired to live data from all {count} spots.',
     open: 'Open',
     moreSoon: 'More tools coming soon.',
   },
