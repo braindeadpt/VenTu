@@ -249,10 +249,28 @@ describe('praiaGeo · água interior (albufeira em altitude)', () => {
     expect(fino(planalto[0], planalto[1])).toBe(340);
     expect(pontoEmPoligono(planalto, geo.aguaInterior!)).toBe(false);
   });
+
+  it('deteta rio com declive junto à praia mesmo quando a jusante a cota desce (Praia da Lomba / Rio Douro)', () => {
+    const ll: [number, number] = [-8.413, 41.07];
+    const fino = (lon: number, lat: number) => {
+      const dLat = Math.abs(lat - ll[1]);
+      const cotaRio = lon < -8.425 ? 8 : 11;
+      if (dLat <= 0.002) return cotaRio;
+      return Math.min(120, cotaRio + (dLat - 0.002) * 15000);
+    };
+    const geo = construirGeo(ll, { meiaLon: 0.04, meiaLat: 0.03, res: 60 }, fino, null);
+    expect(geo.aguaInterior).toBeDefined();
+    expect(geo.aguaInterior!.length).toBeGreaterThanOrEqual(1);
+    expect(geo.aguaInterior![0].length).toBeGreaterThanOrEqual(3);
+    expect(pontoEmPoligono(ll, geo.aguaInterior!)).toBe(true);
+    const encosta: [number, number] = [-8.413, 41.09];
+    expect(fino(encosta[0], encosta[1])).toBe(120);
+    expect(pontoEmPoligono(encosta, geo.aguaInterior!)).toBe(false);
+  });
 });
 
 describe('geografia estática de lagoas e albufeiras (public/geo/praia)', () => {
-  it.each(['obidos-lagoon.json', 'lagoa-albufeira.json', 'alqueva.json', 'castelo-bode.json', 'ilha-do-ermal.json'])(
+  it.each(['obidos-lagoon.json', 'lagoa-albufeira.json', 'alqueva.json', 'castelo-bode.json', 'ilha-do-ermal.json', 'praia-da-lomba.json'])(
     '%s traz aguaInterior com pelo menos 1 anel não vazio',
     (ficheiro) => {
       const j = JSON.parse(readFileSync(path.join(process.cwd(), 'public/geo/praia', ficheiro), 'utf8')) as GeoEstatico;

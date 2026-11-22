@@ -21,23 +21,34 @@ import { geoDaPraia } from './praiaRelevo';
 const TILES = 's3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png';
 const PROTO = 'ventuclamp';
 let protocoloOk = false;
-const clampCache = new Map<string, Promise<ArrayBuffer>>();
+interface EntradaClamp {
+  p: Promise<ArrayBuffer>;
+  ac: AbortController;
+  refs: number;
+  pronto: boolean;
+}
+const clampCache = new Map<string, EntradaClamp>();
 
 function registarProtocolo() {
   if (protocoloOk) return;
   protocoloOk = true;
   maplibregl.addProtocol(PROTO, async (params, ctl) => {
     const url = params.url.replace(`${PROTO}://`, 'https://');
-    let p = clampCache.get(url);
-    if (!p) {
-      p = (async () => {
-        // Sem ligar ctl.signal ao fetch partilhado: o abort de demT não pode cancelar demH.
-        const r = await fetch(url);
+    let ent = clampCache.get(url);
+    if (!ent) {
+      const ac = new AbortController();
+      const nova: EntradaClamp = { ac, refs: 0, pronto: false, p: Promise.resolve(new ArrayBuffer(0)) };
+      nova.p = (async () => {
+        const r = await fetch(url, { signal: ac.signal });
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
         const blob = await r.blob();
-        if (typeof OffscreenCanvas === 'undefined' || typeof createImageBitmap === 'undefined')
+        if (ac.signal.aborted) throw new DOMException('Aborted', 'AbortError');
+        if (typeof OffscreenCanvas === 'undefined' || typeof createImageBitmap === 'undefined') {
+          nova.pronto = true;
           return blob.arrayBuffer();
+        }
         const bmp = await createImageBitmap(blob, { premultiplyAlpha: 'none', colorSpaceConversion: 'none' });
+        if (ac.signal.aborted) throw new DOMException('Aborted', 'AbortError');
         const c = new OffscreenCanvas(bmp.width, bmp.height);
         const x = c.getContext('2d', { willReadFrequently: true }) as OffscreenCanvasRenderingContext2D;
         x.drawImage(bmp, 0, 0);
@@ -51,15 +62,35 @@ function registarProtocolo() {
             d[k + 2] = 0;
           }
         x.putImageData(im, 0, 0);
-        return (await c.convertToBlob({ type: 'image/png' })).arrayBuffer();
+        const out = await (await c.convertToBlob({ type: 'image/png' })).arrayBuffer();
+        nova.pronto = true;
+        return out;
       })();
       if (clampCache.size >= 120) clampCache.clear();
-      clampCache.set(url, p);
-      void p.catch(() => clampCache.delete(url));
+      clampCache.set(url, nova);
+      void nova.p.catch(() => {
+        if (clampCache.get(url) === nova) clampCache.delete(url);
+      });
+      ent = nova;
     }
-    const buf = await p;
-    if (ctl.signal.aborted) throw new DOMException('Aborted', 'AbortError');
-    return { data: buf.slice(0) };
+    ent.refs++;
+    const onAbort = () => {
+      ent.refs = Math.max(0, ent.refs - 1);
+      // Só cancela o fetch partilhado se todos os consumidores (demT + demH) desistirem antes de concluir.
+      if (ent.refs === 0 && !ent.pronto) {
+        ent.ac.abort();
+        if (clampCache.get(url) === ent) clampCache.delete(url);
+      }
+    };
+    ctl.signal.addEventListener('abort', onAbort, { once: true });
+    try {
+      const buf = await ent.p;
+      if (ctl.signal.aborted) throw new DOMException('Aborted', 'AbortError');
+      return { data: buf.slice(0) };
+    } finally {
+      ctl.signal.removeEventListener('abort', onAbort);
+      if (!ctl.signal.aborted) ent.refs = Math.max(0, ent.refs - 1);
+    }
   });
 }
 

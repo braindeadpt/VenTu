@@ -437,13 +437,22 @@ export function construirGeo(ll: [number, number], o: OpcoesGeo, fino: Amostrado
         const b = Math.round(e);
         hist.set(b, (hist.get(b) ?? 0) + 1);
       }
+    // Se o próprio ponto do spot está num espelho plano (ex.: rio com declive suave como o Douro
+    // na Praia da Lomba), usa a cota local; caso contrário (pin na encosta ou numa ilha acima da
+    // albufeira), escolhe o plano significativo de menor altitude no vale (nunca um planalto seco).
     let cotaAlvo: number | null = null;
-    for (const [b, cnt] of hist) {
-      // agrupa o bucket com os vizinhos ±1 m para absorver quantização do DEM;
-      // a água acumula-se sempre no plano mais baixo do vale (nunca num planalto seco acima)
-      const total = cnt + (hist.get(b - 1) ?? 0) + (hist.get(b + 1) ?? 0);
-      if (total >= 15 && (cotaAlvo === null || b < cotaAlvo)) {
-        cotaAlvo = b;
+    const e0 = cx >= 0 && cx < nx && cy >= 0 && cy < ny ? elev[cy * nx + cx] : null;
+    if (e0 !== null && e0 > 2 && slopeDe(cx, cy, cy * nx + cx) <= 1.0) {
+      const b0 = Math.round(e0);
+      const t0 = (hist.get(b0) ?? 0) + (hist.get(b0 - 1) ?? 0) + (hist.get(b0 + 1) ?? 0);
+      if (t0 >= 15) cotaAlvo = b0;
+    }
+    if (cotaAlvo === null) {
+      for (const [b, cnt] of hist) {
+        const total = cnt + (hist.get(b - 1) ?? 0) + (hist.get(b + 1) ?? 0);
+        if (total >= 15 && (cotaAlvo === null || b < cotaAlvo)) {
+          cotaAlvo = b;
+        }
       }
     }
     if (cotaAlvo !== null) {

@@ -77,8 +77,8 @@ export interface SpotV6Props {
 
 /** Fontes do primeiro ecrã (nome, nota, palavra, frase). */
 const PRELOAD = ['BarlowCondensed-900i-latin.woff2', 'BarlowCondensed-900-latin.woff2', 'Barlow-700-latin.woff2'];
-/** Albufeiras interiores fora de spotEditorial.json mas com geografia OSM pré-gerada em public/geo/praia/. */
-const GEO_ESTATICOS_EXTRAS = new Set(['alqueva', 'castelo-bode', 'ilha-do-ermal']);
+/** Albufeiras e rios interiores fora de spotEditorial.json mas com geografia OSM pré-gerada em public/geo/praia/. */
+const GEO_ESTATICOS_EXTRAS = new Set(['alqueva', 'castelo-bode', 'ilha-do-ermal', 'praia-da-lomba']);
 
 export default function SpotV6({ spot, nome, local, locale, linhas, agoraMs, fotos, vizinhos, atencao, melhorMare, onModalidade, seguranca, acoes, contexto, estudo }: SpotV6Props) {
   const copy = spotV6Copy(locale);
