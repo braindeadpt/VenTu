@@ -51,6 +51,9 @@ jobs:
           ref: ${{ inputs.ref }}
           fetch-depth: 1
 
+      - name: Hydrate public/data (ventu-data)
+        run: git fetch origin ventu-data --depth=1 && git checkout FETCH_HEAD -- public/data data-state || true
+
       - name: Setup Node.js
         uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
         with:
