@@ -163,38 +163,6 @@
       ]
     },
     {
-      "id": 19237,
-      "ref": "ANAV NR 2562/26",
-      "category": "Requisitos de segurança maritima",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=d2b20252-1029-4681-81db-a0cfea4990ea",
-      "source": "ih",
-      "collection": "nav_warning_coastal",
-      "polygons": [
-        [
-          [
-            -8.784848,
-            40.604048
-          ],
-          [
-            -8.784848,
-            40.671004
-          ],
-          [
-            -8.683593,
-            40.671004
-          ],
-          [
-            -8.683593,
-            40.604048
-          ],
-          [
-            -8.784848,
-            40.604048
-          ]
-        ]
-      ]
-    },
-    {
       "id": 19239,
       "ref": "ANAV NR 2563/26",
       "category": "Requisitos de segurança maritima",
@@ -7494,11 +7462,9 @@
       1000708
     ],
     "sao-jacinto": [
-      19237,
       1000711
     ],
     "costa-nova": [
-      19237,
       1000711
     ],
     "figueira-foz": [
@@ -7938,7 +7904,6 @@
       1000459
     ],
     "barra-aveiro": [
-      19237,
       1000711
     ],
     "vila-cha": [
@@ -8054,7 +8019,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-11-21T20:07:17.844Z",
+  "fetchedAt": "2026-11-22T00:06:52.566Z",
   "sourceCollection": "nav_warning_coastal+nav_warning_local+orca_anavnet_point",
   "sourceUrl": "https://ogcapi.hidrografico.pt/collections/nav_warning_coastal"
 }
