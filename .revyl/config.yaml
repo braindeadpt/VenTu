@@ -27,12 +27,8 @@ build:
                 secrets:
                     - NEXT_PUBLIC_CARTO_API_KEY
                     - NEXT_PUBLIC_SUPABASE_ANON_KEY
-pr_review:
-    enabled: true
-    build:
-        kind: revyl
-        profile: preview
-    proof_of_changes:
-        enabled: true
-        harness:
-            kind: revyl
+# pr_review desativado: o export estático (out/) tem ~1,7 GiB e o upload
+# de preview falha no limite de 1 GiB do plano Revyl
+# ("Web bundle exceeds its unpacked size limit of 1 GiB").
+# O site é testado em devices Revyl apontados ao live — mais fiel.
+# Reativar se a Revyl subir o limite do bundle.
