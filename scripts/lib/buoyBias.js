@@ -28,6 +28,8 @@ const MIN_BIAS_N = 30;
 const MIN_BIAS_M = 0.15;
 /** Sanity cap: never apply a bigger correction than this (m). */
 const MAX_BIAS_M = 1.5;
+/** Minimum Pearson correlation before trusting regional bias (guards against uncorrelated coasts like Madeira Caniçal corr -0.18). */
+const MIN_BIAS_CORR = 0.6;
 /** IH getDatawellData serves at most 15 days — keep margin. */
 const BIAS_WINDOW_DAYS = 13;
 
@@ -211,8 +213,10 @@ function applyWaveBias(current, region, waveBias, enabled) {
   if (!bias || !Number.isFinite(bias.me) || bias.n < MIN_BIAS_N) return null;
   const meAbs = Math.abs(bias.me);
   if (meAbs < MIN_BIAS_M || meAbs > MAX_BIAS_M) return null;
+  if (bias.corr != null && (!Number.isFinite(bias.corr) || bias.corr < MIN_BIAS_CORR)) return null;
 
   const raw = current.waveHeight;
+  if (raw == null || !Number.isFinite(raw)) return null;
   const corrected = Math.max(0.1, Math.round((raw + bias.me) * 10) / 10);
   const deltaM = Math.round((corrected - raw) * 10) / 10;
   if (Math.abs(deltaM) < 0.05) return null;
@@ -227,6 +231,7 @@ module.exports = {
   MIN_BIAS_N,
   MIN_BIAS_M,
   MAX_BIAS_M,
+  MIN_BIAS_CORR,
   BIAS_WINDOW_DAYS,
   parseSpotsWithRegions,
   fetchHistoricalWaveSeries,

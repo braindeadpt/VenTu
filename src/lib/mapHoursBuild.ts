@@ -18,6 +18,8 @@ import { rawToScoreInput } from '@/lib/scoreConditions';
 import { linhasAgora } from '@/lib/notaV6AgoraBuild';
 import type { LinhaForecast } from '@/lib/horaSpot';
 import { modalidadeDe, notaHora, type SportScoreV6 } from '@/lib/notaUnica';
+import { MODALIDADES_DEF } from '@/lib/modalidades';
+import { posicaoSol } from '@/lib/sol';
 import { isDesportoMotorAntigo, melhorTodos } from '@/lib/desportosV6';
 import { findCoveredHourIndex, hourKeyFromOpenMeteo, lisbonHourKeyFromDate, seriesTimeMs } from '@/lib/openMeteoTime';
 import { getMacroRegion, MACRO_REGIONS } from '@/lib/regions';
@@ -243,15 +245,24 @@ export function buildMapHoursFile(opts: {
         continue;
       }
       // v6 (nota × 10, `null` de noite ou sem dados) nas cinco modalidades v6;
-      // SUP e wakeboard no motor antigo. `best` = regra do «Todos».
+      // SUP e wakeboard no motor antigo COM o mesmo corte de noite solar (`null` de noite,
+      // para nunca mostrar 8/10 Bom à meia-noite em barragens/SUP). `best` = regra do «Todos».
       const input = rawToScoreInput(raw);
       const alvo = linhasV6(series, j, live, isNow, now.getTime());
+      const timeMs = seriesTimeMs(time);
+      const ehNoite =
+        Number.isFinite(timeMs) &&
+        Number.isFinite(spot.lat) &&
+        Number.isFinite(spot.lon) &&
+        posicaoSol(timeMs, spot.lat, spot.lon).el < MODALIDADES_DEF.comum.noite;
       const daHora: Partial<Record<SportType, number | null>> = {};
       for (const sport of ALL_SPORTS) {
         const n = modalidadeDe(sport)
           ? scoreV6(spot, sport, alvo)
           : isDesportoMotorAntigo(sport)
-            ? Math.max(0, Math.min(100, Math.round(getSportScore(spot, sport, input).score ?? 0)))
+            ? ehNoite
+              ? null
+              : Math.max(0, Math.min(100, Math.round(getSportScore(spot, sport, input).score ?? 0)))
             : 0;
         bySport[sport].push(n);
         daHora[sport] = n;

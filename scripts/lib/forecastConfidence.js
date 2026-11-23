@@ -7,15 +7,22 @@
 
 /**
  * Tunable thresholds — combined normalized spread (0–1 scale).
- * @type {{ altaMax: number; baixaMin: number; minSpreadEpsilon: number }}
+ * Piso operacional por grandeza (`waveFloorM`, `windFloorMs`): em vento calmo
+ * (1–3 m/s) dividir por 0,05 fazia uma diferença irrelevante de 1,5 m/s (~3 kt)
+ * parecer 118 % de divergência e prendia 90 % dos spots em «baixa».
+ * @type {{ altaMax: number; baixaMin: number; minSpreadEpsilon: number; waveFloorM: number; windFloorMs: number }}
  */
 const CONFIDENCE_CONFIG = {
   /** Combined spread below this → alta */
   altaMax: 0.15,
   /** Combined spread above this → baixa */
   baixaMin: 0.35,
-  /** Avoid divide-by-zero when means are tiny */
+  /** Legacy minimum denominator kept for backwards compatibility */
   minSpreadEpsilon: 0.05,
+  /** Operational wave floor (m): below 0.5 m a 10 cm spread is noise, not low confidence */
+  waveFloorM: 0.5,
+  /** Operational wind floor (m/s ≈ 11.7 kt): below kite threshold a 2–3 kt spread is noise */
+  windFloorMs: 6.0,
 };
 
 /**
@@ -74,11 +81,11 @@ function buildConfidenceDetail(waveSpreadAbs, windSpreadAbs, waveMean, windMean,
   let windSpreadPct = 0;
 
   if (counts.waveModelCount >= 2) {
-    const wMean = Math.max(waveMean, CONFIDENCE_CONFIG.minSpreadEpsilon);
+    const wMean = Math.max(waveMean, CONFIDENCE_CONFIG.waveFloorM);
     waveSpreadPct = waveSpreadAbs / wMean;
   }
   if (counts.windModelCount >= 2) {
-    const wMean = Math.max(windMean, CONFIDENCE_CONFIG.minSpreadEpsilon);
+    const wMean = Math.max(windMean, CONFIDENCE_CONFIG.windFloorMs);
     windSpreadPct = windSpreadAbs / wMean;
   }
 

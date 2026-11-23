@@ -210,7 +210,9 @@ export const curva = (pts: Curva, x: number): number => {
 
 /** Degraus [[limiar, penalização], …]: vale o maior limiar ultrapassado (x > limiar). */
 export const degrau = (lista: Degraus, x: number | null | undefined): number =>
-  lista.reduce((p, [lim, pen]) => ((x as number) > lim ? pen : p), 0);
+  typeof x === 'number' && Number.isFinite(x)
+    ? lista.reduce((p, [lim, pen]) => (x > lim ? pen : p), 0)
+    : 0;
 
 /** Faixa do vento forte para um vento médio `w` (a última com `w` ≥ limiar). */
 export const faixaForte = (fx: DefForte['faixas'], w: number): FaixaForte =>
@@ -291,12 +293,13 @@ export function modAvalia(MOD: ModalidadesDef, opc?: { DA?: number }): Motor {
         const forte = p.forte && h.w >= p.forte.desde && p.forte.dir.includes(vr.k) ? p.forte : null;
         const pr = degrau(p.rajada, raj);
         const pt = forte ? 0 : p.tectoDegraus ? degrau(p.tectoDegraus, h.g) : h.g > p.tecto[0] ? p.tecto[1] : 0;
-        const po = h.hs > p.onda.acima ? p.onda.pen : 0;
-        const pm = h.tide > p.mare.acima ? p.mare.pen : 0;
+        const semOnda = Boolean(sp.aguaInterior || h.semDados?.includes('onda'));
+        const po = !semOnda && h.hs > p.onda.acima ? p.onda.pen : 0;
+        const pm = !sp.aguaInterior && h.tide > p.mare.acima ? p.mare.pen : 0;
         const n0 = s * dirF - pr - pt - degrau(p.chuva, h.rain) - solBaixo(h) - po - pm;
         const n = forte ? Math.max(n0, forte.piso) : n0;
         f.vento = s * dirF >= p.favor && !pr && !pt ? 1 : -1;
-        f.onda = po ? -1 : h.hs < p.onda.calma ? 1 : 0;
+        f.onda = semOnda ? 0 : po ? -1 : h.hs < p.onda.calma ? 1 : 0;
         f.mare = pm ? -1 : 0;
         if (forte)
           return {

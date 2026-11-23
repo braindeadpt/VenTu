@@ -27,7 +27,7 @@ import ErrorState from '@/components/ui/ErrorState';
 import SpotV6, { type SpotV6Props } from '@/components/spots/v6/SpotV6';
 import SpotAcoesV6 from '@/components/spots/v6/SpotAcoesV6';
 import SpotSafetyStrip from '@/components/spots/verdict/SpotSafetyStrip';
-import type { LinhaForecast } from '@/lib/horaSpot';
+import { aplicarObservacoesNaHoraAgora, type LinhaForecast } from '@/lib/horaSpot';
 import SpotContextoV6 from '@/components/spots/v6/SpotContextoV6';
 import MedeSabeV6 from '@/components/spots/v6/MedeSabeV6';
 import { spotV6Copy } from '@/lib/translations/spotPage/v6';
@@ -477,6 +477,17 @@ export default function SpotDetailClient({
     () => (spotData?.forecast ?? []).map((h) => ({ time: h.time, tideHeight: h.tideHeight })),
     [spotData],
   );
+  // Alinhamento D4: na hora «Agora», aplica vento observado e boia fresca (≤ 40 km)
+  // exatamente como o /mapa, listagens e alertas (`notaV6AgoraBuild`).
+  const linhasV6 = useMemo(
+    () =>
+      aplicarObservacoesNaHoraAgora(
+        (spotData?.forecast ?? []) as unknown as LinhaForecast[],
+        spotData?.conditions,
+        freshnessNowMs ?? Date.now(),
+      ),
+    [spotData, freshnessNowMs],
+  );
 
   if (loading) {
     return (
@@ -588,7 +599,7 @@ export default function SpotDetailClient({
         <SpotV6
           spot={spot}
           locale={locale}
-          linhas={(spotData?.forecast ?? []) as unknown as LinhaForecast[]}
+          linhas={linhasV6}
           agoraMs={bakedAtMs ?? 0}
           onModalidade={(m) => {
             const alvo: SportType = m === 'kite' ? 'kitesurf' : 'surf';

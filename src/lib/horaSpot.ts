@@ -31,6 +31,9 @@ import type { HoraModalidade } from '@/lib/modalidades';
 import { findCoveredHourIndex, seriesTimeMs } from '@/lib/openMeteoTime';
 import { findTideExtrema } from '@/lib/tideSchedule';
 import { instanteLisboa, nascerPor, posicaoSol } from '@/lib/sol';
+import { isObservedFresh, type ObservedConditions } from '@/lib/observations';
+import { isObservedWaveFresh, isObservedWaveNear, type ObservedWave } from '@/lib/observedWave';
+import { ktToMs } from '@/lib/scoreConditions';
 
 /** Nível médio acima do ZH na costa continental (Tabela de Marés IH 2026, Viana a VRSA). */
 export const NIVEL_MEDIO_ZH = 2.0;
@@ -156,7 +159,7 @@ const n360 = (x: number) => ((Math.round(x) % 360) + 360) % 360;
  * pelos três pontos (j-1, j, j+1) dá o instante do vértice (±30 min) e a sua
  * altura, como as tabelas de marés («preia-mar às 16h50»).
  */
-function extremoAfinado(validas: readonly LinhaForecast[], j: number, t: string, nm: number): { t: string; h: number } {
+function extremoAfinado(validas: readonly LinhaForecast[], j: number, t: string, nm: number, lon?: number): { t: string; h: number } {
   const zh = (l: LinhaForecast | undefined) => {
     const v = num(l?.tideHeight);
     return v == null ? NaN : v + nm;
@@ -169,14 +172,73 @@ function extremoAfinado(validas: readonly LinhaForecast[], j: number, t: string,
   const den = y0 - 2 * y1 + y2;
   if (Math.abs(den) < 1e-9) return base;
   const dx = Math.max(-0.5, Math.min(0.5, (0.5 * (y0 - y2)) / den));
+  const baseMs = seriesTimeMs(t);
+  if (Number.isFinite(baseMs)) {
+    const ms = baseMs + Math.round(dx * 60) * 60000;
+    const tz = (lon != null && lon < -20) || t.endsWith('-01:00') ? 'Atlantic/Azores' : 'Europe/Lisbon';
+    const parts = new Intl.DateTimeFormat('en-GB', {
+      timeZone: tz,
+      hourCycle: 'h23',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+    }).formatToParts(new Date(ms));
+    const p = (k: string) => parts.find((x) => x.type === k)?.value ?? '00';
+    return { t: `${p('year')}-${p('month')}-${p('day')}T${p('hour')}:${p('minute')}`, h: r1(y1 - 0.25 * (y0 - y2) * dx) };
+  }
   const m = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/.exec(t);
   if (!m) return base;
-  // aritmética de relógio local (as horas da série são de Lisboa, sem fuso): UTC só como calculadora
   const ms = Date.UTC(+m[1], +m[2] - 1, +m[3], +m[4], +m[5]) + Math.round(dx * 60) * 60000;
   const d = new Date(ms);
   const p2 = (x: number) => String(x).padStart(2, '0');
   const tt = `${d.getUTCFullYear()}-${p2(d.getUTCMonth() + 1)}-${p2(d.getUTCDate())}T${p2(d.getUTCHours())}:${p2(d.getUTCMinutes())}`;
   return { t: tt, h: r1(y1 - 0.25 * (y0 - y2) * dx) };
+}
+
+/**
+ * Regra D4 na página de spot: aplica vento observado fresco (IPMA/Ecowitt/METAR)
+ * e/ou boia fresca ≤ 40 km APENAS à hora coberta por `agoraMs`, igualando a nota
+ * «Agora» da página de spot à do /mapa, listagens e alertas (`notaV6AgoraBuild`).
+ * Nunca muta o array original; sem observação fresca devolve `linhas` intacto.
+ */
+export function aplicarObservacoesNaHoraAgora(
+  linhas: readonly LinhaForecast[],
+  obs: { observed?: ObservedConditions | null; observedWave?: ObservedWave | null } | null | undefined,
+  agoraMs: number,
+): readonly LinhaForecast[] {
+  if (!linhas.length || !obs) return linhas;
+  const temVentoObs = Boolean(obs.observed && isObservedFresh(obs.observed.observedAt, undefined, agoraMs));
+  const temOndaObs = Boolean(
+    obs.observedWave && isObservedWaveFresh(obs.observedWave, agoraMs) && isObservedWaveNear(obs.observedWave),
+  );
+  if (!temVentoObs && !temOndaObs) return linhas;
+  const j = findCoveredHourIndex(
+    linhas.map((l) => (typeof l?.time === 'string' ? l.time : '')),
+    new Date(agoraMs),
+  );
+  if (j < 0) return linhas;
+  const base = linhas[j];
+  const atualizada: LinhaForecast = { ...base };
+  if (temVentoObs && obs.observed) {
+    const ms = ktToMs(obs.observed.windSpeedKt);
+    atualizada.windSpeed = ms;
+    atualizada.windGust = Math.max(num(base.windGust) ?? 0, ms * 1.1);
+    if (!obs.observed.windDirMissing) atualizada.windDirection = obs.observed.windDirDeg;
+  }
+  if (temOndaObs && obs.observedWave) {
+    atualizada.waveHeight = obs.observedWave.waveHeight;
+    if (typeof obs.observedWave.wavePeriod === 'number' && Number.isFinite(obs.observedWave.wavePeriod)) {
+      atualizada.wavePeriod = obs.observedWave.wavePeriod;
+    }
+    if (typeof obs.observedWave.waveDirection === 'number' && Number.isFinite(obs.observedWave.waveDirection)) {
+      atualizada.waveDirection = obs.observedWave.waveDirection;
+    }
+  }
+  const copia = linhas.slice();
+  copia[j] = atualizada;
+  return copia;
 }
 
 /**
@@ -268,7 +330,7 @@ export function construirHoras(
     .filter((e) => typeof e.time === 'string')
     .map((e) => {
       const j = validas.findIndex((x) => x.time === e.time);
-      return { ...extremoAfinado(validas, j, e.time as string, nm), tipo: e.type === 'high' ? 'PM' : 'BM' } as MareExtremo;
+      return { ...extremoAfinado(validas, j, e.time as string, nm, local.lon), tipo: e.type === 'high' ? 'PM' : 'BM' } as MareExtremo;
     });
   const faltam: DadosHoras['faltam'] = [];
   if (horas.every((h) => h.rain == null)) faltam.push('rain');

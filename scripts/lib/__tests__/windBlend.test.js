@@ -16,7 +16,7 @@ describe('median', () => {
 });
 
 describe('blendWindAtIndex', () => {
-  it('floors at best_match when ICON-EU is weaker', () => {
+  it('blends vectorially without positive bias when ICON-EU is weaker than best_match', () => {
     const out = blendWindAtIndex(
       5,
       270,
@@ -25,12 +25,12 @@ describe('blendWindAtIndex', () => {
       { icon_eu: 280 },
       { icon_eu: 5 },
     );
-    expect(out.windSpeed).toBe(5);
-    expect(out.method).toBe('icon_eu_floor');
-    expect(out.blended).toBe(false);
+    expect(out.windSpeed).toBe(3.7);
+    expect(out.method).toBe('icon_eu_vector');
+    expect(out.blended).toBe(true);
   });
 
-  it('lifts to ICON-EU when stronger than best_match', () => {
+  it('blends speed and direction vectorially when ICON-EU is stronger than best_match', () => {
     const out = blendWindAtIndex(
       4,
       270,
@@ -39,24 +39,28 @@ describe('blendWindAtIndex', () => {
       { icon_eu: 315 },
       { icon_eu: 10 },
     );
-    expect(out.windSpeed).toBe(8);
-    expect(out.windDirection).toBe(315);
-    expect(out.windGust).toBeGreaterThanOrEqual(10);
-    expect(out.method).toBe('icon_eu_floor');
+    expect(out.windSpeed).toBe(6.6);
+    expect(out.windDirection).toBeGreaterThan(292.5);
+    expect(out.windDirection).toBeLessThan(315);
+    expect(out.windGust).toBe(8.6);
+    expect(out.method).toBe('icon_eu_vector');
     expect(out.blended).toBe(true);
   });
 
-  it('falls back to median floor without ICON-EU', () => {
+  it('falls back to median_vector without ICON-EU (e.g. Açores) using median speed and median gust', () => {
     const out = blendWindAtIndex(
       3,
       180,
       4,
       { ecmwf_ifs025: 5, gfs_seamless: 7, meteofrance_arpege_europe: 6 },
-      {},
-      {},
+      { ecmwf_ifs025: 190, gfs_seamless: 200, meteofrance_arpege_europe: 195 },
+      { ecmwf_ifs025: 7, gfs_seamless: 18, meteofrance_arpege_europe: 8 },
     );
-    expect(out.method).toBe('median_floor');
-    expect(out.windSpeed).toBe(6);
+    expect(out.method).toBe('median_vector');
+    // Mediana de [3, 5, 6, 7] = 5.5
+    expect(out.windSpeed).toBe(5.5);
+    // Rajada pela mediana de [4, 7, 8, 18] = 7.5 (nunca Math.max = 18)
+    expect(out.windGust).toBe(7.5);
     expect(out.blended).toBe(true);
   });
 });
@@ -76,9 +80,49 @@ describe('applyWindBlendToHours', () => {
     const { blendedHours, method } = applyWindBlendToHours(hours, hourly, [
       'icon_eu',
     ]);
-    expect(method).toBe('icon_eu_floor');
+    expect(method).toBe('icon_eu_vector');
     expect(blendedHours).toBe(2);
-    expect(hours[0].windSpeed).toBe(5);
-    expect(hours[1].windSpeed).toBe(6);
+    expect(hours[0].windSpeed).toBe(3.95);
+    expect(hours[1].windSpeed).toBe(4.6);
+  });
+
+  it('aligns by timestamp when windModelsHourly.time is shifted by 1 hour relative to hours', () => {
+    const hours = [
+      { time: '2026-07-21T13:00', windSpeed: 4, windDirection: 270, windGust: 6 },
+      { time: '2026-07-21T14:00', windSpeed: 4, windDirection: 270, windGust: 6 },
+    ];
+    const hourly = {
+      time: ['2026-07-21T12:00', '2026-07-21T13:00', '2026-07-21T14:00'],
+      wind_speed_10m_icon_eu: [20, 6, 8],
+      wind_direction_10m_icon_eu: [180, 300, 310],
+      wind_gusts_10m_icon_eu: [25, 8, 10],
+    };
+    const { blendedHours, method } = applyWindBlendToHours(hours, hourly, ['icon_eu']);
+    expect(method).toBe('icon_eu_vector');
+    expect(blendedHours).toBe(2);
+    // 13:00 casa com icon_eu=6 (0.65*6 + 0.35*4 = 5.3), não com 12:00 (icon_eu=20)
+    expect(hours[0].windSpeed).toBe(5.3);
+    // 14:00 casa com icon_eu=8 (0.65*8 + 0.35*4 = 6.6)
+    expect(hours[1].windSpeed).toBe(6.6);
+  });
+
+  it('preserves null windSpeed without turning it into 0', () => {
+    const hours = [
+      { time: '2026-07-21T12:00', windSpeed: null, windDirection: null, windGust: null },
+      { time: '2026-07-21T13:00', windSpeed: 4, windDirection: 270, windGust: 6 },
+    ];
+    const hourly = {
+      time: ['2026-07-21T12:00', '2026-07-21T13:00'],
+      wind_speed_10m_icon_eu: [8, 6],
+      wind_direction_10m_icon_eu: [315, 300],
+      wind_gusts_10m_icon_eu: [10, 8],
+    };
+    const { blendedHours, method } = applyWindBlendToHours(hours, hourly, ['icon_eu']);
+    expect(method).toBe('icon_eu_vector');
+    expect(blendedHours).toBe(1);
+    expect(hours[0].windSpeed).toBeNull();
+    expect(hours[0].windDirection).toBeNull();
+    expect(hours[0].windGust).toBeNull();
+    expect(hours[1].windSpeed).toBe(5.3);
   });
 });

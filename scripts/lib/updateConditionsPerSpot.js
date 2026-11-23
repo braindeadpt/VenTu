@@ -1,6 +1,6 @@
 const { confidenceFromPrevious, applyWaveBiasToRow } = require('./updateConditionsPure');
 const { buildConditionsRow, mergeForecast } = require('./updateConditionsMerge');
-const { attachEnsemble } = require('./ensembleQuantiles');
+const { attachEnsemble, inheritEnsemble } = require('./ensembleQuantiles');
 
 async function processSpot(spot, options) {
   const {
@@ -43,8 +43,21 @@ async function processSpot(spot, options) {
     }
     const weatherIdx = Math.min(findCurrentHourIndex(weatherData.hourly.time), weatherData.hourly.wind_speed_10m.length - 1);
     const windIdx = Math.min(findCurrentHourIndex(windModelData.hourly.time), (windModelData.hourly.time?.length ?? 1) - 1);
-    const blend = blendWindAtIndex(weatherData.hourly.wind_speed_10m[weatherIdx] || 0, weatherData.hourly.wind_direction_10m[weatherIdx] || 0, weatherData.hourly.wind_gusts_10m[weatherIdx] || 0, readModelMap(windModelData.hourly, 'wind_speed_10m', windModels, windIdx), readModelMap(windModelData.hourly, 'wind_direction_10m', windModels, windIdx), readModelMap(windModelData.hourly, 'wind_gusts_10m', windModels, windIdx));
-    weatherData = { ...weatherData, hourly: { ...weatherData.hourly, wind_speed_10m: weatherData.hourly.wind_speed_10m.map((v, i) => i === weatherIdx ? blend.windSpeed : v), wind_direction_10m: weatherData.hourly.wind_direction_10m.map((v, i) => i === weatherIdx ? blend.windDirection : v), wind_gusts_10m: weatherData.hourly.wind_gusts_10m.map((v, i) => i === weatherIdx ? blend.windGust : v) }, _windBlend: blend, _windModelsHourly: windModelData.hourly };
+    const baseSpd = weatherData.hourly.wind_speed_10m[weatherIdx];
+    const baseDir = weatherData.hourly.wind_direction_10m[weatherIdx];
+    const baseGust = weatherData.hourly.wind_gusts_10m[weatherIdx];
+    const blend = blendWindAtIndex(baseSpd, baseDir, baseGust, readModelMap(windModelData.hourly, 'wind_speed_10m', windModels, windIdx), readModelMap(windModelData.hourly, 'wind_direction_10m', windModels, windIdx), readModelMap(windModelData.hourly, 'wind_gusts_10m', windModels, windIdx));
+    weatherData = {
+      ...weatherData,
+      hourly: {
+        ...weatherData.hourly,
+        wind_speed_10m: weatherData.hourly.wind_speed_10m.map((v, i) => (i === weatherIdx && blend.windSpeed != null ? blend.windSpeed : v)),
+        wind_direction_10m: weatherData.hourly.wind_direction_10m.map((v, i) => (i === weatherIdx && blend.windDirection != null ? blend.windDirection : v)),
+        wind_gusts_10m: weatherData.hourly.wind_gusts_10m.map((v, i) => (i === weatherIdx && blend.windGust != null ? blend.windGust : v)),
+      },
+      _windBlend: blend,
+      _windModelsHourly: windModelData.hourly,
+    };
     confidenceDetail = confidenceAtIndex(marineWaveModels, windModelData, findCurrentHourIndex(marineWaveModels.hourly.time));
     dailyConfidence = confidenceByDay(marineWaveModels, windModelData);
     waveModelsHourly = marineWaveModels.hourly;
@@ -70,6 +83,7 @@ async function processSpot(spot, options) {
   // blend rewrites the row's central windSpeed: `windP50` is the ensemble
   // median while the row value stays the product wind (ICON-EU floor).
   let ensembleHours = 0;
+  let ensUpdatedAt = null;
   if (waveModelsHourly) {
     ensembleHours = attachEnsemble(forecast, {
       marineHourly: waveModelsHourly,
@@ -77,7 +91,15 @@ async function processSpot(spot, options) {
       waveModels,
       windModels,
     }).hours;
+    if (ensembleHours > 0) ensUpdatedAt = conditions.updatedAt;
+  } else if (options.readPreviousForecast) {
+    const prevEnsAt = previousConditions[spot.id]?.ensUpdatedAt ?? previousConditions[spot.id]?.updatedAt;
+    ensembleHours = inheritEnsemble(forecast, options.readPreviousForecast(spot.id), {
+      previousUpdatedAt: prevEnsAt,
+    });
+    if (ensembleHours > 0 && prevEnsAt) ensUpdatedAt = prevEnsAt;
   }
+  if (ensUpdatedAt) conditions.ensUpdatedAt = ensUpdatedAt;
   if (weatherData._windModelsHourly) applyWindBlendToHours(forecast, weatherData._windModelsHourly, windModels);
   log.log(`  ✓ ${spot.id} updated${ihTideObs ? ` (IH tide: ${ihTideObs.lastObs}m)` : ''}`);
   return { conditions, forecast, ensembleHours };

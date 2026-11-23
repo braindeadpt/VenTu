@@ -298,6 +298,44 @@ function ensembleCoverage(forecasts) {
   return { spots, banded, total };
 }
 
+/**
+ * Herda as bandas P10/P50/P90 (`ens`) da série anterior por timestamp nos runs
+ * só-best_match (08h/10h/14h/16h/20h/00h/04h), evitando apagar a banda
+ * probabilística durante 70 % do dia sem gastar quota extra ao Open-Meteo.
+ * Só herda entradas válidas (validateEnsembleEntry === null) quando o ficheiro
+ * anterior tem idade ≤ maxAgeHours (omissão: 8 h).
+ * @param {Array<{ time: string; ens?: number[] }>} rows
+ * @param {Array<{ time: string; ens?: number[] }> | null | undefined} previousRows
+ * @param {{ previousUpdatedAt?: string | null; nowMs?: number; maxAgeHours?: number }} [opts]
+ * @returns {number} horas herdadas
+ */
+function inheritEnsemble(rows, previousRows, opts = {}) {
+  if (!Array.isArray(rows) || !rows.length || !Array.isArray(previousRows) || !previousRows.length) return 0;
+  const maxAgeHours = opts.maxAgeHours ?? 8;
+  const nowMs = opts.nowMs ?? Date.now();
+  if (opts.previousUpdatedAt) {
+    const prevMs = Date.parse(opts.previousUpdatedAt);
+    if (!Number.isFinite(prevMs) || nowMs - prevMs > maxAgeHours * 3_600_000) return 0;
+  }
+  const byTime = new Map();
+  for (const p of previousRows) {
+    if (p && typeof p.time === 'string' && Array.isArray(p.ens) && validateEnsembleEntry(p.ens) === null) {
+      byTime.set(p.time, p.ens);
+    }
+  }
+  if (!byTime.size) return 0;
+  let inherited = 0;
+  for (const row of rows) {
+    if (!row || typeof row.time !== 'string' || Array.isArray(row.ens)) continue;
+    const ens = byTime.get(row.time);
+    if (ens) {
+      row.ens = ens;
+      inherited += 1;
+    }
+  }
+  return inherited;
+}
+
 module.exports = {
   ENSEMBLE_FIELDS,
   MIN_MEMBERS,
@@ -312,6 +350,7 @@ module.exports = {
   liveModels,
   buildEnsembleEntry,
   attachEnsemble,
+  inheritEnsemble,
   validateEnsembleEntry,
   ensembleCoverage,
 };

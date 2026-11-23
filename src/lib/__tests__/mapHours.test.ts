@@ -193,13 +193,14 @@ describe('mapHours — motor v6 (#218, PR 2; PR 6: as cinco modalidades v6 e o �
     return buildMapHoursFile({ now, generatedAt: 'x', spots: [spot('nazare')], conditions, forecasts });
   }
 
-  it('de noite as cinco v6 e o `best` («Todos») são null; SUP e wakeboard continuam números', () => {
+  it('de noite todas as modalidades (v6 + SUP/wakeboard) e o `best` («Todos») são null', () => {
     const file = build({ nazare: times.map(linha) });
     const noite = file.times.findIndex((t) => t.endsWith('T23:00'));
     expect(noite).toBeGreaterThan(0);
     const row = file.spots.nazare;
-    for (const sport of ['kitesurf', 'surf', 'windsurf', 'bodyboard', 'foil']) expect(row[sport][noite]).toBeNull();
-    for (const sport of ['wakeboard', 'sup']) expect(typeof row[sport][noite]).toBe('number');
+    for (const sport of ['kitesurf', 'surf', 'windsurf', 'bodyboard', 'foil', 'wakeboard', 'sup']) {
+      expect(row[sport][noite]).toBeNull();
+    }
     expect(row.best[noite]).toBeNull();
     expect(scoreAtHour(file, 'nazare', 'surf', noite)).toBeNull();
     expect(scoreAtHour(file, 'nazare', 'big-wave', noite)).toBeNull();

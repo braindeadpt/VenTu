@@ -79,7 +79,7 @@ function getCurrentConditions(marineData, weatherData, ihTideObs, tideBaseline) 
   // usam a série sem a média (auditoria 16/10, A4); em falta → null (M2).
   const pure = require('./lib/updateConditionsPure');
   const seaRaw = marineData.hourly.sea_level_height_msl?.[marineTimeIndex];
-  const seaLevel = Number(seaRaw) || 0;
+  const seaLevel = pure.finiteOrNull(seaRaw);
   const tideMean = pure.seriesMean(marineData.hourly.sea_level_height_msl);
   const tideNow = pure.tideFromSeries(seaRaw, tideMean);
   const tideNext = pure.tideFromSeries(marineData.hourly.sea_level_height_msl?.[marineTimeIndex + 1], tideMean);
@@ -106,15 +106,13 @@ function getCurrentConditions(marineData, weatherData, ihTideObs, tideBaseline) 
     result.secondarySwellPeriod = secondary.period;
     result.secondarySwellDirection = secondary.direction;
   }
-  if (ihTideObs) {
+  if (ihTideObs && seaLevel != null) {
     result.tideObservedHeight = ihTideObs.lastObs;
     result.tideObservedAt = ihTideObs.lastData;
     result.tideStation = ihTideObs.stationTitle;
-    // Anomalia de maré (Fase B): a obs é vs ZH e a previsão vs MSL, e o
-    // resíduo cru oscila ±0.5 m com a fase da maré (amplitude real ≠ modelo).
-    // O baseline por estação guarda amostras [t, resíduo] e a anomalia
-    // compara só contra resíduos da mesma fase M2 (10–15 h atrás) — sem
-    // cobertura de fase, omite (nunca inventa).
+    // Anomalia de maré (Fase B): só quando existe previsão de maré real
+    // (`seaLevel != null`) — spots interiores com `sea_level_height_msl = null`
+    // nunca podem herdar maré costeira nem poluir o baseline da estação.
     if (tideBaseline && ihTideObs.codp != null) {
       const tideAnomaly = require('./lib/tideAnomaly');
       const key = String(ihTideObs.codp);
@@ -176,6 +174,9 @@ async function updateConditions() {
   const waveBiasPath = path.join(__dirname, '../public/data/wave-bias.json');
   const waveBias = readJsonIfExists(waveBiasPath, null, () => console.warn('⚠️ Could not parse wave-bias.json, continuing without bias correction'));
   if (waveBiasEnabled && waveBias) console.log(`📏 Wave bias loaded (${Object.keys(waveBias.regions ?? {}).length} regions)\n`);
+  const perSpotDir = path.join(__dirname, '../public/data/forecasts');
+  const readPreviousForecast = (id) =>
+    readJsonIfExists(path.join(perSpotDir, `${id}.json`), null);
   const aliasSpots = spots.filter((spot) => spot.conditionsSource);
   const usage = createUsageCounter();
   const processPrimarySpot = async (spot) => {
@@ -184,7 +185,7 @@ async function updateConditions() {
       fetchers: { fetchMarineData, fetchWeatherData, fetchMarineWaveModels, fetchWindModels },
       findCurrentHourIndex, confidenceAtIndex, confidenceByDay, blendWindAtIndex, readModelMap,
       applyWindBlendToHours, waveModels: WAVE_MODELS, windModels: WIND_MODELS, isFreshIhObservation,
-      getCurrentConditions, onStaleIhTide: () => { ihSkippedStale += 1; },
+      getCurrentConditions, readPreviousForecast, onStaleIhTide: () => { ihSkippedStale += 1; },
       modelHealthRun, modelHealth: { mergeCounts, countModelSlots, HEALTH_FAMILIES },
     });
     allConditions[spot.id] = result.conditions;
@@ -241,7 +242,6 @@ async function updateConditions() {
   // de applyAliasSpots para os aliases herdarem a entrada; antes das escritas
   // para o validador forecasts.splitFiles (chaves ⇔ ficheiros) ficar
   // consistente. O gate de coverage conta-os como falha, não como sucesso.
-  const perSpotDir = path.join(__dirname, '../public/data/forecasts');
   const carriedIds = applyCarryOver({
     spots,
     allConditions,

@@ -42,4 +42,49 @@ describe('updateConditionsMerge', () => {
     const noAir = { hourly: { time: ['a'], wind_speed_10m: [3], wind_direction_10m: [180], wind_gusts_10m: [6] } };
     expect(mergeForecast(marine, noAir)[0].airTemp).toBeUndefined();
   });
+
+  it('aligns weather and marine by timestamp when weather.hourly.time starts 1 hour later', () => {
+    const marine = {
+      hourly: {
+        time: ['2026-07-21T10:00', '2026-07-21T11:00', '2026-07-21T12:00'],
+        wave_height: [1.0, 1.5, 2.0],
+        wave_period: [9, 10, 11],
+        wave_direction: [280, 290, 300],
+        swell_wave_height: [0.8, 1.2, 1.6],
+        swell_wave_period: [11, 12, 13],
+        swell_wave_direction: [285, 295, 305],
+        wind_wave_height: [0.2, 0.3, 0.4],
+        sea_surface_temperature: [17, 17.5, 18],
+        sea_level_height_msl: [0.1, 0.2, 0.3],
+      },
+    };
+    const weather = {
+      hourly: {
+        time: ['2026-07-21T11:00', '2026-07-21T12:00', '2026-07-21T13:00'],
+        wind_speed_10m: [6, 8, 10],
+        wind_direction_10m: [310, 320, 330],
+        wind_gusts_10m: [8, 10, 12],
+      },
+    };
+    const merged = mergeForecast(marine, weather);
+    expect(merged).toHaveLength(2);
+    expect(merged[0]).toEqual(
+      expect.objectContaining({
+        time: '2026-07-21T11:00',
+        waveHeight: 1.5,
+        windSpeed: 6,
+        windDirection: 310,
+        windGust: 8,
+      }),
+    );
+    expect(merged[1]).toEqual(
+      expect.objectContaining({
+        time: '2026-07-21T12:00',
+        waveHeight: 2.0,
+        windSpeed: 8,
+        windDirection: 320,
+        windGust: 10,
+      }),
+    );
+  });
 });

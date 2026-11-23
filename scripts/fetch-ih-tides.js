@@ -14,6 +14,10 @@
 const fs = require('fs');
 const path = require('path');
 const { atomicWriteJson } = require('./lib/atomicWriteJson.js');
+const { loadConditionsSpots } = require('./lib/spotsCatalog.js');
+
+/** Raio máximo (km) para associar um marégrafo costeiro IH a um spot. */
+const MAX_TIDE_STATION_KM = 55;
 
 const IH_API = process.env.IH_API_URL || 'https://ogcapi.hidrografico.pt';
 /** Current collection id (FAQ / OGC).
@@ -90,20 +94,12 @@ function haversineDistance(lat1, lon1, lat2, lon2) {
 }
 
 function parseSpotsFromFile() {
-  const spotsPath = path.join(__dirname, '../src/lib/spots.ts');
-  const content = fs.readFileSync(spotsPath, 'utf-8');
-  const spots = [];
-  const spotRegex = /id:\s*['"]([^'"]+)['"][^}]*lat:\s*([0-9.\-]+)[^}]*lon:\s*([0-9.\-]+)/g;
-  let match;
-  while ((match = spotRegex.exec(content)) !== null) {
-    spots.push({ id: match[1], lat: parseFloat(match[2]), lon: parseFloat(match[3]) });
-  }
-  const seen = new Set();
-  return spots.filter((s) => {
-    if (seen.has(s.id)) return false;
-    seen.add(s.id);
-    return true;
-  });
+  return loadConditionsSpots().map((s) => ({
+    id: s.id,
+    lat: s.lat,
+    lon: s.lon,
+    aguaInterior: Boolean(s.aguaInterior),
+  }));
 }
 
 /** Normalise IH property names (old + new schema) into our internal shape. */
@@ -298,11 +294,13 @@ async function fetchIHTides() {
 
   const spotMapping = {};
   for (const spot of spots) {
+    // Barragens, albufeiras e rios interiores não têm maré costeira IH.
+    if (spot.aguaInterior) continue;
     let nearestCodp = null;
     let nearestDist = Infinity;
     for (const [codp, station] of Object.entries(stations)) {
       const dist = haversineDistance(spot.lat, spot.lon, station.lat, station.lon);
-      if (dist < nearestDist && dist < 120) {
+      if (dist < nearestDist && dist <= MAX_TIDE_STATION_KM) {
         nearestDist = dist;
         nearestCodp = codp;
       }
