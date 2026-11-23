@@ -3,7 +3,7 @@
  * modalidade, tokens/contraste, fotos e textos.
  */
 import { describe, expect, it, beforeEach } from 'vitest';
-import { construirHoras, nivelMedioZH, type LinhaForecast } from '@/lib/horaSpot';
+import { construirHoras, indiceHoraPorInstante, nivelMedioZH, type LinhaForecast } from '@/lib/horaSpot';
 import { avaliaHoras, bandaDe, MODALIDADES_VISIVEIS, tectoSeguranca, WIND_OFFSHORE_ROUND } from './spotV6.helpers';
 import { parsePrefModalidade, modalidadeDaUrl, LS_MODALIDADE, gravarPrefModalidade, lerPrefModalidade, modalidadeInicial } from '@/lib/modalidadePref';
 import { editorialDe, spotModalidadeDe, SPOTS_CURADOS } from '@/lib/spotEditorial';
@@ -135,6 +135,46 @@ describe('construirHoras: um objecto por hora a partir do forecast', () => {
     const x = construirHoras(s, { lat: guincho.lat, lon: guincho.lon, praiaVirada: ed.praiaVirada }, agora);
     expect(Number.isNaN(x.horas[0].tide)).toBe(true);
     expect(x.faltam).toContain('tide');
+  });
+});
+
+describe('selecção da régua por INSTANTE (a janela desliza com o relógio, P2.2)', () => {
+  const janela = (t0: number, n = 48) => Array.from({ length: n }, (_, k) => ({ ms: t0 + k * 3600000 }));
+  const T0 = Date.UTC(2026, 9, 14, 10); // 10h UTC
+
+  it('a hora escolhida re-encontra-se na janela nova — o índice nu mudaria de hora', () => {
+    // às 10h o utilizador escolhe as 17h (índice 7); a janela passa a abrir
+    // às 11h e as 17h — o MESMO instante — estão agora no índice 6 (o 7 seriam as 18h).
+    expect(indiceHoraPorInstante(janela(T0), T0 + 7 * 3600000)).toBe(7);
+    expect(indiceHoraPorInstante(janela(T0 + 3600000), T0 + 7 * 3600000)).toBe(6);
+  });
+
+  it('saiu da janela: cai na hora mais próxima (passado → «Agora»; além do fim → última)', () => {
+    expect(indiceHoraPorInstante(janela(T0), T0 - 3600000)).toBe(0); // já passou → «Agora»
+    expect(indiceHoraPorInstante(janela(T0), T0 + 100 * 3600000)).toBe(47);
+    // buraco a meio (etiqueta em falta): o vizinho mais próximo
+    const comBuraco = janela(T0).filter((_, k) => k !== 7);
+    expect(indiceHoraPorInstante(comBuraco, T0 + 7 * 3600000)).toBe(6); // 16h e 18h empatam — o 1.º
+  });
+
+  it('o 01:00 repetido da mudança de hora distingue-se pelo instante, não pela etiqueta', () => {
+    const cedo = instanteLisboa('2026-10-25T01:00+01:00');
+    const tarde = instanteLisboa('2026-10-25T01:00+00:00');
+    expect(tarde - cedo).toBe(3600000);
+    const H = [
+      { ms: instanteLisboa('2026-10-25T00:00+01:00') },
+      { ms: cedo },
+      { ms: tarde },
+      { ms: instanteLisboa('2026-10-25T02:00+00:00') },
+    ];
+    expect(indiceHoraPorInstante(H, tarde)).toBe(2); // o SEGUNDO 01:00
+    expect(indiceHoraPorInstante(H, cedo)).toBe(1);
+  });
+
+  it('sem instantes legíveis: índice de recurso com clamp; janela vazia → 0', () => {
+    expect(indiceHoraPorInstante([{ ms: Number.NaN }, {}], 123, 1)).toBe(1);
+    expect(indiceHoraPorInstante([{ ms: Number.NaN }, {}], 123, 9)).toBe(1);
+    expect(indiceHoraPorInstante([], 123, 5)).toBe(0);
   });
 });
 

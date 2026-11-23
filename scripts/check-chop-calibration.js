@@ -5,20 +5,27 @@
  *
  * Verifica:
  *  1. Frequência de disparo do chop por spot (>30 % num spot = sinal de ajuste).
- *  2. Pares forecast↔boia com `forecastWw` no arquivo do forecast-skill:
- *     quando ≥60 pares/boia com ww, divide a skill do hm0 em horas chop/sem-chop
- *     — se o erro piorar nas chop, os limiares justificam-se; se for uniforme,
- *     o chop é só qualidade de forma (vale na mesma, mas não é correção).
+ *  2. Pares forecast↔boia com `forecastWw` no arquivo do forecast-skill
+ *     (janela móvel de 30 dias, não o mês de calendário): quando UMA boia tem
+ *     ≥60 pares com ww e os dois lados (chop/sem-chop) têm amostra, divide a
+ *     skill do hm0 em horas chop/sem-chop — se o erro piorar nas chop, os
+ *     limiares justificam-se; se for uniforme, o chop é só qualidade de forma
+ *     (vale na mesma, mas não é correção). A avaliação é por boia: somar
+ *     pares de boias diferentes atingiria 60 sem amostra própria de nenhuma.
  *
  * Exit 0 sempre (report-only); o workflow lê o output e decide a issue.
  */
 const fs = require('fs');
 const path = require('path');
-const { readArchive, crossPairs, computeSkillStats } = require('./lib/forecastSkill');
+// Os limiares do chop vivem no motor (src/lib/modalidades/avalia.ts) —
+// importar via tsx (mesmo padrão do build-map-hours.js) para o relatório
+// medir sempre a regra em produção e não uma cópia desactualizada.
+const { register } = require('tsx/cjs/api');
+register();
 
-const CHOP_MIN_HS_M = 0.4;
-const CHOP_MIN_WW_M = 0.5;
-const CHOP_MIN_RATIO = 0.35;
+const { readArchive, crossPairs, computeSkillStats } = require('./lib/forecastSkill');
+const { CHOP_MIN_HS_M, CHOP_MIN_WW_M, CHOP_MIN_RATIO } = require('../src/lib/modalidades/avalia.ts');
+
 const SPOT_ALARM_PCT = 30;
 const MIN_WW_PAIRS = 60;
 
@@ -51,21 +58,41 @@ for (const f of fs.readdirSync(dir).filter((x) => x.endsWith('.json'))) {
 const alarms = spots.filter((s) => s.pct > SPOT_ALARM_PCT).sort((a, b) => b.pct - a.pct);
 
 // ── 2. Pares com forecastWw: skill do hm0 em horas chop vs sem-chop ─────────
+// O mínimo de pares aplica-se POR BOIA — somar pares de boias diferentes
+// atingia 60 sem que nenhuma tivesse amostra própria. E a classificação chop
+// usa o hm0 arredondado a 1 casa, a mesma leitura que o motor faz junto do
+// limiar de 35 % (horaSpot r1); o erro/MAE fica com o forecastHm0 original.
 let pairReport = null;
 try {
-  const archive = readArchive();
+  // FORECAST_SKILL_ARCHIVE_PATH: override hermético (mesmo env do
+  // fetch-forecast-skill.js) — testes apontam para um arquivo sintético.
+  const archive = readArchive(process.env.FORECAST_SKILL_ARCHIVE_PATH || undefined);
   const pairs = crossPairs(archive).filter((p) => Number.isFinite(p.forecastWw));
-  const chopPairs = pairs.filter((p) => p.forecastWw >= CHOP_MIN_WW_M && p.forecastWw / p.forecastHm0 >= CHOP_MIN_RATIO && p.forecastHm0 >= CHOP_MIN_HS_M);
-  const calmPairs = pairs.filter((p) => !chopPairs.includes(p));
   const toStats = (arr) =>
     computeSkillStats(arr.map((p) => ({ observedHm0: p.observedHm0, forecastHm0: p.forecastHm0 })));
-  if (pairs.length) {
-    pairReport = {
-      wwPairs: pairs.length,
+  const byBuoy = new Map();
+  for (const p of pairs) {
+    const key = String(p.buoyId);
+    if (!byBuoy.has(key)) byBuoy.set(key, { buoyId: p.buoyId, buoyName: p.buoyName, pairs: [] });
+    byBuoy.get(key).pairs.push(p);
+  }
+  const perBuoy = [];
+  for (const b of byBuoy.values()) {
+    const chopPairs = [];
+    const calmPairs = [];
+    for (const p of b.pairs) {
+      (isChopRow(Math.round(p.forecastHm0 * 10) / 10, p.forecastWw) ? chopPairs : calmPairs).push(p);
+    }
+    perBuoy.push({
+      buoyId: b.buoyId,
+      buoyName: b.buoyName,
+      n: b.pairs.length,
       chop: chopPairs.length ? { n: chopPairs.length, ...toStats(chopPairs) } : null,
       calm: calmPairs.length ? { n: calmPairs.length, ...toStats(calmPairs) } : null,
-    };
+    });
   }
+  perBuoy.sort((a, b) => b.n - a.n);
+  if (pairs.length) pairReport = { wwPairs: pairs.length, perBuoy };
 } catch {
   /* sem arquivo — report só com a frequência */
 }
@@ -87,18 +114,29 @@ lines.push('');
 if (!pairReport) {
   lines.push('⏳ Pares `forecastWw`↔boia ainda indisponíveis (o arquivo começou a acumular com a Fase 3 — revisitar quando houver ≥60/boia).');
 } else {
-  lines.push(`**Pares com forecastWw:** ${pairReport.wwPairs}`);
-  if (pairReport.chop) lines.push(`- Horas chop (ww≥${CHOP_MIN_WW_M} e ≥${CHOP_MIN_RATIO}·hs): n=${pairReport.chop.n}, ME=${pairReport.chop.me}, MAE=${pairReport.chop.mae}, corr=${pairReport.chop.corr}`);
-  if (pairReport.calm) lines.push(`- Horas sem chop: n=${pairReport.calm.n}, ME=${pairReport.calm.me}, MAE=${pairReport.calm.mae}, corr=${pairReport.calm.corr}`);
-  if (pairReport.wwPairs >= MIN_WW_PAIRS && pairReport.chop && pairReport.calm) {
-    const maeDelta = Math.abs(pairReport.chop.mae - pairReport.calm.mae);
-    if (maeDelta >= 0.15) {
-      actions.push(`🎯 **${pairReport.wwPairs} pares com ww** — MAE chop ${pairReport.chop.mae} vs sem-chop ${pairReport.calm.mae} (Δ${maeDelta.toFixed(2)} m) → rever \`CHOP_MIN_*\` em \`src/lib/modalidades/avalia.ts\`.`);
+  // Resumo global só como contexto — a «Ação sugerida» decide por boia.
+  lines.push(`**Pares com forecastWw:** ${pairReport.wwPairs} em ${pairReport.perBuoy.length} boia(s) — avaliação por boia (≥${MIN_WW_PAIRS} pares + amostra nos dois lados).`);
+  let avaliadas = 0;
+  for (const b of pairReport.perBuoy) {
+    const nome = b.buoyName ?? `boia ${b.buoyId}`;
+    lines.push(`- \`${nome}\` (${b.buoyId}): ${b.n} pares com ww`);
+    if (b.chop) lines.push(`  - Horas chop (ww≥${CHOP_MIN_WW_M} e ≥${CHOP_MIN_RATIO}·hs): n=${b.chop.n}, ME=${b.chop.me}, MAE=${b.chop.mae}, corr=${b.chop.corr}`);
+    if (b.calm) lines.push(`  - Horas sem chop: n=${b.calm.n}, ME=${b.calm.me}, MAE=${b.calm.mae}, corr=${b.calm.corr}`);
+    if (b.n >= MIN_WW_PAIRS && b.chop && b.calm) {
+      avaliadas += 1;
+      const maeDelta = Math.abs(b.chop.mae - b.calm.mae);
+      if (maeDelta >= 0.15) {
+        actions.push(`🎯 **${nome}** (${b.n} pares com ww) — MAE chop ${b.chop.mae} vs sem-chop ${b.calm.mae} (Δ${maeDelta.toFixed(2)} m) → rever \`CHOP_MIN_*\` em \`src/lib/modalidades/avalia.ts\`.`);
+      } else {
+        lines.push(`  - ✅ Erro uniforme (ΔMAE ${maeDelta.toFixed(2)} m) — limiares sem necessidade de ajuste.`);
+      }
     } else {
-      lines.push(`✅ ${pairReport.wwPairs} pares com ww e erro uniforme (ΔMAE ${maeDelta.toFixed(2)} m) — limiares sem necessidade de ajuste.`);
+      const falta = b.n < MIN_WW_PAIRS ? `≥${MIN_WW_PAIRS} pares com ww (tem ${b.n})` : 'amostra nos dois lados (chop e sem-chop)';
+      lines.push(`  - ⏳ Sem avaliação ainda — falta ${falta}.`);
     }
-  } else {
-    lines.push(`⏳ ${pairReport.wwPairs} pares com ww — revisitar quando ≥${MIN_WW_PAIRS} e ambos os lados tiverem amostra.`);
+  }
+  if (!avaliadas) {
+    lines.push(`⏳ Nenhuma boia avaliável ainda — o sinal para afinar \`CHOP_MIN_*\` chega quando uma boia tiver ≥${MIN_WW_PAIRS} pares com ww e os dois lados tiverem amostra.`);
   }
 }
 lines.push('');

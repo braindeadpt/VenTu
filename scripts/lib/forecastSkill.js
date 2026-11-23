@@ -50,6 +50,22 @@ const round1 = (n) => Math.round(n * 10) / 10;
 const round2 = (n) => Math.round(n * 100) / 100;
 
 /**
+ * Mar de vento (windWaveHeight) para arquivar junto do slot de previsão:
+ * `{ ww }` só quando o valor é um número finito — o 0 real preserva-se e o
+ * campo ausente/null fica ausente (nunca `ww: 0` inventado: `Number(null)`
+ * seria 0 e mediria «flat» onde não havia dado). Partilhado pelos dois
+ * caminhos de arquivo (IH em fetch-forecast-skill.js e WMO/Copernicus em
+ * archiveWmoSkill) para alimentar os pares `forecastWw` da calibração do
+ * chop (P2.4) — sem ele, os pares WMO ficavam sempre fora desse relatório.
+ * @param {{ windWaveHeight?: number|null }} hour linha do forecast do spot
+ * @returns {{ ww: number } | {}} campo a espalhar no slot de previsão
+ */
+function forecastWwField(hour) {
+  const ww = hour?.windWaveHeight;
+  return Number.isFinite(ww) ? { ww } : {};
+}
+
+/**
  * Faixas de horizonte (lead time, horas) do skill por tempo de anticipação.
  *
  * O ME/RMSE agregado de uma boia mistura horas feitas 2 h antes com horas feitas
@@ -199,7 +215,7 @@ function writeArchive(archive, outputPath = DEFAULT_ARCHIVE_PATH) {
  * Merge a forecast run into the archive (dedupe by Lisbon hour key, keep the
  * EARLIEST runAt — that is the real lead-time forecast, not a nowcast).
  * @param {object} archive
- * @param {Array<{ time: string, hm0: number, runAt: string, buoyId: number, buoyName?: string }>} newForecasts
+ * @param {Array<{ time: string, hm0: number, ww?: number, runAt: string, buoyId: number, buoyName?: string }>} newForecasts
  */
 /** Dedupe key: one forecast slot per buoy per Lisbon hour. */
 function forecastKey(f) {
@@ -492,7 +508,7 @@ function buildStats(pairs) {
  *
  * @param {object} archive forecast-skill archive (mutated like the other archive* helpers)
  * @param {{
- *   forecasts: Record<string, Array<{ time: string, waveHeight: number }>>,
+ *   forecasts: Record<string, Array<{ time: string, waveHeight: number, windWaveHeight?: number|null }>>,
  *   spots: Array<{ id: string, lat: number, lon: number }>,
  *   wmoArchive: { buoys: Record<string, { name?: string, lat?: number, lon?: number, readings?: Array<{ date: string, hm0: number }> }> } | null,
  *   wmoBuoys?: { buoys: Record<string, { name?: string, lat?: number, lon?: number }> } | null,
@@ -559,6 +575,9 @@ function archiveWmoSkill(archive, inputs) {
       newForecasts.push({
         time: hour.time,
         hm0,
+        // P2.4: ww no mesmo formato do caminho IH — sem ele os pares WMO
+        // nunca tinham forecastWw e ficavam fora do relatório do chop.
+        ...forecastWwField(hour),
         runAt,
         buoyId: code,
         buoyName: live[code].name,
@@ -743,6 +762,7 @@ module.exports = {
   archiveForecastRun,
   archiveObservations,
   archiveWmoSkill,
+  forecastWwField,
   attachWaveSkill,
   crossPairs,
   computeSkillStats,

@@ -55,6 +55,7 @@ const {
   archiveForecastRun,
   archiveObservations,
   archiveWmoSkill,
+  forecastWwField,
   buildReport,
   pruneArchive,
   MAX_FORECAST_LEAD_HOURS,
@@ -203,7 +204,9 @@ async function fetchForecastSkill() {
         // P2.4 tuning: mar de vento previsto junto do slot — quando os pares
         // acumularem (≥60/boia) dá para medir se o erro do hm0 piora em horas
         // com chop e afinar CHOP_MIN_* com dados (ver check-chop-calibration).
-        ...(Number.isFinite(Number(hour.windWaveHeight)) ? { ww: Number(hour.windWaveHeight) } : {}),
+        // Partilhado com o caminho WMO (forecastWwField): finito → ww, e o
+        // null de «sem dado» fica ausente (Number(null) seria 0 = «flat»).
+        ...forecastWwField(hour),
         runAt: now.toISOString(),
         buoyId,
         buoyName: buoyNames.get(String(buoyId)) ?? buoy?.name,

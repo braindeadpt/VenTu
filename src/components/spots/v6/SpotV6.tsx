@@ -28,7 +28,7 @@ import { nivelDoSpot, spotDentroDoNivel, type NivelUtilizador } from '@/lib/mapD
 import { getCompatibleSports } from '@/lib/sportRatings';
 import { sportParaMapa } from '@/lib/praiaCena';
 import { avaliaHoras, isModalidade, MODALIDADE_OMISSAO, type Modalidade } from '@/lib/modalidades';
-import { construirHoras, mareDepois, type LinhaForecast, type MareExtremo } from '@/lib/horaSpot';
+import { construirHoras, indiceHoraPorInstante, mareDepois, type LinhaForecast, type MareExtremo } from '@/lib/horaSpot';
 import { editorialDe, spotModalidadeDe } from '@/lib/spotEditorial';
 import { bandaR, construirFrase, diaCurto, horaDe, horaTxt, palavraEResto } from '@/lib/spotVeredicto';
 import { gravarPrefModalidade, modalidadeInicial, MODALIDADE_EVENT } from '@/lib/modalidadePref';
@@ -59,7 +59,9 @@ export interface SpotV6Props {
   local: string;
   locale: string;
   linhas: readonly LinhaForecast[];
-  /** Relógio do build (SSG); depois de montar passa ao relógio real. */
+  /** Relógio partilhado da ficha (P2.2): o do build no 1.º paint; depois de
+   *  montar o dono fá-lo avançar — o mesmo que aplica as observações à hora
+   *  «Agora» (`aplicarObservacoesNaHoraAgora` no SpotDetailClient). */
   agoraMs: number;
   fotos: Record<Modalidade, FotoSpot | null>;
   vizinhos: readonly Vizinho[];
@@ -104,8 +106,11 @@ export default function SpotV6({ spot, nome, local, locale, linhas, agoraMs, fot
   const sp = useMemo(() => spotModalidadeDe(ed), [ed]);
   const omissao: Modalidade = spot.compatibleSports?.includes('kitesurf') ? MODALIDADE_OMISSAO : 'surf';
   const [d, setD] = useState<Modalidade>(omissao);
-  const [agora, setAgora] = useState(agoraMs);
-  const [i, setI] = useState(0);
+  // Selecção da régua: `null` = «Agora» (segue o relógio); objecto = a hora
+  // fixada pelo INSTANTE UTC (`ms`, à prova do 01:00 repetido do DST) — a
+  // janela desliza com o relógio e um índice nu passaria a apontar para
+  // outra hora (revisão P2.2). `i` fica de recurso para linhas sem `ms`.
+  const [sel, setSel] = useState<{ i: number; ms: number | null } | null>(null);
   const [pendH, setPendH] = useState<number | null>(null);
   const [flags, setFlags] = useState({ plano: false, estudo: false, vivo: false });
   // #nivel-ui: o nível do /mapa (`ventu:map:difficulty`), lido só depois de montar (null no SSG)
@@ -113,11 +118,12 @@ export default function SpotV6({ spot, nome, local, locale, linhas, agoraMs, fot
   const [nivel, escolheNivel] = useNivel();
   const [menuNivel, setMenuNivel] = useState(false);
 
-  // depois de montar: relógio real, ?d= / ventu.modalidade, ?h=, ?webgl=0, ?estudo=1
+  // depois de montar: ?d= / ventu.modalidade, ?h=, ?webgl=0, ?estudo=1
+  // (o relógio reactivo — P2.2 — é o do SpotDetailClient e chega por
+  // `agoraMs`: UM relógio comum move a régua e a aplicação das observações)
   useEffect(() => {
     const qs = window.location.search;
     const p = new URLSearchParams(qs);
-    setAgora(Date.now());
     const m = modalidadeInicial(qs);
     if (m) {
       setD(m);
@@ -131,28 +137,15 @@ export default function SpotV6({ spot, nome, local, locale, linhas, agoraMs, fot
       if (isModalidade(v)) setD(v);
     };
     window.addEventListener(MODALIDADE_EVENT, ouve);
-    // Relógio reativo (P2.2): com a ficha aberta horas (PWA/TWA) o «Agora» da
-    // régua tem de avançar mesmo quando a previsão não muda — o refresh de
-    // dados já traz observações da hora NOVA, a régua acompanha-a.
-    const relogio = () => {
-      if (!document.hidden) setAgora(Date.now());
-    };
-    const relogioIv = window.setInterval(relogio, 15 * 60 * 1000);
-    const relogioVis = () => {
-      if (document.visibilityState === 'visible') setAgora(Date.now());
-    };
-    document.addEventListener('visibilitychange', relogioVis);
     return () => {
-      window.clearInterval(relogioIv);
-      document.removeEventListener('visibilitychange', relogioVis);
       window.removeEventListener(MODALIDADE_EVENT, ouve);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const dados = useMemo(
-    () => construirHoras(linhas, { lat: spot.lat, lon: spot.lon, praiaVirada: ed.praiaVirada }, agora),
-    [linhas, spot.lat, spot.lon, ed.praiaVirada, agora],
+    () => construirHoras(linhas, { lat: spot.lat, lon: spot.lon, praiaVirada: ed.praiaVirada }, agoraMs),
+    [linhas, spot.lat, spot.lon, ed.praiaVirada, agoraMs],
   );
   const H = dados.horas;
   const NS = useMemo(() => avaliaHoras(sp, d, H), [sp, d, H]);
@@ -160,8 +153,29 @@ export default function SpotV6({ spot, nome, local, locale, linhas, agoraMs, fot
     () => construirFrase({ sp, d, H, NS, sol: dados.sol, copy, locale }),
     [sp, d, H, NS, dados.sol, copy, locale],
   );
-  const iSel = Math.max(0, Math.min(H.length - 1, i));
-  const escolhe = useCallback((j: number) => setI(Math.max(0, Math.min(H.length - 1, j))), [H.length]);
+  // O índice visado re-encontra o INSTANTE escolhido na janela actual
+  // (`indiceHoraPorInstante`): quando o relógio avança e a régua desliza,
+  // a mesma hora fica seleccionada na nova posição; se já saiu da janela,
+  // cai na mais próxima — passado → «Agora». «Agora» (`sel` nulo) segue
+  // sempre o relógio.
+  const iSel = useMemo(() => {
+    if (sel == null) return 0;
+    if (sel.ms != null) return indiceHoraPorInstante(H, sel.ms, sel.i);
+    return Math.max(0, Math.min(H.length - 1, sel.i));
+  }, [H, sel]);
+  const escolhe = useCallback(
+    (j: number) => {
+      const jj = Math.max(0, Math.min(H.length - 1, j));
+      // a 1.ª barra com cobertura é «Agora»: escolhê-la volta a seguir o relógio
+      if (jj === 0 && !dados.semAgora) {
+        setSel(null);
+        return;
+      }
+      const ms = H[jj]?.ms;
+      setSel({ i: jj, ms: typeof ms === 'number' && Number.isFinite(ms) ? ms : null });
+    },
+    [H, dados.semAgora],
+  );
   useEffect(() => {
     if (pendH == null || !H.length) return;
     escolhe(pendH);

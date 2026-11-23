@@ -2,8 +2,9 @@ name: Chop Calibration Review
 
 # Revisão mensal do «mar batido» (P2.4): corre scripts/check-chop-calibration.js
 # (frequência de chop por spot + pares forecastWw↔boia do arquivo do
-# forecast-skill) e publica o relatório na issue de tracking. Quando os pares
-# com ww ≥60 e os lados chop/sem-chop tiverem amostra, o script sugere rever
+# forecast-skill — janela móvel de 30 dias, não o mês de calendário) e publica
+# o relatório na issue de tracking. Quando uma boia tiver ≥60 pares com ww e
+# os lados chop/sem-chop tiverem amostra, o script sugere rever
 # CHOP_MIN_* em src/lib/modalidades/avalia.ts — até lá, o relatório mensal é
 # o lembrete automático (ninguém precisa de se lembrar manualmente).
 on:
@@ -51,12 +52,19 @@ jobs:
             echo "Relatório semanal sem ação — sem comentário (próxima revisão mensal na 1.ª semana do mês)."
             exit 0
           fi
+          # A label tem de existir antes do issue list/create (mesmo padrão
+          # ensureLabel do check-data-cadence.js) — sem ela o create falhava
+          # com "label not found". --force torna o create idempotente.
+          gh label create "chop-calibration" --force \
+            --color "1d76db" \
+            --description "Revisão da calibração do «mar batido» (P2.4) — relatório do workflow chop-calibration.yml" || true
           ISSUE=$(gh issue list --label "chop-calibration" --state open --limit 1 --json number --jq '.[0].number // empty')
           if [ -z "$ISSUE" ]; then
+            # `gh issue create` não aceita --json/--jq: devolve o URL da
+            # issue no stdout — e o `gh issue comment` aceita URL ou número.
             ISSUE=$(gh issue create \
               --title "📊 Chop calibration — revisão mensal (P2.4)" \
               --label "chop-calibration" \
-              --body "Issue de tracking automático: o workflow \`chop-calibration.yml\` corre semanalmente e comenta aqui na 1.ª semana do mês (ou quando sugere ação) a frequência do chop e, quando houver ≥60 pares \`forecastWw\`↔boia, a comparação da skill do hm0 em horas chop vs sem-chop — o sinal para afinar \`CHOP_MIN_*\` em \`src/lib/modalidades/avalia.ts\`." \
-              --json number --jq '.number')
+              --body "Issue de tracking automático: o workflow \`chop-calibration.yml\` corre semanalmente e comenta aqui na 1.ª semana do mês (ou quando sugere ação) a frequência do chop e, quando uma boia tiver ≥60 pares \`forecastWw\`↔observação na janela móvel de 30 dias do arquivo, a comparação da skill do hm0 em horas chop vs sem-chop — o sinal para afinar \`CHOP_MIN_*\` em \`src/lib/modalidades/avalia.ts\`.")
           fi
           gh issue comment "$ISSUE" --body-file chop-report.md

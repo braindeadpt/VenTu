@@ -256,15 +256,31 @@ export default function SpotDetailClient({
   const [loadError, setLoadError] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
 
-  // As leituras medidas (boia) usam o relógio do BUILD até montar: o primeiro
-  // paint reproduz o bake e uma leitura a cruzar o gate de 3 h/6 h entre o
-  // bake e a hidratação não muda a árvore (React #418). Depois de montar,
-  // relógio real (padrão mounted+bakedAtMs).
-  const [mounted, setMounted] = useState(false);
+  // Relógio partilhado da ficha (revisão P2.2): até montar é o relógio do
+  // build (`bakedAtMs`) — o primeiro paint reproduz o bake e uma leitura a
+  // cruzar o gate de 3 h/6 h entre o bake e a hidratação não muda a árvore
+  // (React #418). Depois de montar é o relógio real e avança na cadência de
+  // refresh e no regresso ao visível. Alimenta a régua (prop `agoraMs` do
+  // SpotV6) E a aplicação das observações à hora «Agora»
+  // (`aplicarObservacoesNaHoraAgora` abaixo): ao virar a hora coberta, a
+  // leitura da boia ainda fresca aplica-se à hora NOVA — sem o relógio na
+  // dependência, a régua mostrava a hora nova com valores do modelo.
+  const [agoraMs, setAgoraMs] = useState(bakedAtMs ?? 0);
   useEffect(() => {
-    setMounted(true);
+    const relogio = () => {
+      if (!document.hidden) setAgoraMs(Date.now());
+    };
+    relogio();
+    const relogioIv = window.setInterval(relogio, SPOT_REFRESH_MS);
+    const relogioVis = () => {
+      if (document.visibilityState === 'visible') setAgoraMs(Date.now());
+    };
+    document.addEventListener('visibilitychange', relogioVis);
+    return () => {
+      window.clearInterval(relogioIv);
+      document.removeEventListener('visibilitychange', relogioVis);
+    };
   }, []);
-  const freshnessNowMs = mounted ? undefined : bakedAtMs;
 
   // null até o overlay chegar (fetch pós-montagem) — o wrapper expõe-o em
   // data-community-tips para as specs esperarem pelo último commit tardio.
@@ -482,7 +498,17 @@ export default function SpotDetailClient({
     // remoções de leituras.
     const keyDe = (c: Record<string, unknown>) =>
       [c.updatedAt, JSON.stringify(c.observed ?? null), JSON.stringify(c.observedWave ?? null)].join('|');
-    let appliedKey = keyDe(baked.conditions as unknown as Record<string, unknown>);
+    // A série horária também entra na chave aplicada (revisão P2.2): as
+    // conditions podem chegar antes duma série NOVA e, sem ela na chave, a
+    // previsão nova nunca se aplicava enquanto as conditions não mudassem.
+    // JSON das linhas = impressão digital exacta e barata (a revalidação já
+    // é rara: 15 min / regresso ao visível).
+    const serieKeyDe = (fc: SpotData['forecast'] | null | undefined) => (fc?.length ? JSON.stringify(fc) : '-');
+    // A série efectivamente aplicada cresce quando chega uma nova e NUNCA
+    // volta ao bake: um fetch de forecast falhado (lista vazia) não a
+    // regredia — antes o fallback era `baked.forecast` e podia desactualizar.
+    let appliedFc: SpotData['forecast'] = baked.forecast;
+    let appliedKey = `${keyDe(baked.conditions as unknown as Record<string, unknown>)}~${serieKeyDe(appliedFc)}`;
 
     async function revalidate() {
       if (document.hidden) return;
@@ -498,7 +524,11 @@ export default function SpotDetailClient({
         if (cancelled) return;
         let spotCond = (condJson[dataId] ?? condJson[spot.id]) as Record<string, unknown> | undefined;
         if (!spotCond) return;
-        const freshKey = keyDe(spotCond);
+        // Chave sobre o que seria EFECTIVAMENTE aplicado: conditions novas ou
+        // série nova — um fetch de forecast falhado mantém a série aplicada
+        // (`appliedFc`), nem conta como mudança nem a regredia.
+        const freshFc = spotFc?.length ? (spotFc as SpotData['forecast']) : appliedFc;
+        const freshKey = `${keyDe(spotCond)}~${serieKeyDe(freshFc)}`;
         if (freshKey === appliedKey) return;
         const biasPatch = applyRegionalBiasFallback(spotCond, spot.region, waveBiasFile);
         if (biasPatch) spotCond = { ...spotCond, ...biasPatch };
@@ -509,8 +539,9 @@ export default function SpotDetailClient({
           spot,
           conditions,
           allScores,
-          forecast: spotFc?.length ? (spotFc as SpotData['forecast']) : baked.forecast,
+          forecast: freshFc,
         });
+        appliedFc = freshFc;
         appliedKey = freshKey;
         rememberDataUpdate(spotCond.updatedAt as string | undefined);
         // O separador escolhido mantém-se — refresca dentro dele, sem salto.
@@ -554,15 +585,17 @@ export default function SpotDetailClient({
     [spotData],
   );
   // Alinhamento D4: na hora «Agora», aplica vento observado e boia fresca (≤ 40 km)
-  // exatamente como o /mapa, listagens e alertas (`notaV6AgoraBuild`).
+  // exatamente como o /mapa, listagens e alertas (`notaV6AgoraBuild`). O
+  // relógio é o MESMO da régua (`agoraMs`): quando a hora coberta vira, a
+  // aplicação re-corre — a leitura da boia ainda fresca passa à hora nova.
   const linhasV6 = useMemo(
     () =>
       aplicarObservacoesNaHoraAgora(
         (spotData?.forecast ?? []) as unknown as LinhaForecast[],
         spotData?.conditions,
-        freshnessNowMs ?? Date.now(),
+        agoraMs,
       ),
-    [spotData, freshnessNowMs],
+    [spotData, agoraMs],
   );
 
   if (loading) {
@@ -676,7 +709,7 @@ export default function SpotDetailClient({
           spot={spot}
           locale={locale}
           linhas={linhasV6}
-          agoraMs={bakedAtMs ?? 0}
+          agoraMs={agoraMs}
           onModalidade={(m) => {
             const alvo: SportType = m === 'kite' ? 'kitesurf' : 'surf';
             if (allScores[alvo]) setSelectedSport(alvo);
@@ -695,7 +728,7 @@ export default function SpotDetailClient({
               mareCurva={mareCurva}
               uvPorHora={uvPorHora}
               c={spotData.conditions}
-              agoraMs={freshnessNowMs}
+              agoraMs={agoraMs}
             />
           )}
           contexto={(h) => (

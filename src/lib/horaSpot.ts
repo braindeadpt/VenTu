@@ -264,6 +264,33 @@ export function aplicarObservacoesNaHoraAgora(
 }
 
 /**
+ * Índice na janela `horas` do instante escolhido na régua (ms UTC): a hora
+ * exacta se ainda estiver na janela; a mais próxima se já saiu — a régua
+ * desliza com o relógio, por isso uma hora passada cai na 1.ª (o «Agora»)
+ * e uma futura além do fim cai na última. `fallback` só quando nenhuma hora
+ * tem instante legível. A comparação é por INSTANTE, não por etiqueta: o
+ * 01:00 repetido da mudança de hora de outubro tem dois `ms` diferentes.
+ */
+export function indiceHoraPorInstante(horas: ReadonlyArray<Pick<HoraSpot, 'ms'>>, ms: number, fallback = 0): number {
+  if (!horas.length) return 0;
+  const exata = horas.findIndex((h) => h.ms === ms);
+  if (exata >= 0) return exata;
+  let best = -1;
+  let bd = Infinity;
+  for (let j = 0; j < horas.length; j++) {
+    const m = horas[j].ms;
+    if (m == null || !Number.isFinite(m)) continue;
+    const d = Math.abs(m - ms);
+    if (d < bd) {
+      bd = d;
+      best = j;
+    }
+  }
+  if (best >= 0) return best;
+  return Math.max(0, Math.min(horas.length - 1, fallback));
+}
+
+/**
  * Chuva da linha (mm/h): o valor, 0 quando a linha tem `cloudCover` sem
  * `precipitation` (o pipeline omite os zeros) e `null` sem dados de tempo.
  */
