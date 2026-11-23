@@ -19,6 +19,9 @@ const { loadConditionsSpots } = require('./lib/spotsCatalog.js');
 /** Raio máximo (km) para associar um marégrafo costeiro IH a um spot. */
 const MAX_TIDE_STATION_KM = 55;
 
+/** Spots `aguaInterior` (para direção do vento) mas com ligação de maré permanente ao oceano. */
+const AGUA_INTERIOR_COM_MARE = new Set(['murtosa', 'foil-alvor']);
+
 const IH_API = process.env.IH_API_URL || 'https://ogcapi.hidrografico.pt';
 /** Current collection id (FAQ / OGC).
  *  Legacy id `tide_obs_stations_nrt` was REMOVED from the API in 2026
@@ -294,9 +297,9 @@ async function fetchIHTides() {
 
   const spotMapping = {};
   for (const spot of spots) {
-    // Mapeia apenas até 55 km; spots interiores sem maré real (barragens/rios onde
-    // `sea_level_height_msl` é `null`) são filtrados no merge de `update-conditions.js`,
-    // preservando estuários/rias com maré real (ex.: Murtosa / Ria de Aveiro).
+    // Exclui barragens, rios e lagoas de barra intermitente/fechada (ex.: Santo André,
+    // Sancha, Albufeira); mantém apenas rias com ligação permanente validada ao oceano.
+    if (spot.aguaInterior && !AGUA_INTERIOR_COM_MARE.has(spot.id)) continue;
     let nearestCodp = null;
     let nearestDist = Infinity;
     for (const [codp, station] of Object.entries(stations)) {

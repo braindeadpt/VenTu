@@ -129,13 +129,13 @@ function blendWindAtIndex(
       windSpeed = iconSpeed;
       windDirection = useDir;
     }
-    const rawGust =
-      iconGust != null && Number.isFinite(iconGust)
-        ? hasBaseGust
-          ? ICON_WEIGHT * iconGust + (1 - ICON_WEIGHT) * baseGust
-          : iconGust
-        : baseGust;
-    windGust = Math.max(rawGust, windSpeed * 1.1);
+    const iconEx = iconGust != null && Number.isFinite(iconGust) ? Math.max(0, iconGust - iconSpeed) : null;
+    const baseEx = hasBaseGust ? Math.max(0, baseGust - baseSpeed) : null;
+    const excess =
+      iconEx != null && baseEx != null
+        ? ICON_WEIGHT * iconEx + (1 - ICON_WEIGHT) * baseEx
+        : iconEx ?? baseEx ?? 0;
+    windGust = Math.max(windSpeed + excess, windSpeed * 1.1);
   } else {
     method = 'median_vector';
     const allSpeeds = hasBaseSpeed ? [...speeds, baseSpeed] : speeds;
@@ -162,10 +162,16 @@ function blendWindAtIndex(
     if (nd > 0 && Math.hypot(su, sv) > 0.1) {
       windDirection = fromUv(su, sv).dir;
     }
-    const modelGusts = Object.values(gustByModel).filter(Number.isFinite);
-    const allGusts = hasBaseGust ? [...modelGusts, baseGust] : modelGusts;
-    const medGust = median(allGusts) ?? baseGust;
-    windGust = Math.max(medGust, windSpeed * 1.1);
+    // Combina o excesso de rajada (gust - speed) por modelo para não inflacionar
+    // a penalização de rajada quando há divergência direcional entre modelos.
+    const excesses = [];
+    for (const [m, sp] of Object.entries(speedByModel)) {
+      const g = gustByModel[m];
+      if (Number.isFinite(sp) && Number.isFinite(g)) excesses.push(Math.max(0, g - sp));
+    }
+    if (hasBaseSpeed && hasBaseGust) excesses.push(Math.max(0, baseGust - baseSpeed));
+    const medExcess = median(excesses) ?? 0;
+    windGust = Math.max(windSpeed + medExcess, windSpeed * 1.1);
   }
 
   const blended =

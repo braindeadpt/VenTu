@@ -44,9 +44,17 @@ describe('blendWindAtIndex', () => {
     expect(out.windSpeed).toBeCloseTo(6.269, 3);
     expect(out.windDirection).toBeGreaterThan(292.5);
     expect(out.windDirection).toBeLessThan(315);
-    expect(out.windGust).toBe(8.6);
+    // ambos os modelos têm excesso de rajada de +2 m/s → windGust = windSpeed + 2 ≈ 8.269 m/s
+    expect(out.windGust).toBeCloseTo(8.269, 3);
     expect(out.method).toBe('icon_eu_vector');
     expect(out.blended).toBe(true);
+  });
+
+  it('preserves relative gust excess when directions diverge by 90° (no false gust penalty)', () => {
+    // Dois modelos com 12 m/s médio e 14 m/s rajada (+2 m/s de excesso), a 90° um do outro:
+    // o excesso de rajada após mistura mantém-se em +2 m/s (não inflaciona para 10 kt).
+    const out = blendWindAtIndex(12, 270, 14, { icon_eu: 12 }, { icon_eu: 360 }, { icon_eu: 14 });
+    expect(out.windGust - out.windSpeed).toBeCloseTo(2, 2);
   });
 
   it('cancels opposing wind vectors instead of returning scalar mean speed', () => {
