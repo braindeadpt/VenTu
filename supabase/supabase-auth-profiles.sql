@@ -103,7 +103,13 @@ RETURNS TRIGGER
 LANGUAGE plpgsql
 AS $$
 BEGIN
-  IF NOT public.is_ventu_admin() THEN
+  -- Só contextos JWT de utilizador são travados: service_role e SQL directo
+  -- (dashboard, migrações) são canais privilegiados (RLS já bypassed) — sem
+  -- esta excepção o `plan` ficava IMUTÁVEL para sempre (auth.jwt() de um
+  -- service key não traz app_metadata.role='admin').
+  IF auth.jwt() IS NOT NULL
+     AND COALESCE(auth.jwt() ->> 'role', '') <> 'service_role'
+     AND NOT public.is_ventu_admin() THEN
     NEW.plan := OLD.plan;
   END IF;
   RETURN NEW;

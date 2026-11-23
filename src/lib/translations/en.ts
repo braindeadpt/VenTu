@@ -617,7 +617,7 @@ export const translationsEn = {
     conditionsWord: 'conditions',
     all: 'All',
     intro:
-      'Schools, kite centers and shops in Portugal. Free for riders — businesses can claim or register (live immediately; verification follows).',
+      'Schools, kite centers and shops in Portugal. Free for riders — businesses can claim or register (public once approved).',
     nothingFoundDescription: 'Adjust filters or register your school below.',
     mapHint: 'Tap a pin to open the profile. Filters apply to the map.',
     claimEditableIntro:
@@ -634,9 +634,9 @@ export const translationsEn = {
     registrationNotEnabled:
       'Registration not enabled — run supabase-directory.sql.',
     profileCreatedUnverified:
-      'Profile created and public as “Unverified”. After we approve it becomes Verified — edit under Manage profile.',
+      'Profile created — you can already see it under Manage profile. It goes public and verified once we approve it.',
     registerIntro:
-      'Register the profile — it goes public immediately as unverified. After we approve, it shows as verified. Free.',
+      'Register the profile — it goes public and verified once we approve it. Free.',
     signInToRegister: 'Sign in to register',
     publishProfile: 'Publish profile',
     unverifiedShort: 'Unverified',

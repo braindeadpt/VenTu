@@ -85,6 +85,36 @@ SELECT test_expect(
   (SELECT plan FROM profiles WHERE id = '11111111-2222-3333-4444-555555555555') = 'pro',
   '4: admin plan write allowed'
 );
+UPDATE profiles SET plan = 'free' WHERE id = '11111111-2222-3333-4444-555555555555';
+
+-- ── 4b. Grants ao nível da API (a prova directa — sem depender do trigger) ──
+-- NENHUM papel da API pode escrever `plan` (nem admin via PostgREST): a
+-- gestão de planos acontece por service_role/dashboard. `locale` fica
+-- editável pelo próprio utilizador.
+SELECT test_expect(
+  has_column_privilege('authenticated', 'public.profiles', 'plan', 'update') = false,
+  '4b: authenticated sem grant UPDATE em plan (API)'
+);
+SELECT test_expect(
+  has_column_privilege('authenticated', 'public.profiles', 'locale', 'update'),
+  '4c: authenticated mantém grant UPDATE em locale (API)'
+);
+SELECT test_expect(
+  has_column_privilege('anon', 'public.profiles', 'plan', 'update') = false,
+  '4d: anon sem grant UPDATE em plan (API)'
+);
+
+-- ── 4e. service_role (dashboard/RPC service) NÃO é travado pelo trigger ──
+-- auth.jwt() de um service key não traz app_metadata.role='admin' — se o
+-- trigger não exceptuasse service_role, o plan ficava imutável para sempre.
+SELECT set_config('request.jwt.claims', '{"role":"service_role"}', false);
+UPDATE profiles SET plan = 'pro' WHERE id = '11111111-2222-3333-4444-555555555555';
+SELECT test_expect(
+  (SELECT plan FROM profiles WHERE id = '11111111-2222-3333-4444-555555555555') = 'pro',
+  '4e: service_role plan write allowed (dashboard path)'
+);
+UPDATE profiles SET plan = 'free' WHERE id = '11111111-2222-3333-4444-555555555555';
+
 SELECT set_config(
   'request.jwt.claims',
   '{"sub":"11111111-2222-3333-4444-555555555555","role":"authenticated"}',

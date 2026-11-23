@@ -177,7 +177,11 @@ DROP POLICY IF EXISTS "directory_listings_public_read" ON directory_listings;
 -- utilizadores (senão o squatting aparecia no site antes da moderação).
 CREATE POLICY "directory_listings_public_read" ON directory_listings
   FOR SELECT TO anon, authenticated
-  USING (verified = true OR auth.uid() = owner_user_id OR public.is_ventu_admin());
+  -- SEM is_ventu_admin() aqui: o EXECUTE da função é revogado a `anon` —
+  -- avaliada numa linha pendente rejeitaria a consulta INTEIRA (directório
+  -- vazio para visitantes sem sessão). Admins lêem via
+  -- directory_listings_admin_all (FOR ALL authenticated) abaixo.
+  USING (verified = true OR auth.uid() = owner_user_id);
 
 DROP POLICY IF EXISTS "directory_listings_insert_own" ON directory_listings;
 CREATE POLICY "directory_listings_insert_own" ON directory_listings

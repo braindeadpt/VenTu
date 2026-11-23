@@ -620,7 +620,7 @@ export const translationsPt = {
     conditionsWord: 'condições',
     all: 'Todos',
     intro:
-      'Escolas, kite centers e lojas em Portugal. Grátis para riders — escolas podem reclamar ou registar o perfil (aparece logo; verificação depois).',
+      'Escolas, kite centers e lojas em Portugal. Grátis para riders — escolas podem reclamar ou registar o perfil (público depois de aprovado).',
     nothingFoundDescription: 'Ajusta filtros ou regista a tua escola abaixo.',
     mapHint: 'Clica num pin para abrir o perfil. Filtros aplicam-se ao mapa.',
     claimEditableIntro:
@@ -637,9 +637,9 @@ export const translationsPt = {
     registrationNotEnabled:
       'Registo ainda não activo — corre supabase-directory.sql no Supabase.',
     profileCreatedUnverified:
-      'Perfil criado e público como «Não verificado». Quando aprovarmos, passa a Verificado — podes editar em Gerir perfil.',
+      'Perfil criado — já o podes ver em Gerir perfil. Fica público e verificado quando aprovarmos.',
     registerIntro:
-      'Regista o perfil — fica logo público como não verificado. Depois de aprovarmos, aparece como verificado. Grátis.',
+      'Regista o perfil — fica público e verificado quando o aprovarmos. Grátis.',
     signInToRegister: 'Entrar para registar',
     publishProfile: 'Publicar perfil',
     unverifiedShort: 'Por verificar',
