@@ -83,12 +83,66 @@ const isExcluded = (rel) => {
   return EXCLUDED.some((d) => norm === d || norm.startsWith(`${d}/`));
 };
 
+let copied = 0;
+let merged = 0;
+let skipped = 0;
+/** Ficheiros que a nota v6 «agora» lê (conditions.json + séries por spot). */
+const notaInputs = (rel) => {
+  const norm = rel.split('\\').join('/');
+  return norm === 'conditions.json' || norm.startsWith('forecasts/');
+};
+let notaInputsChanged = false;
+
+const allFiles = walk(src);
+
+// 1.ª passagem: só JSON. O filtro de frames sat-mtg precisa do manifesto
+// FINAL — o merge pode adotar referências novas quando o shape muda, e a
+// ordem do walk visita sat-mtg/frames/* antes de sat-mtg.json (devin-review).
+for (const f of allFiles) {
+  const rel = relative(src, f);
+  if (isExcluded(rel) || !f.endsWith('.json')) continue;
+  const out = join(dest, rel);
+  const buildText = readFileSync(f, 'utf8');
+  const buildHash = shapeHash(buildText);
+  if (existsSync(out)) {
+    const fixtureText = readFileSync(out, 'utf8');
+    const fixtureHash = shapeHash(fixtureText);
+    if (buildHash === fixtureHash) {
+      skipped += 1;
+      continue;
+    }
+    // Shape changed: fold the build's skeleton into the committed fixture
+    // while KEEPING the fixture's scalar values. A value rewrite here would
+    // flip data-dependent layout (TopNow grid columns) and strand every
+    // baseline recorded against the previous values — see visualFixtureShape.
+    const fixtureValue = JSON.parse(fixtureText);
+    const mergedValue = mergeShape(fixtureValue, JSON.parse(buildText));
+    // The merge keeps fixture values, fixture-only keys and null-vs-value
+    // flips, so a skeleton mismatch often merges back to the very same
+    // fixture — don't rewrite (re-format/re-order) an unchanged file.
+    if (JSON.stringify(mergedValue) === JSON.stringify(fixtureValue)) {
+      skipped += 1;
+      continue;
+    }
+    mkdirSync(dirname(out), { recursive: true });
+    writeFileSync(out, `${JSON.stringify(mergedValue, null, 2)}\n`);
+    merged += 1;
+    if (notaInputs(rel)) notaInputsChanged = true;
+    continue;
+  }
+  mkdirSync(dirname(out), { recursive: true });
+  copyFileSync(f, out);
+  copied += 1;
+  if (notaInputs(rel)) notaInputsChanged = true;
+}
+
 // sat-mtg/frames é a excepção meio-excluída: o manifesto da fixture
 // (sat-mtg.json) mantém os SEUS valores no merge — os frames servidos são
 // sempre os que ele referencia (os de 2026-10-07 hoje). Copiar os frames
 // datados que chegam a cada record era volume morto crescente (~1.3 MB por
-// gravação) sem qualquer pixel servido — devin-review #572. Só se copia o
-// que o manifesto da fixture referencia; o resto é podado abaixo.
+// gravação) sem qualquer pixel servido — devin-review #572. Lê-se DEPOIS
+// da passagem JSON para acompanhar o manifesto final: se um shape change
+// adotar referências novas, essas são copiadas e só o resto é podado.
 const satMtgReferenced = (() => {
   try {
     const manifest = JSON.parse(readFileSync(join(dest, 'sat-mtg.json'), 'utf8'));
@@ -107,52 +161,13 @@ const isUnreferencedSatFrame = (rel) => {
   );
 };
 
-let copied = 0;
-let merged = 0;
-let skipped = 0;
-/** Ficheiros que a nota v6 «agora» lê (conditions.json + séries por spot). */
-const notaInputs = (rel) => {
-  const norm = rel.split('\\').join('/');
-  return norm === 'conditions.json' || norm.startsWith('forecasts/');
-};
-let notaInputsChanged = false;
-
-for (const f of walk(src)) {
+// 2.ª passagem: binários — já com o manifesto final. Cópia só do que falta:
+// byte diffs são value churn (imagens geradas), não shape.
+for (const f of allFiles) {
   const rel = relative(src, f);
-  if (isExcluded(rel) || isUnreferencedSatFrame(rel)) continue;
+  if (isExcluded(rel) || f.endsWith('.json') || isUnreferencedSatFrame(rel)) continue;
   const out = join(dest, rel);
-  if (f.endsWith('.json')) {
-    const buildText = readFileSync(f, 'utf8');
-    const buildHash = shapeHash(buildText);
-    if (existsSync(out)) {
-      const fixtureText = readFileSync(out, 'utf8');
-      const fixtureHash = shapeHash(fixtureText);
-      if (buildHash === fixtureHash) {
-        skipped += 1;
-        continue;
-      }
-      // Shape changed: fold the build's skeleton into the committed fixture
-      // while KEEPING the fixture's scalar values. A value rewrite here would
-      // flip data-dependent layout (TopNow grid columns) and strand every
-      // baseline recorded against the previous values — see visualFixtureShape.
-      const fixtureValue = JSON.parse(fixtureText);
-      const mergedValue = mergeShape(fixtureValue, JSON.parse(buildText));
-      // The merge keeps fixture values, fixture-only keys and null-vs-value
-      // flips, so a skeleton mismatch often merges back to the very same
-      // fixture — don't rewrite (re-format/re-order) an unchanged file.
-      if (JSON.stringify(mergedValue) === JSON.stringify(fixtureValue)) {
-        skipped += 1;
-        continue;
-      }
-      mkdirSync(dirname(out), { recursive: true });
-      writeFileSync(out, `${JSON.stringify(mergedValue, null, 2)}\n`);
-      merged += 1;
-      if (notaInputs(rel)) notaInputsChanged = true;
-      continue;
-    }
-  } else if (existsSync(out)) {
-    // Non-JSON (binaries): keep the committed copy — byte diffs here are
-    // value churn (e.g. generated images), not shape.
+  if (existsSync(out)) {
     skipped += 1;
     continue;
   }
@@ -162,8 +177,8 @@ for (const f of walk(src)) {
   if (notaInputs(rel)) notaInputsChanged = true;
 }
 
-// Poda sat-mtg/frames: apaga da fixture os ficheiros que o manifesto não
-// referencia — restos de records anteriores (nunca são servidos, só pesam).
+// Poda sat-mtg/frames: apaga da fixture os ficheiros que o manifesto final
+// não referencia — restos de records anteriores (nunca são servidos, só pesam).
 let pruned = 0;
 if (satMtgReferenced !== null) {
   const framesDir = join(dest, 'sat-mtg', 'frames');
