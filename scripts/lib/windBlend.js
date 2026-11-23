@@ -4,10 +4,10 @@
  * - When ICON-EU (~7 km Europe) is live: 65 % ICON-EU + 35 % best_match in speed,
  *   gust and unit-vector direction while directions agree (≤ 60°) or either model
  *   is calm (< 0.5 m/s, where direction is undefined noise); when directions
- *   diverge (> 60°), uses the ICON-EU vector (speed, direction) and keeps the
- *   stronger gust of the two members — never cancels wind or drops storm gusts.
- * - Without ICON-EU (e.g. Açores): median speed/gust across live models + best_match
- *   and unit-vector mean direction — never Math.max across all gusts.
+ *   diverge (> 60°), publishes the complete vector (speed, direction, gust) of
+ *   the member with the higher forecast gust — real pairs, never mixed members.
+ * - Without ICON-EU (e.g. Açores): median speed + unit-vector mean direction;
+ *   gust = conservative max(median gust, median speed + median excess).
  * - Matches hourly rows by timestamp (never blind array index) and preserves null.
  */
 
@@ -152,16 +152,21 @@ function blendWindAtIndex(
         : baseGust;
       windGust = Math.max(rawGust, windSpeed * 1.1);
     } else {
-      // Direções divergentes (> 60°) ou sem base: vetor (velocidade, direção) do
-      // modelo de maior resolução (ICON-EU ~7 km) e a maior rajada prevista pelos
-      // dois membros — sem cancelar vento nem descartar rajadas de tempestade.
-      windSpeed = iconSpeed;
-      windDirection = useDir;
-      const memberGusts = [hasIconGust ? iconGust : null, hasBaseGust ? baseGust : null].filter(
-        (v) => v != null,
-      );
-      const rawGust = memberGusts.length ? Math.max(...memberGusts) : iconSpeed;
-      windGust = Math.max(rawGust, windSpeed * 1.1);
+      // Direções divergentes (> 60°) ou sem base: publica o vetor COMPLETO
+      // (velocidade, direção, rajada) do membro com a maior rajada prevista —
+      // pares sempre reais do mesmo modelo, nunca rajada de um com vento médio
+      // do outro. Empate ou rajada em falta → ICON-EU (maior resolução ~7 km).
+      const iconRef = hasIconGust ? iconGust : iconSpeed;
+      const baseRef = hasBaseSpeed && hasBaseGust ? baseGust : -1;
+      if (baseRef > iconRef) {
+        windSpeed = baseSpeed;
+        windDirection = hasBaseDir ? baseDir : useDir;
+        windGust = Math.max(baseGust, windSpeed * 1.1);
+      } else {
+        windSpeed = iconSpeed;
+        windDirection = useDir;
+        windGust = Math.max(iconRef, windSpeed * 1.1);
+      }
     }
   } else {
     method = 'median_vector';
