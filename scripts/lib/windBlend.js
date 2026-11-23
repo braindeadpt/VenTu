@@ -1,8 +1,11 @@
 /**
  * Multi-model wind blend for scoring (Open-Meteo).
- * Vector-coherent blend (u, v) without positive bias:
- * - When ICON-EU (~7 km Europe) is live: 65 % ICON-EU + 35 % best_match in (u, v)
- *   so speed and direction always come from the same coherent wind vector.
+ * Unbiased wind blend:
+ * - When ICON-EU (~7 km Europe) is live: 65 % ICON-EU + 35 % best_match in speed,
+ *   gust and unit-vector direction while directions agree (≤ 60°) or either model
+ *   is calm (< 0.5 m/s, where direction is undefined noise); when directions
+ *   diverge (> 60°), uses the complete ICON-EU vector (speed, direction, gust)
+ *   to avoid vector cancellation or underestimating strong gusts.
  * - Without ICON-EU (e.g. Açores): median speed/gust across live models + best_match
  *   and unit-vector mean direction — never Math.max across all gusts.
  * - Matches hourly rows by timestamp (never blind array index) and preserves null.
@@ -125,15 +128,22 @@ function blendWindAtIndex(
     method = 'icon_eu_vector';
     const useDir = iconDir != null && Number.isFinite(iconDir) ? iconDir : baseDir;
     const hasIconGust = iconGust != null && Number.isFinite(iconGust);
-    const coherentDir = hasBaseSpeed && hasBaseDir && angularDiffDeg(useDir, baseDir) <= MAX_COHERENT_DIR_DIFF_DEG;
+    // Com calmaria (< 0.5 m/s) num dos modelos a direção é ruído, não divergência.
+    const calmEither = hasBaseSpeed && (iconSpeed < 0.5 || baseSpeed < 0.5);
+    const coherentDir =
+      hasBaseSpeed &&
+      (calmEither || (hasBaseDir && angularDiffDeg(useDir, baseDir) <= MAX_COHERENT_DIR_DIFF_DEG));
     if (coherentDir) {
-      // Direções concordantes (≤ 60°): combina velocidade e rajada 65/35 e direção
-      // pelo vetor unitário ponderado — sem viés positivo, sem cancelamento nem
-      // distorção de rajadas absolutas ou relativas.
+      // Direções concordantes (≤ 60°) ou calmaria num dos modelos: combina velocidade e
+      // rajada 65/35; em calmaria usa a direção do modelo com vento, senão vetor unitário.
       windSpeed = ICON_WEIGHT * iconSpeed + (1 - ICON_WEIGHT) * baseSpeed;
-      const [u1, v1] = toUv(ICON_WEIGHT, useDir);
-      const [u0, v0] = toUv(1 - ICON_WEIGHT, baseDir);
-      windDirection = fromUv(u1 + u0, v1 + v0).dir;
+      if (calmEither) {
+        windDirection = iconSpeed >= baseSpeed ? useDir : baseDir;
+      } else {
+        const [u1, v1] = toUv(ICON_WEIGHT, useDir);
+        const [u0, v0] = toUv(1 - ICON_WEIGHT, baseDir);
+        windDirection = fromUv(u1 + u0, v1 + v0).dir;
+      }
       const rawGust = hasIconGust
         ? hasBaseGust
           ? ICON_WEIGHT * iconGust + (1 - ICON_WEIGHT) * baseGust

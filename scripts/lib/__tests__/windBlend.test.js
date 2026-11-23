@@ -75,6 +75,13 @@ describe('blendWindAtIndex', () => {
     expect(out.windGust).toBe(10);
   });
 
+  it('does not discard base wind when ICON-EU is calm (0 m/s) with an arbitrary opposite direction', () => {
+    const out = blendWindAtIndex(10, 270, 14, { icon_eu: 0 }, { icon_eu: 90 }, { icon_eu: 0 });
+    expect(out.windSpeed).toBe(3.5);
+    expect(out.windDirection).toBe(270);
+    expect(out.windGust).toBe(4.9);
+  });
+
   it('falls back to median_vector without ICON-EU (e.g. Açores) using median speed and median gust', () => {
     const out = blendWindAtIndex(
       3,
