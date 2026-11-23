@@ -48,13 +48,13 @@ test.describe('Home v6 — SWR (P2.2)', { tag: '@core' }, () => {
     expect(pedidos).toEqual([]);
 
     // Regresso ao visível com <5 min desde o mount — ainda nada.
-    await page.clock.tick(4 * 60 * 1000);
+    await page.clock.fastForward(4 * 60 * 1000);
     await voltaAoVisivel(page);
     await page.waitForTimeout(300);
     expect(pedidos).toEqual([]);
 
     // Passados ≥5 min, o regresso dispara a revalidação das séries.
-    await page.clock.tick(2 * 60 * 1000);
+    await page.clock.fastForward(2 * 60 * 1000);
     await voltaAoVisivel(page);
     await expect.poll(() => pedidos.length, { timeout: 10_000 }).toBeGreaterThan(0);
   });
