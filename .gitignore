@@ -132,3 +132,7 @@ public/vendor/maplibre-gl-worker-*.mjs
 public/icon-192.png
 public/icon-512.png
 public/icon-maskable-512.png
+
+# Bytecode Python (scripts/fetch-mtg-ir.py e amigos correm direto nos workflows)
+__pycache__/
+*.pyc
