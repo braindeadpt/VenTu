@@ -8,10 +8,12 @@ name: Chop Calibration Review
 # o lembrete automático (ninguém precisa de se lembrar manualmente).
 on:
   schedule:
-    # Dia 2 do mês às 08:13 UTC — fora dos crons de dados (:17/:47), dos
-    # monitores (:07/:37, :12/:42) e do keep-alive (:05/:35). Dia 2 em vez de
-    # dia 1: o arquivo do skill fecha o mês anterior completo.
-    - cron: '13 8 2 * *'
+    # Segunda-feira às 08:13 UTC — o teste cronDelivery exige nominal > 0
+    # corridas/semana, por isso o ritmo é semanal; o passo de comentário abaixo
+    # filtra para a 1.ª semana do mês (ou quando o relatório sugere ação),
+    # mantendo a cadência de revisão mensal sem cron mensal. Fora dos crons de
+    # dados (:17/:47), monitores (:07/:37, :12/:42) e keep-alive (:05/:35).
+    - cron: '13 8 * * 1'
   workflow_dispatch:
 
 permissions:
@@ -41,12 +43,20 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          # Comenta na issue quando (a) corrida manual, (b) 1.ª semana do mês
+          # (dia ≤ 7 → revisão mensal), ou (c) relatório sugere ação — os
+          # semáforos semanais silenciosos não geram ruído na issue.
+          DAY=$(date -u +%d | sed 's/^0//')
+          if [ "${{ github.event_name }}" != "workflow_dispatch" ] && [ "$DAY" -gt 7 ] && ! grep -q 'Ação sugerida' chop-report.md; then
+            echo "Relatório semanal sem ação — sem comentário (próxima revisão mensal na 1.ª semana do mês)."
+            exit 0
+          fi
           ISSUE=$(gh issue list --label "chop-calibration" --state open --limit 1 --json number --jq '.[0].number // empty')
           if [ -z "$ISSUE" ]; then
             ISSUE=$(gh issue create \
               --title "📊 Chop calibration — revisão mensal (P2.4)" \
               --label "chop-calibration" \
-              --body "Issue de tracking automático: o workflow \`chop-calibration.yml\` comenta aqui mensalmente a frequência do chop e, quando houver ≥60 pares \`forecastWw\`↔boia, a comparação da skill do hm0 em horas chop vs sem-chop — o sinal para afinar \`CHOP_MIN_*\` em \`src/lib/modalidades/avalia.ts\`." \
+              --body "Issue de tracking automático: o workflow \`chop-calibration.yml\` corre semanalmente e comenta aqui na 1.ª semana do mês (ou quando sugere ação) a frequência do chop e, quando houver ≥60 pares \`forecastWw\`↔boia, a comparação da skill do hm0 em horas chop vs sem-chop — o sinal para afinar \`CHOP_MIN_*\` em \`src/lib/modalidades/avalia.ts\`." \
               --json number --jq '.number')
           fi
           gh issue comment "$ISSUE" --body-file chop-report.md
