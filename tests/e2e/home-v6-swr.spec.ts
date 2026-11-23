@@ -42,20 +42,24 @@ test.describe('Home v6 — SWR (P2.2)', { tag: '@core' }, () => {
     // O bake já é o conteúdo «stale» do SWR: zero pedidos de série ao abrir.
     expect(pedidos).toEqual([]);
 
-    // Regresso ao visível mesmo por baixo do limiar de 5 min (+4,5 min no
-    // Date da página): uma revalidação prematura falharia aqui.
+    // Regresso ao visível mesmo por baixo do limiar de 5 min: o Date da
+    // página fica com um desvio de +4,5 min em relação ao relógio REAL
+    // (guardado em `__offset` — um segundo override somaria em cima do
+    // primeiro e mediria 10,5 min). Uma revalidação prematura falharia aqui.
     await page.evaluate(() => {
-      const real = Date.now.bind(Date);
-      Date.now = () => real() + 4.5 * 60 * 1000;
+      const w = window as unknown as { __offset: number; __realNow: () => number };
+      w.__realNow = Date.now.bind(Date);
+      w.__offset = 4.5 * 60 * 1000;
+      Date.now = () => w.__realNow() + w.__offset;
       document.dispatchEvent(new Event('visibilitychange'));
     });
     await page.waitForTimeout(300);
     expect(pedidos).toEqual([]);
 
-    // Passados ≥5 min (+6 min no Date), o regresso dispara a revalidação.
+    // Passados ≥5 min (+6 min sobre o MESMO relógio real), o regresso
+    // dispara a revalidação.
     await page.evaluate(() => {
-      const real = Date.now.bind(Date);
-      Date.now = () => real() + 6 * 60 * 1000;
+      (window as unknown as { __offset: number }).__offset = 6 * 60 * 1000;
       document.dispatchEvent(new Event('visibilitychange'));
     });
     await expect.poll(() => pedidos.length, { timeout: 10_000 }).toBeGreaterThan(0);
