@@ -46,6 +46,7 @@ const KEEPALIVE_WORKFLOWS: string[] = [
   'data-cadence-alert.yml',
   'ih-health.yml',
   'telegram-poll.yml',
+  'evaluate-alerts.yml',
 ];
 
 describe('keep-alive externo (repository_dispatch ping)', () => {

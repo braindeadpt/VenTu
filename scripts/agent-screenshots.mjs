@@ -29,7 +29,7 @@ const base = `http://127.0.0.1:${PORT}`;
 
 async function waitUp() {
   for (let i = 0; i < 60; i++) {
-    try { const r = await fetch(base + '/'); if (r.ok || r.status === 404) return; } catch {}
+    try { const r = await fetch(base + '/', { signal: AbortSignal.timeout(5_000) }); if (r.ok || r.status === 404) return; } catch {}
     await new Promise((r) => setTimeout(r, 500));
   }
   throw new Error('serve não arrancou');

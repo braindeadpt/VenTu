@@ -1,9 +1,11 @@
 name: Telegram Link Poll
 
-# Lightweight poll so /start deep-links activate within ~5 min (no always-on server).
+# Lightweight poll so /start deep-links activate within ~30 min (no always-on
+# server; a cadência real vem do ping do keep-alive — o schedule do GitHub
+# entrega ~2 % do nominal, medido).
 on:
   schedule:
-    - cron: '*/5 * * * *'
+    - cron: '*/30 * * * *'
   workflow_dispatch:
   repository_dispatch:
     # Mesmo keep-alive externo do update-data (docs/EXTERNAL-KEEPALIVE.md):
@@ -18,10 +20,11 @@ permissions:
   contents: read
 
 concurrency:
-  # 288 runs/dia: um run pendurado não pode sobrepor-se ao tick seguinte
-  # (o offset getUpdates vive no Supabase — polls concorrentes liam o mesmo
-  # offset e reprocessavam updates). cancel-in-progress é seguro: o offset
-  # só é gravado no fim, pelo que um cancel reprocessa de forma idempotente.
+  # ~48+ runs/dia (ping + schedule): um run pendurado não pode sobrepor-se ao
+  # tick seguinte (o offset getUpdates vive no Supabase — polls concorrentes
+  # liam o mesmo offset e reprocessavam updates). cancel-in-progress é seguro:
+  # o offset só é gravado no fim, pelo que um cancel reprocessa de forma
+  # idempotente.
   group: telegram-poll
   cancel-in-progress: true
 

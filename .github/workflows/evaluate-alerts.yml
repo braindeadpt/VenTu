@@ -9,6 +9,17 @@ on:
     # interessar, usar dois crons ou aceitar o drift de 1h).
     - cron: '30 7 * * *'
   workflow_dispatch:
+  repository_dispatch:
+    # Keep-alive externo (docs/EXTERNAL-KEEPALIVE.md): o POST ping acorda todos
+    # os workflows que declaram este tipo. A entrega medida do schedule do
+    # GitHub é ~44 % do nominal — com o ping, os alertas «immediate» são
+    # avaliados ~30 min (em vez de ~5 h reais) e o digest sai no primeiro tick
+    # após as 07:00 em vez de depender do cron das 07:30. É seguro: o dedup
+    # `last_sent_at` dá uma janela de 24 h por subscrição e
+    # `alreadySentDigestToday` garante um digest/dia; os runs extra só
+    # encurtam a latência.
+    types: [ping]
+
 
 permissions:
   contents: read

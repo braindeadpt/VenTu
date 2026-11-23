@@ -183,7 +183,7 @@ describe('cronDelivery — workflows reais', () => {
     const read = (f) => parseCrons(fs.readFileSync(path.join(WF, f), 'utf-8'));
     expect(read('update-data.yml')).toEqual(['17 * * * *', '47 * * * *']);
     expect(read('ih-health.yml')).toEqual(['0 * * * *']);
-    expect(read('telegram-poll.yml')).toEqual(['*/5 * * * *']);
+    expect(read('telegram-poll.yml')).toEqual(['*/30 * * * *']);
     expect(read('staleness-alert.yml')).toEqual(['7,37 * * * *']);
     expect(read('data-cadence-alert.yml')).toEqual(['12,42 * * * *']);
   });
@@ -197,8 +197,8 @@ describe('cronDelivery — workflows reais', () => {
       observed7d: 45,
       nowMs: NOW,
     });
-    expect(d.expected).toBe(288);
-    expect(d.ratio).toBeLessThan(0.05);
+    expect(d.expected).toBe(48);
+    expect(d.ratio).toBeLessThan(0.5);
     expect(d.belowHalf).toBe(true);
   });
 });
