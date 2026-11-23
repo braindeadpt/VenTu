@@ -1,20 +1,37 @@
-name: Evaluate Alerts
+name: Alerts & Telegram Poll
 
+# Um só workflow para os dois passos: o poll de /start corre SEMPRE antes da
+# avaliação, no mesmo job. Quando eram dois workflows acordados pelo mesmo
+# ping, os dois liam o offset partilhado do Supabase — o primeiro respondia
+# «Ligado ✅» e o segundo «Link inválido» à mesma mensagem; e a avaliação
+# podia correr antes da ligação concluir (o resumo desse dia ia só por email
+# e o dedup diário impedia a recuperação no Telegram).
 on:
   schedule:
-    # Immediate alerts — every 3h (with conditions update)
-    - cron: '15 */3 * * *'
-    # Daily digest — 07:30 UTC (GitHub ignora a chave `timezone`: cron é sempre
-    # UTC — 08:30 no verão de Lisboa / 07:30 no inverno; se a hora local exacta
-    # interessar, usar dois crons ou aceitar o drift de 1h).
-    - cron: '30 7 * * *'
+    # A cada 30 min cobre os três deveres: confirmação de /start, avaliação
+    # de alertas «immediate» (o COOLDOWN_MS de 3 h por subscrição limita os
+    # envios — condições persistentes notificam até ~8×/dia, por desenho da
+    # janela) e o resumo diário no primeiro tick ≥ 07:00 de Lisboa
+    # (alreadySentDigestToday garante um envio/dia). Cron é sempre UTC — o
+    # GitHub ignora a chave `timezone`.
+    - cron: '*/30 * * * *'
   workflow_dispatch:
+  repository_dispatch:
+    # Keep-alive externo (docs/EXTERNAL-KEEPALIVE.md): o POST ping acorda
+    # todos os workflows que declaram este tipo. A entrega medida do schedule
+    # do GitHub é ~2 % do nominal — o ping é a cadência real e o schedule é
+    # a redundância. É seguro: o offset do poll só é gravado no fim do passo
+    # (um cancel reprocessa de forma idempotente), o dedup `last_sent_at`
+    # impõe o mínimo de 3 h entre alertas e `alreadySentDigestToday` garante
+    # um digest/dia; os runs extra só encurtam a latência.
+    types: [ping]
 
 permissions:
   contents: read
 
-# Um digest em curso não deve ser cancelado nem sobreposto por uma execução
-# imediata seguinte (envio duplicado de emails/Telegram); a fila resolve-a.
+# Um envio em curso não deve ser cancelado nem sobreposto pelo tick seguinte
+# (emails/Telegram duplicados); a fila resolve-o. E nunca há dois leitores do
+# offset do poll — a concorrência vive dentro deste grupo.
 concurrency:
   group: evaluate-alerts
   cancel-in-progress: false
@@ -33,7 +50,32 @@ jobs:
 
       - run: npm ci
 
+      - name: Check Telegram poll prerequisites
+        id: poll
+        run: |
+          if [ -z "${{ secrets.TELEGRAM_BOT_TOKEN }}" ] || [ -z "${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}" ] || [ -z "${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" ]; then
+            echo "Telegram/Supabase secrets missing — /start poll is a no-op."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Poll Telegram /start links
+        # Sempre antes da avaliação: um /start que chegue neste tick liga a
+        # conta ANTES do avaliador escolher os canais — o resumo/imediato já
+        # vai para o Telegram nessa mesma execução. O limite próprio de 5 min
+        # reserva o resto do job para a avaliação (a leitura processa
+        # mensagens em série — sem teto podia esgotar os 15 min do job).
+        timeout-minutes: 5
+        if: steps.poll.outputs.skip != 'true'
+        env:
+          SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        run: npm run telegram:poll
+
       - name: Evaluate alert subscriptions
+        # Corre mesmo quando o poll é saltado ou falha: os alertas por email
+        # nunca dependem do bot Telegram.
+        if: always()
         env:
           SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}

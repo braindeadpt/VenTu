@@ -56,6 +56,7 @@ function todayIso() {
 async function githubRequest(path, { token, method = 'GET', body, fetchImpl }) {
   const res = await fetchImpl(`${API_BASE}${path}`, {
     method,
+    signal: AbortSignal.timeout(30_000),
     headers: {
       Authorization: `Bearer ${token}`,
       Accept: 'application/vnd.github+json',

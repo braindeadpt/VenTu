@@ -61,14 +61,18 @@ function addUrl(urls, localePath, { changefreq, priority, lastmod }) {
   }
 }
 
-// Read spots from the source file
-const spotsPath = path.join(__dirname, '..', 'src', 'lib', 'spots.ts');
+// Read spots from the source file. SITEMAP_* envs permitem correr o gerador
+// sobre um instantâneo versionado (check-sitemap-drift materializa os ficheiros
+// do HEAD numa pasta temporária) — sem elas lê a working tree, como sempre.
+const spotsPath =
+  process.env.SITEMAP_SPOTS_TS || path.join(__dirname, '..', 'src', 'lib', 'spots.ts');
 const spotsContent = fs.readFileSync(spotsPath, 'utf-8');
 const slugMatches = [...spotsContent.matchAll(/slug:\s*['"]([^'"]+)['"]/g)];
 const slugs = slugMatches.map((m) => m[1]);
 
 // Read news articles
-const newsPath = path.join(__dirname, '..', 'public', 'data', 'news.json');
+const newsPath =
+  process.env.SITEMAP_NEWS_JSON || path.join(__dirname, '..', 'public', 'data', 'news.json');
 let newsItems = [];
 if (fs.existsSync(newsPath)) {
   try {
@@ -124,7 +128,9 @@ for (const slug of MODALITY_SLUGS) {
   });
 }
 
-for (const slug of getSeoLandingSlugs()) {
+// Landings /explorar/ derivam do mesmo catálogo resolvido acima — com
+// SITEMAP_SPOTS_TS a apontar para um snapshot, nunca misturamos working tree.
+for (const slug of getSeoLandingSlugs(spotsPath)) {
   addUrl(urlEntries, `/explorar/${slug}/`, {
     changefreq: 'weekly',
     priority: '0.8',
@@ -154,7 +160,9 @@ for (const item of newsItems) {
 // ficheiro que o loadDirectoryEntries de src/lib/directory.ts lê). Cada entry
 // tem a rota /diretorio/{slug}/ indexável com buildPageMetadata (hreflang).
 // Sem ficheiro (dev sem dados) degrada para zero entries — como o news.json.
-const directoryPath = path.join(__dirname, '..', 'public', 'data', 'directory.json');
+const directoryPath =
+  process.env.SITEMAP_DIRECTORY_JSON ||
+  path.join(__dirname, '..', 'public', 'data', 'directory.json');
 let directorySlugs = [];
 if (fs.existsSync(directoryPath)) {
   try {
@@ -203,7 +211,8 @@ ${hreflangLinks(entry.localePath)}
 
 xml += '</urlset>\n';
 
-const outputPath = path.join(__dirname, '..', 'public', 'sitemap.xml');
+const outputPath =
+  process.env.SITEMAP_OUT || path.join(__dirname, '..', 'public', 'sitemap.xml');
 fs.writeFileSync(outputPath, xml);
 
 const staticCount = staticPages.length * LOCALES.length;

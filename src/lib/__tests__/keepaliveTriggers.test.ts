@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { readFileSync } from 'fs';
+import { readFileSync, readdirSync } from 'fs';
 import { join } from 'path';
 
 /**
@@ -39,13 +39,19 @@ function onBlock(src: string): string {
   return end === -1 ? rest : rest.slice(0, end);
 }
 
-/** O pipeline + os quatro monitores que partilham o keep-alive externo. */
+/**
+ * O pipeline + os monitores que partilham o keep-alive externo.
+ * `evaluate-alerts.yml` é o workflow único de alertas+Telegram: o poll de
+ * /start é um passo do mesmo job, antes da avaliação (o antigo
+ * telegram-poll.yml separado foi fundido — dois workflows no mesmo ping
+ * liam o offset partilhado em corrida).
+ */
 const KEEPALIVE_WORKFLOWS: string[] = [
   'update-data.yml',
   'staleness-alert.yml',
   'data-cadence-alert.yml',
   'ih-health.yml',
-  'telegram-poll.yml',
+  'evaluate-alerts.yml',
 ];
 
 describe('keep-alive externo (repository_dispatch ping)', () => {
@@ -73,5 +79,46 @@ describe('keep-alive externo (repository_dispatch ping)', () => {
       const on = onBlock(read(join('.github', 'workflows', file)));
       expect(on, `${file}: sem workflow_dispatch`).toMatch(/workflow_dispatch:/);
     }
+  });
+
+  it('o poll de /start vive num só workflow e corre ANTES da avaliação', () => {
+    // Dois workflows separados acordados pelo mesmo ping liam o offset
+    // partilhado do Supabase em corrida («Ligado ✅» + «Link inválido» na
+    // mesma mensagem) e a avaliação podia escolher canais antes da ligação
+    // concluir. O poll é agora um passo do evaluate-alerts.yml, sempre
+    // antes do passo de avaliação.
+    const wf = join('.github', 'workflows');
+    const all = readdirSync(join(ROOT, wf)).filter((f) => f.endsWith(".yml") || f.endsWith(".yaml"));
+    const callers = all.filter((f) => read(join(wf, f)).includes('telegram:poll'));
+    expect(callers, 'telegram:poll deve ter um único dono').toEqual(['evaluate-alerts.yml']);
+
+    // Os dois passos têm de viver no MESMO job — comparar posições no
+    // ficheiro inteiro deixaria passar dois jobs independentes (a avaliação
+    // num segundo job podia correr em paralelo, sem ordem).
+    const src = read(join(wf, 'evaluate-alerts.yml'));
+    const afterJobs = src.slice(src.indexOf('jobs:'));
+    const jobStart = afterJobs.search(/^  alerts:/m);
+    expect(jobStart, 'job `alerts` em falta').toBeGreaterThan(-1);
+    const rest = afterJobs.slice(jobStart + 1);
+    const nextJob = rest.search(/^  [A-Za-z0-9_-]+:/m);
+    const job = nextJob === -1 ? rest : rest.slice(0, nextJob);
+    const pollIdx = job.indexOf('telegram:poll');
+    const evalIdx = job.indexOf('alerts:evaluate');
+    expect(pollIdx, 'passo do poll fora do job `alerts`').toBeGreaterThan(-1);
+    expect(evalIdx, 'passo de avaliação fora do job `alerts` ou antes do poll').toBeGreaterThan(pollIdx);
+    // Os alertas por email nunca dependem do bot: a avaliação corre mesmo se
+    // o poll for saltado (sem secrets) ou falhar.
+    expect(job.slice(pollIdx)).toMatch(/if:\s*always\(\)/);
+    // E o teto tem de estar no PASSO do poll — um `timeout-minutes` ao nível
+    // do job não reserva tempo para a avaliação.
+    const stepStart = job.indexOf('- name: Poll Telegram');
+    const nextStep = job.slice(stepStart + 1).search(/^      -\s/m);
+    const pollStep =
+      nextStep === -1 ? job.slice(stepStart) : job.slice(stepStart, stepStart + 1 + nextStep);
+    // A chave tem de estar ativa e com valor — `/timeout-minutes/` solto
+    // também casava uma linha comentada.
+    expect(pollStep, 'passo do poll sem timeout-minutes ativo').toMatch(
+      /^\s+timeout-minutes:\s*\d+/m,
+    );
   });
 });

@@ -86,8 +86,10 @@ function countSpots(spots, sport, region) {
   }).length;
 }
 
-function getSeoLandingSlugs() {
-  const content = fs.readFileSync(path.join(__dirname, '../src/lib/spots.ts'), 'utf8');
+// spotsTsPath: o gerador do sitemap passa o catálogo resolvido (SITEMAP_SPOTS_TS
+// pode apontar para um snapshot versionado); sem argumento lê a working tree.
+function getSeoLandingSlugs(spotsTsPath = path.join(__dirname, '../src/lib/spots.ts')) {
+  const content = fs.readFileSync(spotsTsPath, 'utf8');
   const spots = parseSpots(content);
   const slugs = [];
 

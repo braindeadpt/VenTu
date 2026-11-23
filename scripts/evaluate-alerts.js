@@ -35,7 +35,6 @@ const {
 } = require('./lib/ihCoastalWarnings');
 const {
   sendTelegramMessage,
-  processTelegramLinkUpdates,
   fetchTelegramChatId,
 } = require('./lib/telegram');
 const { warningTriggersForSpot, triggerLines } = require('./lib/alertWarnTriggers');
@@ -761,15 +760,12 @@ async function main() {
     return;
   }
 
-  try {
-    const tg = await processTelegramLinkUpdates(url, key);
-    if (tg.processed > 0 || tg.linked > 0) {
-      console.log(`  Telegram links: ${tg.linked} linked (${tg.processed} updates)`);
-    }
-  } catch (err) {
-    console.warn(`  ⚠️ Telegram poll skipped: ${err.message}`);
-  }
-
+  // A leitura de /start corre no passo anterior do mesmo workflow
+  // (evaluate-alerts.yml, `npm run telegram:poll`) — um só leitor do offset
+  // do Supabase, e sempre ANTES desta avaliação: um /start que chegue no
+  // tick já tem a conta ligada quando os canais são escolhidos aqui. O
+  // avaliador só envia (sendTelegramMessage/fetchTelegramChatId) para
+  // chats já ligados.
   const { slugToId, idToSlug } = loadSpotMaps();
   const conditions = JSON.parse(fs.readFileSync(CONDITIONS_PATH, 'utf-8'));
 

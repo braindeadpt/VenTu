@@ -72,8 +72,8 @@ describe('cronDelivery — leitura dos crons', () => {
     expect(day(['12,42 * * * *'])).toBe(48); // data-cadence-alert
     expect(day(['7,37 * * * *'])).toBe(48); // staleness-alert
     expect(day(['0 * * * *'])).toBe(24); // ih-health
-    expect(day(['*/5 * * * *'])).toBe(288); // telegram-poll
-    expect(day(['15 */3 * * *', '30 7 * * *'])).toBe(9); // evaluate-alerts
+    expect(day(['*/5 * * * *'])).toBe(288); // antigo telegram-poll (histórico)
+    expect(day(['*/30 * * * *'])).toBe(48); // evaluate-alerts (alertas + poll)
     expect(day(['40 4 * * *'])).toBe(1); // full-route-audit
     expect(day(['0 7 * * *'])).toBe(1); // ops-audit
   });
@@ -183,22 +183,24 @@ describe('cronDelivery — workflows reais', () => {
     const read = (f) => parseCrons(fs.readFileSync(path.join(WF, f), 'utf-8'));
     expect(read('update-data.yml')).toEqual(['17 * * * *', '47 * * * *']);
     expect(read('ih-health.yml')).toEqual(['0 * * * *']);
-    expect(read('telegram-poll.yml')).toEqual(['*/5 * * * *']);
+    expect(read('evaluate-alerts.yml')).toEqual(['*/30 * * * *']);
     expect(read('staleness-alert.yml')).toEqual(['7,37 * * * *']);
     expect(read('data-cadence-alert.yml')).toEqual(['12,42 * * * *']);
   });
 
   it('o cenário real de 2026-09-25 (grava-se o resultado da medição)', () => {
     const read = (f) => parseCrons(fs.readFileSync(path.join(WF, f), 'utf-8'));
-    // Contagens observadas nesse dia (API): telegram-poll 6 em 24 h.
+    // Simulação com a cadência actual: 6 corridas observadas em 24 h contra o
+    // nominal de 48 (*/30) ainda fica abaixo de metade — o julgamento do
+    // delivery mantém-se como o da medição original de 2026-09-25 (6/288).
     const d = evaluateCronDelivery({
-      crons: read('telegram-poll.yml'),
+      crons: read('evaluate-alerts.yml'),
       observed24h: 6,
       observed7d: 45,
       nowMs: NOW,
     });
-    expect(d.expected).toBe(288);
-    expect(d.ratio).toBeLessThan(0.05);
+    expect(d.expected).toBe(48);
+    expect(d.ratio).toBeLessThan(0.5);
     expect(d.belowHalf).toBe(true);
   });
 });

@@ -54,6 +54,16 @@ if (missing.length > 0) {
   );
 }
 
+// O CI regera o sitemap sobre os dados hidratados antes do build; a auditoria
+// e2e descobre rotas via out/sitemap.xml — sem este passo o sitemap servido
+// podia ficar um snapshot atrás do public/data cozido no export.
+const sitemap = spawnSync('npm', ['run', 'sitemap:generate'], {
+  stdio: 'inherit',
+  env: process.env,
+  shell: process.platform === 'win32',
+});
+if (sitemap.status !== 0) process.exit(sitemap.status ?? 1);
+
 const result = spawnSync('npm', ['run', 'build'], {
   stdio: 'inherit',
   env: process.env,

@@ -106,7 +106,7 @@ const REGION_MIN_ZOOM = 11;
 async function resolveTilesUrl() {
   const explicit = arg('--tiles', null);
   if (explicit) return explicit;
-  const r = await fetch('https://tiles.openfreemap.org/planet', { headers: { 'User-Agent': 'ventu-bake-ocean-mask' } });
+  const r = await fetch('https://tiles.openfreemap.org/planet', { headers: { 'User-Agent': 'ventu-bake-ocean-mask' }, signal: AbortSignal.timeout(30_000) });
   if (!r.ok) throw new Error(`TileJSON OpenFreeMap: HTTP ${r.status}`);
   const tj = await r.json();
   if (!Array.isArray(tj.tiles) || !tj.tiles[0]) throw new Error('TileJSON sem tiles');
@@ -126,6 +126,7 @@ async function getTile(url, cache, z, x, y) {
     try {
       const r = await fetch(url.replace('{z}', z).replace('{x}', x).replace('{y}', y), {
         headers: { 'User-Agent': 'ventu-bake-ocean-mask' },
+        signal: AbortSignal.timeout(30_000),
       });
       if (r.status === 204 || r.status === 404) {
         writeFileSync(p, Buffer.alloc(0));

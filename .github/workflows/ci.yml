@@ -168,13 +168,14 @@ jobs:
       - name: Validate public/data history budget
         run: node scripts/check-data-history-budget.js
 
-      - name: Generate sitemap
-        run: npm run sitemap:generate
-
       # Guard: o sitemap é um ficheiro GERADO (scripts/generate-sitemap.js) e
       # nunca deve ser editado à mão. Falha quando o public/sitemap.xml commitado
       # diverge estruturalmente do gerador (novo spot/notícia/rota esquecidos,
       # hreflang em falta) — ignora o <lastmod> (o gerador grava a data de hoje).
+      # A comparação corre inteira no espaço versionado (git show HEAD: dos
+      # inputs + do sitemap): o hydrate de ventu-data traz notícias novas todos
+      # os dias — gerar sobre a working tree tornava o guard um alvo móvel
+      # (devin-review #568).
       - name: Sitemap drift guard
         run: node scripts/check-sitemap-drift.js
 

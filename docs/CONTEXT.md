@@ -678,8 +678,10 @@ perdido pelo GitHub, push a falhar depois da geração, ou API em baixo:
   dele.
 - **Keep-alive partilhado (2026-09-25)**: um `repository_dispatch` é entregue a TODOS os workflows que
   declaram o tipo (o `event_type` não é encaminhado para um só). Por isso `staleness-alert`, `data-cadence`,
-  `ih-health` e `telegram-poll` declaram o MESMO `types: [ping]` do `update-data` — o mesmo cron externo
-  acorda o pipeline e os vigilantes, sem job externo adicional. Motivo: a entrega nominal do `schedule` do
+  `ih-health` e `evaluate-alerts` declaram o MESMO `types: [ping]` do `update-data` — o mesmo cron externo
+  acorda o pipeline e os vigilantes, sem job externo adicional. (`evaluate-alerts` é o workflow único de
+  alertas+Telegram: o poll de `/start` corre como passo antes da avaliação, no mesmo job — o antigo
+  `telegram-poll.yml` separado foi fundido para matar a corrida dos dois leitores do offset no mesmo ping.) Motivo: a entrega nominal do `schedule` do
   GitHub caiu para 2–23% nesses crons (21–24/09), ou seja, falhava o vigilante exactamente quando o scheduler
   falhava. Os `schedule:` mantêm-se (o ping é aditivo, nunca substituto) e todos os monitores são idempotentes
   (estado = issue aberta / offset gravado), pelo que um tick a mais nunca duplica incidente. Guard:
