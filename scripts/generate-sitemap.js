@@ -128,7 +128,9 @@ for (const slug of MODALITY_SLUGS) {
   });
 }
 
-for (const slug of getSeoLandingSlugs()) {
+// Landings /explorar/ derivam do mesmo catálogo resolvido acima — com
+// SITEMAP_SPOTS_TS a apontar para um snapshot, nunca misturamos working tree.
+for (const slug of getSeoLandingSlugs(spotsPath)) {
   addUrl(urlEntries, `/explorar/${slug}/`, {
     changefreq: 'weekly',
     priority: '0.8',

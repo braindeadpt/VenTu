@@ -80,20 +80,25 @@ function committedSitemap(ref) {
  */
 function generatedFromRef(ref) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'sitemap-drift-'));
-  const inputs = {
-    SITEMAP_SPOTS_TS: 'src/lib/spots.ts',
-    SITEMAP_NEWS_JSON: 'public/data/news.json',
-    SITEMAP_DIRECTORY_JSON: 'public/data/directory.json',
-  };
-  const env = { ...process.env, SITEMAP_OUT: path.join(dir, 'sitemap.xml') };
-  for (const [key, rel] of Object.entries(inputs)) {
-    const content = showFile(ref, rel) ?? '';
-    const p = path.join(dir, rel.replace(/\//g, '_'));
-    fs.writeFileSync(p, content);
-    env[key] = p;
+  try {
+    const inputs = {
+      SITEMAP_SPOTS_TS: 'src/lib/spots.ts',
+      SITEMAP_NEWS_JSON: 'public/data/news.json',
+      SITEMAP_DIRECTORY_JSON: 'public/data/directory.json',
+    };
+    const env = { ...process.env, SITEMAP_OUT: path.join(dir, 'sitemap.xml') };
+    for (const [key, rel] of Object.entries(inputs)) {
+      const content = showFile(ref, rel) ?? '';
+      const p = path.join(dir, rel.replace(/\//g, '_'));
+      fs.writeFileSync(p, content);
+      env[key] = p;
+    }
+    execFileSync('node', [GENERATOR], { env, stdio: 'ignore' });
+    return fs.readFileSync(env.SITEMAP_OUT, 'utf-8');
+  } finally {
+    // ~2,3 MB por execução — os runners descartam, mas localmente acumulava.
+    fs.rmSync(dir, { recursive: true, force: true });
   }
-  execFileSync('node', [GENERATOR], { env, stdio: 'ignore' });
-  return fs.readFileSync(env.SITEMAP_OUT, 'utf-8');
 }
 
 function main() {
