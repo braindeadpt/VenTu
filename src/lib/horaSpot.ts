@@ -247,6 +247,10 @@ export function aplicarObservacoesNaHoraAgora(
   }
   if (temOndaObs && obs.observedWave) {
     atualizada.waveHeight = obs.observedWave.waveHeight;
+    // Mar de vento medido não existe na boia — manter o previsto misturava
+    // fontes no rácio do chop (0,6/2,0=30 % → 0,6/1,5=40 %). Sem par real,
+    // sem penalização nesta hora.
+    delete atualizada.windWaveHeight;
     if (typeof obs.observedWave.wavePeriod === 'number' && Number.isFinite(obs.observedWave.wavePeriod)) {
       atualizada.wavePeriod = obs.observedWave.wavePeriod;
     }

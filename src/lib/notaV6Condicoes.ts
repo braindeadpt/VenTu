@@ -79,6 +79,8 @@ export function notaV6DeCondicoes(
     waveDirection: c.waveDirection,
     waterTemp: c.waterTemp,
     tideHeight: tide,
+    // Paridade do chop (P2.4): o alerta penaliza o mar batido como a ficha.
+    ...(fin(raw.windWaveHeight) ? { windWaveHeight: raw.windWaveHeight as number } : {}),
     // chuva e nuvens da hora do forecast (#218): o alerta penaliza a chuva como a página do spot
     ...(fin(raw.precipitation) ? { precipitation: raw.precipitation as number } : {}),
     ...(fin(raw.cloudCover) ? { cloudCover: raw.cloudCover as number } : {}),

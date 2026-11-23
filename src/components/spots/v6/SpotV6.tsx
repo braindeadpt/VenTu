@@ -131,7 +131,22 @@ export default function SpotV6({ spot, nome, local, locale, linhas, agoraMs, fot
       if (isModalidade(v)) setD(v);
     };
     window.addEventListener(MODALIDADE_EVENT, ouve);
-    return () => window.removeEventListener(MODALIDADE_EVENT, ouve);
+    // Relógio reativo (P2.2): com a ficha aberta horas (PWA/TWA) o «Agora» da
+    // régua tem de avançar mesmo quando a previsão não muda — o refresh de
+    // dados já traz observações da hora NOVA, a régua acompanha-a.
+    const relogio = () => {
+      if (!document.hidden) setAgora(Date.now());
+    };
+    const relogioIv = window.setInterval(relogio, 15 * 60 * 1000);
+    const relogioVis = () => {
+      if (document.visibilityState === 'visible') setAgora(Date.now());
+    };
+    document.addEventListener('visibilitychange', relogioVis);
+    return () => {
+      window.clearInterval(relogioIv);
+      document.removeEventListener('visibilitychange', relogioVis);
+      window.removeEventListener(MODALIDADE_EVENT, ouve);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

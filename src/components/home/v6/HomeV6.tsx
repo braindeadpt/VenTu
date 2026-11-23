@@ -115,8 +115,11 @@ export default function HomeV6({ locale, costa: costaSSG, meta, fotos, agoraMs, 
       if (!vivo) return;
       // Falhas transitórias não apagam spots: cada série em falta fica com a
       // última conhecida; se a maioria falhar não se troca nada (mantém o bake).
+      // Na PRIMEIRA volta ainda não há séries em memória — só se troca com a
+      // costa completa, para nunca largar um spot por um fetch isolado.
       const ok = es.filter(([, a]) => a.length).length;
       if (!ok || ok * 2 < es.length) return;
+      if (!ultimasLinhas && ok < es.length) return;
       const merged = { ...(ultimasLinhas ?? {}) };
       for (const [id, a] of es) if (a.length) merged[id] = a;
       const t = Date.now();

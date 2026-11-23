@@ -83,6 +83,18 @@ async function processSpot(spot, options) {
   if (biasRow.waveBias) log.log(`  ↳ ${spot.id}: waveHeight ${biasRow.waveHeightRaw} → ${biasRow.waveHeight} m (${biasRow.waveBias.src === 'skill' ? `skill ${biasRow.waveBias.buoy}` : 'bias'} ${biasRow.waveBias.me >= 0 ? '+' : ''}${biasRow.waveBias.me} m, n=${biasRow.waveBias.n})`);
   const conditions = buildConditionsRow(marineData, currentWeatherData, current, biasRow, confidenceDetail, dailyConfidence, useMultiModel);
   const forecast = mergeForecast(marineData, weatherData);
+  // P2.3: a calibração da boia aplica-se À SÉRIE também — a ficha e a Home
+  // avaliam as horas, não só a row. Raw preservado por hora em waveHeightRaw;
+  // o fetch-forecast-skill arquiva `waveHeightRaw ?? waveHeight`, por isso
+  // nunca aprende com a própria correção.
+  if (biasRow.waveBias?.src === 'skill' && Number.isFinite(biasRow.waveBias.me)) {
+    for (const row of forecast) {
+      if (typeof row.waveHeight === 'number' && Number.isFinite(row.waveHeight)) {
+        row.waveHeightRaw = row.waveHeight;
+        row.waveHeight = Math.max(0.1, Math.round((row.waveHeight + biasRow.waveBias.me) * 10) / 10);
+      }
+    }
+  }
   // Quantiles come from the raw members, so they are attached before the wind
   // blend rewrites the row's central windSpeed: `windP50` is the ensemble
   // median while the row value stays the product wind (ICON-EU floor).

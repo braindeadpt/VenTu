@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 
@@ -474,6 +474,13 @@ export default function SpotDetailClient({
     const baked = initialData;
     let cancelled = false;
     let lastRefreshAt = 0;
+    // A data do modelo não avança em ciclos só de observações (merge-observations
+    // publica vento/onda medidos sem renovar a previsão): a chave compara o
+    // conteúdo aplicado — previsão + observações — e aceita inclusivamente
+    // remoções de leituras.
+    const keyDe = (c: Record<string, unknown>) =>
+      [c.updatedAt, JSON.stringify(c.observed ?? null), JSON.stringify(c.observedWave ?? null)].join('|');
+    let appliedKey = keyDe(baked.conditions as unknown as Record<string, unknown>);
 
     async function revalidate() {
       if (document.hidden) return;
@@ -489,9 +496,8 @@ export default function SpotDetailClient({
         if (cancelled) return;
         let spotCond = (condJson[dataId] ?? condJson[spot.id]) as Record<string, unknown> | undefined;
         if (!spotCond) return;
-        const freshAt = typeof spotCond.updatedAt === 'string' ? Date.parse(spotCond.updatedAt) : NaN;
-        const bakedAt = baked.conditions.updatedAt ? Date.parse(baked.conditions.updatedAt) : 0;
-        if (!Number.isFinite(freshAt) || freshAt <= bakedAt) return;
+        const freshKey = keyDe(spotCond);
+        if (freshKey === appliedKey) return;
         const biasPatch = applyRegionalBiasFallback(spotCond, spot.region, waveBiasFile);
         if (biasPatch) spotCond = { ...spotCond, ...biasPatch };
         const conditions = spotCondToConditions(spotCond);
@@ -503,6 +509,7 @@ export default function SpotDetailClient({
           allScores,
           forecast: spotFc?.length ? (spotFc as SpotData['forecast']) : baked.forecast,
         });
+        appliedKey = freshKey;
         rememberDataUpdate(spotCond.updatedAt as string | undefined);
         // O separador escolhido mantém-se — refresca dentro dele, sem salto.
       } catch {

@@ -192,7 +192,10 @@ async function fetchForecastSkill() {
       if (!Number.isFinite(targetMs)) continue;
       const leadHours = (targetMs - nowMs) / 3_600_000;
       if (leadHours <= 0 || leadHours > FORECAST_ARCHIVE_HOURS) continue;
-      const hm0 = Number(hour.waveHeight);
+      // waveHeightRaw ?? waveHeight: quando a calibração da boia corrigiu a
+      // série, o skill arquiva SEMPRE a altura bruta — nunca aprende com as
+      // suas próprias correções.
+      const hm0 = Number(hour.waveHeightRaw ?? hour.waveHeight);
       if (!Number.isFinite(hm0) || hm0 < 0) continue;
       newForecasts.push({
         time: hour.time,
