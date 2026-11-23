@@ -612,11 +612,18 @@ async function deliver(ghOk) {
     console.log(`🔔 ALERTA — issue aberta: ${url}`);
     const chat = process.env.OPS_TELEGRAM_CHAT_ID;
     if (chat) {
-      const top = findings.slice(0, 5).map((f) => `[${f.sev}] ${f.text}`).join('\n');
-      await sendTelegramMessage(
-        chat,
-        `🚨 VenTu ops audit: ${findings.length} finding(s)${p0 ? ` — ${p0} P0` : ''}\n${top}\n${url}`,
-      );
+      // Best-effort: a entrega primária (a issue) já aconteceu. Se este envio
+      // falhasse sem guarda, o catch do main() reportava «o auditor saiu sem
+      // verificar nada» — falso: o relatório ficou público na issue.
+      try {
+        const top = findings.slice(0, 5).map((f) => `[${f.sev}] ${f.text}`).join('\n');
+        await sendTelegramMessage(
+          chat,
+          `🚨 VenTu ops audit: ${findings.length} finding(s)${p0 ? ` — ${p0} P0` : ''}\n${top}\n${url}`,
+        );
+      } catch (sendErr) {
+        console.log('⚠️ issue aberta mas notificação Telegram falhou:', sendErr.message || sendErr);
+      }
     }
   } else {
     console.log('⚠️ falhou a criar a issue (permissões do GITHUB_TOKEN?)');
@@ -636,7 +643,24 @@ async function main() {
   process.exit(0);
 }
 
-main().catch((e) => {
+main().catch(async (e) => {
   console.error('❌ ops-audit failed:', e.message || e);
+  // O auditor é o último vigilante do pipeline — um crash com exit(0)
+  // aparecia verde no Actions e deixava o pipeline sem ninguém a olhar
+  // (o bug original: jobsWithoutTimeout nunca existiu no cronDelivery —
+  // TypeError antes de deliver(), dias sem alertas). Best-effort: se a
+  // mensagem falhar também, ao menos fica no log.
+  try {
+    const chat = process.env.OPS_TELEGRAM_CHAT_ID;
+    if (chat) {
+      await sendTelegramMessage(
+        chat,
+        `🚨 VenTu ops audit CRASHED (${nowUtc()}): ${String(e.message || e).slice(0, 300)}\n` +
+          'O auditor saiu sem verificar nada — investigar o run do ops-audit.',
+      );
+    }
+  } catch (sendErr) {
+    console.error('⚠️ não foi possível reportar o crash ao Telegram:', sendErr.message || sendErr);
+  }
   process.exit(0); // o auditor nunca deve tornar runs vermelhos
 });

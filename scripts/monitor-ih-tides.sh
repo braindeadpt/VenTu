@@ -42,9 +42,16 @@ gh_available() {
   command -v gh >/dev/null 2>&1 && { [ -n "${GH_TOKEN:-}" ] || [ -n "${GITHUB_TOKEN:-}" ]; }
 }
 
-open_issue() {
-  gh issue list --repo "$REPO" --label "$OUTAGE_LABEL" --state open --json number \
-    --jq '.[0].number // empty' 2>/dev/null || true
+# Lista TODAS as issues abertas da label — e falha FECHADA (sem || true):
+# o `|| true` antigo devolvia "" numa falha transitória do `gh issue list`
+# (rede/5xx/rate-limit) e o ramo DOWN criava uma segunda issue duplicada
+# (#225, #292). Na recuperação, fechar só `.[0]` deixava duplicados órfãos —
+# `.[].number` permite fechar todas.
+list_open_issues() {
+  # --limit explícito: o default (30) deixava incidentes >30 por fechar na
+  # recuperação — ficavam órfãos abertos para uma execução seguinte.
+  gh issue list --repo "$REPO" --label "$OUTAGE_LABEL" --state open \
+    --limit 200 --json number --jq '.[].number // empty'
 }
 
 ensure_label() {
@@ -57,13 +64,18 @@ now_utc() { date -u +"%Y-%m-%d %H:%M UTC"; }
 if probe; then
   echo "✅ tide_obs_nrt/items — UP (HTTP $LAST_CODE, JSON válido)"
   if gh_available; then
-    issue=$(open_issue)
-    if [ -n "$issue" ]; then
-      gh issue comment "$issue" --repo "$REPO" --body "✅ Backend IH recuperou — \`tide_obs_nrt/items\` voltou a devolver HTTP 200 com dados ($(now_utc)). A fechar o incidente; confirmar o fim-a-fim com um run do \`update-data\`." >/dev/null
-      gh issue close "$issue" --repo "$REPO" >/dev/null
-      echo "🔔 RECOVERY — incidente #$issue comentado e fechado"
+    if issues=$(list_open_issues); then
+      if [ -n "$issues" ]; then
+        for issue in $issues; do
+          gh issue comment "$issue" --repo "$REPO" --body "✅ Backend IH recuperou — \`tide_obs_nrt/items\` voltou a devolver HTTP 200 com dados ($(now_utc)). A fechar o incidente; confirmar o fim-a-fim com um run do \`update-data\`." >/dev/null
+          gh issue close "$issue" --repo "$REPO" >/dev/null
+        done
+        echo "🔔 RECOVERY — incidente(s) comentado(s) e fechado(s): $issues"
+      else
+        echo "ℹ️ UP sem incidente aberto — estado normal (sem notificação)"
+      fi
     else
-      echo "ℹ️ UP sem incidente aberto — estado normal (sem notificação)"
+      echo "⚠️ gh issue list falhou — recovery adiado para o próximo run"
     fi
   else
     echo "ℹ️ UP — gh/GH_TOKEN indisponível (sem notificação por issue)"
@@ -74,9 +86,10 @@ fi
 echo "🔴 tide_obs_nrt/items — DOWN (HTTP $LAST_CODE) — backend de marés IH em baixo"
 if gh_available; then
   ensure_label
-  issue=$(open_issue)
-  if [ -n "$issue" ]; then
-    echo "ℹ️ Incidente #$issue já aberto — sem spam"
+  if ! issues=$(list_open_issues); then
+    echo "⚠️ gh issue list falhou — abortar sem abrir duplicado"
+  elif [ -n "$issues" ]; then
+    echo "ℹ️ Incidente(s) já aberto(s) ($issues) — sem spam"
   else
     if url=$(
       gh issue create --repo "$REPO" --label "$OUTAGE_LABEL" \
