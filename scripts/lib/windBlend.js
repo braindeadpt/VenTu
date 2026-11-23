@@ -4,8 +4,8 @@
  * - When ICON-EU (~7 km Europe) is live: 65 % ICON-EU + 35 % best_match in speed,
  *   gust and unit-vector direction while directions agree (≤ 60°) or either model
  *   is calm (< 0.5 m/s, where direction is undefined noise); when directions
- *   diverge (> 60°), publishes the complete vector (speed, direction, gust) of
- *   the member with the higher forecast gust — real pairs, never mixed members.
+ *   diverge (> 60°), publishes one member's complete vector (speed, direction,
+ *   gust) — base wins only with a full triple and a stronger gust than ICON-EU.
  * - Without ICON-EU (e.g. Açores): median speed + unit-vector mean direction;
  *   gust = conservative max(median gust, median speed + median excess).
  * - Matches hourly rows by timestamp (never blind array index) and preserves null.
@@ -153,19 +153,21 @@ function blendWindAtIndex(
       windGust = Math.max(rawGust, windSpeed * 1.1);
     } else {
       // Direções divergentes (> 60°) ou sem base: publica o vetor COMPLETO
-      // (velocidade, direção, rajada) do membro com a maior rajada prevista —
-      // pares sempre reais do mesmo modelo, nunca rajada de um com vento médio
-      // do outro. Empate ou rajada em falta → ICON-EU (maior resolução ~7 km).
-      const iconRef = hasIconGust ? iconGust : iconSpeed;
-      const baseRef = hasBaseSpeed && hasBaseGust ? baseGust : -1;
-      if (baseRef > iconRef) {
+      // (velocidade, direção, rajada) de UM membro — triplos sempre reais do
+      // mesmo modelo. O best_match só é elegível com vetor completo (velocidade
+      // + direção + rajada) e rajada superior à do ICON-EU; sem direção ou
+      // rajada própria, ou em empate, fica o ICON-EU (maior resolução ~7 km).
+      const baseComplete = hasBaseSpeed && hasBaseDir && hasBaseGust;
+      const baseWins = baseComplete && (!hasIconGust || baseGust > iconGust);
+      if (baseWins) {
         windSpeed = baseSpeed;
-        windDirection = hasBaseDir ? baseDir : useDir;
+        windDirection = baseDir;
         windGust = Math.max(baseGust, windSpeed * 1.1);
       } else {
         windSpeed = iconSpeed;
-        windDirection = useDir;
-        windGust = Math.max(iconRef, windSpeed * 1.1);
+        windDirection = Number.isFinite(iconDir) ? iconDir : null;
+        const rawGust = hasIconGust ? iconGust : iconSpeed;
+        windGust = Math.max(rawGust, windSpeed * 1.1);
       }
     }
   } else {

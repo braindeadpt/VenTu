@@ -92,6 +92,38 @@ describe('blendWindAtIndex', () => {
     expect(out.windGust).toBe(16);
   });
 
+  it('keeps ICON-EU vector when base has the stronger gust but no direction', () => {
+    // base 14/18 sem direção + ICON-EU 7/90/10: base não é elegível (triplo
+    // incompleto) → publica o vetor ICON-EU completo em vez de misturar modelos.
+    const out = blendWindAtIndex(
+      14,
+      null,
+      18,
+      { icon_eu: 7 },
+      { icon_eu: 90 },
+      { icon_eu: 10 },
+    );
+    expect(out.windSpeed).toBe(7);
+    expect(out.windDirection).toBe(90);
+    expect(out.windGust).toBe(10);
+  });
+
+  it('publishes the complete base vector when ICON-EU has no gust and base does', () => {
+    // Sem rajada ICON-EU, o critério explicito deixa vencer o membro que tem
+    // vetor completo com rajada — sem comparar rajada com velocidade média.
+    const out = blendWindAtIndex(
+      14,
+      270,
+      18,
+      { icon_eu: 12 },
+      { icon_eu: 90 },
+      {},
+    );
+    expect(out.windSpeed).toBe(14);
+    expect(out.windDirection).toBe(270);
+    expect(out.windGust).toBe(18);
+  });
+
   it('uses the calm model real direction instead of fake 0° when base direction is missing', () => {
     // base 10 m/s sem direção + ICON-EU calmo a 90°: não deve publicar 0° (norte fictício).
     const out = blendWindAtIndex(10, null, 14, { icon_eu: 0 }, { icon_eu: 90 }, { icon_eu: 0 });
