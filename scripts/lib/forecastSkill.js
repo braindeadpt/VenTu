@@ -50,6 +50,22 @@ const round1 = (n) => Math.round(n * 10) / 10;
 const round2 = (n) => Math.round(n * 100) / 100;
 
 /**
+ * Mar de vento (windWaveHeight) para arquivar junto do slot de previsão:
+ * `{ ww }` só quando o valor é um número finito — o 0 real preserva-se e o
+ * campo ausente/null fica ausente (nunca `ww: 0` inventado: `Number(null)`
+ * seria 0 e mediria «flat» onde não havia dado). Partilhado pelos dois
+ * caminhos de arquivo (IH em fetch-forecast-skill.js e WMO/Copernicus em
+ * archiveWmoSkill) para alimentar os pares `forecastWw` da calibração do
+ * chop (P2.4) — sem ele, os pares WMO ficavam sempre fora desse relatório.
+ * @param {{ windWaveHeight?: number|null }} hour linha do forecast do spot
+ * @returns {{ ww: number } | {}} campo a espalhar no slot de previsão
+ */
+function forecastWwField(hour) {
+  const ww = hour?.windWaveHeight;
+  return Number.isFinite(ww) ? { ww } : {};
+}
+
+/**
  * Faixas de horizonte (lead time, horas) do skill por tempo de anticipação.
  *
  * O ME/RMSE agregado de uma boia mistura horas feitas 2 h antes com horas feitas
@@ -199,7 +215,7 @@ function writeArchive(archive, outputPath = DEFAULT_ARCHIVE_PATH) {
  * Merge a forecast run into the archive (dedupe by Lisbon hour key, keep the
  * EARLIEST runAt — that is the real lead-time forecast, not a nowcast).
  * @param {object} archive
- * @param {Array<{ time: string, hm0: number, runAt: string, buoyId: number, buoyName?: string }>} newForecasts
+ * @param {Array<{ time: string, hm0: number, ww?: number, runAt: string, buoyId: number, buoyName?: string }>} newForecasts
  */
 /** Dedupe key: one forecast slot per buoy per Lisbon hour. */
 function forecastKey(f) {
@@ -339,6 +355,7 @@ function crossPairs(archive, opts = {}) {
         obs.origin ??
         (typeof obs.buoyId === 'number' ? 'ih' : wmoOriginForWmoCode(String(obs.buoyId))),
       forecastHm0: round2(f.hm0),
+      ...(Number.isFinite(f.ww) ? { forecastWw: round2(f.ww) } : {}),
       observedHm0: round2(obs.hm0),
       leadTimeHours: round1(leadHours),
     });
@@ -491,7 +508,7 @@ function buildStats(pairs) {
  *
  * @param {object} archive forecast-skill archive (mutated like the other archive* helpers)
  * @param {{
- *   forecasts: Record<string, Array<{ time: string, waveHeight: number }>>,
+ *   forecasts: Record<string, Array<{ time: string, waveHeight: number, windWaveHeight?: number|null }>>,
  *   spots: Array<{ id: string, lat: number, lon: number }>,
  *   wmoArchive: { buoys: Record<string, { name?: string, lat?: number, lon?: number, readings?: Array<{ date: string, hm0: number }> }> } | null,
  *   wmoBuoys?: { buoys: Record<string, { name?: string, lat?: number, lon?: number }> } | null,
@@ -558,6 +575,9 @@ function archiveWmoSkill(archive, inputs) {
       newForecasts.push({
         time: hour.time,
         hm0,
+        // P2.4: ww no mesmo formato do caminho IH — sem ele os pares WMO
+        // nunca tinham forecastWw e ficavam fora do relatório do chop.
+        ...forecastWwField(hour),
         runAt,
         buoyId: code,
         buoyName: live[code].name,
@@ -677,6 +697,54 @@ function buildReport(archive, nowMs = Date.now()) {
   };
 }
 
+/**
+ * Fase 3 (P2.3): skill REAL da boia como calibração do spot — por spot, o
+ * candidato é a boia IH mapeada e/ou a boia WMO mapeada; escolhe-se a
+ * qualificada mais próxima (n≥60 pares e corr≥0.7 — sem amostra ou sem
+ * correlação não se corrige nada). O `me` tem a convenção do skill
+ * (observed − forecast), pronta para somar ao waveHeight previsto.
+ * @param {Array<{ id: string }>} spots
+ * @param {Record<string, { idEst: number|string, distanceKm?: number }>|null|undefined} ihMapping ih-buoys.json spotMapping
+ * @param {Record<string, { code: string|number, distanceKm?: number }>|null|undefined} wmoMapping wmo-buoys.json spotMapping
+ * @param {Record<string, { me?: number, n?: number, corr?: number|null, buoyName?: string, origin?: string }>|null|undefined} byBuoy forecast-skill.json byBuoy
+ * @param {{ minN?: number, minCorr?: number, minAbsMe?: number, maxAbsMe?: number }} [gates]
+ * @returns {Record<string, { me: number, n: number, corr: number|null, buoy: string, km: number }>}
+ */
+function skillBiasBySpot(spots, ihMapping, wmoMapping, byBuoy, gates = {}) {
+  const { minN = 60, minCorr = 0.7, minAbsMe = 0.2, maxAbsMe = 1.0 } = gates;
+  const out = {};
+  if (!byBuoy) return out;
+  for (const spot of spots ?? []) {
+    const candidates = [];
+    const ih = ihMapping?.[spot.id];
+    if (ih?.idEst != null) {
+      const s = byBuoy[String(ih.idEst)];
+      if (s) candidates.push({ s, buoy: s.buoyName ?? String(ih.idEst), km: ih.distanceKm ?? Infinity });
+    }
+    const wmo = wmoMapping?.[spot.id];
+    if (wmo?.code != null) {
+      const s = byBuoy[String(wmo.code)];
+      if (s) candidates.push({ s, buoy: s.buoyName ?? String(wmo.code), km: wmo.distanceKm ?? Infinity });
+    }
+    const qualified = candidates
+      .filter(
+        ({ s }) =>
+          Number.isFinite(s.me) &&
+          (s.n ?? 0) >= minN &&
+          Number.isFinite(s.corr) &&
+          s.corr >= minCorr &&
+          Math.abs(s.me) >= minAbsMe &&
+          Math.abs(s.me) <= maxAbsMe,
+      )
+      .sort((a, b) => a.km - b.km);
+    const pick = qualified[0];
+    if (pick) {
+      out[spot.id] = { me: pick.s.me, n: pick.s.n, corr: pick.s.corr, buoy: pick.buoy, km: Math.round(pick.km * 10) / 10 };
+    }
+  }
+  return out;
+}
+
 module.exports = {
   SKILL_WINDOW_DAYS,
   MIN_PAIRS,
@@ -694,6 +762,7 @@ module.exports = {
   archiveForecastRun,
   archiveObservations,
   archiveWmoSkill,
+  forecastWwField,
   attachWaveSkill,
   crossPairs,
   computeSkillStats,
@@ -702,6 +771,7 @@ module.exports = {
   pruneArchive,
   buildReport,
   pairOriginOf,
+  skillBiasBySpot,
   DEFAULT_OUTPUT_PATH,
   DEFAULT_ARCHIVE_PATH,
 };

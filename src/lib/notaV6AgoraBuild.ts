@@ -43,6 +43,9 @@ export function linhaDeCondicoes(raw: Record<string, unknown>, time: string, now
     ...(temOnda ? { waveHeight: c.waveHeight, wavePeriod: c.wavePeriod } : {}),
     ...(finito(raw.waveDirection) ? { waveDirection: c.waveDirection } : {}),
     ...(finito(raw.swellDirection) ? { swellDirection: raw.swellDirection } : {}),
+    // Paridade do chop (P2.4): o mapa avalia a MESMA hora que a ficha — o mar
+    // de vento tem de atravessar o adaptador ou a penalização diverge.
+    ...(finito(raw.windWaveHeight) ? { windWaveHeight: raw.windWaveHeight } : {}),
     ...(finito(raw.waterTemp) ? { waterTemp: c.waterTemp } : {}),
     ...(finito(raw.airTemp) ? { airTemp: raw.airTemp } : {}),
     ...(finito(raw.tideHeight) ? { tideHeight: raw.tideHeight } : {}),

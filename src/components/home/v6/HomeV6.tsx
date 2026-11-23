@@ -34,6 +34,8 @@ import { getAssetPath } from '@/lib/paths';
 import { hrefMapa as montarHrefMapa } from '@/lib/home/hrefMapa';
 import type { FotoSpot } from '@/lib/spotFotos';
 import type { LinhaForecast } from '@/lib/horaSpot';
+import { loadForecastForSpot } from '@/lib/spotDataCache';
+import { VISIBILITY_REFRESH_MIN_MS } from '@/lib/refreshCadence';
 import { useNivel } from '@/lib/nivelPref';
 import { nivelCopyV6 } from '@/lib/translations/nivel';
 import { emPoucos, fraseNivel, nivelDoSpotHome, rkDe } from './nivelHome';
@@ -99,26 +101,62 @@ export default function HomeV6({ locale, costa: costaSSG, meta, fotos, agoraMs, 
     // costura dos e2e herméticos (a mesma da página de spot): com `ventu_live=1` a home
     // lê o forecast servido (`/data/forecasts/<série>.json`) em vez do snapshot do build
     let vivo = true;
-    if (document.cookie.split(';').some((x) => x.trim() === 'ventu_live=1')) {
-      void Promise.all(
+    let ultimasLinhas: Record<string, LinhaForecast[]> | null = null;
+    const recarrega = async (fetchSerie: (serie: string) => Promise<LinhaForecast[]>) => {
+      const es = await Promise.all(
         Object.entries(meta).map(async ([id, s]) => {
           try {
-            const r = await fetch(getAssetPath(`/data/forecasts/${s.serie}.json`));
-            return [id, r.ok ? ((await r.json()) as LinhaForecast[]) : []] as const;
+            return [id, await fetchSerie(s.serie)] as const;
           } catch {
             return [id, [] as LinhaForecast[]] as const;
           }
         }),
-      ).then((es) => {
-        if (vivo) {
-          const t = Date.now();
-          setCompacta(compactarCosta(Object.fromEntries(es), t, meta));
-          setAgora(t);
-        }
+      );
+      if (!vivo) return;
+      // Falhas transitórias não apagam spots: cada série em falta fica com a
+      // última conhecida; se a maioria falhar não se troca nada (mantém o bake).
+      // Na PRIMEIRA volta ainda não há séries em memória — só se troca com a
+      // costa completa, para nunca largar um spot por um fetch isolado.
+      const ok = es.filter(([, a]) => a.length).length;
+      if (!ok || ok * 2 < es.length) return;
+      if (!ultimasLinhas && ok < es.length) return;
+      const merged = { ...(ultimasLinhas ?? {}) };
+      for (const [id, a] of es) if (a.length) merged[id] = a;
+      const t = Date.now();
+      setCompacta(compactarCosta(merged, t, meta));
+      ultimasLinhas = merged;
+      setAgora(t);
+    };
+    if (document.cookie.split(';').some((x) => x.trim() === 'ventu_live=1')) {
+      void recarrega(async (serie) => {
+        const r = await fetch(getAssetPath(`/data/forecasts/${serie}.json`));
+        return r.ok ? ((await r.json()) as LinhaForecast[]) : [];
       });
     }
+    // P2.2 SWR: mesma cadência da grid (15 min + regresso ao visível ≥5 min) —
+    // as ~19 séries da costa revalidam por ETag via spotDataCache (304 barato).
+    // Começa em "agora": o bake acabou de renderizar, então um regresso ao
+    // visível dentro de <5 min não deve refazer fetch das séries.
+    let lastRefreshAt = Date.now();
+    const tick = () => {
+      setAgora(Date.now());
+      if (document.hidden) return;
+      if (Date.now() - lastRefreshAt < VISIBILITY_REFRESH_MIN_MS) return;
+      lastRefreshAt = Date.now();
+      void recarrega((serie) => loadForecastForSpot(serie, { force: true }) as unknown as Promise<LinhaForecast[]>);
+    };
+    // Sem tick imediato: o bake já é o "stale" do SWR — baixar as ~19 séries no
+    // carregamento infla o total-byte-weight da home (~780KB) e fura o budget
+    // do Lighthouse. A revalidação começa no primeiro intervalo / regresso.
+    const refreshIv = window.setInterval(tick, 15 * 60 * 1000);
+    const onVis = () => {
+      if (document.visibilityState === 'visible') tick();
+    };
+    document.addEventListener('visibilitychange', onVis);
     return () => {
       vivo = false;
+      window.clearInterval(refreshIv);
+      document.removeEventListener('visibilitychange', onVis);
       window.removeEventListener(MODALIDADE_EVENT, ouve);
       mq.removeEventListener('change', largura);
     };

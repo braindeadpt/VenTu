@@ -27,6 +27,8 @@ export interface HoraModalidade {
   wd: number;
   /** Altura significativa da onda (m). */
   hs: number;
+  /** Mar de vento (m) dentro de `hs`; `undefined` quando a fonte não o traz — sem penalização. */
+  ww?: number;
   /** Período (s). */
   tp: number;
   /** Direcção de onde vem a ondulação (graus). */
@@ -46,6 +48,11 @@ export interface HoraModalidade {
   /** A fonte não traz vento / onda nesta hora (`null` no forecast): a lógica que precisa deles não avalia. */
   semDados?: ReadonlyArray<'vento' | 'onda'>;
 }
+
+/** Mar batido (P2.4): limiares do mar de vento dentro da onda — afinar com o skill do `ww` quando houver pares. */
+export const CHOP_MIN_HS_M = 0.4;
+export const CHOP_MIN_WW_M = 0.5;
+export const CHOP_MIN_RATIO = 0.35;
 
 export type Ponto = readonly [number, number];
 export type Curva = ReadonlyArray<Ponto>;
@@ -341,7 +348,12 @@ export function modAvalia(MOD: ModalidadesDef, opc?: { DA?: number }): Motor {
         f.vento = pv === 0 ? 1 : pv > pvv.contra ? -1 : 0;
         const pm = h.tide > p.mare.alta[0] ? p.mare.alta[1] : 0;
         f.mare = pm ? -1 : h.tide < p.mare.baixa ? 1 : 0;
-        const n = s - pv - pm - degrau(p.chuva, h.rain) - solBaixo(h);
+        // Mar batido (Fase 3): o mar de vento é uma fatia grande da onda —
+        // mistura/desordena a forma. −1 na lógica de onda (surf/bodyboard);
+        // sem `ww` na fonte não há penalização.
+        const chop =
+          h.ww != null && h.hs >= CHOP_MIN_HS_M && h.ww >= CHOP_MIN_WW_M && h.ww / h.hs >= CHOP_MIN_RATIO ? 1 : 0;
+        const n = s - pv - pm - chop - degrau(p.chuva, h.rain) - solBaixo(h);
         const motivo: Motivo =
           t < DA - 2
             ? 'pouca'

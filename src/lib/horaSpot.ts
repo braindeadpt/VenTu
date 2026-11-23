@@ -114,6 +114,8 @@ export interface LinhaForecast {
   waterTemp?: number;
   airTemp?: number;
   tideHeight?: number;
+  /** Mar de vento (m) — componente da `waveHeight` gerada pelo vento local. Ausente em linhas antigas. */
+  windWaveHeight?: number;
   /** Precipitação (mm/h). O pipeline só a escreve quando chove: sem o campo e com `cloudCover` = 0 mm/h. */
   precipitation?: number;
   /** Nebulosidade (%). Presente = a hora tem dados de tempo (marca da chuva a 0). */
@@ -245,6 +247,10 @@ export function aplicarObservacoesNaHoraAgora(
   }
   if (temOndaObs && obs.observedWave) {
     atualizada.waveHeight = obs.observedWave.waveHeight;
+    // Mar de vento medido não existe na boia — manter o previsto misturava
+    // fontes no rácio do chop (0,6/2,0=30 % → 0,6/1,5=40 %). Sem par real,
+    // sem penalização nesta hora.
+    delete atualizada.windWaveHeight;
     if (typeof obs.observedWave.wavePeriod === 'number' && Number.isFinite(obs.observedWave.wavePeriod)) {
       atualizada.wavePeriod = obs.observedWave.wavePeriod;
     }
@@ -255,6 +261,33 @@ export function aplicarObservacoesNaHoraAgora(
   const copia = linhas.slice();
   copia[j] = atualizada;
   return copia;
+}
+
+/**
+ * Índice na janela `horas` do instante escolhido na régua (ms UTC): a hora
+ * exacta se ainda estiver na janela; a mais próxima se já saiu — a régua
+ * desliza com o relógio, por isso uma hora passada cai na 1.ª (o «Agora»)
+ * e uma futura além do fim cai na última. `fallback` só quando nenhuma hora
+ * tem instante legível. A comparação é por INSTANTE, não por etiqueta: o
+ * 01:00 repetido da mudança de hora de outubro tem dois `ms` diferentes.
+ */
+export function indiceHoraPorInstante(horas: ReadonlyArray<Pick<HoraSpot, 'ms'>>, ms: number, fallback = 0): number {
+  if (!horas.length) return 0;
+  const exata = horas.findIndex((h) => h.ms === ms);
+  if (exata >= 0) return exata;
+  let best = -1;
+  let bd = Infinity;
+  for (let j = 0; j < horas.length; j++) {
+    const m = horas[j].ms;
+    if (m == null || !Number.isFinite(m)) continue;
+    const d = Math.abs(m - ms);
+    if (d < bd) {
+      bd = d;
+      best = j;
+    }
+  }
+  if (best >= 0) return best;
+  return Math.max(0, Math.min(horas.length - 1, fallback));
 }
 
 /**
@@ -304,6 +337,7 @@ export function horaDeLinha(
     g: Math.round((num(l.windGust) ?? num(l.windSpeed) ?? 0) * KT),
     wd: n360(num(l.windDirection) ?? 0),
     hs: r1(num(l.waveHeight) ?? 0),
+    ww: num(l.windWaveHeight),
     tp: Math.round(num(l.wavePeriod) ?? 0),
     sd: n360(num(l.waveDirection) ?? num(l.swellDirection) ?? local.praiaVirada),
     tide,

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 
@@ -20,6 +20,7 @@ import { getLocalTips } from '@/lib/spotTips';
 import { loadCommunityTips, mergeLocalTips } from '@/lib/communityTips';
 import { rememberDataUpdate } from '@/lib/dataCache';
 import { loadConditionsJson, loadForecastForSpot } from '@/lib/spotDataCache';
+import { REFRESH_MS, VISIBILITY_REFRESH_MIN_MS } from '@/lib/refreshCadence';
 import { rawToScoreInput, applyRegionalBiasFallback } from '@/lib/scoreConditions';
 import { loadWaveBiasRegions } from '@/lib/waveBias';
 import Skeleton from '@/components/ui/Skeleton';
@@ -127,6 +128,60 @@ function sportDoSpot(spot: Spot, s: SportType): boolean {
   return getRelevantSports(spot).includes(s);
 }
 
+/** Mapeia a row do spot em conditions.json para `Conditions` (todos os campos). */
+function spotCondToConditions(spotCond: Record<string, unknown>): Conditions {
+  return {
+    waveHeight: Number(spotCond.waveHeight) || 0,
+    wavePeriod: Number(spotCond.wavePeriod) || 0,
+    waveDirection: Number(spotCond.waveDirection) || 0,
+    windSpeed: Number(spotCond.windSpeed) || 0,
+    windDirection: Number(spotCond.windDirection) || 0,
+    windGust: Number(spotCond.windGust) || 0,
+    waterTemp: Number(spotCond.waterTemp) || 0,
+    uvIndex: spotCond.uvIndex as number | undefined,
+    uvIndexMax: spotCond.uvIndexMax as number | undefined,
+    airQualityIndex: spotCond.airQualityIndex as number | undefined,
+    swellHeight: spotCond.swellHeight as number | undefined,
+    swellPeriod: spotCond.swellPeriod as number | undefined,
+    swellDirection: spotCond.swellDirection as number | undefined,
+    secondarySwellHeight: spotCond.secondarySwellHeight as number | undefined,
+    secondarySwellPeriod: spotCond.secondarySwellPeriod as number | undefined,
+    secondarySwellDirection: spotCond.secondarySwellDirection as number | undefined,
+    wavePowerKw: spotCond.wavePowerKw as number | undefined,
+    observed: spotCond.observed as ObservedConditions | undefined,
+    observedWave: spotCond.observedWave as ObservedWave | undefined,
+    observedWaveAlt: spotCond.observedWaveAlt as ObservedWave | undefined,
+    observedWaveMeta: spotCond.observedWaveMeta as ObservedWaveMeta | undefined,
+    observedWaveCoherenceRefused: spotCond.observedWaveCoherenceRefused as
+      | Conditions['observedWaveCoherenceRefused']
+      | undefined,
+    observedWaveCoherenceWarning: spotCond.observedWaveCoherenceWarning as
+      | Conditions['observedWaveCoherenceWarning']
+      | undefined,
+    waveBias: spotCond.waveBias as Conditions['waveBias'],
+    windBias: spotCond.windBias as Conditions['windBias'],
+    tideHeight: spotCond.tideHeight as number | undefined,
+    tideStatus: spotCond.tideStatus as Conditions['tideStatus'],
+    tideLabel: spotCond.tideLabel as string | undefined,
+    tideObservedHeight: spotCond.tideObservedHeight as number | undefined,
+    tideObservedAt: spotCond.tideObservedAt as string | undefined,
+    tideStation: spotCond.tideStation as string | undefined,
+    tideAnomalyM: spotCond.tideAnomalyM as number | undefined,
+    currentMeasuredSpeed: spotCond.currentMeasuredSpeed as number | undefined,
+    currentMeasuredDir: spotCond.currentMeasuredDir as number | undefined,
+    currentMeasuredAt: spotCond.currentMeasuredAt as string | undefined,
+    currentMeasuredNetwork: spotCond.currentMeasuredNetwork as string | undefined,
+    waterQuality: spotCond.waterQuality as Conditions['waterQuality'],
+    confidence: spotCond.confidence as Conditions['confidence'],
+    confidenceDetail: spotCond.confidenceDetail as Conditions['confidenceDetail'],
+    dailyConfidence: spotCond.dailyConfidence as Conditions['dailyConfidence'],
+    source: 'real',
+    updatedAt: typeof spotCond.updatedAt === 'string' ? spotCond.updatedAt : undefined,
+  };
+}
+
+const SPOT_REFRESH_MS = REFRESH_MS;
+
 export default function SpotDetailClient({
   spot,
   locale,
@@ -201,15 +256,31 @@ export default function SpotDetailClient({
   const [loadError, setLoadError] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
 
-  // As leituras medidas (boia) usam o relógio do BUILD até montar: o primeiro
-  // paint reproduz o bake e uma leitura a cruzar o gate de 3 h/6 h entre o
-  // bake e a hidratação não muda a árvore (React #418). Depois de montar,
-  // relógio real (padrão mounted+bakedAtMs).
-  const [mounted, setMounted] = useState(false);
+  // Relógio partilhado da ficha (revisão P2.2): até montar é o relógio do
+  // build (`bakedAtMs`) — o primeiro paint reproduz o bake e uma leitura a
+  // cruzar o gate de 3 h/6 h entre o bake e a hidratação não muda a árvore
+  // (React #418). Depois de montar é o relógio real e avança na cadência de
+  // refresh e no regresso ao visível. Alimenta a régua (prop `agoraMs` do
+  // SpotV6) E a aplicação das observações à hora «Agora»
+  // (`aplicarObservacoesNaHoraAgora` abaixo): ao virar a hora coberta, a
+  // leitura da boia ainda fresca aplica-se à hora NOVA — sem o relógio na
+  // dependência, a régua mostrava a hora nova com valores do modelo.
+  const [agoraMs, setAgoraMs] = useState(bakedAtMs ?? 0);
   useEffect(() => {
-    setMounted(true);
+    const relogio = () => {
+      if (!document.hidden) setAgoraMs(Date.now());
+    };
+    relogio();
+    const relogioIv = window.setInterval(relogio, SPOT_REFRESH_MS);
+    const relogioVis = () => {
+      if (document.visibilityState === 'visible') setAgoraMs(Date.now());
+    };
+    document.addEventListener('visibilitychange', relogioVis);
+    return () => {
+      window.clearInterval(relogioIv);
+      document.removeEventListener('visibilitychange', relogioVis);
+    };
   }, []);
-  const freshnessNowMs = mounted ? undefined : bakedAtMs;
 
   // null até o overlay chegar (fetch pós-montagem) — o wrapper expõe-o em
   // data-community-tips para as specs esperarem pelo último commit tardio.
@@ -300,55 +371,7 @@ export default function SpotDetailClient({
           }
 
           if (spotCond && spotFc) {
-            conditions = {
-              waveHeight: Number(spotCond.waveHeight) || 0,
-              wavePeriod: Number(spotCond.wavePeriod) || 0,
-              waveDirection: Number(spotCond.waveDirection) || 0,
-              windSpeed: Number(spotCond.windSpeed) || 0,
-              windDirection: Number(spotCond.windDirection) || 0,
-              windGust: Number(spotCond.windGust) || 0,
-              waterTemp: Number(spotCond.waterTemp) || 0,
-              uvIndex: spotCond.uvIndex as number | undefined,
-              uvIndexMax: spotCond.uvIndexMax as number | undefined,
-              airQualityIndex: spotCond.airQualityIndex as number | undefined,
-              swellHeight: spotCond.swellHeight as number | undefined,
-              swellPeriod: spotCond.swellPeriod as number | undefined,
-              swellDirection: spotCond.swellDirection as number | undefined,
-              secondarySwellHeight: spotCond.secondarySwellHeight as number | undefined,
-              secondarySwellPeriod: spotCond.secondarySwellPeriod as number | undefined,
-              secondarySwellDirection: spotCond.secondarySwellDirection as number | undefined,
-              wavePowerKw: spotCond.wavePowerKw as number | undefined,
-              observed: spotCond.observed as ObservedConditions | undefined,
-              observedWave: spotCond.observedWave as ObservedWave | undefined,
-              observedWaveAlt: spotCond.observedWaveAlt as ObservedWave | undefined,
-              observedWaveMeta: spotCond.observedWaveMeta as ObservedWaveMeta | undefined,
-              observedWaveCoherenceRefused: spotCond.observedWaveCoherenceRefused as
-                | Conditions['observedWaveCoherenceRefused']
-                | undefined,
-              observedWaveCoherenceWarning: spotCond.observedWaveCoherenceWarning as
-                | Conditions['observedWaveCoherenceWarning']
-                | undefined,
-              waveBias: spotCond.waveBias as Conditions['waveBias'],
-              windBias: spotCond.windBias as Conditions['windBias'],
-              tideHeight: spotCond.tideHeight as number | undefined,
-              tideStatus: spotCond.tideStatus as Conditions['tideStatus'],
-              tideLabel: spotCond.tideLabel as string | undefined,
-              tideObservedHeight: spotCond.tideObservedHeight as number | undefined,
-              tideObservedAt: spotCond.tideObservedAt as string | undefined,
-              tideStation: spotCond.tideStation as string | undefined,
-              tideAnomalyM: spotCond.tideAnomalyM as number | undefined,
-              currentMeasuredSpeed: spotCond.currentMeasuredSpeed as number | undefined,
-              currentMeasuredDir: spotCond.currentMeasuredDir as number | undefined,
-              currentMeasuredAt: spotCond.currentMeasuredAt as string | undefined,
-              currentMeasuredNetwork: spotCond.currentMeasuredNetwork as string | undefined,
-              waterQuality: spotCond.waterQuality as Conditions['waterQuality'],
-              confidence: spotCond.confidence as Conditions['confidence'],
-              confidenceDetail: spotCond.confidenceDetail as Conditions['confidenceDetail'],
-              dailyConfidence: spotCond.dailyConfidence as Conditions['dailyConfidence'],
-              source: 'real',
-              updatedAt:
-                typeof spotCond.updatedAt === 'string' ? spotCond.updatedAt : undefined,
-            };
+            conditions = spotCondToConditions(spotCond);
 
             forecast = spotFc;
 
@@ -458,6 +481,90 @@ export default function SpotDetailClient({
     };
   }, [spot, sportFromUrl, retryCount, initialData, forceLive]);
 
+  // Revalidação em background (P2.2): a página baked saltava o fetch e, com a
+  // app aberta horas (PWA/TWA), os dados congelavam no build. Mesma cadência
+  // da grid — conditions.json + forecasts/<id>.json por ETag (304 barato),
+  // swap só quando o `updatedAt` avança, sem trocar o separador (CLS).
+  useEffect(() => {
+    if (!initialData || forceLive) return;
+    const baked = initialData;
+    let cancelled = false;
+    // Começa em "agora": o bake acabou de renderizar — um regresso ao visível
+    // dentro de <5 min não deve refazer o fetch.
+    let lastRefreshAt = Date.now();
+    // A data do modelo não avança em ciclos só de observações (merge-observations
+    // publica vento/onda medidos sem renovar a previsão): a chave compara o
+    // conteúdo aplicado — previsão + observações — e aceita inclusivamente
+    // remoções de leituras.
+    const keyDe = (c: Record<string, unknown>) =>
+      [c.updatedAt, JSON.stringify(c.observed ?? null), JSON.stringify(c.observedWave ?? null)].join('|');
+    // A série horária também entra na chave aplicada (revisão P2.2): as
+    // conditions podem chegar antes duma série NOVA e, sem ela na chave, a
+    // previsão nova nunca se aplicava enquanto as conditions não mudassem.
+    // JSON das linhas = impressão digital exacta e barata (a revalidação já
+    // é rara: 15 min / regresso ao visível).
+    const serieKeyDe = (fc: SpotData['forecast'] | null | undefined) => (fc?.length ? JSON.stringify(fc) : '-');
+    // A série efectivamente aplicada cresce quando chega uma nova e NUNCA
+    // volta ao bake: um fetch de forecast falhado (lista vazia) não a
+    // regredia — antes o fallback era `baked.forecast` e podia desactualizar.
+    let appliedFc: SpotData['forecast'] = baked.forecast;
+    let appliedKey = `${keyDe(baked.conditions as unknown as Record<string, unknown>)}~${serieKeyDe(appliedFc)}`;
+
+    async function revalidate() {
+      if (document.hidden) return;
+      if (Date.now() - lastRefreshAt < VISIBILITY_REFRESH_MIN_MS) return;
+      lastRefreshAt = Date.now();
+      try {
+        const dataId = getConditionsDataId(spot);
+        const [condJson, spotFc, waveBiasFile] = await Promise.all([
+          loadConditionsJson({ force: true }),
+          loadForecastForSpot(dataId, { force: true }).catch(() => null),
+          loadWaveBiasRegions().catch(() => null),
+        ]);
+        if (cancelled) return;
+        let spotCond = (condJson[dataId] ?? condJson[spot.id]) as Record<string, unknown> | undefined;
+        if (!spotCond) return;
+        // Chave sobre o que seria EFECTIVAMENTE aplicado: conditions novas ou
+        // série nova — um fetch de forecast falhado mantém a série aplicada
+        // (`appliedFc`), nem conta como mudança nem a regredia.
+        const freshFc = spotFc?.length ? (spotFc as SpotData['forecast']) : appliedFc;
+        const freshKey = `${keyDe(spotCond)}~${serieKeyDe(freshFc)}`;
+        if (freshKey === appliedKey) return;
+        const biasPatch = applyRegionalBiasFallback(spotCond, spot.region, waveBiasFile);
+        if (biasPatch) spotCond = { ...spotCond, ...biasPatch };
+        const conditions = spotCondToConditions(spotCond);
+        const allScores = allScoresComV6(spot, rawToScoreInput(spotCond), notaV6DoSpot(spot, condJson));
+        if (cancelled) return;
+        setSpotData({
+          spot,
+          conditions,
+          allScores,
+          forecast: freshFc,
+        });
+        appliedFc = freshFc;
+        appliedKey = freshKey;
+        rememberDataUpdate(spotCond.updatedAt as string | undefined);
+        // O separador escolhido mantém-se — refresca dentro dele, sem salto.
+      } catch {
+        /* mantém o bake */
+      }
+    }
+
+    // Sem revalidação imediata: este efeito só corre com bake (ver guarda
+    // acima), que já é o "stale" do SWR — baixar conditions+forecast no
+    // carregamento inflaria o total-byte-weight da página sem necessidade.
+    const onVis = () => {
+      if (document.visibilityState === 'visible') void revalidate();
+    };
+    const intervalId = window.setInterval(() => void revalidate(), SPOT_REFRESH_MS);
+    document.addEventListener('visibilitychange', onVis);
+    return () => {
+      cancelled = true;
+      window.clearInterval(intervalId);
+      document.removeEventListener('visibilitychange', onVis);
+    };
+  }, [spot, initialData, forceLive]);
+
   // Baked pages don't run loadData; keep the freshness heuristic fed.
   useEffect(() => {
     if (initialData?.conditions.updatedAt) {
@@ -478,15 +585,17 @@ export default function SpotDetailClient({
     [spotData],
   );
   // Alinhamento D4: na hora «Agora», aplica vento observado e boia fresca (≤ 40 km)
-  // exatamente como o /mapa, listagens e alertas (`notaV6AgoraBuild`).
+  // exatamente como o /mapa, listagens e alertas (`notaV6AgoraBuild`). O
+  // relógio é o MESMO da régua (`agoraMs`): quando a hora coberta vira, a
+  // aplicação re-corre — a leitura da boia ainda fresca passa à hora nova.
   const linhasV6 = useMemo(
     () =>
       aplicarObservacoesNaHoraAgora(
         (spotData?.forecast ?? []) as unknown as LinhaForecast[],
         spotData?.conditions,
-        freshnessNowMs ?? Date.now(),
+        agoraMs,
       ),
-    [spotData, freshnessNowMs],
+    [spotData, agoraMs],
   );
 
   if (loading) {
@@ -600,7 +709,7 @@ export default function SpotDetailClient({
           spot={spot}
           locale={locale}
           linhas={linhasV6}
-          agoraMs={bakedAtMs ?? 0}
+          agoraMs={agoraMs}
           onModalidade={(m) => {
             const alvo: SportType = m === 'kite' ? 'kitesurf' : 'surf';
             if (allScores[alvo]) setSelectedSport(alvo);
@@ -619,7 +728,7 @@ export default function SpotDetailClient({
               mareCurva={mareCurva}
               uvPorHora={uvPorHora}
               c={spotData.conditions}
-              agoraMs={freshnessNowMs}
+              agoraMs={agoraMs}
             />
           )}
           contexto={(h) => (

@@ -1,4 +1,4 @@
-const { confidenceFromPrevious, applyWaveBiasToRow } = require('./updateConditionsPure');
+const { confidenceFromPrevious, applyWaveBiasToRow, applySkillBiasToRow } = require('./updateConditionsPure');
 const { buildConditionsRow, mergeForecast } = require('./updateConditionsMerge');
 const { attachEnsemble, inheritEnsemble } = require('./ensembleQuantiles');
 
@@ -76,10 +76,25 @@ async function processSpot(spot, options) {
     else if (station) options.onStaleIhTide?.();
   }
   const current = options.getCurrentConditions(marineData, currentWeatherData, ihTideObs, options.tideBaseline);
-  const biasRow = applyWaveBiasToRow(current, spot.region, waveBias, waveBiasEnabled);
-  if (biasRow.waveBias) log.log(`  ↳ ${spot.id}: waveHeight ${biasRow.waveHeightRaw} → ${biasRow.waveHeight} m (bias ${biasRow.waveBias.me >= 0 ? '+' : ''}${biasRow.waveBias.me} m, n=${biasRow.waveBias.n})`);
+  // P2.3: a skill REAL da boia do spot (forecast-skill.json) tem prioridade
+  // sobre o viés ERA5 regional — mede directamente o modelo que servimos.
+  const skillRow = applySkillBiasToRow(current, options.skillBySpot?.[spot.id]);
+  const biasRow = skillRow.waveBias ? skillRow : applyWaveBiasToRow(current, spot.region, waveBias, waveBiasEnabled);
+  if (biasRow.waveBias) log.log(`  ↳ ${spot.id}: waveHeight ${biasRow.waveHeightRaw} → ${biasRow.waveHeight} m (${biasRow.waveBias.src === 'skill' ? `skill ${biasRow.waveBias.buoy}` : 'bias'} ${biasRow.waveBias.me >= 0 ? '+' : ''}${biasRow.waveBias.me} m, n=${biasRow.waveBias.n})`);
   const conditions = buildConditionsRow(marineData, currentWeatherData, current, biasRow, confidenceDetail, dailyConfidence, useMultiModel);
   const forecast = mergeForecast(marineData, weatherData);
+  // P2.3: a calibração da boia aplica-se À SÉRIE também — a ficha e a Home
+  // avaliam as horas, não só a row. Raw preservado por hora em waveHeightRaw;
+  // o fetch-forecast-skill arquiva `waveHeightRaw ?? waveHeight`, por isso
+  // nunca aprende com a própria correção.
+  if (biasRow.waveBias?.src === 'skill' && Number.isFinite(biasRow.waveBias.me)) {
+    for (const row of forecast) {
+      if (typeof row.waveHeight === 'number' && Number.isFinite(row.waveHeight)) {
+        row.waveHeightRaw = row.waveHeight;
+        row.waveHeight = Math.max(0.1, Math.round((row.waveHeight + biasRow.waveBias.me) * 10) / 10);
+      }
+    }
+  }
   // Quantiles come from the raw members, so they are attached before the wind
   // blend rewrites the row's central windSpeed: `windP50` is the ensemble
   // median while the row value stays the product wind (ICON-EU floor).

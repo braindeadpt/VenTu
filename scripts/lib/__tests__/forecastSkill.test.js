@@ -274,6 +274,37 @@ describe('archiveWmoSkill (boias ES keyless)', () => {
     expect(byBuoy['6200084'].origin).toBe('wmo-es');
   });
 
+  it('par WMO conserva forecastWw do windWaveHeight previsto (P2.4)', () => {
+    const a = emptyArchive();
+    const fc = {
+      moledo: [
+        { time: '2026-08-14T15:00', waveHeight: 1.4, windWaveHeight: 0.52 },
+        { time: '2026-08-14T16:00', waveHeight: 1.5 },
+        { time: '2026-08-14T17:00', waveHeight: 0.3, windWaveHeight: 0 },
+      ],
+    };
+    const arc = {
+      buoys: {
+        '6200084': {
+          name: 'Cabo Silleiro',
+          lat: 42.12,
+          lon: -9.43,
+          readings: [
+            { date: '2026-08-14T14:00:00Z', hm0: 1.6 },
+            { date: '2026-08-14T15:00:00Z', hm0: 1.7 },
+            { date: '2026-08-14T16:00:00Z', hm0: 0.4 },
+          ],
+        },
+      },
+    };
+    archiveWmoSkill(a, { forecasts: fc, spots, wmoArchive: arc, wmoBuoys: null, nowMs: NOW_MS, runAt: RUN_AT });
+    const pairs = crossPairs(a, { nowMs: Date.parse('2026-08-14T16:00:00Z') });
+    // Com ww → par com forecastWw; sem ww → campo ausente; ww = 0 real preserva-se.
+    expect(pairs.find((p) => p.forecastHm0 === 1.4)).toMatchObject({ forecastWw: 0.52 });
+    expect(pairs.find((p) => p.forecastHm0 === 1.5)).not.toHaveProperty('forecastWw');
+    expect(pairs.find((p) => p.forecastHm0 === 0.3)).toMatchObject({ forecastWw: 0 });
+  });
+
   it('acumula entre runs: mantém previsão mais antiga e leitura mais recente', () => {
     const a = emptyArchive();
     const fc = { moledo: [{ time: '2026-08-14T15:00', waveHeight: 1.4 }] };

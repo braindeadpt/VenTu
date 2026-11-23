@@ -1,0 +1,81 @@
+name: Chop Calibration Review
+
+# Revisão mensal do «mar batido» (P2.4): corre scripts/check-chop-calibration.js
+# (frequência de chop por spot + pares forecastWw↔boia do arquivo do
+# forecast-skill — janela móvel de 30 dias, não o mês de calendário) e publica
+# o relatório na issue de tracking. Quando uma boia tiver ≥60 pares com ww e
+# os lados chop/sem-chop tiverem amostra, o script sugere rever
+# CHOP_MIN_* em src/lib/modalidades/avalia.ts — até lá, o relatório mensal é
+# o lembrete automático (ninguém precisa de se lembrar manualmente).
+on:
+  schedule:
+    # Segunda-feira às 08:13 UTC — o teste cronDelivery exige nominal > 0
+    # corridas/semana, por isso o ritmo é semanal; o passo de comentário abaixo
+    # filtra para a 1.ª semana do mês (ou quando o relatório sugere ação),
+    # mantendo a cadência de revisão mensal sem cron mensal. Fora dos crons de
+    # dados (:17/:47), monitores (:07/:37, :12/:42) e keep-alive (:05/:35).
+    - cron: '13 8 * * 1'
+  workflow_dispatch:
+
+permissions:
+  issues: write
+  contents: read
+
+concurrency:
+  group: chop-calibration
+  cancel-in-progress: false
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+
+      # O script importa os limiares CHOP_MIN_* do motor via tsx (devDep) —
+      # sem npm ci o Node morre em MODULE_NOT_FOUND antes de gerar o relatório.
+      - name: Setup Node.js
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Hydrate public/data + data-state (ventu-data)
+        run: git fetch origin ventu-data --depth=1 && git checkout FETCH_HEAD -- public/data data-state || true
+
+      - name: Run chop calibration check
+        id: check
+        run: node scripts/check-chop-calibration.js > chop-report.md && cat chop-report.md
+
+      - name: Publish report to tracking issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Comenta na issue quando (a) corrida manual, (b) 1.ª semana do mês
+          # (dia ≤ 7 → revisão mensal), ou (c) relatório sugere ação — os
+          # semáforos semanais silenciosos não geram ruído na issue.
+          DAY=$(date -u +%d | sed 's/^0//')
+          if [ "${{ github.event_name }}" != "workflow_dispatch" ] && [ "$DAY" -gt 7 ] && ! grep -q 'Ação sugerida' chop-report.md; then
+            echo "Relatório semanal sem ação — sem comentário (próxima revisão mensal na 1.ª semana do mês)."
+            exit 0
+          fi
+          # A label tem de existir antes do issue list/create (mesmo padrão
+          # ensureLabel do check-data-cadence.js) — sem ela o create falhava
+          # com "label not found". --force torna o create idempotente.
+          gh label create "chop-calibration" --force \
+            --color "1d76db" \
+            --description "Revisão da calibração do «mar batido» (P2.4) — relatório do workflow chop-calibration.yml" || true
+          ISSUE=$(gh issue list --label "chop-calibration" --state open --limit 1 --json number --jq '.[0].number // empty')
+          if [ -z "$ISSUE" ]; then
+            # `gh issue create` não aceita --json/--jq: devolve o URL da
+            # issue no stdout — e o `gh issue comment` aceita URL ou número.
+            ISSUE=$(gh issue create \
+              --title "📊 Chop calibration — revisão mensal (P2.4)" \
+              --label "chop-calibration" \
+              --body "Issue de tracking automático: o workflow \`chop-calibration.yml\` corre semanalmente e comenta aqui na 1.ª semana do mês (ou quando sugere ação) a frequência do chop e, quando uma boia tiver ≥60 pares \`forecastWw\`↔observação na janela móvel de 30 dias do arquivo, a comparação da skill do hm0 em horas chop vs sem-chop — o sinal para afinar \`CHOP_MIN_*\` em \`src/lib/modalidades/avalia.ts\`.")
+          fi
+          gh issue comment "$ISSUE" --body-file chop-report.md
