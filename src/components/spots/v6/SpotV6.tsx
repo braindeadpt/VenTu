@@ -28,7 +28,7 @@ import { nivelDoSpot, spotDentroDoNivel, type NivelUtilizador } from '@/lib/mapD
 import { getCompatibleSports } from '@/lib/sportRatings';
 import { sportParaMapa } from '@/lib/praiaCena';
 import { avaliaHoras, isModalidade, MODALIDADE_OMISSAO, type Modalidade } from '@/lib/modalidades';
-import { construirHoras, type LinhaForecast, type MareExtremo } from '@/lib/horaSpot';
+import { construirHoras, mareDepois, type LinhaForecast, type MareExtremo } from '@/lib/horaSpot';
 import { editorialDe, spotModalidadeDe } from '@/lib/spotEditorial';
 import { bandaR, construirFrase, diaCurto, horaDe, horaTxt, palavraEResto } from '@/lib/spotVeredicto';
 import { gravarPrefModalidade, modalidadeInicial, MODALIDADE_EVENT } from '@/lib/modalidadePref';
@@ -41,6 +41,8 @@ import type { Spot } from '@/types';
 export interface SpotV6Hora {
   /** Hora escolhida (ISO local `YYYY-MM-DDTHH:MM`). */
   t: string;
+  /** Instante UTC real (ms) da hora escolhida (DST-safe). */
+  ms?: number;
   ehAgora: boolean;
   d: Modalidade;
   /** Extremos de maré da janela — os mesmos do Porquê. */
@@ -180,10 +182,11 @@ export default function SpotV6({ spot, nome, local, locale, linhas, agoraMs, fot
   const temNoite = r.n == null && !r.semDados;
   const hv: SpotV6Hora = {
     t: h.t,
+    ms: h.ms,
     ehAgora,
     d,
     mares: dados.mares,
-    citada: Number.isFinite(h.tide) ? dados.mares.find((m) => m.t > h.t) : undefined,
+    citada: Number.isFinite(h.tide) ? dados.mares.find((m) => mareDepois(m, h)) : undefined,
     nivel,
   };
 

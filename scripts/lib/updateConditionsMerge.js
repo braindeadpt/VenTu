@@ -71,15 +71,29 @@ function mergeForecast(marineData, weatherData) {
   const result = [];
   const mh = marineData.hourly;
   const wh = weatherData.hourly;
-  const maxHours = Math.min(mh.time.length, wh.time.length, 168);
+  const maxHours = Math.min(mh.time.length, 168);
   const tideMean = seriesMean(mh.sea_level_height_msl);
+  // Alinha weather a marine por timestamp (nunca índice cego): se uma das APIs
+  // Open-Meteo atrasar 1 h ou saltar um slot, evita misturar vento de outra hora.
+  const weatherByTime = new Map();
+  if (Array.isArray(wh?.time)) {
+    for (let k = 0; k < wh.time.length; k++) {
+      if (typeof wh.time[k] === 'string' && !weatherByTime.has(wh.time[k])) {
+        weatherByTime.set(wh.time[k], k);
+      }
+    }
+  }
+  const useTimestampMatch = weatherByTime.size > 0;
   for (let i = 0; i < maxHours; i += 1) {
+    const t = mh.time[i];
+    const wi = useTimestampMatch ? weatherByTime.get(t) : i < (wh?.time?.length ?? 0) ? i : undefined;
+    if (wi === undefined) continue;
     const fh = finiteOrNull(mh.wave_height?.[i]);
     const ft = finiteOrNull(mh.wave_period?.[i]);
     const fSwellH = finiteOrNull(mh.swell_wave_height?.[i]);
     const fSwellT = finiteOrNull(mh.swell_wave_period?.[i]);
     result.push({
-      time: mh.time[i], waveHeight: fh, wavePeriod: ft,
+      time: t, waveHeight: fh, wavePeriod: ft,
       waveDirection: finiteOrNull(mh.wave_direction?.[i]),
       swellHeight: fSwellH, swellPeriod: fSwellT,
       swellDirection: finiteOrNull(mh.swell_wave_direction?.[i]),
@@ -88,20 +102,20 @@ function mergeForecast(marineData, weatherData) {
         fh == null && fSwellH == null
           ? null
           : wavePowerFromMarine({ swellHeight: fSwellH ?? 0, swellPeriod: fSwellT ?? 0, waveHeight: fh ?? 0, wavePeriod: ft ?? 0 }),
-      windSpeed: finiteOrNull(wh.wind_speed_10m?.[i]),
-      windDirection: finiteOrNull(wh.wind_direction_10m?.[i]),
-      windGust: finiteOrNull(wh.wind_gusts_10m?.[i]),
+      windSpeed: finiteOrNull(wh.wind_speed_10m?.[wi]),
+      windDirection: finiteOrNull(wh.wind_direction_10m?.[wi]),
+      windGust: finiteOrNull(wh.wind_gusts_10m?.[wi]),
       waterTemp: finiteOrNull(mh.sea_surface_temperature?.[i]),
-      ...(Number.isFinite(Number(wh.temperature_2m?.[i])) && wh.temperature_2m?.[i] != null
-        ? { airTemp: Math.round(Number(wh.temperature_2m[i]) * 10) / 10 }
+      ...(Number.isFinite(Number(wh.temperature_2m?.[wi])) && wh.temperature_2m?.[wi] != null
+        ? { airTemp: Math.round(Number(wh.temperature_2m[wi]) * 10) / 10 }
         : {}),
       // uv_index: `Number(null) === 0` — null da série significa «sem
       // dados», nunca «UV 0». Só emitimos o campo com valor real.
-      ...(wh.uv_index?.[i] != null &&
-        Number.isFinite(Number(wh.uv_index[i]))
-        ? { uvIndex: Math.round(Number(wh.uv_index[i]) * 10) / 10 }
+      ...(wh.uv_index?.[wi] != null &&
+        Number.isFinite(Number(wh.uv_index[wi]))
+        ? { uvIndex: Math.round(Number(wh.uv_index[wi]) * 10) / 10 }
         : {}),
-      ...rainCloudFields(wh, i),
+      ...rainCloudFields(wh, wi),
       tideHeight: tideFromSeries(mh.sea_level_height_msl?.[i], tideMean),
       ...readOceanCurrent(mh, i),
     });

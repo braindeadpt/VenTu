@@ -116,7 +116,7 @@ describe('map-hours.json com o motor v6 (#218, PR 2) — golden das fixtures', (
     expect(diferencas).toEqual([]);
   });
 
-  it('de noite as cinco v6 são null (não 0) e o `best` («Todos») também (PR 6)', () => {
+  it('de noite todas as modalidades (v6 + SUP/wakeboard) e o `best` («Todos») são null (não 0)', () => {
     const noites = mh.times
       .map((t, i) => ({ i, h: Number(hourKeyFromOpenMeteo(t).slice(-2)) }))
       .filter(({ h }) => h === 23 || h === 2);
@@ -128,8 +128,8 @@ describe('map-hours.json com o motor v6 (#218, PR 2) — golden das fixtures', (
         expect(scoreAtHour(mh, sp.id, 'big-wave', i)).toBeNull();
         expect(mh.spots[sp.id].best[i]).toBeNull();
         expect(scoreAtHour(mh, sp.id, 'all', i)).toBeNull();
-        // SUP e wakeboard (motor antigo) continuam números
-        expect(typeof mh.spots[sp.id].sup[i]).toBe('number');
+        expect(mh.spots[sp.id].sup[i]).toBeNull();
+        expect(mh.spots[sp.id].wakeboard[i]).toBeNull();
       }
     }
   });

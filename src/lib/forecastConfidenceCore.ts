@@ -26,6 +26,8 @@ export const CONFIDENCE_CONFIG = {
   altaMax: 0.15,
   baixaMin: 0.35,
   minSpreadEpsilon: 0.05,
+  waveFloorM: 0.5,
+  windFloorMs: 6.0,
 } as const;
 
 export function getConfidenceTier(

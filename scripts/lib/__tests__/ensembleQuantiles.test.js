@@ -9,6 +9,7 @@ const {
   attachEnsemble,
   buildEnsembleEntry,
   indexByTime,
+  inheritEnsemble,
   isDeadSeries,
   liveModels,
   quantile,
@@ -296,5 +297,62 @@ describe('ligação ao pipeline (guarda de regressão)', () => {
     expect(updateConditions).toMatch(/result\.ensembleHours/);
     expect(updateConditions).toMatch(/Banda horária P10\/P50\/P90/);
     expect(updateConditions).toMatch(/Banda ensemble em falta/);
+  });
+});
+
+describe('inheritEnsemble — herança da banda P10/P50/P90 em runs só-best_match', () => {
+  const validEns12 = [1.1, 1.3, 1.6, 5.0, 6.0, 7.0, 4, 4];
+  const validEns13 = [1.2, 1.4, 1.7, 5.5, 6.5, 7.5, 4, 4];
+
+  it('herda ens por timestamp na janela noturna 18h→04h (10 h) e até 13 h', () => {
+    const previousRows = [
+      { time: '2026-09-25T11:00', ens: [0.9, 1.0, 1.2, 3.0, 4.0, 5.0, 4, 4] },
+      { time: '2026-09-25T12:00', ens: validEns12 },
+      { time: '2026-09-25T13:00', ens: validEns13 },
+    ];
+    const rows10h = [
+      { time: '2026-09-25T12:00', waveHeight: 1.3 },
+      { time: '2026-09-25T13:00', waveHeight: 1.4 },
+      { time: '2026-09-25T14:00', waveHeight: 1.5 },
+    ];
+
+    const inherited10h = inheritEnsemble(rows10h, previousRows, {
+      previousUpdatedAt: '2026-09-25T18:00:00Z',
+      nowMs: Date.parse('2026-09-26T04:00:00Z'), // 10 h (janela 18h→04h)
+    });
+
+    expect(inherited10h).toBe(2);
+    expect(rows10h[0].ens).toEqual(validEns12);
+    expect(rows10h[1].ens).toEqual(validEns13);
+    expect('ens' in rows10h[2]).toBe(false);
+
+    const rows13h = [{ time: '2026-09-25T12:00', waveHeight: 1.3 }];
+    const inherited13h = inheritEnsemble(rows13h, previousRows, {
+      previousUpdatedAt: '2026-09-25T18:00:00Z',
+      nowMs: Date.parse('2026-09-26T07:00:00Z'), // exatamente 13 h
+    });
+    expect(inherited13h).toBe(1);
+    expect(rows13h[0].ens).toEqual(validEns12);
+  });
+
+  it('não herda ens quando previousUpdatedAt tem > 13 h (13 h + 1 s)', () => {
+    const nowMs = Date.parse('2026-09-26T07:00:01Z');
+    const previousRows = [
+      { time: '2026-09-25T12:00', ens: validEns12 },
+      { time: '2026-09-25T13:00', ens: validEns13 },
+    ];
+    const rows = [
+      { time: '2026-09-25T12:00', waveHeight: 1.3 },
+      { time: '2026-09-25T13:00', waveHeight: 1.4 },
+    ];
+
+    const inherited = inheritEnsemble(rows, previousRows, {
+      previousUpdatedAt: '2026-09-25T18:00:00Z', // 13 h + 1 s (> 13 h)
+      nowMs,
+    });
+
+    expect(inherited).toBe(0);
+    expect('ens' in rows[0]).toBe(false);
+    expect('ens' in rows[1]).toBe(false);
   });
 });

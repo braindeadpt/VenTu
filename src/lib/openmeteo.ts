@@ -58,112 +58,6 @@ export interface TideInfo {
   labelEn: string;
 }
 
-// Generate realistic mock data based on spot characteristics and season
-// FIX C1: Made deterministic using lat/lon as seed
-function generateMockData(lat: number, lon: number): MarineData {
-  const now = new Date();
-  const month = now.getMonth(); // 0-11
-  
-  // Seasonal adjustments for Portugal
-  // Winter (Nov-Mar): bigger waves, stronger wind
-  // Summer (Jun-Sep): smaller waves, thermal winds
-  const isWinter = month >= 10 || month <= 2;
-  const isSummer = month >= 5 && month <= 8;
-  
-  // Base values adjusted by latitude (north = more swell)
-  const northFactor = lat > 39 ? 1.2 : 1.0;
-  
-  let baseWaveHeight = isWinter ? 1.5 : 0.8;
-  let baseWindSpeed = isWinter ? 15 : 10;
-  let baseWaterTemp = isSummer ? 20 : 15;
-  
-  if (isSummer) {
-    baseWaveHeight = 0.6;
-    baseWindSpeed = 12; // Nortada thermal wind
-    baseWaterTemp = 19 + 1.5; // Fixed base + 1.5 (was Math.random() * 3, now deterministic)
-  }
-  
-  baseWaveHeight *= northFactor;
-
-  // Deterministic pseudo-random generator using lat/lon as seed
-  // Each lat/lon combination produces the same sequence of values
-  const seed = Math.abs((lat * 1000 + lon * 100) % 2147483647);
-  let rngState = seed;
-  const pseudoRandom = () => {
-    rngState = (rngState * 16807) % 2147483647;
-    return (rngState - 1) / 2147483646;
-  };
-  const rangeRandom = (min: number, max: number) => min + pseudoRandom() * (max - min);
-
-  const hourlyTime: string[] = [];
-  const hourlyWaveHeight: number[] = [];
-  const hourlyWaveDirection: number[] = [];
-  const hourlyWavePeriod: number[] = [];
-  const hourlyWindSpeed: number[] = [];
-  const hourlyWindDirection: number[] = [];
-  const hourlyWindGusts: number[] = [];
-  const hourlyWaterTemp: number[] = [];
-  const hourlySeaLevel: number[] = [];
-
-  const startOfDay = new Date(now);
-  startOfDay.setHours(0, 0, 0, 0);
-
-  for (let i = 0; i < 168; i++) {
-    const hourTime = new Date(startOfDay.getTime() + i * 60 * 60 * 1000);
-    hourlyTime.push(hourTime.toISOString());
-    
-    // Add some realistic variation (deterministic)
-    const hourOfDay = hourTime.getHours();
-    const dayVariation = Math.sin((hourOfDay - 6) * Math.PI / 12) * 0.3; // wind picks up during day
-    const tideVariation = Math.sin(i * Math.PI / 6.2) * 0.5; // ~12.4h tidal cycle
-    
-    hourlyWaveHeight.push(Math.max(0.1, baseWaveHeight + (rangeRandom(-0.4, 0.4))));
-    hourlyWaveDirection.push(270 + rangeRandom(-15, 15)); // W swell
-    hourlyWavePeriod.push(8 + rangeRandom(-2, 2));
-    hourlyWindSpeed.push(Math.max(2, baseWindSpeed + dayVariation * 8 + rangeRandom(-3, 3)));
-    hourlyWindDirection.push(330 + rangeRandom(-20, 20)); // N/NW wind
-    hourlyWindGusts.push(Math.max(3, baseWindSpeed + dayVariation * 10 + rangeRandom(-4, 4)));
-    hourlyWaterTemp.push(baseWaterTemp + rangeRandom(-1, 1));
-    hourlySeaLevel.push(tideVariation + rangeRandom(-0.05, 0.05));
-  }
-
-  const dailyTime: string[] = [];
-  const dailyWaveHeightMax: number[] = [];
-  const dailyWindSpeedMax: number[] = [];
-  const dailyWaterTempMax: number[] = [];
-
-  for (let d = 0; d < 7; d++) {
-    const dayTime = new Date(startOfDay.getTime() + d * 24 * 60 * 60 * 1000);
-    dailyTime.push(dayTime.toISOString().split('T')[0]);
-    
-    const dayStart = d * 24;
-    const dayEnd = dayStart + 24;
-    dailyWaveHeightMax.push(Math.max(...hourlyWaveHeight.slice(dayStart, dayEnd)));
-    dailyWindSpeedMax.push(Math.max(...hourlyWindSpeed.slice(dayStart, dayEnd)));
-    dailyWaterTempMax.push(Math.max(...hourlyWaterTemp.slice(dayStart, dayEnd)));
-  }
-
-  return {
-    hourly: {
-      time: hourlyTime,
-      wave_height: hourlyWaveHeight,
-      wave_direction: hourlyWaveDirection,
-      wave_period: hourlyWavePeriod,
-      wind_speed_10m: hourlyWindSpeed,
-      wind_direction_10m: hourlyWindDirection,
-      wind_gusts_10m: hourlyWindGusts,
-      water_temperature: hourlyWaterTemp,
-      sea_level_height: hourlySeaLevel,
-    },
-    daily: {
-      time: dailyTime,
-      wave_height_max: dailyWaveHeightMax,
-      wind_speed_max: dailyWindSpeedMax,
-      water_temperature_max: dailyWaterTempMax,
-    },
-  };
-}
-
 export function isValidCoordinate(lat: number, lon: number): boolean {
   return (
     typeof lat === 'number' && 
@@ -185,12 +79,9 @@ export function getCoordValidationError(lat: number, lon: number): string | null
 }
 
 export async function fetchMarineData(lat: number, lon: number): Promise<FetchResult> {
-  // FIX A2: Coordinate validation
   const coordError = getCoordValidationError(lat, lon);
   if (coordError) {
-    console.warn(`Invalid coordinates (${lat}, ${lon}): ${coordError}`);
-    const mock = generateMockData(lat, lon);
-    return { data: mock, source: 'mock' as const };
+    throw new Error(`Invalid coordinates (${lat}, ${lon}): ${coordError}`);
   }
 
   const cacheKey = `${lat.toFixed(3)},${lon.toFixed(3)}`;
@@ -248,22 +139,16 @@ export async function fetchMarineData(lat: number, lon: number): Promise<FetchRe
     clearTimeout(timeoutId);
 
     if (!marineRes.ok || !weatherRes.ok) {
-      console.warn(
-        `Open-Meteo API marine=${marineRes.status} weather=${weatherRes.status}, using mock`,
+      throw new Error(
+        `Open-Meteo API error (marine=${marineRes.status}, weather=${weatherRes.status})`,
       );
-      const mock = generateMockData(lat, lon);
-      cache.set(cacheKey, { data: mock, timestamp: Date.now() });
-      return { data: mock, source: 'mock' as const };
     }
 
     const marine = await marineRes.json();
     const weather = await weatherRes.json();
 
     if (!marine.hourly?.time || !Array.isArray(marine.hourly.time)) {
-      console.warn('Open-Meteo marine returned invalid structure, using mock');
-      const mock = generateMockData(lat, lon);
-      cache.set(cacheKey, { data: mock, timestamp: Date.now() });
-      return { data: mock, source: 'mock' as const };
+      throw new Error('Open-Meteo marine returned invalid structure');
     }
 
     const windHourly = weather.hourly ?? {};
@@ -292,9 +177,7 @@ export async function fetchMarineData(lat: number, lon: number): Promise<FetchRe
     return { data: result, source: 'real' as const };
   } catch (error) {
     console.warn(`Failed to fetch marine data for ${lat},${lon}:`, error instanceof Error ? error.message : 'Unknown error');
-    const mock = generateMockData(lat, lon);
-    cache.set(cacheKey, { data: mock, timestamp: Date.now() });
-    return { data: mock, source: 'mock' as const };
+    throw error instanceof Error ? error : new Error('Failed to fetch marine data');
   }
 }
 

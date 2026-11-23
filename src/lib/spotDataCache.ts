@@ -63,22 +63,34 @@ export function loadConditionsJson(options?: { force?: boolean }): Promise<Recor
  * no snapshot, como já acontecia para um spot sem série — e NÃO guarda a
  * falha em cache: a navegação seguinte volta a tentar.
  */
-const spotForecastCache = new Map<string, Record<string, unknown>[]>();
+/** TTL da cache de previsões horárias por spot (15 min) — evita congelar sessões SPA/PWA longas. */
+export const FORECAST_CACHE_TTL_MS = 15 * 60 * 1000;
+
+const spotForecastCache = new Map<string, { data: Record<string, unknown>[]; fetchedAt: number }>();
 const spotForecastInflight = new Map<string, Promise<Record<string, unknown>[]>>();
 
-export function loadForecastForSpot(dataId: string): Promise<Record<string, unknown>[]> {
-  if (spotForecastCache.has(dataId)) return Promise.resolve(spotForecastCache.get(dataId)!);
+export function loadForecastForSpot(
+  dataId: string,
+  options?: { force?: boolean },
+): Promise<Record<string, unknown>[]> {
+  const force = Boolean(options?.force);
+  const cached = spotForecastCache.get(dataId);
+  if (cached && !force && Date.now() - cached.fetchedAt < FORECAST_CACHE_TTL_MS) {
+    return Promise.resolve(cached.data);
+  }
   if (spotForecastInflight.has(dataId)) return spotForecastInflight.get(dataId)!;
 
   const promise: Promise<Record<string, unknown>[]> = (async () => {
     try {
-      const res = await fetch(getAssetPath(`/data/forecasts/${dataId}.json`));
+      const res = await fetch(getAssetPath(`/data/forecasts/${dataId}.json`), {
+        cache: force ? 'no-cache' : 'default',
+      });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = (await res.json()) as Record<string, unknown>[];
-      spotForecastCache.set(dataId, data);
+      spotForecastCache.set(dataId, { data, fetchedAt: Date.now() });
       return data;
     } catch {
-      return [];
+      return cached?.data ?? [];
     }
   })();
 

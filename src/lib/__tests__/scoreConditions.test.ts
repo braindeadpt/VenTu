@@ -23,6 +23,7 @@ import {
 } from '@/lib/scoreConditions';
 import type { ObservedConditions } from '@/lib/observations';
 import type { ObservedWave } from '@/lib/observedWave';
+import { aplicarObservacoesNaHoraAgora, type LinhaForecast } from '@/lib/horaSpot';
 
 function spotBySlug(slug: string) {
   const spot = spots.find((s) => s.slug === slug);
@@ -727,5 +728,104 @@ describe('viés regional como fallback (wave-bias.json)', () => {
     expect(corr?.n).toBe(120);
     expect(corr?.deltaM).toBe(0.3);
     expect(rawToScoreInput(effective).waveHeight).toBe(1.8);
+  });
+
+  it('resolveRegionBias + applyRegionalBiasFallback: rejeita região com corr: -0.18 (Madeira) e aceita corr: 0.94 ou sem corr', () => {
+    const madeiraFile = file('Madeira', { corr: -0.18, me: -0.5, n: 150 });
+    expect(resolveRegionBias('Madeira', madeiraFile)).toBeNull();
+    expect(applyRegionalBiasFallback({ waveHeight: 1.8 }, 'Madeira', madeiraFile)).toBeNull();
+
+    const cascaisComCorr = file('Cascais', { corr: 0.94, me: 0.3, n: 120 });
+    expect(resolveRegionBias('Cascais', cascaisComCorr)).toMatchObject({
+      region: 'Cascais',
+      me: 0.3,
+      n: 120,
+    });
+    expect(applyRegionalBiasFallback({ waveHeight: 1.5 }, 'Cascais', cascaisComCorr)?.waveHeight).toBe(1.8);
+
+    const semCorr = file('Cascais', { me: 0.3, n: 120 });
+    expect(resolveRegionBias('Cascais', semCorr)).toMatchObject({
+      region: 'Cascais',
+      me: 0.3,
+      n: 120,
+    });
+    expect(applyRegionalBiasFallback({ waveHeight: 1.5 }, 'Cascais', semCorr)?.waveHeight).toBe(1.8);
+  });
+});
+
+describe('aplicarObservacoesNaHoraAgora (regra D4)', () => {
+  it('sobrepõe vento observado fresco e boia ≤ 40 km apenas na hora coberta, sem mutar o array original', () => {
+    const agoraMs = Date.parse('2026-07-21T12:25:00+01:00');
+    const linhas: LinhaForecast[] = [
+      {
+        time: '2026-07-21T11:00+01:00',
+        windSpeed: 4,
+        windDirection: 270,
+        windGust: 6,
+        waveHeight: 1.0,
+        wavePeriod: 9,
+        waveDirection: 280,
+      },
+      {
+        time: '2026-07-21T12:00+01:00',
+        windSpeed: 5,
+        windDirection: 270,
+        windGust: 7,
+        waveHeight: 1.1,
+        wavePeriod: 9,
+        waveDirection: 280,
+      },
+      {
+        time: '2026-07-21T13:00+01:00',
+        windSpeed: 6,
+        windDirection: 275,
+        windGust: 8,
+        waveHeight: 1.2,
+        wavePeriod: 10,
+        waveDirection: 285,
+      },
+    ];
+    const snapshot = structuredClone(linhas);
+
+    const observed: ObservedConditions = {
+      windSpeedKt: 18,
+      windDirDeg: 330,
+      windCardinal: 'NNW',
+      stationName: 'Cascais',
+      distanceKm: 5,
+      observedAt: new Date(agoraMs - 15 * 60_000).toISOString(),
+      source: 'ipma',
+    };
+    const observedWave: ObservedWave = {
+      waveHeight: 2.1,
+      wavePeriod: 13,
+      waveDirection: 295,
+      maxWaveHeight: 3.2,
+      waterTemp: 18,
+      stationName: 'CSA92/D',
+      stationArea: 'Leixões',
+      distanceKm: 25,
+      observedAt: new Date(agoraMs - 20 * 60_000).toISOString(),
+      source: 'ih-buoy',
+    };
+
+    const resultado = aplicarObservacoesNaHoraAgora(linhas, { observed, observedWave }, agoraMs);
+
+    // Não muta o array nem os objectos originais
+    expect(resultado).not.toBe(linhas);
+    expect(linhas).toEqual(snapshot);
+
+    // Hora coberta (12:00) recebe vento e onda observados
+    const expectedMs = ktToMs(18);
+    expect(resultado[1].windSpeed).toBeCloseTo(expectedMs, 6);
+    expect(resultado[1].windDirection).toBe(330);
+    expect(resultado[1].windGust).toBeCloseTo(expectedMs * 1.1, 6);
+    expect(resultado[1].waveHeight).toBe(2.1);
+    expect(resultado[1].wavePeriod).toBe(13);
+    expect(resultado[1].waveDirection).toBe(295);
+
+    // Horas anterior e seguinte permanecem intactas
+    expect(resultado[0]).toEqual(snapshot[0]);
+    expect(resultado[2]).toEqual(snapshot[2]);
   });
 });

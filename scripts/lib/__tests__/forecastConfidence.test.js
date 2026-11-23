@@ -88,3 +88,59 @@ describe('forecastConfidence — membro morto (série toda a 0)', () => {
     for (const d of daily) expect(d.waveSpread).toBeLessThan(0.5);
   });
 });
+
+describe('forecastConfidence — piso operacional de vento calmo', () => {
+  const times = ['2026-07-21T12:00'];
+
+  it('vento calmo (1.36 m/s, spread 0.8 m/s) com onda estável (1.5 m, spread 0.15 m) dá confiança alta; vento forte divergente (10 m/s, spread 5 m/s) mantém baixa', () => {
+    const { confidenceAtIndex } = loadModule();
+
+    const calmMarine = {
+      hourly: {
+        time: times,
+        wave_height_ewam: [1.425],
+        wave_height_ecmwf_wam: [1.5],
+        wave_height_ncep_gfswave025: [1.5],
+        wave_height_gwam: [1.575],
+      },
+    };
+    const calmWind = {
+      hourly: {
+        time: times,
+        wind_speed_10m_icon_eu: [0.96],
+        wind_speed_10m_ecmwf_ifs025: [1.36],
+        wind_speed_10m_gfs_seamless: [1.36],
+        wind_speed_10m_meteofrance_arpege_europe: [1.76],
+      },
+    };
+    const calm = confidenceAtIndex(calmMarine, calmWind, 0);
+    expect(calm.degraded).toBe(false);
+    expect(calm.windSpread).toBe(0.8);
+    expect(calm.waveSpread).toBe(0.15);
+    expect(calm.confidence).toBe('alta');
+
+    const divergentMarine = {
+      hourly: {
+        time: times,
+        wave_height_ewam: [1.275],
+        wave_height_ecmwf_wam: [1.5],
+        wave_height_ncep_gfswave025: [1.5],
+        wave_height_gwam: [1.725],
+      },
+    };
+    const strongDivergentWind = {
+      hourly: {
+        time: times,
+        wind_speed_10m_icon_eu: [7.5],
+        wind_speed_10m_ecmwf_ifs025: [10],
+        wind_speed_10m_gfs_seamless: [10],
+        wind_speed_10m_meteofrance_arpege_europe: [12.5],
+      },
+    };
+    const divergent = confidenceAtIndex(divergentMarine, strongDivergentWind, 0);
+    expect(divergent.degraded).toBe(false);
+    expect(divergent.windSpread).toBe(5);
+    expect(divergent.windSpreadPct).toBe(0.5);
+    expect(divergent.confidence).toBe('baixa');
+  });
+});

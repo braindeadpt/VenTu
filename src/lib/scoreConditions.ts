@@ -221,6 +221,8 @@ export function resolveScoreWaveCorrection(
 export const WAVE_BIAS_MIN_N = 30;
 export const WAVE_BIAS_MIN_M = 0.15;
 export const WAVE_BIAS_MAX_M = 1.5;
+/** Minimum Pearson correlation required before applying regional wave bias (prevents applying sheltered-buoy bias across opposite coasts, e.g. Madeira corr -0.18). */
+export const WAVE_BIAS_MIN_CORR = 0.6;
 
 /** Raw wave-bias.json regions shape (regions keyed by spot.region). */
 export interface WaveBiasRegionsFile {
@@ -251,6 +253,10 @@ export function resolveRegionBias(
   if (n < WAVE_BIAS_MIN_N) return null;
   const meAbs = Math.abs(me);
   if (meAbs < WAVE_BIAS_MIN_M || meAbs > WAVE_BIAS_MAX_M) return null;
+  if (bias.corr != null) {
+    const corr = Number(bias.corr);
+    if (!Number.isFinite(corr) || corr < WAVE_BIAS_MIN_CORR) return null;
+  }
   const out: { region: string; me: number; n: number; mae?: number; rmse?: number } = {
     region,
     me,

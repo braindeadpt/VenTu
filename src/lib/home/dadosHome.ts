@@ -128,9 +128,11 @@ export function montarCosta(compacta: CostaCompacta, agoraMs: number, meta: Meta
     if (!m || !col) continue;
     const h: HoraSpot[] = idx.map((i) => {
       const t = compacta.horas[i];
-      const s = posicaoSol(instanteLisboa(t), m.lat, m.lon);
+      const ms = instanteLisboa(t);
+      const s = posicaoSol(ms, m.lat, m.lon);
       return {
         t,
+        ms,
         w: col.w[i],
         g: col.g[i],
         wd: col.wd[i],

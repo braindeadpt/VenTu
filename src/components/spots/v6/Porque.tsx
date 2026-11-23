@@ -5,7 +5,7 @@
  * Os números são os do objecto da hora; os efeitos são os `f` do motor.
  */
 import type { AvaliacaoHora, Modalidade, SpotModalidade } from '@/lib/modalidades';
-import type { HoraSpot, MareExtremo } from '@/lib/horaSpot';
+import { mareDepois, type HoraSpot, type MareExtremo } from '@/lib/horaSpot';
 import { fmtNum, hmTxt, ondaRelTxt, rumo, ventoRelTxt } from '@/lib/spotVeredicto';
 import { fmtCopy, type SpotPageV6Copy } from '@/lib/translations/spotPage/v6';
 
@@ -113,7 +113,7 @@ export default function Porque({ h, r, d, sp, mares, quando, copy: c, locale }: 
   };
   const nf = (x: number) => fmtNum(x, locale);
   const temMare = Number.isFinite(h.tide);
-  const pm = temMare ? mares.find((m) => m.t > h.t) : undefined;
+  const pm = temMare ? mares.find((m) => mareDepois(m, h)) : undefined;
   const pmTxt = pm
     ? fmtCopy(pm.tipo === 'PM' ? c.preiaMar : c.baixaMar, { t: hmTxt(c, pm.t, locale), h: Number.isFinite(pm.h) ? nf(pm.h) : '–' })
     : '';
