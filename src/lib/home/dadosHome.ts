@@ -42,6 +42,8 @@ export interface ColunasSpot {
   g: number[];
   wd: number[];
   hs: number[];
+  /** Mar de vento (m) por hora; coluna omitida quando a fonte não o traz. */
+  ww?: Array<number | null>;
   tp: number[];
   sd: number[];
   /** maré acima do ZH; `null` = sem dados (NaN no objecto da hora) */
@@ -99,6 +101,7 @@ export function compactarCosta(linhas: Record<string, readonly LinhaForecast[]>,
       tide: Hn.map((h) => (Number.isFinite(h.tide) ? h.tide : null)),
       up: Hn.map((h) => (h.tideUp ? 1 : 0)),
     };
+    if (Hn.some((h) => h.ww != null)) col.ww = Hn.map((h) => h.ww ?? null);
     if (Hn.some((h) => h.cloud != null)) col.cloud = Hn.map((h) => h.cloud ?? null);
     if (Hn.some((h) => h.rain != null)) col.rain = Hn.map((h) => h.rain ?? null);
     spots[c.id] = col;
@@ -137,6 +140,7 @@ export function montarCosta(compacta: CostaCompacta, agoraMs: number, meta: Meta
         g: col.g[i],
         wd: col.wd[i],
         hs: col.hs[i],
+        ww: col.ww?.[i] ?? undefined,
         tp: col.tp[i],
         sd: col.sd[i],
         tide: col.tide[i] ?? NaN,

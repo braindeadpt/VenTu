@@ -20,6 +20,7 @@ import { getLocalTips } from '@/lib/spotTips';
 import { loadCommunityTips, mergeLocalTips } from '@/lib/communityTips';
 import { rememberDataUpdate } from '@/lib/dataCache';
 import { loadConditionsJson, loadForecastForSpot } from '@/lib/spotDataCache';
+import { VISIBILITY_REFRESH_MIN_MS } from '@/hooks/useLiveGridSpotData';
 import { rawToScoreInput, applyRegionalBiasFallback } from '@/lib/scoreConditions';
 import { loadWaveBiasRegions } from '@/lib/waveBias';
 import Skeleton from '@/components/ui/Skeleton';
@@ -126,6 +127,60 @@ interface SpotData {
 function sportDoSpot(spot: Spot, s: SportType): boolean {
   return getRelevantSports(spot).includes(s);
 }
+
+/** Mapeia a row do spot em conditions.json para `Conditions` (todos os campos). */
+function spotCondToConditions(spotCond: Record<string, unknown>): Conditions {
+  return {
+    waveHeight: Number(spotCond.waveHeight) || 0,
+    wavePeriod: Number(spotCond.wavePeriod) || 0,
+    waveDirection: Number(spotCond.waveDirection) || 0,
+    windSpeed: Number(spotCond.windSpeed) || 0,
+    windDirection: Number(spotCond.windDirection) || 0,
+    windGust: Number(spotCond.windGust) || 0,
+    waterTemp: Number(spotCond.waterTemp) || 0,
+    uvIndex: spotCond.uvIndex as number | undefined,
+    uvIndexMax: spotCond.uvIndexMax as number | undefined,
+    airQualityIndex: spotCond.airQualityIndex as number | undefined,
+    swellHeight: spotCond.swellHeight as number | undefined,
+    swellPeriod: spotCond.swellPeriod as number | undefined,
+    swellDirection: spotCond.swellDirection as number | undefined,
+    secondarySwellHeight: spotCond.secondarySwellHeight as number | undefined,
+    secondarySwellPeriod: spotCond.secondarySwellPeriod as number | undefined,
+    secondarySwellDirection: spotCond.secondarySwellDirection as number | undefined,
+    wavePowerKw: spotCond.wavePowerKw as number | undefined,
+    observed: spotCond.observed as ObservedConditions | undefined,
+    observedWave: spotCond.observedWave as ObservedWave | undefined,
+    observedWaveAlt: spotCond.observedWaveAlt as ObservedWave | undefined,
+    observedWaveMeta: spotCond.observedWaveMeta as ObservedWaveMeta | undefined,
+    observedWaveCoherenceRefused: spotCond.observedWaveCoherenceRefused as
+      | Conditions['observedWaveCoherenceRefused']
+      | undefined,
+    observedWaveCoherenceWarning: spotCond.observedWaveCoherenceWarning as
+      | Conditions['observedWaveCoherenceWarning']
+      | undefined,
+    waveBias: spotCond.waveBias as Conditions['waveBias'],
+    windBias: spotCond.windBias as Conditions['windBias'],
+    tideHeight: spotCond.tideHeight as number | undefined,
+    tideStatus: spotCond.tideStatus as Conditions['tideStatus'],
+    tideLabel: spotCond.tideLabel as string | undefined,
+    tideObservedHeight: spotCond.tideObservedHeight as number | undefined,
+    tideObservedAt: spotCond.tideObservedAt as string | undefined,
+    tideStation: spotCond.tideStation as string | undefined,
+    tideAnomalyM: spotCond.tideAnomalyM as number | undefined,
+    currentMeasuredSpeed: spotCond.currentMeasuredSpeed as number | undefined,
+    currentMeasuredDir: spotCond.currentMeasuredDir as number | undefined,
+    currentMeasuredAt: spotCond.currentMeasuredAt as string | undefined,
+    currentMeasuredNetwork: spotCond.currentMeasuredNetwork as string | undefined,
+    waterQuality: spotCond.waterQuality as Conditions['waterQuality'],
+    confidence: spotCond.confidence as Conditions['confidence'],
+    confidenceDetail: spotCond.confidenceDetail as Conditions['confidenceDetail'],
+    dailyConfidence: spotCond.dailyConfidence as Conditions['dailyConfidence'],
+    source: 'real',
+    updatedAt: typeof spotCond.updatedAt === 'string' ? spotCond.updatedAt : undefined,
+  };
+}
+
+const SPOT_REFRESH_MS = 15 * 60 * 1000;
 
 export default function SpotDetailClient({
   spot,
@@ -300,55 +355,7 @@ export default function SpotDetailClient({
           }
 
           if (spotCond && spotFc) {
-            conditions = {
-              waveHeight: Number(spotCond.waveHeight) || 0,
-              wavePeriod: Number(spotCond.wavePeriod) || 0,
-              waveDirection: Number(spotCond.waveDirection) || 0,
-              windSpeed: Number(spotCond.windSpeed) || 0,
-              windDirection: Number(spotCond.windDirection) || 0,
-              windGust: Number(spotCond.windGust) || 0,
-              waterTemp: Number(spotCond.waterTemp) || 0,
-              uvIndex: spotCond.uvIndex as number | undefined,
-              uvIndexMax: spotCond.uvIndexMax as number | undefined,
-              airQualityIndex: spotCond.airQualityIndex as number | undefined,
-              swellHeight: spotCond.swellHeight as number | undefined,
-              swellPeriod: spotCond.swellPeriod as number | undefined,
-              swellDirection: spotCond.swellDirection as number | undefined,
-              secondarySwellHeight: spotCond.secondarySwellHeight as number | undefined,
-              secondarySwellPeriod: spotCond.secondarySwellPeriod as number | undefined,
-              secondarySwellDirection: spotCond.secondarySwellDirection as number | undefined,
-              wavePowerKw: spotCond.wavePowerKw as number | undefined,
-              observed: spotCond.observed as ObservedConditions | undefined,
-              observedWave: spotCond.observedWave as ObservedWave | undefined,
-              observedWaveAlt: spotCond.observedWaveAlt as ObservedWave | undefined,
-              observedWaveMeta: spotCond.observedWaveMeta as ObservedWaveMeta | undefined,
-              observedWaveCoherenceRefused: spotCond.observedWaveCoherenceRefused as
-                | Conditions['observedWaveCoherenceRefused']
-                | undefined,
-              observedWaveCoherenceWarning: spotCond.observedWaveCoherenceWarning as
-                | Conditions['observedWaveCoherenceWarning']
-                | undefined,
-              waveBias: spotCond.waveBias as Conditions['waveBias'],
-              windBias: spotCond.windBias as Conditions['windBias'],
-              tideHeight: spotCond.tideHeight as number | undefined,
-              tideStatus: spotCond.tideStatus as Conditions['tideStatus'],
-              tideLabel: spotCond.tideLabel as string | undefined,
-              tideObservedHeight: spotCond.tideObservedHeight as number | undefined,
-              tideObservedAt: spotCond.tideObservedAt as string | undefined,
-              tideStation: spotCond.tideStation as string | undefined,
-              tideAnomalyM: spotCond.tideAnomalyM as number | undefined,
-              currentMeasuredSpeed: spotCond.currentMeasuredSpeed as number | undefined,
-              currentMeasuredDir: spotCond.currentMeasuredDir as number | undefined,
-              currentMeasuredAt: spotCond.currentMeasuredAt as string | undefined,
-              currentMeasuredNetwork: spotCond.currentMeasuredNetwork as string | undefined,
-              waterQuality: spotCond.waterQuality as Conditions['waterQuality'],
-              confidence: spotCond.confidence as Conditions['confidence'],
-              confidenceDetail: spotCond.confidenceDetail as Conditions['confidenceDetail'],
-              dailyConfidence: spotCond.dailyConfidence as Conditions['dailyConfidence'],
-              source: 'real',
-              updatedAt:
-                typeof spotCond.updatedAt === 'string' ? spotCond.updatedAt : undefined,
-            };
+            conditions = spotCondToConditions(spotCond);
 
             forecast = spotFc;
 
@@ -457,6 +464,64 @@ export default function SpotDetailClient({
       cancelled = true;
     };
   }, [spot, sportFromUrl, retryCount, initialData, forceLive]);
+
+  // Revalidação em background (P2.2): a página baked saltava o fetch e, com a
+  // app aberta horas (PWA/TWA), os dados congelavam no build. Mesma cadência
+  // da grid — conditions.json + forecasts/<id>.json por ETag (304 barato),
+  // swap só quando o `updatedAt` avança, sem trocar o separador (CLS).
+  useEffect(() => {
+    if (!initialData || forceLive) return;
+    const baked = initialData;
+    let cancelled = false;
+    let lastRefreshAt = 0;
+
+    async function revalidate() {
+      if (document.hidden) return;
+      if (lastRefreshAt && Date.now() - lastRefreshAt < VISIBILITY_REFRESH_MIN_MS) return;
+      lastRefreshAt = Date.now();
+      try {
+        const dataId = getConditionsDataId(spot);
+        const [condJson, spotFc, waveBiasFile] = await Promise.all([
+          loadConditionsJson({ force: true }),
+          loadForecastForSpot(dataId, { force: true }).catch(() => null),
+          loadWaveBiasRegions().catch(() => null),
+        ]);
+        if (cancelled) return;
+        let spotCond = (condJson[dataId] ?? condJson[spot.id]) as Record<string, unknown> | undefined;
+        if (!spotCond) return;
+        const freshAt = typeof spotCond.updatedAt === 'string' ? Date.parse(spotCond.updatedAt) : NaN;
+        const bakedAt = baked.conditions.updatedAt ? Date.parse(baked.conditions.updatedAt) : 0;
+        if (!Number.isFinite(freshAt) || freshAt <= bakedAt) return;
+        const biasPatch = applyRegionalBiasFallback(spotCond, spot.region, waveBiasFile);
+        if (biasPatch) spotCond = { ...spotCond, ...biasPatch };
+        const conditions = spotCondToConditions(spotCond);
+        const allScores = allScoresComV6(spot, rawToScoreInput(spotCond), notaV6DoSpot(spot, condJson));
+        if (cancelled) return;
+        setSpotData({
+          spot,
+          conditions,
+          allScores,
+          forecast: spotFc?.length ? (spotFc as SpotData['forecast']) : baked.forecast,
+        });
+        rememberDataUpdate(spotCond.updatedAt as string | undefined);
+        // O separador escolhido mantém-se — refresca dentro dele, sem salto.
+      } catch {
+        /* mantém o bake */
+      }
+    }
+
+    void revalidate();
+    const onVis = () => {
+      if (document.visibilityState === 'visible') void revalidate();
+    };
+    const intervalId = window.setInterval(() => void revalidate(), SPOT_REFRESH_MS);
+    document.addEventListener('visibilitychange', onVis);
+    return () => {
+      cancelled = true;
+      window.clearInterval(intervalId);
+      document.removeEventListener('visibilitychange', onVis);
+    };
+  }, [spot, initialData, forceLive]);
 
   // Baked pages don't run loadData; keep the freshness heuristic fed.
   useEffect(() => {

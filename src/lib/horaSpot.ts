@@ -114,6 +114,8 @@ export interface LinhaForecast {
   waterTemp?: number;
   airTemp?: number;
   tideHeight?: number;
+  /** Mar de vento (m) — componente da `waveHeight` gerada pelo vento local. Ausente em linhas antigas. */
+  windWaveHeight?: number;
   /** Precipitação (mm/h). O pipeline só a escreve quando chove: sem o campo e com `cloudCover` = 0 mm/h. */
   precipitation?: number;
   /** Nebulosidade (%). Presente = a hora tem dados de tempo (marca da chuva a 0). */
@@ -304,6 +306,7 @@ export function horaDeLinha(
     g: Math.round((num(l.windGust) ?? num(l.windSpeed) ?? 0) * KT),
     wd: n360(num(l.windDirection) ?? 0),
     hs: r1(num(l.waveHeight) ?? 0),
+    ww: num(l.windWaveHeight),
     tp: Math.round(num(l.wavePeriod) ?? 0),
     sd: n360(num(l.waveDirection) ?? num(l.swellDirection) ?? local.praiaVirada),
     tide,

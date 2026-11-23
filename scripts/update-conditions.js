@@ -46,6 +46,8 @@ const { validateCoverage, assertCoverage, buildPipelineLayers } = require('./lib
 const { applyCarryOver } = require('./lib/updateConditionsCarryover');
 const { retryFailedSpots, MAX_RETRY_PASSES } = require('./lib/updateConditionsRetryPass');
 const { processSpot } = require('./lib/updateConditionsPerSpot');
+const { prefetchOpenMeteo, createPrefetchedFetchers } = require('./lib/openMeteoBatch');
+const { skillBiasBySpot } = require('./lib/forecastSkill');
 
 function resolveUseMultiModel() {
   const raw = process.env.VENTU_MULTIMODEL;
@@ -174,15 +176,38 @@ async function updateConditions() {
   const waveBiasPath = path.join(__dirname, '../public/data/wave-bias.json');
   const waveBias = readJsonIfExists(waveBiasPath, null, () => console.warn('⚠️ Could not parse wave-bias.json, continuing without bias correction'));
   if (waveBiasEnabled && waveBias) console.log(`📏 Wave bias loaded (${Object.keys(waveBias.regions ?? {}).length} regions)\n`);
+  // P2.3: calibração pela skill REAL (pares boia×previsão do forecast-skill.json)
+  // — gates n≥60 pares / corr≥0.7 / |me|∈[0.2,1.0] já no mapping.
+  const skillFile = readJsonIfExists(path.join(__dirname, '../public/data/forecast-skill.json'), null, () => null);
+  const ihBuoysForSkill = readJsonIfExists(path.join(__dirname, '../public/data/ih-buoys.json'), null, () => null);
+  const wmoBuoysForSkill = readJsonIfExists(path.join(__dirname, '../public/data/wmo-buoys.json'), null, () => null);
+  const skillBySpot = skillBiasBySpot(spots, ihBuoysForSkill?.spotMapping, wmoBuoysForSkill?.spotMapping, skillFile?.byBuoy);
+  if (Object.keys(skillBySpot).length) console.log(`🎯 Skill calibration: ${Object.keys(skillBySpot).length} spots com boia qualificada (n≥60, corr≥0.7)\n`);
   const perSpotDir = path.join(__dirname, '../public/data/forecasts');
   const readPreviousForecast = (id) =>
     readJsonIfExists(path.join(perSpotDir, `${id}.json`), null);
   const aliasSpots = spots.filter((spot) => spot.conditionsSource);
   const usage = createUsageCounter();
+  // Fase 3 (P2.1): prefetch multi-coordenada — 4 pedidos por lote de ≤40 spots
+  // por fuso em vez de 2–4 por spot. Os fetchers caem no pedido individual
+  // quando uma entrada falta (cobre também o retryFailedSpots).
+  const primarySpots = spots.filter((s) => !s.conditionsSource);
+  const { byCoord, batches } = await prefetchOpenMeteo({
+    spots: primarySpots,
+    useMultiModel, usage, fetchWithRetry,
+    marineApi: MARINE_API, weatherApi: WEATHER_API,
+    waveModelsWeight: WAVE_MODELS.length, windModelsWeight: WIND_MODELS.length,
+    sleepMs: sleep, interBatchMs: MIN_REQUEST_INTERVAL,
+  });
+  console.log(`📡 Prefetch Open-Meteo: ${byCoord.size}/${primarySpots.length} spots em ${batches} lotes multi-coordenada\n`);
+  const prefetchedFetchers = createPrefetchedFetchers({
+    byCoord,
+    fetchers: { fetchMarineData, fetchWeatherData, fetchMarineWaveModels, fetchWindModels },
+  });
   const processPrimarySpot = async (spot) => {
     const result = await processSpot(spot, {
-      useMultiModel, previousConditions, ihTides, tideBaseline, waveBias, waveBiasEnabled, usage,
-      fetchers: { fetchMarineData, fetchWeatherData, fetchMarineWaveModels, fetchWindModels },
+      useMultiModel, previousConditions, ihTides, tideBaseline, waveBias, waveBiasEnabled, skillBySpot, usage,
+      fetchers: prefetchedFetchers,
       findCurrentHourIndex, confidenceAtIndex, confidenceByDay, blendWindAtIndex, readModelMap,
       applyWindBlendToHours, waveModels: WAVE_MODELS, windModels: WIND_MODELS, isFreshIhObservation,
       getCurrentConditions, readPreviousForecast, onStaleIhTide: () => { ihSkippedStale += 1; },
@@ -195,7 +220,6 @@ async function updateConditions() {
       ensembleRun.hours += result.ensembleHours;
     }
     usage.spotsFetched += 1;
-    await sleep(MIN_REQUEST_INTERVAL);
   };
   const failedSpotIds = [];
   for (const spot of spots) {
@@ -222,12 +246,18 @@ async function updateConditions() {
     const stillFailing = await retryFailedSpots({
       ids: failedSpotIds,
       totalPrimarios,
-      run: (id) => {
+      run: async (id) => {
         const spot = spotById.get(id);
         // Invariante: failedSpotIds só recebe ids de `spots` — se falhar,
         // a culpa é do wiring, não do provider.
-        if (!spot) return Promise.reject(new Error(`spot desconhecido na repetição: ${id}`));
-        return processPrimarySpot(spot);
+        if (!spot) throw new Error(`spot desconhecido na repetição: ${id}`);
+        try {
+          return await processPrimarySpot(spot);
+        } finally {
+          // O throttle de pedidos saiu do loop principal para o prefetch;
+          // no retry (fetch individual por entrada em falta) mantém-se.
+          await sleep(MIN_REQUEST_INTERVAL);
+        }
       },
       sleep,
       maxPasses: MAX_RETRY_PASSES,

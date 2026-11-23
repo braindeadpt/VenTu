@@ -677,6 +677,54 @@ function buildReport(archive, nowMs = Date.now()) {
   };
 }
 
+/**
+ * Fase 3 (P2.3): skill REAL da boia como calibração do spot — por spot, o
+ * candidato é a boia IH mapeada e/ou a boia WMO mapeada; escolhe-se a
+ * qualificada mais próxima (n≥60 pares e corr≥0.7 — sem amostra ou sem
+ * correlação não se corrige nada). O `me` tem a convenção do skill
+ * (observed − forecast), pronta para somar ao waveHeight previsto.
+ * @param {Array<{ id: string }>} spots
+ * @param {Record<string, { idEst: number|string, distanceKm?: number }>|null|undefined} ihMapping ih-buoys.json spotMapping
+ * @param {Record<string, { code: string|number, distanceKm?: number }>|null|undefined} wmoMapping wmo-buoys.json spotMapping
+ * @param {Record<string, { me?: number, n?: number, corr?: number|null, buoyName?: string, origin?: string }>|null|undefined} byBuoy forecast-skill.json byBuoy
+ * @param {{ minN?: number, minCorr?: number, minAbsMe?: number, maxAbsMe?: number }} [gates]
+ * @returns {Record<string, { me: number, n: number, corr: number|null, buoy: string, km: number }>}
+ */
+function skillBiasBySpot(spots, ihMapping, wmoMapping, byBuoy, gates = {}) {
+  const { minN = 60, minCorr = 0.7, minAbsMe = 0.2, maxAbsMe = 1.0 } = gates;
+  const out = {};
+  if (!byBuoy) return out;
+  for (const spot of spots ?? []) {
+    const candidates = [];
+    const ih = ihMapping?.[spot.id];
+    if (ih?.idEst != null) {
+      const s = byBuoy[String(ih.idEst)];
+      if (s) candidates.push({ s, buoy: s.buoyName ?? String(ih.idEst), km: ih.distanceKm ?? Infinity });
+    }
+    const wmo = wmoMapping?.[spot.id];
+    if (wmo?.code != null) {
+      const s = byBuoy[String(wmo.code)];
+      if (s) candidates.push({ s, buoy: s.buoyName ?? String(wmo.code), km: wmo.distanceKm ?? Infinity });
+    }
+    const qualified = candidates
+      .filter(
+        ({ s }) =>
+          Number.isFinite(s.me) &&
+          (s.n ?? 0) >= minN &&
+          Number.isFinite(s.corr) &&
+          s.corr >= minCorr &&
+          Math.abs(s.me) >= minAbsMe &&
+          Math.abs(s.me) <= maxAbsMe,
+      )
+      .sort((a, b) => a.km - b.km);
+    const pick = qualified[0];
+    if (pick) {
+      out[spot.id] = { me: pick.s.me, n: pick.s.n, corr: pick.s.corr, buoy: pick.buoy, km: Math.round(pick.km * 10) / 10 };
+    }
+  }
+  return out;
+}
+
 module.exports = {
   SKILL_WINDOW_DAYS,
   MIN_PAIRS,
@@ -702,6 +750,7 @@ module.exports = {
   pruneArchive,
   buildReport,
   pairOriginOf,
+  skillBiasBySpot,
   DEFAULT_OUTPUT_PATH,
   DEFAULT_ARCHIVE_PATH,
 };

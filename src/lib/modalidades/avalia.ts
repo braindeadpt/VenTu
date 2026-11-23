@@ -27,6 +27,8 @@ export interface HoraModalidade {
   wd: number;
   /** Altura significativa da onda (m). */
   hs: number;
+  /** Mar de vento (m) dentro de `hs`; `undefined` quando a fonte não o traz — sem penalização. */
+  ww?: number;
   /** Período (s). */
   tp: number;
   /** Direcção de onde vem a ondulação (graus). */
@@ -341,7 +343,11 @@ export function modAvalia(MOD: ModalidadesDef, opc?: { DA?: number }): Motor {
         f.vento = pv === 0 ? 1 : pv > pvv.contra ? -1 : 0;
         const pm = h.tide > p.mare.alta[0] ? p.mare.alta[1] : 0;
         f.mare = pm ? -1 : h.tide < p.mare.baixa ? 1 : 0;
-        const n = s - pv - pm - degrau(p.chuva, h.rain) - solBaixo(h);
+        // Mar batido (Fase 3): o mar de vento é uma fatia grande da onda —
+        // mistura/desordena a forma. −1 na lógica de onda (surf/bodyboard);
+        // sem `ww` na fonte não há penalização.
+        const chop = h.ww != null && h.hs >= 0.4 && h.ww >= 0.5 && h.ww / h.hs >= 0.35 ? 1 : 0;
+        const n = s - pv - pm - chop - degrau(p.chuva, h.rain) - solBaixo(h);
         const motivo: Motivo =
           t < DA - 2
             ? 'pouca'

@@ -35,6 +35,30 @@ function applyWaveBiasToRow(current, region, waveBias, enabled) {
   return meta ? { ...clone, waveBias: meta } : clone;
 }
 
+/**
+ * Fase 3 (P2.3): calibração pela skill REAL da boia do spot (forecast-skill).
+ * Mesmas regras do viés ERA5 — raw preservado em `waveHeightRaw`, piso 0.1 m,
+ * meta em `waveBias` com `src: 'skill'` + a boia. O `me` é obs − forecast,
+ * por isso soma directa ao previsto (sub-previsão ⇒ corrige para cima).
+ * @param {{ waveHeight?: number }} current
+ * @param {{ me: number, n: number, corr?: number|null, buoy?: string }|null|undefined} skill entrada de skillBiasBySpot (já com gates)
+ * @returns {object} row corrigida ou o próprio `current` quando nada se aplica
+ */
+function applySkillBiasToRow(current, skill) {
+  if (!skill || !Number.isFinite(skill.me)) return current;
+  const raw = current.waveHeight;
+  if (raw == null || !Number.isFinite(raw)) return current;
+  const corrected = Math.max(0.1, Math.round((raw + skill.me) * 10) / 10);
+  const deltaM = Math.round((corrected - raw) * 10) / 10;
+  if (Math.abs(deltaM) < 0.05) return current;
+  return {
+    ...current,
+    waveHeightRaw: raw,
+    waveHeight: corrected,
+    waveBias: { src: 'skill', buoy: skill.buoy, me: skill.me, n: skill.n, corr: skill.corr ?? null, deltaM },
+  };
+}
+
 function applyAliasSpots(aliasSpots, allConditions, allForecasts, log = console) {
   const copied = [];
   for (const spot of aliasSpots) {
@@ -149,6 +173,7 @@ module.exports = {
   MIN_BIAS_M,
   confidenceFromPrevious,
   applyWaveBiasToRow,
+  applySkillBiasToRow,
   applyAliasSpots,
   wavePowerKwPerM,
   wavePowerFromMarine,
