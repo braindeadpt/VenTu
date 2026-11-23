@@ -9,9 +9,10 @@ import { FORECASTS_MAQUETE, AGORA_MAQUETE, abreHome } from './helpers/homeV6';
  * tick imediato baixava tudo). A revalidação começa no intervalo de 15 min
  * ou no regresso ao visível — e só se o último refresh tiver ≥ 5 min.
  *
- * O relógio do Playwright (`page.clock`) controla Date e timers da página,
- * pelo que a cadência é testada de forma determinística; `visibilityState`
- * é forçado via defineProperty porque o browser não o expõe a escrita.
+ * O relógio do Playwright (`page.clock` — `install` + `runFor`) controla
+ * Date e timers da página, pelo que a cadência é testada de forma
+ * determinística; `visibilityState` é forçado via defineProperty porque o
+ * browser não o expõe a escrita.
  */
 
 const RE_FORECASTS = /\/data\/forecasts\/([a-z0-9-]+)\.json(\?.*)?$/;
@@ -41,20 +42,22 @@ test.describe('Home v6 — SWR (P2.2)', { tag: '@core' }, () => {
     page,
   }) => {
     const pedidos = await registaRotas(page);
-    await page.clock.setFixedTime(AGORA_MAQUETE);
+    // install({ time }): Date.now e timers ficam no relógio falso — o avanço
+    // é só via runFor (o mount usa este instante como "agora").
+    await page.clock.install({ time: AGORA_MAQUETE });
     await abreHome(page, '/pt/');
 
     // O bake já é o conteúdo «stale» do SWR: zero pedidos de série ao abrir.
     expect(pedidos).toEqual([]);
 
     // Regresso ao visível com <5 min desde o mount — ainda nada.
-    await page.clock.fastForward(4 * 60 * 1000);
+    await page.clock.runFor(4 * 60 * 1000);
     await voltaAoVisivel(page);
     await page.waitForTimeout(300);
     expect(pedidos).toEqual([]);
 
     // Passados ≥5 min, o regresso dispara a revalidação das séries.
-    await page.clock.fastForward(2 * 60 * 1000);
+    await page.clock.runFor(2 * 60 * 1000);
     await voltaAoVisivel(page);
     await expect.poll(() => pedidos.length, { timeout: 10_000 }).toBeGreaterThan(0);
   });
