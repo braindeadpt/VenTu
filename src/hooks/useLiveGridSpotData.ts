@@ -6,14 +6,13 @@ import { refreshGridSpotScores } from '@/lib/refreshGridSpotScores';
 import { loadConditionsJson } from '@/lib/spotDataCache';
 import { loadWaveBiasRegions } from '@/lib/waveBias';
 
-const REFRESH_MS = 15 * 60 * 1000;
-/** Voltar ao separador só refresca se o último refresh tiver ≥ 5 min. */
-export const VISIBILITY_REFRESH_MIN_MS = 5 * 60 * 1000;
+import {
+  REFRESH_MS,
+  shouldRefreshOnVisible,
+  VISIBILITY_REFRESH_MIN_MS,
+} from '@/lib/refreshCadence';
 
-/** Decide se o regresso ao separador justifica um refresh (pura, testável). */
-export function shouldRefreshOnVisible(lastRefreshAt: number, nowMs: number): boolean {
-  return nowMs - lastRefreshAt >= VISIBILITY_REFRESH_MIN_MS;
-}
+export { REFRESH_MS, shouldRefreshOnVisible, VISIBILITY_REFRESH_MIN_MS };
 
 export interface UseLiveGridSpotDataOptions {
   /** Delay first refresh so map can paint (e.g. fullscreen /mapa on mobile). */

@@ -20,7 +20,7 @@ import { getLocalTips } from '@/lib/spotTips';
 import { loadCommunityTips, mergeLocalTips } from '@/lib/communityTips';
 import { rememberDataUpdate } from '@/lib/dataCache';
 import { loadConditionsJson, loadForecastForSpot } from '@/lib/spotDataCache';
-import { VISIBILITY_REFRESH_MIN_MS } from '@/hooks/useLiveGridSpotData';
+import { REFRESH_MS, VISIBILITY_REFRESH_MIN_MS } from '@/lib/refreshCadence';
 import { rawToScoreInput, applyRegionalBiasFallback } from '@/lib/scoreConditions';
 import { loadWaveBiasRegions } from '@/lib/waveBias';
 import Skeleton from '@/components/ui/Skeleton';
@@ -180,7 +180,7 @@ function spotCondToConditions(spotCond: Record<string, unknown>): Conditions {
   };
 }
 
-const SPOT_REFRESH_MS = 15 * 60 * 1000;
+const SPOT_REFRESH_MS = REFRESH_MS;
 
 export default function SpotDetailClient({
   spot,

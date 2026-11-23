@@ -35,7 +35,7 @@ import { hrefMapa as montarHrefMapa } from '@/lib/home/hrefMapa';
 import type { FotoSpot } from '@/lib/spotFotos';
 import type { LinhaForecast } from '@/lib/horaSpot';
 import { loadForecastForSpot } from '@/lib/spotDataCache';
-import { VISIBILITY_REFRESH_MIN_MS } from '@/hooks/useLiveGridSpotData';
+import { VISIBILITY_REFRESH_MIN_MS } from '@/lib/refreshCadence';
 import { useNivel } from '@/lib/nivelPref';
 import { nivelCopyV6 } from '@/lib/translations/nivel';
 import { emPoucos, fraseNivel, nivelDoSpotHome, rkDe } from './nivelHome';
