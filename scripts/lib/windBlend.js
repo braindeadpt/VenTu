@@ -4,8 +4,8 @@
  * - When ICON-EU (~7 km Europe) is live: 65 % ICON-EU + 35 % best_match in speed,
  *   gust and unit-vector direction while directions agree (≤ 60°) or either model
  *   is calm (< 0.5 m/s, where direction is undefined noise); when directions
- *   diverge (> 60°), uses the complete ICON-EU vector (speed, direction, gust)
- *   to avoid vector cancellation or underestimating strong gusts.
+ *   diverge (> 60°), uses the ICON-EU vector (speed, direction) and keeps the
+ *   stronger gust of the two members — never cancels wind or drops storm gusts.
  * - Without ICON-EU (e.g. Açores): median speed/gust across live models + best_match
  *   and unit-vector mean direction — never Math.max across all gusts.
  * - Matches hourly rows by timestamp (never blind array index) and preserves null.
@@ -110,7 +110,7 @@ function blendWindAtIndex(
   }
 
   const baseSpeed = hasBaseSpeed ? bestMatchSpeedMs : median(speeds);
-  const baseDir = hasBaseDir ? bestMatchDirDeg : 0;
+  const baseDir = hasBaseDir ? bestMatchDirDeg : null;
   const baseGust = hasBaseGust ? bestMatchGustMs : baseSpeed;
 
   const iconSpeed = speedByModel.icon_eu;
@@ -138,7 +138,8 @@ function blendWindAtIndex(
       // rajada 65/35; em calmaria usa a direção do modelo com vento, senão vetor unitário.
       windSpeed = ICON_WEIGHT * iconSpeed + (1 - ICON_WEIGHT) * baseSpeed;
       if (calmEither) {
-        windDirection = iconSpeed >= baseSpeed ? useDir : baseDir;
+        // Direção do modelo com vento; se esse não tiver direção, usa a do outro.
+        windDirection = iconSpeed >= baseSpeed ? useDir : hasBaseDir ? baseDir : useDir;
       } else {
         const [u1, v1] = toUv(ICON_WEIGHT, useDir);
         const [u0, v0] = toUv(1 - ICON_WEIGHT, baseDir);
@@ -151,12 +152,15 @@ function blendWindAtIndex(
         : baseGust;
       windGust = Math.max(rawGust, windSpeed * 1.1);
     } else {
-      // Direções divergentes (> 60°) ou sem base: usa o pacote completo (velocidade,
-      // direção e rajada) do modelo de maior resolução (ICON-EU ~7 km), preservando
-      // rajadas fortes absolutas e excesso relativo sem cancelar vetores.
+      // Direções divergentes (> 60°) ou sem base: vetor (velocidade, direção) do
+      // modelo de maior resolução (ICON-EU ~7 km) e a maior rajada prevista pelos
+      // dois membros — sem cancelar vento nem descartar rajadas de tempestade.
       windSpeed = iconSpeed;
       windDirection = useDir;
-      const rawGust = hasIconGust ? iconGust : hasBaseGust ? baseGust : iconSpeed;
+      const memberGusts = [hasIconGust ? iconGust : null, hasBaseGust ? baseGust : null].filter(
+        (v) => v != null,
+      );
+      const rawGust = memberGusts.length ? Math.max(...memberGusts) : iconSpeed;
       windGust = Math.max(rawGust, windSpeed * 1.1);
     }
   } else {
@@ -188,7 +192,17 @@ function blendWindAtIndex(
     const modelGusts = Object.values(gustByModel).filter(Number.isFinite);
     const allGusts = hasBaseGust ? [...modelGusts, baseGust] : modelGusts;
     const medGust = median(allGusts) ?? baseGust;
-    windGust = Math.max(medGust, windSpeed * 1.1);
+    // A nota penaliza rajada absoluta e excesso relativo separadamente: publica a
+    // estimativa mais conservadora entre a mediana das rajadas e a mediana do
+    // excesso (gust - speed) sobre a velocidade mediana.
+    const excesses = [];
+    for (const [m, sp] of Object.entries(speedByModel)) {
+      const g = gustByModel[m];
+      if (Number.isFinite(sp) && Number.isFinite(g)) excesses.push(Math.max(0, g - sp));
+    }
+    if (hasBaseSpeed && hasBaseGust) excesses.push(Math.max(0, baseGust - baseSpeed));
+    const medExcess = median(excesses) ?? 0;
+    windGust = Math.max(medGust, windSpeed + medExcess, windSpeed * 1.1);
   }
 
   const blended =
@@ -197,7 +211,8 @@ function blendWindAtIndex(
 
   return {
     windSpeed: Math.round(windSpeed * 1000) / 1000,
-    windDirection: Math.round(((windDirection % 360) + 360) % 360 * 10) / 10,
+    windDirection:
+      windDirection == null ? null : Math.round((((windDirection % 360) + 360) % 360) * 10) / 10,
     windGust: Math.round(windGust * 1000) / 1000,
     method,
     blended,

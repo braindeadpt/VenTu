@@ -59,7 +59,9 @@ describe('blendWindAtIndex', () => {
     expect(out.windGust - out.windSpeed).toBe(6);
   });
 
-  it('keeps full ICON-EU vector when models oppose by 180° (no artificial cancellation)', () => {
+  it('publishes the complete base vector when it has the stronger gust at 180° opposition', () => {
+    // base 14/18 vs ICON-EU 7/10 em direções opostas: o membro mais rajado ganha
+    // inteiro — par (velocidade, direção, rajada) real do mesmo modelo.
     const out = blendWindAtIndex(
       14,
       270,
@@ -69,10 +71,39 @@ describe('blendWindAtIndex', () => {
       { icon_eu: 10 },
     );
     expect(out.method).toBe('icon_eu_vector');
-    expect(out.blended).toBe(true);
-    expect(out.windSpeed).toBe(7);
+    // Output idêntico ao best_match → blended=false (os valores publicados não mudaram).
+    expect(out.blended).toBe(false);
+    expect(out.windSpeed).toBe(14);
+    expect(out.windDirection).toBe(270);
+    expect(out.windGust).toBe(18);
+  });
+
+  it('publishes the complete ICON-EU vector when it has the stronger gust in divergence', () => {
+    const out = blendWindAtIndex(
+      4,
+      270,
+      6,
+      { icon_eu: 10 },
+      { icon_eu: 90 },
+      { icon_eu: 16 },
+    );
+    expect(out.windSpeed).toBe(10);
     expect(out.windDirection).toBe(90);
-    expect(out.windGust).toBe(10);
+    expect(out.windGust).toBe(16);
+  });
+
+  it('uses the calm model real direction instead of fake 0° when base direction is missing', () => {
+    // base 10 m/s sem direção + ICON-EU calmo a 90°: não deve publicar 0° (norte fictício).
+    const out = blendWindAtIndex(10, null, 14, { icon_eu: 0 }, { icon_eu: 90 }, { icon_eu: 0 });
+    expect(out.windSpeed).toBe(3.5);
+    expect(out.windDirection).toBe(90);
+    expect(out.windGust).toBe(4.9);
+  });
+
+  it('returns null direction when no model provides one (no fabricated 0°)', () => {
+    const out = blendWindAtIndex(10, null, 14, { icon_eu: 0 }, {}, { icon_eu: 0 });
+    expect(out.windSpeed).toBe(3.5);
+    expect(out.windDirection).toBeNull();
   });
 
   it('does not discard base wind when ICON-EU is calm (0 m/s) with an arbitrary opposite direction', () => {
@@ -94,9 +125,26 @@ describe('blendWindAtIndex', () => {
     expect(out.method).toBe('median_vector');
     // Mediana de [3, 5, 6, 7] = 5.5
     expect(out.windSpeed).toBe(5.5);
-    // Rajada pela mediana de [4, 7, 8, 18] = 7.5 (nunca Math.max = 18)
+    // Rajada pela mediana de [4, 7, 8, 18] = 7.5; excessos [1,2,2,11] → med 2 →
+    // max(7.5, 5.5+2) = 7.5 (nunca Math.max absoluto = 18)
     expect(out.windGust).toBe(7.5);
     expect(out.blended).toBe(true);
+  });
+
+  it('publishes conservative gust above median when median excess is larger', () => {
+    // Velocidades 8/14/16, rajadas 14/15/22: mediana absoluta = 15, mas a mediana
+    // dos excessos = 6 → publica 14+6 = 20 (conservador, excesso típico real).
+    const out = blendWindAtIndex(
+      8,
+      180,
+      14,
+      { ecmwf_ifs025: 14, gfs_seamless: 16 },
+      { ecmwf_ifs025: 190, gfs_seamless: 200 },
+      { ecmwf_ifs025: 15, gfs_seamless: 22 },
+    );
+    expect(out.method).toBe('median_vector');
+    expect(out.windSpeed).toBe(14);
+    expect(out.windGust).toBe(20);
   });
 });
 
