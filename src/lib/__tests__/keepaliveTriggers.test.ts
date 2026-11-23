@@ -107,10 +107,14 @@ describe('keep-alive externo (repository_dispatch ping)', () => {
     expect(pollIdx, 'passo do poll fora do job `alerts`').toBeGreaterThan(-1);
     expect(evalIdx, 'passo de avaliação fora do job `alerts` ou antes do poll').toBeGreaterThan(pollIdx);
     // Os alertas por email nunca dependem do bot: a avaliação corre mesmo se
-    // o poll for saltado (sem secrets) ou falhar — e o poll tem teto próprio
-    // para não esgotar os 15 min do job.
-    const evalStep = job.slice(pollIdx);
-    expect(evalStep).toMatch(/if:\s*always\(\)/);
-    expect(job.slice(0, evalIdx)).toMatch(/timeout-minutes/);
+    // o poll for saltado (sem secrets) ou falhar.
+    expect(job.slice(pollIdx)).toMatch(/if:\s*always\(\)/);
+    // E o teto tem de estar no PASSO do poll — um `timeout-minutes` ao nível
+    // do job não reserva tempo para a avaliação.
+    const stepStart = job.indexOf('- name: Poll Telegram');
+    const nextStep = job.slice(stepStart + 1).search(/^      -\s/m);
+    const pollStep =
+      nextStep === -1 ? job.slice(stepStart) : job.slice(stepStart, stepStart + 1 + nextStep);
+    expect(pollStep, 'passo do poll sem timeout-minutes próprio').toMatch(/timeout-minutes/);
   });
 });
