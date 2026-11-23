@@ -116,6 +116,15 @@ export function isObservedWaveNear(wave: Pick<ObservedWave, 'distanceKm'>): bool
   return Number.isFinite(d) && d <= OBSERVED_WAVE_MAX_DISTANCE_KM;
 }
 
+/**
+ * Folga para leituras "do futuro" próximo (horas): o relógio partilhado da
+ * ficha só avança na cadência de 15 min e o relógio do cliente pode estar
+ * atrás do carimbo da boia — uma leitura publicada entre ticks ficava
+ * escondida até ao tick seguinte. Rejeita mesmo assim carimbos >20 min à
+ * frente (lixo de timestamps), como exige o teste de frescura.
+ */
+export const OBSERVED_WAVE_FUTURE_SKEW_HOURS = 1 / 3;
+
 /** Source-aware freshness gate for a buoy reading (mirrors the data layer). */
 export function isObservedWaveFresh(
   wave: Pick<ObservedWave, 'observedAt' | 'source'>,
@@ -124,7 +133,7 @@ export function isObservedWaveFresh(
   const t = new Date(wave.observedAt).getTime();
   if (!Number.isFinite(t)) return false;
   const ageHours = (nowMs - t) / 3_600_000;
-  if (ageHours < 0) return false;
+  if (ageHours < -OBSERVED_WAVE_FUTURE_SKEW_HOURS) return false;
   return ageHours <= OBSERVED_WAVE_MAX_AGE_HOURS[wave.source];
 }
 

@@ -107,4 +107,11 @@ describe('isObservedWaveFresh', () => {
     expect(isObservedWaveFresh(wmo7h, NOW)).toBe(false);
     expect(isObservedWaveFresh({ ...wmo5h, observedAt: '2026-08-14T18:30:00Z' }, NOW)).toBe(false); // futura
   });
+
+  it('tolera leituras no futuro próximo (skew de relógio / tick de 15 min), rejeita >20 min', () => {
+    const wmo = { source: 'wmo-buoy' as const };
+    expect(isObservedWaveFresh({ ...wmo, observedAt: '2026-08-14T18:15:00Z' }, NOW)).toBe(true);
+    expect(isObservedWaveFresh({ ...wmo, observedAt: '2026-08-14T18:19:59Z' }, NOW)).toBe(true);
+    expect(isObservedWaveFresh({ ...wmo, observedAt: '2026-08-14T18:25:00Z' }, NOW)).toBe(false);
+  });
 });
