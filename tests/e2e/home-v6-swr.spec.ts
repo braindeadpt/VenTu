@@ -9,10 +9,10 @@ import { FORECASTS_MAQUETE, abreHome } from './helpers/homeV6';
  * tick imediato baixava tudo). A revalidação começa no intervalo de 15 min
  * ou no regresso ao visível — e só se o último refresh tiver ≥ 5 min.
  *
- * O relógio do Playwright (`page.clock` — `setFixedTime` + `fastForward`)
- * controla Date e timers da página, pelo que a cadência é testada de forma
- * determinística; `visibilityState` é forçado via defineProperty porque o
- * browser não o expõe a escrita.
+ * O padrão é o do map-stable-view: `Date.now` da página com offset de
+ * +6 min (desvio constante — o tempo continua a andar) e um dispatch de
+ * `visibilitychange`; a página já está visível em headless, não é preciso
+ * forçar `hidden`/`visibilityState`.
  */
 
 const RE_FORECASTS = /\/data\/forecasts\/([a-z0-9-]+)\.json(\?.*)?$/;
@@ -29,14 +29,6 @@ async function registaRotas(page: import('@playwright/test').Page) {
   return pedidos;
 }
 
-async function voltaAoVisivel(page: import('@playwright/test').Page) {
-  await page.evaluate(() => {
-    Object.defineProperty(document, 'hidden', { value: false, configurable: true });
-    Object.defineProperty(document, 'visibilityState', { value: 'visible', configurable: true });
-    document.dispatchEvent(new Event('visibilitychange'));
-  });
-}
-
 test.describe('Home v6 — SWR (P2.2)', { tag: '@core' }, () => {
   // O SW serve /data/* do cache e os pedidos nunca chegam ao page.route.
   test.use({ serviceWorkers: 'block' });
@@ -45,24 +37,23 @@ test.describe('Home v6 — SWR (P2.2)', { tag: '@core' }, () => {
     page,
   }) => {
     const pedidos = await registaRotas(page);
-    // setFixedTime (o padrão da maquete): Date congelado no instante real —
-    // o bake é deste momento, a home hidrata normalmente (o `vivo` chega) —
-    // e `fastForward` avança o relógio para os saltos da cadência.
-    await page.clock.setFixedTime(Date.now());
     await abreHome(page, '/pt/');
 
     // O bake já é o conteúdo «stale» do SWR: zero pedidos de série ao abrir.
     expect(pedidos).toEqual([]);
 
-    // Regresso ao visível com <5 min desde o mount — ainda nada.
-    await page.clock.fastForward(4 * 60 * 1000);
-    await voltaAoVisivel(page);
+    // Regresso ao visível <5 min depois do mount (Date real) — sem revalidação.
+    await page.evaluate(() => document.dispatchEvent(new Event('visibilitychange')));
     await page.waitForTimeout(300);
     expect(pedidos).toEqual([]);
 
-    // Passados ≥5 min, o regresso dispara a revalidação das séries.
-    await page.clock.fastForward(2 * 60 * 1000);
-    await voltaAoVisivel(page);
+    // O mesmo regresso com o Date da página +6 min à frente já revalida
+    // (desvio constante do map-stable-view — o tempo continua a andar).
+    await page.evaluate(() => {
+      const real = Date.now.bind(Date);
+      Date.now = () => real() + 6 * 60 * 1000;
+      document.dispatchEvent(new Event('visibilitychange'));
+    });
     await expect.poll(() => pedidos.length, { timeout: 10_000 }).toBeGreaterThan(0);
   });
 });
