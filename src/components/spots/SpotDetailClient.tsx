@@ -473,7 +473,9 @@ export default function SpotDetailClient({
     if (!initialData || forceLive) return;
     const baked = initialData;
     let cancelled = false;
-    let lastRefreshAt = 0;
+    // Começa em "agora": o bake acabou de renderizar — um regresso ao visível
+    // dentro de <5 min não deve refazer o fetch.
+    let lastRefreshAt = Date.now();
     // A data do modelo não avança em ciclos só de observações (merge-observations
     // publica vento/onda medidos sem renovar a previsão): a chave compara o
     // conteúdo aplicado — previsão + observações — e aceita inclusivamente
@@ -484,7 +486,7 @@ export default function SpotDetailClient({
 
     async function revalidate() {
       if (document.hidden) return;
-      if (lastRefreshAt && Date.now() - lastRefreshAt < VISIBILITY_REFRESH_MIN_MS) return;
+      if (Date.now() - lastRefreshAt < VISIBILITY_REFRESH_MIN_MS) return;
       lastRefreshAt = Date.now();
       try {
         const dataId = getConditionsDataId(spot);
@@ -517,7 +519,9 @@ export default function SpotDetailClient({
       }
     }
 
-    void revalidate();
+    // Sem revalidação imediata: este efeito só corre com bake (ver guarda
+    // acima), que já é o "stale" do SWR — baixar conditions+forecast no
+    // carregamento inflaria o total-byte-weight da página sem necessidade.
     const onVis = () => {
       if (document.visibilityState === 'visible') void revalidate();
     };

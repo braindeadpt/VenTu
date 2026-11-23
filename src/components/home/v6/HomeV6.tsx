@@ -135,15 +135,19 @@ export default function HomeV6({ locale, costa: costaSSG, meta, fotos, agoraMs, 
     }
     // P2.2 SWR: mesma cadência da grid (15 min + regresso ao visível ≥5 min) —
     // as ~19 séries da costa revalidam por ETag via spotDataCache (304 barato).
-    let lastRefreshAt = 0;
+    // Começa em "agora": o bake acabou de renderizar, então um regresso ao
+    // visível dentro de <5 min não deve refazer fetch das séries.
+    let lastRefreshAt = Date.now();
     const tick = () => {
       setAgora(Date.now());
       if (document.hidden) return;
-      if (lastRefreshAt && Date.now() - lastRefreshAt < VISIBILITY_REFRESH_MIN_MS) return;
+      if (Date.now() - lastRefreshAt < VISIBILITY_REFRESH_MIN_MS) return;
       lastRefreshAt = Date.now();
       void recarrega((serie) => loadForecastForSpot(serie, { force: true }) as unknown as Promise<LinhaForecast[]>);
     };
-    void tick();
+    // Sem tick imediato: o bake já é o "stale" do SWR — baixar as ~19 séries no
+    // carregamento infla o total-byte-weight da home (~780KB) e fura o budget
+    // do Lighthouse. A revalidação começa no primeiro intervalo / regresso.
     const refreshIv = window.setInterval(tick, 15 * 60 * 1000);
     const onVis = () => {
       if (document.visibilityState === 'visible') tick();
