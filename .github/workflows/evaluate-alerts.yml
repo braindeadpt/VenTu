@@ -15,9 +15,11 @@ on:
     # GitHub é ~44 % do nominal — com o ping, os alertas «immediate» são
     # avaliados ~30 min (em vez de ~5 h reais) e o digest sai no primeiro tick
     # após as 07:00 em vez de depender do cron das 07:30. É seguro: o dedup
-    # `last_sent_at` dá uma janela de 24 h por subscrição e
-    # `alreadySentDigestToday` garante um digest/dia; os runs extra só
-    # encurtam a latência.
+    # `last_sent_at` impõe um mínimo de 3 h entre envios por subscrição
+    # (COOLDOWN_MS — condições persistentes podem notificar até ~8×/dia, mais
+    # do que as ~4-5 corridas anteriores, por desenho da janela de 3 h) e
+    # `alreadySentDigestToday` garante um digest/dia. A leitura de /start NÃO
+    # corre aqui — pertence ao telegram-poll.yml (ver evaluate-alerts.js).
     types: [ping]
 
 

@@ -190,7 +190,9 @@ describe('cronDelivery — workflows reais', () => {
 
   it('o cenário real de 2026-09-25 (grava-se o resultado da medição)', () => {
     const read = (f) => parseCrons(fs.readFileSync(path.join(WF, f), 'utf-8'));
-    // Contagens observadas nesse dia (API): telegram-poll 6 em 24 h.
+    // Simulação com a cadência actual: 6 corridas observadas em 24 h contra o
+    // nominal de 48 (*/30) ainda fica abaixo de metade — o julgamento do
+    // delivery mantém-se como o da medição original de 2026-09-25 (6/288).
     const d = evaluateCronDelivery({
       crons: read('telegram-poll.yml'),
       observed24h: 6,

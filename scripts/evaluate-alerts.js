@@ -35,7 +35,6 @@ const {
 } = require('./lib/ihCoastalWarnings');
 const {
   sendTelegramMessage,
-  processTelegramLinkUpdates,
   fetchTelegramChatId,
 } = require('./lib/telegram');
 const { warningTriggersForSpot, triggerLines } = require('./lib/alertWarnTriggers');
@@ -761,15 +760,11 @@ async function main() {
     return;
   }
 
-  try {
-    const tg = await processTelegramLinkUpdates(url, key);
-    if (tg.processed > 0 || tg.linked > 0) {
-      console.log(`  Telegram links: ${tg.linked} linked (${tg.processed} updates)`);
-    }
-  } catch (err) {
-    console.warn(`  ⚠️ Telegram poll skipped: ${err.message}`);
-  }
-
+  // A leitura de /start pertence ao telegram-poll.yml — correr o mesmo poll
+  // aqui fazia dois leitores partilhar o offset do Supabase no MESMO ping:
+  // o primeiro consumia o token e enviava «Ligado ✅», o segundo lia a
+  // mesma mensagem e respondia «Link inválido». O avaliador só envia
+  // (sendTelegramMessage/fetchTelegramChatId) para chats já ligados.
   const { slugToId, idToSlug } = loadSpotMaps();
   const conditions = JSON.parse(fs.readFileSync(CONDITIONS_PATH, 'utf-8'));
 
