@@ -339,6 +339,7 @@ function crossPairs(archive, opts = {}) {
         obs.origin ??
         (typeof obs.buoyId === 'number' ? 'ih' : wmoOriginForWmoCode(String(obs.buoyId))),
       forecastHm0: round2(f.hm0),
+      ...(Number.isFinite(f.ww) ? { forecastWw: round2(f.ww) } : {}),
       observedHm0: round2(obs.hm0),
       leadTimeHours: round1(leadHours),
     });

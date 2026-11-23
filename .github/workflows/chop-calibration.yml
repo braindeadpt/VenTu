@@ -1,0 +1,52 @@
+name: Chop Calibration Review
+
+# Revisão mensal do «mar batido» (P2.4): corre scripts/check-chop-calibration.js
+# (frequência de chop por spot + pares forecastWw↔boia do arquivo do
+# forecast-skill) e publica o relatório na issue de tracking. Quando os pares
+# com ww ≥60 e os lados chop/sem-chop tiverem amostra, o script sugere rever
+# CHOP_MIN_* em src/lib/modalidades/avalia.ts — até lá, o relatório mensal é
+# o lembrete automático (ninguém precisa de se lembrar manualmente).
+on:
+  schedule:
+    # Dia 2 do mês às 08:13 UTC — fora dos crons de dados (:17/:47), dos
+    # monitores (:07/:37, :12/:42) e do keep-alive (:05/:35). Dia 2 em vez de
+    # dia 1: o arquivo do skill fecha o mês anterior completo.
+    - cron: '13 8 2 * *'
+  workflow_dispatch:
+
+permissions:
+  issues: write
+  contents: read
+
+concurrency:
+  group: chop-calibration
+  cancel-in-progress: false
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+
+      - name: Hydrate public/data + data-state (ventu-data)
+        run: git fetch origin ventu-data --depth=1 && git checkout FETCH_HEAD -- public/data data-state || true
+
+      - name: Run chop calibration check
+        id: check
+        run: node scripts/check-chop-calibration.js > chop-report.md && cat chop-report.md
+
+      - name: Publish report to tracking issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ISSUE=$(gh issue list --label "chop-calibration" --state open --limit 1 --json number --jq '.[0].number // empty')
+          if [ -z "$ISSUE" ]; then
+            ISSUE=$(gh issue create \
+              --title "📊 Chop calibration — revisão mensal (P2.4)" \
+              --label "chop-calibration" \
+              --body "Issue de tracking automático: o workflow \`chop-calibration.yml\` comenta aqui mensalmente a frequência do chop e, quando houver ≥60 pares \`forecastWw\`↔boia, a comparação da skill do hm0 em horas chop vs sem-chop — o sinal para afinar \`CHOP_MIN_*\` em \`src/lib/modalidades/avalia.ts\`." \
+              --json number --jq '.number')
+          fi
+          gh issue comment "$ISSUE" --body-file chop-report.md

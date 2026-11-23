@@ -197,6 +197,10 @@ async function fetchForecastSkill() {
       newForecasts.push({
         time: hour.time,
         hm0,
+        // P2.4 tuning: mar de vento previsto junto do slot — quando os pares
+        // acumularem (≥60/boia) dá para medir se o erro do hm0 piora em horas
+        // com chop e afinar CHOP_MIN_* com dados (ver check-chop-calibration).
+        ...(Number.isFinite(Number(hour.windWaveHeight)) ? { ww: Number(hour.windWaveHeight) } : {}),
         runAt: now.toISOString(),
         buoyId,
         buoyName: buoyNames.get(String(buoyId)) ?? buoy?.name,
