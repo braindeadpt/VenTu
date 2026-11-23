@@ -42,13 +42,17 @@ test.describe('Home v6 — SWR (P2.2)', { tag: '@core' }, () => {
     // O bake já é o conteúdo «stale» do SWR: zero pedidos de série ao abrir.
     expect(pedidos).toEqual([]);
 
-    // Regresso ao visível <5 min depois do mount (Date real) — sem revalidação.
-    await page.evaluate(() => document.dispatchEvent(new Event('visibilitychange')));
+    // Regresso ao visível mesmo por baixo do limiar de 5 min (+4,5 min no
+    // Date da página): uma revalidação prematura falharia aqui.
+    await page.evaluate(() => {
+      const real = Date.now.bind(Date);
+      Date.now = () => real() + 4.5 * 60 * 1000;
+      document.dispatchEvent(new Event('visibilitychange'));
+    });
     await page.waitForTimeout(300);
     expect(pedidos).toEqual([]);
 
-    // O mesmo regresso com o Date da página +6 min à frente já revalida
-    // (desvio constante do map-stable-view — o tempo continua a andar).
+    // Passados ≥5 min (+6 min no Date), o regresso dispara a revalidação.
     await page.evaluate(() => {
       const real = Date.now.bind(Date);
       Date.now = () => real() + 6 * 60 * 1000;
