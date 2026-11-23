@@ -110,8 +110,20 @@ function getSpotSlugs() {
   return [...content.matchAll(/slug:\s*['"]([^'"]+)['"]/g)].map((m) => m[1]);
 }
 
+/**
+ * Dados que cozeram o export sob teste: prefere out/ (o que o servidor e2e
+ * publica) a public/ da working tree — esta pode ter sido hidratada noutro
+ * instante que o build (ventu-data mexe ~3h) e divergir do que foi baked.
+ */
+function dataFileInExportOrPublic(rel) {
+  const baked = path.join(__dirname, '../../../out', rel);
+  return fs.existsSync(baked)
+    ? baked
+    : path.join(__dirname, '../../../public', rel);
+}
+
 function getNewsSlugs() {
-  const newsPath = path.join(__dirname, '../../../public/data/news.json');
+  const newsPath = dataFileInExportOrPublic('data/news.json');
   if (!fs.existsSync(newsPath)) return [];
   try {
     const items = JSON.parse(fs.readFileSync(newsPath, 'utf-8'));
@@ -160,8 +172,15 @@ function discoverAllRoutes() {
   // the export. Include new distinct templates and directory details instead
   // of silently claiming "all routes" with an obsolete manual inventory.
   const known = new Set(routes.map((route) => route.path));
-  const sitemap = path.join(__dirname, '../../../public/sitemap.xml');
-  const expected = parseSitemapRoutes(sitemap).map((rel) => encodeURI(`/${rel.replace(/index\.html$/, '')}`));
+  // O contrato de rotas é o sitemap DO EXPORT (out/sitemap.xml — regerado no
+  // job build sobre os dados hidratados que cozeram as páginas). O
+  // public/sitemap.xml commitado é um snapshot versionado do HEAD
+  // (check-sitemap-drift) e pode listar URLs que este export nunca teve —
+  // os 230 falsos 404 do run 45252799453.
+  const sitemap = dataFileInExportOrPublic('sitemap.xml');
+  const expected = fs.existsSync(sitemap)
+    ? parseSitemapRoutes(sitemap).map((rel) => encodeURI(`/${rel.replace(/index\.html$/, '')}`))
+    : [];
   for (const locale of LOCALES) {
     for (const sub of NOINDEX_ROUTE_PATHS) expected.push(localePath(locale, sub));
   }
