@@ -58,7 +58,7 @@ the external cron wakes the pipeline **and** its watchdogs:
 | `staleness-alert.yml` | `pipeline-meta.json` age → issue `data-stale` |
 | `data-cadence-alert.yml` | last `public/data` commit age → issue `data-stale` |
 | `ih-health.yml` | gate → IH tide + IPMA radar probes (só com o pipeline atrasado) → issues `ih-outage` / `ipma-radar-outage` |
-| `telegram-poll.yml` | `/start` deep-link poll |
+| `evaluate-alerts.yml` | poll de `/start` → avaliação de alertas, no mesmo job |
 
 **No extra external job is needed** — the cron you already run for the
 pipeline now also keeps the monitors off GitHub's best-effort scheduler.
@@ -207,7 +207,7 @@ align the `cron:` with reality, or record the gap on purpose.
 # 1. one ping
 gh api repos/braindeadpt/VenTu/dispatches --method POST -f event_type=ping
 # 2. within a minute: five runs sharing the same trigger minute
-for wf in update-data.yml staleness-alert.yml data-cadence-alert.yml ih-health.yml telegram-poll.yml; do
+for wf in update-data.yml staleness-alert.yml data-cadence-alert.yml ih-health.yml evaluate-alerts.yml; do
   printf '%-24s ' "$wf"
   gh run list --repo braindeadpt/VenTu --workflow="$wf" --limit 1 \
     --json event,createdAt,url --jq '.[0] | "\(.createdAt) \(.event) \(.url)"'

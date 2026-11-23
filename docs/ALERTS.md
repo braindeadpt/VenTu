@@ -76,9 +76,14 @@ Em **Settings → Secrets and variables → Actions**:
 
 O workflow [`.github/workflows/evaluate-alerts.yml`](../.github/workflows/evaluate-alerts.yml) corre:
 
-- **Cron imediato:** `15 */3 * * *` (15 min após cada update de condições)
-- **Cron digest:** `30 7 * * *` (timezone `Europe/Lisbon`)
-- **Manual:** Actions → *Evaluate Alerts* → *Run workflow*
+- **Cron único:** `*/30 * * * *` — no mesmo job corre primeiro o poll de
+  `/start` (liga contas Telegram) e depois a avaliação de alertas. O
+  `COOLDOWN_MS` de 3 h por subscrição limita os envios «immediate»;
+  o digest sai no primeiro tick ≥ 07:00 UTC (`alreadySentDigestToday`
+  garante um envio/dia — cron é sempre UTC).
+- **Keep-alive:** o POST `repository_dispatch(ping)` externo acorda este
+  workflow na mesma cadência (~30 min).
+- **Manual:** Actions → *Alerts & Telegram Poll* → *Run workflow*
 
 ## Verificação local
 
@@ -106,14 +111,16 @@ Mesmo digest/imediato dos favoritos (E1c), enviado também via Bot API se a cont
      (Settings → Secrets and variables → **Actions** → separador **Variables** → New repository variable)  
      Ex.: `VenTuAlertsBot`
 4. Commit/push do código Telegram + novo deploy (Actions → Deploy to GitHub Pages).
-5. Workflows: `evaluate-alerts` (envia avisos) + `telegram-poll` (liga `/start` a cada ~30 min, via keep-alive).
-   Sem o secret, o poll **falha** de propósito — o bot não responde sozinho.
+5. Workflow único `evaluate-alerts` (Alerts & Telegram Poll): a cada ~30 min
+   (schedule + keep-alive) corre o poll de `/start` e **depois** a avaliação,
+   no mesmo job — um só leitor do offset e a ligação pronta antes do envio.
+   Sem o secret, o poll é **saltado** de propósito — o bot não responde sozinho.
 
 ### Fluxo utilizador
 
 1. Activar alertas por email em `/favorites` e confirmar.
 2. Em `/conta` → **Ligar Telegram** → abrir bot → **Start**.
-3. Em até ~30 min o poll confirma; mensagem «Ligado ✅» (ou corre `npm run telegram:poll` com o token no `.env.local` para resposta imediata).
+3. Em até ~30 min o workflow confirma; mensagem «Ligado ✅» (ou corre `npm run telegram:poll` com o token no `.env.local` para resposta imediata).
 4. Quando favoritos ≥ limiar → email + Telegram.
 
 Sem `TELEGRAM_BOT_TOKEN` o evaluate ignora Telegram (dry-run no log).
@@ -123,7 +130,7 @@ Sem `TELEGRAM_BOT_TOKEN` o evaluate ignora Telegram (dry-run no log).
 1. Entra em https://ventu.surf com magic link.
 2. Guarda 1+ spots nos favoritos.
 3. Em `/pt/favorites/` — **Activar alertas** (score + modalidade).
-4. Actions → **Evaluate Alerts** → Run workflow (ou esperar cron).
+4. Actions → **Alerts & Telegram Poll** → Run workflow (ou esperar cron).
 5. Email **Confirma alertas nos teus favoritos** → link → `/pt/alerts/confirm/?token=…`
 6. Quando score ≥ limiar → digest com spots a bombar.
    A nota é a do **motor v6** (a mesma da home e da página de spot,

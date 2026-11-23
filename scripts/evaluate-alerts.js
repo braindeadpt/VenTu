@@ -760,11 +760,12 @@ async function main() {
     return;
   }
 
-  // A leitura de /start pertence ao telegram-poll.yml — correr o mesmo poll
-  // aqui fazia dois leitores partilhar o offset do Supabase no MESMO ping:
-  // o primeiro consumia o token e enviava «Ligado ✅», o segundo lia a
-  // mesma mensagem e respondia «Link inválido». O avaliador só envia
-  // (sendTelegramMessage/fetchTelegramChatId) para chats já ligados.
+  // A leitura de /start corre no passo anterior do mesmo workflow
+  // (evaluate-alerts.yml, `npm run telegram:poll`) — um só leitor do offset
+  // do Supabase, e sempre ANTES desta avaliação: um /start que chegue no
+  // tick já tem a conta ligada quando os canais são escolhidos aqui. O
+  // avaliador só envia (sendTelegramMessage/fetchTelegramChatId) para
+  // chats já ligados.
   const { slugToId, idToSlug } = loadSpotMaps();
   const conditions = JSON.parse(fs.readFileSync(CONDITIONS_PATH, 'utf-8'));
 
