@@ -48,7 +48,11 @@ on:
     workflows:
       - CI
       - Update VenTu Data
-      - Dawn Patrol AI Advisor
+    # «Dawn Patrol AI Advisor» sai da lista (#455): acordava em TODOS os
+    # updates (mesmo gate=skip) e cada conclusão disparava um segundo deploy —
+    # dois clones de ~1.8 GiB por ciclo só para o resolver dar skip. Agora o
+    # dawn-patrol.yml faz `gh workflow run deploy.yml` quando empurra
+    # realmente dawn-patrol.json para a ventu-data.
     types:
       - completed
     branches:
@@ -56,6 +60,7 @@ on:
 
 permissions:
   contents: read
+  actions: read # o job precheck lê os runs do CI via gh api
   pages: write
   id-token: write
 
@@ -64,15 +69,43 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  build:
-    # Gate de entrada: workflow_dispatch é decisão humana; qualquer workflow_run
-    # concluído com success (CI verde, dados ou Dawn Patrol) entra e é RESOLVIDO
-    # pelo passo seguinte — só a resolução decide o que se publica. Runs de
-    # pull_request nunca publicam.
+  # Filtro barato (#455): em workflow_run compara, via API e sem o clone de
+  # ~1.8 GiB, a impressão digital do que se publicaria com a do live —
+  # proceed=false só quando é provavelmente idêntica. Qualquer dúvida emite
+  # proceed=true e o job build corre o resolve-deploy-source completo.
+  precheck:
+    # Gate de entrada: workflow_dispatch é decisão humana; workflow_run só
+    # com success e fora de pull_request — a mesma porta que o build tinha.
     if: >-
       github.event_name == 'workflow_dispatch' ||
       (github.event.workflow_run.conclusion == 'success' &&
        github.event.workflow_run.event != 'pull_request')
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    outputs:
+      proceed: ${{ steps.precheck.outputs.proceed }}
+    steps:
+      - name: Sparse checkout (só scripts/)
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          ref: main
+          fetch-depth: 1
+          sparse-checkout: scripts/
+
+      - name: Deploy precheck — fingerprint vs live
+        id: precheck
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/deploy-precheck.js
+
+  build:
+    needs: precheck
+    # always() + result=failure: se o precheck falhar de infra (checkout/API),
+    # o build corre na mesma — o precheck nunca pode recusar um deploy.
+    if: >-
+      always() &&
+      (needs.precheck.result == 'failure' ||
+       needs.precheck.outputs.proceed == 'true')
     runs-on: ubuntu-latest
     outputs:
       skip: ${{ steps.source.outputs.skip }}

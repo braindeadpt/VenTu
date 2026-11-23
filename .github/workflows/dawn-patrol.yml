@@ -13,6 +13,7 @@ on:
 
 permissions:
   contents: write
+  actions: write # gh workflow run deploy.yml quando o push aterra (#455)
 
 concurrency:
   group: dawn-patrol
@@ -60,6 +61,7 @@ jobs:
 
       - name: Commit and push (with retry)
         if: steps.gate.outputs.gate == 'run'
+        id: push
         # Padrão dos outros bots (update-news/apply-contributions): rebase a
         # cada tentativa (um push de dados pode aterrar entre o checkout e o
         # push) e exit 1 se todas falharem — o loop anterior engolia a falha
@@ -67,6 +69,23 @@ jobs:
         run: |
           # Publica na branch órfão ventu-data (nunca na main) — plumbing
           # puro, branch de 1 commit, sem tocar na working tree.
+          PRE_SHA=$(git rev-parse -q --verify "origin/ventu-data:public/data/dawn-patrol.json" 2>/dev/null || true)
           bash scripts/push-data-file.sh \
             "auto: dawn patrol $(date +%Y-%m-%d)" \
             public/data/dawn-patrol.json
+          # O blob do ficheiro no branch muda só quando o push aterra de
+          # facto — distingue o "Published" do "Nada a publicar" sem parsear
+          # o log do script.
+          POST_SHA=$(git rev-parse -q --verify "origin/ventu-data:public/data/dawn-patrol.json" 2>/dev/null || true)
+          if [ -n "$POST_SHA" ] && [ "$POST_SHA" != "$PRE_SHA" ]; then
+            echo "pushed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      # O deploy saiu do workflow_run do deploy.yml (#455): em vez de cada
+      # conclusão do Dawn Patrol (incl. gate=skip) disparar um segundo deploy,
+      # só um push real de dawn-patrol.json o despacha explicitamente.
+      - name: Dispatch deploy
+        if: steps.gate.outputs.gate == 'run' && steps.push.outputs.pushed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh workflow run deploy.yml

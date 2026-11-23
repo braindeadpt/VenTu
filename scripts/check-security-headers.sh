@@ -75,7 +75,7 @@ check_csp_source() { # label, directive, exact_source, headers
 }
 
 echo "==> $BASE — catch-all (fora de /embed/*)"
-h=$(curl -sI "${BASE}/pt/" || true)
+h=$(curl -sI --max-time 15 "${BASE}/pt/" || true)
 check_header "Content-Security-Policy presente"        "Content-Security-Policy"  "$h"
 check_value  "frame-ancestors 'none'"                  "Content-Security-Policy"  "frame-ancestors 'none'" "$h"
 check_csp_source "CSP connect-src permite AWS Terrain Tiles" "connect-src" "https://s3.amazonaws.com" "$h"
@@ -95,7 +95,7 @@ else
 fi
 
 echo "==> $BASE — /embed/* (widget B2B deve continuar iframeable)"
-eh=$(curl -sI "${BASE}/embed/spot/moledo/" || true)
+eh=$(curl -sI --max-time 15 "${BASE}/embed/spot/moledo/" || true)
 check_value "frame-ancestors * em /embed/*" "Content-Security-Policy" "frame-ancestors \*" "$eh"
 check_csp_source "CSP connect-src permite AWS Terrain Tiles em /embed/*" "connect-src" "https://s3.amazonaws.com" "$eh"
 check_csp_source "CSP img-src permite EUMETView em /embed/*"             "img-src"     "https://view.eumetsat.int" "$eh"
@@ -115,13 +115,13 @@ fi
 echo "==> $BASE — cache edge (C1/C2/C3)"
 
 cf_cache_status() { # url → cf-cache-status (ou vazio)
-  curl -s -D - -o /dev/null "$1" 2>/dev/null | tr -d '\r' | grep -i "^cf-cache-status:" | head -1 | awk '{print $2}'
+  curl -s -D - -o /dev/null --max-time 15 "$1" 2>/dev/null | tr -d '\r' | grep -i "^cf-cache-status:" | head -1 | awk '{print $2}'
 }
 
 # check_cache_rule: label, url, expect (HIT|DYNAMIC), allow_empty(0|1)
 check_cache_rule() {
   local label="$1" url="$2" expect="$3" allow_empty="${4:-0}" st
-  curl -s -o /dev/null "$url" || true # warm-up
+  curl -s -o /dev/null --max-time 15 "$url" || true # warm-up
   st=$(cf_cache_status "$url")
   if [ "$st" = "$expect" ]; then
     echo "  ok: $label — cf-cache-status: $st"
@@ -137,7 +137,7 @@ check_cache_rule() {
 }
 
 # C1 — /_next/static/* (imutável, 1 ano): extrai um asset real do HTML de /pt/
-asset=$(curl -s "${BASE}/pt/" 2>/dev/null | grep -oE "/_next/static/[^\"']+\.js" | head -1 || true)
+asset=$(curl -s --max-time 15 "${BASE}/pt/" 2>/dev/null | grep -oE "/_next/static/[^\"']+\.js" | head -1 || true)
 if [ -n "$asset" ]; then
   check_cache_rule "C1 /_next/static/* (${asset}) — HIT" "${BASE}${asset}" "HIT"
 else
@@ -156,7 +156,7 @@ check_cache_rule "C3 /sw.js — DYNAMIC (bypass)" "${BASE}/sw.js" "DYNAMIC" 1
 # o upload-pages-artifact exclui dotfiles por defeito (include-hidden-files
 # no deploy.yml) e um 404 aqui faz a TWA abrir com barra de URL.
 echo "==> $BASE — Digital Asset Links (TWA)"
-al_code=$(curl -s -o /tmp/ventu-assetlinks.json -w '%{http_code}' "${BASE}/.well-known/assetlinks.json" || true)
+al_code=$(curl -s --max-time 15 -o /tmp/ventu-assetlinks.json -w '%{http_code}' "${BASE}/.well-known/assetlinks.json" || true)
 al_body=$(cat /tmp/ventu-assetlinks.json 2>/dev/null || true)
 rm -f /tmp/ventu-assetlinks.json
 if [ "$al_code" = "200" ] && printf '%s' "$al_body" | grep -q '"package_name": "surf.ventu.twa"'; then

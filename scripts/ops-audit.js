@@ -636,7 +636,24 @@ async function main() {
   process.exit(0);
 }
 
-main().catch((e) => {
+main().catch(async (e) => {
   console.error('❌ ops-audit failed:', e.message || e);
+  // O auditor é o último vigilante do pipeline — um crash com exit(0)
+  // aparecia verde no Actions e deixava o pipeline sem ninguém a olhar
+  // (o bug original: jobsWithoutTimeout nunca existiu no cronDelivery —
+  // TypeError antes de deliver(), dias sem alertas). Best-effort: se a
+  // mensagem falhar também, ao menos fica no log.
+  try {
+    const chat = process.env.OPS_TELEGRAM_CHAT_ID;
+    if (chat) {
+      await sendTelegramMessage(
+        chat,
+        `🚨 VenTu ops audit CRASHED (${nowUtc()}): ${String(e.message || e).slice(0, 300)}\n` +
+          'O auditor saiu sem verificar nada — investigar o run do ops-audit.',
+      );
+    }
+  } catch (sendErr) {
+    console.error('⚠️ não foi possível reportar o crash ao Telegram:', sendErr.message || sendErr);
+  }
   process.exit(0); // o auditor nunca deve tornar runs vermelhos
 });
