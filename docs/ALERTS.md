@@ -79,8 +79,8 @@ O workflow [`.github/workflows/evaluate-alerts.yml`](../.github/workflows/evalua
 - **Cron único:** `*/30 * * * *` — no mesmo job corre primeiro o poll de
   `/start` (liga contas Telegram) e depois a avaliação de alertas. O
   `COOLDOWN_MS` de 3 h por subscrição limita os envios «immediate»;
-  o digest sai no primeiro tick ≥ 07:00 UTC (`alreadySentDigestToday`
-  garante um envio/dia — cron é sempre UTC).
+  o digest sai no primeiro tick ≥ 07:00 de Lisboa (`alreadySentDigestToday`
+  garante um envio/dia — o cron é sempre UTC; a janela é Lisbon-aware).
 - **Keep-alive:** o POST `repository_dispatch(ping)` externo acorda este
   workflow na mesma cadência (~30 min).
 - **Manual:** Actions → *Alerts & Telegram Poll* → *Run workflow*

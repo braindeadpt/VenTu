@@ -92,13 +92,25 @@ describe('keep-alive externo (repository_dispatch ping)', () => {
     const callers = all.filter((f) => read(join(wf, f)).includes('telegram:poll'));
     expect(callers, 'telegram:poll deve ter um único dono').toEqual(['evaluate-alerts.yml']);
 
+    // Os dois passos têm de viver no MESMO job — comparar posições no
+    // ficheiro inteiro deixaria passar dois jobs independentes (a avaliação
+    // num segundo job podia correr em paralelo, sem ordem).
     const src = read(join(wf, 'evaluate-alerts.yml'));
-    const pollIdx = src.indexOf('telegram:poll');
-    const evalIdx = src.indexOf('alerts:evaluate');
-    expect(pollIdx, 'passo do poll em falta').toBeGreaterThan(-1);
-    expect(evalIdx, 'passo de avaliação em falta').toBeGreaterThan(pollIdx);
+    const afterJobs = src.slice(src.indexOf('jobs:'));
+    const jobStart = afterJobs.search(/^  alerts:/m);
+    expect(jobStart, 'job `alerts` em falta').toBeGreaterThan(-1);
+    const rest = afterJobs.slice(jobStart + 1);
+    const nextJob = rest.search(/^  [A-Za-z0-9_-]+:/m);
+    const job = nextJob === -1 ? rest : rest.slice(0, nextJob);
+    const pollIdx = job.indexOf('telegram:poll');
+    const evalIdx = job.indexOf('alerts:evaluate');
+    expect(pollIdx, 'passo do poll fora do job `alerts`').toBeGreaterThan(-1);
+    expect(evalIdx, 'passo de avaliação fora do job `alerts` ou antes do poll').toBeGreaterThan(pollIdx);
     // Os alertas por email nunca dependem do bot: a avaliação corre mesmo se
-    // o poll for saltado (sem secrets) ou falhar.
-    expect(src.slice(pollIdx)).toMatch(/if:\s*always\(\)/);
+    // o poll for saltado (sem secrets) ou falhar — e o poll tem teto próprio
+    // para não esgotar os 15 min do job.
+    const evalStep = job.slice(pollIdx);
+    expect(evalStep).toMatch(/if:\s*always\(\)/);
+    expect(job.slice(0, evalIdx)).toMatch(/timeout-minutes/);
   });
 });

@@ -11,7 +11,7 @@ on:
     # A cada 30 min cobre os três deveres: confirmação de /start, avaliação
     # de alertas «immediate» (o COOLDOWN_MS de 3 h por subscrição limita os
     # envios — condições persistentes notificam até ~8×/dia, por desenho da
-    # janela) e o resumo diário no primeiro tick ≥ 07:00 UTC
+    # janela) e o resumo diário no primeiro tick ≥ 07:00 de Lisboa
     # (alreadySentDigestToday garante um envio/dia). Cron é sempre UTC — o
     # GitHub ignora a chave `timezone`.
     - cron: '*/30 * * * *'
@@ -61,7 +61,10 @@ jobs:
       - name: Poll Telegram /start links
         # Sempre antes da avaliação: um /start que chegue neste tick liga a
         # conta ANTES do avaliador escolher os canais — o resumo/imediato já
-        # vai para o Telegram nessa mesma execução.
+        # vai para o Telegram nessa mesma execução. O limite próprio de 5 min
+        # reserva o resto do job para a avaliação (a leitura processa
+        # mensagens em série — sem teto podia esgotar os 15 min do job).
+        timeout-minutes: 5
         if: steps.poll.outputs.skip != 'true'
         env:
           SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
