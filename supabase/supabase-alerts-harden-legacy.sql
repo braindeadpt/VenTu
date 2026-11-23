@@ -168,7 +168,11 @@ BEGIN
 END;
 $$;
 
-GRANT EXECUTE ON FUNCTION public.verify_alert_subscription(TEXT) TO anon;
+-- anon AND authenticated (#454): um utilizador com sessão aberta que clica no
+-- link do email chega como authenticated — o grant só-anon devolvia
+-- "permission denied" na página de verificação.
+REVOKE ALL ON FUNCTION public.verify_alert_subscription(TEXT) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION public.verify_alert_subscription(TEXT) TO anon, authenticated;
 
 CREATE OR REPLACE FUNCTION public.unsubscribe_alert(p_token TEXT)
 RETURNS BOOLEAN
@@ -185,7 +189,9 @@ BEGIN
 END;
 $$;
 
-GRANT EXECUTE ON FUNCTION public.unsubscribe_alert(TEXT) TO anon;
+-- Idem (verify link / unsubscribe link abertos com sessão iniciada).
+REVOKE ALL ON FUNCTION public.unsubscribe_alert(TEXT) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION public.unsubscribe_alert(TEXT) TO anon, authenticated;
 
 -- ── 7. Sanity checks (keep) ──
 --   "Allow authenticated select own alerts" on alert_subscriptions (authenticated self-select)

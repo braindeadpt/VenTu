@@ -172,9 +172,12 @@ CREATE INDEX IF NOT EXISTS idx_directory_listings_tier
 ALTER TABLE directory_listings ENABLE ROW LEVEL SECURITY;
 
 DROP POLICY IF EXISTS "directory_listings_public_read" ON directory_listings;
+-- Só listagens verificadas são públicas (#454): uma submissão por verificar
+-- fica visível apenas para o dono e para admins — nunca para anon/outros
+-- utilizadores (senão o squatting aparecia no site antes da moderação).
 CREATE POLICY "directory_listings_public_read" ON directory_listings
   FOR SELECT TO anon, authenticated
-  USING (true);
+  USING (verified = true OR auth.uid() = owner_user_id OR public.is_ventu_admin());
 
 DROP POLICY IF EXISTS "directory_listings_insert_own" ON directory_listings;
 CREATE POLICY "directory_listings_insert_own" ON directory_listings

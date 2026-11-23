@@ -1,6 +1,7 @@
 -- ============================================================
 -- VenTu — User accounts + synced favorites (F1)
--- Run in Supabase SQL Editor after supabase-alerts.sql
+-- Run in Supabase SQL Editor after supabase-alerts.sql AND
+-- supabase-admin-helpers.sql (is_ventu_admin — prerequisite below).
 -- Auth: Supabase magic link (configure redirect URLs in dashboard)
 -- ============================================================
 
@@ -75,5 +76,43 @@ CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
 
-GRANT SELECT, UPDATE ON profiles TO authenticated;
+-- ── 0. Prerequisite guard (fail at apply time, not on first update) ──
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_proc p
+    JOIN pg_namespace n ON n.oid = p.pronamespace
+    WHERE n.nspname = 'public' AND p.proname = 'is_ventu_admin'
+  ) THEN
+    RAISE EXCEPTION 'is_ventu_admin() missing — apply supabase/supabase-admin-helpers.sql first (see supabase/README.md)';
+  END IF;
+END
+$$;
+
+-- ── Privilege lockdown (#454): plan is admin-only ──
+-- `plan` controls Pro entitlements: with a blanket UPDATE grant, any signed-in
+-- user could grant themselves 'pro' via PostgREST. The column grant covers
+-- direct table writes (only `locale` is user-editable); the trigger covers
+-- privileged paths (SECURITY DEFINER callers, future RPCs) for non-admins.
+REVOKE UPDATE ON profiles FROM authenticated;
+GRANT SELECT ON profiles TO authenticated;
+GRANT UPDATE (locale) ON profiles TO authenticated;
+
+CREATE OR REPLACE FUNCTION public.profiles_protect_plan()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  IF NOT public.is_ventu_admin() THEN
+    NEW.plan := OLD.plan;
+  END IF;
+  RETURN NEW;
+END;
+$$;
+
+DROP TRIGGER IF EXISTS profiles_protect_plan ON profiles;
+CREATE TRIGGER profiles_protect_plan
+  BEFORE UPDATE ON profiles
+  FOR EACH ROW EXECUTE FUNCTION public.profiles_protect_plan();
+
 GRANT SELECT, INSERT, DELETE ON user_favorites TO authenticated;
