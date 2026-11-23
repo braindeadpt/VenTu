@@ -44,6 +44,7 @@ import {
   mkdirSync,
   readdirSync,
   readFileSync,
+  rmSync,
   writeFileSync,
 } from 'node:fs';
 import { dirname, join, relative } from 'node:path';
@@ -82,6 +83,30 @@ const isExcluded = (rel) => {
   return EXCLUDED.some((d) => norm === d || norm.startsWith(`${d}/`));
 };
 
+// sat-mtg/frames é a excepção meio-excluída: o manifesto da fixture
+// (sat-mtg.json) mantém os SEUS valores no merge — os frames servidos são
+// sempre os que ele referencia (os de 2026-10-07 hoje). Copiar os frames
+// datados que chegam a cada record era volume morto crescente (~1.3 MB por
+// gravação) sem qualquer pixel servido — devin-review #572. Só se copia o
+// que o manifesto da fixture referencia; o resto é podado abaixo.
+const satMtgReferenced = (() => {
+  try {
+    const manifest = JSON.parse(readFileSync(join(dest, 'sat-mtg.json'), 'utf8'));
+    const paths = (manifest.frames ?? []).map((f) => f.imagePath).filter(Boolean);
+    return new Set(paths);
+  } catch {
+    return null; // sem manifesto legível → não filtra nem poda
+  }
+})();
+const isUnreferencedSatFrame = (rel) => {
+  const norm = rel.split('\\').join('/');
+  return (
+    satMtgReferenced !== null &&
+    norm.startsWith('sat-mtg/frames/') &&
+    !satMtgReferenced.has(norm)
+  );
+};
+
 let copied = 0;
 let merged = 0;
 let skipped = 0;
@@ -94,7 +119,7 @@ let notaInputsChanged = false;
 
 for (const f of walk(src)) {
   const rel = relative(src, f);
-  if (isExcluded(rel)) continue;
+  if (isExcluded(rel) || isUnreferencedSatFrame(rel)) continue;
   const out = join(dest, rel);
   if (f.endsWith('.json')) {
     const buildText = readFileSync(f, 'utf8');
@@ -135,6 +160,22 @@ for (const f of walk(src)) {
   copyFileSync(f, out);
   copied += 1;
   if (notaInputs(rel)) notaInputsChanged = true;
+}
+
+// Poda sat-mtg/frames: apaga da fixture os ficheiros que o manifesto não
+// referencia — restos de records anteriores (nunca são servidos, só pesam).
+let pruned = 0;
+if (satMtgReferenced !== null) {
+  const framesDir = join(dest, 'sat-mtg', 'frames');
+  if (existsSync(framesDir)) {
+    for (const f of walk(framesDir)) {
+      const rel = relative(dest, f).split('\\').join('/');
+      if (!satMtgReferenced.has(rel)) {
+        rmSync(f);
+        pruned += 1;
+      }
+    }
+  }
 }
 
 // O merge copia as chaves novas do build com os valores live (ex. `notaV6.sem`)
@@ -186,7 +227,7 @@ for (const f of walk(dest)) {
 }
 
 console.log(
-  `✅ Fixture synced: ${copied} copied (new), ${merged} merged (shape change, values kept), ${skipped} skipped (value-only), ${fixtureOnly.length} fixture-only kept${
+  `✅ Fixture synced: ${copied} copied (new), ${merged} merged (shape change, values kept), ${skipped} skipped (value-only), ${pruned} sat-mtg frames pruned, ${fixtureOnly.length} fixture-only kept${
     fixtureOnly.length ? ` (${fixtureOnly.join(', ')})` : ''
   }.`,
 );
