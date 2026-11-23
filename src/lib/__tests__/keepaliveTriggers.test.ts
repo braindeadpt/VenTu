@@ -115,6 +115,10 @@ describe('keep-alive externo (repository_dispatch ping)', () => {
     const nextStep = job.slice(stepStart + 1).search(/^      -\s/m);
     const pollStep =
       nextStep === -1 ? job.slice(stepStart) : job.slice(stepStart, stepStart + 1 + nextStep);
-    expect(pollStep, 'passo do poll sem timeout-minutes próprio').toMatch(/timeout-minutes/);
+    // A chave tem de estar ativa e com valor — `/timeout-minutes/` solto
+    // também casava uma linha comentada.
+    expect(pollStep, 'passo do poll sem timeout-minutes ativo').toMatch(
+      /^\s+timeout-minutes:\s*\d+/m,
+    );
   });
 });
