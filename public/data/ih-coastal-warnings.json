@@ -251,6 +251,46 @@
       ]
     },
     {
+      "id": 19255,
+      "ref": "ANAV NR 2572/26",
+      "category": "Requisitos de segurança maritima",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=b60da947-1e8b-4703-a989-eb1570f00270",
+      "source": "ih",
+      "collection": "nav_warning_coastal",
+      "polygons": [
+        [
+          [
+            -9.605,
+            38.4
+          ],
+          [
+            -10.466667,
+            38.338333
+          ],
+          [
+            -10.383333,
+            37.733333
+          ],
+          [
+            -9.784167,
+            37.652333
+          ],
+          [
+            -9.45,
+            38
+          ],
+          [
+            -9.6,
+            38.4
+          ],
+          [
+            -9.605,
+            38.4
+          ]
+        ]
+      ]
+    },
+    {
       "id": 1000182,
       "ref": "ANAV NR 121/21",
       "category": "SEGURANÇA DA NAVEGAÇÃO - AVISO À NAVEGAÇÃO LOCAL",
@@ -7323,16 +7363,36 @@
       "radiusKm": 25,
       "eventAt": "2026-10-13T00:00:00.000Z",
       "polygons": []
+    },
+    {
+      "id": 2019257,
+      "ref": "ANAV NR 2573/26",
+      "category": "Animais Marinhos - Interação",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=c0e94a80-c3c5-4ec7-88fb-b46f3e6d8539",
+      "source": "ih",
+      "collection": "orca_anavnet_point",
+      "center": [
+        -9.087167,
+        41.843
+      ],
+      "radiusKm": 25,
+      "eventAt": "2026-11-23T00:00:00.000Z",
+      "polygons": []
     }
   ],
   "coverage": {
     "moledo": [
       1003280,
-      1003281
+      1003281,
+      2019257
     ],
     "vila-praia-ancora": [
       1003280,
-      1003281
+      1003281,
+      2019257
+    ],
+    "afife": [
+      2019257
     ],
     "amorosa": [
       19245,
@@ -8037,7 +8097,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-11-23T10:07:07.253Z",
+  "fetchedAt": "2026-11-23T20:07:08.783Z",
   "sourceCollection": "nav_warning_coastal+nav_warning_local+orca_anavnet_point",
   "sourceUrl": "https://ogcapi.hidrografico.pt/collections/nav_warning_coastal"
 }
