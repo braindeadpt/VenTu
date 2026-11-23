@@ -294,8 +294,9 @@ async function fetchIHTides() {
 
   const spotMapping = {};
   for (const spot of spots) {
-    // Barragens, albufeiras e rios interiores não têm maré costeira IH.
-    if (spot.aguaInterior) continue;
+    // Mapeia apenas até 55 km; spots interiores sem maré real (barragens/rios onde
+    // `sea_level_height_msl` é `null`) são filtrados no merge de `update-conditions.js`,
+    // preservando estuários/rias com maré real (ex.: Murtosa / Ria de Aveiro).
     let nearestCodp = null;
     let nearestDist = Infinity;
     for (const [codp, station] of Object.entries(stations)) {

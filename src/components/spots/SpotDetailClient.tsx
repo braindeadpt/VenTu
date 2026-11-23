@@ -612,6 +612,7 @@ export default function SpotDetailClient({
               locale={locale}
               copy={spotV6Copy(locale)}
               t={h.t}
+              tMs={h.ms}
               ehAgora={h.ehAgora}
               mares={h.mares}
               citada={h.citada}

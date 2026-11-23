@@ -120,9 +120,10 @@ function blendWindAtIndex(
       const [u1, v1] = toUv(iconSpeed, useDir);
       const [u0, v0] = toUv(baseSpeed, baseDir);
       const res = fromUv(ICON_WEIGHT * u1 + (1 - ICON_WEIGHT) * u0, ICON_WEIGHT * v1 + (1 - ICON_WEIGHT) * v0);
-      // Scalar weighted speed keeps magnitude unbiased even when two models disagree in direction;
-      // direction comes strictly from the coherent weighted vector (u, v).
-      windSpeed = ICON_WEIGHT * iconSpeed + (1 - ICON_WEIGHT) * baseSpeed;
+      // Velocidade e direção vêm do MESMO vetor ponderado (u, v): concordantes →
+      // igual à média escalar; sentidos opostos → o cancelamento vetorial reduz a
+      // magnitude em vez de dar vento forte numa direção nula.
+      windSpeed = res.speed;
       windDirection = res.speed > 0.05 ? res.dir : useDir;
     } else {
       windSpeed = iconSpeed;

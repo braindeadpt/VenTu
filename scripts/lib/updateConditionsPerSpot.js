@@ -17,6 +17,7 @@ async function processSpot(spot, options) {
   // Ensemble members kept for the forecast band (see ensembleQuantiles.js) —
   // they arrive in the same two payloads the daytime run already fetches.
   let waveModelsHourly = null;
+  let currentWeatherData;
   if (useMultiModel) {
     const [marine, weather, marineWaveModels, windModelData] = await Promise.all([
       fetchers.fetchMarineData(spot.lat, spot.lon, usage),
@@ -25,10 +26,10 @@ async function processSpot(spot, options) {
       fetchers.fetchWindModels(spot.lat, spot.lon, usage),
     ]);
     marineData = marine;
-    weatherData = weather;
-    // Reuses the multimodel payloads already fetched — empty counts would
-    // make every daytime run report "OK (0 spots amostrados)" and wipe
-    // model-health.json.
+    // Mantém `weatherData` com a série `best_match` original (sem misturar ainda)
+    // para que `mergeForecast` + `applyWindBlendToHours` misturem cada hora UMA SÓ VEZ.
+    // `currentWeatherData` leva apenas a hora atual misturada uma vez para `getCurrentConditions`.
+    weatherData = { ...weather, _windModelsHourly: windModelData.hourly };
     if (options.modelHealthRun && options.modelHealth) {
       const { mergeCounts, countModelSlots, HEALTH_FAMILIES } = options.modelHealth;
       mergeCounts(
@@ -41,28 +42,28 @@ async function processSpot(spot, options) {
       );
       options.modelHealthRun.sampledSpots += 1;
     }
-    const weatherIdx = Math.min(findCurrentHourIndex(weatherData.hourly.time), weatherData.hourly.wind_speed_10m.length - 1);
+    const weatherIdx = Math.min(findCurrentHourIndex(weather.hourly.time), weather.hourly.wind_speed_10m.length - 1);
     const windIdx = Math.min(findCurrentHourIndex(windModelData.hourly.time), (windModelData.hourly.time?.length ?? 1) - 1);
-    const baseSpd = weatherData.hourly.wind_speed_10m[weatherIdx];
-    const baseDir = weatherData.hourly.wind_direction_10m[weatherIdx];
-    const baseGust = weatherData.hourly.wind_gusts_10m[weatherIdx];
+    const baseSpd = weather.hourly.wind_speed_10m[weatherIdx];
+    const baseDir = weather.hourly.wind_direction_10m[weatherIdx];
+    const baseGust = weather.hourly.wind_gusts_10m[weatherIdx];
     const blend = blendWindAtIndex(baseSpd, baseDir, baseGust, readModelMap(windModelData.hourly, 'wind_speed_10m', windModels, windIdx), readModelMap(windModelData.hourly, 'wind_direction_10m', windModels, windIdx), readModelMap(windModelData.hourly, 'wind_gusts_10m', windModels, windIdx));
-    weatherData = {
+    weatherData._windBlend = blend;
+    currentWeatherData = {
       ...weatherData,
       hourly: {
-        ...weatherData.hourly,
-        wind_speed_10m: weatherData.hourly.wind_speed_10m.map((v, i) => (i === weatherIdx && blend.windSpeed != null ? blend.windSpeed : v)),
-        wind_direction_10m: weatherData.hourly.wind_direction_10m.map((v, i) => (i === weatherIdx && blend.windDirection != null ? blend.windDirection : v)),
-        wind_gusts_10m: weatherData.hourly.wind_gusts_10m.map((v, i) => (i === weatherIdx && blend.windGust != null ? blend.windGust : v)),
+        ...weather.hourly,
+        wind_speed_10m: weather.hourly.wind_speed_10m.map((v, i) => (i === weatherIdx && blend.windSpeed != null ? blend.windSpeed : v)),
+        wind_direction_10m: weather.hourly.wind_direction_10m.map((v, i) => (i === weatherIdx && blend.windDirection != null ? blend.windDirection : v)),
+        wind_gusts_10m: weather.hourly.wind_gusts_10m.map((v, i) => (i === weatherIdx && blend.windGust != null ? blend.windGust : v)),
       },
-      _windBlend: blend,
-      _windModelsHourly: windModelData.hourly,
     };
     confidenceDetail = confidenceAtIndex(marineWaveModels, windModelData, findCurrentHourIndex(marineWaveModels.hourly.time));
     dailyConfidence = confidenceByDay(marineWaveModels, windModelData);
     waveModelsHourly = marineWaveModels.hourly;
   } else {
     [marineData, weatherData] = await Promise.all([fetchers.fetchMarineData(spot.lat, spot.lon, usage), fetchers.fetchWeatherData(spot.lat, spot.lon, usage)]);
+    currentWeatherData = weatherData;
     const inherited = confidenceFromPrevious(previousConditions[spot.id]);
     confidenceDetail = { confidence: inherited.confidence, ...inherited.confidenceDetail };
     dailyConfidence = inherited.dailyConfidence;
@@ -74,10 +75,10 @@ async function processSpot(spot, options) {
     if (station && isFreshIhObservation(station.lastData)) ihTideObs = { codp: station.codp ?? mapping.codp, lastObs: station.lastObs, lastData: station.lastData, stationTitle: station.title };
     else if (station) options.onStaleIhTide?.();
   }
-  const current = options.getCurrentConditions(marineData, weatherData, ihTideObs, options.tideBaseline);
+  const current = options.getCurrentConditions(marineData, currentWeatherData, ihTideObs, options.tideBaseline);
   const biasRow = applyWaveBiasToRow(current, spot.region, waveBias, waveBiasEnabled);
   if (biasRow.waveBias) log.log(`  ↳ ${spot.id}: waveHeight ${biasRow.waveHeightRaw} → ${biasRow.waveHeight} m (bias ${biasRow.waveBias.me >= 0 ? '+' : ''}${biasRow.waveBias.me} m, n=${biasRow.waveBias.n})`);
-  const conditions = buildConditionsRow(marineData, weatherData, current, biasRow, confidenceDetail, dailyConfidence, useMultiModel);
+  const conditions = buildConditionsRow(marineData, currentWeatherData, current, biasRow, confidenceDetail, dailyConfidence, useMultiModel);
   const forecast = mergeForecast(marineData, weatherData);
   // Quantiles come from the raw members, so they are attached before the wind
   // blend rewrites the row's central windSpeed: `windP50` is the ensemble

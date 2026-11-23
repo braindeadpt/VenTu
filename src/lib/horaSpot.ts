@@ -121,6 +121,8 @@ export interface LinhaForecast {
 }
 
 export interface HoraSpot extends HoraModalidade {
+  /** Instante UTC real (ms) desta hora, para comparações cronológicas na mudança de hora (DST). */
+  ms?: number;
   /** A fonte não traz vento / onda nesta hora (`null`): sem nota nessa lógica, a UI diz «sem dados». */
   semDados?: Array<'vento' | 'onda'>;
   /** Temperatura da água (°C), quando existe. */
@@ -131,8 +133,18 @@ export interface HoraSpot extends HoraModalidade {
 
 export interface MareExtremo {
   t: string;
+  /** Instante UTC real (ms) do extremo interpolado (à prova da hora repetida de outubro). */
+  ms?: number;
   tipo: 'PM' | 'BM';
   h: number;
+}
+
+/** Compara cronologicamente um extremo de maré com a hora selecionada (DST-safe). */
+export function mareDepois(m: Pick<MareExtremo, 't' | 'ms'>, ref: { t: string; ms?: number }): boolean {
+  if (typeof m.ms === 'number' && Number.isFinite(m.ms) && typeof ref.ms === 'number' && Number.isFinite(ref.ms)) {
+    return m.ms > ref.ms;
+  }
+  return m.t > ref.t;
 }
 
 export interface DadosHoras {
@@ -159,20 +171,24 @@ const n360 = (x: number) => ((Math.round(x) % 360) + 360) % 360;
  * pelos três pontos (j-1, j, j+1) dá o instante do vértice (±30 min) e a sua
  * altura, como as tabelas de marés («preia-mar às 16h50»).
  */
-function extremoAfinado(validas: readonly LinhaForecast[], j: number, t: string, nm: number, lon?: number): { t: string; h: number } {
+function extremoAfinado(validas: readonly LinhaForecast[], j: number, t: string, nm: number, lon?: number): { t: string; ms?: number; h: number } {
   const zh = (l: LinhaForecast | undefined) => {
     const v = num(l?.tideHeight);
     return v == null ? NaN : v + nm;
   };
   const y1 = zh(validas[j]);
-  const base = { t: t.slice(0, 16), h: Number.isFinite(y1) ? r1(y1) : NaN };
+  const baseMs = seriesTimeMs(t);
+  const base = {
+    t: t.slice(0, 16),
+    ...(Number.isFinite(baseMs) ? { ms: baseMs } : {}),
+    h: Number.isFinite(y1) ? r1(y1) : NaN,
+  };
   const y0 = zh(validas[j - 1]);
   const y2 = zh(validas[j + 1]);
   if (j <= 0 || !Number.isFinite(y0) || !Number.isFinite(y1) || !Number.isFinite(y2)) return base;
   const den = y0 - 2 * y1 + y2;
   if (Math.abs(den) < 1e-9) return base;
   const dx = Math.max(-0.5, Math.min(0.5, (0.5 * (y0 - y2)) / den));
-  const baseMs = seriesTimeMs(t);
   if (Number.isFinite(baseMs)) {
     const ms = baseMs + Math.round(dx * 60) * 60000;
     const tz = (lon != null && lon < -20) || t.endsWith('-01:00') ? 'Atlantic/Azores' : 'Europe/Lisbon';
@@ -186,7 +202,7 @@ function extremoAfinado(validas: readonly LinhaForecast[], j: number, t: string,
       minute: '2-digit',
     }).formatToParts(new Date(ms));
     const p = (k: string) => parts.find((x) => x.type === k)?.value ?? '00';
-    return { t: `${p('year')}-${p('month')}-${p('day')}T${p('hour')}:${p('minute')}`, h: r1(y1 - 0.25 * (y0 - y2) * dx) };
+    return { t: `${p('year')}-${p('month')}-${p('day')}T${p('hour')}:${p('minute')}`, ms, h: r1(y1 - 0.25 * (y0 - y2) * dx) };
   }
   const m = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/.exec(t);
   if (!m) return base;
@@ -275,13 +291,15 @@ export function horaDeLinha(
   const ant = mareZH(validas[j - 1], nm);
   const tideUp = Number.isFinite(prox) ? prox > tide || (prox === tide && tide > ant) : tide > ant;
   // instante pela etiqueta COMPLETA (com desvio): o 01:00 repetido e os Açores (M1/B3)
-  const s = posicaoSol(instanteLisboa(l.time), local.lat, local.lon);
+  const instanteMs = instanteLisboa(l.time);
+  const s = posicaoSol(instanteMs, local.lat, local.lon);
   const semDados: Array<'vento' | 'onda'> = [];
   if (num(l.windSpeed) == null) semDados.push('vento');
   if (num(l.waveHeight) == null) semDados.push('onda');
   return {
     ...(semDados.length ? { semDados } : {}),
     t,
+    ms: instanteMs,
     w: Math.round((num(l.windSpeed) ?? 0) * KT),
     g: Math.round((num(l.windGust) ?? num(l.windSpeed) ?? 0) * KT),
     wd: n360(num(l.windDirection) ?? 0),

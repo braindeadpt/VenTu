@@ -18,7 +18,7 @@ import { getTranslation, pickLocale } from '@/lib/i18n';
 import { getMoonPhase } from '@/lib/moonPhase';
 import { dailyTideAmplitudeMetres } from '@/lib/tideAmplitude';
 import type { TideHourPoint } from '@/lib/tideSchedule';
-import type { MareExtremo } from '@/lib/horaSpot';
+import { mareDepois, type MareExtremo } from '@/lib/horaSpot';
 import { europeanAqiLevel } from '@/lib/airQuality';
 import { loadSpotIsobaths, isobathDistancesForSpot, ISOBATH_DEPTHS } from '@/lib/spotIsobaths';
 import { loadClimatology, spotClimatology, monthlyMax, type SpotClimatology } from '@/lib/climatology';
@@ -53,6 +53,8 @@ export interface MedeSabeV6Props {
   /** Hora escolhida na régua (ISO local) e se é «agora». */
   t: string;
   ehAgora: boolean;
+  /** Instante UTC real (ms) da hora escolhida (DST-safe para filtrar marés futuras). */
+  tMs?: number;
   /** Extremos de maré da janela (os mesmos do Porquê) e o que o Porquê cita. */
   mares: readonly MareExtremo[];
   citada?: MareExtremo;
@@ -90,9 +92,10 @@ function Lua({ ilum, cresce, titulo }: { ilum: number; cresce: boolean; titulo: 
   );
 }
 
-function MareLua({ locale, copy: c, t, mares, citada, mareCurva, dataMs, cond }: {
+function MareLua({ locale, copy: c, t, tMs, mares, citada, mareCurva, dataMs, cond }: {
   locale: string;
   t: string;
+  tMs?: number;
   copy: SpotPageV6Copy;
   mares: readonly MareExtremo[];
   citada?: MareExtremo;
@@ -110,7 +113,9 @@ function MareLua({ locale, copy: c, t, mares, citada, mareCurva, dataMs, cond }:
   // Só as marés DEPOIS da hora escolhida e sem a que o Porquê já cita. Só o tipo
   // e a hora ao minuto: a altura já está na coluna «Maré» da tabela hora a hora,
   // logo acima (cada número uma vez).
-  const tabela = mares.filter((m) => m.t > t && !(citada && m.t === citada.t)).slice(0, 6);
+  const tabela = mares
+    .filter((m) => mareDepois(m, { t, ms: tMs }) && !(citada && m.t === citada.t && m.ms === citada.ms))
+    .slice(0, 6);
   const nf = (x: number) => fmtNum(x, locale);
   return (
     <div className="ec ec-mare" data-ec="mare-lua">
@@ -355,7 +360,7 @@ function Clima({ spotId, locale, copy: c, mes }: { spotId: string; locale: strin
   );
 }
 
-export default function MedeSabeV6({ spot, locale, copy: c, t, ehAgora, mares, citada, mareCurva, uvPorHora, c: cond, agoraMs }: MedeSabeV6Props) {
+export default function MedeSabeV6({ spot, locale, copy: c, t, tMs, ehAgora, mares, citada, mareCurva, uvPorHora, c: cond, agoraMs }: MedeSabeV6Props) {
   const [dataMs, setDataMs] = useState(agoraMs ?? 0);
   useEffect(() => {
     setDataMs(agoraMs ?? Date.now());
@@ -374,7 +379,7 @@ export default function MedeSabeV6({ spot, locale, copy: c, t, ehAgora, mares, c
         {/* o que se lê agora (boia, sol e ar) antes do que se calcula (maré, fundo, clima);
             em colunas (≥760 px) a distribuição sai das alturas reais (colunasEquilibradas) */}
         <SolAr locale={locale} copy={c} t={t} ehAgora={ehAgora} uvPorHora={uvPorHora} cond={cond} />
-        <MareLua locale={locale} copy={c} t={t} mares={mares} citada={citada} mareCurva={mareCurva} dataMs={dataMs} cond={cond} />
+        <MareLua locale={locale} copy={c} t={t} tMs={tMs} mares={mares} citada={citada} mareCurva={mareCurva} dataMs={dataMs} cond={cond} />
         <Fundo spotId={spot.id} locale={locale} copy={c} />
         <Clima spotId={spot.id} locale={locale} copy={c} mes={mes} />
       </div>

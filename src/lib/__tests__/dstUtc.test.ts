@@ -13,7 +13,7 @@ import {
   seriesTimeMs,
   wallHourOf,
 } from '@/lib/openMeteoTime';
-import { construirHoras, horaDeLinha, type LinhaForecast } from '@/lib/horaSpot';
+import { construirHoras, horaDeLinha, mareDepois, type LinhaForecast } from '@/lib/horaSpot';
 import { instanteLisboa, posicaoSol } from '@/lib/sol';
 import { hsAtHour, mapHoursClock } from '@/lib/mapHours';
 import { buildMapHoursFile } from '@/lib/mapHoursBuild';
@@ -119,6 +119,41 @@ describe('horaSpot (página de spot, régua da home)', () => {
     const d = construirHoras(serieLx, local, Date.parse('2026-10-28T10:00:00Z'), 4);
     expect(d.semAgora).toBe(true);
     expect(d.horas.at(-1)?.t).toBe('2026-10-26T23:00');
+  });
+
+  it('maré interpolada às 01:45+01:00 não é anunciada como futura na segunda ocorrência 01:00+00:00', () => {
+    // Pico discreto em 2026-10-25T01:00+00:00 (01:00Z) com vizinhos 0.9 / 1.0 / 0.7:
+    // vértice parabólico em dx = -0.25 (-15 min) → 00:45Z = 2026-10-25T01:45+01:00.
+    const alturasPorHora: Record<string, number> = {
+      '2026-10-24T23:00+01:00': 0.0,
+      '2026-10-25T00:00+01:00': 0.4,
+      '2026-10-25T01:00+01:00': 0.9,
+      '2026-10-25T01:00+00:00': 1.0,
+      '2026-10-25T02:00+00:00': 0.7,
+      '2026-10-25T03:00+00:00': 0.2,
+      '2026-10-25T04:00+00:00': -0.3,
+    };
+    const serieMare = serieLx.map((l) => ({
+      ...l,
+      tideHeight: alturasPorHora[l.time] ?? -0.5,
+    }));
+
+    const d = construirHoras(serieMare, local, Date.parse('2026-10-25T00:30:00Z'), 4);
+    const primeiraOcorrencia = d.horas[0]; // 2026-10-25T01:00+01:00 (00:00Z)
+    const segundaOcorrencia = d.horas[1]; // 2026-10-25T01:00+00:00 (01:00Z)
+    expect(primeiraOcorrencia.t).toBe('2026-10-25T01:00');
+    expect(segundaOcorrencia.t).toBe('2026-10-25T01:00');
+    expect(primeiraOcorrencia.ms).toBe(Date.parse('2026-10-25T00:00:00Z'));
+    expect(segundaOcorrencia.ms).toBe(Date.parse('2026-10-25T01:00:00Z'));
+
+    const extremo = d.mares.find((m) => m.tipo === 'PM' && m.t === '2026-10-25T01:45');
+    expect(extremo).toBeDefined();
+    expect(extremo!.ms).toBe(Date.parse('2026-10-25T00:45:00Z'));
+    // Comparação lexicográfica falharia ('2026-10-25T01:45' > '2026-10-25T01:00'),
+    // mas mareDepois compara `ms` UTC real:
+    expect(extremo!.t > segundaOcorrencia.t).toBe(true);
+    expect(mareDepois(extremo!, primeiraOcorrencia)).toBe(true);
+    expect(mareDepois(extremo!, segundaOcorrencia)).toBe(false);
   });
 });
 

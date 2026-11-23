@@ -311,7 +311,9 @@ function ensembleCoverage(forecasts) {
  */
 function inheritEnsemble(rows, previousRows, opts = {}) {
   if (!Array.isArray(rows) || !rows.length || !Array.isArray(previousRows) || !previousRows.length) return 0;
-  const maxAgeHours = opts.maxAgeHours ?? 8;
+  // 13 h cobre toda a janela noturna entre os ciclos multi-modelo das 18h e 06h
+  // (incl. a run das 04h, 10 h após as 18h) garantindo cobertura 24h/24.
+  const maxAgeHours = opts.maxAgeHours ?? 13;
   const nowMs = opts.nowMs ?? Date.now();
   if (opts.previousUpdatedAt) {
     const prevMs = Date.parse(opts.previousUpdatedAt);

@@ -25,7 +25,8 @@ describe('blendWindAtIndex', () => {
       { icon_eu: 280 },
       { icon_eu: 5 },
     );
-    expect(out.windSpeed).toBe(3.7);
+    // |0.65*(3 @ 280°) + 0.35*(5 @ 270°)| ≈ 3.686 m/s (vetorial, não escalar 3.7)
+    expect(out.windSpeed).toBeCloseTo(3.686, 3);
     expect(out.method).toBe('icon_eu_vector');
     expect(out.blended).toBe(true);
   });
@@ -39,12 +40,30 @@ describe('blendWindAtIndex', () => {
       { icon_eu: 315 },
       { icon_eu: 10 },
     );
-    expect(out.windSpeed).toBe(6.6);
+    // |0.65*(8 @ 315°) + 0.35*(4 @ 270°)| = hypot(5.2*sin45 + 1.4, 5.2*cos45) ≈ 6.269 m/s
+    expect(out.windSpeed).toBeCloseTo(6.269, 3);
     expect(out.windDirection).toBeGreaterThan(292.5);
     expect(out.windDirection).toBeLessThan(315);
     expect(out.windGust).toBe(8.6);
     expect(out.method).toBe('icon_eu_vector');
     expect(out.blended).toBe(true);
+  });
+
+  it('cancels opposing wind vectors instead of returning scalar mean speed', () => {
+    // 14 m/s W (270°) vs 7 m/s E (90°): 0.35*14 - 0.65*7 = 4.9 - 4.55 = 0.35 m/s (nunca 9.45 m/s)
+    const out = blendWindAtIndex(
+      14,
+      270,
+      18,
+      { icon_eu: 7 },
+      { icon_eu: 90 },
+      { icon_eu: 10 },
+    );
+    expect(out.method).toBe('icon_eu_vector');
+    expect(out.blended).toBe(true);
+    expect(out.windSpeed).toBeCloseTo(0.35, 3);
+    expect(out.windSpeed).toBeLessThan(1);
+    expect(out.windDirection).toBe(270);
   });
 
   it('falls back to median_vector without ICON-EU (e.g. Açores) using median speed and median gust', () => {
@@ -82,8 +101,9 @@ describe('applyWindBlendToHours', () => {
     ]);
     expect(method).toBe('icon_eu_vector');
     expect(blendedHours).toBe(2);
-    expect(hours[0].windSpeed).toBe(3.95);
-    expect(hours[1].windSpeed).toBe(4.6);
+    // |0.65*(5 @ 300°) + 0.35*(2 @ 270°)| ≈ 3.872; |0.65*(6 @ 310°) + 0.35*(2 @ 270°)| ≈ 4.459
+    expect(hours[0].windSpeed).toBeCloseTo(3.872, 3);
+    expect(hours[1].windSpeed).toBeCloseTo(4.459, 3);
   });
 
   it('aligns by timestamp when windModelsHourly.time is shifted by 1 hour relative to hours', () => {
@@ -100,10 +120,10 @@ describe('applyWindBlendToHours', () => {
     const { blendedHours, method } = applyWindBlendToHours(hours, hourly, ['icon_eu']);
     expect(method).toBe('icon_eu_vector');
     expect(blendedHours).toBe(2);
-    // 13:00 casa com icon_eu=6 (0.65*6 + 0.35*4 = 5.3), não com 12:00 (icon_eu=20)
-    expect(hours[0].windSpeed).toBe(5.3);
-    // 14:00 casa com icon_eu=8 (0.65*8 + 0.35*4 = 6.6)
-    expect(hours[1].windSpeed).toBe(6.6);
+    // 13:00 casa com icon_eu=6 @ 300° (vetorial ≈ 5.16), não com 12:00 (icon_eu=20 @ 180°)
+    expect(hours[0].windSpeed).toBeCloseTo(5.16, 3);
+    // 14:00 casa com icon_eu=8 @ 310° (vetorial ≈ 6.337)
+    expect(hours[1].windSpeed).toBeCloseTo(6.337, 3);
   });
 
   it('preserves null windSpeed without turning it into 0', () => {
@@ -123,6 +143,6 @@ describe('applyWindBlendToHours', () => {
     expect(hours[0].windSpeed).toBeNull();
     expect(hours[0].windDirection).toBeNull();
     expect(hours[0].windGust).toBeNull();
-    expect(hours[1].windSpeed).toBe(5.3);
+    expect(hours[1].windSpeed).toBeCloseTo(5.16, 3);
   });
 });
