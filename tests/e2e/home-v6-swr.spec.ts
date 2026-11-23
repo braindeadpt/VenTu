@@ -38,6 +38,9 @@ async function voltaAoVisivel(page: import('@playwright/test').Page) {
 }
 
 test.describe('Home v6 — SWR (P2.2)', { tag: '@core' }, () => {
+  // O SW serve /data/* do cache e os pedidos nunca chegam ao page.route.
+  test.use({ serviceWorkers: 'block' });
+
   test('sem fetch de forecasts no carregamento; regresso <5 min não revalida; ≥5 min revalida', async ({
     page,
   }) => {
