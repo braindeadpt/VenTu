@@ -130,12 +130,20 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add tests/e2e/visual-regression.spec.ts-snapshots tests/e2e/fixtures/data
-          git commit -m "chore(visual): refresh Linux baselines (fixture only on shape change)"
+          # Pathspec no commit: o hydrate (`git checkout FETCH_HEAD -- public/data`)
+          # deixa a ventu-data inteira encenada no índice — um commit sem
+          # pathspec engolia 239 ficheiros hidratados (incidente 667897349,
+          # estourou o orçamento sat-mtg/frames do check-data-history-budget).
+          git commit -m "chore(visual): refresh Linux baselines (fixture only on shape change)" -- \
+            tests/e2e/visual-regression.spec.ts-snapshots tests/e2e/fixtures/data
           # O `npm run build` regenera ficheiros TRACKED fora dos paths do
           # commit (spots:lite, manifest, og images em public/**) — ficam
           # unstaged e o `git rebase` abaixo recusa com «You have unstaged
           # changes» (falha de 2026-10-06). O commit já contém tudo o que
-          # interessa: descarta o drift de build antes do rebase.
+          # interessa: descarta o drift de build antes do rebase. O reset
+          # limpa ainda o índice — a hidratação encenada (fora do pathspec
+          # do commit) ficaria pendente e travava o rebase igualmente.
+          git reset -q HEAD 2>/dev/null || true
           git checkout -- .
           # O overlay da fixture pode deixar ficheiros novos em public/data.
           git clean -fdq -- public
