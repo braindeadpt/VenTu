@@ -16,7 +16,7 @@ describe('median', () => {
 });
 
 describe('blendWindAtIndex', () => {
-  it('blends vectorially without positive bias when ICON-EU is weaker than best_match', () => {
+  it('blends 65/35 without positive bias when ICON-EU is weaker than best_match (dir diff <= 60°)', () => {
     const out = blendWindAtIndex(
       5,
       270,
@@ -25,13 +25,14 @@ describe('blendWindAtIndex', () => {
       { icon_eu: 280 },
       { icon_eu: 5 },
     );
-    // |0.65*(3 @ 280°) + 0.35*(5 @ 270°)| ≈ 3.686 m/s (vetorial, não escalar 3.7)
-    expect(out.windSpeed).toBeCloseTo(3.686, 3);
+    // 0.65 * 3 + 0.35 * 5 = 3.7 (nunca prende no piso 5)
+    expect(out.windSpeed).toBe(3.7);
+    expect(out.windGust).toBe(5.7);
     expect(out.method).toBe('icon_eu_vector');
     expect(out.blended).toBe(true);
   });
 
-  it('blends speed and direction vectorially when ICON-EU is stronger than best_match', () => {
+  it('blends speed, gust and direction coherently when ICON-EU is stronger (dir diff <= 60°)', () => {
     const out = blendWindAtIndex(
       4,
       270,
@@ -40,25 +41,25 @@ describe('blendWindAtIndex', () => {
       { icon_eu: 315 },
       { icon_eu: 10 },
     );
-    // |0.65*(8 @ 315°) + 0.35*(4 @ 270°)| = hypot(5.2*sin45 + 1.4, 5.2*cos45) ≈ 6.269 m/s
-    expect(out.windSpeed).toBeCloseTo(6.269, 3);
+    expect(out.windSpeed).toBe(6.6);
     expect(out.windDirection).toBeGreaterThan(292.5);
     expect(out.windDirection).toBeLessThan(315);
-    // ambos os modelos têm excesso de rajada de +2 m/s → windGust = windSpeed + 2 ≈ 8.269 m/s
-    expect(out.windGust).toBeCloseTo(8.269, 3);
+    expect(out.windGust).toBe(8.6);
     expect(out.method).toBe('icon_eu_vector');
     expect(out.blended).toBe(true);
   });
 
-  it('preserves relative gust excess when directions diverge by 90° (no false gust penalty)', () => {
-    // Dois modelos com 12 m/s médio e 14 m/s rajada (+2 m/s de excesso), a 90° um do outro:
-    // o excesso de rajada após mistura mantém-se em +2 m/s (não inflaciona para 10 kt).
-    const out = blendWindAtIndex(12, 270, 14, { icon_eu: 12 }, { icon_eu: 360 }, { icon_eu: 14 });
-    expect(out.windGust - out.windSpeed).toBeCloseTo(2, 2);
+  it('keeps full ICON-EU vector when directions diverge > 60° (preserves strong gusts and relative excess)', () => {
+    // 12 m/s médio e 18 m/s rajada (tempestade) em direções a 90°: não cancela vento
+    // nem subestima a rajada absoluta de segurança nem inflaciona o excesso relativo.
+    const out = blendWindAtIndex(12, 270, 18, { icon_eu: 12 }, { icon_eu: 360 }, { icon_eu: 18 });
+    expect(out.windSpeed).toBe(12);
+    expect(out.windDirection).toBe(0);
+    expect(out.windGust).toBe(18);
+    expect(out.windGust - out.windSpeed).toBe(6);
   });
 
-  it('cancels opposing wind vectors instead of returning scalar mean speed', () => {
-    // 14 m/s W (270°) vs 7 m/s E (90°): 0.35*14 - 0.65*7 = 4.9 - 4.55 = 0.35 m/s (nunca 9.45 m/s)
+  it('keeps full ICON-EU vector when models oppose by 180° (no artificial cancellation)', () => {
     const out = blendWindAtIndex(
       14,
       270,
@@ -69,9 +70,9 @@ describe('blendWindAtIndex', () => {
     );
     expect(out.method).toBe('icon_eu_vector');
     expect(out.blended).toBe(true);
-    expect(out.windSpeed).toBeCloseTo(0.35, 3);
-    expect(out.windSpeed).toBeLessThan(1);
-    expect(out.windDirection).toBe(270);
+    expect(out.windSpeed).toBe(7);
+    expect(out.windDirection).toBe(90);
+    expect(out.windGust).toBe(10);
   });
 
   it('falls back to median_vector without ICON-EU (e.g. Açores) using median speed and median gust', () => {
@@ -109,9 +110,8 @@ describe('applyWindBlendToHours', () => {
     ]);
     expect(method).toBe('icon_eu_vector');
     expect(blendedHours).toBe(2);
-    // |0.65*(5 @ 300°) + 0.35*(2 @ 270°)| ≈ 3.872; |0.65*(6 @ 310°) + 0.35*(2 @ 270°)| ≈ 4.459
-    expect(hours[0].windSpeed).toBeCloseTo(3.872, 3);
-    expect(hours[1].windSpeed).toBeCloseTo(4.459, 3);
+    expect(hours[0].windSpeed).toBe(3.95);
+    expect(hours[1].windSpeed).toBe(4.6);
   });
 
   it('aligns by timestamp when windModelsHourly.time is shifted by 1 hour relative to hours', () => {
@@ -128,10 +128,10 @@ describe('applyWindBlendToHours', () => {
     const { blendedHours, method } = applyWindBlendToHours(hours, hourly, ['icon_eu']);
     expect(method).toBe('icon_eu_vector');
     expect(blendedHours).toBe(2);
-    // 13:00 casa com icon_eu=6 @ 300° (vetorial ≈ 5.16), não com 12:00 (icon_eu=20 @ 180°)
-    expect(hours[0].windSpeed).toBeCloseTo(5.16, 3);
-    // 14:00 casa com icon_eu=8 @ 310° (vetorial ≈ 6.337)
-    expect(hours[1].windSpeed).toBeCloseTo(6.337, 3);
+    // 13:00 casa com icon_eu=6 @ 300° (0.65*6 + 0.35*4 = 5.3), não com 12:00 (icon_eu=20 @ 180°)
+    expect(hours[0].windSpeed).toBe(5.3);
+    // 14:00 casa com icon_eu=8 @ 310° (0.65*8 + 0.35*4 = 6.6)
+    expect(hours[1].windSpeed).toBe(6.6);
   });
 
   it('preserves null windSpeed without turning it into 0', () => {
@@ -151,6 +151,6 @@ describe('applyWindBlendToHours', () => {
     expect(hours[0].windSpeed).toBeNull();
     expect(hours[0].windDirection).toBeNull();
     expect(hours[0].windGust).toBeNull();
-    expect(hours[1].windSpeed).toBeCloseTo(5.16, 3);
+    expect(hours[1].windSpeed).toBe(5.3);
   });
 });

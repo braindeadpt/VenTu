@@ -13,6 +13,14 @@ const { indexByTime, liveModels } = require('./ensembleQuantiles');
 const DEG2RAD = Math.PI / 180;
 const RAD2DEG = 180 / Math.PI;
 const ICON_WEIGHT = 0.65;
+/** Acima deste desvio angular entre modelos, evita cancelar vetores ou misturar rajadas: usa o vetor completo de maior resolução (ICON-EU). */
+const MAX_COHERENT_DIR_DIFF_DEG = 60;
+
+/** Menor diferença angular entre duas direções (0..180°). */
+function angularDiffDeg(a, b) {
+  const d = Math.abs((((a - b) % 360) + 540) % 360 - 180);
+  return d;
+}
 
 /**
  * @param {number[]} values
@@ -116,26 +124,31 @@ function blendWindAtIndex(
   if (hasIcon) {
     method = 'icon_eu_vector';
     const useDir = iconDir != null && Number.isFinite(iconDir) ? iconDir : baseDir;
-    if (hasBaseSpeed && hasBaseDir) {
-      const [u1, v1] = toUv(iconSpeed, useDir);
-      const [u0, v0] = toUv(baseSpeed, baseDir);
-      const res = fromUv(ICON_WEIGHT * u1 + (1 - ICON_WEIGHT) * u0, ICON_WEIGHT * v1 + (1 - ICON_WEIGHT) * v0);
-      // Velocidade e direção vêm do MESMO vetor ponderado (u, v): concordantes →
-      // igual à média escalar; sentidos opostos → o cancelamento vetorial reduz a
-      // magnitude em vez de dar vento forte numa direção nula.
-      windSpeed = res.speed;
-      windDirection = res.speed > 0.05 ? res.dir : useDir;
+    const hasIconGust = iconGust != null && Number.isFinite(iconGust);
+    const coherentDir = hasBaseSpeed && hasBaseDir && angularDiffDeg(useDir, baseDir) <= MAX_COHERENT_DIR_DIFF_DEG;
+    if (coherentDir) {
+      // Direções concordantes (≤ 60°): combina velocidade e rajada 65/35 e direção
+      // pelo vetor unitário ponderado — sem viés positivo, sem cancelamento nem
+      // distorção de rajadas absolutas ou relativas.
+      windSpeed = ICON_WEIGHT * iconSpeed + (1 - ICON_WEIGHT) * baseSpeed;
+      const [u1, v1] = toUv(ICON_WEIGHT, useDir);
+      const [u0, v0] = toUv(1 - ICON_WEIGHT, baseDir);
+      windDirection = fromUv(u1 + u0, v1 + v0).dir;
+      const rawGust = hasIconGust
+        ? hasBaseGust
+          ? ICON_WEIGHT * iconGust + (1 - ICON_WEIGHT) * baseGust
+          : iconGust
+        : baseGust;
+      windGust = Math.max(rawGust, windSpeed * 1.1);
     } else {
+      // Direções divergentes (> 60°) ou sem base: usa o pacote completo (velocidade,
+      // direção e rajada) do modelo de maior resolução (ICON-EU ~7 km), preservando
+      // rajadas fortes absolutas e excesso relativo sem cancelar vetores.
       windSpeed = iconSpeed;
       windDirection = useDir;
+      const rawGust = hasIconGust ? iconGust : hasBaseGust ? baseGust : iconSpeed;
+      windGust = Math.max(rawGust, windSpeed * 1.1);
     }
-    const iconEx = iconGust != null && Number.isFinite(iconGust) ? Math.max(0, iconGust - iconSpeed) : null;
-    const baseEx = hasBaseGust ? Math.max(0, baseGust - baseSpeed) : null;
-    const excess =
-      iconEx != null && baseEx != null
-        ? ICON_WEIGHT * iconEx + (1 - ICON_WEIGHT) * baseEx
-        : iconEx ?? baseEx ?? 0;
-    windGust = Math.max(windSpeed + excess, windSpeed * 1.1);
   } else {
     method = 'median_vector';
     const allSpeeds = hasBaseSpeed ? [...speeds, baseSpeed] : speeds;
@@ -162,16 +175,10 @@ function blendWindAtIndex(
     if (nd > 0 && Math.hypot(su, sv) > 0.1) {
       windDirection = fromUv(su, sv).dir;
     }
-    // Combina o excesso de rajada (gust - speed) por modelo para não inflacionar
-    // a penalização de rajada quando há divergência direcional entre modelos.
-    const excesses = [];
-    for (const [m, sp] of Object.entries(speedByModel)) {
-      const g = gustByModel[m];
-      if (Number.isFinite(sp) && Number.isFinite(g)) excesses.push(Math.max(0, g - sp));
-    }
-    if (hasBaseSpeed && hasBaseGust) excesses.push(Math.max(0, baseGust - baseSpeed));
-    const medExcess = median(excesses) ?? 0;
-    windGust = Math.max(windSpeed + medExcess, windSpeed * 1.1);
+    const modelGusts = Object.values(gustByModel).filter(Number.isFinite);
+    const allGusts = hasBaseGust ? [...modelGusts, baseGust] : modelGusts;
+    const medGust = median(allGusts) ?? baseGust;
+    windGust = Math.max(medGust, windSpeed * 1.1);
   }
 
   const blended =

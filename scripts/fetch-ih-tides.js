@@ -19,8 +19,8 @@ const { loadConditionsSpots } = require('./lib/spotsCatalog.js');
 /** Raio máximo (km) para associar um marégrafo costeiro IH a um spot. */
 const MAX_TIDE_STATION_KM = 55;
 
-/** Spots `aguaInterior` (para direção do vento) mas com ligação de maré permanente ao oceano. */
-const AGUA_INTERIOR_COM_MARE = new Set(['murtosa', 'foil-alvor']);
+/** Spots `aguaInterior` (para direção do vento) mas com ligação de maré permanente validada e marégrafo ≤ 55 km. */
+const AGUA_INTERIOR_COM_MARE = new Set(['murtosa', 'cabedelo-wakepark']);
 
 const IH_API = process.env.IH_API_URL || 'https://ogcapi.hidrografico.pt';
 /** Current collection id (FAQ / OGC).
