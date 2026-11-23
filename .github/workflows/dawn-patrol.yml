@@ -69,13 +69,17 @@ jobs:
         run: |
           # Publica na branch órfão ventu-data (nunca na main) — plumbing
           # puro, branch de 1 commit, sem tocar na working tree.
+          # O fetch ANTES do PRE_SHA é obrigatório: o checkout é single-branch
+          # e origin/ventu-data só existe no clone depois do fetch — medir o
+          # PRE sem ele dava "" e marcava pushed=true até no "Nada a publicar".
+          git fetch origin ventu-data --depth=1 || true
           PRE_SHA=$(git rev-parse -q --verify "origin/ventu-data:public/data/dawn-patrol.json" 2>/dev/null || true)
           bash scripts/push-data-file.sh \
             "auto: dawn patrol $(date +%Y-%m-%d)" \
             public/data/dawn-patrol.json
           # O blob do ficheiro no branch muda só quando o push aterra de
           # facto — distingue o "Published" do "Nada a publicar" sem parsear
-          # o log do script.
+          # o log do script. O script re-fez fetch no fim → POST lê a ponta.
           POST_SHA=$(git rev-parse -q --verify "origin/ventu-data:public/data/dawn-patrol.json" 2>/dev/null || true)
           if [ -n "$POST_SHA" ] && [ "$POST_SHA" != "$PRE_SHA" ]; then
             echo "pushed=true" >> "$GITHUB_OUTPUT"
@@ -83,9 +87,25 @@ jobs:
 
       # O deploy saiu do workflow_run do deploy.yml (#455): em vez de cada
       # conclusão do Dawn Patrol (incl. gate=skip) disparar um segundo deploy,
-      # só um push real de dawn-patrol.json o despacha explicitamente.
+      # só um push real de dawn-patrol.json o despacha — e só se a ponta de
+      # main tiver CI verde. O dispatch resolve a main directamente (sem
+      # prova de verde, é decisão humana); um bot não pode publicar código
+      # sem CI. Se a main ainda não tiver verde, o próximo CI verde publica
+      # o boletim no deploy do workflow_run — nada se perde.
       - name: Dispatch deploy
         if: steps.gate.outputs.gate == 'run' && steps.push.outputs.pushed == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh workflow run deploy.yml
+        run: |
+          MAIN_SHA=$(gh api repos/${{ github.repository }}/commits/main --jq .sha)
+          GREEN_SHA=$(gh api "repos/${{ github.repository }}/actions/workflows/ci.yml/runs?branch=main&status=success&per_page=1" \
+            --jq '.workflow_runs[0].head_sha // empty')
+          if [ -z "$MAIN_SHA" ] || [ -z "$GREEN_SHA" ]; then
+            echo "::notice::Sem prova de CI verde na main — o próximo CI publica o boletim."
+            exit 0
+          fi
+          if [ "$GREEN_SHA" != "$MAIN_SHA" ]; then
+            echo "::notice::Último CI verde ($GREEN_SHA) atrás da main ($MAIN_SHA) — adiar para o próximo CI."
+            exit 0
+          fi
+          gh workflow run deploy.yml

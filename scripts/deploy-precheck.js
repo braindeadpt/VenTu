@@ -107,13 +107,15 @@ async function fetchLiveManifest() {
 }
 
 /** Ancestralidade + atraso do verde face a main, sem git local.
- *  `compare base...head`: `status` behind/identical ⇒ base é antepassado. */
+ *  `compare base...head`: o `status` é do HEAD — `ahead`/`identical` ⇒
+ *  main não está atrás do verde ⇒ o verde (base) é antepassado de main.
+ *  `behind`/`diverged` ⇒ main não contém o verde ⇒ não provável. */
 function compareGreenToMain(greenSha, mainSha) {
   const cmp = ghApiJson(`repos/${REPO}/compare/${greenSha}...${mainSha}`);
   if (!cmp || typeof cmp.status !== 'string') return null;
   const files = Array.isArray(cmp.files) ? cmp.files.map((f) => f.filename) : null;
   return {
-    isAncestor: cmp.status === 'behind' || cmp.status === 'identical',
+    isAncestor: cmp.status === 'ahead' || cmp.status === 'identical',
     // ahead_by = commits que main tem e o verde não — o «atraso» do resolver.
     lagCommits: Number.isFinite(cmp.ahead_by) ? cmp.ahead_by : null,
     // A API limita a lista a 300 ficheiros — sem ela completa não dá para
@@ -173,7 +175,15 @@ async function main() {
     return;
   }
   // Os dados vivem na branch órfão ventu-data (mesma fonte do resolver).
-  const dataSha = ghApi(`repos/${REPO}/commits/ventu-data`, '.sha') || mainSha;
+  // SEM fallback para main: uma falha da API aqui disfarçava-se de «dados
+  // de main» e podia produzir uma impressão digital coincidente com o live
+  // → skip sem nunca ter confirmado a versão real dos dados. Em dúvida,
+  // proceed: o resolver lê a branch com git local e decide.
+  const dataSha = ghApi(`repos/${REPO}/commits/ventu-data`, '.sha');
+  if (!dataSha) {
+    emit(true, 'ventu-data indisponível via API — resolver decide');
+    return;
+  }
 
   const runs = fetchCiRuns();
   // Uma só página chega para o precheck: se o índice esconder um verde novo,

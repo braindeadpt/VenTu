@@ -48,8 +48,10 @@ gh_available() {
 # (#225, #292). Na recuperação, fechar só `.[0]` deixava duplicados órfãos —
 # `.[].number` permite fechar todas.
 list_open_issues() {
-  gh issue list --repo "$REPO" --label "$OUTAGE_LABEL" --state open --json number \
-    --jq '.[].number // empty'
+  # --limit explícito: o default (30) deixava incidentes >30 por fechar na
+  # recuperação — ficavam órfãos abertos para uma execução seguinte.
+  gh issue list --repo "$REPO" --label "$OUTAGE_LABEL" --state open \
+    --limit 200 --json number --jq '.[].number // empty'
 }
 
 ensure_label() {
