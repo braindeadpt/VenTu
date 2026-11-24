@@ -2,9 +2,9 @@
 
 Registo de ideias, melhorias e features identificadas mas não agendadas. Cada item tem contexto suficiente para retomar quando fizer sentido.
 
-> **Roadmap activo:** [`ROADMAP.md`](./ROADMAP.md) — **Fase E** (pós A→C) · Templates: [`ROADMAP-ISSUES.md`](./ROADMAP-ISSUES.md)
+> **Roadmap activo:** [`ROADMAP.md`](./ROADMAP.md) — **Fase E/C4b** (calibração scores) · Design v6 «Atlântico» entregue 2026-11 · Templates: [`ROADMAP-ISSUES.md`](./ROADMAP-ISSUES.md)
 
-Última actualização: 2026-05-25
+Última actualização: 2026-11-24
 
 ---
 
@@ -103,23 +103,14 @@ próximo fetch quando o IH reportar `latest` fresco.
 Integrado via APA InfoÁgua: `scripts/fetch-water-quality.js` extrai o dataset
 nacional embutido em `infoagua.apambiente.pt/pt/praias` (761 águas balneares,
 1 GET sem auth) → `water-quality.json` → merge em `conditions.waterQuality`
-(spot → água balnear mais próxima ≤3 km, 166/185 cobertos). UI em
+(spot → água balnear mais próxima ≤3 km, 166/185 cobertos na data da integração — com 189 spots a cobertura exacta está **por confirmar**). UI em
 `WaterQualityBadge` (conselho balnear só na época, classe anual APA, alertas
 activos, Bandeira Azul sem ano hardcoded). Cobertura: 86 spots <0,5 km,
 160 ≤2 km.
 
 ### Imagens reais por spot
 
-Audit original (Fase 1) identificou: `images: []` vazio em todos os spots. Decidido manter porque não há fotos curadas e o tema Coast compensa visualmente.
-
-**Fontes potenciais**:
-- Wikimedia Commons — fotos CC0 da maior parte das praias portuguesas
-- Unsplash API — free tier 50 calls/h
-- Flickr API — free tier
-
-**Decisão**: trabalho de curadoria manual, não LLM. Quando for feito, considerar variant "hero" no SpotCard.
-
-**Estimativa**: 4-6h de curadoria + 1 sessão de integração.
+✅ **Entregue (v6, #184).** `src/lib/spotFotos.ts` + `spotFotos.json` + `public/fotos/spots/` (~60 WebP): uma foto por spot e modalidade (kite/surf), Unsplash + Wikimedia Commons com crédito por foto (`CREDITOS.md`). Cadeia de fallback honesta: real → zona → substituta (mesma região+modalidade, ≤60 km do spot curado, com o sítio real no crédito) → fundo `mar`. A home v6 usa `fotosCosta`/`metaCosta` do mesmo sistema.
 
 ---
 
@@ -127,9 +118,9 @@ Audit original (Fase 1) identificou: `images: []` vazio em todos os spots. Decid
 
 ### Livecams nos spots populares
 
-✅ **Concluído (2026-05-25).** Links externos curados Surftotal/MEO em **31 spots** (`spotLivecams.ts`). Sem embeds (Windy = timelapse 24h; MEO = X-Frame bloqueado).
+✅ **Concluído e expandido (2026-11).** **114 spots** com livecams curadas em `src/lib/spotLivecams.ts`: links externos Surftotal/MEO/FeelViana + embeds válidos — YouTube via `youtube-nocookie` (ex.: Cabedelo 24h) e Surfline onde o embed vive. Os dois embeds partidos da mega audit foram regularizados: `cabedelo-wakepark` ficou **link-only** (o embed Surfline devolvia 404) e `foil-cabedelo` passou a usar a câmara YouTube de Cabedelo.
 
-**Pendente (opcional):** expandir lista de spots com URLs MEO/Surftotal verificadas.
+**Pendente (opcional):** continuar a verificar/expandir URLs MEO/Surftotal/YouTube por spot novo.
 
 ---
 
@@ -137,9 +128,9 @@ Audit original (Fase 1) identificou: `images: []` vazio em todos os spots. Decid
 
 ### Fase 5b — compatibleSports manual
 
-**Estado actual:** 185/185 preenchidos ✅
+**Estado actual:** 189/189 preenchidos ✅ (`spots.json`)
 
-**Agendado em:** [ROADMAP.md § A4](./ROADMAP.md#a4--completar-compatiblesports) — concluído
+**Agendado em:** [ROADMAP.md § A4](./ROADMAP.md#a4--completar-compatiblesports) — concluído; validação contínua via `spots:validate` + `spots:catalog:check` no ci.yml
 
 ### Chat global (adiado)
 
@@ -168,13 +159,13 @@ Audit original (Fase 1) identificou: `images: []` vazio em todos os spots. Decid
 
 **Fix**: mapeamento completo de 50 municípios → macros em `src/lib/regions.ts` (commit `fdad5af`). Fallback alterado de 'Lisboa' para ''.
 
-### Bug 6: 31 spots sem conditions.json
+### Bug 6: spots sem conditions.json
 
-Aguardam próxima execução de `update-data.yml` (cron 3h). Não é acção de código.
+Resolvido na prática — a pipeline cobre os 189 spots; `update-data.yml` + guards de freshness monitorizam (`staleness-alert`, `data-cadence-alert`, `ops-audit`).
 
-### Bug 7: 32 spots sem tide station
+### Bug 7: spots sem tide station
 
-Maioria adições recentes. Display condicional cobre — não crítico.
+Display condicional cobre (marés só aparecem com estação/dados) — não crítico; a cobertura IH é a das 33 estações mapeadas.
 
 ---
 
@@ -190,7 +181,7 @@ Maioria adições recentes. Display condicional cobre — não crítico.
 
 ### SEO landing pages por combinação
 
-✅ **Feito (2026-05-25).** Rotas estáticas `/pt/explorar/` (índice) + `/pt/explorar/{sport}-{região}/` — 49 combinações. Sitemap + footer.
+✅ **Feito (2026-05-25).** Rotas estáticas `/pt/explorar/` (índice) + `/pt/explorar/{sport}-{região}/` — **50 combinações** actuais (7 desportos × até 7 regiões macro; derivadas de `seoLandings.ts` + `spots.json`, sitemap as inclui).
 
 Quando imagens reais por spot existirem (ver acima), considerar variante `<SpotCard variant="hero">` com imagem de fundo, para usar em destaques e top-3.
 
@@ -206,9 +197,7 @@ Audit técnico (Fase 1) sugeriu recalibração empírica dos thresholds em `spor
 
 ### Decision: SwellDetective
 
-Componente em `src/components/SwellDetective.tsx` está pronto mas usa mock data. Activado em SpotDetail seria teatro de feature (induz utilizadores em erro com "padrões históricos" inventados).
-
-**Condição para activar**: pipeline de histórico real (parsing Open-Meteo archived data ou ingestion própria).
+~~Componente em `src/components/SwellDetective.tsx` está pronto mas usa mock data.~~ **Componente removido** — a página de spot v6 (`SpotV6`/`MedeSabeV6`) mostra dados reais; se voltar a fazer sentido um «estudo de swell», tem de nascer de pipeline real (histórico Open-Meteo archived ou ingestão própria), nunca mock.
 
 ---
 
@@ -216,18 +205,13 @@ Componente em `src/components/SwellDetective.tsx` está pronto mas usa mock data
 
 ### Mais idiomas
 
-Actualmente PT/EN. Audiences potenciais não cobertas:
-- ES (espanhóis que visitam PT — particularmente Algarve, Porto)
-- FR (franceses — surfistas frequentes em Portugal)
-- DE (alemães na Madeira)
+✅ **Entregue (2026-11).** Os 5 locales existem — pt/en/es/de/fr (`src/lib/i18n.ts`), incluindo as superfícies v6 (`homeV6.ts`, `spotPage/v6.ts`, `mapUi/*`, `nivel.ts`) com bloco próprio em cada língua. A dívida `isPt→EN` chegou a **0** (ratchet `i18nDebt.test.js`, baseline 0; ver `I18N-MIGRATION.md`).
 
-**Trabalho**: i18n.ts tem estrutura preparada, falta tradução das ~200 strings.
-
-**Estimativa**: 2-3h por idioma (tradução manual de qualidade).
+**Resta (fora de âmbito por decisão #457):** artigos de **notícias** continuam PT/EN — as páginas `/es|de|fr/news/` ficam `noindex` até haver tradução real do conteúdo.
 
 ### URLs por idioma
 
-Routes actuais: `/pt/`, `/en/`, `/es/`, `/de/`, `/fr/` (shell i18n + SEO; copy inline `isPt` ainda cai em EN).
+Routes actuais: `/pt/`, `/en/`, `/es/`, `/de/`, `/fr/` — 5 locales completos com dicionários (a dívida `isPt→EN` está a 0; artigos de notícias es/de/fr ficam `noindex`).
 
 ---
 
@@ -245,7 +229,36 @@ GoatCounter integrado (privacy-first, sem cookies). Commit `e5675f5`. Script só
 
 ## 🔒 Licenças de dados (confirmação pendente)
 
-- Marés observadas, isóbatas costeiras e avisos à navegação do IH: a licença de cada conjunto precisa de ser confirmada contra a respectiva ficha de metadados (as boias ondógrafo já foram confirmadas CC BY-NC — processo IH 0191_2026; marés/isóbatas/avisos continuam declarados CC BY sem confirmação individual).
+- Marés observadas, isóbatas costeiras e avisos à navegação do IH: a licença de cada conjunto precisa de ser confirmada contra a respectiva ficha de metadados (as boias ondógrafo já foram confirmadas CC BY-NC — processo IH 0191_2026; marés/isóbatas/avisos continuam declarados CC BY sem confirmação individual). **Por confirmar** se já foi feito desde 2026-05.
+
+---
+
+## ⏳ Pendentes reais (2026-11-24)
+
+### Boias IH → OGC API EDR (migração anunciada)
+
+O `getDatawellData` será substituído por uma **OGC API EDR** em `https://ogcapi.hidrografico.pt` (a OGC API de features já migrou em 2026-09; o antigo `api-features.hidrografico.pt` não resolve DNS). Enquanto a colecção `buoys_datawell` for Features-only (sem `data_queries`), a migração não é possível — o `ops-audit` diário vigia a publicação do EDR. Receita completa em [`IH_API_KEY.md`](./IH_API_KEY.md); gate de validação `npm run ih:validate` (`scripts/validate-ih-edr-schema.js`). Quando aterrar: trocar `fetchWaveSeries`/`DEFAULT_WAVE_API` em `scripts/lib/ihBuoys.js` pelas consultas EDR (provavelmente keyless) e a `IH_API_KEY` deixa de ser precisa para o observedWave.
+
+### Revyl — preview builds em PRs
+
+`pr_review` está **desactivado** em `.revyl/config.yaml`: o export estático `out/` (~1,7 GiB) excede o limite de 1 GiB do plano Revyl («Web bundle exceeds its unpacked size limit»). O site é testado em devices Revyl apontados ao live. **Reactivar** se a Revyl subir o limite do bundle — ou se se encontrar um caminho de preview mais leve (ex.: subconjunto de rotas).
+
+### News i18n es/de/fr — fora de âmbito (decisão #457)
+
+Os artigos continuam PT/EN; as páginas `/es|de|fr/news/` ficam `noindex` (conteúdo duplicado). Só reabrir se houver tradução real dos artigos (pipeline LLM ou curadoria).
+
+### Specs e2e fora do CI — rever destino
+
+Sem tag `@core` nem suite no `ci.yml`: `map-chrome`, `map-v3-explore/layers/markers`, `spot-v2-context`, `spot-v2-verdict`, `spot-v3-verdict`, `spots-filtro-ssr`, `visual-sweep`, `ipma-radar-carousel` (corre isolado). Decidir por spec: tag `@core`/`test:e2e:v6`, ou arquivar se a v6/pele os tornou obsoletos. Manuais por dados vivos: `about-wave-bias`, `map-wind-markers`. Opt-in: `axe-audit`.
+
+### Calibração de scores (C4b — segue no ROADMAP)
+
+`npm run scores:analyze` pronto; mudar pesos só com N≥30 feedbacks/modalidade.
+
+### Dependências
+
+- `next` declarado `^16.4.6` em `package.json`; se a issue pedia um bump específico, verificar se há patch mais recente (versão efectivamente instalada por confirmar sem `node_modules`).
+- Advisories allowlistadas no `npm audit` do ci.yml: `GHSA-vfj7-8cjw-p6xm` (braces, dev-only) e `GHSA-fc5q-39xc-vjpf` (picomatch, dev-only) — remover da allowlist quando sair release corrigida.
 
 ---
 

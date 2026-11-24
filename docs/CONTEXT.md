@@ -4,7 +4,7 @@ Lê este ficheiro antes de qualquer trabalho no repo. Define o estado do project
 
 > **Prioridades de trabalho:** [`ROADMAP.md`](./ROADMAP.md) — Fase **E** / **C4b** (calibração scores com feedback)
 
-> Última actualização: 2026-09-07 (mapa: teardown com guards + proveniência unificada).
+> Última actualização: 2026-11-24 (design v6 «Atlântico»: home/spot/mapa unificados, tema global, 5 locales — canónico em [`DESIGN-SYSTEM.md`](./DESIGN-SYSTEM.md)).
 
 ## Identidade
 
@@ -21,12 +21,13 @@ Lê este ficheiro antes de qualquer trabalho no repo. Define o estado do project
 | Linguagem | TypeScript 5.4 (strict) | |
 | Styling | Tailwind CSS 3.4 | Config em `tailwind.config.ts` |
 | Ícones | `lucide-react` | Não trocar por outra lib |
-| Mapas | Leaflet + MarkerCluster | SpotMap, cluster na homepage |
+| Mapas | Leaflet + MarkerCluster | `SpotMapInteractive` em `/mapa` e na grelha de spots; a home v6 usa `CostaMapa3D` (WebGL, poster → 3D lazy) |
 | Dados marinha | Open-Meteo Marine API | Free, sem auth, `wind_speed_unit=ms` |
 | Marés (observado) | IH OGC API (hidrografico.pt) | Free, CC-BY 4.0, 33 estações |
 | Chat | Removido | UI removida 2026-05-21 |
 | IA notícias / Dawn Patrol | Gemini Flash + Groq Llama 3.3 + Cerebras | GitHub Actions (secrets no repo remoto) |
-| Previsões | Open-Meteo + `forecasts/<id>.json` precomputed (1 por spot; sem agregado desde 25/10/2026) | CI: full a cada 2h (06h–20h), multi-modelo 3×/dia (06h/12h/18h); crons de 30 min com gate de skip; client JSON first, live API fallback |
+| Previsões | Open-Meteo + `forecasts/<id>.json` precomputed (1 por spot; sem agregado desde 25/10/2026) | CI: full a cada 2h (06h–20h), multi-modelo 3×/dia (06h/12h/18h); crons de 30 min com gate de skip; client JSON first, live API fallback. Fase 3 (#560): batching Open-Meteo, SWR Home/Spot (o bake é o "stale", revalidação ~15 min + regresso ao visível), skill bias, chop |
+| Design | v6 «Atlântico» | [`DESIGN-SYSTEM.md`](./DESIGN-SYSTEM.md) — tokens em `src/app/globals.css`, fontes Barlow em `src/styles/v6-fontes.css` |
 | Testes | Vitest (unit) + Playwright (E2E) | `npm test` + `npm run test:e2e` |
 | Deploy | GitHub Pages (static export) | `output: 'export'` no `next.config.js` |
 
@@ -42,6 +43,52 @@ Lê este ficheiro antes de qualquer trabalho no repo. Define o estado do project
 4. **Rotas dinâmicas exigem `generateStaticParams`.** Não introduzir rotas não enumeráveis.
 5. **Server components correm em build time**, não em runtime.
 6. **Homepage:** não usar `searchParams` async no server — quebra static export. Filtros sport/region via client + `?sport=` / `?region=` (`gridFilters.ts`).
+
+## Design v6 «Atlântico» (2026-11)
+
+O redesign v6 substituiu a UI anterior por uma só linguagem — canónico em
+[`DESIGN-SYSTEM.md`](./DESIGN-SYSTEM.md) (reescrito na #465). Fatos que mudam
+o trabalho diário:
+
+- **Tema global:** dark «Atlântico» é o default (`:root` em
+  `src/app/globals.css`); `.theme-ocean` no `<html>` activa a variante clara
+  «Sol» (aplicada pre-paint a partir do localStorage). **As superfícies v6
+  (`.v6`, `.v6h`, cabeçalho `[data-v6]`, `[data-pele='v6']`) são sempre
+  escuras** — o tema claro nunca as afecta.
+- **Fontes:** Barlow (`font-sans`) + Barlow Condensed (`font-display`),
+  auto-alojadas em `src/styles/v6-fontes.css` (importada em
+  `src/app/layout.tsx`); Geist Mono (`font-mono`) para dados. Versões
+  anteriores (Space Grotesk, escala ÉPICO/BOM/FUN) estão revogadas.
+- **Nota /10:** `src/lib/nota.ts` é a escala única visível (score 0–100 →
+  nota inteira /10, bandas Não dá/Fraco/Dá/Bom/Muito bom); `getScoreTokens`
+  em `sportScore.ts` é a única fonte de tokens de score.
+- **Home unificada (#460):** `src/app/[locale]/page.tsx` renderiza
+  `HomeV6` (`src/components/home/v6/HomeV6.tsx`, superfície `.v6h`) que
+  envolve `HomeAdaptive` (`after=`) — «O teu dia» (`YourDaySection`),
+  `DawnPatrolTopSlot`, Top 8 e grelha ficam dentro da mesma superfície v6.
+  O hero é `CostaMapa3D` (WebGL; poster neutro → 3D lazy, `?webgl=0` desliga).
+- **Spot v6 (#459):** `SpotDetailClient` renderiza `SpotV6`
+  (`src/components/spots/v6/SpotV6.tsx`) — veredicto /10, régua de 48 h
+  (`Regua48h`, sticky), «Porquê», praia 3D (`PraiaCena3D` + Web Worker),
+  «Estudar o spot» (`MedeSabeV6`) e contexto (`SpotContextoV6`). Desporto
+  por `?sport=` / `?d=` / `ventu.modalidade` (só se compatível com o spot).
+- **Mapa pele v6 (#458):** `/mapa` veste `[data-pele='v6']` por defeito
+  (`useMapPele`, `MAP_PELE_OFF` desliga); estilos em
+  `src/styles/mapa-pele-v6.css` + `mapa-pele-cabecalho.css` +
+  `mapa-pele-ponteiro.css`; `data-pele-base` (`?pelebase=v6`) repinta a
+  base do mapa; o cabeçalho do site veste os tokens v6 com a pele activa.
+- **i18n:** 5 locales `pt/en/es/de/fr` (`src/lib/i18n.ts`); as superfícies
+  v6 têm dicionários próprios em `src/lib/translations/` (`homeV6.ts`,
+  `spotPage/v6.ts` + `spotPage/{context,instruments,medeSabe,verdict}.ts`,
+  `mapUi/*`, `nivel.ts`, `newsPage.ts`, `spotDrawer.ts`, `fontesPage.ts`) —
+  todas com bloco pt/en/es/de/fr. A dívida `isPt→EN` está a **0**
+  (ratchet `scripts/lib/__tests__/i18nDebt.test.js`, baseline em
+  `scripts/i18n-debt-report.js`).
+- **Componentes removidos na v6** (não reintroduzir nem referenciar):
+  `HomepageMapHero`, `HeroMapPoster`, `HomepageStatusBar`,
+  `HomepageFeatured`, `SpotModelBand` (§8 antiga), `ObservedWaveCard`,
+  `BuoySkillLine`, `WaveSkillByLead`, `ForecastTable`, `TideScheduleStrip`,
+  `MoonTideCard`, `SpotStickyBar`, `ScoreWindSourceBadge`, `SwellDetective`.
 
 ## Copy e confiança (Fase A — concluída)
 
@@ -102,19 +149,20 @@ Limiares/filtros: «nota ≥ n» ⇔ «score ≥ 10·n − 5» (ex. «Só a bomb
 
 *Porquê:* com vento cross/side-onshore o rider faz bordos ao longo da costa e, se cair ou o equipamento falhar, o vento devolve-o à praia — é o ideal. Onshore puro é seguro mas dá chop e dificulta sair da rebentação (pontuação parcial). Qualquer componente offshore empurra para o mar, e junto à praia o vento chega rajado e com buracos (sombra de terra): side-offshore só é aceitável para avançados com barco de apoio — por isso a nota total nunca passa de 5,0/10 (#195: sem cap, 25 kt side-offshore chegava a ~7–8/10 e dizia «vai» a um intermédio) —, offshore puro é um perigo de deriva — por isso a nota total fica em 2,5/10 (Fraco/Não dá), independentemente da intensidade. Os dois caps estão em /10 e aplicam-se no mesmo sítio (`applyWindSafety`, via `notaToScore`). O kite reserva a margem dos pontos de direcção (`withDirectionHeadroom`) para que uma sessão saturada (vento+rajada+mar+água > 100) continue a ordenar por direcção. O aviso sai em `SportScore.warning`/`warningEn` e `directionSafety`; a UI mostra-o em texto com `role="note"` (`WindSafetyNote`) no veredicto do spot, nos cartões da homepage (Top Now/Favoritos) e no mapa (cartão/sheet e popup). Textos em `windSafety` (`src/lib/translations/*`). **Label alinhada (#195):** nos desportos de vento (`isWindDirectionSport`) a label de direcção dos factores vem de `windSportDirectionSafety(...).direction` — um vento a 80° do onshore é cross-shore no score e na linha «porquê» (`windRelCross`: PT «Cross», EN «Cross-shore»); o surf e os restantes consumidores de `classifyWind` (incluindo o chip do `WindCard`) ficam iguais. Testes: `src/lib/__tests__/windSportDirectionSafety.test.ts` (mock com costa a 270°).
 
-**`compatibleSports`:** 185/185 explícitos. Validação CI: `npm run spots:validate` (`scripts/validate-spots.js`).
+**`compatibleSports`:** 189/189 explícitos. Validação CI: `npm run spots:validate` (`scripts/validate-spots.js`) + `npm run spots:catalog:check` (o `spots.ts` é gerado de `spots.json` — nunca editar à mão).
 
-**Proveniência (gramática única, 2026-09-07):** cada número mostra de onde vem (tier `measured` | `adjusted` | `modeled` | `degraded`, eixo `wave`→`wind`→`calibration`→`confidence`→`freshness`) através de UM componente — `ProvenanceChip` (`title` no hover + popover portalizado para toque/teclado; `interactive={false}` = span estático dentro de cards-link) — definido em `src/lib/provenance.ts` e `src/components/ui/ProvenanceChip.tsx`. Convertidos: `ConfidenceBadge`, `DataSourceBadge`, `ScoreWaveSourceBadge`, `ScoreWindSourceBadge`, `WaveCalibrationTag`; selectores `data-*` antigos preservados via `chipAttrs`/`popoverAttrs`. Ao mexer em chips de origem/frescura/calibração, usar este componente — não criar um oitavo dialecto.
+**Proveniência (gramática única, 2026-09-07):** cada número mostra de onde vem (tier `measured` | `adjusted` | `modeled` | `degraded`, eixo `wave`→`wind`→`calibration`→`confidence`→`freshness`) através de UM componente — `ProvenanceChip` (`title` no hover + popover portalizado para toque/teclado; `interactive={false}` = span estático dentro de cards-link) — definido em `src/lib/provenance.ts` e `src/components/ui/ProvenanceChip.tsx`. Convertidos: `ConfidenceBadge`, `DataSourceBadge`, `ScoreWaveSourceBadge`, `ScoreWindSourceBadge` (depois removido na v6 — o viés de vento continua em `conditions.windBias`), `WaveCalibrationTag`; selectores `data-*` antigos preservados via `chipAttrs`/`popoverAttrs`. Ao mexer em chips de origem/frescura/calibração, usar este componente — não criar um oitavo dialecto.
 ## Maré (Instituto Hidrográfico)
 
 ```
 scripts/fetch-ih-tides.js → public/data/ih-tides.json
 scripts/update-conditions.js → conditions.json (tide fields)
-SpotDetailClient + ForecastTable (row condicional)
+SpotDetailClient → SpotV6/MedeSabeV6 (tabela de marés no «Estudar o spot»)
 ```
 
 - 33 estações IH · maioria dos spots continentais mapeados
 - Dados observados (não previsão horária IH); previsão MSL via Open-Meteo
+- UI: a secção de marés da página de spot v6 vive no «Estudar o spot» (`MedeSabeV6`, tabela de marés + `mareDepois`); o `TideScheduleStrip`/`MoonTideCard` antigos saíram com a v6
 
 ## Boias Datawell (IH) — onda observada
 
@@ -219,7 +267,8 @@ update-conditions.js → waveHeight corrigido + waveHeightRaw + waveBias (opt-in
 scripts/lib/windBiasArchive.js → data-state/wind-bias-archive.json (pares brutos, estado da pipeline)
                               → public/data/wind-bias.json (só relatório: stations + lastPairs + meta)
 scripts/merge-observations.mjs → conditions.json[spot].windBias (ME/MAE/RMSE/n da estação)
-src/components/ui/ScoreWindSourceBadge.tsx → tooltip «Viés desta estação: ME +x kt (n=…)»
+# UI: o badge dedicado (ScoreWindSourceBadge) saiu na v6; o dado segue no
+# conditions e alimenta os sufixos de fonte do score («(viés regional)»).
 ```
 
 > Split 2026-09-14: os `pairs` brutos (janela 30 dias × estações × spots)
@@ -293,9 +342,8 @@ scripts/lib/skillRegression.js → snapshots diários, janelas recente/baseline,
 
 ## Exposição do forecast-skill (UI)
 
-- **Página de spot:** o `ObservedWaveCard` mostra a linha «Skill desta boia» (ME/MAE/RMSE/r/lead, n) quando a leitura está fresca; **sem leitura fresca**, uma linha discreta `BuoySkillLine` (mesmo rótulo, `data-buoy-skill-line`) aparece na secção de verificação, resolvida em runtime a partir do `forecast-skill.json` + mapeamento spot→boia (`ih-buoys.json` idEst, fallback `wmo-buoys.json` code) via `src/lib/forecastSkill.ts` (client, cache por sessão; falha → silencioso).
-- **Skill por horizonte de lead:** o `byLead` do `forecast-skill.json` (`forecastSkill.js` → `leadBucketStats`, faixas `LEAD_BUCKETS` 0–12/12–24/24–48/48–72/72–168 h, publicadas só com n ≥ `MIN_BUCKET_PAIRS` = 5) alimenta a tabela «Skill por horizonte» no detalhe da Onda (`WaveSkillByLead`, `data-skill-by-lead` — ME/RMSE/n por faixa da boia do spot, resolvida pelo mesmo caminho da BuoySkillLine). Cada boia leva o seu `byLead`; o report leva também o global (`byLead` + `leadBuckets`/`minBucketPairs`). O agregado ME/RMSE mistura horizontes: esta é a leitura honesta de quanto vale a previsão a cada prazo (o n de cada faixa é mostrado — nunca se apresenta ruído como skill).
-- **About:** secção «Skill real do forecast por boia» (tabela n/ME/MAE/RMSE/r/lead médio) ao lado da calibração — lida em build time (`loadForecastSkillBuoys`, padrão waveBias.ts); esconde-se sem dados (n≥10 por boia, mesmo gate do produtor).
+- **Página de spot v6:** `BoiaV6` (`src/components/spots/v6/BoiaV6.tsx`) mostra a leitura observada da boia com as calibrações (cross-border ES→PT, skill acumulado, ponte keyless) e o skill como **uma frase** (ME em cm, origem da rede); ME/MAE/RMSE/r/n ficam numa linha «detalhes» fechada. **Sem leitura fresca**, `BoiaSkillV6` mostra o skill acumulado do forecast na boia do spot (forecast-skill.json `byBuoy`, lead > 0), resolvido em runtime via `src/lib/forecastSkill.ts` (client, cache por sessão; falha → silencioso). Os componentes antigos (`ObservedWaveCard`, `BuoySkillLine`, `WaveSkillByLead`) saíram com a v6 — o `byLead` do forecast-skill.json continua produzido mas já não tem tabela na UI.
+- **About:** secção «Skill real do forecast por boia» (tabela n/ME/MAE/RMSE/r/lead médio, por origem IH/WMO-PT/WMO-ES) — `AboutDataCards.tsx` → `SkillCard`, lida em runtime a partir do `forecast-skill.json`; esconde-se sem dados (n≥10 por boia, mesmo gate do produtor).
 - Distinção honesta mantida: o About explica que isto é skill REAL do forecast (lead>0), diferente do viés ERA5 da secção de calibração.
 
 ## Segurança HTTP — headers reais (S7)
@@ -309,12 +357,33 @@ scripts/lib/skillRegression.js → snapshots diários, janelas recente/baseline,
 
 ```
 src/
-├── app/[locale]/          Home, spots, favorites, compare, news, about, modalidades, sazonalidade
-├── components/            UI, spots, weather, layout, DawnPatrolBanner, DataSourceBadge
-├── lib/                   spots.ts (185), sportScore, openmeteo, i18n, homepageSport, gridFilters
+├── app/[locale]/          Home, spots, favorites, compare, news, about, modalidades, sazonalidade, mapa, diretorio, conta, alerts
+├── app/globals.css        Tokens do tema (dark «Atlântico» :root + .theme-ocean «Sol») + gates de hidratação
+├── styles/                v6-atlantico.css, v6-fontes.css (Barlow), v6-home.css, v6-nivel.css, mapa-pele-*.css
+├── components/            ui/ (Button, Card, ScoreBadge, ProvenanceChip…), home/v6/ (HomeV6, CostaMapa3D, ReguaBlocos),
+│                          homepage/ (HomeAdaptive, YourDaySection, DawnPatrolTopSlot, TopNow…), spots/v6/ (SpotV6, Regua48h,
+│                          MedeSabeV6, PraiaCena3D…), spots/map/ (Leaflet), layout/, DawnPatrolBanner, DataSourceBadge
+├── lib/                   spots.json (189) → spots.ts GERADO (npm run spots:catalog), sportScore, nota.ts (/10),
+│                          modalidades/ + notaUnica (motor v6), home/homeV6.ts, spotVeredicto.ts, horaSpot.ts,
+│                          openmeteo, i18n, translations/ (5 locales), homepageSport, gridFilters
 └── types/
 
-public/data/               conditions.json, forecasts/<id>.json, news.json, dawn-patrol.json, ih-tides.json, ih-buoys.json, spot-isobaths.json, ih-coastal-warnings.json, wmo-buoys.json, warnings.json, radar.json, radar/ipma-radar.png, radar/frames/*.png, model-health.json, map-hours.json
+public/data/               NÃO trackeado na main — vive na branch órfão `ventu-data`
+                           (docs/DATA-BRANCH-MIGRATION.md; CI faz hydrate via
+                           `git fetch origin ventu-data --depth=1 && git checkout FETCH_HEAD -- public/data data-state`).
+                           Conteúdo: conditions.json, forecasts/<id>.json, news.json, dawn-patrol.json,
+                           ih-tides.json, ih-buoys.json, spot-isobaths.json, ih-coastal-warnings.json,
+                           wmo-buoys.json, warnings.json, radar.json, radar/ipma-radar.png, radar/frames/*.png,
+                           model-health.json, map-hours.json, sea-grid.json; spotFotos via public/fotos/ (trackeado na main)
+scripts/                   update-conditions, update-news, dawn-patrol, generate-sitemap, validate-spots, build-map-hours, build-sea-grid
+worker/                    Cloudflare worker de observações (typecheck próprio no ci.yml)
+terraform/                 ruleset Cloudflare (S7) — fmt/init/validate no ci.yml
+tests/e2e/                 Playwright (@core, suites v6/rotas/pixel — ver secção E2E)
+.github/workflows/         ci.yml, deploy.yml, update-data.yml, dawn-patrol.yml, api-keys.yml, ih-health.yml,
+                           ops-audit.yml, staleness-alert.yml, data-cadence-alert.yml, evaluate-alerts.yml,
+                           full-route-audit.yml, record-visual-baselines.yml, update-news.yml, apply-contributions.yml,
+                           agent-*.yml, devin-dispatch.yml, chop-calibration.yml
+```
 
 ## Avisos IPMA / MeteoAlarm — UI
 
@@ -347,7 +416,9 @@ public/data/               conditions.json, forecasts/<id>.json, news.json, dawn
 
 - Cada **modelo pedido conta como 1 chamada** ponderada (confirmado na issue
   open-meteo/open-meteo#464 e FAQ de pricing). Ensemble actual (4 ondas + 4 vento
-  + 2 best_match) ≈ **10 ponderadas/spot** → run dia ≈ **1 810**; best_match ≈ 362.
+  + 2 best_match) ≈ **10 ponderadas/spot** → run dia ≈ **1 900** (189 spots);
+  best_match ≈ 370. Os totais abaixo foram medidos com 185 spots — com 189 a
+  folga encolhe ~2 %, dentro da margem declarada.
 - Todos os runs de dia a 2h com multi-modelo gastariam **15–17k/dia (50–70%
   acima do limite)** — por isso o multi-modelo é limitado às **âncoras 06h, 12h,
   18h** (override: `VENTU_MULTIMODEL_HOURS="6,10,14,18"`); os restantes runs de
@@ -404,21 +475,15 @@ public/data/               conditions.json, forecasts/<id>.json, news.json, dawn
   `mode=day`, avisa se nenhuma hora tiver banda — aviso, não falha, porque uma queda
   dos endpoints multi-modelo não pode bloquear o push de dados frescos. Os testes de
   `ensembleQuantiles` incluem um guarda de ligação ao pipeline (falha se
-  `updateConditionsPerSpot` deixar de chamar `attachEnsemble`).- **UI (cartão Onda)**: a banda é UMA frase humana na linha secundária que o cartão já
-tem — «modelos: 1,0–1,9 m», com «Os outros modelos de onda — 8 em cada 10
-ficam neste intervalo» no
-`title`/leitor de ecrã —, nunca uma linha a mais. O slot (banda → mar de fundo →
-placeholder NBSP) decide-se em `src/lib/ensembleCardLine.ts` e desenha sempre uma
-linha: a altura do cartão e da secção de instrumentos é a mesma com e sem banda, com
-a régua parada e entre o HTML de partida e o relógio vivo. É a correcção da auditoria
-de 25/09 ao `f2508ce66`, que acrescentava uma linha só nas horas multi-modelo e fazia
-a página saltar ao mexer na régua (mesma classe do CLS do hero, `a737f4184`).
-- **UI («Como sabemos»)**: o detalhe técnico — P10/P50/P90 por família, nº de modelos e
-  o erro do modelo por horizonte de lead (`byLead` do forecast-skill, ver
-  `docs/DATA-HISTORY.md`) — vive na secção §8 (`SpotModelBand`), não nos cartões de
-  instrumentos (regra v3: proveniência fora dos instrumentos). As duas linhas de
-  família são desenhadas sempre (com «—» quando a hora não tem banda), para a secção
-  não mudar de altura ao passar a régua. A faixa na régua de 48 h continua por fazer.
+  `updateConditionsPerSpot` deixar de chamar `attachEnsemble`).
+- **UI v6:** a banda P10/P50/P90 **já não é renderizada** — `ensembleCardLine.ts`,
+  o cartão de instrumentos e a secção §8 `SpotModelBand` saíram com a página de
+  spot v6. O `ens` continua a ser produzido e gravado em
+  `forecasts/<id>.json` (custo zero de quota; se voltar a haver UI, o contrato
+  do array mantém-se). O detalhe «o que se mede e o que se sabe» vive agora no
+  «Estudar o spot» (`MedeSabeV6`): boia agora com calibrações, maré e lua, sol
+  e ar, isóbatas IH, clima NASA POWER e ligação ao Windguru — regra de ouro do
+  componente: cada número uma vez na página.
 
 ## Health-check de modelos (Open-Meteo ensemble)
 
@@ -479,7 +544,7 @@ a página saltar ao mexer na régua (mesma classe do CLS do hero, `a737f4184`).
   - `useMapCurrentsField` — rAF aninhados do `onZoomEnd` cancelados (via `zoomRafRef`); `paint()` sai cedo sem mapa/canvas.
   - `useMapLayers` — isóbatas com flag `unload`; `useMapCore` varre os overlays ANTES de `map.remove()` (`mapOverlaySweep.ts`, ordem remove-antes-de-destroy).
   - Guard de nível prototype em `Canvas._redraw`/`_update` quando `_ctx` já não existe (`leafletCanvasGuard.ts`) — o ponto único que cobre qualquer caminho de agendamento.
-  - Spec e2e `map-unmount-race` (no `test:e2e:core`): desmonta o mapa do hero da homepage em mobile e exige zero erros de página.
+  - Spec e2e `map-unmount-race` (no `test:e2e:core`): desde a home v6 (#183/#460) a homepage já não embute o hero Leaflet — as variantes A/B correm em `/pt/mapa/` (mesmo `SpotMapInteractive`, mesmas camadas canvas) e a homepage é coberta pelo arranque do mapa de costa v6 (3D ou plano); exige zero erros de página.
 - Stacking: a sheet mobile do `/mapa` é `z-1200`/`z-1201` — acima do HUD (`z-1100`) e dos controls (`z-1200`); nunca voltar a pôr uma camada do mapa acima da sheet aberta.
 
 ## Hydration gates — padrão CSS-gating (2026-09-10)
@@ -489,7 +554,7 @@ a página saltar ao mexer na régua (mesma classe do CLS do hero, `a737f4184`).
   - **(b) Dependente de dados/auth/sessão** — o markup final só existe depois de dados que o SSG não tem (sessão Supabase, favoritos, resposta de fetch). NÃO gatear: o flash é inerente; um placeholder honesto (ou nada) é o correcto. Gatear aqui só esconde conteúdo sem eliminar o salto.
   - **(c) Gated por interação** — overlay que só existe quando aberto (`Drawer`, sheets, modais). `return null` fechado É o estado correcto, não um placeholder a eliminar.
 - **Mecânica (sinal único):** `HydrationBeacon` carimba `html.is-hydrated` no commit do shell — o mesmo instante serve os testes (`waitHydrated` espera `html.is-hydrated`) e o CSS (`html:not(.is-hydrated) [data-hydration-gate=...]` vence qualquer utilitário). Consolidado em `98b031054` (o atributo `data-hydrated` foi removido); o CI falha o build se o setter desaparecer do bundle (`scripts/check-hydration-beacon.js`, `bfa009576`).
-- **Variante map-ready:** o hero do mapa da home usa o mesmo padrão com um sinal diferente — `HeroMapPoster` (estático, sem animação) cobre a área desde o primeiro paint e desvanece quando o `SpotMapInteractive` carimba `data-map-ready` via `onReady` (`81ca7948a`). Para first-paint de mapas: poster estático, nunca anel de loading.
+- **Variante map-ready:** first-paint de mapas segue o mesmo princípio — poster estático, nunca anel de loading. Na home v6 o `CostaMapa3D` cobre a área com um poster neutro (`public/images/home/costa-poster-*.webp`, `data-testid="home-mapa-poster"`) desde o 1.º paint e só arranca o WebGL em idle (`modo` poster → 3d/plano; `?webgl=0` força o plano). O padrão `data-map-ready`/`data-map-hero-poster` (`81ca7948a`) continua no `globals.css` para o `SpotMapInteractive` (grelha de spots e `/mapa`).
 - **Contratos:** `hydrationGates.test.ts` (cadeia classe→CSS→markup por componente) e o bundle check apanham uma quebra no build, sem browser.
 - **Tabela dos 7 classificados** (inventário `setMounted(true)` completo, evidência no HTML cozido):
 
@@ -498,7 +563,7 @@ a página saltar ao mexer na régua (mesma classe do CLS do hero, `a737f4184`).
 | `FavoriteButton` / `CheckInButton` | `mounted` + auth | **(a)** gateado | coração real SSR, `data-hydration-gate='heart'`, zero pulse (`aeae55712`) |
 | `NewsArchiveClient` | params no mount | **(a)** gateado | shell real SSR, `data-hydration-gate='news'`, zero spinner (`aeae55712`) |
 | `HomeDawnPatrolSlots` | relógio no mount | **(a)** gateado | slot SSR, `.hydration-dawn-slot`, decisão da janela continua no mount (`aeae55712`) |
-| `HomepageMapHero` (mapa) | chunk dinâmico | **(a) variante** | poster estático + `data-map-ready` via `onReady` (`81ca7948a`) |
+| `CostaMapa3D` (costa da home v6) | chunk/idle do WebGL | **(a) variante** | poster neutro SSR (`home-mapa-poster`) → 3D lazy em idle; `?webgl=0` = plano |
 | `Drawer` | aberto/fechado | **(c)** legítimo | `data-drawer-close` em 0 páginas cozidas — `null` é o estado fechado correcto |
 | `HomeAdaptive` (`useHasFavorites`) | sessão + favoritos | **(b)** legítimo | 0 marcadores YourDay/hero no HTML cozido (flight payload); featured↔compact depende de sessão client-only |
 | `ContributionsAdminClient` | sessão + fetch | **(b)** legítimo | pulse cozido, mas 3 layouts mutuamente exclusivos (não-config/login/painel) — nenhum SSR-ável; trocar por bloco estático piorava |
@@ -523,19 +588,14 @@ a página saltar ao mexer na régua (mesma classe do CLS do hero, `a737f4184`).
   IDW entre spots (campo raster, pane 350/360, abaixo do radar). Correntes = Open-Meteo SMOC
   (~8 km, m/s, setas para onde a água vai); toggle `?currents=1` / `ventu.map.currents`. Não
   substitui almanaque náutico — resolução costeira limitada.
-- **Badge de aviso** (Agitação Marítima/Vento, nível mais forte) no mapa (hero da homepage + /mapa)
+- **Badge de aviso** (Agitação Marítima/Vento, nível mais forte) no mapa (`/mapa` e grelha de spots)
   e nos cards da homepage (`SpotListCard`): `strongestSpotWarning` em lib/ipmaWarnings.ts,
   fetch partilhado por página em hooks/useIpmaWarnings.ts (cache module-level), chip no popup
   do marker e na bottom-sheet mobile; link para a página do spot via popup/card existente
-scripts/                   update-conditions, update-news, dawn-patrol, generate-sitemap, validate-spots
-tests/e2e/                 Playwright (critical-routes incl. URL filter sync)
-.github/workflows/         ci.yml, deploy.yml, update-data.yml, dawn-patrol.yml, api-keys.yml (job opcional semanal: test-ih-api-key + test-meteoalarm-api-key com os secrets — falha cedo quando uma key expira)
-docs/                      ROADMAP.md ← fonte de verdade para prioridades
-```
 
 ## SEO
 
-- **Sitemap:** `npm run sitemap:generate` → `public/sitemap.xml` (~2 400 URLs: 17 rotas estáticas indexáveis, modalidades, spots, news, directório; 5 hreflang pt/en/es/de/fr por URL)
+- **Sitemap:** `npm run sitemap:generate` → `public/sitemap.xml` (~2 200 `<loc>` medidos a 2026-11-24: 17 rotas estáticas indexáveis, modalidades, spots, news, directório; 5 hreflang pt/en/es/de/fr por URL)
 - **Cobertura de rotas:** TODAS as páginas estáticas indexáveis de `src/app/[locale]/` têm de estar no sitemap (passaporte, diretorio incl. perfis `/diretorio/{slug}/`); as noindex (admin/*, conta, diretorio/gerir, auth/callback) ficam de fora de propósito — o guard do ci.yml tranca a lista
 - **hreflang** pt/en/es/de/fr no sitemap e no `<head>` de cada página (via `buildPageMetadata` → `alternates.languages`)
 - **JSON-LD:** `SpotDetailClient` (Beach + SportsActivityLocation), artigos news
@@ -548,13 +608,24 @@ docs/                      ROADMAP.md ← fonte de verdade para prioridades
 
 | Workflow | Frequência | O que faz |
 |---|---|---|
-| `update-data.yml` | 30 min (crons `:17`/`:47`, gate de skip; full a cada 2h 06h–20h) | conditions + forecasts + news + IH tides |
-| `dawn-patrol.yml` | Diário 05:00 UTC | dawn-patrol.json via LLM |
-| `ci.yml` | PR + push main | lint, validate spots, unit tests, sitemap, build, E2E |
-| `deploy.yml` | push main | test, sitemap, build, GitHub Pages |
-| `evaluate-alerts.yml` | */3h + manual | email alerts (Resend + Supabase) |
-| `staleness-alert.yml` | :07/:37 (30 min) | Heartbeat do pipeline (por meta-file): alerta via issue `data-stale` + Telegram quando `pipeline-meta.json` deixa de refrescar (3h dia / 5h noite) |
-| `data-cadence-alert.yml` | :12/:42 (30 min) | Heartbeat do pipeline (por commit): alerta via issue `data-stale` + Telegram quando o último commit a tocar `public/data/**` passa o limiar |
+| `update-data.yml` | 30 min (crons `:17`/`:47`, gate de skip; full a cada 2h 06h–20h) + ping keep-alive | conditions + forecasts + observações + IH tides/boias/isóbatas/avisos costeiros + radar + warnings + WMO/bias/skill |
+| `dawn-patrol.yml` | `workflow_run` após update-data (janela ~04:00 Lisboa) + manual | dawn-patrol.json via LLM |
+| `ci.yml` | PR + push main | jobs: `checks` (audit, validates, lint, unit, tsc, guards), `build` (export live → artefacto), `build-visual` (export c/ fixture), `e2e` (core ×3 shards + rotas + v6), `pixel` ×3, `lighthouse`, `supabase-sql`, `terraform`, `shellcheck` — detalhe na tabela de jobs abaixo |
+| `deploy.yml` | `workflow_run` (CI + update-data verdes) ou manual (`dry_run`) | build + GitHub Pages |
+| `evaluate-alerts.yml` | */30 min + ping | `/start` Telegram, alertas immediate (cooldown 3h), digest diário ≥07:00 Lisboa — email Resend + Telegram |
+| `update-news.yml` | a cada 2 dias 06:00 UTC + manual | news.json + sitemap + RSS |
+| `ih-health.yml` | horário + ping gated | sonda IH tides + manifest/PNG radar IPMA; issues `ih-outage`/`ipma-radar-outage` (abre/fecha no estado) |
+| `ops-audit.yml` | diário 07:00 UTC | saúde operacional agregada (produção, workflows, endpoints, drift, entrega nominal dos crons) |
+| `full-route-audit.yml` | diário 04:40 UTC + manual | auditoria browser completa (~todas as rotas, `VENTU_FULL_AUDIT=1`) |
+| `staleness-alert.yml` | :07/:37 (30 min) + ping | Heartbeat do pipeline (por meta-file): alerta via issue `data-stale` + Telegram quando `pipeline-meta.json` deixa de refrescar (3h dia / 5h noite) |
+| `data-cadence-alert.yml` | :12/:42 (30 min) + ping | Heartbeat do pipeline (por commit): alerta via issue `data-stale` + Telegram quando o último commit a tocar `public/data/**` passa o limiar |
+| `api-keys.yml` | semanal seg 06:00 UTC | teste e2e das keys IH/MeteoAlarm com os secrets (falha cedo se expirar) |
+| `apply-contributions.yml` | semanal seg 08:00 UTC + manual | community tips → `localTips` |
+| `chop-calibration.yml` | semanal seg 08:13 UTC | relatório de calibração chop (comentário no PR mensal) |
+| `record-visual-baselines.yml` | manual (`ref`) | regrava baselines Linux do pixel gate (ex.: PR do Playwright) |
+| `agent-verify.yml` | PR labeled/synchronize + manual | verificação Playwright visual por specs (olho do agente, não gate de merge) |
+| `devin-dispatch.yml` | issue `agent:ready` | despacha sessão Devin (só etiqueta de maintainer; repo público) |
+| `agent-delivered.yml` | PR merged | limpa `agent:ready`/`agent:working` nas issues ligadas + comenta «entregue em #PR» |
 
 ### Guardas CI — onde cada `scripts/check-*`/`validate-*`/`verify-*` corre
 
@@ -562,20 +633,35 @@ Os guards vivem em `scripts/` e são invocados pelos workflows — esta tabela �
 
 | Guarda | Workflow (job) | O que tranca |
 |---|---|---|
-| `validate-spots.js` | ci.yml | `spots.ts`: slugs ASCII/únicos, coords, `compatibleSports` |
-| `validate-page-slugs.js` | ci.yml | segmentos de URL explorar/modalidades |
-| `validate-news-livecams.js` | ci.yml | slugs de notícias e livecams |
-| `validate-data-files.js` | ci.yml, update-data, update-news, apply-contributions | UTF-8 + JSON parseável em `public/data` |
-| `check-citation-cff.js` | ci.yml | `CITATION.cff` bem formado |
-| `check-guard-test-counts.js` | ci.yml | as 7 suites de guarda correm com contagens exactas |
-| `check-map-layer-names.js` | ci.yml | nenhum controlo de camada do mapa tem `aria-label` dependente do estado (nome=modo) |
-| `check-sitemap-drift.js` | ci.yml | `public/sitemap.xml` commitado ≡ gerador |
-| `check-segment-paths.js` | ci.yml | dirs de segment-cache aninhados no `out/` |
-| `check-headers-file.js` | ci.yml, deploy.yml | directivas de segurança em `out/_headers` |
-| `check-payload-budgets.js` | ci.yml, **update-data.yml** | rotas ≤5 MB; blobs de dados dentro do budget (`--data-dir public/data` no pipeline — é aqui que falha um blob que cresce, não no push seguinte) |
-| `check-export-routes.js` | ci.yml, full-route-audit | todas as ~2300 rotas baked têm index.html real (browserless) |
-| `check-hydration-beacon.js` | ci.yml | `is-hydrated` presente no bundle |
-| `validate-terraform-expressions.js` | ci.yml (terraform) | expressões do ruleset Cloudflare |
+| `npm audit` (high+, allowlist) | ci.yml `checks` | advisories high/critical fora da allowlist (GHSA-vfj7-8cjw-p6xm, GHSA-fc5q-39xc-vjpf — dev-only, sem release corrigida) |
+| `validate-spots.js` (`spots:validate`) | ci.yml `checks` | `spots.json`: slugs ASCII/únicos, coords, `compatibleSports` |
+| `build-spots-catalog.js --check` (`spots:catalog:check`) | ci.yml `checks` | `src/lib/spots.ts` gerado ≡ `spots.json` (o `.ts` nunca se edita à mão) |
+| `validate-page-slugs.js` | ci.yml `checks` | segmentos de URL explorar/modalidades |
+| `validate-news-livecams.js` | ci.yml `checks` | slugs de notícias e livecams |
+| `validate-data-files.js` | ci.yml `checks`, update-data, update-news, apply-contributions | UTF-8 + JSON parseável em `public/data` |
+| `check-citation-cff.js` | ci.yml `checks` | `CITATION.cff` bem formado |
+| `check-guard-test-counts.js` | ci.yml `checks` | as 7 suites de guarda correm com contagens exactas (validate-spots/page-slugs/news-livecams, leafletCanvasGuard, mapOverlaySweep, mapLayerNames, ihHealthGate) |
+| `check-map-layer-names.js` | ci.yml `checks` | nenhum controlo de camada do mapa tem `aria-label` dependente do estado (nome=modo) |
+| `check-sql-function-drift.js` | ci.yml `checks` | cada `public.*` SQL definida num único ficheiro (is_ventu_admin já andou copiada em 3) |
+| `check-data-history-budget.js` | ci.yml `checks` | tecto da árvore `public/data` trackeada (hoje 0 ficheiros na main — dados vivem em `ventu-data`) |
+| `check-sitemap-drift.js` | ci.yml `checks` | `public/sitemap.xml` commitado ≡ gerador (comparação no espaço versionado, ignora `<lastmod>`) |
+| `i18nDebt.test.js` (ratchet, `npm test`) | ci.yml `checks` | dívida `isPt→EN` ≤ `BASELINE` (= 0 — ver [`I18N-MIGRATION.md`](./I18N-MIGRATION.md)) |
+| `lint` + `tsc` (app, e2e specs, worker) | ci.yml `checks` | ESLint (inclui a regra i18n), typecheck de `tests/e2e` e `worker/` |
+| `check-payload-budgets.js` | ci.yml `build` + **update-data.yml** (fonte) | rotas ≤5 MB; blobs de dados dentro do budget (`--data-dir public/data` no pipeline — é aqui que falha um blob que cresce, não no push seguinte) |
+| `generate-sitemap` + `spots:index`/`spots:lite` | ci.yml `build`, `build-visual` | sitemap/index/lite regenerados antes do export |
+| `check-segment-paths.js` | ci.yml `build` | dirs de segment-cache aninhados no `out/` |
+| `check-headers-file.js` | ci.yml `build`, deploy.yml | directivas de segurança em `out/_headers` |
+| `check-export-routes.js` | ci.yml `build`, full-route-audit | todas as ~2 200 rotas baked têm index.html real (browserless) |
+| `check-hydration-beacon.js` | ci.yml `build` | `is-hydrated` presente no bundle |
+| `npm run test:e2e:core` (@core, ×3 shards) | ci.yml `e2e` (core) | specs herméticos de dados/score/mapa — ver tabela E2E |
+| `npm run test:e2e:v6` | ci.yml `e2e` (v6) | 18 specs map-pele-*/home-v6/spot-v6/nivel-ui/noite-fora-mapa/map-night/score-scale/foto-credito-mobile |
+| `critical-routes` + `full-audit` + `visual-ux-audit` | ci.yml `e2e` (rotas) | smoke 18 rotas, amostra estratificada de hidratação, auditoria UX |
+| `npm run test:visual` (pixel, ×3 shards) | ci.yml `pixel` | zero-diff nas baselines Linux da fixture (self-skip sem baselines; regravar via `record-visual-baselines.yml`) |
+| `npm run lighthouse:prod` | ci.yml `lighthouse` | budgets perf/a11y/SEO + CWV na mediana de 5 runs |
+| `supabase/tests/run-tests.sh` | ci.yml `supabase-sql` | testes de integração SQL contra postgres:16 |
+| `terraform fmt/init/validate` + `validate-terraform-expressions.js` | ci.yml `terraform` | módulo Cloudflare + sintaxe das expressões WAF |
+| `shellcheck` | ci.yml `shellcheck` | os scripts `.sh` do repo (checker S7, monitores, push-data-update, run-tests.sh) |
+| `check-security-headers.sh` (`npm run check:headers`) | deploy.yml (pós-deploy) | headers reais servidos em produção (S7) |
 | `validate-generated-data.js` | update-data | schema + TTL dos ficheiros gerados (`--tides-soft-gate` no job soft) |
 | `verify-pipeline-freshness.js` | update-data | Open-Meteo fresco em modo `full` |
 | `verify-ih-buoy-layer.js` | update-data | `ih-buoys.json` com onda real quando há key |
@@ -583,10 +669,17 @@ Os guards vivem em `scripts/` e são invocados pelos workflows — esta tabela �
 | `check-buoy-coherence.js` | update-data | coerência ES×PT das boias cross-border |
 | `check-skill-regression.js` | update-data | RMSE/|ME| por boia vs baseline |
 | `check-data-layer-health.js` | update-data | streaks down/stale das camadas (warn 3 runs, fail 6) |
+| `check-chop-calibration.js` | chop-calibration | relatório de calibração chop (semanal; comentário mensal) |
+| `check-model-health.js` (`models:health`) | manual | probe on-demand de 1 spot — exit 1 se modelo morto |
 | `check-pipeline-staleness.js` | staleness-alert | `pipeline-meta.json` deixa de refrescar |
 | `check-data-cadence.js` | data-cadence-alert | último commit em `public/data/**` fora do limiar |
 | `check-obs-worker.js` | api-keys | worker de observações responde |
 | `ops-audit.js` | ops-audit | saúde operacional agregada (diário): produção, workflows, endpoints, drift e entrega nominal dos crons (`lib/cronDelivery.js` — finding P1 quando um cron entrega menos de metade do nominal; conta qualquer gatilho, ping incluído) |
+| `validate-ih-edr-schema.js` (`ih:validate`) | manual | probe real ao EDR de marés — gate de activação documentado em [`BACKLOG.md`](./BACKLOG.md) |
+| `validate-coastal-wind.mjs` (`wind:validate`) | manual | validação costeira de vento |
+
+> Os guards de vitest (`scripts/lib/__tests__/*` + `src/**/__tests__/*`) correm no
+> `npm test` do job `checks`; os guards browser correm nas suites e2e acima.
 
 ### Auditoria de rotas — split custo/cobertura (2026-09-10)
 
@@ -594,9 +687,9 @@ A auditoria de rotas deixou de ser um único teste browser de ~1585 rotas (837 s
 
 | Dimensão | Cobertura | Onde corre | Custo |
 |---|---|---|---|
-| HTTP / rota presente no export | **todas** (~2300 URLs) | `scripts/check-export-routes.js` no ci.yml (após Build) — browserless | ~2 s |
-| Uncaught JS / hidratação | amostra estratificada determinística (spot 40, news 20, explorar 15; static + modalidade **completas** — templates distintos nunca se amostram) | `full-audit` no ci.yml | ~3–4 min |
-| Auditoria browser completa (1585 rotas) | todas | workflow diário `full-route-audit.yml` (`VENTU_FULL_AUDIT=1`) + `npm run audit:full` em local | diário, fora do caminho crítico |
+| HTTP / rota presente no export | **todas** (~2 200 URLs) | `scripts/check-export-routes.js` no ci.yml `build` — browserless | ~2 s |
+| Uncaught JS / hidratação | amostra estratificada determinística (spot 40, news 20, explorar 15; static + modalidade **completas** — templates distintos nunca se amostram) | `full-audit` no ci.yml `e2e` (rotas) | ~3–4 min |
+| Auditoria browser completa | todas | workflow diário `full-route-audit.yml` (`VENTU_FULL_AUDIT=1`) + `npm run audit:full` em local | diário, fora do caminho crítico |
 
 O validador de export deriva as expectativas de `public/sitemap.xml` (a lista autoritativa, já trancada pelo `check-sitemap-drift.js`) mais uma allowlist de rotas noindex baked (`fontes`, `passaporte`, `conta`, `auth/callback`, `diretorio/gerir`, `admin/*`, `alerts/confirm|unsubscribe`) e verifica: **missing** (rota indexada sem `index.html` — classe que nenhum outro validador cobre: `generateStaticParams` a deixar cair uma página), **not-found** (página cozida com o heading de 404 — `notFound()` atingível em build), **size** (shell < 500 bytes) e **extra** (dir cozido órfão — a classe `forecasts.splitFiles` de 2026-09-09). Cobre as classes por-rota que já tinham validador barato a montante: slugs ASCII/duplicados (`validate-spots.js`, `validate-page-slugs.js`, `validate-news-livecams.js`), orfandade de dados (`validate-generated-data.js`), peso de payload (`check-payload-budgets.js`).
 
@@ -614,20 +707,20 @@ Varredura manual dedicada (não é passo de `ci.yml`: ~6 min no total), para cob
 
 `npm run test:e2e:mega-audit` (Playwright + links). Os dados brutos e as capturas vão para `_audit/mega-2026-09-26/` (**nunca** para `test-results/`: o Playwright apaga essa pasta no início de cada corrida, pelo que varrimentos diferentes apagavam-se uns aos outros). Relatório: `_audit/mega-2026-09-26/RELATORIO.md`.
 
-O que a varredura encontrou (detalhe e evidência no relatório): **`LoginModal` é `aria-modal="true"` sem mover nem conter o foco e sem fechar com Escape** (único de 32 diálogos); **720 páginas exportadas têm dois `<main>`** (`/diretorio/*` e `/admin/diretorio` renderizam o seu próprio dentro do da layout — `diretorio/page.tsx:33`, `DirectoryDetailClient.tsx:61`, `DirectoryManageClient.tsx`, `DirectoryAdminClient.tsx`); **`id` duplicado nos clusters do mapa** (`cluster-clip-<n>-0`, até 7×, 10 rotas); alvos de toque abaixo dos 44 px do projecto (✕ do aviso de locale 22×22, pílulas dos calculadores 36, inputs 42); `/auth/callback/` e `/admin/diretorio/` sem `<h1>` e quase vazias; âncora morta `/xx/favorites/#alertas` (o `id` só existe após hidratação) e dois embeds de terceiros quebrados (Surfline 404 em `cabedelo-wakepark`, X-Frame-Options do weatherlink em `foil-cabedelo`).
+O que a varredura encontrou (detalhe e evidência no relatório) — **estado a 2026-11-24, quase tudo resolvido**: `LoginModal` sem foco/Escape → corrigido e travado por `a11y-login-modal.spec.ts` (@core); **720 páginas com dois `<main>`** → `a11y-landmarks.spec.ts` exige um só `<main id="main-content">` + `<h1>` com texto (cobre `/diretorio/*`, `/admin/diretorio/`, `/auth/callback/`); **`id` duplicado nos clusters do mapa** → `MapClusterIcon` usa agora `clusterClipSeq` (ids únicos por marcador); **alvos de toque <44 px** → `a11y-touch-targets.spec.ts` cobre os componentes partilhados; **âncora morta `#alertas`** → `a11y-anchors.spec.ts` exige o `id` no HTML cozido nos 5 locales e varre `href="rota#id"`; **dois embeds partidos** → regularizados em `spotLivecams.ts` (`cabedelo-wakepark` ficou link-only — o embed Surfline dava 404 — e `foil-cabedelo` passou a apontar para a câmara YouTube de Cabedelo, embed `youtube-nocookie`).
 
 Nota de método: a primeira versão da bateria deu falsos positivos que ficaram corrigidos no próprio harness — o mapa **não** usa `L.popup` (é um `aside[data-map-panel]`), o menu de camadas é um popover portalizado (`[data-map-layers-popover]`) e não um `role="dialog"`, e as «6 animações» de `prefers-reduced-motion` eram os `CSSTransition` de 10 ms dos tiles do Leaflet. Fica registado porque a mesma armadilha apanharia qualquer auditoria futura.
 
 ### E2E core — specs do CI (e o que cada um cobre)
 
-O `ci.yml` corre três passos Playwright: `critical-routes` (smoke de 18 rotas: homepage pt/en/es/de/fr, spot, mapa, comparador, favoritos, 404 localizados, palette de pesquisa), **`npm run test:e2e:core`** (os specs herméticos de dados/score — substituiu o antigo passo `test:e2e:data`, que era um subconjunto) e os audits `full-audit`/`visual-ux-audit`. O core agrupa os specs que correm no Actions sem rede nem `IH_API_KEY` (bloqueiam o SW e interceptam os data files client-side via `tests/e2e/helpers/conditions.ts`):
+O `ci.yml` corre hoje uma **matrix `e2e`** (job `e2e`, sobre o artefacto `out-live`): `core` em **3 shards** (`--shard=N/3`, tag `@core` — 56 ficheiros de spec), `rotas` (`critical-routes` smoke + `full-audit` amostra + `visual-ux-audit` + latência de hidratação) e `v6` (`npm run test:e2e:v6` — os 18 specs map-pele/home-v6/spot-v6/nivel-ui/noite-fora-mapa/map-night/score-scale/foto-credito-mobile, obrigatórios desde a #464). Paralelo: `pixel` ×3 shards (`test:visual` zero-diff sobre `out-visual`, a fixture com relógio congelado `VENTU_BUILD_NOW`) e `lighthouse` (`lighthouse:prod`, budgets na mediana de 5 runs). O core agrupa os specs que correm no Actions sem rede nem `IH_API_KEY` (bloqueiam o SW e interceptam os data files client-side via `tests/e2e/helpers/conditions.ts`):
 
 | Spec | Testes | Cobre |
 |---|---|---|
-| `observed-wave-card` | 46 | Onda observada: rótulo honesto «boia X a Y km», lado a lado IH vs WMO (vencedor + razão), skill ME/n por boia, ponte keyless (Cabo Silleiro), avisos de coerência ES×PT, sufixos do factor `(boia)`/`(viés regional)` e badges em pt **e** en (incl. deltaM negativo do viés e tooltip EN do bias), o trio da sticky bar (observed → nenhum → bias-corrected), comparador, ForecastTable e chip «Mar perigoso» |
+| `observed-wave-card` | 46 | Onda observada na página de spot v6 e comparador: rótulo honesto «boia X a Y km», lado a lado IH vs WMO (vencedor + razão) no «Estudar o spot» (`BoiaV6`), skill ME/n por boia, ponte keyless (Cabo Silleiro), calibração cross-border, avisos de coerência ES×PT, sufixos do factor `(boia)`/`(viés regional)` e badges em pt **e** en, régua/sticky v6 e chip «Mar perigoso» |
 | `buoy-warnings` | 18 | Aviso da camada de boias (no-key/down/stale/ok) no spot, homepage e mapa interactivo; fallback WMO cobre (sem aviso); chip de diagnóstico no ticker via `pipeline-meta.json`; chip compacto no HUD do `/mapa` ligado ao mesmo aviso (dispensa partilhada em localStorage) |
-| `tides` | 5 | Marés (`TideScheduleStrip`): fase (a subir / alta agora / a descer) + próxima Baixa/Alta com HH:MM da curva real; ausência de schedule (curva sem `tideHeight`) e `MoonTideCard` |
-| `home-adaptive` | 4 | Homepage adaptativa: TopNow cards, mapa hero, sufixos/avisos consistentes |
+| `tides` | 5 | Marés na página de spot v6 («Porquê» + «Estudar o spot»/`MedeSabeV6`): fase (a encher / a vazar) e próxima preia/baixa-mar com hora PT e amplitude da curva real; ausência de `tideHeight` → «sem dados» honesto |
+| `home-adaptive` | 4 | Homepage adaptativa (secções dentro do HomeV6): TopNow cards, costa 3D, sufixos/avisos consistentes |
 | `mapa-route` | 8 | Página `/pt/mapa` fullscreen: HUD, sheet mobile com direções/ver spot, filtros persistidos, Escape, sair sem congelar |
 | `spot-dashboard` | 5 | Dashboard da página de spot: métricas, score e secções-chave |
 | `confidence-badge` | 2 | Badge de confiança da previsão (multi-modelo) |
@@ -637,16 +730,28 @@ O `ci.yml` corre três passos Playwright: `critical-routes` (smoke de 18 rotas: 
 | `coastal-nav-warnings` | 8 | Avisos à navegação costeiros IH + ES cross-border: secção no spot, overlay de polígonos, deep link ao detalhe |
 | `data-sources` | 13 | Fontes de dados: tabela de atribuições pt/en, citação Open-Meteo (DOI) com paridade pt/en em fontes e About, cartão IH_API_KEY (+ linha de degradação da camada de boias), sitemap + hreflang, atribuições no mapa/footer |
 | `coastal-map-layer` | 6 | /mapa fullscreen: overlay de polígonos de TODOS os avisos à navegação activos, popup → detalhe |
-| `spot-sticky-geometry` | 2 | Geometria da SpotStickyBar: não sobrepõe os sport tabs após scroll — desktop **e** mobile (390px), cota/altura pelos tokens partilhados (globals.css) |
+| `spot-sticky-geometry` | 2 | Geometria da régua sticky da página de spot v6 (`Regua48h`): `position: sticky; top: 0` no desktop e fixa em baixo no telemóvel, cotas partilhadas (`--ventu-spot-sticky-top`, globals.css) |
 | `tools-calculators` | 13 | Calculadoras de kite e fato: outputs reais (m², janela confortável, espessura mm, extras), edge cases (6 kt, 45 kt, 4 °C, 24 °C, windchill), overflow horizontal em 390px e paridade pt/en |
-| `ipma-radar-carousel` | 28 | Carrossel do radar IPMA (stub de 12 frames): badge/scrubber/tooltip com relógio congelado, pausa por drag/zoom/aba/viewport, persistência e deep link `?radar=1`, paridade es/fr/de, lift acima do HUD no `/mapa` mobile. Fora do core (instável no main) — corre-se isolado |
+| `ipma-radar-carousel` | 28 | Carrossel do radar IPMA (stub de 12 frames): badge/scrubber/tooltip com relógio congelado, pausa por drag/zoom/aba/viewport, persistência e deep link `?radar=1`, paridade es/fr/de, lift acima do HUD no `/mapa` mobile. **Por confirmar:** o comentário do `ci.yml` diz que «entrou no core (auditoria 2026-09-21)», mas o spec não tem `tag: '@core'` — o `--grep @core` não o apanha; corre-se isolado até se confirmar |
 | `a11y-login-modal` | 4 | Contrato de modal do `LoginModal` (achado A1 da mega audit 2026-09-26): o foco entra no primeiro campo ao abrir, 10 `Tab`/10 `Shift+Tab` ficam presos dentro, `Escape` fecha e devolve o foco ao botão que abriu, o fundo fica bloqueado (`overflow: hidden`) e volta ao normal ao fechar |
 | `a11y-landmarks` | 17 | Um só `<main id="main-content">` por documento (HTML do build de 11 rotas, incl. `/xx/diretorio/`, uma ficha, `/diretorio/gerir/` e `/admin/diretorio/`, mais a DOM hidratada) e `<h1>` com texto em `/auth/callback/` e nos dois admins (achados A2/A5) |
 | `a11y-anchors` | 9 | Âncora `#alertas`: o `id` existe no HTML do build de `/xx/favorites/` nos 5 locales e nos quatro estados do cliente (esqueleto, sem sessão, com sessão sem favoritos, com painel); o link de `/xx/alerts/` aterra lá; e o varrimento de todos os `href="rota#id"` de 12 rotas exige destino na rota alvo (achado A7 — era o único caso em 114 574 links) |
 | `a11y-touch-targets` | 11 | Alvos de toque ≥44 px de altura a 390 px em 10 rotas, pelos componentes partilhados (aviso de locale, calculadoras, `Input`, paginação, pastilhas de filtro) — a área pode crescer por margem negativa/`<label>` sem crescer o desenho (achado A4) |
 
+**Specs @core adicionais** (entraram depois de 2026-09-27; contagens exactas via `npx playwright test --grep @core --list`):
+
+- **Spot v6 / hidratação:** `spot-hero-gauge` (gauge do hero), `spot-html-in-place` (conteúdo no sítio, não em flight payload), `spot-hydration` (hidrata sem #418/#423 em qualquer ordem), `spot-dashboard`, `drawer-spots` (o `Drawer` voltou a montar — #455 P0).
+- **Home v6:** `home-map-first` (costa 3D ao lado do «VAI.»), `home-v6-swr` (SWR sem cookie `ventu_live`), `homepage-redesign`, `dawn-patrol-hero-score` (score recalibrado no hero do banner), `news-regiao-vazia` (região por omissão do `/news/`).
+- **Mapa `/mapa` e grelha:** `mapa-route`, `map-unmount-race` (agora em `/pt/mapa/` — a home já não tem hero Leaflet), `map-hud`, `map-stable-view`, `map-touch-targets`, `map-attribution`, `map-tiles`, `map-cluster-best-score` (o cluster mostra o MELHOR score), `map-popup-ver-spot`, `map-popover-hit-test`, `map-layers-menu-keyboard` (menu-button WAI-ARIA), `map-desktop-layer-toggles`, `map-explore-sheet`, `map-navigation-extras` («Perto de mim», partilhar vista, desporto lembrado), `map-score-factors` («Porquê este score»), `map-sea-mode` (selector Vento/Ondulação/Nenhum).
+- **Campos do mapa:** `map-currents` (SMOC), `map-windfield`, `map-hs` (IDW Hs saiu do menu), `map-sst`, `map-tide`.
+- **Carta náutica / camadas:** `isobaths`, `map-bathymetry` (EMODnet), `map-seamarks` (OpenSeaMap), `map-mtg-satellite` (MTG-I1 vs GIBS), `map-buoys`.
+- **Dados/confiança:** `observed-wave-card`, `buoy-warnings`, `tides`, `confidence-badge`, `topnow-wave-badge`, `mar-perigoso`, `coastal-nav-warnings`, `coastal-map-layer`, `compare-calibration` (tag de calibração cross-border no comparador), `about-coherence-trend` (tendência ES×PT no About), `data-sources`, `tools-calculators`, `wind-ring-legend`.
+- **A11y / mobile:** `a11y-login-modal`, `a11y-landmarks`, `a11y-anchors`, `a11y-touch-targets`, `mobile-playtest`.
+
+Ficam **fora** do core por dependerem de dados vivos/rede (correm à mão ou no audit diário): `about-wave-bias`, `map-wind-markers`; `axe-audit` é opt-in (`npm run test:e2e:axe`); `ipma-radar-carousel` **não tem tag `@core`** — o comentário do `ci.yml` afirma que entrou no core em 2026-09-21, mas o spec não foi tagueado (discrepância **por confirmar** — ou falta a tag, ou o comentário está desactualizado); `mega-audit.*`, `map-chrome`, `map-v3-*`, `spot-v2-*`, `spot-v3-*`, `spots-filtro-ssr`, `visual-sweep` não estão tagueados `@core` nem nas suites v6/rotas/pixel do ci.yml (estado actual — rever se devem entrar ou morrer).
+
 Notas de operação:
-- **Config** (`playwright.config.ts`): no CI usa `workers: 2` (runner 4 vCPU; browsers isolados por worker — medido ≈ 2m30s quando o core tinha ~115 testes) e `retries: 2` para flakes pontuais conhecidos (ex. `search palette` / sheet do mapa). Hoje o core são **349 testes em 51 ficheiros** (`npx playwright test <specs do core> --list`; 2026-09-27, com os quatro `a11y-*` novos — 41 testes) — re-medir o tempo no CI se o passo apertar. O core completo (`npm run test:e2e:core`) corre como passo próprio no `ci.yml`.
+- **Config** (`playwright.config.ts`): no CI usa `workers: 2` (runner 4 vCPU; browsers isolados por worker) e `retries: 2` para flakes pontuais conhecidos (ex. `search palette` / sheet do mapa); timeout 60 s por teste no CI. O core são hoje **56 ficheiros com tag `@core`** (eram 51 em 2026-09-27; contagem exacta de testes via `npx playwright test --grep @core --list` — não medida neste doc) — re-medir o tempo no CI se o passo apertar. O core corre shardado (`--shard=N/3`) no job `e2e` do `ci.yml`, e a suite v6 corre no shard `v6` do mesmo job.
 - **Determinismo**: estes specs NÃO dependem da rede nem de keys — as fixtures vivem em `tests/e2e/helpers/conditions.ts` (`interceptConditions`/`interceptIhBuoys`/`interceptWmoBuoys`/`interceptWaveBias`/`interceptIsobaths`/`interceptCoastalNavWarnings`). Se um spec precisa de dados que o build não tem, intercepta client-side.
 - **Bump de `@playwright/test` (dependabot)**: cada minor traz um Chromium novo → o pixel gate (`test:visual`) falha até as baselines Linux serem re-gravadas. O dependabot isola o Playwright no grupo `playwright` (PR próprio, fora do `minor-patch`); nesse PR corre-se **Actions → Record Visual Baselines → ref=\<branch do PR\>** (o workflow grava no ref indicado, não só em `main`), o push das baselines re-corre o CI, e merge quando verde. Nunca gravar baselines no Windows — são Linux-only.
 - **TopNow (homepage) — SSG vs re-hidratação**: o primeiro paint dos cards é SSG (`buildSpotData` em build-time), por isso o badge «Corrigido (viés regional)»/«Corrigido pela boia X» só sai baked no `out/` quando o `wave-bias.json`/`observedWave` existir em `public/data/` DURANTE o `npm run build` (teste baked-only salta com skip honesto). MAS o `HomepageTopNow` re-hidrata client-side (`useLiveGridSpotData`, mount + **15 min** + tab visível — o mesmo `refreshGridSpotScores` do grid/mapa): as rows SSG são substituídas pelas de `conditions.json` e o viés regional aplica-se em runtime, pelo que o badge aparece SEM rebuild e os testes positivos interceptam client-side (`interceptConditions` + transform `all`). Recipe local para validar o caminho baked: `node tests/e2e/fixtures/write-wave-bias-fixture.mjs && npm run build && npx playwright test topnow-wave-badge` (o fixture escreve `public/data/wave-bias.json` com ME +0.3/n=120 em todas as regiões; `public/data/` é gitignored, nunca é commitado).
@@ -715,25 +820,33 @@ perdido pelo GitHub, push a falhar depois da geração, ou API em baixo:
   fechou o incidente #52 (aberto pela detecção real da outage anterior) — o ciclo
   abrir→fechar provado fim-a-fim no repo real, com `data-stale` sem issues abertas no final.
 
-## Estado actual (2026-07-21)
+## Estado actual (2026-11-24)
 
-### ✅ Fases A + B + C concluídas
+### ✅ Entregue desde a última revisão deste doc
 
-- Confiança: copy honesto, badges, Dawn Patrol guards, `compatibleSports` 185/185
+- **Design v6 «Atlântico»** (#459–#465): home unificada `.v6h` (`HomeV6` + `HomeAdaptive`), página de spot v6 (`SpotV6`, nota /10, régua 48 h, «Estudar o spot»), mapa `/mapa` com pele v6 por defeito, tema global dark «Atlântico» + claro «Sol», Barlow auto-alojada — canónico em [`DESIGN-SYSTEM.md`](./DESIGN-SYSTEM.md).
+- **Motor de previsão:** auditoria P0+P1 (#559) e Fase 3 (#560) — batching Open-Meteo, SWR Home/Spot, skill bias, chop.
+- **i18n completo:** 5 locales pt/en/es/de/fr; superfícies v6 traduzidas (`homeV6.ts`, `spotPage/v6.ts`); dívida `isPt→EN` a **0** (ratchet no `npm test`).
+- **Infra:** `public/data` migrado para a branch órfão `ventu-data` (#542 — fim do inchaço do `.git`); TWA Android (#544, assetlinks #554/#558); catálogo de spots extraído para `spots.json` (#528); SEO audit (#537) + noindex news es/de/fr (#457); fusos Lisboa/Açores (#525/#456/#574); segurança (#454/#572, CSP guards #555); CI dividido em jobs paralelos + suite e2e v6 (#455/#464); ops-audit diário (#479→#568).
+- **Dados:** praia 3D P1/P2 (#556/#557 — isóbatas IH reais, Web Worker, bússola); fotos reais por spot (`spotFotos.ts` + `public/fotos/spots/`, Unsplash/Wikimedia com créditos).
+
+### ✅ Fases A + B + C concluídas (histórico)
+
+- Confiança: copy honesto, badges, Dawn Patrol guards, `compatibleSports` 189/189
 - Coerência: homepage multi-desporto, URL sync filtros, unit tests scoring, docs, sitemap completo
 - Diferenciação: notícias PT (ANS, Notícias do Mar, FPS), alertas email, feedback scores, dicas comunidade, PWA
 
 ### ⚠️ Dívida conhecida (não bloqueante)
 
-1. Headers HTTP (CSP real, `X-Frame-Options`, `frame-ancestors`) — ✅ decisão S7 **implementada e verificada** (2026-09-08: DNS proxied + Transform Rules + Cache Rules activas; guard do CI ligado com `S7_PROXY_ENABLED=true`) → [`SECURITY-HEADERS.md`](./SECURITY-HEADERS.md)
-2. Calibração scores (C4b) — `npm run scores:analyze`; pesos só com N≥30/modalidade
-3. Livecams curadas — links externos Surftotal/MEO em 31 spots (`src/lib/spotLivecams.ts`); sem embeds
-4. Alertas email — ✅ E1 em produção → [`ALERTS.md`](./ALERTS.md)
-5. `Access-Control-Allow-Origin: *` do GitHub Pages — removido pelo proxy Cloudflare (Regra 2 em `SECURITY-HEADERS.md`)
+1. Calibração scores (C4b) — `npm run scores:analyze`; pesos só com N≥30/modalidade (ver [`ROADMAP.md`](./ROADMAP.md))
+2. Boias IH via OGC API EDR — o `getDatawellData` será descontinuado; migração documentada em [`IH_API_KEY.md`](./IH_API_KEY.md), monitorizada pelo `ops-audit` diário (a colecção `buoys_datawell` ainda é Features-only)
+3. Preview builds Revyl desactivados em PRs — o export `out/` (~1,7 GiB) excede o limite de 1 GiB do plano (ver `.revyl/config.yaml`); site testado em devices Revyl contra produção
+4. Notícias es/de/fr — shell traduzido mas artigos são PT/EN; páginas de notícia es/de/fr ficam `noindex` por decisão (#457)
+5. Alertas email — ✅ E1 em produção → [`ALERTS.md`](./ALERTS.md); headers HTTP — ✅ S7 implementado → [`SECURITY-HEADERS.md`](./SECURITY-HEADERS.md)
 
 ### Distribuição de spots
 
-**185 spots:** surf, multisport, kitesurf, foil, wakeboard, windsurf, big-wave (ver `spots.ts`).
+**189 spots** (`src/lib/spots.json` → `spots.ts` gerado): surf, multisport, kitesurf, foil, wakeboard, windsurf, big-wave (ver `spots.ts`). Livecams curadas em **114 spots** (`src/lib/spotLivecams.ts` — links Surftotal/MEO/FeelViana + embeds YouTube `youtube-nocookie` e Surfline onde válidos; os dois embeds partidos da mega audit foram regularizados).
 
 ## Acessibilidade do mapa — «nome = modo» (2026-09-21/25)
 
@@ -746,7 +859,7 @@ leitor de ecrã anunciar «Ocultar vento, premido» com a camada LIGADA.
 - A dica («Score ≥ 60») é descrição da acção e vai no `title`, nunca no nome.
 - A regra foi reintroduzida três vezes (cluster, «só a bombar», camadas do HUD),
   por isso é agora travada por `scripts/check-map-layer-names.js` no ci.yml
-  (job quality, estático, `scripts/lib/mapLayerNames.js` + testes unitários).
+  (job `checks`, estático, `scripts/lib/mapLayerNames.js` + testes unitários).
   O guarda varre `src/components/spots/map/**`,
   `SpotMapInteractive.tsx`, `MapLayerToggle.tsx` e a pílula partilhada
   `ui/FilterPill.tsx`; falha se um toggle tiver nome condicional e também se o
@@ -756,7 +869,7 @@ leitor de ecrã anunciar «Ocultar vento, premido» com a camada LIGADA.
 
 ## Convenções
 
-- **Idioma:** PT-PT no UI; strings em `i18n.ts` (PT/EN). Estado da migração para as 5 línguas (es/de/fr ainda recebem EN em parte das superfícies): [`I18N-MIGRATION.md`](./I18N-MIGRATION.md) — medir com `node scripts/i18n-debt-report.js`.
+- **Idioma:** PT-PT no UI; 5 locales `pt/en/es/de/fr` (`src/lib/i18n.ts`) com dicionários em `src/lib/translations/` — a dívida `isPt→EN` está a 0 (ratchet `scripts/lib/__tests__/i18nDebt.test.js`, baseline 0). Estado e método: [`I18N-MIGRATION.md`](./I18N-MIGRATION.md) — medir com `node scripts/i18n-debt-report.js` (precisa de `node_modules`).
 - **Tom:** directo, conciso, sem exclamações excessivas.
 - **Tailwind:** utilities first; custom em `globals.css @layer components`.
 - **Componentes:** server-first; `'use client'` só quando necessário.
