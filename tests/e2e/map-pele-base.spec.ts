@@ -97,7 +97,13 @@ test.describe('/mapa pele v6 — base «Mapa» recolorida (B6)', () => {
     await expect(page.locator('.ventu-base-v6')).toHaveCount(1);
     expect(await filtroDaBase(page)).toContain('#v6base');
     expect(pedidos.some((u) => u.includes('World_Dark_Gray_Base'))).toBe(true);
-    expect(pedidos.some((u) => u.includes('dark_nolabels'))).toBe(false);
+    // A flag resolve-se num efeito (export estático — ler window/localStorage no
+    // 1.º render partia a hidratação): o attach inicial ainda pode disparar
+    // pedidos CARTO antes da troca. O contrato é o estado final — a partir do
+    // primeiro mosaico Esri do v6, nenhum pedido volta a tocar a base antiga.
+    const primeiroEsri = pedidos.findIndex((u) => u.includes('World_Dark_Gray_Base'));
+    expect(primeiroEsri).toBeGreaterThanOrEqual(0);
+    expect(pedidos.slice(primeiroEsri).some((u) => u.includes('dark_nolabels'))).toBe(false);
   });
 
   test('no Satélite: nem classe nem filtro', async ({ page }) => {
