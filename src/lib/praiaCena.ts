@@ -58,8 +58,8 @@ export function rotuloCurtoVizinho(nome: string): string {
 }
 
 /** Resolve o parâmetro `?sport=` do /mapa para o link «Abrir no mapa» nunca filtrar fora o próprio spot. */
-export function sportParaMapa(compativeis: readonly string[] | undefined, d: 'kite' | 'surf'): string {
-  const ativo = d === 'kite' ? 'kitesurf' : 'surf';
+export function sportParaMapa(compativeis: readonly string[] | undefined, d: string): string {
+  const ativo = d === 'kite' ? 'kitesurf' : d;
   if (!compativeis?.length) return 'all';
   if (compativeis.includes(ativo)) return ativo;
   return compativeis[0] ?? 'all';

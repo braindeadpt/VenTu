@@ -415,3 +415,50 @@ test.describe('#184 spot v6 — 390: fim da página', () => {
     expect(Math.abs(m.fimRodape - m.alturaJanela), JSON.stringify(m)).toBeLessThanOrEqual(2);
   });
 });
+
+test.describe('#459 spot v6 — Nota 10', () => {
+  test.use({ viewport: { width: 1280, height: 900 } });
+
+  test('?sport=windsurf no Guincho, lagoa-albufeira sem surf falso e castelo-bode em wakeboard', async ({ page }) => {
+    await abre(page, `${URL_G}?sport=windsurf`);
+    await expect(page.getByTestId('spot-v6')).toHaveAttribute('data-modalidade', 'windsurf');
+
+    // localStorage=surf numa lagoa sem surf → cai em kite
+    await page.addInitScript(() => localStorage.setItem('ventu.modalidade', JSON.stringify({ d: 'surf', v: {} })));
+    await abre(page, '/pt/spots/lagoa-albufeira/', /Lagoa de Albufeira/i);
+    await expect(page.getByTestId('spot-v6')).toHaveAttribute('data-modalidade', 'kite');
+
+    // wakepark → abre em wakeboard, nunca Surf «Sem dados»
+    await abre(page, '/pt/spots/castelo-bode/', /Castelo de Bode/i);
+    await expect(page.getByTestId('spot-v6')).toHaveAttribute('data-modalidade', 'wakeboard');
+    await expect(page.locator('[data-testid="spot-veredicto"] .pal')).not.toHaveText(/Sem dados/i);
+  });
+
+  test('MedeSabe visível fora do <details>, lupa na TopBar + ⌘K abrem pesquisa, tabular-nums activo', async ({ page }) => {
+    await abre(page);
+    await expect(page.locator('#estudo')).not.toHaveAttribute('open', '');
+    await expect(page.getByTestId('spot-mede-sabe')).toBeVisible();
+
+    const fvn = await page.evaluate(() => ({
+      val: getComputedStyle(document.querySelector('.v6 .val')!).fontVariantNumeric,
+      out: getComputedStyle(document.querySelector('.v6 .r-cab output')!).fontVariantNumeric,
+    }));
+    expect(fvn.val).toContain('tabular-nums');
+    expect(fvn.out).toContain('tabular-nums');
+
+    // Lupa na TopBar abre SearchPalette
+    const lupa = page.getByTestId('top-search-btn');
+    await expect(lupa).toBeVisible();
+    const bb = await lupa.boundingBox();
+    expect(Math.round(bb!.width)).toBeGreaterThanOrEqual(44);
+    expect(Math.round(bb!.height)).toBeGreaterThanOrEqual(44);
+    await lupa.click();
+    await expect(page.getByRole('dialog')).toBeVisible();
+    await page.keyboard.press('Escape');
+    await expect(page.getByRole('dialog')).toHaveCount(0);
+
+    // Atalho global Ctrl/Meta+K abre SearchPalette mesmo com Header escondido
+    await page.keyboard.press('Control+k');
+    await expect(page.getByRole('dialog')).toBeVisible();
+  });
+});

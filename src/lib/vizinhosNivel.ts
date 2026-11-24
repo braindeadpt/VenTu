@@ -28,6 +28,9 @@ export interface VizinhoDoNivel {
   nivel: Spot['difficulty'];
 }
 
+/** Nota mínima /10 para sugerir uma alternativa do nível (#459: nunca sugerir «Não dá» / «Fraco»). */
+export const MIN_NOTA_VIZINHO = 5;
+
 export function vizinhosDoNivel(
   spot: Pick<Spot, 'id' | 'lat' | 'lon'>,
   todos: Spot[],
@@ -36,10 +39,12 @@ export function vizinhosDoNivel(
   file: MapHoursFile | null | undefined,
   passo: number,
   limite = 3,
+  soProfissionaisIds?: ReadonlySet<string>,
 ): VizinhoDoNivel[] {
   return nearestSpots(spot, todos, { limit: Number.POSITIVE_INFINITY, maxKm: PERTO_NIVEL_KM })
     .filter((e) => !e.spot.compatibleSports?.length || e.spot.compatibleSports.includes(sport))
     .filter((e) => spotDentroDoNivel(nivelDoSpot(e.spot, sport), nivel))
+    .filter((e) => !soProfissionaisIds?.has(e.spot.id))
     .map((e) => {
       const h: NearbySpotHour = file ? nearbySpotHour(file, e, sport, passo) : null;
       const score = typeof h === 'number' ? h : null;
@@ -51,6 +56,7 @@ export function vizinhosDoNivel(
         nivel: nivelDoSpot(e.spot, sport),
       };
     })
+    .filter((v) => typeof v.nota !== 'number' || v.nota >= MIN_NOTA_VIZINHO)
     .sort((a, b) => {
       const na = typeof a.nota === 'number' ? a.nota : -1;
       const nb = typeof b.nota === 'number' ? b.nota : -1;

@@ -15,14 +15,6 @@ import { alignClockToForecast, interceptForecasts } from './helpers/conditions';
  * dia e a tabela das marés seguintes — SEM o extremo que o Porquê já cita.
  */
 
-async function abreEstudo(page: import('@playwright/test').Page) {
-  const estudo = page.locator('#estudo');
-  await expect(async () => {
-    if ((await estudo.getAttribute('open')) === null) await estudo.locator('summary').click({ timeout: 3_000 });
-    await expect(estudo).toHaveAttribute('open', '', { timeout: 1_000 });
-  }).toPass({ timeout: 20_000 });
-}
-
 const FASES = /Lua (nova|cheia|crescente|minguante)|Quarto (crescente|minguante)|Gibosa (crescente|minguante)/;
 
 test.describe('Marés (Porquê v6)', { tag: '@core' }, () => {
@@ -63,8 +55,7 @@ test.describe('Marés (Porquê v6)', { tag: '@core' }, () => {
 
   test('Maré e lua com curva real → fase lunar, regime, amplitude hoje e a tabela sem repetir o Porquê', async ({ page }) => {
     await page.goto('/pt/spots/guincho/');
-    await abreEstudo(page);
-    const lua = page.locator('#estudo [data-ec="mare-lua"]');
+    const lua = page.locator('[data-testid="spot-mede-sabe"] [data-ec="mare-lua"]');
     await expect(lua).toBeVisible({ timeout: 20_000 });
     await expect(lua.getByText('Maré e lua')).toBeVisible();
     await expect(lua).toContainText(FASES);
@@ -95,8 +86,7 @@ test.describe('Marés (Porquê v6)', { tag: '@core' }, () => {
       },
     });
     await page.goto('/pt/spots/guincho/');
-    await abreEstudo(page);
-    const lua = page.locator('#estudo [data-ec="mare-lua"]');
+    const lua = page.locator('[data-testid="spot-mede-sabe"] [data-ec="mare-lua"]');
     await expect(lua).toBeVisible({ timeout: 20_000 });
     await expect(lua).toContainText(FASES);
     await expect(lua).toContainText(/Marés (vivas|mortas)|Transição/);

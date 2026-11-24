@@ -4,7 +4,8 @@
  * praia. A modalidade decide a ordem (kite → vento primeiro; surf → onda).
  * Os números são os do objecto da hora; os efeitos são os `f` do motor.
  */
-import type { AvaliacaoHora, Modalidade, SpotModalidade } from '@/lib/modalidades';
+import type { AvaliacaoHora, SpotModalidade } from '@/lib/modalidades';
+import type { SpotModalidadeAtiva } from '@/lib/spotV6Modalidade';
 import { mareDepois, type HoraSpot, type MareExtremo } from '@/lib/horaSpot';
 import { fmtNum, hmTxt, ondaRelTxt, rumo, ventoRelTxt } from '@/lib/spotVeredicto';
 import { fmtCopy, type SpotPageV6Copy } from '@/lib/translations/spotPage/v6';
@@ -93,7 +94,7 @@ const efeito = (v: number, c: SpotPageV6Copy): [string, string] =>
 export interface PorqueProps {
   h: HoraSpot;
   r: AvaliacaoHora;
-  d: Modalidade;
+  d: SpotModalidadeAtiva;
   sp: SpotModalidade;
   mares: readonly MareExtremo[];
   quando: string;
@@ -186,7 +187,7 @@ export default function Porque({ h, r, d, sp, mares, quando, copy: c, locale }: 
       <h2 className="sec" id="porque-t">
         {c.porque} <span>· {quando}</span>
       </h2>
-      <div className="fatores">{d === 'kite' ? [vento, onda, mare] : [onda, vento, mare]}</div>
+      <div className="fatores">{d === 'surf' || d === 'bodyboard' ? [onda, vento, mare] : [vento, onda, mare]}</div>
     </section>
   );
 }

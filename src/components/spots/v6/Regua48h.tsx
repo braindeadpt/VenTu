@@ -9,7 +9,7 @@
  */
 import { useRef, useState, type CSSProperties, type ReactNode, type KeyboardEvent, type PointerEvent } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { V6_BANDAS } from '@/lib/v6Tokens';
+import { bandaVars, V6_BANDAS } from '@/lib/v6Tokens';
 import type { BandaK } from '@/lib/modalidades';
 import type { SpotPageV6Copy } from '@/lib/translations/spotPage/v6';
 import { diaCurto, diaSemana, horaDe, horaTxt } from '@/lib/spotVeredicto';
@@ -69,6 +69,16 @@ export default function Regua48h({ horas, i, onEscolhe, copy, semAgora = false, 
         <output className="num" aria-live="off" data-testid="regua-hora">
           {out}
         </output>
+        {h.n != null ? (
+          <span
+            className="r-nota num"
+            data-testid="regua-nota"
+            style={bandaVars(h.banda) as CSSProperties}
+            aria-hidden="true"
+          >
+            {h.n}/10
+          </span>
+        ) : null}
         <button type="button" aria-label={copy.horaSeguinte} disabled={i === N - 1} onClick={() => onEscolhe(i + 1)}>
           <ChevronRight strokeWidth={2.6} aria-hidden="true" />
         </button>
@@ -119,7 +129,7 @@ export default function Regua48h({ horas, i, onEscolhe, copy, semAgora = false, 
             className="r-tip num"
             role="tooltip"
             data-testid="spot-rail-tooltip"
-            style={{ left: `${(((paira + 0.5) / N) * 100).toFixed(2)}%` }}
+            style={{ '--tip-x': `${(((paira + 0.5) / N) * 100).toFixed(2)}%` } as CSSProperties}
           >
             {diaCurto(copy, horas[paira].t)}, {horaTxt(copy, horaDe(horas[paira].t))} ·{' '}
             {horas[paira].n != null ? `${horas[paira].n}/10` : horas[paira].semDados ? copy.semDadosPal : copy.bandas[horas[paira].banda]}

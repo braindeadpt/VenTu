@@ -198,11 +198,24 @@ export default function Header({ locale }: HeaderProps) {
     setSearchOpen(false);
   }, []);
 
-  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
-    if ((e.key === 'k' && (e.metaKey || e.ctrlKey)) || (e.key === '/' && !e.ctrlKey && !e.metaKey)) {
-      e.preventDefault();
-      setSearchOpen(true);
-    }
+  useEffect(() => {
+    const onGlobalKeyDown = (e: globalThis.KeyboardEvent) => {
+      if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+        setSearchOpen(true);
+        return;
+      }
+      if (e.key === '/' && !e.ctrlKey && !e.metaKey && !e.altKey) {
+        const el = e.target as HTMLElement | null;
+        if (el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT' || el.isContentEditable)) {
+          return;
+        }
+        e.preventDefault();
+        setSearchOpen(true);
+      }
+    };
+    window.addEventListener('keydown', onGlobalKeyDown);
+    return () => window.removeEventListener('keydown', onGlobalKeyDown);
   }, []);
 
   const toggleMobileSection = (section: Exclude<MobileSection, null>) => {
@@ -261,7 +274,6 @@ export default function Header({ locale }: HeaderProps) {
     <>
       <header
         className="site-header fixed top-0 left-0 right-0 z-[1300] bg-bg-base/95 backdrop-blur-md border-b border-divider transition-[background,border-color] duration-slow"
-        onKeyDown={handleKeyDown}
         data-header-compact={isMapPage ? 'true' : undefined}
         hidden={isSpotV6 || undefined}
         data-v6={isHomeV6 ? 'home' : undefined}

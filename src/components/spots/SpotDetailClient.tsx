@@ -673,8 +673,7 @@ export default function SpotDetailClient({
           locale={locale}
           linhas={linhasV6}
           agoraMs={agoraMs}
-          onModalidade={(m) => {
-            const alvo: SportType = m === 'kite' ? 'kitesurf' : 'surf';
+          onModalidade={(alvo) => {
             if (allScores[alvo]) setSelectedSport(alvo);
           }}
           seguranca={<SpotSafetyStrip spotId={spot.id} locale={locale} />}
@@ -703,7 +702,7 @@ export default function SpotDetailClient({
               aguaViva={spotData.conditions.waterQuality}
               t={h.t}
               ms={h.ms}
-              sport={h.d === 'kite' ? 'kitesurf' : 'surf'}
+              sport={h.sport}
               nivel={h.nivel}
             />
           )}

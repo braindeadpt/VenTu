@@ -17,11 +17,13 @@ import {
   ventoRel,
   type AvaliacaoHora,
   type BandaK,
+  type DefModalidade,
   type DefOnda,
   type HoraModalidade,
-  type Modalidade,
+  type ModalidadeMotor,
   type SpotModalidade,
 } from '@/lib/modalidades';
+import type { SpotModalidadeAtiva } from '@/lib/spotV6Modalidade';
 import { fmtCopy, type SpotPageV6Copy } from '@/lib/translations/spotPage/v6';
 
 export interface Parte {
@@ -35,9 +37,9 @@ export interface Frase {
 
 export interface ContextoVeredicto {
   sp: SpotModalidade;
-  d: Modalidade;
+  d: SpotModalidadeAtiva;
   H: readonly HoraModalidade[];
-  NS: readonly AvaliacaoHora[];
+  NS: readonly (AvaliacaoHora & { chave?: ModalidadeMotor })[];
   /** Pôr do sol por dia (`YYYY-MM-DD` → `HH:mm`). */
   sol: Record<string, { nascer: string; por: string }>;
   copy: SpotPageV6Copy;
@@ -133,9 +135,14 @@ export function ondaRelTxt(c: SpotPageV6Copy, sp: SpotModalidade, sd: number): s
   return fmtCopy(c.ondaLado, { lado: rel > 0 ? c.peloNorte : c.peloSul, a: Math.round(a / 5) * 5 });
 }
 
+function defParaHora(d: SpotModalidadeAtiva, chave?: ModalidadeMotor): DefModalidade {
+  if (d === 'wakeboard' || d === 'sup') return MODALIDADES_DEF.def.wakeboard as DefModalidade;
+  if (d === 'foil') return defDe(chave ?? 'wing');
+  return defDe(d);
+}
+
 export function construirFrase(ctx: ContextoVeredicto) {
   const { sp, d, H, NS, sol, copy: c, locale } = ctx;
-  const P = defDe(d);
   const CM = MODALIDADES_DEF.comum;
   const nomeD = c.frases[d] ?? d;
   const bandaNome = (b: BandaK) => c.bandas[b];
@@ -160,10 +167,11 @@ export function construirFrase(ctx: ContextoVeredicto) {
   return function frase(i: number): Frase {
     const h = H[i];
     const r = NS[i];
+    const P = defParaHora(d, r.chave);
     const b = bandaR(r);
     if (r.semDados) {
       // a fonte não traz o dado desta hora (auditoria 16/10, M2): nem nota nem «noite»
-      return { l1: `${c.semDadosPal}. ${P.logica === 'vento' ? c.semDadosVento : c.semDadosOnda}`, l2: [] };
+      return { l1: `${c.semDadosPal}. ${P.logica === 'onda' ? c.semDadosOnda : c.semDadosVento}`, l2: [] };
     }
     if (r.n == null) {
       const p = proxJanela(NS, i);
@@ -199,6 +207,11 @@ export function construirFrase(ctx: ContextoVeredicto) {
         const gmax = intervalo(H, i, jn.z, 'g')[1];
         if (gmax - hi >= CM.rajadaNaFrase) l2.push({ t: ', ' + fmtCopy(c.rajadasAte, { g: gmax }) });
         else l2.push({ t: ', ' + c.ventoRelCurto[ventoRel(sp, h.wd).k] });
+      } else if (P.logica === 'plana') {
+        l2 =
+          h.w <= 6
+            ? [{ t: c.quaseSemVento, b: true }]
+            : [{ t: fmtCopy(c.ventoRN, { r: rumo(h.wd), w: h.w }), b: true }, { t: ', ' + fmtCopy(c.rajadasAte, { g: h.g }) }];
       } else {
         const po = P as DefOnda;
         const vk = ventoRel(sp, h.wd).k;
@@ -226,6 +239,10 @@ export function construirFrase(ctx: ContextoVeredicto) {
           chuva: chove ? c.eChuva : '',
           forte: r.forte ? (c.forte[r.forte] ?? '') : '',
         });
+        l2 = [{ t: `${h.w} ${c.nos}`, b: true }, { t: ', ' + fmtCopy(c.rajadasAte, { g: h.g }) }];
+      } else if (P.logica === 'plana') {
+        const tpl = c.motivoPlana[r.motivo ?? 'banda'] ?? c.motivoPlana.banda;
+        l1 = fmtCopy(tpl, { d: nomeD, banda: bandaNome(b) });
         l2 = [{ t: `${h.w} ${c.nos}`, b: true }, { t: ', ' + fmtCopy(c.rajadasAte, { g: h.g }) }];
       } else {
         const tpl = c.motivoOnda[r.motivo ?? 'banda'] ?? c.motivoOnda.banda;
