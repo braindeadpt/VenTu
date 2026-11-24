@@ -118,4 +118,75 @@ describe('sync-visual-fixture.mjs (end to end on a temp tree)', () => {
       rmSync(root, { recursive: true, force: true });
     }
   });
+
+  // devin-review #572: o filtro tem de acompanhar o manifesto FINAL — um
+  // manifesto inicial vazio (`frames: []`) muda de shape → o merge adota o
+  // array do build → as imagens referenciadas pelo manifesto final entram.
+  it('sat-mtg: copia só os frames que o manifesto FINAL referencia e poda o resto', () => {
+    const root = mkdtempSync(join(tmpdir(), 'vfix-'));
+    try {
+      const fix = 'tests/e2e/fixtures/data';
+      put(root, `${fix}/sat-mtg.json`, JSON.stringify({ source: 'eumetsat-mtg-fci', frames: [] }));
+      put(root, `${fix}/sat-mtg/frames/ir-stale.webp`, 'STALE');
+      put(
+        root,
+        'out/data/sat-mtg.json',
+        JSON.stringify({
+          source: 'eumetsat-mtg-fci',
+          frames: [
+            { frameTime: 't2', imagePath: 'sat-mtg/frames/ir-new2.webp', kind: 'ir' },
+            { frameTime: 't1', imagePath: 'sat-mtg/frames/ir-new1.webp', kind: 'ir' },
+          ],
+        }),
+      );
+      put(root, 'out/data/sat-mtg/frames/ir-new1.webp', 'IMG1');
+      put(root, 'out/data/sat-mtg/frames/ir-new2.webp', 'IMG2');
+      put(root, 'out/data/sat-mtg/frames/ir-unreferenced.webp', 'IMG3');
+
+      const log = execFileSync(process.execPath, [SCRIPT], { cwd: root, encoding: 'utf8' });
+
+      const has = (rel) => existsSync(join(root, fix, 'sat-mtg/frames', rel));
+      expect(has('ir-new1.webp')).toBe(true); // referenciada pelo manifesto final
+      expect(has('ir-new2.webp')).toBe(true);
+      expect(has('ir-unreferenced.webp')).toBe(false); // nunca entra
+      expect(has('ir-stale.webp')).toBe(false); // podada
+      const finalManifest = JSON.parse(readFileSync(join(root, fix, 'sat-mtg.json'), 'utf8'));
+      expect(finalManifest.frames).toHaveLength(2);
+      expect(log).toContain('1 sat-mtg frames pruned');
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  // Steady state: o manifesto da fixture tem referências próprias e o merge
+  // preserva-as (array compatível) → os frames datados do build não entram.
+  it('sat-mtg: manifesto com referências próprias ignora os frames novos do build', () => {
+    const root = mkdtempSync(join(tmpdir(), 'vfix-'));
+    try {
+      const fix = 'tests/e2e/fixtures/data';
+      const fixtureManifest = {
+        source: 'eumetsat-mtg-fci',
+        frames: [{ frameTime: 'old', imagePath: 'sat-mtg/frames/ir-keep.webp', kind: 'ir' }],
+      };
+      put(root, `${fix}/sat-mtg.json`, JSON.stringify(fixtureManifest));
+      put(root, `${fix}/sat-mtg/frames/ir-keep.webp`, 'KEEP');
+      put(root, `${fix}/sat-mtg/frames/ir-stale.webp`, 'STALE');
+      put(root, 'out/data/sat-mtg.json', JSON.stringify({
+        source: 'eumetsat-mtg-fci',
+        frames: [{ frameTime: 'new', imagePath: 'sat-mtg/frames/ir-new.webp', kind: 'ir' }],
+      }));
+      put(root, 'out/data/sat-mtg/frames/ir-new.webp', 'IMG');
+
+      execFileSync(process.execPath, [SCRIPT], { cwd: root, encoding: 'utf8' });
+
+      const has = (rel) => existsSync(join(root, fix, 'sat-mtg/frames', rel));
+      expect(has('ir-keep.webp')).toBe(true); // referenciada — fica
+      expect(has('ir-new.webp')).toBe(false); // não referenciada — excluída
+      expect(has('ir-stale.webp')).toBe(false); // podada
+      const finalManifest = JSON.parse(readFileSync(join(root, fix, 'sat-mtg.json'), 'utf8'));
+      expect(finalManifest.frames).toEqual(fixtureManifest.frames);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
 });
