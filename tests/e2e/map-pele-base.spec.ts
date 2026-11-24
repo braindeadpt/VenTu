@@ -132,6 +132,35 @@ test.describe('/mapa pele v6 — base «Mapa» recolorida (B6)', () => {
     expect(pedidos.some((u) => u.includes('cartocdn'))).toBe(false);
   });
 
+  test('z18: a base pede mosaicos em z16 (maxNativeZoom, upscale)', async ({ page }) => {
+    const pedidos: string[] = [];
+    page.on('request', (r) => {
+      if (r.url().includes('World_Dark_Gray_Base')) pedidos.push(r.url());
+    });
+    // Sem o limite nativo o Canvas devolve vazio a z17+ (a costa desaparecia no
+    // Guincho). `__VENTU_MAP__` é o gancho e2e do mapa (atrás de ventu.mapdebug).
+    await page.addInitScript(() => localStorage.setItem('ventu.mapdebug', '1'));
+    await abre(page, { pele: true, base: 'on' });
+    await page.evaluate(() => {
+      const m = (window as unknown as { __VENTU_MAP__?: { setZoom(z: number): void } }).__VENTU_MAP__;
+      m?.setZoom(18);
+    });
+    const limite = Date.now() + 10_000;
+    let n = -1;
+    while (n !== pedidos.length && Date.now() < limite) {
+      n = pedidos.length;
+      await page.waitForTimeout(300);
+    }
+    // Sem zoom confirmado a asserção ficava vacuosa (z≤16 sem nunca lá chegar).
+    const zoom = await page.evaluate(
+      () => (window as unknown as { __VENTU_MAP__?: { getZoom(): number } }).__VENTU_MAP__?.getZoom(),
+    );
+    expect(zoom).toBeGreaterThanOrEqual(17);
+    expect(pedidos.length).toBeGreaterThan(0);
+    const zs = pedidos.map((u) => Number(/\/tile\/(\d+)\//.exec(u)?.[1]));
+    expect(Math.max(...zs)).toBeLessThanOrEqual(16);
+  });
+
   test('no Satélite: nem classe nem filtro', async ({ page }) => {
     await abre(page, { pele: true, base: 'on' }, 'satellite');
     await expect(page.locator('.leaflet-container')).toHaveAttribute('data-basemap', 'satellite');

@@ -38,9 +38,9 @@ import { useMapMarkersZone } from './map/zones/MapMarkersZone';
 
 // #458: a pele v6 mora neste componente também fora do /mapa (mapa embebido
 // das listagens) — sem o CSS os ganchos `data-ms`/`data-pele` ficavam por
-// vestir (ficha sem barras de previsão, marcadores sem cromo v6). Inclui as
-// fontes v6 (rótulos em Barlow) e o ponteiro da pele.
-import '@/styles/v6-fontes.css';
+// vestir (ficha sem barras de previsão, marcadores sem cromo v6). Fontes v6
+// (Barlow) ficam de fora: a exceção tipográfica é só para superfícies /mapa
+// (skill ventu-premium-frontend).
 import '@/styles/mapa-pele-v6.css';
 import '@/styles/mapa-pele-ponteiro.css';
 
