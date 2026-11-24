@@ -43,19 +43,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const title = pickLocale(locale, { pt: news.title, en: news.titleEn })
   const description = pickLocale(locale, { pt: news.summary, en: news.summaryEn })
 
+  // Os artigos só têm texto pt/en (pipeline) — em es/de/fr a página serve o
+  // inglês, ou seja conteúdo duplicado: fica noindex e fora dos hreflang.
+  const duplicado = !['pt', 'en'].includes(locale);
   return {
     title: `${title} — VenTu`,
     description,
+    ...(duplicado ? { robots: { index: false, follow: false } } : {}),
     alternates: {
       canonical: `/${locale}/news/${slug}/`,
-      // 5 línguas + x-default: a notícia é pt/en (conteúdo do pipeline), mas
-      // as páginas existem nas 5 e devem cruzar-se (antes só pt/en).
       languages: {
         pt: `/pt/news/${slug}/`,
         en: `/en/news/${slug}/`,
-        es: `/es/news/${slug}/`,
-        de: `/de/news/${slug}/`,
-        fr: `/fr/news/${slug}/`,
         'x-default': `/pt/news/${slug}/`,
       },
       types: {
@@ -94,9 +93,9 @@ export default async function NewsDetailPage({ params }: Props) {
     datePublished: news.publishedAt,
     author: { '@type': 'Organization', name: news.source },
     publisher: { '@type': 'Organization', name: 'VenTu' },
-    url: `https://ventu.surf/${locale}/news/${slug}`,
+    url: `https://ventu.surf/${locale}/news/${slug}/`,
     articleSection: news.category,
-    inLanguage: locale,
+    inLanguage: locale === 'pt' ? 'pt-PT' : 'en',
   }
 
   return (

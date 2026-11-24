@@ -72,6 +72,11 @@ const NOINDEX_ROUTE_PATHS = [
   '/alerts/unsubscribe/',
 ];
 
+/** Baked routes legitimately outside the sitemap beyond the fixed allowlist
+ * (dynamic paths): es/de/fr news articles are noindex duplicates of the EN
+ * text (issue #457) — baked, reachable, deliberately unindexed. */
+const NOINDEX_BAKED_PATTERNS = [/^(es|de|fr)\/news\/[^/]+\/index\.html$/];
+
 /** A baked page smaller than this has prerendered nothing useful. */
 const MIN_HTML_BYTES = 500;
 
@@ -165,14 +170,15 @@ function classifyBakedPage(htmlPath, bytes, expectedLang) {
  *   expected: string[],
  *   baked: string[],
  *   bakedBad?: Map<string, 'not-found'|'size'|'bad-lang'>,
+ *   noindexPatterns?: RegExp[],
  * }} p
  */
-function checkExportRoutes({ expected, baked, bakedBad = new Map() }) {
+function checkExportRoutes({ expected, baked, bakedBad = new Map(), noindexPatterns = NOINDEX_BAKED_PATTERNS }) {
   const expectedSet = new Set(expected);
   const bakedSet = new Set(baked);
 
   const missing = expected.filter((r) => !bakedSet.has(r));
-  const extra = baked.filter((r) => !expectedSet.has(r));
+  const extra = baked.filter((r) => !expectedSet.has(r) && !noindexPatterns.some((re) => re.test(r)));
   const notFound = baked.filter((r) => bakedBad.get(r) === 'not-found');
   const size = baked.filter((r) => bakedBad.get(r) === 'size');
   const badLang = baked.filter((r) => bakedBad.get(r) === 'bad-lang');
@@ -259,8 +265,18 @@ function main() {
     bakedBad,
   });
 
+  // Rotas fora do sitemap pelo padrão têm de provar o noindex — sem a meta,
+  // são duplicados invisíveis para o sitemap E para este checker.
+  const noNoindex = baked.filter((r) => {
+    if (!NOINDEX_BAKED_PATTERNS.some((re) => re.test(r))) return false;
+    return !/name="robots" content="[^"]*noindex/.test(
+      fs.readFileSync(path.join(outDir, r), 'utf8'),
+    );
+  });
+
   const lines = [];
   if (mode !== 'extra') {
+    lines.push(...fmt(noNoindex, 'baked pattern-excluded routes missing the noindex meta'));
     lines.push(...fmt(missing, 'missing routes (indexed or allowlisted, not baked)'));
     lines.push(...fmt(notFound, 'baked not-found pages (generateStaticParams silently dropped them)'));
     lines.push(...fmt(size, `near-empty pages (< ${MIN_HTML_BYTES} bytes)`));
@@ -293,6 +309,7 @@ module.exports = {
   checkExportRoutes,
   classifyBakedPage,
   NOINDEX_ROUTE_PATHS,
+  NOINDEX_BAKED_PATTERNS,
   LOCALES,
   LANG_BY_LOCALE,
   MIN_HTML_BYTES,

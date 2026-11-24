@@ -92,7 +92,9 @@ self.addEventListener('fetch', (event) => {
           }
           return response;
         })
-        .catch(() => caches.match(request)),
+        // Sem cache e offline: caches.match resolve undefined — respondWith
+        // aceita só Response, nunca undefined (TypeError no fetch handler).
+        .catch(async () => (await caches.match(request)) || Response.error()),
     );
     return;
   }
@@ -107,7 +109,7 @@ self.addEventListener('fetch', (event) => {
           }
           return response;
         })
-        .catch(() => caches.match(request)),
+        .catch(async () => (await caches.match(request)) || Response.error()),
     );
     return;
   }
@@ -115,7 +117,7 @@ self.addEventListener('fetch', (event) => {
   event.respondWith(
     fetch(request)
       .then((response) => response)
-      .catch(() => caches.match(request)),
+      .catch(async () => (await caches.match(request)) || Response.error()),
   );
 });
 

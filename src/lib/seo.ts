@@ -16,8 +16,12 @@ import {
   defaultLocale,
 } from '@/lib/i18n';
 import { SITE_NAME, SITE_URL } from '@/lib/site';
+import { buildSpotOgImagePath } from '@/lib/spotImage';
 
 export { SITE_NAME, SITE_URL };
+// Fonte única em spotImage.ts (módulo puro, seguro em client components) —
+// re-exportado para não partir os importadores existentes.
+export { buildSpotOgImagePath };
 
 export const SPOT_COUNT = spots.length;
 
@@ -242,10 +246,6 @@ export function buildHomeMetadata(locale: Locale): Metadata {
     locale: loc,
     path: `/${loc}/`,
   });
-}
-
-export function buildSpotOgImagePath(slug: string): string {
-  return `/images/og/${slug}.jpg`;
 }
 
 export function resolveSpotOgImagePath(slug: string): string {

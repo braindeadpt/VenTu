@@ -4,6 +4,9 @@ const { getSeoLandingSlugs } = require('./seo-landings-slugs');
 
 const BASE_URL = 'https://ventu.surf';
 const LOCALES = ['pt', 'en', 'es', 'de', 'fr'];
+// Artigos de notícia só têm texto pt/en — em es/de/fr a página é conteúdo
+// duplicado em inglês (noindex na página, fora do sitemap e dos hreflang).
+const NEWS_LOCALES = ['pt', 'en'];
 const MODALITY_SLUGS = ['surf', 'kitesurf', 'windsurf', 'big-wave', 'bodyboard', 'sup', 'foil', 'wakeboard'];
 
 function slugify(text) {
@@ -42,8 +45,8 @@ function sitemapUrl(value) {
   return encodeURI(value);
 }
 
-function hreflangLinks(localePath) {
-  const links = LOCALES.map(
+function hreflangLinks(localePath, locales = LOCALES) {
+  const links = locales.map(
     (loc) => `    <xhtml:link rel="alternate" hreflang="${loc}" href="${sitemapUrl(`${BASE_URL}/${loc}${localePath}`)}" />`,
   );
   // x-default: a variante para quem não corresponde a nenhuma língua (PT, o
@@ -54,10 +57,10 @@ function hreflangLinks(localePath) {
   return links.join('\n');
 }
 
-function addUrl(urls, localePath, { changefreq, priority, lastmod }) {
-  for (const locale of LOCALES) {
+function addUrl(urls, localePath, { changefreq, priority, lastmod }, locales = LOCALES) {
+  for (const locale of locales) {
     const loc = sitemapUrl(`${BASE_URL}/${locale}${localePath}`);
-    urls.push({ loc, changefreq, priority, lastmod, localePath });
+    urls.push({ loc, changefreq, priority, lastmod, localePath, locales });
   }
 }
 
@@ -149,11 +152,16 @@ for (const slug of slugs) {
 for (const item of newsItems) {
   const slug = newsSlug(item);
   const lastmod = item.publishedAt ? item.publishedAt.slice(0, 10) : today;
-  addUrl(urlEntries, `/news/${slug}/`, {
-    changefreq: 'weekly',
-    priority: '0.65',
-    lastmod,
-  });
+  addUrl(
+    urlEntries,
+    `/news/${slug}/`,
+    {
+      changefreq: 'weekly',
+      priority: '0.65',
+      lastmod,
+    },
+    NEWS_LOCALES,
+  );
 }
 
 // Directório: perfil de cada escola/loja (public/data/directory.json, mesmo
@@ -204,7 +212,7 @@ for (const entry of uniqueEntries) {
     <lastmod>${entry.lastmod}</lastmod>
     <changefreq>${entry.changefreq}</changefreq>
     <priority>${entry.priority}</priority>
-${hreflangLinks(entry.localePath)}
+${hreflangLinks(entry.localePath, entry.locales)}
   </url>
 `;
 }
@@ -218,7 +226,7 @@ fs.writeFileSync(outputPath, xml);
 const staticCount = staticPages.length * LOCALES.length;
 const modalityCount = MODALITY_SLUGS.length * LOCALES.length;
 const spotCount = slugs.length * LOCALES.length;
-const newsCount = newsItems.length * LOCALES.length;
+const newsCount = newsItems.length * NEWS_LOCALES.length;
 
 console.log(`✅ Sitemap generated with ${uniqueEntries.length} URLs`);
 console.log(`   - Static pages: ${staticCount}`);
