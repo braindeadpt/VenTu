@@ -117,6 +117,15 @@ test.describe('/mapa pele v6 — base «Mapa» recolorida (B6)', () => {
     await page.mouse.move(box.x + box.width / 2 - 240, box.y + box.height / 2 - 80, { steps: 12 });
     await page.mouse.up();
     await mosaicoBase;
+    // O 1.º mosaico prova a base activa, mas o arrasto continua a emitir — um
+    // pedido CARTO tardio tinha de contar também. Drena até a lista assentar
+    // (dois instantes sem crescimento) antes de asserir.
+    const limite = Date.now() + 10_000;
+    let n = -1;
+    while (n !== pedidos.length && Date.now() < limite) {
+      n = pedidos.length;
+      await page.waitForTimeout(300);
+    }
     const depois = pedidos.slice(posTroca);
     expect(depois.some((u) => u.includes('cartocdn'))).toBe(false);
   });
