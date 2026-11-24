@@ -171,6 +171,11 @@ test.describe('/mapa pele v6 — vento em traços (B7)', () => {
     const cdp = await ctx.newCDPSession(page);
     await abre(page, pele);
     await expect(mapa(page)).toHaveAttribute('data-map-windfield', 'true', { timeout: 30_000 });
+    // #458: com a base por defeito, a perna v6 (mesmo com pelebase=off) monta
+    // a base recolorida no 1.º render e troca-a no efeito que lê o opt-out —
+    // custo de arranque que sangrava para a janela de medição. O D2 mede os
+    // traços em estado estacionário; espera-se o swap assentar antes do t0.
+    await page.waitForTimeout(2500);
     await cdp.send('Emulation.setCPUThrottlingRate', { rate: 4 });
     const t0 = await page.evaluate(() => performance.now());
     // mantém o campo acordado durante a janela (a pausa de 8 s não conta)

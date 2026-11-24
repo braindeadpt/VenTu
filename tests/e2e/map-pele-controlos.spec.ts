@@ -65,15 +65,18 @@ test.describe('/mapa pele v6 — pilha, Camadas e legenda (B5), desktop', () => 
     const linha = page.locator('[data-map-layers-popover] button[aria-pressed]').first();
     if ((await linha.getAttribute('aria-pressed')) !== 'true') await linha.click();
     await expect(linha).toHaveAttribute('aria-pressed', 'true');
-    const fundo = await linha.locator('[data-mc="sw"]').evaluate((e) => getComputedStyle(e).backgroundColor);
     // O estado ligado distingue-se do desligado — o tom exacto é do token do
-    // tema (Atlântico muda-o; amarelo era da base pré-v6).
+    // tema (Atlântico muda-o; amarelo era da base pré-v6). A leitura é em poll:
+    // o swatch tem transição de fundo e a leitura a meio da transição ainda
+    // mostrava a cor desligada.
     const apagado = page.locator('[data-map-layers-popover] button[aria-pressed="false"] [data-mc="sw"]').first();
+    const sw = linha.locator('[data-mc="sw"]');
+    const fundoDe = () => sw.evaluate((e) => getComputedStyle(e).backgroundColor);
     if (await apagado.count()) {
       const fundoOff = await apagado.evaluate((e) => getComputedStyle(e).backgroundColor);
-      expect(fundo).not.toBe(fundoOff);
+      await expect.poll(fundoDe).not.toBe(fundoOff);
     } else {
-      expect(fundo).not.toBe('rgba(0, 0, 0, 0)');
+      await expect.poll(fundoDe).not.toBe('rgba(0, 0, 0, 0)');
     }
   });
 });
