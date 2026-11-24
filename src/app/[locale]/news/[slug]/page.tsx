@@ -43,19 +43,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const title = pickLocale(locale, { pt: news.title, en: news.titleEn })
   const description = pickLocale(locale, { pt: news.summary, en: news.summaryEn })
 
+  // Os artigos só têm texto pt/en (pipeline) — em es/de/fr a página serve o
+  // inglês, ou seja conteúdo duplicado: fica noindex e fora dos hreflang.
+  const duplicado = !['pt', 'en'].includes(locale);
   return {
     title: `${title} — VenTu`,
     description,
+    ...(duplicado ? { robots: { index: false, follow: false } } : {}),
     alternates: {
       canonical: `/${locale}/news/${slug}/`,
-      // 5 línguas + x-default: a notícia é pt/en (conteúdo do pipeline), mas
-      // as páginas existem nas 5 e devem cruzar-se (antes só pt/en).
       languages: {
         pt: `/pt/news/${slug}/`,
         en: `/en/news/${slug}/`,
-        es: `/es/news/${slug}/`,
-        de: `/de/news/${slug}/`,
-        fr: `/fr/news/${slug}/`,
         'x-default': `/pt/news/${slug}/`,
       },
       types: {
@@ -86,17 +85,23 @@ export default async function NewsDetailPage({ params }: Props) {
   const related = getRelatedNews(allNews, news)
   const safeUrl = safeExternalUrl(news.url)
 
+  const headline = pickLocale(locale, { pt: news.title, en: news.titleEn })
+  const resumo = pickLocale(locale, { pt: news.summary, en: news.summaryEn })
+
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Article',
-    headline: pickLocale(locale, { pt: news.title, en: news.titleEn }),
-    description: pickLocale(locale, { pt: news.summary, en: news.summaryEn }),
+    headline,
+    description: resumo,
     datePublished: news.publishedAt,
     author: { '@type': 'Organization', name: news.source },
     publisher: { '@type': 'Organization', name: 'VenTu' },
-    url: `https://ventu.surf/${locale}/news/${slug}`,
+    url: `https://ventu.surf/${locale}/news/${slug}/`,
     articleSection: news.category,
-    inLanguage: locale,
+    // Língua real do texto servido: quando o pipeline repete o português nos
+    // campos EN (ou a tradução falta), o conteúdo é pt-PT — anunciá-lo como
+    // 'en' engana parsers e o Search Console.
+    inLanguage: headline === news.title && resumo === news.summary ? 'pt-PT' : 'en',
   }
 
   return (

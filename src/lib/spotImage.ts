@@ -8,6 +8,12 @@ export function getSpotAerialPath(slug: string): string {
   return `/images/spots/${slug}.jpg`;
 }
 
+/** Branded OG image per spot (see scripts/generate-spot-og-images.mjs). Pure —
+ * the client-safe sibling of seo.ts's resolveSpotOgImagePath (which needs fs). */
+export function buildSpotOgImagePath(slug: string): string {
+  return `/images/og/${slug}.jpg`;
+}
+
 /** Gradient pairs: beach → ocean → accent (cool only, deterministic per region). */
 const REGION_GRADIENT_KEYS: [string, string, string][] = [
   ['--accent',         '--data-waves',  '--data-water'],

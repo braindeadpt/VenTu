@@ -4,6 +4,9 @@ const DATA_CACHE = 'ventu-data-v2';
 const DATA_MAX_AGE_MS = 1000 * 60 * 60 * 2.5; // 2.5h — align with dataFreshness STALE threshold
 
 const STATIC_ASSETS = [
+  // start_url — a app instalada arranca aqui; sem o documento de redirect
+  // por idioma em cache, o arranque offline falha antes de chegar a /pt/.
+  '/',
   '/manifest.json',
   '/favicon.svg',
   '/apple-touch-icon.svg',
@@ -92,7 +95,9 @@ self.addEventListener('fetch', (event) => {
           }
           return response;
         })
-        .catch(() => caches.match(request)),
+        // Sem cache e offline: caches.match resolve undefined — respondWith
+        // aceita só Response, nunca undefined (TypeError no fetch handler).
+        .catch(async () => (await caches.match(request)) || Response.error()),
     );
     return;
   }
@@ -107,7 +112,7 @@ self.addEventListener('fetch', (event) => {
           }
           return response;
         })
-        .catch(() => caches.match(request)),
+        .catch(async () => (await caches.match(request)) || Response.error()),
     );
     return;
   }
@@ -115,7 +120,7 @@ self.addEventListener('fetch', (event) => {
   event.respondWith(
     fetch(request)
       .then((response) => response)
-      .catch(() => caches.match(request)),
+      .catch(async () => (await caches.match(request)) || Response.error()),
   );
 });
 

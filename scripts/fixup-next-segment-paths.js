@@ -24,6 +24,7 @@
  */
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 const { LANG_BY_LOCALE, fixHtmlLang } = require('./lib/htmlLang');
 
 const OUT_DIR = path.join(__dirname, '..', 'out');
@@ -52,6 +53,7 @@ async function main() {
 
   // Run first so an idempotent re-run (no nested dirs) still fixes lang.
   fixHtmlLangPerLocale();
+  stampServiceWorkerBuild();
 
   const nestedDirs = [];
   walk(OUT_DIR, nestedDirs);
@@ -110,6 +112,36 @@ function fixHtmlLangPerLocale(outDir = OUT_DIR) {
   console.log(`fixup-next-segment-paths: set <html lang> in ${fixed} baked page(s)`);
 }
 
+/**
+ * public/sw.js keeps a hand-bumped CACHE_NAME — it never rotated between
+ * builds (issue #457). Stamp the *exported* copy with a deterministic build
+ * id: the filenames under out/_next/static are content-hashed, so the sorted
+ * list is a per-build fingerprint without reading file contents. Same build
+ * → same stamp (idempotent); a new build → new cache → stale clients refresh.
+ * public/sw.js in git stays clean.
+ */
+function stampServiceWorkerBuild(outDir = OUT_DIR) {
+  const swPath = path.join(outDir, 'sw.js');
+  if (!fs.existsSync(swPath)) return;
+  const staticDir = path.join(outDir, '_next', 'static');
+  const files = fs.existsSync(staticDir)
+    ? [...walkFiles(staticDir)]
+        .map((f) => path.relative(outDir, f).split(path.sep).join('/'))
+        .sort()
+    : [];
+  const stamp = crypto
+    .createHash('sha256')
+    .update(files.join('\n'))
+    .digest('hex')
+    .slice(0, 12);
+  const sw = fs.readFileSync(swPath, 'utf8');
+  const next = sw.replace(/ventu-static-(?:v\d+|[0-9a-f]{12})/g, `ventu-static-${stamp}`);
+  if (next !== sw) {
+    fs.writeFileSync(swPath, next);
+    console.log(`fixup-next-segment-paths: stamped sw.js cache as ventu-static-${stamp}`);
+  }
+}
+
 /** Next internals inside a route dir: payload dirs (__next.*) and chunk
  * assets (_next). Neither can hold a baked page — skip them on walks that
  * are only interested in *.html. */
@@ -131,4 +163,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { fixHtmlLang, fixHtmlLangPerLocale, LANG_BY_LOCALE };
+module.exports = { fixHtmlLang, fixHtmlLangPerLocale, stampServiceWorkerBuild, LANG_BY_LOCALE };

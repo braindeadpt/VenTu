@@ -39,7 +39,6 @@ const PAGES_WITH_BUILDER = [
 /** Páginas que mantêm `alternates` à mão (têm OpenGraph que o builder não cobre). */
 const PAGES_WITH_MANUAL_ALTERNATES = ['src/app/[locale]/news/[slug]/page.tsx'];
 
-const LOCALES = ['pt', 'en', 'es', 'de', 'fr'];
 const ALL_PAGES = [...PAGES_WITH_BUILDER, ...PAGES_WITH_MANUAL_ALTERNATES];
 
 function read(page: string): string {
@@ -82,13 +81,18 @@ describe('metadata das páginas usa o locale real (canonical/hreflang)', () => {
   }
 
   for (const page of PAGES_WITH_MANUAL_ALTERNATES) {
-    it(`${page} anuncia as 5 línguas + x-default`, () => {
+    it(`${page} anuncia só pt/en + x-default — artigos sem tradução es/de/fr (#457)`, () => {
       const block = languagesBlock(read(page));
       expect(block, 'bloco languages em falta').not.toBe('');
-      for (const loc of LOCALES) {
-        expect(block, `falta hreflang ${loc}`).toContain(`${loc}:`);
-      }
+      expect(block).toContain('pt:');
+      expect(block).toContain('en:');
       expect(block, 'falta x-default').toContain('x-default');
+      // Os artigos só têm texto pt/en — em es/de/fr a página serve inglês
+      // duplicado, por isso fica noindex e fora dos hreflang. (\b: o `es`
+      // dentro de «languages» não é chave.)
+      expect(block).not.toMatch(/\bes:/);
+      expect(block).not.toMatch(/\bde:/);
+      expect(block).not.toMatch(/\bfr:/);
     });
   }
 
@@ -98,5 +102,13 @@ describe('metadata das páginas usa o locale real (canonical/hreflang)', () => {
       return block !== '' && !block.includes('x-default');
     });
     expect(offenders).toEqual([]);
+  });
+
+  it('spots/[slug] liga a flag aguaInterior do catálogo ao buildSpotJsonLd (#457)', () => {
+    // Sem esta linha o JSON-LD de águas interiores voltava a anunciar Beach —
+    // o teste unitário alimenta inlandWater à mão e não a detectava.
+    expect(read('src/app/[locale]/spots/[slug]/page.tsx')).toContain(
+      'inlandWater: spot.aguaInterior',
+    );
   });
 });

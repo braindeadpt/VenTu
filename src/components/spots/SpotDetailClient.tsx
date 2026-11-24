@@ -10,11 +10,9 @@ import { getRelevantSports, type SportScore } from '@/lib/sportScore';
 import { allScoresComV6, notaV6DoSpot } from '@/lib/notaV6Agora';
 import { desportoTodos } from '@/lib/desportosV6';
 import type { SportType } from '@/lib/sportRatings';
-import { SPORT_LABELS } from '@/lib/sportRatings';
 import { getTranslation, pickLocale } from '@/lib/i18n';
 import { localizedSpotName } from '@/lib/localizedSpotText';
 import { getConditionsDataId } from '@/lib/spotConditionsSource';
-import SeoHead from '@/components/SeoHead';
 
 import { getLocalTips } from '@/lib/spotTips';
 import { loadCommunityTips, mergeLocalTips } from '@/lib/communityTips';
@@ -663,41 +661,6 @@ export default function SpotDetailClient({
 
   return (
     <>
-      <SeoHead
-        title={`${localizedSpotName(spot, locale)} - ${spot.region}, ${spot.regionEn}`}
-        description={pickLocale(locale, { pt: spot.description, en: spot.descriptionEn })}
-        image="/og-image.png"
-        type="article"
-        jsonLd={{
-          '@context': 'https://schema.org',
-          '@type': 'Beach',
-          name: localizedSpotName(spot, locale),
-          description: pickLocale(locale, { pt: spot.description, en: spot.descriptionEn }),
-          address: {
-            '@type': 'PostalAddress',
-            addressRegion: spot.region,
-            addressCountry: 'PT',
-          },
-          geo: {
-            '@type': 'GeoCoordinates',
-            latitude: spot.lat,
-            longitude: spot.lon,
-          },
-          url: `https://ventu.surf/${locale}/spots/${spot.slug}/`,
-          sportActivityLocation: {
-            '@type': 'SportsActivityLocation',
-            name:
-              spot.compatibleSports?.[0] &&
-              SPORT_LABELS[spot.compatibleSports[0] as keyof typeof SPORT_LABELS]
-                ? pickLocale(
-                    locale,
-                    SPORT_LABELS[spot.compatibleSports[0] as keyof typeof SPORT_LABELS],
-                  )
-                : spot.type,
-          },
-        }}
-      />
-
       <div
         className="min-h-screen bg-bg-base"
         data-community-tips={communityOverlay ? 'ready' : 'pending'}

@@ -16,8 +16,12 @@ import {
   defaultLocale,
 } from '@/lib/i18n';
 import { SITE_NAME, SITE_URL } from '@/lib/site';
+import { buildSpotOgImagePath } from '@/lib/spotImage';
 
 export { SITE_NAME, SITE_URL };
+// Fonte única em spotImage.ts (módulo puro, seguro em client components) —
+// re-exportado para não partir os importadores existentes.
+export { buildSpotOgImagePath };
 
 export const SPOT_COUNT = spots.length;
 
@@ -244,9 +248,10 @@ export function buildHomeMetadata(locale: Locale): Metadata {
   });
 }
 
-export function buildSpotOgImagePath(slug: string): string {
-  return `/images/og/${slug}.jpg`;
-}
+/** Spots costeiros confirmados como não-praia (marinas, pontões sem areal).
+ * Águas interiores vêm da flag `aguaInterior` do catálogo; estes são os que
+ * escapam à flag por estarem na costa/estuário. */
+const NON_BEACH_SPOT_SLUGS = new Set(['marina-afurada-foil']);
 
 export function resolveSpotOgImagePath(slug: string): string {
   const branded = path.join(process.cwd(), 'public', 'images', 'og', `${slug}.jpg`);
@@ -343,14 +348,25 @@ export function buildSpotJsonLd(input: {
   lat?: number;
   lon?: number;
   spotType?: Spot['type'];
+  /** Água interior do catálogo (lagoas, albufeiras, cable parks, cais). */
+  inlandWater?: boolean;
 }) {
   const loc = validateLocale(input.locale);
   const spotUrl = absoluteUrl(`/${loc}/spots/${input.slug}/`);
 
   const place: Record<string, unknown> = {
-    '@type': 'SportsActivityLocation',
+    // Beach + SportsActivityLocation só em spots confirmados como praia
+    // (#457): águas interiores (lagoas, cable parks, cais — flag
+    // `aguaInterior` do catálogo) e lançamentos costeiros não-praia
+    // (marina) ficam só como SportsActivityLocation. A modalidade
+    // (spot.type) diz o que se pratica, não o tipo de local.
+    '@type':
+      input.inlandWater || NON_BEACH_SPOT_SLUGS.has(input.slug)
+        ? 'SportsActivityLocation'
+        : ['Beach', 'SportsActivityLocation'],
     name: input.spotName,
     url: spotUrl,
+    image: absoluteUrl(resolveSpotOgImagePath(input.slug)),
     ...(input.description ? { description: input.description } : {}),
     ...(input.lat != null && input.lon != null
       ? {

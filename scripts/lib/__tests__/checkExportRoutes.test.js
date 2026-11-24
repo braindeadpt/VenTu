@@ -98,6 +98,28 @@ describe('checkExportRoutes', () => {
     const r = checkExportRoutes({ expected, baked, bakedBad });
     expect(r.badLang).toEqual(['en/spots/nazare/index.html']);
   });
+
+  it('accepts es/de/fr news articles outside the sitemap but not stray extras', () => {
+    const baked = [
+      ...expected,
+      'es/news/uma-noticia-abc123/index.html',
+      'de/news/a-story-def456/index.html',
+      'fr/news/une-histoire-ghi789/index.html',
+      'es/_orphan/index.html',
+    ];
+    const r = checkExportRoutes({ expected, baked });
+    expect(r.extra).toEqual(['es/_orphan/index.html']);
+  });
+
+  it('lets pt/en news articles stay out of the pattern exemption', () => {
+    // pt/en news must come from the sitemap — a baked one missing there is a
+    // real drift, not a noindex duplicate.
+    const r = checkExportRoutes({
+      expected,
+      baked: [...expected, 'en/news/some-story-zzz/index.html'],
+    });
+    expect(r.extra).toEqual(['en/news/some-story-zzz/index.html']);
+  });
 });
 
 describe('classifyBakedPage', () => {
