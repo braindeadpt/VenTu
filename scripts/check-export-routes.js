@@ -231,6 +231,16 @@ function main() {
 
   const sitemapRoutes = parseSitemapRoutes(sitemapPath);
   const expectedSet = new Set(sitemapRoutes);
+  // Artigos es/de/fr: duplicados noindex fora do sitemap, mas obrigatórios
+  // como baked — derivados dos slugs EN do sitemap. Sem isto, um
+  // generateStaticParams que os deixasse cair passava em silêncio.
+  for (const r of sitemapRoutes) {
+    const news = /^en\/news\/([^/]+)\/index\.html$/.exec(r);
+    if (!news) continue;
+    for (const l of ['es', 'de', 'fr']) {
+      expectedSet.add(`${l}/news/${news[1]}/index.html`);
+    }
+  }
   for (const p of NOINDEX_ROUTE_PATHS) {
     for (const l of LOCALES) {
       // Deduplicate on insert: some allowlist entries (fontes, passaporte)

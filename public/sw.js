@@ -4,6 +4,9 @@ const DATA_CACHE = 'ventu-data-v2';
 const DATA_MAX_AGE_MS = 1000 * 60 * 60 * 2.5; // 2.5h — align with dataFreshness STALE threshold
 
 const STATIC_ASSETS = [
+  // start_url — a app instalada arranca aqui; sem o documento de redirect
+  // por idioma em cache, o arranque offline falha antes de chegar a /pt/.
+  '/',
   '/manifest.json',
   '/favicon.svg',
   '/apple-touch-icon.svg',

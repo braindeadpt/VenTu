@@ -348,9 +348,16 @@ export function buildSpotJsonLd(input: {
   const spotUrl = absoluteUrl(`/${loc}/spots/${input.slug}/`);
 
   const place: Record<string, unknown> = {
-    '@type': 'SportsActivityLocation',
+    // Beach + SportsActivityLocation nos spots de costa (#457); os wakeboard
+    // do catálogo são cable parks/lagos (Wake Park, teleski, albufeiras) —
+    // 'Beach' seria falso aí.
+    '@type':
+      input.spotType === 'wakeboard'
+        ? 'SportsActivityLocation'
+        : ['Beach', 'SportsActivityLocation'],
     name: input.spotName,
     url: spotUrl,
+    image: absoluteUrl(resolveSpotOgImagePath(input.slug)),
     ...(input.description ? { description: input.description } : {}),
     ...(input.lat != null && input.lon != null
       ? {

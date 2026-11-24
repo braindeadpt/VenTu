@@ -85,17 +85,23 @@ export default async function NewsDetailPage({ params }: Props) {
   const related = getRelatedNews(allNews, news)
   const safeUrl = safeExternalUrl(news.url)
 
+  const headline = pickLocale(locale, { pt: news.title, en: news.titleEn })
+  const resumo = pickLocale(locale, { pt: news.summary, en: news.summaryEn })
+
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Article',
-    headline: pickLocale(locale, { pt: news.title, en: news.titleEn }),
-    description: pickLocale(locale, { pt: news.summary, en: news.summaryEn }),
+    headline,
+    description: resumo,
     datePublished: news.publishedAt,
     author: { '@type': 'Organization', name: news.source },
     publisher: { '@type': 'Organization', name: 'VenTu' },
     url: `https://ventu.surf/${locale}/news/${slug}/`,
     articleSection: news.category,
-    inLanguage: locale === 'pt' ? 'pt-PT' : 'en',
+    // Língua real do texto servido: quando o pipeline repete o português nos
+    // campos EN (ou a tradução falta), o conteúdo é pt-PT — anunciá-lo como
+    // 'en' engana parsers e o Search Console.
+    inLanguage: headline === news.title && resumo === news.summary ? 'pt-PT' : 'en',
   }
 
   return (
