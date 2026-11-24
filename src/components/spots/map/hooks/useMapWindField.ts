@@ -33,7 +33,7 @@ import {
 } from '@/lib/landClip';
 import { pointOnLand } from '@/lib/landMask';
 import { toScreen, type ScreenView } from '@/lib/seaFieldPaint';
-import { WIND_V6_TAIL, WIND_V6_TAIL_MOBILE, drawWindV6, drawWindV6Static } from '@/lib/mapWindV6';
+import { WIND_V6_TAIL, WIND_V6_TAIL_MOBILE, drawWindV6, drawWindV6Static, type WindV6Buckets } from '@/lib/mapWindV6';
 import type { MapPele } from '@/lib/mapPele';
 import { mapClipBounds, mapScreenView } from './mapScreenView';
 
@@ -238,6 +238,9 @@ export function useMapWindField({
     // fica exposto em data-map-windfield-color para debug/e2e.
     const colorRef = { current: cssRgbToken(host, '--data-wind', '167 139 250') };
     const particles = particlesRef.current;
+    // Buckets v6 reutilizados frame a frame — o loop não aloca 24 arrays por
+    // pintura (long task >50 ms no runner com CPU estrangulada, #464).
+    const v6Buckets: WindV6Buckets = { segs: [], widths: [] };
     // §9 — o pool ajusta-se ao zoom em vez de um budget fixo (denso em z alto).
     const particleTarget = () => windParticleTarget(map.getZoom(), isMobile);
 
@@ -505,7 +508,7 @@ export function useMapWindField({
         return { x: p.x - origin.x, y: p.y - origin.y };
       };
       if (v6) {
-        drawWindV6(ctx, particles, projectLayer, { width: size.x, height: size.y }, isMobile ? WIND_V6_TAIL_MOBILE : WIND_V6_TAIL, isMobile);
+        drawWindV6(ctx, particles, projectLayer, { width: size.x, height: size.y }, isMobile ? WIND_V6_TAIL_MOBILE : WIND_V6_TAIL, isMobile, v6Buckets);
       } else {
         drawWindParticlesByKt(ctx, particles, projectLayer, isMobile ? 0.85 : 1, { width: size.x, height: size.y });
       }

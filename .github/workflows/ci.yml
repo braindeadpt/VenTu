@@ -239,7 +239,12 @@ jobs:
       # spot-detail forecast bake (847350f9c → ~22 MB/route; fixed by
       # cb6fb1806). Fails the build if any route dir exceeds 5 MB raw.
       - name: Check per-route payload budgets
-        run: node scripts/check-payload-budgets.js
+        # Dois passes: os budgets do export cozido (out/) e os mesmos
+        # budgets aplicados ao public/data hidratado da ventu-data — a fonte
+        # pode inchar sem que o bake o sinalize (#464).
+        run: |
+          node scripts/check-payload-budgets.js
+          node scripts/check-payload-budgets.js --data-dir public/data
 
       # Export-route validator (browserless): every sitemap + noindex
       # allowlist route must have a baked index.html, none may have baked the
@@ -369,6 +374,8 @@ jobs:
             shard: 3/3
           - suite: rotas
             shard: '-'
+          - suite: v6
+            shard: '-'
     name: e2e (${{ matrix.suite }} ${{ matrix.shard }})
     steps:
       - name: Checkout
@@ -422,6 +429,16 @@ jobs:
       - name: E2E — core data/score specs (hermetic)
         if: matrix.suite == 'core'
         run: timeout 900 npm run test:e2e:core -- --shard=${{ matrix.shard }}
+        env:
+          CI: true
+
+      # Suite v6 (#464): os 18 specs map-pele-*/home-v6/spot-v6/nivel-ui/
+      # noite-fora-mapa/map-night/score-scale/foto-credito-mobile correm
+      # obrigatoriamente em cada PR — viviam fora do @core desde a
+      # iniciativa v6 e a PR B9 quebrou map-pele-paridade sem o CI ver.
+      - name: E2E — pele v6 / map-pele specs
+        if: matrix.suite == 'v6'
+        run: timeout 900 npm run test:e2e:v6
         env:
           CI: true
 
@@ -641,9 +658,4 @@ jobs:
       # Os 4 scripts bash do repo (checker S7, monitor IH, push-data-update,
       # runner de testes SQL) — sem findings, o job passa.
       - name: Lint bash scripts (shellcheck)
-        run: |
-          shellcheck scripts/check-security-headers.sh \
-            scripts/monitor-ih-tides.sh \
-            scripts/monitor-ipma-radar.sh \
-            scripts/push-data-update.sh \
-            supabase/tests/run-tests.sh
+        run: shellcheck scripts/*.sh supabase/tests/run-tests.sh

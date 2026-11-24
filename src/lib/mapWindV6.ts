@@ -76,7 +76,13 @@ export function pushWindV6Tail(p: WindV6Particle, x: number, y: number, max: num
   if (n >= 2 && Math.abs(t[n - 2] - x) + Math.abs(t[n - 1] - y) > 60) t.length = 0;
   t.push(x, y);
   const over = t.length - max * 2;
-  if (over > 0) t.splice(0, over);
+  if (over > 0) {
+    // copyWithin + trim: o splice realocava a cauda em cada frame de cada
+    // partícula — pressão de GC que, com CPU estrangulada (runner 4×),
+    // empurrava o frame para lá dos 50 ms de long task (#464).
+    t.copyWithin(0, over);
+    t.length = max * 2;
+  }
   return t;
 }
 
@@ -102,9 +108,14 @@ export function bucketWindV6(
   view: { width: number; height: number },
   maxTail: number,
   mobile: boolean,
+  out?: WindV6Buckets,
 ): WindV6Buckets {
-  const segs: number[][] = Array.from({ length: WIND_V6_BINS * 3 }, () => []);
-  const widths = Array.from({ length: WIND_V6_BINS }, (_, b) => windV6Width(windV6BinKt(b), mobile));
+  // `out` reutilizável: o chamador do loop de animação passa a mesma estrutura
+  // em todos os frames — sem as 24 alocações frescas por frame (#464).
+  const segs: number[][] = out?.segs ?? [];
+  for (let i = 0; i < WIND_V6_BINS * 3; i++) (segs[i] ??= []).length = 0;
+  const widths = out?.widths ?? new Array<number>(WIND_V6_BINS);
+  for (let b = 0; b < WIND_V6_BINS; b++) widths[b] = windV6Width(windV6BinKt(b), mobile);
   const maxX = view.width + 8;
   const maxY = view.height + 8;
   for (const p of particles) {
@@ -134,11 +145,12 @@ export function drawWindV6(
   view: { width: number; height: number },
   maxTail: number,
   mobile: boolean,
+  out?: WindV6Buckets,
 ): number {
   ctx.clearRect(0, 0, view.width, view.height);
   ctx.lineCap = 'round';
   ctx.lineJoin = 'round';
-  const { segs, widths } = bucketWindV6(particles, project, view, maxTail, mobile);
+  const { segs, widths } = bucketWindV6(particles, project, view, maxTail, mobile, out);
   let strokes = 0;
   for (let b = 0; b < WIND_V6_BINS; b++) {
     const kt = windV6BinKt(b);
