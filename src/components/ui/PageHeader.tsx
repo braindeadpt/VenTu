@@ -2,7 +2,7 @@ import { cn } from '@/lib/cn';
 
 interface PageHeaderProps {
   title: string;
-  subtitle?: string;
+  subtitle?: React.ReactNode;
   icon?: React.ReactNode;
   align?: 'left' | 'center';
   className?: string;

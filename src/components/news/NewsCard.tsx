@@ -1,6 +1,8 @@
+import Link from 'next/link';
 import { NewsItem } from '@/types';
 import { safeExternalUrl } from '@/lib/safeUrl';
 import { newsCategoryLabel } from '@/lib/newsCategories';
+import { newsSlug } from '@/lib/news';
 import { getTranslation, pickLocale } from '@/lib/i18n';
 import { ExternalLink, Clock, Sparkles, Waves, Wind, Trophy, Shield, Newspaper, Mountain, Sailboat, Monitor, Triangle, Zap, AlertTriangle } from 'lucide-react';
 
@@ -59,7 +61,9 @@ export default function NewsCard({ news, locale, variant = 'grid' }: NewsCardPro
         </span>
         <div className="min-w-0 flex-1">
           <h4 className="text-sm font-medium text-fg line-clamp-1 leading-snug">
-            {title}
+            <Link href={`/${locale}/news/${newsSlug(news)}/`} className="hover:underline">
+              {title}
+            </Link>
           </h4>
           <div className="flex items-center gap-2 mt-0.5">
             <span className="text-xs text-fg-subtle">
@@ -107,7 +111,9 @@ export default function NewsCard({ news, locale, variant = 'grid' }: NewsCardPro
         </div>
 
         <h3 className="text-lg font-semibold text-fg group-hover:text-fg transition-colors line-clamp-2">
-          {title}
+          <Link href={`/${locale}/news/${newsSlug(news)}/`} className="hover:underline">
+            {title}
+          </Link>
         </h3>
 
         <p className="text-sm text-fg-muted line-clamp-3 leading-relaxed">

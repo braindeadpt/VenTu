@@ -1,12 +1,12 @@
 import { localizedSpotName, localizedSpotRegion } from '@/lib/localizedSpotText';
 import { localizedText } from '@/lib/localizedText';
-import Link from 'next/link';
-import { ExternalLink, Video } from 'lucide-react';
+import { Video } from 'lucide-react';
 import { locales, getTranslation, validateLocale } from '@/lib/i18n';
 import { listAllLivecams, getLivecamSpotCount } from '@/lib/spotLivecams';
 import { spots } from '@/lib/spots';
 import { buildPageMetadata } from '@/lib/seo';
 import PageHeader from '@/components/ui/PageHeader';
+import LivecamsClient, { type LivecamItem } from '@/components/livecams/LivecamsClient';
 import type { Metadata } from 'next';
 
 interface Props {
@@ -34,6 +34,20 @@ export default async function LivecamsPage({ params }: Props) {
   const t = getTranslation(locale as 'pt' | 'en');
   const livecams = listAllLivecams();
 
+  const items: LivecamItem[] = livecams.map(({ slug, cam }) => {
+    const spot = spots.find(s => s.slug === slug);
+    return {
+      slug,
+      name: spot ? localizedSpotName(spot, locale) : localizedText({ pt: cam.labelPt, en: cam.labelEn }, locale),
+      region: spot ? localizedSpotRegion(spot, locale) : null,
+      regionKey: spot ? spot.region : null,
+      provider: cam.provider,
+      url: cam.url,
+      embedded: cam.kind === 'youtube' || cam.kind === 'surfline',
+      hasSpot: !!spot,
+    };
+  });
+
   return (
     <div className="min-h-screen bg-bg-base">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
@@ -42,56 +56,7 @@ export default async function LivecamsPage({ params }: Props) {
           title={t.livecams.title}
           subtitle={t.livecams.subtitle}
         />
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {livecams.map(({ slug, cam }) => {
-            const spot = spots.find(s => s.slug === slug);
-            const name = spot ? localizedSpotName(spot, locale) : localizedText({ pt: cam.labelPt, en: cam.labelEn }, locale);
-            const region = spot ? localizedSpotRegion(spot, locale) : null;
-
-            return (
-              <article
-                key={slug}
-                className="card-1 p-4 flex flex-col gap-3 hover:bg-surface-2/[0.04] transition-colors"
-              >
-                <div className="flex items-start gap-3">
-                  <div className="rounded-card bg-data-waves/10 p-2 text-data-waves shrink-0">
-                    <Video className="w-5 h-5" aria-hidden />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <h2 className="text-h3 text-fg truncate">{name}</h2>
-                    {region && (
-                      <p className="text-meta text-fg-subtle truncate">{region}</p>
-                    )}
-                    <p className="text-meta-sm text-fg-muted mt-1">
-                      {t.livecams.provider}: {cam.provider}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex flex-wrap gap-2 mt-auto">
-                  <a
-                    href={cam.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-data-waves text-bg-base hover:bg-data-waves/80 transition-colors min-h-[36px]"
-                  >
-                    {t.livecams.watchLive}
-                    <ExternalLink className="w-3.5 h-3.5" aria-hidden />
-                  </a>
-                  {spot && (
-                    <Link
-                      href={`/${locale}/spots/${slug}/`}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-surface-2/[0.08] text-fg border border-divider hover:bg-surface-3/[0.12] transition-colors min-h-[36px]"
-                    >
-                      {t.livecams.viewSpot}
-                    </Link>
-                  )}
-                </div>
-              </article>
-            );
-          })}
-        </div>
+        <LivecamsClient locale={locale} items={items} t={t.livecams} />
       </div>
     </div>
   );

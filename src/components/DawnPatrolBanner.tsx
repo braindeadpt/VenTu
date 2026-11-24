@@ -233,7 +233,7 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
           <button
             type="button"
             onClick={handleRetry}
-            className="px-3 py-1 rounded-lg bg-surface-2/[0.08] hover:bg-surface-3/[0.12] transition-colors text-fg-muted text-xs font-medium"
+            className="px-3 py-1 -my-2 min-h-[44px] rounded-lg bg-surface-2/[0.08] hover:bg-surface-3/[0.12] transition-colors text-fg-muted text-xs font-medium"
           >
             {t.retry}
           </button>

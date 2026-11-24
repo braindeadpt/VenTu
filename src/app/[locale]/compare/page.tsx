@@ -21,6 +21,11 @@ export async function generateMetadata({
   });
 }
 
-export default function ComparePage() {
-  return <CompareClient />;
+export default async function ComparePage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  return <CompareClient locale={validateLocale(locale)} />;
 }

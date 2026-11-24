@@ -211,18 +211,25 @@ export default function SpotListCard({
               <WarningPill warning={warning} locale={locale} variant="mini" />
             )}
           </div>
-          <div className="flex items-center gap-1.5 shrink-0" data-visual-dynamic>
-            {conditions.confidence && (
-              <ConfidenceBadge
-                confidence={conditions.confidence}
-                detail={conditions.confidenceDetail}
-                locale={locale}
-                size="sm"
-                withTooltip={false}
-                interactive={false}
-              />
-            )}
-          </div>
+          {/* Compacto: a confiança sai — é o metadado mais dispensável da fila
+              (o detalhe fica a um clique, na página do spot) e era a 5.ª pílula
+              a empilhar em cards de 390px. Fonte/calibração de onda ficam:
+              carregam contratos e2e (texto «Corrigido pela boia» e o atributo
+              data-wave-calibrated na home). */}
+          {!compact && (
+            <div className="flex items-center gap-1.5 shrink-0" data-visual-dynamic>
+              {conditions.confidence && (
+                <ConfidenceBadge
+                  confidence={conditions.confidence}
+                  detail={conditions.confidenceDetail}
+                  locale={locale}
+                  size="sm"
+                  withTooltip={false}
+                  interactive={false}
+                />
+              )}
+            </div>
+          )}
         </div>
 
         <div className="flex items-start gap-3 min-w-0">

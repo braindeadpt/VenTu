@@ -12,6 +12,7 @@ import type { SportType } from '@/lib/sportRatings';
 import type { Conditions } from '@/lib/sportScore';
 import type { JanelasCandidatasBySport } from '@/lib/bestWindowToday';
 import { isNoite, notaV6DoSpot, scoreAgoraComV6, type NotaV6Agora, type SportScoreAgoraV6 } from '@/lib/notaV6Agora';
+import { notaV6AgoraDe } from '@/lib/notaV6AgoraBuild';
 import { getConditionsDataId } from '@/lib/spotConditionsSource';
 import { rawToScoreInput } from '@/lib/scoreConditions';
 
@@ -96,8 +97,9 @@ export async function carregarFavoritos(
       try {
         const current = await deps.marine(spot);
         conditions[id] = current;
-        // sem `notaV6` do pipeline: v6 «sem dados», SUP / wakeboard no motor antigo (#218, PR 6)
-        scores[id] = scoreAgoraComV6(spot, desportoPrincipal(spot), current, null);
+        // Live sem `notaV6` do pipeline: calcula-o das próprias condições (#462)
+        const nv = notaV6AgoraDe(spot, current as unknown as Record<string, unknown>, null, nowMs);
+        scores[id] = scoreAgoraComV6(spot, desportoPrincipal(spot), current, nv);
       } catch {
         /* ignore */
       }

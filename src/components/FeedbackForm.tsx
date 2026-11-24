@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { Send, X, MapPin, Lightbulb, Bug, MessageSquare } from 'lucide-react';
+import { Send, X, MapPin, Lightbulb, Bug, MessageSquare, CheckCircle2 } from 'lucide-react';
 import { getSupabaseClient, isSupabaseConfigured } from '@/lib/supabase';
 import { getTranslation } from '@/lib/i18n';
 
@@ -190,7 +190,7 @@ export default function FeedbackForm({ locale, defaultSpotSlug }: FeedbackFormPr
           </h3>
       <button
         onClick={() => setOpen(false)}
-        className="p-1 rounded-md text-fg-muted hover:text-fg hover:bg-surface-2/[0.08] transition-colors"
+        className="-m-2.5 h-11 w-11 flex items-center justify-center rounded-md text-fg-muted hover:text-fg hover:bg-surface-2/[0.08] transition-colors"
         aria-label={t.common.close}
       >
         <X className="w-5 h-5" />
@@ -199,7 +199,7 @@ export default function FeedbackForm({ locale, defaultSpotSlug }: FeedbackFormPr
 
         {sent ? (
           <div className="py-8 text-center space-y-2">
-            <div className="text-4xl">✅</div>
+            <CheckCircle2 className="w-10 h-10 mx-auto text-score-good" aria-hidden />
             <p className="text-body text-fg">{f.thanks}</p>
           </div>
         ) : (
@@ -215,7 +215,7 @@ export default function FeedbackForm({ locale, defaultSpotSlug }: FeedbackFormPr
                     type="button"
                     onClick={() => setType(entry.id)}
                     className={`
-                      flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium
+                      flex-1 flex items-center justify-center gap-1.5 px-3 py-2 min-h-[44px] rounded-lg text-sm font-medium
                       transition-all duration-fast
                       ${active
                         ? 'bg-surface-2/[0.08] text-fg border border-divider-strong'
@@ -273,7 +273,7 @@ export default function FeedbackForm({ locale, defaultSpotSlug }: FeedbackFormPr
                     value={spotSlug}
                     onChange={(e) => setSpotSlug(e.target.value)}
                     placeholder="guincho, nazare, supertubos..."
-                    className="w-full px-3 py-2 rounded-lg bg-surface-1/[0.04] border border-divider text-body text-fg placeholder:text-fg-subtle focus:outline-none focus:ring-2 focus:ring-score-good/50"
+                    className="w-full px-3 py-2 min-h-[44px] rounded-lg bg-surface-1/[0.04] border border-divider text-body text-fg placeholder:text-fg-subtle focus:outline-none focus:ring-2 focus:ring-score-good/50"
                     required
                   />
                 </div>
@@ -285,7 +285,7 @@ export default function FeedbackForm({ locale, defaultSpotSlug }: FeedbackFormPr
                     id="ff-tip-field"
                     value={tipField}
                     onChange={(e) => setTipField(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg bg-surface-1/[0.04] border border-divider text-body text-fg"
+                    className="w-full px-3 py-2 min-h-[44px] rounded-lg bg-surface-1/[0.04] border border-divider text-body text-fg"
                   >
                     {TIP_FIELDS.map((field) => (
                       <option key={field.id} value={field.id}>
@@ -308,7 +308,7 @@ export default function FeedbackForm({ locale, defaultSpotSlug }: FeedbackFormPr
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder={f.emailPlaceholder}
-                className="w-full px-3 py-2 rounded-lg bg-surface-1/[0.04] border border-divider text-body text-fg placeholder:text-fg-subtle focus:outline-none focus:ring-2 focus:ring-score-good/50"
+                className="w-full px-3 py-2 min-h-[44px] rounded-lg bg-surface-1/[0.04] border border-divider text-body text-fg placeholder:text-fg-subtle focus:outline-none focus:ring-2 focus:ring-score-good/50"
               />
             </div>
 

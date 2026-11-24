@@ -110,14 +110,14 @@ export default function InstallPrompt() {
             <button
               type="button"
               onClick={install}
-              className="flex-1 h-9 px-3 rounded-lg bg-data-waves/20 text-data-waves text-sm font-medium hover:bg-data-waves/30 transition-colors"
+              className="flex-1 min-h-[44px] px-3 rounded-lg bg-data-waves/20 text-data-waves text-sm font-medium hover:bg-data-waves/30 transition-colors"
             >
               {t.installCta}
             </button>
             <button
               type="button"
               onClick={dismiss}
-              className="h-9 px-3 rounded-lg text-fg-muted text-sm hover:bg-surface-2/[0.08] transition-colors"
+              className="min-h-[44px] px-3 rounded-lg text-fg-muted text-sm hover:bg-surface-2/[0.08] transition-colors"
             >
               {t.installLater}
             </button>
@@ -126,7 +126,7 @@ export default function InstallPrompt() {
         <button
           type="button"
           onClick={dismiss}
-          className="shrink-0 p-1 text-fg-subtle hover:text-fg"
+          className="shrink-0 -m-2.5 h-11 w-11 flex items-center justify-center text-fg-subtle hover:text-fg"
           aria-label={tr.common.close}
         >
           <X className="w-4 h-4" />

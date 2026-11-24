@@ -33,6 +33,9 @@ const ROUTES = [
   '/pt/conta/',
   '/pt/alerts/',
   '/pt/favorites/',
+  // #462: pílulas de região/botões de 36 px e o check-in rápido do passaporte
+  '/pt/livecams/',
+  '/pt/passaporte/',
   '/pt/spots/guincho/',
   // NOTA: `/pt/mapa/` fica DE FORA — não é um componente partilhado, é o HUD do
   // mapa (chrome do tempo + sheet de explorar), com desenho e specs próprios

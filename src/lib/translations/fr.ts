@@ -892,6 +892,9 @@ export const translationsFr = {
     watchLive: 'Voir en direct',
     viewSpot: 'Voir le spot',
     provider: 'Source',
+    filterAll: 'Toutes les régions',
+    kindEmbed: 'Vidéo intégrée',
+    kindExternal: 'Lien externe',
   },
   moonTide: {
     title: 'Marées et lune',

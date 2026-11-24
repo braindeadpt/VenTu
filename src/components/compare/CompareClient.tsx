@@ -16,7 +16,9 @@ import { JanelaNoite, LuaNoite } from '@/components/ui/NoiteJanela';
 import type { SportType } from '@/lib/sportRatings';
 import { SPORT_LABELS } from '@/lib/sportRatings';
 import { getAssetPath } from '@/lib/paths';
-import { validateLocale, localePathPattern, pickLocale } from '@/lib/i18n';
+import { validateLocale, pickLocale } from '@/lib/i18n';
+import { localizedSpotRegion } from '@/lib/localizedSpotText';
+import { notaV6AgoraDe } from '@/lib/notaV6AgoraBuild';
 import Link from 'next/link';
 import DataSourceBadge from '@/components/ui/DataSourceBadge';
 import FilterPill from '@/components/ui/FilterPill';
@@ -73,16 +75,18 @@ interface PrecomputedCondition {
   observed?: unknown;
 }
 
-const COMPARE_SPORTS: SportType[] = ['surf', 'kitesurf', 'windsurf', 'bodyboard'];
+const COMPARE_SPORTS: SportType[] = ['surf', 'kitesurf', 'windsurf', 'bodyboard', 'foil', 'sup'];
 
 async function loadSpotBattleData(
   spot: typeof spots[0],
   baseCity: 'lisbon' | 'porto',
+  locale: string,
   precomputed?: Record<string, PrecomputedCondition> | null,
 ): Promise<SpotBattleData | null> {
-  const driveTime = baseCity === 'lisbon'
+  const driveTime = (baseCity === 'lisbon'
     ? getDriveTimeFromLisbon(spot.region)
-    : getDriveTimeFromPorto(spot.region);
+    : getDriveTimeFromPorto(spot.region)
+  ).replace('avion', pickLocale(locale, { pt: 'avião', en: 'flight' }));
 
   const dataId = getConditionsDataId(spot);
   const cond = precomputed?.[dataId] ?? precomputed?.[spot.id];
@@ -119,14 +123,15 @@ async function loadSpotBattleData(
   try {
     const result = await fetchMarineData(spot.lat, spot.lon);
     const conditions = getCurrentConditions(result);
+    // Live Open-Meteo, sem `notaV6` do pipeline: calcula-o das próprias
+    // condições (mesma nota do bake para a hora de Lisboa actual) — #462.
+    const notaV6 = notaV6AgoraDe(spot, conditions as unknown as Record<string, unknown>, null, Date.now());
     return {
       spot,
       conditions,
       scoreInput: conditions,
-      notaV6: null,
-      // Live Open-Meteo, sem `notaV6` do pipeline: as modalidades v6 ficam
-      // «sem dados» (#218, PR 6 — o motor antigo delas já não existe).
-      allScores: allScoresComV6(spot, conditions, null),
+      notaV6,
+      allScores: allScoresComV6(spot, conditions, notaV6),
       driveTime,
       // Live Open-Meteo — sem correcção de boia/viés.
       waveSource: 'forecast',
@@ -167,16 +172,6 @@ function getSpotsFromUrl(): string[] {
   } catch { return []; }
 }
 
-function getLocaleFromPath(): string {
-  if (typeof window === 'undefined') return 'pt';
-  try {
-    const match = window.location.pathname.match(localePathPattern);
-    return match ? match[1] : 'pt';
-  } catch { return 'pt'; }
-}
-
-
-
 function CompareLoadingSkeleton() {
   return (
     <div className="min-h-screen bg-bg-base">
@@ -202,13 +197,12 @@ function CompareLoadingSkeleton() {
   );
 }
 
-export default function CompareClient() {
+export default function CompareClient({ locale }: { locale: string }) {
   const [battleData, setBattleData] = useState<SpotBattleData[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedSport, setSelectedSport] = useState<SportType>('surf');
   const [baseCity, setBaseCity] = useState<'lisbon' | 'porto'>('lisbon');
   const [slugs, setSlugs] = useState<string[]>([]);
-  const [locale, setLocale] = useState('pt');
   const [selectedSlugs, setSelectedSlugs] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [picking, setPicking] = useState(false);
@@ -224,7 +218,6 @@ export default function CompareClient() {
   useEffect(() => {
     const urlSlugs = getSpotsFromUrl();
     setSlugs(urlSlugs);
-    setLocale(getLocaleFromPath());
     setPicking(urlSlugs.length === 0);
   }, []);
 
@@ -254,7 +247,7 @@ export default function CompareClient() {
       }
 
       const results = await Promise.all(
-        selectedSpots.map((spot) => loadSpotBattleData(spot, baseCity, precomputed)),
+        selectedSpots.map((spot) => loadSpotBattleData(spot, baseCity, locale, precomputed)),
       );
 
       if (!cancelled) {
@@ -264,7 +257,7 @@ export default function CompareClient() {
     })();
 
     return () => { cancelled = true; };
-  }, [slugs, baseCity, retryKey]);
+  }, [slugs, baseCity, retryKey, locale]);
 
   useEffect(() => {
     setJanelas(null);
@@ -418,7 +411,7 @@ export default function CompareClient() {
         </span>
         <span className="min-w-0">
           <span className="block text-sm font-medium truncate">{pickLocale(locale, { pt: spot.name, en: spot.nameEn })}</span>
-          <span className="block text-xs text-fg-subtle">{spot.region}</span>
+          <span className="block text-xs text-fg-subtle">{localizedSpotRegion(spot, locale)}</span>
         </span>
         {/* Sem aria-hidden: o score é a razão do picker e tem de entrar no
             nome acessível do botão. */}
@@ -678,7 +671,7 @@ export default function CompareClient() {
             vencedor={vencedorNoite ? { slug: vencedorNoite.spot.slug, nome: nomeDe(vencedorNoite) } : null}
             segundo={ganham24h[1] ? nomeDe(ganham24h[1]) : null}
           />
-        ) : (
+        ) : winnerSemDados || winnerScore === 0 ? null : (
         <div className={`card-1 p-6 text-center border ${winnerTokens.border} ${winnerTokens.glow}`}>
           <Crown className={`w-8 h-8 ${winnerTokens.text} mx-auto mb-2`} aria-hidden />
           <p className={`text-meta-sm font-bold uppercase tracking-wide ${winnerTokens.text} mb-2`}>
@@ -686,15 +679,13 @@ export default function CompareClient() {
           </p>
           <h2 className="text-h2 text-fg">{pickLocale(locale, { pt: winner.spot.name, en: winner.spot.nameEn })}</h2>
           <p className="text-fg-muted mt-1">
-            {winnerSemDados
-              ? semDadosTxt
-              : pickLocale(locale, {
-                  pt: winner.allScores[selectedSport]?.rating,
-                  en: winner.allScores[selectedSport]?.ratingEn,
-                })}
+            {pickLocale(locale, {
+              pt: winner.allScores[selectedSport]?.rating,
+              en: winner.allScores[selectedSport]?.ratingEn,
+            })}
           </p>
           <div className={`text-display-lg font-mono tabular-nums ${winnerTokens.text} mt-4`}>
-            {winnerSemDados ? '—' : `${scoreToNota(winnerScore)}/10`}
+            {`${scoreToNota(winnerScore)}/10`}
           </div>
         </div>
         )}
@@ -730,7 +721,7 @@ export default function CompareClient() {
                 </div>
 
                 <h3 className="text-h3 text-fg">{pickLocale(locale, { pt: data.spot.name, en: data.spot.nameEn })}</h3>
-                <p className="text-meta text-fg-muted">{data.spot.region}</p>
+                <p className="text-meta text-fg-muted">{localizedSpotRegion(data.spot, locale)}</p>
 
                 {warning && (
                   <div className="mt-2">

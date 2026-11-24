@@ -170,7 +170,7 @@ export default function FavoritesAlertsPanel({ locale, favoriteCount }: Favorite
               id="fav-alerts-sport"
               value={sport}
               onChange={(e) => setSport(e.target.value as SportType)}
-              className="w-full px-3 py-2 rounded-lg bg-surface-1/[0.04] border border-divider text-sm text-fg"
+              className="w-full px-3 py-2 min-h-[44px] rounded-lg bg-surface-1/[0.04] border border-divider text-sm text-fg"
             >
               {DESPORTOS_ALERTAS.map((s) => (
                 <option key={s} value={s}>
@@ -189,7 +189,7 @@ export default function FavoritesAlertsPanel({ locale, favoriteCount }: Favorite
               step={1}
               value={scoreToNota(minScore)}
               onChange={(e) => setMinScore(notaMinScore(Number(e.target.value)))}
-              className="w-full px-3 py-2 rounded-lg bg-surface-1/[0.04] border border-divider text-sm text-fg font-mono tabular-nums"
+              className="w-full px-3 py-2 min-h-[44px] rounded-lg bg-surface-1/[0.04] border border-divider text-sm text-fg font-mono tabular-nums"
             />
           </div>
         </div>
@@ -200,7 +200,7 @@ export default function FavoritesAlertsPanel({ locale, favoriteCount }: Favorite
             id="fav-alerts-mode"
             value={alertMode}
             onChange={(e) => setAlertMode(e.target.value as AlertMode)}
-            className="w-full px-3 py-2 rounded-lg bg-surface-1/[0.04] border border-divider text-sm text-fg"
+            className="w-full px-3 py-2 min-h-[44px] rounded-lg bg-surface-1/[0.04] border border-divider text-sm text-fg"
           >
             <option value="digest">{a.dailyDigest}</option>
             <option value="immediate">{a.immediate}</option>

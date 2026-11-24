@@ -892,6 +892,9 @@ export const translationsDe = {
     watchLive: 'Live ansehen',
     viewSpot: 'Spot ansehen',
     provider: 'Quelle',
+    filterAll: 'Alle Regionen',
+    kindEmbed: 'Eingebettetes Video',
+    kindExternal: 'Externer Link',
   },
   moonTide: {
     title: 'Gezeiten und Mond',

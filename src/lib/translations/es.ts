@@ -892,6 +892,9 @@ export const translationsEs = {
     watchLive: 'Ver en vivo',
     viewSpot: 'Ver spot',
     provider: 'Fuente',
+    filterAll: 'Todas las regiones',
+    kindEmbed: 'Vídeo incrustado',
+    kindExternal: 'Enlace externo',
   },
   moonTide: {
     title: 'Marea y luna',

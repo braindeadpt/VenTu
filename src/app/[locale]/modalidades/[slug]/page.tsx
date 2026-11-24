@@ -76,7 +76,7 @@ export default async function ModalidadePage({ params }: Props) {
       <MapTilePreconnect />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
         <Link
-          href={`/${locale}/`}
+          href={`/${locale}/modalidades/`}
           className="inline-flex items-center gap-1.5 text-sm text-fg-muted hover:text-fg transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />

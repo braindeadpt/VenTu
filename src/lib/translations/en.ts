@@ -811,6 +811,9 @@ export const translationsEn = {
     watchLive: 'Watch live',
     viewSpot: 'View spot',
     provider: 'Source',
+    filterAll: 'All regions',
+    kindEmbed: 'Embedded video',
+    kindExternal: 'External link',
   },
   moonTide: {
     title: 'Tides & moon',
