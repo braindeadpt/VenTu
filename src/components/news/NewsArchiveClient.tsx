@@ -287,12 +287,16 @@ export default function NewsArchiveClient({
         <div className="max-w-7xl mx-auto">
           <NewsFilters
             filters={{ category, region, period, query: searchInput, page }}
-            onChange={({ category: cat, region: reg, period: per, query: q, page: pg }) => {
+            onChange={({ category: cat, region: reg, period: per, query: q }) => {
+              // `page: 1` emitido pelos filtros é só «repõe a primeira
+              // página» — os handlers já o fazem. Não passa por
+              // handlePageChange: esse scrolla para o topo e só deve correr
+              // na navegação explícita (NewsPagination); na barra sticky
+              // saltava a cada tecla da pesquisa.
               if (cat !== undefined) handleCategoryChange(cat);
               if (reg !== undefined) handleRegionChange(reg);
               if (per !== undefined) handlePeriodChange(per);
               if (q !== undefined) handleSearchChange(q);
-              if (pg !== undefined) handlePageChange(pg);
             }}
             locale={locale}
             total={filteredAll.length}
