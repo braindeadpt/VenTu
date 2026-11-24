@@ -159,10 +159,13 @@ export function strongestSeaStateForSpots(
 export function strongestSpotWarning(
   data: IpmaWarningsData | null | undefined,
   spotId: string,
+  nowMs = Date.now(),
 ): IpmaWarning | null {
   const list = data?.spotWarnings?.[spotId];
   if (!Array.isArray(list)) return null;
-  const candidates = list.filter((w) => MAP_WARNING_TYPES.has(w.type));
+  const candidates = list.filter(
+    (w) => MAP_WARNING_TYPES.has(w.type) && (!w.endTime || lisbonWallToMs(w.endTime) > nowMs),
+  );
   if (candidates.length === 0) return null;
   return candidates.reduce((best, w) => {
     const rankDiff = WARNING_LEVEL_RANK[w.level] - WARNING_LEVEL_RANK[best.level];
@@ -210,5 +213,6 @@ export function relevantWarningsForSpot(
 }
 
 import { getTranslation, pickLocale } from '@/lib/i18n';
+import { lisbonWallToMs } from '@/lib/lisbonTime';
 import { libIpmaRadarUrl } from '@/lib/translations/lib';
 

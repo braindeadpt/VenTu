@@ -165,6 +165,40 @@ describe('strongestSpotWarning', () => {
     expect(strongestSpotWarning(base, 'faro')).toBeNull();
     expect(strongestSpotWarning({ ...base, spotWarnings: {} }, 'peniche')).toBeNull();
   });
+
+  it('exclui avisos expirados mesmo quando mais graves do que outro ainda em vigor (#460)', () => {
+    const comExpirado: IpmaWarningsData = {
+      ...base,
+      spotWarnings: {
+        guincho: [
+          {
+            areaCode: 'LSB',
+            areaLabel: 'Lisboa',
+            type: 'Agitação Marítima',
+            level: 'red',
+            text: '',
+            relevant: true,
+            endTime: '2026-11-24T12:00:00',
+          },
+          {
+            areaCode: 'LSB',
+            areaLabel: 'Lisboa',
+            type: 'Vento',
+            level: 'yellow',
+            text: '',
+            relevant: true,
+            endTime: '2026-11-24T15:00:00',
+          },
+        ],
+      },
+    };
+    const as1230 = Date.parse('2026-11-24T12:30:00Z');
+    const w = strongestSpotWarning(comExpirado, 'guincho', as1230);
+    expect(w?.level).toBe('yellow');
+    expect(w?.type).toBe('Vento');
+    const as1600 = Date.parse('2026-11-24T16:00:00Z');
+    expect(strongestSpotWarning(comExpirado, 'guincho', as1600)).toBeNull();
+  });
 });
 
 describe('warningLevelLabel (nível localizado — fonte única)', () => {

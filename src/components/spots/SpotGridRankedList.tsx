@@ -40,6 +40,11 @@ export default function SpotGridRankedList({
   const t = getTranslation(locale as 'pt' | 'en');
   const sportLabel = getSportLabel(selectedSport, locale);
   const warningsData = useIpmaWarnings();
+  // Paridade SSG no 1.º paint (`nowMs` do build); após montar usa relógio vivo
+  // para que leituras de boia chegadas em refresh automático nunca pareçam futuras (#460).
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  const freshnessNowMs = mounted ? undefined : (nowMs ?? undefined);
 
   const exclude = excludeSlugs?.length
     ? new Set(excludeSlugs)
@@ -92,7 +97,7 @@ export default function SpotGridRankedList({
             : null;
           const waveCorrection = resolveScoreWaveCorrection(
             { ...data.conditions },
-            nowMs ?? undefined,
+            freshnessNowMs,
           );
           return (
             <li
