@@ -226,14 +226,14 @@ test.describe('#nivel-ui home — 1440 × 900', () => {
     expect(q.y).toBeGreaterThanOrEqual(hero.y);
   });
 
-  test('/es/ (a home v6 cai para EN): o nível sai na mesma língua do hero, nunca em espanhol ao lado de inglês', async ({ page }) => {
+  test('/es/: o nível sai em espanhol, na mesma língua do resto da home v6', async ({ page }) => {
     await comNivel(page, 'beginner');
     await fixtureMaquete(page);
     await abreHome(page, '/es/?d=kite', { maquete: true });
-    await expect(page.getByTestId('nivel-botao')).toHaveText('Beginner', { useInnerText: true, ignoreCase: true });
-    await expect(page.getByTestId('nivel-nota')).toHaveText('Guincho 9 is left out: it is a spot for advanced riders.');
-    await expect(page.getByTestId('home-lider').locator('[data-testid="rk-nivel"]')).toHaveText('beginner');
-    await expect(page.getByTestId('legenda-nivel')).toHaveText('faded: above your level');
+    await expect(page.getByTestId('nivel-botao')).toHaveText('Principiante', { useInnerText: true, ignoreCase: true });
+    await expect(page.getByTestId('nivel-nota')).toHaveText('Guincho 9 queda fuera: es un spot para avanzados.');
+    await expect(page.getByTestId('home-lider').locator('[data-testid="rk-nivel"]')).toHaveText('principiante');
+    await expect(page.getByTestId('legenda-nivel')).toHaveText('atenuado: por encima de tu nivel');
   });
 });
 

@@ -21,7 +21,7 @@ import { getTranslation, pickLocale } from '@/lib/i18n';
 import { getSpotLivecam } from '@/lib/spotLivecams';
 import { getSpotWeatherlink, getWeatherlinkEmbedUrl, getWeatherlinkPageUrl } from '@/lib/spotWeatherlink';
 import { getDifficultyLabel, nivelDoSpot, type NivelUtilizador } from '@/lib/mapDifficulty';
-import { nivelCopy } from '@/lib/translations/nivel';
+import { nivelCopyV6 } from '@/lib/translations/nivel';
 import { getNearAccommodationUrl } from '@/lib/accommodation';
 import { spotTagEn } from '@/lib/spotTagsEn';
 import { eventsForSpot } from '@/lib/events';
@@ -62,7 +62,7 @@ const MODS_V6: Array<[SportType, 'kite' | 'surf']> = [
  * separa por desporto; «por confirmar» quando falta.
  */
 export function nivelTexto(spot: Spot, sport: SportType, locale: string): string {
-  const cn = nivelCopy(locale);
+  const cn = nivelCopyV6(locale);
   const lv = nivelDoSpot(spot, sport);
   if (!lv || !NIVEIS_CONHECIDOS.has(lv)) return cn.porConfirmar;
   const pratica = MODS_V6.filter(([s]) => !spot.compatibleSports?.length || spot.compatibleSports.includes(s));

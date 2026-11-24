@@ -21,7 +21,8 @@ full-screen sem barra de browser, com ícone próprio e splash.
 - ✅ Manifest válido e instalável (testado: Chrome «Add to Home screen»)
 - ✅ Ícones PNG reais gerados no build (`scripts/generate-favicons.mjs`):
   `icon-192.png`, `icon-512.png`, `icon-maskable-512.png` (safe zone 62%)
-- ✅ Screenshots Play Store reais: `tmp-device-test/revyl/*.png` (1080×2400)
+- ✅ Screenshots Play Store reais: `docs/assets/play-store/*.png` (1080×2400,
+  capturados numa sessão de auditoria real ao dispositivo)
 - ✅ Keystore de upload: `E:\ventu-android\ventu-upload.keystore` (alias `ventu`,
   RSA 2048, password em `keystore-password.txt` ao lado — **backup offline dos dois**)
 - ✅ `public/.well-known/assetlinks.json` com o SHA256 do upload key
@@ -127,7 +128,7 @@ links externos (Fontes, GitHub) abrem fora da TWA.
 3. **Privacy policy URL** — criar a página primeiro (ver estado acima)
 4. Store listing: ícone 512 (`icon-maskable-512.png` é full-bleed),
    feature graphic 1024×500, ≥2 screenshots telemóvel (temos 4 reais em
-   `tmp-device-test/revyl/`), descrição curta+longa (reusar copy do manifest)
+   `docs/assets/play-store/`), descrição curta+longa (reusar copy do manifest)
 5. Content rating (questionário IARC) — meteorologia/desporto, sem conteúdo sensível
 6. Data safety — declarar: geolocalização (aproximada), email (auth Supabase),
    analytics anonimizados (GoatCounter)

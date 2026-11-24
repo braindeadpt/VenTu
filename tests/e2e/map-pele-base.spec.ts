@@ -97,7 +97,37 @@ test.describe('/mapa pele v6 — base «Mapa» recolorida (B6)', () => {
     await expect(page.locator('.ventu-base-v6')).toHaveCount(1);
     expect(await filtroDaBase(page)).toContain('#v6base');
     expect(pedidos.some((u) => u.includes('World_Dark_Gray_Base'))).toBe(true);
-    expect(pedidos.some((u) => u.includes('dark_nolabels'))).toBe(false);
+    // A flag resolve-se num efeito (export estático — ler window/localStorage no
+    // 1.º render partia a hidratação): o attach inicial ainda pode disparar
+    // pedidos CARTO antes da troca (e sem chave CARTO o raster normal já é
+    // Esri — o 1.º World_Dark_Gray_Base não marca a troca). Com a camada
+    // .ventu-base-v6 no DOM a antiga já saiu do mapa; daqui em diante nenhum
+    // pedido pode tocar o CARTO. Um pan força mosaicos novos para a prova.
+    const posTroca = pedidos.length;
+    // O pan força mosaicos novos e a espera exige um pedido real da base — os
+    // pedidos de relevo/toponímia do aux stack também cumprem a regex de
+    // `pedidos`, por isso contar qualquer pedido não prova nada.
+    const mosaicoBase = page.waitForRequest(
+      (r) => r.url().includes('World_Dark_Gray_Base'),
+      { timeout: 10_000 },
+    );
+    const box = (await page.locator('.leaflet-container').boundingBox())!;
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(box.x + box.width / 2 - 240, box.y + box.height / 2 - 80, { steps: 12 });
+    await page.mouse.up();
+    await mosaicoBase;
+    // O 1.º mosaico prova a base activa, mas o arrasto continua a emitir — um
+    // pedido CARTO tardio tinha de contar também. Drena até a lista assentar
+    // (dois instantes sem crescimento) antes de asserir.
+    const limite = Date.now() + 10_000;
+    let n = -1;
+    while (n !== pedidos.length && Date.now() < limite) {
+      n = pedidos.length;
+      await page.waitForTimeout(300);
+    }
+    const depois = pedidos.slice(posTroca);
+    expect(depois.some((u) => u.includes('cartocdn'))).toBe(false);
   });
 
   test('no Satélite: nem classe nem filtro', async ({ page }) => {
@@ -126,8 +156,14 @@ test.describe('/mapa pele v6 — base «Mapa» recolorida (B6)', () => {
     const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, serviceWorkers: 'block', reducedMotion: 'reduce' });
     // Referência: a mesma base Esri sem filtro não existe atrás de flag; usa-se a base
     // de hoje (pele sem pelebase). As duas medições correm no mesmo runner, em sequência.
-    const semFiltro = await p95Pan(ctx, { pele: true, base: false });
-    const comFiltro = await p95Pan(ctx, { pele: true, base: true });
+    // Mediana de 3: um pan azarado (tiles a chegar, GC) inchava o p95 e fazia
+    // flapar a comparação no runner sem GPU — mediana por configuração.
+    const med3 = async (flags: { pele: boolean; base: boolean }) => {
+      const xs = [await p95Pan(ctx, flags), await p95Pan(ctx, flags), await p95Pan(ctx, flags)].sort((a, b) => a - b);
+      return xs[1];
+    };
+    const semFiltro = await med3({ pele: true, base: false });
+    const comFiltro = await med3({ pele: true, base: true });
     await ctx.close();
     test.info().annotations.push({ type: 'p95 frame (ms)', description: `sem filtro ${semFiltro.toFixed(1)} · com filtro ${comFiltro.toFixed(1)}` });
     // D1: p95 ≤ 20 ms contra a base actual. No runner de CI (sem GPU) o valor absoluto

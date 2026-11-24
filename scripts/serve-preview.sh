@@ -133,7 +133,7 @@ check_export() {
   if [ -n "$fresh" ]; then
     n="$(find "$ROOT/src" -type f -newer "$ENTRY" 2>/dev/null | wc -l | tr -d ' ')"
     echo "aviso: 'out/' ($(stat -f '%Sm' "$ENTRY" 2>/dev/null)) está desactualizado — $n ficheiro(s) de src/ são mais recentes:" >&2
-    echo "$fresh" | sed 's/^/       /' >&2
+    printf '       %s\n' "${fresh//$'\n'/$'\n       '}" >&2
     echo "       corre 'npm run build' antes de tirar conclusões visuais ou de layout." >&2
   fi
 }
