@@ -104,14 +104,20 @@ test.describe('/mapa pele v6 — base «Mapa» recolorida (B6)', () => {
     // .ventu-base-v6 no DOM a antiga já saiu do mapa; daqui em diante nenhum
     // pedido pode tocar o CARTO. Um pan força mosaicos novos para a prova.
     const posTroca = pedidos.length;
+    // O pan força mosaicos novos e a espera exige um pedido real da base — os
+    // pedidos de relevo/toponímia do aux stack também cumprem a regex de
+    // `pedidos`, por isso contar qualquer pedido não prova nada.
+    const mosaicoBase = page.waitForRequest(
+      (r) => r.url().includes('World_Dark_Gray_Base'),
+      { timeout: 10_000 },
+    );
     const box = (await page.locator('.leaflet-container').boundingBox())!;
     await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
     await page.mouse.down();
     await page.mouse.move(box.x + box.width / 2 - 240, box.y + box.height / 2 - 80, { steps: 12 });
     await page.mouse.up();
-    await page.waitForTimeout(800);
+    await mosaicoBase;
     const depois = pedidos.slice(posTroca);
-    expect(depois.length).toBeGreaterThan(0);
     expect(depois.some((u) => u.includes('cartocdn'))).toBe(false);
   });
 
