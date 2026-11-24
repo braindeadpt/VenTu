@@ -579,7 +579,7 @@ test.describe('/mapa — flag da pele v6 (B0)', () => {
   // B9: o HTML estático sai com a pele e quem optou por sair troca depois de montar, por isso
   // as woff2 da Barlow podem ser pedidas no 1.º paint (decisão aceite na B9). O que conta é o
   // estado depois da troca: sem atributo, sem tokens, sem Barlow aplicada, sem #418.
-  test('desligada (off gravado): sem atributo, sem tokens, sem Barlow aplicada, sem #418', async ({ page }) => {
+  test('desligada (off gravado): sem atributo, sem tokens da pele, sem #418 (Barlow é agora global, #461)', async ({ page }) => {
     const erros = await abre(page, { nome: 'desligada', on: false }, '?sport=all');
     await page.waitForLoadState('networkidle', { timeout: 20_000 }).catch(() => {});
     await expect(page.locator('[data-pele]')).toHaveCount(0);
@@ -587,16 +587,11 @@ test.describe('/mapa — flag da pele v6 (B0)', () => {
     const t = await page.evaluate(() => {
       const el = document.querySelector('[data-map-fullscreen="true"]') as HTMLElement | null;
       const cs = el ? getComputedStyle(el) : null;
-      const h = document.querySelector('header.site-header') as HTMLElement | null;
       return {
         abismo: cs?.getPropertyValue('--abismo').trim() ?? '',
-        font: cs?.fontFamily ?? '',
-        cabecalho: h ? getComputedStyle(h).fontFamily : '',
       };
     });
     expect(t.abismo).toBe('');
-    expect(t.font).not.toMatch(/Barlow/);
-    expect(t.cabecalho).not.toMatch(/Barlow/);
     expect(erros).toEqual([]);
   });
 
