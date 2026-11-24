@@ -21,8 +21,8 @@ export default function ErrorState({
 
   return (
     <div className={cn('flex flex-col items-center justify-center py-16 text-center max-w-md mx-auto', className)}>
-      <div className="w-16 h-16 rounded-card bg-score-poor/10 border border-score-poor/25 flex items-center justify-center mb-4">
-        <AlertCircle className="w-8 h-8 text-score-poor" aria-hidden />
+      <div className="w-16 h-16 rounded-card bg-alert-danger/10 border border-alert-danger/25 flex items-center justify-center mb-4">
+        <AlertCircle className="w-8 h-8 text-alert-danger" aria-hidden />
       </div>
       <h3 className="text-h3 text-fg mb-2">{message ?? t.common.error}</h3>
       <p className="text-body text-fg-muted mb-6">

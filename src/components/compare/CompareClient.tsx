@@ -420,7 +420,7 @@ export default function CompareClient({ locale }: { locale: string }) {
           <LuaNoite size={24} locale={locale} className="ml-auto" />
         ) : spotScore !== undefined && (
           <span
-            className={`ml-auto shrink-0 font-mono text-sm font-semibold tabular-nums ${getScoreTokens(spotScore).text}`}
+            className={`ml-auto shrink-0 inline-flex items-center justify-center min-w-[26px] px-1.5 py-0.5 rounded-md font-mono text-sm font-bold tabular-nums ${getScoreTokens(spotScore).badge}`}
           >
             {scoreToNota(spotScore)}
           </span>
@@ -685,8 +685,10 @@ export default function CompareClient({ locale }: { locale: string }) {
               en: winner.allScores[selectedSport]?.ratingEn,
             })}
           </p>
-          <div className={`text-display-lg font-mono tabular-nums ${winnerTokens.text} mt-4`}>
-            {`${scoreToNota(winnerScore)}/10`}
+          <div className="mt-4 flex justify-center">
+            <span className={`inline-flex items-center justify-center px-4 py-1.5 rounded-xl text-display-lg font-mono font-bold tabular-nums ${winnerTokens.badge}`}>
+              {`${scoreToNota(winnerScore)}/10`}
+            </span>
           </div>
         </div>
         )}
@@ -713,7 +715,7 @@ export default function CompareClient({ locale }: { locale: string }) {
                       locale={locale}
                     />
                     {vencedorNoite === data ? (
-                      <span className="rounded-[6px] bg-score-epic px-1.5 py-1 text-meta-sm font-bold uppercase tracking-[0.12em] text-bg-base" data-compare-ganha-cartao="">
+                      <span className="rounded-[6px] bg-score-epic px-1.5 py-1 text-meta-sm font-bold uppercase tracking-[0.12em] text-score-epic-ink" data-compare-ganha-cartao="">
                         {tn.cartaoGanha}
                       </span>
                     ) : null}
@@ -753,11 +755,15 @@ export default function CompareClient({ locale }: { locale: string }) {
                     )}
                   </div>
                 ) : (
-                <div className="text-center my-4">
-                  <div className={`text-display-lg font-mono tabular-nums ${tokens.text}`}>
+                <div className="text-center my-4 flex flex-col items-center">
+                  <div
+                    className={`inline-flex items-center justify-center min-w-[3.5rem] px-3 py-1 rounded-xl text-display-lg font-mono font-bold tabular-nums ${
+                      isSemDados(score) ? 'bg-surface-2/[0.08] text-fg-muted' : tokens.badge
+                    }`}
+                  >
                     {isSemDados(score) ? '—' : scoreToNota(score?.score || 0)}
                   </div>
-                  <div className="text-meta-sm text-fg-muted">{isSemDados(score) ? semDadosTxt : '/10'}</div>
+                  <div className="text-meta-sm text-fg-muted mt-1">{isSemDados(score) ? semDadosTxt : '/10'}</div>
                 </div>
                 )}
 

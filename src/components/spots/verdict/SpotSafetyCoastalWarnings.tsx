@@ -60,12 +60,12 @@ export default function SpotSafetyCoastalWarnings({
       aria-label={label}
       data-testid="spot-safety-coastal"
       data-faixa="ih"
-      className="border-b border-score-poor/25 bg-score-poor/[0.06]"
+      className="border-b border-alert-danger/25 bg-alert-danger/[0.06]"
     >
       <div className="max-w-6xl mx-auto px-4 py-2">
         <div className="flex items-center justify-between gap-2">
           <p className="text-meta-sm font-semibold text-fg inline-flex items-center gap-1.5">
-            <Anchor className="w-3.5 h-3.5 text-score-poor shrink-0" aria-hidden />
+            <Anchor className="w-3.5 h-3.5 text-alert-danger shrink-0" aria-hidden />
             {label}
           </p>
           <a

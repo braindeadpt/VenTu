@@ -103,7 +103,7 @@ export default function SocialShare({ title, text, url, locale = 'pt' }: SocialS
           <div className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium shadow-lg ${
             toast.type === 'success' 
               ? 'bg-score-good/20 text-score-good border border-score-good/30' 
-              : 'bg-score-poor/20 text-score-poor border border-score-poor/30'
+              : 'bg-alert-danger/20 text-alert-danger border border-alert-danger/30'
           }`}>
             {toast.type === 'success' ? <Check className="w-4 h-4" /> : <X className="w-4 h-4" />}
             {toast.message}

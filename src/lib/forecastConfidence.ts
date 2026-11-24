@@ -38,7 +38,7 @@ export function getConfidenceTokenClass(
     case 'alta':
       return 'text-score-good border-score-good/30 bg-score-good/10';
     case 'baixa':
-      return 'text-score-poor border-score-poor/30 bg-score-poor/10';
+      return 'text-alert-danger border-alert-danger/30 bg-alert-danger/10';
     default:
       return 'text-score-fair border-score-fair/30 bg-score-fair/10';
   }

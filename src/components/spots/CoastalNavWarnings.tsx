@@ -117,7 +117,7 @@ export default function CoastalNavWarnings({
     <div
       className={`rounded-card border px-3 py-2.5 mt-3 ${
         isAlert
-          ? 'border-score-poor/30 bg-score-poor/[0.06]'
+          ? 'border-alert-danger/30 bg-alert-danger/[0.06]'
           : 'border-divider bg-surface-1/[0.04]'
       }`}
       data-testid="coastal-nav-warnings"
@@ -126,7 +126,7 @@ export default function CoastalNavWarnings({
       <div className="flex items-center justify-between gap-2 mb-1.5">
         <p className="text-meta-sm font-semibold text-fg inline-flex items-center gap-1.5">
           <Anchor
-            className={`w-3.5 h-3.5 shrink-0 ${isAlert ? 'text-score-poor' : 'text-fg-muted'}`}
+            className={`w-3.5 h-3.5 shrink-0 ${isAlert ? 'text-alert-danger' : 'text-fg-muted'}`}
             aria-hidden
           />
           {t.coastalNavWarnings}
@@ -165,7 +165,7 @@ export default function CoastalNavWarnings({
       )}
       {es.length > 0 && (
         <div
-          className={`mt-2 pt-2 border-t ${isAlert ? 'border-score-poor/20' : 'border-divider'}`}
+          className={`mt-2 pt-2 border-t ${isAlert ? 'border-alert-danger/20' : 'border-divider'}`}
           data-testid="coastal-nav-warnings-es"
         >
           <p className="text-meta-sm font-semibold text-fg inline-flex items-center gap-1.5 mb-1">

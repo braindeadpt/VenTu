@@ -306,7 +306,7 @@ function IhKeyCard({
                   .replace('{runs}', String(dt.runs))
                 return (
                   <p
-                    className="inline-flex flex-wrap items-center gap-x-1.5 gap-y-0.5 rounded-lg border border-score-poor/25 bg-score-poor/10 px-2.5 py-1.5 text-xs text-score-poor"
+                    className="inline-flex flex-wrap items-center gap-x-1.5 gap-y-0.5 rounded-lg border border-alert-danger/25 bg-alert-danger/10 px-2.5 py-1.5 text-xs text-alert-danger"
                     data-ih-key-status-downtime="true"
                     title={`${full} (${dt.runs} ${unit})${dt.lastOkAt ? ` · ${t.lastOk}: ${new Date(dt.lastOkAt).toLocaleString(isPt ? 'pt-PT' : 'en-GB')}` : ''}`}
                   >
@@ -417,7 +417,7 @@ function RadarCard({
               // f92cf42ea): este badge + os logs são onde a falha vive.
               radar.status !== 'ok' && typeof radar.streak === 'number' && radar.streak > 0 ? (
                 <p
-                  className="inline-flex flex-wrap items-center gap-x-1.5 gap-y-0.5 rounded-lg border border-score-poor/25 bg-score-poor/10 px-2.5 py-1.5 text-xs text-score-poor"
+                  className="inline-flex flex-wrap items-center gap-x-1.5 gap-y-0.5 rounded-lg border border-alert-danger/25 bg-alert-danger/10 px-2.5 py-1.5 text-xs text-alert-danger"
                   data-radar-layer-downtime="true"
                   title={
                     radar.lastOkAt
@@ -500,7 +500,7 @@ function TideCard({
               // pipeline, por isso este badge + os logs são onde a falha vive.
               tide.status !== 'ok' && typeof tide.streak === 'number' && tide.streak > 0 ? (
                 <p
-                  className="inline-flex flex-wrap items-center gap-x-1.5 gap-y-0.5 rounded-lg border border-score-poor/25 bg-score-poor/10 px-2.5 py-1.5 text-xs text-score-poor"
+                  className="inline-flex flex-wrap items-center gap-x-1.5 gap-y-0.5 rounded-lg border border-alert-danger/25 bg-alert-danger/10 px-2.5 py-1.5 text-xs text-alert-danger"
                   data-tide-layer-downtime="true"
                   title={
                     tide.lastOkAt
@@ -703,7 +703,7 @@ function ArchiveCard({
                 className="inline-flex items-center gap-1.5 rounded-card border border-divider px-2.5 py-0.5 text-xs font-medium text-fg-muted"
                 data-visual-dynamic
               >
-                <Anchor className="w-3.5 h-3.5 text-score-poor" aria-hidden />
+                <Anchor className="w-3.5 h-3.5 text-alert-danger" aria-hidden />
                 {(archive.dayCount === 1 ? t.archiveChipOne : t.archiveChipMany).replace(
                   '{n}',
                   String(archive.dayCount),

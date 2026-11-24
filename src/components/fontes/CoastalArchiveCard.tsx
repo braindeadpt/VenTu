@@ -82,7 +82,7 @@ export default function CoastalArchiveCard({ locale, baked }: CoastalArchiveCard
           className="inline-flex items-center gap-1.5 rounded-card border border-divider px-2.5 py-0.5 text-xs font-medium text-fg-muted"
           data-visual-dynamic
         >
-          <Anchor className="w-3.5 h-3.5 text-score-poor" aria-hidden />
+          <Anchor className="w-3.5 h-3.5 text-alert-danger" aria-hidden />
           {(archive.dayCount === 1 ? t.chipOne : t.chipMany)
             .replace('{n}', String(archive.dayCount))
             .replace('{w}', String(archive.windowDays))}

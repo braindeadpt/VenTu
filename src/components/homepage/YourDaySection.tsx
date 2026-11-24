@@ -163,10 +163,8 @@ export default function YourDaySection({
                 ) : (
                 <span
                   className={[
-                    'shrink-0 flex items-center justify-center min-w-[44px] h-10 rounded-pill font-mono font-semibold text-sm tabular-nums border',
-                    tokens.bg,
-                    tokens.text,
-                    tokens.border,
+                    'shrink-0 flex items-center justify-center min-w-[44px] h-10 rounded-pill font-mono font-bold text-sm tabular-nums',
+                    tokens.badge,
                   ].join(' ')}
                   aria-label={`${sportLabel}: ${scoreToNota(score)}/10`}
                 >

@@ -226,7 +226,7 @@ export default function Header({ locale }: HeaderProps) {
   const closeMobile = () => setMobileMenuOpen(false);
 
   const linkClass = (active: boolean) =>
-    `shrink-0 px-1.5 xl:px-3 py-1.5 rounded-input text-sm font-medium whitespace-nowrap transition-all duration-[200ms] ease-out-expo motion-reduce:transition-none ${
+    `filter-pill-compact inline-flex items-center shrink-0 px-1.5 xl:px-3 py-1.5 rounded-input text-sm font-medium whitespace-nowrap transition-all duration-[200ms] ease-out-expo motion-reduce:transition-none ${
       active
         ? 'bg-accent/15 text-accent ring-1 ring-accent/25'
         : 'text-fg-subtle hover:text-fg hover:bg-surface-1/[0.04]'
@@ -295,9 +295,9 @@ export default function Header({ locale }: HeaderProps) {
                 href={`/${locale}/`}
                 className="site-logo flex items-center gap-2 group shrink-0"
               >
-                <Wind className="w-7 h-7 sm:w-8 sm:h-8 text-accent group-hover:text-accent-hover transition-colors shrink-0" />
-                <span className="site-logo-txt text-lg sm:text-xl font-bold text-fg tracking-tight">
-                  Ven<span className="text-accent">Tu</span>
+                <Wind className="w-7 h-7 sm:w-8 sm:h-8 text-[var(--sol)] group-hover:text-accent transition-colors shrink-0" aria-hidden />
+                <span className="site-logo-txt font-display font-black italic uppercase tracking-tight text-2xl sm:text-[26px] leading-none text-fg">
+                  Ven<span className="text-[var(--sol)]">Tu</span>
                 </span>
               </Link>
               {/* #273: abaixo de sm o ícone «Mapa da costa» (aria-current) já diz onde se está;
@@ -315,7 +315,7 @@ export default function Header({ locale }: HeaderProps) {
             >
               <Link
                 href={mapaHref}
-                className="site-nav-mapa relative shrink-0 inline-flex items-center gap-1.5 mr-2 xl:mr-3 px-3 py-2 rounded-input text-sm font-semibold whitespace-nowrap text-fg ring-1 ring-inset ring-accent/60 bg-accent/[0.08] hover:bg-accent/15 transition-colors duration-[200ms] motion-reduce:transition-none"
+                className="site-nav-mapa filter-pill-compact relative shrink-0 inline-flex items-center gap-1.5 mr-2 xl:mr-3 px-3 py-2 rounded-input text-sm font-semibold whitespace-nowrap text-fg ring-1 ring-inset ring-accent/60 bg-accent/[0.08] hover:bg-accent/15 transition-colors duration-[200ms] motion-reduce:transition-none"
                 aria-current={isMapPage ? 'page' : undefined}
                 data-testid="nav-mapa-costa"
               >

@@ -71,7 +71,7 @@ describe('WarningPill — contrato partilhado do chip de aviso', () => {
       warning: { level: 'orange' as 'orange', label: 'Vento' },
       locale: 'pt',
     });
-    expect(html).toContain('bg-score-poor/15');
+    expect(html).toContain('bg-alert-warn/15');
   });
 
   it('warningPillTitle sem área → só «Aviso IPMA: rótulo (nível)»', () => {

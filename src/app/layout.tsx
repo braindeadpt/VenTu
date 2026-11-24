@@ -5,6 +5,7 @@ import { spaceGrotesk } from '@/lib/fonts/display'
 import { DEFAULT_OG_IMAGE, SITE_NAME, SITE_URL, SPOT_COUNT } from '@/lib/seo'
 import { pipelineSchedule } from '@/lib/dataPipelineSchedule'
 import './globals.css'
+import '@/styles/v6-fontes.css'
 import GoatCounterScript from '@/components/analytics/GoatCounterScript'
 
 /**
@@ -25,8 +26,8 @@ export const viewport: Viewport = {
   initialScale: 1,
   viewportFit: 'cover',
   themeColor: [
-    { media: '(prefers-color-scheme: dark)', color: '#0F172A' },
-    { media: '(prefers-color-scheme: light)', color: '#FAFAF7' },
+    { media: '(prefers-color-scheme: dark)', color: '#030E18' },
+    { media: '(prefers-color-scheme: light)', color: '#EEF4F8' },
   ],
 }
 

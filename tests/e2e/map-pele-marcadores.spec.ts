@@ -73,12 +73,14 @@ test.describe('/mapa pele v6 — marcadores nas bandas (B1)', () => {
     }
   });
 
-  test('sem a pele: os mesmos discos não usam as bandas v6', async ({ page }) => {
+  test('sem a pele: os mesmos discos mantêm a escala única de 5 bandas v6 e contraste AA (#461)', async ({ page }) => {
     await abrir(page, '/pt/mapa/?pele=0&sport=all');
     await expect(page.locator('[data-pele="v6"]')).toHaveCount(0);
     await expect.poll(async () => (await lerDiscos(page)).length, { timeout: 20_000 }).toBeGreaterThan(3);
-    const v6 = new Set(BANDA_RGB.map(([, rgb]) => rgb));
-    for (const d of await lerDiscos(page)) expect(v6.has(d.bg), `nota ${d.nota} (${d.bg})`).toBe(false);
+    for (const d of await lerDiscos(page)) {
+      expect(d.bg, `nota ${d.nota}`).toBe(bandaDaNota(d.nota));
+      expect(d.ratio, `contraste nota ${d.nota} (${d.bg})`).toBeGreaterThanOrEqual(4.5);
+    }
   });
 
   test('com ?pele=v6: arco do vento na cor do ventoRel e centrado na direcção do tique', async ({ page }) => {

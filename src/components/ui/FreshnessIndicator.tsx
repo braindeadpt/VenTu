@@ -86,7 +86,7 @@ export default function FreshnessIndicator({
         ? 'bg-[rgb(var(--score-good))]'
         : hoursAgo < 12
           ? 'bg-[rgb(var(--score-fair))]'
-          : 'bg-[rgb(var(--score-poor))]';
+          : 'bg-[rgb(var(--alert-danger))]';
 
   const timeLabel =
     updatedAtTs != null ? formatForecastUpdatedAt(updatedAtTs, locale) : null;
@@ -111,7 +111,7 @@ export default function FreshnessIndicator({
         <span
           className={cn(
             'inline-flex items-center gap-1 shrink-0',
-            buoyStatus === 'no-key' ? 'text-score-fair' : 'text-score-poor',
+            buoyStatus === 'no-key' ? 'text-score-fair' : 'text-alert-danger',
           )}
           title={`${t.ui.buoyLayerTitle}${
             buoyDowntime ? ` · ${formatBuoyLayerDowntimeTitle(buoyDowntime, locale)}` : ''
@@ -127,7 +127,7 @@ export default function FreshnessIndicator({
       {coastalWarningsLayer ? (
         coastalWarningsLayer.status !== 'ok' ? (
           <span
-            className="inline-flex items-center gap-1 shrink-0 text-score-poor"
+            className="inline-flex items-center gap-1 shrink-0 text-alert-danger"
             title={
               (coastalWarningsLayer.status === 'down' ? t.ui.coastalDownTitle : t.ui.coastalStaleTitle) +
               (coastalWarningsLayer.fetchedAt

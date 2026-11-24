@@ -40,7 +40,7 @@ export default function AlertUnsubscribeClient({ locale, token }: { locale: stri
         </p>
       )}
       {status === 'fail' && (
-        <p className="text-score-poor">{a.invalidLink}</p>
+        <p className="text-alert-danger">{a.invalidLink}</p>
       )}
       <Link href={`/${locale}/`} className="text-data-waves underline underline-offset-2 hover:text-data-waves/80 text-sm">
         {a.backToVentu}

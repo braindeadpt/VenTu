@@ -213,7 +213,7 @@ export default function ContributionsAdminClient({ locale }: ContributionsAdminC
               className="w-full min-h-[44px] px-3 py-2 rounded-lg bg-surface-1/[0.04] border border-divider text-fg"
             />
           </div>
-          {error && <p className="text-sm text-score-poor">{error}</p>}
+          {error && <p className="text-sm text-alert-danger">{error}</p>}
           <button
             type="submit"
             disabled={busy}
@@ -279,7 +279,7 @@ export default function ContributionsAdminClient({ locale }: ContributionsAdminC
         ))}
       </div>
 
-      {error && <p className="text-sm text-score-poor">{error}</p>}
+      {error && <p className="text-sm text-alert-danger">{error}</p>}
 
       {filtered.length === 0 ? (
         <p className="text-fg-muted text-center py-12">
@@ -340,7 +340,7 @@ export default function ContributionsAdminClient({ locale }: ContributionsAdminC
                       type="button"
                       onClick={() => deleteItem(item.id)}
                       disabled={busy}
-                      className="px-2 py-1 rounded text-xs bg-score-poor/10 text-score-poor border border-score-poor/20"
+                      className="px-2 py-1 rounded text-xs bg-alert-danger/10 text-alert-danger border border-alert-danger/20"
                     >
                       {admin.yes}
                     </button>
@@ -358,7 +358,7 @@ export default function ContributionsAdminClient({ locale }: ContributionsAdminC
                     type="button"
                     onClick={() => confirmDelete(item.id)}
                     disabled={busy}
-                    className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md text-xs text-score-poor border border-score-poor/20 hover:bg-score-poor/10"
+                    className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md text-xs text-alert-danger border border-alert-danger/20 hover:bg-alert-danger/10"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
                     {admin.delete}

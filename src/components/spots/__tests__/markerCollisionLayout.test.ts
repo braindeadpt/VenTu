@@ -260,10 +260,9 @@ describe('contraste do score (WCAG AA ≥ 4.5:1)', () => {
     }
   });
 
-  it('o escalão «closed» usa branco fixo (bg-base falhava AA no cinza)', () => {
+  it('o escalão «closed» usa branco fixo e os restantes usam --score-*-ink (AA nos dois temas, #461)', () => {
     expect(markerScoreInkCss(10)).toBe(MARKER_INK_CLOSED);
-    expect(markerScoreInkCss(50)).toBe('rgb(var(--bg-base))');
-    // Sanidade: branco no #6B7280 = 4.79:1
+    expect(markerScoreInkCss(50)).toBe('rgb(var(--score-fair-ink))');
     expect(contrastRatio(MARKER_INK_CLOSED, SCORE_TIER_HEX_DARK.closed)).toBeGreaterThanOrEqual(4.5);
   });
 });

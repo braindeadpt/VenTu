@@ -25,14 +25,13 @@ Feel: pre-dawn harbour, wet basalt, nautical instruments, newspaper tide table.
 References in spirit (do not copy UI): Linear density + Aesop editorial restraint + a marine chart.
 One justified risk: large tabular scores as the hero, not a stock wave photo with gradient overlay.
 
-### Allowed type (already loaded — `src/lib/fonts/`)
-- UI/body: Geist Sans
-- Numbers/scores/forecast tables: Geist Mono, `tabular-nums`
-- Display headlines (hero, spot names, epic score label): Space Grotesk via `--font-display`
+### Allowed type (already loaded — `src/lib/fonts/` + `src/styles/v6-fontes.css`)
+- UI/body: Barlow (`font-sans`, fallback Geist Sans)
+- Display headlines, spot names, scores: Barlow Condensed (`font-display`, `tabular-nums`)
+- Numbers/forecast tables: Geist Mono (`font-mono`, `tabular-nums`)
 - Editorial only (news article, about): IBM Plex Serif
 - Do not introduce Inter, Roboto, Arial, Comic fonts, or random Google Display faces.
-- Do not add another family — these four cover every surface.
-- Exception (approved by Pedro, 01/11/2026): the v6 «Atlântico» surfaces (`.v6`, `.v6h`, `.site-header[data-v6]`, and `/mapa` under `[data-pele='v6']`) use the self-hosted Barlow Condensed (display, scores, numbers with `tabular-nums`) and Barlow (text) from `src/styles/v6-fontes.css`, scoped to those roots only. Everywhere else the four families above still apply.
+- Global theme «Atlântico» (#461): self-hosted Barlow and Barlow Condensed from `src/styles/v6-fontes.css` are loaded globally across all routes, unifying `/`, `/mapa`, `/spots/[slug]` and all secondary routes.
 
 ### Color (tokens only)
 Use CSS variables from the design system.

@@ -47,16 +47,16 @@ export default function SeaStateSafetyBanner({
 
   const bannerTone =
     level === 'red'
-      ? 'border-red-500/40 bg-red-500/10'
+      ? 'border-alert-danger/40 bg-alert-danger/10'
       : level === 'orange'
-        ? 'border-score-poor/40 bg-score-poor/10'
+        ? 'border-alert-warn/40 bg-alert-warn/10'
         : 'border-score-fair/40 bg-score-fair/10';
 
   const headlineTone =
     level === 'red'
-      ? 'text-red-500'
+      ? 'text-alert-danger'
       : level === 'orange'
-        ? 'text-score-poor'
+        ? 'text-alert-warn'
         : 'text-score-fair';
 
   return (

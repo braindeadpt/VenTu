@@ -313,7 +313,7 @@ export default function FeedbackForm({ locale, defaultSpotSlug }: FeedbackFormPr
             </div>
 
             {error && (
-              <p className="text-sm text-score-poor">{error}</p>
+              <p className="text-sm text-alert-danger">{error}</p>
             )}
 
             <button

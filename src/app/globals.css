@@ -30,86 +30,103 @@ html:has([data-embed-widget]) body {
     --ventu-spot-sticky-top: 64px;
     --ventu-spot-tabs-h: 48px;
 
-    /* ───── DARK MODE (default) — slate-950 base ───── */
-    
+    /* ───── DARK MODE (default) — Tema global «Atlântico» (cores.md, #461) ───── */
+
     /* Surfaces & backgrounds */
-    --bg-base:       15 23 42;          /* slate-950  #0F172A */
-    --bg-elevated:  30 41 59;           /* slate-800  #1E293B */
-    --surface-1:   255 255 255;
-    --surface-2:   255 255 255;
-    --surface-3:   255 255 255;
-    --divider:     255 255 255 / 0.08;
-    --divider-strong: 255 255 255 / 0.12;
+    --bg-base:         3 14 24;         /* abismo  #030E18 */
+    --bg-elevated:     7 27 44;         /* fundo   #071B2C */
+    --surface-1:     243 248 251;       /* espuma  (usado com /[0.04]) */
+    --surface-2:     243 248 251;
+    --surface-3:      12 42 66;         /* mar     #0C2A42 */
+    --divider:        30 67 97;         /* linha   #1E4361 */
+    --divider-strong: 56 105 142;       /* linha forte #38698E */
 
-    /* Foreground / text — alphas tuned for WCAG AA on slate-950 base.
-       fg-subtle was 0.55 on slate-500 → ~3.0:1 contrast (FAIL AA).
-       Bumped to slate-400 @ 0.85 → ~4.6:1 contrast (PASS AA). */
-    --fg:          241 245 249 / 0.95;  /* slate-100  #F1F5F9 */
-    --fg-muted:    203 213 225 / 0.85;  /* slate-300  #CBD5E1 */
-    --fg-subtle:   148 163 184 / 0.90;  /* slate-400  #94A3B8 */
-    --fg-disabled: 100 116 139 / 0.50;  /* slate-500  #64748B */
+    /* Foreground / text — cores.md (contraste ≥ 7:1 sobre abismo e fundo) */
+    --fg:          243 248 251;         /* espuma  #F3F8FB (18.18:1 / 16.33:1) */
+    --fg-muted:    169 194 212;         /* nevoa   #A9C2D4 (10.51:1 / 9.44:1) */
+    --fg-subtle:   151 178 198;         /* nevoa-2 #97B2C6 (8.2:1 / 7.3:1) */
+    --fg-disabled:  86 103 123;         /* noite   #56677B */
 
-    /* Alpha-free RGB companions — for composing custom alpha values
-       in SVG attributes and other contexts where Tailwind opacity
-       modifiers don't work (e.g. rgb(var(--fg-rgb) / 0.04)). */
-    --fg-rgb:          241 245 249;
-    --fg-muted-rgb:    203 213 225;
-    --fg-subtle-rgb:   148 163 184;
-    --fg-disabled-rgb: 100 116 139;
-    --surface-1-rgb:   255 255 255;
-    --surface-2-rgb:   255 255 255;
-    --surface-3-rgb:   255 255 255;
-    --divider-rgb:     255 255 255;
-    --divider-strong-rgb: 255 255 255;
+    /* Alpha-free RGB companions */
+    --fg-rgb:          243 248 251;
+    --fg-muted-rgb:    169 194 212;
+    --fg-subtle-rgb:   151 178 198;
+    --fg-disabled-rgb:  86 103 123;
+    --surface-1-rgb:   243 248 251;
+    --surface-2-rgb:   243 248 251;
+    --surface-3-rgb:    12 42 66;
+    --divider-rgb:      30 67 97;
+    --divider-strong-rgb: 56 105 142;
 
-    /* Data viz colors */
-    /* Data hues are also used as small text/links on base and tinted chips,
-       so each hue sits one step toward the light (dark theme) ink side:
-       sky-500 / violet-400 / cyan-400 / amber-400 (AA on slate-900 + tints). */
-    --data-waves:    14 165 233;  /* sky-500   */
-    --data-wind:    167 139 250;  /* violet-400 */
-    --data-water:    34 211 238;  /* cyan-400  */
-    --data-period:  251 191 36;   /* amber-400 */
+    /* Marca e acentos Atlântico */
+    --sol:           #FFC93C;
+    --gelo:          #7FE7FF;
+
+    /* Data viz colors (AA sobre #030E18 / #071B2C) */
+    --data-waves:   127 231 255;        /* gelo    #7FE7FF (12.29:1) */
+    --data-wind:    167 139 250;        /* violet-400 */
+    --data-water:    64 220 208;        /* bom     #40DCD0 */
+    --data-period:  255 201 60;         /* sol     #FFC93C */
 
     /* Sport accents (diferenciados para identificação rápida) */
-    --sport-surf:       14 165 233;   /* sky-500     */
-    --sport-kitesurf:  167 139 250;   /* violet-400 — AA on slate-900 headings */
-    --sport-windsurf:  245 158 11;    /* amber-500   */
-    --sport-bodyboard:  16 185 129;   /* emerald-500 */
-    --sport-sup:        6 182 212;    /* cyan-500    */
-    --sport-wakeboard: 236 72 153;    /* pink-500    */
-    --sport-foil:      129 140 248;   /* indigo-400 — AA on slate-900 headings */
+    --sport-surf:      127 231 255;     /* gelo    #7FE7FF */
+    --sport-kitesurf:  167 139 250;     /* violet-400 */
+    --sport-windsurf:  255 201 60;      /* sol     #FFC93C */
+    --sport-bodyboard:  64 220 208;     /* bom     #40DCD0 */
+    --sport-sup:        34 211 238;     /* cyan-400 */
+    --sport-wakeboard: 244 114 182;     /* pink-400 */
+    --sport-foil:      129 140 248;     /* indigo-400 */
 
     /* Wind direction tints */
-    --windDir-offshore:  34 197 94;    /* green-500  */
-    --windDir-onshore:  248 113 113;   /* red-400 — AA on slate-800 cards (red-500 = 3.89:1) */
-    --windDir-cross:    148 163 184;   /* slate-400 */
+    --windDir-offshore:  34 197 94;     /* green-500 */
+    --windDir-onshore:  248 113 113;    /* red-400 */
+    --windDir-cross:    169 194 212;    /* nevoa */
 
-    /* Score colors — single source of truth.
-       Scale: EPICO (azul) > BOM (verde-mar) > FUN (âmbar) > FLAT (vermelho) > FECHADO (cinza) */
-    --score-epic:   14 165 233;   /* sky-500    — 80-100 */
-    --score-good:   16 185 129;   /* emerald-500 — 60-79 */
-    --score-fair:   245 158 11;   /* amber-500  — 40-59 */
-    --score-poor:   248 113 113;  /* red-400 — AA on red score tints */
-    --score-closed: 107 114 128;  /* gray-500   — 0-19  */
+    /* Score colors — escala ÚNICA v6 daltonismo-safe (cores.md, #461).
+       Muito bom #FFF07A · Bom #40DCD0 · Dá #C99E2A · Fraco #4479EE · Não dá #A8464A · Noite #56677B */
+    --score-epic:       255 240 122;    /* #FFF07A */
+    --score-good:        64 220 208;    /* #40DCD0 */
+    --score-fair:       201 158 42;     /* #C99E2A */
+    --score-poor:        68 121 238;    /* #4479EE */
+    --score-closed:     168 70 74;      /* #A8464A */
+    --score-night:       86 103 123;    /* #56677B */
+
+    /* Tinta sobre fill sólido da banda (contraste WCAG AA/AAA: 4.66:1–16.10:1) */
+    --score-epic-ink:     3 14 24;      /* #030E18 */
+    --score-good-ink:     3 14 24;      /* #030E18 */
+    --score-fair-ink:     3 14 24;      /* #030E18 */
+    --score-poor-ink:     3 14 24;      /* #030E18 */
+    --score-closed-ink: 255 255 255;    /* #FFFFFF */
+    --score-night-ink:  255 255 255;    /* #FFFFFF */
+
+    /* Texto livre da banda sobre fundo escuro (#071B2C) — ≥ 4.5:1 AA em todos os tiers */
+    --score-epic-text:   255 240 122;   /* 14.97:1 */
+    --score-good-text:    64 220 208;   /* 10.29:1 */
+    --score-fair-text:   219 178 60;    /*  8.65:1 */
+    --score-poor-text:   116 164 255;   /*  6.74:1 */
+    --score-closed-text: 240 132 136;   /*  6.40:1 */
 
     /* Aliases used by the ScoreGauge SVG and similar */
     --score-current: var(--score-good);
 
-    /* ───── Single signature accent — derived from score-epic (cyan) ─────
-     * Used for all primary CTAs, the "Tu" wordmark, the active nav state,
-     * and the focus ring. ONE color, three states (default/hover/active). */
-    --accent:         6 182 212;   /* cyan-500  #06B6D4 — default */
-    --accent-hover:  14 165 233;   /* sky-500   #0EA5E9 — hover */
-    --accent-active:  8 145 178;   /* cyan-600  #0891B2 — active */
-    --accent-rgb:     6 182 212;   /* companion for alpha composition */
+    /* Alertas / erros / offline — tokens dedicados, NUNCA usar --score-poor (#461) */
+    --alert-danger:      248 113 113;   /* #F87171 (6.4:1 sobre #071B2C) */
+    --alert-warn:        249 115 22;    /* #F97316 (6.2:1 sobre #071B2C) */
+    --alert-orange-text: 249 115 22;    /* #F97316 (6.2:1 sobre #071B2C) */
+    --alert-warn-text:   255 201 60;    /* #FFC93C (11.4:1 sobre #071B2C) */
 
-    /* Daypart ambient — cool cyan tint for late-day header (no more warm) */
-    --daypart-tint:  14 165 233;   /* sky-500 */
+    /* Signature accent — Atlântico Sol (#FFC93C) */
+    --accent:         255 201 60;       /* #FFC93C */
+    --accent-hover:   255 214 98;       /* #FFD662 */
+    --accent-active:  235 178 32;       /* #EBB220 */
+    --accent-rgb:     255 201 60;
 
-    /* Skeleton tokens — theme-aware (work in both light & dark) */
-    --skeleton-bg:      255 255 255;  /* fg-rgb in dark, used at /0.04 */
-    --skeleton-shimmer: 255 255 255;  /* fg-rgb in dark, used at /0.08 */
+    /* Daypart ambient */
+    --daypart-tint:   127 231 255;      /* gelo */
+
+    /* Skeleton tokens */
+    --skeleton-bg:      243 248 251;
+    --skeleton-shimmer: 243 248 251;
   }
 
   /* ═══════════════════════════════════════════════════════════════
@@ -166,81 +183,87 @@ html:has([data-embed-widget]) body {
   }
 
   /* ═══════════════════════════════════════════════════════════════
-   * THEME OCEAN — Light mode (white-sand base)
+   * THEME OCEAN — Variante clara «Sol» (cores.md:55-66, #461)
    * Aplica-se ao elemento <html> com class="theme-ocean".
    * ═══════════════════════════════════════════════════════════════ */
   .theme-ocean {
-    /* Carta-nautica: neutral cool base, not warm cream */
-    --bg-base:       248 250 252;      /* slate-50  #F8FAFC */
-    --bg-elevated:  255 255 255;       /* #FFFFFF — white */
-    --surface-1:    15 23 42;
-    --surface-2:    15 23 42;
-    --surface-3:    15 23 42;
-    --divider:      15 23 42 / 0.10;
-    --divider-strong: 15 23 42 / 0.18;
+    --bg-base:       238 244 248;       /* abismo Sol #EEF4F8 */
+    --bg-elevated:   255 255 255;       /* fundo Sol  #FFFFFF */
+    --surface-1:       4 19 31;
+    --surface-2:       4 19 31;
+    --surface-3:       4 19 31;
+    --divider:         4 19 31 / 0.12;
+    --divider-strong:  4 19 31 / 0.22;
 
-    /* Foreground / text — light theme, AA-tuned. */
-    --fg:           15 23 42 / 1.0;    /* slate-900  #0F172A */
-    --fg-muted:     51 65 85 / 0.85;   /* slate-700  #334155 */
-    --fg-subtle:    71 85 105 / 0.95;  /* slate-600  #475569 — AA on #f8fafc */
-    --fg-disabled:  148 163 184 / 0.55;/* slate-400  #94A3B8 */
+    /* Foreground / text — cores.md Sol (16.93:1 / 7.33:1 sobre #EEF4F8) */
+    --fg:              4 19 31;         /* #04131F */
+    --fg-muted:       56 82 106;        /* #38526A (8.13:1 sobre branco) */
+    --fg-subtle:      56 82 106;        /* #38526A */
+    --fg-disabled:   100 116 139;
 
     /* Alpha-free RGB companions */
-    --fg-rgb:          15 23 42;
-    --fg-muted-rgb:    51 65 85;
-    --fg-subtle-rgb:   71 85 105;
-    --fg-disabled-rgb: 148 163 184;
-    --surface-1-rgb:   15 23 42;
-    --surface-2-rgb:   15 23 42;
-    --surface-3-rgb:   15 23 42;
-    --divider-rgb:     15 23 42;
-    --divider-strong-rgb: 15 23 42;
+    --fg-rgb:           4 19 31;
+    --fg-muted-rgb:    56 82 106;
+    --fg-subtle-rgb:   56 82 106;
+    --fg-disabled-rgb: 100 116 139;
+    --surface-1-rgb:    4 19 31;
+    --surface-2-rgb:    4 19 31;
+    --surface-3-rgb:    4 19 31;
+    --divider-rgb:      4 19 31;
+    --divider-strong-rgb: 4 19 31;
 
-    /* Data viz — mais escuros para legibilidade AA em fundo claro (texto,
-       links e chips): sky-700 / violet-700 / cyan-700 / amber-800.
-       O âmbar é o hue mais claro dos quatro: a amber-700 (#b45309) os chips
-       tintados do NewsCard/EventCard davam 4.43:1 sobre a superfície card-1
-       (#eff1f4) — falha AA por 0.07 e o axe-audit apanha-a. amber-800 leva-o
-       a 6.3:1. Os outros três já passam nesta superfície (5.2 / 6.3 / 4.7),
-       por isso só este desce um degrau — o mesmo que --sport-windsurf. */
-    --data-waves:     3 105 161;  /* sky-700   */
-    --data-wind:    109 40 217;    /* violet-700 */
-    --data-water:    14 116 144;   /* cyan-700  */
-    --data-period:  146 64 14;     /* amber-800 — AA on tinted chips */
+    --sol:           #9A6A00;           /* cores.md:63 — 4.73:1 sobre branco */
+    --gelo:          #005F8A;           /* cores.md:64 — 6.99:1 sobre branco */
+
+    /* Data viz — AA sobre fundo claro #EEF4F8 / #FFFFFF */
+    --data-waves:      0 95 138;        /* #005F8A (6.99:1) */
+    --data-wind:     109 40 217;        /* violet-700 */
+    --data-water:     14 116 144;       /* cyan-700 */
+    --data-period:   154 106 0;         /* #9A6A00 (4.73:1) */
 
     /* Sport accents (light-optimized) */
-    --sport-surf:        7 89 133;     /* sky-700     */
-    --sport-kitesurf:  126 34 206;     /* violet-700  */
-    --sport-windsurf:  146 64 14;      /* amber-800 — AA on tinted badges */
-    --sport-bodyboard:  6 78 59;      /* emerald-800 — AA on tinted pills (emerald-700 = 4.47 on #e6e8ec) */
-    --sport-sup:        14 116 144;    /* cyan-700    */
-    --sport-wakeboard: 190 18 60;      /* pink-700    */
-    --sport-foil:       67 56 202;     /* indigo-700  */
+    --sport-surf:        0 95 138;
+    --sport-kitesurf:  126 34 206;
+    --sport-windsurf:  146 64 14;
+    --sport-bodyboard:   6 78 59;
+    --sport-sup:        14 116 144;
+    --sport-wakeboard: 190 18 60;
+    --sport-foil:       67 56 202;
 
-    /* Wind direction — mesmo tratamento dos score colors: um degrau mais
-       escuro para AA em fundo claro E nos chips tintados a /20.
-       green-600 = 3.3:1 / red-600 = 4.47:1 em branco (FAIL AA);
-       green-800 = 7.1:1 (5.2:1 no tint /20) e red-700 = 6.5:1 (4.6:1 no
-       tint /20). */
-    --windDir-offshore:  22 101 52;     /* green-800 */
-    --windDir-onshore:  185 28 28;      /* red-700   */
-    --windDir-cross:   71 85 105;       /* slate-600 — AA em branco (slate-500 = 3.03:1 falha AA) */
+    /* Wind direction — AA em fundo claro */
+    --windDir-offshore:  22 101 52;
+    --windDir-onshore:  185 28 28;
+    --windDir-cross:     56 82 106;
 
-    /* Score colors — mais saturados para fundo claro */
-    --score-epic:     3 105 161;       /* sky-700 — AA on epic score tints */
-    --score-good:     6 95 70;         /* emerald-800 — AA on score tints */
-    --score-fair:    146 64 14;        /* amber-800 — AA on amber score tints */
-    --score-poor:    185 28 28;        /* red-700   — AA on red score tints */
-    --score-closed:  107 114 128;      /* gray-500 */
+    /* Score colors — MESMAS 5 bandas v6 (fills idênticos nos dois temas) */
+    --score-epic:       255 240 122;    /* #FFF07A */
+    --score-good:        64 220 208;    /* #40DCD0 */
+    --score-fair:       201 158 42;     /* #C99E2A */
+    --score-poor:        68 121 238;    /* #4479EE */
+    --score-closed:     168 70 74;      /* #A8464A */
+    --score-night:       86 103 123;    /* #56677B */
 
-    /* Light accent — cyan-700 for AA contrast on slate-50 base */
-    --accent:         21 94 117;    /* cyan-800 #155E75 — AA on accent/15 tints */
-    --accent-hover:   14 165 233;   /* sky-500  #0EA5E9 — hover */
-    --accent-active:   6 182 212;   /* cyan-500 #06B6D4 — active */
-    --accent-rgb:     14 116 144;
-    --daypart-tint:    2 132 199;   /* sky-600 */
-    --skeleton-bg:     15 23 42;    /* fg-rgb, /0.04 */
-    --skeleton-shimmer:15 23 42;    /* fg-rgb, /0.08 */
+    /* Texto livre da banda sobre fundo claro (#FFFFFF / #EEF4F8) — ≥ 6:1 AA */
+    --score-epic-text:   120 88 0;      /* #785800 (6.9:1 sobre branco) */
+    --score-good-text:     0 107 100;   /* #006B64 (6.3:1 sobre branco) */
+    --score-fair-text:   125 89 0;      /* #7D5900 (6.6:1 sobre branco) */
+    --score-poor-text:    29 78 216;    /* #1D4ED8 (6.7:1 sobre branco) */
+    --score-closed-text: 153 45 50;     /* #992D32 (6.9:1 sobre branco) */
+
+    /* Alertas / erros / offline — AA sobre fundo claro (incluindo tint /15) */
+    --alert-danger:      185 28 28;     /* #B91C1C (6.5:1 sobre branco) */
+    --alert-warn:        180 83 9;      /* #B45309 (fill/border) */
+    --alert-orange-text: 154 52 18;     /* #9A3412 (6.4:1 sobre branco, 5.8:1 sobre tint /15) */
+    --alert-warn-text:   146 64 14;     /* #92400E (7.1:1 sobre branco) */
+
+    /* Light accent — gelo Sol (#005F8A, 6.99:1 sobre branco) */
+    --accent:           0 95 138;
+    --accent-hover:     0 79 116;
+    --accent-active:    0 65 96;
+    --accent-rgb:       0 95 138;
+    --daypart-tint:     0 95 138;
+    --skeleton-bg:      4 19 31;
+    --skeleton-shimmer: 4 19 31;
   }
 
   /* Default surface */
@@ -408,8 +431,8 @@ html:has([data-embed-widget]) body {
   .sport-accent[data-sport="foil"]      { @apply text-sport-foil; }
 
   /* ── Daypart ambient (18h–21h PT via data-daypart on <html>) ── */
-  /* Cool cyan tint — no warm gradient. Sober overlay on header. */
-  html[data-daypart='sunset'] .site-header {
+  /* Cool cyan tint — no warm gradient. Sober overlay on header; cabeçalhos v6 preservam o seu fundo sólido. */
+  html[data-daypart='sunset'] .site-header:not([data-pele-cabecalho='v6']):not([data-v6='home']) {
     background: linear-gradient(
       180deg,
       rgb(var(--daypart-tint) / 0.10) 0%,
@@ -417,6 +440,15 @@ html:has([data-embed-widget]) body {
     ) !important;
     border-bottom-color: rgb(var(--daypart-tint) / 0.18);
   }
+
+  /* #461: no tema claro (.theme-ocean), usos de texto livre `text-score-*`
+     resolvem às tintas AA `--score-*-text` (≥ 6:1 sobre branco e tints /15),
+     mantendo `bg-score-*` nos 5 fills oficiais das bandas v6. */
+  .theme-ocean .text-score-epic   { color: rgb(var(--score-epic-text)); }
+  .theme-ocean .text-score-good   { color: rgb(var(--score-good-text)); }
+  .theme-ocean .text-score-fair   { color: rgb(var(--score-fair-text)); }
+  .theme-ocean .text-score-poor   { color: rgb(var(--score-poor-text)); }
+  .theme-ocean .text-score-closed { color: rgb(var(--score-closed-text)); }
 
   /* Ocean-themed hero surface (cyan inner glow, no warm gradient) */
   .hero-ocean-surface {

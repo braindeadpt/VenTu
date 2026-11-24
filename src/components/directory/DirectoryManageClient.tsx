@@ -151,7 +151,7 @@ export default function DirectoryManageClient({ locale, seedById }: Props) {
         </p>
       </header>
 
-      {error && <p className="text-meta-sm text-score-poor">{error}</p>}
+      {error && <p className="text-meta-sm text-alert-danger">{error}</p>}
       {okMsg && <p className="text-meta-sm text-score-good">{okMsg}</p>}
 
       {empty ? (

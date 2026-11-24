@@ -79,10 +79,10 @@ describe('<select> nativo — color-scheme por tema (popup legível)', () => {
   it('o tema claro define os tokens que as opções usam (fundo claro, tinta escura)', () => {
     const ocean = rules.get('.theme-ocean');
     expect(ocean?.['--bg-elevated']).toMatch(/^255 255 255/);
-    expect(ocean?.['--fg']).toMatch(/^15 23 42/);
+    expect(ocean?.['--fg']).toMatch(/^4 19 31/);
     const dark = rules.get(':root');
-    expect(dark?.['--bg-elevated']).toMatch(/^30 41 59/);
-    expect(dark?.['--fg']).toMatch(/^241 245 249/);
+    expect(dark?.['--bg-elevated']).toMatch(/^7 27 44/);
+    expect(dark?.['--fg']).toMatch(/^243 248 251/);
   });
 
   it('não põe color-scheme no :root nem no .theme-ocean (scrollbars e outros controlos intactos)', () => {

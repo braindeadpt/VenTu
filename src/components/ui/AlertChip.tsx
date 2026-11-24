@@ -42,11 +42,11 @@ const SEVERITY_STYLES: Record<AlertSeverity, {
     iconClass: 'text-score-fair',
   },
   danger: {
-    bg: 'bg-score-poor/12',
-    border: 'border-score-poor/35',
-    text: 'text-score-poor',
-    icon: 'border-score-poor/40',
-    iconClass: 'text-score-poor',
+    bg: 'bg-alert-danger/12',
+    border: 'border-alert-danger/35',
+    text: 'text-alert-danger',
+    icon: 'border-alert-danger/40',
+    iconClass: 'text-alert-danger',
   },
 };
 

@@ -54,7 +54,7 @@ export const PROVENANCE_TIER_CLASS: Record<ProvenanceTier, string> = {
   measured: 'border-score-good/40 bg-score-good/10 text-score-good',
   adjusted: 'border-score-fair/40 bg-score-fair/10 text-score-fair',
   modeled: 'border-divider bg-surface-1/[0.04] text-fg-muted',
-  degraded: 'border-score-poor/40 bg-score-poor/10 text-score-poor',
+  degraded: 'border-alert-danger/40 bg-alert-danger/10 text-alert-danger',
 };
 
 /**

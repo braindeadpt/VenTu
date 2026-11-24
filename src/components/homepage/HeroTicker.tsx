@@ -41,7 +41,7 @@ function freshnessDotClass(ageHours: number | null): string {
   if (ageHours === null) return 'bg-fg-subtle';
   if (ageHours < 3) return 'bg-score-good';
   if (ageHours < 12) return 'bg-score-fair';
-  return 'bg-score-poor';
+  return 'bg-alert-danger';
 }
 
 type UiLabels = ReturnType<typeof getTranslation>['ui'];
@@ -172,11 +172,11 @@ export default function HeroTicker({
           >
             {SEP}
             <AlertTriangle
-              className={`w-3.5 h-3.5 ${buoyStatus === 'no-key' ? 'text-score-fair' : 'text-score-poor'}`}
+              className={`w-3.5 h-3.5 ${buoyStatus === 'no-key' ? 'text-score-fair' : 'text-alert-danger'}`}
               aria-hidden
             />
             <span
-              className={`font-medium ${buoyStatus === 'no-key' ? 'text-score-fair' : 'text-score-poor'}`}
+              className={`font-medium ${buoyStatus === 'no-key' ? 'text-score-fair' : 'text-alert-danger'}`}
               data-buoy-streak="true"
             >
               {buoyLayerLabel(buoyStatus, t.ui)}
@@ -202,10 +202,10 @@ export default function HeroTicker({
           >
             {SEP}
             <AlertTriangle
-              className="w-3.5 h-3.5 text-score-poor"
+              className="w-3.5 h-3.5 text-alert-danger"
               aria-hidden
             />
-            <span className="font-medium text-score-poor">
+            <span className="font-medium text-alert-danger">
               {coastalLayerLabel(coastalStatus, t.ui)}
             </span>
           </span>
