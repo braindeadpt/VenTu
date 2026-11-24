@@ -97,7 +97,10 @@ export function notasHorariasCompare(
     if (linhaDe(t) === undefined) return null;
     const sd = hourly[i]?.semDados ?? [];
     const faltaVento = sd.includes('vento');
-    const faltaOnda = sd.includes('onda') && !spot.aguaInterior && spot.type !== 'wakeboard';
+    // A onda em falta só é N/A no SUP costeiro (regra de scoreSUP); o motor do
+    // wakeboard não lê waveHeight — num spot costeiro com cable não pode dar «—».
+    const faltaOnda =
+      sport === 'sup' && sd.includes('onda') && !spot.aguaInterior && spot.type !== 'wakeboard';
     return faltaVento || faltaOnda ? null : (scores[i] ?? 0);
   });
 }
