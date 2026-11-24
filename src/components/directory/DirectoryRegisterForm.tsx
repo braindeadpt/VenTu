@@ -259,7 +259,7 @@ export default function DirectoryRegisterForm({ locale, onCreated }: Props) {
         </Button>
 
         {message && <p className="text-meta-sm text-score-good">{message}</p>}
-        {error && <p className="text-meta-sm text-score-poor">{error}</p>}
+        {error && <p className="text-meta-sm text-alert-danger">{error}</p>}
       </form>
     </Card>
     </div>

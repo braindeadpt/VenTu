@@ -319,9 +319,9 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
           href={resolveSpotHref(locale, seaState.slug)}
           className={`flex items-center gap-2 px-4 py-2 text-sm font-medium ${
             seaState.warning.level === 'red'
-              ? 'bg-red-500/10 text-red-500 border-b border-red-500/30'
+              ? 'bg-alert-danger/10 text-alert-danger border-b border-alert-danger/30'
               : seaState.warning.level === 'orange'
-                ? 'bg-score-poor/10 text-score-poor border-b border-score-poor/30'
+                ? 'bg-alert-warn/10 text-alert-warn border-b border-alert-warn/30'
                 : 'bg-score-fair/10 text-score-fair border-b border-score-fair/30'
           } hover:brightness-110 transition-all`}
         >
@@ -451,7 +451,7 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
             href={ipmaRadarUrl(locale)}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-start gap-2 text-sm mt-2 text-score-poor hover:underline"
+            className="flex items-start gap-2 text-sm mt-2 text-alert-danger hover:underline"
           >
             <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" aria-hidden />
             <span>
@@ -466,7 +466,7 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
         {coastalState && (
           <Link
             href={resolveSpotHref(locale, coastalState.slug)}
-            className="flex items-start gap-2 text-sm mt-2 text-score-poor hover:underline"
+            className="flex items-start gap-2 text-sm mt-2 text-alert-danger hover:underline"
           >
             <Anchor className="w-4 h-4 shrink-0 mt-0.5" aria-hidden />
             <span>

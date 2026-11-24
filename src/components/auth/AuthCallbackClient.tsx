@@ -67,7 +67,7 @@ export default function AuthCallbackClient({ locale }: { locale: string }) {
       )}
       {status === 'fail' && (
         <>
-          <p className="text-score-poor">
+          <p className="text-alert-danger">
             {t.failed}
           </p>
           <a href={`/${locale}/`} className="text-data-waves hover:underline text-sm">

@@ -17,8 +17,8 @@ interface WindSafetyNoteProps {
 
 const LEVEL_CLASS: Record<WindSafetyNoteLevel, string> = {
   'side-offshore': 'bg-score-fair/15 text-score-fair border-score-fair/40',
-  offshore: 'bg-score-poor/15 text-score-poor border-score-poor/40',
-  'so-profissionais': 'bg-score-poor/15 text-score-poor border-score-poor/40',
+  offshore: 'bg-alert-danger/15 text-alert-danger border-alert-danger/40',
+  'so-profissionais': 'bg-alert-danger/15 text-alert-danger border-alert-danger/40',
 };
 
 const VARIANT_CLASS: Record<WindSafetyNoteVariant, string> = {

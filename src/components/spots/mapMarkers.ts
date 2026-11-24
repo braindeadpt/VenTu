@@ -489,23 +489,23 @@ export function planMarkerLayout(
  * usa `rgb(var(--score-*))` e resolve estas mesmas cores.
  */
 export const SCORE_TIER_HEX_DARK = {
-  epic: '#0EA5E9',
-  good: '#10B981',
-  fair: '#F59E0B',
-  poor: '#F87171',
-  closed: '#6B7280',
+  epic: '#FFF07A',
+  good: '#40DCD0',
+  fair: '#C99E2A',
+  poor: '#4479EE',
+  closed: '#A8464A',
 } as const;
 export const SCORE_TIER_HEX_LIGHT = {
-  epic: '#0369A1',
-  good: '#065F46',
-  fair: '#92400E',
-  poor: '#B91C1C',
-  closed: '#6B7280',
+  epic: '#FFF07A',
+  good: '#40DCD0',
+  fair: '#C99E2A',
+  poor: '#4479EE',
+  closed: '#A8464A',
 } as const;
-/** `rgb(var(--bg-base))` resolvido: slate-950 no tema escuro, slate-50 no claro. */
-export const MARKER_INK_DARK_THEME = '#0F172A';
-export const MARKER_INK_LIGHT_THEME = '#F8FAFC';
-/** Tinta fixa do escalão «closed» (cinza #6B7280 — bg-base escuro falha AA). */
+/** Tinta dos escalões claros nas 5 bandas v6 (`--score-*-ink`: `#030E18` nos dois temas). */
+export const MARKER_INK_DARK_THEME = '#030E18';
+export const MARKER_INK_LIGHT_THEME = '#030E18';
+/** Tinta fixa do escalão «closed» (`#A8464A` — branco 5.36:1 nos dois temas). */
 export const MARKER_INK_CLOSED = '#FFFFFF';
 
 /** Luminância relativa WCAG 2.x de uma cor #RRGGBB. */
@@ -536,7 +536,8 @@ export function contrastRatio(hexA: string, hexB: string): number {
  * 3.65:1; por isso leva branco fixo (4.79:1 nos dois temas).
  */
 export function markerScoreInkCss(score: number): string {
-  return getScoreTier(score) === 'closed' ? MARKER_INK_CLOSED : 'rgb(var(--bg-base))';
+  const tier = getScoreTier(score);
+  return tier === 'closed' ? MARKER_INK_CLOSED : `rgb(var(--score-${tier}-ink))`;
 }
 
 /** Ink resolvido a hex por tema — espelho do que markerScoreInkCss produz no browser. */

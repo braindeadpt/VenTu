@@ -24,10 +24,8 @@ export default function ScoreBadge({
   return (
     <span
       className={cn(
-        'inline-flex items-center gap-1.5 rounded-pill font-mono font-semibold tabular-nums border',
-        tokens.bg,
-        tokens.text,
-        tokens.border,
+        'inline-flex items-center gap-1.5 rounded-pill font-mono font-bold tabular-nums',
+        tokens.badge,
         glow && tokens.glow,
         size === 'sm' ? 'px-2 py-0.5 text-meta-sm' : 'px-2.5 py-1 text-meta',
         className,
@@ -37,8 +35,8 @@ export default function ScoreBadge({
       {showLabel && (
         <span
           className={cn(
-            'font-sans font-medium',
-            tokens.tier === 'epic' && 'text-accent font-display',
+            'font-sans font-semibold',
+            tokens.tier === 'epic' && 'font-display',
           )}
         >
           {label}

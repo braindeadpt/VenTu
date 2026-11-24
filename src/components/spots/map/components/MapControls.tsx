@@ -154,7 +154,7 @@ export function buildLayerMenuItems(p: MapControlsProps): MapLayersMenuItem[] {
             pressed: p.stormsEnabled,
             onToggle: p.toggleStorms,
             toggleAttr: 'data-map-storms-toggle',
-            iconClass: 'text-score-poor',
+            iconClass: 'text-alert-danger',
           } satisfies MapLayersMenuItem]),
           // «Ondulação» e vento: selector «Vento | Ondulação | Nenhum» no topo
           // do /mapa. O Hs IDW antigo saiu (fonte única: a «Ondulação»).
@@ -212,7 +212,7 @@ export function buildLayerMenuItems(p: MapControlsProps): MapLayersMenuItem[] {
       pressed: p.warnAreasEnabled,
       onToggle: p.toggleWarnAreas,
       toggleAttr: 'data-map-warn-areas-toggle',
-      iconClass: 'text-score-poor',
+      iconClass: 'text-alert-danger',
     } satisfies MapLayersMenuItem]),
     {
       key: 'coastalWarnings',
@@ -222,7 +222,7 @@ export function buildLayerMenuItems(p: MapControlsProps): MapLayersMenuItem[] {
       pressed: p.coastalWarningsEnabled,
       onToggle: p.toggleCoastalWarnings,
       toggleAttr: 'data-map-coastal-warnings-toggle',
-      iconClass: 'text-score-poor',
+      iconClass: 'text-alert-danger',
     },
   ];
 }

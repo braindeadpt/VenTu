@@ -127,7 +127,7 @@ export default function EmbedSpotWidget({ slug }: { slug: string }) {
             </div>
           ) : score != null && tokens && (
             <div
-              className={`shrink-0 w-12 h-12 rounded-full flex items-center justify-center font-mono font-bold text-lg tabular-nums border ${tokens.text} ${tokens.bg} ${tokens.border}`}
+              className={`shrink-0 w-12 h-12 rounded-full flex items-center justify-center font-mono font-bold text-lg tabular-nums ${tokens.badge}`}
               aria-label={`${scoreToNota(score)}/10`}
             >
               {scoreToNota(score)}

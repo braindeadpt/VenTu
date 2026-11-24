@@ -206,7 +206,7 @@ export default function LoginModal({ open, reason, locale, onClose, onSignIn }: 
                 />
               </div>
             </div>
-            {error && <p className="text-xs text-score-poor">{error}</p>}
+            {error && <p className="text-xs text-alert-danger">{error}</p>}
             <Button type="submit" size="md" className="w-full" disabled={sending}>
               {sending ? t.sending : t.sendLink}
             </Button>

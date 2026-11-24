@@ -220,7 +220,7 @@ export default function FavoritesAlertsPanel({ locale, favoriteCount }: Favorite
           </span>
         </label>
 
-        {error && <p className="text-xs text-score-poor">{error}</p>}
+        {error && <p className="text-xs text-alert-danger">{error}</p>}
 
         <div className="flex flex-wrap gap-2">
           <Button

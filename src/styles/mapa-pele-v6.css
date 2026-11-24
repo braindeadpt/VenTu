@@ -28,6 +28,9 @@
      pontos, grupos «+N») veste as bandas sem mudar de markup. Espelho testado em
      src/lib/__tests__/mapPeleMarcadores.test.ts contra V6_BANDAS (v6Tokens.ts). */
   --score-closed:168 70 74;--score-poor:68 121 238;--score-fair:201 158 42;--score-good:64 220 208;--score-epic:255 240 122;
+  --score-epic-ink:3 14 24;--score-good-ink:3 14 24;--score-fair-ink:3 14 24;--score-poor-ink:3 14 24;--score-closed-ink:255 255 255;
+  --score-epic-text:255 240 122;--score-good-text:64 220 208;--score-fair-text:219 178 60;--score-poor-text:116 164 255;--score-closed-text:240 132 136;
+  --alert-danger:248 113 113;--alert-warn:249 115 22;--alert-warn-text:255 201 60;--sol:#FFC93C;--gelo:#7FE7FF;
   /* B1: anel do vento por ventoRel — gelo offshore, névoa cross, coral onshore */
   --windDir-offshore:127 231 255;--windDir-cross:169 194 212;--windDir-onshore:255 138 128;
   /* Superfície sempre escura: com `.theme-ocean` no documento os tokens de dados, desporto,

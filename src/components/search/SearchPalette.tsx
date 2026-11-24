@@ -271,7 +271,7 @@ export default function SearchPalette({ locale, onClose }: SearchPaletteProps) {
 
   return (
     <div
-      className="fixed inset-0 z-[1400] flex items-start justify-center pt-[15vh] bg-black/60 backdrop-blur-sm"
+      className="fixed inset-0 z-[1400] flex items-start justify-center pt-[15vh] bg-bg-base/75 backdrop-blur-sm"
       onClick={handleOverlayClick}
       role="dialog"
       aria-modal="true"
@@ -298,8 +298,9 @@ export default function SearchPalette({ locale, onClose }: SearchPaletteProps) {
           />
           {query && (
             <button
+              type="button"
               onClick={() => setQuery('')}
-              className="p-1 rounded text-fg-subtle hover:text-fg hover:bg-surface-1/[0.04] transition-colors"
+              className="inline-flex items-center justify-center min-w-[44px] min-h-[44px] -mr-2 rounded text-fg-subtle hover:text-fg hover:bg-surface-1/[0.04] transition-colors"
               aria-label={t.nav.searchClear}
             >
               <X className="w-4 h-4" />

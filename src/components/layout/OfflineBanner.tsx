@@ -78,7 +78,7 @@ export default function OfflineBanner() {
 
   return (
     <div
-      className="fixed top-0 inset-x-0 z-[1310] bg-score-poor/95 text-fg border-b border-score-poor/40 px-4 py-2 text-center text-sm"
+      className="fixed top-0 inset-x-0 z-[1310] bg-bg-elevated border-b-2 border-alert-danger text-fg px-4 py-2 text-center text-sm"
       role="status"
     >
       <span className="inline-flex items-center gap-2">

@@ -68,11 +68,11 @@ export default function BuoyLayerNotice({
           ? 'border-l-2 border-score-fair/60 pl-3 pr-12 py-1'
           : cn(
               'rounded-card border p-3 pr-12',
-              isDegraded ? 'border-score-poor/40' : 'border-score-fair/40',
+              isDegraded ? 'border-alert-danger/40' : 'border-score-fair/40',
               overlay
                 ? 'bg-bg-elevated/95 backdrop-blur-sm shadow-card'
                 : isDegraded
-                  ? 'bg-score-poor/10'
+                  ? 'bg-alert-danger/10'
                   : 'bg-score-fair/10',
             ),
       )}
@@ -80,7 +80,7 @@ export default function BuoyLayerNotice({
       <Glyph
         className={cn(
           'w-4 h-4 mt-0.5 shrink-0',
-          isDegraded ? 'text-score-poor' : 'text-score-fair',
+          isDegraded ? 'text-alert-danger' : 'text-score-fair',
         )}
         aria-hidden
       />

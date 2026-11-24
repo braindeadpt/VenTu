@@ -243,8 +243,8 @@ export default function SpotListCard({
             ) : (
               <span
                 className={cn(
-                  'font-mono font-semibold tabular-nums text-num-lg',
-                  scoreTokens.text,
+                  'inline-flex items-center justify-center min-w-[2.25rem] px-2 py-0.5 rounded-md font-display font-black tabular-nums text-num-lg',
+                  semNota ? 'bg-surface-2/[0.08] text-fg-muted' : scoreTokens.badge,
                 )}
               >
                 {semNota ? '—' : scoreToNota(score)}

@@ -228,7 +228,7 @@ export default function DirectoryAdminClient({
           <Button type="submit" variant="secondary" loading={busy} leftIcon={<LogIn className="w-4 h-4" />}>
             {nav.signIn}
           </Button>
-          {error && <p className="text-meta-sm text-score-poor">{error}</p>}
+          {error && <p className="text-meta-sm text-alert-danger">{error}</p>}
         </form>
       </div>
     );
@@ -283,7 +283,7 @@ export default function DirectoryAdminClient({
         </button>
       </div>
 
-      {error && <p className="text-meta-sm text-score-poor">{error}</p>}
+      {error && <p className="text-meta-sm text-alert-danger">{error}</p>}
 
       {tab === 'claims' ? (
         <div className="space-y-3">

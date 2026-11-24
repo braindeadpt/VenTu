@@ -49,8 +49,10 @@ export default function Footer({ locale }: FooterProps) {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 md:gap-8">
           <div className="space-y-4 pb-4 md:pb-0">
             <div className="flex items-center gap-2">
-              <Wind className="w-6 h-6 text-data-waves" />
-              <span className="text-lg font-bold text-fg">Ven<span className="text-data-waves">Tu</span></span>
+              <Wind className="w-6 h-6 text-[var(--sol)]" aria-hidden />
+              <span className="font-display font-black italic uppercase tracking-tight text-xl text-fg">
+                Ven<span className="text-[var(--sol)]">Tu</span>
+              </span>
             </div>
             <p className="text-sm text-fg-muted leading-relaxed">
               {t.footer.tagline.replace('{schedule}', pipelineSchedule(locale))}

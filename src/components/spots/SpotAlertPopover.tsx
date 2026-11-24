@@ -246,7 +246,7 @@ export default function SpotAlertPopover({
                 )}
 
                 {error && (
-                  <p className="text-meta-sm text-score-poor">{error}</p>
+                  <p className="text-meta-sm text-alert-danger">{error}</p>
                 )}
 
                 <button

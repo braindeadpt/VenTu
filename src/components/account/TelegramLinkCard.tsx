@@ -115,7 +115,7 @@ export default function TelegramLinkCard({ locale }: { locale: string }) {
         <p className="text-xs text-fg-muted">{f.telegramSteps}</p>
       )}
 
-      {error && <p className="text-xs text-score-poor">{error}</p>}
+      {error && <p className="text-xs text-alert-danger">{error}</p>}
 
       {deepLink && !linked && (
         <p className="text-xs text-fg-muted break-all">

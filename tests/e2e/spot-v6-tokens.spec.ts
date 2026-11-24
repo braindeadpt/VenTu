@@ -137,8 +137,8 @@ test.describe('Spot v6 em tema claro (#459 V1)', () => {
     expect(await contrasteDe(page, '.v6 .acoes .acao-alerta [role=dialog] p')).toBeGreaterThanOrEqual(4.5);
     // o rpc do stub devolve erro — gravar falha e a tinta de erro real aparece
     await alerta.getByRole('button').last().click();
-    const erro = alerta.locator('p.text-score-poor');
+    const erro = alerta.locator('p.text-alert-danger');
     await expect(erro).toBeVisible();
-    expect(await contrasteDe(page, '.v6 .acoes .acao-alerta [role=dialog] p.text-score-poor')).toBeGreaterThanOrEqual(4.5);
+    expect(await contrasteDe(page, '.v6 .acoes .acao-alerta [role=dialog] p.text-alert-danger')).toBeGreaterThanOrEqual(4.5);
   });
 });

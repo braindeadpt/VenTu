@@ -73,7 +73,7 @@ export function verificationBadge(
       return {
         symbol: '⚠',
         label: t.agOff,
-        className: 'border-score-poor/40 bg-score-poor/10 text-score-poor',
+        className: 'border-alert-danger/40 bg-alert-danger/10 text-alert-danger',
       };
   }
 }

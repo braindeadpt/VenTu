@@ -515,7 +515,7 @@ export function useMapLayersFields({
       pressed: stormsEnabled,
       onToggle: toggleStorms,
       toggleAttr: 'data-map-storms-toggle',
-      iconClass: 'text-score-poor',
+      iconClass: 'text-alert-danger',
     } satisfies MapLayersMenuItem]),
     ...(warnAreasUnavailable ? [] : [{
       key: 'warnAreas',
@@ -526,7 +526,7 @@ export function useMapLayersFields({
       pressed: warnAreasEnabled,
       onToggle: toggleWarnAreas,
       toggleAttr: 'data-map-warn-areas-toggle',
-      iconClass: 'text-score-poor',
+      iconClass: 'text-alert-danger',
     } satisfies MapLayersMenuItem]),
     // «Ondulação» e o vento vivem no selector do topo (MapSeaModeSwitch);
     // o Hs IDW antigo saiu — uma só fonte para a altura das ondas.
@@ -590,7 +590,7 @@ export function useMapLayersFields({
       pressed: coastalWarningsEnabled,
       onToggle: toggleCoastalWarnings,
       toggleAttr: 'data-map-coastal-warnings-toggle',
-      iconClass: 'text-score-poor',
+      iconClass: 'text-alert-danger',
     },
   ], [
     layerCopy, lyr,

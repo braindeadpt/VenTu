@@ -8,6 +8,31 @@ const SCORE_GLOW_SAFELIST = [
   'shadow-glow-fair',
   'shadow-glow-poor',
   'shadow-glow-closed',
+  'bg-score-epic',
+  'bg-score-good',
+  'bg-score-fair',
+  'bg-score-poor',
+  'bg-score-closed',
+  'text-score-epic-ink',
+  'text-score-good-ink',
+  'text-score-fair-ink',
+  'text-score-poor-ink',
+  'text-score-closed-ink',
+  'text-score-epic-text',
+  'text-score-good-text',
+  'text-score-fair-text',
+  'text-score-poor-text',
+  'text-score-closed-text',
+  'bg-score-epic/15',
+  'bg-score-good/15',
+  'bg-score-fair/15',
+  'bg-score-poor/15',
+  'bg-score-closed/15',
+  'border-score-epic/25',
+  'border-score-good/25',
+  'border-score-fair/25',
+  'border-score-poor/25',
+  'border-score-closed/25',
 ]
 
 /**
@@ -83,15 +108,36 @@ const config: Config = {
         },
 
         // ═══════════════════════════════════════════════════════════
-        //  SCORE COLORS
+        //  SCORE COLORS (5 bandas v6 daltonismo-safe + tintas AA, #461)
         // ═══════════════════════════════════════════════════════════
         score: {
-          epic:   'rgb(var(--score-epic) / <alpha-value>)',
-          good:   'rgb(var(--score-good) / <alpha-value>)',
-          fair:   'rgb(var(--score-fair) / <alpha-value>)',
-          mid:    'rgb(var(--score-mid, var(--score-fair)) / <alpha-value>)',
-          poor:   'rgb(var(--score-poor) / <alpha-value>)',
-          closed: 'rgb(var(--score-closed) / <alpha-value>)',
+          epic:          'rgb(var(--score-epic) / <alpha-value>)',
+          'epic-ink':    'rgb(var(--score-epic-ink) / <alpha-value>)',
+          'epic-text':   'rgb(var(--score-epic-text) / <alpha-value>)',
+          good:          'rgb(var(--score-good) / <alpha-value>)',
+          'good-ink':    'rgb(var(--score-good-ink) / <alpha-value>)',
+          'good-text':   'rgb(var(--score-good-text) / <alpha-value>)',
+          fair:          'rgb(var(--score-fair) / <alpha-value>)',
+          'fair-ink':    'rgb(var(--score-fair-ink) / <alpha-value>)',
+          'fair-text':   'rgb(var(--score-fair-text) / <alpha-value>)',
+          mid:           'rgb(var(--score-mid, var(--score-fair)) / <alpha-value>)',
+          poor:          'rgb(var(--score-poor) / <alpha-value>)',
+          'poor-ink':    'rgb(var(--score-poor-ink) / <alpha-value>)',
+          'poor-text':   'rgb(var(--score-poor-text) / <alpha-value>)',
+          closed:        'rgb(var(--score-closed) / <alpha-value>)',
+          'closed-ink':  'rgb(var(--score-closed-ink) / <alpha-value>)',
+          'closed-text': 'rgb(var(--score-closed-text) / <alpha-value>)',
+          night:         'rgb(var(--score-night) / <alpha-value>)',
+          'night-ink':   'rgb(var(--score-night-ink) / <alpha-value>)',
+        },
+
+        // ═══════════════════════════════════════════════════════════
+        //  ALERT / ERROR TOKENS (nunca usar --score-poor para erros, #461)
+        // ═══════════════════════════════════════════════════════════
+        alert: {
+          danger:      'rgb(var(--alert-danger) / <alpha-value>)',
+          warn:        'rgb(var(--alert-warn) / <alpha-value>)',
+          'warn-text': 'rgb(var(--alert-warn-text) / <alpha-value>)',
         },
 
         // ═══════════════════════════════════════════════════════════
@@ -111,12 +157,12 @@ const config: Config = {
       },
 
       // ═══════════════════════════════════════════════════════════
-      //  TYPOGRAPHY
+      //  TYPOGRAPHY (Barlow + Barlow Condensed + Geist Mono, #461)
       // ═══════════════════════════════════════════════════════════
       fontFamily: {
-        sans: ['var(--font-geist-sans)', 'system-ui', 'sans-serif'],
+        sans: ['Barlow', 'var(--font-geist-sans)', 'system-ui', 'sans-serif'],
         mono: ['var(--font-geist-mono)', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'monospace'],
-        display: ['var(--font-display)', 'var(--font-geist-sans)', 'system-ui', 'sans-serif'],
+        display: ['Barlow Condensed', 'Arial Narrow', 'var(--font-display)', 'sans-serif'],
         serif: ['Georgia', 'serif'],
       },
 

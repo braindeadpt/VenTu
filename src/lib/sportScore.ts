@@ -400,27 +400,40 @@ export type ScoreTier = 'epic' | 'good' | 'fair' | 'poor' | 'closed'
 
 export interface ScoreTokens {
   tier: ScoreTier
+  /** Texto AA sobre superfície (dark e light). */
   text: string
+  /** Tint suave (legado). */
   bg: string
   border: string
   ring: string
   glow: string
+  /** Fill sólido da banda v6 (`#FFF07A` / `#40DCD0` / `#C99E2A` / `#4479EE` / `#A8464A`). */
+  fill: string
+  /** Tinta de contraste AA/AAA sobre `fill` (`#030E18` nos fundos claros, `#FFFFFF` em «Não dá»). */
+  onFill: string
+  /** Pill canónica v6: `fill` + `onFill`. */
+  badge: string
 }
 
 function scoreTierName(score: number): ScoreTier {
   return scoreTierFromScore(score)
 }
 
-/** Single source of truth for score → design-system colour tokens. */
+/** Single source of truth for score → design-system colour tokens (#461 v6 Atlântico). */
 export function getScoreTokens(score: number): ScoreTokens {
   const tier = scoreTierName(score)
+  const fill = `bg-score-${tier}`
+  const onFill = `text-score-${tier}-ink`
   return {
     tier,
-    text: `text-score-${tier}`,
+    text: `text-score-${tier}-text`,
     bg: `bg-score-${tier}/15`,
     border: `border-score-${tier}/25`,
     ring: `ring-score-${tier}/40`,
     glow: `shadow-glow-${tier}`,
+    fill,
+    onFill,
+    badge: `${fill} ${onFill}`,
   }
 }
 

@@ -184,7 +184,10 @@ export default function SpotRankedTable({
                       <LuaNoite size={22} locale={locale} className="align-middle" />
                     ) : (
                       <span
-                        className={cn('font-mono font-semibold tabular-nums', tokens.text)}
+                        className={cn(
+                          'inline-flex items-center justify-center min-w-[28px] px-1.5 py-0.5 rounded-md font-mono font-bold tabular-nums',
+                          tokens.badge,
+                        )}
                         title={getScoreTierLabel(tokens.tier, locale)}
                       >
                         {scoreToNota(score)}
