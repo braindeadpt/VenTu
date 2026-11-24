@@ -39,11 +39,17 @@ export default async function LivecamsPage({ params }: Props) {
     return {
       slug,
       name: spot ? localizedSpotName(spot, locale) : localizedText({ pt: cam.labelPt, en: cam.labelEn }, locale),
-      region: spot ? localizedSpotRegion(spot, locale) : null,
-      regionKey: spot ? spot.region : null,
+      region: spot
+        ? localizedSpotRegion(spot, locale)
+        : cam.region
+          ? localizedText({ pt: cam.region, en: cam.regionEn ?? cam.region }, locale)
+          : null,
+      regionKey: spot ? spot.region : cam.region ?? null,
       provider: cam.provider,
       url: cam.url,
-      embedded: cam.kind === 'youtube' || cam.kind === 'surfline',
+      // Embebido SÓ com leitor real (o FeelViana ficou 'surfline' sem embedUrl
+      // por 404 — a regra do produto é link curado, nunca embed partido).
+      embedded: cam.kind === 'youtube' ? !!cam.youtubeId : cam.kind === 'surfline' ? !!cam.embedUrl : false,
       hasSpot: !!spot,
     };
   });

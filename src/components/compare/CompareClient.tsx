@@ -313,7 +313,8 @@ export default function CompareClient({ locale }: { locale: string }) {
     return spots.filter(s =>
       s.name.toLowerCase().includes(q) ||
       s.nameEn.toLowerCase().includes(q) ||
-      s.region.toLowerCase().includes(q)
+      s.region.toLowerCase().includes(q) ||
+      (s.regionEn ?? '').toLowerCase().includes(q)
     );
   }, [searchQuery]);
 

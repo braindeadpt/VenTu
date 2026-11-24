@@ -28,6 +28,7 @@ const SHARED_TOKENS = new Set([
   'Cross-off', // termo adoptado em pt/en (relação de vento side-offshore)
   'Multisport', // termo adoptado em pt/es/de/fr (tipo de spot)
   'Expert',   // termo adoptado em pt/en/es/de/fr (nível de dificuldade)
+  'Check-in', // termo de produto adoptado em pt/es/de/fr (passaporte)
   'onshore',  // termo adoptado em pt/en/es/de/fr (relação de vento)
   'Hs', 'Copernicus', 'Instituto Hidrográfico',
   // Pontos cardeais — símbolos universais (N/S/E/O válidos em pt/en/es/de/fr).

@@ -12,6 +12,9 @@ export interface SpotLivecam {
   youtubeId?: string
   /** Full embed URL when kind is surfline. */
   embedUrl?: string
+  /** Região explícita para cams cujo slug não tem spot no catálogo (ex.: 'peniche'). */
+  region?: string
+  regionEn?: string
 }
 
 const SURFTOTAL = 'Surftotal'
@@ -267,6 +270,8 @@ export const SPOT_LIVECAMS: Record<string, SpotLivecam> = {
     provider: SURFTOTAL,
     labelPt: 'Peniche HD',
     labelEn: 'Peniche HD',
+    region: 'Peniche',
+    regionEn: 'Peniche',
   },
   supertubos: {
     url: 'https://beachcam.meo.pt/livecams/peniche-supertubos/',

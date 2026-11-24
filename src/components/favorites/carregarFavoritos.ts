@@ -100,6 +100,16 @@ export async function carregarFavoritos(
         // Live sem `notaV6` do pipeline: calcula-o das próprias condições (#462)
         const nv = notaV6AgoraDe(spot, current as unknown as Record<string, unknown>, null, nowMs);
         scores[id] = scoreAgoraComV6(spot, desportoPrincipal(spot), current, nv);
+        // De noite no fallback também se resolvem as janelas (o cartão noturno
+        // mostrava «Sem janela boa» mesmo com janela amanhã — Devin #579)
+        if (isNoite(scores[id])) {
+          deNoite.push(
+            deps
+              .janelasDeNoite(spot, current, nv, nowMs)
+              .catch(() => ({}) as JanelasCandidatasBySport)
+              .then((w) => [id, w] as const),
+          );
+        }
       } catch {
         /* ignore */
       }

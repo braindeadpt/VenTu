@@ -206,18 +206,23 @@ describe('4 · favoritos: as janelas de noite resolvem-se também com o fallback
       nowMs: Date.parse('2026-10-28T22:00:00Z'),
     });
     expect(r.conditions.nazare).toBeDefined();
-    expect(janelasDeNoite).toHaveBeenCalledTimes(1);
+    // Desde #462 o fallback live também calcula notaV6 — a Nazaré fica de
+    // noite como o Guincho e pede as suas janelas (antes ficava «sem janela»).
+    expect(janelasDeNoite).toHaveBeenCalledTimes(2);
     expect(r.janelas?.porSpot.guincho?.surf?.[0].score).toBe(80);
     expect(janelaSeguinte({ spot: guincho, janelasNoiteBySport: r.janelas!.porSpot.guincho }, 'surf', r.janelas!.nowMs)).not.toBeNull();
-    expect(r.janelas?.porSpot.nazare).toBeUndefined();
+    expect(r.janelas?.porSpot.nazare?.surf?.[0].score).toBe(80);
   });
 
   it('cada carregamento devolve o estado inteiro (sem noite → janelas null, nunca as do fetch anterior)', async () => {
+    // Hora de DIA (13:00 Lisboa): o fallback live calcula notaV6 real desde
+    // #462 — com nowMs=0 (01:00) o fallback cairia de noite e pediria janelas.
+    const meioDia = Date.parse('2026-10-28T12:00:00Z');
     const r = await carregarFavoritos(['guincho'], spots as Spot[], {
       conditionsJson: async () => ({ guincho: { waveHeight: 1.2, wavePeriod: 10, windSpeed: 3 } }),
       marine,
       janelasDeNoite: async () => ({}),
-      nowMs: 0,
+      nowMs: meioDia,
     });
     expect(r.janelas).toBeNull();
     // conditions.json em falta: tudo pelo fallback, sem rebentar
@@ -227,7 +232,7 @@ describe('4 · favoritos: as janelas de noite resolvem-se também com o fallback
       },
       marine,
       janelasDeNoite: async () => ({}),
-      nowMs: 0,
+      nowMs: meioDia,
     });
     expect(r2.conditions.guincho).toBeDefined();
     expect(r2.janelas).toBeNull();

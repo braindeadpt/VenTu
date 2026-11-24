@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, MapPin, LogIn, BookOpen, MapPinCheck, Search, CheckCircle2 } from 'lucide-react';
 import { spots } from '@/lib/spots';
+import { getTranslation } from '@/lib/i18n';
 import { localizedSpotName, localizedSpotRegion } from '@/lib/localizedSpotText';
 import { useAuth } from '@/contexts/AuthProvider';
 import { hasTestSupabaseClient } from '@/lib/supabase';
@@ -20,6 +21,7 @@ interface Props {
 export default function PassaporteClient({ locale }: Props) {
   const loc = locale;
   const pt = loc === 'pt';
+  const tp = getTranslation(locale).passaporte;
   const {
     session,
     authLoading,
@@ -119,7 +121,7 @@ export default function PassaporteClient({ locale }: Props) {
   const quickCheckin = (
     <section className="card-1 p-4 space-y-3" aria-labelledby="quick-checkin-heading">
       <h2 id="quick-checkin-heading" className="text-h3 font-display text-fg">
-        {pt ? 'Registar spot visitado' : 'Log a visited spot'}
+        {tp.quickCheckinTitle}
       </h2>
       <div className="relative">
         <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-fg-subtle pointer-events-none" aria-hidden />
@@ -127,19 +129,15 @@ export default function PassaporteClient({ locale }: Props) {
           type="search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder={pt ? 'Procurar spot…' : 'Search spots…'}
-          aria-label={pt ? 'Procurar spot' : 'Search spots'}
+          placeholder={tp.quickCheckinSearch}
+          aria-label={tp.quickCheckinSearch}
           className="w-full min-h-[44px] pl-9 pr-3 rounded-lg bg-surface-1/[0.06] border border-divider text-fg placeholder:text-fg-subtle focus:outline-none focus:border-divider-strong"
         />
       </div>
       {candidates.length === 0 ? (
-        <p className="text-sm text-fg-muted">
-          {pt ? 'Já tens check-in em todos os spots.' : 'You have checked in at every spot.'}
-        </p>
+        <p className="text-sm text-fg-muted">{tp.quickCheckinAllDone}</p>
       ) : results.length === 0 ? (
-        <p className="text-sm text-fg-muted">
-          {pt ? 'Nenhum spot corresponde à pesquisa.' : 'No spot matches the search.'}
-        </p>
+        <p className="text-sm text-fg-muted">{tp.quickCheckinNoResults}</p>
       ) : (
         <ul className="divide-y divide-divider">
           {results.map((spot) => (
@@ -155,7 +153,7 @@ export default function PassaporteClient({ locale }: Props) {
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 -my-1.5 rounded-lg text-sm font-medium min-h-[44px] bg-data-waves/10 text-data-waves hover:bg-data-waves/20 transition-colors disabled:opacity-50"
               >
                 <CheckCircle2 className="w-4 h-4" aria-hidden />
-                {pt ? 'Check-in' : 'Check in'}
+                {tp.checkinCta}
               </button>
             </li>
           ))}
