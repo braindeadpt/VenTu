@@ -20,7 +20,7 @@ import {
   type ModalidadeSite,
   type SpotModalidade,
 } from '@/lib/modalidades';
-import type { HoraSpot } from '@/lib/horaSpot';
+import type { HoraSpot, LinhaForecast } from '@/lib/horaSpot';
 import { scoreToNota } from '@/lib/nota';
 import { rawToScoreInput } from '@/lib/scoreConditions';
 import { getCompatibleSports, type SportType } from '@/lib/sportRatings';
@@ -125,11 +125,18 @@ export function avaliaHorasSpotV6(
   sp: SpotModalidade,
   mod: SpotModalidadeAtiva,
   horas: readonly HoraSpot[],
+  linhasOrigem?: readonly LinhaForecast[],
 ): AvaliacaoHoraSite[] {
   if (isModalidadeV6Site(mod)) return avaliaHorasSite(sp, mod, horas);
   const sport = mod;
   const limiarNoite = MODALIDADES_DEF.comum.noite;
   const chave: ModalidadeMotor = 'kite';
+  const porTempo = new Map<string, LinhaForecast>();
+  if (linhasOrigem) {
+    for (const ln of linhasOrigem) {
+      if (ln.time) porTempo.set(ln.time.slice(0, 16), ln);
+    }
+  }
   return horas.map((h) => {
     if (h.semDados?.includes('vento')) {
       return { n: null, f: { vento: 0, onda: 0, mare: 0 }, nMotor: null, seguranca: null, semDados: true as const, chave };
@@ -137,16 +144,22 @@ export function avaliaHorasSpotV6(
     if (h.sunEl < limiarNoite) {
       return { n: null, f: { vento: 0, onda: 0, mare: 0 }, nMotor: null, seguranca: null, chave };
     }
-    const input = rawToScoreInput({
-      waveHeight: h.semDados?.includes('onda') ? 0 : h.hs,
-      wavePeriod: h.semDados?.includes('onda') ? 0 : h.tp,
-      waveDirection: h.sd,
-      windSpeed: h.w * MS_PER_KT,
-      windDirection: h.wd,
-      windGust: h.g * MS_PER_KT,
-      waterTemp: h.agua ?? 18,
-      tideHeight: Number.isFinite(h.tide) ? h.tide : undefined,
-    });
+    // Preserva os valores originais da linha de previsão (não arredondados)
+    // e a distinção de onda em falta, para a nota de SUP/wakeboard bater
+    // certo com o /mapa (`mapHoursBuild.ts`).
+    const raw = porTempo.get(h.t.slice(0, 16));
+    const input = raw
+      ? rawToScoreInput(raw as unknown as Record<string, unknown>)
+      : rawToScoreInput({
+          waveHeight: h.semDados?.includes('onda') ? undefined : h.hs,
+          wavePeriod: h.semDados?.includes('onda') ? undefined : h.tp,
+          waveDirection: h.sd,
+          windSpeed: h.w * MS_PER_KT,
+          windDirection: h.wd,
+          windGust: h.g * MS_PER_KT,
+          waterTemp: h.agua ?? 18,
+          tideHeight: Number.isFinite(h.tide) ? h.tide : undefined,
+        });
     const res = getSportScore(spot, sport, input);
     const n = scoreToNota(res.score);
     const ventoEfeito = h.w <= 10 ? 1 : h.w > 16 ? -1 : 0;

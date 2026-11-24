@@ -200,6 +200,7 @@ export default function Header({ locale }: HeaderProps) {
 
   useEffect(() => {
     const onGlobalKeyDown = (e: globalThis.KeyboardEvent) => {
+      if (e.defaultPrevented) return;
       if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
         setSearchOpen(true);

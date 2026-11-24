@@ -60,4 +60,23 @@ describe('spotV6Modalidade (#459)', () => {
     expect(ns[1].n).toBeNull();
     expect(ns[1].semDados).toBeUndefined();
   });
+
+  it('SUP preserva precisão original da linha de forecast (paridade com o /mapa)', () => {
+    const rocha = spots.find((s) => s.id === 'praia-rocha') ?? spots.find((s) => !s.aguaInterior && s.compatibleSports?.includes('sup'))!;
+    const sp = spotModalidadeDe(editorialDe(rocha));
+    const horaArredondada: HoraSpot = { ...HORA_DIA, w: 3, g: 5, hs: 0.5, tp: 9, semDados: undefined };
+    const linhaOriginal = {
+      time: HORA_DIA.t,
+      waveHeight: 0.48,
+      wavePeriod: 9,
+      waveDirection: 270,
+      windSpeed: 1.5,
+      windDirection: 315,
+      windGust: 2.5,
+      waterTemp: 21,
+    };
+    const comLinha = avaliaHorasSpotV6(rocha, sp, 'sup', [horaArredondada], [linhaOriginal]);
+    const semLinha = avaliaHorasSpotV6(rocha, sp, 'sup', [horaArredondada]);
+    expect(comLinha[0].n).toBeGreaterThanOrEqual(semLinha[0].n!);
+  });
 });

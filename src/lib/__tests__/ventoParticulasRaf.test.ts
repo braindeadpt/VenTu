@@ -145,9 +145,20 @@ describe('ventoParticulas rAF stop (#459)', () => {
     flushFrame(300);
     expect(rafCalls).toBe(antes);
 
-    // Volta ao viewport e perde contexto WebGL (setAtivo3D(false))
+    // Volta ao viewport, oculta o separador (document.hidden) → 0 rAF; volta visível → retoma
     loop.setVisivel(true);
     expect(queued.size).toBe(1);
+    hidden = true;
+    loop.onVisibilityChange();
+    expect(queued.size).toBe(0);
+    const antesHidden = rafCalls;
+    flushFrame(350);
+    expect(rafCalls).toBe(antesHidden);
+    hidden = false;
+    loop.onVisibilityChange();
+    expect(queued.size).toBe(1);
+
+    // Perde contexto WebGL (setAtivo3D(false)) → 0 rAF
     loop.setAtivo3D(false);
     expect(queued.size).toBe(0);
     const aposPerda = rafCalls;

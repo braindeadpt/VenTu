@@ -90,9 +90,11 @@ export interface PertoV6Props {
   sport: SportType;
   /** #nivel-ui: com o spot acima do nível escolhido, abre com «Do teu nível, perto daqui». */
   nivel?: NivelUtilizador | null;
+  /** #459: aviso activo também por condições da hora (soProfissionais / offshore / onda > 1.6 m). */
+  acimaNivel?: boolean;
 }
 
-export default function PertoV6({ spot, locale, copy: c, t, ms, sport, nivel = null }: PertoV6Props) {
+export default function PertoV6({ spot, locale, copy: c, t, ms, sport, nivel = null, acimaNivel = false }: PertoV6Props) {
   const tr = getTranslation(locale);
   const tc = tr.spotPageContext;
   const dir = tr.directory;
@@ -130,7 +132,7 @@ export default function PertoV6({ spot, locale, copy: c, t, ms, sport, nivel = n
   const passo = pickMapHourStep(file?.times ?? [], t, { lon: spot.lon, ms });
   const diretorio = useDiretorio(spot.id, spot.lat, spot.lon);
   const cn = nivelCopyV6(locale);
-  const acima = !!nivel && !spotDentroDoNivel(nivelDoSpot(spot, sport), nivel);
+  const acima = !!nivel && (acimaNivel || !spotDentroDoNivel(nivelDoSpot(spot, sport), nivel));
   const doNivel = useMemo(
     () => (acima && nivel ? vizinhosDoNivel(spot, spots, sport, nivel, file, passo) : []),
     [acima, nivel, spot, sport, file, passo],

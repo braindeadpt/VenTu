@@ -76,7 +76,7 @@
 .v6 .modo button svg{width:20px;height:20px;flex:none}
 .v6 .modo button[aria-pressed=true]{color:var(--ink)}
 .v6 .modo .pista{position:absolute;z-index:0;top:4px;bottom:4px;left:4px;width:calc(50% - 4px);border-radius:999px;background:var(--sol);transition:transform .35s cubic-bezier(.3,1.3,.5,1)}
-.v6 .modo[data-d=surf] .pista,.v6 .modo[data-idx='1'] .pista{transform:translateX(100%)}
+.v6 .modo[data-idx='1'] .pista{transform:translateX(100%)}
 /* modalidades extra compatíveis do spot (#459) */
 .v6 .modos-extra{display:flex;flex-wrap:wrap;gap:8px;margin:20px 16px 0}
 .v6 .modos-extra button{min-height:44px;padding:0 14px;border-radius:999px;border:0;background:var(--fundo);box-shadow:inset 0 0 0 1.5px var(--acao-borda);color:var(--espuma);cursor:pointer;

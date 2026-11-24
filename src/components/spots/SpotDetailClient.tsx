@@ -704,17 +704,18 @@ export default function SpotDetailClient({
               ms={h.ms}
               sport={h.sport}
               nivel={h.nivel}
+              acimaNivel={h.acimaNivel}
             />
           )}
-          acoes={
+          acoes={(h) => (
             <SpotAcoesV6
               spot={spot}
               locale={locale}
-              sport={selectedSport}
+              sport={h.sport}
               directionsLabel={td.getDirections}
               livecamLabel={getSpotLivecam(spot.slug) ? td.livecam : undefined}
             />
-          }
+          )}
           {...v6}
         />
       </div>

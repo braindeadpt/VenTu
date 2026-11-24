@@ -48,6 +48,8 @@ export interface SpotContextoV6Props {
   sport: SportType;
   /** #nivel-ui: nível escolhido (null = sem nível): o «Perto daqui» abre com «Do teu nível, perto daqui». */
   nivel?: NivelUtilizador | null;
+  /** #459: aviso activo por condições (vento/onda), além da dificuldade do spot. */
+  acimaNivel?: boolean;
 }
 
 const NIVEIS_CONHECIDOS = new Set(['beginner', 'intermediate', 'advanced', 'expert', 'all']);
@@ -202,7 +204,7 @@ function temTexto(v: string | undefined | null): v is string {
   return t.length > 0 && t !== '—' && t !== '-';
 }
 
-export default function SpotContextoV6({ spot, locale, events, dicas, aguaViva, t: hora, ms: horaMs, sport, nivel = null }: SpotContextoV6Props) {
+export default function SpotContextoV6({ spot, locale, events, dicas, aguaViva, t: hora, ms: horaMs, sport, nivel = null, acimaNivel = false }: SpotContextoV6Props) {
   const c6 = spotV6Copy(locale);
   const t = getTranslation(locale);
   const td = t.spotDetail;
@@ -391,7 +393,7 @@ export default function SpotContextoV6({ spot, locale, events, dicas, aguaViva, 
         </div>
       </div>
 
-      <PertoV6 spot={spot} locale={locale} copy={c6} t={hora} ms={horaMs} sport={sport} nivel={nivel} />
+      <PertoV6 spot={spot} locale={locale} copy={c6} t={hora} ms={horaMs} sport={sport} nivel={nivel} acimaNivel={acimaNivel} />
 
       {proximos.length ? <Eventos lista={proximos} locale={locale} c={c6} /> : null}
     </section>

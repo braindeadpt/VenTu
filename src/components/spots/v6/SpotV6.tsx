@@ -63,6 +63,8 @@ export interface SpotV6Hora {
   citada?: MareExtremo;
   /** #nivel-ui: nível escolhido (null = sem nível), para o «Do teu nível, perto daqui». */
   nivel: NivelUtilizador | null;
+  /** #459: true quando o aviso de nível está activo (dificuldade do spot OU vento/onda perigosa). */
+  acimaNivel: boolean;
 }
 
 export interface SpotV6Props {
@@ -84,7 +86,7 @@ export interface SpotV6Props {
   /** Faixa de segurança (avisos IPMA / estado do mar / costeiros), só com aviso activo. */
   seguranca?: ReactNode;
   /** Acções do spot (como chegar, favorito, alerta, câmara, mais). */
-  acoes?: ReactNode;
+  acoes?: ReactNode | ((h: SpotV6Hora) => ReactNode);
   /** O que só o contexto do spot traz (avisos, câmara, estação, água, chegar e estar, perto daqui, eventos). */
   contexto?: ReactNode | ((h: SpotV6Hora) => ReactNode);
   /** O que se mede e o que se sabe (boia, maré e lua, sol e ar, fundo, clima) — visível fora do `<details>` (#459). */
@@ -163,7 +165,7 @@ export default function SpotV6({ spot, nome, local, locale, linhas, agoraMs, fot
     [linhas, spot.lat, spot.lon, ed.praiaVirada, agoraMs],
   );
   const H = dados.horas;
-  const NS = useMemo(() => avaliaHorasSpotV6(spot, sp, d, H), [spot, sp, d, H]);
+  const NS = useMemo(() => avaliaHorasSpotV6(spot, sp, d, H, linhas), [spot, sp, d, H, linhas]);
   const frase = useMemo(
     () => construirFrase({ sp, d, H, NS, sol: dados.sol, copy, locale }),
     [sp, d, H, NS, dados.sol, copy, locale],
@@ -208,10 +210,18 @@ export default function SpotV6({ spot, nome, local, locale, linhas, agoraMs, fot
   const sport = spotModParaSport(d);
   const dBase = spotModParaBase(d);
   const nivelSpot = nivelDoSpot(spot, sport);
+  const hSel = H[iSel];
   const rSel = NS[iSel];
+  const ondaGrandeIniciante =
+    nivel === 'beginner' &&
+    (d === 'surf' || d === 'bodyboard') &&
+    !hSel?.semDados?.includes('onda') &&
+    typeof hSel?.hs === 'number' &&
+    hSel.hs > 1.6;
   const condicoesAcimaNivel =
-    (nivel === 'beginner' || nivel === 'intermediate') &&
-    (Boolean(rSel?.soProfissionais) || rSel?.seguranca === 'offshore' || rSel?.seguranca === 'side-offshore');
+    ondaGrandeIniciante ||
+    ((nivel === 'beginner' || nivel === 'intermediate') &&
+      (Boolean(rSel?.soProfissionais) || rSel?.seguranca === 'offshore' || rSel?.seguranca === 'side-offshore'));
   const acimaNivel = !!nivel && (!spotDentroDoNivel(nivelSpot, nivel) || condicoesAcimaNivel);
   // sem nível: só a dica, e só num spot intermédio ou acima (o estudo §4); «Todos os níveis» e sem nível na ficha nunca
   const dicaNivel = !nivel && (nivelSpot === 'intermediate' || nivelSpot === 'advanced' || nivelSpot === 'expert');
@@ -238,6 +248,7 @@ export default function SpotV6({ spot, nome, local, locale, linhas, agoraMs, fot
     mares: dados.mares,
     citada: Number.isFinite(h.tide) ? dados.mares.find((m) => mareDepois(m, h)) : undefined,
     nivel,
+    acimaNivel,
   };
   const fotoHero = fotos[dBase] ?? fotos.surf ?? fotos.kite;
   const mostrarMaisModos = compativeis.length > opcoesTop.length;
@@ -347,7 +358,7 @@ export default function SpotV6({ spot, nome, local, locale, linhas, agoraMs, fot
           ))}
         </div>
       ) : null}
-      {acoes}
+      {typeof acoes === 'function' ? acoes(hv) : acoes}
       {estudo ? <div className="medesabe-fora">{estudo(hv)}</div> : null}
       <EstudarSpot
         key={flags.estudo ? 'aberto' : 'fechado'}
