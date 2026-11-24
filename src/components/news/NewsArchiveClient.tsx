@@ -279,17 +279,24 @@ export default function NewsArchiveClient({
       {/* Filters — news only. The -mx-* full-bleed needs a padded parent (see events
           section above); without it the bar overflows the viewport by 32px and
           creates a horizontal scrollbar. */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="sticky top-0 z-40 bg-bg-base/90 backdrop-blur-md border-b border-divider -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 py-3">
+      {/* O sticky tem de estar no WRAPPER: sticky fica preso aos limites do
+          pai — dentro da caixa da barra nunca fixava (a lista é irmã, não
+          filha). No pai comum a barra acompanha o scroll da lista. */}
+      <div className="md:sticky md:top-16 z-40 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="bg-bg-base/90 backdrop-blur-md border-b border-divider -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 py-3">
         <div className="max-w-7xl mx-auto">
           <NewsFilters
             filters={{ category, region, period, query: searchInput, page }}
-            onChange={({ category: cat, region: reg, period: per, query: q, page: pg }) => {
+            onChange={({ category: cat, region: reg, period: per, query: q }) => {
+              // `page: 1` emitido pelos filtros é só «repõe a primeira
+              // página» — os handlers já o fazem. Não passa por
+              // handlePageChange: esse scrolla para o topo e só deve correr
+              // na navegação explícita (NewsPagination); na barra sticky
+              // saltava a cada tecla da pesquisa.
               if (cat !== undefined) handleCategoryChange(cat);
               if (reg !== undefined) handleRegionChange(reg);
               if (per !== undefined) handlePeriodChange(per);
               if (q !== undefined) handleSearchChange(q);
-              if (pg !== undefined) handlePageChange(pg);
             }}
             locale={locale}
             total={filteredAll.length}

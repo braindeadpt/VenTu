@@ -218,7 +218,12 @@ export default function ProvenanceChip({
         aria-label={ariaLabel}
         onClick={toggle}
         title={detail ?? undefined}
-        className={cn(shape, 'cursor-pointer')}
+        className={cn(
+          shape,
+          // Piso de toque 44px na border-box real (pseudo-elemento é cortado
+          // pelos overflows dos cards); -my-2.5 mantém a linha compacta.
+          'cursor-pointer min-h-[44px] -my-2.5',
+        )}
       >
         {body}
       </button>

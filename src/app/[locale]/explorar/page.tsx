@@ -97,7 +97,7 @@ export default async function ExplorarIndexPage({ params }: Props) {
                         {landingTitle(sportOnly, locale)}
                       </p>
                       <p className="text-meta text-fg-subtle mt-1">
-                        {sportOnly.spotCount} spots
+                        <span className="font-mono tabular-nums">{sportOnly.spotCount}</span> spots
                       </p>
                     </Link>
                   )}
@@ -115,7 +115,7 @@ export default async function ExplorarIndexPage({ params }: Props) {
                           : landing.slug}
                       </p>
                       <p className="text-meta text-fg-subtle mt-1">
-                        {landing.spotCount} spots
+                        <span className="font-mono tabular-nums">{landing.spotCount}</span> spots
                       </p>
                     </Link>
                   ))}

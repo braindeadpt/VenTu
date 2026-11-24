@@ -133,7 +133,7 @@ export default function SpotAlertPopover({
       <button
         type="button"
         onClick={handleToggle}
-        className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-input text-meta-sm font-medium border border-divider bg-surface-1/[0.04] text-fg-muted hover:text-fg hover:border-divider-strong transition-colors duration-150"
+        className="inline-flex items-center gap-1.5 px-2.5 py-1.5 -my-2 min-h-[44px] rounded-input text-meta-sm font-medium border border-divider bg-surface-1/[0.04] text-fg-muted hover:text-fg hover:border-divider-strong transition-colors duration-150"
         aria-label={t.createAlertAria}
       >
         <Bell className="w-3.5 h-3.5" aria-hidden />
@@ -203,7 +203,7 @@ export default function SpotAlertPopover({
                       step={1}
                       value={scoreToNota(minScore)}
                       onChange={(e) => setMinScore(notaMinScore(Number(e.target.value)))}
-                      className="flex-1 accent-accent"
+                      className="flex-1 accent-accent min-h-[44px] -my-2.5"
                       aria-label={t.minScoreAria}
                     />
                     <span className="font-mono tabular-nums text-meta font-semibold text-fg w-8 text-right">
@@ -223,7 +223,7 @@ export default function SpotAlertPopover({
                         key={mode}
                         type="button"
                         onClick={() => setAlertMode(mode)}
-                        className={`flex-1 py-1.5 rounded-input text-meta-sm font-medium border transition-colors duration-150 ${
+                        className={`flex-1 py-1.5 min-h-[44px] rounded-input text-meta-sm font-medium border transition-colors duration-150 ${
                           alertMode === mode
                             ? 'bg-accent/15 text-accent border-accent/30'
                             : 'bg-surface-1/[0.04] text-fg-muted border-divider hover:text-fg'
@@ -253,7 +253,7 @@ export default function SpotAlertPopover({
                   type="button"
                   onClick={handleSave}
                   disabled={saving}
-                  className="w-full py-2 rounded-input text-meta-sm font-semibold bg-accent text-bg-base hover:bg-accent-hover disabled:opacity-50 transition-colors duration-150 inline-flex items-center justify-center gap-1.5"
+                  className="w-full py-2 min-h-[44px] rounded-input text-meta-sm font-semibold bg-accent text-bg-base hover:bg-accent-hover disabled:opacity-50 transition-colors duration-150 inline-flex items-center justify-center gap-1.5"
                 >
                   {saving ? (
                     <Loader2 className="w-3.5 h-3.5 animate-spin" aria-hidden />

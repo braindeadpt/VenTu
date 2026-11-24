@@ -1,5 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
-import { installSupabaseMock } from './helpers/supabase-mock';
+import { installSupabaseMock, installSupabaseSignedIn } from './helpers/supabase-mock';
 import { waitHydrated } from './helpers/hydration';
 import { interceptData } from './helpers/conditions';
 
@@ -33,6 +33,9 @@ const ROUTES = [
   '/pt/conta/',
   '/pt/alerts/',
   '/pt/favorites/',
+  // #462: pílulas de região/botões de 36 px e o check-in rápido do passaporte
+  '/pt/livecams/',
+  '/pt/passaporte/',
   '/pt/spots/guincho/',
   // NOTA: `/pt/mapa/` fica DE FORA — não é um componente partilhado, é o HUD do
   // mapa (chrome do tempo + sheet de explorar), com desenho e specs próprios
@@ -90,7 +93,10 @@ test.describe('Alvos de toque ≥44 px (390 px, touch)', { tag: '@core' }, () =>
   for (const route of [...new Set(ROUTES)]) {
     test(`${route} — nenhum controlo abaixo de 44 px de altura`, async ({ page }) => {
       test.setTimeout(60_000);
-      await installSupabaseMock(page);
+      // /passaporte só mostra o check-in rápido (input + botões «Check-in»)
+      // com sessão — o mock anónimo mede só o ecrã de login (#462, Devin).
+      if (route === '/pt/passaporte/') await installSupabaseSignedIn(page);
+      else await installSupabaseMock(page);
       // O aviso de locale lê o localStorage num efeito: entra logo (sem dispensa).
       await page.goto(route, { waitUntil: 'domcontentloaded', timeout: 45_000 });
       await waitHydrated(page);

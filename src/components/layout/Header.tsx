@@ -462,6 +462,14 @@ export default function Header({ locale }: HeaderProps) {
                 <p className="px-4 pt-2 pb-1 text-xs font-semibold uppercase tracking-wider text-fg-muted">
                   {t.megaMenu.modalidadesTitle}
                 </p>
+                <Link
+                  href={`/${locale}/modalidades/`}
+                  onClick={closeMobile}
+                  className={`${mobileLinkClass} ${isActive(`/${locale}/modalidades/`) ? 'text-accent bg-accent/10' : ''}`}
+                  aria-current={isActive(`/${locale}/modalidades/`) ? 'page' : undefined}
+                >
+                  {t.megaMenu.modalidadesTitle}
+                </Link>
                 {modalidadesLinks.map((item) => (
                   <Link
                     key={item.slug}
