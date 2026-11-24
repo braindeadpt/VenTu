@@ -125,6 +125,7 @@ export default async function SpotDetailPage({ params }: { params: Promise<{ loc
     lat: spot.lat,
     lon: spot.lon,
     spotType: spot.type,
+    inlandWater: spot.aguaInterior,
   })
 
   return (

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { jsonLdHtml } from '../jsonLd';
+import { buildSpotJsonLd } from '../seo';
 
 describe('jsonLdHtml (H1 — JSON-LD script breakout)', () => {
   it('neutralises a </script> breakout while staying valid JSON', () => {
@@ -37,5 +38,34 @@ describe('jsonLdHtml (H1 — JSON-LD script breakout)', () => {
       n: 42,
       s: 'Nazaré',
     });
+  });
+});
+
+describe('buildSpotJsonLd — @type geográfico (#457)', () => {
+  const base = {
+    locale: 'pt' as const,
+    spotName: 'Spot',
+    regionName: 'Região',
+  };
+  const placeOf = (input: Parameters<typeof buildSpotJsonLd>[0]) =>
+    (buildSpotJsonLd(input)['@graph'] as Record<string, unknown>[])[0];
+
+  it('spot de costa é Beach + SportsActivityLocation', () => {
+    expect(placeOf({ ...base, slug: 'guincho', spotType: 'surf' })['@type']).toEqual([
+      'Beach',
+      'SportsActivityLocation',
+    ]);
+  });
+
+  it('marina costeira não é Beach (modalidade foil não implica praia)', () => {
+    expect(
+      placeOf({ ...base, slug: 'marina-afurada-foil', spotType: 'foil' })['@type'],
+    ).toBe('SportsActivityLocation');
+  });
+
+  it('água interior nunca é Beach (cable parks, lagoas, albufeiras)', () => {
+    expect(
+      placeOf({ ...base, slug: 'alqueva', spotType: 'wakeboard', inlandWater: true })['@type'],
+    ).toBe('SportsActivityLocation');
   });
 });

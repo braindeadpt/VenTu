@@ -248,6 +248,11 @@ export function buildHomeMetadata(locale: Locale): Metadata {
   });
 }
 
+/** Spots costeiros confirmados como não-praia (marinas, pontões sem areal).
+ * Águas interiores vêm da flag `aguaInterior` do catálogo; estes são os que
+ * escapam à flag por estarem na costa/estuário. */
+const NON_BEACH_SPOT_SLUGS = new Set(['marina-afurada-foil']);
+
 export function resolveSpotOgImagePath(slug: string): string {
   const branded = path.join(process.cwd(), 'public', 'images', 'og', `${slug}.jpg`);
   if (existsSync(branded)) return buildSpotOgImagePath(slug);
@@ -343,16 +348,20 @@ export function buildSpotJsonLd(input: {
   lat?: number;
   lon?: number;
   spotType?: Spot['type'];
+  /** Água interior do catálogo (lagoas, albufeiras, cable parks, cais). */
+  inlandWater?: boolean;
 }) {
   const loc = validateLocale(input.locale);
   const spotUrl = absoluteUrl(`/${loc}/spots/${input.slug}/`);
 
   const place: Record<string, unknown> = {
-    // Beach + SportsActivityLocation nos spots de costa (#457); os wakeboard
-    // do catálogo são cable parks/lagos (Wake Park, teleski, albufeiras) —
-    // 'Beach' seria falso aí.
+    // Beach + SportsActivityLocation só em spots confirmados como praia
+    // (#457): águas interiores (lagoas, cable parks, cais — flag
+    // `aguaInterior` do catálogo) e lançamentos costeiros não-praia
+    // (marina) ficam só como SportsActivityLocation. A modalidade
+    // (spot.type) diz o que se pratica, não o tipo de local.
     '@type':
-      input.spotType === 'wakeboard'
+      input.inlandWater || NON_BEACH_SPOT_SLUGS.has(input.slug)
         ? 'SportsActivityLocation'
         : ['Beach', 'SportsActivityLocation'],
     name: input.spotName,
