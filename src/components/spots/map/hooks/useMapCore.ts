@@ -272,7 +272,7 @@ function attachBasemap(
     // caminho sem key; o watchdog e o auto-recover são os mesmos.
     const esri = getEsriRasterBasemap(true);
     const layer = Leaflet.tileLayer(esri.url, {
-      attribution: esri.attribution,
+      ...esri,
       maxZoom: MAX_ZOOM,
       className: MAP_BASE_V6_CLASS,
       ...tilePerf,
@@ -295,7 +295,7 @@ function attachBasemap(
     }
     const esri = getEsriRasterBasemap(dark);
     const esriLayer = Leaflet.tileLayer(esri.url, {
-      attribution: esri.attribution,
+      ...esri,
       maxZoom: MAX_ZOOM,
       ...tilePerf,
     });

@@ -104,9 +104,9 @@ test.describe('/mapa pele v6 — base «Mapa» recolorida (B6)', () => {
     expect(pedidos.some((u) => u.includes('World_Dark_Gray_Base'))).toBe(true);
     // Com a base por defeito, a 1.ª camada já é a recolorida — a peleBase arranca
     // `true` no 1.º render (como a pele) e o CARTO nunca chega a montar para o
-    // utilizador normal. A prova de fogo mantém-se: daqui em diante nenhum
-    // pedido pode tocar o CARTO. Um pan força mosaicos novos para a prova.
-    const posTroca = pedidos.length;
+    // utilizador normal: zero pedidos cartocdn em TODA a captura (inclui o
+    // arranque — um mount inicial de CARTO seguido de troca falhava aqui).
+    // Um pan força mosaicos novos para a prova.
     // O pan força mosaicos novos e a espera exige um pedido real da base — os
     // pedidos de relevo/toponímia do aux stack também cumprem a regex de
     // `pedidos`, por isso contar qualquer pedido não prova nada.
@@ -129,8 +129,7 @@ test.describe('/mapa pele v6 — base «Mapa» recolorida (B6)', () => {
       n = pedidos.length;
       await page.waitForTimeout(300);
     }
-    const depois = pedidos.slice(posTroca);
-    expect(depois.some((u) => u.includes('cartocdn'))).toBe(false);
+    expect(pedidos.some((u) => u.includes('cartocdn'))).toBe(false);
   });
 
   test('no Satélite: nem classe nem filtro', async ({ page }) => {

@@ -58,32 +58,38 @@ test.describe('/mapa pele v6 — cabeçalho e atribuição (B8)', () => {
   }
 
   test('atribuição v6 com o mesmo texto de licenças', async ({ page }) => {
+    // Cada preferência abre numa página própria — `abre` regista um init
+    // script por chamada e eles acumulam-se entre navegações na mesma página.
+    const atr = (p: Page) => p.locator('.leaflet-control-attribution');
+    const licencas = (t: string) =>
+      t.replace(/\s*©\s*/g, '\n© ').split(/[\n,]+/).map((s) => s.trim()).filter(Boolean).sort();
     await abre(page, false);
-    const atr = page.locator('.leaflet-control-attribution');
-    await expect(atr).toBeVisible({ timeout: 20_000 });
-    const textoSem = (await atr.innerText()).trim();
+    await expect(atr(page)).toBeVisible({ timeout: 20_000 });
+    const textoSem = (await atr(page).innerText()).trim();
     // #458: a pele não muda a atribuição — isola-se com pelebase=off (a base
     // recolore por defeito e o texto da base Esri é legitimamente outro).
     // Compara-se o conjunto de licenças, não a string: a ordem dos créditos
     // corre uma race (a camada que regista primeiro aparece primeiro).
-    const licencas = (t: string) =>
-      t.replace(/\s*©\s*/g, '\n© ').split(/[\n,]+/).map((s) => s.trim()).filter(Boolean).sort();
-    await abre(page, true, 1440, '', 'off');
-    await expect(cabecalho(page)).toHaveAttribute('data-pele-cabecalho', 'v6', { timeout: 15_000 });
-    await expect(atr).toBeVisible({ timeout: 20_000 });
-    expect(licencas(await atr.innerText())).toEqual(licencas(textoSem));
+    const pPele = await page.context().newPage();
+    await abre(pPele, true, 1440, '', 'off');
+    await expect(cabecalho(pPele)).toHaveAttribute('data-pele-cabecalho', 'v6', { timeout: 15_000 });
+    await expect(atr(pPele)).toBeVisible({ timeout: 20_000 });
+    expect(licencas(await atr(pPele).innerText())).toEqual(licencas(textoSem));
     // Com a base por defeito (Esri recolour) as licenças continuam presentes.
-    await abre(page, true);
-    await expect(atr).toBeVisible({ timeout: 20_000 });
-    const textoBase = await atr.innerText();
+    const pBase = await page.context().newPage();
+    await abre(pBase, true);
+    await expect(atr(pBase)).toBeVisible({ timeout: 20_000 });
+    const textoBase = await atr(pBase).innerText();
     expect(textoBase).toContain('Esri');
     expect(textoBase).toContain('Open-Meteo');
-    const cor = await atr.evaluate((el) => ({
+    const cor = await atr(pBase).evaluate((el) => ({
       bg: getComputedStyle(el).backgroundColor,
       a: el.querySelector('a[href]') ? getComputedStyle(el.querySelector('a[href]')!).color : '',
     }));
     expect(cor.bg).toBe('rgba(3, 14, 24, 0.82)');
     if (cor.a) expect(cor.a).toBe('rgb(127, 231, 255)');
+    await pPele.close();
+    await pBase.close();
   });
 
   test('sair do /mapa tira a marca do cabeçalho', async ({ page }) => {
