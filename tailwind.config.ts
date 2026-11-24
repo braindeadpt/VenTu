@@ -135,9 +135,10 @@ const config: Config = {
         //  ALERT / ERROR TOKENS (nunca usar --score-poor para erros, #461)
         // ═══════════════════════════════════════════════════════════
         alert: {
-          danger:      'rgb(var(--alert-danger) / <alpha-value>)',
-          warn:        'rgb(var(--alert-warn) / <alpha-value>)',
-          'warn-text': 'rgb(var(--alert-warn-text) / <alpha-value>)',
+          danger:        'rgb(var(--alert-danger) / <alpha-value>)',
+          warn:          'rgb(var(--alert-warn) / <alpha-value>)',
+          'orange-text': 'rgb(var(--alert-orange-text) / <alpha-value>)',
+          'warn-text':   'rgb(var(--alert-warn-text) / <alpha-value>)',
         },
 
         // ═══════════════════════════════════════════════════════════

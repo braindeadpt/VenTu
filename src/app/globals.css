@@ -110,9 +110,10 @@ html:has([data-embed-widget]) body {
     --score-current: var(--score-good);
 
     /* Alertas / erros / offline — tokens dedicados, NUNCA usar --score-poor (#461) */
-    --alert-danger:     248 113 113;    /* #F87171 (6.4:1 sobre #071B2C) */
-    --alert-warn:       249 115 22;     /* #F97316 (6.2:1 sobre #071B2C) */
-    --alert-warn-text:  255 201 60;     /* #FFC93C (11.4:1 sobre #071B2C) */
+    --alert-danger:      248 113 113;   /* #F87171 (6.4:1 sobre #071B2C) */
+    --alert-warn:        249 115 22;    /* #F97316 (6.2:1 sobre #071B2C) */
+    --alert-orange-text: 249 115 22;    /* #F97316 (6.2:1 sobre #071B2C) */
+    --alert-warn-text:   255 201 60;    /* #FFC93C (11.4:1 sobre #071B2C) */
 
     /* Signature accent — Atlântico Sol (#FFC93C) */
     --accent:         255 201 60;       /* #FFC93C */
@@ -249,10 +250,11 @@ html:has([data-embed-widget]) body {
     --score-poor-text:    29 78 216;    /* #1D4ED8 (6.7:1 sobre branco) */
     --score-closed-text: 153 45 50;     /* #992D32 (6.9:1 sobre branco) */
 
-    /* Alertas / erros / offline — AA sobre fundo claro */
-    --alert-danger:     185 28 28;      /* #B91C1C (6.5:1 sobre branco) */
-    --alert-warn:       180 83 9;       /* #B45309 (5.0:1 sobre branco) */
-    --alert-warn-text:  146 64 14;      /* #92400E (7.1:1 sobre branco) */
+    /* Alertas / erros / offline — AA sobre fundo claro (incluindo tint /15) */
+    --alert-danger:      185 28 28;     /* #B91C1C (6.5:1 sobre branco) */
+    --alert-warn:        180 83 9;      /* #B45309 (fill/border) */
+    --alert-orange-text: 154 52 18;     /* #9A3412 (6.4:1 sobre branco, 5.8:1 sobre tint /15) */
+    --alert-warn-text:   146 64 14;     /* #92400E (7.1:1 sobre branco) */
 
     /* Light accent — gelo Sol (#005F8A, 6.99:1 sobre branco) */
     --accent:           0 95 138;
@@ -429,8 +431,8 @@ html:has([data-embed-widget]) body {
   .sport-accent[data-sport="foil"]      { @apply text-sport-foil; }
 
   /* ── Daypart ambient (18h–21h PT via data-daypart on <html>) ── */
-  /* Cool cyan tint — no warm gradient. Sober overlay on header. */
-  html[data-daypart='sunset'] .site-header {
+  /* Cool cyan tint — no warm gradient. Sober overlay on header; cabeçalhos v6 preservam o seu fundo sólido. */
+  html[data-daypart='sunset'] .site-header:not([data-pele-cabecalho='v6']):not([data-v6='home']) {
     background: linear-gradient(
       180deg,
       rgb(var(--daypart-tint) / 0.10) 0%,
@@ -438,6 +440,15 @@ html:has([data-embed-widget]) body {
     ) !important;
     border-bottom-color: rgb(var(--daypart-tint) / 0.18);
   }
+
+  /* #461: no tema claro (.theme-ocean), usos de texto livre `text-score-*`
+     resolvem às tintas AA `--score-*-text` (≥ 6:1 sobre branco e tints /15),
+     mantendo `bg-score-*` nos 5 fills oficiais das bandas v6. */
+  .theme-ocean .text-score-epic   { color: rgb(var(--score-epic-text)); }
+  .theme-ocean .text-score-good   { color: rgb(var(--score-good-text)); }
+  .theme-ocean .text-score-fair   { color: rgb(var(--score-fair-text)); }
+  .theme-ocean .text-score-poor   { color: rgb(var(--score-poor-text)); }
+  .theme-ocean .text-score-closed { color: rgb(var(--score-closed-text)); }
 
   /* Ocean-themed hero surface (cyan inner glow, no warm gradient) */
   .hero-ocean-surface {

@@ -8,6 +8,7 @@
  */
 
 import { scoreToNota } from '@/lib/nota';
+import { getScoreTier } from '@/lib/scoreThresholds';
 import { getCardinalLabel, getWindRelationLabel, type WindRelation } from '@/lib/wind';
 import { relacaoAnelVento } from '@/lib/ventoRelAnel';
 import { warningLevelLabel } from '@/lib/ipmaWarnings';
@@ -234,6 +235,8 @@ function buildPinSvg(score: number, scoreRgb: string, night?: MapNightCopy | nul
   `.trim();
   }
   const scoreLabel = scoreToNota(score);
+  const tier = getScoreTier(score);
+  const ink = tier === 'closed' ? '#FFFFFF' : `rgb(var(--score-${tier}-ink, 3 14 24))`;
 
   return `
     <g class="ventu-marker-pin">
@@ -241,7 +244,7 @@ function buildPinSvg(score: number, scoreRgb: string, night?: MapNightCopy | nul
       <circle cx="${PIN_CX}" cy="${PIN_CY}" r="${PIN_R}" fill="${scoreRgb}" stroke="${HALO}" stroke-width="2.5"/>
       <text x="${PIN_CX}" y="${PIN_CY + 5}" text-anchor="middle"
         font-family="var(--font-geist-mono, 'Geist Mono', ui-monospace, monospace)"
-        font-size="13" font-weight="700" fill="#fff"
+        font-size="13" font-weight="700" fill="${ink}"
         font-variant-numeric="tabular-nums">${scoreLabel}</text>
     </g>
   `.trim();

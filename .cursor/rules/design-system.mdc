@@ -22,9 +22,9 @@ alwaysApply: true
 - Spacing scale only: 4, 8, 12, 16, 24, 32, 48 px
 
 ## Typography
-- **Body**: Geist Sans (`font-sans`) — UI, parágrafos, labels
+- **Body**: Barlow (`font-sans`, fallback Geist Sans) — UI, parágrafos, labels
 - **Data**: Geist Mono (`font-mono`, tabular) — scores em tabela, métricas numéricas
-- **Display**: Space Grotesk (`font-display`, `--font-display` via `next/font`) — headlines hero, nomes de spot, label épico no `ScoreBadge`
+- **Display**: Barlow Condensed (`font-display`, via `src/styles/v6-fontes.css`) — headlines hero, nomes de spot, scores v6
 
 ## Accent — onde usar (e onde NÃO)
 Usar `text-accent` / `bg-accent` **apenas**:

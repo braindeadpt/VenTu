@@ -51,7 +51,7 @@ export const WARNING_TYPE_LABELS: Record<string, { pt: string; en: string }> = {
 
 export const WARNING_LEVEL_META: Record<IpmaWarningLevel, { chipClass: string }> = {
   yellow: { chipClass: 'bg-alert-warn/15 text-alert-warn-text border-alert-warn/40' },
-  orange: { chipClass: 'bg-alert-warn/15 text-alert-warn border-alert-warn/40' },
+  orange: { chipClass: 'bg-alert-warn/15 text-alert-orange-text border-alert-warn/40' },
   red: { chipClass: 'bg-alert-danger/15 text-alert-danger border-alert-danger/40' },
 };
 
