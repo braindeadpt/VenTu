@@ -64,10 +64,14 @@ test.describe('/mapa pele v6 — cabeçalho e atribuição (B8)', () => {
     const textoSem = (await atr.innerText()).trim();
     // #458: a pele não muda a atribuição — isola-se com pelebase=off (a base
     // recolore por defeito e o texto da base Esri é legitimamente outro).
+    // Compara-se o conjunto de licenças, não a string: a ordem dos créditos
+    // corre uma race (a camada que regista primeiro aparece primeiro).
+    const licencas = (t: string) =>
+      t.replace(/\s*©\s*/g, '\n© ').split(/[\n,]+/).map((s) => s.trim()).filter(Boolean).sort();
     await abre(page, true, 1440, '', 'off');
     await expect(cabecalho(page)).toHaveAttribute('data-pele-cabecalho', 'v6', { timeout: 15_000 });
     await expect(atr).toBeVisible({ timeout: 20_000 });
-    expect((await atr.innerText()).trim()).toBe(textoSem);
+    expect(licencas(await atr.innerText())).toEqual(licencas(textoSem));
     // Com a base por defeito (Esri recolour) as licenças continuam presentes.
     await abre(page, true);
     await expect(atr).toBeVisible({ timeout: 20_000 });
