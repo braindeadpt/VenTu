@@ -43,6 +43,8 @@ export interface SpotContextoV6Props {
   aguaViva?: WaterQualityLive;
   /** Hora escolhida na régua (para as notas dos vizinhos) e modalidade da página. */
   t?: string;
+  /** Instante da hora escolhida (#456 — o 01:00 repetido do fim do DST). */
+  ms?: number;
   sport: SportType;
   /** #nivel-ui: nível escolhido (null = sem nível): o «Perto daqui» abre com «Do teu nível, perto daqui». */
   nivel?: NivelUtilizador | null;
@@ -200,7 +202,7 @@ function temTexto(v: string | undefined | null): v is string {
   return t.length > 0 && t !== '—' && t !== '-';
 }
 
-export default function SpotContextoV6({ spot, locale, events, dicas, aguaViva, t: hora, sport, nivel = null }: SpotContextoV6Props) {
+export default function SpotContextoV6({ spot, locale, events, dicas, aguaViva, t: hora, ms: horaMs, sport, nivel = null }: SpotContextoV6Props) {
   const c6 = spotV6Copy(locale);
   const t = getTranslation(locale);
   const td = t.spotDetail;
@@ -389,7 +391,7 @@ export default function SpotContextoV6({ spot, locale, events, dicas, aguaViva, 
         </div>
       </div>
 
-      <PertoV6 spot={spot} locale={locale} copy={c6} t={hora} sport={sport} nivel={nivel} />
+      <PertoV6 spot={spot} locale={locale} copy={c6} t={hora} ms={horaMs} sport={sport} nivel={nivel} />
 
       {proximos.length ? <Eventos lista={proximos} locale={locale} c={c6} /> : null}
     </section>

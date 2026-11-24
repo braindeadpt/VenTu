@@ -20,6 +20,7 @@ export function useVizinhosNivel(
   nivel: NivelUtilizador | null,
   t: string | undefined,
   ativo: boolean,
+  ms?: number,
 ): VizinhoDoNivel[] {
   const [file, setFile] = useState<MapHoursFile | null>(null);
   useEffect(() => {
@@ -32,7 +33,7 @@ export function useVizinhosNivel(
       vivo = false;
     };
   }, [ativo]);
-  const passo = pickMapHourStep(file?.times ?? [], t, { lon: spot.lon });
+  const passo = pickMapHourStep(file?.times ?? [], t, { lon: spot.lon, ms });
   return useMemo(
     () => (ativo && nivel ? vizinhosDoNivel(spot, spots, sport, nivel, file, passo) : []),
     [ativo, nivel, spot, sport, file, passo],

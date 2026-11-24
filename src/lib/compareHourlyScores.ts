@@ -73,6 +73,12 @@ export function notasHorariasCompare(
     const r = (j === undefined ? undefined : rows[j]) as
       | { waveHeight?: number; wavePeriod?: number; windSpeed?: number; windDirection?: number; windGust?: number; waterTemp?: number }
       | undefined;
+    // #456: `?? 0` apagava «sem dados» — a bandeira chega ao motor (N/A, não 8/10).
+    const semDados: Array<'vento' | 'onda'> = [];
+    if (r) {
+      if (r.windSpeed == null) semDados.push('vento');
+      if (r.waveHeight == null) semDados.push('onda');
+    }
     return {
       time: t,
       waveHeight: r?.waveHeight ?? 0,
@@ -81,6 +87,7 @@ export function notasHorariasCompare(
       windDirection: r?.windDirection ?? 0,
       windGust: r?.windGust ?? fallback.windGust,
       waterTemp: r?.waterTemp ?? fallback.waterTemp,
+      ...(semDados.length ? { semDados } : {}),
     };
   });
   const scores = getHourlyScores(spot, sport, hourly, fallback);

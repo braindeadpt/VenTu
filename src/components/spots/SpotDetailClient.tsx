@@ -739,6 +739,7 @@ export default function SpotDetailClient({
               dicas={mergedLocalTips}
               aguaViva={spotData.conditions.waterQuality}
               t={h.t}
+              ms={h.ms}
               sport={h.d === 'kite' ? 'kitesurf' : 'surf'}
               nivel={h.nivel}
             />
