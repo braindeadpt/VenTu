@@ -45,7 +45,7 @@ ulimit -n 65535 2>/dev/null || ulimit -n 10240 2>/dev/null || true
 echo "[corrida] servidor estático em 127.0.0.1:$PORT (limite de ficheiros: $(ulimit -n))"
 node scripts/visual-sweep-server.mjs out "$PORT" >> "$LOGS/server.log" 2>&1 &
 SRV=$!
-echo "$SRV" > "$LOGS/server.pid"
+echo "$SRV" > "$LOGS/server.$PORT.pid"
 sleep 2
 if ! curl -sf -o /dev/null --max-time 5 "http://127.0.0.1:$PORT/pt/index.html"; then
   echo "[corrida] servidor não respondeu — a abortar" >&2
@@ -64,7 +64,7 @@ fi
       node scripts/visual-sweep-server.mjs out "$PORT" >> "$LOGS/server.log" 2>&1 &
       # shellcheck disable=SC2030 # SRV é do guardião: o loop mata sempre a instância actual.
       SRV=$!
-      echo "$SRV" > "$LOGS/server.pid"
+      echo "$SRV" > "$LOGS/server.$PORT.pid"
       sleep 2
     fi
   done
@@ -80,10 +80,10 @@ echo "EXIT=$EXIT" >> "$LOGS/sweep.log"
 kill "$GUARD" 2>/dev/null
 # shellcheck disable=SC2031 # $SRV pode ficar velho após reinícios; o PID file tem sempre a instância actual.
 # Só o servidor desta sessão morre — nunca o de outra worktree/porta (o pkill -f
-# anterior não discriminava; o guardião regista cada PID novo em server.pid).
-kill "${SRV:-$(cat "$LOGS/server.pid" 2>/dev/null)}" 2>/dev/null
-kill "$(cat "$LOGS/server.pid" 2>/dev/null)" 2>/dev/null
-rm -f "$LOGS/server.pid"
+# anterior não discriminava; o guardião regista cada PID novo em server.$PORT.pid).
+kill "${SRV:-$(cat "$LOGS/server.$PORT.pid" 2>/dev/null)}" 2>/dev/null
+kill "$(cat "$LOGS/server.$PORT.pid" 2>/dev/null)" 2>/dev/null
+rm -f "$LOGS/server.$PORT.pid"
 echo "[corrida] terminado com EXIT=$EXIT · $(find "$OUT/records" -name '*.json' 2>/dev/null | wc -l | tr -d ' ') capturas em disco"
 
 # Capturas que caíram na janela de uma morte do servidor: apagadas para a

@@ -26,6 +26,13 @@ const MAP_HOURS_STUB = {
       kitesurf: Array.from({ length: 16 }, () => 60),
     },
   },
+  // Vento por spot (m/s + FROM °): alimenta a via IDW entre spots quando a
+  // grelha do mar falta — o caso funcional «sem sea-grid» depende dele.
+  wind: Object.fromEntries(
+    ['guincho', 'carcavelos', 'costa-caparica', 'sao-joao-caparica', 'praia-norte-ericeira', 'praia-sul-ericeira', 'nazare'].map(
+      (id) => [id, { spd: Array.from({ length: 16 }, () => 8), dir: Array.from({ length: 16 }, () => 0) }],
+    ),
+  ),
 };
 
 /**
@@ -41,7 +48,7 @@ const MAP_HOURS_STUB = {
  *    mesmo runner.
  */
 
-async function abre(page: Page, pele: boolean, viewport?: { width: number; height: number }): Promise<void> {
+async function abre(page: Page, pele: boolean, viewport?: { width: number; height: number }, opts: { semGrelha?: boolean } = {}): Promise<void> {
   if (viewport) await page.setViewportSize(viewport);
   await preseedWindRingLegend(page);
   await page.addInitScript(
@@ -67,7 +74,14 @@ async function abre(page: Page, pele: boolean, viewport?: { width: number; heigh
   // frame deixam de depender da previsão publicada — o critério de long tasks
   // mede o desenho, não o dia (#464).
   await interceptMapHours(page, MAP_HOURS_STUB);
-  await interceptSeaGrid(page);
+  if (opts.semGrelha) {
+    // Sem grelha do mar: o campo cai para o IDW entre spots (file.wind).
+    await page.route('**/data/sea-grid.json*', (route) =>
+      route.fulfill({ status: 404, contentType: 'application/json', body: '{}' }),
+    );
+  } else {
+    await interceptSeaGrid(page);
+  }
   await page.goto('/pt/mapa/?sport=kitesurf&wind=1&lat=38.9&lon=-9.5&z=8', { waitUntil: 'domcontentloaded', timeout: 60_000 });
   await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
   await waitHydrated(page);
@@ -129,6 +143,13 @@ test.describe('/mapa pele v6 — vento em traços (B7)', () => {
     const f1 = await frames(page);
     await page.waitForTimeout(1500);
     expect(await frames(page)).toBe(f1);
+  });
+
+  test('sem grelha do mar: o IDW entre spots ainda pinta na pele v6', async ({ page }) => {
+    await abre(page, true, undefined, { semGrelha: true });
+    await expect(mapa(page)).toHaveAttribute('data-map-windfield', 'true', { timeout: 30_000 });
+    await expect(mapa(page)).toHaveAttribute('data-map-windfield-estilo', 'v6');
+    await expect.poll(async () => (await tinta(page)).n, { timeout: 15_000 }).toBeGreaterThan(50);
   });
 
   test('desligar o vento remove o canvas e o atributo', async ({ page }) => {
