@@ -3,7 +3,7 @@ import { preseedWindRingLegend } from './helpers/map-setup';
 import { waitHydrated } from './helpers/hydration';
 import { interceptMapHours } from './helpers/conditions';
 import { interceptSeaGrid } from './helpers/sea-grid';
-import { MAP_PELE_LS_KEY } from '../../src/lib/mapPele';
+import { MAP_PELE_BASE_LS_KEY, MAP_PELE_LS_KEY } from '../../src/lib/mapPele';
 
 /**
  * map-hours mínimo e fixo — o campo de vento vem do sea-grid (stub em
@@ -52,11 +52,16 @@ async function abre(page: Page, pele: boolean, viewport?: { width: number; heigh
   if (viewport) await page.setViewportSize(viewport);
   await preseedWindRingLegend(page);
   await page.addInitScript(
-    ({ kp, pele }) => {
+    ({ kp, kb, pele }) => {
       if (pele) localStorage.setItem(kp, 'v6');
       else localStorage.setItem(kp, 'off');
       localStorage.setItem('ventu.map.cluster', '0');
       localStorage.setItem('ventu.map.wind', '1');
+      // #458: a base recolorida é o defeito com a pele — mas estes testes medem
+      // os traços de vento, e a base tem o seu próprio gate de desempenho
+      // (map-pele-base, p95 do pan). Sem a semente, o arranque da base Esri
+      // somava long tasks à perna v6 e misturava duas features no critério D2.
+      localStorage.setItem(kb, 'off');
       // Observador de long tasks desde o arranque (lido no teste de desempenho).
       const w = window as unknown as { __lt: { t: number; d: number }[] };
       w.__lt = [];
@@ -68,7 +73,7 @@ async function abre(page: Page, pele: boolean, viewport?: { width: number; heigh
         /* sem suporte */
       }
     },
-    { kp: MAP_PELE_LS_KEY, pele },
+    { kp: MAP_PELE_LS_KEY, kb: MAP_PELE_BASE_LS_KEY, pele },
   );
   // Grelha do mar e map-hours fixos: a contagem de partículas e o custo por
   // frame deixam de depender da previsão publicada — o critério de long tasks

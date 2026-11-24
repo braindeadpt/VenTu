@@ -159,14 +159,18 @@ test.describe('/mapa pele v6 — base «Mapa» recolorida (B6)', () => {
     const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, serviceWorkers: 'block', reducedMotion: 'reduce' });
     // Referência: a mesma base Esri sem filtro não existe atrás de flag; usa-se a base
     // de hoje (pele com o opt-out gravado). As duas medições correm no mesmo runner, em sequência.
-    // Mediana de 3: um pan azarado (tiles a chegar, GC) inchava o p95 e fazia
-    // flapar a comparação no runner sem GPU — mediana por configuração.
-    const med3 = async (flags: { pele: boolean; base: 'on' | 'off' | 'unset' }) => {
-      const xs = [await p95Pan(ctx, flags), await p95Pan(ctx, flags), await p95Pan(ctx, flags)].sort((a, b) => a - b);
-      return xs[1];
-    };
-    const semFiltro = await med3({ pele: true, base: 'off' });
-    const comFiltro = await med3({ pele: true, base: 'on' });
+    // Mediana de 3 por perna, intercaladas: medir 3× a mesma configuração em
+    // sequência deixava a segunda perna apanhar outra janela de carga do runner
+    // (o CI partilhado arrefece/aquece entre páginas) e a comparação flapava.
+    const off: number[] = [];
+    const on: number[] = [];
+    for (let i = 0; i < 3; i++) {
+      off.push(await p95Pan(ctx, { pele: true, base: 'off' }));
+      on.push(await p95Pan(ctx, { pele: true, base: 'on' }));
+    }
+    const med = (xs: number[]) => [...xs].sort((a, b) => a - b)[1];
+    const semFiltro = med(off);
+    const comFiltro = med(on);
     await ctx.close();
     test.info().annotations.push({ type: 'p95 frame (ms)', description: `sem filtro ${semFiltro.toFixed(1)} · com filtro ${comFiltro.toFixed(1)}` });
     // D1: p95 ≤ 20 ms contra a base actual. No runner de CI (sem GPU) o valor absoluto

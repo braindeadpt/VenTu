@@ -1,7 +1,7 @@
 import { test, expect, type Page } from '@playwright/test';
 import { preseedWindRingLegend } from './helpers/map-setup';
 import { waitHydrated } from './helpers/hydration';
-import { MAP_PELE_LS_KEY } from '../../src/lib/mapPele';
+import { MAP_PELE_BASE_LS_KEY, MAP_PELE_LS_KEY } from '../../src/lib/mapPele';
 
 /**
  * Fase B do /mapa, PR B8 — cabeçalho do site em tokens v6 + atribuição, atrás de `?pele=v6`.
@@ -11,15 +11,18 @@ import { MAP_PELE_LS_KEY } from '../../src/lib/mapPele';
  *  - Sem a pele: nenhum atributo novo e o cabeçalho com os estilos de hoje.
  *  - Sair do /mapa tira a marca do cabeçalho.
  */
-async function abre(page: Page, pele: boolean, w = 1440, q = ''): Promise<void> {
+async function abre(page: Page, pele: boolean, w = 1440, q = '', pelebase: 'on' | 'off' | 'unset' = 'unset'): Promise<void> {
   await page.setViewportSize({ width: w, height: w > 800 ? 900 : 844 });
   await preseedWindRingLegend(page);
   await page.addInitScript(
-    ({ k, on }) => {
+    ({ k, kb, on, base }) => {
       if (on) localStorage.setItem(k, 'v6');
       else localStorage.setItem(k, 'off');
+      // #458: a base recolore por defeito com a pele; 'off' é o opt-out gravado.
+      if (base === 'off') localStorage.setItem(kb, 'off');
+      else localStorage.removeItem(kb);
     },
-    { k: MAP_PELE_LS_KEY, on: pele },
+    { k: MAP_PELE_LS_KEY, kb: MAP_PELE_BASE_LS_KEY, on: pele, base: pelebase },
   );
   await page.goto(`/pt/mapa/?sport=surf${q}`, { waitUntil: 'domcontentloaded', timeout: 60_000 });
   await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
@@ -59,10 +62,18 @@ test.describe('/mapa pele v6 — cabeçalho e atribuição (B8)', () => {
     const atr = page.locator('.leaflet-control-attribution');
     await expect(atr).toBeVisible({ timeout: 20_000 });
     const textoSem = (await atr.innerText()).trim();
-    await abre(page, true);
+    // #458: a pele não muda a atribuição — isola-se com pelebase=off (a base
+    // recolore por defeito e o texto da base Esri é legitimamente outro).
+    await abre(page, true, 1440, '', 'off');
     await expect(cabecalho(page)).toHaveAttribute('data-pele-cabecalho', 'v6', { timeout: 15_000 });
     await expect(atr).toBeVisible({ timeout: 20_000 });
     expect((await atr.innerText()).trim()).toBe(textoSem);
+    // Com a base por defeito (Esri recolour) as licenças continuam presentes.
+    await abre(page, true);
+    await expect(atr).toBeVisible({ timeout: 20_000 });
+    const textoBase = await atr.innerText();
+    expect(textoBase).toContain('Esri');
+    expect(textoBase).toContain('Open-Meteo');
     const cor = await atr.evaluate((el) => ({
       bg: getComputedStyle(el).backgroundColor,
       a: el.querySelector('a[href]') ? getComputedStyle(el.querySelector('a[href]')!).color : '',
