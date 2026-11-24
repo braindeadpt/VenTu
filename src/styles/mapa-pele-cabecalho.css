@@ -19,3 +19,6 @@
 .site-header[data-pele-cabecalho='v6'] [data-cabecalho-onde]{font:600 14px/1 'Barlow',system-ui,sans-serif;color:#A9C2D4;letter-spacing:.01em}
 .site-header[data-pele-cabecalho='v6'] button,.site-header[data-pele-cabecalho='v6'] a{font-weight:600}
 .site-header[data-pele-cabecalho='v6'] :focus-visible{outline:3px solid #FFC93C;outline-offset:2px;border-radius:6px}
+/* #458: a pele v6 é só escura — o toggle de tema no cabeçalho compacto ficava
+   a prometer um modo claro que a pele não tem (e que traía os traços de vento). */
+.site-header[data-pele-cabecalho='v6'] .theme-toggle{display:none}

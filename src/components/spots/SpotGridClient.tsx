@@ -353,6 +353,9 @@ export function SpotGridClient({
             onDifficultyChange: setMapDifficulty,
             difficultyGroupLabel: t.spots.level,
             layersLabel: t.map.layersMenu,
+            // #458 §3: o mapa embebido veste a pele v6 (marcadores, cromo e
+            // base escura) — sem isto ficava com a pele antiga.
+            pele: 'v6',
           }}
         />
         )}

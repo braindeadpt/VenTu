@@ -265,6 +265,11 @@ export default function Header({ locale }: HeaderProps) {
         data-header-compact={isMapPage ? 'true' : undefined}
         hidden={isSpotV6 || undefined}
         data-v6={isHomeV6 ? 'home' : undefined}
+        // #458: a pele v6 é o /mapa por defeito — o atributo sai já no 1.º
+        // render (antes só no useEffect, com flash do cabeçalho anterior).
+        // `useMapPeleCabecalho` reconcilia no efeito: tira-o se a pele
+        // resolver off (opt-out gravado), e ao sair do /mapa.
+        data-pele-cabecalho={isMapPage ? 'v6' : undefined}
       >
         <div className="max-w-7xl mx-auto pl-[max(1.25rem,env(safe-area-inset-left))] pr-[max(1.25rem,env(safe-area-inset-right))] sm:px-6 lg:px-8">
           <div

@@ -67,33 +67,40 @@ export function useMapPele(): MapPele | null {
 }
 
 /**
- * PR B6 (D1): o recolor da base «Mapa» tem uma flag própria, por cima da pele.
- * `?pelebase=v6` liga-a e grava-a em `localStorage['ventu:map:pele-base']`;
- * qualquer outro valor desliga-a e apaga a chave (a mesma regra da pele). Só vale
- * com a pele ligada: sem `?pele=v6` o /mapa fica exactamente como hoje.
+ * PR B6 (D1) + #458: o recolor da base «Mapa» é o defeito com a pele ligada —
+ * o mar azul-atlântico #0E3A5E da maquete em vez do CARTO cinzento. `?pelebase=off`
+ * (ou qualquer valor ≠ v6) desliga-a e grava `off` em
+ * `localStorage['ventu:map:pele-base']`; `?pelebase=v6` volta a ligá-la. Só vale
+ * com a pele ligada: sem pele o /mapa fica exactamente como hoje.
  */
 export const MAP_PELE_BASE_PARAM = 'pelebase';
 export const MAP_PELE_BASE_LS_KEY = 'ventu:map:pele-base';
+/** Valor gravado quando o utilizador pede a base anterior (`?pelebase=off`…). */
+export const MAP_PELE_BASE_OFF = 'off';
 
 /**
- * Decisão pura (testada): a flag da base só conta com a pele activa. Continua opt-in
- * depois da B9 (a aceitação (a) da D1 está por fazer): só `v6` liga; outro valor apaga.
+ * Decisão pura (testada): a base só conta com a pele activa. #458: passou a ser
+ * por defeito — sem parâmetro, só um `off` gravado a desliga (o opt-out tem de
+ * persistir: apagar a chave re-ligava-a na visita seguinte). O URL vence o
+ * gravado: `v6` liga e grava `v6`; qualquer outro valor desliga e grava `off`.
  */
 export function resolveMapPeleBase(
   pele: MapPele | null,
   param: string | null,
   gravado: string | null,
-): { activa: boolean; gravar: 'v6' | 'apagar' | null } {
+): { activa: boolean; gravar: 'v6' | 'off' | null } {
   if (param !== null) {
     const on = param.trim().toLowerCase() === 'v6';
-    return { activa: pele === 'v6' && on, gravar: on ? 'v6' : 'apagar' };
+    return { activa: pele === 'v6' && on, gravar: on ? 'v6' : 'off' };
   }
-  return { activa: pele === 'v6' && gravado === 'v6', gravar: null };
+  return { activa: pele === 'v6' && gravado !== MAP_PELE_BASE_OFF, gravar: null };
 }
 
-/** Hook do contentor do /mapa: `true` só com a pele e a flag da base ligadas. */
+/** Hook do contentor do /mapa: `true` com a pele ligada, salvo opt-out gravado
+ * ou `?pelebase=`≠v6. O 1.º render já sai ligado com a pele (como `useMapPele`),
+ * por isso o basemap v6 monta logo — sem a janela CARTO→Esri que o opt-in tinha. */
 export function useMapPeleBase(pele: MapPele | null): boolean {
-  const [activa, setActiva] = useState(false);
+  const [activa, setActiva] = useState(() => pele === 'v6');
   useEffect(() => {
     let gravado: string | null = null;
     try {
@@ -104,8 +111,7 @@ export function useMapPeleBase(pele: MapPele | null): boolean {
     const param = new URLSearchParams(window.location.search).get(MAP_PELE_BASE_PARAM);
     const d = resolveMapPeleBase(pele, param, gravado);
     try {
-      if (d.gravar === 'v6') localStorage.setItem(MAP_PELE_BASE_LS_KEY, 'v6');
-      else if (d.gravar === 'apagar') localStorage.removeItem(MAP_PELE_BASE_LS_KEY);
+      if (d.gravar) localStorage.setItem(MAP_PELE_BASE_LS_KEY, d.gravar);
     } catch {
       /* noop */
     }
