@@ -1,91 +1,225 @@
-# VenTu Design System v2.0
+# VenTu Design System v6.0 «Atlântico»
 
-Ocean-tech sério. Dados são protagonistas. Zero ilustrações decorativas.
+Ferramenta de decisão costeira para desportos de ondas e vento em Portugal.
+Os dados são protagonistas; a identidade é o Atlântico ao amanhecer —
+azul-marinho profundo, névoa fria, solo e gelo como acentos cirúrgicos.
+
+Fonte canónica das cores: `docs/design/maquetes/v6-atlantico/cores.md`
+(todas as tabelas de contraste desta página derivam dela).
+Implementação: `src/app/globals.css`, `tailwind.config.ts`, `src/lib/nota.ts`,
+`src/lib/sportScore.ts` (`getScoreTokens` é a única fonte de tokens de score).
+
+> Versões anteriores (v2.0: slate/IBM Plex Serif/escala 0–100/ÉPICO-BOM-FUN)
+> estão **revogadas**. Não usar `#FAFAF7`, `#0F172A`, `#0B3D5C`, `#0EA5E9`,
+> `Space Grotesk` como display, nem a escala ÉPICO/BOM/FUN/FLAT/FECHADO.
 
 ---
 
 ## 1. PALETA DE CORES
 
-### 1.1 Cores Base (theme-aware via CSS variables)
+Dois temas sobre os mesmos tokens. O escuro é o default (`:root`);
+`.theme-ocean` no `<html>` activa a variante clara «Sol».
 
-| Token | Light (`.theme-ocean`) | Dark (`:root`) | Uso |
-|-------|----------------------|----------------|-----|
-| `--bg-base` | `#FAFAF7` (white-sand) | `#0F172A` (slate-950) | Fundo da página |
-| `--bg-elevated` | `#FFFFFF` (white) | `#1E293B` (slate-800) | Fundo de modais/drawers |
-| `--surface-1` | `rgba(15,23,42,0.04)` | `rgba(255,255,255,0.04)` | Card padrão |
-| `--surface-2` | `rgba(15,23,42,0.08)` | `rgba(255,255,255,0.08)` | Card hover/selecionado |
-| `--surface-3` | `rgba(15,23,42,0.12)` | `rgba(255,255,255,0.12)` | Card hero/destacado |
-| `--divider` | `rgba(15,23,42,0.10)` | `rgba(255,255,255,0.08)` | Bordas finas |
-| `--divider-strong` | `rgba(15,23,42,0.18)` | `rgba(255,255,255,0.12)` | Bordas de destaque |
-| `--fg` | `#1E293B` (slate-800) | `#F1F5F9` (slate-100) | Texto primário |
-| `--fg-muted` | `#64748B` (slate-500) | `#94A3B8` (slate-400) | Texto secundário |
-| `--fg-subtle` | `#94A3B8` (slate-400) | `#64748B` (slate-500) | Labels, unidades |
-| `--fg-disabled` | `#CBD5E1` (slate-300) | `#475569` (slate-600) | Texto desativado |
+**Importante:** as superfícies v6 (`.v6`, `.v6h`, cabeçalho `[data-v6]` e
+`[data-pele='v6']`) são **sempre escuras**, mesmo com `.theme-ocean` activo —
+o tema claro nunca as afecta (ver `globals.css`, selects de superfícies v6).
 
-### 1.2 Cores de Acento
+### 1.1 Superfícies e tinta (dark `:root` — «Atlântico»)
 
-| Token | Hex | Light | Dark | Uso |
-|-------|-----|-------|------|-----|
-| `--accent-primary` | `#0B3D5C` | `11 61 92` | `11 61 92` | Botões, links, header bg |
-| `--accent-positive` | `#10B981` | `16 185 129` | `16 185 129` | Deltas positivos, scores bons |
-| `--accent-negative` | `#F43F5E` | `244 63 94` | `244 63 94` | Deltas negativos, alertas |
+| Token | Hex | RGB | Uso |
+|-------|-----|-----|-----|
+| `--bg-base` | `#030E18` abismo | `3 14 24` | Fundo da página |
+| `--bg-elevated` | `#071B2C` fundo | `7 27 44` | Modais, drawers, headers |
+| `--surface-3` | `#0C2A42` mar | `12 42 66` | Card hero/destacado |
+| `--surface-1/2` | espuma `/0.04` `/0.08` | `243 248 251` | Cards padrão/hover |
+| `--divider` | `#1E4361` linha | `30 67 97` | Bordas finas |
+| `--divider-strong` | `#38698E` | `56 105 142` | Bordas de destaque |
+| `--fg` | `#F3F8FB` espuma | `243 248 251` | Texto primário (18.18:1) |
+| `--fg-muted` | `#A9C2D4` névoa | `169 194 212` | Meta, legendas (10.51:1) |
+| `--fg-subtle` | `#97B2C6` | `151 178 198` | Secundário (8.2:1) |
+| `--fg-disabled` | `#56677B` noite | `86 103 123` | Desativado |
+| `--sol` | `#FFC93C` | — | Acento quente: marca VEN+TU, sol/dia, highlights |
+| `--gelo` | `#7FE7FF` | — | Acento frio: água, realces gelados |
 
-### 1.3 Escala de Score (5 níveis)
-
-| Nível | Score | Cor | Light | Dark | Uso |
-|-------|-------|-----|-------|------|-----|
-| **ÉPICO** | 80-100 | Azul-vivo `#0EA5E9` | `14 165 233` | `14 165 233` | ScoreDial, badges topo |
-| **BOM** | 60-79 | Verde-mar `#10B981` | `16 185 129` | `16 185 129` | Scores positivos |
-| **FUN** | 40-59 | Âmbar `#F59E0B` | `245 158 11` | `245 158 11` | Scores médios |
-| **FLAT** | 20-39 | Vermelho `#EF4444` | `239 68 68` | `239 68 68` | Scores baixos |
-| **FECHADO** | 0-19 | Cinza `#6B7280` | `107 114 128` | `107 114 128` | Spot offline/sem dados |
-
-Gradiente visual: 🔴 Vermelho → 🟡 Âmbar → 🟢 Verde-mar → 🔵 Azul-vivo
-
-### 1.4 Cores de Data Visualization
+### 1.2 Variante clara «Sol» (`.theme-ocean`)
 
 | Token | Hex | Uso |
 |-------|-----|-----|
-| `--data-waves` | `#0EA5E9` (sky-500) | Gráficos de ondas, swell |
-| `--data-wind` | `#8B5CF6` (violet-500) | Gráficos de vento |
-| `--data-water` | `#06B6D4` (cyan-500) | Temperatura água |
-| `--data-period` | `#F59E0B` (amber-500) | Período de ondas |
+| `--bg-base` | `#EEF4F8` | Fundo claro |
+| `--bg-elevated` | `#FFFFFF` | Superfícies elevadas |
+| `--fg` | `#04131F` | Texto (16.93:1) |
+| `--fg-muted` / `--fg-subtle` | `#38526A` | Meta/secundário (8.13:1) |
+| `--sol` | `#9A6A00` | Acento quente AA (4.73:1) |
+| `--gelo` | `#005F8A` | Acento frio AA (6.99:1) |
+| `--accent` | `0 95 138` (`#005F8A`) | Accent primário claro |
 
-### 1.5 Cores de Desporto (Sport Accents)
+No tema claro as **bandas de score aparecem sempre dentro do fill** — texto
+solto na cor da banda falha em fundo claro (ex.: «Muito bom» `#FFF07A`
+sobre branco = 1.1:1). Usar `--score-*-text` (tintas AA escuras) para texto.
 
-| Desporto | Cor | Hex | Uso |
-|----------|-----|-----|-----|
-| Surf | Sky | `#0EA5E9` | Markers, badges, tabs |
-| Kitesurf | Violet | `#8B5CF6` | Markers, badges, tabs |
-| Windsurf | Amber | `#F59E0B` | Markers, badges, tabs |
-| Bodyboard | Emerald | `#10B981` | Markers, badges, tabs |
-| SUP | Cyan | `#06B6D4` | Markers, badges, tabs |
-| Wakeboard | Pink | `#EC4899` | Markers, badges, tabs |
-| Foil | Indigo | `#6366F1` | Markers, badges, tabs |
+### 1.3 Acento primário (`--accent`)
 
-### 1.6 Wind Direction Tints
+| Tema | Hex | RGB | Uso |
+|------|-----|-----|-----|
+| Dark | `#FFC93C` sol | `255 201 60` | CTA primário, Dawn Patrol, badge «Muito bom» |
+| Light | `#005F8A` gelo | `0 95 138` | Idem em `.theme-ocean` |
 
-| Direção | Cor | Hex |
-|---------|-----|-----|
-| Offshore | Green | `#22C55E` |
-| Onshore | Red | `#EF4444` |
-| Cross (lateral) | Slate | `#94A3B8` |
+`--accent-hover` / `--accent-active` são os estados hover/active.
+Usar accent para: CTA primário (hero, SignupNudge, Dawn Patrol), marca
+`VEN`+`TU`, ícones sol e a pill «Ir ao mapa» na nav.
+**Não** usar accent como cor de dados, de banda de score ou de alerta —
+esses têm tokens próprios (`--score-*`, `--alert-*`).
 
 ---
 
-## 2. TIPOGRAFIA
+## 2. ESCALA DA NOTA (/10) — a escala sagrada
 
-### 2.1 Famílias
+O motor calcula 0–100 (`sportScore.ts`); **tudo o que a UI mostra passa por
+`src/lib/nota.ts`** e sai como nota inteira `/10` (`scoreToNota`).
 
-| Role | Fonte | Pesos | Fallback |
-|------|-------|-------|----------|
-| **UI / Body** | `Geist Sans` | 400/500/600/700 | `system-ui, sans-serif` |
-| **Números / Mono** | `Geist Mono` | 400/500/600/700 | `ui-monospace, monospace` |
-| **Display editorial** | `IBM Plex Serif` | 400/600 | `Georgia, serif` |
+```
+nota = round(score / 10)          inteira 0–10, NaN/∞ → 0
+bandas sobre a nota (arredonda primeiro, classifica depois):
+  Muito bom (epic) ≥ 9   Bom (good) ≥ 7   Dá (fair) ≥ 5
+  Fraco (poor)    ≥ 3   Não dá (closed) < 3
+Noite (night) = sem dados / fora de hora — nunca é «nota».
+```
 
-IBM Plex Serif é usado APENAS em páginas editoriais (notícia individual, sobre). Não usado em UI de dados.
+Limiares em 0–100: `nota ≥ n` ⇔ `score ≥ 10n − 5` (`notaMinScore`).
+Assim «score ≥ 65» e «nota ≥ 7 (Bom)» nunca discordam.
 
-### 2.2 Escala
+### 2.1 Bandas — fills, tintas e texto
+
+| Banda | Nota | Tier token | Fill | Tinta sobre fill | Texto AA sobre superfície |
+|-------|------|-----------|------|------------------|---------------------------|
+| Muito bom | ≥ 9 | `epic` | `#FFF07A` | `#030E18` (16.10:1) | `--score-epic-text` |
+| Bom | ≥ 7 | `good` | `#40DCD0` | `#030E18` (11.06:1) | `--score-good-text` |
+| Dá | ≥ 5 | `fair` | `#C99E2A` | `#030E18` (7.52:1) | `--score-fair-text` |
+| Fraco | ≥ 3 | `poor` | `#4479EE` | `#030E18` (4.66:1) | `--score-poor-text` |
+| Não dá | < 3 | `closed` | `#A8464A` | `#FFFFFF` (5.77:1) | `--score-closed-text` |
+| Noite | — | `night` | `#56677B` | `#FFFFFF` (5.80:1) | `--score-night-ink` |
+
+Classes Tailwind: `bg-score-{tier}`, `text-score-{tier}-ink` (tinta sobre
+fill), `text-score-{tier}-text` (texto AA solto na superfície),
+`bg-score-{tier}/15` + `border-score-{tier}/25` (tint suave legado).
+Em `.theme-ocean` as classes `text-score-*` são remapeadas para as tintas
+escuras AA (`#785800`, `#006B64`, `#7D5900`, `#1D4ED8`, `#992D32`).
+
+### 2.2 Regras de uso da cor de banda como TEXTO (cores.md)
+
+A cor da banda só aparece como texto em números **≥ 24 px** (≥ 3:1 sobre o
+fundo escuro). Texto pequeno com cor de banda exige ≥ 4.5:1; abaixo disso
+a banda aparece como **fill com a sua tinta** (`badge`: `bg-score-*` +
+`text-score-*-ink`).
+
+| Banda | sobre abismo `#030E18` | sobre fundo `#071B2C` | sobre mar `#0C2A42` | Texto permitido |
+|-------|------------------------|-----------------------|---------------------|-----------------|
+| Não dá | 3.37 | 3.03 | 2.55 | só ≥ 24 px |
+| Fraco | 4.83 | 4.34 | 3.66 | só ≥ 24 px |
+| Dá | 7.79 | 6.99 | 5.90 | qualquer tamanho |
+| Bom | 11.45 | 10.29 | 8.67 | qualquer tamanho |
+| Muito bom | 16.67 | 14.97 | 12.63 | qualquer tamanho |
+| Noite | 3.35 | 3.01 | 2.54 | só ≥ 24 px |
+
+### 2.3 Contraste do texto dentro do fill (daltonismo-safe)
+
+Escala verificada com Machado/Oliveira/Fernandes (2009), severidade 1.0:
+ΔE2000 mínimo entre bandas vizinhas = **26.5** (protanopia) — todas ≥ 20.
+Luminância monotónica nas três visões (normal, deuteranopia, protanopia).
+
+### 2.4 ScoreBadge (padrão)
+
+Pill `rounded-pill` + `font-mono tabular-nums`: número `/10` inteiro à
+esquerda, label da banda à direita (`font-sans`; na banda «Muito bom» o
+label usa `font-display`). Fill = `tokens.badge` (`bg-score-*` +
+`text-score-*-ink`); glow `shadow-glow-*` apenas em `epic`/`good`.
+Sempre via `getScoreTokens(score)` / `scoreToNota` — nunca cor à mão.
+
+### 2.5 Alertas ≠ bandas de score
+
+Erros, offline, avisos de segurança e estados degradados **nunca** usam
+cores de banda (`--score-poor` incluído — era o bug da v2). Usam os tokens
+dedicados `--alert-*` (§3). Azul `#4479EE` é «Fraco», não é «erro».
+
+---
+
+## 3. TOKENS DE ALERTA (`--alert-*`)
+
+Separados das bandas desde a v6 (#461). Erros, offline, avisos IPMA/segurança:
+
+| Token | Dark | Light (`.theme-ocean`) | Uso |
+|-------|------|------------------------|-----|
+| `--alert-danger` | `#F87171` (6.4:1) | `#B91C1C` (6.5:1) | Erros, offline, falhas |
+| `--alert-warn` | `#F97316` (6.2:1) | `#B45309` | Fill/borda de aviso |
+| `--alert-orange-text` | `#F97316` | `#9A3412` (5.8:1 sobre tint /15) | Texto de aviso em tint |
+| `--alert-warn-text` | `#FFC93C` (11.4:1) | `#92400E` (7.1:1) | Texto de aviso AA |
+
+Classes: `text-alert-danger`, `text-alert-warn-text`,
+`text-alert-orange-text`, `bg-alert-warn`, `border-alert-*`.
+
+---
+
+## 4. DADOS E DESPORTOS
+
+### 4.1 Cores de data visualization (`--data-*`)
+
+| Token | Dark | Light | Uso |
+|-------|------|-------|-----|
+| `--data-waves` | `#7FE7FF` gelo | `#005F8A` | Ondas, swell |
+| `--data-wind` | violet-400 | violet-700 | Vento |
+| `--data-water` | `#40DCD0` | cyan-700 | Temperatura da água |
+| `--data-period` | `#FFC93C` sol | `#9A6A00` | Período de ondas |
+
+### 4.2 Desportos (`--sport-*`)
+
+| Desporto | Dark | Light |
+|----------|------|-------|
+| Surf | gelo `#7FE7FF` | `#005F8A` |
+| Kitesurf | violet-400 | violet-700 |
+| Windsurf | sol `#FFC93C` | `#92400E` |
+| Bodyboard | `#40DCD0` | `#065F46` |
+| SUP | cyan-400 | cyan-700 |
+| Wakeboard | pink-400 | `#BE123C` |
+| Foil | indigo-400 | `#4338CA` |
+
+Classes: `text-sport-*`, `bg-sport-*` — markers, badges, tabs. Reusar,
+nunca inventar novos matizes.
+
+### 4.3 Direção do vento (`--windDir-*`)
+
+| Direção | Dark | Light |
+|---------|------|-------|
+| Offshore | green-500 | `#166534` |
+| Onshore | red-400 | `#B91C1C` |
+| Cross | névoa | `#38526A` |
+
+### 4.4 Daypart (`data-daypart` no `<html>`)
+
+18h–21h PT aplica `data-daypart='sunset'`: tinta ambiente `--daypart-tint`
+(gelo dark / `#005F8A` claro) em gradientes do header e do hero — **exceto**
+cabeçalhos v6 (`[data-pele-cabecalho='v6']`, `[data-v6='home']`), que mantêm
+fundo sólido.
+
+---
+
+## 5. TIPOGRAFIA
+
+Fontes auto-alojadas em `src/styles/v6-fontes.css` (Barlow + Barlow
+Condensed, SIL OFL, woff2 latin + latin-ext, `font-display: swap`),
+carregadas **globalmente** em todas as rotas desde a v6 (#461).
+
+| Role | Fonte | Classe | Notas |
+|------|-------|-------|-------|
+| **UI / Body** | `Barlow` | `font-sans` | UI, parágrafos, labels (fallback Geist Sans → system-ui) |
+| **Display** | `Barlow Condensed` | `font-display` | Headlines hero, nomes de spot, label «Muito bom», números grandes |
+| **Data** | `Geist Mono` | `font-mono` | Scores em tabela, métricas, `tabular-nums` por defeito |
+| Editorial | `Georgia` | `font-serif` | Reservado (não usar em UI de dados) |
+
+`Space Grotesk` (`--font-display` via `next/font`) permanece apenas como
+fallback tardio da stack `font-display`; **não** é a display oficial.
+`IBM Plex Serif` foi removida do produto.
+
+### 5.1 Escala
 
 | Token | Size | Line H. | Tracking | Weight | Uso |
 |-------|------|---------|----------|--------|-----|
@@ -95,52 +229,39 @@ IBM Plex Serif é usado APENAS em páginas editoriais (notícia individual, sobr
 | `h2` | 1.5rem | 1.3 | -0.015em | 600 | Subsecção |
 | `h3` | 1.125rem | 1.4 | -0.01em | 600 | Card header |
 | `body-lg` | 1rem | 1.55 | — | 400 | Corpo texto grande |
-| `body` | 0.875rem | 1.55 | — | 400 | Corpo texto padrão |
+| `body` | 0.875rem | 1.55 | — | 400 | Corpo padrão |
 | `body-sm` | 0.8125rem | 1.5 | — | 400 | Texto auxiliar |
 | `meta` | 0.75rem | 1.4 | 0.005em | 400 | Labels, units |
 | `meta-sm` | 0.6875rem | 1.4 | 0.04em | 500 | Captions, badges |
-| `num-xl` | 3rem | 1 | — | 600 | Score grande (drawer) |
-| `num-lg` | 2rem | 1 | — | 600 | Score médio (cards) |
+| `meta-xs` | 0.625rem | 1.4 | 0.05em | 500 | Micro-captions |
+| `num-xl` | 3rem | 1 | — | 600 | Score grande |
+| `num-lg` | 2rem | 1 | — | 600 | Score médio |
 | `num` | 1.125rem | 1 | — | 500 | Métricas inline |
 | `num-sm` | 0.875rem | 1 | — | 500 | Scores em listas |
 | `num-xs` | 0.75rem | 1 | — | 500 | Scores em badges |
 
-**Regra:** Todos os números (scores, métricas, deltas, datas) usam `font-mono` + `tabular-nums`.
-
-### 2.3 Exemplos
-
-```css
-/* H1 numérico no drawer */
-.score-hero { font-family: Geist Mono; font-size: 3rem; font-weight: 600; }
-
-/* Tabela de previsão */
-td.value { font-family: Geist Mono; font-variant-numeric: tabular-nums; font-size: 0.875rem; }
-
-/* Corpo de texto editorial */
-.article-body { font-family: IBM Plex Serif; font-size: 1rem; line-height: 1.7; }
-```
+**Regra:** todos os números (notas, métricas, deltas, datas) usam
+`font-mono` + `tabular-nums` (já default em `.font-mono`).
 
 ---
 
-## 3. SPACING SCALE
+## 6. SPACING, RADII E SOMBRAS
+
+### 6.1 Spacing (só esta escala)
 
 | Pixel | Tailwind | Uso |
 |-------|----------|-----|
 | 4 | `p-1` | Chips internos, ícones |
 | 8 | `p-2` | Inputs, botões pequenos |
 | 12 | `p-3` | Cards compactos, pills |
-| 16 | `p-4` | Cards padrão, padding content |
+| 16 | `p-4` | Cards padrão, padding |
 | 24 | `p-6` | Secções, modais |
 | 32 | `p-8` | Secções grandes |
 | 48 | `p-12` | Hero spacing |
 | 64 | `p-16` | Page sections |
 | 96 | `p-24` | Page margins |
 
-Gap scale idêntica: `gap-1` = 4px, `gap-2` = 8px, etc.
-
----
-
-## 4. RADII
+### 6.2 Radii
 
 | Token | Value | Uso |
 |-------|-------|-----|
@@ -148,203 +269,170 @@ Gap scale idêntica: `gap-1` = 4px, `gap-2` = 8px, etc.
 | `rounded-input` | 6px | Inputs, botões, selects |
 | `rounded-card` | 8px | Cards padrão |
 | `rounded-modal` | 12px | Modais, drawers |
-| `rounded-surface` | 16px | Superfícies grandes: molduras de mapa, blocos de secção |
-| `rounded-pill` | 9999px | Pills, sport selectors |
+| `rounded-surface` | 16px | Molduras de mapa, blocos de secção |
+| `rounded-pill` | 9999px | Pills, ScoreBadge, sport selectors |
 
-No tailwind: `rounded-sm` (chip), `rounded-md` (input), `rounded-lg` (card), `rounded-xl` (modal), `rounded-full` (pill).
-
----
-
-## 5. SHADOWS
+### 6.3 Sombras
 
 | Token | Value | Uso |
 |-------|-------|-----|
-| `shadow-card` | `0 1px 2px rgba(0,0,0,0.08)` | Card padrão (mínimo) |
-| `shadow-card-hover` | `0 4px 12px rgba(0,0,0,0.10)` | Card hover |
-| `shadow-modal` | `0 8px 24px rgba(0,0,0,0.15)` | Modal, drawer |
-| `shadow-glow-epic` | `0 0 24px rgba(14,165,233,0.30)` | Score épico glow |
-| `shadow-glow-good` | `0 0 20px rgba(16,185,129,0.25)` | Score bom glow |
-| `shadow-glow-fair` | `0 0 16px rgba(245,158,11,0.20)` | Score fun glow |
-| `shadow-glow-poor` | `0 0 12px rgba(239,68,68,0.15)` | Score flat glow |
+| `shadow-card` | `0 1px 2px / 0.2 + 0 1px 3px / 0.15` | Card padrão |
+| `shadow-card-hover` | `0 8px 24px -4px / 0.3` | Card hover |
+| `shadow-modal` | idem hover | Modais, drawers |
+| `shadow-inset-divider` | `inset 0 -1px` | Hairline interior |
+| `shadow-glow-{tier}` | `0 0 32px -4px rgb(var(--score-*) / .45)` | Glow de score (epic/good na UI) |
 
-**Regra:** Preferir bordas `1px` a sombras. Apenas modais e glows de score usam sombra.
-
----
-
-## 6. COMPONENTES-CHAVE (exemplos visuais ASCII)
-
-### 6.1 SpotCard
-
-```
-┌────────────────────────────────────┐
-│ ┌────┐                             │
-│ │ 78 │  Praia do Norte    2.1m     │
-│ │score│  Nazaré · Oeste    14s     │
-│ └────┘                     12kt    │
-│                                  → │
-└────────────────────────────────────┘
-```
-ScoreDial à esquerda, nome+região ao centro, métricas à direita, seta no canto.
-
-### 6.2 ScoreDial
-
-```
-     ╭──────────╮
-     │  \  78  / │
-     │   \ BOM/  │
-     │    \ /    │
-     │     ╯     │
-     ╰──────────╯
-```
-Círculo 270°, cor por tier (azul/verde/âmbar/vermelho). Label qualitativa dentro.
-
-### 6.3 MetricBar
-
-```
-Altura     ████████████████░░░░  2.1m  78/100
-Período    ██████████░░░░░░░░░░  14s   65/100
-Vento      ████████░░░░░░░░░░░░  12kt  58/100
-```
-
-Label à esquerda, barra horizontal com fill, valor à direita, score no fim.
-
-### 6.4 WidgetCard
-
-```
-┌────────────────────────────────────────┐
-│ ⠿  Melhores spots agora              │
-├────────────────────────────────────────┤
-│ 1. Praia do Norte  ·  78  ·  ÉPICO    │
-│ 2. Supertubos      ·  74  ·  BOM      │
-│ 3. Ericeira        ·  72  ·  BOM      │
-│ 4. Guincho         ·  68  ·  BOM      │
-│ 5. Coxos           ·  65  ·  FUN      │
-└────────────────────────────────────────┘
-```
-Header com handle ⠿ + título. Body compacto com lista.
-
-### 6.5 MegaMenuItem
-
-```
-┌──────────────────────────────────────────┐
-│ 🏄 Surf                                   │
-│    Ondas de ponto a praia. 43 spots.     │
-├──────────────────────────────────────────┤
-│ 🪁 Kitesurf                               │
-│    Vento constante, águas planas.        │
-│    ~15 spots.                             │
-└──────────────────────────────────────────┘
-```
-Ícone + título bold + descrição 1 linha + contagem.
-
-### 6.6 SearchPalette
-
-```
-┌──────────────────────────────────────────┐
-│ 🔍  [nazaré_________________________]    │
-├──────────────────────────────────────────┤
-│ SPOTS                                     │
-│ Nazaré · Oeste · Score 92        → Ir    │
-│ Praia do Norte · Nazaré · Score 78 → Ir  │
-│                                          │
-│ REGIÕES                                  │
-│ Nazaré · 5 spots              → Ver     │
-│                                          │
-│ MODALIDADES                              │
-│ Big Wave · 2 spots           → Ver      │
-└──────────────────────────────────────────┘
-```
-Input focado, resultados agrupados por tipo.
+**Regra:** preferir bordas `1px` a sombras. Apenas modais e glows de score
+usam sombra; glows só em `epic`/`good` no `ScoreBadge`.
 
 ---
 
-## 7. REGRAS DO/DON'T
+## 7. COMPONENTES-CHAVE
+
+### 7.1 ScoreBadge
+
+```
+┌─────────────────────────────┐
+│ [ 9  Muito bom ]            │  ← fill #FFF07A, tinta #030E18, font-mono
+└─────────────────────────────┘
+```
+Pill `rounded-pill`, `font-mono tabular-nums`, `tokens.badge`
+(`bg-score-*` + `text-score-*-ink`). Glow `shadow-glow-*` só em epic/good.
+Label em `font-sans` (epic → `font-display`). Sempre `/10` inteiro.
+
+### 7.2 SpotListCard
+
+Card `card-1`/`card-2` + `ScoreBadge` + `SpotImage` opcional + `tierPhrase`
+no hover. Versão `compact` remove `ConfidenceBadge` (máx. densidade).
+Um só componente de card de spot — não criar variações ad-hoc.
+
+### 7.3 FilterPill / `.filter-pill-compact`
+
+`pill-ghost` inativo / `pill-active` activo. `.filter-pill-compact` dá
+44 px por omissão e 36 px só em `≥1024px` **e** `any-pointer: fine`
+(densidade desktop com rato). Alvos de toque ≥ 44 px em mobile.
+
+### 7.4 Header / Footer v6
+
+Marca `VEN`+`TU` em `--sol` (dark) / `--sol` claro. Nav desktop usa
+`.filter-pill-compact`. `ThemeToggle` escondido na homepage
+(`[data-v6='home']`). Header v6 tem fundo sólido mesmo ao pôr-do-sol.
+
+### 7.5 Superfícies v6
+
+Três raízes escuras fixas — **independentes de `.theme-ocean`**:
+`.v6` (spot page), `.v6h` (homepage), `[data-pele='v6']` (mapa).
+Tokens de banda/alerta são remapeados dentro delas para os valores
+escuros AA mesmo quando o utilizador escolhe o tema claro.
+
+### 7.6 Map markers
+
+Pins/markers usam `getScoreTokens`/`--score-*` — a cor do marcador tem de
+bater com o badge da mesma nota. `mapMarkers.ts`/`mapWindArrow.ts` usam
+`rgb(var(--score-*-ink))` para texto/pin em fill de banda.
+
+### 7.7 Regua48h / tábuas de previsão
+
+Números em `font-mono tabular-nums`; célula de hora/note por banda via
+fill+tinta; tooltip `.r-tip` abaixo da faixa; dias/meses localizados via
+`formatHourLabel` (5 locales).
+
+---
+
+## 8. REGRAS DO / DON'T
 
 ### DO
-- Usar `font-mono` + `tabular-nums` para **todos** os números
-- Preferir bordas a sombras para separação visual
-- Scores de 0-100 mapeados na escala ÉPICO/BOM/FUN/FLAT/FECHADO
-- Deltas positivos em verde-mar, negativos em coral
+- Usar `getScoreTokens(score)` / `scoreToNota` / `nota.ts` para **toda** a
+  linguagem de score; nunca hex manual
+- `font-mono` + `tabular-nums` para todos os números
+- Preferir bordas a sombras; sombra só em modal e glow epic/good
+- Nota `/10` inteira; bandas pelas notas (≥9/≥7/≥5/≥3/<3), não por score cru
+- Alertas/erros/offline com tokens `--alert-*`, nunca cores de banda
+- Bandas daltonismo-safe (verificadas em `cores.md`); `Noite` para sem-dados
 - Manter densidade alta — dados primeiro, whitespace propositado
-- Modo escuro com contraste mínimo WCAG AA (4.5:1 texto normal)
-- Cards com `border` + `surface-1`, sem sombra
-- Animações apenas para feedback (loading, hover, score count-up)
+- Contraste WCAG AA (4.5:1 texto normal); alvos ≥ 44 px em toque
+- Animações só para feedback (hover, loading, count-up)
+- PT-PT canónico na copy (ver `ventu-i18n-voice`); 5 locales pt/en/es/de/fr
 
 ### DON'T
-- ❌ Nunca usar verde-lima vibrante (cor do analisa.pt)
-- ❌ Nunca usar coral fora de deltas negativos ou alertas
-- ❌ Nunca centralizar blocos de texto >3 linhas
-- ❌ Nunca usar ilustrações decorativas (ícones funcionais ok)
-- ❌ Nunca usar emoji como ícone primário (usar lucide-react)
-- ❌ Nunca aplicar sombras em cards padrão (apenas modais)
-- ❌ Nunca usar fontes display para UI de dados
-- ❌ Nunca ter spinners genéricos — loading states são skeleton contextual
+- ❌ Nunca usar verde-lima vibrante, roxo SaaS, gradientes arco-íris,
+  glassmorphism, blobs decorativos, fotos stock de surfistas
+- ❌ Nunca usar cores de banda para erros/avisos (azul `#4479EE` é «Fraco»)
+- ❌ Nunca usar a escala 0–100 ou ÉPICO/BOM/FUN/FLAT/FECHADO na UI
+- ❌ Nunca mostrar score como 0–100 ao utilizador — sempre `/10`
+- ❌ Nunca inventar matizes fora dos tokens (`--sport-*`, `--score-*`,
+  `--data-*`, `--alert-*`, `--accent`, `--sol`, `--gelo`)
+- ❌ Nunca usar IBM Plex Serif, Space Grotesk ou Inter como display/body
+- ❌ Nunca emojis como ícone primário (lucide-react); nunca ícones de
+  conjuntos mistos
+- ❌ Nunca `UTC` cru na UI — hora local do spot via `DATE_LOCALE`
+- ❌ Nunca sombras em cards padrão; nunca spinners genéricos (skeleton
+  contextual); nunca animações contínuas na home
+- ❌ Nunca centralizar blocos de texto >3 linhas; nunca ilustrações
+  decorativas (ícones funcionais ok)
 
 ---
 
-## 8. ACESSIBILIDADE
+## 9. ACESSIBILIDADE
 
-### Contrastes (WCAG AA)
+### 9.1 Contrastes (de `cores.md`, WCAG 2.x)
 
-| Combinação | Light Ratio | Dark Ratio | Passa? |
-|------------|-------------|------------|--------|
-| `fg` (#1E293B) on `bg-base` (#FAFAF7) | 12.8:1 | — | ✅ AA |
-| `fg-muted` (#64748B) on `bg-base` (#FAFAF7) | 5.2:1 | — | ✅ AA |
-| `fg-subtle` (#94A3B8) on `bg-base` (#FAFAF7) | 3.8:1 | — | ⚠️ Apenas para labels |
-| — | — | `fg` (#F1F5F9) on `bg-base` (#0F172A) | 13.1:1 ✅ AA |
-| — | — | `fg-muted` (#94A3B8) on `bg-base` (#0F172A) | 6.8:1 ✅ AA |
-| — | — | `fg-subtle` (#64748B) on `bg-base` (#0F172A) | 4.5:1 ✅ AA |
+Dark (`:root`):
 
-### Focus ring
-- `:focus-visible` usa `--accent-positive` (verde-mar) com 2px + offset 2px
-- Inputs/textarea têm offset 0 (tighter ring)
+| Par | Contraste | Mínimo |
+|-----|-----------|--------|
+| espuma `#F3F8FB` / abismo `#030E18` | 18.18 ✅ | 4.5 |
+| espuma / fundo `#071B2C` | 16.33 ✅ | 4.5 |
+| espuma / mar `#0C2A42` | 13.77 ✅ | 4.5 |
+| névoa `#A9C2D4` / abismo | 10.51 ✅ | 4.5 |
+| névoa / fundo | 9.44 ✅ | 4.5 |
+| névoa / mar | 7.97 ✅ | 4.5 |
+| sol `#FFC93C` / abismo | 12.66 ✅ | 4.5 |
+| gelo `#7FE7FF` / fundo | 12.29 ✅ | 4.5 |
+| ink `#04131F` / sol | 12.23 ✅ | 4.5 |
 
-### Reduced motion
-- Media query `prefers-reduced-motion: reduce` desliga todas as animações
-- Score count-up respeita animação nula
+Claro (`.theme-ocean`):
 
-### Alvos de toque (≥ 44 px)
-Regra global: qualquer controlo (botão, `<select>`, `<input>`, `<summary>`,
-`[role=button|tab|switch]`) tem **≥ 44 px de altura** no viewport de toque. O que
-assina é a **altura** — uma pastilha de 32×44 está conforme (a WCAG 2.5.8 isenta
-links de texto corrido, que o harness mede à parte, a nível informativo).
+| Par | Contraste |
+|-----|-----------|
+| `#04131F` / `#EEF4F8` | 16.93 ✅ |
+| `#04131F` / `#FFFFFF` | 18.78 ✅ |
+| `#38526A` / `#FFFFFF` | 8.13 ✅ |
+| `#38526A` / `#EEF4F8` | 7.33 ✅ |
+| `#9A6A00` / `#FFFFFF` | 4.73 ✅ |
+| `#005F8A` / `#FFFFFF` | 6.99 ✅ |
 
-- **Densidade em desktop de rato puro:** a classe `.filter-pill-compact`
-  (globals.css) dá 44 px por omissão e 36 px só em `≥1024px` **e**
-  `any-pointer: fine` — a decisão V3′ de 2026-09, usada pelo `FilterPill`.
-  Chips/hud densos que queiram 36 px em desktop usam-na em vez de
-  `min-h-[36px]`.
-- **Crescer a área sem crescer o desenho:** onde o alvo tem de ser maior do que a
-  peça desenhada, usa-se `min-h-[44px]` com **margem vertical negativa** que
-  devolve a altura original ao fluxo (sliders das calculadoras), ou o `<label>`
-  que envolve o checkbox/rádio (é ele que recebe o clique e é ele que se mede).
-- **Diálogos:** `aria-modal="true"` obriga ao contrato completo (foco inicial
-  dentro, `Tab` preso, `Escape`, foco devolvido ao abridor, fundo bloqueado) — o
-  `Drawer` e o `LoginModal` seguem-no; nenhum diálogo pode declarar `aria-modal`
-  sem o cumprir.
-- **Marcadores do Leaflet** (`.spot-marker`, 24×24 desenhados) ficam fora desta
-  regra: o alvo é o mapa e a densidade é o produto — os controlos do mapa (HUD,
-  camadas, legenda) cumprem os 44 px e têm specs próprios (`map-touch-targets`,
-  `map-hud`).
+Texto de banda sobre superfície: ver tabela §2.2 — abaixo de 4.5:1 só ≥ 24 px.
 
-Guardas: `tests/e2e/a11y-touch-targets.spec.ts` (10 rotas a 390 px) e
-`tests/e2e/a11y-login-modal.spec.ts`, ambos no `test:e2e:core`.
+### 9.2 Foco, movimento e toque
+
+- `:focus-visible` com outline visível (globals.css); inputs com offset 0
+- `prefers-reduced-motion` desliga animações; count-up fica instantâneo
+- Alvos de toque ≥ 44 px (ver §7.3); marcadores Leaflet 24×24 são exceção
+  documentada (alvo = mapa; controlos do mapa cumprem 44 px)
+- Diálogos `aria-modal` cumprem o contrato completo (foco, trap, Escape)
+- Guards: `tests/e2e/a11y-touch-targets.spec.ts`, `a11y-login-modal.spec.ts`
 
 ---
 
-## 9. MODO ESCURO vs CLARO
+## 10. MODO ESCURO vs CLARO
 
-| Aspecto | Light (`.theme-ocean`) | Dark (`:root`) |
-|---------|----------------------|----------------|
-| Base | white-sand `#FAFAF7` | slate-950 `#0F172A` |
-| Texto | slate-800 `#1E293B` | slate-100 `#F1F5F9` |
-| Cards | branco com opacidades de navy | branco com opacidades de branco |
-| Bordas | navy a 10% | branco a 8% |
-| Data viz | vibrante (full saturation) | ligeiramente reduzido |
-| Glows | opacidade normal | opacidade reduzida |
+| Aspecto | Dark (`:root`) | Light (`.theme-ocean` «Sol») |
+|---------|----------------|------------------------------|
+| Base | abismo `#030E18` | `#EEF4F8` |
+| Elevado | fundo `#071B2C` | `#FFFFFF` |
+| Texto | espuma `#F3F8FB` | `#04131F` |
+| Meta | névoa `#A9C2D4` | `#38526A` |
+| Accent | sol `#FFC93C` | gelo `#005F8A` |
+| Bandas de score | fills idênticos | fills idênticos |
+| Texto de banda | `--score-*-text` claras | `--score-*-text` escuras AA |
+| Superfícies v6 (`.v6`/`.v6h`/`[data-pele]`) | sempre escuras | sempre escuras |
 
-Ambos os temas foram desenhados de raiz. O escuro não é uma inversão automática do claro.
+O claro não é uma inversão automática do escuro — os dois foram desenhados
+de raiz (`cores.md` secção «variante clara»).
 
 ---
 
-*Fim do Design System v2.0. Aguardo feedback antes de implementação de componentes.*
+*Fim do Design System v6.0 «Atlântico». Fonte de verdade dos valores:
+`src/app/globals.css`, `tailwind.config.ts`, `src/lib/nota.ts`,
+`src/lib/sportScore.ts`, `docs/design/maquetes/v6-atlantico/cores.md`.*
