@@ -49,14 +49,6 @@ async function interceptContours(page: import('@playwright/test').Page): Promise
 test.describe('Fundo perto da praia (isóbatas IH, «Estudar o spot» v6)', { tag: '@core' }, () => {
   test.use({ serviceWorkers: 'block' });
 
-  async function abreEstudo(page: import('@playwright/test').Page) {
-    const estudo = page.locator('#estudo');
-    await expect(async () => {
-      if ((await estudo.getAttribute('open')) === null) await estudo.locator('summary').click({ timeout: 3_000 });
-      await expect(estudo).toHaveAttribute('open', '', { timeout: 1_000 });
-    }).toPass({ timeout: 20_000 });
-  }
-
   const NAZARE_ISOBATHS = {
     spots: { nazare: { 8: 0.25, 16: 0.31, 30: 0.46 } },
     fetchedAt: 'Sat 2026-08-15 9:00 AM WEST (UTC+01:00)',
@@ -68,7 +60,6 @@ test.describe('Fundo perto da praia (isóbatas IH, «Estudar o spot» v6)', { ta
     await interceptIsobaths(page, NAZARE_ISOBATHS);
     await page.goto('/pt/spots/nazare/');
     await expect(page.getByRole('heading', { level: 1, name: /Nazaré/i })).toBeVisible({ timeout: 20_000 });
-    await abreEstudo(page);
 
     const fundo = page.getByTestId('isobaths-strip');
     await expect(fundo).toHaveCount(1);
@@ -86,8 +77,8 @@ test.describe('Fundo perto da praia (isóbatas IH, «Estudar o spot» v6)', { ta
     await expect(fonte).toHaveText('Distância da praia até cada profundidade · dados do Instituto Hidrográfico (CC BY 4.0)');
     await expect(fonte).toHaveAttribute('title', /Instituto Hidrográfico, CC-BY 4\.0/);
     await expect(fundo.getByText(/Isóbatas IH/)).toHaveCount(0);
-    // Estilo v6, dentro do «Estudar o spot».
-    await expect(page.locator('#estudo [data-testid="isobaths-strip"]')).toHaveCount(1);
+    // Estilo v6, visível em «O que se mede» (fora do <details>, #459).
+    await expect(page.locator('[data-testid="spot-mede-sabe"] [data-testid="isobaths-strip"]')).toHaveCount(1);
     expect(await fundo.evaluate((el) => getComputedStyle(el).backgroundColor)).toBe('rgb(12, 42, 66)');
   });
 
@@ -100,7 +91,6 @@ test.describe('Fundo perto da praia (isóbatas IH, «Estudar o spot» v6)', { ta
     });
     await page.goto('/pt/spots/nazare/');
     await expect(page.getByRole('heading', { level: 1, name: /Nazaré/i })).toBeVisible({ timeout: 20_000 });
-    await abreEstudo(page);
     await page.waitForTimeout(1_500);
     await expect(page.getByTestId('isobaths-strip')).toHaveCount(0);
   });
@@ -109,10 +99,9 @@ test.describe('Fundo perto da praia (isóbatas IH, «Estudar o spot» v6)', { ta
     await page.route('**/data/spot-isobaths.json', async (route) => route.fulfill({ status: 404 }));
     await page.goto('/pt/spots/nazare/');
     await expect(page.getByRole('heading', { level: 1, name: /Nazaré/i })).toBeVisible({ timeout: 20_000 });
-    await abreEstudo(page);
     await page.waitForTimeout(1_500);
     await expect(page.getByTestId('isobaths-strip')).toHaveCount(0);
-    await expect(page.locator('#estudo [data-ec="mare-lua"]')).toBeVisible();
+    await expect(page.locator('[data-testid="spot-mede-sabe"] [data-ec="mare-lua"]')).toBeVisible();
   });
 });
 

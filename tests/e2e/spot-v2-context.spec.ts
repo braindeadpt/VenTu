@@ -86,17 +86,23 @@ test.describe('Contexto do spot (v6)', () => {
     await expect(noLocal.getByText(/Sem avisos activos|Avisos/i).first()).toBeVisible({ timeout: 15_000 });
   });
 
-  test('logo a seguir ao «Estudar o spot» e antes das acções, no estilo v6', async ({ page }) => {
+  test('acções acima do «Estudar o spot», contexto logo a seguir ao «Estudar o spot», no estilo v6', async ({ page }) => {
     await abre(page);
     const ordem = await page.evaluate(() => {
       const v6 = document.querySelector('[data-testid="spot-v6"]')!;
       const filhos = Array.from(v6.children);
       const pos = (sel: string) => filhos.findIndex((el) => el.matches(sel));
-      return { estudo: pos('#estudo'), ctx: pos('[data-testid="spot-contexto"]'), acoes: pos('[data-testid="spot-acoes"]') };
+      return {
+        acoes: pos('[data-testid="spot-acoes"]'),
+        mede: pos('.medesabe-fora'),
+        estudo: pos('#estudo'),
+        ctx: pos('[data-testid="spot-contexto"]'),
+      };
     });
-    expect(ordem.estudo).toBeGreaterThanOrEqual(0);
+    expect(ordem.acoes).toBeGreaterThanOrEqual(0);
+    expect(ordem.mede).toBeGreaterThan(ordem.acoes);
+    expect(ordem.estudo).toBe(ordem.mede + 1);
     expect(ordem.ctx).toBe(ordem.estudo + 1);
-    expect(ordem.acoes).toBe(ordem.ctx + 1);
     // Tipografia e cores da v6: títulos em Barlow Condensed, cartões no --fundo da v6.
     const t = page.locator('#no-local-t');
     expect(await t.evaluate((el) => getComputedStyle(el).fontFamily)).toMatch(/Barlow Condensed/);

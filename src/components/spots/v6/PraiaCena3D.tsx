@@ -23,6 +23,7 @@ import type { HoraSpot } from '@/lib/horaSpot';
 import type { EditorialSpot } from '@/lib/spotEditorial';
 import type { EstadoCena, GrupoIsobata, HandleMapa } from './praiaMapa';
 import type { HandlePlano } from './praiaPlano';
+import { criarLoopFrentes } from './praiaFrentesLoop';
 
 export interface Vizinho {
   nome: string;
@@ -254,18 +255,15 @@ export default function PraiaCena3D({ spotId, locale, mapaSport, nome, ll, idEst
         });
     let iniciado = false;
     let visivel = false;
-    let raf = 0;
     let moveRaf = 0;
-    const t0 = performance.now();
-    let ultimo = 0;
-    const anima = (now: number) => {
-      if (!document.hidden && visivel && now - ultimo > 80) {
-        ultimo = now;
-        mapa.current?.frentes((now - t0) / 1000);
-      }
-      raf = requestAnimationFrame(anima);
-    };
+    let ativo = true;
+    const frentesLoop = criarLoopFrentes((s) => mapa.current?.frentes(s), {
+      reduz: reduz.current,
+      semOndas,
+    });
     const usarPlano = () => {
+      frentesLoop.setAtivo3D(false);
+      vento.current?.estatico();
       mapa.current?.destruir();
       mapa.current = null;
       modoRef.current = 'plano';
@@ -273,7 +271,7 @@ export default function PraiaCena3D({ spotId, locale, mapaSport, nome, ll, idEst
       setCamVista({ bearing: 0, pitch: 0 });
       setVistaTopo(false);
       requestAnimationFrame(() => {
-        if (!planoEl.current) return;
+        if (!ativo || !planoEl.current) return;
         const cam = camara(ll, praiaVirada, desk.current, rotulos?.ll, aguaInterior);
         plano.current = criarPlano(planoEl.current, ll, idEstatico, rotulos?.centroPlano ?? cam.center, praiaVirada, desk.current, estadoRef.current, () => setPronto(true), rotulos?.caixaFrentes, semOndas);
         proj.current = plano.current;
@@ -283,7 +281,6 @@ export default function PraiaCena3D({ spotId, locale, mapaSport, nome, ll, idEst
       });
     };
     let criarPlano: typeof import('./praiaPlano').criarPlano;
-    let ativo = true;
     const iniciar = async () => {
       iniciado = true;
       if (!semOndas) {
@@ -326,7 +323,7 @@ export default function PraiaCena3D({ spotId, locale, mapaSport, nome, ll, idEst
             if (!reduz.current) {
               vento.current?.iniciar();
               campoVento();
-              if (!semOndas) raf = requestAnimationFrame(anima);
+              frentesLoop.setAtivo3D(true);
             }
             setTimeout(() => setPronto(true), 400);
           },
@@ -360,11 +357,16 @@ export default function PraiaCena3D({ spotId, locale, mapaSport, nome, ll, idEst
       (es) => {
         visivel = es.some((e) => e.isIntersecting);
         vento.current?.pausar(!visivel);
+        frentesLoop.setVisivel(visivel);
         if (visivel && !iniciado) void iniciar();
       },
       { threshold: 0.15 },
     );
     io.observe(f);
+    const onVis = () => {
+      frentesLoop.onVisibilityChange();
+    };
+    document.addEventListener('visibilitychange', onVis);
     const rs = () => {
       vento.current?.tamanho();
       vento.current?.limpar();
@@ -375,8 +377,9 @@ export default function PraiaCena3D({ spotId, locale, mapaSport, nome, ll, idEst
     return () => {
       ativo = false;
       io.disconnect();
+      document.removeEventListener('visibilitychange', onVis);
       window.removeEventListener('resize', rs);
-      cancelAnimationFrame(raf);
+      frentesLoop.destruir();
       cancelAnimationFrame(moveRaf);
       vento.current?.parar();
       mapa.current?.destruir();

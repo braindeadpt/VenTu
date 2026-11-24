@@ -38,7 +38,7 @@ import { decimalV6 } from './boiaFmt';
 import { nivelDoSpot, spotDentroDoNivel, type NivelUtilizador } from '@/lib/mapDifficulty';
 import { vizinhosDoNivel } from '@/lib/vizinhosNivel';
 import { nivelCopyV6 } from '@/lib/translations/nivel';
-import { PERTO_NIVEL_ID, porqueNivel } from './NivelAviso';
+import { PERTO_NIVEL_ID, porqueNivel, queryModalidadeVizinho } from './NivelAviso';
 
 type Perto = DirectoryEntry & { distanceKm: number };
 
@@ -90,9 +90,11 @@ export interface PertoV6Props {
   sport: SportType;
   /** #nivel-ui: com o spot acima do nível escolhido, abre com «Do teu nível, perto daqui». */
   nivel?: NivelUtilizador | null;
+  /** #459: aviso activo também por condições da hora (soProfissionais / offshore / onda > 1.6 m). */
+  acimaNivel?: boolean;
 }
 
-export default function PertoV6({ spot, locale, copy: c, t, ms, sport, nivel = null }: PertoV6Props) {
+export default function PertoV6({ spot, locale, copy: c, t, ms, sport, nivel = null, acimaNivel = false }: PertoV6Props) {
   const tr = getTranslation(locale);
   const tc = tr.spotPageContext;
   const dir = tr.directory;
@@ -130,12 +132,13 @@ export default function PertoV6({ spot, locale, copy: c, t, ms, sport, nivel = n
   const passo = pickMapHourStep(file?.times ?? [], t, { lon: spot.lon, ms });
   const diretorio = useDiretorio(spot.id, spot.lat, spot.lon);
   const cn = nivelCopyV6(locale);
-  const acima = !!nivel && !spotDentroDoNivel(nivelDoSpot(spot, sport), nivel);
+  const acima = !!nivel && (acimaNivel || !spotDentroDoNivel(nivelDoSpot(spot, sport), nivel));
   const doNivel = useMemo(
     () => (acima && nivel ? vizinhosDoNivel(spot, spots, sport, nivel, file, passo) : []),
     [acima, nivel, spot, sport, file, passo],
   );
   const mod = sport === 'kitesurf' ? 'kite' : 'surf';
+  const qsMod = queryModalidadeVizinho(sport, mod);
 
   return (
     <div className="ctx-bloco" id="perto" role="group" aria-labelledby="perto-t" ref={raiz}>
@@ -155,7 +158,7 @@ export default function PertoV6({ spot, locale, copy: c, t, ms, sport, nivel = n
             <ul>
               {doNivel.map((v) => (
                 <li key={v.spot.id}>
-                  <a href={`/${locale}/spots/${v.spot.slug}/?d=${mod}`} data-spot={v.spot.id}>
+                  <a href={`/${locale}/spots/${v.spot.slug}/${qsMod}`} data-spot={v.spot.id}>
                     <span className="nm">
                       <b>{pickLocale(locale, { pt: v.spot.name, en: v.spot.nameEn || v.spot.name })}</b>
                       <span className="km">{cn.pertoKm(decimalV6(formatDistance(v.distanceKm, locale), locale), v.nivel)}</span>

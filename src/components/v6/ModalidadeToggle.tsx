@@ -7,8 +7,9 @@
  */
 import type { CSSProperties } from 'react';
 import { MODALIDADES_VISIVEIS, type Modalidade } from '@/lib/modalidades';
+import type { SpotModalidadeAtiva } from '@/lib/spotV6Modalidade';
 
-const ICONES: Record<Modalidade, JSX.Element> = {
+const ICONES: Partial<Record<SpotModalidadeAtiva, JSX.Element>> = {
   kite: (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true">
       <path d="M3 9c3-5 15-5 18 0" />
@@ -23,20 +24,41 @@ const ICONES: Record<Modalidade, JSX.Element> = {
   ),
 };
 
-export interface ModalidadeToggleProps {
-  valor: Modalidade;
-  onChange: (d: Modalidade) => void;
+export interface ModalidadeToggleProps<T extends string = Modalidade> {
+  valor: T;
+  onChange: (d: T) => void;
   rotulos: Record<string, string>;
   ariaLabel: string;
+  /** Lista de opções do toggle (omissão: `MODALIDADES_VISIVEIS` — Kite · Surf). */
+  opcoes?: readonly T[];
   className?: string;
   style?: CSSProperties;
 }
 
-export default function ModalidadeToggle({ valor, onChange, rotulos, ariaLabel, className, style }: ModalidadeToggleProps) {
+export default function ModalidadeToggle<T extends string = Modalidade>({
+  valor,
+  onChange,
+  rotulos,
+  ariaLabel,
+  opcoes,
+  className,
+  style,
+}: ModalidadeToggleProps<T>) {
+  const lista = (opcoes ?? (MODALIDADES_VISIVEIS as unknown as readonly T[]));
+  const idx = lista.indexOf(valor);
+  const duasOpcoes = lista.length === 2;
   return (
-    <div className={`modo${className ? ' ' + className : ''}`} role="group" aria-label={ariaLabel} data-d={valor} style={style} data-testid="modalidade-toggle">
-      <span className="pista" aria-hidden="true" />
-      {MODALIDADES_VISIVEIS.map((d) => (
+    <div
+      className={`modo${duasOpcoes ? '' : ' modo-flex'}${className ? ' ' + className : ''}`}
+      role="group"
+      aria-label={ariaLabel}
+      data-d={valor}
+      data-idx={idx >= 0 ? String(idx) : undefined}
+      style={style}
+      data-testid="modalidade-toggle"
+    >
+      {duasOpcoes && idx >= 0 ? <span className="pista" aria-hidden="true" /> : null}
+      {lista.map((d) => (
         <button
           key={d}
           type="button"
@@ -46,7 +68,7 @@ export default function ModalidadeToggle({ valor, onChange, rotulos, ariaLabel, 
             if (d !== valor) onChange(d);
           }}
         >
-          {ICONES[d]}
+          {ICONES[d as SpotModalidadeAtiva] ?? null}
           {rotulos[d] ?? d}
         </button>
       ))}

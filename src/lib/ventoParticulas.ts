@@ -178,15 +178,43 @@ export function criarVento(canvas: HTMLCanvasElement, opcoes?: OpcoesVento): Mot
       ctx.stroke();
     }
   }
+  function pararLoop() {
+    if (raf) {
+      cancelAnimationFrame(raf);
+      raf = 0;
+    }
+    ultimo = 0;
+  }
+  function agendarLoop() {
+    if (!vivo || pausado || document.hidden || raf) return;
+    raf = requestAnimationFrame(loop);
+  }
+  let visEscuta = false;
+  const onVis = () => {
+    if (document.hidden) pararLoop();
+    else agendarLoop();
+  };
+  function ligarVis() {
+    if (visEscuta || typeof document === 'undefined') return;
+    visEscuta = true;
+    document.addEventListener('visibilitychange', onVis);
+  }
+  function desligarVis() {
+    if (!visEscuta || typeof document === 'undefined') return;
+    visEscuta = false;
+    document.removeEventListener('visibilitychange', onVis);
+  }
   function loop(t: number) {
-    if (!vivo) return;
-    if (!document.hidden && !pausado && t - ultimo > 30) {
+    raf = 0;
+    if (!vivo || document.hidden || pausado) {
+      ultimo = 0;
+      return;
+    }
+    if (t - ultimo > 30) {
       const dt = Math.min(0.05, (t - (ultimo || t)) / 1000) || 0.033;
       ultimo = t;
       mover(dt);
       desenhar();
-    } else if (document.hidden || pausado) {
-      ultimo = 0;
     }
     raf = requestAnimationFrame(loop);
   }
@@ -241,24 +269,28 @@ export function criarVento(canvas: HTMLCanvasElement, opcoes?: OpcoesVento): Mot
       tamanho();
       semear();
       vivo = true;
-      ultimo = 0;
       instantaneo = false;
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(loop);
+      pararLoop();
+      ligarVis();
+      agendarLoop();
       return api;
     },
     parar() {
       vivo = false;
-      cancelAnimationFrame(raf);
+      desligarVis();
+      pararLoop();
       return api;
     },
     pausar(p) {
       pausado = p;
+      if (p) pararLoop();
+      else agendarLoop();
       return api;
     },
     estatico() {
       vivo = false;
-      cancelAnimationFrame(raf);
+      desligarVis();
+      pararLoop();
       tamanho();
       setas();
       return api;

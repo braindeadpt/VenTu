@@ -541,7 +541,9 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
       }
       await expect(page.locator('main table:not([data-ec="mares"])')).toHaveCount(1);
       await expect(page.locator('#estudo .tabela table')).toHaveCount(1);
-      await expect(page.locator('main table[data-ec="mares"]')).toHaveCount(await page.locator('#estudo [data-ec="mares"]').count());
+      await expect(page.locator('main table[data-ec="mares"]')).toHaveCount(
+        await page.locator('[data-testid="spot-mede-sabe"] [data-ec="mares"]').count(),
+      );
       expect(await page.locator('main table[data-ec="mares"]').count()).toBeLessThanOrEqual(1);
       // Cada bloco do «O que se mede e o que se sabe» existe no máximo uma vez.
       for (const b of ['boia', 'mare-lua', 'sol-ar', 'fundo', 'clima']) {

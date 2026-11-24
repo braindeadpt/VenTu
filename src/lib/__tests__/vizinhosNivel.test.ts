@@ -39,18 +39,23 @@ describe('vizinhosDoNivel', () => {
     expect([...d].sort((a, b) => a - b)).toEqual(d);
   });
 
-  it('ordena pela nota na hora escolhida; empate → o mais perto; noite e sem série no fim', () => {
+  it('ordena pela nota na hora escolhida, exclui nota < 5 e soProfissionais; empate → o mais perto', () => {
     const base = vizinhosDoNivel(guincho, spots, 'kitesurf', 'beginner', null, 0, 99);
     expect(base.length).toBeGreaterThanOrEqual(3);
     const [a, b, c] = base; // por distância
     const f = ficheiro({ [a.spot.id]: [40, 90], [b.spot.id]: [80, 10], [c.spot.id]: [80, null] });
     const p0 = vizinhosDoNivel(guincho, spots, 'kitesurf', 'beginner', f, 0);
-    expect(p0.map((v) => v.spot.id)).toEqual([b.spot.id, c.spot.id, a.spot.id]);
-    expect(p0.map((v) => v.nota)).toEqual([8, 8, 4]);
+    // `a` tem nota 4 (< 5) → nunca sugerido (#459); `b` e `c` têm nota 8
+    expect(p0.map((v) => v.spot.id).slice(0, 2)).toEqual([b.spot.id, c.spot.id]);
+    expect(p0.some((v) => v.spot.id === a.spot.id)).toBe(false);
+    expect(p0.every((v) => typeof v.nota !== 'number' || v.nota >= 5)).toBe(true);
     const p1 = vizinhosDoNivel(guincho, spots, 'kitesurf', 'beginner', f, 1);
     expect(p1[0].spot.id).toBe(a.spot.id);
     expect(p1[0].nota).toBe(9);
-    expect(p1.find((v) => v.spot.id === c.spot.id)?.nota ?? 'fora do top').not.toBe(0);
+    expect(p1.some((v) => v.spot.id === b.spot.id)).toBe(false);
+    // spot marcado soProfissionais é excluído mesmo com nota ≥ 5
+    const semPro = vizinhosDoNivel(guincho, spots, 'kitesurf', 'beginner', f, 0, 3, new Set([b.spot.id]));
+    expect(semPro.some((v) => v.spot.id === b.spot.id)).toBe(false);
   });
 
   it('o próprio nível por desporto conta: o Guincho é intermédio em surf, cabe para um intermédio', () => {
@@ -76,5 +81,28 @@ describe('vizinhosDoNivel', () => {
 
   it('limite de 3 por omissão', () => {
     expect(vizinhosDoNivel(guincho, spots, 'kitesurf', 'advanced', null, 0).length).toBeLessThanOrEqual(3);
+  });
+
+  it('iniciante em surf/bodyboard exclui vizinhos com ondulação > 1,6 m no passo (#459)', () => {
+    const base = vizinhosDoNivel(guincho, spots, 'surf', 'beginner', null, 0, 99);
+    expect(base.length).toBeGreaterThanOrEqual(2);
+    const [grande, seguro] = base;
+    const f: MapHoursFile = {
+      generatedAt: '2026-10-14T13:00:00Z',
+      stepHours: 3,
+      times: ['2026-10-14T12:00'],
+      sports: ['surf'],
+      spots: {
+        [grande.spot.id]: { surf: [80] },
+        [seguro.spot.id]: { surf: [70] },
+      },
+      hs: {
+        [grande.spot.conditionsSource ?? grande.spot.id]: [1.88],
+        [seguro.spot.conditionsSource ?? seguro.spot.id]: [1.2],
+      },
+    };
+    const r = vizinhosDoNivel(guincho, spots, 'surf', 'beginner', f, 0, 3);
+    expect(r.some((v) => v.spot.id === grande.spot.id)).toBe(false);
+    expect(r.some((v) => v.spot.id === seguro.spot.id)).toBe(true);
   });
 });

@@ -1,19 +1,21 @@
 'use client';
 
-/** Barra de topo sobre a foto (#184): «‹ Costa» (volta à home) + nível (#nivel-ui) + ModalidadeToggle. */
+/** Barra de topo sobre a foto (#184): «‹ Costa» (volta à home) + pesquisa + nível (#nivel-ui) + ModalidadeToggle. */
 import Link from 'next/link';
-import { ChevronLeft } from 'lucide-react';
+import { ChevronLeft, Search } from 'lucide-react';
 import ModalidadeToggle from '@/components/v6/ModalidadeToggle';
 import NivelControl from '@/components/v6/NivelControl';
 import type { MapDifficultyFilter, NivelUtilizador } from '@/lib/mapDifficulty';
 import type { NivelCopy } from '@/lib/translations/nivel';
-import type { Modalidade } from '@/lib/modalidades';
+import type { SpotModalidadeAtiva } from '@/lib/spotV6Modalidade';
 import type { SpotPageV6Copy } from '@/lib/translations/spotPage/v6';
+import { OPEN_SEARCH_EVENT } from '@/lib/searchEvents';
 
 export default function TopBar({
   locale,
   copy,
   d,
+  opcoes,
   onModalidade,
   nivel,
   onNivel,
@@ -23,8 +25,10 @@ export default function TopBar({
 }: {
   locale: string;
   copy: SpotPageV6Copy;
-  d: Modalidade;
-  onModalidade: (d: Modalidade) => void;
+  d: SpotModalidadeAtiva;
+  /** Modalidades apresentadas no toggle da barra (compatíveis com o spot). */
+  opcoes: readonly SpotModalidadeAtiva[];
+  onModalidade: (d: SpotModalidadeAtiva) => void;
   nivel: NivelUtilizador | null;
   onNivel: (v: MapDifficultyFilter) => void;
   cn: NivelCopy;
@@ -36,11 +40,26 @@ export default function TopBar({
     <header className="top">
       <Link className="voltar" href={`/${locale}/`} aria-label={copy.voltarAria}>
         <ChevronLeft size={22} strokeWidth={2.6} aria-hidden="true" />
-        <span aria-hidden="true">{copy.voltar}</span>
+        <span className="voltar-txt" aria-hidden="true">{copy.voltar}</span>
       </Link>
       <span className="esp" />
+      <button
+        type="button"
+        className="top-pesq"
+        aria-label={copy.pesquisarAria}
+        data-testid="top-search-btn"
+        onClick={() => window.dispatchEvent(new CustomEvent(OPEN_SEARCH_EVENT))}
+      >
+        <Search size={19} strokeWidth={2.4} aria-hidden="true" />
+      </button>
       <NivelControl nivel={nivel} onEscolhe={onNivel} copy={cn} aberto={menuNivel} onAberto={onMenuNivel} />
-      <ModalidadeToggle valor={d} onChange={onModalidade} rotulos={copy.modalidades} ariaLabel={copy.modalidadeAria} />
+      <ModalidadeToggle
+        valor={d}
+        opcoes={opcoes}
+        onChange={onModalidade}
+        rotulos={copy.modalidades}
+        ariaLabel={copy.modalidadeAria}
+      />
     </header>
   );
 }

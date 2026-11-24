@@ -241,6 +241,17 @@ test.describe('#nivel-ui spot (Guincho: avançado em kite, intermédio em surf)'
   test.use({ serviceWorkers: 'block' });
 
   async function abreSpot(page: Page, q: string) {
+    // #459: vizinhosDoNivel exclui spots com nota < 5; garante notas >= 60 nos
+    // vizinhos de kite no map-hours.json para que os testes de UI dos chips/link
+    // não dependam do vento real no dia do build.
+    await page.route('**/data/map-hours.json', async (route) => {
+      const res = await route.fetch();
+      const j = (await res.json()) as { spots?: Record<string, Record<string, Array<number | null>>> };
+      for (const row of Object.values(j.spots ?? {})) {
+        if (Array.isArray(row.kitesurf)) row.kitesurf = row.kitesurf.map((v) => (v == null ? null : Math.max(v, 70)));
+      }
+      await route.fulfill({ response: res, json: j });
+    });
     await page.goto(`/pt/spots/guincho/${q}`);
     await waitHydrated(page);
     await expect(page.getByTestId('spot-v6')).toHaveClass(/vivo/, { timeout: 20_000 });

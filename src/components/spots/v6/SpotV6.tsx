@@ -25,13 +25,24 @@ import { useVizinhosNivel } from './useVizinhosNivel';
 import { useNivel } from '@/lib/nivelPref';
 import { nivelCopyV6 } from '@/lib/translations/nivel';
 import { nivelDoSpot, spotDentroDoNivel, type NivelUtilizador } from '@/lib/mapDifficulty';
-import { getCompatibleSports } from '@/lib/sportRatings';
+import { ondaExcedeLimiteIniciante } from '@/lib/spotLevelToday';
+import { getCompatibleSports, type SportType } from '@/lib/sportRatings';
 import { sportParaMapa } from '@/lib/praiaCena';
-import { avaliaHoras, isModalidade, MODALIDADE_OMISSAO, type Modalidade } from '@/lib/modalidades';
+import { isModalidade, type Modalidade } from '@/lib/modalidades';
+import {
+  avaliaHorasSpotV6,
+  isSpotModalidadeAtiva,
+  modalidadeOmissaoSpot,
+  modalidadesCompativeisSpot,
+  resolverModalidadeSpot,
+  spotModParaBase,
+  spotModParaSport,
+  type SpotModalidadeAtiva,
+} from '@/lib/spotV6Modalidade';
 import { construirHoras, indiceHoraPorInstante, mareDepois, type LinhaForecast, type MareExtremo } from '@/lib/horaSpot';
 import { editorialDe, spotModalidadeDe } from '@/lib/spotEditorial';
 import { bandaR, construirFrase, diaCurto, horaDe, horaTxt, palavraEResto } from '@/lib/spotVeredicto';
-import { gravarPrefModalidade, modalidadeInicial, MODALIDADE_EVENT } from '@/lib/modalidadePref';
+import { gravarPrefModalidade, lerPrefModalidade, MODALIDADE_EVENT } from '@/lib/modalidadePref';
 import { spotV6Copy } from '@/lib/translations/spotPage/v6';
 import { getAssetPath } from '@/lib/paths';
 import type { FotoSpot } from '@/lib/spotFotos';
@@ -44,13 +55,17 @@ export interface SpotV6Hora {
   /** Instante UTC real (ms) da hora escolhida (DST-safe). */
   ms?: number;
   ehAgora: boolean;
-  d: Modalidade;
+  d: SpotModalidadeAtiva;
+  /** Desporto do site correspondente a `d` (ex. `kitesurf`, `windsurf`, `wakeboard`). */
+  sport: SportType;
   /** Extremos de maré da janela — os mesmos do Porquê. */
   mares: readonly MareExtremo[];
   /** O extremo que o Porquê cita para esta hora (não se repete noutro sítio). */
   citada?: MareExtremo;
   /** #nivel-ui: nível escolhido (null = sem nível), para o «Do teu nível, perto daqui». */
   nivel: NivelUtilizador | null;
+  /** #459: true quando o aviso de nível está activo (dificuldade do spot OU vento/onda perigosa). */
+  acimaNivel: boolean;
 }
 
 export interface SpotV6Props {
@@ -67,15 +82,15 @@ export interface SpotV6Props {
   vizinhos: readonly Vizinho[];
   atencao: string | null;
   melhorMare: string | null;
-  /** Avisa a página (alerta das acções) da modalidade escolhida. */
-  onModalidade?: (d: Modalidade) => void;
+  /** Avisa a página (alerta das acções) do desporto escolhido. */
+  onModalidade?: (sport: SportType) => void;
   /** Faixa de segurança (avisos IPMA / estado do mar / costeiros), só com aviso activo. */
   seguranca?: ReactNode;
   /** Acções do spot (como chegar, favorito, alerta, câmara, mais). */
-  acoes?: ReactNode;
+  acoes?: ReactNode | ((h: SpotV6Hora) => ReactNode);
   /** O que só o contexto do spot traz (avisos, câmara, estação, água, chegar e estar, perto daqui, eventos). */
   contexto?: ReactNode | ((h: SpotV6Hora) => ReactNode);
-  /** Fim do «Estudar o spot»: o que se mede e o que se sabe (boia, maré e lua, sol e ar, fundo, clima). */
+  /** O que se mede e o que se sabe (boia, maré e lua, sol e ar, fundo, clima) — visível fora do `<details>` (#459). */
   estudo?: (h: SpotV6Hora) => ReactNode;
 }
 
@@ -104,8 +119,13 @@ export default function SpotV6({ spot, nome, local, locale, linhas, agoraMs, fot
   const copy = spotV6Copy(locale);
   const ed = useMemo(() => editorialDe(spot), [spot]);
   const sp = useMemo(() => spotModalidadeDe(ed), [ed]);
-  const omissao: Modalidade = spot.compatibleSports?.includes('kitesurf') ? MODALIDADE_OMISSAO : 'surf';
-  const [d, setD] = useState<Modalidade>(omissao);
+  const compativeis = useMemo(() => modalidadesCompativeisSpot(spot), [spot]);
+  const opcoesTop = useMemo<SpotModalidadeAtiva[]>(() => {
+    if (compativeis.includes('kite') && compativeis.includes('surf')) return ['kite', 'surf'];
+    return compativeis.slice(0, 2);
+  }, [compativeis]);
+  const omissao = useMemo(() => modalidadeOmissaoSpot(spot), [spot]);
+  const [d, setD] = useState<SpotModalidadeAtiva>(omissao);
   // Selecção da régua: `null` = «Agora» (segue o relógio); objecto = a hora
   // fixada pelo INSTANTE UTC (`ms`, à prova do 01:00 repetido do DST) — a
   // janela desliza com o relógio e um índice nu passaria a apontar para
@@ -118,23 +138,21 @@ export default function SpotV6({ spot, nome, local, locale, linhas, agoraMs, fot
   const [nivel, escolheNivel] = useNivel();
   const [menuNivel, setMenuNivel] = useState(false);
 
-  // depois de montar: ?d= / ventu.modalidade, ?h=, ?webgl=0, ?estudo=1
+  // depois de montar: ?sport= / ?d= / ventu.modalidade (só se compatível com o spot), ?h=, ?webgl=0, ?estudo=1
   // (o relógio reactivo — P2.2 — é o do SpotDetailClient e chega por
   // `agoraMs`: UM relógio comum move a régua e a aplicação das observações)
   useEffect(() => {
     const qs = window.location.search;
     const p = new URLSearchParams(qs);
-    const m = modalidadeInicial(qs);
-    if (m) {
-      setD(m);
-      onModalidade?.(m);
-    }
+    const m = resolverModalidadeSpot(spot, qs, lerPrefModalidade()?.d ?? null);
+    setD(m);
+    onModalidade?.(spotModParaSport(m));
     const hq = Number(p.get('h'));
     if (Number.isFinite(hq) && hq > 0) setPendH(Math.floor(hq));
     setFlags({ plano: p.get('webgl') === '0', estudo: p.get('estudo') === '1', vivo: true });
     const ouve = (e: Event) => {
       const v = (e as CustomEvent).detail;
-      if (isModalidade(v)) setD(v);
+      if (isSpotModalidadeAtiva(v) && compativeis.includes(v)) setD(v);
     };
     window.addEventListener(MODALIDADE_EVENT, ouve);
     return () => {
@@ -148,7 +166,7 @@ export default function SpotV6({ spot, nome, local, locale, linhas, agoraMs, fot
     [linhas, spot.lat, spot.lon, ed.praiaVirada, agoraMs],
   );
   const H = dados.horas;
-  const NS = useMemo(() => avaliaHoras(sp, d, H), [sp, d, H]);
+  const NS = useMemo(() => avaliaHorasSpotV6(spot, sp, d, H, linhas), [spot, sp, d, H, linhas]);
   const frase = useMemo(
     () => construirFrase({ sp, d, H, NS, sol: dados.sol, copy, locale }),
     [sp, d, H, NS, dados.sol, copy, locale],
@@ -182,17 +200,36 @@ export default function SpotV6({ spot, nome, local, locale, linhas, agoraMs, fot
     setPendH(null);
   }, [pendH, H.length, escolhe]);
   const muda = useCallback(
-    (m: Modalidade) => {
+    (m: SpotModalidadeAtiva) => {
       setD(m);
-      gravarPrefModalidade(m);
-      onModalidade?.(m);
+      if (isModalidade(m)) gravarPrefModalidade(m);
+      onModalidade?.(spotModParaSport(m));
     },
     [onModalidade],
   );
 
-  const sport = d === 'kite' ? 'kitesurf' : 'surf';
+  const sport = spotModParaSport(d);
+  const dBase = spotModParaBase(d);
   const nivelSpot = nivelDoSpot(spot, sport);
-  const acimaNivel = !!nivel && !spotDentroDoNivel(nivelSpot, nivel);
+  const hSel = H[iSel];
+  const rSel = NS[iSel];
+  // Altura não arredondada da linha original (evita 1,62 m arredondar a 1,6 m e saltar o aviso).
+  const linhaSel = useMemo(() => {
+    const key = hSel?.t?.slice(0, 16);
+    return key ? linhas.find((ln) => ln.time?.slice(0, 16) === key) : undefined;
+  }, [linhas, hSel?.t]);
+  const hsExato = hSel?.semDados?.includes('onda')
+    ? null
+    : typeof linhaSel?.waveHeight === 'number' && Number.isFinite(linhaSel.waveHeight)
+      ? linhaSel.waveHeight
+      : hSel?.hs;
+  const ondaGrandeIniciante = nivel === 'beginner' && ondaExcedeLimiteIniciante(hsExato, sport);
+  const ventoPerigoso =
+    (nivel === 'beginner' || nivel === 'intermediate') &&
+    (Boolean(rSel?.soProfissionais) || rSel?.seguranca === 'offshore' || rSel?.seguranca === 'side-offshore');
+  const catalogoAcima = !!nivel && !spotDentroDoNivel(nivelSpot, nivel);
+  const motivoCondicao: 'onda' | 'vento' | null = catalogoAcima ? null : ondaGrandeIniciante ? 'onda' : ventoPerigoso ? 'vento' : null;
+  const acimaNivel = !!nivel && (catalogoAcima || ondaGrandeIniciante || ventoPerigoso);
   // sem nível: só a dica, e só num spot intermédio ou acima (o estudo §4); «Todos os níveis» e sem nível na ficha nunca
   const dicaNivel = !nivel && (nivelSpot === 'intermediate' || nivelSpot === 'advanced' || nivelSpot === 'expert');
   const tSel = H[iSel]?.t;
@@ -214,10 +251,15 @@ export default function SpotV6({ spot, nome, local, locale, linhas, agoraMs, fot
     ms: h.ms,
     ehAgora,
     d,
+    sport,
     mares: dados.mares,
     citada: Number.isFinite(h.tide) ? dados.mares.find((m) => mareDepois(m, h)) : undefined,
     nivel,
+    acimaNivel,
   };
+  const fotoHero = fotos[dBase] ?? fotos.surf ?? fotos.kite;
+  const mostrarMaisModos = compativeis.length > opcoesTop.length;
+  const localHero = !opcoesTop.includes(d) ? `${local} · ${copy.modalidades[d] ?? d}` : local;
 
   return (
     <div
@@ -235,6 +277,7 @@ export default function SpotV6({ spot, nome, local, locale, linhas, agoraMs, fot
         locale={locale}
         copy={copy}
         d={d}
+        opcoes={opcoesTop}
         onModalidade={muda}
         nivel={nivel}
         onNivel={escolheNivel}
@@ -244,13 +287,13 @@ export default function SpotV6({ spot, nome, local, locale, linhas, agoraMs, fot
       />
       <SpotHero
         nome={nome}
-        quando={{ local, dia: quandoDia, hora: horaTxt(copy, horaDe(h.t)), agora: ehAgora }}
+        quando={{ local: localHero, dia: quandoDia, hora: horaTxt(copy, horaDe(h.t)), agora: ehAgora }}
         n={r.n}
         banda={b}
         palavra={palavra}
         resto={resto}
         apoio={f.l2}
-        foto={fotos[d]}
+        foto={fotoHero}
         locale={locale}
         copy={copy}
         faltaTxt={dados.semAgora ? copy.semPrevisao : null}
@@ -259,10 +302,12 @@ export default function SpotV6({ spot, nome, local, locale, linhas, agoraMs, fot
           acimaNivel || dicaNivel ? (
             <NivelAviso
               spot={spot}
-              d={d}
+              d={dBase}
+              sport={sport}
               nivel={nivel}
               nivelSpot={nivelSpot}
               modo={acimaNivel ? 'acima' : 'dica'}
+              motivoCondicao={motivoCondicao}
               vizinhos={vizinhosNivel}
               locale={locale}
               cn={cn}
@@ -299,12 +344,31 @@ export default function SpotV6({ spot, nome, local, locale, linhas, agoraMs, fot
           vizinhos={vizinhos}
           h={h}
           banda={b}
-          d={d}
+          d={dBase}
           copy={copy}
           forcarPlano={flags.plano}
           rotulos={ed.rotulos}
         />
       </div>
+      {mostrarMaisModos ? (
+        <div className="modos-extra" data-testid="spot-modos-extra">
+          {compativeis.map((m) => (
+            <button
+              key={m}
+              type="button"
+              data-d={m}
+              aria-pressed={d === m}
+              onClick={() => {
+                if (m !== d) muda(m);
+              }}
+            >
+              {copy.modalidades[m] ?? m}
+            </button>
+          ))}
+        </div>
+      ) : null}
+      {typeof acoes === 'function' ? acoes(hv) : acoes}
+      {estudo ? <div className="medesabe-fora">{estudo(hv)}</div> : null}
       <EstudarSpot
         key={flags.estudo ? 'aberto' : 'fechado'}
         horas={H}
@@ -318,15 +382,11 @@ export default function SpotV6({ spot, nome, local, locale, linhas, agoraMs, fot
         copy={copy}
         locale={locale}
         abertoInicial={flags.estudo}
-        extra={estudo ? estudo(hv) : null}
       />
-      {/* fora da maquete: o contexto do spot (o que a v6 não tinha) e as acções, depois do «Estudar o spot»,
-          para o Porquê e a praia 3D seguirem a maquete */}
       {typeof contexto === 'function' ? contexto(hv) : contexto}
-      {acoes}
       <p className="falta-dados" data-testid="falta-dados">
         {[
-          dados.faltam.includes('onda') && d === 'surf' ? copy.faltaOnda : null,
+          dados.faltam.includes('onda') && (d === 'surf' || d === 'bodyboard') ? copy.faltaOnda : null,
           dados.faltam.includes('agua') ? copy.faltaAgua : null,
           dados.faltam.includes('rain') ? copy.faltaChuvaNuvens : null,
         ]

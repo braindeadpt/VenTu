@@ -11,6 +11,7 @@ import FavoriteButton from '@/components/FavoriteButton';
 import SpotAlertPopover from '@/components/spots/SpotAlertPopover';
 import SpotMoreMenu from '@/components/spots/verdict/SpotMoreMenu';
 import { getGoogleMapsDirectionsUrl } from '@/lib/mapSpotDetail';
+import { temAlertasCondicoes } from '@/lib/desportosV6';
 import { getTranslation, pickLocale } from '@/lib/i18n';
 import type { SportType } from '@/lib/sportRatings';
 import type { Spot } from '@/types';
@@ -40,9 +41,11 @@ export default function SpotAcoesV6({
       <span className="acao-fav">
         <FavoriteButton spotId={spot.id} spotName={spot.name} size="md" locale={locale} />
       </span>
-      <span className="acao-alerta">
-        <SpotAlertPopover spotId={spot.id} sport={sport} locale={locale} />
-      </span>
+      {temAlertasCondicoes(sport) ? (
+        <span className="acao-alerta">
+          <SpotAlertPopover spotId={spot.id} sport={sport} locale={locale} />
+        </span>
+      ) : null}
       {livecamLabel ? (
         <a className="acao" href="#spot-livecam" aria-label={livecamLabel}>
           <Video aria-hidden="true" />

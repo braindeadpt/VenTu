@@ -19,11 +19,18 @@ import { bandaVars } from '@/lib/v6Tokens';
 import { spotTagEn } from '@/lib/spotTagsEn';
 import { pickLocale } from '@/lib/i18n';
 import type { NivelUtilizador } from '@/lib/mapDifficulty';
+import type { SportType } from '@/lib/sportRatings';
 import type { NivelCopy } from '@/lib/translations/nivel';
 import type { VizinhoDoNivel } from '@/lib/vizinhosNivel';
 import type { Spot } from '@/types';
 
 export const PERTO_NIVEL_ID = 'perto-nivel';
+
+/** Query string para abrir um spot vizinho na modalidade activa (#459). */
+export function queryModalidadeVizinho(sport: SportType | undefined, d: Modalidade): string {
+  if (!sport || sport === 'kitesurf' || sport === 'surf') return `?d=${d}`;
+  return `?sport=${sport}`;
+}
 
 /** O porquê do aviso a partir dos perigos da ficha (`hazards`), na língua da página. */
 export function porqueNivel(spot: Pick<Spot, 'hazards'>, d: Modalidade, cn: NivelCopy): string {
@@ -34,17 +41,38 @@ export function porqueNivel(spot: Pick<Spot, 'hazards'>, d: Modalidade, cn: Nive
 export interface NivelAvisoProps {
   spot: Spot;
   d: Modalidade;
+  /** Desporto exacto da ficha (para links de alternativas em windsurf/bodyboard/foil, #459). */
+  sport?: SportType;
   nivel: NivelUtilizador | null;
   /** Nível do spot nesta modalidade (`nivelDoSpot`). */
   nivelSpot: Spot['difficulty'];
   modo: 'acima' | 'dica';
+  /** Quando só a condição da hora (onda > 1,6 m ou vento perigoso) dispara o aviso num spot do nível. */
+  motivoCondicao?: 'onda' | 'vento' | null;
   vizinhos: VizinhoDoNivel[];
   locale: string;
   cn: NivelCopy;
   onQualNivel: () => void;
 }
 
-export default function NivelAviso({ spot, d, nivel, nivelSpot, modo, vizinhos, locale, cn, onQualNivel }: NivelAvisoProps) {
+const MOTIVO_HORA_TAG: Record<'onda' | 'vento', { pt: string; en: string; es: string; de: string; fr: string }> = {
+  onda: {
+    pt: 'Ondulação grande para iniciantes (> 1,6 m)',
+    en: 'Swell too big for beginners (> 1.6 m)',
+    es: 'Oleaje grande para principiantes (> 1,6 m)',
+    de: 'Wellen zu groß für Einsteiger (> 1,6 m)',
+    fr: 'Houle trop grosse pour débutants (> 1,6 m)',
+  },
+  vento: {
+    pt: 'Vento exigente nesta hora',
+    en: 'Demanding wind this hour',
+    es: 'Viento exigente a esta hora',
+    de: 'Anspruchsvoller Wind zu dieser Stunde',
+    fr: 'Vent exigeant à cette heure',
+  },
+};
+
+export default function NivelAviso({ spot, d, sport, nivel, nivelSpot, modo, motivoCondicao = null, vizinhos, locale, cn, onQualNivel }: NivelAvisoProps) {
   if (modo === 'dica') {
     return (
       <div className="nv-av" data-testid="spot-nivel" data-estado="dica">
@@ -65,11 +93,13 @@ export default function NivelAviso({ spot, d, nivel, nivelSpot, modo, vizinhos, 
     );
   }
   if (!nivel) return null;
+  const tagTexto = motivoCondicao ? pickLocale(locale, MOTIVO_HORA_TAG[motivoCondicao]) : cn.tag(nivelSpot);
+  const qsMod = queryModalidadeVizinho(sport, d);
   return (
     <div className="nv-av" data-testid="spot-nivel" data-estado="acima">
       <span className="nv-tag" role="note">
         <Ondas n={ondasDe(nivelSpot)} />
-        {cn.tag(nivelSpot)}
+        {tagTexto}
       </span>
       <p className="porq">
         {porqueNivel(spot, d, cn)} <span>{cn.escolheste(nivel)}</span>
@@ -80,7 +110,7 @@ export default function NivelAviso({ spot, d, nivel, nivelSpot, modo, vizinhos, 
             <span className="chips">
               <span>{cn.pertoChips}</span>
               {vizinhos.map((v) => (
-                <a key={v.spot.id} className="ch" href={`/${locale}/spots/${v.spot.slug}/?d=${d}`} data-spot={v.spot.id}>
+                <a key={v.spot.id} className="ch" href={`/${locale}/spots/${v.spot.slug}/${qsMod}`} data-spot={v.spot.id}>
                   {pickLocale(locale, { pt: v.spot.name, en: v.spot.nameEn || v.spot.name })}
                   {typeof v.nota === 'number' ? (
                     <span className="nota" style={bandaVars(bandaDe(v.nota)) as CSSProperties}>

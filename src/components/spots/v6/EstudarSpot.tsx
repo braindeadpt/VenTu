@@ -8,11 +8,14 @@ import { ChevronDown } from 'lucide-react';
 import {
   MOTOR,
   defDe,
+  MODALIDADES_DEF,
   type AvaliacaoHora,
+  type DefModalidade,
   type DefOnda,
+  type DefPlana,
   type DefVento,
-  type Modalidade,
 } from '@/lib/modalidades';
+import type { SpotModalidadeAtiva } from '@/lib/spotV6Modalidade';
 import type { HoraSpot } from '@/lib/horaSpot';
 import type { EditorialSpot } from '@/lib/spotEditorial';
 import { bandaR, diaCurto, fmtNum, horaDe, horaTxt, rumo } from '@/lib/spotVeredicto';
@@ -23,7 +26,7 @@ export interface EstudarSpotProps {
   horas: readonly HoraSpot[];
   NS: readonly AvaliacaoHora[];
   i: number;
-  d: Modalidade;
+  d: SpotModalidadeAtiva;
   ed: EditorialSpot;
   sol: Record<string, { nascer: string; por: string }>;
   atencao: string | null;
@@ -31,13 +34,22 @@ export interface EstudarSpotProps {
   copy: SpotPageV6Copy;
   locale: string;
   abertoInicial?: boolean;
-  /** O que se mede e o que se sabe (boia, maré e lua, sol e ar, fundo, clima, Windguru). */
+  /** O que se mede e o que se sabe (opcional dentro do details; na v6 #459 vive visível fora). */
   extra?: ReactNode;
 }
 
-function regraTxt(d: Modalidade, c: SpotPageV6Copy, locale: string): string {
-  const P = defDe(d);
+function regraTxt(d: SpotModalidadeAtiva, c: SpotPageV6Copy, locale: string): string {
+  const P: DefModalidade =
+    d === 'wakeboard' || d === 'sup'
+      ? (MODALIDADES_DEF.def.wakeboard as DefPlana)
+      : d === 'foil'
+        ? defDe('wing')
+        : defDe(d);
   const r1 = (x: number) => Math.round(x * 10) / 10;
+  if (P.logica === 'plana') {
+    const [, hi] = MOTOR.intervaloDa(P.vento);
+    return fmtCopy(c.regraPlana, { hi: Math.floor(hi ?? 12) });
+  }
   if (P.logica === 'vento') {
     const pv = P as DefVento;
     const [lo, hi] = MOTOR.intervaloDa(pv.vento);

@@ -170,10 +170,9 @@ async function abreEstudo(page: import('@playwright/test').Page) {
   }).toPass({ timeout: 20_000 });
 }
 
-/** A leitura da boia (v6), já com o «Estudar o spot» aberto. */
+/** A leitura da boia (v6), visível directamente em «O que se mede» (fora do <details>, #459). */
 async function boiaV6(page: import('@playwright/test').Page) {
-  await abreEstudo(page);
-  const card = page.locator('#estudo').getByLabel(/Onda observada \(boia\)|Observed wave \(buoy\)/i);
+  const card = page.getByTestId('spot-mede-sabe').getByLabel(/Onda observada \(boia\)|Observed wave \(buoy\)/i);
   await expect(card).toBeVisible({ timeout: 15_000 });
   return card;
 }
@@ -289,11 +288,10 @@ test.describe('Leitura da boia no conditions.json: página de spot v6 e comparad
     for (const antigo of ['#instrumentos', '#previsao', '#como-sabemos']) {
       await expect(page.locator(antigo)).toHaveCount(0);
     }
-    // A leitura da boia voltou (decisão do Pedro, 2026-10-15), UMA vez, dentro
-    // do «Estudar o spot» — nunca ao lado do Porquê nem num painel à parte.
+    // A leitura da boia (#459) aparece UMA vez em «O que se mede» (visível fora do <details>).
     const boia = page.getByLabel(/Onda observada \(boia\)|Observed wave \(buoy\)/i);
     await expect(boia).toHaveCount(1);
-    await expect(page.locator('#estudo').getByLabel(/Onda observada \(boia\)/i)).toHaveCount(1);
+    await expect(page.getByTestId('spot-mede-sabe').getByLabel(/Onda observada \(boia\)/i)).toHaveCount(1);
   });
 
   test('régua v6 continua presa e operável após scroll (desktop); o selector troca a modalidade', async ({
@@ -950,8 +948,8 @@ test.describe('Leitura da boia no «Estudar o spot» v6 (boia X a Y km)', { tag:
       });
     });
     await page.goto('/pt/spots/guincho/');
-    await abreEstudo(page);
-    const linha = page.locator('#estudo [data-buoy-skill-line="true"]');
+    const mede = page.getByTestId('spot-mede-sabe');
+    const linha = mede.locator('[data-buoy-skill-line="true"]');
     await expect(linha).toBeVisible({ timeout: 20_000 });
     // Uma frase de surfista (a do pedido), sem siglas nem parênteses aninhados.
     await expect(linha).toHaveText(
@@ -959,9 +957,9 @@ test.describe('Leitura da boia no «Estudar o spot» v6 (boia X a Y km)', { tag:
     );
     await expect(linha).toHaveAttribute('title', /^ME \+0,2 m · RMSE 0,5 m · r 0,91 \(n=47\)/);
     // Sem leitura nenhuma no JSON: nem «agora» nem idade.
-    await expect(page.locator('#estudo [data-boia-idade]')).toHaveCount(0);
+    await expect(mede.locator('[data-boia-idade]')).toHaveCount(0);
     // Os números técnicos numa linha «detalhes» fechada, em letra pequena.
-    const det = page.locator('#estudo [data-buoy-skill-det="true"]');
+    const det = mede.locator('[data-buoy-skill-det="true"]');
     await expect(det.getByRole('button', { name: 'detalhes' })).toHaveAttribute('aria-expanded', 'false');
     const origens = det.locator('[data-buoy-skill-origins="true"]');
     await expect(origens).toBeHidden();
@@ -1012,8 +1010,7 @@ test.describe('Leitura da boia no «Estudar o spot» v6 (boia X a Y km)', { tag:
       },
     });
     await page.goto('/pt/spots/guincho/');
-    await abreEstudo(page);
-    const boia = page.locator('#estudo [data-boia="sem-leitura"]');
+    const boia = page.locator('[data-testid="spot-mede-sabe"] [data-boia="sem-leitura"]');
     await expect(boia).toContainText(/Leitura antiga demais para contar/, { timeout: 15_000 });
     await expect(page.getByLabel(/Onda observada \(boia\)|Observed wave \(buoy\)/i)).toHaveCount(0);
     await expect(page.getByText(/Altura \(medida\)/)).toHaveCount(0);
@@ -1036,16 +1033,14 @@ test.describe('Leitura da boia no «Estudar o spot» v6 (boia X a Y km)', { tag:
       },
     });
     await page.goto('/pt/spots/guincho/');
-    await abreEstudo(page);
-    const selo = page.locator('#estudo [data-boia="sem-leitura"] [data-boia-idade="antiga"]');
+    const selo = page.locator('[data-testid="spot-mede-sabe"] [data-boia="sem-leitura"] [data-boia-idade="antiga"]');
     await expect(selo).toHaveText(/^leitura de (ontem|dom|seg|ter|qua|qui|sex|sáb) \d{1,2}h(\d{2})?$/, { timeout: 15_000 });
-    await expect(page.locator('#estudo [data-boia-idade="fresca"]')).toHaveCount(0);
+    await expect(page.locator('[data-testid="spot-mede-sabe"] [data-boia-idade="fresca"]')).toHaveCount(0);
   });
 
   test('avisa quando a leitura ES foi descartada por incoerência do par ES×PT', async ({ page }) => {
     await gotoSpot(page, 'coherence-refused');
-    await abreEstudo(page);
-    const aviso = page.locator('#estudo [data-coherence-refused="true"]');
+    const aviso = page.locator('[data-testid="spot-mede-sabe"] [data-coherence-refused="true"]');
     await expect(aviso).toHaveCount(1);
     await expect(aviso).toBeVisible({ timeout: 15_000 });
     await expect(aviso).toContainText('Hoje pusemos de lado a boia espanhola');
@@ -1100,8 +1095,7 @@ test.describe('Leitura da boia no «Estudar o spot» v6 (boia X a Y km)', { tag:
 
   test('EN: «Observed wave (buoy)» com o rótulo e o separador decimal ingleses', async ({ page }) => {
     await gotoSpot(page, 'single-source-ih', 'en');
-    await abreEstudo(page);
-    const card = page.locator('#estudo').getByLabel(/Observed wave \(buoy\)/i);
+    const card = page.getByTestId('spot-mede-sabe').getByLabel(/Observed wave \(buoy\)/i);
     await expect(card).toBeVisible({ timeout: 15_000 });
     await expect(card.getByText(/Height \(measured\)/i).locator('xpath=following-sibling::p[1]')).toHaveText(/^1\.8 m$/);
   });
