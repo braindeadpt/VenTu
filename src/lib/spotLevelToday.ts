@@ -20,7 +20,16 @@ export interface SpotLevelTodayContext {
   seguranca?: WindSafetyLevel | null;
 }
 
-const MAX_WAVE_BEGINNER_M = 1.6;
+export const MAX_WAVE_BEGINNER_M = 1.6;
+
+/** Onda acima do limite seguro de aprendizagem (1,6 m em surf/bodyboard, #459). */
+export function ondaExcedeLimiteIniciante(
+  waveHeight: number | null | undefined,
+  sport?: SportType,
+): boolean {
+  const isWaveSport = !sport || sport === 'surf' || sport === 'bodyboard';
+  return isWaveSport && typeof waveHeight === 'number' && Number.isFinite(waveHeight) && waveHeight > MAX_WAVE_BEGINNER_M;
+}
 
 export function resolveSpotLevelToday(
   difficulty: Spot['difficulty'],
@@ -29,8 +38,7 @@ export function resolveSpotLevelToday(
 ): SpotLevelTodayCopy | null {
   const isBeginnerSpot = difficulty === 'beginner' || difficulty === 'all';
   const isHardSpot = difficulty === 'advanced' || difficulty === 'expert';
-  const isWaveSport = !ctx?.sport || ctx.sport === 'surf' || ctx.sport === 'bodyboard';
-  const bigWave = isWaveSport && typeof ctx?.waveHeight === 'number' && Number.isFinite(ctx.waveHeight) && ctx.waveHeight > MAX_WAVE_BEGINNER_M;
+  const bigWave = ondaExcedeLimiteIniciante(ctx?.waveHeight, ctx?.sport);
   const windHazard = Boolean(ctx?.soProfissionais) || ctx?.seguranca === 'offshore';
 
   if (bigWave || windHazard) {

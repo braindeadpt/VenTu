@@ -77,6 +77,7 @@ describe('spotV6Modalidade (#459)', () => {
     };
     const comLinha = avaliaHorasSpotV6(rocha, sp, 'sup', [horaArredondada], [linhaOriginal]);
     const semLinha = avaliaHorasSpotV6(rocha, sp, 'sup', [horaArredondada]);
-    expect(comLinha[0].n).toBeGreaterThanOrEqual(semLinha[0].n!);
+    // 0,48 m cai no escalão de 40 pts (nota 9); arredondado a 0,5 m cai em 30 pts (nota 8)
+    expect(comLinha[0].n).toBeGreaterThan(semLinha[0].n!);
   });
 });

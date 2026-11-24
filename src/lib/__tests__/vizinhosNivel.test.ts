@@ -82,4 +82,27 @@ describe('vizinhosDoNivel', () => {
   it('limite de 3 por omissão', () => {
     expect(vizinhosDoNivel(guincho, spots, 'kitesurf', 'advanced', null, 0).length).toBeLessThanOrEqual(3);
   });
+
+  it('iniciante em surf/bodyboard exclui vizinhos com ondulação > 1,6 m no passo (#459)', () => {
+    const base = vizinhosDoNivel(guincho, spots, 'surf', 'beginner', null, 0, 99);
+    expect(base.length).toBeGreaterThanOrEqual(2);
+    const [grande, seguro] = base;
+    const f: MapHoursFile = {
+      generatedAt: '2026-10-14T13:00:00Z',
+      stepHours: 3,
+      times: ['2026-10-14T12:00'],
+      sports: ['surf'],
+      spots: {
+        [grande.spot.id]: { surf: [80] },
+        [seguro.spot.id]: { surf: [70] },
+      },
+      hs: {
+        [grande.spot.conditionsSource ?? grande.spot.id]: [1.88],
+        [seguro.spot.conditionsSource ?? seguro.spot.id]: [1.2],
+      },
+    };
+    const r = vizinhosDoNivel(guincho, spots, 'surf', 'beginner', f, 0, 3);
+    expect(r.some((v) => v.spot.id === grande.spot.id)).toBe(false);
+    expect(r.some((v) => v.spot.id === seguro.spot.id)).toBe(true);
+  });
 });

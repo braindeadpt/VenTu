@@ -1,13 +1,19 @@
 import { describe, expect, it } from 'vitest';
-import { resolveSpotLevelToday } from '@/lib/spotLevelToday';
+import { ondaExcedeLimiteIniciante, resolveSpotLevelToday } from '@/lib/spotLevelToday';
 
 describe('resolveSpotLevelToday', () => {
   it('flags good learning days on beginner spots with decent score', () => {
     expect(resolveSpotLevelToday('beginner', 60)?.tone).toBe('good');
     expect(resolveSpotLevelToday('beginner', 75, { waveHeight: 1.2, sport: 'surf' })?.tone).toBe('good');
+    expect(resolveSpotLevelToday('beginner', 75, { waveHeight: 1.6, sport: 'surf' })?.tone).toBe('good');
   });
 
-  it('never recommends learning when surf/bodyboard waves exceed 1.6 m (#459)', () => {
+  it('never recommends learning when surf/bodyboard waves exceed 1.6 m, including 1.62 m (#459)', () => {
+    expect(ondaExcedeLimiteIniciante(1.6, 'surf')).toBe(false);
+    expect(ondaExcedeLimiteIniciante(1.62, 'surf')).toBe(true);
+    expect(ondaExcedeLimiteIniciante(null, 'surf')).toBe(false);
+    expect(ondaExcedeLimiteIniciante(undefined, 'bodyboard')).toBe(false);
+    expect(resolveSpotLevelToday('beginner', 85, { waveHeight: 1.62, sport: 'surf' })?.tone).toBe('warn');
     expect(resolveSpotLevelToday('beginner', 85, { waveHeight: 2.5, sport: 'surf' })?.tone).toBe('warn');
     expect(resolveSpotLevelToday('all', 80, { waveHeight: 1.8, sport: 'bodyboard' })?.tone).toBe('warn');
   });

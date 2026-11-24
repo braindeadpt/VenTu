@@ -25,6 +25,7 @@ import { useVizinhosNivel } from './useVizinhosNivel';
 import { useNivel } from '@/lib/nivelPref';
 import { nivelCopyV6 } from '@/lib/translations/nivel';
 import { nivelDoSpot, spotDentroDoNivel, type NivelUtilizador } from '@/lib/mapDifficulty';
+import { ondaExcedeLimiteIniciante } from '@/lib/spotLevelToday';
 import { getCompatibleSports, type SportType } from '@/lib/sportRatings';
 import { sportParaMapa } from '@/lib/praiaCena';
 import { isModalidade, type Modalidade } from '@/lib/modalidades';
@@ -212,17 +213,23 @@ export default function SpotV6({ spot, nome, local, locale, linhas, agoraMs, fot
   const nivelSpot = nivelDoSpot(spot, sport);
   const hSel = H[iSel];
   const rSel = NS[iSel];
-  const ondaGrandeIniciante =
-    nivel === 'beginner' &&
-    (d === 'surf' || d === 'bodyboard') &&
-    !hSel?.semDados?.includes('onda') &&
-    typeof hSel?.hs === 'number' &&
-    hSel.hs > 1.6;
-  const condicoesAcimaNivel =
-    ondaGrandeIniciante ||
-    ((nivel === 'beginner' || nivel === 'intermediate') &&
-      (Boolean(rSel?.soProfissionais) || rSel?.seguranca === 'offshore' || rSel?.seguranca === 'side-offshore'));
-  const acimaNivel = !!nivel && (!spotDentroDoNivel(nivelSpot, nivel) || condicoesAcimaNivel);
+  // Altura não arredondada da linha original (evita 1,62 m arredondar a 1,6 m e saltar o aviso).
+  const linhaSel = useMemo(() => {
+    const key = hSel?.t?.slice(0, 16);
+    return key ? linhas.find((ln) => ln.time?.slice(0, 16) === key) : undefined;
+  }, [linhas, hSel?.t]);
+  const hsExato = hSel?.semDados?.includes('onda')
+    ? null
+    : typeof linhaSel?.waveHeight === 'number' && Number.isFinite(linhaSel.waveHeight)
+      ? linhaSel.waveHeight
+      : hSel?.hs;
+  const ondaGrandeIniciante = nivel === 'beginner' && ondaExcedeLimiteIniciante(hsExato, sport);
+  const ventoPerigoso =
+    (nivel === 'beginner' || nivel === 'intermediate') &&
+    (Boolean(rSel?.soProfissionais) || rSel?.seguranca === 'offshore' || rSel?.seguranca === 'side-offshore');
+  const catalogoAcima = !!nivel && !spotDentroDoNivel(nivelSpot, nivel);
+  const motivoCondicao: 'onda' | 'vento' | null = catalogoAcima ? null : ondaGrandeIniciante ? 'onda' : ventoPerigoso ? 'vento' : null;
+  const acimaNivel = !!nivel && (catalogoAcima || ondaGrandeIniciante || ventoPerigoso);
   // sem nível: só a dica, e só num spot intermédio ou acima (o estudo §4); «Todos os níveis» e sem nível na ficha nunca
   const dicaNivel = !nivel && (nivelSpot === 'intermediate' || nivelSpot === 'advanced' || nivelSpot === 'expert');
   const tSel = H[iSel]?.t;
@@ -296,9 +303,11 @@ export default function SpotV6({ spot, nome, local, locale, linhas, agoraMs, fot
             <NivelAviso
               spot={spot}
               d={dBase}
+              sport={sport}
               nivel={nivel}
               nivelSpot={nivelSpot}
               modo={acimaNivel ? 'acima' : 'dica'}
+              motivoCondicao={motivoCondicao}
               vizinhos={vizinhosNivel}
               locale={locale}
               cn={cn}

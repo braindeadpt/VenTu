@@ -13,6 +13,7 @@ import { nivelDoSpot, spotDentroDoNivel, type NivelUtilizador } from '@/lib/mapD
 import { nearbySpotHour, nearestSpots, type NearbySpotHour } from '@/lib/context/nearbySpots';
 import { scoreToNota } from '@/lib/nota';
 import { calculateDistance } from '@/lib/geolocation';
+import { ondaExcedeLimiteIniciante } from '@/lib/spotLevelToday';
 
 export const PERTO_NIVEL_KM = 80;
 /** Dois spots a menos disto são o mesmo sítio para o «perto daqui». */
@@ -45,6 +46,12 @@ export function vizinhosDoNivel(
     .filter((e) => !e.spot.compatibleSports?.length || e.spot.compatibleSports.includes(sport))
     .filter((e) => spotDentroDoNivel(nivelDoSpot(e.spot, sport), nivel))
     .filter((e) => !soProfissionaisIds?.has(e.spot.id))
+    .filter((e) => {
+      if (nivel !== 'beginner' || !file?.hs) return true;
+      const serieHs = file.hs[e.spot.conditionsSource ?? e.spot.id] ?? file.hs[e.spot.id];
+      const hsViz = serieHs?.[passo];
+      return !ondaExcedeLimiteIniciante(hsViz, sport);
+    })
     .map((e) => {
       const h: NearbySpotHour = file ? nearbySpotHour(file, e, sport, passo) : null;
       const score = typeof h === 'number' ? h : null;

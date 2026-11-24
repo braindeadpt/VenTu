@@ -38,7 +38,7 @@ import { decimalV6 } from './boiaFmt';
 import { nivelDoSpot, spotDentroDoNivel, type NivelUtilizador } from '@/lib/mapDifficulty';
 import { vizinhosDoNivel } from '@/lib/vizinhosNivel';
 import { nivelCopyV6 } from '@/lib/translations/nivel';
-import { PERTO_NIVEL_ID, porqueNivel } from './NivelAviso';
+import { PERTO_NIVEL_ID, porqueNivel, queryModalidadeVizinho } from './NivelAviso';
 
 type Perto = DirectoryEntry & { distanceKm: number };
 
@@ -138,6 +138,7 @@ export default function PertoV6({ spot, locale, copy: c, t, ms, sport, nivel = n
     [acima, nivel, spot, sport, file, passo],
   );
   const mod = sport === 'kitesurf' ? 'kite' : 'surf';
+  const qsMod = queryModalidadeVizinho(sport, mod);
 
   return (
     <div className="ctx-bloco" id="perto" role="group" aria-labelledby="perto-t" ref={raiz}>
@@ -157,7 +158,7 @@ export default function PertoV6({ spot, locale, copy: c, t, ms, sport, nivel = n
             <ul>
               {doNivel.map((v) => (
                 <li key={v.spot.id}>
-                  <a href={`/${locale}/spots/${v.spot.slug}/?d=${mod}`} data-spot={v.spot.id}>
+                  <a href={`/${locale}/spots/${v.spot.slug}/${qsMod}`} data-spot={v.spot.id}>
                     <span className="nm">
                       <b>{pickLocale(locale, { pt: v.spot.name, en: v.spot.nameEn || v.spot.name })}</b>
                       <span className="km">{cn.pertoKm(decimalV6(formatDistance(v.distanceKm, locale), locale), v.nivel)}</span>
