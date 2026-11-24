@@ -6,6 +6,8 @@ import {
   validateLocale,
   locales,
 } from '@/lib/i18n';
+import { spotV6Copy } from '@/lib/translations/spotPage/v6';
+import { homeV6Copy } from '@/lib/translations/homeV6';
 
 /**
  * Valores legítimos por serem IDÊNTICOS em todas as línguas — nunca devem ser
@@ -287,13 +289,6 @@ const IDENTICAL_ALLOWLIST: Record<'en' | 'es' | 'de' | 'fr', Set<string>> = {
   fr: new Set([...SHARED_TOKENS, ...FR_COGNATES]),
 };
 
-/**
- * Keys que existem SÓ no bloco pt, de propósito: são o valor EN embutido usado
- * pela UI quando o locale não é pt (ex. `hero.filteredSpotsEn`). Nunca devem
- * ser exigidas aos shells es/de/fr nem ao en.
- */
-const PT_ONLY_KEYS = new Set(['hero.filteredSpotsEn', 'hero.sortedByScoreEn']);
-
 /** Cadeias de atribuição de dados do footer (modelos/observações/notícias). */
 const FOOTER_ATTRIB_KEYS = [
   'attribWaves',
@@ -493,7 +488,7 @@ describe('i18n locales', () => {
               missing.push(p);
             }
           } else if (!(k in b)) {
-            if (!PT_ONLY_KEYS.has(p)) missing.push(p);
+            missing.push(p);
           }
         }
       };
@@ -651,5 +646,103 @@ describe('i18n locales', () => {
         }
       }
     }
+  });
+
+  /**
+   * Dicts v6 da página de spot e da home (`spotPage/v6.ts`, `homeV6.ts`,
+   * #463 fatia B): os blocos es/de/fr são traduções completas — o resolver
+   * (`Object.hasOwn`, fallback EN para locale desconhecido) nunca pode
+   * devolver o dict EN para uma língua suportada.
+   */
+  describe('v6 copy dicts — es/de/fr completos', () => {
+    const V6_LOCALES = ['pt', 'en', 'es', 'de', 'fr'] as const;
+
+    /** Dict resolvido por locale, via os próprios resolvers públicos. */
+    const V6_DICTS = {
+      spotPageV6: Object.fromEntries(V6_LOCALES.map((l) => [l, spotV6Copy(l)])),
+      homeV6: Object.fromEntries(V6_LOCALES.map((l) => [l, homeV6Copy(l)])),
+    } as Record<string, Record<string, unknown>>;
+
+    /** Caminhos até leaves: objetos e arrays recursivos; funções contam como leaf. */
+    const keyPaths = (o: unknown, prefix = ''): string[] => {
+      if (Array.isArray(o)) {
+        return o.flatMap((v, i) => keyPaths(v, `${prefix}[${i}].`));
+      }
+      if (o && typeof o === 'object') {
+        return Object.entries(o as Record<string, unknown>).flatMap(([k, v]) =>
+          keyPaths(v, `${prefix}${k}.`),
+        );
+      }
+      return [prefix.replace(/\.$/, '')];
+    };
+
+    it('spotV6Copy e homeV6Copy resolvem es/de/fr sem cair no bloco EN', () => {
+      for (const loc of ['es', 'de', 'fr'] as const) {
+        expect(spotV6Copy(loc), `spotV6Copy(${loc})`).not.toBe(spotV6Copy('en'));
+        expect(homeV6Copy(loc), `homeV6Copy(${loc})`).not.toBe(homeV6Copy('en'));
+      }
+      // Contrato de fallback: locale desconhecido cai no EN (não no PT).
+      expect(spotV6Copy('xx')).toBe(spotV6Copy('en'));
+      expect(homeV6Copy('xx')).toBe(homeV6Copy('en'));
+    });
+
+    it('paridade de keys: cada locale v6 tem exactamente as keys do pt', () => {
+      for (const [name, dict] of Object.entries(V6_DICTS)) {
+        const ptPaths = new Set(keyPaths(dict.pt));
+        for (const loc of V6_LOCALES) {
+          const locPaths = new Set(keyPaths(dict[loc]));
+          const missing = [...ptPaths].filter((p) => !locPaths.has(p));
+          const extra = [...locPaths].filter((p) => !ptPaths.has(p));
+          expect(missing, `${name}.${loc} missing keys`).toEqual([]);
+          expect(extra, `${name}.${loc} extra keys`).toEqual([]);
+        }
+      }
+    });
+
+    it('nenhuma string v6 ficou vazia nas 5 línguas', () => {
+      const empties: string[] = [];
+      const walk = (o: unknown, path: string): void => {
+        if (typeof o === 'string') {
+          if (o.trim() === '') empties.push(path);
+        } else if (Array.isArray(o)) {
+          o.forEach((v, i) => walk(v, `${path}[${i}]`));
+        } else if (o && typeof o === 'object') {
+          for (const [k, v] of Object.entries(o)) walk(v, path ? `${path}.${k}` : k);
+        }
+      };
+      for (const [name, dict] of Object.entries(V6_DICTS)) {
+        for (const loc of V6_LOCALES) walk(dict[loc], `${name}.${loc}`);
+      }
+      expect(empties).toEqual([]);
+    });
+
+    it('es/de/fr trazem texto próprio — amostra de chaves representativas', () => {
+      const sp = spotV6Copy;
+      const hm = homeV6Copy;
+      // Página de spot.
+      expect(sp('es').porque).toBe('Por qué');
+      expect(sp('de').porque).toBe('Warum');
+      expect(sp('fr').porque).toBe('Pourquoi');
+      expect(sp('es').bandas.nao).toBe('No va');
+      expect(sp('de').bandas.nao).toBe('Geht nicht');
+      expect(sp('fr').bandas.nao).toBe('Ça ne marche pas');
+      expect(sp('es').agora).toBe('ahora');
+      expect(sp('de').agora).toBe('jetzt');
+      expect(sp('fr').agora).toBe('maintenant');
+      // Home.
+      expect(hm('es').hoje).toBe('Hoy');
+      expect(hm('de').hoje).toBe('Heute');
+      expect(hm('fr').hoje).toBe('Aujourd’hui');
+      expect(hm('es').amanha).toBe('Mañana');
+      expect(hm('de').amanha).toBe('Morgen');
+      expect(hm('fr').amanha).toBe('Demain');
+      // Prova de que não é fallback EN: nenhuma destas chaves repete o valor EN.
+      for (const loc of ['es', 'de', 'fr'] as const) {
+        expect(sp(loc).porque, `spotV6Copy(${loc}).porque`).not.toBe(sp('en').porque);
+        expect(sp(loc).bandas.nao, `spotV6Copy(${loc}).bandas.nao`).not.toBe(sp('en').bandas.nao);
+        expect(hm(loc).amanha, `homeV6Copy(${loc}).amanha`).not.toBe(hm('en').amanha);
+        expect(hm(loc).comoLemos, `homeV6Copy(${loc}).comoLemos`).not.toBe(hm('en').comoLemos);
+      }
+    });
   });
 });

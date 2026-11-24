@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Download, X } from 'lucide-react';
 import { pipelineSchedule } from '@/lib/dataPipelineSchedule';
-import { getTranslation } from '@/lib/i18n';
+import { getTranslation, localePathPattern, validateLocale, type Locale } from '@/lib/i18n';
 
 const VISITS_KEY = 'ventu:visit-count';
 const DISMISS_KEY = 'ventu:install-dismissed-until';
@@ -18,7 +18,7 @@ interface BeforeInstallPromptEvent extends Event {
 export default function InstallPrompt() {
   const [deferred, setDeferred] = useState<BeforeInstallPromptEvent | null>(null);
   const [visible, setVisible] = useState(false);
-  const [locale, setLocale] = useState<'pt' | 'en'>('pt');
+  const [locale, setLocale] = useState<Locale>('pt');
   const deferredRef = useRef<BeforeInstallPromptEvent | null>(null);
   useEffect(() => {
     deferredRef.current = deferred;
@@ -28,7 +28,7 @@ export default function InstallPrompt() {
     if (typeof window === 'undefined') return;
 
     const path = window.location.pathname;
-    setLocale(path.startsWith('/en') ? 'en' : 'pt');
+    setLocale(validateLocale(localePathPattern.exec(path)?.[1] ?? ''));
 
     // Nunca sobrepor o mapa fullscreen nem os embeds — o card tapa a legenda
     // e o HUD; nessas superfícies o prompt perde para a ferramenta.
@@ -87,7 +87,6 @@ export default function InstallPrompt() {
 
   if (!visible || !deferred) return null;
 
-  const isPt = locale === 'pt';
   const tr = getTranslation(locale);
   const t = tr.layout;
 
@@ -104,7 +103,7 @@ export default function InstallPrompt() {
         <div className="flex-1 min-w-0">
           <p className="text-sm font-semibold text-fg">{t.installTitle}</p>
           <p className="text-xs text-fg-muted mt-0.5">
-            {t.installBody.replace('{schedule}', pipelineSchedule(isPt ? 'pt' : 'en'))}
+            {t.installBody.replace('{schedule}', pipelineSchedule(locale))}
           </p>
           <div className="flex gap-2 mt-3">
             <button

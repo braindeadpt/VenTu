@@ -11,6 +11,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { ExternalLink } from 'lucide-react';
 import { getTranslation, pickLocale } from '@/lib/i18n';
+import { localizedSpotName, localizedSpotRegion } from '@/lib/localizedSpotText';
 import { getAssetPath } from '@/lib/paths';
 import { spots } from '@/lib/spots';
 import { fetchMapHours, type MapHoursFile } from '@/lib/mapHours';
@@ -160,7 +161,7 @@ export default function PertoV6({ spot, locale, copy: c, t, ms, sport, nivel = n
                 <li key={v.spot.id}>
                   <a href={`/${locale}/spots/${v.spot.slug}/${qsMod}`} data-spot={v.spot.id}>
                     <span className="nm">
-                      <b>{pickLocale(locale, { pt: v.spot.name, en: v.spot.nameEn || v.spot.name })}</b>
+                      <b>{localizedSpotName(v.spot, locale)}</b>
                       <span className="km">{cn.pertoKm(decimalV6(formatDistance(v.distanceKm, locale), locale), v.nivel)}</span>
                     </span>
                     {typeof v.nota === 'number' && v.score != null ? (
@@ -230,9 +231,9 @@ export default function PertoV6({ spot, locale, copy: c, t, ms, sport, nivel = n
                         </span>
                       )}
                       <span className="pt-nome">
-                        <b data-nearby-name={s.id}>{pickLocale(locale, { pt: s.name, en: s.nameEn })}</b>
+                        <b data-nearby-name={s.id}>{localizedSpotName(s, locale)}</b>
                         <small>
-                          {pickLocale(locale, { pt: s.region, en: s.regionEn })} · {decimalV6(formatDistance(e.distanceKm, locale), locale)}
+                          {localizedSpotRegion(s, locale)} · {decimalV6(formatDistance(e.distanceKm, locale), locale)}
                         </small>
                       </span>
                     </a>

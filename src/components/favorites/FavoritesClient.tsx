@@ -10,7 +10,8 @@ import { isNoite, isSemDados, notaV6DoSpot, scoreAgoraComV6 } from '@/lib/notaV6
 import { compararJanelas, janelaSeguinte } from '@/lib/noiteListas';
 import { janelasDeNoite } from '@/lib/janelasNoiteCliente';
 import { carregarFavoritos, type JanelasFavoritos } from './carregarFavoritos';
-import { getTranslation } from '@/lib/i18n';
+import { getTranslation, validateLocale } from '@/lib/i18n';
+import { localizedSpotName, localizedSpotRegion } from '@/lib/localizedSpotText';
 import type { SportType } from '@/lib/sportRatings';
 import { SPORT_LABELS } from '@/lib/sportRatings';
 import { getAssetPath } from '@/lib/paths';
@@ -44,8 +45,8 @@ export default function FavoritesClient() {
   const params = useParams();
   const loc = (params?.locale as string) || 'pt';
   const pt = loc === 'pt';
-  const locale = (loc === 'en' ? 'en' : 'pt') as 'pt' | 'en';
-  const semDadosTxt = getTranslation(loc).map.noData;
+  const locale = validateLocale(loc);
+  const semDadosTxt = getTranslation(locale).map.noData;
   const {
     session,
     authLoading,
@@ -262,8 +263,8 @@ export default function FavoritesClient() {
                     <FavoriteButton spotId={spot.id} spotName={spot.name} size="md" locale={loc} />
                   </div>
                   <SpotListCard
-                    name={pt ? spot.name : spot.nameEn}
-                    region={pt ? spot.region : spot.regionEn}
+                    name={localizedSpotName(spot, locale)}
+                    region={localizedSpotRegion(spot, locale)}
                     score={score}
                     conditions={{
                       waveHeight: current?.waveHeight ?? 0,

@@ -17,7 +17,9 @@ import Link from 'next/link';
 import type { Spot } from '@/types';
 import type { VentuEvent } from '@/types/events';
 import type { SpotLocalTips } from '@/lib/spotTips';
-import { getTranslation, pickLocale } from '@/lib/i18n';
+import { getTranslation, pickLocale, validateLocale } from '@/lib/i18n';
+import { DATE_LOCALE } from '@/lib/dataFreshness';
+import { localizedSpotRegion } from '@/lib/localizedSpotText';
 import { getSpotLivecam } from '@/lib/spotLivecams';
 import { getSpotWeatherlink, getWeatherlinkEmbedUrl, getWeatherlinkPageUrl } from '@/lib/spotWeatherlink';
 import { getDifficultyLabel, nivelDoSpot, type NivelUtilizador } from '@/lib/mapDifficulty';
@@ -31,7 +33,6 @@ import type { SportType } from '@/lib/sportRatings';
 import { spotV6Copy, type SpotPageV6Copy } from '@/lib/translations/spotPage/v6';
 import AvisosV6 from './AvisosV6';
 import PertoV6 from './PertoV6';
-import { LOCALE_TAGS } from './boiaFmt';
 
 export interface SpotContextoV6Props {
   spot: Spot;
@@ -102,7 +103,7 @@ function Agua({ spot, locale, viva }: { spot: Spot; locale: string; viva?: Water
   const bandeira = viva?.blueFlag || (!viva && spot.blueFlag);
   const acessivel = spot.accessibleBeach || viva?.accessible;
   if (!bandeira && !classe && !qTxt && conselho == null && !(epoca && viva?.advice === 0) && !viva?.alerts?.length && !acessivel && !viva) return null;
-  const lang = LOCALE_TAGS[locale] ?? 'en-GB';
+  const lang = DATE_LOCALE[validateLocale(locale)];
   const km = new Intl.NumberFormat(lang, { maximumFractionDigits: 1 });
   const dia = new Intl.DateTimeFormat(lang, { day: 'numeric', month: 'short' });
   return (
@@ -150,7 +151,7 @@ function Agua({ spot, locale, viva }: { spot: Spot; locale: string; viva?: Water
 function dataEvento(iso: string, locale: string) {
   const [y, m, d] = iso.split('-').map(Number);
   const dt = new Date(Date.UTC(y, m - 1, d, 12));
-  const f = (o: Intl.DateTimeFormatOptions) => new Intl.DateTimeFormat(LOCALE_TAGS[locale] ?? 'en-GB', { ...o, timeZone: 'UTC' }).format(dt);
+  const f = (o: Intl.DateTimeFormatOptions) => new Intl.DateTimeFormat(DATE_LOCALE[validateLocale(locale)], { ...o, timeZone: 'UTC' }).format(dt);
   return { dia: f({ day: '2-digit' }), mes: f({ month: 'short' }).replace('.', '') };
 }
 
@@ -252,7 +253,7 @@ export default function SpotContextoV6({ spot, locale, events, dicas, aguaViva, 
     ? spot.facilities.map((f) => pickLocale(locale, { pt: f, en: spotTagEn(f) })).join(' · ')
     : null;
 
-  const regiao = pickLocale(locale, { pt: spot.region, en: spot.regionEn });
+  const regiao = localizedSpotRegion(spot, locale);
   const sobre = pickLocale(locale, { pt: spot.description, en: spot.descriptionEn });
   const mapaUrl = `/${locale}/mapa/?lat=${spot.lat}&lon=${spot.lon}`;
   const proximos = eventsForSpot([...events], spot.id);

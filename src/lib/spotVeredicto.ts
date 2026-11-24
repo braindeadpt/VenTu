@@ -25,6 +25,8 @@ import {
 } from '@/lib/modalidades';
 import type { SpotModalidadeAtiva } from '@/lib/spotV6Modalidade';
 import { fmtCopy, type SpotPageV6Copy } from '@/lib/translations/spotPage/v6';
+import { validateLocale } from '@/lib/i18n';
+import { DATE_LOCALE } from '@/lib/dataFreshness';
 
 export interface Parte {
   t: string;
@@ -50,9 +52,9 @@ const ROSA = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW'
 /** Rumo de 16 pontos. */
 export const rumo = (d: number) => ROSA[Math.round((((d % 360) + 360) % 360) / 22.5) % 16];
 
-/** Número com casas decimais no locale. */
+/** Número com casas decimais no locale (vírgula em pt/es/de/fr, ponto em en). */
 export function fmtNum(x: number, locale: string, d = 1): string {
-  return x.toLocaleString(locale === 'pt' ? 'pt-PT' : 'en-GB', {
+  return x.toLocaleString(DATE_LOCALE[validateLocale(locale)], {
     minimumFractionDigits: d,
     maximumFractionDigits: d,
   });

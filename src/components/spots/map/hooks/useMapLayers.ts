@@ -1245,7 +1245,6 @@ export function useMapLayers({
     if (stormsData === undefined) return;
     if (!stormsData || !stormsFresh(stormsData) || stormsData.storms.length === 0) return;
 
-    const isPt = locale === 'pt';
     const escapeHtml = (s: string) =>
       s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     const group = Leaflet.layerGroup();
@@ -1255,7 +1254,7 @@ export function useMapLayers({
       const color = hurricane ? '#ef4444' : '#f97316';
       const name = s.name ?? '—';
       const cls = s.classificationLabel ?? s.classification;
-      const moveCard = movementCardinal(s.movementDirDeg, isPt);
+      const moveCard = movementCardinal(s.movementDirDeg, locale);
       const moveTxt =
         s.movementSpeedMph != null
           ? ` → ${moveCard ?? ''} ${mphToKmh(s.movementSpeedMph)} km/h`

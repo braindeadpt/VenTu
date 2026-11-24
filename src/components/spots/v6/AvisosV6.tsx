@@ -11,7 +11,7 @@
 import { useEffect, useState } from 'react';
 import { CloudLightning, CloudRain, ExternalLink } from 'lucide-react';
 import { getAssetPath } from '@/lib/paths';
-import { getTranslation } from '@/lib/i18n';
+import { getTranslation, validateLocale } from '@/lib/i18n';
 import { DATE_LOCALE } from '@/lib/dataFreshness';
 import { formatLisbonWall } from '@/lib/lisbonTime';
 import {
@@ -43,7 +43,6 @@ export default function AvisosV6({ spotId, locale }: { spotId: string; locale: s
   const t = getTranslation(locale);
   const tc = t.spotPageContext;
   const tsu = t.spotsUi;
-  const isPt = locale === 'pt';
   const [avisos, setAvisos] = useState<IpmaWarningsData | null | undefined>(undefined);
   const [nhc, setNhc] = useState<NhcStormsFile | null>(null);
   const [radar, setRadar] = useState<StormStateFile | null>(null);
@@ -77,7 +76,7 @@ export default function AvisosV6({ spotId, locale }: { spotId: string; locale: s
   const eco = radar && radarStateFresh(radar) ? stormStateForSpot(radar, spotId)?.radar : null;
   const lista = relevantWarningsForSpot(avisos, spotId);
   const hhmm = avisos?.fetchedAt
-    ? new Date(avisos.fetchedAt).toLocaleTimeString(isPt ? 'pt-PT' : 'en-GB', {
+    ? new Date(avisos.fetchedAt).toLocaleTimeString(DATE_LOCALE[validateLocale(locale)], {
         hour: '2-digit',
         minute: '2-digit',
         timeZone: 'Europe/Lisbon',
@@ -91,13 +90,13 @@ export default function AvisosV6({ spotId, locale }: { spotId: string; locale: s
       eco.intensity === 'heavy' ? tc.stormIntensityHeavy : eco.intensity === 'moderate' ? tc.stormIntensityModerate : tc.stormIntensityLight;
     const titulo = sobre
       ? tc.stormRainOver
-      : tc.stormRainNear.replace('{km}', String(eco.distKm ?? '—')).replace('{dir}', movementCardinal(eco.dirDeg, isPt) ?? '—');
+      : tc.stormRainNear.replace('{km}', String(eco.distKm ?? '—')).replace('{dir}', movementCardinal(eco.dirDeg, locale) ?? '—');
     const partes: string[] = [intens];
     if (eco.approach?.state === 'approaching') {
       const de = eco.approach.deg != null ? (eco.approach.deg + 180) % 360 : null;
       partes.push(
         tc.stormRainApproach
-          .replace('{dir}', movementCardinal(de, isPt) ?? '—')
+          .replace('{dir}', movementCardinal(de, locale) ?? '—')
           .replace('{kmh}', eco.approach.kmh != null ? String(eco.approach.kmh) : '—'),
       );
     } else if (eco.approach?.state === 'receding') {
@@ -123,7 +122,7 @@ export default function AvisosV6({ spotId, locale }: { spotId: string; locale: s
                 {tc.stormConeMeta
                   .replace('{cls}', s.classificationLabel ?? s.classification)
                   .replace('{km}', String(Math.round(s.centerDistKm)))
-                  .replace('{dir}', movementCardinal(s.movementDirDeg, isPt) ?? '—')
+                  .replace('{dir}', movementCardinal(s.movementDirDeg, locale) ?? '—')
                   .replace('{kmh}', s.movementSpeedMph != null ? String(mphToKmh(s.movementSpeedMph)) : '—')}
               </p>
             </li>
