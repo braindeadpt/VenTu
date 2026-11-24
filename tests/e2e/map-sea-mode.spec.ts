@@ -1,7 +1,7 @@
 import { test, expect, type Page } from '@playwright/test';
 import { interceptMapHours } from './helpers/conditions';
 import { preseedWindRingLegend } from './helpers/map-setup';
-import { encodeSeaGrid } from '../../scripts/lib/seaGrid.js';
+import { seaGridStub } from './helpers/sea-grid';
 
 /**
  * Selector «Vento | Ondulação | Nenhum» do /mapa (maquete aprovada):
@@ -12,28 +12,7 @@ import { encodeSeaGrid } from '../../scripts/lib/seaGrid.js';
  */
 
 
-function seaGridStub() {
-  const boxes = [
-    { id: 'mainland', west: -11, south: 36, nx: 9, ny: 13, step: 0.5 },
-    { id: 'atlantic', west: -34.5, south: 26.5, nx: 35, ny: 21, step: 1 },
-  ];
-  const nodes: Array<{ lat: number; lon: number; fetch: boolean; store: boolean }> = [];
-  for (const b of boxes) {
-    for (let j = 0; j < b.ny; j++) {
-      for (let i = 0; i < b.nx; i++) nodes.push({ lat: b.south + j * b.step, lon: b.west + i * b.step, fetch: true, store: true });
-    }
-  }
-  const nowH = Math.floor(Date.now() / 3600_000) * 3600;
-  const times = Array.from({ length: 56 }, (_, k) => nowH - 3600 + k * 3600);
-  const idx = times.map((_, k) => k);
-  const wind = nodes.map(() => ({ wind_speed_10m: times.map(() => 8), wind_direction_10m: times.map(() => 0) }));
-  const marine = nodes.map((n) => ({
-    wave_height: times.map(() => 1 + (n.lat - 26) / 10),
-    swell_wave_direction: times.map(() => 300),
-    swell_wave_period: times.map(() => 12),
-  }));
-  return encodeSeaGrid({ boxes, nodes, wind, marine, times, idx, generatedAt: new Date().toISOString(), source: 'e2e' });
-}
+
 
 const TIMES = Array.from({ length: 16 }, (_, i) => {
   const h = 8 + i * 3;

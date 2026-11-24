@@ -29,6 +29,7 @@
     "test:visual": "playwright test visual-regression",
     "test:visual:update": "playwright test visual-regression --update-snapshots",
     "test:e2e:core": "playwright test --grep @core",
+    "test:e2e:v6": "playwright test map-pele home-v6 spot-v6 nivel-ui noite-fora-mapa map-night score-scale foto-credito-mobile",
     "test:e2e:data": "playwright test tides buoy-warnings topnow-wave-badge",
     "test:supabase": "bash supabase/tests/run-tests.sh",
     "check:headers": "bash scripts/check-security-headers.sh",
