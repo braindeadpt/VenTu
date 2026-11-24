@@ -8,8 +8,7 @@
  */
 
 import { getAssetPath } from '@/lib/paths';
-import { lisbonWallToMs } from '@/lib/lisbonTime';
-import type { IpmaWarning, IpmaWarningLevel } from '@/lib/ipmaWarnings';
+import { parseWarningEndMs, type IpmaWarning, type IpmaWarningLevel } from '@/lib/ipmaWarnings';
 
 export const MAP_WARN_AREAS_LS_KEY = 'ventu.map-warn-areas';
 
@@ -69,9 +68,12 @@ export function activeWarnGroups(
   const hits: WarnAreaHit[] = [];
   for (const group of Object.values(areas.groups)) {
     const list = warnings.filter(
-      (w) =>
-        group.codes.includes(w.areaCode) &&
-        (!w.endTime || lisbonWallToMs(w.endTime) > now),
+      (w) => {
+        if (!group.codes.includes(w.areaCode)) return false;
+        if (!w.endTime) return true;
+        const endMs = parseWarningEndMs(w.endTime);
+        return !Number.isFinite(endMs) || endMs > now;
+      },
     );
     if (list.length === 0) continue;
     const maxLevel = list.reduce<IpmaWarningLevel>(

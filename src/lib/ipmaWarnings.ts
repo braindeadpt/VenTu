@@ -156,6 +156,8 @@ export function strongestSeaStateForSpots(
  * tie → alphabetical type). Returns null when none active — the badge is
  * never shown for irrelevant or missing warnings.
  */
+const WARNING_END_TZ_RE = /[zZ]$|[+-]\d{2}:?\d{2}$/;
+
 /**
  * Converte `endTime` de um aviso IPMA/MeteoAlarm para ms UTC:
  * - se já traz fuso (`Z` ou `±HH:MM`), respeita-o;
@@ -163,10 +165,9 @@ export function strongestSeaStateForSpots(
  * Evita subtrair 1 h em horário de verão (WEST) como aconteceria se fosse
  * lido como hora local de Lisboa.
  */
-function parseWarningEndMs(endTime: string): number {
+export function parseWarningEndMs(endTime: string): number {
   const s = endTime.trim();
-  const hasTz = /[zZ]$|[+-]\d{2}:?\d{2}$/.test(s);
-  return Date.parse(hasTz ? s : `${s}Z`);
+  return Date.parse(WARNING_END_TZ_RE.test(s) ? s : `${s}Z`);
 }
 
 export function strongestSpotWarning(
