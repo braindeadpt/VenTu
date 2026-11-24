@@ -99,11 +99,20 @@ test.describe('/mapa pele v6 — base «Mapa» recolorida (B6)', () => {
     expect(pedidos.some((u) => u.includes('World_Dark_Gray_Base'))).toBe(true);
     // A flag resolve-se num efeito (export estático — ler window/localStorage no
     // 1.º render partia a hidratação): o attach inicial ainda pode disparar
-    // pedidos CARTO antes da troca. O contrato é o estado final — a partir do
-    // primeiro mosaico Esri do v6, nenhum pedido volta a tocar a base antiga.
-    const primeiroEsri = pedidos.findIndex((u) => u.includes('World_Dark_Gray_Base'));
-    expect(primeiroEsri).toBeGreaterThanOrEqual(0);
-    expect(pedidos.slice(primeiroEsri).some((u) => u.includes('dark_nolabels'))).toBe(false);
+    // pedidos CARTO antes da troca (e sem chave CARTO o raster normal já é
+    // Esri — o 1.º World_Dark_Gray_Base não marca a troca). Com a camada
+    // .ventu-base-v6 no DOM a antiga já saiu do mapa; daqui em diante nenhum
+    // pedido pode tocar o CARTO. Um pan força mosaicos novos para a prova.
+    const posTroca = pedidos.length;
+    const box = (await page.locator('.leaflet-container').boundingBox())!;
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(box.x + box.width / 2 - 240, box.y + box.height / 2 - 80, { steps: 12 });
+    await page.mouse.up();
+    await page.waitForTimeout(800);
+    const depois = pedidos.slice(posTroca);
+    expect(depois.length).toBeGreaterThan(0);
+    expect(depois.some((u) => u.includes('cartocdn'))).toBe(false);
   });
 
   test('no Satélite: nem classe nem filtro', async ({ page }) => {
