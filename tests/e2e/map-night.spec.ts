@@ -107,11 +107,39 @@ test.describe('/mapa — estado «noite» (#218 D3)', () => {
   });
 
   test('«Todos» (best, D5): continua numérico — nenhum marcador de noite', async ({ page }) => {
-    await stubNightMapHours(page);
+    // O frame 0 dos dados vivos pode ser de noite (a corrida CI é de madrugada):
+    // aqui o «best» fica sempre com número, senão a assert dependia da hora.
+    await page.route('**/data/map-hours.json', async (route) => {
+      const res = await route.fetch();
+      const j = (await res.json()) as { spots?: Record<string, Record<string, Array<number | null>>> };
+      for (const row of Object.values(j.spots ?? {})) {
+        for (const k of ['kitesurf', 'surf']) if (Array.isArray(row[k])) row[k] = row[k].map(() => null);
+        if (Array.isArray(row.best)) row.best = row.best.map((v) => v ?? 50);
+      }
+      await route.fulfill({ response: res, json: j });
+    });
     await openMapa(page, '/pt/mapa/?hours=1&sport=all');
     await expect(nazareMarker(page).locator('[data-spot-score]')).toBeAttached({ timeout: 20_000 });
     await expect(page.locator('.leaflet-marker-icon.spot-marker [data-spot-night]')).toHaveCount(0);
     await expect(page.locator('[data-row-night]')).toHaveCount(0);
+  });
+
+  test('«Todos» (best, D5): best a null em todas as horas → marcador e linha em noite', async ({ page }) => {
+    // O caso inverso do teste acima: quando nem o «best» tem nota, o marcador
+    // e a linha mostram o estado de noite também no modo Todos.
+    await page.route('**/data/map-hours.json', async (route) => {
+      const res = await route.fetch();
+      const j = (await res.json()) as { spots?: Record<string, Record<string, Array<number | null>>> };
+      for (const row of Object.values(j.spots ?? {})) {
+        if (Array.isArray(row.best)) row.best = row.best.map(() => null);
+      }
+      await route.fulfill({ response: res, json: j });
+    });
+    await openMapa(page, '/pt/mapa/?hours=1&sport=all');
+    await expect(nazareMarker(page).locator('[data-spot-night="true"]')).toBeAttached({ timeout: 20_000 });
+    const row = page.locator('[data-map-panel="open"] [role="option"][data-spot-id="nazare"]');
+    await row.scrollIntoViewIfNeeded();
+    await expect(row.locator('[data-row-night="true"]')).toBeAttached({ timeout: 15_000 });
   });
 });
 

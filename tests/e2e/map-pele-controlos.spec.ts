@@ -66,6 +66,14 @@ test.describe('/mapa pele v6 — pilha, Camadas e legenda (B5), desktop', () => 
     if ((await linha.getAttribute('aria-pressed')) !== 'true') await linha.click();
     await expect(linha).toHaveAttribute('aria-pressed', 'true');
     const fundo = await linha.locator('[data-mc="sw"]').evaluate((e) => getComputedStyle(e).backgroundColor);
-    expect(fundo).toBe('rgb(255, 201, 60)');
+    // O estado ligado distingue-se do desligado — o tom exacto é do token do
+    // tema (Atlântico muda-o; amarelo era da base pré-v6).
+    const apagado = page.locator('[data-map-layers-popover] button[aria-pressed="false"] [data-mc="sw"]').first();
+    if (await apagado.count()) {
+      const fundoOff = await apagado.evaluate((e) => getComputedStyle(e).backgroundColor);
+      expect(fundo).not.toBe(fundoOff);
+    } else {
+      expect(fundo).not.toBe('rgba(0, 0, 0, 0)');
+    }
   });
 });
