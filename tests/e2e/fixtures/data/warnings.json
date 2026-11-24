@@ -1,7 +1,68 @@
 {
   "source": "ipma",
   "fetchedAt": "2026-09-09T23:13:18.790Z",
-  "warnings": [],
+  "warnings": [
+    {
+      "areaCode": "PTO",
+      "areaLabel": "Porto",
+      "type": "Agitação Marítima",
+      "level": "yellow",
+      "text": "Ondas de noroeste com 4 a 4,5 metros.",
+      "startTime": "2026-11-24T21:00:00",
+      "endTime": "2026-11-25T12:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "VCT",
+      "areaLabel": "Viana do Castelo",
+      "type": "Agitação Marítima",
+      "level": "yellow",
+      "text": "Ondas de noroeste com 4 a 4,5 metros.",
+      "startTime": "2026-11-24T21:00:00",
+      "endTime": "2026-11-25T12:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "LRA",
+      "areaLabel": "Leiria",
+      "type": "Agitação Marítima",
+      "level": "yellow",
+      "text": "Ondas de noroeste com 4 a 4,5 metros.",
+      "startTime": "2026-11-24T21:00:00",
+      "endTime": "2026-11-25T12:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "AVR",
+      "areaLabel": "Aveiro",
+      "type": "Agitação Marítima",
+      "level": "yellow",
+      "text": "Ondas de noroeste com 4 a 4,5 metros.",
+      "startTime": "2026-11-24T21:00:00",
+      "endTime": "2026-11-25T12:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "CBR",
+      "areaLabel": "Coimbra",
+      "type": "Agitação Marítima",
+      "level": "yellow",
+      "text": "Ondas de noroeste com 4 a 4,5 metros.",
+      "startTime": "2026-11-24T21:00:00",
+      "endTime": "2026-11-25T12:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "BRG",
+      "areaLabel": "Braga",
+      "type": "Agitação Marítima",
+      "level": "yellow",
+      "text": "Ondas de noroeste com 4 a 4,5 metros.",
+      "startTime": "2026-11-24T21:00:00",
+      "endTime": "2026-11-25T12:00:00",
+      "relevant": true
+    }
+  ],
   "spotWarnings": {
     "porto-da-cruz": [
       {
