@@ -62,6 +62,7 @@ fi
       pkill -f visual-sweep-server 2>/dev/null
       sleep 1
       node scripts/visual-sweep-server.mjs out "$PORT" >> "$LOGS/server.log" 2>&1 &
+      # shellcheck disable=SC2030 # SRV é do guardião: o loop mata sempre a instância actual.
       SRV=$!
       sleep 2
     fi
@@ -76,7 +77,9 @@ EXIT=$?
 echo "EXIT=$EXIT" >> "$LOGS/sweep.log"
 
 kill "$GUARD" 2>/dev/null
+# shellcheck disable=SC2031 # $SRV pode ser de uma instância reiniciada; o pkill cobre-a.
 kill "$SRV" 2>/dev/null
+pkill -f visual-sweep-server 2>/dev/null
 echo "[corrida] terminado com EXIT=$EXIT · $(find "$OUT/records" -name '*.json' 2>/dev/null | wc -l | tr -d ' ') capturas em disco"
 
 # Capturas que caíram na janela de uma morte do servidor: apagadas para a
