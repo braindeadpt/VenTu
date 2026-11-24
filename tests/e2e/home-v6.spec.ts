@@ -413,25 +413,27 @@ test.describe('#460 home v6 unificada', () => {
   test('líder mostra /10, tabular-nums activo, tema escuro sem corte branco em theme-ocean e régua sticky sai no fim', async ({
     page,
   }) => {
-    await page.addInitScript(() => localStorage.setItem('theme', 'ocean'));
+    await page.addInitScript(() => localStorage.setItem('windspot:theme', 'light'));
     await fixtureMaquete(page);
     await abreHome(page, '/pt/', { maquete: true });
 
     // /10 no mosaico .lider .nota
     await expect(page.locator('[data-testid="home-lider"] .nota')).toContainText('/10');
 
-    // tabular-nums + ThemeToggle escondido + superfície escura mesmo com html.theme-ocean
+    // tabular-nums + ThemeToggle escondido + superfície escura mesmo com html.theme-ocean activo
     const estilos = await page.evaluate(() => {
       const l1 = document.querySelector('.v6h .l1');
       const ext = document.querySelector('[data-testid="home-unificada-ext"]');
       const toggle = document.querySelector('.site-header[data-v6="home"] .theme-toggle');
       return {
+        isOcean: document.documentElement.classList.contains('theme-ocean'),
         fvn: l1 ? getComputedStyle(l1).fontVariantNumeric : '',
         v6Bg: getComputedStyle(document.querySelector('.v6h')!).backgroundColor,
         extColor: ext ? getComputedStyle(ext).color : '',
         toggleDisplay: toggle ? getComputedStyle(toggle).display : 'none',
       };
     });
+    expect(estilos.isOcean).toBe(true);
     expect(estilos.fvn).toContain('tabular-nums');
     expect(estilos.v6Bg).toBe('rgb(3, 14, 24)');
     expect(estilos.extColor).toBe('rgb(243, 248, 251)');

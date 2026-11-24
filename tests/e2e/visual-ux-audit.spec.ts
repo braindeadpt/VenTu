@@ -269,7 +269,8 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
     test('04 — Header: alternar tema claro/escuro', async ({ browser }) => {
       const context = await createContext(browser, viewport);
       const { page, health } = await setupPage(context, viewport);
-      await gotoHealthy(page, health, '/pt/');
+      // #460: o ThemeToggle fica escondido na home v6 (superfície escura fixa); testa em /spots/
+      await gotoHealthy(page, health, '/pt/spots/');
 
       // Theme toggle lives in the desktop action row; on mobile it's inside the drawer.
       if (viewport === 'mobile') {

@@ -83,7 +83,8 @@ test.describe('mobile playtest (390×844, touch)', { tag: '@core' }, () => {
   });
 
   test('theme toggle inside drawer switches to ocean and back', async ({ page }) => {
-    await page.goto('/pt/', { waitUntil: 'domcontentloaded' });
+    // #460: o ThemeToggle fica escondido na home v6 (superfície escura fixa); testa em /spots/
+    await page.goto('/pt/spots/', { waitUntil: 'domcontentloaded' });
     await waitHydrated(page);
 
     const drawer = page.locator('#mobile-nav');

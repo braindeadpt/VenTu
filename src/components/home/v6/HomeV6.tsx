@@ -209,60 +209,66 @@ export default function HomeV6({ locale, costa: costaSSG, meta, fotos, agoraMs, 
     document.title = c.titulo(c.veredito[E.palavra], semTags((fraseNv ?? E.frase).txt));
   }, [E, c, flags.vivo, fraseNv]);
 
-  if (!E) return <p className="sr">{c.semDados}</p>;
-  const heroFoto = E.top[0] ? (fotos[E.top[0].sp.id]?.[d] ?? null) : null;
+  const heroFoto = E?.top[0] ? (fotos[E.top[0].sp.id]?.[d] ?? null) : null;
 
   return (
     <div
-      className={`v6h${flags.vivo ? ' vivo' : ''}${E.noite ? ' e-noite' : ''}`}
+      className={`v6h${flags.vivo ? ' vivo' : ''}${E?.noite ? ' e-noite' : ''}`}
       data-testid="home-v6"
       data-modalidade={d}
-      data-bloco={E.bId ?? ''}
-      data-hora={M.t(E.agoraI)}
-      style={{ ['--band' as string]: `var(--b-${E.banda})`, ['--band-t' as string]: `var(--b-${E.banda}-t)` }}
+      data-bloco={E?.bId ?? ''}
+      data-hora={E ? M.t(E.agoraI) : ''}
+      style={{
+        ['--band' as string]: `var(--b-${E?.banda ?? 'bom'})`,
+        ['--band-t' as string]: `var(--b-${E?.banda ?? 'bom'}-t)`,
+      }}
     >
       {PRELOAD.map((fn) => (
         <link key={fn} rel="preload" as="font" type="font/woff2" crossOrigin="anonymous" href={getAssetPath(`/fonts/barlow/${fn}`)} />
       ))}
-      <div className="v6h-bloco">
-        <div className={`topo${nivel && emPoucos(E) ? ' nv-poucos' : ''}`}>
-          <HomeHero
-            E={E}
-            copy={c}
-            foto={heroFoto}
-            locale={locale}
-            hrefSpot={hrefSpot}
-            d={d}
-            onModalidade={muda}
-            nivel={nivel}
-            onNivel={escolheNivel}
-            cn={cn}
-            frase={fraseNv}
-          />
-          <section className="outros" aria-label={c.outrosAria} data-testid="home-outros">
-            {E.top.slice(1).map((r, k) => (
-              <SpotCardV6
-                key={`${r.sp.id}-${d}`}
-                r={r}
-                l={E.linhas[k + 1]}
-                k={k}
-                foto={fotos[r.sp.id]?.[d] ?? null}
-                href={hrefSpot(r.sp, r.i)}
-                copy={c}
-                locale={locale}
-                rk={rkDe(E, r, E.linhas[k + 1]?.rk ?? '', c, cn)}
-                nivelRk={nivel ? cn.rkNivel(nivel) : null}
-                tagNivel={(() => {
-                  const lv = r.acimaDoNivel ? nivelDoSpotHome(r.sp, d) : undefined;
-                  return lv ? { txt: cn.tag(lv), lv } : null;
-                })()}
-              />
-            ))}
-          </section>
-          <CostaMapa3D M={M} E={E} copy={c} hrefMapa={hrefMapa} nSpots={nSpots[d]} forcarPlano={flags.plano} nivel={nivel} legendaNivel={cn.legenda} />
+      {E ? (
+        <div className="v6h-bloco">
+          <div className={`topo${nivel && emPoucos(E) ? ' nv-poucos' : ''}`}>
+            <HomeHero
+              E={E}
+              copy={c}
+              foto={heroFoto}
+              locale={locale}
+              hrefSpot={hrefSpot}
+              d={d}
+              onModalidade={muda}
+              nivel={nivel}
+              onNivel={escolheNivel}
+              cn={cn}
+              frase={fraseNv}
+            />
+            <section className="outros" aria-label={c.outrosAria} data-testid="home-outros">
+              {E.top.slice(1).map((r, k) => (
+                <SpotCardV6
+                  key={`${r.sp.id}-${d}`}
+                  r={r}
+                  l={E.linhas[k + 1]}
+                  k={k}
+                  foto={fotos[r.sp.id]?.[d] ?? null}
+                  href={hrefSpot(r.sp, r.i)}
+                  copy={c}
+                  locale={locale}
+                  rk={rkDe(E, r, E.linhas[k + 1]?.rk ?? '', c, cn)}
+                  nivelRk={nivel ? cn.rkNivel(nivel) : null}
+                  tagNivel={(() => {
+                    const lv = r.acimaDoNivel ? nivelDoSpotHome(r.sp, d) : undefined;
+                    return lv ? { txt: cn.tag(lv), lv } : null;
+                  })()}
+                />
+              ))}
+            </section>
+            <CostaMapa3D M={M} E={E} copy={c} hrefMapa={hrefMapa} nSpots={nSpots[d]} forcarPlano={flags.plano} nivel={nivel} legendaNivel={cn.legenda} />
+          </div>
+          <ReguaBlocos E={E} copy={c} onEscolhe={escolhe} />
         </div>
-        <ReguaBlocos E={E} copy={c} onEscolhe={escolhe} />
-      </div>
+      ) : (
+        <p className="v6h-sem-dados">{c.semDados}</p>
+      )}
       {after}
       {/* div e não <footer>: fecho único da home antes do <Footer> global (contentinfo único, #460) */}
       <div className="rodape" data-testid="home-v6-rodape">

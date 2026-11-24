@@ -29,12 +29,15 @@
   --daypart-tint:14 165 233;--skeleton-bg:243 248 251;--skeleton-shimmer:243 248 251;
   --font-geist-sans:'Barlow';--font-display:'Barlow Condensed';
 }
-/* Avisos de camada degradada dentro da .v6h nunca herdam o azul da banda Fraco (--score-poor): coral AA */
+/* Avisos de camada degradada e pills IPMA laranja dentro da .v6h nunca herdam o azul Fraco (--score-poor) */
 .v6h [data-testid="home-ticker"],.v6h [data-testid="home-buoy-notice"]{--score-poor:248 113 113}
+.v6h [data-ipma-nivel='orange']{--score-poor:249 115 22}
 /* Rodapé global escuro na home, também com html.theme-ocean (#460) */
 body:has(.v6h) [data-site-footer]{background:#030E18;color:#F3F8FB;border-top:1px solid #1E4361}
 .v6h *,.v6h *::before,.v6h *::after{box-sizing:border-box}
-.v6h a{color:inherit}
+/* :where mantém especificidade 0 — nunca sobrepõe text-bg-base em Button do Dawn Patrol (#460) */
+:where(.v6h) a{color:inherit}
+.v6h .v6h-sem-dados{padding:24px 16px;color:var(--nevoa);font-size:16px}
 .v6h button{font:inherit;color:inherit}
 .v6h h1,.v6h h2,.v6h p{margin:0}
 .v6h .sr{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}

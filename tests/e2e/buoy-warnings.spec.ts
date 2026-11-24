@@ -328,7 +328,7 @@ test.describe('Aviso de boias no mapa interactivo (chip do HUD — auditoria C4)
     });
     await interceptWmoBuoys(page, WMO_DOWN);
     await page.goto('/pt/');
-    await expect(topNowHeading(page)).toBeVisible({
+    await expect(page.getByTestId('home-hero')).toBeVisible({
       timeout: 20_000,
     });
 
@@ -438,7 +438,7 @@ test.describe('Aviso de boias — dispensa (localStorage)', { tag: '@core' }, ()
   async function gotoHome(page: import('@playwright/test').Page) {
     await interceptWmoBuoys(page, WMO_DOWN);
     await page.goto('/pt/');
-    await expect(topNowHeading(page)).toBeVisible({
+    await expect(page.getByTestId('home-hero')).toBeVisible({
       timeout: 20_000,
     });
   }
@@ -461,7 +461,7 @@ test.describe('Aviso de boias — dispensa (localStorage)', { tag: '@core' }, ()
 
     // Reload (mesmas fixtures — os routes persistem) → continua escondido.
     await page.reload({ waitUntil: 'networkidle' });
-    await expect(topNowHeading(page)).toBeVisible({
+    await expect(page.getByTestId('home-hero')).toBeVisible({
       timeout: 20_000,
     });
     await expect(page.getByText('Onda observada desactivada')).toHaveCount(0);
@@ -481,7 +481,7 @@ test.describe('Aviso de boias — dispensa (localStorage)', { tag: '@core' }, ()
     // A camada fica saudável (IH fresca): sem aviso E a dispensa é removida.
     await interceptIhBuoys(page, IH_OK);
     await page.reload({ waitUntil: 'networkidle' });
-    await expect(topNowHeading(page)).toBeVisible({
+    await expect(page.getByTestId('home-hero')).toBeVisible({
       timeout: 20_000,
     });
     await expect(
@@ -498,7 +498,7 @@ test.describe('Aviso de boias — dispensa (localStorage)', { tag: '@core' }, ()
     // Volta ao no-key: a dispensa já não existe → o aviso reaparece.
     await interceptIhBuoys(page, IH_NO_KEY);
     await page.reload({ waitUntil: 'networkidle' });
-    await expect(topNowHeading(page)).toBeVisible({
+    await expect(page.getByTestId('home-hero')).toBeVisible({
       timeout: 20_000,
     });
     await expect(page.getByText('Onda observada desactivada')).toBeVisible({ timeout: 20_000 });
