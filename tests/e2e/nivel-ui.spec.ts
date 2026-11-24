@@ -274,14 +274,28 @@ test.describe('#nivel-ui spot (Guincho: avançado em kite, intermédio em surf)'
     expect(n).toBeGreaterThan(0);
     expect(n).toBeLessThanOrEqual(3);
     await expect(perto.locator('li .km').first()).toContainText('para iniciantes');
-    // a nota do veredicto é a mesma sem nível — `> .nota` apanha o meter de
-    // dia e a lua de noite (os cartões «perto» dentro do bloco não são filhos directos).
-    const comNv = await page.locator('[data-testid="spot-veredicto"] > .nota').getAttribute('data-nota');
+    // a nota do veredicto é a mesma sem nível — se for noite na hora actual,
+    // avança até à 1.ª barra de dia da régua para provar uma nota numérica real.
+    const notaEl = page.locator('[data-testid="spot-veredicto"] > .nota');
+    if ((await notaEl.getAttribute('data-nota')) === null) {
+      const idxDia = await page.evaluate(() =>
+        Array.from(document.querySelectorAll('[data-testid="regua-48h"] .faixa i')).findIndex(
+          (el) => el.getAttribute('data-banda') !== 'noite',
+        ),
+      );
+      if (idxDia > 0) {
+        const slider = page.getByRole('slider');
+        await slider.focus();
+        for (let k = 0; k < idxDia; k++) await page.keyboard.press('ArrowRight');
+      }
+    }
+    const comNv = await notaEl.getAttribute('data-nota');
+    expect(comNv).toMatch(/^\d+$/);
     await page.evaluate((k) => localStorage.removeItem(k), CHAVE);
     await page.getByTestId('nivel-botao').click();
     await page.getByTestId('nivel-menu').getByRole('radio', { name: /^Todos/ }).click();
     await expect(page.getByTestId('spot-nivel')).toHaveAttribute('data-estado', 'dica');
-    expect(await page.locator('[data-testid="spot-veredicto"] > .nota').getAttribute('data-nota')).toBe(comNv);
+    expect(await notaEl.getAttribute('data-nota')).toBe(comNv);
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
   });
 
