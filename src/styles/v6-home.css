@@ -10,11 +10,34 @@
   --band:#40DCD0;--band-t:#04131F;
   --r:14px;--sombra:0 18px 40px -18px rgba(0,0,0,.65);
   color-scheme:dark;position:relative;
-  background:var(--abismo);color:var(--espuma);font:500 17px/1.45 var(--txt);font-variant-numeric:lining-nums;
+  background:var(--abismo);color:var(--espuma);font:500 17px/1.45 var(--txt);font-variant-numeric:tabular-nums lining-nums;
   overflow-x:clip;
 }
+/* Tokens do site remapeados na RAIZ `.v6h` (#460): toda a homepage (incluindo «O teu dia»,
+   Dawn Patrol, Top 8, ticker e rodapé) vive na superfície escura v6 «Atlântico» e usa as
+   5 bandas cromáticas v6 — zero corte branco em `.theme-ocean`. */
+.v6h,body:has(.v6h) [data-site-footer]{
+  --bg-base:3 14 24;--bg-elevated:7 27 44;--surface-1:243 248 251;--surface-2:243 248 251;--surface-3:12 42 66;
+  --divider:30 67 97;--divider-strong:30 67 97;--fg:243 248 251;--fg-muted:169 194 212;--fg-subtle:169 194 212;--fg-disabled:86 103 123;
+  --fg-rgb:243 248 251;--fg-muted-rgb:169 194 212;--fg-subtle-rgb:169 194 212;--fg-disabled-rgb:86 103 123;
+  --surface-1-rgb:243 248 251;--surface-2-rgb:243 248 251;--surface-3-rgb:12 42 66;--divider-rgb:30 67 97;--divider-strong-rgb:30 67 97;
+  --data-waves:127 231 255;--data-wind:127 231 255;--data-water:127 231 255;--data-period:255 201 60;
+  --accent:255 201 60;--accent-hover:255 201 60;--accent-active:255 201 60;--accent-rgb:255 201 60;
+  --score-epic:255 240 122;--score-good:64 220 208;--score-fair:201 158 42;--score-poor:68 121 238;--score-closed:168 70 74;--score-current:var(--score-good);
+  --sport-surf:14 165 233;--sport-kitesurf:167 139 250;--sport-windsurf:245 158 11;--sport-bodyboard:16 185 129;--sport-sup:6 182 212;--sport-wakeboard:236 72 153;--sport-foil:129 140 248;
+  --windDir-offshore:34 197 94;--windDir-onshore:248 113 113;--windDir-cross:148 163 184;
+  --daypart-tint:14 165 233;--skeleton-bg:243 248 251;--skeleton-shimmer:243 248 251;
+  --font-geist-sans:'Barlow';--font-display:'Barlow Condensed';
+}
+/* Avisos de camada degradada e pills IPMA laranja dentro da .v6h nunca herdam o azul Fraco (--score-poor) */
+.v6h [data-testid="home-ticker"],.v6h [data-testid="home-buoy-notice"]{--score-poor:248 113 113}
+.v6h [data-ipma-nivel='orange']{--score-poor:249 115 22}
+/* Rodapé global escuro na home, também com html.theme-ocean (#460) */
+body:has(.v6h) [data-site-footer]{background:#030E18;color:#F3F8FB;border-top:1px solid #1E4361}
 .v6h *,.v6h *::before,.v6h *::after{box-sizing:border-box}
-.v6h a{color:inherit}
+/* :where mantém especificidade 0 — nunca sobrepõe text-bg-base em Button do Dawn Patrol (#460) */
+:where(.v6h) a{color:inherit}
+.v6h .v6h-sem-dados{padding:24px 16px;color:var(--nevoa);font-size:16px}
 .v6h button{font:inherit;color:inherit}
 .v6h h1,.v6h h2,.v6h p{margin:0}
 .v6h .sr{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
@@ -32,6 +55,8 @@
 .site-header[data-v6=home] .site-logo-txt{font:900 italic 27px/1 'Barlow Condensed','Arial Narrow',sans-serif;letter-spacing:-.02em;text-transform:uppercase;color:#F3F8FB}
 .site-header[data-v6=home] .site-logo-txt span{color:#FFC93C}
 .site-header[data-v6=home] nav a,.site-header[data-v6=home] nav button{font-weight:600}
+/* Home v6 é superfície escura fixa (#460): esconde o ThemeToggle no cabeçalho */
+.site-header[data-v6=home] .theme-toggle{display:none}
 
 /* o contentor do cabeçalho alinha com a grelha da home (32 px de margem no desktop, como a maquete) */
 @media (min-width:1024px){.site-header[data-v6=home]>.max-w-7xl{max-width:none}}
@@ -53,7 +78,8 @@
 .v6h .chip{display:inline-flex;align-items:center;gap:.3em;padding:.08em .42em .1em;border-radius:6px;background:var(--c,var(--band));color:var(--t,var(--band-t));
   font-weight:800;font-style:normal;white-space:nowrap}
 .v6h .nota{display:inline-flex;align-items:baseline;justify-content:center;background:var(--c);color:var(--t);border-radius:12px;font:900 var(--fs,44px)/1 var(--disp);
-  font-variant-numeric:tabular-nums;padding:.1em .16em .06em;min-width:1.25em}
+  font-variant-numeric:tabular-nums lining-nums;padding:.1em .16em .06em;min-width:1.25em}
+.v6h .nota small{font-size:.34em;font-weight:800;opacity:.85;margin-left:.06em}
 .v6h .nota svg{width:.7em;height:.7em;align-self:center}
 
 /* ---------- foto ---------- */
@@ -94,21 +120,21 @@
 .v6h.e-noite .hero .foto img{filter:brightness(.45) saturate(.6) hue-rotate(10deg)}
 .v6h .hero-in{position:relative;z-index:3;padding:84px 16px 34px}
 .v6h .hero-cred{top:72px;bottom:auto;right:12px;background:rgba(3,14,24,.5);padding:3px 6px;border-radius:5px}
-.v6h .quando{display:inline-block;margin:0 0 8px;padding:6px 10px;border-radius:8px;background:rgba(3,14,24,.72);font:800 15px/1.2 var(--txt);letter-spacing:.12em;text-transform:uppercase;color:var(--espuma)}
+.v6h .quando{display:inline-block;margin:0 0 8px;padding:6px 10px;border-radius:8px;background:rgba(3,14,24,.72);font:800 15px/1.2 var(--txt);font-variant-numeric:tabular-nums lining-nums;letter-spacing:.12em;text-transform:uppercase;color:var(--espuma)}
 .v6h .quando b{color:var(--sol)}
-.v6h .gng{margin:0;font:900 italic clamp(96px,30vw,190px)/.8 var(--disp);letter-spacing:-.035em;text-transform:uppercase;color:var(--band);
+.v6h .gng{margin:0;font:900 italic clamp(96px,30vw,190px)/.8 var(--disp);font-variant-numeric:tabular-nums lining-nums;letter-spacing:-.035em;text-transform:uppercase;color:var(--band);
   text-shadow:0 6px 30px rgba(0,0,0,.45);padding:.06em 0 .04em}
-.v6h .gng small{display:block;font:800 italic 22px/1.1 var(--disp);letter-spacing:.02em;color:var(--espuma);margin-top:10px;text-shadow:none}
-.v6h .nac{margin:12px 0 18px;font:600 20px/1.32 var(--txt);max-width:34ch;text-wrap:pretty}
+.v6h .gng small{display:block;font:800 italic 22px/1.1 var(--disp);font-variant-numeric:tabular-nums lining-nums;letter-spacing:.02em;color:var(--espuma);margin-top:10px;text-shadow:none}
+.v6h .nac{margin:12px 0 18px;font:600 20px/1.32 var(--txt);font-variant-numeric:tabular-nums lining-nums;max-width:34ch;text-wrap:pretty}
 .v6h .nac em{font-style:normal}
 .v6h .lider{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;text-decoration:none;padding:12px 14px 12px 12px;border-radius:var(--r);
   background:rgba(7,27,44,.82);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:inset 0 0 0 1.5px rgba(243,248,251,.14),var(--sombra);min-height:88px}
 .v6h .lider .nota{--fs:58px}
-.v6h .rk{font:800 13px/1 var(--txt);letter-spacing:.14em;text-transform:uppercase;color:var(--nevoa);display:block;margin-bottom:3px}
-.v6h .nm{font:900 italic 30px/.92 var(--disp);text-transform:uppercase;letter-spacing:-.005em;display:block}
-.v6h .nm span{font:700 15px/1 var(--txt);font-style:normal;text-transform:none;color:var(--nevoa);letter-spacing:0;margin-left:6px}
-.v6h .l1{display:block;font:800 17px/1.25 var(--txt);margin-top:5px}
-.v6h .l2{display:block;font:500 15px/1.35 var(--txt);color:var(--nevoa);margin-top:2px}
+.v6h .rk{font:800 13px/1 var(--txt);font-variant-numeric:tabular-nums lining-nums;letter-spacing:.14em;text-transform:uppercase;color:var(--nevoa);display:block;margin-bottom:3px}
+.v6h .nm{font:900 italic 30px/.92 var(--disp);font-variant-numeric:tabular-nums lining-nums;text-transform:uppercase;letter-spacing:-.005em;display:block}
+.v6h .nm span{font:700 15px/1 var(--txt);font-variant-numeric:tabular-nums lining-nums;font-style:normal;text-transform:none;color:var(--nevoa);letter-spacing:0;margin-left:6px}
+.v6h .l1{display:block;font:800 17px/1.25 var(--txt);font-variant-numeric:tabular-nums lining-nums;margin-top:5px}
+.v6h .l2{display:block;font:500 15px/1.35 var(--txt);font-variant-numeric:tabular-nums lining-nums;color:var(--nevoa);margin-top:2px}
 .v6h .l2 b{color:var(--espuma);font-weight:700}
 .v6h .seta{width:26px;height:26px;color:var(--sol)}
 
@@ -129,17 +155,17 @@
 .v6h .card .foto img{transition:transform .6s cubic-bezier(.2,.8,.2,1)}
 .v6h .card:hover .foto img{transform:scale(1.05)}
 
-/* ---------- régua de blocos (fixa em baixo no telemóvel) ---------- */
+/* ---------- régua de blocos (sticky em baixo dentro de .v6h-bloco no telemóvel, #460) ---------- */
 /* fundo opaco (abismo) e não .9 como na maquete: quando o backdrop-filter não corre (computado «none»), o texto da página via-se através da régua */
-.v6h .regua{position:fixed;left:0;right:0;bottom:0;z-index:20;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:rgb(3,14,24);
+.v6h .regua{position:sticky;bottom:0;z-index:20;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:rgb(3,14,24);
   backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--linha)}
 .v6h .dias{display:flex;gap:10px}
 .v6h .dia{flex:var(--n) 1 0;min-width:0}
-.v6h .dia-n{display:block;font:800 12px/1 var(--txt);letter-spacing:.14em;text-transform:uppercase;color:var(--nevoa);margin:0 0 12px 2px;white-space:nowrap}
+.v6h .dia-n{display:block;font:800 12px/1 var(--txt);font-variant-numeric:tabular-nums lining-nums;letter-spacing:.14em;text-transform:uppercase;color:var(--nevoa);margin:0 0 12px 2px;white-space:nowrap}
 .v6h .cels{display:flex;gap:5px}
 .v6h .bloco{flex:1 1 0;min-width:44px;border:0;padding:0;background:none;cursor:pointer;text-align:center}
 .v6h .bloco .bar{display:flex;align-items:center;justify-content:center;height:44px;border-radius:10px;background:var(--c);color:var(--t);
-  font:900 26px/1 var(--disp);font-variant-numeric:tabular-nums;position:relative;transition:transform .2s}
+  font:900 26px/1 var(--disp);font-variant-numeric:tabular-nums lining-nums;position:relative;transition:transform .2s}
 .v6h .bloco .bl{display:block;font:700 13px/1.1 var(--txt);margin-top:5px;color:var(--nevoa);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .v6h .bloco .bl .lg{display:none}
 .v6h .bloco .bar svg{width:.8em;height:.8em}
@@ -162,8 +188,10 @@
 .v6h .rotulos.movendo{opacity:0;transition:opacity .15s}
 .v6h .guias{position:absolute;inset:0;width:100%;height:100%}
 .v6h .rot{position:absolute;display:flex;align-items:center;gap:0;pointer-events:auto;text-decoration:none;border-radius:999px;
-  background:rgba(3,14,24,.86);box-shadow:inset 0 0 0 1.5px rgba(243,248,251,.18);padding:2px 2px 2px 10px;font:800 14px/1 var(--txt);white-space:nowrap;min-height:30px}
-.v6h .rot .rn{margin-left:8px;min-width:28px;height:26px;border-radius:999px;background:var(--c);color:var(--t);display:flex;align-items:center;justify-content:center;font:900 19px/1 var(--disp);padding:0 6px}
+  background:rgba(3,14,24,.86);box-shadow:inset 0 0 0 1.5px rgba(243,248,251,.18);padding:2px 2px 2px 10px;font:800 14px/1 var(--txt);font-variant-numeric:tabular-nums lining-nums;white-space:nowrap;min-height:30px}
+/* #460: alvo de toque >= 44 x 44 px via pseudo-elemento sem alargar o marcador visual no mapa 3D */
+.v6h .rot::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);min-width:max(100%,44px);min-height:max(100%,44px)}
+.v6h .rot .rn{margin-left:8px;min-width:28px;height:26px;border-radius:999px;background:var(--c);color:var(--t);display:flex;align-items:center;justify-content:center;font:900 19px/1 var(--disp);font-variant-numeric:tabular-nums lining-nums;padding:0 6px}
 .v6h .rot.menor{font-size:12px;min-height:24px;padding-left:8px;opacity:.92}
 .v6h .rot.menor .rn{min-width:22px;height:20px;font-size:15px}
 .v6h .top-lbl{position:absolute;transform:translate(-50%,-50%);font:700 12px/1 var(--txt);letter-spacing:.14em;text-transform:uppercase;color:rgba(243,248,251,.55);white-space:nowrap}
@@ -172,7 +200,7 @@
 .v6h .cena .cab .sec{margin:0;font-size:26px;white-space:nowrap}
 .v6h .cena .cab .sub{margin:2px 0 0;color:var(--nevoa);font:600 14px/1.3 var(--txt);max-width:24ch}
 /* chip do vento: 2.ª linha do cabeçalho do cartão, debaixo de «MAPA · AGORA» (já não tapa o título) */
-.v6h .vento-chip{display:flex;align-items:center;gap:8px;background:rgba(3,14,24,.82);border-radius:999px;padding:7px 12px;font:700 13px/1 var(--txt);box-shadow:inset 0 0 0 1.5px rgba(243,248,251,.16);max-width:100%;white-space:nowrap}
+.v6h .vento-chip{display:flex;align-items:center;gap:8px;background:rgba(3,14,24,.82);border-radius:999px;padding:7px 12px;font:700 13px/1 var(--txt);font-variant-numeric:tabular-nums lining-nums;box-shadow:inset 0 0 0 1.5px rgba(243,248,251,.16);max-width:100%;white-space:nowrap}
 .v6h .vento-chip svg{width:28px;height:10px;flex:none}
 .v6h .estatica{position:absolute;z-index:4;left:12px;right:12px;top:96px;margin:0;padding:8px 12px;border-radius:10px;background:rgba(3,14,24,.86);font:600 14px/1.35 var(--txt);display:none;max-width:420px}
 .v6h .cena.sem-webgl .estatica{display:block}
@@ -208,17 +236,19 @@
   .v6h .porta:has(.porta-a:active) .cta-seta{transform:scale(.92)}
 }
 
-/* ---------- rodapé da v6 (as notas da maquete → links do site) ---------- */
-.v6h .rodape{padding:28px 16px 28px;color:var(--nevoa);font-size:14px;border-top:1px solid var(--linha);margin-top:24px}
+/* ---------- rodapé da v6 (fecho único antes do <Footer> global, #460) ---------- */
+.v6h .rodape{padding:24px 16px 28px;color:var(--nevoa);font-size:14px;border-top:1px solid var(--linha);margin-top:20px}
 .v6h .rodape a{color:var(--espuma)}
 .v6h .rodape p{margin:0 0 8px;max-width:70ch}
-.v6h .rodape nav ul{list-style:none;margin:0 0 14px;padding:0;display:flex;flex-wrap:wrap;gap:8px 18px}
+.v6h .rodape nav ul{list-style:none;margin:0 0 10px;padding:0;display:flex;flex-wrap:wrap;gap:8px 18px}
 .v6h .rodape nav a{display:inline-flex;align-items:center;min-height:44px;font:800 italic 19px/1 var(--disp);text-transform:uppercase;letter-spacing:.02em;text-decoration:none}
 .v6h .rodape nav a:hover{color:var(--sol)}
+/* Secção compacta de ferramentas dentro do fecho único */
+.v6h .rodape>section{max-width:none;padding:4px 0 14px;margin:0}
 
-/* a régua fixa (< 1024 px) não tapa o fim da página: a folga vai para o rodapé do site */
+/* Salvaguarda CSS (#460): em mobile (< 1024 px) na homepage o SignupNudge nunca colide com a régua sticky */
 @media (max-width:1023.98px){
-  body:has(.v6h .regua) [data-site-footer]{padding-bottom:calc(140px + env(safe-area-inset-bottom))}
+  body:has(.v6h .regua) .ventu-signup-nudge{display:none}
 }
 
 /* ================= desktop (≥ 1024 px): «VAI.» + top 3 à esquerda, mapa 3D vivo à direita, régua por baixo ================= */

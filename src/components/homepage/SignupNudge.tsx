@@ -3,6 +3,7 @@
 import { getTranslation } from '@/lib/i18n';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { Bell, X } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthProvider';
 
@@ -33,28 +34,47 @@ export default function SignupNudge({ locale }: SignupNudgeProps) {
   const isPt = locale === 'pt';
   const t = getTranslation(locale);
   const { session } = useAuth();
+  const pathname = usePathname();
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    if (session?.user) {
-      setVisible(false);
-      return;
-    }
-    // Suprimido onde o nudge compete com a CTA própria da página (signup já
-    // é a acção principal em /alerts /conta /auth), onde tapa listas
-    // accionáveis (/favorites /compare) e no mapa (ferramenta fullscreen).
-    const path = window.location.pathname;
-    if (/(?:^|\/)(alerts|favorites|conta|compare|auth|mapa|admin)(?:\/|$)/.test(path)) return;
-    try {
-      const dismissed = localStorage.getItem(LS_NUDGE_SEEN);
-      if (dismissed) return;
-      const raw = localStorage.getItem(LS_SPOT_VIEWS);
-      const count = raw ? Number(raw) : 0;
-      if (count >= 3) {
-        setVisible(true);
+    const evaluate = () => {
+      if (session?.user) {
+        setVisible(false);
+        return;
       }
-    } catch { /* noop */ }
-  }, [session?.user]);
+      // Suprimido onde o nudge compete com a CTA própria da página (signup já
+      // é a acção principal em /alerts /conta /auth), onde tapa listas
+      // accionáveis (/favorites /compare) e no mapa (ferramenta fullscreen).
+      const path = pathname || window.location.pathname;
+      if (/(?:^|\/)(alerts|favorites|conta|compare|auth|mapa|admin)(?:\/|$)/.test(path)) {
+        setVisible(false);
+        return;
+      }
+      // #460: em mobile (< 1024 px) na homepage a régua de blocos é sticky bottom-0 —
+      // suprimir o nudge fixo no fundo evita qualquer colisão com a régua.
+      if (/^\/(?:pt|en|es|de|fr)?\/?$/.test(path) && window.matchMedia('(max-width: 1023.98px)').matches) {
+        setVisible(false);
+        return;
+      }
+      try {
+        const dismissed = localStorage.getItem(LS_NUDGE_SEEN);
+        if (dismissed) {
+          setVisible(false);
+          return;
+        }
+        const raw = localStorage.getItem(LS_SPOT_VIEWS);
+        const count = raw ? Number(raw) : 0;
+        setVisible(count >= 3);
+      } catch {
+        /* noop */
+      }
+    };
+    evaluate();
+    const mq = window.matchMedia('(max-width: 1023.98px)');
+    mq.addEventListener('change', evaluate);
+    return () => mq.removeEventListener('change', evaluate);
+  }, [session?.user, pathname]);
 
   useEffect(() => {
     document.body.classList.toggle('ventu-signup-nudge-open', visible);

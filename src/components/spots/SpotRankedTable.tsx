@@ -25,6 +25,9 @@ import type { TidePhase } from '@/lib/tideSchedule';
 import { cn } from '@/lib/cn';
 import { janelaSeguinte, linhaDeNoite, listaDeNoite } from '@/lib/noiteListas';
 import { FaixaNoite, JanelaNoite, LuaNoite } from '@/components/ui/NoiteJanela';
+import { useIpmaWarnings } from '@/hooks/useIpmaWarnings';
+import { strongestSpotWarning, warningBadgeLabel } from '@/lib/ipmaWarnings';
+import WarningPill from '@/components/ui/WarningPill';
 
 interface SpotRankedTableProps {
   sorted: GridSpotData[];
@@ -76,6 +79,7 @@ export default function SpotRankedTable({
   const isPt = locale === 'pt';
   const t = getTranslation(locale as Locale);
   const router = useRouter();
+  const warningsData = useIpmaWarnings();
   const wSport = windowSport(selectedSport);
   // Noite (opção A, 28/10): lua no lugar do «0» e a próxima janela na coluna Janela
   const noiteLista = listaDeNoite(sorted, selectedSport);
@@ -155,6 +159,10 @@ export default function SpotRankedTable({
               );
               const tideCell = tidePhase ? TIDE_PHASE_CELL[tidePhase] : undefined;
               const noite = linhaDeNoite(data, selectedSport);
+              const warning = strongestSpotWarning(warningsData, spot.id);
+              const warningBadge = warning
+                ? { level: warning.level, label: warningBadgeLabel(warning, locale) }
+                : null;
               const bestWindow = resolveBestWindowForSport(
                 data.bestWindowToday,
                 data.bestWindowsBySport,
@@ -184,13 +192,18 @@ export default function SpotRankedTable({
                     )}
                   </td>
                   <td className="py-2 px-2 min-w-0">
-                    <Link
-                      href={href}
-                      onClick={(e) => e.stopPropagation()}
-                      className="font-medium text-fg hover:text-accent transition-colors duration-150"
-                    >
-                      {name}
-                    </Link>
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      <Link
+                        href={href}
+                        onClick={(e) => e.stopPropagation()}
+                        className="font-medium text-fg hover:text-accent transition-colors duration-150"
+                      >
+                        {name}
+                      </Link>
+                      {warningBadge ? (
+                        <WarningPill warning={warningBadge} locale={locale} variant="mini" />
+                      ) : null}
+                    </div>
                     <span className="block text-meta-sm text-fg-muted truncate">
                       {region}
                     </span>

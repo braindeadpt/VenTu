@@ -156,13 +156,33 @@ export function strongestSeaStateForSpots(
  * tie → alphabetical type). Returns null when none active — the badge is
  * never shown for irrelevant or missing warnings.
  */
+const WARNING_END_TZ_RE = /[zZ]$|[+-]\d{2}:?\d{2}$/;
+
+/**
+ * Converte `endTime` de um aviso IPMA/MeteoAlarm para ms UTC:
+ * - se já traz fuso (`Z` ou `±HH:MM`), respeita-o;
+ * - se vem sem fuso (formato da API IPMA, sempre em UTC), acrescenta `Z`.
+ * Evita subtrair 1 h em horário de verão (WEST) como aconteceria se fosse
+ * lido como hora local de Lisboa.
+ */
+export function parseWarningEndMs(endTime: string): number {
+  const s = endTime.trim();
+  return Date.parse(WARNING_END_TZ_RE.test(s) ? s : `${s}Z`);
+}
+
 export function strongestSpotWarning(
   data: IpmaWarningsData | null | undefined,
   spotId: string,
+  nowMs = Date.now(),
 ): IpmaWarning | null {
   const list = data?.spotWarnings?.[spotId];
   if (!Array.isArray(list)) return null;
-  const candidates = list.filter((w) => MAP_WARNING_TYPES.has(w.type));
+  const candidates = list.filter((w) => {
+    if (!MAP_WARNING_TYPES.has(w.type)) return false;
+    if (!w.endTime) return true;
+    const endMs = parseWarningEndMs(w.endTime);
+    return !Number.isFinite(endMs) || endMs > nowMs;
+  });
   if (candidates.length === 0) return null;
   return candidates.reduce((best, w) => {
     const rankDiff = WARNING_LEVEL_RANK[w.level] - WARNING_LEVEL_RANK[best.level];

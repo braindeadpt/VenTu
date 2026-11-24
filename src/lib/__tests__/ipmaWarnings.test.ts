@@ -165,6 +165,63 @@ describe('strongestSpotWarning', () => {
     expect(strongestSpotWarning(base, 'faro')).toBeNull();
     expect(strongestSpotWarning({ ...base, spotWarnings: {} }, 'peniche')).toBeNull();
   });
+
+  it('exclui avisos expirados mesmo quando mais graves do que outro ainda em vigor (#460)', () => {
+    const comExpirado: IpmaWarningsData = {
+      ...base,
+      spotWarnings: {
+        guincho: [
+          {
+            areaCode: 'LSB',
+            areaLabel: 'Lisboa',
+            type: 'Agitação Marítima',
+            level: 'red',
+            text: '',
+            relevant: true,
+            endTime: '2026-11-24T12:00:00',
+          },
+          {
+            areaCode: 'LSB',
+            areaLabel: 'Lisboa',
+            type: 'Vento',
+            level: 'yellow',
+            text: '',
+            relevant: true,
+            endTime: '2026-11-24T15:00:00',
+          },
+        ],
+      },
+    };
+    const as1230 = Date.parse('2026-11-24T12:30:00Z');
+    const w = strongestSpotWarning(comExpirado, 'guincho', as1230);
+    expect(w?.level).toBe('yellow');
+    expect(w?.type).toBe('Vento');
+    const as1600 = Date.parse('2026-11-24T16:00:00Z');
+    expect(strongestSpotWarning(comExpirado, 'guincho', as1600)).toBeNull();
+  });
+
+  it('interpreta endTime IPMA sem fuso como UTC mesmo no horário de verão (agosto)', () => {
+    const verao: IpmaWarningsData = {
+      ...base,
+      spotWarnings: {
+        guincho: [
+          {
+            areaCode: 'LSB',
+            areaLabel: 'Lisboa',
+            type: 'Agitação Marítima',
+            level: 'orange',
+            text: '',
+            relevant: true,
+            endTime: '2026-08-14T18:00:00',
+          },
+        ],
+      },
+    };
+    // 17:30 UTC (18:30 WEST): ainda activo até às 18:00 UTC
+    expect(strongestSpotWarning(verao, 'guincho', Date.parse('2026-08-14T17:30:00Z'))?.level).toBe('orange');
+    // 18:01 UTC: expirado
+    expect(strongestSpotWarning(verao, 'guincho', Date.parse('2026-08-14T18:01:00Z'))).toBeNull();
+  });
 });
 
 describe('warningLevelLabel (nível localizado — fonte única)', () => {

@@ -211,6 +211,7 @@ async function scrollToSettledBottom(page: import('@playwright/test').Page) {
  * isso desce-se até logo depois do hero. Devolve a régua já presa.
  */
 async function scrollToPinnedRegua(page: import('@playwright/test').Page) {
+  await expect(page.getByTestId('regua-48h')).toBeVisible({ timeout: 20_000 });
   const desktop = (page.viewportSize()?.width ?? 1280) >= 1024;
   if (desktop) {
     // Passa a posição natural da régua, não um deslocamento fixo: faixas

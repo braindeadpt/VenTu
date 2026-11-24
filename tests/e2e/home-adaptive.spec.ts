@@ -18,8 +18,8 @@ test.describe('Home adaptive layout', { tag: '@core' }, () => {
     // #273: o cartão do mapa é a porta do /mapa (e «Mapa da costa» passou ao cabeçalho)
     await expect(page.getByTestId('home-mapa').getByRole('link', { name: 'Explorar o mapa da costa' })).toBeVisible();
     await expect(page.getByRole('banner').getByRole('link', { name: 'Mapa da costa', exact: true })).toBeVisible();
-    // Nome exacto: de noite o h3 do estado vazio («Ninguém a bombar agora 😴») também casa.
-    await expect(page.getByRole('heading', { name: 'A bombar agora', exact: true })).toBeVisible();
+    // #460: fim da repetição de «A bombar agora» por baixo do Top 3 v6
+    await expect(page.getByRole('heading', { name: 'A bombar agora', exact: true })).toHaveCount(0);
     await expect(page.getByRole('heading', { name: /Os teus spots, agora/i })).toHaveCount(0);
   });
 

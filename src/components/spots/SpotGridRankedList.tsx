@@ -13,6 +13,9 @@ import SpotListCard from './SpotListCard';
 import Button from '@/components/ui/Button';
 import { janelaSeguinte, linhaDeNoite, listaDeNoite } from '@/lib/noiteListas';
 import { FaixaNoite } from '@/components/ui/NoiteJanela';
+import { resolveScoreWaveCorrection } from '@/lib/scoreConditions';
+import { useIpmaWarnings } from '@/hooks/useIpmaWarnings';
+import { strongestSpotWarning, warningBadgeLabel } from '@/lib/ipmaWarnings';
 
 const PAGE_SIZE = 12;
 
@@ -36,6 +39,12 @@ export default function SpotGridRankedList({
   const isPt = locale === 'pt';
   const t = getTranslation(locale as 'pt' | 'en');
   const sportLabel = getSportLabel(selectedSport, locale);
+  const warningsData = useIpmaWarnings();
+  // Paridade SSG no 1.º paint (`nowMs` do build); após montar usa relógio vivo
+  // para que leituras de boia chegadas em refresh automático nunca pareçam futuras (#460).
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  const freshnessNowMs = mounted ? undefined : (nowMs ?? undefined);
 
   const exclude = excludeSlugs?.length
     ? new Set(excludeSlugs)
@@ -81,35 +90,50 @@ export default function SpotGridRankedList({
       {noiteLista ? <FaixaNoite locale={locale} className="mb-3" /> : null}
 
       <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 list-none p-0 m-0">
-        {list.map((data, i) => (
-          <li
-            key={data.spot.id}
-            className="stagger-fade-in motion-reduce:animate-none"
-            style={{ '--stagger-delay': i * 30 } as React.CSSProperties}
-          >
-            <SpotListCard
-              compact
-              withImage
-              spot={data.spot}
-              name={localizedSpotName(data.spot, locale)}
-              region={localizedSpotRegion(data.spot, locale)}
-              score={getGridSpotScore(data, selectedSport)}
-              conditions={data.conditions}
-              href={spotDetailHref(locale, data.spot.slug, selectedSport)}
-              locale={locale}
-              calmWaterLabel={getCalmWaterMetricLabel(
-                data.spot,
-                data.conditions.waveHeight,
-                locale,
-              )}
-              noite={
-                linhaDeNoite(data, selectedSport)
-                  ? { janela: janelaSeguinte(data, selectedSport, nowMs) }
-                  : null
-              }
-            />
-          </li>
-        ))}
+        {list.map((data, i) => {
+          const warning = strongestSpotWarning(warningsData, data.spot.id);
+          const warningBadge = warning
+            ? { level: warning.level, label: warningBadgeLabel(warning, locale) }
+            : null;
+          const waveCorrection = resolveScoreWaveCorrection(
+            { ...data.conditions },
+            freshnessNowMs,
+          );
+          return (
+            <li
+              key={data.spot.id}
+              className="stagger-fade-in motion-reduce:animate-none"
+              style={{ '--stagger-delay': i * 30 } as React.CSSProperties}
+            >
+              <SpotListCard
+                compact
+                withImage
+                spot={data.spot}
+                name={localizedSpotName(data.spot, locale)}
+                region={localizedSpotRegion(data.spot, locale)}
+                score={getGridSpotScore(data, selectedSport)}
+                conditions={data.conditions}
+                href={spotDetailHref(locale, data.spot.slug, selectedSport)}
+                locale={locale}
+                calmWaterLabel={getCalmWaterMetricLabel(
+                  data.spot,
+                  data.conditions.waveHeight,
+                  locale,
+                )}
+                warning={warningBadge}
+                waveCorrection={waveCorrection}
+                observedWaveAt={data.conditions.observedWave?.observedAt ?? null}
+                observedWaveSource={data.conditions.observedWave?.source ?? null}
+                observedWaveCalibration={data.conditions.observedWave?.calibration ?? null}
+                noite={
+                  linhaDeNoite(data, selectedSport)
+                    ? { janela: janelaSeguinte(data, selectedSport, nowMs) }
+                    : null
+                }
+              />
+            </li>
+          );
+        })}
       </ul>
 
       {remaining > 0 && (
