@@ -68,6 +68,10 @@ interface UseMapCoreOptions {
    * a classe `ventu-base-v6`. Nunca no Satélite. Falso = a base de hoje.
    */
   recolorV6?: boolean;
+  /** Pele v6 ligada (#458): o /mapa é todo escuro — força `isDark` mesmo com
+   * `.theme-ocean` no documento (basemap claro ficaria invisível sob os traços
+   * de vento gelo→espuma; e o filtro `#v6base` exige `data-map-theme='dark'`). */
+  peleV6?: boolean;
 }
 
 interface UseMapCoreReturn {
@@ -268,7 +272,7 @@ function attachBasemap(
     // caminho sem key; o watchdog e o auto-recover são os mesmos.
     const esri = getEsriRasterBasemap(true);
     const layer = Leaflet.tileLayer(esri.url, {
-      attribution: esri.attribution,
+      ...esri,
       maxZoom: MAX_ZOOM,
       className: MAP_BASE_V6_CLASS,
       ...tilePerf,
@@ -291,7 +295,7 @@ function attachBasemap(
     }
     const esri = getEsriRasterBasemap(dark);
     const esriLayer = Leaflet.tileLayer(esri.url, {
-      attribution: esri.attribution,
+      ...esri,
       maxZoom: MAX_ZOOM,
       ...tilePerf,
     });
@@ -314,7 +318,7 @@ function attachBasemap(
   attachAuxStack();
 }
 
-export function useMapCore({ containerRef, isHeroEmbed, locale = 'pt', initialViewBounds = null, exploreChrome, initialBasemap, recolorV6 = false }: UseMapCoreOptions): UseMapCoreReturn {
+export function useMapCore({ containerRef, isHeroEmbed, locale = 'pt', initialViewBounds = null, exploreChrome, initialBasemap, recolorV6 = false, peleV6 = false }: UseMapCoreOptions): UseMapCoreReturn {
   const mapInstanceRef = useRef<L.Map | null>(null);
   const LRef = useRef<typeof L | null>(null);
   const tileLayerRef = useRef<L.TileLayer | null>(null);
@@ -333,7 +337,10 @@ export function useMapCore({ containerRef, isHeroEmbed, locale = 'pt', initialVi
   const [isReady, setIsReady] = useState(false);
   const [clusterReady, setClusterReady] = useState(false);
   const [tileState, setTileState] = useState<BasemapLoadState>('loading');
-  const [isDark, setIsDark] = useState(readIsDark);
+  // `themeDark` = o tema do documento; `isDark` = o que o mapa usa — com a
+  // pele v6 é sempre escuro (a pele não tem modo claro).
+  const [themeDark, setThemeDark] = useState(readIsDark);
+  const isDark = peleV6 || themeDark;
   const [basemapMode, setBasemapMode] = useState<BasemapMode>(() => initialBasemap ?? readBasemapPref());
   const [isMobile, setIsMobile] = useState(() => {
     if (typeof window === 'undefined') return false;
@@ -451,7 +458,7 @@ export function useMapCore({ containerRef, isHeroEmbed, locale = 'pt', initialVi
     if (typeof window === 'undefined') return;
     const checkTheme = () => {
       const hasCoast = document.documentElement.classList.contains('theme-ocean');
-      setIsDark(!hasCoast);
+      setThemeDark(!hasCoast);
     };
     checkTheme();
     const observer = new MutationObserver(checkTheme);

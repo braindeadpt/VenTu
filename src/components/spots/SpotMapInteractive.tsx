@@ -36,6 +36,14 @@ import { useMapChromeZone } from './map/zones/MapChromeZone';
 import { useMapExploreZone } from './map/zones/MapExploreZone';
 import { useMapMarkersZone } from './map/zones/MapMarkersZone';
 
+// #458: a pele v6 mora neste componente também fora do /mapa (mapa embebido
+// das listagens) — sem o CSS os ganchos `data-ms`/`data-pele` ficavam por
+// vestir (ficha sem barras de previsão, marcadores sem cromo v6). Fontes v6
+// (Barlow) ficam de fora: a exceção tipográfica é só para superfícies /mapa
+// (skill ventu-premium-frontend).
+import '@/styles/mapa-pele-v6.css';
+import '@/styles/mapa-pele-ponteiro.css';
+
 // M7-F: as vistas das zonas vivem em chunks dinâmicos próprios. A
 // avaliação do chunk principal dividia-se numa única tarefa de ~220 ms
 // (trace Lighthouse) — com cada vista no seu ficheiro a avaliação parte-se
@@ -188,6 +196,9 @@ export default function SpotMapInteractive({
     exploreChrome: { enabled: Boolean(mapHud) && initialFullscreen, panelCollapsed: false },
     // B6: recolor v6 da base «Mapa» (só com a pele e a flag própria).
     recolorV6: mapHud?.pele === 'v6' && mapHud.peleBase === true,
+    // #458: a pele é toda escura — com .theme-ocean o basemap não pode ir a
+    // claro (traços de vento brancos sobre fundo branco = invisíveis).
+    peleV6: mapHud?.pele === 'v6',
   });
   const {
     mapInstanceRef, LRef, isReady, clusterReady, basemapMode, isMobile,

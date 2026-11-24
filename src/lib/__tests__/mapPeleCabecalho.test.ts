@@ -67,9 +67,9 @@ describe('ligações', () => {
     expect(c).toContain("import '@/styles/mapa-pele-cabecalho.css'");
     expect(c).toContain('useMapPeleCabecalho(pele)');
   });
-  it('o Header não ganha atributo de pele no markup (só o gancho neutro da etiqueta)', () => {
+  it('o Header sai já com a pele no 1.º render do /mapa (#458 — sem flash; o hook reconcilia no opt-out)', () => {
     const h = ler('src/components/layout/Header.tsx');
-    expect(h).not.toContain('data-pele');
+    expect(h).toContain("data-pele-cabecalho={isMapPage ? 'v6' : undefined}");
     expect(h).toContain('data-cabecalho-onde');
   });
   it('a atribuição v6 mantém o controlo Leaflet e as ligações acima de .theme-ocean', () => {

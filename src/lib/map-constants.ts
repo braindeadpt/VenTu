@@ -22,6 +22,9 @@ export type RasterBasemap = {
   url: string;
   attribution: string;
   subdomains?: string;
+  /** Fim da cobertura nativa do serviço — acima o Leaflet faz upscale em vez de
+   *  pedir mosaicos que o servidor não tem (Canvas Esri devolve vazio a z17+). */
+  maxNativeZoom?: number;
 };
 
 /** Carto raster tiles require `?key=` (watermark otherwise). Free key: carto.com/basemaps/apikey */
@@ -35,6 +38,7 @@ export function getEsriRasterBasemap(isDark: boolean): RasterBasemap {
       ? 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}'
       : 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',
     attribution: TILE_ATTRIBUTIONS.esri,
+    maxNativeZoom: ESRI_CANVAS_NATIVE_MAX_ZOOM,
   };
 }
 
@@ -220,6 +224,9 @@ export const MAP_HILLSHADE_PANE = 'ventu-hillshade';
 export const MAP_HILLSHADE_PANE_Z = '201';
 /** Fim da cobertura nativa do serviço global — acima o Leaflet faz upscale. */
 export const ESRI_HILLSHADE_NATIVE_MAX_ZOOM = 14;
+/** Cobertura nativa do Canvas (World_*_Gray_Base) — a z17+ o serviço devolve
+ *  mosaicos vazios (a costa «desaparece» ao ampliar); o Leaflet faz upscale. */
+export const ESRI_CANVAS_NATIVE_MAX_ZOOM = 16;
 
 /** Toponímia + fronteiras por cima de TODOS os dados — acima do radar (400)
  *  e dos fields (345–370), abaixo dos marcadores (600+). Basemap nasce

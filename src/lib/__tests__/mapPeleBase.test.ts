@@ -44,8 +44,17 @@ describe('B6 · flag própria', () => {
     expect(resolveMapPeleBase('v6', 'v6', null)).toEqual({ activa: true, gravar: 'v6' });
     expect(resolveMapPeleBase(null, 'v6', null)).toEqual({ activa: false, gravar: 'v6' });
     expect(resolveMapPeleBase('v6', null, 'v6')).toEqual({ activa: true, gravar: null });
-    expect(resolveMapPeleBase('v6', '0', 'v6')).toEqual({ activa: false, gravar: 'apagar' });
-    expect(resolveMapPeleBase('v6', null, null)).toEqual({ activa: false, gravar: null });
+    expect(resolveMapPeleBase('v6', '0', 'v6')).toEqual({ activa: false, gravar: 'off' });
+    expect(resolveMapPeleBase('v6', null, null)).toEqual({ activa: true, gravar: null });
+  });
+  it('#458: por defeito com a pele; só um off gravado desliga', () => {
+    // O opt-out persiste — apagar a chave re-ligava a base na visita seguinte.
+    expect(resolveMapPeleBase('v6', null, 'off')).toEqual({ activa: false, gravar: null });
+    expect(resolveMapPeleBase('v6', 'off', null)).toEqual({ activa: false, gravar: 'off' });
+    expect(resolveMapPeleBase('v6', 'v6', 'off')).toEqual({ activa: true, gravar: 'v6' });
+    // Sem a pele nunca liga — o /mapa anterior fica exactamente como hoje.
+    expect(resolveMapPeleBase(null, null, null)).toEqual({ activa: false, gravar: null });
+    expect(resolveMapPeleBase(null, null, 'off')).toEqual({ activa: false, gravar: null });
   });
 });
 

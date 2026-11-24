@@ -99,7 +99,7 @@ export default function DirectoryMap({ entries, locale, className }: Props) {
       bindRasterTileFallback(rasterLayer, () => {
         try { map.removeLayer(rasterLayer); } catch { /* noop */ }
         const esri = getEsriRasterBasemap(dark);
-        Leaflet.tileLayer(esri.url, { attribution: esri.attribution, maxZoom: MAX_ZOOM }).addTo(map);
+        Leaflet.tileLayer(esri.url, { ...esri, maxZoom: MAX_ZOOM }).addTo(map);
       });
       rasterLayer.addTo(map);
 
@@ -145,7 +145,7 @@ export default function DirectoryMap({ entries, locale, className }: Props) {
       bindRasterTileFallback(rasterLayer, () => {
         try { map.removeLayer(rasterLayer); } catch { /* noop */ }
         const esri = getEsriRasterBasemap(dark);
-        L.tileLayer(esri.url, { attribution: esri.attribution, maxZoom: MAX_ZOOM }).addTo(map);
+        L.tileLayer(esri.url, { ...esri, maxZoom: MAX_ZOOM }).addTo(map);
       });
       rasterLayer.addTo(map);
     };

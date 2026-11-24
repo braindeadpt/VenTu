@@ -3,7 +3,7 @@ import { preseedWindRingLegend } from './helpers/map-setup';
 import { waitHydrated } from './helpers/hydration';
 import { interceptMapHours } from './helpers/conditions';
 import { interceptSeaGrid } from './helpers/sea-grid';
-import { MAP_PELE_LS_KEY } from '../../src/lib/mapPele';
+import { MAP_PELE_BASE_LS_KEY, MAP_PELE_LS_KEY } from '../../src/lib/mapPele';
 
 /**
  * map-hours mínimo e fixo — o campo de vento vem do sea-grid (stub em
@@ -52,11 +52,16 @@ async function abre(page: Page, pele: boolean, viewport?: { width: number; heigh
   if (viewport) await page.setViewportSize(viewport);
   await preseedWindRingLegend(page);
   await page.addInitScript(
-    ({ kp, pele }) => {
+    ({ kp, kb, pele }) => {
       if (pele) localStorage.setItem(kp, 'v6');
       else localStorage.setItem(kp, 'off');
       localStorage.setItem('ventu.map.cluster', '0');
       localStorage.setItem('ventu.map.wind', '1');
+      // #458: a base recolorida é o defeito com a pele — mas estes testes medem
+      // os traços de vento, e a base tem o seu próprio gate de desempenho
+      // (map-pele-base, p95 do pan). Sem a semente, o arranque da base Esri
+      // somava long tasks à perna v6 e misturava duas features no critério D2.
+      localStorage.setItem(kb, 'off');
       // Observador de long tasks desde o arranque (lido no teste de desempenho).
       const w = window as unknown as { __lt: { t: number; d: number }[] };
       w.__lt = [];
@@ -68,7 +73,7 @@ async function abre(page: Page, pele: boolean, viewport?: { width: number; heigh
         /* sem suporte */
       }
     },
-    { kp: MAP_PELE_LS_KEY, pele },
+    { kp: MAP_PELE_LS_KEY, kb: MAP_PELE_BASE_LS_KEY, pele },
   );
   // Grelha do mar e map-hours fixos: a contagem de partículas e o custo por
   // frame deixam de depender da previsão publicada — o critério de long tasks
@@ -166,6 +171,16 @@ test.describe('/mapa pele v6 — vento em traços (B7)', () => {
     const cdp = await ctx.newCDPSession(page);
     await abre(page, pele);
     await expect(mapa(page)).toHaveAttribute('data-map-windfield', 'true', { timeout: 30_000 });
+    // #458: com a base por defeito, a perna v6 (mesmo com pelebase=off) monta
+    // a base recolorida no 1.º render e troca-a no efeito que lê o opt-out —
+    // custo de arranque que sangrava para a janela de medição. O D2 mede os
+    // traços em regime estacionário: espera-se o fim do swap (data-pele-base
+    // sai do contentor quando a peleBase resolve off) + drenagem dos mosaicos
+    // em voo antes do t0.
+    if (pele) {
+      await expect(page.locator('[data-pele="v6"]')).not.toHaveAttribute('data-pele-base', 'v6', { timeout: 15_000 });
+    }
+    await page.waitForTimeout(800);
     await cdp.send('Emulation.setCPUThrottlingRate', { rate: 4 });
     const t0 = await page.evaluate(() => performance.now());
     // mantém o campo acordado durante a janela (a pausa de 8 s não conta)
