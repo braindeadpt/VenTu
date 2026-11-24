@@ -1,6 +1,7 @@
 import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import { spots } from '@/lib/spots';
+import CSPMeta from '@/components/CSPMeta';
 import EmbedSpotWidget from '@/components/directory/EmbedSpotWidget';
 
 export function generateStaticParams() {
@@ -24,8 +25,14 @@ export default async function EmbedSpotPage({
 }) {
   const { slug } = await params;
   return (
-    <Suspense fallback={<div data-embed-widget className="p-4 text-sm text-fg-muted">…</div>}>
-      <EmbedSpotWidget slug={slug} />
-    </Suspense>
+    <>
+      {/* #454: /embed/* vive fora de [locale]/layout — sem isto o widget não
+          tinha CSP nenhum. frame-ancestors nunca entra em <meta> (a spec
+          ignora-o); o controlo de framing vive no _headers / terraform. */}
+      <CSPMeta />
+      <Suspense fallback={<div data-embed-widget className="p-4 text-sm text-fg-muted">…</div>}>
+        <EmbedSpotWidget slug={slug} />
+      </Suspense>
+    </>
   );
 }

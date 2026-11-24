@@ -3,6 +3,7 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 import { distanceKm, entriesNearSpot } from '../directory';
 import {
   applyDirectoryProfiles,
+  buildEmbedSnippet,
   fetchDirectoryListings,
   isDirectorySlug,
   listingToEntry,
@@ -142,6 +143,29 @@ describe('applyDirectoryProfiles', () => {
     expect(out.verified).toBe(true);
     expect(out.tier).toBe('featured');
     expect(out.source).toBe('claimed');
+  });
+});
+
+describe('buildEmbedSnippet (#454)', () => {
+  it('escapa HTML no schoolName do atributo title', () => {
+    const snippet = buildEmbedSnippet({
+      spotId: 'carcavelos',
+      locale: 'pt',
+      schoolName: 'Escola "X" <script>alert(1)</script>',
+    });
+    expect(snippet).not.toContain('<script>');
+    expect(snippet).toContain('&quot;X&quot;');
+    expect(snippet).toContain('&lt;script&gt;');
+  });
+
+  it('nome simples passa intacto e o src fica URL-encoded', () => {
+    const snippet = buildEmbedSnippet({
+      spotId: 'carcavelos',
+      locale: 'en',
+      schoolName: 'Surf School & Co',
+    });
+    expect(snippet).toContain('title="VenTu — Surf School &amp; Co"');
+    expect(snippet).toContain('school=Surf%20School%20%26%20Co');
   });
 });
 

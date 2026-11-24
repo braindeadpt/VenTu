@@ -692,7 +692,7 @@ export const translationsDe = {
     conditionsWord: 'Bedingungen',
     all: 'Alle',
     intro:
-      'Schulen, Kite-Zentren und Shops in Portugal. Kostenlos für Rider — Schulen können ein Profil beanspruchen oder registrieren (sofort sichtbar; Verifikation später).',
+      'Schulen, Kite-Zentren und Shops in Portugal. Kostenlos für Rider — Schulen können ein Profil beanspruchen oder registrieren (öffentlich nach Freigabe).',
     nothingFoundDescription: 'Passe die Filter an oder registriere deine Schule unten.',
     mapHint: 'Tippe auf einen Pin, um das Profil zu öffnen. Filter gelten für die Karte.',
     claimEditableIntro:
@@ -709,9 +709,9 @@ export const translationsDe = {
     registrationNotEnabled:
       'Registrierung noch nicht aktiv — führe supabase-directory.sql in Supabase aus.',
     profileCreatedUnverified:
-      'Profil erstellt und öffentlich als «Nicht verifiziert». Nach Freigabe wird es Verifiziert — bearbeite es unter Profil verwalten.',
+      'Profil erstellt — du siehst es bereits unter Profil verwalten. Es wird öffentlich und verifiziert, sobald wir es freigeben.',
     registerIntro:
-      'Registriere das Profil — es wird sofort öffentlich als nicht verifiziert. Nach Freigabe erscheint es als verifiziert. Kostenlos.',
+      'Registriere das Profil — es wird öffentlich und verifiziert, sobald wir es freigeben. Kostenlos.',
     signInToRegister: 'Anmelden zum Registrieren',
     publishProfile: 'Profil veröffentlichen',
     unverifiedShort: 'Zu verifizieren',

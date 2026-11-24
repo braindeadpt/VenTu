@@ -3,10 +3,14 @@
 # GitHub Pages IGNORES this file (widget embed works there today for that reason).
 #
 # FOOTGUN — /embed/* MUST stay iframeable (B2B school widget):
-#   The catch-all below sets X-Frame-Options: DENY. If you migrate off GitHub Pages
-#   to Netlify/Cloudflare without an /embed override, school iframes break silently.
-#   Always keep the /embed/* block below (omit X-Frame-Options; allow frame-ancestors).
-#   Modern browsers honour CSP frame-ancestors over X-Frame-Options when both exist.
+#   On Netlify/Cloudflare Pages ALL matching rules apply cumulatively and
+#   repeated headers are sent together — a `frame-ancestors 'none'` in the
+#   catch-all would reach /embed/* too and block it (two CSPs = both
+#   enforced). That's why `frame-ancestors` lives ONLY in the per-locale
+#   blocks below, never in `/*`. X-Frame-Options: DENY does reach /embed/*,
+#   but modern browsers ignore XFO when a CSP with frame-ancestors exists
+#   (the /embed/* block supplies one — and it also keeps XFO protecting
+#   every non-locale page that has no CSP frame-ancestors).
 
 /*
   # Prevent MIME-sniffing
@@ -27,10 +31,34 @@
   # HSTS — 1 year, include subdomains
   Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
 
+  # CSP do site principal — ALINHADO com var.csp_default (terraform/variables.tf)
+  # EXCEPTO frame-ancestors: nas plataformas _headers as regras acumulam
+  # (todas as que casam aplicam-se em conjunto), por isso 'none' sai daqui e
+  # vive só nos blocos /<locale>/* abaixo — senão chegava também a /embed/*.
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://gc.zgo.at; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: blob: https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com https://server.arcgisonline.com https://*.supabase.co https://ows.emodnet-bathymetry.eu https://tiles.openseamap.org https://gibs.earthdata.nasa.gov https://view.eumetsat.int https://s3.amazonaws.com; connect-src 'self' https://gc.zgo.at https://*.goatcounter.com https://*.supabase.co wss://*.supabase.co https://api.open-meteo.com https://marine-api.open-meteo.com https://*.workers.dev https://s3.amazonaws.com; worker-src 'self' blob:; frame-src 'self' https://www.openstreetmap.org https://www.youtube-nocookie.com https://www.youtube.com https://www.weatherlink.com https://embed.cdn-surfline.com; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests
+
+# Clickjacking por locale — o frame-ancestors 'none' que não pode viver no
+# catch-all (ver FOOTGUN acima). Todas as rotas HTML da app estão prefixadas
+# pelo locale; páginas fora destes caminhos (404, redirects) ficam cobertas
+# pelo X-Frame-Options: DENY do bloco /*.
+/pt/*
+  Content-Security-Policy: frame-ancestors 'none'
+/en/*
+  Content-Security-Policy: frame-ancestors 'none'
+/es/*
+  Content-Security-Policy: frame-ancestors 'none'
+/de/*
+  Content-Security-Policy: frame-ancestors 'none'
+/fr/*
+  Content-Security-Policy: frame-ancestors 'none'
+
 # Embed widget — allow framing (Netlify / Cloudflare Pages path overrides)
 # Do not set X-Frame-Options here. frame-ancestors * permits school sites to iframe.
+# CSP ALINHADO com var.csp_embed (terraform/variables.tf) — mesmas directivas do
+# site principal, só frame-ancestors difere. Antes só levava frame-ancestors:
+# um embed ficava sem resto da política (img/connect/object-src abertos, #454).
 /embed/*
-  Content-Security-Policy: frame-ancestors *
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://gc.zgo.at; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: blob: https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com https://server.arcgisonline.com https://*.supabase.co https://ows.emodnet-bathymetry.eu https://tiles.openseamap.org https://gibs.earthdata.nasa.gov https://view.eumetsat.int https://s3.amazonaws.com; connect-src 'self' https://gc.zgo.at https://*.goatcounter.com https://*.supabase.co wss://*.supabase.co https://api.open-meteo.com https://marine-api.open-meteo.com https://*.workers.dev https://s3.amazonaws.com; worker-src 'self' blob:; frame-src 'self' https://www.openstreetmap.org https://www.youtube-nocookie.com https://www.youtube.com https://www.weatherlink.com https://embed.cdn-surfline.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors *; upgrade-insecure-requests
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
 

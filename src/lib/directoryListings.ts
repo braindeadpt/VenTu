@@ -490,6 +490,18 @@ function tierBeats(a: DirectoryEntry, b: DirectoryEntry): boolean {
   return rank(a.tier) > rank(b.tier);
 }
 
+// #454: schoolName entra também no atributo title= do iframe — sem escape,
+// uma escola com `"` ou `<` no nome partia/injectava markup no snippet que a
+// escola copia para o próprio site.
+function escapeHtml(s: string): string {
+  return s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 export function buildEmbedSnippet(opts: {
   spotId: string;
   locale: string;
@@ -499,5 +511,5 @@ export function buildEmbedSnippet(opts: {
   const origin = opts.siteOrigin || 'https://ventu.surf';
   const school = encodeURIComponent(opts.schoolName);
   const src = `${origin}/embed/spot/${opts.spotId}/?school=${school}&lang=${opts.locale}`;
-  return `<iframe src="${src}" title="VenTu — ${opts.schoolName}" width="320" height="200" style="border:0;border-radius:12px;max-width:100%" loading="lazy"></iframe>`;
+  return `<iframe src="${src}" title="VenTu — ${escapeHtml(opts.schoolName)}" width="320" height="200" style="border:0;border-radius:12px;max-width:100%" loading="lazy"></iframe>`;
 }

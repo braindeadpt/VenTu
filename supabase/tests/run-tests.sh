@@ -86,4 +86,7 @@ run_sql supabase/tests/test-e1c-token-chain.sql
 echo "==> running rate-limit IP / internal-helper grant assertions"
 run_sql supabase/tests/test-rate-limit-ip.sql
 
+echo "==> running profiles plan-lockdown + legacy grant assertions"
+run_sql supabase/tests/test-profiles.sql
+
 echo "OK — supabase integration tests passed"

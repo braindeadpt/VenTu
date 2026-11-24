@@ -171,31 +171,7 @@
       "verdict": "insufficient"
     }
   },
-  "regressions": [
-    {
-      "buoyId": "6200085",
-      "name": "Golfo de Cádiz",
-      "origin": "wmo-es",
-      "recent": {
-        "snapshots": 7,
-        "rmse": 0.7957142857142857,
-        "me": 0.6485714285714286,
-        "n": 535.8571428571429
-      },
-      "baseline": {
-        "snapshots": 21,
-        "rmse": 0.5004761904761905,
-        "me": 0.4361904761904763,
-        "n": 567.6666666666666
-      },
-      "rmseDelta": 0.3,
-      "meAbsDelta": 0.21,
-      "verdict": "regressed",
-      "reasons": [
-        "RMSE +0.3 m (limiar +0.3)"
-      ]
-    }
-  ],
+  "regressions": [],
   "platforms": {
     "ih": {
       "platform": "ih",

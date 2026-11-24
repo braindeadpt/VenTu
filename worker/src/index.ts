@@ -251,6 +251,11 @@ export async function ecowittObserved(
 ): Promise<Obs | null> {
   const elat = parseFloat(env.ECOWITT_LAT);
   const elon = parseFloat(env.ECOWITT_LON);
+  // Env por configurar ou inválida (#454): sem lat/lon finitos a distância é
+  // NaN (comparação false → dist 0 imaginário) e sem api_key o upstream falha.
+  if (!Number.isFinite(elat) || !Number.isFinite(elon) || !env.ECOWITT_API_KEY) {
+    return null;
+  }
   const dist = hav(lat, lon, elat, elon);
   if (dist > MAX_DIST_KM) return null;
 
@@ -267,8 +272,9 @@ export async function ecowittObserved(
   const w = j.data.wind;
   const ws = parseFloat(String(w.wind_speed?.value));
   const deg = parseFloat(String(w.wind_direction?.value));
-  // wind_speed is mandatory — a NaN would serialize as null in the JSON payload.
-  if (Number.isNaN(ws)) return null;
+  // wind_speed is mandatory — a NaN would serialize as null in the JSON
+  // payload; parseFloat("Infinity") também passa isNaN → isFinite (#454).
+  if (!Number.isFinite(ws)) return null;
   const t = j.data.outdoor?.temperature?.value;
   const observedAt = new Date(
     (Number(j.time) || Math.floor(Date.now() / 1000)) * 1000,
@@ -384,6 +390,9 @@ function cors(origin: string | null, allowed: string): Record<string, string> {
   const headers: Record<string, string> = {
     'Access-Control-Allow-Methods': 'GET,OPTIONS',
     'Cache-Control': 'public, max-age=300',
+    // O ACAO é dinâmico por Origin — sem Vary, um CDN/browser podia servir a
+    // resposta cacheada com o ACAO de outro origin (#454).
+    Vary: 'Origin',
   };
   const allowOrigin = ok ? origin : (list[0] ?? origin);
   if (allowOrigin) headers['Access-Control-Allow-Origin'] = allowOrigin;
@@ -495,9 +504,11 @@ export default {
       );
     }
     if (pathname !== '/obs') {
+      // Erros nunca são cacheáveis (#454): um 404/4xx com max-age=300 ficava
+      // preso no cache compartilhado durante 5 min.
       return new Response(JSON.stringify({ error: 'not found' }), {
         status: 404,
-        headers: h,
+        headers: { ...h, 'Cache-Control': 'no-store' },
       });
     }
 
@@ -514,7 +525,7 @@ export default {
     ) {
       return new Response(JSON.stringify({ error: 'lat/lon required' }), {
         status: 400,
-        headers: h,
+        headers: { ...h, 'Cache-Control': 'no-store' },
       });
     }
 
@@ -522,7 +533,11 @@ export default {
     if (await isRateLimited(req, env, ctx)) {
       return new Response(JSON.stringify({ error: 'rate limited' }), {
         status: 429,
-        headers: { ...h, 'Retry-After': String(RATE_LIMIT_WINDOW_S) },
+        headers: {
+          ...h,
+          'Cache-Control': 'no-store',
+          'Retry-After': String(RATE_LIMIT_WINDOW_S),
+        },
       });
     }
 

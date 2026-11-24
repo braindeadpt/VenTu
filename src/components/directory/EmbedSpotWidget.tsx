@@ -9,6 +9,7 @@ import { allScoresComV6, notaV6DoSpot } from '@/lib/notaV6Agora';
 import { rawToScoreInput } from '@/lib/scoreConditions';
 import { SITE_URL } from '@/lib/site';
 import { getAssetPath } from '@/lib/paths';
+import { resolveConditionsEntry } from '@/lib/spotConditionsSource';
 import { getTranslation, pickLocale, validateLocale } from '@/lib/i18n';
 import { scoreTodos } from '@/lib/desportosV6';
 import { SPORT_LABELS } from '@/lib/sportRatings';
@@ -50,7 +51,10 @@ export default function EmbedSpotWidget({ slug }: { slug: string }) {
       .then((r) => (r.ok ? r.json() : null))
       .then((file: ConditionsFile | null) => {
         if (cancelled || !file) return;
-        const raw = file[spot.id] || file[spot.slug];
+        // #454: resolveConditionsEntry honra spot.conditionsSource (spots que
+        // partilham a fonte de dados — ex.: lagoa de Óbidos) que o lookup
+        // directo por id/slug deixava a zeros.
+        const raw = resolveConditionsEntry(spot, file);
         if (!raw) return;
         const input = rawToScoreInput(raw as Record<string, unknown>);
         // kitesurf/surf do `notaV6` do pipeline (#218 PR 4), as outras no motor antigo (D5)
