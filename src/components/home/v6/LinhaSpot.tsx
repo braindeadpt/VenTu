@@ -29,7 +29,14 @@ export default function LinhaSpot({
   return (
     <>
       <span className="nota" style={bandaVars(r.b) as CSSProperties} aria-hidden="true" data-nota={r.n ?? ''} data-banda={r.b}>
-        {r.n ?? '–'}
+        {r.n != null ? (
+          <>
+            {r.n}
+            {seta ? <small aria-hidden="true">/10</small> : null}
+          </>
+        ) : (
+          '–'
+        )}
       </span>
       <span>
         <span className={`rk${nivelRk || (rk && rk !== l.rk) ? ' rk-nv' : ''}`}>

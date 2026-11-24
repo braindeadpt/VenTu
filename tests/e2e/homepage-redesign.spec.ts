@@ -26,9 +26,9 @@ test.describe('Homepage redesign', { tag: '@core' }, () => {
     await expect(page.getByRole('banner').getByRole('link', { name: 'Mapa da costa', exact: true })).toHaveAttribute('href', '/pt/mapa/');
   });
 
-  test('top now section with firing title', async ({ page }) => {
-    // Nome exacto: de noite o h3 do estado vazio («Ninguém a bombar agora 😴») também casa.
-    await expect(page.getByRole('heading', { name: 'A bombar agora', exact: true })).toBeVisible();
+  test('unified v6 homepage has Top 8 without repeating «A bombar agora»', async ({ page }) => {
+    await expect(page.getByRole('heading', { name: 'A bombar agora', exact: true })).toHaveCount(0);
+    await expect(page.getByRole('heading', { name: /^Top 8/i })).toBeVisible();
   });
 
   test('no full spot grid filters on home', async ({ page }) => {
@@ -55,7 +55,7 @@ test.describe('Homepage redesign', { tag: '@core' }, () => {
  * (notaV6 diurno → há cards) ou a mesma fixture com as 5 modalidades v6 de noite
  * (→ estado vazio, o comportamento correcto de madrugada).
  */
-test.describe('Homepage — A bombar agora (fixture, qualquer hora)', { tag: '@core' }, () => {
+test.describe('Homepage — Top 8 e noite (fixture, qualquer hora)', { tag: '@core' }, () => {
   // O SW serve /data/* do cache e burla o page.route — ver helpers/conditions.ts.
   test.use({ serviceWorkers: 'block' });
 
@@ -63,41 +63,12 @@ test.describe('Homepage — A bombar agora (fixture, qualquer hora)', { tag: '@c
     await preseedWindRingLegend(page);
   });
 
-  test('top now section renders firing copy in EN', async ({ page }) => {
+  test('EN homepage renders unified v6 hero and Top 8 without repeating Firing now', async ({ page }) => {
     await interceptConditions(page, { base: 'fixture' });
     await page.goto('/en/');
-    await expect(
-      page.getByRole('heading', { name: 'Firing now', exact: true }),
-    ).toBeVisible({ timeout: 15_000 });
-    // «Only firing spots · …» — o rótulo EN do TopNow, não o placeholder pt.
-    // Desde o #135 o sufixo varia (modo adaptativo «across every sport» ou o
-    // desporto escolhido), por isso só o prefixo é fixo.
-    // Scoped to main: home streams the hero/TopNow in a hidden S: container;
-    // during the reveal window an unscoped getByText can match both copies.
-    await expect(
-      page.locator('#main-content').getByText(/^Only firing spots · /).first(),
-    ).toBeVisible({ timeout: 20_000 });
-    await expect(
-      page.getByRole('region', { name: 'Firing now' }).getByRole('listitem').first(),
-    ).toBeVisible();
-  });
-
-  test('de noite (5 modalidades v6 sem nota) → estado vazio «Ninguém a bombar agora», sem cards', async ({
-    page,
-  }) => {
-    await interceptConditions(page, { base: 'fixture', all: notaV6DeNoite });
-    await page.goto('/pt/');
-    const section = page.getByRole('region', { name: 'A bombar agora' });
-    await expect(section).toBeVisible({ timeout: 20_000 });
-    await expect(section.getByRole('heading', { name: 'Ninguém a bombar agora 😴' })).toBeVisible({
-      timeout: 20_000,
-    });
-    await expect(section.getByText('Nenhum desporto a bombar neste momento')).toBeVisible();
-    await expect(section.getByRole('listitem')).toHaveCount(0);
-    await expect(section.getByRole('link', { name: 'Ver previsões' })).toBeVisible();
-    // a descrição do estado vazio não fala de «mar de espelho hoje» à noite (opção A, 28/10)
-    await expect(section.getByText(/É de noite na costa/)).toBeVisible();
-    await expect(section.getByText(/Mar de espelho/)).toHaveCount(0);
+    await expect(page.getByTestId('home-hero')).toBeVisible({ timeout: 15_000 });
+    await expect(page.getByRole('heading', { name: 'Firing now', exact: true })).toHaveCount(0);
+    await expect(page.getByRole('heading', { name: /^Top 8/i })).toBeVisible({ timeout: 15_000 });
   });
 
   test('de noite o Top 8 é «Top 8 · próxima janela»: lua no lugar do «0», sem janela no fim', async ({ page }) => {

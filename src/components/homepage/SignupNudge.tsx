@@ -45,6 +45,9 @@ export default function SignupNudge({ locale }: SignupNudgeProps) {
     // accionáveis (/favorites /compare) e no mapa (ferramenta fullscreen).
     const path = window.location.pathname;
     if (/(?:^|\/)(alerts|favorites|conta|compare|auth|mapa|admin)(?:\/|$)/.test(path)) return;
+    // #460: em mobile (< 1024 px) na homepage a régua de blocos é sticky bottom-0 —
+    // suprimir o nudge fixo no fundo evita qualquer colisão com a régua.
+    if (/^\/(?:pt|en|es|de|fr)?\/?$/.test(path) && window.matchMedia('(max-width: 1023.98px)').matches) return;
     try {
       const dismissed = localStorage.getItem(LS_NUDGE_SEEN);
       if (dismissed) return;

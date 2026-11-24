@@ -3,16 +3,13 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useAuth } from '@/contexts/AuthProvider';
 import { useHasFavorites } from '@/hooks/useHasFavorites';
-import { isConditionDriven, type HomepageSpotData } from '@/lib/homepageSport';
-import type { GridSportFilter } from '@/lib/sportRatings';
+import type { HomepageSpotData } from '@/lib/homepageSport';
 import { useHomeSport } from '@/hooks/useUrlGridSport';
-import { DEFAULT_REGION } from '@/lib/gridFilters';
 import { MACRO_REGIONS } from '@/lib/regions';
 import HeroTicker from '@/components/homepage/HeroTicker';
 import YourDaySection from '@/components/homepage/YourDaySection';
-import HomepageTopNow from '@/components/homepage/HomepageTopNow';
 import HomepageRankedSection from '@/components/homepage/HomepageRankedSection';
-import HomepageFooterSection from '@/components/homepage/HomepageFooterSection';
+import BuoyLayerNotice from '@/components/spots/BuoyLayerNotice';
 import { DawnPatrolTopSlot } from '@/components/homepage/HomeDawnPatrolSlots';
 import WaveDivider from '@/components/ui/WaveDivider';
 
@@ -20,8 +17,6 @@ interface HomeAdaptiveProps {
   locale: string;
   spotsData: HomepageSpotData[];
   maxTs: number | null;
-  spotCount: number;
-  sportsCount: number;
   /** IH buoy layer state from pipeline-meta.json (ticker diagnostics). */
   buoyLayer?: import('@/lib/pipelineMeta').BuoyLayerMeta | null;
   /** Coastal warnings (IH) layer state from pipeline-meta.json (ticker). */
@@ -34,8 +29,6 @@ export default function HomeAdaptive({
   locale,
   spotsData,
   maxTs,
-  spotCount,
-  sportsCount,
   buoyLayer,
   coastalWarningsLayer,
   bakedAtMs,
@@ -49,33 +42,28 @@ export default function HomeAdaptive({
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
   const tickerNowMs = mounted ? Date.now() : bakedAtMs;
-  const { sport: activeSport, explicit: sportChosen } = useHomeSport(regions, 'surf');
-  // «A bombar agora» só fica preso a um desporto quando o utilizador o
-  // escolheu; por defeito (ou com «Todos») mostra o que está mesmo a dar.
-  const topNowSport: GridSportFilter = isConditionDriven(activeSport, sportChosen)
-    ? 'all'
-    : activeSport;
+  const { sport: activeSport } = useHomeSport(regions, 'surf');
 
   return (
-    <>
+    <div className="v6h-ext" data-testid="home-unificada-ext">
+      {/* #460: «O teu dia» logo abaixo dos destaques v6 para utilizadores com favoritos */}
       {isReturning && (
-        <>
-          <YourDaySection
-            locale={locale}
-            spotsData={spotsData}
-            favoriteIds={favorites.length > 0 ? favorites : []}
-            activeSport={activeSport}
-            nowMs={tickerNowMs}
-          />
-          <WaveDivider />
-        </>
+        <YourDaySection
+          locale={locale}
+          spotsData={spotsData}
+          favoriteIds={favorites.length > 0 ? favorites : []}
+          activeSport={activeSport}
+          nowMs={tickerNowMs}
+        />
       )}
 
-      {/* #183: o hero e o mapa da home são a v6 «Atlântico» (HomeV6, por cima). O ticker de
-          estado dos dados (frescura, boias, avisos costeiros) fica aqui, à cabeça das secções
-          que se mantêm até decisão do Pedro («Em aberto» da issue). */}
-      <div className="px-4 sm:px-6 lg:px-8 pt-6 pb-2" data-testid="home-ticker">
-        <div className="max-w-7xl mx-auto">
+      {/* #460: Dawn Patrol visível para TODOS os utilizadores (com e sem favoritos) quando fresco */}
+      <DawnPatrolTopSlot locale={locale} />
+
+      <WaveDivider />
+
+      <div className="px-4 sm:px-6 lg:px-8 pt-2 pb-4" data-testid="home-ticker">
+        <div className="max-w-7xl mx-auto space-y-3">
           <HeroTicker
             locale={locale}
             updatedAtTs={maxTs}
@@ -83,18 +71,11 @@ export default function HomeAdaptive({
             coastalWarningsLayer={coastalWarningsLayer}
             nowMs={tickerNowMs}
           />
+          <div data-testid="home-buoy-notice">
+            <BuoyLayerNotice locale={locale} scope="home" />
+          </div>
         </div>
       </div>
-
-      <WaveDivider />
-
-      <HomepageTopNow
-        spotsData={spotsData}
-        sport={topNowSport}
-        locale={locale}
-        maxCards={isReturning ? 4 : undefined}
-        bakedAtMs={bakedAtMs}
-      />
 
       <HomepageRankedSection
         spotsData={spotsData}
@@ -102,17 +83,6 @@ export default function HomeAdaptive({
         locale={locale}
         bakedAtMs={bakedAtMs}
       />
-
-      {/* Dawn Patrol owns its own divider — avoids empty double-waves outside morning hours */}
-      {!isReturning && <DawnPatrolTopSlot locale={locale} />}
-
-      <WaveDivider />
-
-      <HomepageFooterSection
-        locale={locale}
-        spotCount={spotCount}
-        sportsCount={sportsCount}
-      />
-    </>
+    </div>
   );
 }

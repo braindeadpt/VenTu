@@ -36,9 +36,14 @@ import { MIN_BIAS_N, MIN_BIAS_M } from '../../scripts/lib/buoyBias.js';
 test.describe('TopNow — badge do score de onda', { tag: '@core' }, () => {
   test.use({ serviceWorkers: 'block' });
 
-  /** Secção «A bombar agora» (section[aria-labelledby="top-now-heading"] → region). */
-  const topNow = (page: import('@playwright/test').Page) =>
-    page.getByRole('region', { name: 'A bombar agora' });
+  /** Lista de cards em /pt/spots/ (vista em cards — #460 removeu HomepageTopNow duplicado da home). */
+  async function gotoSpotCards(page: import('@playwright/test').Page) {
+    await page.goto('/pt/spots/?sport=surf', { waitUntil: 'networkidle', timeout: 60_000 });
+    await page.getByRole('button', { name: 'Vista em cards' }).click();
+    const section = page.locator('section[aria-labelledby="spot-ranked-heading"]');
+    await expect(section.getByRole('listitem').first()).toBeVisible({ timeout: 20_000 });
+    return section;
+  }
 
   /**
    * Build está baked com wave-bias.json APLICÁVEL (recipe
@@ -104,8 +109,7 @@ test.describe('TopNow — badge do score de onda', { tag: '@core' }, () => {
         return rest;
       }),
     });
-    await page.goto('/pt/', { waitUntil: 'networkidle', timeout: 60_000 });
-    const section = topNow(page);
+    const section = await gotoSpotCards(page);
     await expect(section).toBeVisible({ timeout: 20_000 });
 
     // Nenhum badge «Corrigido» (nem boia nem viés regional) na secção.
@@ -143,8 +147,7 @@ test.describe('TopNow — badge do score de onda', { tag: '@core' }, () => {
         };
       }),
     });
-    await page.goto('/pt/', { waitUntil: 'networkidle', timeout: 60_000 });
-    const section = topNow(page);
+    const section = await gotoSpotCards(page);
 
     // Pelo menos um card mostra o badge na row de métricas (top spot do
     // desporto — todas as rows transformadas), com o tooltip Δ + ME/n.
@@ -178,8 +181,7 @@ test.describe('TopNow — badge do score de onda', { tag: '@core' }, () => {
         };
       }),
     });
-    await page.goto('/pt/', { waitUntil: 'networkidle', timeout: 60_000 });
-    const section = topNow(page);
+    const section = await gotoSpotCards(page);
 
     const badge = section.getByText('Corrigido (viés regional)').first();
     await expect(badge).toBeVisible({ timeout: 20_000 });
@@ -206,14 +208,13 @@ test.describe('TopNow — badge do score de onda', { tag: '@core' }, () => {
       process.env.E2E_BAKED_WAVE !== '1',
       'recipe local: E2E_BAKED_WAVE=1 node tests/e2e/fixtures/write-wave-bias-fixture.mjs && npm run build && npx playwright test topnow-wave-badge',
     );
-    await page.goto('/pt/', { waitUntil: 'networkidle', timeout: 60_000 });
+    const section = await gotoSpotCards(page);
     const baked = await isBakedWaveBias(page);
     test.skip(
       !baked,
       `build sem wave-bias.json aplicável (nenhuma região com n >= ${MIN_BIAS_N} e |ME| >= ${MIN_BIAS_M} m — wave-bias.json presente mas todas sub-limiar, nada a corrigir) — recipe: node tests/e2e/fixtures/write-wave-bias-fixture.mjs && npm run build && npx playwright test topnow-wave-badge`,
     );
 
-    const section = topNow(page);
     await expect(section).toBeVisible({ timeout: 20_000 });
     const badge = section.getByText('Corrigido (viés regional)').first();
     await expect(badge).toBeVisible({ timeout: 20_000 });
@@ -239,8 +240,7 @@ test.describe('TopNow — badge do score de onda', { tag: '@core' }, () => {
         return { ...rest, observedWave: freshObservedWave({ distanceKm: 30 }), observedWaveAlt: null };
       }),
     });
-    await page.goto('/pt/', { waitUntil: 'networkidle', timeout: 60_000 });
-    const section = topNow(page);
+    const section = await gotoSpotCards(page);
 
     const badge = section.getByText('Corrigido pela boia CSA92/D').first();
     await expect(badge).toBeVisible({ timeout: 20_000 });
@@ -275,8 +275,7 @@ test.describe('TopNow — badge do score de onda', { tag: '@core' }, () => {
         };
       }),
     });
-    await page.goto('/pt/', { waitUntil: 'networkidle', timeout: 60_000 });
-    const section = topNow(page);
+    const section = await gotoSpotCards(page);
 
     // A boia fresca vence o viés: badge por nome com o ME/n do skill.
     const badge = section.getByText('Corrigido pela boia CSA92/D').first();
@@ -317,8 +316,7 @@ test.describe('TopNow — badge do score de onda', { tag: '@core' }, () => {
       return;
     }
 
-    await page.goto('/pt/', { waitUntil: 'networkidle', timeout: 60_000 });
-    const section = topNow(page);
+    const section = await gotoSpotCards(page);
     await expect(section).toBeVisible({ timeout: 20_000 });
 
     // Primeiro paint: badge por boia (uma leitura fresca baked existe), nunca
@@ -363,8 +361,7 @@ test.describe('TopNow — badge do score de onda', { tag: '@core' }, () => {
         };
       }),
     });
-    await page.goto('/pt/', { waitUntil: 'networkidle', timeout: 60_000 });
-    const section = topNow(page);
+    const section = await gotoSpotCards(page);
 
     const tag = section.locator('[data-wave-calibrated="compact"]').first();
     await expect(tag).toBeVisible({ timeout: 20_000 });
@@ -398,8 +395,7 @@ test.describe('TopNow — badge do score de onda', { tag: '@core' }, () => {
         };
       }),
     });
-    await page.goto('/pt/', { waitUntil: 'networkidle', timeout: 60_000 });
-    const section = topNow(page);
+    const section = await gotoSpotCards(page);
     await expect(section).toBeVisible({ timeout: 20_000 });
 
     // Leitura velha → sem correcção: nenhum badge, sufixo «(boia)» ou relógio.

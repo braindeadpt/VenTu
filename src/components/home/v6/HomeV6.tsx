@@ -15,7 +15,7 @@
  * O HTML estático leva a palavra, a frase e o nº 1 do momento do build; depois
  * de montar passa ao relógio real, a `?d=` / `ventu.modalidade` e a `?b=`.
  */
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
 import '@/styles/v6-fontes.css';
 import '@/styles/v6-home.css';
 import '@/styles/v6-nivel.css';
@@ -49,6 +49,10 @@ export interface HomeV6Props {
   agoraMs: number;
   /** Spots de cada modalidade no /mapa (filtro do próprio /mapa sobre o índice de spots). */
   nSpots: Record<Modalidade, number>;
+  /** Secções unificadas abaixo do bloco v6 («O teu dia», Dawn Patrol, Top 8), dentro da mesma superfície `.v6h` (#460). */
+  after?: ReactNode;
+  /** Ferramentas secundárias + prova social integradas no fecho único antes do `<Footer>` global (#460). */
+  footerTools?: ReactNode;
 }
 
 /** Fontes do primeiro ecrã (palavra, nomes, frase). */
@@ -66,7 +70,7 @@ function semTags(s: string): string {
   return o;
 }
 
-export default function HomeV6({ locale, costa: costaSSG, meta, fotos, agoraMs, nSpots }: HomeV6Props) {
+export default function HomeV6({ locale, costa: costaSSG, meta, fotos, agoraMs, nSpots, after, footerTools }: HomeV6Props) {
   const c = homeV6Copy(locale);
   const cn = nivelCopyV6(locale);
   // #nivel-ui: o nível do /mapa (`ventu:map:difficulty`), lido só depois de montar (null no SSG)
@@ -220,44 +224,47 @@ export default function HomeV6({ locale, costa: costaSSG, meta, fotos, agoraMs, 
       {PRELOAD.map((fn) => (
         <link key={fn} rel="preload" as="font" type="font/woff2" crossOrigin="anonymous" href={getAssetPath(`/fonts/barlow/${fn}`)} />
       ))}
-      <div className={`topo${nivel && emPoucos(E) ? ' nv-poucos' : ''}`}>
-        <HomeHero
-          E={E}
-          copy={c}
-          foto={heroFoto}
-          locale={locale}
-          hrefSpot={hrefSpot}
-          d={d}
-          onModalidade={muda}
-          nivel={nivel}
-          onNivel={escolheNivel}
-          cn={cn}
-          frase={fraseNv}
-        />
-        <section className="outros" aria-label={c.outrosAria} data-testid="home-outros">
-          {E.top.slice(1).map((r, k) => (
-            <SpotCardV6
-              key={`${r.sp.id}-${d}`}
-              r={r}
-              l={E.linhas[k + 1]}
-              k={k}
-              foto={fotos[r.sp.id]?.[d] ?? null}
-              href={hrefSpot(r.sp, r.i)}
-              copy={c}
-              locale={locale}
-              rk={rkDe(E, r, E.linhas[k + 1]?.rk ?? '', c, cn)}
-              nivelRk={nivel ? cn.rkNivel(nivel) : null}
-              tagNivel={(() => {
-                const lv = r.acimaDoNivel ? nivelDoSpotHome(r.sp, d) : undefined;
-                return lv ? { txt: cn.tag(lv), lv } : null;
-              })()}
-            />
-          ))}
-        </section>
-        <CostaMapa3D M={M} E={E} copy={c} hrefMapa={hrefMapa} nSpots={nSpots[d]} forcarPlano={flags.plano} nivel={nivel} legendaNivel={cn.legenda} />
+      <div className="v6h-bloco">
+        <div className={`topo${nivel && emPoucos(E) ? ' nv-poucos' : ''}`}>
+          <HomeHero
+            E={E}
+            copy={c}
+            foto={heroFoto}
+            locale={locale}
+            hrefSpot={hrefSpot}
+            d={d}
+            onModalidade={muda}
+            nivel={nivel}
+            onNivel={escolheNivel}
+            cn={cn}
+            frase={fraseNv}
+          />
+          <section className="outros" aria-label={c.outrosAria} data-testid="home-outros">
+            {E.top.slice(1).map((r, k) => (
+              <SpotCardV6
+                key={`${r.sp.id}-${d}`}
+                r={r}
+                l={E.linhas[k + 1]}
+                k={k}
+                foto={fotos[r.sp.id]?.[d] ?? null}
+                href={hrefSpot(r.sp, r.i)}
+                copy={c}
+                locale={locale}
+                rk={rkDe(E, r, E.linhas[k + 1]?.rk ?? '', c, cn)}
+                nivelRk={nivel ? cn.rkNivel(nivel) : null}
+                tagNivel={(() => {
+                  const lv = r.acimaDoNivel ? nivelDoSpotHome(r.sp, d) : undefined;
+                  return lv ? { txt: cn.tag(lv), lv } : null;
+                })()}
+              />
+            ))}
+          </section>
+          <CostaMapa3D M={M} E={E} copy={c} hrefMapa={hrefMapa} nSpots={nSpots[d]} forcarPlano={flags.plano} nivel={nivel} legendaNivel={cn.legenda} />
+        </div>
+        <ReguaBlocos E={E} copy={c} onEscolhe={escolhe} />
       </div>
-      <ReguaBlocos E={E} copy={c} onEscolhe={escolhe} />
-      {/* div e não <footer>: o rodapé da página é o do site (contentinfo único, spec data-sources) */}
+      {after}
+      {/* div e não <footer>: fecho único da home antes do <Footer> global (contentinfo único, #460) */}
       <div className="rodape" data-testid="home-v6-rodape">
         <nav aria-label={c.rodapeLinks}>
           <ul>
@@ -269,6 +276,7 @@ export default function HomeV6({ locale, costa: costaSSG, meta, fotos, agoraMs, 
             </li>
           </ul>
         </nav>
+        {footerTools}
         <p>{c.fonte}</p>
         <p>
           {c.fotosA}

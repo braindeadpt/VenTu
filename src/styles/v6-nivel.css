@@ -69,8 +69,10 @@
 /* etiqueta do cartão acima do nível: no telemóvel no canto (como a maquete); no desktop entra na coluna, por cima
    do «nº N da costa», para não tocar no crédito da foto (os cartões têm ~340 px) */
 .v6h .card .in>.nv-tag{position:absolute;z-index:3;left:10px;top:8px}
-.v6h .rot.menor.acima{opacity:.45}
-.v6h .rot.menor.acima:hover,.v6h .rot.menor.acima:focus-visible{opacity:1}
+/* #460: contraste WCAG AA >= 4,5:1 em vez de opacity:.45 (~3,1:1): fundo sólido escuro + --nevoa (9,4:1) */
+.v6h .rot.menor.acima{opacity:1;background:#071B2C;color:var(--nevoa);box-shadow:inset 0 0 0 1px var(--linha)}
+.v6h .rot.menor.acima .rn{background:var(--mar);color:var(--nevoa)}
+.v6h .rot.menor.acima:hover,.v6h .rot.menor.acima:focus-visible{background:rgba(3,14,24,.94);color:var(--espuma);box-shadow:inset 0 0 0 1.5px rgba(243,248,251,.35)}
 .v6h .cena .leg .nvleg{display:inline-flex;align-items:center;gap:5px;font:600 13px/1 var(--txt);color:var(--nevoa);margin:0 4px 4px 2px;vertical-align:middle}
 .v6h .cena .leg .nvleg i{display:inline-block;width:22px;height:14px;border-radius:999px;background:rgba(243,248,251,.25)}
 

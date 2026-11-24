@@ -6,6 +6,7 @@ import { toHomepageSpotLite } from '@/lib/homepageSpotLite';
 import { pipelineSchedule } from '@/lib/dataPipelineSchedule';
 import { loadPipelineMeta, resolveDisplayUpdatedTs } from '@/lib/pipelineMeta';
 import HomeAdaptive from '@/components/homepage/HomeAdaptive';
+import HomepageFooterSection from '@/components/homepage/HomepageFooterSection';
 import HomeV6 from '@/components/home/v6/HomeV6';
 import { costaCompacta, fotosCosta, metaCosta } from '@/lib/home/dadosHomeServidor';
 import { loadForecastsBySpot } from '@/lib/load-spot-data';
@@ -57,7 +58,7 @@ export default async function HomePage({
   const homeSpotsData = spotsData.map((r) => toHomepageSpotLite(r, locale));
 
   return (
-    <div className="min-h-screen bg-bg-base">
+    <div className="min-h-screen bg-[#030E18]">
       <h1 className="sr-only">
         {t.hero.seoH1
           .replace('{count}', String(spotsData.length))
@@ -65,17 +66,30 @@ export default async function HomePage({
           .replace('{schedule}', pipelineSchedule(locale))}
       </h1>
 
-      <HomeV6 locale={locale} costa={costa} meta={metaCosta()} fotos={fotosCosta(locale)} agoraMs={bakedAtMs} nSpots={nSpots} />
-
-      <HomeAdaptive
+      <HomeV6
         locale={locale}
-        spotsData={homeSpotsData}
-        maxTs={maxTs}
-        spotCount={spotsData.length}
-        sportsCount={SPORTS_COUNT}
-        buoyLayer={pipelineMeta?.buoyLayer ?? null}
-        coastalWarningsLayer={pipelineMeta?.coastalWarningsLayer ?? null}
-        bakedAtMs={bakedAtMs}
+        costa={costa}
+        meta={metaCosta()}
+        fotos={fotosCosta(locale)}
+        agoraMs={bakedAtMs}
+        nSpots={nSpots}
+        after={
+          <HomeAdaptive
+            locale={locale}
+            spotsData={homeSpotsData}
+            maxTs={maxTs}
+            buoyLayer={pipelineMeta?.buoyLayer ?? null}
+            coastalWarningsLayer={pipelineMeta?.coastalWarningsLayer ?? null}
+            bakedAtMs={bakedAtMs}
+          />
+        }
+        footerTools={
+          <HomepageFooterSection
+            locale={locale}
+            spotCount={spotsData.length}
+            sportsCount={SPORTS_COUNT}
+          />
+        }
       />
     </div>
   );

@@ -31,16 +31,7 @@ const STALE_ISO = new Date(Date.now() - 5 * 3_600_000).toISOString();
 const FRESH_ISO = new Date().toISOString();
 
 /**
- * Título h2 do «A bombar agora» — nome EXACTO: o h3 do estado vazio (de noite,
- * «Ninguém a bombar agora 😴») também casa com /A bombar agora/i.
- */
-const topNowHeading = (page: import('@playwright/test').Page) =>
-  page.getByRole('heading', { name: 'A bombar agora', exact: true });
-
-/**
- * Página de spot v6 (#184): o aviso de boias vive na leitura da boia, no fim do
- * «Estudar o spot» (decisão do Pedro, 2026-10-15). Abre o <details> antes das
- * asserções (com retry: o clique pode cair antes da hidratação).
+ * Página de spot v6 (#184): o aviso de boias vive na leitura da boia (MedeSabeV6).
  */
 async function abreEstudo(page: import('@playwright/test').Page) {
   const estudo = page.locator('#estudo');
@@ -226,7 +217,7 @@ test.describe('Aviso de boias na homepage (BuoyLayerNotice scope=home)', { tag: 
   async function gotoHome(page: import('@playwright/test').Page) {
     await interceptWmoBuoys(page, WMO_DOWN);
     await page.goto('/pt/');
-    await expect(topNowHeading(page)).toBeVisible({
+    await expect(page.getByTestId('home-hero')).toBeVisible({
       timeout: 20_000,
     });
   }
@@ -245,9 +236,9 @@ test.describe('Aviso de boias na homepage (BuoyLayerNotice scope=home)', { tag: 
     await expect(
       page.getByText(/alturas de onda no mapa e nos cards são previsão do modelo/),
     ).toBeVisible();
-    // WMO também sem dados → nota visível na homepage, na região dos cards.
+    // WMO também sem dados → nota visível na homepage, na região de avisos de boia.
     await expect(
-      page.getByRole('region', { name: /A bombar agora/i }).getByText(
+      page.getByTestId('home-buoy-notice').getByText(
         /fallback WMO \(Copernicus\) também está em baixo/,
       ),
     ).toBeVisible();
