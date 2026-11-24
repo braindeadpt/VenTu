@@ -1,6 +1,7 @@
 import type { Spot } from '@/types';
 import { calculateDistance } from '@/lib/geolocation';
-import { hourKeyFromOpenMeteo } from '@/lib/openMeteoTime';
+import { hasOffset, hourKeyFromOpenMeteo, seriesTimeMs } from '@/lib/openMeteoTime';
+import { fusoDoSpot, instanteDaParede } from '@/lib/sol';
 import { scoreAtHour, type MapHoursFile } from '@/lib/mapHours';
 import type { SportType } from '@/lib/sportRatings';
 
@@ -11,19 +12,54 @@ import type { SportType } from '@/lib/sportRatings';
  * carregado lazy pelo componente — estas funções são puras e testáveis.
  */
 
+/**
+ * Instante da hora escolhida (#456): `opts.ms` quando o chamador já tem o
+ * instante (ex.: `HoraSpot.ms`); `opts.lon` resolve uma etiqueta de parede
+ * sem desvio no fuso do spot (Açores ≠ Lisboa); uma etiqueta com desvio fala
+ * por si. `NaN` quando não há como resolver → comparação lexical antiga.
+ */
+function instanteSelecionadoMs(
+  selectedIso: string | null | undefined,
+  opts?: { ms?: number; lon?: number },
+): number {
+  if (opts && Number.isFinite(opts.ms)) return opts.ms as number;
+  const s = String(selectedIso ?? '').trim();
+  if (!s) return NaN;
+  if (opts && Number.isFinite(opts.lon) && !hasOffset(s)) {
+    const ms = instanteDaParede(s, fusoDoSpot(opts.lon as number));
+    if (Number.isFinite(ms)) return ms;
+  }
+  return seriesTimeMs(s);
+}
+
 /** Índice do passo de 3 h que contém a hora escolhida: o último passo ≤ hora.
- *  Fora da janela do ficheiro → clamp ao primeiro/último passo (o rótulo «±3 h»
- *  da UI cobre a aproximação). -1 quando o ficheiro não tem passos. */
+ *  Por INSTANTE quando há como resolver (#456 — a hora dos Açores não é a de
+ *  Lisboa e o 01:00 repetido do fim do DST são dois instantes); comparação
+ *  lexical como antes quando não. Fora da janela do ficheiro → clamp ao
+ *  primeiro/último passo (o rótulo «±3 h» da UI cobre a aproximação). -1
+ *  quando o ficheiro não tem passos. */
 export function pickMapHourStep(
   times: string[],
   selectedIso: string | null | undefined,
+  opts?: { ms?: number; lon?: number },
 ): number {
   if (!times.length) return -1;
-  if (!selectedIso) return 0;
-  const target = hourKeyFromOpenMeteo(selectedIso);
+  const target = instanteSelecionadoMs(selectedIso, opts);
+  if (!Number.isFinite(target)) {
+    if (!selectedIso) return 0;
+    const key = hourKeyFromOpenMeteo(selectedIso);
+    let legacy = 0;
+    for (let i = 0; i < times.length; i++) {
+      if (hourKeyFromOpenMeteo(times[i]) <= key) legacy = i;
+      else break;
+    }
+    return legacy;
+  }
   let best = 0;
   for (let i = 0; i < times.length; i++) {
-    if (hourKeyFromOpenMeteo(times[i]) <= target) best = i;
+    const ti = seriesTimeMs(times[i]);
+    if (!Number.isFinite(ti)) continue;
+    if (ti <= target) best = i;
     else break;
   }
   return best;

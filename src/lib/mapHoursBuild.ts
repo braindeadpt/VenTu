@@ -247,7 +247,9 @@ export function buildMapHoursFile(opts: {
       // v6 (nota × 10, `null` de noite ou sem dados) nas cinco modalidades v6;
       // SUP e wakeboard no motor antigo COM o mesmo corte de noite solar (`null` de noite,
       // para nunca mostrar 8/10 Bom à meia-noite em barragens/SUP). `best` = regra do «Todos».
-      const input = rawToScoreInput(raw);
+      // `nowMs` da build (VENTU_BUILD_NOW) — a frescura do observado não pode
+      // comparar com o relógio da máquina que corre o bake (#456).
+      const input = rawToScoreInput(raw, now.getTime());
       const alvo = linhasV6(series, j, live, isNow, now.getTime());
       const timeMs = seriesTimeMs(time);
       const ehNoite =

@@ -32,7 +32,7 @@ export function useVizinhosNivel(
       vivo = false;
     };
   }, [ativo]);
-  const passo = pickMapHourStep(file?.times ?? [], t);
+  const passo = pickMapHourStep(file?.times ?? [], t, { lon: spot.lon });
   return useMemo(
     () => (ativo && nivel ? vizinhosDoNivel(spot, spots, sport, nivel, file, passo) : []),
     [ativo, nivel, spot, sport, file, passo],

@@ -26,6 +26,7 @@ export function mapTideChipAt(
   curve: MapTideCurve,
   at: Date,
   locale: string = 'pt',
+  timeZone?: string,
 ): MapTideChipModel | null {
   const hourly = curve.times.map((time, i) => ({ time, tideHeight: curve.height[i] }));
   const schedule = buildTideSchedule(hourly, { now: at, locale });
@@ -45,7 +46,7 @@ export function mapTideChipAt(
 
   return {
     phase: schedule.phase,
-    nextTime: nextDate ? formatTideTime(nextDate, locale) : null,
+    nextTime: nextDate ? formatTideTime(nextDate, locale, timeZone) : null,
     nextKind: nextDate ? nextKind : null,
   };
 }

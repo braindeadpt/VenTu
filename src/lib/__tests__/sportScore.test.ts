@@ -44,15 +44,53 @@ const baseConditions: Conditions = {
 describe('getSportScore (motor antigo: SUP e wakeboard)', () => {
   it('Lagos Wake Park — wakeboard available regardless of weather', () => {
     const wake = spotBySlug('lagos-wakepark')
-    const storm: Conditions = {
+    const calm: Conditions = {
       ...baseConditions,
       waveHeight: 3,
-      windSpeed: ktToMs(40),
+      windSpeed: ktToMs(10),
     }
-    const result = getSportScore(wake, 'wakeboard', storm)
+    const result = getSportScore(wake, 'wakeboard', calm)
     expect(result.score).toBe(80)
     expect(result.rating).toBe('Disponível')
     expect(result.factors.some((f) => /cable|teleski|disponível/i.test(f))).toBe(true)
+  })
+
+  it('#456 — wakeboard com vento forte desce; ≥ 28 kt fica em «Fraco»/«Não dá»', () => {
+    const wake = spotBySlug('lagos-wakepark')
+    const breezy: Conditions = { ...baseConditions, windSpeed: ktToMs(22) }
+    const storm: Conditions = { ...baseConditions, windSpeed: ktToMs(30) }
+    const b = getSportScore(wake, 'wakeboard', breezy)
+    const s = getSportScore(wake, 'wakeboard', storm)
+    expect(b.score).toBeLessThan(80)
+    expect(b.factors).toContain('Vento forte')
+    expect(s.score).toBeLessThanOrEqual(35)
+    expect(s.rating).not.toBe('Disponível')
+  })
+
+  it('#456 — sem vento da série: N/A «sem dados» em vez de 80 inventado', () => {
+    const wake = spotBySlug('lagos-wakepark')
+    const semVento: Conditions = { ...baseConditions, semDados: ['vento'] }
+    const r = getSportScore(wake, 'wakeboard', semVento)
+    expect(r.score).toBe(0)
+    expect(r.rating).toBe('N/A')
+    expect(r.semDados).toBe(true)
+  })
+
+  it('#456 — SUP na costa sem onda da série: N/A, não «água plana» 8/10', () => {
+    const guincho = spotBySlug('guincho')
+    const semOnda: Conditions = { ...baseConditions, semDados: ['onda'] }
+    const r = getSportScore(guincho, 'sup', semOnda)
+    expect(r.score).toBe(0)
+    expect(r.rating).toBe('N/A')
+    expect(r.semDados).toBe(true)
+  })
+
+  it('#456 — SUP em spot de wakeboard sem onda: o mar não entra, continua a pontuar', () => {
+    const wake = spotBySlug('lagos-wakepark')
+    const semOnda: Conditions = { ...baseConditions, semDados: ['onda'] }
+    const r = getSportScore(wake, 'sup', semOnda)
+    expect(r.semDados).toBeUndefined()
+    expect(r.score).toBeGreaterThan(0)
   })
 
   it('Ocean surf spot without cable — wakeboard N/A', () => {
@@ -278,6 +316,44 @@ describe('getHourlyScores', () => {
     const scores = getHourlyScores(spot, 'sup', hourly, baseConditions)
     expect(scores).toHaveLength(2)
     expect(scores[0]).toBeGreaterThan(scores[1])
+  })
+
+  it('#456 — noite solar vale 0: SUP não pontua às 03:00 nem abre janela nocturna', () => {
+    const spot = spotBySlug('guincho')
+    const flat = { waveHeight: 0.2, wavePeriod: 5, windSpeed: ktToMs(6), windDirection: 270 }
+    const hourly = [
+      { time: '2026-07-15T03:00', ...flat },
+      { time: '2026-07-15T14:00', ...flat },
+    ]
+    const scores = getHourlyScores(spot, 'sup', hourly, baseConditions)
+    expect(scores[0]).toBe(0)
+    expect(scores[1]).toBeGreaterThan(0)
+  })
+
+  it('#456 — «sem dados» da série chega ao scorer (0, não «flat water»)', () => {
+    const spot = spotBySlug('guincho')
+    const hourly = [
+      { time: '2026-07-15T14:00', waveHeight: null as unknown as number, wavePeriod: 5, windSpeed: ktToMs(6), windDirection: 270 },
+      { time: '2026-07-15T15:00', waveHeight: 0.2, wavePeriod: 5, windSpeed: null as unknown as number, windDirection: 270 },
+      { time: '2026-07-15T16:00', waveHeight: 0.2, wavePeriod: 5, windSpeed: ktToMs(6), windDirection: 270 },
+    ]
+    const scores = getHourlyScores(spot, 'sup', hourly, baseConditions)
+    expect(scores[0]).toBe(0) // onda em falta na costa → N/A
+    expect(scores[1]).toBe(0) // vento em falta → N/A
+    expect(scores[2]).toBeGreaterThan(0)
+  })
+
+  it('#456 — wakeboard: janelas de dia pontuam, noite e vento de tempestade não', () => {
+    const wake = spotBySlug('lagos-wakepark')
+    const hourly = [
+      { time: '2026-07-15T03:00', waveHeight: 0, wavePeriod: 5, windSpeed: ktToMs(5), windDirection: 270 },
+      { time: '2026-07-15T14:00', waveHeight: 0, wavePeriod: 5, windSpeed: ktToMs(5), windDirection: 270 },
+      { time: '2026-07-15T15:00', waveHeight: 0, wavePeriod: 5, windSpeed: ktToMs(30), windDirection: 270 },
+    ]
+    const scores = getHourlyScores(wake, 'wakeboard', hourly, baseConditions)
+    expect(scores[0]).toBe(0)
+    expect(scores[1]).toBe(80)
+    expect(scores[2]).toBeLessThanOrEqual(35)
   })
 })
 

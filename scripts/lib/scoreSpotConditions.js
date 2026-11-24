@@ -80,8 +80,8 @@ function computeScore(spotId, sport, conditionsJson, opc = {}) {
     if (v6.n == null) return null; // noite
     return { score: notaToScore(v6.n), nota: v6.n, engine: 'v6', source };
   }
-  // motor antigo: só o SUP chega aqui
-  const score = getSportScore(spot, sportKey, rawToScoreInput(raw)).score;
+  // motor antigo: só o SUP chega aqui (e o wakeboard, #456 — com o relógio da build)
+  const score = getSportScore(spot, sportKey, rawToScoreInput(raw, opc.nowMs)).score;
   return { score, nota: scoreToNota(score), engine: 'legacy', source };
 }
 

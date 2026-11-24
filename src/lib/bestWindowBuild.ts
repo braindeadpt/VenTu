@@ -50,7 +50,23 @@ const HOUR_MS = 3_600_000;
 type SpotJanela = Pick<Spot, 'id' | 'lat' | 'lon' | 'coastOrientation' | 'compatibleSports' | 'bestWind' | 'type'> &
   Partial<Pick<Spot, 'aguaInterior'>>;
 
+/** Base vazia para `getHourlyScores` no ramo «hoje» (a série já traz tudo). */
+const CONDICOES_VAZIAS: Conditions = {
+  waveHeight: 0,
+  wavePeriod: 0,
+  waveDirection: 0,
+  windSpeed: 0,
+  windDirection: 0,
+  windGust: 0,
+  waterTemp: 0,
+};
+
 function toHourly(row: ForecastHourRow): HourlyCondition {
+  // #456: `?? 0` apaga a diferença entre «sem dados» e «medido 0» — vai na
+  // bandeira `semDados` para `getHourlyScores` devolver N/A em vez de 8/10.
+  const semDados: Array<'vento' | 'onda'> = [];
+  if (row.windSpeed == null) semDados.push('vento');
+  if (row.waveHeight == null) semDados.push('onda');
   return {
     time: row.time,
     waveHeight: row.waveHeight ?? 0,
@@ -59,6 +75,7 @@ function toHourly(row: ForecastHourRow): HourlyCondition {
     windDirection: row.windDirection ?? 0,
     windGust: row.windGust ?? 0,
     waterTemp: row.waterTemp ?? 0,
+    ...(semDados.length ? { semDados } : {}),
   };
 }
 
@@ -162,8 +179,12 @@ export function computeBestWindowsForSpot(
     if (v6) {
       const w = janelaV6(spot, v6, forecast, js, nowMs, notaV6);
       if (w) slice = { start: hourFromForecastTime(w.startIso), end: hourFromForecastTime(w.endIso), score: w.score };
-    } else if (hourly.length) {
-      const top = computeMagicWindows(hourly, sport, spot.bestWind || '')[0];
+    } else if (hourly.length && isDesportoMotorAntigo(sport)) {
+      // #456: `getHourlyScores` aplica o corte de noite (score 0) e o N/A de
+      // dados em falta — sem scores próprios a heurística deixava janelas de
+      // SUP/wakeboard atravessar a noite.
+      const scores = getHourlyScores(spot as Spot, sport, hourly, CONDICOES_VAZIAS);
+      const top = computeMagicWindows(hourly, sport, spot.bestWind || '', scores)[0];
       const startRow = top ? hourly[top.start] : undefined;
       const endRow = top ? hourly[top.end] : undefined;
       if (top && startRow && endRow)

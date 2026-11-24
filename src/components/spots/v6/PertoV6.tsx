@@ -125,7 +125,7 @@ export default function PertoV6({ spot, locale, copy: c, t, sport, nivel = null 
   }, []);
 
   const vizinhos = useMemo(() => nearestSpots(spot, spots, { limit: 5 }), [spot]);
-  const passo = pickMapHourStep(file?.times ?? [], t);
+  const passo = pickMapHourStep(file?.times ?? [], t, { lon: spot.lon });
   const diretorio = useDiretorio(spot.id, spot.lat, spot.lon);
   const cn = nivelCopyV6(locale);
   const acima = !!nivel && !spotDentroDoNivel(nivelDoSpot(spot, sport), nivel);

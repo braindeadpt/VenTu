@@ -8,6 +8,8 @@ export interface HourlyCondition {
   windDirection: number;
   windGust: number;
   waterTemp: number;
+  /** Campos que vieram `null` da série (#456) — lido por `getHourlyScores`. */
+  semDados?: ReadonlyArray<'vento' | 'onda'>;
 }
 
 export interface MagicWindow {

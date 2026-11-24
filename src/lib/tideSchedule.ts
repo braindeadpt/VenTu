@@ -179,23 +179,23 @@ export function tidePhaseLabel(phase: TidePhase, locale: string): string {
   }
 }
 
-export function formatTideTime(date: Date, locale: string): string {
+export function formatTideTime(date: Date, locale: string, timeZone?: string): string {
   return new Intl.DateTimeFormat(DATE_LOCALE[locale] ?? 'en-GB', {
     hour: '2-digit',
     minute: '2-digit',
-    timeZone: 'Europe/Lisbon',
+    timeZone: timeZone ?? 'Europe/Lisbon',
   }).format(date);
 }
 
-export function formatTideScheduleLine(schedule: TideSchedule, locale: string): string {
+export function formatTideScheduleLine(schedule: TideSchedule, locale: string, timeZone?: string): string {
   const t = getTranslation(locale).tideLabels;
   const parts: string[] = [schedule.phaseLabel];
 
   if (schedule.nextLow) {
-    parts.push(t.lowAt.replace('{time}', formatTideTime(schedule.nextLow, locale)));
+    parts.push(t.lowAt.replace('{time}', formatTideTime(schedule.nextLow, locale, timeZone)));
   }
   if (schedule.nextHigh) {
-    parts.push(t.highAt.replace('{time}', formatTideTime(schedule.nextHigh, locale)));
+    parts.push(t.highAt.replace('{time}', formatTideTime(schedule.nextHigh, locale, timeZone)));
   }
 
   return parts.join(' · ');

@@ -43,7 +43,8 @@ function isWakeboardOnly(spot: Spot): boolean {
 type RawConditions = Record<string, unknown>
 
 function toScoreInput(raw: RawConditions) {
-  return rawToScoreInput(raw as Record<string, unknown>)
+  // #456: bake com o relógio do build (VENTU_BUILD_NOW), não Date.now().
+  return rawToScoreInput(raw as Record<string, unknown>, buildNowMs())
 }
 
 /**

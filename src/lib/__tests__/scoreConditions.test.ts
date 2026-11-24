@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { spots } from '@/lib/spots';
-import { SCORE_TIER_THRESHOLDS } from '@/lib/sportScore';
+import { SCORE_TIER_THRESHOLDS, type Conditions } from '@/lib/sportScore';
 // #218 PR 6: as notas de surf / kitesurf / windsurf saem do motor v6 (o caminho do site)
 import { v6 as getSportScore } from './motorV6Teste';
 import {
@@ -405,6 +405,23 @@ describe('scoreConditions', () => {
       observedAt: new Date(Date.now() - 5 * 3600_000).toISOString(),
     };
     expect(applyObservedWindForScore(base, stale)).toEqual(base);
+  });
+
+  it('#456 — nowMs torna a frescura determinística (builds com VENTU_BUILD_NOW)', () => {
+    const base: Conditions = {
+      waveHeight: 1,
+      wavePeriod: 10,
+      waveDirection: 270,
+      windSpeed: ktToMs(8),
+      windDirection: 270,
+      windGust: ktToMs(10),
+      waterTemp: 18,
+    };
+    const obs = freshObserved(20);
+    const obsMs = Date.parse(obs.observedAt);
+    // Fresco contra o relógio da observação; velho contra um "agora" 10 h à frente.
+    expect(applyObservedWindForScore(base, obs, obsMs + 60_000).windSpeed).not.toBe(base.windSpeed);
+    expect(applyObservedWindForScore(base, obs, obsMs + 10 * 3600_000)).toEqual(base);
   });
 
   it('rawToScoreInput applies observed from pipeline JSON', () => {

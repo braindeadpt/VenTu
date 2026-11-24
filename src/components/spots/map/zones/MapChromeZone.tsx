@@ -26,6 +26,7 @@ import {
   type MapHoursFile,
 } from '@/lib/mapHours';
 import { mapTideChipAt, pickMapTideCurve } from '@/lib/mapTideChip';
+import { TZ_ACORES } from '@/lib/sol';
 import { thermalHudAt } from '@/lib/mapThermal';
 import MapTimeTrack from '../MapTimeTrack';
 import MapTideChip from '../MapTideChip';
@@ -141,7 +142,7 @@ export function useMapChromeZone({
     const at = hoursLive && hoursTimes[hoursFrame]
       ? new Date(hoursTimes[hoursFrame])
       : new Date();
-    const model = mapTideChipAt(curve, at, locale);
+    const model = mapTideChipAt(curve, at, locale, selectedRegion === 'Açores' ? TZ_ACORES : undefined);
     if (!model) return undefined;
     const phaseLabel =
       model.phase === 'rising' ? t.map.tideChipRising
