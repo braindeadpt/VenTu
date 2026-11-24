@@ -3,6 +3,7 @@ import {
   buildTideSchedule,
   findTideExtrema,
   formatTideScheduleLine,
+  formatTideTime,
   getTidePhasesForHours,
 } from '../tideSchedule';
 
@@ -144,5 +145,13 @@ describe('buildTideSchedule — next high/low independente do fuso', () => {
       if (prevTz === undefined) delete process.env.TZ;
       else process.env.TZ = prevTz;
     }
+  });
+});
+
+describe('#456 — formatTideTime no fuso da estação', () => {
+  it('Açores mostram a hora de lá (UTC+0 no verão), não a de Lisboa', () => {
+    const d = new Date('2026-07-15T14:00:00Z');
+    expect(formatTideTime(d, 'pt')).toBe('15:00'); // Lisboa UTC+1
+    expect(formatTideTime(d, 'pt', 'Atlantic/Azores')).toBe('14:00'); // Açores UTC+0
   });
 });

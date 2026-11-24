@@ -8,6 +8,8 @@ export interface HourlyCondition {
   windDirection: number;
   windGust: number;
   waterTemp: number;
+  /** Campos que vieram `null` da série (#456) — lido por `getHourlyScores`. */
+  semDados?: ReadonlyArray<'vento' | 'onda'>;
 }
 
 export interface MagicWindow {
@@ -191,8 +193,11 @@ export function computeMagicWindows(
     if (scored[i].score >= minHourScore) {
       if (start === -1) start = i;
       end = i;
-    } else if (start !== -1 && end - start >= 1) {
-      pushWindow(start, end);
+    } else if (start !== -1) {
+      // A hora abaixo do limiar (noite, sem dados) parte SEMPRE a janela:
+      // reiniciar só quando já há ≥2 h boas deixava uma hora boa isolada
+      // «colar» o segmento à manhã seguinte — janela através da noite (#456).
+      if (end - start >= 1) pushWindow(start, end);
       start = -1;
       end = -1;
     }

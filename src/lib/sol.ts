@@ -19,7 +19,7 @@ const RAD = Math.PI / 180;
 const DEG = 180 / Math.PI;
 
 const TZ_LISBOA = 'Europe/Lisbon';
-const TZ_ACORES = 'Atlantic/Azores';
+export const TZ_ACORES = 'Atlantic/Azores';
 
 /**
  * Um só `Intl.DateTimeFormat` por fuso: construí-lo é caro (~0,1 ms cada) e a home v6 chama

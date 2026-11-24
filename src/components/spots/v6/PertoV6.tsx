@@ -85,12 +85,14 @@ export interface PertoV6Props {
   copy: SpotPageV6Copy;
   /** Hora escolhida na régua (ISO local) e modalidade da página. */
   t?: string;
+  /** Instante da hora escolhida (#456 — o 01:00 repetido do fim do DST). */
+  ms?: number;
   sport: SportType;
   /** #nivel-ui: com o spot acima do nível escolhido, abre com «Do teu nível, perto daqui». */
   nivel?: NivelUtilizador | null;
 }
 
-export default function PertoV6({ spot, locale, copy: c, t, sport, nivel = null }: PertoV6Props) {
+export default function PertoV6({ spot, locale, copy: c, t, ms, sport, nivel = null }: PertoV6Props) {
   const tr = getTranslation(locale);
   const tc = tr.spotPageContext;
   const dir = tr.directory;
@@ -125,7 +127,7 @@ export default function PertoV6({ spot, locale, copy: c, t, sport, nivel = null 
   }, []);
 
   const vizinhos = useMemo(() => nearestSpots(spot, spots, { limit: 5 }), [spot]);
-  const passo = pickMapHourStep(file?.times ?? [], t);
+  const passo = pickMapHourStep(file?.times ?? [], t, { lon: spot.lon, ms });
   const diretorio = useDiretorio(spot.id, spot.lat, spot.lon);
   const cn = nivelCopyV6(locale);
   const acima = !!nivel && !spotDentroDoNivel(nivelDoSpot(spot, sport), nivel);

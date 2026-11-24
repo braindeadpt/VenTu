@@ -55,6 +55,10 @@ export interface ColunasSpot {
 export interface CostaCompacta {
   /** horas locais `YYYY-MM-DDTHH:MM`, as mesmas para todos os spots */
   horas: string[];
+  /** instante (epoch ms) de cada hora, alinhado com `horas` — o `t` truncado
+   *  perde o desvio: o 01:00 repetido do fim do DST e as horas dos Açores só
+   *  se distinguem aqui (#456). Ausente em ficheiros antigos → fallback. */
+  ms?: number[];
   spots: Record<string, ColunasSpot>;
 }
 
@@ -70,6 +74,7 @@ export function compactarCosta(linhas: Record<string, readonly LinhaForecast[]>,
   const dia0 = lisbonHourKeyFromDate(new Date(agoraMs)).slice(0, 10);
   const fim = somaDias(dia0, dias - 1);
   let horas: string[] | null = null;
+  let msArr: number[] | null = null;
   const spots: Record<string, ColunasSpot> = {};
   for (const c of COSTA_V6.spots) {
     const m = meta[c.id];
@@ -83,11 +88,16 @@ export function compactarCosta(linhas: Record<string, readonly LinhaForecast[]>,
     }
     if (!H.length || H[0].t.slice(0, 13) !== `${dia0}T00`) continue;
     const ts = H.map((h) => h.t);
-    if (!horas) horas = ts;
+    const ms = H.map((h) => h.ms ?? NaN);
+    if (!horas) {
+      horas = ts;
+      msArr = ms;
+    }
     const n = Math.min(horas.length, ts.length);
     if (ts.slice(0, n).some((t, i) => t !== horas![i])) continue;
     if (n < horas.length) {
       horas = horas.slice(0, n);
+      if (msArr) msArr = msArr.slice(0, n);
       for (const k of Object.keys(spots)) for (const col of Object.values(spots[k])) (col as unknown[]).length = n;
     }
     const Hn = H.slice(0, n);
@@ -106,7 +116,7 @@ export function compactarCosta(linhas: Record<string, readonly LinhaForecast[]>,
     if (Hn.some((h) => h.rain != null)) col.rain = Hn.map((h) => h.rain ?? null);
     spots[c.id] = col;
   }
-  return { horas: horas ?? [], spots };
+  return { horas: horas ?? [], ...(msArr ? { ms: msArr } : {}), spots };
 }
 
 /**
@@ -131,7 +141,8 @@ export function montarCosta(compacta: CostaCompacta, agoraMs: number, meta: Meta
     if (!m || !col) continue;
     const h: HoraSpot[] = idx.map((i) => {
       const t = compacta.horas[i];
-      const ms = instanteLisboa(t);
+      const colMs = compacta.ms?.[i];
+      const ms = Number.isFinite(colMs) ? (colMs as number) : instanteLisboa(t);
       const s = posicaoSol(ms, m.lat, m.lon);
       return {
         t,
@@ -161,6 +172,13 @@ export function montarCosta(compacta: CostaCompacta, agoraMs: number, meta: Meta
       h,
     });
   }
-  const agoraI = idx.findIndex((i) => compacta.horas[i].slice(0, 13) === key);
+  // «Agora» por instante quando há `ms` — no 01:00 repetido do fim do DST a
+  // chave de parede acertava sempre no primeiro (#456); fallback lexical.
+  const agoraI = compacta.ms
+    ? idx.findIndex((i) => {
+        const m = compacta.ms?.[i];
+        return Number.isFinite(m) && (m as number) <= agoraMs && agoraMs < (m as number) + 3_600_000;
+      })
+    : idx.findIndex((i) => compacta.horas[i].slice(0, 13) === key);
   return { spots: out, agoraI };
 }

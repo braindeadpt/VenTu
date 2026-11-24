@@ -80,6 +80,8 @@ export function applyObservedWaveForScore(
   }
   return {
     ...conditions,
+    // A boia fresca substitui a onda do modelo — deixa de ser «sem dados».
+    semDados: conditions.semDados?.filter((f) => f !== 'onda'),
     waveHeight: observedWave.waveHeight,
     wavePeriod:
       typeof observedWave.wavePeriod === 'number' ? observedWave.wavePeriod : conditions.wavePeriod,
@@ -309,8 +311,9 @@ export function applyRegionalBiasFallback(
 export function applyObservedWindForScore(
   conditions: Conditions,
   observed?: ObservedConditions | null,
+  nowMs?: number,
 ): Conditions {
-  if (!observed || !isObservedFresh(observed.observedAt)) {
+  if (!observed || !isObservedFresh(observed.observedAt, undefined, nowMs)) {
     return conditions;
   }
 
@@ -322,6 +325,8 @@ export function applyObservedWindForScore(
 
   return {
     ...conditions,
+    // O vento observado substitui o da série — deixa de ser «sem dados».
+    semDados: conditions.semDados?.filter((f) => f !== 'vento'),
     windSpeed: windSpeedMs,
     windDirection,
     windGust: gustMs,
@@ -388,6 +393,11 @@ export function resolveScoreWindSource(
  * time — the surf score then reflects what the waverider actually measured.
  */
 export function rawToScoreInput(raw: Record<string, unknown>, nowMs?: number): Conditions {
+  // `Number(null) → 0` perdia a diferença entre «sem dados» e «medido 0»
+  // (#456): `semDados` marca os campos em falta para o scorer devolver N/A.
+  const semDados: Array<'vento' | 'onda'> = [];
+  if (raw.windSpeed == null) semDados.push('vento');
+  if (raw.waveHeight == null) semDados.push('onda');
   const base: Conditions = {
     waveHeight: Number(raw.waveHeight) || 0,
     wavePeriod: Number(raw.wavePeriod) || 0,
@@ -396,11 +406,12 @@ export function rawToScoreInput(raw: Record<string, unknown>, nowMs?: number): C
     windDirection: Number(raw.windDirection) || 0,
     windGust: Number(raw.windGust) || 0,
     waterTemp: Number(raw.waterTemp) || 0,
+    ...(semDados.length ? { semDados } : {}),
   };
   const observed = pickObservedField(raw);
   let out = base;
   if (observed && isObservedFresh(observed.observedAt, undefined, nowMs)) {
-    out = applyObservedWindForScore(out, observed);
+    out = applyObservedWindForScore(out, observed, nowMs);
   }
   return applyObservedWaveForScore(out, raw.observedWave as ObservedWave | undefined, nowMs);
 }

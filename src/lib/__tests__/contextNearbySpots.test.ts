@@ -42,6 +42,30 @@ describe('pickMapHourStep', () => {
   it('hora depois do último passo → último (clamp)', () => {
     expect(pickMapHourStep(TIMES, '2026-09-25T12:00')).toBe(3);
   });
+
+  it('#456 — etiqueta dos Açores resolve no fuso do spot (não na de Lisboa)', () => {
+    // 04:00 nos Açores (UTC+0 em Setembro) = 05:00 em Lisboa → passo das 05:00.
+    // A comparação lexical antiga parava no passo das 02:00.
+    expect(pickMapHourStep(TIMES, '2026-09-22T04:00', { lon: -25.7 })).toBe(2);
+    // Sem `lon`/`ms` continua a hora de parede de Lisboa (compatibilidade).
+    expect(pickMapHourStep(TIMES, '2026-09-22T04:00')).toBe(1);
+  });
+
+  it('#456 — `opts.ms` decide por instante (01:00 repetido do fim do DST)', () => {
+    const times = [
+      '2026-10-25T00:00+01:00',
+      '2026-10-25T03:00+00:00',
+      '2026-10-25T06:00+00:00',
+    ];
+    // Passos de 3 h por instante: 01:00+01:00 (=00:00Z) e o segundo 01:00
+    // (=01:30Z) caem no passo 0; só a partir das 03:00Z começa o passo 1.
+    const ms1a = Date.parse('2026-10-25T01:00:00+01:00');
+    const ms1b = Date.parse('2026-10-25T01:30:00+00:00');
+    const ms3 = Date.parse('2026-10-25T03:30:00+00:00');
+    expect(pickMapHourStep(times, null, { ms: ms1a })).toBe(0);
+    expect(pickMapHourStep(times, null, { ms: ms1b })).toBe(0);
+    expect(pickMapHourStep(times, null, { ms: ms3 })).toBe(1);
+  });
 });
 
 function fakeSpot(id: string, lat: number, lon: number, sports?: Spot['compatibleSports']): Spot {

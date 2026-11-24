@@ -73,6 +73,12 @@ export function notasHorariasCompare(
     const r = (j === undefined ? undefined : rows[j]) as
       | { waveHeight?: number; wavePeriod?: number; windSpeed?: number; windDirection?: number; windGust?: number; waterTemp?: number }
       | undefined;
+    // #456: `?? 0` apagava «sem dados» — a bandeira chega ao motor (N/A, não 8/10).
+    const semDados: Array<'vento' | 'onda'> = [];
+    if (r) {
+      if (r.windSpeed == null) semDados.push('vento');
+      if (r.waveHeight == null) semDados.push('onda');
+    }
     return {
       time: t,
       waveHeight: r?.waveHeight ?? 0,
@@ -81,8 +87,20 @@ export function notasHorariasCompare(
       windDirection: r?.windDirection ?? 0,
       windGust: r?.windGust ?? fallback.windGust,
       waterTemp: r?.waterTemp ?? fallback.waterTemp,
+      semDados,
     };
   });
   const scores = getHourlyScores(spot, sport, hourly, fallback);
-  return times.map((t, i) => (linhaDe(t) !== undefined ? (scores[i] ?? 0) : null));
+  // N/A de dados em falta mostra «—» como as modalidades v6 (o motor devolve
+  // score 0; a célula diz «sem dados», não «0 · Não dá» inventado).
+  return times.map((t, i) => {
+    if (linhaDe(t) === undefined) return null;
+    const sd = hourly[i]?.semDados ?? [];
+    const faltaVento = sd.includes('vento');
+    // A onda em falta só é N/A no SUP costeiro (regra de scoreSUP); o motor do
+    // wakeboard não lê waveHeight — num spot costeiro com cable não pode dar «—».
+    const faltaOnda =
+      sport === 'sup' && sd.includes('onda') && !spot.aguaInterior && spot.type !== 'wakeboard';
+    return faltaVento || faltaOnda ? null : (scores[i] ?? 0);
+  });
 }

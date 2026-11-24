@@ -196,7 +196,7 @@ export default function SpotV6({ spot, nome, local, locale, linhas, agoraMs, fot
   // sem nível: só a dica, e só num spot intermédio ou acima (o estudo §4); «Todos os níveis» e sem nível na ficha nunca
   const dicaNivel = !nivel && (nivelSpot === 'intermediate' || nivelSpot === 'advanced' || nivelSpot === 'expert');
   const tSel = H[iSel]?.t;
-  const vizinhosNivel = useVizinhosNivel(spot, sport, nivel, tSel, acimaNivel);
+  const vizinhosNivel = useVizinhosNivel(spot, sport, nivel, tSel, acimaNivel, H[iSel]?.ms);
 
   if (!H.length) return null;
   const h = H[iSel];

@@ -8,6 +8,9 @@ import { getTranslation } from '@/lib/i18n';
 import { Spot } from '@/types'
 import { SportType, getCompatibleSports } from './sportRatings'
 import { SCORE_TIER_THRESHOLDS, scoreTierFromScore } from './nota'
+import { MODALIDADES_DEF } from './modalidades'
+import { posicaoSol } from './sol'
+import { seriesTimeMs } from './openMeteoTime'
 
 export interface Conditions {
   waveHeight: number
@@ -17,6 +20,9 @@ export interface Conditions {
   windDirection: number
   windGust: number
   waterTemp: number
+  /** Campos que vieram `null` da série (#456): `0` aqui é placeholder, não
+   *  medida — o scorer devolve N/A em vez de inventar «água plana». */
+  semDados?: Array<'vento' | 'onda'>
 }
 
 export interface SportScore {
@@ -31,6 +37,9 @@ export interface SportScore {
    *  (`windSportDirectionSafety`). The UI renders a visible note from it. */
   directionSafety?: WindSafetyLevel
   primaryFactor: string    // The main metric (waves for surf, wind for kite)
+  /** `true` quando a série não trouxe os campos que a modalidade precisa
+   *  (#456) — score 0 «N/A», nunca um número inventado. */
+  semDados?: true
 }
 
 // ─── Per-sport config ───
@@ -216,18 +225,66 @@ function scoreWakeboard(spot: Spot, c: Conditions): SportScore {
     }
   }
 
+  // Sem vento da série não se sabe se o wake está navegável (#456).
+  if (c.semDados?.includes('vento')) {
+    return {
+      score: 0,
+      rating: 'N/A',
+      ratingEn: 'N/A',
+      factors: [],
+      factorsEn: [],
+      primaryFactor: 'N/A',
+      semDados: true,
+    }
+  }
+
   const label = wakeboardAvailabilityLabel(spot)
+  const factors = [label.pt]
+  const factorsEn = [label.en]
+  // Cable/barco com vento forte deixa de ser agradável (#456): > 18 kt desce,
+  // ≥ 28 kt nunca passa de «Fraco».
+  const windKt = c.windSpeed * 1.94384
+  let score = 80
+  if (Number.isFinite(windKt) && windKt > 18) {
+    score = Math.max(0, Math.round(80 - (windKt - 18) * 5))
+    factors.push('Vento forte')
+    factorsEn.push('Strong wind')
+  }
+  if (Number.isFinite(windKt) && windKt >= 28) score = Math.min(score, 35)
+
+  if (score < 80) {
+    const labels = getRatingLabels(score)
+    return { score, rating: labels.rating, ratingEn: labels.ratingEn, factors, factorsEn, primaryFactor: label.primary }
+  }
   return {
-    score: 80,
+    score,
     rating: 'Disponível',
     ratingEn: 'Available',
-    factors: [label.pt],
-    factorsEn: [label.en],
+    factors,
+    factorsEn,
     primaryFactor: label.primary,
   }
 }
 
 function scoreSUP(spot: Spot, c: Conditions): SportScore {
+  // Sem dados da série não se inventa «água plana» (#456): vento em falta é
+  // N/A em todo o lado; onda em falta só é N/A na costa — em água interior /
+  // wakeboard o mar não entra no score.
+  if (
+    c.semDados?.includes('vento') ||
+    (c.semDados?.includes('onda') && !spot.aguaInterior && spot.type !== 'wakeboard')
+  ) {
+    return {
+      score: 0,
+      rating: 'N/A',
+      ratingEn: 'N/A',
+      factors: [],
+      factorsEn: [],
+      primaryFactor: 'N/A',
+      semDados: true,
+    }
+  }
+
   const factors: string[] = []
   const factorsEn: string[] = []
   const pushFactor = (pt: string, en: string) => {
@@ -293,29 +350,47 @@ export function getSportScore(spot: Spot, sport: DesportoAntigo, conditions: Con
 }
 
 /** Calculate per-hour scores (motor antigo: SUP e wakeboard) from hourly forecast data.
- *  Missing fields in hourly fallback to currentConditions. */
+ *  Missing fields in hourly fallback to currentConditions.
+ *  #456: de noite (`posicaoSol < noite`) a hora vale 0 — SUP/wakeboard não
+ *  pontuam às 03:00 nem abrem janelas nocturnas; `null` na série vai em
+ *  `semDados` (vento sempre N/A; onda N/A fora de água interior). */
 export function getHourlyScores(
   spot: Spot,
   sport: DesportoAntigo,
   hourly: Array<{
+    time?: string
     waveHeight: number
     wavePeriod: number
     windSpeed: number
     windDirection: number
     windGust?: number
     waterTemp?: number
+    semDados?: ReadonlyArray<'vento' | 'onda'>
   }>,
   currentConditions: Conditions,
 ): number[] {
   return hourly.map((h) => {
+    const tMs = h.time ? seriesTimeMs(h.time) : NaN
+    if (
+      Number.isFinite(tMs) &&
+      Number.isFinite(spot.lat) &&
+      Number.isFinite(spot.lon) &&
+      posicaoSol(tMs, spot.lat, spot.lon).el < MODALIDADES_DEF.comum.noite
+    ) {
+      return 0
+    }
+    const sd = new Set<'vento' | 'onda'>(h.semDados ?? [])
+    if (h.windSpeed == null) sd.add('vento')
+    if (h.waveHeight == null) sd.add('onda')
     const hourConditions: Conditions = {
-      waveHeight: h.waveHeight,
-      wavePeriod: h.wavePeriod,
+      waveHeight: h.waveHeight ?? 0,
+      wavePeriod: h.wavePeriod ?? 0,
       waveDirection: currentConditions.waveDirection,
-      windSpeed: h.windSpeed,
+      windSpeed: h.windSpeed ?? 0,
       windDirection: h.windDirection,
       windGust: h.windGust ?? currentConditions.windGust,
       waterTemp: h.waterTemp ?? currentConditions.waterTemp,
+      ...(sd.size ? { semDados: [...sd] } : {}),
     }
     return getSportScore(spot, sport, hourConditions).score
   })

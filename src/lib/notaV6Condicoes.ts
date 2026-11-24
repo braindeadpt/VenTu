@@ -66,7 +66,7 @@ export function notaV6DeCondicoes(
   // etiqueta completa (com desvio, #240) para o sol; `t` devolvido fica com 16 caracteres
   const tCompleta = opc.t ?? `${lisbonHourKeyFromDate(new Date(opc.nowMs ?? Date.now()))}:00`;
   const t = tCompleta.slice(0, 16);
-  const c = rawToScoreInput(raw);
+  const c = rawToScoreInput(raw, opc.nowMs);
   const fin = (x: unknown): boolean => typeof x === 'number' && Number.isFinite(x);
   const tide = fin(raw.tideHeight) ? (raw.tideHeight as number) : undefined;
   const linha: LinhaForecast = {

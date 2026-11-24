@@ -115,7 +115,7 @@ function build() {
       };
     }
 
-    const scoreInput = cond ? rawToScoreInput(cond as Record<string, unknown>) : CALM_LAKE;
+    const scoreInput = cond ? rawToScoreInput(cond as Record<string, unknown>, buildNowMs()) : CALM_LAKE;
     const rawCond = (cond ?? {}) as Record<string, unknown>;
     const conditions = {
       ...scoreInput,
