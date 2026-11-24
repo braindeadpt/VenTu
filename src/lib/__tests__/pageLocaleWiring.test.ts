@@ -103,4 +103,12 @@ describe('metadata das páginas usa o locale real (canonical/hreflang)', () => {
     });
     expect(offenders).toEqual([]);
   });
+
+  it('spots/[slug] liga a flag aguaInterior do catálogo ao buildSpotJsonLd (#457)', () => {
+    // Sem esta linha o JSON-LD de águas interiores voltava a anunciar Beach —
+    // o teste unitário alimenta inlandWater à mão e não a detectava.
+    expect(read('src/app/[locale]/spots/[slug]/page.tsx')).toContain(
+      'inlandWater: spot.aguaInterior',
+    );
+  });
 });

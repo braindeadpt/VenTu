@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { jsonLdHtml } from '../jsonLd';
 import { buildSpotJsonLd } from '../seo';
+import { getSpotBySlug } from '../spots';
 
 describe('jsonLdHtml (H1 — JSON-LD script breakout)', () => {
   it('neutralises a </script> breakout while staying valid JSON', () => {
@@ -67,5 +68,11 @@ describe('buildSpotJsonLd — @type geográfico (#457)', () => {
     expect(
       placeOf({ ...base, slug: 'alqueva', spotType: 'wakeboard', inlandWater: true })['@type'],
     ).toBe('SportsActivityLocation');
+  });
+
+  it('a flag aguaInterior chega do catálogo gerado (murtosa — kitesurf no cais)', () => {
+    // Murtosa é kitesurf mas água interior: prova que a classificação é
+    // geográfica (flag do catálogo) e não derivada da modalidade.
+    expect(getSpotBySlug('murtosa')?.aguaInterior).toBe(true);
   });
 });
