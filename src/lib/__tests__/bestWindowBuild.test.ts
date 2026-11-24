@@ -47,17 +47,13 @@ describe('#456 — janelas de SUP/wakeboard não atravessam a noite', () => {
     expect(w!.end).toBe(14);
   });
 
-  it('sem nenhuma hora ≥ 60, não há janela (noite ou tempestade a valer)', () => {
+  it('sem nenhuma hora ≥ 60, não há janela (tempestade o dia todo)', () => {
+    // 24 h de vento ≥ 28 kt → wakeboard ≤ 35 em todas; nem uma janela sai.
     const NOW = Date.parse('2026-07-15T15:00:00Z');
     const forecast: ForecastHourRow[] = Array.from({ length: 24 }, (_, i) =>
-      row(NOW + (i + 1) * HOUR_MS, i < 12 ? STORM : CALM),
+      row(NOW + (i + 1) * HOUR_MS, STORM),
     );
-    // i<12 (16:00Z–03:00Z): tempestade + noite; i>=12 (04:00Z–15:00Z): madrugada
-    // ainda de noite até ~05:00Z e depois dia calmo ≥60 — janela só na parte boa.
     const { bestWindowsBySport } = computeBestWindowsForSpot(casteloBode, forecast, NOW);
-    const w = bestWindowsBySport.wakeboard;
-    expect(w).toBeDefined();
-    expect(w!.start).toBeGreaterThanOrEqual(4);
-    expect(w!.end).toBeLessThanOrEqual(15);
+    expect(bestWindowsBySport.wakeboard).toBeUndefined();
   });
 });

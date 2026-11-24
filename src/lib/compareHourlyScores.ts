@@ -87,9 +87,17 @@ export function notasHorariasCompare(
       windDirection: r?.windDirection ?? 0,
       windGust: r?.windGust ?? fallback.windGust,
       waterTemp: r?.waterTemp ?? fallback.waterTemp,
-      ...(semDados.length ? { semDados } : {}),
+      semDados,
     };
   });
   const scores = getHourlyScores(spot, sport, hourly, fallback);
-  return times.map((t, i) => (linhaDe(t) !== undefined ? (scores[i] ?? 0) : null));
+  // N/A de dados em falta mostra «—» como as modalidades v6 (o motor devolve
+  // score 0; a célula diz «sem dados», não «0 · Não dá» inventado).
+  return times.map((t, i) => {
+    if (linhaDe(t) === undefined) return null;
+    const sd = hourly[i]?.semDados ?? [];
+    const faltaVento = sd.includes('vento');
+    const faltaOnda = sd.includes('onda') && !spot.aguaInterior && spot.type !== 'wakeboard';
+    return faltaVento || faltaOnda ? null : (scores[i] ?? 0);
+  });
 }
