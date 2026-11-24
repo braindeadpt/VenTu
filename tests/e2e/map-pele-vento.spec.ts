@@ -1,7 +1,32 @@
 import { test, expect, type Page, type BrowserContext } from '@playwright/test';
 import { preseedWindRingLegend } from './helpers/map-setup';
 import { waitHydrated } from './helpers/hydration';
+import { interceptMapHours } from './helpers/conditions';
+import { interceptSeaGrid } from './helpers/sea-grid';
 import { MAP_PELE_LS_KEY } from '../../src/lib/mapPele';
+
+/**
+ * map-hours mínimo e fixo — o campo de vento vem do sea-grid (stub em
+ * helpers/sea-grid.ts); este ficheiro só alimenta o resto do /mapa, e ficá-lo
+ * tira do teste a variação da previsão publicada (#464).
+ */
+const HORA0 = Math.floor(Date.now() / 3600_000) * 3600;
+const MAP_HOURS_STUB = {
+  generatedAt: new Date().toISOString(),
+  stepHours: 3,
+  times: Array.from({ length: 16 }, (_, i) => {
+    const d = new Date(HORA0 - 3600_000 + i * 3 * 3600_000);
+    return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}-${String(d.getUTCDate()).padStart(2, '0')}T${String(d.getUTCHours()).padStart(2, '0')}:00`;
+  }),
+  sports: ['surf', 'kitesurf'],
+  spots: {
+    guincho: {
+      best: Array.from({ length: 16 }, () => 60),
+      surf: Array.from({ length: 16 }, () => 40),
+      kitesurf: Array.from({ length: 16 }, () => 60),
+    },
+  },
+};
 
 /**
  * Fase B do /mapa, PR B7 — o vento v6 em traços com cauda, atrás de `?pele=v6`.
@@ -38,6 +63,11 @@ async function abre(page: Page, pele: boolean, viewport?: { width: number; heigh
     },
     { kp: MAP_PELE_LS_KEY, pele },
   );
+  // Grelha do mar e map-hours fixos: a contagem de partículas e o custo por
+  // frame deixam de depender da previsão publicada — o critério de long tasks
+  // mede o desenho, não o dia (#464).
+  await interceptMapHours(page, MAP_HOURS_STUB);
+  await interceptSeaGrid(page);
   await page.goto('/pt/mapa/?sport=kitesurf&wind=1&lat=38.9&lon=-9.5&z=8', { waitUntil: 'domcontentloaded', timeout: 60_000 });
   await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
   await waitHydrated(page);

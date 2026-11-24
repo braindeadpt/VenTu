@@ -201,6 +201,12 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # Budgets da FONTE hidratada: corre antes de `spots:index`, que
+      # regenera o índice por cima do ficheiro da ventu-data — depois disso o
+      # check mediria sempre o regenerado e nunca a origem (#464).
+      - name: Check data budgets (fonte ventu-data)
+        run: node scripts/check-payload-budgets.js --data-dir public/data
+
       - name: Generate sitemap
         run: npm run sitemap:generate
 
@@ -239,12 +245,7 @@ jobs:
       # spot-detail forecast bake (847350f9c → ~22 MB/route; fixed by
       # cb6fb1806). Fails the build if any route dir exceeds 5 MB raw.
       - name: Check per-route payload budgets
-        # Dois passes: os budgets do export cozido (out/) e os mesmos
-        # budgets aplicados ao public/data hidratado da ventu-data — a fonte
-        # pode inchar sem que o bake o sinalize (#464).
-        run: |
-          node scripts/check-payload-budgets.js
-          node scripts/check-payload-budgets.js --data-dir public/data
+        run: node scripts/check-payload-budgets.js
 
       # Export-route validator (browserless): every sitemap + noindex
       # allowlist route must have a baked index.html, none may have baked the
