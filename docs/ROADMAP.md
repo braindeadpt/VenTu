@@ -271,7 +271,7 @@ Templates em [`ROADMAP-ISSUES.md`](./ROADMAP-ISSUES.md). Depois de `gh auth logi
 ### 2026-11 — O que resta (backlog técnico real)
 
 - **C4b** — calibração de scores continua a aguardar N≥30 feedbacks/modalidade.
-- **Boias IH → OGC API EDR** — migração quando a colecção `buoys_datawell` publicar `data_queries` (monitorizado pelo `ops-audit`; receita em `IH_API_KEY.md` + `ih:validate`).
+- **Boias IH → OGC API EDR** — migração quando a colecção `buoys_datawell` publicar `data_queries` (monitorizado pelo `ops-audit`; receita em `IH_API_KEY.md` — o `ih:validate` actual só cobre o schema de marés `tide_obs_nrt`).
 - **Revyl preview** — `pr_review` desactivado: `out/` ~1,7 GiB > limite 1 GiB do plano (`.revyl/config.yaml`); reactivar se a Revyl subir o limite.
 - **News i18n es/de/fr** — artigos continuam PT/EN e `noindex` em es/de/fr (fora de âmbito por decisão #457).
 - **Specs e2e fora do CI** — `map-chrome`, `map-v3-*`, `spot-v2-*`, `spot-v3-*`, `spots-filtro-ssr`, `visual-sweep`, `ipma-radar-carousel`: sem tag `@core` nem suite — rever se entram ou morrem.

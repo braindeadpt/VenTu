@@ -7,7 +7,10 @@ azul-marinho profundo, névoa fria, solo e gelo como acentos cirúrgicos.
 Fonte canónica das cores: `docs/design/maquetes/v6-atlantico/cores.md`
 (todas as tabelas de contraste desta página derivam dela).
 Implementação: `src/app/globals.css`, `tailwind.config.ts`, `src/lib/nota.ts`,
-`src/lib/sportScore.ts` (`getScoreTokens` é a única fonte de tokens de score).
+`src/lib/sportScore.ts`. Tokens de banda têm **dois caminhos de consumo** com a
+mesma paleta: `getScoreTokens`/`scoreThresholds` (classes Tailwind — superfícies
+clássicas) e `V6_BANDAS`/`bandaVars` em `src/lib/v6Tokens.ts` (superfícies v6 —
+a régua de 48 h pinta-se por aqui). Uma alteração de paleta tem de passar nos dois.
 
 > Versões anteriores (v2.0: slate/IBM Plex Serif/escala 0–100/ÉPICO-BOM-FUN)
 > estão **revogadas**. Não usar `#FAFAF7`, `#0F172A`, `#0B3D5C`, `#0EA5E9`,
@@ -61,7 +64,7 @@ sobre branco = 1.1:1). Usar `--score-*-text` (tintas AA escuras) para texto.
 
 | Tema | Hex | RGB | Uso |
 |------|-----|-----|-----|
-| Dark | `#FFC93C` sol | `255 201 60` | CTA primário, Dawn Patrol, badge «Muito bom» |
+| Dark | `#FFC93C` sol | `255 201 60` | CTA primário, Dawn Patrol |
 | Light | `#005F8A` gelo | `0 95 138` | Idem em `.theme-ocean` |
 
 `--accent-hover` / `--accent-active` são os estados hover/active.
@@ -82,7 +85,9 @@ nota = round(score / 10)          inteira 0–10, NaN/∞ → 0
 bandas sobre a nota (arredonda primeiro, classifica depois):
   Muito bom (epic) ≥ 9   Bom (good) ≥ 7   Dá (fair) ≥ 5
   Fraco (poor)    ≥ 3   Não dá (closed) < 3
-Noite (night) = sem dados / fora de hora — nunca é «nota».
+`noite` = fora das horas de luz (o motor v6 marca `n == null && !av.fora`);
+`semDados` = previsão em falta/offline — são **dois estados distintos** em
+`notaUnica.ts` e a régua de 48 h apresenta-os separadamente. Nenhum é «nota».
 ```
 
 Limiares em 0–100: `nota ≥ n` ⇔ `score ≥ 10n − 5` (`notaMinScore`).
@@ -108,18 +113,21 @@ escuras AA (`#785800`, `#006B64`, `#7D5900`, `#1D4ED8`, `#992D32`).
 ### 2.2 Regras de uso da cor de banda como TEXTO (cores.md)
 
 A cor da banda só aparece como texto em números **≥ 24 px** (≥ 3:1 sobre o
-fundo escuro). Texto pequeno com cor de banda exige ≥ 4.5:1; abaixo disso
-a banda aparece como **fill com a sua tinta** (`badge`: `bg-score-*` +
-`text-score-*-ink`).
+fundo escuro) — regra codificada em `BANDAS_TEXTO_SO_GRANDE` (`v6Tokens.ts`:
+`nao`, `fraco`, `noite`). Texto pequeno com cor de banda exige ≥ 4.5:1; abaixo
+disso a banda aparece como **fill com a sua tinta** (`badge`: `bg-score-*` +
+`text-score-*-ink`). Sobre o fundo mar `#0C2A42`, «Não dá» (2.55:1) e «Noite»
+(2.54:1) ficam abaixo de 3:1 **a qualquer tamanho** — nessas superfícies são
+sempre fill+tinta.
 
 | Banda | sobre abismo `#030E18` | sobre fundo `#071B2C` | sobre mar `#0C2A42` | Texto permitido |
 |-------|------------------------|-----------------------|---------------------|-----------------|
-| Não dá | 3.37 | 3.03 | 2.55 | só ≥ 24 px |
+| Não dá | 3.37 | 3.03 | 2.55 | ≥ 24 px só em abismo/fundo; no mar sempre fill+tinta |
 | Fraco | 4.83 | 4.34 | 3.66 | só ≥ 24 px |
 | Dá | 7.79 | 6.99 | 5.90 | qualquer tamanho |
 | Bom | 11.45 | 10.29 | 8.67 | qualquer tamanho |
 | Muito bom | 16.67 | 14.97 | 12.63 | qualquer tamanho |
-| Noite | 3.35 | 3.01 | 2.54 | só ≥ 24 px |
+| Noite | 3.35 | 3.01 | 2.54 | ≥ 24 px só em abismo/fundo; no mar sempre fill+tinta |
 
 ### 2.3 Contraste do texto dentro do fill (daltonismo-safe)
 

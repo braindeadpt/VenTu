@@ -237,7 +237,7 @@ GoatCounter integrado (privacy-first, sem cookies). Commit `e5675f5`. Script só
 
 ### Boias IH → OGC API EDR (migração anunciada)
 
-O `getDatawellData` será substituído por uma **OGC API EDR** em `https://ogcapi.hidrografico.pt` (a OGC API de features já migrou em 2026-09; o antigo `api-features.hidrografico.pt` não resolve DNS). Enquanto a colecção `buoys_datawell` for Features-only (sem `data_queries`), a migração não é possível — o `ops-audit` diário vigia a publicação do EDR. Receita completa em [`IH_API_KEY.md`](./IH_API_KEY.md); gate de validação `npm run ih:validate` (`scripts/validate-ih-edr-schema.js`). Quando aterrar: trocar `fetchWaveSeries`/`DEFAULT_WAVE_API` em `scripts/lib/ihBuoys.js` pelas consultas EDR (provavelmente keyless) e a `IH_API_KEY` deixa de ser precisa para o observedWave.
+O `getDatawellData` será substituído por uma **OGC API EDR** em `https://ogcapi.hidrografico.pt` (a OGC API de features já migrou em 2026-09; o antigo `api-features.hidrografico.pt` não resolve DNS). Enquanto a colecção `buoys_datawell` for Features-only (sem `data_queries`), a migração não é possível — o `ops-audit` diário vigia a publicação do EDR. Receita completa em [`IH_API_KEY.md`](./IH_API_KEY.md); o gate `npm run ih:validate` (`scripts/validate-ih-edr-schema.js`) valida **apenas o schema de marés** (`collections/tide_obs_nrt`) — não cobre as séries de onda de `buoys_datawell`, que precisam de validador próprio quando a colecção publicar `data_queries`. Quando aterrar: trocar `fetchWaveSeries`/`DEFAULT_WAVE_API` em `scripts/lib/ihBuoys.js` pelas consultas EDR (provavelmente keyless) e a `IH_API_KEY` deixa de ser precisa para o observedWave.
 
 ### Revyl — preview builds em PRs
 
