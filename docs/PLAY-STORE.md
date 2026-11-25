@@ -44,7 +44,7 @@ O QUE TENS NA APP
 • Marés, lua, sol, isóbatas, corrente de superfície e avisos IPMA no mesmo ecrã
 • Livecams de 114 spots para veres o mar com os teus olhos
 • Dawn Patrol: ao amanhecer, o resumo do que vale a pena hoje
-• Alertas: escolhes o spot e a nota mínima — nós avisamos quando alinha
+• Alertas: marcas os spots favoritos e defines a nota mínima — avisamos quando algum alinha
 • Favoritos e passaporte de sessões sincronizados em qualquer dispositivo
 • 5 línguas: português, inglês, espanhol, alemão e francês
 
@@ -74,7 +74,7 @@ WHAT'S IN THE APP
 • Tides, moon, sun, isobaths, surface current and IPMA weather warnings on one screen
 • Livecams at 114 spots to see the sea with your own eyes
 • Dawn Patrol: at sunrise, the summary of what's worth it today
-• Alerts: pick the spot and the minimum score — we ping you when it lines up
+• Alerts: favorite your spots and set the minimum score — we ping you when one lines up
 • Favorites and session passport synced across devices
 • 5 languages: Portuguese, English, Spanish, German and French
 
@@ -96,12 +96,12 @@ Made on the Portuguese coast, for the people who read it.
 | Pergunta | Resposta | Nota |
 |---|---|---|
 | A app recolhe dados? | **Sim** — parcialmente | |
-| **Localização** — Localização aproximada | ✅ Recolhida · **não partilhada** · opcional | Só quando o utilizador toca «localizar» no mapa; processada no dispositivo para centrar o mapa/ordenar spots por distância. Não sai do dispositivo exceto aproximação para queries de dados meteorológicos (região, não coordenadas exatas) |
+| **Localização** — Localização aproximada | ❌ **Não recolhida** | Usada **apenas no dispositivo** quando o utilizador toca «localizar» — para centrar o mapa e ordenar spots por distância. Nunca transmitida: as previsões meteorológicas usam as coordenadas do **spot**, não a posição do utilizador. Os pedidos de mosaicos de mapa ao ver uma zona (CARTO/Esri CDN) são tráfego padrão de tiles, não ligado à identidade — verificar na revisão final se a Play exige declaração |
 | **Informação pessoal** — Endereço de email | ✅ Recolhida · **não partilhada** · opcional | Apenas se o utilizador criar conta (magic link Supabase) para favoritos/alertas/passaporte |
-| **Atividade da app** — Interações | ❌ Não recolhida como dado identificado | GoatCounter é analytics **anonimizado** (sem cookies, sem fingerprint, sem IP) — não conta como recolha de dados pessoais na taxonomia da Play |
+| **Conteúdo do utilizador / Atividade** — Favoritos, check-ins do passaporte, preferências de alertas | ✅ Recolhidos · **não partilhados** · opcionais | Sincronizados na conta Supabase (ligados ao user ID) — só se o utilizador criar conta e usar estas features. Analytics GoatCounter é **anonimizado** (sem cookies, sem fingerprint, sem IP) — não conta como recolha na taxonomia da Play |
 | IDs de dispositivo | ❌ Não | |
 | Dados encriptados em trânsito? | **Sim** (HTTPS/TLS) | |
-| Caminho para apagar dados? | **Sim** | Conta e dados apagáveis — o utilizador pede por email ou apaga diretamente na app (perfil) |
+| Caminho para apagar dados? | **Sim — por pedido** | ⚠️ **Não há eliminação in-app nesta versão**: o ecrã de conta só permite terminar sessão. O fluxo real (privacy policy) é pedido via formulário de feedback na app ou GitHub, tratado manualmente. **Bloqueador antes de production**: a Play exige caminho de eliminação acessível (in-app + link web na ficha de data safety). Ver §5 passo 0 |
 | Compromisso com a política de famílias? | Não aplicável — não é dirigida a crianças | |
 
 Privacy policy URL: `https://ventu.surf/pt/privacidade/`
@@ -138,6 +138,7 @@ Privacy policy URL: `https://ventu.surf/pt/privacidade/`
 
 ## 5. Checklist de upload (ordem)
 
+0. ⚠️ **Pré-production**: implementar eliminação de conta in-app (botão no ecrã de conta → Supabase `auth.admin`/RPC) — a Play rejeita apps com criação de conta sem caminho de eliminação acessível. Internal testing pode avançar já; production não
 1. ⬜ Play Console → nova app «VenTu» (gratuita, categoria Weather ou Sports)
 2. ⬜ Store listing: copy acima (PT default + EN), ícone, feature graphic, screenshots
 3. ⬜ Privacy policy URL: `https://ventu.surf/pt/privacidade/`
