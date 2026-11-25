@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
-const { evaluateLighthouseBudgets, METRIC_BUDGETS, medianReport } = require('../lighthouseBudgets');
+const { evaluateLighthouseBudgets, METRIC_BUDGETS, ROUTE_CATEGORY_BUDGETS, medianReport } = require('../lighthouseBudgets');
 
 /** Build a report-shaped object with the given category scores (0-1) and audit ms values. */
 function report(scores = {}, audits = {}) {
@@ -103,6 +103,47 @@ describe('evaluateLighthouseBudgets', () => {
     r.audits['some-random-audit'] = { numericValue: 999999 };
     const { breaches } = evaluateLighthouseBudgets(r);
     expect(breaches).toEqual([]);
+  });
+
+  it('applies the per-route accessibility floor (spot-guincho = 100, #204)', () => {
+    // 96 passes the global 85 floor but breaches the spot route floor.
+    const { breaches } = evaluateLighthouseBudgets(PASSING, {
+      categories: ROUTE_CATEGORY_BUDGETS['spot-guincho'],
+    });
+    expect(breaches).toEqual(['category accessibility: 96 < 100']);
+  });
+
+  it('per-route floor passes at exactly 100 (inclusive)', () => {
+    const r = structuredClone(PASSING);
+    r.categories.accessibility = { score: 1 };
+    const { breaches } = evaluateLighthouseBudgets(r, {
+      categories: ROUTE_CATEGORY_BUDGETS['spot-guincho'],
+    });
+    expect(breaches).toEqual([]);
+  });
+
+  it('without route budgets the global floors are unchanged (85 a11y)', () => {
+    const { breaches } = evaluateLighthouseBudgets(PASSING);
+    expect(breaches).toEqual([]);
+    const r = structuredClone(PASSING);
+    r.categories.accessibility = { score: 0.84 };
+    const { breaches: low } = evaluateLighthouseBudgets(r);
+    expect(low).toEqual(['category accessibility: 84 < 85']);
+  });
+
+  it('route floor never widens other categories (seo/perf keep global floors)', () => {
+    const r = structuredClone(PASSING);
+    r.categories.accessibility = { score: 1 };
+    r.categories.seo = { score: 0.89 };
+    const { breaches } = evaluateLighthouseBudgets(r, {
+      categories: ROUTE_CATEGORY_BUDGETS['spot-guincho'],
+    });
+    expect(breaches).toEqual(['category seo: 89 < 90']);
+  });
+
+  it('spot-guincho is the only route with a raised floor', () => {
+    expect(Object.keys(ROUTE_CATEGORY_BUDGETS)).toEqual(['spot-guincho']);
+    expect(ROUTE_CATEGORY_BUDGETS['spot-guincho']).toEqual({ accessibility: 100 });
   });
 });
 

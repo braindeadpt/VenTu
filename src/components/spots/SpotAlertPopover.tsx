@@ -134,7 +134,11 @@ export default function SpotAlertPopover({
         type="button"
         onClick={handleToggle}
         className="inline-flex items-center gap-1.5 px-2.5 py-1.5 -my-2 min-h-[44px] rounded-input text-meta-sm font-medium border border-divider bg-surface-1/[0.04] text-fg-muted hover:text-fg hover:border-divider-strong transition-colors duration-150"
-        aria-label={t.createAlertAria}
+        // #204 (label-content-name-mismatch): o nome acessível é o rótulo
+        // visível («Avisa-me») — um aria-label diferente fazia o controlo por
+        // voz falhar o botão. O contexto extra (cobre os favoritos) vai no
+        // title, nunca no nome — a mesma regra dos controlos do mapa.
+        title={t.createAlertAria}
       >
         <Bell className="w-3.5 h-3.5" aria-hidden />
         {t.alertMe}
