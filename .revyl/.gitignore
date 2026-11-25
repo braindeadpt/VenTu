@@ -13,3 +13,7 @@
 !modules/**
 !scripts/
 !scripts/**
+
+# Logs de diagnóstico nunca são definições partilhadas — re-ignora depois das
+# excepções (último match ganha), mantendo a regra global `*.log` eficaz aqui.
+*.log
