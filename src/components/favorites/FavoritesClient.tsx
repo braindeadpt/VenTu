@@ -7,10 +7,13 @@ import { Heart, ArrowLeft, Share2, Check, LogIn } from 'lucide-react';
 import { spots } from '@/lib/spots';
 import { fetchMarineData, getCurrentConditions } from '@/lib/openmeteo';
 import { isNoite, isSemDados, notaV6DoSpot, scoreAgoraComV6 } from '@/lib/notaV6Agora';
+import { scoreTierFromScore } from '@/lib/nota';
+import { getScoreTierLabel } from '@/lib/sportScore';
 import { compararJanelas, janelaSeguinte } from '@/lib/noiteListas';
 import { janelasDeNoite } from '@/lib/janelasNoiteCliente';
 import { carregarFavoritos, type JanelasFavoritos } from './carregarFavoritos';
-import { getTranslation } from '@/lib/i18n';
+import { getTranslation, pickLocale, validateLocale } from '@/lib/i18n';
+import { localizedSpotName, localizedSpotRegion } from '@/lib/localizedSpotText';
 import type { SportType } from '@/lib/sportRatings';
 import { SPORT_LABELS } from '@/lib/sportRatings';
 import { getAssetPath } from '@/lib/paths';
@@ -43,9 +46,9 @@ interface SpotConditions {
 export default function FavoritesClient() {
   const params = useParams();
   const loc = (params?.locale as string) || 'pt';
-  const pt = loc === 'pt';
-  const locale = (loc === 'en' ? 'en' : 'pt') as 'pt' | 'en';
-  const semDadosTxt = getTranslation(loc).map.noData;
+  const locale = validateLocale(loc);
+  const t = getTranslation(locale);
+  const semDadosTxt = t.map.noData;
   const {
     session,
     authLoading,
@@ -105,7 +108,7 @@ export default function FavoritesClient() {
       setShareCopied(true);
       setTimeout(() => setShareCopied(false), 2000);
     } catch {
-      prompt('Copy this link:', window.location.href);
+      prompt(t.favoritesPage.copyLinkPrompt, window.location.href);
     }
   };
 
@@ -153,7 +156,7 @@ export default function FavoritesClient() {
     return (
       <div id="alertas" className="min-h-screen bg-bg-base flex items-center justify-center px-4 scroll-mt-24">
         <p className="text-sm text-fg-muted text-center">
-          {pt ? 'Favoritos indisponíveis (Supabase não configurado).' : 'Favorites unavailable (Supabase not configured).'}
+          {t.favoritesPage.unavailable}
         </p>
       </div>
     );
@@ -166,17 +169,15 @@ export default function FavoritesClient() {
           <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full border border-divider bg-surface-1/[0.04]">
             <LogIn className="w-6 h-6 text-data-waves" aria-hidden />
           </div>
-          <h1 className="font-display text-h2 text-fg">{pt ? 'Meus Favoritos' : 'My Favorites'}</h1>
+          <h1 className="font-display text-h2 text-fg">{t.favoritesPage.title}</h1>
           <p className="text-sm text-fg-muted leading-relaxed">
-            {pt
-              ? 'Entra com o teu email para guardar spots e vê-los em qualquer dispositivo.'
-              : 'Sign in with your email to save spots and see them on any device.'}
+            {t.favoritesPage.signInPrompt}
           </p>
           <Button size="lg" onClick={() => requestLogin('favorites-page')}>
-            {pt ? 'Entrar com magic link' : 'Sign in with magic link'}
+            {t.favoritesPage.signInCta}
           </Button>
           <Button href={`/${loc}/spots/`} variant="secondary" size="md" locale={locale}>
-            {pt ? 'Explorar spots' : 'Explore spots'}
+            {t.pages.exploreTitle}
           </Button>
         </div>
       </div>
@@ -192,18 +193,16 @@ export default function FavoritesClient() {
             className="inline-flex items-center gap-2 text-fg-muted hover:text-fg min-h-[44px] transition-colors duration-150"
           >
             <ArrowLeft className="w-4 h-4" aria-hidden />
-            {pt ? 'Voltar' : 'Back'}
+            {t.pages.back}
           </Link>
 
           <div className="flex flex-wrap items-end justify-between gap-3">
             <PageHeader
               icon={<Heart className="w-7 h-7 text-data-waves" aria-hidden />}
-              title={pt ? 'Meus Favoritos' : 'My Favorites'}
-              subtitle={
-                pt
-                  ? `${favoriteSpots.length} spot${favoriteSpots.length === 1 ? '' : 's'} · ordenados por score`
-                  : `${favoriteSpots.length} spot${favoriteSpots.length === 1 ? '' : 's'} · sorted by score`
-              }
+              title={t.favoritesPage.title}
+              subtitle={t.favoritesPage.subtitle
+                .replace('{count}', String(favoriteSpots.length))
+                .replace('{spots}', favoriteSpots.length === 1 ? t.favoritesPage.spotOne : t.favoritesPage.spotMany)}
             />
             {favoriteSpots.length > 0 && (
               <Button
@@ -213,7 +212,7 @@ export default function FavoritesClient() {
                 className={cn(shareCopied && 'text-score-good border-score-good/30')}
               >
                 {shareCopied ? <Check className="w-4 h-4" aria-hidden /> : <Share2 className="w-4 h-4" aria-hidden />}
-                {shareCopied ? (pt ? 'Copiado!' : 'Copied!') : pt ? 'Partilhar' : 'Share'}
+                {shareCopied ? t.ui.shareCopied : t.ui.share}
               </Button>
             )}
           </div>
@@ -234,7 +233,7 @@ export default function FavoritesClient() {
               description={getPlayfulEmptyCopy('no-favorites', loc).description}
               action={
                 <Button href={`/${loc}/spots/`} size="lg" locale={locale}>
-                  {pt ? 'Explorar Spots' : 'Explore Spots'}
+                  {t.pages.exploreTitle}
                 </Button>
               }
             />
@@ -251,10 +250,19 @@ export default function FavoritesClient() {
               const noite = isNoite(sportScores[spot.id]);
               const primarySport = (spot.compatibleSports?.[0] || spot.type) as SportType;
               const sportLabel = SPORT_LABELS[primarySport]
-                ? pt
-                  ? SPORT_LABELS[primarySport].pt
-                  : SPORT_LABELS[primarySport].en
+                ? pickLocale(locale, SPORT_LABELS[primarySport])
                 : undefined;
+              // statusLine: o score chega com rating/ratingEn cozidos (pt/en);
+              // para es/de/fr deriva-se a etiqueta da banda via tier — os
+              // especiais ('N/A', 'Disponível' do wakebook) vêm do dict.
+              const sc = sportScores[spot.id];
+              const statusRating = !sc
+                ? undefined
+                : sc.rating === 'N/A'
+                  ? t.favoritesPage.ratingNA
+                  : sc.rating === 'Disponível'
+                    ? t.favoritesPage.ratingAvailable
+                    : getScoreTierLabel(scoreTierFromScore(sc.score), locale);
 
               return (
                 <li key={spot.id} className="relative">
@@ -262,8 +270,8 @@ export default function FavoritesClient() {
                     <FavoriteButton spotId={spot.id} spotName={spot.name} size="md" locale={loc} />
                   </div>
                   <SpotListCard
-                    name={pt ? spot.name : spot.nameEn}
-                    region={pt ? spot.region : spot.regionEn}
+                    name={localizedSpotName(spot, locale)}
+                    region={localizedSpotRegion(spot, locale)}
                     score={score}
                     conditions={{
                       waveHeight: current?.waveHeight ?? 0,
@@ -283,12 +291,8 @@ export default function FavoritesClient() {
                       semDados
                         ? semDadosTxt
                         : current
-                        ? pt
-                          ? sportScores[spot.id]?.rating
-                          : sportScores[spot.id]?.ratingEn
-                        : pt
-                          ? 'A carregar…'
-                          : 'Loading…'
+                        ? statusRating
+                        : t.favoritesPage.loading
                     }
                   />
                 </li>

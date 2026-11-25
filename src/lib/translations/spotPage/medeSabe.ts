@@ -77,7 +77,7 @@ const pt = {
   mareAbaixo: 'O mar está {v} m abaixo da maré prevista',
   mareVento: 'efeito do vento e da pressão',
   corrente: 'Corrente à superfície: {spd} m/s, {dir}',
-  correnteTitle: 'Medida por radar costeiro (IH, EMODnet) às',
+  correnteTitle: 'Medida por radar costeiro (IH, EMODnet) em',
   fundoFonte: 'Distância da praia até cada profundidade · dados do Instituto Hidrográfico (CC BY 4.0)',
   climaFonte: 'Médias de 2001 a 2020 · NASA POWER',
 };
@@ -149,7 +149,7 @@ const en: MedeSabeCopy = {
   mareAbaixo: 'The sea is {v} m below the forecast tide',
   mareVento: 'wind and pressure effect',
   corrente: 'Surface current: {spd} m/s, {dir}',
-  correnteTitle: 'Measured by coastal radar (IH, EMODnet) at',
+  correnteTitle: 'Measured by coastal radar (IH, EMODnet) on',
   fundoFonte: 'Distance from the beach to each depth · data from the Hydrographic Institute (CC BY 4.0)',
   climaFonte: 'Averages 2001 to 2020 · NASA POWER',
 };
@@ -219,7 +219,7 @@ const es: MedeSabeCopy = {
   mareAbaixo: 'El mar está {v} m por debajo de la marea prevista',
   mareVento: 'efecto del viento y la presión',
   corrente: 'Corriente en superficie: {spd} m/s, {dir}',
-  correnteTitle: 'Medida por radar costero (IH, EMODnet) a las',
+  correnteTitle: 'Medida por radar costero (IH, EMODnet) el',
   fundoFonte: 'Distancia de la playa a cada profundidad · datos del Instituto Hidrográfico (CC BY 4.0)',
   climaFonte: 'Medias de 2001 a 2020 · NASA POWER',
 };
@@ -289,7 +289,7 @@ const de: MedeSabeCopy = {
   mareAbaixo: 'Das Meer steht {v} m unter der vorhergesagten Tide',
   mareVento: 'Wirkung von Wind und Luftdruck',
   corrente: 'Oberflächenströmung: {spd} m/s, {dir}',
-  correnteTitle: 'Gemessen per Küstenradar (IH, EMODnet) um',
+  correnteTitle: 'Gemessen per Küstenradar (IH, EMODnet) am',
   fundoFonte: 'Entfernung vom Strand bis zu jeder Tiefe · Daten des Hydrographischen Instituts (CC BY 4.0)',
   climaFonte: 'Mittel 2001 bis 2020 · NASA POWER',
 };
@@ -359,7 +359,7 @@ const fr: MedeSabeCopy = {
   mareAbaixo: 'La mer est {v} m en dessous de la marée prévue',
   mareVento: 'effet du vent et de la pression',
   corrente: 'Courant de surface : {spd} m/s, {dir}',
-  correnteTitle: 'Mesuré par radar côtier (IH, EMODnet) à',
+  correnteTitle: 'Mesuré par radar côtier (IH, EMODnet) le',
   fundoFonte: 'Distance de la plage à chaque profondeur · données de l’Institut hydrographique (CC BY 4.0)',
   climaFonte: 'Moyennes 2001 à 2020 · NASA POWER',
 };

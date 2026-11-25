@@ -550,7 +550,7 @@ describe('coordenadas dos spots', () => {
     expect(v.compatibleSports).toContain('kitesurf');
     const l = spots.find((s) => s.id === 'leirosa')!;
     expect(l.hazards).not.toContain('Sem infraestruturas');
-    expect(l.facilities).toEqual(expect.arrayContaining(['Restaurantes', 'Salva-vidas (época balnear)']));
+    expect(l.facilities).toEqual(expect.arrayContaining(['Restaurantes', 'Nadador-salvador (época balnear)']));
     const sc = spots.find((s) => s.id === 'santa-cruz')!;
     expect(sc.name).toBe('Santa Cruz (Praia da Física)');
     expect(`${sc.name} ${sc.nameEn}`).not.toMatch(/Praia Azul/);

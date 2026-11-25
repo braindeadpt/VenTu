@@ -23,6 +23,7 @@ const FACILITY_ICONS: Record<string, React.ReactNode> = {
   'Aluguer equipamento': <Anchor className="w-4 h-4 text-data-waves" />,
   'Aluguer pranchas': <Anchor className="w-4 h-4 text-data-waves" />,
   'Nadador-salvador': <Shield className="w-4 h-4 text-data-waves" />,
+  'Nadador-salvador (época balnear)': <Shield className="w-4 h-4 text-data-waves" />,
   'Acesso fácil': <Heart className="w-4 h-4 text-data-waves" />,
   'Acesso PMR': <Heart className="w-4 h-4 text-data-waves" />,
   'Posto médico': <Cross className="w-4 h-4 text-data-waves" />,

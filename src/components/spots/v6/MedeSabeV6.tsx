@@ -14,7 +14,9 @@
  */
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { ExternalLink } from 'lucide-react';
-import { getTranslation, pickLocale } from '@/lib/i18n';
+import { getTranslation, pickLocale, validateLocale } from '@/lib/i18n';
+import { DATE_LOCALE } from '@/lib/dataFreshness';
+import { fusoDoSpot } from '@/lib/sol';
 import { getMoonPhase } from '@/lib/moonPhase';
 import { dailyTideAmplitudeMetres } from '@/lib/tideAmplitude';
 import type { TideHourPoint } from '@/lib/tideSchedule';
@@ -92,7 +94,32 @@ function Lua({ ilum, cresce, titulo }: { ilum: number; cresce: boolean; titulo: 
   );
 }
 
-function MareLua({ locale, copy: c, t, tMs, mares, citada, mareCurva, dataMs, cond }: {
+/**
+ * Instante da medida da corrente (ISO UTC) na hora de parede do spot:
+ * «15/07, 15:32 WEST». O carimbo cru «…T…Z» lia-se como UTC e obrigava a
+ * somar a hora de cabeça — a página fala a hora do spot (`fusoDoSpot`:
+ * Lisboa, Açores a oeste de −24,4°), logo o tooltip também. O dia/mês
+ * fazem sempre parte: o pipeline aceita leituras de corrente até ~6 h
+ * velhas e a corrida da meia-noite conserva a medição anterior, por isso
+ * «23:00» pode ser de ontem — sem a data o tooltip mentia por omissão.
+ * `null` se o ISO for inválido (o tooltip cai então no texto genérico,
+ * sem data inventada).
+ */
+export function instanteMedida(iso: string, locale: string, tz: string): string | null {
+  const epochMs = new Date(iso).getTime();
+  if (!Number.isFinite(epochMs)) return null;
+  return new Intl.DateTimeFormat(DATE_LOCALE[validateLocale(locale)], {
+    day: 'numeric',
+    month: 'short',
+    hour: '2-digit',
+    minute: '2-digit',
+    hourCycle: 'h23',
+    timeZone: tz,
+    timeZoneName: 'short',
+  }).format(new Date(epochMs));
+}
+
+function MareLua({ locale, copy: c, t, tMs, mares, citada, mareCurva, dataMs, cond, tz }: {
   locale: string;
   t: string;
   tMs?: number;
@@ -102,6 +129,8 @@ function MareLua({ locale, copy: c, t, tMs, mares, citada, mareCurva, dataMs, co
   mareCurva: readonly TideHourPoint[];
   dataMs: number;
   cond: MedeSabeCondicoes;
+  /** Fuso de parede do spot (`fusoDoSpot`) — o da hora mostrada no tooltip. */
+  tz: string;
 }) {
   const tr = getTranslation(locale);
   const mt = tr.moonTide;
@@ -117,6 +146,7 @@ function MareLua({ locale, copy: c, t, tMs, mares, citada, mareCurva, dataMs, co
     .filter((m) => mareDepois(m, { t, ms: tMs }) && !(citada && m.t === citada.t && m.ms === citada.ms))
     .slice(0, 6);
   const nf = (x: number) => fmtNum(x, locale);
+  const medidaEm = cond.currentMeasuredAt ? instanteMedida(cond.currentMeasuredAt, locale, tz) : null;
   return (
     <div className="ec ec-mare" data-ec="mare-lua">
       <h3 className="ec-t">{c.mareLua}</h3>
@@ -167,11 +197,7 @@ function MareLua({ locale, copy: c, t, tMs, mares, citada, mareCurva, dataMs, co
         <p
           className="ec-num"
           data-current-measured
-          title={
-            cond.currentMeasuredAt
-              ? `${ms.correnteTitle} ${cond.currentMeasuredAt.replace('T', ' ').replace(':00Z', ' UTC')}`
-              : ti.currentMeasuredTitle
-          }
+          title={medidaEm ? `${ms.correnteTitle} ${medidaEm}` : ti.currentMeasuredTitle}
         >
           {ms.corrente
             .replace('{spd}', nf(cond.currentMeasuredSpeed))
@@ -369,6 +395,7 @@ export default function MedeSabeV6({ spot, locale, copy: c, t, tMs, ehAgora, mar
   const grelha = useRef<HTMLDivElement>(null);
   useColunasEquilibradas(grelha);
   const windguru = getWindguruUrl(spot.slug, pickLocale(locale, { pt: spot.name, en: spot.nameEn }), spot.lat, spot.lon);
+  const fuso = fusoDoSpot(spot.lon);
   return (
     <section className="medesabe" aria-labelledby="medesabe-t" data-testid="spot-mede-sabe">
       <h3 className="ec-sec" id="medesabe-t">
@@ -379,7 +406,7 @@ export default function MedeSabeV6({ spot, locale, copy: c, t, tMs, ehAgora, mar
         {/* o que se lê agora (boia, sol e ar) antes do que se calcula (maré, fundo, clima);
             em colunas (≥760 px) a distribuição sai das alturas reais (colunasEquilibradas) */}
         <SolAr locale={locale} copy={c} t={t} ehAgora={ehAgora} uvPorHora={uvPorHora} cond={cond} />
-        <MareLua locale={locale} copy={c} t={t} tMs={tMs} mares={mares} citada={citada} mareCurva={mareCurva} dataMs={dataMs} cond={cond} />
+        <MareLua locale={locale} copy={c} t={t} tMs={tMs} mares={mares} citada={citada} mareCurva={mareCurva} dataMs={dataMs} cond={cond} tz={fuso} />
         <Fundo spotId={spot.id} locale={locale} copy={c} />
         <Clima spotId={spot.id} locale={locale} copy={c} mes={mes} />
       </div>

@@ -2,15 +2,16 @@
 
 import { useEffect, useState } from 'react';
 import { WifiOff } from 'lucide-react';
-import { getTranslation } from '@/lib/i18n';
+import { getTranslation, localePathPattern, validateLocale, type Locale } from '@/lib/i18n';
+import { DATE_LOCALE } from '@/lib/dataFreshness';
 import { getAssetPath } from '@/lib/paths';
 
 const LAST_UPDATE_KEY = 'ventu:last-data-update';
 
-function formatTime(iso: string, locale: 'pt' | 'en'): string {
+function formatTime(iso: string, locale: Locale): string {
   try {
     const d = new Date(iso);
-    return d.toLocaleString(locale === 'pt' ? 'pt-PT' : 'en-GB', {
+    return d.toLocaleString(DATE_LOCALE[locale], {
       day: 'numeric',
       month: 'short',
       hour: '2-digit',
@@ -24,12 +25,12 @@ function formatTime(iso: string, locale: 'pt' | 'en'): string {
 export default function OfflineBanner() {
   const [offline, setOffline] = useState(false);
   const [lastUpdate, setLastUpdate] = useState<string | null>(null);
-  const [locale, setLocale] = useState<'pt' | 'en'>('pt');
+  const [locale, setLocale] = useState<Locale>('pt');
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
-    setLocale(window.location.pathname.startsWith('/en') ? 'en' : 'pt');
+    setLocale(validateLocale(localePathPattern.exec(window.location.pathname)?.[1] ?? ''));
     setOffline(!navigator.onLine);
 
     try {

@@ -1330,6 +1330,20 @@ export const translationsEn = {
     mapMetaDescription: 'Interactive map of {count} spots in Portugal — filter by sport, region and score.',
     modalitiesSubtitle: 'Pick a modality — spots with score, conditions {schedule} and forecast.',
   },
+  /** /favorites page shell — title, sign-in invite, share and empty state. */
+  favoritesPage: {
+    title: 'My Favorites',
+    unavailable: 'Favorites unavailable (Supabase not configured).',
+    signInPrompt: 'Sign in with your email to save spots and see them on any device.',
+    signInCta: 'Sign in with magic link',
+    subtitle: '{count} {spots} · sorted by score',
+    spotOne: 'spot',
+    spotMany: 'spots',
+    loading: 'Loading…',
+    copyLinkPrompt: 'Copy this link:',
+    ratingAvailable: 'Available',
+    ratingNA: 'N/A',
+  },
   spotsMap: {
     bestNow: 'Best now',
     essentialFilters: 'Essential filters',

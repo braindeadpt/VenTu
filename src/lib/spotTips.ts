@@ -198,7 +198,7 @@ export const secretTips: SpotSecretTips[] = [
   },
   {
     spotSlug: 'sao-torpes',
-    tips: 'Spot pouco conhecido ao sul de Sines. Acesso por estrada de terra — carro alto recomendado. As ondas são mais consistentes no inverno. Não há salva-vidas — surf por tua conta e risco.',
+    tips: 'Spot pouco conhecido ao sul de Sines. Acesso por estrada de terra — carro alto recomendado. As ondas são mais consistentes no inverno. Não há nadadores-salvadores — surf por tua conta e risco.',
     tipsEn: 'Little-known spot south of Sines. Access via dirt road — high car recommended. Waves are more consistent in winter. No lifeguards — surf at your own risk.',
   },
   {

@@ -386,7 +386,7 @@ export const spots: Spot[] = [
       description: 'Wakeboard, hydrofoil e bóia rebocada no Rio Douro — água plana na margem esquerda (Praia da Lomba). Acesso também pela Marina de Melres (taxi-boat ~10 min). Sessões com barco e guias; não é cable park. ~30 min do Porto.',
       descriptionEn: 'Wakeboard, hydrofoil and towable tube on flat Douro River water at Praia da Lomba (left bank). Also reachable from Marina de Melres (taxi-boat ~10 min). Boat-towed sessions with guides — not a cable park. ~30 min from Porto.',
       compatibleSports: ['wakeboard', 'foil'],
-      facilities: ['Estacionamento', 'Praia fluvial', 'Escola wake', 'Aluguer', 'Snackbar', 'Parque de merendas', 'Taxi-boat Melres', 'Salva-vidas (época balnear)'],
+      facilities: ['Estacionamento', 'Praia fluvial', 'Escola wake', 'Aluguer', 'Snackbar', 'Parque de merendas', 'Taxi-boat Melres', 'Nadador-salvador (época balnear)'],
       hazards: ['Tráfego fluvial', 'Infraestrutura balnear Jun–Set'],
     },
   {
@@ -911,7 +911,7 @@ export const spots: Spot[] = [
       description: 'Praia de areal extenso a sul da Figueira da Foz, junto à aldeia piscatória da Leirosa. Beach break potente, com ondas tubulares em dias bons; o esporão ajuda a segurar os bancos. Praia vigiada na época balnear, com pontão, passadiço e restaurantes, e menos gente que as praias da cidade.',
       descriptionEn: 'Long sandy beach south of Figueira da Foz, by the fishing village of Leirosa. Powerful beach break with tubular waves on good days; the groyne helps hold the sandbanks. Lifeguarded in the bathing season, with a jetty, boardwalk and restaurants, and fewer people than the town beaches.',
       compatibleSports: ['surf', 'bodyboard', 'sup'],
-      facilities: ['Estacionamento', 'Restaurantes', 'Salva-vidas (época balnear)'],
+      facilities: ['Estacionamento', 'Restaurantes', 'Nadador-salvador (época balnear)'],
       hazards: ['Correntes fortes'],
     },
   {
@@ -994,7 +994,7 @@ export const spots: Spot[] = [
       description: 'Famoso pelas maiores ondas do mundo. Praia do Norte é o palco do Big Wave Surfing. Canal submarino amplifica ondas gigantescas.',
       descriptionEn: 'Famous for the biggest waves in the world. Praia do Norte is the stage for Big Wave Surfing. Underwater canyon amplifies giant waves.',
       compatibleSports: ['surf', 'bodyboard'],
-      facilities: ['Estacionamento', 'Restaurantes', 'Salva-vidas', 'WC'],
+      facilities: ['Estacionamento', 'Restaurantes', 'Nadador-salvador', 'WC'],
       hazards: ['Ondas gigantescas', 'Correntes fortes', 'Rochas submersas'],
     },
   {
@@ -1419,7 +1419,7 @@ export const spots: Spot[] = [
       difficulty: 'intermediate',
       bestWind: 'E, SE',
       bestSwell: 'W, NW',
-      description: 'Praia de surf mais acessível da Ericeira. Ondas desafiadoras mas gerenciáveis. Múltiplos picos ao longo da praia. Excelente para surfistas em evolução.',
+      description: 'Praia de surf mais acessível da Ericeira. Ondas desafiadoras mas geríveis. Múltiplos picos ao longo da praia. Excelente para surfistas em evolução.',
       descriptionEn: 'Most accessible surf beach in Ericeira. Challenging but manageable waves. Multiple peaks along the beach. Excellent for evolving surfers.',
       facilities: ['Estacionamento', 'Escola surf', 'Restaurantes', 'WC'],
       hazards: ['Correntes', 'Rochas'],
@@ -2704,7 +2704,7 @@ export const spots: Spot[] = [
       description: 'Spot multidesportos reconhecido com ventos constantes! Ria de Alvor com 2 acessos à lagoa (água plana para kitesurf, windsurf e foil) + Praia de Alvor no oceano. Vento térmico NW consistente.',
       descriptionEn: 'Renowned multi-sport spot with constant winds! Alvor Lagoon with 2 access points (flat water for kitesurf, windsurf and foil) + Alvor Beach on the ocean. Consistent NW thermal wind.',
       compatibleSports: ['kitesurf', 'windsurf', 'foil', 'surf', 'sup'],
-      facilities: ['Estacionamento', 'Restaurantes', 'Aluguer', 'Salva-vidas', 'WC'],
+      facilities: ['Estacionamento', 'Restaurantes', 'Aluguer', 'Nadador-salvador', 'WC'],
       hazards: ['Rochas na extremidade sul'],
     },
   {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { luaAcesa } from '../MedeSabeV6';
+import { instanteMedida, luaAcesa } from '../MedeSabeV6';
 
 describe('luaAcesa (disco da lua do «Maré e lua» v6)', () => {
   it('nova → nada aceso; cheia → o disco inteiro', () => {
@@ -18,5 +18,40 @@ describe('luaAcesa (disco da lua do «Maré e lua» v6)', () => {
     expect(luaAcesa(24, 24, 21, 0.2, false)).toBe('M24 3A21 21 0 0 0 24 45A12.6 21 0 0 1 24 3Z');
     // gibosa crescente: o terminador passa para o lado escuro (sweep 1)
     expect(luaAcesa(24, 24, 21, 0.8, true)).toBe('M24 3A21 21 0 0 1 24 45A12.6 21 0 0 1 24 3Z');
+  });
+});
+
+describe('instanteMedida (tooltip da corrente — hora do spot, não UTC cru)', () => {
+  it('Lisboa: converte o ISO UTC para dia+hora de parede com abreviatura de fuso', () => {
+    // 14:32Z → 15/07 15:32 em Lisboa no verão (WEST, UTC+1); 15:32 no inverno (WET, UTC+0)
+    const verao = instanteMedida('2026-07-15T14:32:00Z', 'pt', 'Europe/Lisbon');
+    expect(verao).toMatch(/15\/07,\s*15:32\s+\S/);
+    const inverno = instanteMedida('2026-01-15T14:32:00Z', 'pt', 'Europe/Lisbon');
+    expect(inverno).toMatch(/15\/01,\s*14:32\s+\S/);
+    // Nunca o carimbo cru: sem data ISO, sem segundos, sem «Z» solto.
+    for (const s of [verao, inverno]) {
+      expect(s).not.toMatch(/\d{4}-\d{2}-\d{2}/);
+      expect(s).not.toMatch(/:\d{2}:\d{2}/);
+      expect(s).not.toMatch(/Z$/);
+    }
+  });
+
+  it('Açores (fuso do spot): 1 h atrás de Lisboa no verão', () => {
+    // 14:32Z → 14:32 nos Açores no verão (AZOST, UTC+0) — não 15:32 de Lisboa.
+    expect(instanteMedida('2026-07-15T14:32:00Z', 'pt', 'Atlantic/Azores')).toMatch(/15\/07,\s*14:32\s+\S/);
+  });
+
+  it('a viragem UTC→local muda o dia: a data mostrada é a do spot, não a do ISO', () => {
+    // 23:30Z de 15/07 → 00:30 de 16/07 em Lisboa (WEST) — o tooltip tem de
+    // dizer 16/07, senão uma leitura «de hoje» pareceria de ontem (ou
+    // vice-versa na corrida da meia-noite, que conserva a medição anterior).
+    expect(instanteMedida('2026-07-15T23:30:00Z', 'pt', 'Europe/Lisbon')).toMatch(/16\/07,\s*00:30\s+\S/);
+    // Nos Açores (UTC+0 no verão) o mesmo instante continua em 15/07.
+    expect(instanteMedida('2026-07-15T23:30:00Z', 'pt', 'Atlantic/Azores')).toMatch(/15\/07,\s*23:30\s+\S/);
+  });
+
+  it('locale inválido cai em pt; ISO inválido devolve null', () => {
+    expect(instanteMedida('2026-07-15T14:32:00Z', 'xx', 'Europe/Lisbon')).toMatch(/15\/07,\s*15:32\s+\S/);
+    expect(instanteMedida('ontem às tantas', 'pt', 'Europe/Lisbon')).toBeNull();
   });
 });
