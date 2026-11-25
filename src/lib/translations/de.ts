@@ -1422,6 +1422,7 @@ export const translationsDe = {
     spotMany: 'Spots',
     loading: 'Wird geladen…',
     copyLinkPrompt: 'Diesen Link kopieren:',
+    ratingAvailable: 'Verfügbar',
   },
   spotsMap: {
     bestNow: 'Beste jetzt',

@@ -7,6 +7,8 @@ import { Heart, ArrowLeft, Share2, Check, LogIn } from 'lucide-react';
 import { spots } from '@/lib/spots';
 import { fetchMarineData, getCurrentConditions } from '@/lib/openmeteo';
 import { isNoite, isSemDados, notaV6DoSpot, scoreAgoraComV6 } from '@/lib/notaV6Agora';
+import { scoreTierFromScore } from '@/lib/nota';
+import { getScoreTierLabel } from '@/lib/sportScore';
 import { compararJanelas, janelaSeguinte } from '@/lib/noiteListas';
 import { janelasDeNoite } from '@/lib/janelasNoiteCliente';
 import { carregarFavoritos, type JanelasFavoritos } from './carregarFavoritos';
@@ -248,6 +250,17 @@ export default function FavoritesClient() {
               const noite = isNoite(sportScores[spot.id]);
               const primarySport = (spot.compatibleSports?.[0] || spot.type) as SportType;
               const sportLabel = pickLocale(locale, SPORT_LABELS[primarySport]);
+              // statusLine: o score chega com rating/ratingEn cozidos (pt/en);
+              // para es/de/fr deriva-se a etiqueta da banda via tier — os
+              // especiais ('N/A', 'Disponível' do wakebook) vêm do dict.
+              const sc = sportScores[spot.id];
+              const statusRating = !sc
+                ? undefined
+                : sc.rating === 'N/A'
+                  ? 'N/A'
+                  : sc.rating === 'Disponível'
+                    ? t.favoritesPage.ratingAvailable
+                    : getScoreTierLabel(scoreTierFromScore(sc.score), locale);
 
               return (
                 <li key={spot.id} className="relative">
@@ -276,9 +289,7 @@ export default function FavoritesClient() {
                       semDados
                         ? semDadosTxt
                         : current
-                        ? locale === 'pt'
-                          ? sportScores[spot.id]?.rating
-                          : sportScores[spot.id]?.ratingEn
+                        ? statusRating
                         : t.favoritesPage.loading
                     }
                   />
