@@ -184,9 +184,14 @@ SELECT test_expect(
 );
 RESET ROLE;
 
+-- is_ventu_admin() exige conta existente (PR #593): fixture de admin real +
+-- sub nos claims (o user 22222222 só nasce mais tarde, nos testes E1c).
+INSERT INTO auth.users (id, email)
+VALUES ('99999999-9999-9999-9999-999999999999', 'admin-fixture@example.com')
+ON CONFLICT (id) DO NOTHING;
 SELECT set_config(
   'request.jwt.claims',
-  '{"sub":"22222222-2222-2222-2222-222222222222","app_metadata":{"role":"admin"}}',
+  '{"sub":"99999999-9999-9999-9999-999999999999","app_metadata":{"role":"admin"}}',
   false
 );
 SET ROLE authenticated;

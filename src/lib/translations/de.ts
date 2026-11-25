@@ -1764,7 +1764,7 @@ export const translationsDe = {
     secShareTitle: 'Mit wem wir teilen',
     secShareBody: 'Wir verkaufen, vermieten oder teilen deine personenbezogenen Daten mit niemandem. Die genannten Anbieter verarbeiten Daten ausschließlich in unserem Auftrag, damit der Dienst funktioniert.',
     secRightsTitle: 'Deine Rechte (DSGVO)',
-    secRightsBody: 'Du hast das Recht auf Auskunft, Berichtigung, Export und Löschung deiner Daten. Du kannst dein Konto und alle zugehörigen Daten löschen — frag einfach über das Feedback-Formular oder auf GitHub und wir kümmern uns darum.',
+    secRightsBody: 'Du hast das Recht auf Auskunft, Berichtigung, Export und Löschung deiner Daten. Du kannst dein Konto und alle zugehörigen Daten direkt in der App löschen — im Bildschirm «Konto», Option «Konto löschen» — oder, wenn du magst, frag einfach über das Feedback-Formular oder auf GitHub und wir kümmern uns darum.',
     secContactTitle: 'Kontakt',
     secContactBody: 'Fragen zum Datenschutz? Nutze den Button „Vorschlagen / Melden“ auf der Website oder öffne ein Issue auf GitHub — das Projekt ist Open Source und die Konversation ist standardmäßig öffentlich.',
     secChangesTitle: 'Änderungen',

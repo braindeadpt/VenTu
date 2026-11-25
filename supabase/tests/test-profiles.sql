@@ -79,7 +79,16 @@ SELECT test_expect(
 );
 
 -- ── 4. Admin claims CAN change plan ──
-SELECT set_config('request.jwt.claims', '{"app_metadata":{"role":"admin"}}', false);
+-- is_ventu_admin() exige conta existente (PR #593): o fixture de admin tem de
+-- ser um user real em auth.users e os claims trazem o sub dele.
+INSERT INTO auth.users (id, email)
+VALUES ('99999999-9999-9999-9999-999999999999', 'admin-fixture@example.com')
+ON CONFLICT (id) DO NOTHING;
+SELECT set_config(
+  'request.jwt.claims',
+  '{"sub":"99999999-9999-9999-9999-999999999999","app_metadata":{"role":"admin"}}',
+  false
+);
 UPDATE profiles SET plan = 'pro' WHERE id = '11111111-2222-3333-4444-555555555555';
 SELECT test_expect(
   (SELECT plan FROM profiles WHERE id = '11111111-2222-3333-4444-555555555555') = 'pro',

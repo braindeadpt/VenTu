@@ -1683,7 +1683,7 @@ export const translationsEn = {
     secShareTitle: 'Who we share with',
     secShareBody: 'We do not sell, rent or share your personal data with anyone. The providers above process data only on our behalf so the service can run.',
     secRightsTitle: 'Your rights (GDPR)',
-    secRightsBody: 'You have the right to access, rectify, export and delete your data. You can delete your account and all associated data — just ask via the feedback form or on GitHub and we will handle it.',
+    secRightsBody: 'You have the right to access, rectify, export and delete your data. You can delete your account and all associated data directly in the app — on the «Account» screen, «Delete account» option — or, if you prefer, ask via the feedback form or on GitHub and we will handle it.',
     secContactTitle: 'Contact',
     secContactBody: 'Questions about privacy? Use the “Suggest / Report” button on the site or open an issue on GitHub — the project is open source and the conversation is public by default.',
     secChangesTitle: 'Changes',

@@ -1764,7 +1764,7 @@ export const translationsFr = {
     secShareTitle: 'Avec qui nous partageons',
     secShareBody: 'Nous ne vendons, ne louons ni ne partageons vos données personnelles avec personne. Les prestataires ci-dessus ne traitent des données qu’en notre nom, pour que le service fonctionne.',
     secRightsTitle: 'Vos droits (RGPD)',
-    secRightsBody: 'Vous avez le droit d’accéder, de rectifier, d’exporter et de supprimer vos données. Vous pouvez supprimer le compte et toutes les données associées — demandez via le formulaire de feedback ou sur GitHub et nous nous en occupons.',
+    secRightsBody: 'Vous avez le droit d’accéder, de rectifier, d’exporter et de supprimer vos données. Vous pouvez supprimer le compte et toutes les données associées directement dans l’app — dans l’écran «Compte», option «Supprimer le compte» — ou, si vous préférez, demandez via le formulaire de feedback ou sur GitHub et nous nous en occupons.',
     secContactTitle: 'Contact',
     secContactBody: 'Des questions sur la confidentialité ? Utilisez le bouton « Suggérer / Signaler » du site ou ouvrez une issue sur GitHub — le projet est open-source et la conversation est publique par défaut.',
     secChangesTitle: 'Modifications',

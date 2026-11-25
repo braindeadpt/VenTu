@@ -2,6 +2,13 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 import { describe, expect, it, vi } from 'vitest';
 import { deleteOwnAccount } from '@/lib/deleteAccount';
 
+// Estes testes cobrem apenas o wrapper cliente (mapeamento de erros). O
+// comportamento REAL da eliminação — cascata, sweep de alertas legacy por
+// email, scrub do directório contra os protect triggers, refs de moderação
+// NO ACTION e a perda de acesso admin pós-delete — é exercitado contra
+// Postgres real em supabase/tests/test-delete-account.sql (CI: job
+// supabase-sql), porque aqui só conseguiríamos mockar o RPC.
+
 function supabaseWithRpc(rpc: ReturnType<typeof vi.fn>): SupabaseClient {
   return { rpc } as unknown as SupabaseClient;
 }
