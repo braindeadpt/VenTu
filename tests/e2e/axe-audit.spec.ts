@@ -42,6 +42,20 @@ const ROUTE_GROUPS = new Map([
   ['/pt/spots/', 'map'],
 ]);
 
+/**
+ * Páginas de spot (#204 — Opção B): o template é um só, mas o conteúdo varia
+ * (livecam, big-wave, observações, avisos) — a amostra cobre um spot com
+ * câmara e régua completa (guincho, a rota que o gate Lighthouse mede), um
+ * big-wave noutro locale (nazaré EN) e um terceiro perfil (moledo, norte).
+ * O scan é no tema escuro (default) — a dívida de contraste do tema claro é
+ * conhecida e fora do âmbito (ver cabeçalho do ficheiro).
+ */
+const SPOT_ROUTES = [
+  '/pt/spots/guincho/',
+  '/en/spots/nazare/',
+  '/pt/spots/moledo/',
+];
+
 const FAILING_IMPACTS = new Set(['critical', 'serious']);
 
 test.describe('axe-core scan (core routes × themes)', () => {
@@ -103,5 +117,41 @@ test.describe('axe-core scan (core routes × themes)', () => {
         ).toEqual([]);
       });
     }
+  }
+});
+
+test.describe('axe-core scan (spot template × locales, #204)', () => {
+  test.describe.configure({ mode: 'parallel' });
+
+  for (const path of SPOT_ROUTES) {
+    test(`${path} has no critical/serious a11y violations`, async ({ page }) => {
+      test.setTimeout(120_000);
+      await page.emulateMedia({ reducedMotion: 'reduce' });
+      await page.goto(path, { waitUntil: 'domcontentloaded', timeout: 45_000 });
+      await page.locator('main').first().waitFor({ state: 'visible', timeout: 20_000 });
+      // A régua 48h e as secções v6 hidratam logo a seguir ao primeiro paint —
+      // esperar pela superfície do veredicto para o scan não medir o shell vazio.
+      await page.waitForTimeout(1500);
+
+      const results = await new AxeBuilder({ page })
+        .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'best-practice'])
+        .analyze();
+
+      const failing = results.violations.filter((v) => FAILING_IMPACTS.has(v.impact ?? ''));
+      const summary = failing.map((v) => ({
+        id: v.id,
+        impact: v.impact,
+        help: v.help,
+        nodes: v.nodes.length,
+        targets: v.nodes.slice(0, 3).map((n) => (n.target ?? []).join(' ')),
+        details: v.nodes.slice(0, 2).map((n) => (n.failureSummary ?? '').replace(/\s+/g, ' ').slice(0, 160)),
+      }));
+
+      expect(
+        summary,
+        `${path} axe violations:
+${JSON.stringify(summary, null, 1)}`,
+      ).toEqual([]);
+    });
   }
 });

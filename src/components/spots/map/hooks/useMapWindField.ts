@@ -331,9 +331,18 @@ export function useMapWindField({
     };
     const clipReady = () => !!clipState.mask || clipState.missing || clipState.slow;
 
-    const respawnAll = () => {
+    // #204 (TBT /mapa): o arranque enchia as ~460 partículas de uma vez no
+    // task do efeito e o primeiro frame advectava+desenhava o pool inteiro
+    // com o código ainda frio de JIT — um long task de ~100 ms dentro da
+    // janela do Lighthouse. Agora o pool cresce no máximo `spawnCap` por
+    // frame (≈ 6 frames, coberto pelo fade-in de 300 ms — o traço já
+    // precisava desse tempo para se formar, logo nada muda no ecrã).
+    // `fillNow` só para o caminho estático (reduced-motion), que compõe as
+    // streamlines numa única pintura e precisa do pool completo.
+    const spawnCap = () => Math.max(24, Math.ceil(particleTarget() / 6));
+    const respawnAll = (fillNow = false) => {
       particles.length = 0;
-      if (!clipReady()) return;
+      if (!fillNow || !clipReady()) return;
       const view = spawnView();
       const target = particleTarget();
       for (let i = 0; i < target; i++) {
@@ -368,7 +377,7 @@ export function useMapWindField({
         );
         return;
       }
-      respawnAll();
+      respawnAll(true);
       const origin = map.containerPointToLayerPoint([0, 0]);
       const project = (lat: number, lon: number) => {
         const p = map.latLngToLayerPoint([lat, lon]);
@@ -487,10 +496,17 @@ export function useMapWindField({
         return;
       }
       if (particles.length > target) particles.length = target;
-      while (particles.length < target) {
+      // #204: cresce no máximo `spawnCap` por frame — o pool enche em
+      // ≈ 6 frames (dentro do fade-in de 300 ms) em vez de um único frame
+      // pesado. As partículas que morrem continuam a repor-se uma a uma
+      // (o cap só morde no enchimento inicial/respawn em massa).
+      const cap = spawnCap();
+      let spawned = 0;
+      while (particles.length < target && spawned < cap) {
         const np: WindParticle = { lat: 0, lon: 0, px: 0, py: 0, hasPrev: false, life: 0, kt: 0, jit: 1 };
         if (!spawnWindParticle(gridsRef.current, view, np, Math.random, undefined, onLand)) break;
         particles.push(np);
+        spawned += 1;
       }
       for (const p of particles) {
         // Velocidade ∝ vento (u,v em m/s × px/s por m/s) e cor pelo nó actual.

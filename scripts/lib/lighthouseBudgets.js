@@ -30,19 +30,33 @@ const METRIC_BUDGETS = {
 const CATEGORY_BUDGETS = { seo: 90, accessibility: 85, performance: 50 };
 
 /**
+ * Per-route category floors (#204, decisão do maintainer — Opção B): a rota
+ * de referência da página de spot é medida contra um floor de A11y de 100
+ * (home e mapa já medem 100; o template do spot tem de os igualar). Só
+ * aperta — os floors globais das outras rotas ficam como estão e nenhum
+ * orçamento de métricas é alargado.
+ */
+const ROUTE_CATEGORY_BUDGETS = {
+  'spot-guincho': { accessibility: 100 },
+};
+
+/**
  * Evaluate one Lighthouse report against the budgets.
  * @param {{categories?: Record<string, {score: number|null}>, audits?: Record<string, {numericValue?: number}>}} report
+ * @param {{categories?: Record<string, number>}} [routeBudgets] per-route
+ *   category-floor overrides (merged over CATEGORY_BUDGETS — nunca alarga).
  * @returns {{breaches: string[], tracked: Array<{id: string, value: number}>, worst: Record<string, number>}}
  *   breaches: human-readable lines (empty = pass). Fail-closed: a budgeted
  *   audit missing from the report is itself a breach.
  */
-function evaluateLighthouseBudgets(report) {
+function evaluateLighthouseBudgets(report, routeBudgets) {
   const breaches = [];
   const tracked = [];
   const worst = {};
+  const categoryBudgets = { ...CATEGORY_BUDGETS, ...(routeBudgets?.categories ?? {}) };
 
   for (const [id, { score }] of Object.entries(report.categories ?? {})) {
-    const floor = CATEGORY_BUDGETS[id];
+    const floor = categoryBudgets[id];
     if (floor == null) continue;
     const value = Math.round((score ?? 0) * 100);
     worst[id] = value;
@@ -118,4 +132,4 @@ function medianReport(reports) {
   return out;
 }
 
-module.exports = { METRIC_BUDGETS, CATEGORY_BUDGETS, evaluateLighthouseBudgets, medianReport };
+module.exports = { METRIC_BUDGETS, CATEGORY_BUDGETS, ROUTE_CATEGORY_BUDGETS, evaluateLighthouseBudgets, medianReport };

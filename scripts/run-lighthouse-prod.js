@@ -6,7 +6,7 @@ const { spawn } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 const http = require('http');
-const { evaluateLighthouseBudgets, medianReport } = require('./lib/lighthouseBudgets');
+const { evaluateLighthouseBudgets, medianReport, ROUTE_CATEGORY_BUDGETS } = require('./lib/lighthouseBudgets');
 
 // Nota (2026-09-23): NÃO usar um perfil Chrome partilhado para "aquecer" a
 // cache — o `lighthouse` CLI arranca sempre um perfil temporário próprio e
@@ -188,7 +188,9 @@ async function main() {
           `CLS ${medianCls} (budget 0.1)`,
       );
 
-      const { breaches } = evaluateLighthouseBudgets(median);
+      const { breaches } = evaluateLighthouseBudgets(median, {
+        categories: ROUTE_CATEGORY_BUDGETS[route.name] ?? {},
+      });
       for (const breach of breaches) allBreaches.push(`[${route.name}] ${breach}`);
       // Pior run por CLS (é a métrica que oscila no runner partilhado). Guardado
       // como artefacto sempre que a rota rebenta um budget, para o diagnóstico
