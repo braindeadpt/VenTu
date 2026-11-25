@@ -1342,6 +1342,7 @@ export const translationsEn = {
     loading: 'Loading…',
     copyLinkPrompt: 'Copy this link:',
     ratingAvailable: 'Available',
+    ratingNA: 'N/A',
   },
   spotsMap: {
     bestNow: 'Best now',

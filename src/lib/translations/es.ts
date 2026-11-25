@@ -1423,6 +1423,7 @@ export const translationsEs = {
     loading: 'Cargando…',
     copyLinkPrompt: 'Copia este enlace:',
     ratingAvailable: 'Disponible',
+    ratingNA: 'N/A',
   },
   spotsMap: {
     bestNow: 'Mejor ahora',

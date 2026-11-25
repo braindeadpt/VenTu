@@ -1348,6 +1348,7 @@ export const translationsPt = {
     loading: 'A carregar…',
     copyLinkPrompt: 'Copia este link:',
     ratingAvailable: 'Disponível',
+    ratingNA: 'N/A',
   },
   spotsMap: {
     bestNow: 'Melhor agora',

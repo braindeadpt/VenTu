@@ -249,7 +249,9 @@ export default function FavoritesClient() {
               const semDados = isSemDados(sportScores[spot.id]);
               const noite = isNoite(sportScores[spot.id]);
               const primarySport = (spot.compatibleSports?.[0] || spot.type) as SportType;
-              const sportLabel = pickLocale(locale, SPORT_LABELS[primarySport]);
+              const sportLabel = SPORT_LABELS[primarySport]
+                ? pickLocale(locale, SPORT_LABELS[primarySport])
+                : undefined;
               // statusLine: o score chega com rating/ratingEn cozidos (pt/en);
               // para es/de/fr deriva-se a etiqueta da banda via tier — os
               // especiais ('N/A', 'Disponível' do wakebook) vêm do dict.
@@ -257,7 +259,7 @@ export default function FavoritesClient() {
               const statusRating = !sc
                 ? undefined
                 : sc.rating === 'N/A'
-                  ? 'N/A'
+                  ? t.favoritesPage.ratingNA
                   : sc.rating === 'Disponível'
                     ? t.favoritesPage.ratingAvailable
                     : getScoreTierLabel(scoreTierFromScore(sc.score), locale);
