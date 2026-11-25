@@ -12,6 +12,7 @@ Run these files once in the [Supabase SQL Editor](https://supabase.com/dashboard
 | [`supabase-alerts-e1c.sql`](supabase-alerts-e1c.sql) | Bulk alerts on favorites (E1c) |
 | [`supabase-alerts-e1c-harden.sql`](supabase-alerts-e1c-harden.sql) | Harden E1c alert RPCs (per-IP rate limits via `request.headers`, direct writes on `user_alert_prefs` revoked) — run after `supabase-alerts-e1c.sql` + `supabase-rate-limit-common.sql` |
 | [`supabase-auth-profiles.sql`](supabase-auth-profiles.sql) | User accounts + synced favorites (F1) |
+| [`supabase-delete-account.sql`](supabase-delete-account.sql) | Self-service account deletion RPC (`delete_own_account()`) — deletes the caller's `auth.users` row so every personal-data table cascades; executable by `authenticated` only. Run after `supabase-auth-profiles.sql` |
 | [`supabase-contributions.sql`](supabase-contributions.sql) | Community contributions form |
 | [`supabase-contributions-migration-c3.sql`](supabase-contributions-migration-c3.sql) | Migration for contributions schema |
 | [`supabase-contributions-harden-rpc.sql`](supabase-contributions-harden-rpc.sql) | Harden anon writes (per-IP rate limit via RPC; direct INSERT revoked) — run after contributions + score-feedback files + `supabase-rate-limit-common.sql`. Its RPCs are granted to `anon` **and** `authenticated` |
