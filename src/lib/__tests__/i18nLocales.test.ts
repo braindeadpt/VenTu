@@ -20,7 +20,7 @@ const SHARED_TOKENS = new Set([
   'Open-Meteo', 'GitHub', 'VenTu', 'VenTu. Open Source Project.',
   'Big Wave', 'Bodyboard', 'Foil', 'Kitesurf', 'SUP', 'Surf', 'Wakeboard', 'Windsurf',
   'Chat', 'Feedback', 'Links', 'Livecams', 'Livecams →', 'Powered by', 'Rankings', 'Reset',
-  'Score', 'Swell', 'Top score', 'Radar', 'Radar IPMA', 'spots', 'Spots',
+  'Score', 'Swell', 'Top score', 'Radar', 'Radar IPMA', 'spot', 'spots', 'Spots',
   'cross', 'offshore', 'onshore', 'kW/m', '{count} spots',
   'flat', // termo adoptado em pt/en/es (frase de tier «flat»)
   'offshore', // termo adoptado em pt/en/es/de/fr (relação de vento)
@@ -77,6 +77,7 @@ const ES_COGNATES = new Set([
   'Favoritos', 'Filtrar por', 'Idioma', 'Legal', 'Logística', 'Mapa',
   'Mar total', 'Menos horas', 'Métricas', 'Modalidades', 'Mostrar filtros',
   'Mostrar todos',  'Ocultar filtros', 'Ocultar radar', 'Ordenados por score', 'Pausado', 'Pausar radar',
+  '{count} {spots} · ordenados por score', // subtítulo de /favorites — espanhol correcto = PT
   'Perfil', 'Próximos eventos', 'Resumido por IA', 'Resultados', 'Satélite',
   'Spots filtrados', 'spots monitorizados', 'Swell ideal', 'Todos',
   'Top 1 para', 'Top 3 para', 'Últimas', 'Ver', 'Ver todos',
@@ -255,7 +256,7 @@ const EN_COGNATES = new Set([
   'Pausar radar', 'Perfil', 'Powered by', 'Radar', 'Radar IPMA', 'Rankings',
   'Reset', 'Score', 'spots', 'Spots', 'SUP', 'Surf', 'Swell', 'Top score',
   'VenTu', 'VenTu. Open Source Project.', 'Ver spot', 'Wakeboard', 'Windsurf',
-  '{count} spots',
+  '{count} spots', 'spot', // «spot» é a mesma palavra em PT e EN (contagem singular)
   'Hs', 'Copernicus', 'Instituto Hidrográfico',
   ' · {n} frame',        // «frame» é o termo adoptado em PT e EN (contagem do radar)
   ' · {n} frames',

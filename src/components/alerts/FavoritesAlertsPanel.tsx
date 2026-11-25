@@ -7,7 +7,7 @@ import { useAuth } from '@/contexts/AuthProvider';
 import { getSupabaseClient } from '@/lib/supabase';
 import { SPORT_LABELS, type SportType } from '@/lib/sportRatings';
 import { DESPORTOS_ALERTAS, temAlertasCondicoes } from '@/lib/desportosV6';
-import { getTranslation } from '@/lib/i18n';
+import { getTranslation, pickLocale } from '@/lib/i18n';
 import {
   deactivateUserAlerts,
   fetchUserAlertPrefs,
@@ -25,7 +25,6 @@ interface FavoritesAlertsPanelProps {
 }
 
 export default function FavoritesAlertsPanel({ locale, favoriteCount }: FavoritesAlertsPanelProps) {
-  const isPt = locale === 'pt';
   const t = getTranslation(locale);
   const a = t.alerts;
   const { session, favoritesReady } = useAuth();
@@ -119,6 +118,9 @@ export default function FavoritesAlertsPanel({ locale, favoriteCount }: Favorite
   const isActive = prefs?.active === true;
   const isVerified = prefs?.verified === true;
   const pendingConfirm = isActive && !isVerified;
+  const activeSportLabel = prefs
+    ? pickLocale(locale, SPORT_LABELS[prefs.sport as SportType] ?? { pt: prefs.sport, en: prefs.sport })
+    : '';
 
   return (
     // O `id="alertas"` (destino do link de /xx/alerts/) é do contentor estável
@@ -141,7 +143,7 @@ export default function FavoritesAlertsPanel({ locale, favoriteCount }: Favorite
         <p className="text-xs text-score-good font-medium">
           {a.alertsActive}
           {' · '}
-          {SPORT_LABELS[prefs!.sport as SportType]?.[isPt ? 'pt' : 'en'] ?? prefs!.sport}
+          {activeSportLabel}
           {' · '}
           score ≥ {scoreToNota(prefs!.min_score)}
           {' · '}
@@ -174,7 +176,7 @@ export default function FavoritesAlertsPanel({ locale, favoriteCount }: Favorite
             >
               {DESPORTOS_ALERTAS.map((s) => (
                 <option key={s} value={s}>
-                  {SPORT_LABELS[s][isPt ? 'pt' : 'en']}
+                  {pickLocale(locale, SPORT_LABELS[s])}
                 </option>
               ))}
             </select>

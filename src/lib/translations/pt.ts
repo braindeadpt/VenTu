@@ -1336,6 +1336,18 @@ export const translationsPt = {
     mapMetaDescription: 'Mapa interactivo com {count} spots em Portugal — filtros por desporto, região e score.',
     modalitiesSubtitle: 'Escolhe uma modalidade — spots com score, condições {schedule} e previsão.',
   },
+  /** Shell da página /favorites — título, convite de login, partilha e estado vazio. */
+  favoritesPage: {
+    title: 'Meus Favoritos',
+    unavailable: 'Favoritos indisponíveis (Supabase não configurado).',
+    signInPrompt: 'Entra com o teu email para guardar spots e vê-los em qualquer dispositivo.',
+    signInCta: 'Entrar com magic link',
+    subtitle: '{count} {spots} · ordenados por score',
+    spotOne: 'spot',
+    spotMany: 'spots',
+    loading: 'A carregar…',
+    copyLinkPrompt: 'Copia este link:',
+  },
   spotsMap: {
     bestNow: 'Melhor agora',
     essentialFilters: 'Filtros essenciais',

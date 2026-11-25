@@ -1411,6 +1411,18 @@ export const translationsDe = {
     mapMetaDescription: 'Interaktive Karte mit {count} Spots in Portugal — Filter nach Sportart, Region und Score.',
     modalitiesSubtitle: 'Wähle eine Sportart — Spots mit Score, Bedingungen {schedule} und Vorhersage.',
   },
+  /** Shell der /favorites-Seite — Titel, Login-Einladung, Teilen und Leerzustand. */
+  favoritesPage: {
+    title: 'Meine Favoriten',
+    unavailable: 'Favoriten nicht verfügbar (Supabase nicht konfiguriert).',
+    signInPrompt: 'Melde dich mit deiner E-Mail an, um Spots zu speichern und sie auf jedem Gerät zu sehen.',
+    signInCta: 'Mit Magic Link anmelden',
+    subtitle: '{count} {spots} · nach Score sortiert',
+    spotOne: 'Spot',
+    spotMany: 'Spots',
+    loading: 'Wird geladen…',
+    copyLinkPrompt: 'Diesen Link kopieren:',
+  },
   spotsMap: {
     bestNow: 'Beste jetzt',
     essentialFilters: 'Wesentliche Filter',
