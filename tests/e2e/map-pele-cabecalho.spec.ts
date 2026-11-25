@@ -62,7 +62,14 @@ test.describe('/mapa pele v6 — cabeçalho e atribuição (B8)', () => {
     // script por chamada e eles acumulam-se entre navegações na mesma página.
     const atr = (p: Page) => p.locator('.leaflet-control-attribution');
     const licencas = (t: string) =>
-      t.replace(/\s*©\s*/g, '\n© ').split(/[\n,]+/).map((s) => s.trim()).filter(Boolean).sort();
+      [...new Set(
+        t.replace(/\s*©\s*/g, '\n© ').split(/[\n,]+/).map((s) => s.trim())
+          // O crédito do provider do mapa base corre uma race (CARTO ↔ Esri
+          // conforme a camada que responde primeiro) — normaliza-se para o
+          // teste continuar a garantir que a pele não altera o texto.
+          .map((s) => (s === '© CARTO' || s === '© Esri' ? '© basemap' : s))
+          .filter(Boolean),
+      )].sort();
     await abre(page, false);
     await expect(atr(page)).toBeVisible({ timeout: 20_000 });
     const textoSem = (await atr(page).innerText()).trim();
