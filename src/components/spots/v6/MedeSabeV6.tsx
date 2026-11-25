@@ -96,15 +96,21 @@ function Lua({ ilum, cresce, titulo }: { ilum: number; cresce: boolean; titulo: 
 
 /**
  * Instante da medida da corrente (ISO UTC) na hora de parede do spot:
- * «15:32 WEST». O carimbo cru «…T…Z» lia-se como UTC e obrigava a somar a
- * hora de cabeça — a página fala a hora do spot (`fusoDoSpot`: Lisboa,
- * Açores a oeste de −24,4°), logo o tooltip também. `null` se o ISO for
- * inválido (o tooltip cai então no texto genérico, sem data inventada).
+ * «15/07, 15:32 WEST». O carimbo cru «…T…Z» lia-se como UTC e obrigava a
+ * somar a hora de cabeça — a página fala a hora do spot (`fusoDoSpot`:
+ * Lisboa, Açores a oeste de −24,4°), logo o tooltip também. O dia/mês
+ * fazem sempre parte: o pipeline aceita leituras de corrente até ~6 h
+ * velhas e a corrida da meia-noite conserva a medição anterior, por isso
+ * «23:00» pode ser de ontem — sem a data o tooltip mentia por omissão.
+ * `null` se o ISO for inválido (o tooltip cai então no texto genérico,
+ * sem data inventada).
  */
 export function instanteMedida(iso: string, locale: string, tz: string): string | null {
   const epochMs = new Date(iso).getTime();
   if (!Number.isFinite(epochMs)) return null;
   return new Intl.DateTimeFormat(DATE_LOCALE[validateLocale(locale)], {
+    day: 'numeric',
+    month: 'short',
     hour: '2-digit',
     minute: '2-digit',
     hourCycle: 'h23',
