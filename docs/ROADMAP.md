@@ -2,7 +2,7 @@
 
 > **Objectivo:** transformar o VenTu de “projecto impressionante” em “ferramenta em que confio todos os dias”.  
 > **Posicionamento:** referência gratuita portuguesa multi-desporto — *não* rival do Surfline.  
-> **Criado:** 2026-05-24 · **Última revisão:** 2026-05-25
+> **Criado:** 2026-05-24 · **Última revisão:** 2026-11-24 (design v6 «Atlântico» entregue — ver Notas de sessão)
 
 ---
 
@@ -56,9 +56,9 @@ Templates em [`ROADMAP-ISSUES.md`](./ROADMAP-ISSUES.md). Depois de `gh auth logi
 | E3 | Notícias v2 | P1 | 4–6h | ✅ done |
 | C4b | Calibração scores (pesos empíricos) | P2 | contínuo | 🟡 tooling ready — aguardar N≥30/modalidade |
 | E5 | Mapa / UX mapa (vento legível) | P1 | 1h | ✅ done |
-| E6 | Livecams embed + expansão | P2 | 4h+ | ✅ done |
+| E6 | Livecams embed + expansão | P2 | 4h+ | ✅ done (114 spots curados — ver notas 2026-11) |
 
-**Fase activa:** **C4b** (recolher feedback → `npm run scores:analyze`) · vento/METAR/ilhas/mapa split feitos
+**Fase activa:** **C4b** (recolher feedback → `npm run scores:analyze`) · onda entregue entretanto: design v6 «Atlântico» completo (home/spot/mapa/tema/i18n), motor de previsão Fases auditoria+3, infra `ventu-data`, TWA Android — ver secção «Notas de sessão» 2026-11
 
 ---
 
@@ -138,7 +138,7 @@ Templates em [`ROADMAP-ISSUES.md`](./ROADMAP-ISSUES.md). Depois de `gh auth logi
 
 ### E6 — Livecams ✅
 
-**Feito (2026-05-25):** 31 spots com links externos Surftotal/MEO (`spotLivecams.ts`). Secção «Câmara ao vivo» só em spots curados; botão abre o operador (live real). Removidos embeds Windy (timelapse) e iframes MEO.
+**Feito (2026-05-25; expandido 2026-11):** **114 spots** com câmaras em `spotLivecams.ts` — links externos Surftotal/MEO/FeelViana + embeds válidos (YouTube `youtube-nocookie`, Surfline onde o embed vive). Secção «Câmara ao vivo» só em spots curados; os dois embeds partidos da mega audit foram regularizados (`cabedelo-wakepark` link-only, `foil-cabedelo` → YouTube de Cabedelo). Removidos embeds Windy (timelapse) e iframes MEO.
 
 ---
 
@@ -224,33 +224,58 @@ Templates em [`ROADMAP-ISSUES.md`](./ROADMAP-ISSUES.md). Depois de `gh auth logi
 
 ## Fase D — Explicitamente adiado
 
-| Item | Porquê adiar |
+| Item | Porquê adiar / estado 2026-11 |
 |------|--------------|
-| Multi-modelo GFS/ECMWF | Windguru domina power users; complexidade alta |
-| App nativa iOS/Android | PWA + SEO primeiro |
-| Contas completas / sync favoritos | URL + localStorage + export suficiente |
+| Multi-modelo GFS/ECMWF | ✅ **entregue como ensemble** — 4 modelos de onda + 4 de vento no run multi-modelo (`WAVE_MODELS`/`WIND_MODELS`, banda `ens` P10/P50/P90 nos forecasts; UI da banda removida na v6, dados mantidos) |
+| App nativa iOS/Android | Android via **TWA** entregue (#544 — ícones, assetlinks, página de privacidade, pipeline documentada em `ANDROID.md`); iOS continua adiado (PWA + SEO primeiro) |
+| Contas completas / sync favoritos | Parcialmente revisto: Supabase auth + `/conta` + favoritos/alertas/passaporte/diretório existem; sync offline completo continua desnecessário (URL + localStorage + export) |
 | Chat global | Sem analytics que justifiquem ([`archive/CHAT-SECURITY.md`](./archive/CHAT-SECURITY.md)) |
-| Câmaras embed genéricas | Descartado; links curados em 31 spots (**E6** ✅) |
+| Câmaras embed genéricas | Descartado; **114 spots** com livecams curadas em `spotLivecams.ts` (links + embeds válidos — YouTube `youtube-nocookie`, Surfline onde o embed vive) |
 
 ---
 
-## Métricas (2026-05-25)
+## Métricas (2026-11-24)
 
 | Métrica | Estado actual |
 |---------|----------------|
-| Dawn Patrol freshness | ≤ 24h (workflow) |
-| Copy “tempo real” no UI | 0 |
-| `compatibleSports` | 185/185 ✅ |
-| Unit tests scoring | 220+ |
-| Sitemap URLs | ~448 ✅ |
-| Livecams curadas | 31 spots |
-| Alertas email prod | ✅ E1 done |
+| Spots no catálogo | **189** (`src/lib/spots.json` → `spots.ts` gerado, `compatibleSports` 189/189) |
+| Locales | **5** — pt/en/es/de/fr; dívida `isPt→EN` = 0 (ratchet `i18nDebt.test.js`) |
+| Design | v6 «Atlântico» — home `.v6h`, spot `SpotV6`, mapa `[data-pele='v6']` default, tema dark+«Sol» |
+| Livecams curadas | **114** spots (`spotLivecams.ts`) |
+| Sitemap URLs | ~2 200 `<loc>` (5 hreflang por URL) |
+| E2E CI | `ci.yml`: checks + build + build-visual + e2e (core ×3 shards @core=56 ficheiros, rotas, v6=18 specs) + pixel ×3 + lighthouse + supabase-sql + terraform + shellcheck |
+| `public/data` | branch órfão `ventu-data` (0 ficheiros trackeados na main; hydrate no CI) |
 | Feedback scores → tuning | 🟡 tooling ready (C4b — N≥30/modalidade) |
-| Notícias Cena PT | 3 feeds PT + intl |
+| Notícias | 3 feeds PT + intl; artigos es/de/fr `noindex` (conteúdo PT/EN) |
 
 ---
 
 ## Notas de sessão
+
+### 2026-11-24 — Design v6 «Atlântico» completo + contexto actualizado (esta revisão)
+
+- **Docs:** `CONTEXT.md`/`ROADMAP.md`/`BACKLOG.md` actualizados ao estado real (tinham parado em 2026-05-25 / 2026-09-07); `DESIGN-SYSTEM.md` reescrito para v6.0 na #465.
+
+### 2026-11 — Onda v6 «Atlântico» (issues #458–#465, PRs #575–#583)
+
+- **Spot v6 Nota 10** (#459 → PR #581): `SpotV6` + `spotPage/v6.ts` — veredicto /10, régua 48 h sticky, «Porquê», praia 3D (`PraiaCena3D` + Web Worker), «Estudar o spot» (`MedeSabeV6`), `?sport=`/`?d=`/`ventu.modalidade`.
+- **Home v6 unificada** (#460 → PR #582): `.v6h`, `HomeV6` + `YourDaySection`/`DawnPatrolTopSlot`/Top 8 na mesma superfície, `CostaMapa3D` (WebGL, poster → 3D idle), régua sticky mobile, /10, AA.
+- **Tema global «Atlântico»** (#461 → PR #583): dark default `:root`, `.theme-ocean` = claro «Sol», superfícies v6 sempre escuras, Barlow/Barlow Condensed auto-alojadas.
+- **Rotas secundárias + piso de toque 44px** (#462 → PR #579).
+- **Mapa pele v6** (#458 → PR #578): `[data-pele='v6']` por defeito em `/mapa`, dark forçado, header sem flash, `?pelebase=v6`.
+- **SEO** (#457 → PRs #537/#577): llms.txt, crawlers LLM, JSON-LD por spot, `noindex` news es/de/fr, manifest/SW.
+- **i18n v6** (#463): `homeV6.ts` e `spotPage/v6.ts` com pt/en/es/de/fr — estado final: 5 idiomas nas superfícies v6 (dívida `isPt→EN` = 0).
+- **e2e v6** (#464 → PRs #575/#576): suite `test:e2e:v6` (18 specs) obrigatória no ci.yml + budgets `public/data` + shellcheck total.
+- **Qualidade/ops paralela:** segurança #454 (PR #572, CSP #555), CI #455 (PR #573 — jobs paralelos checks/build/e2e/pixel/lighthouse), fusos #456 (PR #574), forecast auditoria #559 + Fase 3 #560, TWA Android #544/#554/#558, `public/data`→`ventu-data` #542, catálogo `spots.json` #528, fixes #517/#518/#519/#522/#524/#525/#527/#548/#558.
+
+### 2026-11 — O que resta (backlog técnico real)
+
+- **C4b** — calibração de scores continua a aguardar N≥30 feedbacks/modalidade.
+- **Boias IH → OGC API EDR** — migração quando a colecção `buoys_datawell` publicar `data_queries` (monitorizado pelo `ops-audit`; receita em `IH_API_KEY.md` — o `ih:validate` actual só cobre o schema de marés `tide_obs_nrt`).
+- **Revyl preview** — `pr_review` desactivado: `out/` ~1,7 GiB > limite 1 GiB do plano (`.revyl/config.yaml`); reactivar se a Revyl subir o limite.
+- **News i18n es/de/fr** — artigos continuam PT/EN e `noindex` em es/de/fr (fora de âmbito por decisão #457).
+- **Specs e2e fora do CI** — `map-chrome`, `map-v3-*`, `spot-v2-*`, `spot-v3-*`, `spots-filtro-ssr`, `visual-sweep`, `ipma-radar-carousel`: sem tag `@core` nem suite — rever se entram ou morrem.
+- **Next.js** — `next` declarado `^16.4.6` em `package.json` (versão instalada por confirmar sem `node_modules`); qualquer bump específico pedido ficou superado.
 
 ### 2026-08-31 — Dawn Patrol sequencial após update-data (04:00 Lisboa)
 
@@ -327,7 +352,7 @@ Templates em [`ROADMAP-ISSUES.md`](./ROADMAP-ISSUES.md). Depois de `gh auth logi
 
 - **Docs:** ROADMAP reorganizado — Fase E activa; checkboxes A→C alinhadas com estado real
 - **E5:** setas de vento no mapa mais legíveis (`mapWindArrow.ts`, commit `8ab3863`)
-- **Próximo recomendado:** **E1** alertas produção → **E2** NewsCard + polish visual
+- **Próximo recomendado:** **C4b** calibração de scores (aguarda N≥30 feedbacks/modalidade) · backlog técnico em [`BACKLOG.md`](./BACKLOG.md) § «Pendentes reais» (boias IH→EDR, Revyl preview, specs e2e fora do CI)
 
 ### 2026-05-25 (noite 2) — Livecams, índice explorar, polish
 

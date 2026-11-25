@@ -14,7 +14,7 @@ Existing tokens win over any third-party skill (including frontend-design font b
 
 ## Product facts
 - Stack: Next.js 16, React 18, TypeScript, Tailwind 3.4, Lucide, Leaflet, static export (GitHub Pages).
-- Locales: PT-PT first, EN second. Copy is PT-PT, never Brazilian informal.
+- Locales: PT-PT first; pt/en/es/de/fr. Copy is PT-PT, never Brazilian informal.
 - Audience: surfers, kiters, windsurfers checking conditions on mobile at dawn.
 - Primary job of the homepage: answer "onde ir hoje" in under 5 seconds.
 - Do not break static export, i18n routes `src/app/[locale]`, or Leaflet map performance.
@@ -29,17 +29,17 @@ One justified risk: large tabular scores as the hero, not a stock wave photo wit
 - UI/body: Barlow (`font-sans`, fallback Geist Sans)
 - Display headlines, spot names, scores: Barlow Condensed (`font-display`, `tabular-nums`)
 - Numbers/forecast tables: Geist Mono (`font-mono`, `tabular-nums`)
-- Editorial only (news article, about): IBM Plex Serif
-- Do not introduce Inter, Roboto, Arial, Comic fonts, or random Google Display faces.
+- Do not introduce Inter, Roboto, Arial, Comic fonts, Space Grotesk or random Google Display faces. IBM Plex Serif was removed from the product.
 - Global theme «Atlântico» (#461): self-hosted Barlow and Barlow Condensed from `src/styles/v6-fontes.css` are loaded globally across all routes, unifying `/`, `/mapa`, `/spots/[slug]` and all secondary routes.
 
 ### Color (tokens only)
-Use CSS variables from the design system.
-- Dark default is slate-950 water at night, not pure black, not neon cyberpunk.
-- Light is white-sand `#FAFAF7`, not stark #FFF only.
-- Accent primary `#0B3D5C` (deep atlantic). Never replace with indigo/violet SaaS purple.
-- Score scale is sacred: ÉPICO sky / BOM emerald / FUN amber / FLAT red / FECHADO gray.
-- Sport accents already exist (surf sky, kite violet, wind amber…). Reuse, do not invent new hues.
+Use CSS variables from the design system (`docs/DESIGN-SYSTEM.md` v6.0 «Atlântico»).
+- Dark default «Atlântico»: `--bg-base #030E18` abismo, `--bg-elevated #071B2C`, text `--fg #F3F8FB` / `--fg-muted #A9C2D4`, accents `--sol #FFC93C` + `--gelo #7FE7FF`.
+- Light variant «Sol»: `.theme-ocean` (`#EEF4F8` base, `#04131F` text, `#005F8A` accent).
+- v6 surfaces (`.v6`, `.v6h`, `[data-pele='v6']`) are always dark, even under `.theme-ocean`.
+- Score scale is sacred: `/10` integer via `nota.ts` — bands Muito bom ≥9 `#FFF07A` / Bom ≥7 `#40DCD0` / Dá ≥5 `#C99E2A` / Fraco ≥3 `#4479EE` / Não dá <3 `#A8464A` + Noite `#56677B`, always through `getScoreTokens`.
+- Alerts/errors/offline use `--alert-*` tokens, never score-band colors.
+- Sport accents already exist (surf gelo, kite violet, wind sol…). Reuse, do not invent new hues.
 - No rainbow gradients, no glassmorphism soup, no 12-color dashboards.
 
 ### Layout

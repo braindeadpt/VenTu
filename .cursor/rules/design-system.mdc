@@ -1,5 +1,5 @@
 ---
-description: VenTu design system v2 — tokens, components, spacing, motion
+description: VenTu design system v6 «Atlântico» — tokens, components, spacing, motion
 alwaysApply: true
 ---
 
@@ -12,13 +12,13 @@ alwaysApply: true
 - A11y: visible focus (globals.css), AA contrast, 44px touch targets on mobile
 - Score is product language: always use `getScoreTokens(score)` / `--score-*` tokens
 - **Stoke inclusivo**: energia e comunidade (todas as idades e níveis) — sem tom de festa, sexualização ou exclusão de género
-- Atmosphere = Atlantic clarity (cool cyan water, slate fog, mono data) — never purple gradients, cream+serif terracotta, or broadsheet density
+- Atmosphere = Atlantic clarity (deep navy abismo, cold névoa, sol/gelo accents, mono data) — never purple gradients, cream+serif terracotta, or broadsheet density
 
 ## Tokens (globals.css)
 - Surfaces: `bg-base`, `bg-elevated`, `surface-1/2/3`, `divider`, `divider-strong`
 - Text: `fg`, `fg-muted` (meta/legends), `fg-subtle` (secondary)
 - Sport accents: `--sport-*` / `text-sport-*`
-- **Ocean accent** (cyan): `--accent` / `bg-accent` / `text-accent` — primary actions, Dawn Patrol, epic badge
+- **Primary accent**: `--accent` / `bg-accent` / `text-accent` — sol `#FFC93C` (dark) / gelo `#005F8A` (light `.theme-ocean`); primary actions, Dawn Patrol
 - Spacing scale only: 4, 8, 12, 16, 24, 32, 48 px
 
 ## Typography
@@ -27,12 +27,12 @@ alwaysApply: true
 - **Display**: Barlow Condensed (`font-display`, via `src/styles/v6-fontes.css`) — headlines hero, nomes de spot, scores v6
 
 ## Accent — onde usar (e onde NÃO)
-Usar `text-accent` / `bg-accent` **apenas**:
-- CTA primário do hero homepage (`Button` “Explorar mapa”)
-- Label de tier **épico** no `ScoreBadge` (`text-accent` + `font-display`)
-- Dawn Patrol (barra lateral, badge, CTA “Ver spot”)
+`--accent` = cor de acção primária (sol `#FFC93C` no escuro, `#005F8A` no claro). Usar para:
+- CTA primário (hero homepage, SignupNudge, Dawn Patrol «Ver spot»)
+- Marca `VEN`+`TU` no Header/Footer; ícones sol; pill «Ir ao mapa» na nav
+- Realces pontuais de hierarquia — nunca como cor de dados ou de banda de score
 
-Não usar em: cards de lista, mapa, filtros, scores não-épicos, footer, nav.
+Não usar como: cor de score/banda, cor de alerta (usar `--alert-*`), fundo de cards de lista ou do mapa.
 
 ## Voice (PT-PT) — `src/lib/voice.ts`
 - **“a bombar”** / “firing” — nunca “ON” como copy de produto
@@ -48,7 +48,7 @@ Não usar em: cards de lista, mapa, filtros, scores não-épicos, footer, nav.
 - **Button**: `primary` | `secondary` | `ghost`; sizes `sm`(36) `md`(44) `lg`(48+)
 - **Card**: `card-1` | `card-2` | `card-hero`; clickable → `hover:-translate-y-px`, `hover:border-divider-strong`, light shadow
 - **Pill**: `pill-ghost` (inactive) / `pill-active` (active) via `FilterPill`
-- **ScoreBadge**: `getScoreTokens`; glow epic/good; label épico → `text-accent` + `font-display`
+- **ScoreBadge**: `getScoreTokens` (pill `badge` = fill + tinta ink); glow epic/good; label «Muito bom» em `font-display`; número sempre `/10` via `scoreToNota`
 - **StatChip**: icon + mono value + short label (spot hero metrics)
 - **WaveDivider**: separador SVG entre zonas; `motion-safe:animate-wave-drift` (respeita `prefers-reduced-motion`)
 - **MapControlButton**: 44×44, `aria-pressed` when toggled
@@ -73,4 +73,4 @@ Não usar em: cards de lista, mapa, filtros, scores não-épicos, footer, nav.
 
 ## Shared list UI
 - **`SpotListCard`**: `Card` + `ScoreBadge` + `SpotImage` opcional + hover via `tierPhrase`
-- **Scores**: `getScoreTokens` / `scoreThresholds.ts` — map markers must match badges (80/60/40/20); alerts/favorites/compare usam o mesmo scorer
+- **Scores**: `getScoreTokens` / `nota.ts` — escala `/10` inteira, bandas Muito bom ≥9 / Bom ≥7 / Dá ≥5 / Fraco ≥3 / Não dá <3 (+Noite); map markers must match badges; alerts/favorites/compare usam o mesmo scorer; erros/avisos usam `--alert-*`, nunca cores de banda
