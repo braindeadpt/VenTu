@@ -910,6 +910,7 @@ export const translationsPt = {
     unavailable: 'Contas indisponíveis (Supabase não configurado).',
     signedOutTitle: 'A tua conta',
     signedOutBody: 'Entra com magic link para sincronizar favoritos entre dispositivos.',
+    signedOutDeleteHint: 'Para eliminar a tua conta e os teus dados, entra — a opção está nesta página.',
     signInWithEmail: 'Entrar com email',
     title: 'Conta',
     favorites: 'Favoritos',

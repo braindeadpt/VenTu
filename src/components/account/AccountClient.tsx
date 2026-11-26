@@ -122,6 +122,11 @@ export default function AccountClient({ locale }: { locale: string }) {
         <Button size="lg" onClick={() => requestLogin('general')}>
           {f.signInWithEmail}
         </Button>
+        {/* Play Store data-safety: o link web de eliminação declarado
+            (https://ventu.surf/pt/conta/) abre esta página SEM sessão — a
+            Google exige que o percurso de eliminação seja fácil de encontrar,
+            por isso o signed-out diz explicitamente que a opção existe aqui. */}
+        <p className="text-meta-sm text-fg-subtle">{f.signedOutDeleteHint}</p>
       </div>
     );
   }

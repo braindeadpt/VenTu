@@ -5,6 +5,10 @@
 -- each cleanup block is guarded by to_regclass() and simply has nothing to
 -- scrub when the table does not exist — but in production all three are
 -- applied, so apply this one LAST for the full sweep.
+-- VERSION dependency (since the post-#593 fix): when directory_listings
+-- DOES exist, it must already carry first_verified_at — i.e. the CURRENT
+-- supabase-directory.sql must be (re)applied BEFORE this file. The guard
+-- below aborts the apply loudly otherwise; see supabase/README.md.
 -- ============================================================
 -- Everything runs in the single transaction of the RPC call: either every
 -- step succeeds or the account is not deleted at all (no half-scrubbed
@@ -26,11 +30,28 @@
 --    (ventu.delete_own_account_cleanup) that only this RPC can set — the
 --    PostgREST API executes no arbitrary SET, and the setting dies with
 --    the transaction. What is removed vs kept, and why:
---      · UNVERIFIED listings owned by the caller with source 'submitted'
---        (id 'sub-%'), plus their directory_profiles rows, are DELETED:
---        a never-published submission is the owner's personal draft, not
---        public business content, and with the account gone it could never
---        be managed or meaningfully moderated again.
+--      · NEVER-PUBLISHED listings owned by the caller with source
+--        'submitted' (id 'sub-%'), plus their directory_profiles rows, are
+--        DELETED: a never-published submission is the owner's personal
+--        draft, not public business content, and with the account gone it
+--        could never be managed or meaningfully moderated again.
+--        «Never published» is verified = false AND first_verified_at IS NULL
+--        — NOT just verified = false. The admin unverify flow
+--        (unverifyDirectoryListing in src/lib/directoryListings.ts) clears
+--        verified_at/verified_by when it pulls a listing back to
+--        verified = false, so a published-then-unverified listing is
+--        indistinguishable from a draft by state fields alone; the only
+--        honest marker is directory_listings.first_verified_at, stamped
+--        once by the directory triggers at the first verification and never
+--        cleared afterwards. Alternatives considered and rejected: keeping
+--        verified_at on unverify (repurposes a column whose semantics are
+--        «current verification» — one future client change silently
+--        reintroduces the data loss), restricting the delete to very recent
+--        submissions (bad proxy: an old genuine draft is still personal
+--        data, and a quickly-unverified business is still public content),
+--        or never deleting drafts at all (breaks the erasure promise for
+--        genuine personal drafts). The dedicated column is server-enforced
+--        by trigger — immune to client-side mistakes.
 --      · VERIFIED listings STAY — they are vetted public business content
 --        (a school/shop does not cease to exist because the manager left)
 --        — but orphaned: owner_user_id becomes NULL. Curated/OSM-sourced
@@ -64,6 +85,29 @@
 -- Idempotent in effect: a second call fails fast with 'not authenticated'
 -- because the session is already dead.
 
+-- ============================================================
+-- APPLY-ORDER GUARD (Devin post-merge review of #593): the «never
+-- published» condition depends on directory_listings.first_verified_at,
+-- which only exists after the CURRENT supabase-directory.sql is applied.
+-- Without it, the draft delete below would either error at runtime (column
+-- missing) — breaking account deletion for everyone — or, worse, if someone
+-- patched around it, delete published-then-unverified business content as
+-- «drafts». Failing HERE, loudly, at apply time in the SQL Editor is the
+-- honest failure mode. Correct order, always:
+--   supabase-admin-helpers.sql → supabase-directory.sql → this file.
+-- ============================================================
+DO $$
+BEGIN
+  IF to_regclass('public.directory_listings') IS NOT NULL AND NOT EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_schema = 'public'
+      AND table_name = 'directory_listings'
+      AND column_name = 'first_verified_at'
+  ) THEN
+    RAISE EXCEPTION 'directory_listings.first_verified_at missing — reapply supabase-directory.sql BEFORE supabase-delete-account.sql (see supabase/README.md)';
+  END IF;
+END $$;
+
 CREATE OR REPLACE FUNCTION public.delete_own_account()
 RETURNS VOID
 LANGUAGE plpgsql
@@ -90,7 +134,12 @@ BEGIN
     PERFORM set_config('ventu.delete_own_account_cleanup', 'on', true);
 
     -- 2a. Submissões nunca publicadas do próprio (rascunhos pessoais) —
-    -- perfis primeiro, a ficha depois.
+    -- perfis primeiro, a ficha depois. first_verified_at IS NULL é o
+    -- marcador «nunca publicada»: uma ficha verificada e depois
+    -- desverificada pelo admin (o unverify limpa verified_at/verified_by)
+    -- tem verified=false mas first_verified_at NOT NULL — já esteve
+    -- pública, é conteúdo de negócio e NÃO é apagada: cai no órfão+scrub
+    -- de 2b como qualquer ficha publicada.
     DELETE FROM directory_profiles
     WHERE entry_id IN (
       SELECT id FROM directory_listings
@@ -98,13 +147,15 @@ BEGIN
         AND verified = false
         AND source = 'submitted'
         AND id LIKE 'sub-%'
+        AND first_verified_at IS NULL
     );
 
     DELETE FROM directory_listings
     WHERE owner_user_id = v_uid
       AND verified = false
       AND source = 'submitted'
-      AND id LIKE 'sub-%';
+      AND id LIKE 'sub-%'
+      AND first_verified_at IS NULL;
 
     -- 2b. Tudo o resto que o utilizador detinha fica órfão (conteúdo de
     -- negócio verificado, ou origem curada/OSM). Sem o bypass do trigger

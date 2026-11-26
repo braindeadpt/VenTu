@@ -21,3 +21,32 @@ test.describe('Spot detail hero gauge', { tag: '@core' }, () => {
     await expect(hero.getByText(/^(Muito bom|Bom|Dá|Fraco|Não dá)$/)).toBeVisible();
   });
 });
+
+/**
+ * #204 (label-content-name-mismatch) — regressão do nome acessível do botão
+ * de alerta no hero do spot. O scan axe completo é opt-in
+ * (`npm run test:e2e:axe`), mas esta asserção corre SEMPRE no core: o nome
+ * acessível tem de ser exactamente o rótulo visível por locale — um
+ * aria-label diferente faz o controlo por voz falhar o botão.
+ * moledo serve: os desportos compatíveis (surf/bodyboard/sup) têm todos
+ * alertas, logo o botão renderiza independentemente do desporto escolhido.
+ */
+test.describe('Spot hero alert button accessible name (#204)', { tag: '@core' }, () => {
+  const ALERT_ME_BY_LOCALE: Record<string, string> = {
+    pt: 'Avisa-me',
+    en: 'Alert me',
+    es: 'Avísame',
+    de: 'Benachrichtige mich',
+    fr: 'Préviens-moi',
+  };
+
+  for (const [locale, label] of Object.entries(ALERT_ME_BY_LOCALE)) {
+    test(`/${locale}/spots/moledo/ — «${label}» is the exact accessible name`, async ({ page }) => {
+      await alignClockToForecast(page, firstSlug);
+      await page.goto(`/${locale}/spots/${firstSlug}/`);
+      await expect(
+        page.getByRole('button', { name: label, exact: true }),
+      ).toBeVisible({ timeout: 15_000 });
+    });
+  }
+});

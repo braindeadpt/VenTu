@@ -94,6 +94,13 @@ run_sql supabase/supabase-checkins.sql
 run_sql supabase/supabase-telegram.sql
 run_sql supabase/supabase-directory.sql
 
+# directory.sql twice: the production path IS a re-apply over an existing
+# install (column ADD IF NOT EXISTS + first_verified_at backfill + CREATE OR
+# REPLACE triggers) — it must be idempotent, and the delete-account guard
+# depends on the column being there.
+echo "==> applying supabase-directory.sql again (idempotency, 2/2)"
+run_sql supabase/supabase-directory.sql
+
 echo "==> applying supabase-delete-account.sql (twice — idempotency)"
 run_sql supabase/supabase-delete-account.sql
 run_sql supabase/supabase-delete-account.sql

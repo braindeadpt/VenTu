@@ -985,6 +985,7 @@ export const translationsFr = {
     unavailable: 'Comptes indisponibles (Supabase non configuré).',
     signedOutTitle: 'Ton compte',
     signedOutBody: 'Connecte-toi par lien magique pour synchroniser tes favoris entre appareils.',
+    signedOutDeleteHint: 'Pour supprimer ton compte et tes données, connecte-toi — l’option est sur cette page.',
     signInWithEmail: 'Se connecter par email',
     title: 'Compte',
     favorites: 'Favoris',
