@@ -142,7 +142,16 @@ SELECT test_expect(
 RESET ROLE;
 
 -- 4b/4c. authenticated admin: sees the tip row INCLUDING the email
-SELECT set_config('request.jwt.claims', '{"app_metadata":{"role":"admin"}}', false);
+-- is_ventu_admin() exige conta existente (PR #593): fixture de admin real +
+-- sub nos claims.
+INSERT INTO auth.users (id, email)
+VALUES ('99999999-9999-9999-9999-999999999999', 'admin-fixture@example.com')
+ON CONFLICT (id) DO NOTHING;
+SELECT set_config(
+  'request.jwt.claims',
+  '{"sub":"99999999-9999-9999-9999-999999999999","app_metadata":{"role":"admin"}}',
+  false
+);
 SET ROLE authenticated;
 SELECT test_expect(
   (SELECT email FROM contributions WHERE email = 'tipper@example.com') = 'tipper@example.com',

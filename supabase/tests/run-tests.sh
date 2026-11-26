@@ -89,4 +89,16 @@ run_sql supabase/tests/test-rate-limit-ip.sql
 echo "==> running profiles plan-lockdown + legacy grant assertions"
 run_sql supabase/tests/test-profiles.sql
 
+echo "==> applying checkins + telegram + directory migrations"
+run_sql supabase/supabase-checkins.sql
+run_sql supabase/supabase-telegram.sql
+run_sql supabase/supabase-directory.sql
+
+echo "==> applying supabase-delete-account.sql (twice — idempotency)"
+run_sql supabase/supabase-delete-account.sql
+run_sql supabase/supabase-delete-account.sql
+
+echo "==> running delete_own_account behavior assertions"
+run_sql supabase/tests/test-delete-account.sql
+
 echo "OK — supabase integration tests passed"

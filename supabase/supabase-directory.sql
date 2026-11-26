@@ -218,7 +218,14 @@ SECURITY DEFINER
 SET search_path = public
 AS $$
 BEGIN
-  IF public.is_ventu_admin() THEN
+  -- O bypass por GUC existe APENAS para delete_own_account(): sem ele, a
+  -- limpeza de owner_user_id/verified_by na eliminação de conta seria
+  -- revertida aqui (o trigger não distingue escrita de utilizador da acção
+  -- de cascata/limpeza). É transaction-local, morre com a transacção e não
+  -- pode ser activado por clientes — o PostgREST não executa SET arbitrário;
+  -- só a RPC SECURITY DEFINER o define. Não usar noutro contexto.
+  IF public.is_ventu_admin()
+     OR current_setting('ventu.delete_own_account_cleanup', true) = 'on' THEN
     RETURN NEW;
   END IF;
   NEW.id := OLD.id;
@@ -370,7 +377,10 @@ SECURITY DEFINER
 SET search_path = public
 AS $$
 BEGIN
-  IF public.is_ventu_admin() THEN
+  -- Bypass por GUC exclusivo de delete_own_account() — ver o comentário em
+  -- directory_listings_protect_admin_fields() acima.
+  IF public.is_ventu_admin()
+     OR current_setting('ventu.delete_own_account_cleanup', true) = 'on' THEN
     RETURN NEW;
   END IF;
   NEW.entry_id := OLD.entry_id;

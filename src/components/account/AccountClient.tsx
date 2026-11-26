@@ -1,10 +1,11 @@
 'use client';
 
 import { scoreToNota } from '@/lib/nota';
-import { useEffect, useState } from 'react';
-import { LogOut, Heart, User, Bell, GraduationCap } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { LogOut, Heart, User, Bell, GraduationCap, Trash2 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthProvider';
 import { getSupabaseClient, hasTestSupabaseClient } from '@/lib/supabase';
+import { deleteOwnAccount } from '@/lib/deleteAccount';
 import { fetchUserAlertPrefs, alertModeLabel, type UserAlertPrefs } from '@/lib/userAlerts';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
@@ -36,6 +37,48 @@ export default function AccountClient({ locale }: { locale: string }) {
     void fetchUserAlertPrefs(sb, session.user.id).then(setAlertPrefs);
   }, [session?.user]);
 
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [deletePending, setDeletePending] = useState(false);
+  const [deleteFailed, setDeleteFailed] = useState(false);
+  const [accountDeleted, setAccountDeleted] = useState(false);
+  const deletedResultRef = useRef<HTMLDivElement>(null);
+  const deletePendingRef = useRef(false);
+
+  useEffect(() => {
+    if (accountDeleted) deletedResultRef.current?.focus();
+  }, [accountDeleted]);
+
+  const closeDeleteConfirm = () => {
+    if (deletePending) return;
+    setDeleteConfirmOpen(false);
+    setDeleteFailed(false);
+    window.setTimeout(() => {
+      document.getElementById('account-delete-trigger')?.focus();
+    }, 0);
+  };
+
+  const confirmDeleteAccount = async () => {
+    const sb = getSupabaseClient();
+    if (!sb || deletePendingRef.current) return;
+
+    deletePendingRef.current = true;
+    setDeletePending(true);
+    setDeleteFailed(false);
+    const result = await deleteOwnAccount(sb);
+
+    if (!result.ok) {
+      deletePendingRef.current = false;
+      setDeletePending(false);
+      setDeleteFailed(true);
+      return;
+    }
+
+    deletePendingRef.current = false;
+    setDeletePending(false);
+    setAccountDeleted(true);
+    void signOut();
+  };
+
   const supabaseReady = isSupabaseReady || hasTestSupabaseClient();
 
   if (!mounted || authLoading) {
@@ -50,6 +93,22 @@ export default function AccountClient({ locale }: { locale: string }) {
     return (
       <div className="max-w-lg mx-auto py-16 px-4 text-center text-fg-muted text-sm">
         {f.unavailable}
+      </div>
+    );
+  }
+
+  if (accountDeleted) {
+    return (
+      <div className="max-w-lg mx-auto py-16 px-4 text-center">
+        <div
+          ref={deletedResultRef}
+          tabIndex={-1}
+          aria-live="polite"
+          className="space-y-3"
+        >
+          <Trash2 className="w-10 h-10 mx-auto text-alert-danger" aria-hidden />
+          <h1 className="text-h2 text-fg">{f.deleteAccountDone}</h1>
+        </div>
       </div>
     );
   }
@@ -146,6 +205,74 @@ export default function AccountClient({ locale }: { locale: string }) {
         <LogOut className="w-4 h-4" aria-hidden />
         {f.signOut}
       </Button>
+
+      <section aria-label={f.deleteAccount} className="space-y-3 border-t border-divider pt-4">
+        <Button
+          id="account-delete-trigger"
+          variant="ghost"
+          size="md"
+          className="text-alert-danger"
+          aria-expanded={deleteConfirmOpen}
+          aria-controls="account-delete-confirm"
+          disabled={deletePending}
+          onClick={() => {
+            if (deleteConfirmOpen) {
+              closeDeleteConfirm();
+              return;
+            }
+            setDeleteFailed(false);
+            setDeleteConfirmOpen(true);
+          }}
+        >
+          <Trash2 className="w-4 h-4 text-alert-danger" aria-hidden />
+          <span className="text-alert-danger">{f.deleteAccount}</span>
+        </Button>
+
+        {deleteConfirmOpen && (
+          <div id="account-delete-confirm">
+            <Card variant="card-1" className="space-y-4 border-alert-danger/40">
+              <div className="flex items-start gap-3">
+                <Trash2 className="w-5 h-5 flex-none text-alert-danger" aria-hidden />
+                <div className="space-y-2">
+                  <h2 className="text-sm font-semibold text-alert-danger">
+                    {f.deleteAccountConfirmTitle}
+                  </h2>
+                  <p className="text-sm text-fg-muted">{f.deleteAccountConfirmBody}</p>
+                </div>
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="md"
+                  className="text-alert-danger"
+                  loading={deletePending}
+                  loadingLabel={f.deleteAccountDeleting}
+                  onClick={() => void confirmDeleteAccount()}
+                >
+                  <span className="text-alert-danger">{f.deleteAccountYes}</span>
+                </Button>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  size="md"
+                  disabled={deletePending}
+                  onClick={closeDeleteConfirm}
+                >
+                  {f.deleteAccountCancel}
+                </Button>
+              </div>
+
+              <div aria-live="polite">
+                {deleteFailed && (
+                  <p className="text-sm text-alert-danger">{f.deleteAccountError}</p>
+                )}
+              </div>
+            </Card>
+          </div>
+        )}
+      </section>
     </div>
   );
 }
