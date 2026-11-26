@@ -985,6 +985,7 @@ export const translationsDe = {
     unavailable: 'Konten nicht verfügbar (Supabase nicht konfiguriert).',
     signedOutTitle: 'Dein Konto',
     signedOutBody: 'Melde dich per Magic Link an, um Favoriten geräteübergreifend zu synchronisieren.',
+    signedOutDeleteHint: 'Um dein Konto und deine Daten zu löschen, melde dich an — die Option findest du auf dieser Seite.',
     signInWithEmail: 'Mit E-Mail anmelden',
     title: 'Konto',
     favorites: 'Favoriten',

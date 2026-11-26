@@ -129,10 +129,35 @@ VALUES ('sub-deltest4', 'escola-deltest4-eltest4', 'Escola Deltest 4', 'surf_sch
         'dd000000-0000-0000-0000-000000000004', true, 'business-other@example.com', 'submitted')
 ON CONFLICT (id) DO NOTHING;
 
--- Perfis: P1 da ficha verificada do manager, P2 do rascunho
+-- L5 (achado 🔴 pós-#593): ficha do manager PUBLICADA e depois DESVERIFICADA
+-- pelo admin — o fluxo unverifyDirectoryListing do painel escreve
+-- verified=false e limpa verified_at/verified_by, deixando-a
+-- indistinguível do rascunho L2 pelos campos de estado. É conteúdo de
+-- negócio que já esteve público: NUNCA pode ser apagada como rascunho. O
+-- percurso replica os dois UPDATEs reais do painel para exercitar o carimbo
+-- first_verified_at nos triggers (não é escrito à mão aqui — tem de ser o
+-- trigger a fazê-lo, senão a asserção não prova nada).
+INSERT INTO directory_listings (id, slug, name, kind, lat, lon, owner_user_id, verified, email, source)
+VALUES ('sub-deltest5', 'escola-deltest5-eltest5', 'Escola Deltest 5', 'surf_school', 38.7, -9.4,
+        'dd000000-0000-0000-0000-000000000001', false, 'del-manager@example.com', 'submitted')
+ON CONFLICT (id) DO NOTHING;
+
+-- verify (replica verifyDirectoryListing: UPDATE com verified_at/verified_by)
+UPDATE directory_listings
+SET verified = true, verified_at = now(), verified_by = 'dd000000-0000-0000-0000-000000000002'
+WHERE id = 'sub-deltest5';
+
+-- unverify (replica unverifyDirectoryListing: limpa verified_at/verified_by)
+UPDATE directory_listings
+SET verified = false, verified_at = NULL, verified_by = NULL
+WHERE id = 'sub-deltest5';
+
+-- Perfis: P1 da ficha verificada do manager, P2 do rascunho, P5 da ficha
+-- publicada→desverificada
 INSERT INTO directory_profiles (entry_id, owner_user_id, email, display_name) VALUES
   ('sub-deltest1', 'dd000000-0000-0000-0000-000000000001', 'del-manager@example.com', 'Escola Deltest 1'),
-  ('sub-deltest2', 'dd000000-0000-0000-0000-000000000001', 'del-manager@example.com', 'Escola Deltest 2')
+  ('sub-deltest2', 'dd000000-0000-0000-0000-000000000001', 'del-manager@example.com', 'Escola Deltest 2'),
+  ('sub-deltest5', 'dd000000-0000-0000-0000-000000000001', 'del-manager@example.com', 'Escola Deltest 5')
 ON CONFLICT (entry_id) DO NOTHING;
 
 -- Claims: uma do manager (cascateia com a conta) e uma do other revista pelo admin
@@ -145,6 +170,26 @@ INSERT INTO directory_claims (entry_id, user_id, contact_email, status, reviewed
 ON CONFLICT (entry_id, user_id) DO NOTHING;
 
 SELECT set_config('request.jwt.claims', '', false);
+
+-- ── 2z. O carimbo first_verified_at ANTES de qualquer eliminação ──
+-- (prova que são os triggers a escrevê-lo, não as fixtures)
+SELECT test_expect(
+  (SELECT first_verified_at IS NOT NULL FROM directory_listings WHERE id = 'sub-deltest1'),
+  '2za: ficha inserida directamente como verificada (admin) nasce carimbada'
+);
+SELECT test_expect(
+  (SELECT first_verified_at IS NOT NULL FROM directory_listings WHERE id = 'sub-deltest5'),
+  '2zb: first_verified_at carimbado pelo UPDATE de verificação sobrevive ao unverify'
+);
+SELECT test_expect(
+  (SELECT verified = false AND verified_at IS NULL AND verified_by IS NULL
+   FROM directory_listings WHERE id = 'sub-deltest5'),
+  '2zc: unverify limpa verified_at/verified_by — a razão pela qual verified_at não pode ser o marcador'
+);
+SELECT test_expect(
+  (SELECT first_verified_at IS NULL FROM directory_listings WHERE id = 'sub-deltest2'),
+  '2zd: rascunho genuíno nunca verificado tem first_verified_at NULL'
+);
 
 -- ── 3. Utilizador base: cascata total + alertas legacy por email ──
 SELECT set_config(
@@ -251,6 +296,25 @@ SELECT test_expect(
     SELECT 1 FROM directory_profiles WHERE owner_user_id = 'dd000000-0000-0000-0000-000000000001'
   ),
   '4k: nenhuma referência de ownership ao utilizador eliminado sobrevive (achado 2)'
+);
+
+-- ── 4l-4o. ACHADO 🔴 pós-#593: ficha publicada→desverificada NÃO é rascunho ──
+SELECT test_expect(
+  EXISTS (SELECT 1 FROM directory_listings WHERE id = 'sub-deltest5'),
+  '4l: ficha verificada→desverificada NÃO é apagada como rascunho na eliminação (achado pós-merge)'
+);
+SELECT test_expect(
+  (SELECT owner_user_id IS NULL AND verified = false AND first_verified_at IS NOT NULL
+   FROM directory_listings WHERE id = 'sub-deltest5'),
+  '4m: ficha desverificada sobrevive órfã, desverificada e com o carimbo de publicação'
+);
+SELECT test_expect(
+  (SELECT owner_user_id IS NULL FROM directory_profiles WHERE entry_id = 'sub-deltest5'),
+  '4n: perfil da ficha desverificada também sobrevive (órfão, não apagado)'
+);
+SELECT test_expect(
+  (SELECT email IS NULL FROM directory_listings WHERE id = 'sub-deltest5'),
+  '4o: email pessoal da conta scrubbed também na ficha desverificada'
 );
 
 -- ── 5. Admin que moderou: o delete NÃO pode falhar por FK NO ACTION ──

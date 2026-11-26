@@ -44,24 +44,40 @@ const ROUTE_CATEGORY_BUDGETS = {
  * Evaluate one Lighthouse report against the budgets.
  * @param {{categories?: Record<string, {score: number|null}>, audits?: Record<string, {numericValue?: number}>}} report
  * @param {{categories?: Record<string, number>}} [routeBudgets] per-route
- *   category-floor overrides (merged over CATEGORY_BUDGETS — nunca alarga).
- * @returns {{breaches: string[], tracked: Array<{id: string, value: number}>, worst: Record<string, number>}}
- *   breaches: human-readable lines (empty = pass). Fail-closed: a budgeted
- *   audit missing from the report is itself a breach.
+ *   category-floor overrides (merged over CATEGORY_BUDGETS com Math.max —
+ *   nunca alarga).
+ * @returns {{breaches: string[], failedCategories: string[], worst: Record<string, number>}}
+ *   breaches: human-readable lines (empty = pass). failedCategories: ids das
+ *   categorias que rebentaram o floor (para o runner escolher o artefacto).
+ *   Fail-closed: a budgeted audit missing from the report is itself a breach.
  */
 function evaluateLighthouseBudgets(report, routeBudgets) {
   const breaches = [];
-  const tracked = [];
+  const failedCategories = [];
   const worst = {};
-  const categoryBudgets = { ...CATEGORY_BUDGETS, ...(routeBudgets?.categories ?? {}) };
+  // «Só aperta, nunca alarga» (#204) agora enforced: antes um spread simples
+  // deixava um override de rota BAIXAR o floor global da categoria — a
+  // promessa não era garantida (Devin post-merge review da #594).
+  const categoryBudgets = { ...CATEGORY_BUDGETS };
+  for (const [id, floor] of Object.entries(routeBudgets?.categories ?? {})) {
+    categoryBudgets[id] = Math.max(categoryBudgets[id] ?? 0, floor);
+  }
 
   for (const [id, { score }] of Object.entries(report.categories ?? {})) {
     const floor = categoryBudgets[id];
     if (floor == null) continue;
-    const value = Math.round((score ?? 0) * 100);
+    // Nunca arredondar a favor do floor: com um número PAR de corridas a
+    // mediana pode ser x.5 (ex.: 99,5 com floor 100) e Math.round empurrava-a
+    // para cima do floor sem o cumprir — aprovação falsa (Devin post-merge).
+    // Compara-se o valor REAL (o epsilon 1e-9 só absorve pó de vírgula
+    // flutuante, 5 ordens de grandeza abaixo de qualquer granularidade real);
+    // o valor mostrado/devolvido leva no máximo 1 casa decimal.
+    const raw = (score ?? 0) * 100;
+    const value = Math.round(raw * 10) / 10;
     worst[id] = value;
-    if (value < floor) {
+    if (raw < floor - 1e-9) {
       breaches.push(`category ${id}: ${value} < ${floor}`);
+      failedCategories.push(id);
     }
   }
 
@@ -86,7 +102,7 @@ function evaluateLighthouseBudgets(report, routeBudgets) {
     }
   }
 
-  return { breaches, worst };
+  return { breaches, failedCategories, worst };
 }
 
 /**

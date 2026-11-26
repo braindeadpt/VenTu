@@ -101,7 +101,7 @@ Made on the Portuguese coast, for the people who read it.
 | **Conteúdo do utilizador / Atividade** — Favoritos, check-ins do passaporte, preferências de alertas | ✅ Recolhidos · **não partilhados** · opcionais | Sincronizados na conta Supabase (ligados ao user ID) — só se o utilizador criar conta e usar estas features. Analytics GoatCounter é **anonimizado** (sem cookies, sem fingerprint, sem IP) — não conta como recolha na taxonomia da Play |
 | IDs de dispositivo | ❌ Não | |
 | Dados encriptados em trânsito? | **Sim** (HTTPS/TLS) | |
-| Caminho para apagar dados? | **Sim — por pedido** | ⚠️ **Não há eliminação in-app nesta versão** (chega com a PR #593): o fluxo atual é pedido via formulário de feedback na app ou GitHub. Na ficha de data safety da Play, a pergunta «link web para pedido de eliminação» responde-se com **`https://ventu.surf/pt/conta/`** — após o deploy da #593 essa página tem o fluxo self-service (login → eliminar conta), igual ao da app. Ver §5 passo 0 |
+| Caminho para apagar dados? | **Sim — self-service** | Eliminação in-app na página Conta (PR #593) + o mesmo fluxo na web. Na ficha de data safety da Play, a pergunta «link web para pedido de eliminação» responde-se com **`https://ventu.surf/pt/conta/`** — mesmo sem sessão iniciada, essa página diz explicitamente que iniciar sessão permite eliminar a conta e os dados (a Google exige que o percurso seja fácil de encontrar, não um sign-in genérico); após login, a opção «Eliminar conta» está na própria página. Ver §5 passo 0 |
 | Compromisso com a política de famílias? | Não aplicável — não é dirigida a crianças | |
 
 Privacy policy URL: `https://ventu.surf/pt/privacidade/`
@@ -138,7 +138,12 @@ Privacy policy URL: `https://ventu.surf/pt/privacidade/`
 
 ## 5. Checklist de upload (ordem)
 
-0. ⚠️ **Pré-production** (PR #593 em curso): eliminação de conta in-app — a Play rejeita apps com criação de conta sem caminho acessível. São **duas** obrigações distintas: (a) eliminação iniciada pelo utilizador na app e (b) **link web de eliminação declarado na ficha de data safety** — usar `https://ventu.surf/pt/conta/` (após login, a página de conta web tem o mesmo fluxo self-service da app). Internal testing pode avançar já; production não
+0. ⬜ ⚠️ **Pré-production — aplicar o SQL da eliminação de conta no Supabase** (passo manual, SQL Editor do dashboard): a eliminação self-service da #593 só existe em produção depois deste passo — a app/web chamam o RPC `delete_own_account()` e sem ele o fluxo rebenta em runtime. Aplicar por esta ordem **obrigatória** (ver `supabase/README.md`):
+   1. `supabase/supabase-admin-helpers.sql`
+   2. `supabase/supabase-directory.sql` — reaplicar **mesmo** que já tenha sido aplicado antes: traz o bypass GUC dos protect triggers e a coluna `first_verified_at` (+ backfill)
+   3. `supabase/supabase-delete-account.sql` — recusa-se a aplicar em voz alta se o directório estiver desactualizado; se o SQL Editor não mostrar erro, ficou bem
+   
+   São **duas** obrigações distintas na Play: (a) eliminação iniciada pelo utilizador na app e (b) **link web de eliminação declarado na ficha de data safety** — usar `https://ventu.surf/pt/conta/`, que mesmo sem sessão diz explicitamente que iniciar sessão permite eliminar a conta e os dados. Internal testing pode avançar já; production não
 1. ⬜ Play Console → nova app «VenTu» (gratuita, categoria Weather ou Sports)
 2. ⬜ Store listing: copy acima (PT default + EN), ícone, feature graphic, screenshots
 3. ⬜ Privacy policy URL: `https://ventu.surf/pt/privacidade/`

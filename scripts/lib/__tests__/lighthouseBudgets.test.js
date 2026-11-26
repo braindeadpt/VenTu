@@ -141,6 +141,91 @@ describe('evaluateLighthouseBudgets', () => {
     expect(breaches).toEqual(['category seo: 89 < 90']);
   });
 
+  it('a route override LOWER than the global floor never widens it (Math.max merge)', () => {
+    // Devin post-merge (#594): the plain spread let a route override drop the
+    // global floor — «só aperta, nunca alarga» is now enforced. accessibility
+    // global floor is 85; an override of 50 must not rescue a 0.84 report.
+    const r = structuredClone(PASSING);
+    r.categories.accessibility = { score: 0.84 };
+    const { breaches } = evaluateLighthouseBudgets(r, {
+      categories: { accessibility: 50 },
+    });
+    expect(breaches).toEqual(['category accessibility: 84 < 85']);
+  });
+
+  it('a route override lower than the global performance floor keeps 50', () => {
+    const r = structuredClone(PASSING);
+    r.categories.accessibility = { score: 1 };
+    r.categories.performance = { score: 0.45 };
+    const { breaches } = evaluateLighthouseBudgets(r, {
+      categories: { performance: 30 },
+    });
+    expect(breaches).toEqual(['category performance: 45 < 50']);
+  });
+
+  it('a route override HIGHER than the global floor still tightens', () => {
+    const r = structuredClone(PASSING);
+    r.categories.accessibility = { score: 0.9 };
+    const { breaches } = evaluateLighthouseBudgets(r, {
+      categories: { accessibility: 95 },
+    });
+    expect(breaches).toEqual(['category accessibility: 90 < 95']);
+  });
+
+  it('a route override for a category without a global floor adds the floor', () => {
+    // Tightening where nothing was gated is not «widening» — Math.max(0, x).
+    const r = structuredClone(PASSING);
+    r.categories['best-practices'] = { score: 0.5 };
+    const { breaches } = evaluateLighthouseBudgets(r, {
+      categories: { 'best-practices': 80 },
+    });
+    expect(breaches).toEqual(['category best-practices: 50 < 80']);
+  });
+
+  it('an even-run median of x.5 does NOT round up across the floor (99.5 < 100)', () => {
+    // Devin post-merge (#594): median of [1.0, 0.99] is 0.995 — Math.round
+    // pushed it to 100 and the spot floor passed without being met.
+    const half = (a11y) =>
+      report(
+        { seo: 0.97, accessibility: a11y, performance: 0.73 },
+        {
+          'first-contentful-paint': 456,
+          'largest-contentful-paint': 2315,
+          'speed-index': 2161,
+          'total-blocking-time': 70,
+          'total-byte-weight': 1310000,
+          'cumulative-layout-shift': 0.02,
+        },
+      );
+    const med = medianReport([half(1), half(0.99)]);
+    expect(med.categories.accessibility.score).toBe(0.995);
+    const { breaches, failedCategories } = evaluateLighthouseBudgets(med, {
+      categories: ROUTE_CATEGORY_BUDGETS['spot-guincho'],
+    });
+    expect(breaches).toEqual(['category accessibility: 99.5 < 100']);
+    expect(failedCategories).toEqual(['accessibility']);
+  });
+
+  it('an exact-floor median still passes (floors stay inclusive)', () => {
+    const perfect = (a11y) =>
+      report(
+        { seo: 0.97, accessibility: a11y, performance: 0.73 },
+        {
+          'first-contentful-paint': 456,
+          'largest-contentful-paint': 2315,
+          'speed-index': 2161,
+          'total-blocking-time': 70,
+          'total-byte-weight': 1310000,
+          'cumulative-layout-shift': 0.02,
+        },
+      );
+    const med = medianReport([perfect(1), perfect(1)]);
+    const { breaches } = evaluateLighthouseBudgets(med, {
+      categories: ROUTE_CATEGORY_BUDGETS['spot-guincho'],
+    });
+    expect(breaches).toEqual([]);
+  });
+
   it('spot-guincho is the only route with a raised floor', () => {
     expect(Object.keys(ROUTE_CATEGORY_BUDGETS)).toEqual(['spot-guincho']);
     expect(ROUTE_CATEGORY_BUDGETS['spot-guincho']).toEqual({ accessibility: 100 });

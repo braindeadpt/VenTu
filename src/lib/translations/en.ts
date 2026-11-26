@@ -904,6 +904,7 @@ export const translationsEn = {
     unavailable: 'Accounts unavailable (Supabase not configured).',
     signedOutTitle: 'Your account',
     signedOutBody: 'Sign in with a magic link to sync favorites across devices.',
+    signedOutDeleteHint: 'To delete your account and data, sign in — the option is on this page.',
     signInWithEmail: 'Sign in with email',
     title: 'Account',
     favorites: 'Favorites',

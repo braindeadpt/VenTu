@@ -40,6 +40,13 @@ CREATE TABLE IF NOT EXISTS directory_listings (
   owner_user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
   verified BOOLEAN NOT NULL DEFAULT false,
   verified_at TIMESTAMPTZ,
+  -- Carimbo da PRIMEIRA passagem a público — escrito uma vez pelo trigger na
+  -- primeira verificação e nunca limpo pelo unverify (que limpa verified_at).
+  -- É o marcador «alguma vez publicada» que delete_own_account() usa para
+  -- distinguir um rascunho genuíno (NULL) de conteúdo de negócio que já
+  -- esteve público (NOT NULL → nunca apagado, fica órfão). NULL aqui não
+  -- significa «ainda não verificada agora» — significa «nunca verificada».
+  first_verified_at TIMESTAMPTZ,
   verified_by UUID REFERENCES auth.users(id),
   tier TEXT NOT NULL DEFAULT 'free' CHECK (tier IN ('free', 'featured', 'pro')),
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
@@ -65,6 +72,30 @@ CREATE TABLE IF NOT EXISTS directory_listings (
 -- Migração se a tabela já existir sem tier
 ALTER TABLE directory_listings
   ADD COLUMN IF NOT EXISTS tier TEXT NOT NULL DEFAULT 'free';
+
+-- Migração se a tabela já existir sem o carimbo de primeira publicação
+-- (Devin post-merge review da #593, achado 🔴: fichas publicadas que foram
+-- «desverificadas» eram apagadas como rascunhos na eliminação de conta).
+-- verified_at NÃO serve de marcador: o fluxo de unverify do painel admin
+-- (unverifyDirectoryListing) limpa-o juntamente com verified_by — depois
+-- disso uma ficha que já esteve pública é indistinguível de um rascunho
+-- pelos campos de estado. first_verified_at é escrito uma vez pelo trigger
+-- na primeira passagem a verified=true e nunca mais se move.
+ALTER TABLE directory_listings
+  ADD COLUMN IF NOT EXISTS first_verified_at TIMESTAMPTZ;
+
+-- Backfill: toda a ficha actualmente verificada esteve publicada pelo menos
+-- uma vez, logo o carimbo não pode ser NULL nela. verified_at é o timestamp
+-- da verificação em curso; em linhas legacy sem ele usa-se created_at (lower
+-- bound garantido — não podia estar pública antes de existir). Fichas já
+-- DESVERIFICADAS antes desta migração são indistinguíveis de rascunhos — o
+-- unverify apagou-lhes o histórico e não há maneira honesta de o reconstruir
+-- — por isso ficam NULL: trade-off aceite e documentado (no pior caso, uma
+-- ficha desverificada há muito tempo é apagada como rascunho, exactamente o
+-- comportamento anterior à correção).
+UPDATE directory_listings
+SET first_verified_at = COALESCE(verified_at, created_at)
+WHERE verified = true AND first_verified_at IS NULL;
 
 -- Garantir CHECK (ignora se já existir constraint com outro nome)
 DO $$
@@ -224,20 +255,33 @@ BEGIN
   -- de cascata/limpeza). É transaction-local, morre com a transacção e não
   -- pode ser activado por clientes — o PostgREST não executa SET arbitrário;
   -- só a RPC SECURITY DEFINER o define. Não usar noutro contexto.
-  IF public.is_ventu_admin()
-     OR current_setting('ventu.delete_own_account_cleanup', true) = 'on' THEN
-    RETURN NEW;
+  IF NOT (public.is_ventu_admin()
+          OR current_setting('ventu.delete_own_account_cleanup', true) = 'on') THEN
+    NEW.id := OLD.id;
+    NEW.slug := OLD.slug;
+    NEW.source := OLD.source;
+    NEW.owner_user_id := OLD.owner_user_id;
+    NEW.verified := OLD.verified;
+    NEW.verified_at := OLD.verified_at;
+    NEW.verified_by := OLD.verified_by;
+    NEW.tier := OLD.tier;
+    NEW.created_at := OLD.created_at;
+    -- first_verified_at também é admin-only: o dono não pode apagar o
+    -- carimbo de publicação da própria ficha — é ele que impede a eliminação
+    -- de conta de a tratar como rascunho.
+    NEW.first_verified_at := OLD.first_verified_at;
+    NEW.updated_at := now();
   END IF;
-  NEW.id := OLD.id;
-  NEW.slug := OLD.slug;
-  NEW.source := OLD.source;
-  NEW.owner_user_id := OLD.owner_user_id;
-  NEW.verified := OLD.verified;
-  NEW.verified_at := OLD.verified_at;
-  NEW.verified_by := OLD.verified_by;
-  NEW.tier := OLD.tier;
-  NEW.created_at := OLD.created_at;
-  NEW.updated_at := now();
+  -- Carimbo da primeira publicação: dispara em qualquer escrita que deixe a
+  -- ficha verified=true ainda sem carimbo — cobre a transição false→true da
+  -- verificação (verifyDirectoryListing, approve_directory_claim) e sara
+  -- linhas legacy verificadas que o backfill não apanhou. Depois de escrito
+  -- nunca se move: o unverify (verified=false, verified_at=NULL) não o
+  -- toca — é precisamente essa a diferença para verified_at, e a razão de
+  -- verified_at não poder ser o marcador «alguma vez publicada».
+  IF NEW.verified = true AND NEW.first_verified_at IS NULL THEN
+    NEW.first_verified_at := COALESCE(NEW.verified_at, now());
+  END IF;
   RETURN NEW;
 END;
 $$;
@@ -259,12 +303,18 @@ SET search_path = public
 AS $$
 BEGIN
   IF public.is_ventu_admin() THEN
+    -- INSERT admin directo já verificado (seed/migração): a ficha nasce
+    -- pública, logo nasce carimbada — o mesmo invariante do trigger de UPDATE.
+    IF NEW.verified = true AND NEW.first_verified_at IS NULL THEN
+      NEW.first_verified_at := COALESCE(NEW.verified_at, now());
+    END IF;
     RETURN NEW;
   END IF;
   NEW.source := 'submitted';
   NEW.verified := false;
   NEW.verified_at := NULL;
   NEW.verified_by := NULL;
+  NEW.first_verified_at := NULL;
   NEW.tier := 'free';
   NEW.created_at := now();
   NEW.updated_at := now();

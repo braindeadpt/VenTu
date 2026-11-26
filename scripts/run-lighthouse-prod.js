@@ -174,12 +174,16 @@ async function main() {
 
       const median = medianReport(reports);
       const cats = median.categories || {};
+      // Mesma regra do gate (lighthouseBudgets): nunca arredondar x.5 para
+      // cima do floor — a mediana de um número par de corridas pode ser 99,5
+      // e mostrá-la como «100» escondia o breach logo a seguir.
+      const score100 = (s) => Math.round((s ?? 0) * 1000) / 10;
       const row = {
         route: route.name,
         path: route.path,
-        performance: Math.round((cats.performance?.score ?? 0) * 100),
-        accessibility: Math.round((cats.accessibility?.score ?? 0) * 100),
-        seo: Math.round((cats.seo?.score ?? 0) * 100),
+        performance: score100(cats.performance?.score),
+        accessibility: score100(cats.accessibility?.score),
+        seo: score100(cats.seo?.score),
       };
       summary.push(row);
       const medianCls = Math.round((median.audits?.['cumulative-layout-shift']?.numericValue ?? 0) * 1000) / 1000;
@@ -188,28 +192,40 @@ async function main() {
           `CLS ${medianCls} (budget 0.1)`,
       );
 
-      const { breaches } = evaluateLighthouseBudgets(median, {
+      const { breaches, failedCategories } = evaluateLighthouseBudgets(median, {
         categories: ROUTE_CATEGORY_BUDGETS[route.name] ?? {},
       });
       for (const breach of breaches) allBreaches.push(`[${route.name}] ${breach}`);
-      // Pior run por CLS (é a métrica que oscila no runner partilhado). Guardado
-      // como artefacto sempre que a rota rebenta um budget, para o diagnóstico
-      // sair do próprio runner — foi o único sítio onde a assinatura apareceu
-      // (localmente, mesmo com CPU 8× e máquina carregada, o CLS fica ~0.00003).
-      const worstRun = reports.reduce((a, b) =>
-        (b.audits?.['cumulative-layout-shift']?.numericValue ?? 0) >
-        (a.audits?.['cumulative-layout-shift']?.numericValue ?? 0)
-          ? b
-          : a,
-      );
+      // Pior run por CLS (é a métrica que oscila no runner partilhado) — base
+      // dos diagnósticos de layout-shift e, quando só rebentam métricas, do
+      // artefacto. Foi o único sítio onde a assinatura apareceu (localmente,
+      // mesmo com CPU 8× e máquina carregada, o CLS fica ~0.00003).
+      const clsOf = (r) => r.audits?.['cumulative-layout-shift']?.numericValue ?? 0;
+      const worstClsRun = reports.reduce((a, b) => (clsOf(b) > clsOf(a) ? b : a));
+      // Artefacto (Devin post-merge #594): quando a falha é de CATEGORIA, o
+      // pior-run-por-CLS pode ter essa categoria impecável — ex.: a11y floor
+      // 100 no spot rebenta na mediana mas a run guardada tinha a11y 100 e o
+      // artefacto não mostrava o problema. Com categorias falhadas escolhe-se
+      // a run PIOR nessas categorias (menor soma dos scores delas — uma run
+      // que falhe várias afunda mais), com desempate por CLS.
+      let artifactRun = worstClsRun;
+      if (failedCategories.length > 0) {
+        const failedScore = (r) =>
+          failedCategories.reduce((acc, id) => acc + (r.categories?.[id]?.score ?? 1), 0);
+        artifactRun = reports.reduce((a, b) => {
+          const diff = failedScore(a) - failedScore(b);
+          if (diff !== 0) return diff > 0 ? b : a;
+          return clsOf(b) > clsOf(a) ? b : a;
+        });
+      }
       if (breaches.length > 0) {
-        breachReports.push({ route: route.name, path: route.path, breaches, worstRun });
+        breachReports.push({ route: route.name, path: route.path, breaches, worstRun: artifactRun });
       }
       // Diagnostics: when CLS breaches, name the elements that shifted in the
       // worst run — the spot page has an intermittent ~0.64 cold-cache
       // signature (one late ~37KB resource) that pure scores can't identify.
       if (medianCls > 0.1) {
-        const worst = worstRun;
+        const worst = worstClsRun;
         const shifts =
           worst.audits?.['layout-shifts']?.details?.items ?? [];
         for (const item of shifts.slice(0, 5)) {
