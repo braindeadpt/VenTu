@@ -60,7 +60,9 @@ on:
 
 permissions:
   contents: read
-  actions: read # o job precheck lê os runs do CI via gh api
+  # read: o job precheck lê os runs do CI via gh api. write: o job deploy
+  # apaga o artifact github-pages da própria run no fim (ver o step final).
+  actions: write
   pages: write
   id-token: write
 
@@ -382,9 +384,21 @@ jobs:
           URL3: ${{ steps.deployment3.outputs.page_url }}
           URL4: ${{ steps.deployment4.outputs.page_url }}
           URL5: ${{ steps.deployment5.outputs.page_url }}
+          OC1: ${{ steps.deployment.outcome }}
+          OC2: ${{ steps.deployment2.outcome }}
+          OC3: ${{ steps.deployment3.outcome }}
+          OC4: ${{ steps.deployment4.outcome }}
+          OC5: ${{ steps.deployment5.outcome }}
         run: |
-          for url in "$URL5" "$URL4" "$URL3" "$URL2" "$URL1"; do
-            if [ -n "$url" ]; then
+          # O deploy-pages emite page_url ANTES de confirmar a publicação — uma
+          # tentativa que termina em deployment_failed deixa URL não vazia.
+          # Aceitar só a URL de uma tentativa com outcome success: sem isto o
+          # job ficava verde sem nada publicado (e o cleanup abaixo apagava o
+          # artifact, quebrando o re-run manual).
+          for pair in "$OC1|$URL1" "$OC2|$URL2" "$OC3|$URL3" "$OC4|$URL4" "$OC5|$URL5"; do
+            oc="${pair%%|*}"
+            url="${pair#*|}"
+            if [ "$oc" = "success" ] && [ -n "$url" ]; then
               echo "page_url=$url" >> "$GITHUB_OUTPUT"
               echo "Deployed to $url"
               exit 0
@@ -392,6 +406,40 @@ jobs:
           done
           echo "::error::GitHub Pages deploy failed after 5 attempts (transient API error). Re-run this workflow from Actions."
           exit 1
+
+      # O artifact github-pages (~270 MB por deploy) só alimenta o deploy-pages
+      # dentro desta run — com ~10-14 deploys/dia e retenção mínima de 1 dia
+      # acumulava ~3,8 GB permanentes de lixo (nov 2026: 6,8 GB no total de
+      # artifacts, mais de metade destes). Apaga-se aqui em sucesso; em falha
+      # fica para o re-run manual do job (o publish falha o job ⇒ success()
+      # false ⇒ não apagamos) e expira sozinho em 1 dia.
+      # Nota: este passo nunca pode falhar o job — uma falha da API aqui não
+      # pode bloquear os verificadores pós-publicação (security-headers etc.)
+      # nem pintar de vermelho um deploy que já está live. Qualquer erro vira
+      # warning: o artifact expira sozinho em 1 dia.
+      - name: Delete pages artifact
+        if: success()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Sem pipeline para head: numa pipe o exit code é o do último comando
+          # e o head tem sempre sucesso — uma falha do gh api pareceria «sem
+          # artifact». Selecionar o primeiro id no próprio jq preserva o exit
+          # status do gh, que é o que o if testa.
+          if ! artifact_id=$(gh api "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts" \
+            --jq '[.artifacts[] | select(.name == "github-pages") | .id][0] // empty' 2>/dev/null); then
+            echo "::warning::não foi possível listar artifacts da run — github-pages expira em 1 dia"
+            exit 0
+          fi
+          if [ -z "$artifact_id" ]; then
+            echo "sem artifact github-pages nesta run — nada a apagar"
+            exit 0
+          fi
+          if gh api -X DELETE "repos/${{ github.repository }}/actions/artifacts/$artifact_id" > /dev/null 2>&1; then
+            echo "github-pages artifact $artifact_id apagado"
+          else
+            echo "::warning::delete do artifact $artifact_id recusado — expira sozinho em 1 dia"
+          fi
 
   security-headers:
     # Guard S7 (docs/SECURITY-HEADERS.md §4.1) — corre o verificador após o deploy
