@@ -422,8 +422,12 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          # Sem pipeline para head: numa pipe o exit code é o do último comando
+          # e o head tem sempre sucesso — uma falha do gh api pareceria «sem
+          # artifact». Selecionar o primeiro id no próprio jq preserva o exit
+          # status do gh, que é o que o if testa.
           if ! artifact_id=$(gh api "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts" \
-            --jq '.artifacts[] | select(.name == "github-pages") | .id' 2>/dev/null | head -n1); then
+            --jq '[.artifacts[] | select(.name == "github-pages") | .id][0] // empty' 2>/dev/null); then
             echo "::warning::não foi possível listar artifacts da run — github-pages expira em 1 dia"
             exit 0
           fi
