@@ -384,9 +384,21 @@ jobs:
           URL3: ${{ steps.deployment3.outputs.page_url }}
           URL4: ${{ steps.deployment4.outputs.page_url }}
           URL5: ${{ steps.deployment5.outputs.page_url }}
+          OC1: ${{ steps.deployment.outcome }}
+          OC2: ${{ steps.deployment2.outcome }}
+          OC3: ${{ steps.deployment3.outcome }}
+          OC4: ${{ steps.deployment4.outcome }}
+          OC5: ${{ steps.deployment5.outcome }}
         run: |
-          for url in "$URL5" "$URL4" "$URL3" "$URL2" "$URL1"; do
-            if [ -n "$url" ]; then
+          # O deploy-pages emite page_url ANTES de confirmar a publicação — uma
+          # tentativa que termina em deployment_failed deixa URL não vazia.
+          # Aceitar só a URL de uma tentativa com outcome success: sem isto o
+          # job ficava verde sem nada publicado (e o cleanup abaixo apagava o
+          # artifact, quebrando o re-run manual).
+          for pair in "$OC1|$URL1" "$OC2|$URL2" "$OC3|$URL3" "$OC4|$URL4" "$OC5|$URL5"; do
+            oc="${pair%%|*}"
+            url="${pair#*|}"
+            if [ "$oc" = "success" ] && [ -n "$url" ]; then
               echo "page_url=$url" >> "$GITHUB_OUTPUT"
               echo "Deployed to $url"
               exit 0
@@ -401,18 +413,28 @@ jobs:
       # artifacts, mais de metade destes). Apaga-se aqui em sucesso; em falha
       # fica para o re-run manual do job (o publish falha o job ⇒ success()
       # false ⇒ não apagamos) e expira sozinho em 1 dia.
+      # Nota: este passo nunca pode falhar o job — uma falha da API aqui não
+      # pode bloquear os verificadores pós-publicação (security-headers etc.)
+      # nem pintar de vermelho um deploy que já está live. Qualquer erro vira
+      # warning: o artifact expira sozinho em 1 dia.
       - name: Delete pages artifact
         if: success()
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          artifact_id=$(gh api "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts" \
-            --jq '.artifacts[] | select(.name == "github-pages") | .id' | head -n1)
-          if [ -n "$artifact_id" ]; then
-            gh api -X DELETE "repos/${{ github.repository }}/actions/artifacts/$artifact_id" \
-              && echo "github-pages artifact $artifact_id apagado"
-          else
+          if ! artifact_id=$(gh api "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts" \
+            --jq '.artifacts[] | select(.name == "github-pages") | .id' 2>/dev/null | head -n1); then
+            echo "::warning::não foi possível listar artifacts da run — github-pages expira em 1 dia"
+            exit 0
+          fi
+          if [ -z "$artifact_id" ]; then
             echo "sem artifact github-pages nesta run — nada a apagar"
+            exit 0
+          fi
+          if gh api -X DELETE "repos/${{ github.repository }}/actions/artifacts/$artifact_id" > /dev/null 2>&1; then
+            echo "github-pages artifact $artifact_id apagado"
+          else
+            echo "::warning::delete do artifact $artifact_id recusado — expira sozinho em 1 dia"
           fi
 
   security-headers:
