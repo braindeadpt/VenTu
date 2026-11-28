@@ -60,7 +60,9 @@ on:
 
 permissions:
   contents: read
-  actions: read # o job precheck lê os runs do CI via gh api
+  # read: o job precheck lê os runs do CI via gh api. write: o job deploy
+  # apaga o artifact github-pages da própria run no fim (ver o step final).
+  actions: write
   pages: write
   id-token: write
 
@@ -392,6 +394,26 @@ jobs:
           done
           echo "::error::GitHub Pages deploy failed after 5 attempts (transient API error). Re-run this workflow from Actions."
           exit 1
+
+      # O artifact github-pages (~270 MB por deploy) só alimenta o deploy-pages
+      # dentro desta run — com ~10-14 deploys/dia e retenção mínima de 1 dia
+      # acumulava ~3,8 GB permanentes de lixo (nov 2026: 6,8 GB no total de
+      # artifacts, mais de metade destes). Apaga-se aqui em sucesso; em falha
+      # fica para o re-run manual do job (o publish falha o job ⇒ success()
+      # false ⇒ não apagamos) e expira sozinho em 1 dia.
+      - name: Delete pages artifact
+        if: success()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          artifact_id=$(gh api "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts" \
+            --jq '.artifacts[] | select(.name == "github-pages") | .id' | head -n1)
+          if [ -n "$artifact_id" ]; then
+            gh api -X DELETE "repos/${{ github.repository }}/actions/artifacts/$artifact_id" \
+              && echo "github-pages artifact $artifact_id apagado"
+          else
+            echo "sem artifact github-pages nesta run — nada a apagar"
+          fi
 
   security-headers:
     # Guard S7 (docs/SECURITY-HEADERS.md §4.1) — corre o verificador após o deploy
